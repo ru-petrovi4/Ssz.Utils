@@ -1,0 +1,186 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>disable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="CollectionControl\Images\Delete16.png" />
+    <None Remove="MessageBox\Icons\Error48.png" />
+    <None Remove="MessageBox\Icons\Information48.png" />
+    <None Remove="MessageBox\Icons\Question48.png" />
+    <None Remove="MessageBox\Icons\Warning48.png" />
+    <None Remove="MultiLineTextEditor\Images\Notes16.png" />
+    <None Remove="PropertyGrid\Images\AdvancedProperties11.png" />
+    <None Remove="PropertyGrid\Images\Categorize16.png" />
+    <None Remove="PropertyGrid\Images\ClearFilter16.png" />
+    <None Remove="PropertyGrid\Images\Database11.png" />
+    <None Remove="PropertyGrid\Images\Inheritance11.png" />
+    <None Remove="PropertyGrid\Images\Local11.png" />
+    <None Remove="PropertyGrid\Images\Resource11.png" />
+    <None Remove="PropertyGrid\Images\SortAscending16.png" />
+    <None Remove="PropertyGrid\Images\Style11.png" />
+    <None Remove="RichTextBoxFormatBar\Images\Bold16.png" />
+    <None Remove="RichTextBoxFormatBar\Images\Bullets16.png" />
+    <None Remove="RichTextBoxFormatBar\Images\CenterAlign16.png" />
+    <None Remove="RichTextBoxFormatBar\Images\FontColorPicker16.png" />
+    <None Remove="RichTextBoxFormatBar\Images\Italic16.png" />
+    <None Remove="RichTextBoxFormatBar\Images\JustifyAlign16.png" />
+    <None Remove="RichTextBoxFormatBar\Images\LeftAlign16.png" />
+    <None Remove="RichTextBoxFormatBar\Images\Numbering16.png" />
+    <None Remove="RichTextBoxFormatBar\Images\RightAlign16.png" />
+    <None Remove="RichTextBoxFormatBar\Images\TextHighlightColorPicker16.png" />
+    <None Remove="RichTextBoxFormatBar\Images\Underline16.png" />
+    <None Remove="Themes\Generic\Images\close_hover.png" />
+    <None Remove="Themes\Generic\Images\close_inactive.png" />
+    <None Remove="Themes\Generic\Images\close_normal.png" />
+    <None Remove="Themes\Generic\Images\close_pressed.png" />
+    <None Remove="Themes\Generic\Images\close_rounded_hover.png" />
+    <None Remove="Themes\Generic\Images\close_rounded_inactive.png" />
+    <None Remove="Themes\Generic\Images\close_rounded_normal.png" />
+    <None Remove="Themes\Generic\Images\close_rounded_pressed.png" />
+    <None Remove="Themes\Generic\Images\close_toolwindow_hover.png" />
+    <None Remove="Themes\Generic\Images\close_toolwindow_inactive.png" />
+    <None Remove="Themes\Generic\Images\close_toolwindow_normal.png" />
+    <None Remove="Themes\Generic\Images\close_toolwindow_pressed.png" />
+    <None Remove="Themes\Generic\Images\maximize_disabled.png" />
+    <None Remove="Themes\Generic\Images\maximize_hover.png" />
+    <None Remove="Themes\Generic\Images\maximize_inactive.png" />
+    <None Remove="Themes\Generic\Images\maximize_normal.png" />
+    <None Remove="Themes\Generic\Images\maximize_pressed.png" />
+    <None Remove="Themes\Generic\Images\minimize_hover.png" />
+    <None Remove="Themes\Generic\Images\minimize_inactive.png" />
+    <None Remove="Themes\Generic\Images\minimize_normal.png" />
+    <None Remove="Themes\Generic\Images\minimize_pressed.png" />
+    <None Remove="Themes\Generic\Images\resize_grip.png" />
+    <None Remove="Themes\Generic\Images\restore_disabled.png" />
+    <None Remove="Themes\Generic\Images\restore_hover.png" />
+    <None Remove="Themes\Generic\Images\restore_inactive.png" />
+    <None Remove="Themes\Generic\Images\restore_normal.png" />
+    <None Remove="Themes\Generic\Images\restore_pressed.png" />
+    <None Remove="Zoombox\Resources\Zoom.cur" />
+    <None Remove="Zoombox\Resources\ZoomRelative.cur" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dnc.Utils" Version="1.0.13" />
+    <PackageReference Include="Dnc.Utils.Wpf" Version="1.0.14" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="CollectionControl\Images\Delete16.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="MessageBox\Icons\Error48.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="MessageBox\Icons\Information48.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="MessageBox\Icons\Question48.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="MessageBox\Icons\Warning48.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="MultiLineTextEditor\Images\Notes16.png" />
+    <Resource Include="PropertyGrid\Images\AdvancedProperties11.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="PropertyGrid\Images\Categorize16.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="PropertyGrid\Images\ClearFilter16.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="PropertyGrid\Images\Database11.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="PropertyGrid\Images\Inheritance11.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="PropertyGrid\Images\Local11.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="PropertyGrid\Images\Resource11.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="PropertyGrid\Images\SortAscending16.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="PropertyGrid\Images\Style11.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="RichTextBoxFormatBar\Images\Bold16.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="RichTextBoxFormatBar\Images\Bullets16.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="RichTextBoxFormatBar\Images\CenterAlign16.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="RichTextBoxFormatBar\Images\FontColorPicker16.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="RichTextBoxFormatBar\Images\Italic16.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="RichTextBoxFormatBar\Images\JustifyAlign16.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="RichTextBoxFormatBar\Images\LeftAlign16.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="RichTextBoxFormatBar\Images\Numbering16.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="RichTextBoxFormatBar\Images\RightAlign16.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="RichTextBoxFormatBar\Images\TextHighlightColorPicker16.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="RichTextBoxFormatBar\Images\Underline16.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Themes\Generic\Images\close_hover.png" />
+    <Resource Include="Themes\Generic\Images\close_inactive.png" />
+    <Resource Include="Themes\Generic\Images\close_normal.png" />
+    <Resource Include="Themes\Generic\Images\close_pressed.png" />
+    <Resource Include="Themes\Generic\Images\close_rounded_hover.png" />
+    <Resource Include="Themes\Generic\Images\close_rounded_inactive.png" />
+    <Resource Include="Themes\Generic\Images\close_rounded_normal.png" />
+    <Resource Include="Themes\Generic\Images\close_rounded_pressed.png" />
+    <Resource Include="Themes\Generic\Images\close_toolwindow_hover.png" />
+    <Resource Include="Themes\Generic\Images\close_toolwindow_inactive.png" />
+    <Resource Include="Themes\Generic\Images\close_toolwindow_normal.png" />
+    <Resource Include="Themes\Generic\Images\close_toolwindow_pressed.png" />
+    <Resource Include="Themes\Generic\Images\maximize_disabled.png" />
+    <Resource Include="Themes\Generic\Images\maximize_hover.png" />
+    <Resource Include="Themes\Generic\Images\maximize_inactive.png" />
+    <Resource Include="Themes\Generic\Images\maximize_normal.png" />
+    <Resource Include="Themes\Generic\Images\maximize_pressed.png" />
+    <Resource Include="Themes\Generic\Images\minimize_hover.png" />
+    <Resource Include="Themes\Generic\Images\minimize_inactive.png" />
+    <Resource Include="Themes\Generic\Images\minimize_normal.png" />
+    <Resource Include="Themes\Generic\Images\minimize_pressed.png" />
+    <Resource Include="Themes\Generic\Images\resize_grip.png" />
+    <Resource Include="Themes\Generic\Images\restore_disabled.png" />
+    <Resource Include="Themes\Generic\Images\restore_hover.png" />
+    <Resource Include="Themes\Generic\Images\restore_inactive.png" />
+    <Resource Include="Themes\Generic\Images\restore_normal.png" />
+    <Resource Include="Themes\Generic\Images\restore_pressed.png" />
+    <Resource Include="Zoombox\Resources\Zoom.cur" />
+    <Resource Include="Zoombox\Resources\ZoomRelative.cur" />
+  </ItemGroup>
+
+</Project>
