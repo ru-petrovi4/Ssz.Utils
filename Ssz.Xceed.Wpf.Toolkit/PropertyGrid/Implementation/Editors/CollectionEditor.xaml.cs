@@ -20,7 +20,7 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using Dnc.Utils.Wpf;
+using Ssz.Utils.Wpf;
 using Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Implementation.Editors;
 
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Editors

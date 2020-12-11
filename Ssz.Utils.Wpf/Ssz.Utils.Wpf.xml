@@ -1,0 +1,884 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Ssz.Utils.Wpf</name>
+    </assembly>
+    <members>
+        <member name="M:Ssz.Utils.Wpf.ClipboardHelper.ParseClipboardData">
+            <summary>        
+                Uses CultureHelper.SystemCultureInfo.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ClipboardHelper.SetClipboardData(System.Collections.Generic.List{System.String[]})">
+            <summary>
+                Uses CultureHelper.SystemCultureInfo
+            </summary>
+            <param name="data"></param>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.DisposableViewModelBase">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.DisposableViewModelBase.Dispose">
+            <summary>
+                This is the implementation of the IDisposable.Dispose method.  The client
+                application should invoke this method when this instance is no longer needed.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.DisposableViewModelBase.Dispose(System.Boolean)">
+            <summary>
+                This method is invoked when the IDisposable.Dispose or Finalize actions are
+                requested.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.DisposableViewModelBase.Finalize">
+            <summary>
+                Invoked by the .NET Framework while doing heap managment (Finalize).
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.DisposableViewModelBase.Disposed">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.FileSystemHelper.Compare(System.IO.FileSystemInfo,System.IO.FileSystemInfo)">
+            <summary>
+            
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.FileSystemHelper.GetFilesByExtensions(System.IO.DirectoryInfo,System.IO.SearchOption,System.String[])">
+            <summary>
+            
+            </summary>
+            <param name="dir"></param>
+            <param name="searchOption"></param>
+            <param name="extensions"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.FileSystemHelper.IsDirectoryWritable(System.String,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="dirPath"></param>
+            <param name="throwIfFails"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.FileSystemHelper.OpenFolderInExplorerAndSelectFiles(System.String,System.String[])">
+            <summary>
+            
+            </summary>
+            <param name="folder"></param>
+            <param name="filesToSelect"></param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.LocationMindfulWindows.LocationMindfulRibbonWindow.#ctor">
+            <summary>
+                For using in VS editor
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.LocationMindfulWindows.LocationMindfulWindow.#ctor">
+            <summary>
+                For using in VS editor
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.LocationMindfulWindows.WindowSlot.InitializeWindow(Ssz.Utils.Wpf.LocationMindfulWindows.ILocationMindfulWindow,System.String,System.Double,System.Double)">
+            <summary>        
+            </summary>
+            <param name="window"></param>
+            <param name="category"></param>
+            <param name="initialWidth"></param>
+            <param name="initialHeight"></param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.NameValueCollectionTypeConverter`1.CanConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Type)">
+            <summary>
+                Returns true if this type converter can convert from a given type.
+            </summary>
+            <returns>
+                bool - True if this converter can convert from the provided type, false if not.
+            </returns>
+            <param name="context"> The ITypeDescriptorContext for this call. </param>
+            <param name="sourceType"> The Type being queried for support. </param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.NameValueCollectionTypeConverter`1.ConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Globalization.CultureInfo,System.Object)">
+            <summary>
+                Attempts to convert to a DoubleDataSourceItemInfo from the given object.
+            </summary>
+            <returns>
+                The DoubleDataSourceItemInfo which was constructed.
+            </returns>
+            <exception cref="T:System.NotSupportedException">
+                A NotSupportedException is thrown if the example object is null or is not a valid type
+                which can be converted to a DoubleDataSourceItemInfo.
+            </exception>
+            <param name="context"> The ITypeDescriptorContext for this call. </param>
+            <param name="culture"> The requested CultureInfo.  Note that conversion uses "en-US" rather than this parameter. </param>
+            <param name="value"> The object to convert to an instance of DoubleDataSourceItemInfo. </param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.NameValueCollectionValueSerializer`1.CanConvertFromString(System.String,System.Windows.Markup.IValueSerializerContext)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.NameValueCollectionValueSerializer`1.ConvertFromString(System.String,System.Windows.Markup.IValueSerializerContext)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.NameValueCollectionValueSerializer`1.ConvertFromString(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.NameValueCollectionValueSerializer`1.CanConvertToString(System.Object,System.Windows.Markup.IValueSerializerContext)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.NameValueCollectionValueSerializer`1.ConvertToString(System.Object,System.Windows.Markup.IValueSerializerContext)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+            <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.Properties.Resources.WpfMessageBoxCancellButton">
+            <summary>
+              Looks up a localized string similar to _Cancel.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.Properties.Resources.WpfMessageBoxNoButton">
+            <summary>
+              Looks up a localized string similar to _No.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.Properties.Resources.WpfMessageBoxNoForAllButton">
+            <summary>
+              Looks up a localized string similar to No for All.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.Properties.Resources.WpfMessageBoxOkButton">
+            <summary>
+              Looks up a localized string similar to O_K.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.Properties.Resources.WpfMessageBoxYesButton">
+            <summary>
+              Looks up a localized string similar to _Yes.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.Properties.Resources.WpfMessageBoxYesForAllButton">
+            <summary>
+              Looks up a localized string similar to Yes for All.
+            </summary>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.RecentFilesCollectionManager">
+            <summary>
+                Recent manager - manages Most Recently Used Files list
+                for Windows Window application.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.RecentFilesCollectionManager.Add(System.String)">
+            <summary>
+                Add file name to Recent list.
+                Call this function when file is opened successfully.
+                If file already exists in the list, it is moved to the first place.
+            </summary>
+            <param name="fullFileName">File Name</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.RecentFilesCollectionManager.Remove(System.String)">
+            <summary>
+                Remove file name from Recent list.
+                Call this function when File - Open operation failed.
+            </summary>
+            <param name="fullFileName">File Name</param>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.RecentFilesCollectionManager.MaxDisplayNameLength">
+            <summary>
+                Maximum length of displayed file name in menu (default is 40).
+                Set this property to change default value (optional).
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.RecentFilesCollectionManager.MaxNumberOfFiles">
+            <summary>
+                Maximum length of Recent list (default is 10).
+                Set this property to change default value (optional).
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.RecentFilesCollectionManager.CurrentDir">
+            <summary>
+                Set current directory.
+                Default value is program current directory which is set when
+                Initialize function is called.
+                Set this property to change default value (optional)
+                after call to Initialize.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.RecentFilesCollectionManager.GetShortDisplayName(System.String,System.Int32)">
+            <summary>
+                Truncate a path to fit within a certain number of characters
+                by replacing path components with ellipses.
+                This solution is provided by CodeProject and GotDotNet C# expert
+                Richard Deeming.
+            </summary>
+            <param name="longName">Long file name</param>
+            <param name="maxLen">Maximum length</param>
+            <returns>Truncated file name</returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.RecentFilesCollectionManager.GetDisplayName(System.String)">
+            <summary>
+                Get display file name from full name.
+            </summary>
+            <param name="fullName">Full file name</param>
+            <returns>Short display name</returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.RecentFilesCollectionManager.LoadRecent">
+            <summary>
+                Load Recent list from Registry.
+                Called from Initialize.
+            </summary>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.RelayCommand">
+             <summary>
+             The RelayCommand is a core class in the MVVM pattern to allow a ViewModel class
+             to implement the code associated with a command request that has been made by the View
+             </summary>
+             <remarks>
+             The RelayCommand implements the ICommand interface with its three methods (Execute, 
+             CanExecute, and CanExecuteChanged).
+             The intent is for the ViewModel class to create an instance of the RelayCommand class for 
+             each of the commands that are supported in the ViewModel so that when the DataBinding
+             from the View access the command property, the associated callback is made on the 
+             ViewModel so that it can execute the command.
+             
+             <example><code>
+             public class MyViewModel : INotifyPropertyChanged
+             {
+            		public MyViewModel()
+            		{
+            			//Hook the databound property to the method which does the work
+            			DoSomethingCommand = new RelayCommand(DoSomething);
+            		}
+            		
+            		///<summary>The property for the View to databind to.</summary>
+            		public RelayCommand DoSomethingCommand { get; private set; }
+            
+                 ///<summary>The method that does the work associated with the DoSomethingCommand databound property</summary>
+            		public void DoSomething()
+            		{
+            			//TODO - Implement the command here in my viewmodel class
+            		}
+             }
+             </code></example>
+             </remarks>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.RelayCommand.#ctor(System.Action)">
+            <summary>
+            Will callback on the provided method when Execute() is called
+            </summary>
+            <param name="executeMethod">The method to call which will execute the command</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.RelayCommand.#ctor(System.Action{System.Object})">
+            <summary>
+            Will callback on the provided method when Execute() is called
+            </summary>
+            <param name="executeMethod">The method to call which will execute the command</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.RelayCommand.#ctor(System.Action,System.Func{System.Boolean})">
+            <summary>
+            Will callback on the provided method when Execute() is called.
+            Will callback on the provided method when CanExecute() is called
+            </summary>
+            <param name="executeMethod">The method to call which will execute the command</param>
+            <param name="canExecuteMethod">The method to call to determine if Execute() can be called</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.RelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object})">
+            <summary>
+            Will callback on the provided method when Execute() is called.
+            Will callback on the provided method when CanExecute() is called
+            </summary>
+            <param name="executeMethod">The method to call which will execute the command</param>
+            <param name="canExecuteMethod">The method to call to determine if Execute() can be called</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.RelayCommand.CanExecute(System.Object)">
+            <summary>
+            Invokes the Func as defined in the RelayCommand's constructor 
+            </summary>
+            <remarks>
+            If the CanExecute callback has not been defined, then the Execute method
+            is always available to be called.
+            </remarks>
+            <param name="parameter">The parameter passed in from the caller</param>
+            <returns>
+            true if Execute() can be called
+            false if Execute() cannot be called
+            </returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.RelayCommand.Execute(System.Object)">
+            <summary>
+            Invokes the action as defined in the RelayCommand's constructor 
+            </summary>
+            <remarks>
+            Calls back on the defined method
+            </remarks>
+            <param name="parameter">The object to pass along to the execute command</param>
+        </member>
+        <member name="E:Ssz.Utils.Wpf.RelayCommand.CanExecuteChanged">
+            <summary>
+            Notification when changes occur that affect whether or not the command should execute
+            </summary>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.RotationViewbox.LayoutInvalidationCatcher">
+            <summary>
+                Wrap this around a class that we want to catch the measure and arrange
+                processes occuring on, and propagate to the parent RotationViewbox, if any.
+                Do this because layout invalidations don't flow up out of a
+                Viewport2DVisual3D object.
+            </summary>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.ScreenHelper">
+            <summary>
+                All functions work with WPF coordinates.
+                Warning! frameworkElement.PointToScreen returns values in screen coordinates, not WPF coordinates.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ScreenHelper.GetSystemScreens">
+            <summary>
+                Returns screens working areas in WPF coordinates.
+                First screen in array is primary screen.
+                result != null
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ScreenHelper.GetPrimarySystemScreen">
+            <summary>
+                Returns primary screen working area in WPF coordinates.        
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ScreenHelper.GetSystemScreen(System.Windows.Point)">
+            <summary>
+                Returns system screen containing the point.
+                All values in WPF coordinates.
+                Returns null, if not found.
+            </summary>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ScreenHelper.IsFullyVisible(System.Windows.Rect)">
+            <summary>
+                All values in WPF coordinates.
+            </summary>
+            <param name="rect"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ScreenHelper.SetFullyVisible(System.Windows.Window,System.Windows.Rect)">
+            <summary>
+                Set window fully contained in rect.
+                All values in WPF coordinates.        
+            </summary>
+            <param name="window"></param>
+            <param name="rect"></param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ScreenHelper.GetNearestSystemScreen(System.Windows.Point)">
+            <summary>
+                All values in WPF coordinates.
+            </summary>
+            <param name="point"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ScreenHelper.GetRect(System.Windows.FrameworkElement)">
+            <summary>
+                Gets location of frameworkElement on system screen.
+                All values in WPF coordinates.
+                Warning! frameworkElement.PointToScreen returns values in screen coordinates, not WPF coordinates.        
+            </summary>
+            <param name="frameworkElement"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ScreenHelper.ScreenScaleX">
+            <summary>
+                Screen coordinate/WPF coordinate ratio on X-axis.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ScreenHelper.ScreenScaleY">
+            <summary>
+                Screen coordinate/WPF coordinate ratio on Y-axis.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ScreenHelper.IsValidCoordinate(System.Nullable{System.Double})">
+            <summary>
+                Returns true if valid.
+            </summary>
+            <param name="length"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ScreenHelper.IsValidLength(System.Nullable{System.Double})">
+            <summary>
+                Returns true if valid.
+            </summary>
+            <param name="length"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.SystemMenu.SystemMenuWindow.#ctor">
+            <summary>
+                Initializes a new instance of the SystemMenuWindow class.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.TreeHelper.FindChild``1(System.Windows.DependencyObject,System.String)">
+            <summary>
+                Searches in all sub-tree
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="that"></param>
+            <param name="elementName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.TreeHelper.FindChilds``1(System.Windows.DependencyObject,System.Func{``0,System.Boolean})">
+            <summary>
+                Searches in all sub-tree        
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="parent"></param>
+            <param name="additionalCheck"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.TreeHelper.FindChildsOrSelf``1(System.Windows.DependencyObject,System.Func{``0,System.Boolean})">
+            <summary>
+                Searches in all sub-tree        
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="parent"></param>
+            <param name="additionalCheck"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.TreeHelper.FindChild``1(System.Windows.DependencyObject,System.Func{``0,System.Boolean})">
+            <summary>
+                Searches in all sub-tree
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="parent"></param>
+            <param name="additionalCheck"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.TreeHelper.FindParent``1(System.Windows.DependencyObject,System.Func{``0,System.Boolean})">
+            <summary>
+            
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="obj"></param>
+            <param name="additionalCheck"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.TreeHelper.IsUserVisible(System.Windows.FrameworkElement,System.Windows.FrameworkElement)">
+            <summary>
+            Determines if the specified WPF element in the specified WPF container is currently visible
+            </summary>
+            <remarks>
+            WPF has a complex tree system where controls are embeded into other controls and walking that 
+            stack is not easy.  This method will walk the stack for us to determine if both the element
+            and the container it is in are visible.
+            
+            An example of this use is with alarms.  Alarms will typically be embedded into a ListView.
+            When we acknowledge the page, we want to only acknowledge the alarms that are currently 
+            visible to the user.  So we rip through the entire alarm list, and for each element in
+            the list, we check to see if that element is visible within its ListView container.
+            </remarks>
+            <example>
+            This sample shows how to do something with the visible elements in a WPF ListView control named 'MyListView'
+            <code>
+            for (int i=0; i_MyListView.Items.Count; i++)
+            {
+                FrameworkElement container = MyListView;
+                FrameworkElement element = container.ItemContainerGenerator.ContainerFromIndex(i) as FrameworkElement;
+                if (TreeHelper.IsUserVisible(element, container))
+                {
+                    //Do something with the visible item
+                }
+            }
+            </code>
+            </example>
+            <param name="element">The element that we are checking if it is visible</param>
+            <param name="container">The container that is holding this element</param>
+            <returns>
+            true if the element is visible
+            false if the element is not visible
+            </returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.TreeHelper.GetDependencyProperties(System.Object)">
+            <summary>       
+            </summary>
+            <param name="element"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.ViewModelBase">
+            <summary>
+            The ViewModelBase is a core class in the MVVM pattern to allow a ViewModel class
+            to reuse the PropertyChanged methods/pattern associated with the INotifyPropertyChanged
+            </summary>
+            <remarks>
+            Every Model and every ViewModel should implement the INotifyPropertyChanged interface in
+            order to support data binding.  In the MVVM pattern, the Model (or ViewModel) communicates
+            up to interested parties exclusively through the property changed notification.
+            
+            This base class provides some typical implementation for the PropertyChanged and SetValue
+            methods.  This helps to reduce copy/paste code in the derived class.  The base class is
+            expected to be used in the following manner in the Model or ViewModel
+            <example><code>
+            public class MyViewModel : ViewModelBase	//derive from INPC base class
+            {
+            	private string _firstName;
+            	public string FirstName 
+            	{ 
+            		get { return _firstName; } 
+            		set { SetValue(ref _firstName, value); }	//Call base.SetValue to set the value and raise the PropertyChanged event
+            	}
+            }
+            </code></example>
+            </remarks>
+        </member>
+        <member name="E:Ssz.Utils.Wpf.ViewModelBase.PropertyChanged">
+            <summary>
+                Notification that the value contained in a property has changed		
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ViewModelBase.ClearPropertyChangedEvent">
+            <summary>
+                Clears PropertyChange event from subscribers. PropertyChanged becomes empty but not null.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ViewModelBase.OnPropertyChanged(System.String)">
+            <summary>
+            Causes the PropertyChanged event to fire for the specified property name
+            </summary>
+            <remarks>
+            This method is provided so that a class can force a property changed event
+            to be raised on a specific property.  This will typically be done if one property 
+            is changed and it is related to a derived property.  An example would be the Height
+            property value changing also affects the Size property (even though Size was not 
+            directly changed)
+            
+            Note that using this method is error prone as demonstrated in the following example
+            <example>
+            //OnPropertyChanged("Size");		//Don't use - error prone - runtime validation only
+            OnPropertyChanged(() => Size);		//Best practice - compile time validation
+            </example>
+            </remarks>
+            <param name="propertyName">The property that needs to raise the PropertyChanged notification</param>		
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ViewModelBase.OnPropertyChanged``1(System.Linq.Expressions.Expression{System.Func{``0}})">
+            <summary>
+            Causes the PropertyChanged event to fire for the specified property
+            </summary>
+            <remarks>
+            This method is provided so that a class can force a property changed event
+            to be raised on a specific property.  This will typically be done if one property 
+            is changed and it is related to a derived property.  An example would be the Height
+            property value changing also affects the Size property (even though Size was not 
+            directly changed)
+            
+            This method is the preferred way to raise a property changed notification.  This 
+            allows the caller to directly use the property which then allows for compile time 
+            validation.
+            <example>
+            //OnPropertyChanged("Size");		//Don't use - error prone - runtime validation only
+            OnPropertyChanged(() => Size);		//Best practice - compile time validation
+            </example>
+            </remarks>
+            <param name="propertyNameExpression">The property that needs to raise the PropertyChanged notification</param>        
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ViewModelBase.OnPropertyChangedAuto(System.String)">
+            <summary>
+            Causes the PropertyChanged event to fire for the current property
+            </summary>
+            <remarks>
+            This method can be used when within a property to automatically raise its property changed event.
+            <example>
+            private string _firstName;
+            public string FirstName
+            {
+            	get { return _firstName; }
+            	set 
+            	{
+            		_firstName = value;
+            		OnPropertyChangedAuto();	//No need to specify "FirstName" as the argument
+            	}
+            }
+            </example>
+            </remarks>
+            <param name="propertyName">
+            Automatically set via the [CallerMemberName] attribute.  If the property 
+            calling this method is "FirstName", then propertyName is autmatically 
+            populated with "FirstName".  This helps to avoid typos ... especially
+            if the property name is changed or refactored.
+            </param>        
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ViewModelBase.SetValue``1(``0@,``0,System.String)">
+            <summary>
+            Sets the value on the backing field and raises the ProperyChanged notification
+            if the value has actually changed
+            </summary>
+            <remarks>
+            This method is expected to be used in the following manner by the derived class
+            <example><code>
+            public class MyViewModel : ViewModelBase	//derive from INPC base class
+            {
+            	private string _firstName;
+            	public string FirstName 
+            	{ 
+            		get { return _firstName; } 
+            		set { SetValue(ref _firstName, value); }	//Call base.SetValue to set the value and raise the PropertyChanged event
+            	}
+            }
+            </code></example></remarks>
+            <typeparam name="T">The field's type - makes this method generic</typeparam>
+            <param name="backingField">
+            A reference to the local member variable in the derived class 
+            which contains the current value of the field
+            </param>
+            <param name="value">The value that this field is being set to</param>
+            <param name="propertyName">
+            Automatically set via the [CallerMemberName] attribute.  If the property 
+            calling this method is "FirstName", then propertyName is autmatically 
+            populated with "FirstName".  This helps to avoid typos ... especially
+            if the property name is changed or refactored.
+            </param>
+            <returns>
+            true if the new value is different from the old value
+            false if the new and old values are equal (and PropertyChanged notifcation was not sent)
+            </returns>        
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ViewModelBase.VerifyPropertyName(System.String)">
+            <summary>
+            Verifies that the property name that is specified is a valid property on the object.
+            </summary>
+            <remarks>
+            This is done because typos in the property name could cause problems
+            or if the property name changes but the caller doesn't update the related
+            string.  We use reflection to verify that a property of the specified 
+            name is on this class.
+            </remarks>
+            <param name="propertyName">The name of the property to validate</param>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.WpfMessageBox.DelegateCommand">
+            <summary>
+                This class allows delegating the commanding logic to methods passed as parameters,
+                and enables a View to bind commands to objects that are not part of the element tree.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfMessageBox.DelegateCommand.Execute">
+            <summary>
+                Execution of the command
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.WpfMessageBox.DelegateCommand.IsAutomaticRequeryDisabled">
+            <summary>
+                Property to enable or disable CommandManager's automatic requery on this command
+            </summary>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.WpfMessageBox.DelegateCommand`1">
+            <summary>
+                This class allows delegating the commanding logic to methods passed as parameters,
+                and enables a View to bind commands to objects that are not part of the element tree.
+            </summary>
+            <typeparam name="T">Type of the parameter passed to the delegates</typeparam>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.WpfMessageBox.CommandManagerHelper">
+            <summary>
+                This class contains methods for the CommandManager that help avoid memory leaks by
+                using weak references.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.WpfMessageBox.WpfMessageBoxButton.OK">
+            <summary>
+                The message box displays an OK button.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.WpfMessageBox.WpfMessageBoxButton.OKCancel">
+            <summary>
+                The message box displays OK and Cancel buttons.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.WpfMessageBox.WpfMessageBoxButton.YesNoCancel">
+            <summary>
+                The message box displays Yes, No, and Cancel buttons.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.WpfMessageBox.WpfMessageBoxButton.YesNo">
+            <summary>
+                The message box displays Yes and No buttons.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.WpfMessageBox.WpfMessageBoxButton.YesNoYesAllNoAllCancel">
+            <summary>
+                The message box displays Yes, No, Yes for All, No for All, and Cancel buttons.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.WpfMessageBox.WpfMessageBoxResult.None">
+            <summary>
+                The message box returns no result.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.WpfMessageBox.WpfMessageBoxResult.OK">
+            <summary>
+                The result value of the message box is OK.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.WpfMessageBox.WpfMessageBoxResult.Cancel">
+            <summary>
+                The result value of the message box is Cancel.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.WpfMessageBox.WpfMessageBoxResult.Yes">
+            <summary>
+                The result value of the message box is Yes.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.WpfMessageBox.WpfMessageBoxResult.No">
+            <summary>
+                The result value of the message box is No.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.WpfMessageBox.WpfMessageBoxResult.YesForAll">
+            <summary>
+                The result value of the message box is Yes.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.WpfMessageBox.WpfMessageBoxResult.NoForAll">
+            <summary>
+                The result value of the message box is No.
+            </summary>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.WpfMessageBox.WpfMessageBoxWindow">
+            <summary>
+                Interaction logic for WPFMessageBoxWindow.xaml
+            </summary>
+            <summary>
+            WpfMessageBoxWindow
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfMessageBox.WpfMessageBoxWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.WpfScreenHelper.Screen">
+            <summary>
+            Represents a display device or multiple display devices on a single system.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.Screen.AllScreens">
+            <summary>
+            Gets an array of all displays on the system.
+            </summary>
+            <returns>An enumerable of type Screen, containing all displays on the system.</returns>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.Screen.Bounds">
+            <summary>
+            Gets the bounds of the display.
+            </summary>
+            <returns>A <see cref="T:System.Windows.Rect" />, representing the bounds of the display.</returns>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.Screen.DeviceName">
+            <summary>
+            Gets the device name associated with a display.
+            </summary>
+            <returns>The device name associated with a display.</returns>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.Screen.Primary">
+            <summary>
+            Gets a value indicating whether a particular display is the primary device.
+            </summary>
+            <returns>true if this display is primary; otherwise, false.</returns>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.Screen.PrimaryScreen">
+            <summary>
+            Gets the primary display.
+            </summary>
+            <returns>The primary display.</returns>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.Screen.WorkingArea">
+            <summary>
+            Gets the working area of the display. The working area is the desktop area of the display, excluding taskbars, docked windows, and docked tool bars.
+            </summary>
+            <returns>A <see cref="T:System.Windows.Rect" />, representing the working area of the display.</returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfScreenHelper.Screen.FromHandle(System.IntPtr)">
+            <summary>
+            Retrieves a Screen for the display that contains the largest portion of the specified control.
+            </summary>
+            <param name="hwnd">The window handle for which to retrieve the Screen.</param>
+            <returns>A Screen for the display that contains the largest region of the object. In multiple display environments where no display contains any portion of the specified window, the display closest to the object is returned.</returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfScreenHelper.Screen.FromPoint(System.Windows.Point)">
+            <summary>
+            Retrieves a Screen for the display that contains the specified point.
+            </summary>
+            <param name="point">A <see cref="T:System.Windows.Point" /> that specifies the location for which to retrieve a Screen.</param>
+            <returns>A Screen for the display that contains the point. In multiple display environments where no display contains the point, the display closest to the specified point is returned.</returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfScreenHelper.Screen.Equals(System.Object)">
+            <summary>
+            Gets or sets a value indicating whether the specified object is equal to this Screen.
+            </summary>
+            <param name="obj">The object to compare to this Screen.</param>
+            <returns>true if the specified object is equal to this Screen; otherwise, false.</returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfScreenHelper.Screen.GetHashCode">
+            <summary>
+            Computes and retrieves a hash code for an object.
+            </summary>
+            <returns>A hash code for an object.</returns>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.SystemInformation.VirtualScreen">
+            <summary>
+            Gets the bounds of the virtual screen.
+            </summary>
+            <returns>A <see cref="T:System.Windows.Rect" /> that specifies the bounding rectangle of the entire virtual screen.</returns>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.SystemInformation.WorkingArea">
+            <summary>
+            Gets the size, in pixels, of the working area of the screen.
+            </summary>
+            <returns>A <see cref="T:System.Windows.Rect" /> that represents the size, in pixels, of the working area of the screen.</returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.Xaml2Emf.CreateEmf(System.String,System.Windows.Media.Drawing)">
+            <summary>
+                drawing != null
+            </summary>
+            <param name="fileName"></param>
+            <param name="drawing"></param>
+        </member>
+    </members>
+</doc>

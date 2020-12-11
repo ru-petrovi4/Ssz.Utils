@@ -876,7 +876,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
     {
       Keyboard.Focus(this);
 
-      foreach (IPropertyGridItem child in Dnc.Utils.Wpf.TreeHelper.FindChilds<IPropertyGridItem>(this))
+      foreach (IPropertyGridItem child in Ssz.Utils.Wpf.TreeHelper.FindChilds<IPropertyGridItem>(this))
         {
             child.OnEndEditing();
         }
