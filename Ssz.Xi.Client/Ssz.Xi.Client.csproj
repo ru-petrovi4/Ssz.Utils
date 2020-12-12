@@ -3,9 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Authors>Valery Pogorelov</Authors>
     <Company>SSZ</Company>
-    <Version>1.0.13</Version>
+    <Version>1.0.15</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -23,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="System.ServiceModel.Duplex" Version="4.8.0" />
     <PackageReference Include="System.ServiceModel.Http" Version="4.8.0" />
     <PackageReference Include="System.ServiceModel.NetTcp" Version="4.8.0" />

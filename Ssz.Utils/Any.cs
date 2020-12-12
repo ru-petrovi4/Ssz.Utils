@@ -2449,7 +2449,7 @@ namespace Ssz.Utils
 
         private static CultureInfo GetCultureInfo(bool localized)
         {
-            if (localized) return CultureHelper.SystemCultureInfo;
+            if (localized) return ConfigurationHelper.SystemCultureInfo;
             return CultureInfo.InvariantCulture;
         }
 

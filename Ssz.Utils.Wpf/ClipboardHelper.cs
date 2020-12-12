@@ -28,7 +28,7 @@ namespace Ssz.Utils.Wpf
             if (clipboardData != null)
             {
                 string clipboardDataString = GetClipboardDataString(clipboardData);
-                return CsvHelper.ParseCsv(CultureHelper.SystemCultureInfo.TextInfo.ListSeparator, clipboardDataString);
+                return CsvHelper.ParseCsv(ConfigurationHelper.SystemCultureInfo.TextInfo.ListSeparator, clipboardDataString);
             }
             clipboardData = dataObj.GetData(DataFormats.Text);
             if (clipboardData != null)
@@ -52,7 +52,7 @@ namespace Ssz.Utils.Wpf
             var sb2 = new StringBuilder();
             foreach (var row in data)
             {
-                sb1.Append(CsvHelper.FormatForCsv(CultureHelper.SystemCultureInfo.TextInfo.ListSeparator, row));
+                sb1.Append(CsvHelper.FormatForCsv(ConfigurationHelper.SystemCultureInfo.TextInfo.ListSeparator, row));
                 sb1.Append(Environment.NewLine);
 
                 sb2.Append(CsvHelper.FormatForCsv("\t", row));
