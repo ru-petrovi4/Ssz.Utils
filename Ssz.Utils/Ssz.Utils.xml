@@ -2004,6 +2004,30 @@
                 Handle parsing errors delegate.
             </summary>
         </member>
+        <member name="T:Ssz.Utils.ConfigurationHelper">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.ConfigurationHelper.SystemCultureInfo">
+            <summary>
+                By default contains CultureInfo.InvariantCulture.
+                If CultureHelper.InitializeCulture() is called, contains CultureInfo that corresponds operating system culture.
+                SystemCultureInfo field is used in Utils.Any class when func param stringIsLocalized = True.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.ConfigurationHelper.AppSettings">
+            <summary>
+                appSettings.json -> AppSettings section.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.ConfigurationHelper.InitializeCulture">
+            <summary>
+                Initializes SystemCultureInfo field to operating system culture.        
+                Sets CurrentUICulture from appSettings.json -> AppSettings -> UICulture for all threads, if setting exists.
+                Otherwise, CurrentUICulture remains unchanged.
+            </summary>
+        </member>
         <member name="T:Ssz.Utils.CsvHelper">
             <summary>
             
@@ -2064,25 +2088,6 @@
             <param name="sourceString"></param>
             <param name="defines"></param>
             <returns></returns>
-        </member>
-        <member name="T:Ssz.Utils.CultureHelper">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="F:Ssz.Utils.CultureHelper.SystemCultureInfo">
-            <summary>
-                By default contains CultureInfo.InvariantCulture.
-                If CultureHelper.InitializeCulture() is called, contains CultureInfo that corresponds operating system culture.
-                SystemCultureInfo field is used in Utils.Any class when func param stringIsLocalized = True.
-            </summary>
-        </member>
-        <member name="M:Ssz.Utils.CultureHelper.InitializeCulture">
-            <summary>
-                Initializes SystemCultureInfo field to operating system culture.        
-                Sets CurrentUICulture from AppSettings["UICulture"] for all threads, if setting exists in app.config.
-                Otherwise, CurrentUICulture remains unchanged.
-            </summary>
         </member>
         <member name="M:Ssz.Utils.DynamicExpression.Initialize(System.Type[])">
             <summary>
