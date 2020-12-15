@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.VisualBasic.FileIO;
 
 namespace Ssz.Utils
@@ -160,13 +161,13 @@ namespace Ssz.Utils
         /// <param name="includeFiles"></param>
         /// <param name="defines"></param>
         /// <returns></returns>
-        public static CaseInsensitiveDictionary<List<string?>> ParseCsvFile(string fileFullName, bool includeFiles, CaseInsensitiveDictionary<string>? defines = null)
+        public static CaseInsensitiveDictionary<List<string?>> ParseCsvFile(string fileFullName, bool includeFiles, Dictionary<Regex, string>? defines = null)
         {
             var fileData = new CaseInsensitiveDictionary<List<string?>>();            
                 
             if (File.Exists(fileFullName))
             {
-                if (defines == null) defines = new CaseInsensitiveDictionary<string>();
+                if (defines == null) defines = new Dictionary<Regex, string>();
                 string? filePath = Path.GetDirectoryName(fileFullName);
                 using (var reader = new StreamReader(fileFullName, true))
                 {
@@ -225,7 +226,7 @@ namespace Ssz.Utils
                                 {                                    
                                     subst = ReplaceDefines(line.Substring(q2 + 1).Trim(), defines);
                                 }
-                                defines[define] = subst;
+                                defines[new Regex(@"\b" + define + @"\b", RegexOptions.IgnoreCase)] = subst;
                             }
                         }
                         else if (line[0] == '#')
@@ -270,11 +271,11 @@ namespace Ssz.Utils
         /// <param name="sourceString"></param>
         /// <param name="defines"></param>
         /// <returns></returns>
-        private static string ReplaceDefines(string sourceString, CaseInsensitiveDictionary<string> defines)
+        private static string ReplaceDefines(string sourceString, Dictionary<Regex, string> defines)
         {            
             foreach (var d in defines)
             {
-                sourceString = sourceString.Replace(d.Key, d.Value);
+                sourceString = d.Key.Replace(sourceString, d.Value);
             }
             return sourceString;
         }
