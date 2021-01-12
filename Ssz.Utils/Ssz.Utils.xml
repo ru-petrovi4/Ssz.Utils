@@ -2069,7 +2069,7 @@
             <param name="sourceString"></param>
             <returns></returns>
         </member>
-        <member name="M:Ssz.Utils.CsvHelper.ParseCsvFile(System.String,System.Boolean,System.Collections.Generic.Dictionary{System.Text.RegularExpressions.Regex,System.String})">
+        <member name="M:Ssz.Utils.CsvHelper.LoadCsvFile(System.String,System.Boolean,System.Collections.Generic.Dictionary{System.Text.RegularExpressions.Regex,System.String})">
             <summary>
                 First column in file is Key and must be unique.
                 Can contain include directives, defines and comments.
@@ -2080,6 +2080,13 @@
             <param name="includeFiles"></param>
             <param name="defines"></param>
             <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.CsvHelper.SaveCsvFile(System.String,Ssz.Utils.CaseInsensitiveDictionary{System.Collections.Generic.List{System.String}})">
+            <summary>
+                Saves data to file.
+            </summary>
+            <param name="fileFullName"></param>
+            <param name="fileData"></param>
         </member>
         <member name="M:Ssz.Utils.CsvHelper.ReplaceDefines(System.String,System.Collections.Generic.Dictionary{System.Text.RegularExpressions.Regex,System.String})">
             <summary>

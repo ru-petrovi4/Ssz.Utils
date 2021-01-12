@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.VisualBasic.FileIO;
 
@@ -161,7 +162,7 @@ namespace Ssz.Utils
         /// <param name="includeFiles"></param>
         /// <param name="defines"></param>
         /// <returns></returns>
-        public static CaseInsensitiveDictionary<List<string?>> ParseCsvFile(string fileFullName, bool includeFiles, Dictionary<Regex, string>? defines = null)
+        public static CaseInsensitiveDictionary<List<string?>> LoadCsvFile(string fileFullName, bool includeFiles, Dictionary<Regex, string>? defines = null)
         {
             var fileData = new CaseInsensitiveDictionary<List<string?>>();            
                 
@@ -195,7 +196,7 @@ namespace Ssz.Utils
                                 if (q2 != -1 && q2 > q1 + 1)
                                 {
                                     var includeFileName = line.Substring(q1 + 1, q2 - q1 - 1);
-                                    foreach (var kvp in ParseCsvFile(filePath + @"\" + includeFileName, false, defines))
+                                    foreach (var kvp in LoadCsvFile(filePath + @"\" + includeFileName, false, defines))
                                     {
                                         fileData[kvp.Key] = kvp.Value;
                                     }
@@ -259,6 +260,22 @@ namespace Ssz.Utils
             }            
 
             return fileData;
+        }
+
+        /// <summary>
+        ///     Saves data to file.
+        /// </summary>
+        /// <param name="fileFullName"></param>
+        /// <param name="fileData"></param>
+        public static void SaveCsvFile(string fileFullName, CaseInsensitiveDictionary<List<string?>> fileData)
+        {
+            using (var writer = new StreamWriter(File.Create(fileFullName), Encoding.UTF8))
+            {
+                foreach (var fileLine in fileData.OrderBy(kvp => kvp.Key))
+                {
+                    writer.WriteLine(FormatForCsv(",", fileLine.Value));
+                }
+            }
         }
 
         #endregion
