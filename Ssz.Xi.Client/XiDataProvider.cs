@@ -355,7 +355,7 @@ namespace Ssz.Xi.Client
             
             while (true)
             {
-                if (ct.WaitHandle.WaitOne(100)) break;
+                if (ct.WaitHandle.WaitOne(10)) break;
 
                 OnLoopInWorkingThread(ct);
             }

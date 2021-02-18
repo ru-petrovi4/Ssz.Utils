@@ -135,7 +135,7 @@ namespace Ssz.Xi.Client.Api
                 {
                     xiListItemWrappersToAdd.Add(xiListItemWrapper);
                     TXiListItem? xiListItem = null;
-                    if (XiList != null && !XiList.Disposed && !String.IsNullOrEmpty(kvp.Key))
+                    if (XiList != null && !XiList.Disposed)
                     {
                         try
                         {
