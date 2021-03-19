@@ -158,20 +158,7 @@ namespace Ssz.Utils.Serialization
         public IDisposable EnterBlock(int version)
         {
             return new Block(this, version);
-        }
-        
-        /// <summary>
-        ///     Writes a section of a character array to the current stream, and advances the
-        ///     current position of the stream in accordance with the Encoding used and perhaps
-        ///     the specific characters being written to the stream.
-        /// </summary>
-        /// <param name="chars"></param>
-        /// <param name="index"></param>
-        /// <param name="count"></param>
-        public void Write(char[] chars, int index, int count)
-        {
-            _binaryWriter.Write(chars, index, count);
-        }
+        }        
          
         /// <summary>
         ///     Writes a four-byte floating-point value to the current stream and advances the
@@ -244,17 +231,68 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     Writes a character array to the current stream and advances the current position
+        ///     of the stream in accordance with the Encoding used and the specific characters
+        ///     being written to the stream.
+        ///     Use ReadRawChars(...) in SerializationReader.
+        /// </summary>
+        /// <param name="chars"></param>
+        public void WriteRaw(char[] chars)
+        {
+            _binaryWriter.Write(chars);
+        }
+
+        /// <summary>
+        ///     Writes a section of a character array to the current stream, and advances the
+        ///     current position of the stream in accordance with the Encoding used and perhaps
+        ///     the specific characters being written to the stream.
+        ///     Use ReadRawChars(...) in SerializationReader.
+        /// </summary>
+        /// <param name="chars"></param>
+        /// <param name="index"></param>
+        /// <param name="count"></param>
+        public void WriteRaw(char[] chars, int index, int count)
+        {
+            _binaryWriter.Write(chars, index, count);
+        }
+
+        /// <summary>
         ///     Writes a region of a byte array to the current stream.
-        ///     Use ReadBytes(int count) in SerializationReader.
+        ///     Use ReadRawBytes(int count) in SerializationReader.
         /// </summary>
         /// <param name="buffer"></param>
         /// <param name="index"></param>
         /// <param name="count"></param>
-        public void Write(byte[] buffer, int index, int count)
+        public void WriteRaw(byte[] buffer, int index, int count)
         {
             _binaryWriter.Write(buffer, index, count);
         }
-            
+
+        /// <summary>
+        ///     Writes a byte array to the current stream.
+        ///     Use ReadRawBytes(int count) in SerializationReader.
+        /// </summary>
+        /// <param name="buffer"></param>
+        public void WriteRaw(byte[] buffer)
+        {
+            _binaryWriter.Write(buffer);
+        }
+
+        /// <summary>
+        ///     Writes a nullable array into the stream.
+        ///     Use ReadByteArray() in SerializationReader.
+        /// </summary>
+        /// <remarks>
+        ///     Array type itself is not stored - it must be supplied
+        ///     at deserialization time.
+        /// </remarks>
+        /// <typeparam name="T"> Array Type. </typeparam>
+        /// <param name="value"> The generic List. </param>
+        public void Write(byte[] values)
+        {
+            WriteArrayInternal(values);
+        }
+
         /// <summary>
         ///     Writes an eight-byte floating-point value to the current stream and advances
         ///     the stream position by eight bytes.
@@ -266,17 +304,6 @@ namespace Ssz.Utils.Serialization
         }
         
         /// <summary>
-        ///     Writes a character array to the current stream and advances the current position
-        ///     of the stream in accordance with the Encoding used and the specific characters
-        ///     being written to the stream.
-        /// </summary>
-        /// <param name="chars"></param>
-        public void Write(char[] chars)
-        {
-            _binaryWriter.Write(chars);
-        }
-        
-        /// <summary>
         ///     Writes a Unicode character to the current stream and advances the current position
         ///     of the stream in accordance with the Encoding used and the specific characters
         ///     being written to the stream.
@@ -285,17 +312,7 @@ namespace Ssz.Utils.Serialization
         public void Write(char ch)
         {
             _binaryWriter.Write(ch);
-        }
-
-        /// <summary>
-        ///     Writes a byte array to the current stream.
-        ///     Use ReadBytes(int count) in SerializationReader.
-        /// </summary>
-        /// <param name="buffer"></param>
-        public void Write(byte[] buffer)
-        {
-            _binaryWriter.Write(buffer);
-        }
+        }        
 
         //
         // Summary:
@@ -463,56 +480,11 @@ namespace Ssz.Utils.Serialization
                 return;
             }
 
-            if (value is Int32 valueInt32)
-            {                
-                switch (valueInt32)
-                {
-                    case 0:
-                        WriteSerializedType(SerializedType.ZeroInt32Type);
-                        return;
-                    case -1:
-                        WriteSerializedType(SerializedType.MinusOneInt32Type);
-                        return;
-                    case 1:
-                        WriteSerializedType(SerializedType.OneInt32Type);
-                        return;
-                    default:
-                        if (valueInt32 > 0)
-                        {
-                            if (valueInt32 <= HighestOptimizable32BitValue)
-                            {
-                                WriteSerializedType(SerializedType.OptimizedInt32Type);
-                                WriteOptimized(valueInt32);
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            int positiveInt32Value = -(valueInt32 + 1);
-                            if (positiveInt32Value <= HighestOptimizable32BitValue)
-                            {
-                                WriteSerializedType(SerializedType.OptimizedInt32NegativeType);
-                                WriteOptimized(positiveInt32Value);
-                                return;
-                            }
-                        }
-                        WriteSerializedType(SerializedType.Int32Type);
-                        _binaryWriter.Write(valueInt32);
-                        return;
-                }
-            }
-
             if (value == DBNull.Value)
             {
                 WriteSerializedType(SerializedType.DbNullType);
                 return;
-            }
-
-            if (value is Boolean valueBool)
-            {
-                WriteSerializedType(valueBool ? SerializedType.BooleanTrueType : SerializedType.BooleanFalseType);
-                return;
-            }
+            }            
 
             if (value is Decimal valueDecimal)
             {                
@@ -553,82 +525,6 @@ namespace Ssz.Utils.Serialization
                     Write(valueDateTime);
                 }
                 return;
-            }
-
-            if (value is Double valueDouble)
-            {                
-                if (valueDouble == 0.0)
-                {
-                    WriteSerializedType(SerializedType.ZeroDoubleType);
-                }
-                else if (valueDouble == 1.0)
-                {
-                    WriteSerializedType(SerializedType.OneDoubleType);
-                }
-                else
-                {
-                    WriteSerializedType(SerializedType.DoubleType);
-                    _binaryWriter.Write(valueDouble);
-                }
-                return;
-            }
-
-            if (value is Single valueSingle)
-            {                
-                if (valueSingle == 0.0)
-                {
-                    WriteSerializedType(SerializedType.ZeroSingleType);
-                }
-                else if (valueSingle == 1.0)
-                {
-                    WriteSerializedType(SerializedType.OneSingleType);
-                }
-                else
-                {
-                    WriteSerializedType(SerializedType.SingleType);
-                    _binaryWriter.Write(valueSingle);
-                }
-                return;
-            }
-
-            if (value is Int16 valueInt16)
-            {                
-                switch (valueInt16)
-                {
-                    case 0:
-                        WriteSerializedType(SerializedType.ZeroInt16Type);
-                        return;
-                    case -1:
-                        WriteSerializedType(SerializedType.MinusOneInt16Type);
-                        return;
-                    case 1:
-                        WriteSerializedType(SerializedType.OneInt16Type);
-                        return;
-                    default:
-                        if (valueInt16 > 0)
-                        {
-                            if (valueInt16 <= HighestOptimizable16BitValue)
-                            {
-                                WriteSerializedType(SerializedType.OptimizedInt16Type);
-                                WriteOptimized(valueInt16);
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            int positiveInt16Value = (-(valueInt16 + 1));
-
-                            if (positiveInt16Value <= HighestOptimizable16BitValue)
-                            {
-                                WriteSerializedType(SerializedType.OptimizedInt16NegativeType);
-                                WriteOptimized(positiveInt16Value);
-                                return;
-                            }
-                        }
-                        WriteSerializedType(SerializedType.Int16Type);
-                        _binaryWriter.Write(valueInt16);
-                        return;
-                }
             }
 
             if (value is Guid valueGuid)
@@ -681,107 +577,6 @@ namespace Ssz.Utils.Serialization
                         }
                         WriteSerializedType(SerializedType.Int64Type);
                         _binaryWriter.Write(valueInt64);
-                        return;
-                }
-            }
-
-            if (value is Byte valueByte)
-            {                
-                switch (valueByte)
-                {
-                    case 0:
-                        WriteSerializedType(SerializedType.ZeroByteType);
-                        return;
-                    case 1:
-                        WriteSerializedType(SerializedType.OneByteType);
-                        return;
-                    default:
-                        WriteSerializedType(SerializedType.ByteType);
-                        _binaryWriter.Write(valueByte);
-                        return;
-                }
-            }
-
-            if (value is Char valueChar)
-            {                
-                switch (valueChar)
-                {
-                    case (Char) 0:
-                        WriteSerializedType(SerializedType.ZeroCharType);
-                        return;
-                    case (Char) 1:
-                        WriteSerializedType(SerializedType.OneCharType);
-                        return;
-                    default:
-                        WriteSerializedType(SerializedType.CharType);
-                        _binaryWriter.Write(valueChar);
-                        return;
-                }
-            }
-
-            if (value is SByte valueSByte)
-            {                
-                switch (valueSByte)
-                {
-                    case 0:
-                        WriteSerializedType(SerializedType.ZeroSByteType);
-                        return;
-                    case 1:
-                        WriteSerializedType(SerializedType.OneSByteType);
-                        return;
-                    default:
-                        WriteSerializedType(SerializedType.SByteType);
-                        _binaryWriter.Write(valueSByte);
-                        return;
-                }
-            }
-
-            if (value is UInt32 valueUInt32)
-            {                
-                switch (valueUInt32)
-                {
-                    case 0:
-                        WriteSerializedType(SerializedType.ZeroUInt32Type);
-                        return;
-                    case 1:
-                        WriteSerializedType(SerializedType.OneUInt32Type);
-                        return;
-                    default:
-                        if (valueUInt32 <= HighestOptimizable32BitValue)
-                        {
-                            WriteSerializedType(SerializedType.OptimizedUInt32Type);
-                            WriteOptimized(valueUInt32);
-                        }
-                        else
-                        {
-                            WriteSerializedType(SerializedType.UInt32Type);
-                            _binaryWriter.Write(valueUInt32);
-                        }
-                        return;
-                }
-            }
-
-            if (value is UInt16 valueUInt16)
-            {                
-                switch (valueUInt16)
-                {
-                    case 0:
-                        WriteSerializedType(SerializedType.ZeroUInt16Type);
-                        return;
-                    case 1:
-                        WriteSerializedType(SerializedType.OneUInt16Type);
-                        return;
-                    default:
-                        if (valueUInt16 <= HighestOptimizable16BitValue)
-                        {
-                            WriteSerializedType(SerializedType.OptimizedUInt16Type);
-                            WriteOptimized(valueUInt16);
-                        }
-                        else
-                        {
-                            WriteSerializedType(SerializedType.UInt16Type);
-                            _binaryWriter.Write(valueUInt16);
-                        }
                         return;
                 }
             }
@@ -922,6 +717,228 @@ namespace Ssz.Utils.Serialization
                 }
             }
 
+            if (value is Char valueChar)
+            {
+                switch (valueChar)
+                {
+                    case (Char)0:
+                        WriteSerializedType(SerializedType.ZeroCharType);
+                        return;
+                    case (Char)1:
+                        WriteSerializedType(SerializedType.OneCharType);
+                        return;
+                    default:
+                        WriteSerializedType(SerializedType.CharType);
+                        _binaryWriter.Write(valueChar);
+                        return;
+                }
+            }
+
+            if (value is Boolean valueBool)
+            {
+                WriteSerializedType(valueBool ? SerializedType.BooleanTrueType : SerializedType.BooleanFalseType);
+                return;
+            }
+
+            if (value is Double valueDouble)
+            {
+                if (valueDouble == 0.0)
+                {
+                    WriteSerializedType(SerializedType.ZeroDoubleType);
+                }
+                else if (valueDouble == 1.0)
+                {
+                    WriteSerializedType(SerializedType.OneDoubleType);
+                }
+                else
+                {
+                    WriteSerializedType(SerializedType.DoubleType);
+                    _binaryWriter.Write(valueDouble);
+                }
+                return;
+            }
+
+            if (value is Single valueSingle)
+            {
+                if (valueSingle == 0.0)
+                {
+                    WriteSerializedType(SerializedType.ZeroSingleType);
+                }
+                else if (valueSingle == 1.0)
+                {
+                    WriteSerializedType(SerializedType.OneSingleType);
+                }
+                else
+                {
+                    WriteSerializedType(SerializedType.SingleType);
+                    _binaryWriter.Write(valueSingle);
+                }
+                return;
+            }
+
+            if (value is SByte valueSByte)
+            {
+                switch (valueSByte)
+                {
+                    case 0:
+                        WriteSerializedType(SerializedType.ZeroSByteType);
+                        return;
+                    case 1:
+                        WriteSerializedType(SerializedType.OneSByteType);
+                        return;
+                    default:
+                        WriteSerializedType(SerializedType.SByteType);
+                        _binaryWriter.Write(valueSByte);
+                        return;
+                }
+            }
+
+            if (value is Byte valueByte)
+            {
+                switch (valueByte)
+                {
+                    case 0:
+                        WriteSerializedType(SerializedType.ZeroByteType);
+                        return;
+                    case 1:
+                        WriteSerializedType(SerializedType.OneByteType);
+                        return;
+                    default:
+                        WriteSerializedType(SerializedType.ByteType);
+                        _binaryWriter.Write(valueByte);
+                        return;
+                }
+            }
+
+            if (value is Int16 valueInt16)
+            {
+                switch (valueInt16)
+                {
+                    case 0:
+                        WriteSerializedType(SerializedType.ZeroInt16Type);
+                        return;
+                    case -1:
+                        WriteSerializedType(SerializedType.MinusOneInt16Type);
+                        return;
+                    case 1:
+                        WriteSerializedType(SerializedType.OneInt16Type);
+                        return;
+                    default:
+                        if (valueInt16 > 0)
+                        {
+                            if (valueInt16 <= HighestOptimizable16BitValue)
+                            {
+                                WriteSerializedType(SerializedType.OptimizedInt16Type);
+                                WriteOptimized(valueInt16);
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            int positiveInt16Value = (-(valueInt16 + 1));
+
+                            if (positiveInt16Value <= HighestOptimizable16BitValue)
+                            {
+                                WriteSerializedType(SerializedType.OptimizedInt16NegativeType);
+                                WriteOptimized(positiveInt16Value);
+                                return;
+                            }
+                        }
+                        WriteSerializedType(SerializedType.Int16Type);
+                        _binaryWriter.Write(valueInt16);
+                        return;
+                }
+            }
+
+            if (value is UInt16 valueUInt16)
+            {
+                switch (valueUInt16)
+                {
+                    case 0:
+                        WriteSerializedType(SerializedType.ZeroUInt16Type);
+                        return;
+                    case 1:
+                        WriteSerializedType(SerializedType.OneUInt16Type);
+                        return;
+                    default:
+                        if (valueUInt16 <= HighestOptimizable16BitValue)
+                        {
+                            WriteSerializedType(SerializedType.OptimizedUInt16Type);
+                            WriteOptimized(valueUInt16);
+                        }
+                        else
+                        {
+                            WriteSerializedType(SerializedType.UInt16Type);
+                            _binaryWriter.Write(valueUInt16);
+                        }
+                        return;
+                }
+            }
+
+            if (value is Int32 valueInt32)
+            {
+                switch (valueInt32)
+                {
+                    case 0:
+                        WriteSerializedType(SerializedType.ZeroInt32Type);
+                        return;
+                    case -1:
+                        WriteSerializedType(SerializedType.MinusOneInt32Type);
+                        return;
+                    case 1:
+                        WriteSerializedType(SerializedType.OneInt32Type);
+                        return;
+                    default:
+                        if (valueInt32 > 0)
+                        {
+                            if (valueInt32 <= HighestOptimizable32BitValue)
+                            {
+                                WriteSerializedType(SerializedType.OptimizedInt32Type);
+                                WriteOptimized(valueInt32);
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            int positiveInt32Value = -(valueInt32 + 1);
+                            if (positiveInt32Value <= HighestOptimizable32BitValue)
+                            {
+                                WriteSerializedType(SerializedType.OptimizedInt32NegativeType);
+                                WriteOptimized(positiveInt32Value);
+                                return;
+                            }
+                        }
+                        WriteSerializedType(SerializedType.Int32Type);
+                        _binaryWriter.Write(valueInt32);
+                        return;
+                }
+            }
+
+            if (value is UInt32 valueUInt32)
+            {
+                switch (valueUInt32)
+                {
+                    case 0:
+                        WriteSerializedType(SerializedType.ZeroUInt32Type);
+                        return;
+                    case 1:
+                        WriteSerializedType(SerializedType.OneUInt32Type);
+                        return;
+                    default:
+                        if (valueUInt32 <= HighestOptimizable32BitValue)
+                        {
+                            WriteSerializedType(SerializedType.OptimizedUInt32Type);
+                            WriteOptimized(valueUInt32);
+                        }
+                        else
+                        {
+                            WriteSerializedType(SerializedType.UInt32Type);
+                            _binaryWriter.Write(valueUInt32);
+                        }
+                        return;
+                }
+            }
+
             WriteOtherType(value);
         }
 
@@ -1041,7 +1058,7 @@ namespace Ssz.Utils.Serialization
             {
                 WriteArrayInternal(value, typeof (T));
             }
-        }
+        }        
 
         /// <summary>
         ///     Writes a nullable generic List into the stream.
@@ -2031,7 +2048,7 @@ namespace Ssz.Utils.Serialization
         ///     Stored as a BitArray for optimization.
         /// </remarks>
         /// <param name="values"> The Boolean[] to store. </param>
-        private void WriteTypeCode(bool[] values)
+        private void WriteArrayInternal(bool[] values)
         {
             WriteOptimized(new BitArray(values));
         }
@@ -2619,7 +2636,7 @@ namespace Ssz.Utils.Serialization
             if (elementType == typeof (Boolean))
             {
                 WriteSerializedType(SerializedType.BooleanArrayType);
-                WriteTypeCode((bool[]) values);
+                WriteArrayInternal((bool[]) values);
                 return;
             }
 

@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.13.0" />
+    <PackageReference Include="Grpc.Net.ClientFactory" Version="2.32.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.32.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ssz.DataGrpc.Common\Ssz.DataGrpc.Common.csproj" />
+    <ProjectReference Include="..\Ssz.Utils\Ssz.Utils.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="..\Ssz.DataGrpc.Server\Protos\ResourceManagement.proto" GrpcServices="Client">
+      <Link>Protos\ResourceManagement.proto</Link>
+    </Protobuf>
+  </ItemGroup>
+
+</Project>

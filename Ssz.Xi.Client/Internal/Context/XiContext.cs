@@ -239,7 +239,7 @@ namespace Ssz.Xi.Client.Internal.Context
             if (disposing)
             {
                 // remove the context from the list of contexts
-                if (ContextId != null)
+                if (_contextId != null)
                     lock (StaticActiveContextsSyncRoot)
                     {
                         StaticActiveContexts.Remove(ContextId);

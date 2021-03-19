@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Logging
 {
     /// <summary>
     /// 
@@ -15,29 +15,36 @@ namespace Ssz.Utils
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="logDirectoryName"></param>
+        /// <param name="logsDirectoryFullName"></param>
         /// <param name="exeFileName"></param>
-        public LogFileTextWriter(string logDirectoryName, string exeFileName)
+        public LogFileTextWriter(SszLoggerOptions options)
             : base(null)
         {
-            _logDirectoryName = logDirectoryName;
-            _exeFileName = exeFileName;
+            _options = options;
 
-            LogFileName = _logDirectoryName + "\\" + _exeFileName + @"." + Process.GetCurrentProcess().Id +
+            _logsDirectoryFullName = Environment.ExpandEnvironmentVariables(_options.LogsDirectory);
+            if (!Directory.Exists(_logsDirectoryFullName)) Directory.CreateDirectory(_logsDirectoryFullName);
+
+            Process currentProcess = Process.GetCurrentProcess();
+            string? moduleName = currentProcess.MainModule?.ModuleName;
+            if (moduleName == null) throw new InvalidOperationException();
+            _exeFileName = new FileInfo(moduleName).Name;         
+
+            LogFileName = _logsDirectoryFullName + "\\" + _exeFileName + @"." + currentProcess.Id +
                                  @".log";
 
             _buffer = new StringBuilder();
 
             #region DeleteOldFiles
 
-            string[] files = Directory.GetFiles(_logDirectoryName, _exeFileName + @".*.log");
+            string[] files = Directory.GetFiles(_logsDirectoryFullName, _exeFileName + @".*.log");
 
             foreach (string file in files)
             {
                 try
                 {
                     var f = new FileInfo(file);
-                    if (f.LastAccessTime < DateTime.Now.AddDays(-3))
+                    if (f.LastAccessTime < DateTime.Now.AddDays(-_options.DaysCountToStoreFiles))
                         f.Delete();
                 }
                 catch
@@ -68,7 +75,7 @@ namespace Ssz.Utils
         /// <summary>
         /// 
         /// </summary>
-        public string LogFileName { get; private set; }
+        public string LogFileName { get; }
 
         /// <summary>
         /// 
@@ -87,7 +94,7 @@ namespace Ssz.Utils
                     }
                     else
                     {
-                        if (fi.Length > 50*1024*1024)
+                        if (fi.Length > _options.LogFileMaxSizeInBytes)
                         {
                             fi.Delete();
                             sw = File.CreateText(LogFileName);
@@ -430,8 +437,10 @@ namespace Ssz.Utils
 
         #region private fields
 
-        private readonly string _logDirectoryName;
-        private readonly string _exeFileName;
+        private readonly SszLoggerOptions _options;
+
+        private readonly string _logsDirectoryFullName;
+        private readonly string _exeFileName;        
 
         private readonly StringBuilder _buffer;
 

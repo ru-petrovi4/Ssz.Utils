@@ -424,6 +424,7 @@ namespace Ssz.Utils.Serialization
         public char ReadChar()
         {
             ThrowIfBlockEnding();
+
             return _binaryReader.ReadChar();
         }
         
@@ -490,32 +491,39 @@ namespace Ssz.Utils.Serialization
             return _binaryReader.ReadDecimal();
         }
 
-        public int Read(char[] buffer, int index, int count)
+        public int ReadRawChars(char[] buffer, int index, int count)
         {
             ThrowIfBlockEnding();
 
             return _binaryReader.Read(buffer, index, count);
         }
 
-        public char[] ReadChars(int count)
+        public char[] ReadRawChars(int count)
         {
             ThrowIfBlockEnding();
 
             return _binaryReader.ReadChars(count);
         }
 
-        public int Read(byte[] buffer, int index, int count)
+        public int ReadRawBytes(byte[] buffer, int index, int count)
         {
             ThrowIfBlockEnding();
 
             return _binaryReader.Read(buffer, index, count);
         }
 
-        public byte[] ReadBytes(int count)
+        public byte[] ReadRawBytes(int count)
         {
             ThrowIfBlockEnding();
 
             return _binaryReader.ReadBytes(count);
+        }
+
+        public byte[] ReadByteArray()
+        {
+            ThrowIfBlockEnding();
+
+            return ReadByteArrayInternal();
         }
 
         public void SkipString()
@@ -1560,7 +1568,7 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.SByteArrayType:
                     return ReadSByteArray();
                 case SerializedType.ByteArrayType:
-                    return ReadByteArray();
+                    return ReadByteArrayInternal();
                 case SerializedType.CharArrayType:
                     return ReadCharArray();
                 case SerializedType.TypedArrayType:
@@ -1600,7 +1608,7 @@ namespace Ssz.Utils.Serialization
         ///     Internal implementation returning a Byte[].
         /// </summary>
         /// <returns> A Byte[]. </returns>
-        private byte[] ReadByteArray()
+        private byte[] ReadByteArrayInternal()
         {
             return _binaryReader.ReadBytes(ReadOptimizedInt32());
         }

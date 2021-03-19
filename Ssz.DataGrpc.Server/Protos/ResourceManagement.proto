@@ -1,0 +1,362 @@
+syntax = "proto3";
+
+option csharp_namespace = "Ssz.DataGrpc.Server";
+
+import "google/protobuf/timestamp.proto";
+
+// The greeting service definition.
+service ResourceManagement {
+  rpc SubscribeForCallback(SubscribeForCallbackRequest) returns (stream CallbackMessage);
+
+  rpc Initiate (InitiateRequest) returns (InitiateReply);
+
+  rpc Conclude (ConcludeRequest) returns (ConcludeReply);
+
+  rpc ClientKeepAlive (ClientKeepAliveRequest) returns (ClientKeepAliveReply);
+
+  rpc DefineList (DefineListRequest) returns (DefineListReply);
+
+  rpc DeleteLists (DeleteListsRequest) returns (DeleteListsReply);
+
+  rpc AddDataObjectsToList (AddDataObjectsToListRequest) returns (AddDataObjectsToListReply);
+
+  rpc RemoveDataObjectsFromList (RemoveDataObjectsFromListRequest) returns (RemoveDataObjectsFromListReply);
+
+  rpc EnableListCallback (EnableListCallbackRequest) returns (EnableListCallbackReply);
+
+  rpc TouchList (TouchListRequest) returns (TouchListReply);
+
+  rpc PollDataChanges (PollDataChangesRequest) returns (PollDataChangesReply);
+
+  rpc PollEventChanges (PollEventChangesRequest) returns (PollEventChangesReply);
+
+  rpc ReadElementValueJournalForTimeInterval (ReadElementValueJournalForTimeIntervalRequest) returns (ReadElementValueJournalForTimeIntervalReply);
+
+  rpc WriteValues (WriteValuesRequest) returns (WriteValuesReply);
+
+  rpc AcknowledgeAlarms (AcknowledgeAlarmsRequest) returns (AcknowledgeAlarmsReply);
+
+  rpc Passthrough (PassthroughRequest) returns (PassthroughReply);
+}
+
+enum State
+{
+  STATE_OPERATIONAL = 0;
+  STATE_DIAGNOSTIC = 1;
+  STATE_INITIALIZING = 2;
+  STATE_FAULTED = 3;
+  STATE_NEEDS_CONFIGURATION = 4;
+  STATE_OUT_OF_SERVICE = 5;
+  STATE_NOT_CONNECTED = 6;
+  STATE_ABORTING = 7;
+  STATE_NOT_OPERATIONAL = 8;
+}
+
+message ServerInfo {  
+  State state = 1;
+}
+
+message ContextInfo {
+  string context_id = 1;
+  State state = 2;  
+}
+
+message InformationReport {  
+  string context_id = 1;
+  uint32 list_client_alias = 2;
+  ElementValueArrays element_value_arrays = 3;
+}
+
+message EventNotification {  
+  string context_id = 1;
+  uint32 list_client_alias = 2;
+  EventMessageArrays event_message_arrays = 3;
+}
+
+message SubscribeForCallbackRequest {   
+}
+
+message CallbackMessage {
+  oneof optional_message {
+    ServerInfo server_info = 1;
+    ContextInfo context_info = 2;
+    InformationReport information_report = 3;
+    EventNotification event_notification = 4;
+  }
+}
+
+message InitiateRequest {
+  string application_name = 1;
+  string workstation_name = 2;     
+  uint32 context_timeout_ms = 3;
+  uint32 locale_id = 4;
+  repeated string system_names = 5; 
+  map<string, string> context_params = 6;
+}
+
+message InitiateReply {
+  string context_id = 1;
+  uint32 context_timeout_ms = 2;
+  uint32 locale_id = 3;
+}
+
+message ConcludeRequest {
+  string context_id = 1;
+}
+
+message ConcludeReply {  
+}
+
+message ClientKeepAliveRequest {
+  string context_id = 1;
+}
+
+message ClientKeepAliveReply {  
+}
+
+message AliasResult {
+  uint32 result_code = 1;
+  uint32 client_alias = 2; 
+  uint32 server_alias = 3; 
+}
+
+message DefineListRequest {
+  string context_id = 1;
+  uint32 list_client_alias = 2; 
+  uint32 list_type = 3; 
+  map<string, string> list_params = 4;
+}
+
+message DefineListReply {  
+  AliasResult result = 1;   
+}
+
+message DeleteListsRequest {
+  string context_id = 1;
+  repeated uint32 list_server_aliases = 2; 
+}
+
+message DeleteListsReply {  
+  repeated AliasResult results = 1;
+}
+
+message ListInstanceId {
+  string element_id = 1;
+  uint32 client_alias = 2; 
+}
+
+message AddDataObjectsToListRequest {
+  string context_id = 1;
+  uint32 list_server_alias = 2; 
+  repeated ListInstanceId data_objects_to_add = 3;
+}
+
+message AddDataObjectToListResult {  
+  AliasResult alias_result = 1;
+  TypeId data_type_id = 2;
+  bool is_readable = 3;
+  bool is_writable = 4;
+}
+
+message AddDataObjectsToListReply {  
+  repeated AddDataObjectToListResult results = 1;
+}
+
+message RemoveDataObjectsFromListRequest {
+  string context_id = 1;
+  uint32 list_server_alias = 2; 
+  repeated uint32 server_aliases_to_remove = 3; 
+}
+
+message RemoveDataObjectsFromListReply {  
+  repeated AliasResult results = 1;
+}
+
+message EnableListCallbackRequest {
+  string context_id = 1;
+  uint32 list_server_alias = 2; 
+  bool enable = 3;
+}
+
+message EnableListCallbackReply {
+  uint32 result_code = 1;
+  bool enabled = 2;
+}
+
+message TouchListRequest {
+  string context_id = 1;
+  uint32 list_server_alias = 2;
+}
+
+message TouchListReply {
+  uint32 result_code = 1;  
+}
+
+message ElementValueArrays {
+  string guid = 1;
+  string next_arrays_guid = 2;
+
+  repeated uint32 double_aliases = 3;
+  repeated uint32 double_status_codes = 4;
+  repeated google.protobuf.Timestamp double_timestamps = 5;
+  repeated double double_values = 6;
+
+  repeated uint32 uint_aliases = 7;
+  repeated uint32 uint_status_codes = 8;
+  repeated google.protobuf.Timestamp uint_timestamps = 9;
+  repeated uint32 uint_values = 10;
+
+  repeated uint32 object_aliases = 11;
+  repeated uint32 object_status_codes = 12;
+  repeated google.protobuf.Timestamp object_timestamps = 13;
+  bytes object_values = 14;  
+}
+
+message EventMessageArrays {
+  string guid = 1;
+  string next_arrays_guid = 2;
+
+  repeated EventMessage event_messages = 3;  
+}
+
+message EventMessage {  
+  google.protobuf.Timestamp occurrence_time = 1;
+  uint32 list_client_alias = 2;
+  EventType event_type = 3;
+  EventId EventId = 4;
+  string text_message = 5;
+  uint32 category_id = 6;
+  uint32 priority = 7;
+  string operator_name = 8;
+  oneof optional_alarm_data {
+    AlarmMessageData alarm_data = 9;
+  }  
+  map<string, string> client_requested_fields = 10;
+}
+
+enum EventType
+{
+  EVENT_TYPE_NONE = 0;
+  EVENT_TYPE_SYSTEM_EVENT = 1;
+  EVENT_TYPE_OPERATOR_ACTION_EVENT = 2;
+  EVENT_TYPE_SIMPLE_ALARM = 3;
+  EVENT_TYPE_ECLIPSED_ALARM = 4;
+  EVENT_TYPE_GROUPED_ALARM = 5;
+  EVENT_TYPE_ALERT = 6;
+  EVENT_TYPE_DISCARDED_MESSAGE = 7;
+}
+
+message EventId {  
+  string source_id = 1;
+  oneof optional_multiplexed_alarm_container {
+    TypeId multiplexed_alarm_container = 2;
+  }
+  repeated TypeId conditions = 3;
+  string occurence_id = 4;
+  oneof optional_time_last_active {
+    google.protobuf.Timestamp time_last_active = 5;
+  }
+}
+
+message TypeId {  
+  string schema_type = 1;
+  string namespace = 2;
+  string local_id = 3;  
+}
+
+message AlarmMessageData {  
+  uint32 alarm_state = 1;
+  uint32 alarm_state_change = 2;
+  oneof optional_time_last_active {
+    google.protobuf.Timestamp time_last_active = 3;
+  }
+}
+
+message PollDataChangesRequest {
+  string context_id = 1;
+  uint32 list_server_alias = 2; 
+}
+
+message PollDataChangesReply {  
+  ElementValueArrays element_value_arrays = 1;
+}
+
+message PollEventChangesRequest {
+  string context_id = 1;
+  uint32 list_server_alias = 2; 
+}
+
+message PollEventChangesReply {  
+  EventMessageArrays event_message_arrays = 1;
+}
+
+message ReadElementValueJournalForTimeIntervalRequest {
+  string context_id = 1;
+  uint32 list_server_alias = 2; 
+  google.protobuf.Timestamp first_time_stamp = 3;
+  google.protobuf.Timestamp second_time_stamp = 4;  
+  uint32 num_values_per_alias = 5;
+  TypeId calculation = 6;
+  map<string, string> params = 7;
+  repeated uint32 server_aliases = 8; 
+}
+
+message ReadElementValueJournalForTimeIntervalReply {  
+  ElementValueJournalArrays element_value_journal_arrays = 1;  
+}
+
+message ElementValueJournalArrays {  
+  string guid = 1;
+  string next_arrays_guid = 2;
+
+  repeated ElementValueJournal element_value_journals = 3;  
+}
+
+message ElementValueJournal {
+  repeated uint32 double_status_codes = 1;
+  repeated google.protobuf.Timestamp double_timestamps = 2;
+  repeated double double_values = 3;
+  
+  repeated uint32 uint_status_codes = 4;
+  repeated google.protobuf.Timestamp uint_timestamps = 5;
+  repeated uint32 uint_values = 6;
+}
+
+message WriteValuesRequest {
+  string context_id = 1;
+  uint32 list_server_alias = 2; 
+  ElementValueArrays element_value_arrays = 3; 
+}
+
+message WriteValuesReply {  
+  repeated AliasResult results = 1;
+}
+
+message AcknowledgeAlarmsRequest {
+  string context_id = 1;
+  uint32 list_server_alias = 2; 
+  string operator_name = 3;
+  string comment = 4;
+  repeated EventId alarms_to_ack = 5;
+}
+
+message AcknowledgeAlarmsReply {  
+  repeated EventIdResult results = 1;
+}
+
+message EventIdResult {
+  uint32 result_code = 1;
+  EventId event_id = 2;
+}
+
+message PassthroughRequest {
+  string context_id = 1;
+  string recipient_id = 2;
+  string passthrough_name = 3;
+  bytes data_to_send = 4;
+}
+
+message PassthroughReply {  
+  uint32 result_code = 1;
+  bytes return_data = 2;
+}

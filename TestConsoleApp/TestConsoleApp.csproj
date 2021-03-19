@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ssz.Utils\Ssz.Utils.csproj" />
-    <ProjectReference Include="..\Ssz.Xi.Client\Ssz.Xi.Client.csproj" />
   </ItemGroup>
 
   <ItemGroup>

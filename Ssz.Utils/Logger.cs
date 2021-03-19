@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ssz.Utils.Logging;
+using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
@@ -427,32 +428,15 @@ namespace Ssz.Utils
         public static void Initialize(bool duplicateInConsole = false)
         {
             try
-            {
-                // TODO:
-                string SszAppDataDir = ""; // ConfigurationManager.AppSettings[IDS_LOGFILEPATH];
-                if (string.IsNullOrEmpty(SszAppDataDir))
-                    SszAppDataDir = DefaultFolder;
-                SszAppDataDir = Environment.ExpandEnvironmentVariables(SszAppDataDir);
-                if (!Directory.Exists(SszAppDataDir)) Directory.CreateDirectory(SszAppDataDir);
-
-                // TODO:
-                string logFileName = ""; // ConfigurationManager.AppSettings[IDS_LOGFILENAME];
-                if (string.IsNullOrEmpty(logFileName))
-                {
-                    string? moduleName = Process.GetCurrentProcess().MainModule?.ModuleName;
-                    if (moduleName == null) throw new InvalidOperationException();
-                    logFileName = new FileInfo(moduleName).Name;
-                    logFileName = logFileName.Replace(".vshost", "");
-                }
-
-                LogFileTextWriter = new LogFileTextWriter(SszAppDataDir, logFileName);
+            {                
+                LogFileTextWriter = new LogFileTextWriter(new SszLoggerOptions());
                 var textWriterTraceListener = new TextWriterTraceListener(LogFileTextWriter);
                 textWriterTraceListener.TraceOutputOptions = TraceOptions.DateTime | TraceOptions.ThreadId;
 
                 Trace.Listeners.Add(textWriterTraceListener);
                 Trace.AutoFlush = true;
 
-                TraceSource = new TraceSource(logFileName);
+                TraceSource = new TraceSource(LogFileTextWriter.LogFileName);
                 TraceSource.Listeners.Clear();
                 TraceSource.Listeners.Add(textWriterTraceListener);  
                 
