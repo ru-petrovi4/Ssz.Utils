@@ -30,7 +30,7 @@ namespace Ssz.Xi.Client.Internal.Endpoints
         /// <param name="xiCallbackDoer"></param>
         internal XiCallbackEndpoint(EndpointDefinition endpointDefinition,
             ServiceEndpoint serviceEndpoint, TimeSpan receiveTimeout, TimeSpan sendTimeout,
-            int maxItemsInObjectGraph, ICallbackDoer xiCallbackDoer)
+            int maxItemsInObjectGraph, IDispatcher xiCallbackDoer)
             : base(
                 endpointDefinition, serviceEndpoint, receiveTimeout, sendTimeout,
                 maxItemsInObjectGraph)
@@ -218,7 +218,7 @@ namespace Ssz.Xi.Client.Internal.Endpoints
         ///     This data member is used to make calls on the Xi ICallback interface.
         /// </summary>
         private XiCallback? _xiCallback;
-        private readonly ICallbackDoer _xiCallbackDoer;
+        private readonly IDispatcher _xiCallbackDoer;
 
         #endregion
     }

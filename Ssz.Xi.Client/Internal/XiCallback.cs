@@ -14,7 +14,7 @@ namespace Ssz.Xi.Client.Internal
     {
         #region construction and destruction
 
-        public XiCallback(ICallbackDoer xiCallbackDoer)
+        public XiCallback(IDispatcher xiCallbackDoer)
         {
             _xiCallbackDoer = xiCallbackDoer;
         }
@@ -126,7 +126,7 @@ namespace Ssz.Xi.Client.Internal
 
         #region private fields
 
-        private readonly ICallbackDoer _xiCallbackDoer;
+        private readonly IDispatcher _xiCallbackDoer;
 
         #endregion
     }

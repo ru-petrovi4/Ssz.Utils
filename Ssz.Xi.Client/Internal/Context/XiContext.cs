@@ -60,7 +60,7 @@ namespace Ssz.Xi.Client.Internal.Context
             uint contextTimeout,
             uint contextOptions, uint localeId, string applicationName,
             string workstationName, uint keepAliveSkipCount,
-            TimeSpan callbackRate, ICallbackDoer xiCallbackDoer)
+            TimeSpan callbackRate, IDispatcher xiCallbackDoer)
         {
             _callbackEndpointLastCallUtc = DateTime.UtcNow;
             _xiCallbackDoer = xiCallbackDoer;
@@ -1126,7 +1126,7 @@ namespace Ssz.Xi.Client.Internal.Context
         private DateTime _callbackEndpointLastCallUtc;
         private readonly object _callbackEndpointLastCallUtcSyncRoot = new object();
 
-        private readonly ICallbackDoer _xiCallbackDoer;
+        private readonly IDispatcher _xiCallbackDoer;
 
         /// <summary>
         ///     The time interval that controls when ClientKeepAlive messages are

@@ -20,7 +20,7 @@ namespace Ssz.Xi.Client.Api
         /// <param name="сallbackDoer"></param>        
         /// <param name="callbackable"></param>
         /// <param name="ct"></param>
-        public void Subscribe(XiServerProxy xiServerProxy, ICallbackDoer? сallbackDoer, bool callbackable, CancellationToken ct)
+        public void Subscribe(XiServerProxy xiServerProxy, IDispatcher? сallbackDoer, bool callbackable, CancellationToken ct)
         {
             if (ct.IsCancellationRequested) return;
             if (!xiServerProxy.ContextExists) return;

@@ -24,7 +24,7 @@ namespace Ssz.Xi.Client.Api
         /// <param name="informationReportEventHandler"></param>
         /// <param name="callbackable"></param>
         /// <param name="ct"></param>
-        public void Subscribe(XiServerProxy xiServerProxy, ICallbackDoer? сallbackDoer,
+        public void Subscribe(XiServerProxy xiServerProxy, IDispatcher? сallbackDoer,
             InformationReportEventHandler informationReportEventHandler, bool callbackable, CancellationToken ct)
         {
             try

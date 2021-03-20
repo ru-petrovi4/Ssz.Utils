@@ -13,7 +13,7 @@ using Ssz.DataGrpc.Common;
 
 namespace Ssz.DataGrpc.Client
 {
-    public partial class DataGrpcProvider : IDataSource, ICallbackDoer
+    public partial class DataGrpcProvider : IDataSource, IDispatcher
     {
         #region construction and destruction
 
@@ -21,11 +21,11 @@ namespace Ssz.DataGrpc.Client
         {
             _logger = logger;
 
-            _dataGrpcServerManager = new DataGrpcServerManager(logger);
+            _clientConnectionManager = new ClientConnectionManager(logger);
 
-            _dataGrpcElementValueListItemsManager = new DataGrpcElementValueListItemsManager(logger);
-            _dataGrpcElementValueJournalListItemsManager = new DataGrpcElementValueJournalListItemsManager(logger);
-            _dataGrpcEventListItemsManager = new DataGrpcEventListItemsManager(logger);
+            _clientElementValueListManager = new ClientElementValueListManager(logger);
+            _clientElementValueJournalListManager = new ClientElementValueJournalListManager(logger);
+            _clientEventListManager = new ClientEventListManager(logger);
         }
 
         #endregion
@@ -84,7 +84,7 @@ namespace Ssz.DataGrpc.Client
         ///     Used in DataGrpc Context initialization.
         ///     Can be null
         /// </summary>
-        public CaseInsensitiveDictionary<string> DataGrpcContextParams
+        public CaseInsensitiveDictionary<string> ClientContextParams
         {
             get
             {
@@ -106,18 +106,18 @@ namespace Ssz.DataGrpc.Client
         public Guid ModelDataGuid { get; private set; }
 
         /// <summary>
-        ///     Is called using сallbackDoer, see Initialize(..).
+        ///     Is called using сallbackDispatcher, see Initialize(..).
         /// </summary>
         public event Action ValueSubscriptionsUpdated = delegate { };
 
         /// <summary>
-        ///     Is called using сallbackDoer, see Initialize(..).
+        ///     Is called using сallbackDispatcher, see Initialize(..).
         ///     Occurs after connected to model.
         /// </summary>
         public event Action Connected = delegate { };
 
         /// <summary>
-        ///     Is called using сallbackDoer, see Initialize(..).
+        ///     Is called using сallbackDispatcher, see Initialize(..).
         ///     Occurs after disconnected from model.
         /// </summary>
         public event Action Disconnected = delegate { };
@@ -125,22 +125,22 @@ namespace Ssz.DataGrpc.Client
         /// <summary>
         ///     You can set updateValueItems = false and invoke PollDataChanges(...) manually.       
         /// </summary>
-        /// <param name="сallbackDoer">ICallbackDoer? for doing all callbacks.</param>
-        /// <param name="tagValuesCallbackIsEnabled">Used in DataGrpc ElementValueList initialization</param>
+        /// <param name="сallbackDispatcher">IDispatcher? for doing all callbacks.</param>
+        /// <param name="elementValueListCallbackIsEnabled">Used in DataGrpc ElementValueList initialization</param>
         /// <param name="serverAddress">DataGrpc Server connection string</param>
         /// <param name="dataGrpcSystem">DataGrpc System Name</param>
         /// <param name="applicationName">Used in DataGrpc Context initialization</param>
         /// <param name="workstationName">Used in DataGrpc Context initialization</param>
         /// <param name="dataGrpcContextParams">Used in DataGrpc Context initialization</param>
-        public void Initialize(ICallbackDoer? сallbackDoer, bool tagValuesCallbackIsEnabled, string serverAddress,
+        public void Initialize(IDispatcher? сallbackDispatcher, bool elementValueListCallbackIsEnabled, string serverAddress,
             string applicationName, string workstationName, string[] systemNames, CaseInsensitiveDictionary<string>? dataGrpcContextParams = null)
         {
             Close();            
 
-            _logger.LogDebug("Starting ModelDataProvider. сallbackDoer != null " + (сallbackDoer != null).ToString());
+            _logger.LogDebug("Starting ModelDataProvider. сallbackDispatcher != null " + (сallbackDispatcher != null).ToString());
 
-            _сallbackDoer = сallbackDoer;
-            _tagValuesCallbackIsEnabled = tagValuesCallbackIsEnabled;
+            _сallbackDispatcher = сallbackDispatcher;
+            _elementValueListCallbackIsEnabled = elementValueListCallbackIsEnabled;
             _serverAddress = serverAddress;            
             _applicationName = applicationName;            
             _workstationName = workstationName;
@@ -173,7 +173,7 @@ namespace Ssz.DataGrpc.Client
             IsInitialized = false;
 
             _dataGrpcContextParams = new CaseInsensitiveDictionary<string>();
-            _сallbackDoer = null;
+            _сallbackDispatcher = null;
 
             if (_cancellationTokenSource != null)
             {
@@ -186,7 +186,7 @@ namespace Ssz.DataGrpc.Client
 
         /// <summary>        
         ///     Returns id actully used for OPC subscription, always as original id.
-        ///     valueSubscription.Update() is called using сallbackDoer, see Initialize(..).        
+        ///     valueSubscription.Update() is called using сallbackDispatcher, see Initialize(..).        
         /// </summary>
         /// <param name="elementId"></param>
         /// <param name="valueSubscription"></param>
@@ -199,7 +199,7 @@ namespace Ssz.DataGrpc.Client
                 ElementId = elementId
             };
 
-            BeginInvoke(ct => _dataGrpcElementValueListItemsManager.AddItem(elementId, valueSubscription));
+            BeginInvoke(ct => _clientElementValueListManager.AddItem(elementId, valueSubscription));
 
             return elementId;
         }
@@ -212,26 +212,26 @@ namespace Ssz.DataGrpc.Client
         {
             valueSubscription.Obj = null;
 
-            BeginInvoke(ct => _dataGrpcElementValueListItemsManager.RemoveItem(valueSubscription));
+            BeginInvoke(ct => _clientElementValueListManager.RemoveItem(valueSubscription));
         }
 
         /// <summary>        
-        ///     setResultAction(..) is called using сallbackDoer, see Initialize(..).
+        ///     setResultAction(..) is called using сallbackDispatcher, see Initialize(..).
         ///     If call to server failed setResultAction(null) is called, otherwise setResultAction(changedValueSubscriptions) is called.        
         /// </summary>
         public void PollDataChanges(Action<IValueSubscription[]?> setResultAction)
         {
             BeginInvoke(ct =>
             {                
-                _dataGrpcElementValueListItemsManager.Subscribe(_dataGrpcServerManager, _сallbackDoer,
-                    DataGrpcElementValueListItemsManagerOnInformationReport, true, ct);
-                object[]? changedValueSubscriptions = _dataGrpcElementValueListItemsManager.PollChanges();
-                ICallbackDoer? сallbackDoer = _сallbackDoer;
-                if (сallbackDoer != null)
+                _clientElementValueListManager.Subscribe(_clientConnectionManager, _сallbackDispatcher,
+                    ClientElementValueListItemsManagerOnInformationReport, true, ct);
+                object[]? changedValueSubscriptions = _clientElementValueListManager.PollChanges();
+                IDispatcher? сallbackDispatcher = _сallbackDispatcher;
+                if (сallbackDispatcher != null)
                 {
                     try
                     {
-                        сallbackDoer.BeginInvoke(ct => setResultAction(changedValueSubscriptions != null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null));
+                        сallbackDispatcher.BeginInvoke(ct => setResultAction(changedValueSubscriptions != null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null));
                     }
                     catch (Exception)
                     {
@@ -242,7 +242,7 @@ namespace Ssz.DataGrpc.Client
         }
 
         /// <summary>        
-        ///     setResultAction(..) is called using сallbackDoer, see Initialize(..).
+        ///     setResultAction(..) is called using сallbackDispatcher, see Initialize(..).
         ///     setResultAction(failedValueSubscriptions) is called, failedValueSubscriptions != null.
         ///     If connection error, failedValueSubscriptions is all clientObjs.        
         /// </summary>
@@ -252,18 +252,18 @@ namespace Ssz.DataGrpc.Client
 
             BeginInvoke(ct =>
             {                
-                _dataGrpcElementValueListItemsManager.Subscribe(_dataGrpcServerManager, _сallbackDoer,
-                    DataGrpcElementValueListItemsManagerOnInformationReport, true, ct);                
-                object[] failedValueSubscriptions = _dataGrpcElementValueListItemsManager.Write(valueSubscriptions, values, utcNow);
+                _clientElementValueListManager.Subscribe(_clientConnectionManager, _сallbackDispatcher,
+                    ClientElementValueListItemsManagerOnInformationReport, true, ct);                
+                object[] failedValueSubscriptions = _clientElementValueListManager.Write(valueSubscriptions, values, utcNow);
 
                 if (setResultAction != null)
                 {
-                    ICallbackDoer? сallbackDoer = _сallbackDoer;
-                    if (сallbackDoer != null)
+                    IDispatcher? сallbackDispatcher = _сallbackDispatcher;
+                    if (сallbackDispatcher != null)
                     {
                         try
                         {
-                            сallbackDoer.BeginInvoke(ct => setResultAction(failedValueSubscriptions.OfType<IValueSubscription>().ToArray()));
+                            сallbackDispatcher.BeginInvoke(ct => setResultAction(failedValueSubscriptions.OfType<IValueSubscription>().ToArray()));
                         }
                         catch (Exception)
                         {
@@ -284,15 +284,15 @@ namespace Ssz.DataGrpc.Client
 
             BeginInvoke(ct =>
             {                
-                _dataGrpcElementValueListItemsManager.Subscribe(_dataGrpcServerManager, _сallbackDoer,
-                    DataGrpcElementValueListItemsManagerOnInformationReport, true, ct);
-                _dataGrpcElementValueListItemsManager.Write(valueSubscription, value, utcNow);
+                _clientElementValueListManager.Subscribe(_clientConnectionManager, _сallbackDispatcher,
+                    ClientElementValueListItemsManagerOnInformationReport, true, ct);
+                _clientElementValueListManager.Write(valueSubscription, value, utcNow);
             }
             );
         }
 
         /// <summary>        
-        ///     setResultAction(..) is called using сallbackDoer, see Initialize(..).
+        ///     setResultAction(..) is called using сallbackDispatcher, see Initialize(..).
         ///     If call to server failed (exception or passthroughResult.ResultCode != 0), setResultAction(null) is called.        
         /// </summary>
         public void Passthrough(string recipientId, string passthroughName, byte[] dataToSend,
@@ -303,7 +303,7 @@ namespace Ssz.DataGrpc.Client
                 byte[]? result;
                 try
                 {                   
-                    PassthroughResult passthroughResult = _dataGrpcServerManager.Passthrough(recipientId, passthroughName,
+                    PassthroughResult passthroughResult = _clientConnectionManager.Passthrough(recipientId, passthroughName,
                         dataToSend);
                     if (passthroughResult.ResultCode == 0) // SUCCESS
                     {
@@ -319,12 +319,12 @@ namespace Ssz.DataGrpc.Client
                     result = null;
                 }
 
-                ICallbackDoer? сallbackDoer = _сallbackDoer;
-                if (сallbackDoer != null)
+                IDispatcher? сallbackDispatcher = _сallbackDispatcher;
+                if (сallbackDispatcher != null)
                 {
                     try
                     {
-                        сallbackDoer.BeginInvoke(ct => setResultAction(result));
+                        сallbackDispatcher.BeginInvoke(ct => setResultAction(result));
                     }
                     catch (Exception)
                     {
@@ -364,7 +364,7 @@ namespace Ssz.DataGrpc.Client
 
             _logger.LogDebug("Disconnecting");
 
-            if (_onEventNotificationSubscribed) _dataGrpcEventListItemsManager.EventNotification -= OnEventNotification;            
+            if (_onEventNotificationSubscribed) _clientEventListManager.EventNotification -= OnEventNotification;            
 
             _logger.LogDebug("End Disconnecting");
         }        
@@ -377,9 +377,9 @@ namespace Ssz.DataGrpc.Client
             DateTime nowUtc = DateTime.UtcNow;
 
             if (ct.IsCancellationRequested) return;
-            if (!_dataGrpcServerManager.ConnectionExists)
+            if (!_clientConnectionManager.ConnectionExists)
             {
-                ICallbackDoer? сallbackDoer;
+                IDispatcher? сallbackDispatcher;
                 if (_isConnected)
                 {
                     UnsubscribeInWorkingThread();
@@ -390,13 +390,13 @@ namespace Ssz.DataGrpc.Client
 
                     _isConnected = false;
                     Action disconnected = Disconnected;
-                    сallbackDoer = _сallbackDoer;
-                    if (disconnected != null && сallbackDoer != null)
+                    сallbackDispatcher = _сallbackDispatcher;
+                    if (disconnected != null && сallbackDispatcher != null)
                     {
                         if (ct.IsCancellationRequested) return;
                         try
                         {
-                            сallbackDoer.BeginInvoke(ct => disconnected());
+                            сallbackDispatcher.BeginInvoke(ct => disconnected());
                         }
                         catch (Exception)
                         {
@@ -404,15 +404,15 @@ namespace Ssz.DataGrpc.Client
                     }
 
                     IEnumerable<IValueSubscription> valueSubscriptions =
-                        _dataGrpcElementValueListItemsManager.GetAllClientObjs().OfType<IValueSubscription>();
+                        _clientElementValueListManager.GetAllClientObjs().OfType<IValueSubscription>();
 
-                    сallbackDoer = _сallbackDoer;
-                    if (сallbackDoer != null)
+                    сallbackDispatcher = _сallbackDispatcher;
+                    if (сallbackDispatcher != null)
                     {
                         if (ct.IsCancellationRequested) return;
                         try
                         {
-                            сallbackDoer.BeginInvoke(ct =>
+                            сallbackDispatcher.BeginInvoke(ct =>
                             {
                                 foreach (IValueSubscription valueSubscription in valueSubscriptions)
                                 {
@@ -446,7 +446,7 @@ namespace Ssz.DataGrpc.Client
                         //}
                         
 
-                        _dataGrpcServerManager.InitiateConnection(_serverAddress, _applicationName,
+                        _clientConnectionManager.InitiateConnection(_serverAddress, _applicationName,
                             _workstationName, _systemNames, _dataGrpcContextParams);                        
 
                         _logger.LogDebug("End Connecting");
@@ -455,13 +455,13 @@ namespace Ssz.DataGrpc.Client
 
                         _isConnected = true;
                         Action connected = Connected;
-                        сallbackDoer = _сallbackDoer;
-                        if (connected != null && сallbackDoer != null)
+                        сallbackDispatcher = _сallbackDispatcher;
+                        if (connected != null && сallbackDispatcher != null)
                         {
                             if (ct.IsCancellationRequested) return;
                             try
                             {
-                                сallbackDoer.BeginInvoke(ct => connected());
+                                сallbackDispatcher.BeginInvoke(ct => connected());
                             }
                             catch (Exception)
                             {
@@ -478,17 +478,17 @@ namespace Ssz.DataGrpc.Client
             }
 
             if (ct.IsCancellationRequested) return;
-            _dataGrpcElementValueListItemsManager.Subscribe(_dataGrpcServerManager, _сallbackDoer,
-                DataGrpcElementValueListItemsManagerOnInformationReport, _tagValuesCallbackIsEnabled, ct);
-            _dataGrpcEventListItemsManager.Subscribe(_dataGrpcServerManager, _сallbackDoer, true, ct);
+            _clientElementValueListManager.Subscribe(_clientConnectionManager, _сallbackDispatcher,
+                ClientElementValueListItemsManagerOnInformationReport, _elementValueListCallbackIsEnabled, ct);
+            _clientEventListManager.Subscribe(_clientConnectionManager, _сallbackDispatcher, true, ct);
 
             if (ct.IsCancellationRequested) return;
-            if (_dataGrpcServerManager.ConnectionExists)
+            if (_clientConnectionManager.ConnectionExists)
             {                
                 try
                 {
                     if (ct.IsCancellationRequested) return;
-                    _dataGrpcServerManager.Process(nowUtc);
+                    _clientConnectionManager.Process(nowUtc);
                 }
                 catch
                 {
@@ -500,19 +500,19 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         private void UnsubscribeInWorkingThread()
         { 
-            _dataGrpcElementValueListItemsManager.Unsubscribe();
-            _dataGrpcEventListItemsManager.Unsubscribe();
-            _dataGrpcElementValueJournalListItemsManager.Unsubscribe();
+            _clientElementValueListManager.Unsubscribe();
+            _clientEventListManager.Unsubscribe();
+            _clientElementValueJournalListManager.Unsubscribe();
             
-            _dataGrpcServerManager.CloseConnection();
+            _clientConnectionManager.CloseConnection();
         }
 
         /// <summary>
-        ///     Called using сallbackDoer.
+        ///     Called using сallbackDispatcher.
         /// </summary>
         /// <param name="changedClientObjs"></param>
         /// <param name="changedValues"></param>
-        private void DataGrpcElementValueListItemsManagerOnInformationReport(object[] changedClientObjs,
+        private void ClientElementValueListItemsManagerOnInformationReport(object[] changedClientObjs,
             DataGrpcValueStatusTimestamp[] changedValues)
         {
             if (changedClientObjs != null)
@@ -555,7 +555,7 @@ namespace Ssz.DataGrpc.Client
         /// <summary>
         ///     Used in DataGrpc ElementValueList initialization.
         /// </summary>
-        private bool _tagValuesCallbackIsEnabled;
+        private bool _elementValueListCallbackIsEnabled;
 
         /// <summary>
         ///     Used in DataGrpc Context initialization.
@@ -573,11 +573,11 @@ namespace Ssz.DataGrpc.Client
 
         private CancellationTokenSource? _cancellationTokenSource;
 
-        private readonly DataGrpcServerManager _dataGrpcServerManager;
+        private readonly ClientConnectionManager _clientConnectionManager;
 
-        private readonly DataGrpcElementValueListItemsManager _dataGrpcElementValueListItemsManager;
+        private readonly ClientElementValueListManager _clientElementValueListManager;
 
-        private volatile ICallbackDoer? _сallbackDoer;
+        private volatile IDispatcher? _сallbackDispatcher;
 
         private Action<CancellationToken> _actionsForWorkingThread = delegate { };        
         

@@ -11,7 +11,7 @@ using Xi.Contracts.Data;
 
 namespace Ssz.Xi.Client
 {
-    public partial class XiDataProvider : IDataSource, ICallbackDoer
+    public partial class XiDataProvider : IDataSource, IDispatcher
     {
         #region public functions
 
@@ -115,7 +115,7 @@ namespace Ssz.Xi.Client
         /// <param name="applicationName">Used in Xi Context initialization</param>
         /// <param name="workstationNameWithoutArgs">Used in Xi Context initialization</param>
         /// <param name="xiContextParams">Used in Xi Context initialization</param>
-        public void Initialize(ICallbackDoer? сallbackDoer, bool updateDataItems, string serverDiscoveryEndpointHttpUrl,
+        public void Initialize(IDispatcher? сallbackDoer, bool updateDataItems, string serverDiscoveryEndpointHttpUrl,
             string xiSystem, string applicationName, string workstationNameWithoutArgs, CaseInsensitiveDictionary<string?>? xiContextParams = null)
         {
             Close();            
@@ -229,7 +229,7 @@ namespace Ssz.Xi.Client
                 _xiDataListItemsManager.Subscribe(_xiServerProxy, _сallbackDoer,
                     XiDataListItemsManagerOnInformationReport, true, ct);
                 object[]? changedValueSubscriptions = _xiDataListItemsManager.PollChanges();
-                ICallbackDoer? сallbackDoer = _сallbackDoer;
+                IDispatcher? сallbackDoer = _сallbackDoer;
                 if (сallbackDoer != null)
                 {
                     try
@@ -261,7 +261,7 @@ namespace Ssz.Xi.Client
 
                 if (setResultAction != null)
                 {
-                    ICallbackDoer? сallbackDoer = _сallbackDoer;
+                    IDispatcher? сallbackDoer = _сallbackDoer;
                     if (сallbackDoer != null)
                     {
                         try
@@ -322,7 +322,7 @@ namespace Ssz.Xi.Client
                     result = null;
                 }
 
-                ICallbackDoer? сallbackDoer = _сallbackDoer;
+                IDispatcher? сallbackDoer = _сallbackDoer;
                 if (сallbackDoer != null)
                 {
                     try
@@ -387,7 +387,7 @@ namespace Ssz.Xi.Client
             if (ct.IsCancellationRequested) return;
             if (!_xiServerProxy.ContextExists)
             {
-                ICallbackDoer? сallbackDoer;
+                IDispatcher? сallbackDoer;
                 if (_isConnected)
                 {
                     UnsubscribeInWorkingThread();
@@ -602,7 +602,7 @@ namespace Ssz.Xi.Client
 
         private readonly XiDataListItemsManager _xiDataListItemsManager = new XiDataListItemsManager();
 
-        private volatile ICallbackDoer? _сallbackDoer;
+        private volatile IDispatcher? _сallbackDoer;
 
         private Action<CancellationToken> _actionsForWorkingThread = delegate { };
 

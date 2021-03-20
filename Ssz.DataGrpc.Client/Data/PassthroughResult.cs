@@ -1,4 +1,4 @@
-﻿namespace Ssz.DataGrpc.Client.Data
+namespace Ssz.DataGrpc.Client.Data
 {
     /// <summary>
     ///     This class defines the response messsage that is returned

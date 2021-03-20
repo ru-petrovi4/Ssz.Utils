@@ -13,12 +13,12 @@ namespace Ssz.DataGrpc.Client
         #region public functions
 
         /// <summary>
-        ///     Is called using сallbackDoer, see Initialize(..).        
+        ///     Is called using сallbackDispatcher, see Initialize(..).        
         /// </summary>
         public event Action<IEnumerable<EventMessage>> EventNotification
         {
-            add { BeginInvoke(ct => _dataGrpcEventListItemsManager.EventNotification += value); }
-            remove { BeginInvoke(ct => _dataGrpcEventListItemsManager.EventNotification -= value); }
+            add { BeginInvoke(ct => _clientEventListManager.EventNotification += value); }
+            remove { BeginInvoke(ct => _clientEventListManager.EventNotification -= value); }
         }
 
         /// <summary>
@@ -32,11 +32,11 @@ namespace Ssz.DataGrpc.Client
                 if (!_onEventNotificationSubscribed)
                 {
                     _onEventNotificationSubscribed = true;
-                    _dataGrpcEventListItemsManager.EventNotification += OnEventNotification;
+                    _clientEventListManager.EventNotification += OnEventNotification;
                 }
 
-                DataGrpcEventList? dataGrpcEventList =
-                    _dataGrpcEventListItemsManager.GetRelatedDataGrpcEventList(OnEventNotification);
+                ClientEventList? dataGrpcEventList =
+                    _clientEventListManager.GetRelatedClientEventList(OnEventNotification);
 
                 if (dataGrpcEventList == null) return;
 
@@ -66,7 +66,7 @@ namespace Ssz.DataGrpc.Client
 
         #region private fields
 
-        private readonly DataGrpcEventListItemsManager _dataGrpcEventListItemsManager;
+        private readonly ClientEventListManager _clientEventListManager;
         private bool _onEventNotificationSubscribed;
 
         #endregion

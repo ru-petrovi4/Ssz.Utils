@@ -13,7 +13,7 @@ namespace Ssz.DataGrpc.Client
         #region public functions
 
         /// <summary>        
-        ///     valueSubscription.Update() is called from сallbackDoer.
+        ///     valueSubscription.Update() is called from сallbackDispatcher.
         /// </summary>
         /// <param name="elementId"></param>
         /// <param name="valueSubscription"></param>
@@ -21,8 +21,8 @@ namespace Ssz.DataGrpc.Client
         {
             BeginInvoke(ct =>
             {
-                _dataGrpcElementValueJournalListItemsManager.AddItem(elementId, valueSubscription);
-                _dataGrpcElementValueJournalListItemsManager.Subscribe(_dataGrpcServerManager, _сallbackDoer);
+                _clientElementValueJournalListManager.AddItem(elementId, valueSubscription);
+                _clientElementValueJournalListManager.Subscribe(_clientConnectionManager, _сallbackDispatcher);
             }
             );
         }
@@ -35,7 +35,7 @@ namespace Ssz.DataGrpc.Client
         {
             BeginInvoke(ct =>
             {
-                _dataGrpcElementValueJournalListItemsManager.RemoveItem(valueSubscription);
+                _clientElementValueJournalListManager.RemoveItem(valueSubscription);
             }
             );            
         }
@@ -54,7 +54,7 @@ namespace Ssz.DataGrpc.Client
         {
             BeginInvoke(ct =>
             {
-                _dataGrpcElementValueJournalListItemsManager.HdaReadElementValueJournalForTimeInterval( firstTimeStampUtc, secondTimeStampUtc, numValuesPerDataObject, calculation, valueSubscriptionsCollection,
+                _clientElementValueJournalListManager.HdaReadElementValueJournalForTimeInterval( firstTimeStampUtc, secondTimeStampUtc, numValuesPerDataObject, calculation, valueSubscriptionsCollection,
                     setResultAction);
             }
             );            
@@ -64,7 +64,7 @@ namespace Ssz.DataGrpc.Client
 
         #region private fields
 
-        private readonly DataGrpcElementValueJournalListItemsManager _dataGrpcElementValueJournalListItemsManager;
+        private readonly ClientElementValueJournalListManager _clientElementValueJournalListManager;
 
         #endregion
     }

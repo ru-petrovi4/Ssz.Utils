@@ -1,4 +1,4 @@
-﻿using Ssz.Utils.Serialization;
+using Ssz.Utils.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
