@@ -15,8 +15,7 @@ namespace Ssz.Utils.Logging
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="logsDirectoryFullName"></param>
-        /// <param name="exeFileName"></param>
+        /// <param name="options"></param>
         public LogFileTextWriter(SszLoggerOptions options)
             : base(null)
         {

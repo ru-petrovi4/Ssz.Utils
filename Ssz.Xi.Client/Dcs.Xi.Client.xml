@@ -344,7 +344,7 @@
                 No throw.
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.Api.XiDataListItemsManager.Subscribe(Ssz.Xi.Client.Api.XiServerProxy,Ssz.Utils.ICallbackDoer,Ssz.Xi.Client.Api.XiDataListItemsManager.InformationReportEventHandler,System.Boolean,System.Threading.CancellationToken)">
+        <member name="M:Ssz.Xi.Client.Api.XiDataListItemsManager.Subscribe(Ssz.Xi.Client.Api.XiServerProxy,Ssz.Utils.IDispatcher,Ssz.Xi.Client.Api.XiDataListItemsManager.InformationReportEventHandler,System.Boolean,System.Threading.CancellationToken)">
             <summary>
                 Creates List, adds/removes items.
                 No throw.
@@ -389,7 +389,7 @@
                 This delegate defines the callback for reporting data updates to the client application.
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.Api.XiEventListItemsManager.Subscribe(Ssz.Xi.Client.Api.XiServerProxy,Ssz.Utils.ICallbackDoer,System.Boolean,System.Threading.CancellationToken)">
+        <member name="M:Ssz.Xi.Client.Api.XiEventListItemsManager.Subscribe(Ssz.Xi.Client.Api.XiServerProxy,Ssz.Utils.IDispatcher,System.Boolean,System.Threading.CancellationToken)">
             <summary>
                 No throw.
             </summary>
@@ -547,7 +547,7 @@
                 The standard destructor invoked by the .NET garbage collector during Finalize.
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.Api.XiServerProxy.InitiateXiContext(System.String,System.String,System.String,Ssz.Utils.ICallbackDoer)">
+        <member name="M:Ssz.Xi.Client.Api.XiServerProxy.InitiateXiContext(System.String,System.String,System.String,Ssz.Utils.IDispatcher)">
             <summary>
                 This method is used to connect to the server and establish a context with it.
             </summary>
@@ -902,7 +902,7 @@
                 This partial class defines the Callback and Polling related aspects of the XiContext class.
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.Context.XiContext.#ctor(Ssz.Xi.Client.Internal.XiServerInfo,System.ServiceModel.Description.ServiceEndpoint,System.UInt32,System.UInt32,System.UInt32,System.String,System.String,System.UInt32,System.TimeSpan,Ssz.Utils.ICallbackDoer)">
+        <member name="M:Ssz.Xi.Client.Internal.Context.XiContext.#ctor(Ssz.Xi.Client.Internal.XiServerInfo,System.ServiceModel.Description.ServiceEndpoint,System.UInt32,System.UInt32,System.UInt32,System.String,System.String,System.UInt32,System.TimeSpan,Ssz.Utils.IDispatcher)">
             <summary>
                 <para>
                     This method is invoked to create an instance of the XiContext class. The XiContext class implements the
@@ -2099,7 +2099,7 @@
                 This class defines endpoints that support the Xi IRegisterForCallback and ICallback interfaces.
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.Endpoints.XiCallbackEndpoint.#ctor(Xi.Contracts.Data.EndpointDefinition,System.ServiceModel.Description.ServiceEndpoint,System.TimeSpan,System.TimeSpan,System.Int32,Ssz.Utils.ICallbackDoer)">
+        <member name="M:Ssz.Xi.Client.Internal.Endpoints.XiCallbackEndpoint.#ctor(Xi.Contracts.Data.EndpointDefinition,System.ServiceModel.Description.ServiceEndpoint,System.TimeSpan,System.TimeSpan,System.Int32,Ssz.Utils.IDispatcher)">
             <summary>
                 The contstructor for IRegisterForCallback/ICallback endpoints
             </summary>
@@ -4321,7 +4321,7 @@
                 Occurs after disconnected from model.
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.Initialize(Ssz.Utils.ICallbackDoer,System.Boolean,System.String,System.String,System.String,System.String,Ssz.Utils.CaseInsensitiveDictionary{System.String})">
+        <member name="M:Ssz.Xi.Client.XiDataProvider.Initialize(Ssz.Utils.IDispatcher,System.Boolean,System.String,System.String,System.String,System.String,Ssz.Utils.CaseInsensitiveDictionary{System.String})">
             <summary>
                 You can set updateDataItems = false and invoke PollDataChanges(...) manually.       
             </summary>

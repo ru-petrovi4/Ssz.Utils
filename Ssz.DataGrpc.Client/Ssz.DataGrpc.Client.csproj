@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Company>SSZ</Company>
+    <Version>1.0.18</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,9 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="..\Ssz.DataGrpc.Server\Protos\ResourceManagement.proto" GrpcServices="Client">
-      <Link>Protos\ResourceManagement.proto</Link>
-    </Protobuf>
+    <Protobuf Include="Protos\ResourceManagement.proto" GrpcServices="Client" />
   </ItemGroup>
 
 </Project>

@@ -279,15 +279,9 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Writes a nullable array into the stream.
-        ///     Use ReadByteArray() in SerializationReader.
+        /// 
         /// </summary>
-        /// <remarks>
-        ///     Array type itself is not stored - it must be supplied
-        ///     at deserialization time.
-        /// </remarks>
-        /// <typeparam name="T"> Array Type. </typeparam>
-        /// <param name="value"> The generic List. </param>
+        /// <param name="values"></param>
         public void Write(byte[] values)
         {
             WriteArrayInternal(values);

@@ -2117,252 +2117,16 @@
             <param name="instance"></param>
             <returns></returns>
         </member>
-        <member name="T:Ssz.Utils.ICallbackDoer">
+        <member name="T:Ssz.Utils.IDispatcher">
             <summary>
             
             </summary>
         </member>
-        <member name="M:Ssz.Utils.ICallbackDoer.BeginInvoke(System.Action{System.Threading.CancellationToken})">
+        <member name="M:Ssz.Utils.IDispatcher.BeginInvoke(System.Action{System.Threading.CancellationToken})">
             <summary>
             
             </summary>
             <param name="action"></param>
-        </member>
-        <member name="T:Ssz.Utils.LogFileTextWriter">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.#ctor(System.String,System.String)">
-            <summary>
-            
-            </summary>
-            <param name="logDirectoryName"></param>
-            <param name="exeFileName"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.Dispose(System.Boolean)">
-            <summary>
-            
-            </summary>
-            <param name="disposing"></param>
-        </member>
-        <member name="P:Ssz.Utils.LogFileTextWriter.LogFileName">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.Flush">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.Write(System.Boolean)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.Write(System.Char)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.Write(System.Char[])">
-            <summary>
-            
-            </summary>
-            <param name="buffer"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.Write(System.Char[],System.Int32,System.Int32)">
-            <summary>
-            
-            </summary>
-            <param name="buffer"></param>
-            <param name="index"></param>
-            <param name="count"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.Write(System.Decimal)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.Write(System.Double)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.Write(System.Single)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.Write(System.Int32)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.Write(System.Int64)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.Write(System.Object)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.Write(System.String,System.Object)">
-            <summary>
-            
-            </summary>
-            <param name="format"></param>
-            <param name="arg0"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.Write(System.String,System.Object,System.Object)">
-            <summary>
-            
-            </summary>
-            <param name="format"></param>
-            <param name="arg0"></param>
-            <param name="arg1"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.Write(System.String,System.Object,System.Object,System.Object)">
-            <summary>
-            
-            </summary>
-            <param name="format"></param>
-            <param name="arg0"></param>
-            <param name="arg1"></param>
-            <param name="arg2"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.Write(System.String,System.Object[])">
-            <summary>
-            
-            </summary>
-            <param name="format"></param>
-            <param name="arg"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.Write(System.String)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.WriteLine">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.WriteLine(System.Boolean)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.WriteLine(System.Char)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.WriteLine(System.Char[])">
-            <summary>
-            
-            </summary>
-            <param name="buffer"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.WriteLine(System.Char[],System.Int32,System.Int32)">
-            <summary>
-            
-            </summary>
-            <param name="buffer"></param>
-            <param name="index"></param>
-            <param name="count"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.WriteLine(System.Decimal)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.WriteLine(System.Double)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.WriteLine(System.Single)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.WriteLine(System.Int32)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.WriteLine(System.Int64)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.WriteLine(System.Object)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.WriteLine(System.String,System.Object)">
-            <summary>
-            
-            </summary>
-            <param name="format"></param>
-            <param name="arg0"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.WriteLine(System.String,System.Object,System.Object)">
-            <summary>
-            
-            </summary>
-            <param name="format"></param>
-            <param name="arg0"></param>
-            <param name="arg1"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.WriteLine(System.String,System.Object,System.Object,System.Object)">
-            <summary>
-            
-            </summary>
-            <param name="format"></param>
-            <param name="arg0"></param>
-            <param name="arg1"></param>
-            <param name="arg2"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.WriteLine(System.String,System.Object[])">
-            <summary>
-            
-            </summary>
-            <param name="format"></param>
-            <param name="arg"></param>
-        </member>
-        <member name="M:Ssz.Utils.LogFileTextWriter.WriteLine(System.String)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="P:Ssz.Utils.LogFileTextWriter.Encoding">
-            <summary>
-            
-            </summary>
         </member>
         <member name="T:Ssz.Utils.Logger">
             <summary>
@@ -2544,6 +2308,246 @@
                 Initializes Trace class to use same log file.         
             </summary>  
             <param name="duplicateInConsole"></param>        
+        </member>
+        <member name="T:Ssz.Utils.Logging.LogFileTextWriter">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.#ctor(Ssz.Utils.Logging.SszLoggerOptions)">
+            <summary>
+            
+            </summary>
+            <param name="options"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.Dispose(System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="disposing"></param>
+        </member>
+        <member name="P:Ssz.Utils.Logging.LogFileTextWriter.LogFileName">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.Flush">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.Write(System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.Write(System.Char)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.Write(System.Char[])">
+            <summary>
+            
+            </summary>
+            <param name="buffer"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.Write(System.Char[],System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="buffer"></param>
+            <param name="index"></param>
+            <param name="count"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.Write(System.Decimal)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.Write(System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.Write(System.Single)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.Write(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.Write(System.Int64)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.Write(System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.Write(System.String,System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="format"></param>
+            <param name="arg0"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.Write(System.String,System.Object,System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="format"></param>
+            <param name="arg0"></param>
+            <param name="arg1"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.Write(System.String,System.Object,System.Object,System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="format"></param>
+            <param name="arg0"></param>
+            <param name="arg1"></param>
+            <param name="arg2"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.Write(System.String,System.Object[])">
+            <summary>
+            
+            </summary>
+            <param name="format"></param>
+            <param name="arg"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.Write(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.WriteLine">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.WriteLine(System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.WriteLine(System.Char)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.WriteLine(System.Char[])">
+            <summary>
+            
+            </summary>
+            <param name="buffer"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.WriteLine(System.Char[],System.Int32,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="buffer"></param>
+            <param name="index"></param>
+            <param name="count"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.WriteLine(System.Decimal)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.WriteLine(System.Double)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.WriteLine(System.Single)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.WriteLine(System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.WriteLine(System.Int64)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.WriteLine(System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.WriteLine(System.String,System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="format"></param>
+            <param name="arg0"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.WriteLine(System.String,System.Object,System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="format"></param>
+            <param name="arg0"></param>
+            <param name="arg1"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.WriteLine(System.String,System.Object,System.Object,System.Object)">
+            <summary>
+            
+            </summary>
+            <param name="format"></param>
+            <param name="arg0"></param>
+            <param name="arg1"></param>
+            <param name="arg2"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.WriteLine(System.String,System.Object[])">
+            <summary>
+            
+            </summary>
+            <param name="format"></param>
+            <param name="arg"></param>
+        </member>
+        <member name="M:Ssz.Utils.Logging.LogFileTextWriter.WriteLine(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+        </member>
+        <member name="P:Ssz.Utils.Logging.LogFileTextWriter.Encoding">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Logging.SszLogger.Finalize">
+            <summary>
+                The standard destructor invoked by the .NET garbage collector during Finalize.
+            </summary>
         </member>
         <member name="T:Ssz.Utils.MonitoredUndo.ChangeKey`2">
             <summary>
@@ -3668,7 +3672,7 @@
             </summary>
             <returns> A Bool[]. </returns>
         </member>
-        <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadByteArray">
+        <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadByteArrayInternal">
             <summary>
                 Internal implementation returning a Byte[].
             </summary>
@@ -3774,16 +3778,6 @@
             <param name="version"></param>
             <returns></returns>
         </member>
-        <member name="M:Ssz.Utils.Serialization.SerializationWriter.Write(System.Char[],System.Int32,System.Int32)">
-            <summary>
-                Writes a section of a character array to the current stream, and advances the
-                current position of the stream in accordance with the Encoding used and perhaps
-                the specific characters being written to the stream.
-            </summary>
-            <param name="chars"></param>
-            <param name="index"></param>
-            <param name="count"></param>
-        </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.Write(System.Single)">
             <summary>
                 Writes a four-byte floating-point value to the current stream and advances the
@@ -3833,14 +3827,47 @@
             </summary>
             <param name="value"></param>
         </member>
-        <member name="M:Ssz.Utils.Serialization.SerializationWriter.Write(System.Byte[],System.Int32,System.Int32)">
+        <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteRaw(System.Char[])">
+            <summary>
+                Writes a character array to the current stream and advances the current position
+                of the stream in accordance with the Encoding used and the specific characters
+                being written to the stream.
+                Use ReadRawChars(...) in SerializationReader.
+            </summary>
+            <param name="chars"></param>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteRaw(System.Char[],System.Int32,System.Int32)">
+            <summary>
+                Writes a section of a character array to the current stream, and advances the
+                current position of the stream in accordance with the Encoding used and perhaps
+                the specific characters being written to the stream.
+                Use ReadRawChars(...) in SerializationReader.
+            </summary>
+            <param name="chars"></param>
+            <param name="index"></param>
+            <param name="count"></param>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteRaw(System.Byte[],System.Int32,System.Int32)">
             <summary>
                 Writes a region of a byte array to the current stream.
-                Use ReadBytes(int count) in SerializationReader.
+                Use ReadRawBytes(int count) in SerializationReader.
             </summary>
             <param name="buffer"></param>
             <param name="index"></param>
             <param name="count"></param>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteRaw(System.Byte[])">
+            <summary>
+                Writes a byte array to the current stream.
+                Use ReadRawBytes(int count) in SerializationReader.
+            </summary>
+            <param name="buffer"></param>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.SerializationWriter.Write(System.Byte[])">
+            <summary>
+            
+            </summary>
+            <param name="values"></param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.Write(System.Double)">
             <summary>
@@ -3849,14 +3876,6 @@
             </summary>
             <param name="value"></param>
         </member>
-        <member name="M:Ssz.Utils.Serialization.SerializationWriter.Write(System.Char[])">
-            <summary>
-                Writes a character array to the current stream and advances the current position
-                of the stream in accordance with the Encoding used and the specific characters
-                being written to the stream.
-            </summary>
-            <param name="chars"></param>
-        </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.Write(System.Char)">
             <summary>
                 Writes a Unicode character to the current stream and advances the current position
@@ -3864,13 +3883,6 @@
                 being written to the stream.
             </summary>
             <param name="ch"></param>
-        </member>
-        <member name="M:Ssz.Utils.Serialization.SerializationWriter.Write(System.Byte[])">
-            <summary>
-                Writes a byte array to the current stream.
-                Use ReadBytes(int count) in SerializationReader.
-            </summary>
-            <param name="buffer"></param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.Write(System.SByte)">
             <summary>
@@ -4299,7 +4311,7 @@
             </summary>
             <param name="values"> The Guid[] to store. </param>
         </member>
-        <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteTypeCode(System.Boolean[])">
+        <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteArrayInternal(System.Boolean[])">
             <summary>
                 values != null
             </summary>
