@@ -1,3 +1,4 @@
+using Ssz.DataGrpc.Common;
 using Ssz.Utils;
 using System;
 

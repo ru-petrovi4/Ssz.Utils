@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace TestConsoleApp
 {
@@ -14,7 +15,22 @@ namespace TestConsoleApp
         //static string _s2 = "m9zyvlcodIYY+B1j2FK21mmvchyFfylNjO/jjtTU9Cg=";
         static void Main(string[] args)
         {
-            ConfigurationHelper.InitializeCulture();
+            var r = new AsyncResult<int>();
+
+            
+            Task.Run(async () => 
+            {
+                var result = await r.GetResultAsync();
+                Console.WriteLine(result);
+            }
+            );
+
+            r.SetReult(5);
+
+            Console.ReadKey();
+
+
+            //onfigurationHelper.InitializeCulture();
             //var bytes0 = System.Convert.FromBase64String(_s0);
             //var bytes1 = System.Convert.FromBase64String(_s1);
             //var bytes2 = System.Convert.FromBase64String(_s2);
@@ -25,10 +41,11 @@ namespace TestConsoleApp
 
             //Console.WriteLine();
             //Console.WriteLine();
-            Console.WriteLine("sadad".Substring(6, 0) == "");
-        }
+            //Console.WriteLine("sadad".Substring(6, 0) == "");
+        }       
 
-    }
+
+   }
 }
 
 
