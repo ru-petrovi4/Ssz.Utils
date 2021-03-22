@@ -60,45 +60,57 @@ namespace Ssz.Utils
 
         #region public functions
 
-        public void SetReult(T result)
+        public void SetResult(T result)
         {
             _result = result;
+            _semaphoreSlim.Release();
+        }
+
+        public void SetException(Exception exception)
+        {
+            _exception = exception;
             _semaphoreSlim.Release();
         }
 
         public async Task<T?> GetResultAsync()
         {
             await _semaphoreSlim.WaitAsync();
+            if (_exception != null) throw _exception;
             return _result;
         }
 
         public async Task<T?> GetResultAsync(int millisecondsTimeout)
         {
             await _semaphoreSlim.WaitAsync(millisecondsTimeout);
+            if (_exception != null) throw _exception;
             return _result;
         }
 
         public async Task<T?> GetResultAsync(int millisecondsTimeout, CancellationToken cancellationToken)
         {
             await _semaphoreSlim.WaitAsync(millisecondsTimeout, cancellationToken);
+            if (_exception != null) throw _exception;
             return _result;
         }
 
         public async Task<T?> GetResultAsync(CancellationToken cancellationToken)
         {
             await _semaphoreSlim.WaitAsync(cancellationToken);
+            if (_exception != null) throw _exception;
             return _result;
         }
 
         public async Task<T?> GetResultAsync(TimeSpan timeout)
         {
             await _semaphoreSlim.WaitAsync(timeout);
+            if (_exception != null) throw _exception;
             return _result;
         }
 
         public async Task<T?> GetResultAsync(TimeSpan timeout, CancellationToken cancellationToken)
         {
             await _semaphoreSlim.WaitAsync(timeout, cancellationToken);
+            if (_exception != null) throw _exception;
             return _result;
         }
 
@@ -109,6 +121,8 @@ namespace Ssz.Utils
         private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(0, 1);
 
         private T? _result;
+
+        private Exception? _exception;
 
         #endregion
     }

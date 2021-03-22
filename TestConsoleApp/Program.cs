@@ -25,7 +25,7 @@ namespace TestConsoleApp
             }
             );
 
-            r.SetReult(5);
+            r.SetResult(5);
 
             Console.ReadKey();
 
