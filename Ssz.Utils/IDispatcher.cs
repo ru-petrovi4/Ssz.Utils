@@ -72,45 +72,51 @@ namespace Ssz.Utils
             _semaphoreSlim.Release();
         }
 
-        public async Task<T?> GetResultAsync()
+        public async Task<T> GetResultAsync()
         {
             await _semaphoreSlim.WaitAsync();
             if (_exception != null) throw _exception;
+            if (_result == null) throw new OperationCanceledException();
             return _result;
         }
 
-        public async Task<T?> GetResultAsync(int millisecondsTimeout)
+        public async Task<T> GetResultAsync(int millisecondsTimeout)
         {
             await _semaphoreSlim.WaitAsync(millisecondsTimeout);
             if (_exception != null) throw _exception;
+            if (_result == null) throw new OperationCanceledException();
             return _result;
         }
 
-        public async Task<T?> GetResultAsync(int millisecondsTimeout, CancellationToken cancellationToken)
+        public async Task<T> GetResultAsync(int millisecondsTimeout, CancellationToken cancellationToken)
         {
             await _semaphoreSlim.WaitAsync(millisecondsTimeout, cancellationToken);
             if (_exception != null) throw _exception;
+            if (_result == null) throw new OperationCanceledException();
             return _result;
         }
 
-        public async Task<T?> GetResultAsync(CancellationToken cancellationToken)
+        public async Task<T> GetResultAsync(CancellationToken cancellationToken)
         {
             await _semaphoreSlim.WaitAsync(cancellationToken);
             if (_exception != null) throw _exception;
+            if (_result == null) throw new OperationCanceledException();
             return _result;
         }
 
-        public async Task<T?> GetResultAsync(TimeSpan timeout)
+        public async Task<T> GetResultAsync(TimeSpan timeout)
         {
             await _semaphoreSlim.WaitAsync(timeout);
             if (_exception != null) throw _exception;
+            if (_result == null) throw new OperationCanceledException();
             return _result;
         }
 
-        public async Task<T?> GetResultAsync(TimeSpan timeout, CancellationToken cancellationToken)
+        public async Task<T> GetResultAsync(TimeSpan timeout, CancellationToken cancellationToken)
         {
             await _semaphoreSlim.WaitAsync(timeout, cancellationToken);
             if (_exception != null) throw _exception;
+            if (_result == null) throw new OperationCanceledException();
             return _result;
         }
 
