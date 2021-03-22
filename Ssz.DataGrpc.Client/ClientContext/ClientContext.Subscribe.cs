@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Ssz.DataGrpc.Client.Core.Lists;
+using Ssz.DataGrpc.Client.ClientLists;
 using Ssz.DataGrpc.Server;
-using Ssz.DataGrpc.Client.Core.ListItems;
+using Ssz.DataGrpc.Client.ClientListItems;
 using Ssz.DataGrpc.Common;
 using System.Linq;
 
-namespace Ssz.DataGrpc.Client.Core.Context
+namespace Ssz.DataGrpc.Client
 {
     /// <summary>
     ///     This partial class defines the Callback and Polling related aspects of the ClientContext class.

@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using Ssz.Utils;
-using Ssz.DataGrpc.Client.Core.Context;
-using Ssz.DataGrpc.Client.Core.ListItems;
+using Ssz.DataGrpc.Client.ClientListItems;
 using Ssz.DataGrpc.Server;
 using Ssz.DataGrpc.Common;
 
-namespace Ssz.DataGrpc.Client.Core.Lists
+namespace Ssz.DataGrpc.Client.ClientLists
 {
     /// <summary>
     ///     This abstract class definition allows for the implantation of methods that are

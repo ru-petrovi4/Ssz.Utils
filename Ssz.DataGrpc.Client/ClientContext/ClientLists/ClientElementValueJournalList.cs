@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Ssz.DataGrpc.Client.Managers;
-using Ssz.DataGrpc.Client.Core.Context;
-using Ssz.DataGrpc.Client.Core.ListItems;
+using Ssz.DataGrpc.Client.ClientListItems;
 using Ssz.DataGrpc.Server;
 using Ssz.DataGrpc.Common;
 using Ssz.Utils;
 
-namespace Ssz.DataGrpc.Client.Core.Lists
+namespace Ssz.DataGrpc.Client.ClientLists
 {
     /// <summary>
     /// 

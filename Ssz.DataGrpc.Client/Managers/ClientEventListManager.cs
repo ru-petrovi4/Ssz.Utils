@@ -5,8 +5,8 @@ using System.Threading;
 using Ssz.Utils;
 using Ssz.DataGrpc.Server;
 using Microsoft.Extensions.Logging;
-using Ssz.DataGrpc.Client.Core.Lists;
-using Ssz.DataGrpc.Client.Core.ListItems;
+using Ssz.DataGrpc.Client.ClientLists;
+using Ssz.DataGrpc.Client.ClientListItems;
 
 namespace Ssz.DataGrpc.Client.Managers
 {

@@ -10,7 +10,7 @@ using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using Ssz.DataGrpc.Client.Data;
 
-namespace Ssz.DataGrpc.Client.Core.Context
+namespace Ssz.DataGrpc.Client
 {
 
     #region Context Management

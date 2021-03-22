@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ssz.DataGrpc.Client.Core.ListItems
+namespace Ssz.DataGrpc.Client.ClientListItems
 {
     /// <summary>
     /// 

@@ -3,7 +3,7 @@ using Ssz.DataGrpc.Client.Data;
 using Ssz.DataGrpc.Common;
 using Ssz.DataGrpc.Server;
 
-namespace Ssz.DataGrpc.Client.Core.ListItems
+namespace Ssz.DataGrpc.Client.ClientListItems
 {
     /// <summary>
     ///     This is the base class for elements of all DataGrpcLists (e.g. ElementValueList, EventList).

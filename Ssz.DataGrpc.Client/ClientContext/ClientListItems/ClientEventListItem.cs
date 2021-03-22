@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Ssz.Utils;
 using Ssz.DataGrpc.Server;
 
-namespace Ssz.DataGrpc.Client.Core.ListItems
+namespace Ssz.DataGrpc.Client.ClientListItems
 {
     /// <summary>
     ///     This class defines an element of an DataGrpc Event List. It contains the Event Message sent by the server.

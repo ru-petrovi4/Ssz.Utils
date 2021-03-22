@@ -1,7 +1,7 @@
 using System;
 using Ssz.DataGrpc.Common;
 
-namespace Ssz.DataGrpc.Client.Core.ListItems
+namespace Ssz.DataGrpc.Client.ClientListItems
 {
     /// <summary>
     ///     The DataGrpc Data List Value class is used by the DataGrpc Data List

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using Ssz.DataGrpc.Client.Core.ListItems;
-using Ssz.DataGrpc.Client.Core.Lists;
+using Ssz.DataGrpc.Client.ClientListItems;
+using Ssz.DataGrpc.Client.ClientLists;
 
 namespace Ssz.DataGrpc.Client.Data
 {

@@ -5,7 +5,7 @@ using Google.Protobuf;
 using Ssz.DataGrpc.Client.Data;
 using Ssz.DataGrpc.Server;
 
-namespace Ssz.DataGrpc.Client.Core.Context
+namespace Ssz.DataGrpc.Client
 {
     public partial class ClientContext
     {

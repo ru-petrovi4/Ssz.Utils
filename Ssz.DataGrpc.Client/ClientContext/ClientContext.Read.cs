@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Ssz.DataGrpc.Client.Core.Lists;
+using Ssz.DataGrpc.Client.ClientLists;
 using Ssz.DataGrpc.Common;
 using Ssz.DataGrpc.Server;
 
-namespace Ssz.DataGrpc.Client.Core.Context
+namespace Ssz.DataGrpc.Client
 {
     /// <summary>
     ///     This partial class defines the IRead related aspects of the ClientContext class.

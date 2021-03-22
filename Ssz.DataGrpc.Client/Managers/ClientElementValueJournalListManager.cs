@@ -1,8 +1,8 @@
 using System;
 using Ssz.Utils;
-using Ssz.DataGrpc.Client.Core.ListItems;
+using Ssz.DataGrpc.Client.ClientListItems;
 using Microsoft.Extensions.Logging;
-using Ssz.DataGrpc.Client.Core.Lists;
+using Ssz.DataGrpc.Client.ClientLists;
 using Ssz.DataGrpc.Common;
 using System.Collections.Generic;
 using Ssz.DataGrpc.Server;

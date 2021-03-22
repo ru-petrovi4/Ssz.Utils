@@ -2,15 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Ssz.Utils;
-using Ssz.DataGrpc.Client.Core.Context;
-using Ssz.DataGrpc.Client.Core.ListItems;
+using Ssz.DataGrpc.Client.ClientListItems;
 using Ssz.DataGrpc.Server;
 using Ssz.DataGrpc.Common;
 using System.IO;
 using Ssz.Utils.Serialization;
 using Ssz.DataGrpc.Client.Data;
 
-namespace Ssz.DataGrpc.Client.Core.Lists
+namespace Ssz.DataGrpc.Client.ClientLists
 {
     /// <summary>
     /// 

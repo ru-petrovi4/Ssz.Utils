@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using Ssz.Utils;
-using Ssz.DataGrpc.Client.Core.Lists;
+using Ssz.DataGrpc.Client.ClientLists;
 using Ssz.DataGrpc.Server;
 using Ssz.DataGrpc.Common;
 
-namespace Ssz.DataGrpc.Client.Core.Context
+namespace Ssz.DataGrpc.Client
 {
 
     #region List Management

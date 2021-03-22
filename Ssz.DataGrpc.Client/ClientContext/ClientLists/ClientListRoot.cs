@@ -1,7 +1,6 @@
 using System;
-using Ssz.DataGrpc.Client.Core.Context;
 
-namespace Ssz.DataGrpc.Client.Core.Lists
+namespace Ssz.DataGrpc.Client.ClientLists
 {
     /// <summary>
     ///     This abstract class definition allows for the implantation of methods that are
