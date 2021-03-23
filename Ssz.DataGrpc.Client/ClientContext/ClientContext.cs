@@ -69,11 +69,6 @@ namespace Ssz.DataGrpc.Client
 
             SetResourceManagementLastCallUtc();
 
-            lock (StaticClientContextsDictionary)
-            {
-                StaticClientContextsDictionary.Add(_serverContextId, this);
-            }
-
             _serverContextIsOperational = true;
         }
 
@@ -129,11 +124,6 @@ namespace Ssz.DataGrpc.Client
                     {
                     }
                 }
-
-                lock (StaticClientContextsDictionary)
-                {
-                    StaticClientContextsDictionary.Remove(_serverContextId);
-                }
             }        
 
             _disposed = true;
@@ -151,21 +141,6 @@ namespace Ssz.DataGrpc.Client
 
         #region public functions
 
-        /// <summary>
-        ///     This method is invoked to find a context in the static StaticActiveContexts dictionary for a specified context id.
-        /// </summary>
-        /// <param name="serverContextId"> The context to look up. </param>
-        /// <returns> The context if found, otherwise null. </returns>
-        public static ClientContext? LookUpClientContext(string serverContextId)
-        {
-            ClientContext? clientContext = null;
-            lock (StaticClientContextsDictionary)
-            {
-                StaticClientContextsDictionary.TryGetValue(serverContextId, out clientContext);
-            }
-            return clientContext;
-        }
-
         public ContextInfo? ServerContextInfo
         {
             get
@@ -181,15 +156,14 @@ namespace Ssz.DataGrpc.Client
                     _pendingContextNotificationData = new ClientContextNotificationData(ClientContextNotificationType.Shutdown,
                         null);
                 }
-            }
-            
+            }            
         }
 
         /// <summary>
         ///     This method is used to
         ///     keep the context alive.
         /// </summary>
-        public void KeepContextAlive(DateTime nowUtc)
+        public void KeepContextAliveIfNeeded(DateTime nowUtc)
         {
             if (!_serverContextIsOperational) return;
                 
@@ -319,12 +293,6 @@ namespace Ssz.DataGrpc.Client
         #endregion
 
         #region private fields
-
-        /// <summary>
-        ///     This static data member contains the dictionary of all contexts defined for this instance of the Client Base.
-        /// </summary>
-        private static readonly Dictionary<string, ClientContext> StaticClientContextsDictionary =
-            new Dictionary<string, ClientContext>();
 
         /// <summary>
         ///     This member indicates, when TRUE, that the object has been disposed by the Dispose(bool isDisposing) method.

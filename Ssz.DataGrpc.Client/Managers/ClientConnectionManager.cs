@@ -313,7 +313,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
             if (_connectionInfo == null) throw new ConnectionDoesNotExistException();
 
-            _connectionInfo.ClientContext.KeepContextAlive(nowUtc);
+            _connectionInfo.ClientContext.KeepContextAliveIfNeeded(nowUtc);
             _connectionInfo.ClientContext.ProcessPendingContextNotificationData();
         }
 
@@ -377,8 +377,7 @@ namespace Ssz.DataGrpc.Client.Managers
                 }
 
                 try
-                {
-                    ClientContext? context;
+                {                    
                     switch (reader.Current.OptionalMessageCase)
                     {
                         case CallbackMessage.OptionalMessageOneofCase.ServerInfo:
@@ -386,26 +385,23 @@ namespace Ssz.DataGrpc.Client.Managers
                             break;
                         case CallbackMessage.OptionalMessageOneofCase.ContextInfo:
                             ContextInfo serverContextInfo = reader.Current.ContextInfo;
-                            context = ClientContext.LookUpClientContext(serverContextInfo.ContextId);
-                            if (context != null)
+                            if (serverContextInfo.ContextId == _connectionInfo.ClientContext.ServerContextId)
                             {
-                                context.ServerContextInfo = serverContextInfo;
+                                _connectionInfo.ClientContext.ServerContextInfo = serverContextInfo;
                             }
                             break;
                         case CallbackMessage.OptionalMessageOneofCase.InformationReport:
                             InformationReport informationReport = reader.Current.InformationReport;
-                            context = ClientContext.LookUpClientContext(informationReport.ContextId);
-                            if (context != null)
+                            if (informationReport.ContextId == _connectionInfo.ClientContext.ServerContextId)
                             {
-                                context.InformationReport(informationReport.ListClientAlias, informationReport.ElementValueArrays);
+                                _connectionInfo.ClientContext.InformationReport(informationReport.ListClientAlias, informationReport.ElementValueArrays);
                             }
                             break;
                         case CallbackMessage.OptionalMessageOneofCase.EventNotification:
                             EventNotification eventNotification = reader.Current.EventNotification;
-                            context = ClientContext.LookUpClientContext(eventNotification.ContextId);
-                            if (context != null)
+                            if (eventNotification.ContextId == _connectionInfo.ClientContext.ServerContextId)
                             {
-                                context.EventNotification(eventNotification.ListClientAlias, eventNotification.EventMessageArrays);
+                                _connectionInfo.ClientContext.EventNotification(eventNotification.ListClientAlias, eventNotification.EventMessageArrays);
                             }
                             break;
                     }
