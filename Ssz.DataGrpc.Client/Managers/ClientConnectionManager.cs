@@ -238,22 +238,6 @@ namespace Ssz.DataGrpc.Client.Managers
         ///     This property specifies how long the context will stay alive in the server after a WCF
         ///     connection failure. The ClientBase will attempt reconnection during this period.
         /// </summary>
-        public ServerInfo? ServerInfo
-        {
-            get
-            {
-                if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataGrpcServerProxy.");
-
-                if (_connectionInfo == null) throw new ConnectionDoesNotExistException();
-
-                return _serverInfo;
-            }
-        }
-
-        /// <summary>
-        ///     This property specifies how long the context will stay alive in the server after a WCF
-        ///     connection failure. The ClientBase will attempt reconnection during this period.
-        /// </summary>
         public TimeSpan ServerContextTimeout
         {
             get
@@ -379,30 +363,18 @@ namespace Ssz.DataGrpc.Client.Managers
                 try
                 {                    
                     switch (reader.Current.OptionalMessageCase)
-                    {
-                        case CallbackMessage.OptionalMessageOneofCase.ServerInfo:
-                            _serverInfo = reader.Current.ServerInfo;
-                            break;
+                    {                       
                         case CallbackMessage.OptionalMessageOneofCase.ContextInfo:
                             ContextInfo serverContextInfo = reader.Current.ContextInfo;
-                            if (serverContextInfo.ContextId == _connectionInfo.ClientContext.ServerContextId)
-                            {
-                                _connectionInfo.ClientContext.ServerContextInfo = serverContextInfo;
-                            }
+                            _connectionInfo.ClientContext.ServerContextInfo = serverContextInfo;
                             break;
                         case CallbackMessage.OptionalMessageOneofCase.InformationReport:
                             InformationReport informationReport = reader.Current.InformationReport;
-                            if (informationReport.ContextId == _connectionInfo.ClientContext.ServerContextId)
-                            {
-                                _connectionInfo.ClientContext.InformationReport(informationReport.ListClientAlias, informationReport.ElementValueArrays);
-                            }
+                            _connectionInfo.ClientContext.InformationReport(informationReport.ListClientAlias, informationReport.ElementValueArrays);
                             break;
                         case CallbackMessage.OptionalMessageOneofCase.EventNotification:
                             EventNotification eventNotification = reader.Current.EventNotification;
-                            if (eventNotification.ContextId == _connectionInfo.ClientContext.ServerContextId)
-                            {
-                                _connectionInfo.ClientContext.EventNotification(eventNotification.ListClientAlias, eventNotification.EventMessageArrays);
-                            }
+                            _connectionInfo.ClientContext.EventNotification(eventNotification.ListClientAlias, eventNotification.EventMessageArrays);
                             break;
                     }
                 }                
@@ -421,9 +393,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
         private ILogger<DataGrpcProvider> _logger;
 
-        private ConnectionInfo? _connectionInfo;        
-
-        private ServerInfo? _serverInfo;
+        private ConnectionInfo? _connectionInfo;
 
         #endregion
 

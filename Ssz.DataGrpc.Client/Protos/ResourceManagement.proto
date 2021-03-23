@@ -6,9 +6,9 @@ import "google/protobuf/timestamp.proto";
 
 // The greeting service definition.
 service ResourceManagement {
-  rpc SubscribeForCallback(SubscribeForCallbackRequest) returns (stream CallbackMessage);
-
   rpc Initiate (InitiateRequest) returns (InitiateReply);
+
+  rpc SubscribeForCallback(SubscribeForCallbackRequest) returns (stream CallbackMessage);
 
   rpc Conclude (ConcludeRequest) returns (ConcludeReply);
 
@@ -52,36 +52,29 @@ enum State
   STATE_NOT_OPERATIONAL = 8;
 }
 
-message ServerInfo {  
-  State state = 1;
-}
-
-message ContextInfo {
-  string context_id = 1;
+message ContextInfo {  
   State state = 2;  
 }
 
-message InformationReport {  
-  string context_id = 1;
+message InformationReport {    
   uint32 list_client_alias = 2;
   ElementValueArrays element_value_arrays = 3;
 }
 
-message EventNotification {  
-  string context_id = 1;
+message EventNotification {
   uint32 list_client_alias = 2;
   EventMessageArrays event_message_arrays = 3;
 }
 
-message SubscribeForCallbackRequest {   
+message SubscribeForCallbackRequest {
+  string context_id = 1;
 }
 
 message CallbackMessage {
-  oneof optional_message {
-    ServerInfo server_info = 1;
-    ContextInfo context_info = 2;
-    InformationReport information_report = 3;
-    EventNotification event_notification = 4;
+  oneof optional_message {    
+    ContextInfo context_info = 1;
+    InformationReport information_report = 2;
+    EventNotification event_notification = 3;
   }
 }
 
