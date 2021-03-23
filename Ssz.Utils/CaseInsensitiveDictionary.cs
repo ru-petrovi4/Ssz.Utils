@@ -32,8 +32,13 @@ namespace Ssz.Utils
         /// 
         /// </summary>
         /// <param name="dictionary"></param>
-        public CaseInsensitiveDictionary(Dictionary<string, T> dictionary)
+        public CaseInsensitiveDictionary(IDictionary<string, T> dictionary)
             : base(dictionary, StringComparer.InvariantCultureIgnoreCase)
+        {
+        }
+
+        public CaseInsensitiveDictionary(IEnumerable<KeyValuePair<string, T>> collection)
+            : base(collection, StringComparer.InvariantCultureIgnoreCase)
         {
         }
 

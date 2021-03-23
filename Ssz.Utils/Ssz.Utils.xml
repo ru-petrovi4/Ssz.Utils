@@ -567,7 +567,7 @@
             </summary>
             <param name="capacity"></param>
         </member>
-        <member name="M:Ssz.Utils.CaseInsensitiveDictionary`1.#ctor(System.Collections.Generic.Dictionary{System.String,`0})">
+        <member name="M:Ssz.Utils.CaseInsensitiveDictionary`1.#ctor(System.Collections.Generic.IDictionary{System.String,`0})">
             <summary>
             
             </summary>
