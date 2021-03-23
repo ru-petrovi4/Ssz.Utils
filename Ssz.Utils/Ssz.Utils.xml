@@ -2128,29 +2128,6 @@
             </summary>
             <param name="action"></param>
         </member>
-        <member name="T:Ssz.Utils.AsyncResult`1">
-            <summary>
-            
-            </summary>
-            <typeparam name="T"></typeparam>
-        </member>
-        <member name="M:Ssz.Utils.AsyncResult`1.Dispose">
-            <summary>
-                This is the implementation of the IDisposable.Dispose method.  The client
-                application should invoke this method when this instance is no longer needed.
-            </summary>
-        </member>
-        <member name="M:Ssz.Utils.AsyncResult`1.Dispose(System.Boolean)">
-            <summary>
-                This method is invoked when the IDisposable.Dispose or Finalize actions are
-                requested.
-            </summary>
-        </member>
-        <member name="M:Ssz.Utils.AsyncResult`1.Finalize">
-            <summary>
-                Invoked by the .NET Framework while doing heap managment (Finalize).
-            </summary>
-        </member>
         <member name="T:Ssz.Utils.Logger">
             <summary>
                 This class provides tracing support in a concrete

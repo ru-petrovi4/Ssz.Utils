@@ -15,17 +15,29 @@ namespace TestConsoleApp
         //static string _s2 = "m9zyvlcodIYY+B1j2FK21mmvchyFfylNjO/jjtTU9Cg=";
         static void Main(string[] args)
         {
-            var r = new AsyncResult<int>();
+            var r = new TaskCompletionSource<int>();
 
             
             Task.Run(async () => 
             {
-                var result = await r.GetResultAsync();
-                Console.WriteLine(result);
+                try
+                {
+                    var result = await r.Task;
+                    Console.WriteLine(result);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    Console.WriteLine("InvalidOperationException " + ex.GetType());
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Exception " + ex.GetType());
+                }
             }
             );
 
-            r.SetResult(5);
+            //r.SetException(new InvalidOperationException());
+            r.TrySetCanceled();
 
             Console.ReadKey();
 
