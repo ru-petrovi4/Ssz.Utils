@@ -12,7 +12,19 @@ namespace Ssz.Utils
     public static class StringHelper
     {
         #region public functions
-        
+
+        /// <summary>
+        ///     Object is null or String.Empty
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool IsNullOrEmptyString(object? value)
+        {
+#pragma warning disable CS0252 // Possible unintended reference comparison; left hand side needs cast
+            return value == null || value == @"";
+#pragma warning restore CS0252 // Possible unintended reference comparison; left hand side needs cast
+        }
+
         /// <summary>        
         /// </summary>
         /// <param name="left"></param>

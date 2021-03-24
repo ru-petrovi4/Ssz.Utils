@@ -108,8 +108,10 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static bool CanGetNameValueCollection(object obj)
+        public static bool CanGetNameValueCollection(object? obj)
         {
+            if (obj == null) return true;
+
             PropertyInfo[] props = obj.GetType().GetProperties();
             foreach (PropertyInfo prop in props)
             {
@@ -154,9 +156,11 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static CaseInsensitiveDictionary<string?> GetNameValueCollection(object obj)
+        public static CaseInsensitiveDictionary<string?> GetNameValueCollection(object? obj)
         {
             var result = new CaseInsensitiveDictionary<string?>();
+
+            if (obj == null) return result;
 
             PropertyInfo[] props = obj.GetType().GetProperties();
             foreach (PropertyInfo prop in props)

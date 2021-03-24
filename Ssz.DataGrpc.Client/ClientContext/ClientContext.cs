@@ -220,7 +220,7 @@ namespace Ssz.DataGrpc.Client
         ///     Within this time period, if there was a communications failure, the client can
         ///     attempt to ReInitiate the connection with the server for this context.
         /// </summary>
-        public uint ServerContextTimeout
+        public uint ServerContextTimeoutMs
         {
             get { return _serverContextTimeoutMs; }
         }

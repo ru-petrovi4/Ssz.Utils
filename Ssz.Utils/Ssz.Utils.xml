@@ -4473,6 +4473,13 @@
             
             </summary>
         </member>
+        <member name="M:Ssz.Utils.StringHelper.IsNullOrEmptyString(System.Object)">
+            <summary>
+                Object is null or String.Empty
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
         <member name="M:Ssz.Utils.StringHelper.CompareIgnoreCase(System.String,System.String)">
             <summary>        
             </summary>

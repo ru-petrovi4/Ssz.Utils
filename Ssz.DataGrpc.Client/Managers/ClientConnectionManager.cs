@@ -246,7 +246,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
                 if (_connectionInfo == null) throw new ConnectionDoesNotExistException();
 
-                return TimeSpan.FromMilliseconds(_connectionInfo.ClientContext.ServerContextTimeout);
+                return TimeSpan.FromMilliseconds(_connectionInfo.ClientContext.ServerContextTimeoutMs);
             }
         }
 
