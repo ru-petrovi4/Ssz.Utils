@@ -10,6 +10,7 @@ using Ssz.DataGrpc.Server;
 using Ssz.DataGrpc.Client.Data;
 using Microsoft.Extensions.Logging;
 using Ssz.DataGrpc.Common;
+using Ssz.Utils.DataSource;
 
 namespace Ssz.DataGrpc.Client
 {
