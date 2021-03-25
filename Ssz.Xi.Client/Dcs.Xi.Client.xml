@@ -854,31 +854,6 @@
             </summary>
             <param name="obj"></param>
         </member>
-        <member name="M:Ssz.Xi.Client.IDataSource.AddItem(System.String,Ssz.Xi.Client.IValueSubscription)">
-            <summary>        
-                Returns id actully used for OPC subscription
-                valueSubscription.Update() is called from UI thread.        
-            </summary>
-            <param name="id"></param>
-            <param name="valueSubscription"></param>
-        </member>
-        <member name="M:Ssz.Xi.Client.IDataSource.RemoveItem(Ssz.Xi.Client.IValueSubscription)">
-            <summary>        
-                If valueSubscription is not subscribed - does nothing.
-            </summary>
-            <param name="valueSubscription"></param>
-        </member>
-        <member name="M:Ssz.Xi.Client.IDataSource.Write(Ssz.Xi.Client.IValueSubscription,Ssz.Utils.Any)">
-            <summary>        
-                To use this method, AddItem(...) must be called first for this valueSubscription.
-                You cannot write values after RemoveItem(...) is called.
-            </summary>
-        </member>
-        <member name="E:Ssz.Xi.Client.IDataSource.ValueSubscriptionsUpdated">
-            <summary>
-                Is called from UI thread.
-            </summary>
-        </member>
         <member name="T:Ssz.Xi.Client.Internal.Context.XiContext">
             <summary>
                 This partial class defines the Context Management related aspects of the XiContext class.  Two
@@ -4201,78 +4176,6 @@
                 Mex WsHttpBinding constructor parameter
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.IValueSubscription.Update(Ssz.Utils.Any)">
-            <summary>        
-                When item don't exist in data source, invokes with new Any(DBNull.Value)
-                When disconnected from data source, invokes with new Any(null).
-            </summary>
-        </member>
-        <member name="P:Ssz.Xi.Client.IValueSubscription.Obj">
-            <summary>
-                Property to use internally in ModelDataProvider. You need to
-                implement this field, but you shouldn't change its value.
-            </summary>
-        </member>
-        <member name="M:Ssz.Xi.Client.ReadOnceValueSubscription.#ctor(Ssz.Xi.Client.IDataSource,System.String,System.Action{Ssz.Utils.Any})">
-            <summary>
-                Is used to one-time read value.
-                Callback is invoked when value is not null (value.ValueTypeCode != TypeCode.Empty)        
-            </summary>
-        </member>
-        <member name="P:Ssz.Xi.Client.ReadOnceValueSubscription.ModelId">
-            <summary>
-                Id actually used for OPC subscription. Initialized after constructor.
-            </summary>
-        </member>
-        <member name="P:Ssz.Xi.Client.ReadOnceValueSubscription.Ssz#Xi#Client#IValueSubscription#Obj">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Ssz.Xi.Client.ReadOnceValueSubscription.Ssz#Xi#Client#IValueSubscription#Update(Ssz.Utils.Any)">
-            <summary>
-                Callback Thread.
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="M:Ssz.Xi.Client.ValueSubscription.#ctor(Ssz.Xi.Client.IDataSource,System.String,System.Action{Ssz.Utils.Any,Ssz.Utils.Any})">
-            <summary>
-                Is used to subscribe for value updating and to write values.
-                valueChangedAction(oldValue, newValue) is invoked when Value property changed. Initial Value property is Any(null).        
-            </summary>
-        </member>
-        <member name="P:Ssz.Xi.Client.ValueSubscription.ModelId">
-            <summary>
-                Id actually used for OPC subscription. Initialized after constructor.       
-            </summary>
-        </member>
-        <member name="P:Ssz.Xi.Client.ValueSubscription.Ssz#Xi#Client#IValueSubscription#Obj">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Ssz.Xi.Client.ValueSubscription.Ssz#Xi#Client#IValueSubscription#Update(Ssz.Utils.Any)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-        </member>
-        <member name="P:Ssz.Xi.Client.ValueSubscription.Id">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Ssz.Xi.Client.ValueSubscription.Value">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Ssz.Xi.Client.ValueSubscription.Write(Ssz.Utils.Any)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
-        </member>
         <member name="P:Ssz.Xi.Client.XiDataProvider.ServerDiscoveryEndpointHttpUrl">
             <summary>
                 Xi Server connection string.
@@ -4333,7 +4236,7 @@
             <param name="workstationNameWithoutArgs">Used in Xi Context initialization</param>
             <param name="xiContextParams">Used in Xi Context initialization</param>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.AddItem(System.String,Ssz.Xi.Client.IValueSubscription)">
+        <member name="M:Ssz.Xi.Client.XiDataProvider.AddItem(System.String,Ssz.Utils.DataSource.IValueSubscription)">
             <summary>        
                 Returns id actully used for OPC subscription, always as original id.
                 valueSubscription.Update() is called using сallbackDoer, see Initialize(..).        
@@ -4341,26 +4244,26 @@
             <param name="id"></param>
             <param name="valueSubscription"></param>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.RemoveItem(Ssz.Xi.Client.IValueSubscription)">
+        <member name="M:Ssz.Xi.Client.XiDataProvider.RemoveItem(Ssz.Utils.DataSource.IValueSubscription)">
             <summary>        
                 If valueSubscription is not subscribed - does nothing.
             </summary>
             <param name="valueSubscription"></param>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.PollDataChanges(System.Action{Ssz.Xi.Client.IValueSubscription[]})">
+        <member name="M:Ssz.Xi.Client.XiDataProvider.PollDataChanges(System.Action{Ssz.Utils.DataSource.IValueSubscription[]})">
             <summary>        
                 setResultAction(..) is called using сallbackDoer, see Initialize(..).
                 If call to server failed setResultAction(null) is called, otherwise setResultAction(changedValueSubscriptions) is called.        
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.Write(Ssz.Xi.Client.IValueSubscription[],Ssz.Utils.Any[],System.Action{Ssz.Xi.Client.IValueSubscription[]})">
+        <member name="M:Ssz.Xi.Client.XiDataProvider.Write(Ssz.Utils.DataSource.IValueSubscription[],Ssz.Utils.Any[],System.Action{Ssz.Utils.DataSource.IValueSubscription[]})">
             <summary>        
                 setResultAction(..) is called using сallbackDoer, see Initialize(..).
                 setResultAction(failedValueSubscriptions) is called, failedValueSubscriptions != null.
                 If connection error, failedValueSubscriptions is all clientObjs.        
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.Write(Ssz.Xi.Client.IValueSubscription,Ssz.Utils.Any)">
+        <member name="M:Ssz.Xi.Client.XiDataProvider.Write(Ssz.Utils.DataSource.IValueSubscription,Ssz.Utils.Any)">
             <summary>        
             </summary>
             <param name="valueSubscription"></param>

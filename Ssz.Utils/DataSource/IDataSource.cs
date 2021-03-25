@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ssz.Xi.Client
+namespace Ssz.Utils.DataSource
 {
     public interface IDataSource
     {

@@ -1,7 +1,7 @@
 ﻿using Ssz.Utils;
 using System;
 
-namespace Ssz.Xi.Client
+namespace Ssz.Utils.DataSource
 {
     public class ReadOnceValueSubscription : IValueSubscription
     {
