@@ -119,7 +119,7 @@ namespace Ssz.DataGrpc.Client.Managers
             {
                 grpcChannel = GrpcChannel.ForAddress(serverAddress);
 
-                var resourceManagementClient = new ResourceManagement.ResourceManagementClient(grpcChannel);
+                var resourceManagementClient = new DataAccess.DataAccessClient(grpcChannel);
 
                 callbackMessageStream = resourceManagementClient.SubscribeForCallback(new SubscribeForCallbackRequest());                
 
@@ -400,7 +400,7 @@ namespace Ssz.DataGrpc.Client.Managers
         private class ConnectionInfo
         {
             public ConnectionInfo(GrpcChannel grpcChannel,
-                ResourceManagement.ResourceManagementClient resourceManagementClient,
+                DataAccess.DataAccessClient resourceManagementClient,
                 AsyncServerStreamingCall<CallbackMessage> callbackMessageStream,
                 ClientContext clientContext)
             {
@@ -412,7 +412,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
             public readonly GrpcChannel GrpcChannel;
 
-            public readonly ResourceManagement.ResourceManagementClient ResourceManagementClient;
+            public readonly DataAccess.DataAccessClient ResourceManagementClient;
 
             public readonly AsyncServerStreamingCall<CallbackMessage> CallbackMessageStream;
             

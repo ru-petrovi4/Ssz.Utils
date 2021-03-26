@@ -4,7 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Company>SSZ</Company>
-    <Version>1.0.29</Version>
+    <Version>1.0.30</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\ResourceManagement.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\DataAccess.proto" GrpcServices="Client" />
   </ItemGroup>
 
 </Project>

@@ -37,7 +37,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="systemNames"></param>
         /// <param name="contextParams"></param>
         public ClientContext(ILogger<DataGrpcProvider> logger,
-            ResourceManagement.ResourceManagementClient resourceManagementClient,            
+            DataAccess.DataAccessClient resourceManagementClient,            
             string applicationName,
             string workstationName,            
             uint serverContextTimeoutMs,
@@ -308,7 +308,7 @@ namespace Ssz.DataGrpc.Client
         ///     them into the preferred order of use. For example, if the client and server are on the
         ///     same machine, the netPipe endpoints will sort to the top.
         /// </summary>
-        private ResourceManagement.ResourceManagementClient _resourceManagementClient;
+        private DataAccess.DataAccessClient _resourceManagementClient;
 
         /// <summary>
         ///     This data member represents the ApplicationName public property

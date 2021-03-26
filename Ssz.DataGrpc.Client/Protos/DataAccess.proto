@@ -5,7 +5,7 @@ option csharp_namespace = "Ssz.DataGrpc.Server";
 import "google/protobuf/timestamp.proto";
 
 // The greeting service definition.
-service ResourceManagement {
+service DataAccess {
   rpc Initiate (InitiateRequest) returns (InitiateReply);
 
   rpc SubscribeForCallback(SubscribeForCallbackRequest) returns (stream CallbackMessage);
