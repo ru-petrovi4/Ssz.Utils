@@ -112,12 +112,12 @@ namespace Ssz.DataGrpc.Client
         ///     </para>
         /// </summary>
         /// <param name="listServerAlias"> The server identifier for the list to which data objects are to be added. </param>
-        /// <param name="dataObjectsToAdd"> The data objects to add. </param>
+        /// <param name="itemsToAdd"> The data objects to add. </param>
         /// <returns>
         ///     The list of results. The size and order of this list matches the size and order of the objectsToAdd
         ///     parameter.
         /// </returns>
-        public List<AddDataObjectToListResult> AddDataObjectsToList(uint listServerAlias, List<ListInstanceId> dataObjectsToAdd)
+        public List<AddItemToListResult> AddItemsToList(uint listServerAlias, List<ListItemInfo> itemsToAdd)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -125,13 +125,13 @@ namespace Ssz.DataGrpc.Client
             
             try
             {
-                var request = new AddDataObjectsToListRequest
+                var request = new AddItemsToListRequest
                 {
                     ContextId = this.ServerContextId,
                     ListServerAlias = listServerAlias
                 };
-                request.DataObjectsToAdd.Add(dataObjectsToAdd);
-                var reply = _resourceManagementClient.AddDataObjectsToList(request);
+                request.ItemsToAdd.Add(itemsToAdd);
+                var reply = _resourceManagementClient.AddItemsToList(request);
                 SetResourceManagementLastCallUtc();
                 return reply.Results.ToList();
             }
@@ -154,7 +154,7 @@ namespace Ssz.DataGrpc.Client
         ///     The list identifiers and result codes for data objects whose removal failed. Returns null if all removals
         ///     succeeded.
         /// </returns>
-        public List<AliasResult> RemoveDataObjectsFromList(uint listServerAlias, List<uint> serverAliasesToRemove)
+        public List<AliasResult> RemoveItemsFromList(uint listServerAlias, List<uint> serverAliasesToRemove)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -162,13 +162,13 @@ namespace Ssz.DataGrpc.Client
 
             try
             {
-                var request = new RemoveDataObjectsFromListRequest
+                var request = new RemoveItemsFromListRequest
                 {
                     ContextId = this.ServerContextId,
                     ListServerAlias = listServerAlias
                 };
                 request.ServerAliasesToRemove.Add(serverAliasesToRemove);
-                var reply = _resourceManagementClient.RemoveDataObjectsFromList(request);
+                var reply = _resourceManagementClient.RemoveItemsFromList(request);
                 SetResourceManagementLastCallUtc();
                 return reply.Results.ToList();
             }

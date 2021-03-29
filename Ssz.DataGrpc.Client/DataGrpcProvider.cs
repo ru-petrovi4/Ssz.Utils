@@ -124,7 +124,7 @@ namespace Ssz.DataGrpc.Client
         public event Action Disconnected = delegate { };
 
         /// <summary>
-        ///     You can set updateValueItems = false and invoke PollDataChanges(...) manually.       
+        ///     You can set updateValueItems = false and invoke PollElementValuesChanges(...) manually.       
         /// </summary>
         /// <param name="сallbackDispatcher">IDispatcher? for doing all callbacks.</param>
         /// <param name="elementValueListCallbackIsEnabled">Used in DataGrpc ElementValueList initialization</param>
@@ -220,7 +220,7 @@ namespace Ssz.DataGrpc.Client
         ///     setResultAction(..) is called using сallbackDispatcher, see Initialize(..).
         ///     If call to server failed setResultAction(null) is called, otherwise setResultAction(changedValueSubscriptions) is called.        
         /// </summary>
-        public void PollDataChanges(Action<IValueSubscription[]?> setResultAction)
+        public void PollElementValuesChanges(Action<IValueSubscription[]?> setResultAction)
         {
             BeginInvoke(ct =>
             {                

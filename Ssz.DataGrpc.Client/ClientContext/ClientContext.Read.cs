@@ -24,7 +24,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="calculation"></param>
         /// <param name="serverAliases"></param>
         /// <returns></returns>
-        public DataGrpcValueStatusTimestamp[][] ReadElementValueJournalForTimeInterval(ClientElementValueJournalList dataGrpcElementValueJournalList, DateTime firstTimeStampUtc,
+        public DataGrpcValueStatusTimestamp[][] ReadElementValueJournals(ClientElementValueJournalList dataGrpcElementValueJournalList, DateTime firstTimeStampUtc,
             DateTime secondTimeStampUtc,
             uint numValuesPerAlias, TypeId calculation, uint[] serverAliases)
         {
@@ -36,7 +36,7 @@ namespace Ssz.DataGrpc.Client
             {
                 while (true)
                 {
-                    var request = new ReadElementValueJournalForTimeIntervalRequest
+                    var request = new ReadElementValueJournalsRequest
                     {
                         ContextId = _serverContextId,
                         ListServerAlias = dataGrpcElementValueJournalList.ListServerAlias,
@@ -46,10 +46,10 @@ namespace Ssz.DataGrpc.Client
                         Calculation = calculation
                     };
                     request.ServerAliases.Add(serverAliases);
-                    ReadElementValueJournalForTimeIntervalReply reply = _resourceManagementClient.ReadElementValueJournalForTimeInterval(request);
+                    ReadElementValueJournalsReply reply = _resourceManagementClient.ReadElementValueJournals(request);
                     SetResourceManagementLastCallUtc();
 
-                    var result = dataGrpcElementValueJournalList.OnReadElementValueJournal(reply.ElementValueJournalArrays);
+                    var result = dataGrpcElementValueJournalList.OnReadElementValueJournal(reply.ElementValueJournalsCollection);
                     if (result != null) return result;
                 }
             }
@@ -84,7 +84,7 @@ namespace Ssz.DataGrpc.Client
 /////     </para>
 /////     <para> Returns null if this is a keep-alive. </para>
 ///// </returns>
-//public ElementValueArrays? ReadData(uint listServerAlias, List<uint> serverAliases)
+//public ElementValuesCollection? ReadData(uint listServerAlias, List<uint> serverAliases)
 //{
 //    if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -113,7 +113,7 @@ namespace Ssz.DataGrpc.Client
 //        throw;
 //    }
 
-//    ElementValueArrays? readValueList = null;
+//    ElementValuesCollection? readValueList = null;
 //    if (DataGrpcEndpointRoot.CreateChannelIfNotCreated(_readEndpoint))
 //    {
 //        try

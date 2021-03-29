@@ -6,30 +6,30 @@ using System.Threading.Tasks;
 
 namespace Ssz.DataGrpc.Server
 {
-    public sealed partial class ElementValueArrays
+    public sealed partial class ElementValuesCollection
     {
         #region public functions
 
-        public void Add(ElementValueArrays elementValueArrays)
+        public void Add(ElementValuesCollection elementValuesCollection)
         {
-            Guid = elementValueArrays.Guid;
-            NextArraysGuid = elementValueArrays.NextArraysGuid;
+            Guid = elementValuesCollection.Guid;
+            NextCollectionGuid = elementValuesCollection.NextCollectionGuid;
 
-            DoubleAliases.Add(elementValueArrays.DoubleAliases);
-            DoubleStatusCodes.Add(elementValueArrays.DoubleStatusCodes);
-            DoubleTimestamps.Add(elementValueArrays.DoubleTimestamps);
-            DoubleValues.Add(elementValueArrays.DoubleValues);
+            DoubleAliases.Add(elementValuesCollection.DoubleAliases);
+            DoubleStatusCodes.Add(elementValuesCollection.DoubleStatusCodes);
+            DoubleTimestamps.Add(elementValuesCollection.DoubleTimestamps);
+            DoubleValues.Add(elementValuesCollection.DoubleValues);
 
-            UintAliases.Add(elementValueArrays.UintAliases);
-            UintStatusCodes.Add(elementValueArrays.UintStatusCodes);
-            UintTimestamps.Add(elementValueArrays.UintTimestamps);
-            UintValues.Add(elementValueArrays.UintValues);
+            UintAliases.Add(elementValuesCollection.UintAliases);
+            UintStatusCodes.Add(elementValuesCollection.UintStatusCodes);
+            UintTimestamps.Add(elementValuesCollection.UintTimestamps);
+            UintValues.Add(elementValuesCollection.UintValues);
 
-            ObjectAliases.Add(elementValueArrays.ObjectAliases);
-            ObjectStatusCodes.Add(elementValueArrays.ObjectStatusCodes);
-            ObjectTimestamps.Add(elementValueArrays.ObjectTimestamps);
+            ObjectAliases.Add(elementValuesCollection.ObjectAliases);
+            ObjectStatusCodes.Add(elementValuesCollection.ObjectStatusCodes);
+            ObjectTimestamps.Add(elementValuesCollection.ObjectTimestamps);
             ObjectValues = Google.Protobuf.ByteString.CopyFrom(
-                ObjectValues.ToByteArray().Concat(elementValueArrays.ObjectValues.ToByteArray()).ToArray()
+                ObjectValues.ToByteArray().Concat(elementValuesCollection.ObjectValues.ToByteArray()).ToArray()
                 );
         }
 

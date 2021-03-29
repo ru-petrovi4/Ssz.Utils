@@ -73,7 +73,7 @@ namespace Ssz.DataGrpc.Client.Managers
         /// <param name="numValuesPerDataObject"></param>
         /// <param name="valueSubscriptionsCollection"></param>
         /// <returns></returns>
-        public void HdaReadElementValueJournalForTimeInterval(DateTime firstTimeStampUtc, DateTime secondTimeStampUtc, uint numValuesPerDataObject, TypeId calculation,
+        public void HdaReadElementValueJournals(DateTime firstTimeStampUtc, DateTime secondTimeStampUtc, uint numValuesPerDataObject, TypeId calculation,
             object[] valueSubscriptionsCollection,
             Action<DataGrpcValueStatusTimestamp[][]?> setResultAction)
         {
@@ -98,7 +98,7 @@ namespace Ssz.DataGrpc.Client.Managers
                         }
                     }
 
-                    result = dataGrpcList.ReadElementValueJournalForTimeInterval(firstTimeStampUtc, secondTimeStampUtc, numValuesPerDataObject, calculation, serverAliases.ToArray());
+                    result = dataGrpcList.ReadElementValueJournals(firstTimeStampUtc, secondTimeStampUtc, numValuesPerDataObject, calculation, serverAliases.ToArray());
                 }
                 else
                 {

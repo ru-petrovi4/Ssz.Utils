@@ -4,7 +4,6 @@ option csharp_namespace = "Ssz.DataGrpc.Server";
 
 import "google/protobuf/timestamp.proto";
 
-// The greeting service definition.
 service DataAccess {
   rpc Initiate (InitiateRequest) returns (InitiateReply);
 
@@ -18,19 +17,19 @@ service DataAccess {
 
   rpc DeleteLists (DeleteListsRequest) returns (DeleteListsReply);
 
-  rpc AddDataObjectsToList (AddDataObjectsToListRequest) returns (AddDataObjectsToListReply);
+  rpc AddItemsToList (AddItemsToListRequest) returns (AddItemsToListReply);
 
-  rpc RemoveDataObjectsFromList (RemoveDataObjectsFromListRequest) returns (RemoveDataObjectsFromListReply);
+  rpc RemoveItemsFromList (RemoveItemsFromListRequest) returns (RemoveItemsFromListReply);
 
   rpc EnableListCallback (EnableListCallbackRequest) returns (EnableListCallbackReply);
 
   rpc TouchList (TouchListRequest) returns (TouchListReply);
 
-  rpc PollDataChanges (PollDataChangesRequest) returns (PollDataChangesReply);
+  rpc PollElementValuesChanges (PollElementValuesChangesRequest) returns (PollElementValuesChangesReply);
 
-  rpc PollEventChanges (PollEventChangesRequest) returns (PollEventChangesReply);
+  rpc PollEventsChanges (PollEventsChangesRequest) returns (PollEventsChangesReply);
 
-  rpc ReadElementValueJournalForTimeInterval (ReadElementValueJournalForTimeIntervalRequest) returns (ReadElementValueJournalForTimeIntervalReply);
+  rpc ReadElementValueJournals (ReadElementValueJournalsRequest) returns (ReadElementValueJournalsReply);
 
   rpc WriteValues (WriteValuesRequest) returns (WriteValuesReply);
 
@@ -58,12 +57,12 @@ message ContextInfo {
 
 message InformationReport {    
   uint32 list_client_alias = 2;
-  ElementValueArrays element_value_arrays = 3;
+  ElementValuesCollection element_values_collection = 3;
 }
 
 message EventNotification {
   uint32 list_client_alias = 2;
-  EventMessageArrays event_message_arrays = 3;
+  EventMessagesCollection event_messages_collection = 3;
 }
 
 message SubscribeForCallbackRequest {
@@ -133,35 +132,35 @@ message DeleteListsReply {
   repeated AliasResult results = 1;
 }
 
-message ListInstanceId {
+message ListItemInfo {
   string element_id = 1;
   uint32 client_alias = 2; 
 }
 
-message AddDataObjectsToListRequest {
+message AddItemsToListRequest {
   string context_id = 1;
   uint32 list_server_alias = 2; 
-  repeated ListInstanceId data_objects_to_add = 3;
+  repeated ListItemInfo items_to_add = 3;
 }
 
-message AddDataObjectToListResult {  
+message AddItemToListResult {  
   AliasResult alias_result = 1;
   TypeId data_type_id = 2;
   bool is_readable = 3;
   bool is_writable = 4;
 }
 
-message AddDataObjectsToListReply {  
-  repeated AddDataObjectToListResult results = 1;
+message AddItemsToListReply {  
+  repeated AddItemToListResult results = 1;
 }
 
-message RemoveDataObjectsFromListRequest {
+message RemoveItemsFromListRequest {
   string context_id = 1;
   uint32 list_server_alias = 2; 
   repeated uint32 server_aliases_to_remove = 3; 
 }
 
-message RemoveDataObjectsFromListReply {  
+message RemoveItemsFromListReply {  
   repeated AliasResult results = 1;
 }
 
@@ -185,9 +184,9 @@ message TouchListReply {
   uint32 result_code = 1;  
 }
 
-message ElementValueArrays {
+message ElementValuesCollection {
   string guid = 1;
-  string next_arrays_guid = 2;
+  string next_collection_guid = 2;
 
   repeated uint32 double_aliases = 3;
   repeated uint32 double_status_codes = 4;
@@ -205,9 +204,9 @@ message ElementValueArrays {
   bytes object_values = 14;  
 }
 
-message EventMessageArrays {
+message EventMessagesCollection {
   string guid = 1;
-  string next_arrays_guid = 2;
+  string next_collection_guid = 2;
 
   repeated EventMessage event_messages = 3;  
 }
@@ -265,25 +264,25 @@ message AlarmMessageData {
   }
 }
 
-message PollDataChangesRequest {
+message PollElementValuesChangesRequest {
   string context_id = 1;
   uint32 list_server_alias = 2; 
 }
 
-message PollDataChangesReply {  
-  ElementValueArrays element_value_arrays = 1;
+message PollElementValuesChangesReply {  
+  ElementValuesCollection element_values_collection = 1;
 }
 
-message PollEventChangesRequest {
+message PollEventsChangesRequest {
   string context_id = 1;
   uint32 list_server_alias = 2; 
 }
 
-message PollEventChangesReply {  
-  EventMessageArrays event_message_arrays = 1;
+message PollEventsChangesReply {  
+  EventMessagesCollection event_messages_collection = 1;
 }
 
-message ReadElementValueJournalForTimeIntervalRequest {
+message ReadElementValueJournalsRequest {
   string context_id = 1;
   uint32 list_server_alias = 2; 
   google.protobuf.Timestamp first_time_stamp = 3;
@@ -294,13 +293,13 @@ message ReadElementValueJournalForTimeIntervalRequest {
   repeated uint32 server_aliases = 8; 
 }
 
-message ReadElementValueJournalForTimeIntervalReply {  
-  ElementValueJournalArrays element_value_journal_arrays = 1;  
+message ReadElementValueJournalsReply {  
+  ElementValueJournalsCollection element_value_journals_collection = 1;  
 }
 
-message ElementValueJournalArrays {  
+message ElementValueJournalsCollection {  
   string guid = 1;
-  string next_arrays_guid = 2;
+  string next_collection_guid = 2;
 
   repeated ElementValueJournal element_value_journals = 3;  
 }
@@ -318,7 +317,7 @@ message ElementValueJournal {
 message WriteValuesRequest {
   string context_id = 1;
   uint32 list_server_alias = 2; 
-  ElementValueArrays element_value_arrays = 3; 
+  ElementValuesCollection element_values_collection = 3; 
 }
 
 message WriteValuesReply {  

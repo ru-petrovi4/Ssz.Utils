@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace Ssz.DataGrpc.Server
 {
-    public sealed partial class ElementValueJournalArrays
+    public sealed partial class ElementValueJournalsCollection
     {
         #region public functions
 
-        public void Add(ElementValueJournalArrays elementValueJournalArrays)
+        public void Add(ElementValueJournalsCollection elementValueJournalsCollection)
         {
-            Guid = elementValueJournalArrays.Guid;
-            NextArraysGuid = elementValueJournalArrays.NextArraysGuid;
+            Guid = elementValueJournalsCollection.Guid;
+            NextCollectionGuid = elementValueJournalsCollection.NextCollectionGuid;
 
-            for (int i = 0; i < elementValueJournalArrays.ElementValueJournals.Count; i++)
+            for (int i = 0; i < elementValueJournalsCollection.ElementValueJournals.Count; i++)
             {
                 ElementValueJournal elementValueJournal;
                 if (i < ElementValueJournals.Count)
@@ -27,7 +27,7 @@ namespace Ssz.DataGrpc.Server
                     elementValueJournal = new ElementValueJournal();
                     ElementValueJournals.Add(elementValueJournal);
                 }
-                Add(elementValueJournal, elementValueJournalArrays.ElementValueJournals[i]);
+                Add(elementValueJournal, elementValueJournalsCollection.ElementValueJournals[i]);
             }            
         }
 

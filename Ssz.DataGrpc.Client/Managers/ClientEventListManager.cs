@@ -117,7 +117,7 @@ namespace Ssz.DataGrpc.Client.Managers
                 if (dataGrpcEventList == null || dataGrpcEventList.Disposed) continue;
                 try
                 {
-                    dataGrpcEventList.PollEventChanges();
+                    dataGrpcEventList.PollEventsChanges();
                 }
                 catch
                 {

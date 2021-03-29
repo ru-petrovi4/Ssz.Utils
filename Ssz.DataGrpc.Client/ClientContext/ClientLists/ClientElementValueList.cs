@@ -72,7 +72,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
 
-            ElementValueArraysManager? writeValueArraysManager = null;
+            ElementValuesCollectionManager? writeElementValuesCollectionManager = null;
             var writeValueDictionary = new Dictionary<uint, ClientElementValueListItem>();
 
             int uintCount = 0;
@@ -102,7 +102,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
             }
             if (0 < dblCount || 0 < uintCount || 0 < objCount)
             {
-                writeValueArraysManager = new ElementValueArraysManager(dblCount, uintCount, objCount);
+                writeElementValuesCollectionManager = new ElementValuesCollectionManager(dblCount, uintCount, objCount);
                 foreach (var kvp in writeValueDictionary)
                 {
                     ClientElementValueListItem item = kvp.Value;
@@ -112,19 +112,19 @@ namespace Ssz.DataGrpc.Client.ClientLists
                         switch (item.PendingWriteDataGrpcValueStatusTimestamp.Value.ValueStorageType)
                         {
                             case Any.StorageType.Double:
-                                writeValueArraysManager.AddDouble(item.ServerAlias,
+                                writeElementValuesCollectionManager.AddDouble(item.ServerAlias,
                                     item.PendingWriteDataGrpcValueStatusTimestamp.StatusCode,
                                     item.PendingWriteDataGrpcValueStatusTimestamp.TimestampUtc,
                                     item.PendingWriteDataGrpcValueStatusTimestamp.Value.StorageDouble);
                                 break;
                             case Any.StorageType.UInt32:
-                                writeValueArraysManager.AddUint(item.ServerAlias,
+                                writeElementValuesCollectionManager.AddUint(item.ServerAlias,
                                     item.PendingWriteDataGrpcValueStatusTimestamp.StatusCode,
                                     item.PendingWriteDataGrpcValueStatusTimestamp.TimestampUtc,
                                     item.PendingWriteDataGrpcValueStatusTimestamp.Value.StorageUInt32);
                                 break;
                             case Any.StorageType.Object:
-                                writeValueArraysManager.AddObject(item.ServerAlias,
+                                writeElementValuesCollectionManager.AddObject(item.ServerAlias,
                                     item.PendingWriteDataGrpcValueStatusTimestamp.StatusCode,
                                     item.PendingWriteDataGrpcValueStatusTimestamp.TimestampUtc,
                                     item.PendingWriteDataGrpcValueStatusTimestamp.Value.StorageObject);
@@ -136,9 +136,9 @@ namespace Ssz.DataGrpc.Client.ClientLists
             }
 
             var listDataGrpcValues = new List<ClientElementValueListItem>();
-            if (writeValueArraysManager != null)
+            if (writeElementValuesCollectionManager != null)
             {
-                AliasResult[] listAliasesResult = Context.WriteData(ListServerAlias, writeValueArraysManager.GetElementValueArrays());
+                AliasResult[] listAliasesResult = Context.WriteData(ListServerAlias, writeElementValuesCollectionManager.GetElementValuesCollection());
                 foreach (AliasResult aliasResult in listAliasesResult)
                 {
                     ClientElementValueListItem? item = null;
@@ -157,36 +157,36 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// 
         /// </summary>
         /// <returns></returns>
-        public ClientElementValueListItem[] PollDataChanges()
+        public ClientElementValueListItem[] PollElementValuesChanges()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
 
-            return Context.PollDataChanges(this);
+            return Context.PollElementValuesChanges(this);
         }
 
         /// <summary>
         ///     Returns changed ClientElementValueListItems or null, if waiting next message.
         /// </summary>
-        /// <param name="elementValueArrays"></param>
+        /// <param name="elementValuesCollection"></param>
         /// <returns></returns>
-        public ClientElementValueListItem[]? OnInformationReport(ElementValueArrays elementValueArrays)
+        public ClientElementValueListItem[]? OnInformationReport(ElementValuesCollection elementValuesCollection)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
 
-            if (elementValueArrays.Guid != @"" && _incompleteElementValueArraysCollection.Count > 0)
+            if (elementValuesCollection.Guid != @"" && _incompleteElementValuesCollectionCollection.Count > 0)
             {
-                var beginElementValueArrays = _incompleteElementValueArraysCollection.TryGetValue(elementValueArrays.Guid);
-                if (beginElementValueArrays != null)
+                var beginElementValuesCollection = _incompleteElementValuesCollectionCollection.TryGetValue(elementValuesCollection.Guid);
+                if (beginElementValuesCollection != null)
                 {
-                    _incompleteElementValueArraysCollection.Remove(elementValueArrays.Guid);
-                    beginElementValueArrays.Add(elementValueArrays);
-                    elementValueArrays = beginElementValueArrays;
+                    _incompleteElementValuesCollectionCollection.Remove(elementValuesCollection.Guid);
+                    beginElementValuesCollection.Add(elementValuesCollection);
+                    elementValuesCollection = beginElementValuesCollection;
                 }
             }
 
-            if (elementValueArrays.NextArraysGuid != @"")
+            if (elementValuesCollection.NextCollectionGuid != @"")
             {
-                _incompleteElementValueArraysCollection[elementValueArrays.NextArraysGuid] = elementValueArrays;
+                _incompleteElementValuesCollectionCollection[elementValuesCollection.NextCollectionGuid] = elementValuesCollection;
 
                 return null;
             }
@@ -194,47 +194,47 @@ namespace Ssz.DataGrpc.Client.ClientLists
             {
                 var changedListItems = new List<ClientElementValueListItem>();
 
-                for (int index = 0; index < elementValueArrays.DoubleAliases.Count; index++)
+                for (int index = 0; index < elementValuesCollection.DoubleAliases.Count; index++)
                 {
                     ClientElementValueListItem? item;
-                    ListItemsManager.TryGetValue(elementValueArrays.DoubleAliases[index], out item);
+                    ListItemsManager.TryGetValue(elementValuesCollection.DoubleAliases[index], out item);
                     if (item != null)
                     {
-                        item.UpdateValue(elementValueArrays.DoubleValues[index],
-                            elementValueArrays.DoubleStatusCodes[index],
-                            elementValueArrays.DoubleTimestamps[index].ToDateTime()
+                        item.UpdateValue(elementValuesCollection.DoubleValues[index],
+                            elementValuesCollection.DoubleStatusCodes[index],
+                            elementValuesCollection.DoubleTimestamps[index].ToDateTime()
                             );
                         changedListItems.Add(item);
                     }
                 }
-                for (int index = 0; index < elementValueArrays.UintAliases.Count; index++)
+                for (int index = 0; index < elementValuesCollection.UintAliases.Count; index++)
                 {
                     ClientElementValueListItem? item;
-                    ListItemsManager.TryGetValue(elementValueArrays.UintAliases[index], out item);
+                    ListItemsManager.TryGetValue(elementValuesCollection.UintAliases[index], out item);
                     if (item != null)
                     {
-                        item.UpdateValue(elementValueArrays.UintValues[index],
-                            elementValueArrays.UintStatusCodes[index],
-                            elementValueArrays.UintTimestamps[index].ToDateTime()
+                        item.UpdateValue(elementValuesCollection.UintValues[index],
+                            elementValuesCollection.UintStatusCodes[index],
+                            elementValuesCollection.UintTimestamps[index].ToDateTime()
                             );
                         changedListItems.Add(item);
                     }
                 }
-                if (elementValueArrays.ObjectAliases.Count > 0)
+                if (elementValuesCollection.ObjectAliases.Count > 0)
                 {
-                    using (var memoryStream = new MemoryStream(elementValueArrays.ObjectValues.ToByteArray()))
+                    using (var memoryStream = new MemoryStream(elementValuesCollection.ObjectValues.ToByteArray()))
                     using (var reader = new SerializationReader(memoryStream))
                     {
-                        for (int index = 0; index < elementValueArrays.ObjectAliases.Count; index++)
+                        for (int index = 0; index < elementValuesCollection.ObjectAliases.Count; index++)
                         {
                             object? objectValue = reader.ReadObject();
                             ClientElementValueListItem? item;
-                            ListItemsManager.TryGetValue(elementValueArrays.ObjectAliases[index], out item);
+                            ListItemsManager.TryGetValue(elementValuesCollection.ObjectAliases[index], out item);
                             if (item != null)
                             {
                                 item.UpdateValue(objectValue,
-                                    elementValueArrays.ObjectStatusCodes[index],
-                                    elementValueArrays.ObjectTimestamps[index].ToDateTime()
+                                    elementValuesCollection.ObjectStatusCodes[index],
+                                    elementValuesCollection.ObjectTimestamps[index].ToDateTime()
                                     );
                                 changedListItems.Add(item);
                             }
@@ -284,7 +284,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
         ///     This data member holds the last exception message encountered by the
         ///     InformationReport callback when calling valuesUpdateEvent().
         /// </summary>
-        private CaseInsensitiveDictionary<ElementValueArrays> _incompleteElementValueArraysCollection = new CaseInsensitiveDictionary<ElementValueArrays>();
+        private CaseInsensitiveDictionary<ElementValuesCollection> _incompleteElementValuesCollectionCollection = new CaseInsensitiveDictionary<ElementValuesCollection>();
 
         #endregion
     }
@@ -310,7 +310,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
 //        }
 //    }
 
-//    ElementValueArrays? readValueArrays = Context.ReadData(ListServerAlias, serverAliaseses);
+//    ElementValuesCollection? readValueArrays = Context.ReadData(ListServerAlias, serverAliaseses);
 
 //    if (readValueArrays != null)
 //    {

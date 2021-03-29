@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace Ssz.DataGrpc.Server
 {
-    public sealed partial class EventMessageArrays
+    public sealed partial class EventMessagesCollection
     {
         #region public functions
 
-        public void Add(EventMessageArrays eventMessageArrays)
+        public void Add(EventMessagesCollection eventMessagesCollection)
         {
-            Guid = eventMessageArrays.Guid;
-            NextArraysGuid = eventMessageArrays.NextArraysGuid;
+            Guid = eventMessagesCollection.Guid;
+            NextCollectionGuid = eventMessagesCollection.NextCollectionGuid;
 
-            EventMessages.Add(eventMessageArrays.EventMessages);
+            EventMessages.Add(eventMessagesCollection.EventMessages);
         }
 
         #endregion

@@ -184,7 +184,7 @@ namespace Ssz.DataGrpc.Client.Managers
             try
             {
                 var changedClientObjs = new List<object>();
-                ClientElementValueListItem[] changedClientElementValueListItems = DataGrpcList.PollDataChanges();
+                ClientElementValueListItem[] changedClientElementValueListItems = DataGrpcList.PollElementValuesChanges();
                 foreach (ClientElementValueListItem dataGrpcElementValueListItem in changedClientElementValueListItems)
                 {
                     var o = dataGrpcElementValueListItem.Obj as DataGrpcListItemWrapper;

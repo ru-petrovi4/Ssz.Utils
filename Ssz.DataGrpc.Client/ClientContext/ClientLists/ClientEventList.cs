@@ -53,36 +53,36 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// 
         /// </summary>
         /// <returns></returns>
-        public ClientEventListItem[] PollEventChanges()
+        public ClientEventListItem[] PollEventsChanges()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
-            return Context.PollEventChanges(this);
+            return Context.PollEventsChanges(this);
         }
 
         /// <summary>
         ///     Returns new ClientEventListItems or null, if waiting next message.
         /// </summary>
-        /// <param name="eventMessageArrays"></param>
+        /// <param name="eventMessagesCollection"></param>
         /// <returns></returns>
-        public ClientEventListItem[]? EventNotification(EventMessageArrays eventMessageArrays)
+        public ClientEventListItem[]? EventNotification(EventMessagesCollection eventMessagesCollection)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
-            if (eventMessageArrays.Guid != @"" && _incompleteEventMessageArraysCollection.Count > 0)
+            if (eventMessagesCollection.Guid != @"" && _incompleteEventMessagesCollectionCollection.Count > 0)
             {
-                var beginEventMessageArrays = _incompleteEventMessageArraysCollection.TryGetValue(eventMessageArrays.Guid);
-                if (beginEventMessageArrays != null)
+                var beginEventMessagesCollection = _incompleteEventMessagesCollectionCollection.TryGetValue(eventMessagesCollection.Guid);
+                if (beginEventMessagesCollection != null)
                 {
-                    _incompleteEventMessageArraysCollection.Remove(eventMessageArrays.Guid);
-                    beginEventMessageArrays.Add(eventMessageArrays);
-                    eventMessageArrays = beginEventMessageArrays;
+                    _incompleteEventMessagesCollectionCollection.Remove(eventMessagesCollection.Guid);
+                    beginEventMessagesCollection.Add(eventMessagesCollection);
+                    eventMessagesCollection = beginEventMessagesCollection;
                 }
             }
 
-            if (eventMessageArrays.NextArraysGuid != @"")
+            if (eventMessagesCollection.NextCollectionGuid != @"")
             {
-                _incompleteEventMessageArraysCollection[eventMessageArrays.NextArraysGuid] = eventMessageArrays;
+                _incompleteEventMessagesCollectionCollection[eventMessagesCollection.NextCollectionGuid] = eventMessagesCollection;
 
                 return null;
             }
@@ -90,7 +90,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
             {
                 var result = new List<ClientEventListItem>();
 
-                foreach (var eventMessage in eventMessageArrays.EventMessages)
+                foreach (var eventMessage in eventMessagesCollection.EventMessages)
                 {
                     result.Add(new ClientEventListItem(eventMessage));
                 }
@@ -130,7 +130,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
         ///     This data member holds the last exception message encountered by the
         ///     InformationReport callback when calling valuesUpdateEvent().
         /// </summary>
-        private CaseInsensitiveDictionary<EventMessageArrays> _incompleteEventMessageArraysCollection = new CaseInsensitiveDictionary<EventMessageArrays>();
+        private CaseInsensitiveDictionary<EventMessagesCollection> _incompleteEventMessagesCollectionCollection = new CaseInsensitiveDictionary<EventMessagesCollection>();
 
         #endregion
     }

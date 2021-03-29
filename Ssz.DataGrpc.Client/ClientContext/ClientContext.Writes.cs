@@ -17,12 +17,12 @@ namespace Ssz.DataGrpc.Client
         ///     values.
         /// </summary>
         /// <param name="listServerAlias"> The server identifier of the list containing the data objects to write. </param>
-        /// <param name="elementValueArrays"> The data values to write. </param>
+        /// <param name="elementValuesCollection"> The data values to write. </param>
         /// <returns>
         ///     The list server aliases and result codes for the data objects whose write failed. Returns empty if all writes
         ///     succeeded.
         /// </returns>
-        public AliasResult[] WriteData(uint listServerAlias, ElementValueArrays elementValueArrays)
+        public AliasResult[] WriteData(uint listServerAlias, ElementValuesCollection elementValuesCollection)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -34,7 +34,7 @@ namespace Ssz.DataGrpc.Client
                 {
                     ContextId = _serverContextId,
                     ListServerAlias = listServerAlias,
-                    ElementValueArrays = elementValueArrays
+                    ElementValuesCollection = elementValuesCollection
                 };
                 WriteValuesReply reply = _resourceManagementClient.WriteValues(request);
                 SetResourceManagementLastCallUtc();

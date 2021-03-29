@@ -49,12 +49,12 @@ namespace Ssz.DataGrpc.Client
         /// <param name="calculation"></param>
         /// <param name="valueSubscriptionsCollection"></param>
         /// <param name="setResultAction"></param>
-        public void HdaReadElementValueJournalForTimeInterval(DateTime firstTimeStampUtc, DateTime secondTimeStampUtc, uint numValuesPerDataObject, TypeId calculation, object[] valueSubscriptionsCollection,
+        public void HdaReadElementValueJournals(DateTime firstTimeStampUtc, DateTime secondTimeStampUtc, uint numValuesPerDataObject, TypeId calculation, object[] valueSubscriptionsCollection,
             Action<DataGrpcValueStatusTimestamp[][]?> setResultAction)
         {
             BeginInvoke(ct =>
             {
-                _clientElementValueJournalListManager.HdaReadElementValueJournalForTimeInterval( firstTimeStampUtc, secondTimeStampUtc, numValuesPerDataObject, calculation, valueSubscriptionsCollection,
+                _clientElementValueJournalListManager.HdaReadElementValueJournals( firstTimeStampUtc, secondTimeStampUtc, numValuesPerDataObject, calculation, valueSubscriptionsCollection,
                     setResultAction);
             }
             );            

@@ -70,12 +70,12 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// <param name="secondTimeStamp"></param>
         /// <param name="numValuesPerDataObject"></param>
         /// <param name="dataGrpcValueStatusTimestampSetCollection"></param>
-        public DataGrpcValueStatusTimestamp[][] ReadElementValueJournalForTimeInterval(DateTime firstTimeStamp, DateTime secondTimeStamp,
+        public DataGrpcValueStatusTimestamp[][] ReadElementValueJournals(DateTime firstTimeStamp, DateTime secondTimeStamp,
             uint numValuesPerDataObject, TypeId calculation, uint[] serverAliases)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueJournalList.");
 
-            return Context.ReadElementValueJournalForTimeInterval(this,
+            return Context.ReadElementValueJournals(this,
                 firstTimeStamp,
                 secondTimeStamp,
                 numValuesPerDataObject,
@@ -86,26 +86,26 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// <summary>
         ///     Returns ElementValueJournals or null, if waiting next message.
         /// </summary>
-        /// <param name="elementValueJournalArrays"></param>
+        /// <param name="elementValueJournalsCollection"></param>
         /// <returns></returns>
-        public DataGrpcValueStatusTimestamp[][]? OnReadElementValueJournal(ElementValueJournalArrays elementValueJournalArrays)
+        public DataGrpcValueStatusTimestamp[][]? OnReadElementValueJournal(ElementValueJournalsCollection elementValueJournalsCollection)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueJournalList.");
 
-            if (elementValueJournalArrays.Guid != @"" && _incompleteElementValueJournalArraysCollection.Count > 0)
+            if (elementValueJournalsCollection.Guid != @"" && _incompleteElementValueJournalsCollectionCollection.Count > 0)
             {
-                var beginElementValueJournalArrays = _incompleteElementValueJournalArraysCollection.TryGetValue(elementValueJournalArrays.Guid);
-                if (beginElementValueJournalArrays != null)
+                var beginElementValueJournalsCollection = _incompleteElementValueJournalsCollectionCollection.TryGetValue(elementValueJournalsCollection.Guid);
+                if (beginElementValueJournalsCollection != null)
                 {
-                    _incompleteElementValueJournalArraysCollection.Remove(elementValueJournalArrays.Guid);
-                    beginElementValueJournalArrays.Add(elementValueJournalArrays);
-                    elementValueJournalArrays = beginElementValueJournalArrays;
+                    _incompleteElementValueJournalsCollectionCollection.Remove(elementValueJournalsCollection.Guid);
+                    beginElementValueJournalsCollection.Add(elementValueJournalsCollection);
+                    elementValueJournalsCollection = beginElementValueJournalsCollection;
                 }
             }
 
-            if (elementValueJournalArrays.NextArraysGuid != @"")
+            if (elementValueJournalsCollection.NextCollectionGuid != @"")
             {
-                _incompleteElementValueJournalArraysCollection[elementValueJournalArrays.NextArraysGuid] = elementValueJournalArrays;
+                _incompleteElementValueJournalsCollectionCollection[elementValueJournalsCollection.NextCollectionGuid] = elementValueJournalsCollection;
 
                 return null;
             }
@@ -113,7 +113,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
             {
                 var list = new List<DataGrpcValueStatusTimestamp[]>();
 
-                foreach (ElementValueJournal elementValueJournal in elementValueJournalArrays.ElementValueJournals)
+                foreach (ElementValueJournal elementValueJournal in elementValueJournalsCollection.ElementValueJournals)
                 {
                     var valuesList = new List<DataGrpcValueStatusTimestamp>();
 
@@ -158,7 +158,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
         ///     This data member holds the last exception message encountered by the
         ///     InformationReport callback when calling valuesUpdateEvent().
         /// </summary>
-        private CaseInsensitiveDictionary<ElementValueJournalArrays> _incompleteElementValueJournalArraysCollection = new CaseInsensitiveDictionary<ElementValueJournalArrays>();
+        private CaseInsensitiveDictionary<ElementValueJournalsCollection> _incompleteElementValueJournalsCollectionCollection = new CaseInsensitiveDictionary<ElementValueJournalsCollection>();
 
         #endregion
     }

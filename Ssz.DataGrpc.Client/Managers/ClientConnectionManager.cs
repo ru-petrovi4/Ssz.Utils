@@ -370,11 +370,11 @@ namespace Ssz.DataGrpc.Client.Managers
                             break;
                         case CallbackMessage.OptionalMessageOneofCase.InformationReport:
                             InformationReport informationReport = reader.Current.InformationReport;
-                            _connectionInfo.ClientContext.InformationReport(informationReport.ListClientAlias, informationReport.ElementValueArrays);
+                            _connectionInfo.ClientContext.InformationReport(informationReport.ListClientAlias, informationReport.ElementValuesCollection);
                             break;
                         case CallbackMessage.OptionalMessageOneofCase.EventNotification:
                             EventNotification eventNotification = reader.Current.EventNotification;
-                            _connectionInfo.ClientContext.EventNotification(eventNotification.ListClientAlias, eventNotification.EventMessageArrays);
+                            _connectionInfo.ClientContext.EventNotification(eventNotification.ListClientAlias, eventNotification.EventMessagesCollection);
                             break;
                     }
                 }                

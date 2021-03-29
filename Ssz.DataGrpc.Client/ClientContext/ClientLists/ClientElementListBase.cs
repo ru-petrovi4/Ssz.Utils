@@ -88,13 +88,13 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// <returns> The list of elements that were not added to the server or null is call to server failed.</returns>
         protected IEnumerable<TClientElementListItemBase>? CommitAddItemsInternal()
         {
-            var listInstanceIdsCollection = new List<ListInstanceId>();
+            var listInstanceIdsCollection = new List<ListItemInfo>();
 
             foreach (TClientElementListItemBase listItem in ListItemsManager)
             {
                 if (!listItem.IsInServerList && listItem.PreparedForAdd)
                 {
-                    var listInstanceId = new ListInstanceId
+                    var listInstanceId = new ListItemInfo
                     {
                         ElementId = listItem.ElementId,
                         ClientAlias = listItem.ClientAlias,
@@ -110,10 +110,10 @@ namespace Ssz.DataGrpc.Client.ClientLists
             {
                 try
                 {
-                    List<AddDataObjectToListResult> result = Context.AddDataObjectsToList(ListServerAlias,
+                    List<AddItemToListResult> result = Context.AddItemsToList(ListServerAlias,
                         listInstanceIdsCollection);
                     
-                    foreach (AddDataObjectToListResult r in result)
+                    foreach (AddItemToListResult r in result)
                     {
                         TClientElementListItemBase? listItem = null;
                         if (ListItemsManager.TryGetValue(r.AliasResult.ClientAlias, out listItem))
@@ -141,7 +141,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
                 }
                 catch (Exception)
                 {
-                    foreach (ListInstanceId ar in listInstanceIdsCollection)
+                    foreach (ListItemInfo ar in listInstanceIdsCollection)
                     {
                         ListItemsManager.Remove(ar.ClientAlias); // remove values that the server failed to add                                            
                     }
@@ -193,7 +193,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
                     List<AliasResult>? aliasResultList = null;
                     // a null list means all were successfully removed or are no longer defined in the server
                     if (Context.ServerContextIsOperational) // if still connected to the server
-                        aliasResultList = Context.RemoveDataObjectsFromList(ListServerAlias, serverAliasesToRemove);
+                        aliasResultList = Context.RemoveItemsFromList(ListServerAlias, serverAliasesToRemove);
 
                     // Remove each value from the client list unless there was an error and it could not be removed
                     // if there were errors and the value could not be removed from the server
