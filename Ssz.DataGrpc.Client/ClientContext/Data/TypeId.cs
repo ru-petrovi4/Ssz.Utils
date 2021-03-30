@@ -8,38 +8,26 @@ namespace Ssz.DataGrpc.Server
 {
     public sealed partial class TypeId
     {
-        #region construction and destruction
+        #region construction and destruction        
 
-        /// <summary>
-        ///     Construct a Type LocalId given a .NET / CLI Type.
-        /// </summary>
-        /// <param name="id">
-        ///     The .NET / CLI Type for which the TypeId is being constructed.
-        /// </param>
-        public TypeId(Type id)
+        public TypeId(Utils.DataSource.TypeId typeId)
         {
-            SchemaType = @"";
-            Namespace = @"";
-            LocalId = id.ToString();
+            SchemaType = typeId.SchemaType;
+            Namespace = typeId.Namespace;
+            LocalId = typeId.LocalId;
         }
 
-        /// <summary>
-        ///     This constructor initializes a new TypeId object.
-        /// </summary>
-        /// <param name="schemaType">
-        ///     The SchemaType.
-        /// </param>
-        /// <param name="nameSpace">
-        ///     The Namespace.
-        /// </param>
-        /// <param name="id">
-        ///     The LocalId.
-        /// </param>
-        public TypeId(string schemaType, string nameSpace, string id)
+        #endregion
+
+        #region public functions
+
+        public Utils.DataSource.TypeId ToTypeId()
         {
-            SchemaType = schemaType;
-            Namespace = nameSpace;
-            LocalId = id;
+            var typeId = new Utils.DataSource.TypeId();
+            typeId.SchemaType = SchemaType;
+            typeId.Namespace = Namespace;
+            typeId.LocalId = LocalId;
+            return typeId;
         }
 
         #endregion

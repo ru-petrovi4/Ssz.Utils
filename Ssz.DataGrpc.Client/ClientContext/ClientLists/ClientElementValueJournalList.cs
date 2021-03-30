@@ -7,6 +7,7 @@ using Ssz.DataGrpc.Client.ClientListItems;
 using Ssz.DataGrpc.Server;
 using Ssz.DataGrpc.Common;
 using Ssz.Utils;
+using Ssz.Utils.DataSource;
 
 namespace Ssz.DataGrpc.Client.ClientLists
 {
@@ -69,9 +70,9 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// <param name="firstTimeStamp"></param>
         /// <param name="secondTimeStamp"></param>
         /// <param name="numValuesPerDataObject"></param>
-        /// <param name="dataGrpcValueStatusTimestampSetCollection"></param>
-        public DataGrpcValueStatusTimestamp[][] ReadElementValueJournals(DateTime firstTimeStamp, DateTime secondTimeStamp,
-            uint numValuesPerDataObject, TypeId calculation, uint[] serverAliases)
+        /// <param name="valueStatusTimestampSetCollection"></param>
+        public ValueStatusTimestamp[][] ReadElementValueJournals(DateTime firstTimeStamp, DateTime secondTimeStamp,
+            uint numValuesPerDataObject, Ssz.Utils.DataSource.TypeId calculation, uint[] serverAliases)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueJournalList.");
 
@@ -88,7 +89,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// </summary>
         /// <param name="elementValueJournalsCollection"></param>
         /// <returns></returns>
-        public DataGrpcValueStatusTimestamp[][]? OnReadElementValueJournal(ElementValueJournalsCollection elementValueJournalsCollection)
+        public ValueStatusTimestamp[][]? OnReadElementValueJournal(ElementValueJournalsCollection elementValueJournalsCollection)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueJournalList.");
 
@@ -111,15 +112,15 @@ namespace Ssz.DataGrpc.Client.ClientLists
             }
             else
             {
-                var list = new List<DataGrpcValueStatusTimestamp[]>();
+                var list = new List<ValueStatusTimestamp[]>();
 
                 foreach (ElementValueJournal elementValueJournal in elementValueJournalsCollection.ElementValueJournals)
                 {
-                    var valuesList = new List<DataGrpcValueStatusTimestamp>();
+                    var valuesList = new List<ValueStatusTimestamp>();
 
                     for (int index = 0; index < elementValueJournal.DoubleStatusCodes.Count; index++)
                     {
-                        valuesList.Add(new DataGrpcValueStatusTimestamp
+                        valuesList.Add(new ValueStatusTimestamp
                         {
                             Value = new Any(elementValueJournal.DoubleValues[index]),
                             StatusCode = elementValueJournal.DoubleStatusCodes[index],
@@ -129,7 +130,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
                     }
                     for (int index = 0; index < elementValueJournal.UintStatusCodes.Count; index++)
                     {
-                        valuesList.Add(new DataGrpcValueStatusTimestamp
+                        valuesList.Add(new ValueStatusTimestamp
                         {
                             Value = new Any(elementValueJournal.UintValues[index]),
                             StatusCode = elementValueJournal.UintStatusCodes[index],

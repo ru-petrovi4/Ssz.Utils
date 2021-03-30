@@ -15,18 +15,18 @@ namespace Ssz.Utils.DataSource
         ///     Is used to subscribe for value updating and to write values.
         ///     valueChangedAction(oldValue, newValue) is invoked when Value property changed. Initial Value property is Any(null).        
         /// </summary>
-        public ValueSubscription(IDataSource dataSource, string id, Action<Any, Any>? valueChangedAction = null)
+        public ValueSubscription(IDataProvider dataProvider, string id, Action<Any, Any>? valueChangedAction = null)
         {
-            _dataSource = dataSource;
+            _dataProvider = dataProvider;
             Id = id ?? @"";
             _valueChangedAction = valueChangedAction;
 
-            ModelId = _dataSource.AddItem(Id, this);
+            ModelId = _dataProvider.AddItem(Id, this);
         }
 
         public void Dispose()
         {
-            _dataSource.RemoveItem(this);
+            _dataProvider.RemoveItem(this);
 
             _valueChangedAction = null;
         }
@@ -36,7 +36,7 @@ namespace Ssz.Utils.DataSource
         #region public functions
 
         /// <summary>
-        ///     Id actually used for OPC subscription. Initialized after constructor.       
+        ///     Id actually used for subscription. Initialized after constructor.       
         /// </summary>
         public string ModelId { get; private set; }
 
@@ -72,14 +72,14 @@ namespace Ssz.Utils.DataSource
         /// <param name="value"></param>
         public void Write(Any value)
         {
-            _dataSource.Write(this, value);
+            _dataProvider.Write(this, value);
         }
 
         #endregion
 
         #region private fields
 
-        private readonly IDataSource _dataSource;
+        private readonly IDataProvider _dataProvider;
         private Action<Any, Any>? _valueChangedAction;
 
         #endregion

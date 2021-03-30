@@ -7,6 +7,7 @@ using Ssz.DataGrpc.Client.ClientListItems;
 using Microsoft.Extensions.Logging;
 using Ssz.DataGrpc.Client.ClientLists;
 using Ssz.DataGrpc.Common;
+using Ssz.Utils.DataSource;
 
 namespace Ssz.DataGrpc.Client.Managers
 {
@@ -66,10 +67,10 @@ namespace Ssz.DataGrpc.Client.Managers
                         {
                             DataGrpcList.InformationReport +=
                                 (ClientElementValueList dataList, ClientElementValueListItem[] items,
-                                    DataGrpcValueStatusTimestamp[] values) =>
+                                    ValueStatusTimestamp[] values) =>
                                 {
                                     var changedClientObjs = new List<object>(items.Length);
-                                    var changedValues = new List<DataGrpcValueStatusTimestamp>(items.Length);
+                                    var changedValues = new List<ValueStatusTimestamp>(items.Length);
                                     int i = 0;
                                     foreach (ClientElementValueListItem dataGrpcElementValueListItem in items)
                                     {
@@ -117,8 +118,9 @@ namespace Ssz.DataGrpc.Client.Managers
                 }
 
                 {
+                    var utcNow = DateTime.UtcNow;
                     var changedClientObjs = new List<object>();
-                    var changedValues = new List<DataGrpcValueStatusTimestamp>();
+                    var changedValues = new List<ValueStatusTimestamp>();
                     foreach (DataGrpcListItemWrapper dataGrpcListItemWrapper in DataGrpcListItemWrappersDictionary.Values)
                     {                        
                         foreach (var modelItem in dataGrpcListItemWrapper.ModelItems)
@@ -131,17 +133,17 @@ namespace Ssz.DataGrpc.Client.Managers
                                     if (dataGrpcListItemWrapper.InvalidId)
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(new DataGrpcValueStatusTimestamp(new Any(DBNull.Value)));
+                                        changedValues.Add(ValueStatusTimestampHelper.NewValueStatusTimestamp(new Any(DBNull.Value), utcNow));
                                     }
                                     else if (dataGrpcListItemWrapper.DataGrpcListItem != null)
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(dataGrpcListItemWrapper.DataGrpcListItem.DataGrpcValueStatusTimestamp);
+                                        changedValues.Add(dataGrpcListItemWrapper.DataGrpcListItem.ValueStatusTimestamp);
                                     }
                                     else
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(new DataGrpcValueStatusTimestamp(new Any(null)));
+                                        changedValues.Add(ValueStatusTimestampHelper.NewValueStatusTimestamp(new Any(null), utcNow));
                                     }                                                                                                  
                                 }                                
                             }
@@ -237,7 +239,7 @@ namespace Ssz.DataGrpc.Client.Managers
                     continue;
                 }
                 ClientElementValueListItem dataGrpcElementValueListItem = modelItem.DataGrpcListItemWrapper.DataGrpcListItem;
-                dataGrpcElementValueListItem.PrepareForWrite(new DataGrpcValueStatusTimestamp(values[i]) { TimestampUtc = timestampUtc });
+                dataGrpcElementValueListItem.PrepareForWrite(ValueStatusTimestampHelper.NewValueStatusTimestamp(values[i], timestampUtc));
             }
 
             IEnumerable<ClientElementValueListItem>? failedItems = null;
@@ -294,7 +296,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
             try
             {                
-                dataGrpcElementValueListItem.PrepareForWrite(new DataGrpcValueStatusTimestamp(value) {TimestampUtc = timestampUtc});
+                dataGrpcElementValueListItem.PrepareForWrite(ValueStatusTimestampHelper.NewValueStatusTimestamp(value, timestampUtc));
 
                 try
                 {
@@ -319,7 +321,7 @@ namespace Ssz.DataGrpc.Client.Managers
             var dataGrpcListItem = DataGrpcListItemsDictionary.TryGetValue(id);
             if (dataGrpcListItem == null) return new Any();
             
-            return dataGrpcListItem.DataGrpcValueStatusTimestamp.Value;
+            return dataGrpcListItem.ValueStatusTimestamp.Value;
         }
         */
 
@@ -329,6 +331,6 @@ namespace Ssz.DataGrpc.Client.Managers
         ///     This delegate defines the callback for reporting data updates to the client application.
         /// </summary>
         public delegate void InformationReportEventHandler(
-            object[] changedClientObjs, DataGrpcValueStatusTimestamp[] changedValues);
+            object[] changedClientObjs, ValueStatusTimestamp[] changedValues);
     }
 }

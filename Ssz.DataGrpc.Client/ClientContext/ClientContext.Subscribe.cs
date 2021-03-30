@@ -5,6 +5,7 @@ using Ssz.DataGrpc.Server;
 using Ssz.DataGrpc.Client.ClientListItems;
 using Ssz.DataGrpc.Common;
 using System.Linq;
+using Ssz.Utils.DataSource;
 
 namespace Ssz.DataGrpc.Client
 {
@@ -125,10 +126,10 @@ namespace Ssz.DataGrpc.Client
             ClientElementValueListItem[]? changedListItems = dataList.OnInformationReport(elementValuesCollections);
             if (changedListItems != null && changedListItems.Length > 0)
             {
-                List<DataGrpcValueStatusTimestamp> changedValuesList = new List<DataGrpcValueStatusTimestamp>(changedListItems.Length);
+                List<ValueStatusTimestamp> changedValuesList = new List<ValueStatusTimestamp>(changedListItems.Length);
                 foreach (ClientElementValueListItem changedListItem in changedListItems)
                 {
-                    changedValuesList.Add(changedListItem.DataGrpcValueStatusTimestamp);
+                    changedValuesList.Add(changedListItem.ValueStatusTimestamp);
                 }
                 dataList.RaiseInformationReportEvent(changedListItems, changedValuesList.ToArray());
             }

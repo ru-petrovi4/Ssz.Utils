@@ -57,7 +57,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="alarmsToAck"></param>
         /// <returns></returns>
         public EventIdResult[] AcknowledgeAlarms(uint listServerAlias,
-            string operatorName, string comment, EventId[] alarmsToAck)
+            string operatorName, string comment, Ssz.Utils.DataSource.EventId[] alarmsToAck)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -72,7 +72,7 @@ namespace Ssz.DataGrpc.Client
                     OperatorName = operatorName,
                     Comment = comment,                   
                 };
-                request.AlarmsToAck.Add(alarmsToAck);
+                request.AlarmsToAck.Add(alarmsToAck.Select(e => new EventId(e)));
                 AcknowledgeAlarmsReply reply = _resourceManagementClient.AcknowledgeAlarms(request);
                 SetResourceManagementLastCallUtc();
                 return reply.Results.ToArray();

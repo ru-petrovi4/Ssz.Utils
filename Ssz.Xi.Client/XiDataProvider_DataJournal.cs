@@ -18,13 +18,11 @@ namespace Ssz.Xi.Client
         /// <summary>        
         ///     valueSubscription.Update() is called from сallbackDoer.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="elementId"></param>
         /// <param name="valueSubscription"></param>
-        public void HdaAddItem(string? id, object valueSubscription)
+        public void HdaAddItem(string elementId, object valueSubscription)
         {
-            id = id ?? @"";
-
-            _xiDataJournalListItemsManager.AddItem(id, valueSubscription);
+            _xiDataJournalListItemsManager.AddItem(elementId, valueSubscription);
             if (_xiServerProxy == null) throw new InvalidOperationException();
             _xiDataJournalListItemsManager.Subscribe(_xiServerProxy);
         }

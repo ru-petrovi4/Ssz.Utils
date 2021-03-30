@@ -17,7 +17,7 @@ namespace TestWpfApp.Alarms
         /// <summary>        
         ///     Returns new AlarmInfoViewModels or Null.
         /// </summary>
-        public static async Task<IEnumerable<AlarmInfoViewModelBase>?> ProcessEventMessage(EventMessage eventMessage)
+        public static async Task<IEnumerable<AlarmInfoViewModelBase>?> ProcessEventMessage(Xi.Contracts.Data.EventMessage eventMessage)
         {
             if (eventMessage.EventId != null && eventMessage.EventId.Condition != null &&
                 eventMessage.EventId.Condition.Any(c => c.LocalId == "BeforeStateLoad"))

@@ -1,6 +1,7 @@
 using Ssz.DataGrpc.Client.ClientListItems;
 using Ssz.DataGrpc.Client.ClientLists;
 using Ssz.DataGrpc.Common;
+using Ssz.Utils.DataSource;
 
 namespace Ssz.DataGrpc.Client.Data
 {
@@ -11,5 +12,5 @@ namespace Ssz.DataGrpc.Client.Data
     /// <param name="changedListItems"> The list of data updates being reported. </param>
     /// <param name="changedValues">The time when the values were last changed.</param>
     public delegate void InformationReportEventHandler(
-        ClientElementValueList dataList, ClientElementValueListItem[] changedListItems, DataGrpcValueStatusTimestamp[] changedValues);
+        ClientElementValueList dataList, ClientElementValueListItem[] changedListItems, ValueStatusTimestamp[] changedValues);
 }

@@ -11,12 +11,12 @@ namespace Ssz.Utils.DataSource
         ///     Is used to one-time read value.
         ///     Callback is invoked when value is not null (value.ValueTypeCode != TypeCode.Empty)        
         /// </summary>
-        public ReadOnceValueSubscription(IDataSource dataSource, string id, Action<Any>? setValueAction)
+        public ReadOnceValueSubscription(IDataProvider dataProvider, string id, Action<Any>? setValueAction)
         {
-            _dataSource = dataSource;
+            _dataProvider = dataProvider;
             _setValueAction = setValueAction;
 
-            ModelId = _dataSource.AddItem(id ?? @"", this);
+            ModelId = _dataProvider.AddItem(id ?? @"", this);
         }
 
         #endregion
@@ -24,7 +24,7 @@ namespace Ssz.Utils.DataSource
         #region public functions
 
         /// <summary>
-        ///     Id actually used for OPC subscription. Initialized after constructor.
+        ///     Id actually used for subscription. Initialized after constructor.
         /// </summary>
         public string ModelId { get; private set; }
 
@@ -41,7 +41,7 @@ namespace Ssz.Utils.DataSource
         {
             if (value.ValueTypeCode == TypeCode.Empty) return;
 
-            _dataSource.RemoveItem(this);            
+            _dataProvider.RemoveItem(this);            
 
             if (_setValueAction != null)
             {
@@ -54,7 +54,7 @@ namespace Ssz.Utils.DataSource
 
         #region private fields
 
-        private IDataSource _dataSource;
+        private IDataProvider _dataProvider;
         private Action<Any>? _setValueAction;
 
         #endregion

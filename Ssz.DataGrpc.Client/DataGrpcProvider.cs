@@ -14,7 +14,7 @@ using Ssz.Utils.DataSource;
 
 namespace Ssz.DataGrpc.Client
 {
-    public partial class DataGrpcProvider : IDataSource, IDispatcher
+    public partial class DataGrpcProvider : IDataProvider, IDispatcher
     {
         #region construction and destruction
 
@@ -85,12 +85,12 @@ namespace Ssz.DataGrpc.Client
         ///     Used in DataGrpc Context initialization.
         ///     Can be null
         /// </summary>
-        public CaseInsensitiveDictionary<string> ClientContextParams
+        public CaseInsensitiveDictionary<string> ContextParams
         {
             get
             {
                 if (!IsInitialized) throw new Exception("Not Initialized");
-                return _dataGrpcContextParams;
+                return _contextParams;
             }
         }
 
@@ -124,17 +124,17 @@ namespace Ssz.DataGrpc.Client
         public event Action Disconnected = delegate { };
 
         /// <summary>
-        ///     You can set updateValueItems = false and invoke PollElementValuesChanges(...) manually.       
+        ///     You can set updateValueItems = false and invoke PollElementValuesChanges(...) manually.
         /// </summary>
-        /// <param name="сallbackDispatcher">IDispatcher? for doing all callbacks.</param>
-        /// <param name="elementValueListCallbackIsEnabled">Used in DataGrpc ElementValueList initialization</param>
-        /// <param name="serverAddress">DataGrpc Server connection string</param>
-        /// <param name="dataGrpcSystem">DataGrpc System Name</param>
-        /// <param name="applicationName">Used in DataGrpc Context initialization</param>
-        /// <param name="workstationName">Used in DataGrpc Context initialization</param>
-        /// <param name="dataGrpcContextParams">Used in DataGrpc Context initialization</param>
+        /// <param name="сallbackDispatcher"></param>
+        /// <param name="elementValueListCallbackIsEnabled"></param>
+        /// <param name="serverAddress"></param>
+        /// <param name="applicationName"></param>
+        /// <param name="workstationName"></param>
+        /// <param name="systemNames"></param>
+        /// <param name="contextParams"></param>
         public void Initialize(IDispatcher? сallbackDispatcher, bool elementValueListCallbackIsEnabled, string serverAddress,
-            string applicationName, string workstationName, string[] systemNames, CaseInsensitiveDictionary<string>? dataGrpcContextParams = null)
+            string applicationName, string workstationName, string[] systemNames, CaseInsensitiveDictionary<string> contextParams)
         {
             Close();            
 
@@ -146,7 +146,7 @@ namespace Ssz.DataGrpc.Client
             _applicationName = applicationName;            
             _workstationName = workstationName;
             _systemNames = systemNames;
-            if (dataGrpcContextParams != null) _dataGrpcContextParams = dataGrpcContextParams;            
+            _contextParams = contextParams;            
 
             //string pollIntervalMsString =
             //    ConfigurationManager.AppSettings["PollIntervalMs"];
@@ -173,7 +173,7 @@ namespace Ssz.DataGrpc.Client
 
             IsInitialized = false;
 
-            _dataGrpcContextParams = new CaseInsensitiveDictionary<string>();
+            _contextParams = new CaseInsensitiveDictionary<string>();
             _сallbackDispatcher = null;
 
             if (_cancellationTokenSource != null)
@@ -448,7 +448,7 @@ namespace Ssz.DataGrpc.Client
                         
 
                         _clientConnectionManager.InitiateConnection(_serverAddress, _applicationName,
-                            _workstationName, _systemNames, _dataGrpcContextParams);                        
+                            _workstationName, _systemNames, _contextParams);                        
 
                         _logger.LogDebug("End Connecting");
 
@@ -514,7 +514,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="changedClientObjs"></param>
         /// <param name="changedValues"></param>
         private void ClientElementValueListItemsManagerOnInformationReport(object[] changedClientObjs,
-            DataGrpcValueStatusTimestamp[] changedValues)
+            ValueStatusTimestamp[] changedValues)
         {
             if (changedClientObjs != null)
             {
@@ -566,7 +566,7 @@ namespace Ssz.DataGrpc.Client
         /// <summary>
         ///     Used in DataGrpc Context initialization.
         /// </summary>
-        private CaseInsensitiveDictionary<string> _dataGrpcContextParams = new CaseInsensitiveDictionary<string>();
+        private CaseInsensitiveDictionary<string> _contextParams = new CaseInsensitiveDictionary<string>();
 
         private volatile bool _isConnected;
 

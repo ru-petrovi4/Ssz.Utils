@@ -214,37 +214,25 @@ message EventMessagesCollection {
 message EventMessage {  
   google.protobuf.Timestamp occurrence_time = 1;
   uint32 list_client_alias = 2;
-  EventType event_type = 3;
+  uint32 event_type = 3;
   EventId EventId = 4;
   string text_message = 5;
   uint32 category_id = 6;
   uint32 priority = 7;
   string operator_name = 8;
   oneof optional_alarm_data {
-    AlarmMessageData alarm_data = 9;
+    AlarmMessageData alarm_message_data = 9;
   }  
   map<string, string> client_requested_fields = 10;
 }
 
-enum EventType
-{
-  EVENT_TYPE_NONE = 0;
-  EVENT_TYPE_SYSTEM_EVENT = 1;
-  EVENT_TYPE_OPERATOR_ACTION_EVENT = 2;
-  EVENT_TYPE_SIMPLE_ALARM = 3;
-  EVENT_TYPE_ECLIPSED_ALARM = 4;
-  EVENT_TYPE_GROUPED_ALARM = 5;
-  EVENT_TYPE_ALERT = 6;
-  EVENT_TYPE_DISCARDED_MESSAGE = 7;
-}
-
 message EventId {  
-  string source_id = 1;
+  string source_element_id = 1;
   oneof optional_multiplexed_alarm_container {
     TypeId multiplexed_alarm_container = 2;
   }
   repeated TypeId conditions = 3;
-  string occurence_id = 4;
+  string occurrence_id = 4;
   oneof optional_time_last_active {
     google.protobuf.Timestamp time_last_active = 5;
   }

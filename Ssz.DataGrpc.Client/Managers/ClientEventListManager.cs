@@ -7,6 +7,7 @@ using Ssz.DataGrpc.Server;
 using Microsoft.Extensions.Logging;
 using Ssz.DataGrpc.Client.ClientLists;
 using Ssz.DataGrpc.Client.ClientListItems;
+using Ssz.Utils.DataSource;
 
 namespace Ssz.DataGrpc.Client.Managers
 {
@@ -64,7 +65,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
                     try
                     {
-                        Action<IEnumerable<EventMessage>> eventNotificationEventHandler = kvp.Key;
+                        Action<Utils.DataSource.EventMessage[]> eventNotificationEventHandler = kvp.Key;
 
                         dataGrpcEventList.EventNotificationEvent +=
                             (ClientEventList eventList, ClientEventListItem[] newListItems) =>
@@ -75,7 +76,7 @@ namespace Ssz.DataGrpc.Client.Managers
                                     try
                                     {
                                         сallbackDispatcher.BeginInvoke(ct => eventNotificationEventHandler(
-                                            newListItems.Select(li => li.EventMessage)));
+                                            newListItems.Select(li => li.EventMessage.ToEventInfo()).ToArray()));
                                     }
                                     catch (Exception)
                                     {
@@ -141,14 +142,14 @@ namespace Ssz.DataGrpc.Client.Managers
             _dataGrpcEventItemsMustBeAdded = true;
         }
 
-        public ClientEventList? GetRelatedClientEventList(Action<IEnumerable<EventMessage>> eventHandler)
+        public ClientEventList? GetRelatedClientEventList(Action<IEnumerable<Utils.DataSource.EventMessage>> eventHandler)
         {
             ClientEventListPointer? dataGrpcEventListPointer;
             if (!_eventNotificationEventHandlers.TryGetValue(eventHandler, out dataGrpcEventListPointer)) return null;
             return dataGrpcEventListPointer.P;
         }
 
-        public event Action<IEnumerable<EventMessage>> EventNotification
+        public event Action<Utils.DataSource.EventMessage[]> EventNotification
         {
             add
             {
@@ -186,8 +187,8 @@ namespace Ssz.DataGrpc.Client.Managers
 
         private volatile bool _dataGrpcEventItemsMustBeAdded;
 
-        private readonly Dictionary<Action<IEnumerable<EventMessage>>, ClientEventListPointer> _eventNotificationEventHandlers =
-            new Dictionary<Action<IEnumerable<EventMessage>>, ClientEventListPointer>();
+        private readonly Dictionary<Action<Utils.DataSource.EventMessage[]>, ClientEventListPointer> _eventNotificationEventHandlers =
+            new Dictionary<Action<Utils.DataSource.EventMessage[]>, ClientEventListPointer>();
 
         #endregion
 

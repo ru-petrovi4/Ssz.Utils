@@ -1,5 +1,6 @@
 using System;
 using Ssz.DataGrpc.Common;
+using Ssz.Utils.DataSource;
 
 namespace Ssz.DataGrpc.Client.ClientListItems
 {
@@ -36,9 +37,9 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         /// <param name="valueUInt32"> The value </param>
         public void UpdateValue(uint valueUInt32, uint statusCode, DateTime timeStampUtc)
         {
-            DataGrpcValueStatusTimestamp.Value.Set(valueUInt32, ValueTypeCode, false);
-            DataGrpcValueStatusTimestamp.StatusCode = statusCode;
-            DataGrpcValueStatusTimestamp.TimestampUtc = timeStampUtc;
+            ValueStatusTimestamp.Value.Set(valueUInt32, ValueTypeCode, false);
+            ValueStatusTimestamp.StatusCode = statusCode;
+            ValueStatusTimestamp.TimestampUtc = timeStampUtc;
             IncrementUpdateCount();
         }
 
@@ -53,9 +54,9 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         /// <param name="valueDouble"> The value </param>
         public void UpdateValue(double valueDouble, uint statusCode, DateTime timeStampUtc)
         {
-            DataGrpcValueStatusTimestamp.Value.Set(valueDouble, ValueTypeCode, false);
-            DataGrpcValueStatusTimestamp.StatusCode = statusCode;
-            DataGrpcValueStatusTimestamp.TimestampUtc = timeStampUtc;
+            ValueStatusTimestamp.Value.Set(valueDouble, ValueTypeCode, false);
+            ValueStatusTimestamp.StatusCode = statusCode;
+            ValueStatusTimestamp.TimestampUtc = timeStampUtc;
             IncrementUpdateCount();
         }
 
@@ -70,9 +71,9 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         /// <param name="valueObject"> The value </param>
         public void UpdateValue(object? valueObject, uint statusCode, DateTime timeStampUtc)
         {
-            DataGrpcValueStatusTimestamp.Value.Set(valueObject);
-            DataGrpcValueStatusTimestamp.StatusCode = statusCode;
-            DataGrpcValueStatusTimestamp.TimestampUtc = timeStampUtc;
+            ValueStatusTimestamp.Value.Set(valueObject);
+            ValueStatusTimestamp.StatusCode = statusCode;
+            ValueStatusTimestamp.TimestampUtc = timeStampUtc;
             IncrementUpdateCount();
         }
 
@@ -83,22 +84,22 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         ///     client application issues the data list CommitDataObjectWrites() method
         ///     to write them to the server in a single call.
         /// </summary>
-        /// <param name="dataGrpcValueStatusTimestamp"> The data value to be written. </param>
+        /// <param name="valueStatusTimestamp"> The data value to be written. </param>
         /// <returns> Returns TRUE if the data object is writable, otherwise FALSE. </returns>
-        public bool PrepareForWrite(DataGrpcValueStatusTimestamp dataGrpcValueStatusTimestamp)
+        public bool PrepareForWrite(ValueStatusTimestamp valueStatusTimestamp)
         {
             if (!IsWritable)
             {
-                _pendingWriteDataGrpcValueStatusTimestamp = null;
+                _pendingWriteValueStatusTimestamp = null;
                 return false;
             }
-            _pendingWriteDataGrpcValueStatusTimestamp = dataGrpcValueStatusTimestamp;
+            _pendingWriteValueStatusTimestamp = valueStatusTimestamp;
             return true;
         }
 
         public void HasWritten(uint resultCodeWrite)
         {
-            _pendingWriteDataGrpcValueStatusTimestamp = null;
+            _pendingWriteValueStatusTimestamp = null;
             _resultCodeWrite = resultCodeWrite;
         }
 
@@ -116,9 +117,9 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         /// <summary>
         ///     This property contains the data value for the data object.
         /// </summary>
-        public DataGrpcValueStatusTimestamp DataGrpcValueStatusTimestamp
+        public ValueStatusTimestamp ValueStatusTimestamp
         {
-            get { return _dataGrpcValueStatusTimestamp; }
+            get { return _valueStatusTimestamp; }
         }
 
         /// <summary>
@@ -128,13 +129,13 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         ///     and then issues the data list CommitDataObjectWrites() method to write them
         ///     to the server in a single call.
         /// </summary>
-        public DataGrpcValueStatusTimestamp? PendingWriteDataGrpcValueStatusTimestamp
+        public ValueStatusTimestamp? PendingWriteValueStatusTimestamp
         {
-            get { return _pendingWriteDataGrpcValueStatusTimestamp; }
+            get { return _pendingWriteValueStatusTimestamp; }
         }
 
         /// <summary>
-        ///     This property contains the result code associated with writing the PendingWriteDataGrpcValueStatusTimestamp.
+        ///     This property contains the result code associated with writing the PendingWriteValueStatusTimestamp.
         ///     See DataGrpcFaultCodes class for standardized result codes.
         /// </summary>
         public uint ResultCodeWrite
@@ -147,7 +148,7 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         /// </summary>
         public bool PreparedForWrite
         {
-            get { return _pendingWriteDataGrpcValueStatusTimestamp != null; }
+            get { return _pendingWriteValueStatusTimestamp != null; }
         }
 
         /// <summary>
@@ -162,14 +163,14 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         /// <summary>
         ///     This data member is the private representation of the PendingWriteDataValue property.
         /// </summary>
-        private DataGrpcValueStatusTimestamp? _pendingWriteDataGrpcValueStatusTimestamp;
+        private ValueStatusTimestamp? _pendingWriteValueStatusTimestamp;
 
         private uint _resultCodeWrite;
 
         /// <summary>
         ///     This data member is the private representation of the DataValue property.
         /// </summary>
-        private DataGrpcValueStatusTimestamp _dataGrpcValueStatusTimestamp = new DataGrpcValueStatusTimestamp();
+        private ValueStatusTimestamp _valueStatusTimestamp = new ValueStatusTimestamp();
 
         #endregion
     }

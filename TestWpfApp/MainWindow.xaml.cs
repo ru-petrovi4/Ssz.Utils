@@ -36,7 +36,7 @@ namespace TestWpfApp
             _alarmsListViewModel = new AlarmsListViewModel();
             MainAlarmListControl.MainDataGrid.ItemsSource = _alarmsListViewModel.Alarms;
 
-            App.XiDataProvider.Initialize(this, true, @"http://localhost:60080/SszCtcmXiServer/ServerDiscovery", "", "TestWpfApp", Environment.MachineName);
+            App.XiDataProvider.Initialize(this, true, @"http://localhost:60080/SszCtcmXiServer/ServerDiscovery", "TestWpfApp", Environment.MachineName, new string[0], new CaseInsensitiveDictionary<string>());
             App.XiDataProvider.EventNotification += XiDataProviderOnEventNotification;
             App.XiDataProvider.Disconnected += XiDataProviderOnDisconnected;
 
@@ -55,10 +55,10 @@ namespace TestWpfApp
             EventSourceModel.Instance.Clear();
         }
 
-        private async void XiDataProviderOnEventNotification(IEnumerable<EventMessage> newEventMessages)
+        private async void XiDataProviderOnEventNotification(IEnumerable<Xi.Contracts.Data.EventMessage> newEventMessages)
         {
             List<AlarmInfoViewModelBase> newAlarmInfoViewModels = new List<AlarmInfoViewModelBase>();
-            foreach (EventMessage eventMessage in newEventMessages.Where(em => em != null).OrderBy(em => em.OccurrenceTime))
+            foreach (Xi.Contracts.Data.EventMessage eventMessage in newEventMessages.Where(em => em != null).OrderBy(em => em.OccurrenceTime))
             {
                 var alarmInfoViewModels = await CtcmModelEngine.ProcessEventMessage(eventMessage);
                 if (alarmInfoViewModels != null)

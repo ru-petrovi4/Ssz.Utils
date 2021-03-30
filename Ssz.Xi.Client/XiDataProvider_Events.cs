@@ -15,7 +15,7 @@ namespace Ssz.Xi.Client
         /// <summary>
         ///     Is called using сallbackDoer, see Initialize(..).        
         /// </summary>
-        public event Action<IEnumerable<EventMessage>> EventNotification
+        public event Action<Ssz.Utils.DataSource.EventMessage[]> EventNotification
         {
             add { BeginInvoke(ct => _xiEventListItemsManager.EventNotification += value); }
             remove { BeginInvoke(ct => _xiEventListItemsManager.EventNotification -= value); }
@@ -25,11 +25,8 @@ namespace Ssz.Xi.Client
         ///     events != null
         /// </summary>
         /// <param name="events"></param>
-        public void AckAlarms(IEnumerable<EventId> events)
+        public void AckAlarms(Ssz.Utils.DataSource.EventId[] events)
         {
-            if (events == null)
-                throw new ArgumentNullException("events");
-
             BeginInvoke(ct =>
             {
                 if (!_onEventNotificationSubscribed)
@@ -60,7 +57,7 @@ namespace Ssz.Xi.Client
 
         #region private functions
 
-        private void OnEventNotification(IEnumerable<EventMessage> obj)
+        private void OnEventNotification(Ssz.Utils.DataSource.EventMessage[] obj)
         {
         }
 

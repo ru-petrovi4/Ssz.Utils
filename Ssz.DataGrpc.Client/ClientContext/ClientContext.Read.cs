@@ -4,6 +4,7 @@ using System.Linq;
 using Ssz.DataGrpc.Client.ClientLists;
 using Ssz.DataGrpc.Common;
 using Ssz.DataGrpc.Server;
+using Ssz.Utils.DataSource;
 
 namespace Ssz.DataGrpc.Client
 {
@@ -24,9 +25,9 @@ namespace Ssz.DataGrpc.Client
         /// <param name="calculation"></param>
         /// <param name="serverAliases"></param>
         /// <returns></returns>
-        public DataGrpcValueStatusTimestamp[][] ReadElementValueJournals(ClientElementValueJournalList dataGrpcElementValueJournalList, DateTime firstTimeStampUtc,
+        public ValueStatusTimestamp[][] ReadElementValueJournals(ClientElementValueJournalList dataGrpcElementValueJournalList, DateTime firstTimeStampUtc,
             DateTime secondTimeStampUtc,
-            uint numValuesPerAlias, TypeId calculation, uint[] serverAliases)
+            uint numValuesPerAlias, Ssz.Utils.DataSource.TypeId calculation, uint[] serverAliases)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -43,7 +44,7 @@ namespace Ssz.DataGrpc.Client
                         FirstTimeStamp = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(firstTimeStampUtc),
                         SecondTimeStamp = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(secondTimeStampUtc),
                         NumValuesPerAlias = numValuesPerAlias,
-                        Calculation = calculation
+                        Calculation = new Server.TypeId(calculation)
                     };
                     request.ServerAliases.Add(serverAliases);
                     ReadElementValueJournalsReply reply = _resourceManagementClient.ReadElementValueJournals(request);

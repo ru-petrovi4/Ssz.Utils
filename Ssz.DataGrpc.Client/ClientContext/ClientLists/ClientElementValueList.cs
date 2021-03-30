@@ -8,6 +8,7 @@ using Ssz.DataGrpc.Common;
 using System.IO;
 using Ssz.Utils.Serialization;
 using Ssz.DataGrpc.Client.Data;
+using Ssz.Utils.DataSource;
 
 namespace Ssz.DataGrpc.Client.ClientLists
 {
@@ -81,10 +82,10 @@ namespace Ssz.DataGrpc.Client.ClientLists
 
             foreach (ClientElementValueListItem item in ListItemsManager)
             {
-                if (item.PendingWriteDataGrpcValueStatusTimestamp != null &&
-                    item.PendingWriteDataGrpcValueStatusTimestamp.Value.ValueTypeCode != TypeCode.Empty)
+                if (item.PendingWriteValueStatusTimestamp != null &&
+                    item.PendingWriteValueStatusTimestamp.Value.ValueTypeCode != TypeCode.Empty)
                 {
-                    switch (item.PendingWriteDataGrpcValueStatusTimestamp.Value.ValueStorageType)
+                    switch (item.PendingWriteValueStatusTimestamp.Value.ValueStorageType)
                     {
                         case Any.StorageType.Double:
                             dblCount += 1;
@@ -106,28 +107,28 @@ namespace Ssz.DataGrpc.Client.ClientLists
                 foreach (var kvp in writeValueDictionary)
                 {
                     ClientElementValueListItem item = kvp.Value;
-                    if (item.PendingWriteDataGrpcValueStatusTimestamp != null &&
-                        item.PendingWriteDataGrpcValueStatusTimestamp.Value.ValueTypeCode != TypeCode.Empty)
+                    if (item.PendingWriteValueStatusTimestamp != null &&
+                        item.PendingWriteValueStatusTimestamp.Value.ValueTypeCode != TypeCode.Empty)
                     {
-                        switch (item.PendingWriteDataGrpcValueStatusTimestamp.Value.ValueStorageType)
+                        switch (item.PendingWriteValueStatusTimestamp.Value.ValueStorageType)
                         {
                             case Any.StorageType.Double:
                                 writeElementValuesCollectionManager.AddDouble(item.ServerAlias,
-                                    item.PendingWriteDataGrpcValueStatusTimestamp.StatusCode,
-                                    item.PendingWriteDataGrpcValueStatusTimestamp.TimestampUtc,
-                                    item.PendingWriteDataGrpcValueStatusTimestamp.Value.StorageDouble);
+                                    item.PendingWriteValueStatusTimestamp.StatusCode,
+                                    item.PendingWriteValueStatusTimestamp.TimestampUtc,
+                                    item.PendingWriteValueStatusTimestamp.Value.StorageDouble);
                                 break;
                             case Any.StorageType.UInt32:
                                 writeElementValuesCollectionManager.AddUint(item.ServerAlias,
-                                    item.PendingWriteDataGrpcValueStatusTimestamp.StatusCode,
-                                    item.PendingWriteDataGrpcValueStatusTimestamp.TimestampUtc,
-                                    item.PendingWriteDataGrpcValueStatusTimestamp.Value.StorageUInt32);
+                                    item.PendingWriteValueStatusTimestamp.StatusCode,
+                                    item.PendingWriteValueStatusTimestamp.TimestampUtc,
+                                    item.PendingWriteValueStatusTimestamp.Value.StorageUInt32);
                                 break;
                             case Any.StorageType.Object:
                                 writeElementValuesCollectionManager.AddObject(item.ServerAlias,
-                                    item.PendingWriteDataGrpcValueStatusTimestamp.StatusCode,
-                                    item.PendingWriteDataGrpcValueStatusTimestamp.TimestampUtc,
-                                    item.PendingWriteDataGrpcValueStatusTimestamp.Value.StorageObject);
+                                    item.PendingWriteValueStatusTimestamp.StatusCode,
+                                    item.PendingWriteValueStatusTimestamp.TimestampUtc,
+                                    item.PendingWriteValueStatusTimestamp.Value.StorageObject);
                                 break;
                         }
                     }
@@ -253,7 +254,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// <param name="changedListItems"></param>
         /// <param name="changedValues"></param>
         public void RaiseInformationReportEvent(ClientElementValueListItem[] changedListItems,
-            DataGrpcValueStatusTimestamp[] changedValues)
+            ValueStatusTimestamp[] changedValues)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
 

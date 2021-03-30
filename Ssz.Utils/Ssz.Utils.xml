@@ -2096,29 +2096,233 @@
             <param name="defines"></param>
             <returns></returns>
         </member>
-        <member name="M:Ssz.Utils.DataSource.IDataSource.AddItem(System.String,Ssz.Utils.DataSource.IValueSubscription)">
-            <summary>        
-                Returns id actully used for OPC subscription
-                valueSubscription.Update() is called from UI thread.        
-            </summary>
-            <param name="id"></param>
-            <param name="valueSubscription"></param>
-        </member>
-        <member name="M:Ssz.Utils.DataSource.IDataSource.RemoveItem(Ssz.Utils.DataSource.IValueSubscription)">
-            <summary>        
-                If valueSubscription is not subscribed - does nothing.
-            </summary>
-            <param name="valueSubscription"></param>
-        </member>
-        <member name="M:Ssz.Utils.DataSource.IDataSource.Write(Ssz.Utils.DataSource.IValueSubscription,Ssz.Utils.Any)">
-            <summary>        
-                To use this method, AddItem(...) must be called first for this valueSubscription.
-                You cannot write values after RemoveItem(...) is called.
-            </summary>
-        </member>
-        <member name="E:Ssz.Utils.DataSource.IDataSource.ValueSubscriptionsUpdated">
+        <member name="F:Ssz.Utils.DataSource.EventId.MultiplexedAlarmContainer">
             <summary>
-                Is called from UI thread.
+            The TypeId of the container for alarms with multiple conditions, 
+            such as grouped or eclipsed alarms. The EventType enumeration defines 
+            these types of alarms. 
+            Null if the event is not a grouped or eclipsed alarm. 
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.EventId.Conditions">
+            <summary>
+            <para>For system events, operator action events, simple alarms, 
+            and complex alarms, the TypeId of the condition 
+            that is being reported in the event message.</para>
+            <para>For grouped or eclipsed alarms, the name of 
+            one or more conditions that are active.</para>
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.EventId.OccurrenceId">
+            <summary>
+            A server-specific id that identifies an individual occurrence of the 
+            alarm/event.  This identifier can be constructed by the server to meet 
+            the server's needs for identifying alarms.  For example, if the server 
+            wraps an OPC AE server, the OccurrenceId may be constructed from the 
+            ActiveTime and Cookie parameters of the IOPCEventServer::AckCondition() 
+            method.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.EventId.TimeLastActive">
+            <summary>
+            This element is mandatory when acknowledging an alarm using the AcknowledgeAlarms() method. 
+            It is set to null in all other uses.  Its value is copied from the AlarmMessageData object 
+            contained in the EventMessage used to report the alarm being acknowledged.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.EventMessage.OccurrenceTime">
+            <summary>
+            The time of the event/alarm occurrence.  
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.EventMessage.EventType">
+            <summary>
+            The type of the event/alarm that is being reported by this 
+            event message.  
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.EventMessage.EventId">
+            <summary>
+            The identifier for the event/alarm occurrence.  
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.EventMessage.TextMessage">
+            <summary>
+            Text that describes the event occurrence.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.EventMessage.CategoryId">
+            <summary>
+            The category to which the event is assigned.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.EventMessage.Priority">
+            <summary>
+            The priority of the event.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.EventMessage.OperatorName">
+            <summary>
+            <para>For event messages that report operator action events, 
+            the name of the operator who caused an operator action event 
+            to be generated.</para>
+            <para>For event messages that report the acknowledgement of 
+            an alarm, the name of the operator who acknowledged the 
+            alarm.</para>
+            <para>Null for all other event messages.</para>  
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.EventMessage.AlarmMessageData">
+            <summary>
+            Data to be included in the event message for alarms.  Null 
+            if the event message is not reporting an alarm.  
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.EventMessage.ClientRequestedFields">
+            <summary>
+            The fields selected by the client to be included in Event Messages 
+            for the indicated Event Category.  The fields that can be selected 
+            by the client to be returned in Event Messages for a given Category 
+            are specified in the EventCategories member of the Event Capabilities 
+            MIB Element.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.AlarmMessageData.AlarmState">
+            <summary>
+            The current state of the alarm.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.AlarmMessageData.AlarmStateChange">
+            <summary>
+            The state change(s) that caused the alarm message to sent.
+            The AlarmStateChangeCodes class defines 
+            the values for this member.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.AlarmMessageData.TimeLastActive">
+            <summary>
+            The time that the alarm last transitioned to the active state.  
+            This time is independent of the current state of the alarm.  
+            Null if the alarm has never been active. 
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.EventType.SystemEvent">
+            <summary>
+            An event generated by a condition within the system 
+            that does not require operator attention.
+            See EEMUA Publication 191, 2.4.1.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.EventType.OperatorActionEvent">
+            <summary>
+            An event generated as the result of an operator action. 
+            See EEMUA Publication 191, 2.4.1.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.EventType.SimpleAlarm">
+            <summary>
+            The general case of an alarm as defined by See EEMUA Publication 191.  
+            A simple alarm is represented by a single condition.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.EventType.EclipsedAlarm">
+            <summary>
+            An alarm that is composed of a set of conditions that are 
+            all related to the same monitored data object, but where 
+            only the one with the highest operational significance 
+            can be active at a time. See EEMUA Publication 191, A8.3.2. 
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.EventType.GroupedAlarm">
+            <summary>
+            An alarm that is represented by multiple conditions, 
+            any number of which can be active at the same time.  
+            For alarms of this type, the alarm is active when at 
+            least one of its conditions is active, and is inactive 
+            when none of its conditions are active. See EEMUA 
+            Publication 191, A8.2.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.EventType.Alert">
+            <summary>
+            An event similar to an alarm, but that is a lower 
+            priority and has no significant consequences if missed. 
+            Alerts are often referred to as warnings or prompts.  
+            See EEMUA Publication 191, Appendix 7. 
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.EventType.DiscardedMessage">
+            <summary>
+            An event that indicates that the server has discarded 
+            one or more queued messages from its poll queue. This 
+            event type is only used when event polling is in use. 
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.AlarmState.Initial">
+            <summary>
+            The default value of 0 is the starting state, 
+            which is inactive (cleared), acknowledged, enabled, 
+            and unsuppressed.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.AlarmState.Disabled">
+            <summary>
+            The generation/detection of the alarm is disabled 
+            even though the base condition may be active.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.AlarmState.Active">
+            <summary>
+            The Alarm has been detected and its condition 
+            continues to persist. This state is also referred 
+            to as "raised" or "standing".  The inactive state 
+            is indicated by not setting the Alarm to active.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.AlarmState.Unacked">
+            <summary>
+            The Alarm has not been acknowledged.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.AlarmState.Suppressed">
+            <summary>
+            Automatic generation/detection of the alarm is 
+            disabled, even though the base condition may be active.  
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.AlarmStateChangeCodes.Active">
+            <summary>
+            The Active State has changed
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.AlarmStateChangeCodes.Acknowledge">
+            <summary>
+            The Acknowledge State has changed. 
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.AlarmStateChangeCodes.Disable">
+            <summary>
+            The Disable State has changed.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.AlarmStateChangeCodes.Priority">
+            <summary>
+            The Priority has changed.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.AlarmStateChangeCodes.Subcondition">
+            <summary>
+            The Subcondition has changed.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.AlarmStateChangeCodes.Message">
+            <summary>
+            The Message has changed.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataSource.AlarmStateChangeCodes.RequestedField">
+            <summary>
+            One or more of the Requested Fields has changed.
             </summary>
         </member>
         <member name="M:Ssz.Utils.DataSource.IValueSubscription.Update(Ssz.Utils.Any)">
@@ -2133,7 +2337,7 @@
                 implement this field, but you shouldn't change its value.
             </summary>
         </member>
-        <member name="M:Ssz.Utils.DataSource.ReadOnceValueSubscription.#ctor(Ssz.Utils.DataSource.IDataSource,System.String,System.Action{Ssz.Utils.Any})">
+        <member name="M:Ssz.Utils.DataSource.ReadOnceValueSubscription.#ctor(Ssz.Utils.DataSource.IDataProvider,System.String,System.Action{Ssz.Utils.Any})">
             <summary>
                 Is used to one-time read value.
                 Callback is invoked when value is not null (value.ValueTypeCode != TypeCode.Empty)        
@@ -2141,7 +2345,7 @@
         </member>
         <member name="P:Ssz.Utils.DataSource.ReadOnceValueSubscription.ModelId">
             <summary>
-                Id actually used for OPC subscription. Initialized after constructor.
+                Id actually used for subscription. Initialized after constructor.
             </summary>
         </member>
         <member name="P:Ssz.Utils.DataSource.ReadOnceValueSubscription.Ssz#Utils#DataSource#IValueSubscription#Obj">
@@ -2155,7 +2359,22 @@
             </summary>
             <param name="value"></param>
         </member>
-        <member name="M:Ssz.Utils.DataSource.ValueSubscription.#ctor(Ssz.Utils.DataSource.IDataSource,System.String,System.Action{Ssz.Utils.Any,Ssz.Utils.Any})">
+        <member name="M:Ssz.Utils.DataSource.TypeId.#ctor(System.Type)">
+            <summary>
+                Construct a Type LocalId given a .NET / CLI Type.
+            </summary>
+            <param name="id">
+                The .NET / CLI Type for which the TypeId is being constructed.
+            </param>
+        </member>
+        <member name="M:Ssz.Utils.DataSource.ValueStatusTimestamp.ToString">
+            <summary>
+                Provides an simple overload for the ToString() method that combines the
+                data type, timestamp, status code, and value into a single string.
+            </summary>
+            <returns> </returns>
+        </member>
+        <member name="M:Ssz.Utils.DataSource.ValueSubscription.#ctor(Ssz.Utils.DataSource.IDataProvider,System.String,System.Action{Ssz.Utils.Any,Ssz.Utils.Any})">
             <summary>
                 Is used to subscribe for value updating and to write values.
                 valueChangedAction(oldValue, newValue) is invoked when Value property changed. Initial Value property is Any(null).        
@@ -2163,7 +2382,7 @@
         </member>
         <member name="P:Ssz.Utils.DataSource.ValueSubscription.ModelId">
             <summary>
-                Id actually used for OPC subscription. Initialized after constructor.       
+                Id actually used for subscription. Initialized after constructor.       
             </summary>
         </member>
         <member name="P:Ssz.Utils.DataSource.ValueSubscription.Ssz#Utils#DataSource#IValueSubscription#Obj">
