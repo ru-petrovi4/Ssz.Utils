@@ -31,12 +31,12 @@ namespace Ssz.Xi.Client
         /// <summary>
         ///     Xi System Name.
         /// </summary>
-        public string[] SystemNames
+        public string SystemNameToConnect
         {
             get
             {
                 if (!IsInitialized) throw new Exception("Not Initialized");
-                return _systemNames;
+                return _systemNameToConnect;
             }
         }
 
@@ -114,10 +114,10 @@ namespace Ssz.Xi.Client
         /// <param name="serverAddress"></param>
         /// <param name="applicationName"></param>
         /// <param name="workstationName"></param>
-        /// <param name="systemNames"></param>
+        /// <param name="systemNameToConnect"></param>
         /// <param name="contextParams"></param>
         public void Initialize(IDispatcher? сallbackDispatcher, bool elementValueListCallbackIsEnabled, string serverAddress,
-            string applicationName, string workstationName, string[] systemNames, CaseInsensitiveDictionary<string> contextParams)
+            string applicationName, string workstationName, string systemNameToConnect, CaseInsensitiveDictionary<string> contextParams)
         {
             Close();            
 
@@ -126,10 +126,10 @@ namespace Ssz.Xi.Client
             _сallbackDispatcher = сallbackDispatcher;
             _elementValueListCallbackIsEnabled = elementValueListCallbackIsEnabled;
             _serverAddress = serverAddress;
-            _systemNames = systemNames;
-            _xiDataListItemsManager.XiSystem = _systemNames.FirstOrDefault() ?? @"";
-            _xiEventListItemsManager.XiSystem = _systemNames.FirstOrDefault() ?? @"";
-            _xiDataJournalListItemsManager.XiSystem = _systemNames.FirstOrDefault() ?? @"";
+            _systemNameToConnect = systemNameToConnect;
+            _xiDataListItemsManager.XiSystem = _systemNameToConnect;
+            _xiEventListItemsManager.XiSystem = _systemNameToConnect;
+            _xiDataJournalListItemsManager.XiSystem = _systemNameToConnect;
             _applicationName = applicationName;            
             _workstationName = workstationName;            
             if (contextParams != null) _contextParams = contextParams;            
@@ -556,7 +556,7 @@ namespace Ssz.Xi.Client
         /// <summary>
         ///     Xi System Name.
         /// </summary>
-        private string[] _systemNames = new string[0];
+        private string _systemNameToConnect = @"";
 
         /// <summary>
         ///     Used in Xi Context initialization.

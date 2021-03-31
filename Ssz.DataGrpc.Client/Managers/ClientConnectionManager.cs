@@ -96,12 +96,17 @@ namespace Ssz.DataGrpc.Client.Managers
         #region public functions
 
         /// <summary>
-        ///     This method is used to connect to the server and establish a context with it.
+        /// 
         /// </summary>
+        /// <param name="serverAddress"></param>
+        /// <param name="applicationName"></param>
+        /// <param name="workstationName"></param>
+        /// <param name="systemNameToConnect"></param>
+        /// <param name="contextParams"></param>
         public void InitiateConnection(string serverAddress,
             string applicationName,
             string workstationName,
-            string[] systemNames,
+            string systemNameToConnect,
             CaseInsensitiveDictionary<string> contextParams)
         {
             if (_disposed) throw new ObjectDisposedException(@"Cannot access a disposed DataGrpcServerProxy.");
@@ -129,7 +134,7 @@ namespace Ssz.DataGrpc.Client.Managers
                             workstationName,
                             (uint)contextTimeout.TotalMilliseconds,
                             (uint)Thread.CurrentThread.CurrentCulture.LCID,
-                            systemNames,
+                            systemNameToConnect,
                             contextParams
                             );
 

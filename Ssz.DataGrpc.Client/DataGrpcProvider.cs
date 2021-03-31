@@ -48,12 +48,12 @@ namespace Ssz.DataGrpc.Client
         /// <summary>
         ///     DataGrpc Systems Names.
         /// </summary>
-        public string[] SystemNames
+        public string SystemNameToConnect
         {
             get
             {
                 if (!IsInitialized) throw new Exception("Not Initialized");
-                return _systemNames;
+                return _systemNameToConnect;
             }
         }
 
@@ -134,7 +134,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="systemNames"></param>
         /// <param name="contextParams"></param>
         public void Initialize(IDispatcher? сallbackDispatcher, bool elementValueListCallbackIsEnabled, string serverAddress,
-            string applicationName, string workstationName, string[] systemNames, CaseInsensitiveDictionary<string> contextParams)
+            string applicationName, string workstationName, string systemNameToConnect, CaseInsensitiveDictionary<string> contextParams)
         {
             Close();            
 
@@ -145,7 +145,7 @@ namespace Ssz.DataGrpc.Client
             _serverAddress = serverAddress;            
             _applicationName = applicationName;            
             _workstationName = workstationName;
-            _systemNames = systemNames;
+            _systemNameToConnect = systemNameToConnect;
             _contextParams = contextParams;            
 
             //string pollIntervalMsString =
@@ -448,7 +448,7 @@ namespace Ssz.DataGrpc.Client
                         
 
                         _clientConnectionManager.InitiateConnection(_serverAddress, _applicationName,
-                            _workstationName, _systemNames, _contextParams);                        
+                            _workstationName, _systemNameToConnect, _contextParams);                        
 
                         _logger.LogDebug("End Connecting");
 
@@ -546,7 +546,7 @@ namespace Ssz.DataGrpc.Client
         /// <summary>
         ///     DataGrpc Systems Names.
         /// </summary>
-        private string[] _systemNames = new string[0];
+        private string _systemNameToConnect = @"";
 
         /// <summary>
         ///     Used in DataGrpc Context initialization.

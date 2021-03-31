@@ -82,7 +82,7 @@ message InitiateRequest {
   string workstation_name = 2;     
   uint32 context_timeout_ms = 3;
   uint32 locale_id = 4;
-  repeated string system_names = 5; 
+  string system_name_to_connect = 5; 
   map<string, string> context_params = 6;
 }
 

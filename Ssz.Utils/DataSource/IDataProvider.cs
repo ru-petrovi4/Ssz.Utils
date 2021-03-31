@@ -11,7 +11,7 @@ namespace Ssz.Utils.DataSource
     {
         string ServerAddress { get; }
 
-        string[] SystemNames { get; }
+        string SystemNameToConnect { get; }
 
         string ApplicationName { get; }
 
@@ -32,7 +32,7 @@ namespace Ssz.Utils.DataSource
         event Action Disconnected;
 
         void Initialize(IDispatcher? сallbackDispatcher, bool elementValueListCallbackIsEnabled, string serverAddress,
-            string applicationName, string workstationName, string[] systemNames, CaseInsensitiveDictionary<string> contextParams);
+            string applicationName, string workstationName, string systemNameToConnect, CaseInsensitiveDictionary<string> contextParams);
 
         void Close();
         

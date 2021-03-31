@@ -4152,7 +4152,7 @@
                 Xi Server connection string.
             </summary>
         </member>
-        <member name="P:Ssz.Xi.Client.XiDataProvider.SystemNames">
+        <member name="P:Ssz.Xi.Client.XiDataProvider.SystemNameToConnect">
             <summary>
                 Xi System Name.
             </summary>
@@ -4195,7 +4195,7 @@
                 Occurs after disconnected from model.
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.Initialize(Ssz.Utils.IDispatcher,System.Boolean,System.String,System.String,System.String,System.String[],Ssz.Utils.CaseInsensitiveDictionary{System.String})">
+        <member name="M:Ssz.Xi.Client.XiDataProvider.Initialize(Ssz.Utils.IDispatcher,System.Boolean,System.String,System.String,System.String,System.String,Ssz.Utils.CaseInsensitiveDictionary{System.String})">
             <summary>
             
             </summary>
@@ -4204,7 +4204,7 @@
             <param name="serverAddress"></param>
             <param name="applicationName"></param>
             <param name="workstationName"></param>
-            <param name="systemNames"></param>
+            <param name="systemNameToConnect"></param>
             <param name="contextParams"></param>
         </member>
         <member name="M:Ssz.Xi.Client.XiDataProvider.AddItem(System.String,Ssz.Utils.DataSource.IValueSubscription)">
@@ -4268,7 +4268,7 @@
                 Xi Server connection string.
             </summary>
         </member>
-        <member name="F:Ssz.Xi.Client.XiDataProvider._systemNames">
+        <member name="F:Ssz.Xi.Client.XiDataProvider._systemNameToConnect">
             <summary>
                 Xi System Name.
             </summary>

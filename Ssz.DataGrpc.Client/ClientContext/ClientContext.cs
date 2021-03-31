@@ -34,7 +34,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="workstationName"></param>
         /// <param name="serverContextTimeoutMs"></param>
         /// <param name="localeId"></param>
-        /// <param name="systemNames"></param>
+        /// <param name="systemNameToConnect"></param>
         /// <param name="contextParams"></param>
         public ClientContext(ILogger<DataGrpcProvider> logger,
             DataAccess.DataAccessClient resourceManagementClient,            
@@ -42,7 +42,7 @@ namespace Ssz.DataGrpc.Client
             string workstationName,            
             uint serverContextTimeoutMs,
             uint localeId,
-            string[] systemNames,
+            string systemNameToConnect,
             CaseInsensitiveDictionary<string> contextParams)
         {
             _logger = logger;
@@ -57,7 +57,7 @@ namespace Ssz.DataGrpc.Client
                 ContextTimeoutMs = serverContextTimeoutMs,
                 LocaleId = localeId,
             };
-            initiateRequest.SystemNames.Add(systemNames);
+            initiateRequest.SystemNameToConnect = systemNameToConnect;
             initiateRequest.ContextParams.Add(contextParams);
 
             InitiateReply initiateReply = _resourceManagementClient.Initiate(initiateRequest);
