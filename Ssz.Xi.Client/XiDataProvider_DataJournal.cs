@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Ssz.Utils;
+using Ssz.Utils.DataSource;
 using Ssz.Xi.Client.Api;
 using Ssz.Xi.Client.Api.ListItems;
 using Ssz.Xi.Client.Api.Lists;
@@ -36,44 +37,66 @@ namespace Ssz.Xi.Client
             _xiDataJournalListItemsManager.RemoveItem(valueSubscription);
         }
 
-        /// <summary>        
-        ///   Result.Count == valueSubscriptionsList.Count or Result == Null, if failed.
+        /// <summary>
+        /// 
         /// </summary>
-        /// <param name="firstTimeStamp"></param>
-        /// <param name="secondTimeStamp"></param>
+        /// <param name="firstTimestampUtc"></param>
+        /// <param name="secondTimestampUtc"></param>
         /// <param name="numValuesPerDataObject"></param>
-        /// <param name="valueSubscriptionsList"></param>
-        /// <returns></returns>
-        public List<XiValueStatusTimestamp[]?>? HdaReadJournalDataForTimeInterval(FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp, uint numValuesPerDataObject, IEnumerable<object> valueSubscriptionsList)
+        /// <param name="calculation"></param>
+        /// <param name="valueSubscriptionsCollection"></param>
+        /// <param name="setResultAction"></param>
+        public void HdaReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerDataObject, Ssz.Utils.DataSource.TypeId calculation, object[] valueSubscriptionsCollection,
+            Action<ValueStatusTimestamp[][]?> setResultAction)
         {
             var xiList = _xiDataJournalListItemsManager.XiList;
-            if (xiList == null || xiList.Disposed) return null;
+            if (xiList == null || xiList.Disposed)
+            {
+                setResultAction(null);
+                return;
+            }
 
             try
             {
-                xiList.ReadJournalDataForTimeInterval(firstTimeStamp, secondTimeStamp,
+                var firstTimestamp = new FilterCriterion
+                {
+                    OperandName = FilterOperandNames.Timestamp,
+                    ComparisonValue = firstTimestampUtc,
+                    Operator = FilterOperator.GreaterThan
+                };
+
+                var secondTimestamp = new FilterCriterion
+                {
+                    OperandName = FilterOperandNames.Timestamp,
+                    ComparisonValue = secondTimestampUtc,
+                    Operator = FilterOperator.LessThanOrEqual
+                };
+
+                xiList.ReadJournalDataForTimeInterval(firstTimestamp, secondTimestamp,
                     numValuesPerDataObject, null);
 
-                var result = new List<XiValueStatusTimestamp[]?>();
-                foreach (var valueSubscription in valueSubscriptionsList)
+                var result = new List<ValueStatusTimestamp[]>();
+                foreach (var valueSubscription in valueSubscriptionsCollection)
                 {
                     var modelItem = _xiDataJournalListItemsManager.GetModelItem(valueSubscription);
                     if (modelItem != null && modelItem.XiListItemWrapper != null && modelItem.XiListItemWrapper.XiListItem != null)
                     {
-                        XiValueStatusTimestamp[] vstSet =
+                        ValueStatusTimestamp[] vstSet =
                             modelItem.XiListItemWrapper.XiListItem.GetExistingOrNewValueStatusTimestampSet().ToArray();
                         result.Add(vstSet);
                     }
                     else
                     {
-                        result.Add(null);
+                        result.Add(new ValueStatusTimestamp[0]);
                     }
                 }
-                return result;
+                setResultAction(result.ToArray());
+                return;                
             }
             catch (Exception)
             {
-                return null;
+                setResultAction(null);
+                return;
             }
         }
 

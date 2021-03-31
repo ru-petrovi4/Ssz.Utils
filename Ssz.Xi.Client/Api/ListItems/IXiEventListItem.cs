@@ -4,6 +4,6 @@ namespace Ssz.Xi.Client.Api.ListItems
 {
     public interface IXiEventListItem
     {
-        EventMessage EventMessage { get; }
+        Ssz.Utils.DataSource.EventMessage EventMessage { get; }
     }
 }

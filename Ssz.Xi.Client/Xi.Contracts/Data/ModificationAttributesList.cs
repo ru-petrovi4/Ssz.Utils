@@ -29,7 +29,7 @@ namespace Xi.Contracts.Data
 		/// <summary>
 		/// The time that the modification was performed.
 		/// </summary>
-		[DataMember] public DateTime[]? DoubleModificationTimeStamps { get; private set; }
+		[DataMember] public DateTime[]? DoubleModificationTimestamps { get; private set; }
 
 		/// <summary>
 		/// The type of modification performed. 
@@ -45,7 +45,7 @@ namespace Xi.Contracts.Data
 		/// <summary>
 		/// The time that the modification was performed.
 		/// </summary>
-		[DataMember] public DateTime[]? LongModificationTimeStamps { get; private set; }
+		[DataMember] public DateTime[]? LongModificationTimestamps { get; private set; }
 
 		/// <summary>
 		/// The type of modification performed. 
@@ -61,7 +61,7 @@ namespace Xi.Contracts.Data
 		/// <summary>
 		/// The time that the modification was performed.
 		/// </summary>
-		[DataMember] public DateTime[]? ObjectModificationTimeStamps { get; private set; }
+		[DataMember] public DateTime[]? ObjectModificationTimestamps { get; private set; }
 
 		/// <summary>
 		/// The type of modification performed. 
@@ -79,48 +79,48 @@ namespace Xi.Contracts.Data
 		/// This constructor initializes a ModificationAttributesList object with arrays of the 
 		/// specified sizes.
 		/// </summary>
-		/// <param name="doubleArraySize">The size of the DoubleModificationTimeStamps, 
+		/// <param name="doubleArraySize">The size of the DoubleModificationTimestamps, 
 		/// DoubleModificationTypes, and the DoubleOperatorNames arrays.</param>
-		/// <param name="longArraySize">The size of the LongModificationTimeStamps, 
+		/// <param name="longArraySize">The size of the LongModificationTimestamps, 
 		/// LongModificationTypes, and the LongOperatorNames arrays.</param>
-		/// <param name="objectArraySize">The size of the ObjectModificationTimeStamps, 
+		/// <param name="objectArraySize">The size of the ObjectModificationTimestamps, 
 		/// ObjectModificationTypes, and the ObjectOperatorNames arrays.</param>
 		public ModificationAttributesList(int doubleArraySize, int longArraySize, int objectArraySize)
 			: base(doubleArraySize, longArraySize, objectArraySize)
 		{
 			if (0 == doubleArraySize)
 			{
-				DoubleModificationTimeStamps = null;
+				DoubleModificationTimestamps = null;
 				DoubleModificationTypes = null;
 				DoubleOperatorNames = null;
 			}
 			else
 			{
-				DoubleModificationTimeStamps = new DateTime[doubleArraySize];
+				DoubleModificationTimestamps = new DateTime[doubleArraySize];
 				DoubleModificationTypes = new ModificationType[doubleArraySize];
 				DoubleOperatorNames = new string[doubleArraySize];
 			}
 			if (0 == longArraySize)
 			{
-				LongModificationTimeStamps = null;
+				LongModificationTimestamps = null;
 				LongModificationTypes = null;
 				LongOperatorNames = null;
 			}
 			else
 			{
-				LongModificationTimeStamps = new DateTime[longArraySize];
+				LongModificationTimestamps = new DateTime[longArraySize];
 				LongModificationTypes = new ModificationType[longArraySize];
 				LongOperatorNames = new string[longArraySize];
 			}
 			if (0 == objectArraySize)
 			{
-				ObjectModificationTimeStamps = null;
+				ObjectModificationTimestamps = null;
 				ObjectModificationTypes = null;
 				ObjectOperatorNames = null;
 			}
 			else
 			{
-				ObjectModificationTimeStamps = new DateTime[objectArraySize];
+				ObjectModificationTimestamps = new DateTime[objectArraySize];
 				ObjectModificationTypes = new ModificationType[objectArraySize];
 				ObjectOperatorNames = new string[objectArraySize];
 			}
@@ -128,74 +128,74 @@ namespace Xi.Contracts.Data
 
 		/// <summary>
 		/// This method is used to set the entries at a specific index in the 
-		/// DoubleModificationTimeStamps, DoubleModificationTypes, and the 
+		/// DoubleModificationTimestamps, DoubleModificationTypes, and the 
 		/// DoubleOperatorNames arrays.
 		/// </summary>
 		/// <param name="idx">The index of the entries to be updated.</param>
-		/// <param name="modificationTimeStamp">The modificationTimeStamp to be set for the entry.</param>
+		/// <param name="modificationTimestamp">The modificationTimestamp to be set for the entry.</param>
 		/// <param name="modificationType">The modificationType to be set for the entry.</param>
 		/// <param name="operatorName">The operatorName to be set for the entry.</param>
 		/// <param name="statusCode">The statusCode to be set for the entry.</param>
-		/// <param name="timeStamp">The timeStamp to be set for the entry.</param>
+		/// <param name="timestamp">The timestamp to be set for the entry.</param>
 		/// <param name="value">The double value to be set for the entry.</param>
-		public void SetDouble(int idx, DateTime modificationTimeStamp, ModificationType modificationType, 
-			string operatorName, uint statusCode, DateTime timeStamp, double value)
+		public void SetDouble(int idx, DateTime modificationTimestamp, ModificationType modificationType, 
+			string operatorName, uint statusCode, DateTime timestamp, double value)
 		{
-			if (DoubleModificationTimeStamps == null ||
+			if (DoubleModificationTimestamps == null ||
 				DoubleModificationTypes == null ||
 				DoubleOperatorNames == null) throw new InvalidOperationException();
-			DoubleModificationTimeStamps[idx] = modificationTimeStamp;
+			DoubleModificationTimestamps[idx] = modificationTimestamp;
 			DoubleModificationTypes[idx] = modificationType;
 			DoubleOperatorNames[idx] = operatorName;
-			base.SetDouble(idx, statusCode, timeStamp, value);
+			base.SetDouble(idx, statusCode, timestamp, value);
 		}
 
 		/// <summary>
 		/// This method is used to set the entries at a specific index in the 
-		/// LongModificationTimeStamps, LongModificationTypes, and the 
+		/// LongModificationTimestamps, LongModificationTypes, and the 
 		/// LonOperatorNames arrays
 		/// </summary>
 		/// <param name="idx">The index of the entries to be updated.</param>
-		/// <param name="modificationTimeStamp">The modificationTimeStamp to be set for the entry.</param>
+		/// <param name="modificationTimestamp">The modificationTimestamp to be set for the entry.</param>
 		/// <param name="modificationType">The modificationType to be set for the entry.</param>
 		/// <param name="operatorName">The operatorName to be set for the entry.</param>
 		/// <param name="statusCode">The statusCode to be set for the entry.</param>
-		/// <param name="timeStamp">The timeStamp to be set for the entry.</param>
+		/// <param name="timestamp">The timestamp to be set for the entry.</param>
 		/// <param name="value">The long value to be set for the entry.</param>
-		public void SetUint(int idx, DateTime modificationTimeStamp, ModificationType modificationType,
-			string operatorName, uint statusCode, DateTime timeStamp, uint value)
+		public void SetUint(int idx, DateTime modificationTimestamp, ModificationType modificationType,
+			string operatorName, uint statusCode, DateTime timestamp, uint value)
 		{
-			if (LongModificationTimeStamps == null ||
+			if (LongModificationTimestamps == null ||
 				LongModificationTypes == null ||
 				LongOperatorNames == null) throw new InvalidOperationException();
-			LongModificationTimeStamps[idx] = modificationTimeStamp;
+			LongModificationTimestamps[idx] = modificationTimestamp;
 			LongModificationTypes[idx] = modificationType;
 			LongOperatorNames[idx] = operatorName;
-			base.SetUint(idx, statusCode, timeStamp, value);
+			base.SetUint(idx, statusCode, timestamp, value);
 		}
 
 		/// <summary>
 		/// This method is used to set the entries at a specific index in the 
-		/// ObjectModificationTimeStamps, ObjectModificationTypes, and the 
+		/// ObjectModificationTimestamps, ObjectModificationTypes, and the 
 		/// ObjectOperatorNames arrays.
 		/// </summary>
 		/// <param name="idx">The index of the entries to be updated.</param>
-		/// <param name="modificationTimeStamp">The modificationTimeStamp to be set for the entry.</param>
+		/// <param name="modificationTimestamp">The modificationTimestamp to be set for the entry.</param>
 		/// <param name="modificationType">The modificationType to be set for the entry.</param>
 		/// <param name="operatorName">The operatorName to be set for the entry.</param>
 		/// <param name="statusCode">The statusCode to be set for the entry.</param>
-		/// <param name="timeStamp">The timeStamp to be set for the entry.</param>
+		/// <param name="timestamp">The timestamp to be set for the entry.</param>
 		/// <param name="value">The object value to be set for the entry.</param>
-		public void SetObject(int idx, DateTime modificationTimeStamp, ModificationType modificationType,
-			string operatorName, uint statusCode, DateTime timeStamp, object value)
+		public void SetObject(int idx, DateTime modificationTimestamp, ModificationType modificationType,
+			string operatorName, uint statusCode, DateTime timestamp, object value)
 		{
-			if (ObjectModificationTimeStamps == null ||
+			if (ObjectModificationTimestamps == null ||
 				ObjectModificationTypes == null ||
 				ObjectOperatorNames == null) throw new InvalidOperationException();
-			ObjectModificationTimeStamps[idx] = modificationTimeStamp;
+			ObjectModificationTimestamps[idx] = modificationTimestamp;
 			ObjectModificationTypes[idx] = modificationType;
 			ObjectOperatorNames[idx] = operatorName;
-			base.SetObject(idx, statusCode, timeStamp, value);
+			base.SetObject(idx, statusCode, timestamp, value);
 		}
 
 	}

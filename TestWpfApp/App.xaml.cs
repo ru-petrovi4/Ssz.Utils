@@ -1,4 +1,5 @@
-﻿using Ssz.Xi.Client;
+﻿using Ssz.Utils.DataSource;
+using Ssz.Xi.Client;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -14,7 +15,7 @@ namespace TestWpfApp
     /// </summary>
     public partial class App : Application
     {
-        public static readonly XiDataProvider XiDataProvider = new XiDataProvider();
+        public static readonly IDataProvider DataProvider = new XiDataProvider();
     }
     
 }

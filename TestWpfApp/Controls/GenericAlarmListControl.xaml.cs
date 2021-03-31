@@ -4,10 +4,10 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Xi.Contracts.Data;
 using Ssz.Utils.Wpf;
 using TestWpfApp;
 using Ssz.WpfHmi.Common.ControlsRuntime.GenericRuntime;
+using Ssz.Utils.DataSource;
 
 namespace Ssz.WpfHmi.Common.ControlsCommon
 {
@@ -41,7 +41,7 @@ namespace Ssz.WpfHmi.Common.ControlsCommon
                 }
             }
 
-            if (eventIds.Count > 0) App.XiDataProvider.AckAlarms(eventIds);
+            if (eventIds.Count > 0) App.DataProvider.AckAlarms(eventIds.ToArray());
         }
 
         #endregion

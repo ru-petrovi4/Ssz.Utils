@@ -69,12 +69,12 @@ namespace Ssz.DataGrpc.Client.Managers
         /// <summary>        
         ///   Result.Length == valueSubscriptionsList.Length or Result == Null, if failed.
         /// </summary>
-        /// <param name="firstTimeStamp"></param>
-        /// <param name="secondTimeStamp"></param>
+        /// <param name="firstTimestamp"></param>
+        /// <param name="secondTimestamp"></param>
         /// <param name="numValuesPerDataObject"></param>
         /// <param name="valueSubscriptionsCollection"></param>
         /// <returns></returns>
-        public void HdaReadElementValueJournals(DateTime firstTimeStampUtc, DateTime secondTimeStampUtc, uint numValuesPerDataObject, Ssz.Utils.DataSource.TypeId calculation,
+        public void HdaReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerDataObject, Ssz.Utils.DataSource.TypeId calculation,
             object[] valueSubscriptionsCollection,
             Action<ValueStatusTimestamp[][]?> setResultAction)
         {
@@ -99,7 +99,7 @@ namespace Ssz.DataGrpc.Client.Managers
                         }
                     }
 
-                    result = dataGrpcList.ReadElementValueJournals(firstTimeStampUtc, secondTimeStampUtc, numValuesPerDataObject, calculation, serverAliases.ToArray());
+                    result = dataGrpcList.ReadElementValueJournals(firstTimestampUtc, secondTimestampUtc, numValuesPerDataObject, calculation, serverAliases.ToArray());
                 }
                 else
                 {

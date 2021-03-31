@@ -19,14 +19,14 @@ namespace Ssz.DataGrpc.Client
         /// 
         /// </summary>
         /// <param name="dataGrpcElementValueJournalList"></param>
-        /// <param name="firstTimeStampUtc"></param>
-        /// <param name="secondTimeStampUtc"></param>
+        /// <param name="firstTimestampUtc"></param>
+        /// <param name="secondTimestampUtc"></param>
         /// <param name="numValuesPerAlias"></param>
         /// <param name="calculation"></param>
         /// <param name="serverAliases"></param>
         /// <returns></returns>
-        public ValueStatusTimestamp[][] ReadElementValueJournals(ClientElementValueJournalList dataGrpcElementValueJournalList, DateTime firstTimeStampUtc,
-            DateTime secondTimeStampUtc,
+        public ValueStatusTimestamp[][] ReadElementValueJournals(ClientElementValueJournalList dataGrpcElementValueJournalList, DateTime firstTimestampUtc,
+            DateTime secondTimestampUtc,
             uint numValuesPerAlias, Ssz.Utils.DataSource.TypeId calculation, uint[] serverAliases)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
@@ -41,8 +41,8 @@ namespace Ssz.DataGrpc.Client
                     {
                         ContextId = _serverContextId,
                         ListServerAlias = dataGrpcElementValueJournalList.ListServerAlias,
-                        FirstTimeStamp = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(firstTimeStampUtc),
-                        SecondTimeStamp = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(secondTimeStampUtc),
+                        FirstTimestamp = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(firstTimestampUtc),
+                        SecondTimestamp = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(secondTimestampUtc),
                         NumValuesPerAlias = numValuesPerAlias,
                         Calculation = new Server.TypeId(calculation)
                     };

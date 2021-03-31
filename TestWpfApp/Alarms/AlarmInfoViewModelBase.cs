@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
+using Ssz.Utils.DataSource;
 using Ssz.Utils.Wpf;
-using Xi.Contracts.Data;
 
 namespace Ssz.WpfHmi.Common.ModelData.Events
 {

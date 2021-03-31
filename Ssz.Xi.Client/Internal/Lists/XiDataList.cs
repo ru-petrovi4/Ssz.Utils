@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Ssz.Utils;
+using Ssz.Utils.DataSource;
 using Ssz.Xi.Client.Api;
 using Ssz.Xi.Client.Api.EventHandlers;
 using Ssz.Xi.Client.Api.ListItems;
@@ -214,10 +215,10 @@ namespace Ssz.Xi.Client.Internal.Lists
 
             foreach (XiDataListItem item in ListItemsManager)
             {
-                if (item.PendingWriteXiValueStatusTimestamp != null &&
-                    item.PendingWriteXiValueStatusTimestamp.Value.ValueTypeCode != TypeCode.Empty)
+                if (item.PendingWriteValueStatusTimestamp != null &&
+                    item.PendingWriteValueStatusTimestamp.Value.ValueTypeCode != TypeCode.Empty)
                 {
-                    switch (item.PendingWriteXiValueStatusTimestamp.Value.ValueStorageType)
+                    switch (item.PendingWriteValueStatusTimestamp.Value.ValueStorageType)
                     {
                         case Any.StorageType.Double:
                             dblCount += 1;
@@ -242,28 +243,28 @@ namespace Ssz.Xi.Client.Internal.Lists
                 foreach (var kvp in writeValueDictionary)
                 {
                     XiDataListItem item = kvp.Value;
-                    if (item.PendingWriteXiValueStatusTimestamp != null &&
-                        item.PendingWriteXiValueStatusTimestamp.Value.ValueTypeCode != TypeCode.Empty)
+                    if (item.PendingWriteValueStatusTimestamp != null &&
+                        item.PendingWriteValueStatusTimestamp.Value.ValueTypeCode != TypeCode.Empty)
                     {
-                        switch (item.PendingWriteXiValueStatusTimestamp.Value.ValueStorageType)
+                        switch (item.PendingWriteValueStatusTimestamp.Value.ValueStorageType)
                         {
                             case Any.StorageType.Double:
                                 writeValueArrays.SetDouble(dblIdx++, item.ServerAlias,
-                                    item.PendingWriteXiValueStatusTimestamp.StatusCode,
-                                    item.PendingWriteXiValueStatusTimestamp.TimestampUtc,
-                                    item.PendingWriteXiValueStatusTimestamp.Value.StorageDouble);
+                                    item.PendingWriteValueStatusTimestamp.StatusCode,
+                                    item.PendingWriteValueStatusTimestamp.TimestampUtc,
+                                    item.PendingWriteValueStatusTimestamp.Value.StorageDouble);
                                 break;
                             case Any.StorageType.UInt32:
                                 writeValueArrays.SetUint(intIdx++, item.ServerAlias,
-                                    item.PendingWriteXiValueStatusTimestamp.StatusCode,
-                                    item.PendingWriteXiValueStatusTimestamp.TimestampUtc,
-                                    item.PendingWriteXiValueStatusTimestamp.Value.StorageUInt32);
+                                    item.PendingWriteValueStatusTimestamp.StatusCode,
+                                    item.PendingWriteValueStatusTimestamp.TimestampUtc,
+                                    item.PendingWriteValueStatusTimestamp.Value.StorageUInt32);
                                 break;
                             case Any.StorageType.Object:
                                 writeValueArrays.SetObject(objIdx++, item.ServerAlias,
-                                    item.PendingWriteXiValueStatusTimestamp.StatusCode,
-                                    item.PendingWriteXiValueStatusTimestamp.TimestampUtc,
-                                    item.PendingWriteXiValueStatusTimestamp.Value.StorageObject);
+                                    item.PendingWriteValueStatusTimestamp.StatusCode,
+                                    item.PendingWriteValueStatusTimestamp.TimestampUtc,
+                                    item.PendingWriteValueStatusTimestamp.Value.StorageObject);
                                 break;
                         }
                     }
@@ -331,7 +332,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         /// <param name="changedListItems"></param>
         /// <param name="changedValues"></param>
         public void RaiseInformationReportEvent(IEnumerable<IXiDataListItem> changedListItems,
-            IEnumerable<XiValueStatusTimestamp> changedValues)
+            IEnumerable<ValueStatusTimestamp> changedValues)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiDataList.");
 
@@ -394,11 +395,11 @@ namespace Ssz.Xi.Client.Internal.Lists
                         ListItemsManager.TryGetValue(readValueArrays.DoubleAlias[idx], out item);
                         if (item != null && readValueArrays.DoubleValues != null &&
                             readValueArrays.DoubleStatusCodes != null &&
-                            readValueArrays.DoubleTimeStamps != null)
+                            readValueArrays.DoubleTimestamps != null)
                         {
                             item.UpdateValue(readValueArrays.DoubleValues[idx],
                                 readValueArrays.DoubleStatusCodes[idx],
-                                readValueArrays.DoubleTimeStamps[idx]
+                                readValueArrays.DoubleTimestamps[idx]
                                 );
                             if (changedListItems != null) changedListItems.Add(item);
                         }
@@ -422,10 +423,10 @@ namespace Ssz.Xi.Client.Internal.Lists
                         ListItemsManager.TryGetValue(readValueArrays.UintAlias[idx], out item);
                         if (item != null && readValueArrays.UintValues != null &&
                             readValueArrays.UintStatusCodes != null &&
-                            readValueArrays.UintTimeStamps != null)
+                            readValueArrays.UintTimestamps != null)
                         {
                             item.UpdateValue(readValueArrays.UintValues[idx], readValueArrays.UintStatusCodes[idx],
-                                readValueArrays.UintTimeStamps[idx]);
+                                readValueArrays.UintTimestamps[idx]);
                             if (changedListItems != null) changedListItems.Add(item);
                         }
                     }
@@ -438,10 +439,10 @@ namespace Ssz.Xi.Client.Internal.Lists
                         ListItemsManager.TryGetValue(readValueArrays.ObjectAlias[idx], out item);
                         if (item != null && readValueArrays.ObjectValues != null &&
                             readValueArrays.ObjectStatusCodes != null &&
-                            readValueArrays.ObjectTimeStamps != null)
+                            readValueArrays.ObjectTimestamps != null)
                         {
                             item.UpdateValue(readValueArrays.ObjectValues[idx], readValueArrays.ObjectStatusCodes[idx],
-                                readValueArrays.ObjectTimeStamps[idx]
+                                readValueArrays.ObjectTimestamps[idx]
                                 );
                             if (changedListItems != null) changedListItems.Add(item);
                         }

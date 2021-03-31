@@ -67,18 +67,18 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="firstTimeStamp"></param>
-        /// <param name="secondTimeStamp"></param>
+        /// <param name="firstTimestamp"></param>
+        /// <param name="secondTimestamp"></param>
         /// <param name="numValuesPerDataObject"></param>
         /// <param name="valueStatusTimestampSetCollection"></param>
-        public ValueStatusTimestamp[][] ReadElementValueJournals(DateTime firstTimeStamp, DateTime secondTimeStamp,
+        public ValueStatusTimestamp[][] ReadElementValueJournals(DateTime firstTimestamp, DateTime secondTimestamp,
             uint numValuesPerDataObject, Ssz.Utils.DataSource.TypeId calculation, uint[] serverAliases)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueJournalList.");
 
             return Context.ReadElementValueJournals(this,
-                firstTimeStamp,
-                secondTimeStamp,
+                firstTimestamp,
+                secondTimestamp,
                 numValuesPerDataObject,
                 calculation,
                 serverAliases);

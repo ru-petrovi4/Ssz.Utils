@@ -112,7 +112,7 @@ namespace Xi.Contracts.Data
 		/// <summary>
 		/// The array of timestamps.  All timestamps are UTC.
 		/// </summary>
-		[DataMember] public DateTime[]? DoubleTimeStamps;
+		[DataMember] public DateTime[]? DoubleTimestamps;
 
 		/// <summary>
 		/// The array of values. 
@@ -129,7 +129,7 @@ namespace Xi.Contracts.Data
 		/// <summary>
 		/// The array of timestamps.  All timestamps are UTC.
 		/// </summary>
-		[DataMember] public DateTime[]? UintTimeStamps;
+		[DataMember] public DateTime[]? UintTimestamps;
 
 		/// <summary>
 		/// The array of integer values.
@@ -146,7 +146,7 @@ namespace Xi.Contracts.Data
 		/// <summary>
 		/// The array of timestamps.  All timestamps are UTC.
 		/// </summary>
-		[DataMember] public DateTime[]? ObjectTimeStamps;
+		[DataMember] public DateTime[]? ObjectTimestamps;
 
 		/// <summary>
 		/// The array of values.
@@ -189,37 +189,37 @@ namespace Xi.Contracts.Data
 			if (0 == doubleArraySize)
 			{
 				DoubleStatusCodes = null;
-				DoubleTimeStamps = null;
+				DoubleTimestamps = null;
 				DoubleValues = null;
 			}
 			else
 			{
 				DoubleStatusCodes = new uint[doubleArraySize];
-				DoubleTimeStamps = new DateTime[doubleArraySize];
+				DoubleTimestamps = new DateTime[doubleArraySize];
 				DoubleValues = new double[doubleArraySize];
 			}
 			if (0 == uintArraySize)
 			{
 				UintStatusCodes = null;
-				UintTimeStamps = null;
+				UintTimestamps = null;
 				UintValues = null;
 			}
 			else
 			{
 				UintStatusCodes = new uint[uintArraySize];
-				UintTimeStamps = new DateTime[uintArraySize];
+				UintTimestamps = new DateTime[uintArraySize];
 				UintValues = new uint[uintArraySize];
 			}
 			if (0 == objectArraySize)
 			{
 				ObjectStatusCodes = null;
-				ObjectTimeStamps = null;
+				ObjectTimestamps = null;
 				ObjectValues = null;
 			}
 			else
 			{
 				ObjectStatusCodes = new uint[objectArraySize];
-				ObjectTimeStamps = new DateTime[objectArraySize];
+				ObjectTimestamps = new DateTime[objectArraySize];
 				ObjectValues = new object[objectArraySize];
 			}
 			ErrorInfo = null;
@@ -232,7 +232,7 @@ namespace Xi.Contracts.Data
 		/// <param name="doubleStatusCodes">
 		/// The status code array for double values.
 		/// </param>
-		/// <param name="doubleTimeStamps">
+		/// <param name="doubleTimestamps">
 		/// The timestamp array for double values.
 		/// </param>
 		/// <param name="doubleValues">
@@ -241,7 +241,7 @@ namespace Xi.Contracts.Data
 		/// <param name="uintStatusCodes">
 		/// The status code array for long values.
 		/// </param>
-		/// <param name="uintTimeStamps">
+		/// <param name="uintTimestamps">
 		/// The timestamp array for long values.
 		/// </param>
 		/// <param name="uintValues">
@@ -250,25 +250,25 @@ namespace Xi.Contracts.Data
 		/// <param name="objectStatusCodes">
 		/// The status code array for object values.
 		/// </param>
-		/// <param name="objectTimeStamps">
+		/// <param name="objectTimestamps">
 		/// The timestamp array for object values.
 		/// </param>
 		/// <param name="objectValues">
 		/// The array of object values.
 		/// </param>
 		public DataValueArrays(
-			ref uint[] doubleStatusCodes, ref DateTime[] doubleTimeStamps, ref double[] doubleValues,
-			ref uint[] uintStatusCodes, ref DateTime[] uintTimeStamps, ref uint[] uintValues,
-			ref uint[] objectStatusCodes, ref DateTime[] objectTimeStamps, ref object[] objectValues)
+			ref uint[] doubleStatusCodes, ref DateTime[] doubleTimestamps, ref double[] doubleValues,
+			ref uint[] uintStatusCodes, ref DateTime[] uintTimestamps, ref uint[] uintValues,
+			ref uint[] objectStatusCodes, ref DateTime[] objectTimestamps, ref object[] objectValues)
 		{
 			DoubleStatusCodes = doubleStatusCodes;
-			DoubleTimeStamps = doubleTimeStamps;
+			DoubleTimestamps = doubleTimestamps;
 			DoubleValues = doubleValues;
 			UintStatusCodes = uintStatusCodes;
-			UintTimeStamps = uintTimeStamps;
+			UintTimestamps = uintTimestamps;
 			UintValues = uintValues;
 			ObjectStatusCodes = objectStatusCodes;
-			ObjectTimeStamps = objectTimeStamps;
+			ObjectTimestamps = objectTimestamps;
 			ObjectValues = objectValues;
 			ErrorInfo = null;
 		}
@@ -280,13 +280,13 @@ namespace Xi.Contracts.Data
 		public void Clear()
 		{
 			DoubleStatusCodes = null;
-			DoubleTimeStamps = null;
+			DoubleTimestamps = null;
 			DoubleValues = null;
 			UintStatusCodes = null;
-			UintTimeStamps = null;
+			UintTimestamps = null;
 			UintValues = null;
 			ObjectStatusCodes = null;
-			ObjectTimeStamps = null;
+			ObjectTimestamps = null;
 			if (null != ObjectValues)
 				Array.Clear(ObjectValues, 0, ObjectValues.Length);
 			ObjectValues = null;
@@ -306,18 +306,18 @@ namespace Xi.Contracts.Data
 		/// <param name="statusCode">
 		/// The status code of the value.
 		/// </param>
-		/// <param name="timeStamp">
+		/// <param name="timestamp">
 		/// The timestamp of the value.</param>
 		/// <param name="value">
 		/// The double value.
 		/// </param>
-		public void SetDouble(int idx, uint statusCode, DateTime timeStamp, double value)
+		public void SetDouble(int idx, uint statusCode, DateTime timestamp, double value)
 		{
 			if (DoubleStatusCodes == null ||
-				DoubleTimeStamps == null ||
+				DoubleTimestamps == null ||
 				DoubleValues == null) throw new InvalidOperationException();
 			DoubleStatusCodes[idx] = statusCode;
-			DoubleTimeStamps[idx] = timeStamp;
+			DoubleTimestamps[idx] = timestamp;
 			DoubleValues[idx] = value;
 		}
 
@@ -332,19 +332,19 @@ namespace Xi.Contracts.Data
 		/// <param name="statusCode">
 		/// The status code of the value.
 		/// </param>
-		/// <param name="timeStamp">
+		/// <param name="timestamp">
 		/// The timestamp of the value.
 		/// </param>
 		/// <param name="value">
 		/// The long value.
 		/// </param>
-		public void SetUint(int idx, uint statusCode, DateTime timeStamp, uint value)
+		public void SetUint(int idx, uint statusCode, DateTime timestamp, uint value)
 		{
 			if (UintStatusCodes == null ||
-				UintTimeStamps == null ||
+				UintTimestamps == null ||
 				UintValues == null) throw new InvalidOperationException();
 			UintStatusCodes[idx] = statusCode;
-			UintTimeStamps[idx] = timeStamp;
+			UintTimestamps[idx] = timestamp;
 			UintValues[idx] = value;
 		}
 
@@ -359,19 +359,19 @@ namespace Xi.Contracts.Data
 		/// <param name="statusCode">
 		/// The status code of the value.
 		/// </param>
-		/// <param name="timeStamp">
+		/// <param name="timestamp">
 		/// The timestamp of the value.
 		/// </param>
 		/// <param name="value">
 		/// The object value.
 		/// </param>
-		public void SetObject(int idx, uint statusCode, DateTime timeStamp, object? value)
+		public void SetObject(int idx, uint statusCode, DateTime timestamp, object? value)
 		{
 			if (ObjectStatusCodes == null ||
-				ObjectTimeStamps == null ||
+				ObjectTimestamps == null ||
 				ObjectValues == null) throw new InvalidOperationException();
 			ObjectStatusCodes[idx] = statusCode;
-			ObjectTimeStamps[idx] = timeStamp;
+			ObjectTimestamps[idx] = timestamp;
 			ObjectValues[idx] = value;
 		}
 
@@ -381,7 +381,7 @@ namespace Xi.Contracts.Data
 		/// <param name="statusCodeArray">
 		/// The status code array.
 		/// </param>
-		/// <param name="timeStampArray">
+		/// <param name="timestampArray">
 		/// The timestamp array.
 		/// </param>
 		/// <param name="valueArray">
@@ -391,31 +391,31 @@ namespace Xi.Contracts.Data
 		/// True if the array could be set.
 		/// </returns>
 		public bool CreateDoubleArrays(uint[]? statusCodeArray,
-			DateTime[]? timeStampArray, double[]? valueArray)
+			DateTime[]? timestampArray, double[]? valueArray)
 		{
 			if (   (statusCodeArray == null)
-				&& (timeStampArray == null)
+				&& (timestampArray == null)
 				&& (valueArray == null)
 			   )
 			{
 				DoubleStatusCodes = null;
-				DoubleTimeStamps = null;
+				DoubleTimestamps = null;
 				DoubleValues = null;
 				return true;
 			}
-			else if (statusCodeArray == null || timeStampArray == null || valueArray == null)
+			else if (statusCodeArray == null || timestampArray == null || valueArray == null)
 			{
 				//EJL - not sure if this is the correct functionality.  Just preserving original coding
 				//while fixing up a klocwork check that found a null pointer use if one of the parameters 
 				//was null but the others weren't.  Presumably we won't ever hit this line of code.
 				return false;
 			}
-			else if ((statusCodeArray.Length == timeStampArray.Length)
+			else if ((statusCodeArray.Length == timestampArray.Length)
 					 && (statusCodeArray.Length == valueArray.Length)
 					)
 			{
 				DoubleStatusCodes = statusCodeArray;
-				DoubleTimeStamps = timeStampArray;
+				DoubleTimestamps = timestampArray;
 				DoubleValues = valueArray;
 				return true;
 			}
@@ -428,7 +428,7 @@ namespace Xi.Contracts.Data
 		/// <param name="statusCodeArray">
 		/// The status code array.
 		/// </param>
-		/// <param name="timeStampArray">
+		/// <param name="timestampArray">
 		/// The timestamp array.
 		/// </param>
 		/// <param name="valueArray">
@@ -438,31 +438,31 @@ namespace Xi.Contracts.Data
 		/// True if the array could be set.
 		/// </returns>
 		public bool CreateUintArrays(uint[]? statusCodeArray,
-			DateTime[]? timeStampArray, uint[]? valueArray)
+			DateTime[]? timestampArray, uint[]? valueArray)
 		{
 			if (   (statusCodeArray == null)
-				&& (timeStampArray == null)
+				&& (timestampArray == null)
 				&& (valueArray == null)
 			   )
 			{
 				UintStatusCodes = null;
-				UintTimeStamps = null;
+				UintTimestamps = null;
 				UintValues = null;
 				return true;
 			}
-			else if (statusCodeArray == null || timeStampArray == null || valueArray == null)
+			else if (statusCodeArray == null || timestampArray == null || valueArray == null)
 			{
 				//EJL - not sure if this is the correct functionality.  Just preserving original coding
 				//while fixing up a klocwork check that found a null pointer use if one of the parameters 
 				//was null but the others weren't.  Presumably we won't ever hit this line of code.
 				return false;
 			}
-			else if ((statusCodeArray.Length == timeStampArray.Length)
+			else if ((statusCodeArray.Length == timestampArray.Length)
 					 && (statusCodeArray.Length == valueArray.Length)
 					)
 			{
 				UintStatusCodes = statusCodeArray;
-				UintTimeStamps = timeStampArray;
+				UintTimestamps = timestampArray;
 				UintValues = valueArray;
 				return true;
 			}
@@ -475,7 +475,7 @@ namespace Xi.Contracts.Data
 		/// <param name="statusCodeArray">
 		/// The status code array.
 		/// </param>
-		/// <param name="timeStampArray">
+		/// <param name="timestampArray">
 		/// The timestamp array.
 		/// </param>
 		/// <param name="valueArray">
@@ -485,31 +485,31 @@ namespace Xi.Contracts.Data
 		/// True if the array could be set.
 		/// </returns>
 		public bool CreateObjectArrays(uint[]? statusCodeArray,
-			DateTime[]? timeStampArray, object[]? valueArray)
+			DateTime[]? timestampArray, object[]? valueArray)
 		{
 			if (   (statusCodeArray == null)
-				&& (timeStampArray == null)
+				&& (timestampArray == null)
 				&& (valueArray == null)
 			   )
 			{
 				ObjectStatusCodes = null;
-				ObjectTimeStamps = null;
+				ObjectTimestamps = null;
 				ObjectValues = null;
 				return true;
 			}
-			else if (statusCodeArray == null || timeStampArray == null || valueArray == null)
+			else if (statusCodeArray == null || timestampArray == null || valueArray == null)
 			{
 				//EJL - not sure if this is the correct functionality.  Just preserving original coding
 				//while fixing up a klocwork check that found a null pointer use if one of the parameters 
 				//was null but the others weren't.  Presumably we won't ever hit this line of code.
 				return false;
 			}
-			else if ((statusCodeArray.Length == timeStampArray.Length)
+			else if ((statusCodeArray.Length == timestampArray.Length)
 					 && (statusCodeArray.Length == valueArray.Length)
 					)
 			{
 				ObjectStatusCodes = statusCodeArray;
-				ObjectTimeStamps = timeStampArray;
+				ObjectTimestamps = timestampArray;
 				ObjectValues = valueArray;
 				return true;
 			}

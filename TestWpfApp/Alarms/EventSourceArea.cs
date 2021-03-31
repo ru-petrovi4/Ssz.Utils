@@ -26,7 +26,7 @@ namespace Ssz.WpfHmi.Common.ModelData.Events
             var alarmUnackedSubscribers = AlarmUnackedSubscribers;
             if (alarmUnackedSubscribers != null)
             {
-                if (App.XiDataProvider.IsConnected)
+                if (App.DataProvider.IsConnected)
                 {
                     bool anyUnacked = UnackedAlarmsCount > 0;
                     alarmUnackedSubscribers(new Any(anyUnacked));
@@ -43,7 +43,7 @@ namespace Ssz.WpfHmi.Common.ModelData.Events
             var alarmCategorySubscribers = AlarmCategorySubscribers;
             if (alarmCategorySubscribers != null)
             {
-                if (App.XiDataProvider.IsConnected)
+                if (App.DataProvider.IsConnected)
                 {
                     uint maxCategory = 0;
                     if (ActiveAlarmsCategories.Count > 0)

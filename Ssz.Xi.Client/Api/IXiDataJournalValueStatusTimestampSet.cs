@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ssz.Utils.DataSource;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Xi.Contracts.Data;
@@ -9,7 +10,7 @@ namespace Ssz.Xi.Client.Api
     /// 
     /// </summary>
     public interface IXiDataJournalValueStatusTimestampSet : IEnumerable,
-        IEnumerable<XiValueStatusTimestamp>
+        IEnumerable<ValueStatusTimestamp>
     {
         /// <summary>
         ///     The type of calculation used to create the value set as defined by the
@@ -18,7 +19,7 @@ namespace Ssz.Xi.Client.Api
         ///     for which this value set is defined may not have two value sets with the
         ///     same CalculationTypeId.
         /// </summary>
-        TypeId CalculationTypeId { get; }
+        Ssz.Utils.DataSource.TypeId CalculationTypeId { get; }
 
         /// <summary>
         ///     This property contains the Result Code associated with reading this value

@@ -88,7 +88,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
                 return existingValueStatusTimestampSet;
 
             var newValueStatusTimestampSet = new XiDataJournalValueStatusTimestampSet(this,
-                new TypeId(null, null, calculationLocalId));
+                new Ssz.Utils.DataSource.TypeId("", "", calculationLocalId));
             _xiValueStatusTimestampSetsDictionary[calculationLocalId] = newValueStatusTimestampSet;
             return newValueStatusTimestampSet;
         }

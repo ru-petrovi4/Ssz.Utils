@@ -44,7 +44,7 @@ namespace Ssz.Xi.Client
                 {
                     if (eventListProxy.Disposed) return;
 
-                    eventListProxy.AcknowledgeAlarms(null, null, events.ToList());
+                    eventListProxy.AcknowledgeAlarms(null, null, events.Select(e => new EventId(e)).ToList());
                 }
                 catch (Exception ex)
                 {

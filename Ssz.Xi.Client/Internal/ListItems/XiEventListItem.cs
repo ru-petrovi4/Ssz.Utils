@@ -24,7 +24,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         public XiEventListItem(EventMessage eventMessage, string? messageKey = null)
         {
             _messageKey = messageKey;
-            _eventMessage = eventMessage;
+            _eventMessage = eventMessage.ToEventMessage();
             if (string.IsNullOrEmpty(_messageKey)) _messageKey = Guid.NewGuid().ToString();
         }
 
@@ -35,7 +35,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         /// <summary>
         ///     This property contains the Event Message received from the server in an Event Notification.
         /// </summary>
-        public EventMessage EventMessage
+        public Ssz.Utils.DataSource.EventMessage EventMessage
         {
             get { return _eventMessage; }
             set
@@ -92,7 +92,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         /// <summary>
         ///     The private representation of the EventMessage property
         /// </summary>
-        private EventMessage _eventMessage;
+        private Ssz.Utils.DataSource.EventMessage _eventMessage;
 
         /// <summary>
         ///     The private representation of the MessageKey property

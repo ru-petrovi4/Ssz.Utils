@@ -1060,7 +1060,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         if( state.Animator != null )
         {
           state.TargetPlacement = ceea.ExitTo.HasValue ? ceea.ExitTo.Value : Rect.Empty;
-          state.BeginTimeStamp = DateTime.Now;
+          state.BeginTimestamp = DateTime.Now;
 
           // decrement the animating count if this child is already animating because the 
           // ArrangeChild call will increment it again
@@ -1085,7 +1085,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
       ChildState state = new ChildState( currentRect );
       AnimationPanel.SetChildState( grandchild, state );
       state.Type = AnimationType.Switch;
-      state.BeginTimeStamp = DateTime.Now;
+      state.BeginTimestamp = DateTime.Now;
       state.TargetPlacement = placementRect;
       state.Animator = this.GetEffectiveAnimator( AnimationType.Template );
       if( state.Animator != null && !state.TargetPlacement.IsEmpty )
@@ -1408,7 +1408,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
       {
         if( state.Type != AnimationType.Exit )
         {
-          state.BeginTimeStamp = DateTime.Now;
+          state.BeginTimestamp = DateTime.Now;
           state.Type = IsSwitchInProgress ? AnimationType.Switch : AnimationType.Layout;
           state.TargetPlacement = placementRect;
         }
@@ -1417,7 +1417,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
       {
         // if the child is in the middle of an enter animation, we
         // still need to update the placement rect
-        state.BeginTimeStamp = DateTime.Now;
+        state.BeginTimestamp = DateTime.Now;
         state.TargetPlacement = placementRect;
       }
 
@@ -1467,7 +1467,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
       if( state.Animator != null && ceea.EnterFrom.HasValue )
       {
         state.CurrentPlacement = ceea.EnterFrom.Value;
-        state.BeginTimeStamp = DateTime.Now;
+        state.BeginTimestamp = DateTime.Now;
       }
     }
 
@@ -1661,7 +1661,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
           ChildState state = AnimationPanel.GetChildState( child );
           if( state != null )
           {
-            TimeSpan t = DateTime.Now.Subtract( state.BeginTimeStamp );
+            TimeSpan t = DateTime.Now.Subtract( state.BeginTimestamp );
             if( state.IsAnimating )
             {
               bool isDone;
@@ -1683,7 +1683,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         ChildState state = AnimationPanel.GetChildState( grandchild );
         if( state != null && state.IsAnimating )
         {
-          TimeSpan t = DateTime.Now.Subtract( state.BeginTimeStamp );
+          TimeSpan t = DateTime.Now.Subtract( state.BeginTimestamp );
           bool isDone;
           state.CurrentPlacement = state.Animator.GetNextChildPlacement( grandchild, t, state.CurrentPlacement,
               state.TargetPlacement, this, state.AnimationRate, ref state.PlacementArgs, out isDone );
@@ -1718,7 +1718,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
           ChildState state = AnimationPanel.GetChildState( child );
           if( state != null )
           {
-            TimeSpan t = DateTime.Now.Subtract( state.BeginTimeStamp );
+            TimeSpan t = DateTime.Now.Subtract( state.BeginTimestamp );
             if( state.IsAnimating )
             {
               bool isDone;
@@ -1774,7 +1774,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
       {
         this.CurrentPlacement = currentRect;
         this.TargetPlacement = currentRect;
-        this.BeginTimeStamp = DateTime.Now;
+        this.BeginTimestamp = DateTime.Now;
       }
 
       public bool HasEnterCompleted
@@ -1826,7 +1826,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
       }
 
       public AnimationType Type;
-      public DateTime BeginTimeStamp;
+      public DateTime BeginTimestamp;
       public IterativeAnimator Animator;
       public Rect CurrentPlacement;
       public Rect TargetPlacement;

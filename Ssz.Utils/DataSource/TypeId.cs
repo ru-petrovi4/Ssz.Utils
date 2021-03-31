@@ -14,6 +14,13 @@ namespace Ssz.Utils.DataSource
         {            
         }
 
+        public TypeId(string schemaType, string nameSpace, string id)
+        {
+            SchemaType = schemaType;
+            Namespace = nameSpace;
+            LocalId = id;
+        }
+
         /// <summary>
         ///     Construct a Type LocalId given a .NET / CLI Type.
         /// </summary>

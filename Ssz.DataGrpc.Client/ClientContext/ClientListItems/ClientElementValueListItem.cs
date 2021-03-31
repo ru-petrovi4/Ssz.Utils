@@ -33,13 +33,13 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         ///     for the data object.
         /// </summary>
         /// <param name="statusCode"> The DataGrpc StatusCode of the value. </param>
-        /// <param name="timeStampUtc"> The timestamp of the value. </param>
+        /// <param name="timestampUtc"> The timestamp of the value. </param>
         /// <param name="valueUInt32"> The value </param>
-        public void UpdateValue(uint valueUInt32, uint statusCode, DateTime timeStampUtc)
+        public void UpdateValue(uint valueUInt32, uint statusCode, DateTime timestampUtc)
         {
             ValueStatusTimestamp.Value.Set(valueUInt32, ValueTypeCode, false);
             ValueStatusTimestamp.StatusCode = statusCode;
-            ValueStatusTimestamp.TimestampUtc = timeStampUtc;
+            ValueStatusTimestamp.TimestampUtc = timestampUtc;
             IncrementUpdateCount();
         }
 
@@ -50,13 +50,13 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         ///     for the data object.
         /// </summary>
         /// <param name="statusCode"> The DataGrpc StatusCode of the value. </param>
-        /// <param name="timeStampUtc"> The timestamp of the value. </param>
+        /// <param name="timestampUtc"> The timestamp of the value. </param>
         /// <param name="valueDouble"> The value </param>
-        public void UpdateValue(double valueDouble, uint statusCode, DateTime timeStampUtc)
+        public void UpdateValue(double valueDouble, uint statusCode, DateTime timestampUtc)
         {
             ValueStatusTimestamp.Value.Set(valueDouble, ValueTypeCode, false);
             ValueStatusTimestamp.StatusCode = statusCode;
-            ValueStatusTimestamp.TimestampUtc = timeStampUtc;
+            ValueStatusTimestamp.TimestampUtc = timestampUtc;
             IncrementUpdateCount();
         }
 
@@ -67,13 +67,13 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         ///     for the data object.
         /// </summary>
         /// <param name="statusCode"> The DataGrpc StatusCode of the value. </param>
-        /// <param name="timeStampUtc"> The timestamp of the value. </param>
+        /// <param name="timestampUtc"> The timestamp of the value. </param>
         /// <param name="valueObject"> The value </param>
-        public void UpdateValue(object? valueObject, uint statusCode, DateTime timeStampUtc)
+        public void UpdateValue(object? valueObject, uint statusCode, DateTime timestampUtc)
         {
             ValueStatusTimestamp.Value.Set(valueObject);
             ValueStatusTimestamp.StatusCode = statusCode;
-            ValueStatusTimestamp.TimestampUtc = timeStampUtc;
+            ValueStatusTimestamp.TimestampUtc = timestampUtc;
             IncrementUpdateCount();
         }
 

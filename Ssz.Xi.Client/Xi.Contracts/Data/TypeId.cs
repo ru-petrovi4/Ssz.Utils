@@ -68,6 +68,13 @@ namespace Xi.Contracts.Data
             LocalId = id;
         }
 
+        public TypeId(Ssz.Utils.DataSource.TypeId typeId)
+        {
+            SchemaType = typeId.SchemaType;
+            Namespace = typeId.Namespace;
+            LocalId = typeId.LocalId;
+        }
+
         #endregion
 
         #region public functions
@@ -223,6 +230,15 @@ namespace Xi.Contracts.Data
                 typeIdString += LocalId;
             }
             return typeIdString ?? "";
+        }
+
+        public Ssz.Utils.DataSource.TypeId ToTypeId()
+        {
+            var typeId = new Ssz.Utils.DataSource.TypeId();
+            typeId.SchemaType = SchemaType ?? @"";
+            typeId.Namespace = Namespace ?? @"";
+            typeId.LocalId = LocalId ?? @"";
+            return typeId;
         }
 
         #endregion

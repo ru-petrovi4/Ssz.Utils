@@ -72,7 +72,7 @@ namespace Ssz.Xi.Client.Internal.Context
         ///     The server identifier of the list that contains data objects whose historical values are to
         ///     be read.
         /// </param>
-        /// <param name="firstTimeStamp">
+        /// <param name="firstTimestamp">
         ///     The filter that specifies the first or beginning (of returned list) timestamp for values
         ///     to be returned. Valid operands include the Timestamp (UTC) and OpcHdaTimestampStr constants defined by the
         ///     FilterOperand class. The FilterOperand Operator is used to determine if the returned data should include data
@@ -80,7 +80,7 @@ namespace Ssz.Xi.Client.Internal.Context
         ///     occur at the first and second time stamp will be included in the sample set. Any other operator will not include
         ///     first or second time stamped values.
         /// </param>
-        /// <param name="secondTimeStamp">
+        /// <param name="secondTimestamp">
         ///     The filter that specifies the second or ending (of returned list) timestamp for values
         ///     to be returned. Valid operands include the Timestamp (UTC) and OpcHdaTimestampStr constants defined by the
         ///     FilterOperand class. The FilterOperand Operator is not used.
@@ -88,8 +88,8 @@ namespace Ssz.Xi.Client.Internal.Context
         /// <param name="numValuesPerAlias"> The maximum number of JournalDataReturnValues to be returned per alias. </param>
         /// <param name="serverAliases"> The list of server aliases for the data objects whose historical values are to be read. </param>
         /// <returns> The list of requested historical values, or the reason they could not be read. </returns>
-        public JournalDataValues[]? ReadJournalDataForTimeInterval(uint serverListId, FilterCriterion firstTimeStamp,
-            FilterCriterion secondTimeStamp,
+        public JournalDataValues[]? ReadJournalDataForTimeInterval(uint serverListId, FilterCriterion firstTimestamp,
+            FilterCriterion secondTimestamp,
             uint numValuesPerAlias, List<uint> serverAliases)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
@@ -105,8 +105,8 @@ namespace Ssz.Xi.Client.Internal.Context
                 {
                     listJDRV = _readEndpoint.Proxy.ReadJournalDataForTimeInterval(ContextId,
                         serverListId,
-                        firstTimeStamp,
-                        secondTimeStamp,
+                        firstTimestamp,
+                        secondTimestamp,
                         numValuesPerAlias,
                         serverAliases);
 
@@ -176,11 +176,11 @@ namespace Ssz.Xi.Client.Internal.Context
         ///     The server identifier of the list that contains data objects whose historical values are to
         ///     be read.
         /// </param>
-        /// <param name="firstTimeStamp">
+        /// <param name="firstTimestamp">
         ///     The filter that specifies the inclusive earliest (oldest) timestamp for values to be
         ///     returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
         /// </param>
-        /// <param name="secondTimeStamp">
+        /// <param name="secondTimestamp">
         ///     The filter that specifies the inclusive newest (most recent) timestamp for values to be
         ///     returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
         /// </param>
@@ -191,8 +191,8 @@ namespace Ssz.Xi.Client.Internal.Context
         ///     returned for any alias is equal to numValuesPerDataObject, then the client should issue a
         ///     ReadJournalDataChangesNext() to retrieve any remaining values.
         /// </returns>
-        public JournalDataChangedValues[]? ReadJournalDataChanges(uint serverListId, FilterCriterion firstTimeStamp,
-            FilterCriterion secondTimeStamp,
+        public JournalDataChangedValues[]? ReadJournalDataChanges(uint serverListId, FilterCriterion firstTimestamp,
+            FilterCriterion secondTimestamp,
             uint numValuesPerAlias, List<uint> serverAliases)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
@@ -205,8 +205,8 @@ namespace Ssz.Xi.Client.Internal.Context
                 try
                 {
                     listJDCV = _readEndpoint.Proxy.ReadJournalDataChanges(ContextId, serverListId,
-                        firstTimeStamp,
-                        secondTimeStamp,
+                        firstTimestamp,
+                        secondTimestamp,
                         numValuesPerAlias,
                         serverAliases);
 
@@ -233,11 +233,11 @@ namespace Ssz.Xi.Client.Internal.Context
         ///     The server identifier of the list that contains data objects whose historical values are to
         ///     be read.
         /// </param>
-        /// <param name="firstTimeStamp">
+        /// <param name="firstTimestamp">
         ///     The filter that specifies the inclusive earliest (oldest) timestamp for values to be
         ///     returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
         /// </param>
-        /// <param name="secondTimeStamp">
+        /// <param name="secondTimestamp">
         ///     The filter that specifies the inclusive newest (most recent) timestamp for values to be
         ///     returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
         /// </param>
@@ -254,8 +254,8 @@ namespace Ssz.Xi.Client.Internal.Context
         ///     The set of calculated values. There is one value for each calculation period within the specified time range
         ///     for each specific data object.
         /// </returns>
-        public JournalDataValues[]? ReadCalculatedJournalData(uint serverListId, FilterCriterion firstTimeStamp,
-            FilterCriterion secondTimeStamp,
+        public JournalDataValues[]? ReadCalculatedJournalData(uint serverListId, FilterCriterion firstTimestamp,
+            FilterCriterion secondTimestamp,
             TimeSpan calculationPeriod,
             List<AliasAndCalculation> serverAliasesAndCalculations)
         {
@@ -270,8 +270,8 @@ namespace Ssz.Xi.Client.Internal.Context
                 {
                     listJDRV = _readEndpoint.Proxy.ReadCalculatedJournalData(ContextId,
                         serverListId,
-                        firstTimeStamp,
-                        secondTimeStamp,
+                        firstTimestamp,
+                        secondTimestamp,
                         calculationPeriod,
                         serverAliasesAndCalculations);
 
@@ -293,11 +293,11 @@ namespace Ssz.Xi.Client.Internal.Context
         ///     The server identifier of the list that contains data objects whose property values are to
         ///     be read.
         /// </param>
-        /// <param name="firstTimeStamp">
+        /// <param name="firstTimestamp">
         ///     The filter that specifies the inclusive earliest (oldest) timestamp for values to be
         ///     returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
         /// </param>
-        /// <param name="secondTimeStamp">
+        /// <param name="secondTimestamp">
         ///     The filter that specifies the inclusive newest (most recent) timestamp for values to be
         ///     returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
         /// </param>
@@ -307,8 +307,8 @@ namespace Ssz.Xi.Client.Internal.Context
         ///     type.
         /// </param>
         /// <returns> The array of requested property values. </returns>
-        public JournalDataPropertyValue[]? ReadJournalDataProperties(uint serverListId, FilterCriterion firstTimeStamp,
-            FilterCriterion secondTimeStamp, uint serverAlias,
+        public JournalDataPropertyValue[]? ReadJournalDataProperties(uint serverListId, FilterCriterion firstTimestamp,
+            FilterCriterion secondTimestamp, uint serverAlias,
             List<TypeId> propertiesToRead)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
@@ -322,8 +322,8 @@ namespace Ssz.Xi.Client.Internal.Context
                 {
                     JDPVarray = _readEndpoint.Proxy.ReadJournalDataProperties(ContextId,
                         serverListId,
-                        firstTimeStamp,
-                        secondTimeStamp,
+                        firstTimestamp,
+                        secondTimestamp,
                         serverAlias,
                         propertiesToRead);
 

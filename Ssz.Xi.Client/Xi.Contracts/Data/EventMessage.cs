@@ -132,6 +132,27 @@ namespace Xi.Contracts.Data
 		/// </summary>
 		[DataMember] public List<object>? ClientRequestedFields;
 
+		public Ssz.Utils.DataSource.EventMessage ToEventMessage()
+		{
+			var eventInfo = new Ssz.Utils.DataSource.EventMessage(EventId != null ? EventId.ToEventId() : new Ssz.Utils.DataSource.EventId());
+			eventInfo.OccurrenceTime = OccurrenceTime;
+			eventInfo.EventType = (Ssz.Utils.DataSource.EventType)EventType;
+			eventInfo.TextMessage = TextMessage ?? @"";
+			eventInfo.CategoryId = CategoryId;
+			eventInfo.Priority = Priority;
+			eventInfo.OperatorName = OperatorName ?? @"";
+			if (AlarmData != null)
+			{
+				eventInfo.AlarmMessageData = AlarmData.ToAlarmMessageData();
+			}
+			if (ClientRequestedFields != null)
+			{
+				// TODO
+				//eventInfo.ClientRequestedFields = new CaseInsensitiveDictionary<string>(ClientRequestedFields);
+			}
+			return eventInfo;
+		}
+
 		#endregion
 	}
 }

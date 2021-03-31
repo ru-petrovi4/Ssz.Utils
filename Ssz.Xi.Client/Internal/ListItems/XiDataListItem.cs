@@ -1,4 +1,5 @@
 ﻿using System;
+using Ssz.Utils.DataSource;
 using Ssz.Xi.Client.Api;
 using Ssz.Xi.Client.Api.ListItems;
 using Xi.Contracts.Data;
@@ -35,13 +36,13 @@ namespace Ssz.Xi.Client.Internal.ListItems
         ///     for the data object.
         /// </summary>
         /// <param name="statusCode"> The Xi StatusCode of the value. </param>
-        /// <param name="timeStampUtc"> The timestamp of the value. </param>
+        /// <param name="timestampUtc"> The timestamp of the value. </param>
         /// <param name="valueUInt32"> The value </param>
-        public void UpdateValue(uint valueUInt32, uint statusCode, DateTime timeStampUtc)
+        public void UpdateValue(uint valueUInt32, uint statusCode, DateTime timestampUtc)
         {
-            XiValueStatusTimestamp.Value.Set(valueUInt32, ValueTypeCode, false);
-            XiValueStatusTimestamp.StatusCode = statusCode;
-            XiValueStatusTimestamp.TimestampUtc = timeStampUtc;
+            ValueStatusTimestamp.Value.Set(valueUInt32, ValueTypeCode, false);
+            ValueStatusTimestamp.StatusCode = statusCode;
+            ValueStatusTimestamp.TimestampUtc = timestampUtc;
             IncrementUpdateCount();
         }
 
@@ -52,13 +53,13 @@ namespace Ssz.Xi.Client.Internal.ListItems
         ///     for the data object.
         /// </summary>
         /// <param name="statusCode"> The Xi StatusCode of the value. </param>
-        /// <param name="timeStampUtc"> The timestamp of the value. </param>
+        /// <param name="timestampUtc"> The timestamp of the value. </param>
         /// <param name="valueDouble"> The value </param>
-        public void UpdateValue(double valueDouble, uint statusCode, DateTime timeStampUtc)
+        public void UpdateValue(double valueDouble, uint statusCode, DateTime timestampUtc)
         {
-            XiValueStatusTimestamp.Value.Set(valueDouble, ValueTypeCode, false);
-            XiValueStatusTimestamp.StatusCode = statusCode;
-            XiValueStatusTimestamp.TimestampUtc = timeStampUtc;
+            ValueStatusTimestamp.Value.Set(valueDouble, ValueTypeCode, false);
+            ValueStatusTimestamp.StatusCode = statusCode;
+            ValueStatusTimestamp.TimestampUtc = timestampUtc;
             IncrementUpdateCount();
         }
 
@@ -69,13 +70,13 @@ namespace Ssz.Xi.Client.Internal.ListItems
         ///     for the data object.
         /// </summary>
         /// <param name="statusCode"> The Xi StatusCode of the value. </param>
-        /// <param name="timeStampUtc"> The timestamp of the value. </param>
+        /// <param name="timestampUtc"> The timestamp of the value. </param>
         /// <param name="valueObject"> The value </param>
-        public void UpdateValue(object? valueObject, uint statusCode, DateTime timeStampUtc)
+        public void UpdateValue(object? valueObject, uint statusCode, DateTime timestampUtc)
         {
-            XiValueStatusTimestamp.Value.Set(valueObject);
-            XiValueStatusTimestamp.StatusCode = statusCode;
-            XiValueStatusTimestamp.TimestampUtc = timeStampUtc;
+            ValueStatusTimestamp.Value.Set(valueObject);
+            ValueStatusTimestamp.StatusCode = statusCode;
+            ValueStatusTimestamp.TimestampUtc = timestampUtc;
             IncrementUpdateCount();
         }
 
@@ -88,20 +89,20 @@ namespace Ssz.Xi.Client.Internal.ListItems
         /// </summary>
         /// <param name="xiValueStatusTimestamp"> The data value to be written. </param>
         /// <returns> Returns TRUE if the data object is writable, otherwise FALSE. </returns>
-        public bool PrepareForWrite(XiValueStatusTimestamp xiValueStatusTimestamp)
+        public bool PrepareForWrite(ValueStatusTimestamp xiValueStatusTimestamp)
         {
             if (!IsWritable)
             {
-                _pendingWriteXiValueStatusTimestamp = null;
+                _pendingWriteValueStatusTimestamp = null;
                 return false;
             }
-            _pendingWriteXiValueStatusTimestamp = xiValueStatusTimestamp;
+            _pendingWriteValueStatusTimestamp = xiValueStatusTimestamp;
             return true;
         }
 
         public void HasWritten(uint resultCodeWrite)
         {
-            _pendingWriteXiValueStatusTimestamp = null;
+            _pendingWriteValueStatusTimestamp = null;
             _resultCodeWrite = ResultCodeWrite;
         }
 
@@ -140,7 +141,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         /// <summary>
         ///     This property contains the data value for the data object.
         /// </summary>
-        public XiValueStatusTimestamp XiValueStatusTimestamp
+        public ValueStatusTimestamp ValueStatusTimestamp
         {
             get { return _xiValueStatusTimestamp; }
         }
@@ -152,13 +153,13 @@ namespace Ssz.Xi.Client.Internal.ListItems
         ///     and then issues the data list CommitDataObjectWrites() method to write them
         ///     to the server in a single call.
         /// </summary>
-        public XiValueStatusTimestamp? PendingWriteXiValueStatusTimestamp
+        public ValueStatusTimestamp? PendingWriteValueStatusTimestamp
         {
-            get { return _pendingWriteXiValueStatusTimestamp; }
+            get { return _pendingWriteValueStatusTimestamp; }
         }
 
         /// <summary>
-        ///     This property contains the result code associated with writing the PendingWriteXiValueStatusTimestamp.
+        ///     This property contains the result code associated with writing the PendingWriteValueStatusTimestamp.
         ///     See XiFaultCodes class for standardized result codes.
         /// </summary>
         public uint ResultCodeWrite
@@ -171,7 +172,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         /// </summary>
         public bool PreparedForWrite
         {
-            get { return _pendingWriteXiValueStatusTimestamp != null; }
+            get { return _pendingWriteValueStatusTimestamp != null; }
         }
 
         /// <summary>
@@ -191,14 +192,14 @@ namespace Ssz.Xi.Client.Internal.ListItems
         /// <summary>
         ///     This data member is the private representation of the PendingWriteDataValue property.
         /// </summary>
-        private XiValueStatusTimestamp? _pendingWriteXiValueStatusTimestamp;
+        private ValueStatusTimestamp? _pendingWriteValueStatusTimestamp;
 
         private uint _resultCodeWrite;
 
         /// <summary>
         ///     This data member is the private representation of the DataValue property.
         /// </summary>
-        private XiValueStatusTimestamp _xiValueStatusTimestamp = new XiValueStatusTimestamp();
+        private ValueStatusTimestamp _xiValueStatusTimestamp = new ValueStatusTimestamp();
 
         #endregion
     }

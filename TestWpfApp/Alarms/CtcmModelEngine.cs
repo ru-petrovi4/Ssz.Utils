@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using Xi.Contracts.Data;
+
 
 namespace TestWpfApp.Alarms
 {
@@ -17,10 +17,10 @@ namespace TestWpfApp.Alarms
         /// <summary>        
         ///     Returns new AlarmInfoViewModels or Null.
         /// </summary>
-        public static async Task<IEnumerable<AlarmInfoViewModelBase>?> ProcessEventMessage(Xi.Contracts.Data.EventMessage eventMessage)
+        public static async Task<IEnumerable<AlarmInfoViewModelBase>?> ProcessEventMessage(EventMessage eventMessage)
         {
-            if (eventMessage.EventId != null && eventMessage.EventId.Condition != null &&
-                eventMessage.EventId.Condition.Any(c => c.LocalId == "BeforeStateLoad"))
+            if (eventMessage.EventId != null && eventMessage.EventId.Conditions != null &&
+                eventMessage.EventId.Conditions.Any(c => c.LocalId == "BeforeStateLoad"))
             {                
                 return null;
             }
@@ -31,11 +31,11 @@ namespace TestWpfApp.Alarms
                     return null;
 
                 if (eventMessage.EventId == null ||
-                    eventMessage.EventId.Condition == null ||
-                    eventMessage.EventId.SourceId == null ||
-                    eventMessage.AlarmData == null ||
-                    !eventMessage.AlarmData.TimeLastActive.HasValue ||
-                    !eventMessage.EventId.SourceId.IsValid()) return null;
+                    eventMessage.EventId.Conditions == null ||
+                    eventMessage.EventId.SourceElementId == null ||
+                    eventMessage.AlarmMessageData == null ||
+                    !eventMessage.AlarmMessageData.TimeLastActive.HasValue ||
+                    eventMessage.EventId.SourceElementId == "") return null;
 
                 /*
                 if (Logger.ShouldTrace(TraceEventType.Verbose))
@@ -57,13 +57,13 @@ namespace TestWpfApp.Alarms
                 string area;
                 AlarmConditionType condition;
                 bool isDigital = false;
-                string varName = eventMessage.EventId?.SourceId?.LocalId ?? "";
-                bool active = eventMessage.AlarmData.AlarmState.HasFlag(AlarmState.Active);
-                bool unacked = eventMessage.AlarmData.AlarmState.HasFlag(AlarmState.Unacked);
+                string varName = eventMessage.EventId?.SourceElementId ?? "";
+                bool active = eventMessage.AlarmMessageData.AlarmState.HasFlag(AlarmState.Active);
+                bool unacked = eventMessage.AlarmMessageData.AlarmState.HasFlag(AlarmState.Unacked);
                 uint categoryId = eventMessage.CategoryId;
                 uint priority = eventMessage.Priority;
 
-                switch (eventMessage.EventId?.Condition[0].LocalId)
+                switch (eventMessage.EventId?.Conditions[0].LocalId)
                 {
                     case "LoLo":
                         condition = AlarmConditionType.LowLow;
@@ -131,9 +131,9 @@ namespace TestWpfApp.Alarms
                 {
                     var tagCompleted = new TaskCompletionSource<string>();
                     var descCompleted = new TaskCompletionSource<string>();
-                    new ReadOnceValueSubscription(App.XiDataProvider, varName + ".propTag",
+                    new ReadOnceValueSubscription(App.DataProvider, varName + ".propTag",
                                any => tagCompleted.SetResult(any.ValueAsString(false)));
-                    new ReadOnceValueSubscription(App.XiDataProvider, varName + ".propDescription",
+                    new ReadOnceValueSubscription(App.DataProvider, varName + ".propDescription",
                                any => descCompleted.SetResult(any.ValueAsString(false)));
                     tag = await tagCompleted.Task ?? @"";
                     desc = await descCompleted.Task ?? @"";
@@ -167,7 +167,7 @@ namespace TestWpfApp.Alarms
                     alarmInfoViewModel.Active = active;
                     alarmInfoViewModel.Unacked = unacked;
                     alarmInfoViewModel.OccurrenceTime = eventMessage.OccurrenceTime;
-                    alarmInfoViewModel.TimeLastActive = eventMessage.AlarmData.TimeLastActive.Value;
+                    alarmInfoViewModel.TimeLastActive = eventMessage.AlarmMessageData.TimeLastActive.Value;
                     alarmInfoViewModel.Tag = tag;
                     alarmInfoViewModel.Desc = desc;
                     alarmInfoViewModel.Area = area;
@@ -186,7 +186,7 @@ namespace TestWpfApp.Alarms
                         Active = active,
                         Unacked = unacked,
                         OccurrenceTime = eventMessage.OccurrenceTime,
-                        TimeLastActive = eventMessage.AlarmData.TimeLastActive.Value,
+                        TimeLastActive = eventMessage.AlarmMessageData.TimeLastActive.Value,
                         Tag = tag,
                         Desc = desc,
                         Area = area,

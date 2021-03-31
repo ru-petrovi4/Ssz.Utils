@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Ssz.Utils;
+using Ssz.Utils.DataSource;
 using Ssz.Xi.Client.Api.ListItems;
 using Ssz.Xi.Client.Api.Lists;
 using Ssz.Xi.Client.Internal.ListItems;
@@ -56,10 +57,10 @@ namespace Ssz.Xi.Client.Api
                         {
                             XiList.InformationReport +=
                                 (IXiDataListProxy dataList, IXiDataListItem[] items,
-                                    XiValueStatusTimestamp[] values) =>
+                                    ValueStatusTimestamp[] values) =>
                                 {
                                     var changedClientObjs = new List<object>(items.Length);
-                                    var changedValues = new List<XiValueStatusTimestamp>(items.Length);
+                                    var changedValues = new List<ValueStatusTimestamp>(items.Length);
                                     int i = 0;
                                     foreach (IXiDataListItem xiDataListItem in items)
                                     {
@@ -111,8 +112,9 @@ namespace Ssz.Xi.Client.Api
                 }
 
                 {
+                    var utcNow = DateTime.UtcNow;
                     var changedClientObjs = new List<object>();
-                    var changedValues = new List<XiValueStatusTimestamp>();
+                    var changedValues = new List<ValueStatusTimestamp>();
                     foreach (XiListItemWrapper xiListItemWrapper in XiListItemWrappersDictionary.Values)
                     {                        
                         foreach (var modelItem in xiListItemWrapper.ModelItems)
@@ -125,17 +127,17 @@ namespace Ssz.Xi.Client.Api
                                     if (xiListItemWrapper.InvalidId)
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(new XiValueStatusTimestamp(new Any(DBNull.Value)));
+                                        changedValues.Add(ValueStatusTimestampHelper.NewValueStatusTimestamp(new Any(DBNull.Value), utcNow));
                                     }
                                     else if (xiListItemWrapper.XiListItem != null)
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(xiListItemWrapper.XiListItem.XiValueStatusTimestamp);
+                                        changedValues.Add(xiListItemWrapper.XiListItem.ValueStatusTimestamp);
                                     }
                                     else
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(new XiValueStatusTimestamp(new Any(null)));
+                                        changedValues.Add(ValueStatusTimestampHelper.NewValueStatusTimestamp(new Any(null), utcNow));
                                     }                                                                                                  
                                 }                                
                             }
@@ -251,7 +253,7 @@ namespace Ssz.Xi.Client.Api
                     continue;
                 }
                 IXiDataListItem xiDataListItem = modelItem.XiListItemWrapper.XiListItem;
-                xiDataListItem.PrepareForWrite(new XiValueStatusTimestamp(values[i]) { TimestampUtc = timestampUtc });
+                xiDataListItem.PrepareForWrite(ValueStatusTimestampHelper.NewValueStatusTimestamp(values[i], timestampUtc));
             }
 
             IEnumerable<IXiDataListItem>? failedItems = null;
@@ -308,7 +310,7 @@ namespace Ssz.Xi.Client.Api
 
             try
             {                
-                xiDataListItem.PrepareForWrite(new XiValueStatusTimestamp(value) {TimestampUtc = timestampUtc});
+                xiDataListItem.PrepareForWrite(ValueStatusTimestampHelper.NewValueStatusTimestamp(value, timestampUtc));
 
                 try
                 {
@@ -338,7 +340,7 @@ namespace Ssz.Xi.Client.Api
             var xiListItem = XiListItemsDictionary.TryGetValue(id);
             if (xiListItem == null) return new Any();
             
-            return xiListItem.XiValueStatusTimestamp.Value;
+            return xiListItem.ValueStatusTimestamp.Value;
         }
         */
 
@@ -348,6 +350,6 @@ namespace Ssz.Xi.Client.Api
         ///     This delegate defines the callback for reporting data updates to the client application.
         /// </summary>
         public delegate void InformationReportEventHandler(
-            object[] changedClientObjs, XiValueStatusTimestamp[] changedValues);
+            object[] changedClientObjs, ValueStatusTimestamp[] changedValues);
     }
 }

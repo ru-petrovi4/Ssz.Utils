@@ -11,7 +11,7 @@ namespace Ssz.DataGrpc.Server
     {
         #region public functions
 
-        public Utils.DataSource.EventMessage ToEventInfo()
+        public Utils.DataSource.EventMessage ToEventMessage()
         {
             var eventInfo = new Utils.DataSource.EventMessage(EventId.ToEventId());
             eventInfo.OccurrenceTime = OccurrenceTime.ToDateTime();

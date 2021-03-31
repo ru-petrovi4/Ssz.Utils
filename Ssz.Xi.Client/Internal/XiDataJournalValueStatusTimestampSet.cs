@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using Ssz.Utils.DataSource;
 using Ssz.Xi.Client.Api;
 using Ssz.Xi.Client.Internal.ListItems;
 using Xi.Contracts.Constants;
@@ -27,7 +28,7 @@ namespace Ssz.Xi.Client.Internal
         /// </param>
         /// <param name="calculationTypeId"> The CalculationTypeId associated with the value set. </param>
         public XiDataJournalValueStatusTimestampSet(XiDataJournalListItem owningXiDataJournalListItem,
-            TypeId calculationTypeId)
+            Ssz.Utils.DataSource.TypeId calculationTypeId)
         {
             _owningXiDataJournalListItem = owningXiDataJournalListItem;
             _calculationTypeId = calculationTypeId;
@@ -89,7 +90,7 @@ namespace Ssz.Xi.Client.Internal
         /// <summary>
         ///     The LocalId portion of the CalculationTypeId. Set to 0 if the LocalId is not a uint.
         /// </summary>
-        public static uint GetCalculationTypeLocalId(TypeId calculationTypeId)
+        public static uint GetCalculationTypeLocalId(Ssz.Utils.DataSource.TypeId calculationTypeId)
         {
             return Convert.ToUInt32(calculationTypeId.LocalId);
         }
@@ -97,9 +98,9 @@ namespace Ssz.Xi.Client.Internal
         /// <summary>
         ///     The LocalId portion of the CalculationTypeId. Set to 0 if the LocalId is not a uint.
         /// </summary>
-        public static TypeId GetCalculationTypeId(uint calculationTypeLocalId)
+        public static Ssz.Utils.DataSource.TypeId GetCalculationTypeId(uint calculationTypeLocalId)
         {
-            return new TypeId(null, null, calculationTypeLocalId.ToString(CultureInfo.InvariantCulture));
+            return new Ssz.Utils.DataSource.TypeId("", "", calculationTypeLocalId.ToString(CultureInfo.InvariantCulture));
         }
 
         /// <summary>
@@ -116,7 +117,7 @@ namespace Ssz.Xi.Client.Internal
         ///     This enumerator allows the var type to be used in foreach calls.
         /// </summary>
         /// <returns> Returns the enumerator for list of values in the historical data object value set. </returns>
-        IEnumerator<XiValueStatusTimestamp> IEnumerable<XiValueStatusTimestamp>.GetEnumerator()
+        IEnumerator<ValueStatusTimestamp> IEnumerable<ValueStatusTimestamp>.GetEnumerator()
         {
             return _xiValueStatusTimestampsList.GetEnumerator();
         }
@@ -137,7 +138,7 @@ namespace Ssz.Xi.Client.Internal
         ///     for which this value set is defined may not have two value sets with the
         ///     same CalculationTypeId.
         /// </summary>
-        public TypeId CalculationTypeId
+        public Ssz.Utils.DataSource.TypeId CalculationTypeId
         {
             get { return _calculationTypeId; }
         }
@@ -208,44 +209,44 @@ namespace Ssz.Xi.Client.Internal
 
             if (journalDataValues.HistoricalValues.DoubleStatusCodes != null &&
                 journalDataValues.HistoricalValues.DoubleValues != null &&
-                journalDataValues.HistoricalValues.DoubleTimeStamps != null)
+                journalDataValues.HistoricalValues.DoubleTimestamps != null)
             {
                 for (int idx = 0; idx < journalDataValues.HistoricalValues.DoubleStatusCodes.Length; idx++)
                 {
-                    var xiValueStatusTimestamp = new XiValueStatusTimestamp();
+                    var xiValueStatusTimestamp = new ValueStatusTimestamp();
                     xiValueStatusTimestamp.Value.Set(journalDataValues.HistoricalValues.DoubleValues[idx],
                         _owningXiDataJournalListItem.ValueTypeCode, false);
                     xiValueStatusTimestamp.StatusCode = journalDataValues.HistoricalValues.DoubleStatusCodes[idx];
-                    xiValueStatusTimestamp.TimestampUtc = journalDataValues.HistoricalValues.DoubleTimeStamps[idx];
+                    xiValueStatusTimestamp.TimestampUtc = journalDataValues.HistoricalValues.DoubleTimestamps[idx];
 
                     _xiValueStatusTimestampsList.Add(xiValueStatusTimestamp);
                 }
             }
             if (journalDataValues.HistoricalValues.UintStatusCodes != null &&
                 journalDataValues.HistoricalValues.UintValues != null &&
-                journalDataValues.HistoricalValues.UintTimeStamps != null)
+                journalDataValues.HistoricalValues.UintTimestamps != null)
             {
                 for (int idx = 0; idx < journalDataValues.HistoricalValues.UintStatusCodes.Length; idx++)
                 {
-                    var xiValueStatusTimestamp = new XiValueStatusTimestamp();
+                    var xiValueStatusTimestamp = new ValueStatusTimestamp();
                     xiValueStatusTimestamp.Value.Set(journalDataValues.HistoricalValues.UintValues[idx],
                         _owningXiDataJournalListItem.ValueTypeCode, false);
                     xiValueStatusTimestamp.StatusCode = journalDataValues.HistoricalValues.UintStatusCodes[idx];
-                    xiValueStatusTimestamp.TimestampUtc = journalDataValues.HistoricalValues.UintTimeStamps[idx];
+                    xiValueStatusTimestamp.TimestampUtc = journalDataValues.HistoricalValues.UintTimestamps[idx];
 
                     _xiValueStatusTimestampsList.Add(xiValueStatusTimestamp);
                 }
             }
             if (journalDataValues.HistoricalValues.ObjectStatusCodes != null &&
                 journalDataValues.HistoricalValues.ObjectValues != null &&
-                journalDataValues.HistoricalValues.ObjectTimeStamps != null)
+                journalDataValues.HistoricalValues.ObjectTimestamps != null)
             {
                 for (int idx = 0; idx < journalDataValues.HistoricalValues.ObjectStatusCodes.Length; idx++)
                 {
-                    var xiValueStatusTimestamp = new XiValueStatusTimestamp();
+                    var xiValueStatusTimestamp = new ValueStatusTimestamp();
                     xiValueStatusTimestamp.Value.Set(journalDataValues.HistoricalValues.ObjectValues[idx]);
                     xiValueStatusTimestamp.StatusCode = journalDataValues.HistoricalValues.ObjectStatusCodes[idx];
-                    xiValueStatusTimestamp.TimestampUtc = journalDataValues.HistoricalValues.ObjectTimeStamps[idx];
+                    xiValueStatusTimestamp.TimestampUtc = journalDataValues.HistoricalValues.ObjectTimestamps[idx];
 
                     _xiValueStatusTimestampsList.Add(xiValueStatusTimestamp);
                 }
@@ -265,7 +266,7 @@ namespace Ssz.Xi.Client.Internal
         /// <summary>
         ///     The private representation of the CalculationTypeId and CalculationTypeLocalId interface properties.
         /// </summary>
-        private TypeId _calculationTypeId;
+        private Ssz.Utils.DataSource.TypeId _calculationTypeId;
 
         /// <summary>
         ///     This member indicates, when TRUE, that the object has been disposed by the Dispose(bool isDisposing) method.
@@ -275,7 +276,7 @@ namespace Ssz.Xi.Client.Internal
         /// <summary>
         ///     The private representation of the _xiValueStatusTimestampsList interface property.
         /// </summary>
-        private readonly List<XiValueStatusTimestamp> _xiValueStatusTimestampsList = new List<XiValueStatusTimestamp>();
+        private readonly List<ValueStatusTimestamp> _xiValueStatusTimestampsList = new List<ValueStatusTimestamp>();
 
         #endregion
     }

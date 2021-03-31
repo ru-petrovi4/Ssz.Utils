@@ -107,15 +107,15 @@ namespace Ssz.Xi.Client
         public event Action Disconnected = delegate { };
 
         /// <summary>
-        ///     You can set updateDataItems = false and invoke PollDataChanges(...) manually.       
+        /// 
         /// </summary>
-        /// <param name="сallbackDispatcher">ICallbackDoer? for doing all callbacks.</param>
-        /// <param name="elementValueListCallbackIsEnabled">Used in Xi DataList initialization</param>
-        /// <param name="serverAddress">Xi Server connection string</param>
-        /// <param name="xiSystem">Xi System Name</param>
-        /// <param name="applicationName">Used in Xi Context initialization</param>
-        /// <param name="workstationName">Used in Xi Context initialization</param>
-        /// <param name="contextParams">Used in Xi Context initialization</param>
+        /// <param name="сallbackDispatcher"></param>
+        /// <param name="elementValueListCallbackIsEnabled"></param>
+        /// <param name="serverAddress"></param>
+        /// <param name="applicationName"></param>
+        /// <param name="workstationName"></param>
+        /// <param name="systemNames"></param>
+        /// <param name="contextParams"></param>
         public void Initialize(IDispatcher? сallbackDispatcher, bool elementValueListCallbackIsEnabled, string serverAddress,
             string applicationName, string workstationName, string[] systemNames, CaseInsensitiveDictionary<string> contextParams)
         {
@@ -128,7 +128,7 @@ namespace Ssz.Xi.Client
             _serverAddress = serverAddress;
             _systemNames = systemNames;
             _xiDataListItemsManager.XiSystem = _systemNames.FirstOrDefault() ?? @"";
-            _xiEventListItemsManager.XiSystem = _systemNames.FirstOrDefault() ?? @""
+            _xiEventListItemsManager.XiSystem = _systemNames.FirstOrDefault() ?? @"";
             _xiDataJournalListItemsManager.XiSystem = _systemNames.FirstOrDefault() ?? @"";
             _applicationName = applicationName;            
             _workstationName = workstationName;            
@@ -432,7 +432,7 @@ namespace Ssz.Xi.Client
                     {
                         string workstationName = _workstationName;
                         string xiContextParamsString =
-                            NameValueCollectionHelper.GetNameValueCollectionString(_contextParams);
+                            NameValueCollectionHelper.GetNameValueCollectionString(new CaseInsensitiveDictionary<string?>(_contextParams.Select(kvp => new KeyValuePair<string, string?>(kvp.Key, kvp.Value))));
                         if (!String.IsNullOrEmpty(xiContextParamsString))
                         {
                             workstationName += @"?" + xiContextParamsString;
@@ -526,7 +526,7 @@ namespace Ssz.Xi.Client
         /// <param name="changedClientObjs"></param>
         /// <param name="changedValues"></param>
         private void XiDataListItemsManagerOnInformationReport(object[] changedClientObjs,
-            XiValueStatusTimestamp[] changedValues)
+            ValueStatusTimestamp[] changedValues)
         {
             if (changedClientObjs != null)
             {

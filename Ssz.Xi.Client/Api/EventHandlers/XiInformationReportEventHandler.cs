@@ -1,4 +1,5 @@
-﻿using Ssz.Xi.Client.Api.ListItems;
+﻿using Ssz.Utils.DataSource;
+using Ssz.Xi.Client.Api.ListItems;
 using Ssz.Xi.Client.Api.Lists;
 
 namespace Ssz.Xi.Client.Api.EventHandlers
@@ -10,5 +11,5 @@ namespace Ssz.Xi.Client.Api.EventHandlers
     /// <param name="changedListItems"> The list of data updates being reported. </param>
     /// <param name="changedValues">The time when the values were last changed.</param>
     public delegate void XiInformationReportEventHandler(
-        IXiDataListProxy dataList, IXiDataListItem[] changedListItems, XiValueStatusTimestamp[] changedValues);
+        IXiDataListProxy dataList, IXiDataListItem[] changedListItems, ValueStatusTimestamp[] changedValues);
 }

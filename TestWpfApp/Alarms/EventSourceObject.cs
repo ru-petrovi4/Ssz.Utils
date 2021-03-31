@@ -105,7 +105,7 @@ namespace Ssz.WpfHmi.Common.ModelData.Events
             var alarmUnackedSubscribers = AlarmUnackedSubscribers;
             if (alarmUnackedSubscribers != null)
             {
-                if (App.XiDataProvider.IsConnected)
+                if (App.DataProvider.IsConnected)
                 {
                     bool anyUnacked = AnyUnacked();
                     alarmUnackedSubscribers(new Any(anyUnacked));
@@ -119,7 +119,7 @@ namespace Ssz.WpfHmi.Common.ModelData.Events
 
         public void NotifyAlarmUnackedSubscriber(IValueSubscription subscriber)
         {
-            if (App.XiDataProvider.IsConnected)
+            if (App.DataProvider.IsConnected)
             {
                 bool anyUnacked = AnyUnacked();
                 subscriber.Update(new Any(anyUnacked));
@@ -135,7 +135,7 @@ namespace Ssz.WpfHmi.Common.ModelData.Events
             var alarmCategorySubscribers = AlarmCategorySubscribers;
             if (alarmCategorySubscribers != null)
             {
-                if (App.XiDataProvider.IsConnected)
+                if (App.DataProvider.IsConnected)
                 {
                     uint maxCategory = GetActiveAlarmsMaxCategory();
                     alarmCategorySubscribers(new Any(maxCategory));
@@ -149,7 +149,7 @@ namespace Ssz.WpfHmi.Common.ModelData.Events
 
         public void NotifyAlarmCategorySubscriber(IValueSubscription subscriber)
         {
-            if (App.XiDataProvider.IsConnected)
+            if (App.DataProvider.IsConnected)
             {
                 uint maxCategory = GetActiveAlarmsMaxCategory();
                 subscriber.Update(new Any(maxCategory));
@@ -165,7 +165,7 @@ namespace Ssz.WpfHmi.Common.ModelData.Events
             var alarmBrushSubscribers = AlarmBrushSubscribers;
             if (alarmBrushSubscribers != null)
             {
-                if (App.XiDataProvider.IsConnected)
+                if (App.DataProvider.IsConnected)
                 {
                     Brush alarmBrush = GetAlarmBrush();
                     alarmBrushSubscribers(new Any(alarmBrush));
@@ -179,7 +179,7 @@ namespace Ssz.WpfHmi.Common.ModelData.Events
 
         public void NotifyAlarmBrushSubscriber(IValueSubscription subscriber)
         {
-            if (App.XiDataProvider.IsConnected)
+            if (App.DataProvider.IsConnected)
             {
                 Brush alarmBrush = GetAlarmBrush();
                 subscriber.Update(new Any(alarmBrush));
@@ -195,7 +195,7 @@ namespace Ssz.WpfHmi.Common.ModelData.Events
             var alarmConditionTypeSubscribers = AlarmConditionTypeSubscribers;
             if (alarmConditionTypeSubscribers != null)
             {
-                if (App.XiDataProvider.IsConnected)
+                if (App.DataProvider.IsConnected)
                 {
                     AlarmConditionType alarmConditionType = GetAlarmConditionType();
                     alarmConditionTypeSubscribers(new Any(alarmConditionType));
@@ -209,7 +209,7 @@ namespace Ssz.WpfHmi.Common.ModelData.Events
 
         public void NotifyAlarmConditionTypeSubscriber(IValueSubscription subscriber)
         {
-            if (App.XiDataProvider.IsConnected)
+            if (App.DataProvider.IsConnected)
             {
                 AlarmConditionType alarmConditionType = GetAlarmConditionType();
                 subscriber.Update(new Any(alarmConditionType));

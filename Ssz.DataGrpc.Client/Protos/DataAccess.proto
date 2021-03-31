@@ -273,8 +273,8 @@ message PollEventsChangesReply {
 message ReadElementValueJournalsRequest {
   string context_id = 1;
   uint32 list_server_alias = 2; 
-  google.protobuf.Timestamp first_time_stamp = 3;
-  google.protobuf.Timestamp second_time_stamp = 4;  
+  google.protobuf.Timestamp first_timestamp = 3;
+  google.protobuf.Timestamp second_timestamp = 4;  
   uint32 num_values_per_alias = 5;
   TypeId calculation = 6;
   map<string, string> params = 7;

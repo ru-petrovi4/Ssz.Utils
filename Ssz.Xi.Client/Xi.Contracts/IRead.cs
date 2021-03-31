@@ -68,7 +68,7 @@ namespace Xi.Contracts
 		/// The server identifier of the list that contains data objects whose 
 		/// historical values are to be read.
 		/// </param>
-		/// <param name="firstTimeStamp">
+		/// <param name="firstTimestamp">
 		/// The filter that specifies the first or beginning (of returned list) 
 		/// timestamp for values to be returned.  Valid operands include the 
 		/// Timestamp (UTC) and OpcHdaTimestampStr constants defined by the 
@@ -79,7 +79,7 @@ namespace Xi.Contracts
 		/// time stamp will be included in the sample set.  Any other operator 
 		/// will not include first or second time stamped values.
 		/// </param>
-		/// <param name="secondTimeStamp">
+		/// <param name="secondTimestamp">
 		/// The filter that specifies the second or ending (of returned list)
 		/// timestamp for values to be returned.  Valid operands include the 
 		/// Timestamp (UTC) and OpcHdaTimestampStr constants defined by the 
@@ -98,7 +98,7 @@ namespace Xi.Contracts
 		/// </returns>
 		[OperationContract, FaultContract(typeof(XiFault))]
 		JournalDataValues[] ReadJournalDataForTimeInterval(string contextId, uint listId,
-			FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp,
+			FilterCriterion firstTimestamp, FilterCriterion secondTimestamp,
 			uint numValuesPerAlias, List<uint> serverAliases);
 
 		/// <summary>
@@ -179,12 +179,12 @@ namespace Xi.Contracts
 		/// The server identifier of the list that contains data objects whose historical 
 		/// values are to be read.
 		/// </param>
-		/// <param name="firstTimeStamp">
+		/// <param name="firstTimestamp">
 		/// The filter that specifies the inclusive earliest (oldest) timestamp 
 		/// for values to be returned.  Valid operands include the Timestamp and 
 		/// OpcHdaTimestampStr constants defined by the FilterOperand class.
 		/// </param>
-		/// <param name="secondTimeStamp">
+		/// <param name="secondTimestamp">
 		/// The filter that specifies the inclusive newest (most recent) timestamp 
 		/// for values to be returned.  Valid operands include the Timestamp and 
 		/// OpcHdaTimestampStr constants defined by the FilterOperand class.
@@ -205,7 +205,7 @@ namespace Xi.Contracts
 		/// </returns>
 		[OperationContract, FaultContract(typeof(XiFault))]
 		JournalDataChangedValues[] ReadJournalDataChanges(string contextId, uint listId,
-			FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp,
+			FilterCriterion firstTimestamp, FilterCriterion secondTimestamp,
 			uint numValuesPerAlias, List<uint> serverAliases);
 
 		/// <summary>
@@ -259,12 +259,12 @@ namespace Xi.Contracts
 		/// The server identifier of the list that contains data objects whose historical 
 		/// values are to be read.
 		/// </param>
-		/// <param name="firstTimeStamp">
+		/// <param name="firstTimestamp">
 		/// The filter that specifies the inclusive earliest (oldest) timestamp 
 		/// for values to be returned.  Valid operands include the Timestamp and 
 		/// OpcHdaTimestampStr constants defined by the FilterOperand class.
 		/// </param>
-		/// <param name="secondTimeStamp">
+		/// <param name="secondTimestamp">
 		/// The filter that specifies the inclusive newest (most recent) timestamp 
 		/// for values to be returned.  Valid operands include the Timestamp and 
 		/// OpcHdaTimestampStr constants defined by the FilterOperand class.
@@ -284,7 +284,7 @@ namespace Xi.Contracts
 		/// </returns>
 		[OperationContract, FaultContract(typeof(XiFault))]
 		JournalDataValues[] ReadCalculatedJournalData(string contextId, uint listId,
-			FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp, TimeSpan calculationPeriod,
+			FilterCriterion firstTimestamp, FilterCriterion secondTimestamp, TimeSpan calculationPeriod,
 			List<AliasAndCalculation> serverAliasesAndCalculations);
 
 		/// <summary>
@@ -297,12 +297,12 @@ namespace Xi.Contracts
 		/// The server identifier of the list that contains data objects whose property 
 		/// values are to be read.
 		/// </param>
-		/// <param name="firstTimeStamp">
+		/// <param name="firstTimestamp">
 		/// The filter that specifies the inclusive earliest (oldest) timestamp 
 		/// for values to be returned.  Valid operands include the Timestamp and 
 		/// OpcHdaTimestampStr constants defined by the FilterOperand class.
 		/// </param>
-		/// <param name="secondTimeStamp">
+		/// <param name="secondTimestamp">
 		/// The filter that specifies the inclusive newest (most recent) timestamp 
 		/// for values to be returned.  Valid operands include the Timestamp and 
 		/// OpcHdaTimestampStr constants defined by the FilterOperand class.
@@ -319,7 +319,7 @@ namespace Xi.Contracts
 		/// </returns>
 		[OperationContract, FaultContract(typeof(XiFault))]
 		JournalDataPropertyValue[] ReadJournalDataProperties(string contextId, uint listId,
-			FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp, uint serverAlias,
+			FilterCriterion firstTimestamp, FilterCriterion secondTimestamp, uint serverAlias,
 			List<TypeId> propertiesToRead);
 
 		/// <summary>
@@ -361,12 +361,12 @@ namespace Xi.Contracts
 		/// The server identifier of the list that contains historical alarms and 
 		/// events that are to be read.
 		/// </param>
-		/// <param name="firstTimeStamp">
+		/// <param name="firstTimestamp">
 		/// The filter that specifies the first or beginning (of returned list) 
 		/// timestamp for event messages to be returned.  Valid operands include 
 		/// the Timestamp (UTC) constant defined by the FilterOperand class.
 		/// </param>
-		/// <param name="secondTimeStamp">
+		/// <param name="secondTimestamp">
 		/// The filter that specifies the second or ending (of returned list)
 		/// timestamp for event messages to be returned.  Valid operands include 
 		/// the Timestamp (UTC) constant defined by the FilterOperand class.
@@ -384,7 +384,7 @@ namespace Xi.Contracts
 		/// </returns>
 		[OperationContract, FaultContract(typeof(XiFault))]
 		EventMessage[] ReadJournalEvents(string contextId, uint listId, 
-			FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp, uint numEventMessages,
+			FilterCriterion firstTimestamp, FilterCriterion secondTimestamp, uint numEventMessages,
 			FilterSet filterSet);
 
 		/// <summary>

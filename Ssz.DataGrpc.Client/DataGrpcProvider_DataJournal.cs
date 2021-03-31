@@ -44,18 +44,18 @@ namespace Ssz.DataGrpc.Client
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="firstTimeStampUtc"></param>
-        /// <param name="secondTimeStampUtc"></param>
+        /// <param name="firstTimestampUtc"></param>
+        /// <param name="secondTimestampUtc"></param>
         /// <param name="numValuesPerDataObject"></param>
         /// <param name="calculation"></param>
         /// <param name="valueSubscriptionsCollection"></param>
         /// <param name="setResultAction"></param>
-        public void HdaReadElementValueJournals(DateTime firstTimeStampUtc, DateTime secondTimeStampUtc, uint numValuesPerDataObject, Ssz.Utils.DataSource.TypeId calculation, object[] valueSubscriptionsCollection,
+        public void HdaReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerDataObject, Ssz.Utils.DataSource.TypeId calculation, object[] valueSubscriptionsCollection,
             Action<ValueStatusTimestamp[][]?> setResultAction)
         {
             BeginInvoke(ct =>
             {
-                _clientElementValueJournalListManager.HdaReadElementValueJournals(firstTimeStampUtc, secondTimeStampUtc, numValuesPerDataObject, calculation, valueSubscriptionsCollection,
+                _clientElementValueJournalListManager.HdaReadElementValueJournals(firstTimestampUtc, secondTimestampUtc, numValuesPerDataObject, calculation, valueSubscriptionsCollection,
                     setResultAction);
             }
             );            

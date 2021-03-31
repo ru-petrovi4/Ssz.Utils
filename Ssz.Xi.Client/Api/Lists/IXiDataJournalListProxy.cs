@@ -13,7 +13,7 @@ namespace Ssz.Xi.Client.Api.Lists
         ///         data objects within a specific data journal list.
         ///     </para>
         /// </summary>
-        /// <param name="firstTimeStamp">
+        /// <param name="firstTimestamp">
         ///     The filter that specifies the first or beginning (of returned list) timestamp for values
         ///     to be returned. Valid operands include the Timestamp (UTC) and OpcHdaTimestampStr constants defined by the
         ///     FilterOperand class. The FilterOperand Operator is used to determine if the returned data should include data
@@ -21,7 +21,7 @@ namespace Ssz.Xi.Client.Api.Lists
         ///     occur at the first and second time stamp will be included in the sample set. Any other operator will not include
         ///     first or second time stamped values.
         /// </param>
-        /// <param name="secondTimeStamp">
+        /// <param name="secondTimestamp">
         ///     The filter that specifies the second or ending (of returned list) timestamp for values
         ///     to be returned. Valid operands include the Timestamp (UTC) and OpcHdaTimestampStr constants defined by the
         ///     FilterOperand class. The FilterOperand Operator is not used.
@@ -31,7 +31,7 @@ namespace Ssz.Xi.Client.Api.Lists
         ///     The list of data objects whose historical values are to be read. Each data
         ///     object is represented by a value set that contains the values selected and returned by the server.
         /// </param>
-        void ReadJournalDataForTimeInterval(FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp,
+        void ReadJournalDataForTimeInterval(FilterCriterion firstTimestamp, FilterCriterion secondTimestamp,
             uint numValuesPerDataObject,
             IEnumerable<IXiDataJournalValueStatusTimestampSet>? xiValueStatusTimestampSetCollection);
 
@@ -60,11 +60,11 @@ namespace Ssz.Xi.Client.Api.Lists
         ///     Additionally, the client specifies a calculation period that divides that time
         ///     range into periods. The server calculates a return value for each of these periods.
         /// </summary>
-        /// <param name="firstTimeStamp">
+        /// <param name="firstTimestamp">
         ///     The filter that specifies the inclusive earliest (oldest) timestamp for values to be
         ///     returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
         /// </param>
-        /// <param name="secondTimeStamp">
+        /// <param name="secondTimestamp">
         ///     The filter that specifies the inclusive newest (most recent) timestamp for values to be
         ///     returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
         /// </param>
@@ -77,7 +77,7 @@ namespace Ssz.Xi.Client.Api.Lists
         ///     The list of data objects whose historical values are to be read. Each data
         ///     object is represented by a value set that contains the values calculated and returned by the server.
         /// </param>
-        void ReadCalculatedJournalData(FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp,
+        void ReadCalculatedJournalData(FilterCriterion firstTimestamp, FilterCriterion secondTimestamp,
             TimeSpan calculationPeriod,
             List<IXiDataJournalValueStatusTimestampSet> xiValueStatusTimestampSetList);
     }

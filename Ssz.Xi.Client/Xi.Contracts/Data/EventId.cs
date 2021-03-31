@@ -17,6 +17,7 @@
 using System;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Xi.Contracts.Data
 {
@@ -27,6 +28,33 @@ namespace Xi.Contracts.Data
 	[DataContract(Namespace = "urn:xi/data")]
 	public class EventId
 	{
+		#region construction and destruction
+
+		public EventId()
+		{
+
+		}
+
+		public EventId(Ssz.Utils.DataSource.EventId eventId)
+		{
+			SourceId = new InstanceId("", "", eventId.SourceElementId);
+			if (eventId.MultiplexedAlarmContainer != null)
+			{
+				MultiplexedAlarmContainer = new TypeId(eventId.MultiplexedAlarmContainer);
+			}
+			if (eventId.Conditions != null)
+			{
+				Condition = new List<TypeId>(eventId.Conditions.Select(t => new TypeId(t)));				
+			}
+			OccurrenceId = eventId.OccurrenceId;
+			if (eventId.TimeLastActive != null)
+			{
+				TimeLastActive = eventId.TimeLastActive.Value;
+			}
+		}
+
+		#endregion
+
 		#region Data Members
 
 		/// <summary>
@@ -68,7 +96,26 @@ namespace Xi.Contracts.Data
 		/// </summary>
 		[DataMember] public Nullable<DateTime> TimeLastActive;
 
-		#endregion
+		public Ssz.Utils.DataSource.EventId ToEventId()
+		{
+			var eventId = new Ssz.Utils.DataSource.EventId();
+			eventId.SourceElementId = SourceId != null ? SourceId.LocalId ?? "" : "";
+			if (MultiplexedAlarmContainer != null)
+			{
+				eventId.MultiplexedAlarmContainer = MultiplexedAlarmContainer.ToTypeId();
+			}
+			if (Condition != null)
+			{
+				eventId.Conditions = Condition.Select(t => t.ToTypeId()).ToList();
+			}
+			eventId.OccurrenceId = OccurrenceId ?? "";
+			if (TimeLastActive != null)
+			{
+				eventId.TimeLastActive = TimeLastActive.Value;
+			}
+			return eventId;
+		}
 
+		#endregion
 	}
 }

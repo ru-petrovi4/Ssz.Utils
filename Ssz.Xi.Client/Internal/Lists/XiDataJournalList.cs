@@ -71,11 +71,11 @@ namespace Ssz.Xi.Client.Internal.Lists
         /// <summary>
         ///   <para> This method is used to read the historical values that fall between a start and end time for one or more data objects within a specific data journal list. </para>
         /// </summary>
-        /// <param name="firstTimeStamp"> The filter that specifies the first or beginning (of returned list) timestamp for values to be returned. Valid operands include the Timestamp (UTC) and OpcHdaTimestampStr constants defined by the FilterOperand class. The FilterOperand Operator is used to determine if the returned data should include data values the occur exactly at the first or second time stamp. If the equals operator is specified then values that occur at the first and second time stamp will be included in the sample set. Any other operator will not include first or second time stamped values. </param>
-        /// <param name="secondTimeStamp"> The filter that specifies the second or ending (of returned list) timestamp for values to be returned. Valid operands include the Timestamp (UTC) and OpcHdaTimestampStr constants defined by the FilterOperand class. The FilterOperand Operator is not used. </param>
+        /// <param name="firstTimestamp"> The filter that specifies the first or beginning (of returned list) timestamp for values to be returned. Valid operands include the Timestamp (UTC) and OpcHdaTimestampStr constants defined by the FilterOperand class. The FilterOperand Operator is used to determine if the returned data should include data values the occur exactly at the first or second time stamp. If the equals operator is specified then values that occur at the first and second time stamp will be included in the sample set. Any other operator will not include first or second time stamped values. </param>
+        /// <param name="secondTimestamp"> The filter that specifies the second or ending (of returned list) timestamp for values to be returned. Valid operands include the Timestamp (UTC) and OpcHdaTimestampStr constants defined by the FilterOperand class. The FilterOperand Operator is not used. </param>
         /// <param name="numValuesPerDataObject"> The maximum number of values to be returned for each data object. </param>
         /// <param name="xiDataJournalListItem"> The list of data objects whose historical values are to be read. Each data object is represented by a value set that contains the values selected and returned by the server. </param>
-        public JournalDataValues ReadJournalDataForTimeInterval(FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp,
+        public JournalDataValues ReadJournalDataForTimeInterval(FilterCriterion firstTimestamp, FilterCriterion secondTimestamp,
                                                    uint numValuesPerDataObject,
                                                    IXiDataJournalListItem xiDataJournalListItem)
         {
@@ -83,8 +83,8 @@ namespace Ssz.Xi.Client.Internal.Lists
 
             var serverAliases = new List<uint> {((XiDataJournalListItem) xiDataJournalListItem).ServerAlias};
 
-            JournalDataValues[] journalDataValuesArray = Context.ReadJournalDataForTimeInterval(ServerListId, firstTimeStamp,
-                                                                                          secondTimeStamp,
+            JournalDataValues[] journalDataValuesArray = Context.ReadJournalDataForTimeInterval(ServerListId, firstTimestamp,
+                                                                                          secondTimestamp,
                                                                                           numValuesPerDataObject,
                                                                                           serverAliases);
 
@@ -97,7 +97,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         ///         data objects within a specific data journal list.
         ///     </para>
         /// </summary>
-        /// <param name="firstTimeStamp">
+        /// <param name="firstTimestamp">
         ///     The filter that specifies the first or beginning (of returned list) timestamp for values
         ///     to be returned. Valid operands include the Timestamp (UTC) and OpcHdaTimestampStr constants defined by the
         ///     FilterOperand class. The FilterOperand Operator is used to determine if the returned data should include data
@@ -105,7 +105,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         ///     occur at the first and second time stamp will be included in the sample set. Any other operator will not include
         ///     first or second time stamped values.
         /// </param>
-        /// <param name="secondTimeStamp">
+        /// <param name="secondTimestamp">
         ///     The filter that specifies the second or ending (of returned list) timestamp for values
         ///     to be returned. Valid operands include the Timestamp (UTC) and OpcHdaTimestampStr constants defined by the
         ///     FilterOperand class. The FilterOperand Operator is not used.
@@ -115,7 +115,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         ///     The list of data objects whose historical values are to be read. Each data
         ///     object is represented by a value set that contains the values selected and returned by the server.
         /// </param>
-        public void ReadJournalDataForTimeInterval(FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp,
+        public void ReadJournalDataForTimeInterval(FilterCriterion firstTimestamp, FilterCriterion secondTimestamp,
             uint numValuesPerDataObject,
             IEnumerable<IXiDataJournalValueStatusTimestampSet>? xiValueStatusTimestampSetCollection)
         {
@@ -146,8 +146,8 @@ namespace Ssz.Xi.Client.Internal.Lists
             if (serverAliases.Count == 0) return;
 
             JournalDataValues[]? journalDataValuesArray = Context.ReadJournalDataForTimeInterval(ServerListId,
-                firstTimeStamp,
-                secondTimeStamp,
+                firstTimestamp,
+                secondTimestamp,
                 numValuesPerDataObject,
                 serverAliases.ToList());
 
@@ -220,11 +220,11 @@ namespace Ssz.Xi.Client.Internal.Lists
         ///     Additionally, the client specifies a calculation period that divides that time
         ///     range into periods. The server calculates a return value for each of these periods.
         /// </summary>
-        /// <param name="firstTimeStamp">
+        /// <param name="firstTimestamp">
         ///     The filter that specifies the inclusive earliest (oldest) timestamp for values to be
         ///     returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
         /// </param>
-        /// <param name="secondTimeStamp">
+        /// <param name="secondTimestamp">
         ///     The filter that specifies the inclusive newest (most recent) timestamp for values to be
         ///     returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
         /// </param>
@@ -237,7 +237,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         ///     The list of data objects whose historical values are to be read. Each data
         ///     object is represented by a value set that contains the values calculated and returned by the server.
         /// </param>
-        public void ReadCalculatedJournalData(FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp,
+        public void ReadCalculatedJournalData(FilterCriterion firstTimestamp, FilterCriterion secondTimestamp,
             TimeSpan calculationPeriod,
             List<IXiDataJournalValueStatusTimestampSet> xiValueStatusTimestampSetList)
         {
@@ -261,7 +261,7 @@ namespace Ssz.Xi.Client.Internal.Lists
                                 ServerAlias =
                                     xiValueStatusTimestampSet.
                                         OwningXiDataJournalListItem.ServerAlias,
-                                Calculation = xiValueStatusTimestampSet.CalculationTypeId
+                                Calculation = new TypeId(xiValueStatusTimestampSet.CalculationTypeId)
                             };
                             serverAliasesAndCalculations.Add(aliasAndCalculation);
                         }
@@ -285,15 +285,15 @@ namespace Ssz.Xi.Client.Internal.Lists
                             ServerAlias =
                                 s.
                                     OwningXiDataJournalListItem.ServerAlias,
-                            Calculation = xiValueStatusTimestampSet.CalculationTypeId
+                            Calculation = new TypeId(xiValueStatusTimestampSet.CalculationTypeId)
                         };
                         serverAliasesAndCalculations.Add(aliasAndCalculation);
                     }
                 }
             }
 
-            JournalDataValues[]? journalDataValuesArray = Context.ReadCalculatedJournalData(ServerListId, firstTimeStamp,
-                secondTimeStamp,
+            JournalDataValues[]? journalDataValuesArray = Context.ReadCalculatedJournalData(ServerListId, firstTimestamp,
+                secondTimestamp,
                 calculationPeriod,
                 serverAliasesAndCalculations);
             if (journalDataValuesArray != null)
@@ -311,11 +311,11 @@ namespace Ssz.Xi.Client.Internal.Lists
         ///     values are those that were entered into the journal and then changed
         ///     (corrected) by an operator or other user.
         /// </summary>
-        /// <param name="firstTimeStamp">
+        /// <param name="firstTimestamp">
         ///     The filter that specifies the inclusive earliest (oldest) timestamp for values to be
         ///     returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
         /// </param>
-        /// <param name="secondTimeStamp">
+        /// <param name="secondTimestamp">
         ///     The filter that specifies the inclusive newest (most recent) timestamp for values to be
         ///     returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
         /// </param>
@@ -324,7 +324,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         ///     The list of data objects whose historical values are to be read. Each data object may
         ///     contain zero, one, or more value sets, each of which contains changed values selected and returned by the server.
         /// </param>
-        public void ReadJournalDataChanges(FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp,
+        public void ReadJournalDataChanges(FilterCriterion firstTimestamp, FilterCriterion secondTimestamp,
             uint numValuesPerDataObject, List<XiDataJournalListItem> dataObjects)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiDataJournalList.");
@@ -353,8 +353,8 @@ namespace Ssz.Xi.Client.Internal.Lists
                     }
                 }
             }
-            JournalDataChangedValues[]? valuesFromServer = Context.ReadJournalDataChanges(ServerListId, firstTimeStamp,
-                secondTimeStamp,
+            JournalDataChangedValues[]? valuesFromServer = Context.ReadJournalDataChanges(ServerListId, firstTimestamp,
+                secondTimestamp,
                 numValuesPerDataObject,
                 serverAliases);
             if (valuesFromServer != null)
@@ -368,11 +368,11 @@ namespace Ssz.Xi.Client.Internal.Lists
         /// <summary>
         ///     This method reads the properties associated with a historized data object.
         /// </summary>
-        /// <param name="firstTimeStamp">
+        /// <param name="firstTimestamp">
         ///     The filter that specifies the inclusive earliest (oldest) timestamp for values to be
         ///     returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
         /// </param>
-        /// <param name="secondTimeStamp">
+        /// <param name="secondTimestamp">
         ///     The filter that specifies the inclusive newest (most recent) timestamp for values to be
         ///     returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
         /// </param>
@@ -381,13 +381,13 @@ namespace Ssz.Xi.Client.Internal.Lists
         ///     The TypeIds of the properties to read. Each property is identified by its property
         ///     type.
         /// </param>
-        public void ReadJournalDataProperties(FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp,
+        public void ReadJournalDataProperties(FilterCriterion firstTimestamp, FilterCriterion secondTimestamp,
             XiDataJournalListItem dataObject, List<TypeId> propertiesToRead)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiDataJournalList.");
 
-            JournalDataPropertyValue[]? propValueArray = Context.ReadJournalDataProperties(ServerListId, firstTimeStamp,
-                secondTimeStamp,
+            JournalDataPropertyValue[]? propValueArray = Context.ReadJournalDataProperties(ServerListId, firstTimestamp,
+                secondTimestamp,
                 dataObject.ServerAlias,
                 propertiesToRead);
             dataObject.SetPropertyValues(propValueArray);

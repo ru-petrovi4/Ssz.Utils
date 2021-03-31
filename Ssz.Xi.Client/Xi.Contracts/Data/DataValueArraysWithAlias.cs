@@ -82,7 +82,7 @@ namespace Xi.Contracts.Data
 		/// <param name="doubleStatusCodes">
 		/// The array of status codes for double values.
 		/// </param>
-		/// <param name="doubleTimeStamps">
+		/// <param name="doubleTimestamps">
 		/// The array of timestamps for double values.
 		/// </param>
 		/// <param name="doubleValues">
@@ -94,7 +94,7 @@ namespace Xi.Contracts.Data
 		/// <param name="uintStatusCodes">
 		/// The array of status codes for uint values.
 		/// </param>
-		/// <param name="uintTimeStamps">
+		/// <param name="uintTimestamps">
 		/// The array of timestamps for uint values.
 		/// </param>
 		/// <param name="uintValues">
@@ -106,19 +106,19 @@ namespace Xi.Contracts.Data
 		/// <param name="objectStatusCodes">
 		/// The array of status codes for object values.
 		/// </param>
-		/// <param name="objectTimeStamps">
+		/// <param name="objectTimestamps">
 		/// The array of timestamps for object values.
 		/// </param>
 		/// <param name="objectValues">
 		/// The array of object values.
 		/// </param>
 		public DataValueArraysWithAlias(
-			ref uint[] doubleAliases,       ref uint[] doubleStatusCodes, ref DateTime[] doubleTimeStamps, ref double[] doubleValues,
-			ref uint[] uintClientAliases,   ref uint[] uintStatusCodes,   ref DateTime[] uintTimeStamps,   ref uint[] uintValues,
-			ref uint[] objectClientAliases, ref uint[] objectStatusCodes, ref DateTime[] objectTimeStamps, ref object[] objectValues)
-			: base(ref doubleStatusCodes, ref doubleTimeStamps, ref doubleValues,
-				ref uintStatusCodes, ref uintTimeStamps, ref uintValues,
-				ref objectStatusCodes, ref objectTimeStamps, ref objectValues)
+			ref uint[] doubleAliases,       ref uint[] doubleStatusCodes, ref DateTime[] doubleTimestamps, ref double[] doubleValues,
+			ref uint[] uintClientAliases,   ref uint[] uintStatusCodes,   ref DateTime[] uintTimestamps,   ref uint[] uintValues,
+			ref uint[] objectClientAliases, ref uint[] objectStatusCodes, ref DateTime[] objectTimestamps, ref object[] objectValues)
+			: base(ref doubleStatusCodes, ref doubleTimestamps, ref doubleValues,
+				ref uintStatusCodes, ref uintTimestamps, ref uintValues,
+				ref objectStatusCodes, ref objectTimestamps, ref objectValues)
 		{
 			DoubleAlias = doubleAliases;
 			UintAlias = uintClientAliases;
@@ -149,18 +149,18 @@ namespace Xi.Contracts.Data
 		/// <param name="statusCode">
 		/// The status of the value.
 		/// </param>
-		/// <param name="timeStamp">
+		/// <param name="timestamp">
 		/// The timestamp of the value.
 		/// </param>
 		/// <param name="value">
 		/// The double value.
 		/// </param>
 		public void SetDouble(int idx, uint clientAlias, 
-			uint statusCode, DateTime timeStamp, double value)
+			uint statusCode, DateTime timestamp, double value)
 		{
 			if (DoubleAlias == null) throw new InvalidOperationException();
 			DoubleAlias[idx] = clientAlias;
-			base.SetDouble(idx, statusCode, timeStamp, value);
+			base.SetDouble(idx, statusCode, timestamp, value);
 		}
 
 		/// <summary>
@@ -176,18 +176,18 @@ namespace Xi.Contracts.Data
 		/// <param name="statusCode">
 		/// The status of the value.
 		/// </param>
-		/// <param name="timeStamp">
+		/// <param name="timestamp">
 		/// The timestamp of the value.
 		/// </param>
 		/// <param name="value">
 		/// The long value.
 		/// </param>
 		public void SetUint(int idx, uint clientAlias, 
-			uint statusCode, DateTime timeStamp, uint value)
+			uint statusCode, DateTime timestamp, uint value)
 		{
 			if (UintAlias == null) throw new InvalidOperationException();
 			UintAlias[idx] = clientAlias;
-			base.SetUint(idx, statusCode, timeStamp, value);
+			base.SetUint(idx, statusCode, timestamp, value);
 		}
 
 		/// <summary>
@@ -203,18 +203,18 @@ namespace Xi.Contracts.Data
 		/// <param name="statusCode">
 		/// The status of the value.
 		/// </param>
-		/// <param name="timeStamp">
+		/// <param name="timestamp">
 		/// The timestamp of the value.
 		/// </param>
 		/// <param name="value">
 		/// The object value.
 		/// </param>
-		public void SetObject(int idx, uint clientAlias, uint statusCode, DateTime timeStamp, 
+		public void SetObject(int idx, uint clientAlias, uint statusCode, DateTime timestamp, 
 			object? value)
 		{
 			if (ObjectAlias == null) throw new InvalidOperationException();
 			ObjectAlias[idx] = clientAlias;
-			base.SetObject(idx, statusCode, timeStamp, value);
+			base.SetObject(idx, statusCode, timestamp, value);
 		}
 
 		/// <summary>
@@ -226,7 +226,7 @@ namespace Xi.Contracts.Data
 		/// <param name="statusCodeArray">
 		/// The status code array.
 		/// </param>
-		/// <param name="timeStampArray">
+		/// <param name="timestampArray">
 		/// The timestamp array.
 		/// </param>
 		/// <param name="valueArray">
@@ -236,11 +236,11 @@ namespace Xi.Contracts.Data
 		/// True if the array could be set.
 		/// </returns>
 		public bool CreateDoubleArraysWithAlias(uint[]? clientAliasArray, uint[]? statusCodeArray,
-			DateTime[]? timeStampArray, double[]? valueArray)
+			DateTime[]? timestampArray, double[]? valueArray)
 		{
 			if (   (clientAliasArray == null)
 				|| (statusCodeArray == null)
-				|| (timeStampArray == null)
+				|| (timestampArray == null)
 				|| (valueArray == null)
 			   )
 			{
@@ -248,13 +248,13 @@ namespace Xi.Contracts.Data
 				return base.CreateDoubleArrays(null, null, null);
 			}
 			else if (   (clientAliasArray.Length == statusCodeArray.Length)
-					 && (clientAliasArray.Length == timeStampArray.Length)
+					 && (clientAliasArray.Length == timestampArray.Length)
 					 && (clientAliasArray.Length == valueArray.Length)
 			   )
 			{
 				DoubleAlias = clientAliasArray;
 				ObjectAlias = clientAliasArray;
-				return base.CreateDoubleArrays(statusCodeArray, timeStampArray, valueArray);
+				return base.CreateDoubleArrays(statusCodeArray, timestampArray, valueArray);
 			}
 			return false;
 		}
@@ -268,7 +268,7 @@ namespace Xi.Contracts.Data
 		/// <param name="statusCodeArray">
 		/// The status code array.
 		/// </param>
-		/// <param name="timeStampArray">
+		/// <param name="timestampArray">
 		/// The timestamp array.
 		/// </param>
 		/// <param name="valueArray">
@@ -278,11 +278,11 @@ namespace Xi.Contracts.Data
 		/// True if the array could be set.
 		/// </returns>
 		public bool CreateUintArraysWithAlias(uint[] clientAliasArray, uint[] statusCodeArray,
-			DateTime[] timeStampArray, uint[] valueArray)
+			DateTime[] timestampArray, uint[] valueArray)
 		{
 			if (   (clientAliasArray == null)
 				|| (statusCodeArray == null)
-				|| (timeStampArray == null)
+				|| (timestampArray == null)
 				|| (valueArray == null)
 			   )
 			{
@@ -290,13 +290,13 @@ namespace Xi.Contracts.Data
 				return base.CreateUintArrays(null, null, null);
 			}
 			else if (   (clientAliasArray.Length == statusCodeArray.Length)
-					 && (clientAliasArray.Length == timeStampArray.Length)
+					 && (clientAliasArray.Length == timestampArray.Length)
 					 && (clientAliasArray.Length == valueArray.Length)
 			   )
 			{
 				UintAlias = clientAliasArray;
 				ObjectAlias = clientAliasArray;
-				return base.CreateUintArrays(statusCodeArray, timeStampArray, valueArray);
+				return base.CreateUintArrays(statusCodeArray, timestampArray, valueArray);
 			}
 			return false;
 		}
@@ -310,7 +310,7 @@ namespace Xi.Contracts.Data
 		/// <param name="statusCodeArray">
 		/// The status code array.
 		/// </param>
-		/// <param name="timeStampArray">
+		/// <param name="timestampArray">
 		/// The timestamp array.
 		/// </param>
 		/// <param name="valueArray">
@@ -320,11 +320,11 @@ namespace Xi.Contracts.Data
 		/// True if the array could be set.
 		/// </returns>
 		public bool CreateObjectArraysWithAlias(uint[] clientAliasArray, uint[] statusCodeArray,
-			DateTime[] timeStampArray, object[] valueArray)
+			DateTime[] timestampArray, object[] valueArray)
 		{
 			if (   (clientAliasArray == null)
 				|| (statusCodeArray == null)
-				|| (timeStampArray == null)
+				|| (timestampArray == null)
 				|| (valueArray == null)
 			   )
 			{
@@ -332,12 +332,12 @@ namespace Xi.Contracts.Data
 				return base.CreateObjectArrays(null, null, null);
 			}
 			else if (   (clientAliasArray.Length == statusCodeArray.Length)
-					 && (clientAliasArray.Length == timeStampArray.Length)
+					 && (clientAliasArray.Length == timestampArray.Length)
 					 && (clientAliasArray.Length == valueArray.Length)
 			   )
 			{
 				ObjectAlias = clientAliasArray;
-				return base.CreateObjectArrays(statusCodeArray, timeStampArray, valueArray);
+				return base.CreateObjectArrays(statusCodeArray, timestampArray, valueArray);
 			}
 			return false;
 		}

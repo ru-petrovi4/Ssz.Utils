@@ -20,7 +20,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TestWpfApp.Alarms;
-using Xi.Contracts.Data;
+
 
 namespace TestWpfApp
 {
@@ -36,11 +36,11 @@ namespace TestWpfApp
             _alarmsListViewModel = new AlarmsListViewModel();
             MainAlarmListControl.MainDataGrid.ItemsSource = _alarmsListViewModel.Alarms;
 
-            App.XiDataProvider.Initialize(this, true, @"http://localhost:60080/SszCtcmXiServer/ServerDiscovery", "TestWpfApp", Environment.MachineName, new string[0], new CaseInsensitiveDictionary<string>());
-            App.XiDataProvider.EventNotification += XiDataProviderOnEventNotification;
-            App.XiDataProvider.Disconnected += XiDataProviderOnDisconnected;
+            App.DataProvider.Initialize(this, true, @"http://localhost:60080/SszCtcmXiServer/ServerDiscovery", "TestWpfApp", Environment.MachineName, new string[0], new CaseInsensitiveDictionary<string>());
+            App.DataProvider.EventNotification += XiDataProviderOnEventNotification;
+            App.DataProvider.Disconnected += XiDataProviderOnDisconnected;
 
-            _valueSubscription = new ValueSubscription(App.XiDataProvider,
+            _valueSubscription = new ValueSubscription(App.DataProvider,
                 "BP2.propTransmValueDspl",
                 (oldValue, newValue) =>
                 {
@@ -55,10 +55,10 @@ namespace TestWpfApp
             EventSourceModel.Instance.Clear();
         }
 
-        private async void XiDataProviderOnEventNotification(IEnumerable<Xi.Contracts.Data.EventMessage> newEventMessages)
+        private async void XiDataProviderOnEventNotification(EventMessage[] newEventMessages)
         {
             List<AlarmInfoViewModelBase> newAlarmInfoViewModels = new List<AlarmInfoViewModelBase>();
-            foreach (Xi.Contracts.Data.EventMessage eventMessage in newEventMessages.Where(em => em != null).OrderBy(em => em.OccurrenceTime))
+            foreach (EventMessage eventMessage in newEventMessages.Where(em => em != null).OrderBy(em => em.OccurrenceTime))
             {
                 var alarmInfoViewModels = await CtcmModelEngine.ProcessEventMessage(eventMessage);
                 if (alarmInfoViewModels != null)
@@ -79,7 +79,7 @@ namespace TestWpfApp
         {
             _valueSubscription.Dispose();
 
-            App.XiDataProvider.Close();
+            App.DataProvider.Close();
 
             base.OnClosed(e);
         }

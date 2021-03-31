@@ -1,8 +1,10 @@
-﻿namespace Ssz.Xi.Client.Api.ListItems
+﻿using Ssz.Utils.DataSource;
+
+namespace Ssz.Xi.Client.Api.ListItems
 {
     public interface IXiDataListItem : IXiListItem
     {
-        XiValueStatusTimestamp XiValueStatusTimestamp { get; }
+        ValueStatusTimestamp ValueStatusTimestamp { get; }
 
         /// <summary>
         ///     Marked For Touch From Server
@@ -20,7 +22,7 @@
         bool PreparedForRead { get; }
 
         bool PrepareForTouch();
-        bool PrepareForWrite(XiValueStatusTimestamp xiValueStatusTimestamp);
+        bool PrepareForWrite(ValueStatusTimestamp xiValueStatusTimestamp);
         bool PrepareForRead();
     }
 }

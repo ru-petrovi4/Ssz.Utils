@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Ssz.Utils.DataSource;
 using Ssz.Xi.Client.Api;
 using Ssz.Xi.Client.Api.ListItems;
 using Ssz.Xi.Client.Internal.Endpoints;
 using Ssz.Xi.Client.Internal.Lists;
 using Xi.Contracts.Data;
+using EventMessage = Xi.Contracts.Data.EventMessage;
 
 namespace Ssz.Xi.Client.Internal.Context
 {
@@ -283,10 +285,10 @@ namespace Ssz.Xi.Client.Internal.Context
                 if (changedListItems == null) return null;
                 if (changedListItems.Count > 0)
                 {
-                    List<XiValueStatusTimestamp> changedValuesList = new List<XiValueStatusTimestamp>(changedListItems.Count);
+                    List<ValueStatusTimestamp> changedValuesList = new List<ValueStatusTimestamp>(changedListItems.Count);
                     foreach (IXiDataListItem changedListItem in changedListItems)
                     {
-                        changedValuesList.Add(changedListItem.XiValueStatusTimestamp);
+                        changedValuesList.Add(changedListItem.ValueStatusTimestamp);
                     }
                     dataList.RaiseInformationReportEvent(changedListItems, changedValuesList);
                 }

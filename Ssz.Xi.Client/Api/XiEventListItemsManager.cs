@@ -83,7 +83,7 @@ namespace Ssz.Xi.Client.Api
                                     try
                                     {
                                         сallbackDoer.BeginInvoke(ct => eventNotificationEventHandler(
-                                            newListItems.Select(li => li.EventMessage)));
+                                            newListItems.Select(li => li.EventMessage).ToArray()));
                                     }
                                     catch (Exception)
                                     {

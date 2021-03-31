@@ -76,7 +76,7 @@ namespace Ssz.DataGrpc.Client.Managers
                                     try
                                     {
                                         сallbackDispatcher.BeginInvoke(ct => eventNotificationEventHandler(
-                                            newListItems.Select(li => li.EventMessage.ToEventInfo()).ToArray()));
+                                            newListItems.Select(li => li.EventMessage.ToEventMessage()).ToArray()));
                                     }
                                     catch (Exception)
                                     {

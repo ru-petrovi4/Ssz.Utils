@@ -148,7 +148,7 @@
                     data objects within a specific data journal list.
                 </para>
             </summary>
-            <param name="firstTimeStamp">
+            <param name="firstTimestamp">
                 The filter that specifies the first or beginning (of returned list) timestamp for values
                 to be returned. Valid operands include the Timestamp (UTC) and OpcHdaTimestampStr constants defined by the
                 FilterOperand class. The FilterOperand Operator is used to determine if the returned data should include data
@@ -156,7 +156,7 @@
                 occur at the first and second time stamp will be included in the sample set. Any other operator will not include
                 first or second time stamped values.
             </param>
-            <param name="secondTimeStamp">
+            <param name="secondTimestamp">
                 The filter that specifies the second or ending (of returned list) timestamp for values
                 to be returned. Valid operands include the Timestamp (UTC) and OpcHdaTimestampStr constants defined by the
                 FilterOperand class. The FilterOperand Operator is not used.
@@ -192,11 +192,11 @@
                 Additionally, the client specifies a calculation period that divides that time
                 range into periods. The server calculates a return value for each of these periods.
             </summary>
-            <param name="firstTimeStamp">
+            <param name="firstTimestamp">
                 The filter that specifies the inclusive earliest (oldest) timestamp for values to be
                 returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
             </param>
-            <param name="secondTimeStamp">
+            <param name="secondTimestamp">
                 The filter that specifies the inclusive newest (most recent) timestamp for values to be
                 returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
             </param>
@@ -305,6 +305,17 @@
             <summary>
             </summary>
             <returns> List Items than was not added or null. </returns>
+        </member>
+        <member name="T:Ssz.Xi.Client.Api.ValueStatusTimestampHelper">
+            <summary>
+                The Xi Data Value class is the Client Base representation of data values.
+            </summary>
+        </member>
+        <member name="M:Ssz.Xi.Client.Api.ValueStatusTimestampHelper.NewValueStatusTimestamp(Ssz.Utils.Any,System.DateTime)">
+            <summary>
+                It creates a data value
+                with a good status and DateTime.MinValue timestamp.
+            </summary>
         </member>
         <member name="T:Ssz.Xi.Client.Api.XiCategorySpecificFields">
             <summary>
@@ -765,46 +776,6 @@
         <member name="F:Ssz.Xi.Client.Api.XiServerProxy._context">
             <summary>
                 This data member is the private representation of the XiContext public property.
-            </summary>
-        </member>
-        <member name="T:Ssz.Xi.Client.Api.XiValueStatusTimestamp">
-            <summary>
-                The Xi Data Value class is the Client Base representation of data values.
-            </summary>
-        </member>
-        <member name="M:Ssz.Xi.Client.Api.XiValueStatusTimestamp.#ctor">
-            <summary>
-                The default constructor. It creates a data value
-                with a bad status and DateTime.MinValue timestamp.
-            </summary>
-        </member>
-        <member name="M:Ssz.Xi.Client.Api.XiValueStatusTimestamp.#ctor(Ssz.Utils.Any)">
-            <summary>
-                Constructor. It creates a data value
-                with a good status and DateTime.MinValue timestamp.
-            </summary>
-        </member>
-        <member name="M:Ssz.Xi.Client.Api.XiValueStatusTimestamp.ToString">
-            <summary>
-                Provides an simple overload for the ToString() method that combines the
-                data type, timestamp, status code, and value into a single string.
-            </summary>
-            <returns> </returns>
-        </member>
-        <member name="F:Ssz.Xi.Client.Api.XiValueStatusTimestamp.Value">
-            <summary>
-                This property is the value of the data item.
-            </summary>
-        </member>
-        <member name="F:Ssz.Xi.Client.Api.XiValueStatusTimestamp.StatusCode">
-            <summary>
-                This property is the 32-bit status associated with the value.
-                Status codes are defined by the Xi.Contracts.Data.XiStatusCode class.
-            </summary>
-        </member>
-        <member name="F:Ssz.Xi.Client.Api.XiValueStatusTimestamp.TimestampUtc">
-            <summary>
-                This property is the UTC DateTime timestamp of this value.
             </summary>
         </member>
         <member name="T:Ssz.Xi.Client.ChannelCloser">
@@ -1720,7 +1691,7 @@
                 The server identifier of the list that contains data objects whose historical values are to
                 be read.
             </param>
-            <param name="firstTimeStamp">
+            <param name="firstTimestamp">
                 The filter that specifies the first or beginning (of returned list) timestamp for values
                 to be returned. Valid operands include the Timestamp (UTC) and OpcHdaTimestampStr constants defined by the
                 FilterOperand class. The FilterOperand Operator is used to determine if the returned data should include data
@@ -1728,7 +1699,7 @@
                 occur at the first and second time stamp will be included in the sample set. Any other operator will not include
                 first or second time stamped values.
             </param>
-            <param name="secondTimeStamp">
+            <param name="secondTimestamp">
                 The filter that specifies the second or ending (of returned list) timestamp for values
                 to be returned. Valid operands include the Timestamp (UTC) and OpcHdaTimestampStr constants defined by the
                 FilterOperand class. The FilterOperand Operator is not used.
@@ -1769,11 +1740,11 @@
                 The server identifier of the list that contains data objects whose historical values are to
                 be read.
             </param>
-            <param name="firstTimeStamp">
+            <param name="firstTimestamp">
                 The filter that specifies the inclusive earliest (oldest) timestamp for values to be
                 returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
             </param>
-            <param name="secondTimeStamp">
+            <param name="secondTimestamp">
                 The filter that specifies the inclusive newest (most recent) timestamp for values to be
                 returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
             </param>
@@ -1798,11 +1769,11 @@
                 The server identifier of the list that contains data objects whose historical values are to
                 be read.
             </param>
-            <param name="firstTimeStamp">
+            <param name="firstTimestamp">
                 The filter that specifies the inclusive earliest (oldest) timestamp for values to be
                 returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
             </param>
-            <param name="secondTimeStamp">
+            <param name="secondTimestamp">
                 The filter that specifies the inclusive newest (most recent) timestamp for values to be
                 returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
             </param>
@@ -1828,11 +1799,11 @@
                 The server identifier of the list that contains data objects whose property values are to
                 be read.
             </param>
-            <param name="firstTimeStamp">
+            <param name="firstTimestamp">
                 The filter that specifies the inclusive earliest (oldest) timestamp for values to be
                 returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
             </param>
-            <param name="secondTimeStamp">
+            <param name="secondTimestamp">
                 The filter that specifies the inclusive newest (most recent) timestamp for values to be
                 returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
             </param>
@@ -2735,7 +2706,7 @@
                 for the data object.
             </summary>
             <param name="statusCode"> The Xi StatusCode of the value. </param>
-            <param name="timeStampUtc"> The timestamp of the value. </param>
+            <param name="timestampUtc"> The timestamp of the value. </param>
             <param name="valueUInt32"> The value </param>
         </member>
         <member name="M:Ssz.Xi.Client.Internal.ListItems.XiDataListItem.UpdateValue(System.Double,System.UInt32,System.DateTime)">
@@ -2746,7 +2717,7 @@
                 for the data object.
             </summary>
             <param name="statusCode"> The Xi StatusCode of the value. </param>
-            <param name="timeStampUtc"> The timestamp of the value. </param>
+            <param name="timestampUtc"> The timestamp of the value. </param>
             <param name="valueDouble"> The value </param>
         </member>
         <member name="M:Ssz.Xi.Client.Internal.ListItems.XiDataListItem.UpdateValue(System.Object,System.UInt32,System.DateTime)">
@@ -2757,10 +2728,10 @@
                 for the data object.
             </summary>
             <param name="statusCode"> The Xi StatusCode of the value. </param>
-            <param name="timeStampUtc"> The timestamp of the value. </param>
+            <param name="timestampUtc"> The timestamp of the value. </param>
             <param name="valueObject"> The value </param>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.ListItems.XiDataListItem.PrepareForWrite(Ssz.Xi.Client.Api.XiValueStatusTimestamp)">
+        <member name="M:Ssz.Xi.Client.Internal.ListItems.XiDataListItem.PrepareForWrite(Ssz.Utils.DataSource.ValueStatusTimestamp)">
             <summary>
                 This method is used to set PendingWriteValue to a value to be written.
                 If the data object is not writable, this method sets PendingWriteValue
@@ -2771,12 +2742,12 @@
             <param name="xiValueStatusTimestamp"> The data value to be written. </param>
             <returns> Returns TRUE if the data object is writable, otherwise FALSE. </returns>
         </member>
-        <member name="P:Ssz.Xi.Client.Internal.ListItems.XiDataListItem.XiValueStatusTimestamp">
+        <member name="P:Ssz.Xi.Client.Internal.ListItems.XiDataListItem.ValueStatusTimestamp">
             <summary>
                 This property contains the data value for the data object.
             </summary>
         </member>
-        <member name="P:Ssz.Xi.Client.Internal.ListItems.XiDataListItem.PendingWriteXiValueStatusTimestamp">
+        <member name="P:Ssz.Xi.Client.Internal.ListItems.XiDataListItem.PendingWriteValueStatusTimestamp">
             <summary>
                 This property contains the data value that is to be written to the data object.
                 Prior to writing a value to the server, the client application sets the
@@ -2787,7 +2758,7 @@
         </member>
         <member name="P:Ssz.Xi.Client.Internal.ListItems.XiDataListItem.ResultCodeWrite">
             <summary>
-                This property contains the result code associated with writing the PendingWriteXiValueStatusTimestamp.
+                This property contains the result code associated with writing the PendingWriteValueStatusTimestamp.
                 See XiFaultCodes class for standardized result codes.
             </summary>
         </member>
@@ -2806,7 +2777,7 @@
                 Marked For Read From Server
             </summary>
         </member>
-        <member name="F:Ssz.Xi.Client.Internal.ListItems.XiDataListItem._pendingWriteXiValueStatusTimestamp">
+        <member name="F:Ssz.Xi.Client.Internal.ListItems.XiDataListItem._pendingWriteValueStatusTimestamp">
             <summary>
                 This data member is the private representation of the PendingWriteDataValue property.
             </summary>
@@ -2882,7 +2853,7 @@
                 This class is used to represent a vendor-specific field of an event message.
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.ListItems.XiEventMessageFieldValue.#ctor(System.String,Xi.Contracts.Data.TypeId)">
+        <member name="M:Ssz.Xi.Client.Internal.ListItems.XiEventMessageFieldValue.#ctor(System.String,Ssz.Utils.DataSource.TypeId)">
             <summary>
                 The constructor for the XiEventMessageFieldValue
             </summary>
@@ -3029,7 +3000,7 @@
                     data objects within a specific data journal list.
                 </para>
             </summary>
-            <param name="firstTimeStamp">
+            <param name="firstTimestamp">
                 The filter that specifies the first or beginning (of returned list) timestamp for values
                 to be returned. Valid operands include the Timestamp (UTC) and OpcHdaTimestampStr constants defined by the
                 FilterOperand class. The FilterOperand Operator is used to determine if the returned data should include data
@@ -3037,7 +3008,7 @@
                 occur at the first and second time stamp will be included in the sample set. Any other operator will not include
                 first or second time stamped values.
             </param>
-            <param name="secondTimeStamp">
+            <param name="secondTimestamp">
                 The filter that specifies the second or ending (of returned list) timestamp for values
                 to be returned. Valid operands include the Timestamp (UTC) and OpcHdaTimestampStr constants defined by the
                 FilterOperand class. The FilterOperand Operator is not used.
@@ -3073,11 +3044,11 @@
                 Additionally, the client specifies a calculation period that divides that time
                 range into periods. The server calculates a return value for each of these periods.
             </summary>
-            <param name="firstTimeStamp">
+            <param name="firstTimestamp">
                 The filter that specifies the inclusive earliest (oldest) timestamp for values to be
                 returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
             </param>
-            <param name="secondTimeStamp">
+            <param name="secondTimestamp">
                 The filter that specifies the inclusive newest (most recent) timestamp for values to be
                 returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
             </param>
@@ -3098,11 +3069,11 @@
                 values are those that were entered into the journal and then changed
                 (corrected) by an operator or other user.
             </summary>
-            <param name="firstTimeStamp">
+            <param name="firstTimestamp">
                 The filter that specifies the inclusive earliest (oldest) timestamp for values to be
                 returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
             </param>
-            <param name="secondTimeStamp">
+            <param name="secondTimestamp">
                 The filter that specifies the inclusive newest (most recent) timestamp for values to be
                 returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
             </param>
@@ -3116,11 +3087,11 @@
             <summary>
                 This method reads the properties associated with a historized data object.
             </summary>
-            <param name="firstTimeStamp">
+            <param name="firstTimestamp">
                 The filter that specifies the inclusive earliest (oldest) timestamp for values to be
                 returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
             </param>
-            <param name="secondTimeStamp">
+            <param name="secondTimestamp">
                 The filter that specifies the inclusive newest (most recent) timestamp for values to be
                 returned. Valid operands include the Timestamp and OpcHdaTimestampStr constants defined by the FilterOperand class.
             </param>
@@ -3215,7 +3186,7 @@
             </summary>
             <param name="dataValueArraysWithAlias"> </param>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.Lists.XiDataList.RaiseInformationReportEvent(System.Collections.Generic.IEnumerable{Ssz.Xi.Client.Api.ListItems.IXiDataListItem},System.Collections.Generic.IEnumerable{Ssz.Xi.Client.Api.XiValueStatusTimestamp})">
+        <member name="M:Ssz.Xi.Client.Internal.Lists.XiDataList.RaiseInformationReportEvent(System.Collections.Generic.IEnumerable{Ssz.Xi.Client.Api.ListItems.IXiDataListItem},System.Collections.Generic.IEnumerable{Ssz.Utils.DataSource.ValueStatusTimestamp})">
             <summary>
                 Throws or invokes InformationReport event.
                 changedListItems != null, changedValues != null
@@ -3821,7 +3792,7 @@
                 This class is used to represent a sample set from a historical read.
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.XiDataJournalValueStatusTimestampSet.#ctor(Ssz.Xi.Client.Internal.ListItems.XiDataJournalListItem,Xi.Contracts.Data.TypeId)">
+        <member name="M:Ssz.Xi.Client.Internal.XiDataJournalValueStatusTimestampSet.#ctor(Ssz.Xi.Client.Internal.ListItems.XiDataJournalListItem,Ssz.Utils.DataSource.TypeId)">
             <summary>
                 Constructor for a Data Journal List Value List that will
                 be associated with a Data Journal List Value.
@@ -3861,7 +3832,7 @@
                 The standard destructor invoked by the .NET garbage collector during Finalize.
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.XiDataJournalValueStatusTimestampSet.GetCalculationTypeLocalId(Xi.Contracts.Data.TypeId)">
+        <member name="M:Ssz.Xi.Client.Internal.XiDataJournalValueStatusTimestampSet.GetCalculationTypeLocalId(Ssz.Utils.DataSource.TypeId)">
             <summary>
                 The LocalId portion of the CalculationTypeId. Set to 0 if the LocalId is not a uint.
             </summary>
@@ -3877,7 +3848,7 @@
             </summary>
             <returns> Returns the enumerator for the list of objects in the historical data object value set. </returns>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.XiDataJournalValueStatusTimestampSet.System#Collections#Generic#IEnumerable{Ssz#Xi#Client#Api#XiValueStatusTimestamp}#GetEnumerator">
+        <member name="M:Ssz.Xi.Client.Internal.XiDataJournalValueStatusTimestampSet.System#Collections#Generic#IEnumerable{Ssz#Utils#DataSource#ValueStatusTimestamp}#GetEnumerator">
             <summary>
                 This method returns the typed enumerator for the list of values in the historical data object value set.
                 This enumerator allows the var type to be used in foreach calls.
@@ -4176,12 +4147,12 @@
                 Mex WsHttpBinding constructor parameter
             </summary>
         </member>
-        <member name="P:Ssz.Xi.Client.XiDataProvider.ServerDiscoveryEndpointHttpUrl">
+        <member name="P:Ssz.Xi.Client.XiDataProvider.ServerAddress">
             <summary>
                 Xi Server connection string.
             </summary>
         </member>
-        <member name="P:Ssz.Xi.Client.XiDataProvider.XiSystem">
+        <member name="P:Ssz.Xi.Client.XiDataProvider.SystemNames">
             <summary>
                 Xi System Name.
             </summary>
@@ -4191,12 +4162,12 @@
                 Used in Xi Context initialization.
             </summary>
         </member>
-        <member name="P:Ssz.Xi.Client.XiDataProvider.WorkstationNameWithoutArgs">
+        <member name="P:Ssz.Xi.Client.XiDataProvider.WorkstationName">
             <summary>
                 Used in Xi Context initialization.
             </summary>
         </member>
-        <member name="P:Ssz.Xi.Client.XiDataProvider.XiContextParams">
+        <member name="P:Ssz.Xi.Client.XiDataProvider.ContextParams">
             <summary>
                 Used in Xi Context initialization.
                 Can be null
@@ -4224,24 +4195,24 @@
                 Occurs after disconnected from model.
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.Initialize(Ssz.Utils.IDispatcher,System.Boolean,System.String,System.String,System.String,System.String,Ssz.Utils.CaseInsensitiveDictionary{System.String})">
+        <member name="M:Ssz.Xi.Client.XiDataProvider.Initialize(Ssz.Utils.IDispatcher,System.Boolean,System.String,System.String,System.String,System.String[],Ssz.Utils.CaseInsensitiveDictionary{System.String})">
             <summary>
-                You can set updateDataItems = false and invoke PollDataChanges(...) manually.       
+            
             </summary>
-            <param name="сallbackDoer">ICallbackDoer? for doing all callbacks.</param>
-            <param name="updateDataItems">Used in Xi DataList initialization</param>
-            <param name="serverDiscoveryEndpointHttpUrl">Xi Server connection string</param>
-            <param name="xiSystem">Xi System Name</param>
-            <param name="applicationName">Used in Xi Context initialization</param>
-            <param name="workstationNameWithoutArgs">Used in Xi Context initialization</param>
-            <param name="xiContextParams">Used in Xi Context initialization</param>
+            <param name="сallbackDispatcher"></param>
+            <param name="elementValueListCallbackIsEnabled"></param>
+            <param name="serverAddress"></param>
+            <param name="applicationName"></param>
+            <param name="workstationName"></param>
+            <param name="systemNames"></param>
+            <param name="contextParams"></param>
         </member>
         <member name="M:Ssz.Xi.Client.XiDataProvider.AddItem(System.String,Ssz.Utils.DataSource.IValueSubscription)">
             <summary>        
                 Returns id actully used for OPC subscription, always as original id.
                 valueSubscription.Update() is called using сallbackDoer, see Initialize(..).        
             </summary>
-            <param name="id"></param>
+            <param name="elementId"></param>
             <param name="valueSubscription"></param>
         </member>
         <member name="M:Ssz.Xi.Client.XiDataProvider.RemoveItem(Ssz.Utils.DataSource.IValueSubscription)">
@@ -4250,7 +4221,7 @@
             </summary>
             <param name="valueSubscription"></param>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.PollDataChanges(System.Action{Ssz.Utils.DataSource.IValueSubscription[]})">
+        <member name="M:Ssz.Xi.Client.XiDataProvider.PollElementValuesChanges(System.Action{Ssz.Utils.DataSource.IValueSubscription[]})">
             <summary>        
                 setResultAction(..) is called using сallbackDoer, see Initialize(..).
                 If call to server failed setResultAction(null) is called, otherwise setResultAction(changedValueSubscriptions) is called.        
@@ -4269,7 +4240,7 @@
             <param name="valueSubscription"></param>
             <param name="value"></param>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.Passthrough(System.Action{System.Byte[]},System.String,System.String,System.Byte[])">
+        <member name="M:Ssz.Xi.Client.XiDataProvider.Passthrough(System.String,System.String,System.Byte[],System.Action{System.Byte[]})">
             <summary>        
                 setResultAction(..) is called using сallbackDoer, see Initialize(..).
                 If call to server failed (exception or passthroughResult == null or passthroughResult.ResultCode != 0), setResultAction(null) is called.        
@@ -4285,19 +4256,19 @@
             <summary>
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.XiDataListItemsManagerOnInformationReport(System.Object[],Ssz.Xi.Client.Api.XiValueStatusTimestamp[])">
+        <member name="M:Ssz.Xi.Client.XiDataProvider.XiDataListItemsManagerOnInformationReport(System.Object[],Ssz.Utils.DataSource.ValueStatusTimestamp[])">
             <summary>
                 Called using сallbackDoer.
             </summary>
             <param name="changedClientObjs"></param>
             <param name="changedValues"></param>
         </member>
-        <member name="F:Ssz.Xi.Client.XiDataProvider._serverDiscoveryEndpointHttpUrl">
+        <member name="F:Ssz.Xi.Client.XiDataProvider._serverAddress">
             <summary>
                 Xi Server connection string.
             </summary>
         </member>
-        <member name="F:Ssz.Xi.Client.XiDataProvider._xiSystem">
+        <member name="F:Ssz.Xi.Client.XiDataProvider._systemNames">
             <summary>
                 Xi System Name.
             </summary>
@@ -4307,17 +4278,17 @@
                 Used in Xi Context initialization.
             </summary>
         </member>
-        <member name="F:Ssz.Xi.Client.XiDataProvider._updateDataItems">
+        <member name="F:Ssz.Xi.Client.XiDataProvider._elementValueListCallbackIsEnabled">
             <summary>
                 Used in Xi DataList initialization.
             </summary>
         </member>
-        <member name="F:Ssz.Xi.Client.XiDataProvider._workstationNameWithoutArgs">
+        <member name="F:Ssz.Xi.Client.XiDataProvider._workstationName">
             <summary>
                 Used in Xi Context initialization.
             </summary>
         </member>
-        <member name="F:Ssz.Xi.Client.XiDataProvider._xiContextParams">
+        <member name="F:Ssz.Xi.Client.XiDataProvider._contextParams">
             <summary>
                 Used in Xi Context initialization.
             </summary>
@@ -4326,7 +4297,7 @@
             <summary>        
                 valueSubscription.Update() is called from сallbackDoer.
             </summary>
-            <param name="id"></param>
+            <param name="elementId"></param>
             <param name="valueSubscription"></param>
         </member>
         <member name="M:Ssz.Xi.Client.XiDataProvider.HdaRemoveItem(System.Object)">
@@ -4335,22 +4306,23 @@
             </summary>
             <param name="valueSubscription"></param>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.HdaReadJournalDataForTimeInterval(Xi.Contracts.Data.FilterCriterion,Xi.Contracts.Data.FilterCriterion,System.UInt32,System.Collections.Generic.IEnumerable{System.Object})">
-            <summary>        
-              Result.Count == valueSubscriptionsList.Count or Result == Null, if failed.
+        <member name="M:Ssz.Xi.Client.XiDataProvider.HdaReadElementValueJournals(System.DateTime,System.DateTime,System.UInt32,Ssz.Utils.DataSource.TypeId,System.Object[],System.Action{Ssz.Utils.DataSource.ValueStatusTimestamp[][]})">
+            <summary>
+            
             </summary>
-            <param name="firstTimeStamp"></param>
-            <param name="secondTimeStamp"></param>
+            <param name="firstTimestampUtc"></param>
+            <param name="secondTimestampUtc"></param>
             <param name="numValuesPerDataObject"></param>
-            <param name="valueSubscriptionsList"></param>
-            <returns></returns>
+            <param name="calculation"></param>
+            <param name="valueSubscriptionsCollection"></param>
+            <param name="setResultAction"></param>
         </member>
         <member name="E:Ssz.Xi.Client.XiDataProvider.EventNotification">
             <summary>
                 Is called using сallbackDoer, see Initialize(..).        
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.AckAlarms(System.Collections.Generic.IEnumerable{Xi.Contracts.Data.EventId})">
+        <member name="M:Ssz.Xi.Client.XiDataProvider.AckAlarms(Ssz.Utils.DataSource.EventId[])">
             <summary>
                 events != null
             </summary>
@@ -7577,7 +7549,7 @@
             the XiStatusCode class.
             </summary>
         </member>
-        <member name="F:Xi.Contracts.Data.DataValueArrays.DoubleTimeStamps">
+        <member name="F:Xi.Contracts.Data.DataValueArrays.DoubleTimestamps">
             <summary>
             The array of timestamps.  All timestamps are UTC.
             </summary>
@@ -7594,7 +7566,7 @@
             the XiStatusCode class.
             </summary>
         </member>
-        <member name="F:Xi.Contracts.Data.DataValueArrays.UintTimeStamps">
+        <member name="F:Xi.Contracts.Data.DataValueArrays.UintTimestamps">
             <summary>
             The array of timestamps.  All timestamps are UTC.
             </summary>
@@ -7611,7 +7583,7 @@
             the XiStatusCode class.
             </summary>
         </member>
-        <member name="F:Xi.Contracts.Data.DataValueArrays.ObjectTimeStamps">
+        <member name="F:Xi.Contracts.Data.DataValueArrays.ObjectTimestamps">
             <summary>
             The array of timestamps.  All timestamps are UTC.
             </summary>
@@ -7662,7 +7634,7 @@
             <param name="doubleStatusCodes">
             The status code array for double values.
             </param>
-            <param name="doubleTimeStamps">
+            <param name="doubleTimestamps">
             The timestamp array for double values.
             </param>
             <param name="doubleValues">
@@ -7671,7 +7643,7 @@
             <param name="uintStatusCodes">
             The status code array for long values.
             </param>
-            <param name="uintTimeStamps">
+            <param name="uintTimestamps">
             The timestamp array for long values.
             </param>
             <param name="uintValues">
@@ -7680,7 +7652,7 @@
             <param name="objectStatusCodes">
             The status code array for object values.
             </param>
-            <param name="objectTimeStamps">
+            <param name="objectTimestamps">
             The timestamp array for object values.
             </param>
             <param name="objectValues">
@@ -7705,7 +7677,7 @@
             <param name="statusCode">
             The status code of the value.
             </param>
-            <param name="timeStamp">
+            <param name="timestamp">
             The timestamp of the value.</param>
             <param name="value">
             The double value.
@@ -7723,7 +7695,7 @@
             <param name="statusCode">
             The status code of the value.
             </param>
-            <param name="timeStamp">
+            <param name="timestamp">
             The timestamp of the value.
             </param>
             <param name="value">
@@ -7742,7 +7714,7 @@
             <param name="statusCode">
             The status code of the value.
             </param>
-            <param name="timeStamp">
+            <param name="timestamp">
             The timestamp of the value.
             </param>
             <param name="value">
@@ -7756,7 +7728,7 @@
             <param name="statusCodeArray">
             The status code array.
             </param>
-            <param name="timeStampArray">
+            <param name="timestampArray">
             The timestamp array.
             </param>
             <param name="valueArray">
@@ -7773,7 +7745,7 @@
             <param name="statusCodeArray">
             The status code array.
             </param>
-            <param name="timeStampArray">
+            <param name="timestampArray">
             The timestamp array.
             </param>
             <param name="valueArray">
@@ -7790,7 +7762,7 @@
             <param name="statusCodeArray">
             The status code array.
             </param>
-            <param name="timeStampArray">
+            <param name="timestampArray">
             The timestamp array.
             </param>
             <param name="valueArray">
@@ -7857,7 +7829,7 @@
             <param name="doubleStatusCodes">
             The array of status codes for double values.
             </param>
-            <param name="doubleTimeStamps">
+            <param name="doubleTimestamps">
             The array of timestamps for double values.
             </param>
             <param name="doubleValues">
@@ -7869,7 +7841,7 @@
             <param name="uintStatusCodes">
             The array of status codes for uint values.
             </param>
-            <param name="uintTimeStamps">
+            <param name="uintTimestamps">
             The array of timestamps for uint values.
             </param>
             <param name="uintValues">
@@ -7881,7 +7853,7 @@
             <param name="objectStatusCodes">
             The array of status codes for object values.
             </param>
-            <param name="objectTimeStamps">
+            <param name="objectTimestamps">
             The array of timestamps for object values.
             </param>
             <param name="objectValues">
@@ -7907,7 +7879,7 @@
             <param name="statusCode">
             The status of the value.
             </param>
-            <param name="timeStamp">
+            <param name="timestamp">
             The timestamp of the value.
             </param>
             <param name="value">
@@ -7928,7 +7900,7 @@
             <param name="statusCode">
             The status of the value.
             </param>
-            <param name="timeStamp">
+            <param name="timestamp">
             The timestamp of the value.
             </param>
             <param name="value">
@@ -7949,7 +7921,7 @@
             <param name="statusCode">
             The status of the value.
             </param>
-            <param name="timeStamp">
+            <param name="timestamp">
             The timestamp of the value.
             </param>
             <param name="value">
@@ -7966,7 +7938,7 @@
             <param name="statusCodeArray">
             The status code array.
             </param>
-            <param name="timeStampArray">
+            <param name="timestampArray">
             The timestamp array.
             </param>
             <param name="valueArray">
@@ -7986,7 +7958,7 @@
             <param name="statusCodeArray">
             The status code array.
             </param>
-            <param name="timeStampArray">
+            <param name="timestampArray">
             The timestamp array.
             </param>
             <param name="valueArray">
@@ -8006,7 +7978,7 @@
             <param name="statusCodeArray">
             The status code array.
             </param>
-            <param name="timeStampArray">
+            <param name="timestampArray">
             The timestamp array.
             </param>
             <param name="valueArray">
@@ -9095,7 +9067,7 @@
             performed to a history value. 
             </summary>
         </member>
-        <member name="P:Xi.Contracts.Data.ModificationAttributesList.DoubleModificationTimeStamps">
+        <member name="P:Xi.Contracts.Data.ModificationAttributesList.DoubleModificationTimestamps">
             <summary>
             The time that the modification was performed.
             </summary>
@@ -9111,7 +9083,7 @@
             operator who performed the modification. 
             </summary>
         </member>
-        <member name="P:Xi.Contracts.Data.ModificationAttributesList.LongModificationTimeStamps">
+        <member name="P:Xi.Contracts.Data.ModificationAttributesList.LongModificationTimestamps">
             <summary>
             The time that the modification was performed.
             </summary>
@@ -9127,7 +9099,7 @@
             operator who performed the modification. 
             </summary>
         </member>
-        <member name="P:Xi.Contracts.Data.ModificationAttributesList.ObjectModificationTimeStamps">
+        <member name="P:Xi.Contracts.Data.ModificationAttributesList.ObjectModificationTimestamps">
             <summary>
             The time that the modification was performed.
             </summary>
@@ -9148,53 +9120,53 @@
             This constructor initializes a ModificationAttributesList object with arrays of the 
             specified sizes.
             </summary>
-            <param name="doubleArraySize">The size of the DoubleModificationTimeStamps, 
+            <param name="doubleArraySize">The size of the DoubleModificationTimestamps, 
             DoubleModificationTypes, and the DoubleOperatorNames arrays.</param>
-            <param name="longArraySize">The size of the LongModificationTimeStamps, 
+            <param name="longArraySize">The size of the LongModificationTimestamps, 
             LongModificationTypes, and the LongOperatorNames arrays.</param>
-            <param name="objectArraySize">The size of the ObjectModificationTimeStamps, 
+            <param name="objectArraySize">The size of the ObjectModificationTimestamps, 
             ObjectModificationTypes, and the ObjectOperatorNames arrays.</param>
         </member>
         <member name="M:Xi.Contracts.Data.ModificationAttributesList.SetDouble(System.Int32,System.DateTime,Xi.Contracts.Data.ModificationType,System.String,System.UInt32,System.DateTime,System.Double)">
             <summary>
             This method is used to set the entries at a specific index in the 
-            DoubleModificationTimeStamps, DoubleModificationTypes, and the 
+            DoubleModificationTimestamps, DoubleModificationTypes, and the 
             DoubleOperatorNames arrays.
             </summary>
             <param name="idx">The index of the entries to be updated.</param>
-            <param name="modificationTimeStamp">The modificationTimeStamp to be set for the entry.</param>
+            <param name="modificationTimestamp">The modificationTimestamp to be set for the entry.</param>
             <param name="modificationType">The modificationType to be set for the entry.</param>
             <param name="operatorName">The operatorName to be set for the entry.</param>
             <param name="statusCode">The statusCode to be set for the entry.</param>
-            <param name="timeStamp">The timeStamp to be set for the entry.</param>
+            <param name="timestamp">The timestamp to be set for the entry.</param>
             <param name="value">The double value to be set for the entry.</param>
         </member>
         <member name="M:Xi.Contracts.Data.ModificationAttributesList.SetUint(System.Int32,System.DateTime,Xi.Contracts.Data.ModificationType,System.String,System.UInt32,System.DateTime,System.UInt32)">
             <summary>
             This method is used to set the entries at a specific index in the 
-            LongModificationTimeStamps, LongModificationTypes, and the 
+            LongModificationTimestamps, LongModificationTypes, and the 
             LonOperatorNames arrays
             </summary>
             <param name="idx">The index of the entries to be updated.</param>
-            <param name="modificationTimeStamp">The modificationTimeStamp to be set for the entry.</param>
+            <param name="modificationTimestamp">The modificationTimestamp to be set for the entry.</param>
             <param name="modificationType">The modificationType to be set for the entry.</param>
             <param name="operatorName">The operatorName to be set for the entry.</param>
             <param name="statusCode">The statusCode to be set for the entry.</param>
-            <param name="timeStamp">The timeStamp to be set for the entry.</param>
+            <param name="timestamp">The timestamp to be set for the entry.</param>
             <param name="value">The long value to be set for the entry.</param>
         </member>
         <member name="M:Xi.Contracts.Data.ModificationAttributesList.SetObject(System.Int32,System.DateTime,Xi.Contracts.Data.ModificationType,System.String,System.UInt32,System.DateTime,System.Object)">
             <summary>
             This method is used to set the entries at a specific index in the 
-            ObjectModificationTimeStamps, ObjectModificationTypes, and the 
+            ObjectModificationTimestamps, ObjectModificationTypes, and the 
             ObjectOperatorNames arrays.
             </summary>
             <param name="idx">The index of the entries to be updated.</param>
-            <param name="modificationTimeStamp">The modificationTimeStamp to be set for the entry.</param>
+            <param name="modificationTimestamp">The modificationTimestamp to be set for the entry.</param>
             <param name="modificationType">The modificationType to be set for the entry.</param>
             <param name="operatorName">The operatorName to be set for the entry.</param>
             <param name="statusCode">The statusCode to be set for the entry.</param>
-            <param name="timeStamp">The timeStamp to be set for the entry.</param>
+            <param name="timestamp">The timestamp to be set for the entry.</param>
             <param name="value">The object value to be set for the entry.</param>
         </member>
         <member name="T:Xi.Contracts.Data.ModificationType">
@@ -11444,7 +11416,7 @@
             The server identifier of the list that contains data objects whose 
             historical values are to be read.
             </param>
-            <param name="firstTimeStamp">
+            <param name="firstTimestamp">
             The filter that specifies the first or beginning (of returned list) 
             timestamp for values to be returned.  Valid operands include the 
             Timestamp (UTC) and OpcHdaTimestampStr constants defined by the 
@@ -11455,7 +11427,7 @@
             time stamp will be included in the sample set.  Any other operator 
             will not include first or second time stamped values.
             </param>
-            <param name="secondTimeStamp">
+            <param name="secondTimestamp">
             The filter that specifies the second or ending (of returned list)
             timestamp for values to be returned.  Valid operands include the 
             Timestamp (UTC) and OpcHdaTimestampStr constants defined by the 
@@ -11549,12 +11521,12 @@
             The server identifier of the list that contains data objects whose historical 
             values are to be read.
             </param>
-            <param name="firstTimeStamp">
+            <param name="firstTimestamp">
             The filter that specifies the inclusive earliest (oldest) timestamp 
             for values to be returned.  Valid operands include the Timestamp and 
             OpcHdaTimestampStr constants defined by the FilterOperand class.
             </param>
-            <param name="secondTimeStamp">
+            <param name="secondTimestamp">
             The filter that specifies the inclusive newest (most recent) timestamp 
             for values to be returned.  Valid operands include the Timestamp and 
             OpcHdaTimestampStr constants defined by the FilterOperand class.
@@ -11624,12 +11596,12 @@
             The server identifier of the list that contains data objects whose historical 
             values are to be read.
             </param>
-            <param name="firstTimeStamp">
+            <param name="firstTimestamp">
             The filter that specifies the inclusive earliest (oldest) timestamp 
             for values to be returned.  Valid operands include the Timestamp and 
             OpcHdaTimestampStr constants defined by the FilterOperand class.
             </param>
-            <param name="secondTimeStamp">
+            <param name="secondTimestamp">
             The filter that specifies the inclusive newest (most recent) timestamp 
             for values to be returned.  Valid operands include the Timestamp and 
             OpcHdaTimestampStr constants defined by the FilterOperand class.
@@ -11659,12 +11631,12 @@
             The server identifier of the list that contains data objects whose property 
             values are to be read.
             </param>
-            <param name="firstTimeStamp">
+            <param name="firstTimestamp">
             The filter that specifies the inclusive earliest (oldest) timestamp 
             for values to be returned.  Valid operands include the Timestamp and 
             OpcHdaTimestampStr constants defined by the FilterOperand class.
             </param>
-            <param name="secondTimeStamp">
+            <param name="secondTimestamp">
             The filter that specifies the inclusive newest (most recent) timestamp 
             for values to be returned.  Valid operands include the Timestamp and 
             OpcHdaTimestampStr constants defined by the FilterOperand class.
@@ -11719,12 +11691,12 @@
             The server identifier of the list that contains historical alarms and 
             events that are to be read.
             </param>
-            <param name="firstTimeStamp">
+            <param name="firstTimestamp">
             The filter that specifies the first or beginning (of returned list) 
             timestamp for event messages to be returned.  Valid operands include 
             the Timestamp (UTC) constant defined by the FilterOperand class.
             </param>
-            <param name="secondTimeStamp">
+            <param name="secondTimestamp">
             The filter that specifies the second or ending (of returned list)
             timestamp for event messages to be returned.  Valid operands include 
             the Timestamp (UTC) constant defined by the FilterOperand class.

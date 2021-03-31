@@ -54,5 +54,17 @@ namespace Xi.Contracts.Data
 		/// Null if the alarm has never been active. 
 		/// </summary>
 		[DataMember] public Nullable<DateTime> TimeLastActive;
+
+		public Ssz.Utils.DataSource.AlarmMessageData ToAlarmMessageData()
+		{
+			var alarmMessageData = new Ssz.Utils.DataSource.AlarmMessageData();
+			alarmMessageData.AlarmState = (Ssz.Utils.DataSource.AlarmState)AlarmState;
+			alarmMessageData.AlarmStateChange = AlarmStateChange;
+			if (TimeLastActive != null)
+			{
+				alarmMessageData.TimeLastActive = TimeLastActive.Value;
+			}
+			return alarmMessageData;
+		}
 	}
 }

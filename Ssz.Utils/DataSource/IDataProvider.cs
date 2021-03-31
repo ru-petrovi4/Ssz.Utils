@@ -53,7 +53,7 @@ namespace Ssz.Utils.DataSource
 
         void HdaRemoveItem(object valueSubscription);
 
-        void HdaReadElementValueJournals(DateTime firstTimeStampUtc, DateTime secondTimeStampUtc, uint numValuesPerDataObject, TypeId calculation, object[] valueSubscriptionsCollection,
+        void HdaReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerDataObject, TypeId calculation, object[] valueSubscriptionsCollection,
             Action<ValueStatusTimestamp[][]?> setResultAction);
 
         event Action<EventMessage[]> EventNotification;
