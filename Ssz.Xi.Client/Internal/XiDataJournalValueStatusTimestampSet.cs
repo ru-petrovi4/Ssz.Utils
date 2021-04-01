@@ -209,7 +209,7 @@ namespace Ssz.Xi.Client.Internal
 
             if (journalDataValues.HistoricalValues.DoubleStatusCodes != null &&
                 journalDataValues.HistoricalValues.DoubleValues != null &&
-                journalDataValues.HistoricalValues.DoubleTimestamps != null)
+                journalDataValues.HistoricalValues.DoubleTimeStamps != null)
             {
                 for (int idx = 0; idx < journalDataValues.HistoricalValues.DoubleStatusCodes.Length; idx++)
                 {
@@ -217,14 +217,14 @@ namespace Ssz.Xi.Client.Internal
                     xiValueStatusTimestamp.Value.Set(journalDataValues.HistoricalValues.DoubleValues[idx],
                         _owningXiDataJournalListItem.ValueTypeCode, false);
                     xiValueStatusTimestamp.StatusCode = journalDataValues.HistoricalValues.DoubleStatusCodes[idx];
-                    xiValueStatusTimestamp.TimestampUtc = journalDataValues.HistoricalValues.DoubleTimestamps[idx];
+                    xiValueStatusTimestamp.TimestampUtc = journalDataValues.HistoricalValues.DoubleTimeStamps[idx];
 
                     _xiValueStatusTimestampsList.Add(xiValueStatusTimestamp);
                 }
             }
             if (journalDataValues.HistoricalValues.UintStatusCodes != null &&
                 journalDataValues.HistoricalValues.UintValues != null &&
-                journalDataValues.HistoricalValues.UintTimestamps != null)
+                journalDataValues.HistoricalValues.UintTimeStamps != null)
             {
                 for (int idx = 0; idx < journalDataValues.HistoricalValues.UintStatusCodes.Length; idx++)
                 {
@@ -232,21 +232,21 @@ namespace Ssz.Xi.Client.Internal
                     xiValueStatusTimestamp.Value.Set(journalDataValues.HistoricalValues.UintValues[idx],
                         _owningXiDataJournalListItem.ValueTypeCode, false);
                     xiValueStatusTimestamp.StatusCode = journalDataValues.HistoricalValues.UintStatusCodes[idx];
-                    xiValueStatusTimestamp.TimestampUtc = journalDataValues.HistoricalValues.UintTimestamps[idx];
+                    xiValueStatusTimestamp.TimestampUtc = journalDataValues.HistoricalValues.UintTimeStamps[idx];
 
                     _xiValueStatusTimestampsList.Add(xiValueStatusTimestamp);
                 }
             }
             if (journalDataValues.HistoricalValues.ObjectStatusCodes != null &&
                 journalDataValues.HistoricalValues.ObjectValues != null &&
-                journalDataValues.HistoricalValues.ObjectTimestamps != null)
+                journalDataValues.HistoricalValues.ObjectTimeStamps != null)
             {
                 for (int idx = 0; idx < journalDataValues.HistoricalValues.ObjectStatusCodes.Length; idx++)
                 {
                     var xiValueStatusTimestamp = new ValueStatusTimestamp();
                     xiValueStatusTimestamp.Value.Set(journalDataValues.HistoricalValues.ObjectValues[idx]);
                     xiValueStatusTimestamp.StatusCode = journalDataValues.HistoricalValues.ObjectStatusCodes[idx];
-                    xiValueStatusTimestamp.TimestampUtc = journalDataValues.HistoricalValues.ObjectTimestamps[idx];
+                    xiValueStatusTimestamp.TimestampUtc = journalDataValues.HistoricalValues.ObjectTimeStamps[idx];
 
                     _xiValueStatusTimestampsList.Add(xiValueStatusTimestamp);
                 }

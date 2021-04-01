@@ -112,7 +112,7 @@ namespace Xi.Contracts.Data
 		/// <summary>
 		/// The array of timestamps.  All timestamps are UTC.
 		/// </summary>
-		[DataMember] public DateTime[]? DoubleTimestamps;
+		[DataMember] public DateTime[]? DoubleTimeStamps;
 
 		/// <summary>
 		/// The array of values. 
@@ -129,7 +129,7 @@ namespace Xi.Contracts.Data
 		/// <summary>
 		/// The array of timestamps.  All timestamps are UTC.
 		/// </summary>
-		[DataMember] public DateTime[]? UintTimestamps;
+		[DataMember] public DateTime[]? UintTimeStamps;
 
 		/// <summary>
 		/// The array of integer values.
@@ -146,7 +146,7 @@ namespace Xi.Contracts.Data
 		/// <summary>
 		/// The array of timestamps.  All timestamps are UTC.
 		/// </summary>
-		[DataMember] public DateTime[]? ObjectTimestamps;
+		[DataMember] public DateTime[]? ObjectTimeStamps;
 
 		/// <summary>
 		/// The array of values.
@@ -189,37 +189,37 @@ namespace Xi.Contracts.Data
 			if (0 == doubleArraySize)
 			{
 				DoubleStatusCodes = null;
-				DoubleTimestamps = null;
+				DoubleTimeStamps = null;
 				DoubleValues = null;
 			}
 			else
 			{
 				DoubleStatusCodes = new uint[doubleArraySize];
-				DoubleTimestamps = new DateTime[doubleArraySize];
+				DoubleTimeStamps = new DateTime[doubleArraySize];
 				DoubleValues = new double[doubleArraySize];
 			}
 			if (0 == uintArraySize)
 			{
 				UintStatusCodes = null;
-				UintTimestamps = null;
+				UintTimeStamps = null;
 				UintValues = null;
 			}
 			else
 			{
 				UintStatusCodes = new uint[uintArraySize];
-				UintTimestamps = new DateTime[uintArraySize];
+				UintTimeStamps = new DateTime[uintArraySize];
 				UintValues = new uint[uintArraySize];
 			}
 			if (0 == objectArraySize)
 			{
 				ObjectStatusCodes = null;
-				ObjectTimestamps = null;
+				ObjectTimeStamps = null;
 				ObjectValues = null;
 			}
 			else
 			{
 				ObjectStatusCodes = new uint[objectArraySize];
-				ObjectTimestamps = new DateTime[objectArraySize];
+				ObjectTimeStamps = new DateTime[objectArraySize];
 				ObjectValues = new object[objectArraySize];
 			}
 			ErrorInfo = null;
@@ -262,13 +262,13 @@ namespace Xi.Contracts.Data
 			ref uint[] objectStatusCodes, ref DateTime[] objectTimestamps, ref object[] objectValues)
 		{
 			DoubleStatusCodes = doubleStatusCodes;
-			DoubleTimestamps = doubleTimestamps;
+			DoubleTimeStamps = doubleTimestamps;
 			DoubleValues = doubleValues;
 			UintStatusCodes = uintStatusCodes;
-			UintTimestamps = uintTimestamps;
+			UintTimeStamps = uintTimestamps;
 			UintValues = uintValues;
 			ObjectStatusCodes = objectStatusCodes;
-			ObjectTimestamps = objectTimestamps;
+			ObjectTimeStamps = objectTimestamps;
 			ObjectValues = objectValues;
 			ErrorInfo = null;
 		}
@@ -280,13 +280,13 @@ namespace Xi.Contracts.Data
 		public void Clear()
 		{
 			DoubleStatusCodes = null;
-			DoubleTimestamps = null;
+			DoubleTimeStamps = null;
 			DoubleValues = null;
 			UintStatusCodes = null;
-			UintTimestamps = null;
+			UintTimeStamps = null;
 			UintValues = null;
 			ObjectStatusCodes = null;
-			ObjectTimestamps = null;
+			ObjectTimeStamps = null;
 			if (null != ObjectValues)
 				Array.Clear(ObjectValues, 0, ObjectValues.Length);
 			ObjectValues = null;
@@ -314,10 +314,10 @@ namespace Xi.Contracts.Data
 		public void SetDouble(int idx, uint statusCode, DateTime timestamp, double value)
 		{
 			if (DoubleStatusCodes == null ||
-				DoubleTimestamps == null ||
+				DoubleTimeStamps == null ||
 				DoubleValues == null) throw new InvalidOperationException();
 			DoubleStatusCodes[idx] = statusCode;
-			DoubleTimestamps[idx] = timestamp;
+			DoubleTimeStamps[idx] = timestamp;
 			DoubleValues[idx] = value;
 		}
 
@@ -341,10 +341,10 @@ namespace Xi.Contracts.Data
 		public void SetUint(int idx, uint statusCode, DateTime timestamp, uint value)
 		{
 			if (UintStatusCodes == null ||
-				UintTimestamps == null ||
+				UintTimeStamps == null ||
 				UintValues == null) throw new InvalidOperationException();
 			UintStatusCodes[idx] = statusCode;
-			UintTimestamps[idx] = timestamp;
+			UintTimeStamps[idx] = timestamp;
 			UintValues[idx] = value;
 		}
 
@@ -368,10 +368,10 @@ namespace Xi.Contracts.Data
 		public void SetObject(int idx, uint statusCode, DateTime timestamp, object? value)
 		{
 			if (ObjectStatusCodes == null ||
-				ObjectTimestamps == null ||
+				ObjectTimeStamps == null ||
 				ObjectValues == null) throw new InvalidOperationException();
 			ObjectStatusCodes[idx] = statusCode;
-			ObjectTimestamps[idx] = timestamp;
+			ObjectTimeStamps[idx] = timestamp;
 			ObjectValues[idx] = value;
 		}
 
@@ -399,7 +399,7 @@ namespace Xi.Contracts.Data
 			   )
 			{
 				DoubleStatusCodes = null;
-				DoubleTimestamps = null;
+				DoubleTimeStamps = null;
 				DoubleValues = null;
 				return true;
 			}
@@ -415,7 +415,7 @@ namespace Xi.Contracts.Data
 					)
 			{
 				DoubleStatusCodes = statusCodeArray;
-				DoubleTimestamps = timestampArray;
+				DoubleTimeStamps = timestampArray;
 				DoubleValues = valueArray;
 				return true;
 			}
@@ -446,7 +446,7 @@ namespace Xi.Contracts.Data
 			   )
 			{
 				UintStatusCodes = null;
-				UintTimestamps = null;
+				UintTimeStamps = null;
 				UintValues = null;
 				return true;
 			}
@@ -462,7 +462,7 @@ namespace Xi.Contracts.Data
 					)
 			{
 				UintStatusCodes = statusCodeArray;
-				UintTimestamps = timestampArray;
+				UintTimeStamps = timestampArray;
 				UintValues = valueArray;
 				return true;
 			}
@@ -493,7 +493,7 @@ namespace Xi.Contracts.Data
 			   )
 			{
 				ObjectStatusCodes = null;
-				ObjectTimestamps = null;
+				ObjectTimeStamps = null;
 				ObjectValues = null;
 				return true;
 			}
@@ -509,7 +509,7 @@ namespace Xi.Contracts.Data
 					)
 			{
 				ObjectStatusCodes = statusCodeArray;
-				ObjectTimestamps = timestampArray;
+				ObjectTimeStamps = timestampArray;
 				ObjectValues = valueArray;
 				return true;
 			}

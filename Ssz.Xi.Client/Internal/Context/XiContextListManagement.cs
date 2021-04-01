@@ -456,13 +456,11 @@ namespace Ssz.Xi.Client.Internal.Context
         /// </summary>
         /// <param name="clientListId"> The client list id </param>
         /// <returns> The specified list </returns>
-        private XiDataList GetDataList(uint clientListId)
+        private XiDataList? GetDataList(uint clientListId)
         {
             XiListRoot? xiListRoot;
-            _lists.TryGetValue(clientListId, out xiListRoot);
-            var result = xiListRoot as XiDataList;
-            if (result == null) throw new InvalidOperationException();
-            return result;
+            _lists.TryGetValue(clientListId, out xiListRoot);            
+            return xiListRoot as XiDataList;
         }
 
         /// <summary>

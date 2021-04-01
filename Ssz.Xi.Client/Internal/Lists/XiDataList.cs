@@ -395,11 +395,11 @@ namespace Ssz.Xi.Client.Internal.Lists
                         ListItemsManager.TryGetValue(readValueArrays.DoubleAlias[idx], out item);
                         if (item != null && readValueArrays.DoubleValues != null &&
                             readValueArrays.DoubleStatusCodes != null &&
-                            readValueArrays.DoubleTimestamps != null)
+                            readValueArrays.DoubleTimeStamps != null)
                         {
                             item.UpdateValue(readValueArrays.DoubleValues[idx],
                                 readValueArrays.DoubleStatusCodes[idx],
-                                readValueArrays.DoubleTimestamps[idx]
+                                readValueArrays.DoubleTimeStamps[idx]
                                 );
                             if (changedListItems != null) changedListItems.Add(item);
                         }
@@ -423,10 +423,10 @@ namespace Ssz.Xi.Client.Internal.Lists
                         ListItemsManager.TryGetValue(readValueArrays.UintAlias[idx], out item);
                         if (item != null && readValueArrays.UintValues != null &&
                             readValueArrays.UintStatusCodes != null &&
-                            readValueArrays.UintTimestamps != null)
+                            readValueArrays.UintTimeStamps != null)
                         {
                             item.UpdateValue(readValueArrays.UintValues[idx], readValueArrays.UintStatusCodes[idx],
-                                readValueArrays.UintTimestamps[idx]);
+                                readValueArrays.UintTimeStamps[idx]);
                             if (changedListItems != null) changedListItems.Add(item);
                         }
                     }
@@ -439,10 +439,10 @@ namespace Ssz.Xi.Client.Internal.Lists
                         ListItemsManager.TryGetValue(readValueArrays.ObjectAlias[idx], out item);
                         if (item != null && readValueArrays.ObjectValues != null &&
                             readValueArrays.ObjectStatusCodes != null &&
-                            readValueArrays.ObjectTimestamps != null)
+                            readValueArrays.ObjectTimeStamps != null)
                         {
                             item.UpdateValue(readValueArrays.ObjectValues[idx], readValueArrays.ObjectStatusCodes[idx],
-                                readValueArrays.ObjectTimestamps[idx]
+                                readValueArrays.ObjectTimeStamps[idx]
                                 );
                             if (changedListItems != null) changedListItems.Add(item);
                         }

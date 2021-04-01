@@ -202,7 +202,8 @@ namespace Ssz.Xi.Client.Internal.Context
 
             if (_callbackEndpoint != null) _callbackEndpoint.LastCallUtc = DateTime.UtcNow;
 
-            XiDataList datalist = GetDataList(clientListId);
+            XiDataList? datalist = GetDataList(clientListId);
+            if (datalist == null) return;
 
             InformationReportInternal(datalist, updatedValues);
         }

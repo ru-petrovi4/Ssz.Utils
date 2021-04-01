@@ -68,7 +68,7 @@ namespace Xi.Contracts
 		/// The server identifier of the list that contains data objects whose 
 		/// historical values are to be read.
 		/// </param>
-		/// <param name="firstTimestamp">
+		/// <param name="firstTimeStamp">
 		/// The filter that specifies the first or beginning (of returned list) 
 		/// timestamp for values to be returned.  Valid operands include the 
 		/// Timestamp (UTC) and OpcHdaTimestampStr constants defined by the 
@@ -79,7 +79,7 @@ namespace Xi.Contracts
 		/// time stamp will be included in the sample set.  Any other operator 
 		/// will not include first or second time stamped values.
 		/// </param>
-		/// <param name="secondTimestamp">
+		/// <param name="secondTimeStamp">
 		/// The filter that specifies the second or ending (of returned list)
 		/// timestamp for values to be returned.  Valid operands include the 
 		/// Timestamp (UTC) and OpcHdaTimestampStr constants defined by the 
@@ -98,7 +98,7 @@ namespace Xi.Contracts
 		/// </returns>
 		[OperationContract, FaultContract(typeof(XiFault))]
 		JournalDataValues[] ReadJournalDataForTimeInterval(string contextId, uint listId,
-			FilterCriterion firstTimestamp, FilterCriterion secondTimestamp,
+			FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp,
 			uint numValuesPerAlias, List<uint> serverAliases);
 
 		/// <summary>
