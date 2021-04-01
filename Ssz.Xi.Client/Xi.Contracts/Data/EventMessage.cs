@@ -17,6 +17,7 @@
 using System;
 using System.Runtime.Serialization;
 using System.Collections.Generic;
+using Ssz.Utils;
 
 namespace Xi.Contracts.Data
 {
@@ -147,8 +148,13 @@ namespace Xi.Contracts.Data
 			}
 			if (ClientRequestedFields != null)
 			{
+				eventInfo.ClientRequestedFields = new CaseInsensitiveDictionary<string>();
+				for (int i = 0; i < ClientRequestedFields.Count; i++)
+                {					
+					eventInfo.ClientRequestedFields.Add(new Any(i).ValueAsString(false), new Any(ClientRequestedFields[i]).ValueAsString(false));
+				}
 				// TODO
-				//eventInfo.ClientRequestedFields = new CaseInsensitiveDictionary<string>(ClientRequestedFields);
+				//
 			}
 			return eventInfo;
 		}
