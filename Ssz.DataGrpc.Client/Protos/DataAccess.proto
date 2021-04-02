@@ -52,17 +52,17 @@ enum State
 }
 
 message ContextInfo {  
-  State state = 2;  
+  State state = 1;  
 }
 
 message InformationReport {    
-  uint32 list_client_alias = 2;
-  ElementValuesCollection element_values_collection = 3;
+  uint32 list_client_alias = 1;
+  ElementValuesCollection element_values_collection = 2;
 }
 
 message EventNotification {
-  uint32 list_client_alias = 2;
-  EventMessagesCollection event_messages_collection = 3;
+  uint32 list_client_alias = 1;
+  EventMessagesCollection event_messages_collection = 2;
 }
 
 message SubscribeForCallbackRequest {
