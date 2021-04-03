@@ -72,7 +72,7 @@ namespace Ssz.Xi.Client.Api
 
                     try
                     {
-                        Action<Ssz.Utils.DataSource.EventMessage[]> eventNotificationEventHandler = kvp.Key;
+                        Action<Ssz.Utils.DataAccess.EventMessage[]> eventNotificationEventHandler = kvp.Key;
 
                         xiEventList.EventNotificationEvent +=
                             (IXiEventListProxy eventList, IEnumerable<IXiEventListItem> newListItems) =>
@@ -178,14 +178,14 @@ namespace Ssz.Xi.Client.Api
             _xiEventItemsMustBeAdded = true;
         }
 
-        public IXiEventListProxy? GetRelatedXiEventList(Action<Ssz.Utils.DataSource.EventMessage[]> eventHandler)
+        public IXiEventListProxy? GetRelatedXiEventList(Action<Ssz.Utils.DataAccess.EventMessage[]> eventHandler)
         {
             XiEventListPointer? xiEventListPointer;
             if (!_eventNotificationEventHandlers.TryGetValue(eventHandler, out xiEventListPointer)) return null;
             return xiEventListPointer.P;
         }
 
-        public event Action<Ssz.Utils.DataSource.EventMessage[]> EventNotification
+        public event Action<Ssz.Utils.DataAccess.EventMessage[]> EventNotification
         {
             add
             {
@@ -226,8 +226,8 @@ namespace Ssz.Xi.Client.Api
         
         private volatile bool _xiEventItemsMustBeAdded;
 
-        private readonly Dictionary<Action<Ssz.Utils.DataSource.EventMessage[]>, XiEventListPointer> _eventNotificationEventHandlers =
-            new Dictionary<Action<Ssz.Utils.DataSource.EventMessage[]>, XiEventListPointer>();
+        private readonly Dictionary<Action<Ssz.Utils.DataAccess.EventMessage[]>, XiEventListPointer> _eventNotificationEventHandlers =
+            new Dictionary<Action<Ssz.Utils.DataAccess.EventMessage[]>, XiEventListPointer>();
 
         private string _xiSystem = "";
 

@@ -42,7 +42,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// <param name="comment"></param>
         /// <param name="alarmsToAck"></param>
         /// <returns></returns>
-        public EventIdResult[] AcknowledgeAlarms(string operatorName, string comment, Ssz.Utils.DataSource.EventId[] alarmsToAck)
+        public EventIdResult[] AcknowledgeAlarms(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] alarmsToAck)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 

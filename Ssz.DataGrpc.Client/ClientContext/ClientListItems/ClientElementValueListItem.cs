@@ -1,6 +1,6 @@
 using System;
 using Ssz.DataGrpc.Common;
-using Ssz.Utils.DataSource;
+using Ssz.Utils.DataAccess;
 
 namespace Ssz.DataGrpc.Client.ClientListItems
 {

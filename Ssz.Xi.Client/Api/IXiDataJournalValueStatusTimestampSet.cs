@@ -1,4 +1,4 @@
-﻿using Ssz.Utils.DataSource;
+﻿using Ssz.Utils.DataAccess;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,7 +19,7 @@ namespace Ssz.Xi.Client.Api
         ///     for which this value set is defined may not have two value sets with the
         ///     same CalculationTypeId.
         /// </summary>
-        Ssz.Utils.DataSource.TypeId CalculationTypeId { get; }
+        Ssz.Utils.DataAccess.TypeId CalculationTypeId { get; }
 
         /// <summary>
         ///     This property contains the Result Code associated with reading this value

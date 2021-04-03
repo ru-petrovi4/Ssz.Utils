@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Xml.Serialization;
-using Ssz.Utils.DataSource;
+using Ssz.Utils.DataAccess;
 using Ssz.Utils.Wpf;
 
 namespace Ssz.WpfHmi.Common.ModelData.Events

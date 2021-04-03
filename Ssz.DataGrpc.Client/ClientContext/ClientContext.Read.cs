@@ -4,7 +4,7 @@ using System.Linq;
 using Ssz.DataGrpc.Client.ClientLists;
 using Ssz.DataGrpc.Common;
 using Ssz.DataGrpc.Server;
-using Ssz.Utils.DataSource;
+using Ssz.Utils.DataAccess;
 
 namespace Ssz.DataGrpc.Client
 {
@@ -27,7 +27,7 @@ namespace Ssz.DataGrpc.Client
         /// <returns></returns>
         public ValueStatusTimestamp[][] ReadElementValueJournals(ClientElementValueJournalList dataGrpcElementValueJournalList, DateTime firstTimestampUtc,
             DateTime secondTimestampUtc,
-            uint numValuesPerAlias, Ssz.Utils.DataSource.TypeId calculation, uint[] serverAliases)
+            uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId calculation, uint[] serverAliases)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 

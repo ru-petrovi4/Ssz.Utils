@@ -5,7 +5,7 @@ using Ssz.Utils;
 using Ssz.DataGrpc.Client.Managers;
 using Ssz.DataGrpc.Server;
 using Ssz.DataGrpc.Common;
-using Ssz.Utils.DataSource;
+using Ssz.Utils.DataAccess;
 
 namespace Ssz.DataGrpc.Client
 {
@@ -50,7 +50,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="calculation"></param>
         /// <param name="valueSubscriptionsCollection"></param>
         /// <param name="setResultAction"></param>
-        public void HdaReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerDataObject, Ssz.Utils.DataSource.TypeId calculation, object[] valueSubscriptionsCollection,
+        public void HdaReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerDataObject, Ssz.Utils.DataAccess.TypeId calculation, object[] valueSubscriptionsCollection,
             Action<ValueStatusTimestamp[][]?> setResultAction)
         {
             BeginInvoke(ct =>

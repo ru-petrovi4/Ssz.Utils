@@ -57,7 +57,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="alarmsToAck"></param>
         /// <returns></returns>
         public EventIdResult[] AcknowledgeAlarms(uint listServerAlias,
-            string operatorName, string comment, Ssz.Utils.DataSource.EventId[] alarmsToAck)
+            string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] alarmsToAck)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 

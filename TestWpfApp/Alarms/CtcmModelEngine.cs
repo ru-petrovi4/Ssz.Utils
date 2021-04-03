@@ -1,5 +1,5 @@
 ﻿using Ssz.Utils;
-using Ssz.Utils.DataSource;
+using Ssz.Utils.DataAccess;
 using Ssz.WpfHmi.Common.ModelData.Events;
 using Ssz.Xi.Client;
 using System;
@@ -131,9 +131,9 @@ namespace TestWpfApp.Alarms
                 {
                     var tagCompleted = new TaskCompletionSource<string>();
                     var descCompleted = new TaskCompletionSource<string>();
-                    new ReadOnceValueSubscription(App.DataProvider, varName + ".propTag",
+                    new ReadOnceValueSubscription(App.DataAccessProvider, varName + ".propTag",
                                any => tagCompleted.SetResult(any.ValueAsString(false)));
-                    new ReadOnceValueSubscription(App.DataProvider, varName + ".propDescription",
+                    new ReadOnceValueSubscription(App.DataAccessProvider, varName + ".propDescription",
                                any => descCompleted.SetResult(any.ValueAsString(false)));
                     tag = await tagCompleted.Task ?? @"";
                     desc = await descCompleted.Task ?? @"";
@@ -219,7 +219,7 @@ namespace TestWpfApp.Alarms
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "DataProviderOnEventNotificationEvent method error.");
+                Logger.Error(ex, "DataAccessProviderOnEventNotificationEvent method error.");
             }
 
             return null;

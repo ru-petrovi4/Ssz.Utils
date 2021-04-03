@@ -35,7 +35,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         /// <summary>
         ///     This property contains the Event Message received from the server in an Event Notification.
         /// </summary>
-        public Ssz.Utils.DataSource.EventMessage EventMessage
+        public Ssz.Utils.DataAccess.EventMessage EventMessage
         {
             get { return _eventMessage; }
             set
@@ -92,7 +92,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         /// <summary>
         ///     The private representation of the EventMessage property
         /// </summary>
-        private Ssz.Utils.DataSource.EventMessage _eventMessage;
+        private Ssz.Utils.DataAccess.EventMessage _eventMessage;
 
         /// <summary>
         ///     The private representation of the MessageKey property

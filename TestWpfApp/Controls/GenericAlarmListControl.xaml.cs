@@ -7,7 +7,7 @@ using System.Windows.Input;
 using Ssz.Utils.Wpf;
 using TestWpfApp;
 using Ssz.WpfHmi.Common.ControlsRuntime.GenericRuntime;
-using Ssz.Utils.DataSource;
+using Ssz.Utils.DataAccess;
 
 namespace Ssz.WpfHmi.Common.ControlsCommon
 {
@@ -41,7 +41,7 @@ namespace Ssz.WpfHmi.Common.ControlsCommon
                 }
             }
 
-            if (eventIds.Count > 0) App.DataProvider.AckAlarms(eventIds.ToArray());
+            if (eventIds.Count > 0) App.DataAccessProvider.AckAlarms(eventIds.ToArray());
         }
 
         #endregion

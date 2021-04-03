@@ -1,4 +1,4 @@
-﻿using Ssz.Utils.DataSource;
+﻿using Ssz.Utils.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +11,9 @@ namespace Ssz.DataGrpc.Server
     {
         #region public functions
 
-        public Ssz.Utils.DataSource.AlarmMessageData ToAlarmMessageData()
+        public Ssz.Utils.DataAccess.AlarmMessageData ToAlarmMessageData()
         {
-            var alarmMessageData = new Ssz.Utils.DataSource.AlarmMessageData();
+            var alarmMessageData = new Ssz.Utils.DataAccess.AlarmMessageData();
             alarmMessageData.AlarmState = (AlarmState)AlarmState;
             alarmMessageData.AlarmStateChange = AlarmStateChange;
             if (OptionalTimeLastActiveCase == OptionalTimeLastActiveOneofCase.TimeLastActive)

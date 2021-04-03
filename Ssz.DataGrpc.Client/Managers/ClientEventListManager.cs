@@ -7,7 +7,7 @@ using Ssz.DataGrpc.Server;
 using Microsoft.Extensions.Logging;
 using Ssz.DataGrpc.Client.ClientLists;
 using Ssz.DataGrpc.Client.ClientListItems;
-using Ssz.Utils.DataSource;
+using Ssz.Utils.DataAccess;
 
 namespace Ssz.DataGrpc.Client.Managers
 {
@@ -65,7 +65,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
                     try
                     {
-                        Action<Utils.DataSource.EventMessage[]> eventNotificationEventHandler = kvp.Key;
+                        Action<Utils.DataAccess.EventMessage[]> eventNotificationEventHandler = kvp.Key;
 
                         dataGrpcEventList.EventNotificationEvent +=
                             (ClientEventList eventList, ClientEventListItem[] newListItems) =>
@@ -142,14 +142,14 @@ namespace Ssz.DataGrpc.Client.Managers
             _dataGrpcEventItemsMustBeAdded = true;
         }
 
-        public ClientEventList? GetRelatedClientEventList(Action<IEnumerable<Utils.DataSource.EventMessage>> eventHandler)
+        public ClientEventList? GetRelatedClientEventList(Action<IEnumerable<Utils.DataAccess.EventMessage>> eventHandler)
         {
             ClientEventListPointer? dataGrpcEventListPointer;
             if (!_eventNotificationEventHandlers.TryGetValue(eventHandler, out dataGrpcEventListPointer)) return null;
             return dataGrpcEventListPointer.P;
         }
 
-        public event Action<Utils.DataSource.EventMessage[]> EventNotification
+        public event Action<Utils.DataAccess.EventMessage[]> EventNotification
         {
             add
             {
@@ -187,8 +187,8 @@ namespace Ssz.DataGrpc.Client.Managers
 
         private volatile bool _dataGrpcEventItemsMustBeAdded;
 
-        private readonly Dictionary<Action<Utils.DataSource.EventMessage[]>, ClientEventListPointer> _eventNotificationEventHandlers =
-            new Dictionary<Action<Utils.DataSource.EventMessage[]>, ClientEventListPointer>();
+        private readonly Dictionary<Action<Utils.DataAccess.EventMessage[]>, ClientEventListPointer> _eventNotificationEventHandlers =
+            new Dictionary<Action<Utils.DataAccess.EventMessage[]>, ClientEventListPointer>();
 
         #endregion
 

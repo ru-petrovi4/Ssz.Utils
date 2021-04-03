@@ -7,7 +7,7 @@ using Ssz.DataGrpc.Client.ClientListItems;
 using Ssz.DataGrpc.Server;
 using Ssz.DataGrpc.Common;
 using Ssz.Utils;
-using Ssz.Utils.DataSource;
+using Ssz.Utils.DataAccess;
 
 namespace Ssz.DataGrpc.Client.ClientLists
 {
@@ -72,7 +72,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// <param name="numValuesPerDataObject"></param>
         /// <param name="valueStatusTimestampSetCollection"></param>
         public ValueStatusTimestamp[][] ReadElementValueJournals(DateTime firstTimestamp, DateTime secondTimestamp,
-            uint numValuesPerDataObject, Ssz.Utils.DataSource.TypeId calculation, uint[] serverAliases)
+            uint numValuesPerDataObject, Ssz.Utils.DataAccess.TypeId calculation, uint[] serverAliases)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueJournalList.");
 

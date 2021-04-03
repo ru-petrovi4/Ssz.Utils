@@ -5,7 +5,7 @@ using Ssz.Utils;
 using Ssz.DataGrpc.Client.Managers;
 using Ssz.DataGrpc.Server;
 using Ssz.DataGrpc.Client.ClientLists;
-using Ssz.Utils.DataSource;
+using Ssz.Utils.DataAccess;
 
 namespace Ssz.DataGrpc.Client
 {
@@ -16,7 +16,7 @@ namespace Ssz.DataGrpc.Client
         /// <summary>
         ///     Is called using сallbackDispatcher, see Initialize(..).        
         /// </summary>
-        public event Action<Utils.DataSource.EventMessage[]> EventNotification
+        public event Action<Utils.DataAccess.EventMessage[]> EventNotification
         {
             add { BeginInvoke(ct => _clientEventListManager.EventNotification += value); }
             remove { BeginInvoke(ct => _clientEventListManager.EventNotification -= value); }
@@ -26,7 +26,7 @@ namespace Ssz.DataGrpc.Client
         ///     
         /// </summary>
         /// <param name="events"></param>
-        public void AckAlarms(Ssz.Utils.DataSource.EventId[] events)
+        public void AckAlarms(Ssz.Utils.DataAccess.EventId[] events)
         {
             BeginInvoke(ct =>
             {
@@ -59,7 +59,7 @@ namespace Ssz.DataGrpc.Client
 
         #region private functions
 
-        private void OnEventNotification(IEnumerable<Utils.DataSource.EventMessage> obj)
+        private void OnEventNotification(IEnumerable<Utils.DataAccess.EventMessage> obj)
         {
         }
 

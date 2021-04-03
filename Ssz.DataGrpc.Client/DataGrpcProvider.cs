@@ -10,11 +10,11 @@ using Ssz.DataGrpc.Server;
 using Ssz.DataGrpc.Client.Data;
 using Microsoft.Extensions.Logging;
 using Ssz.DataGrpc.Common;
-using Ssz.Utils.DataSource;
+using Ssz.Utils.DataAccess;
 
 namespace Ssz.DataGrpc.Client
 {
-    public partial class DataGrpcProvider : IDataProvider, IDispatcher
+    public partial class DataGrpcProvider : IDataAccessProvider, IDispatcher
     {
         #region construction and destruction
 
@@ -104,7 +104,7 @@ namespace Ssz.DataGrpc.Client
 
         public bool IsInitialized { get; private set; }
 
-        public Guid ModelDataGuid { get; private set; }
+        public Guid DataGuid { get; private set; }
 
         /// <summary>
         ///     Is called using сallbackDispatcher, see Initialize(..).
@@ -419,7 +419,7 @@ namespace Ssz.DataGrpc.Client
                                 {
                                     valueSubscription.Update(new Any(null));
                                 }
-                                ModelDataGuid = Guid.NewGuid();
+                                DataGuid = Guid.NewGuid();
 
                                 ValueSubscriptionsUpdated();
                             });
@@ -526,7 +526,7 @@ namespace Ssz.DataGrpc.Client
 
                     changedValueSubscription.Update(changedValues[i].Value);                    
                 }
-                ModelDataGuid = Guid.NewGuid();
+                DataGuid = Guid.NewGuid();
             }
 
             ValueSubscriptionsUpdated();

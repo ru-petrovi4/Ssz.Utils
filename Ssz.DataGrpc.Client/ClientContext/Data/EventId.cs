@@ -10,7 +10,7 @@ namespace Ssz.DataGrpc.Server
     {
         #region construction and destruction
 
-        public EventId(Ssz.Utils.DataSource.EventId eventId)
+        public EventId(Ssz.Utils.DataAccess.EventId eventId)
         {
             SourceElementId = eventId.SourceElementId;
             if (eventId.MultiplexedAlarmContainer != null)
@@ -32,9 +32,9 @@ namespace Ssz.DataGrpc.Server
 
         #region public functions
 
-        public Ssz.Utils.DataSource.EventId ToEventId()
+        public Ssz.Utils.DataAccess.EventId ToEventId()
         {
-            var eventId = new Ssz.Utils.DataSource.EventId();
+            var eventId = new Ssz.Utils.DataAccess.EventId();
             eventId.SourceElementId = SourceElementId;
             if (OptionalMultiplexedAlarmContainerCase == OptionalMultiplexedAlarmContainerOneofCase.MultiplexedAlarmContainer)
             {

@@ -133,11 +133,11 @@ namespace Xi.Contracts.Data
 		/// </summary>
 		[DataMember] public List<object>? ClientRequestedFields;
 
-		public Ssz.Utils.DataSource.EventMessage ToEventMessage()
+		public Ssz.Utils.DataAccess.EventMessage ToEventMessage()
 		{
-			var eventInfo = new Ssz.Utils.DataSource.EventMessage(EventId != null ? EventId.ToEventId() : new Ssz.Utils.DataSource.EventId());
+			var eventInfo = new Ssz.Utils.DataAccess.EventMessage(EventId != null ? EventId.ToEventId() : new Ssz.Utils.DataAccess.EventId());
 			eventInfo.OccurrenceTime = OccurrenceTime;
-			eventInfo.EventType = (Ssz.Utils.DataSource.EventType)EventType;
+			eventInfo.EventType = (Ssz.Utils.DataAccess.EventType)EventType;
 			eventInfo.TextMessage = TextMessage ?? @"";
 			eventInfo.CategoryId = CategoryId;
 			eventInfo.Priority = Priority;

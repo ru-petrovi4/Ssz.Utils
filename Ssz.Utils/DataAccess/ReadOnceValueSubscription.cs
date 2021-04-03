@@ -1,7 +1,7 @@
 ﻿using Ssz.Utils;
 using System;
 
-namespace Ssz.Utils.DataSource
+namespace Ssz.Utils.DataAccess
 {
     public class ReadOnceValueSubscription : IValueSubscription
     {
@@ -11,7 +11,7 @@ namespace Ssz.Utils.DataSource
         ///     Is used to one-time read value.
         ///     Callback is invoked when value is not null (value.ValueTypeCode != TypeCode.Empty)        
         /// </summary>
-        public ReadOnceValueSubscription(IDataProvider dataProvider, string id, Action<Any>? setValueAction)
+        public ReadOnceValueSubscription(IDataAccessProvider dataProvider, string id, Action<Any>? setValueAction)
         {
             _dataProvider = dataProvider;
             _setValueAction = setValueAction;
@@ -54,7 +54,7 @@ namespace Ssz.Utils.DataSource
 
         #region private fields
 
-        private IDataProvider _dataProvider;
+        private IDataAccessProvider _dataProvider;
         private Action<Any>? _setValueAction;
 
         #endregion

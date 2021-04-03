@@ -10,7 +10,7 @@ namespace Ssz.DataGrpc.Server
     {
         #region construction and destruction        
 
-        public TypeId(Utils.DataSource.TypeId typeId)
+        public TypeId(Utils.DataAccess.TypeId typeId)
         {
             SchemaType = typeId.SchemaType;
             Namespace = typeId.Namespace;
@@ -21,9 +21,9 @@ namespace Ssz.DataGrpc.Server
 
         #region public functions
 
-        public Utils.DataSource.TypeId ToTypeId()
+        public Utils.DataAccess.TypeId ToTypeId()
         {
-            var typeId = new Utils.DataSource.TypeId();
+            var typeId = new Utils.DataAccess.TypeId();
             typeId.SchemaType = SchemaType;
             typeId.Namespace = Namespace;
             typeId.LocalId = LocalId;

@@ -8,7 +8,7 @@ using Ssz.DataGrpc.Common;
 using System.IO;
 using Ssz.Utils.Serialization;
 using Ssz.DataGrpc.Client.Data;
-using Ssz.Utils.DataSource;
+using Ssz.Utils.DataAccess;
 
 namespace Ssz.DataGrpc.Client.ClientLists
 {

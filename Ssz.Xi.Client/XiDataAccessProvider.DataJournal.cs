@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Ssz.Utils;
-using Ssz.Utils.DataSource;
+using Ssz.Utils.DataAccess;
 using Ssz.Xi.Client.Api;
 using Ssz.Xi.Client.Api.ListItems;
 using Ssz.Xi.Client.Api.Lists;
@@ -12,7 +12,7 @@ using Xi.Contracts.Data;
 
 namespace Ssz.Xi.Client
 {
-    public partial class XiDataProvider
+    public partial class XiDataAccessProvider
     {
         #region public functions
 
@@ -46,7 +46,7 @@ namespace Ssz.Xi.Client
         /// <param name="calculation"></param>
         /// <param name="valueSubscriptionsCollection"></param>
         /// <param name="setResultAction"></param>
-        public void HdaReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerDataObject, Ssz.Utils.DataSource.TypeId calculation, object[] valueSubscriptionsCollection,
+        public void HdaReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerDataObject, Ssz.Utils.DataAccess.TypeId calculation, object[] valueSubscriptionsCollection,
             Action<ValueStatusTimestamp[][]?> setResultAction)
         {
             var xiList = _xiDataJournalListItemsManager.XiList;

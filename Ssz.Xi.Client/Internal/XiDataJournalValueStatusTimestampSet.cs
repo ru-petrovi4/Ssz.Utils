@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using Ssz.Utils.DataSource;
+using Ssz.Utils.DataAccess;
 using Ssz.Xi.Client.Api;
 using Ssz.Xi.Client.Internal.ListItems;
 using Xi.Contracts.Constants;
@@ -28,7 +28,7 @@ namespace Ssz.Xi.Client.Internal
         /// </param>
         /// <param name="calculationTypeId"> The CalculationTypeId associated with the value set. </param>
         public XiDataJournalValueStatusTimestampSet(XiDataJournalListItem owningXiDataJournalListItem,
-            Ssz.Utils.DataSource.TypeId calculationTypeId)
+            Ssz.Utils.DataAccess.TypeId calculationTypeId)
         {
             _owningXiDataJournalListItem = owningXiDataJournalListItem;
             _calculationTypeId = calculationTypeId;
@@ -90,7 +90,7 @@ namespace Ssz.Xi.Client.Internal
         /// <summary>
         ///     The LocalId portion of the CalculationTypeId. Set to 0 if the LocalId is not a uint.
         /// </summary>
-        public static uint GetCalculationTypeLocalId(Ssz.Utils.DataSource.TypeId calculationTypeId)
+        public static uint GetCalculationTypeLocalId(Ssz.Utils.DataAccess.TypeId calculationTypeId)
         {
             return Convert.ToUInt32(calculationTypeId.LocalId);
         }
@@ -98,9 +98,9 @@ namespace Ssz.Xi.Client.Internal
         /// <summary>
         ///     The LocalId portion of the CalculationTypeId. Set to 0 if the LocalId is not a uint.
         /// </summary>
-        public static Ssz.Utils.DataSource.TypeId GetCalculationTypeId(uint calculationTypeLocalId)
+        public static Ssz.Utils.DataAccess.TypeId GetCalculationTypeId(uint calculationTypeLocalId)
         {
-            return new Ssz.Utils.DataSource.TypeId("", "", calculationTypeLocalId.ToString(CultureInfo.InvariantCulture));
+            return new Ssz.Utils.DataAccess.TypeId("", "", calculationTypeLocalId.ToString(CultureInfo.InvariantCulture));
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace Ssz.Xi.Client.Internal
         ///     for which this value set is defined may not have two value sets with the
         ///     same CalculationTypeId.
         /// </summary>
-        public Ssz.Utils.DataSource.TypeId CalculationTypeId
+        public Ssz.Utils.DataAccess.TypeId CalculationTypeId
         {
             get { return _calculationTypeId; }
         }
@@ -266,7 +266,7 @@ namespace Ssz.Xi.Client.Internal
         /// <summary>
         ///     The private representation of the CalculationTypeId and CalculationTypeLocalId interface properties.
         /// </summary>
-        private Ssz.Utils.DataSource.TypeId _calculationTypeId;
+        private Ssz.Utils.DataAccess.TypeId _calculationTypeId;
 
         /// <summary>
         ///     This member indicates, when TRUE, that the object has been disposed by the Dispose(bool isDisposing) method.

@@ -2731,7 +2731,7 @@
             <param name="timestampUtc"> The timestamp of the value. </param>
             <param name="valueObject"> The value </param>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.ListItems.XiDataListItem.PrepareForWrite(Ssz.Utils.DataSource.ValueStatusTimestamp)">
+        <member name="M:Ssz.Xi.Client.Internal.ListItems.XiDataListItem.PrepareForWrite(Ssz.Utils.DataAccess.ValueStatusTimestamp)">
             <summary>
                 This method is used to set PendingWriteValue to a value to be written.
                 If the data object is not writable, this method sets PendingWriteValue
@@ -2853,7 +2853,7 @@
                 This class is used to represent a vendor-specific field of an event message.
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.ListItems.XiEventMessageFieldValue.#ctor(System.String,Ssz.Utils.DataSource.TypeId)">
+        <member name="M:Ssz.Xi.Client.Internal.ListItems.XiEventMessageFieldValue.#ctor(System.String,Ssz.Utils.DataAccess.TypeId)">
             <summary>
                 The constructor for the XiEventMessageFieldValue
             </summary>
@@ -3186,7 +3186,7 @@
             </summary>
             <param name="dataValueArraysWithAlias"> </param>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.Lists.XiDataList.RaiseInformationReportEvent(System.Collections.Generic.IEnumerable{Ssz.Xi.Client.Api.ListItems.IXiDataListItem},System.Collections.Generic.IEnumerable{Ssz.Utils.DataSource.ValueStatusTimestamp})">
+        <member name="M:Ssz.Xi.Client.Internal.Lists.XiDataList.RaiseInformationReportEvent(System.Collections.Generic.IEnumerable{Ssz.Xi.Client.Api.ListItems.IXiDataListItem},System.Collections.Generic.IEnumerable{Ssz.Utils.DataAccess.ValueStatusTimestamp})">
             <summary>
                 Throws or invokes InformationReport event.
                 changedListItems != null, changedValues != null
@@ -3792,7 +3792,7 @@
                 This class is used to represent a sample set from a historical read.
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.XiDataJournalValueStatusTimestampSet.#ctor(Ssz.Xi.Client.Internal.ListItems.XiDataJournalListItem,Ssz.Utils.DataSource.TypeId)">
+        <member name="M:Ssz.Xi.Client.Internal.XiDataJournalValueStatusTimestampSet.#ctor(Ssz.Xi.Client.Internal.ListItems.XiDataJournalListItem,Ssz.Utils.DataAccess.TypeId)">
             <summary>
                 Constructor for a Data Journal List Value List that will
                 be associated with a Data Journal List Value.
@@ -3832,7 +3832,7 @@
                 The standard destructor invoked by the .NET garbage collector during Finalize.
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.XiDataJournalValueStatusTimestampSet.GetCalculationTypeLocalId(Ssz.Utils.DataSource.TypeId)">
+        <member name="M:Ssz.Xi.Client.Internal.XiDataJournalValueStatusTimestampSet.GetCalculationTypeLocalId(Ssz.Utils.DataAccess.TypeId)">
             <summary>
                 The LocalId portion of the CalculationTypeId. Set to 0 if the LocalId is not a uint.
             </summary>
@@ -3848,7 +3848,7 @@
             </summary>
             <returns> Returns the enumerator for the list of objects in the historical data object value set. </returns>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.XiDataJournalValueStatusTimestampSet.System#Collections#Generic#IEnumerable{Ssz#Utils#DataSource#ValueStatusTimestamp}#GetEnumerator">
+        <member name="M:Ssz.Xi.Client.Internal.XiDataJournalValueStatusTimestampSet.System#Collections#Generic#IEnumerable{Ssz#Utils#DataAccess#ValueStatusTimestamp}#GetEnumerator">
             <summary>
                 This method returns the typed enumerator for the list of values in the historical data object value set.
                 This enumerator allows the var type to be used in foreach calls.
@@ -4147,55 +4147,55 @@
                 Mex WsHttpBinding constructor parameter
             </summary>
         </member>
-        <member name="P:Ssz.Xi.Client.XiDataProvider.ServerAddress">
+        <member name="P:Ssz.Xi.Client.XiDataAccessProvider.ServerAddress">
             <summary>
                 Xi Server connection string.
             </summary>
         </member>
-        <member name="P:Ssz.Xi.Client.XiDataProvider.SystemNameToConnect">
+        <member name="P:Ssz.Xi.Client.XiDataAccessProvider.SystemNameToConnect">
             <summary>
                 Xi System Name.
             </summary>
         </member>
-        <member name="P:Ssz.Xi.Client.XiDataProvider.ApplicationName">
+        <member name="P:Ssz.Xi.Client.XiDataAccessProvider.ApplicationName">
             <summary>
                 Used in Xi Context initialization.
             </summary>
         </member>
-        <member name="P:Ssz.Xi.Client.XiDataProvider.WorkstationName">
+        <member name="P:Ssz.Xi.Client.XiDataAccessProvider.WorkstationName">
             <summary>
                 Used in Xi Context initialization.
             </summary>
         </member>
-        <member name="P:Ssz.Xi.Client.XiDataProvider.ContextParams">
+        <member name="P:Ssz.Xi.Client.XiDataAccessProvider.ContextParams">
             <summary>
                 Used in Xi Context initialization.
                 Can be null
             </summary>
         </member>
-        <member name="P:Ssz.Xi.Client.XiDataProvider.IsConnected">
+        <member name="P:Ssz.Xi.Client.XiDataAccessProvider.IsConnected">
             <summary>
                 Is connected to Model Data Source.
             </summary>
         </member>
-        <member name="E:Ssz.Xi.Client.XiDataProvider.ValueSubscriptionsUpdated">
+        <member name="E:Ssz.Xi.Client.XiDataAccessProvider.ValueSubscriptionsUpdated">
             <summary>
                 Is called using сallbackDoer, see Initialize(..).
             </summary>
         </member>
-        <member name="E:Ssz.Xi.Client.XiDataProvider.Connected">
+        <member name="E:Ssz.Xi.Client.XiDataAccessProvider.Connected">
             <summary>
                 Is called using сallbackDoer, see Initialize(..).
                 Occurs after connected to model.
             </summary>
         </member>
-        <member name="E:Ssz.Xi.Client.XiDataProvider.Disconnected">
+        <member name="E:Ssz.Xi.Client.XiDataAccessProvider.Disconnected">
             <summary>
                 Is called using сallbackDoer, see Initialize(..).
                 Occurs after disconnected from model.
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.Initialize(Ssz.Utils.IDispatcher,System.Boolean,System.String,System.String,System.String,System.String,Ssz.Utils.CaseInsensitiveDictionary{System.String})">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Initialize(Ssz.Utils.IDispatcher,System.Boolean,System.String,System.String,System.String,System.String,Ssz.Utils.CaseInsensitiveDictionary{System.String})">
             <summary>
             
             </summary>
@@ -4207,7 +4207,7 @@
             <param name="systemNameToConnect"></param>
             <param name="contextParams"></param>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.AddItem(System.String,Ssz.Utils.DataSource.IValueSubscription)">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.AddItem(System.String,Ssz.Utils.DataAccess.IValueSubscription)">
             <summary>        
                 Returns id actully used for OPC subscription, always as original id.
                 valueSubscription.Update() is called using сallbackDoer, see Initialize(..).        
@@ -4215,98 +4215,98 @@
             <param name="elementId"></param>
             <param name="valueSubscription"></param>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.RemoveItem(Ssz.Utils.DataSource.IValueSubscription)">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.RemoveItem(Ssz.Utils.DataAccess.IValueSubscription)">
             <summary>        
                 If valueSubscription is not subscribed - does nothing.
             </summary>
             <param name="valueSubscription"></param>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.PollElementValuesChanges(System.Action{Ssz.Utils.DataSource.IValueSubscription[]})">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.PollElementValuesChanges(System.Action{Ssz.Utils.DataAccess.IValueSubscription[]})">
             <summary>        
                 setResultAction(..) is called using сallbackDoer, see Initialize(..).
                 If call to server failed setResultAction(null) is called, otherwise setResultAction(changedValueSubscriptions) is called.        
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.Write(Ssz.Utils.DataSource.IValueSubscription[],Ssz.Utils.Any[],System.Action{Ssz.Utils.DataSource.IValueSubscription[]})">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Write(Ssz.Utils.DataAccess.IValueSubscription[],Ssz.Utils.Any[],System.Action{Ssz.Utils.DataAccess.IValueSubscription[]})">
             <summary>        
                 setResultAction(..) is called using сallbackDoer, see Initialize(..).
                 setResultAction(failedValueSubscriptions) is called, failedValueSubscriptions != null.
                 If connection error, failedValueSubscriptions is all clientObjs.        
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.Write(Ssz.Utils.DataSource.IValueSubscription,Ssz.Utils.Any)">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Write(Ssz.Utils.DataAccess.IValueSubscription,Ssz.Utils.Any)">
             <summary>        
             </summary>
             <param name="valueSubscription"></param>
             <param name="value"></param>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.Passthrough(System.String,System.String,System.Byte[],System.Action{System.Byte[]})">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Passthrough(System.String,System.String,System.Byte[],System.Action{System.Byte[]})">
             <summary>        
                 setResultAction(..) is called using сallbackDoer, see Initialize(..).
                 If call to server failed (exception or passthroughResult == null or passthroughResult.ResultCode != 0), setResultAction(null) is called.        
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.BeginInvoke(System.Action{System.Threading.CancellationToken})">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.BeginInvoke(System.Action{System.Threading.CancellationToken})">
             <summary>
                 Invokes Action in working thread with cancellation support.
             </summary>
             <param name="action"></param>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.UnsubscribeInWorkingThread">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.UnsubscribeInWorkingThread">
             <summary>
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.XiDataListItemsManagerOnInformationReport(System.Object[],Ssz.Utils.DataSource.ValueStatusTimestamp[])">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.XiDataListItemsManagerOnInformationReport(System.Object[],Ssz.Utils.DataAccess.ValueStatusTimestamp[])">
             <summary>
                 Called using сallbackDoer.
             </summary>
             <param name="changedClientObjs"></param>
             <param name="changedValues"></param>
         </member>
-        <member name="F:Ssz.Xi.Client.XiDataProvider._serverAddress">
+        <member name="F:Ssz.Xi.Client.XiDataAccessProvider._serverAddress">
             <summary>
                 Xi Server connection string.
             </summary>
         </member>
-        <member name="F:Ssz.Xi.Client.XiDataProvider._systemNameToConnect">
+        <member name="F:Ssz.Xi.Client.XiDataAccessProvider._systemNameToConnect">
             <summary>
                 Xi System Name.
             </summary>
         </member>
-        <member name="F:Ssz.Xi.Client.XiDataProvider._applicationName">
+        <member name="F:Ssz.Xi.Client.XiDataAccessProvider._applicationName">
             <summary>
                 Used in Xi Context initialization.
             </summary>
         </member>
-        <member name="F:Ssz.Xi.Client.XiDataProvider._elementValueListCallbackIsEnabled">
+        <member name="F:Ssz.Xi.Client.XiDataAccessProvider._elementValueListCallbackIsEnabled">
             <summary>
                 Used in Xi DataList initialization.
             </summary>
         </member>
-        <member name="F:Ssz.Xi.Client.XiDataProvider._workstationName">
+        <member name="F:Ssz.Xi.Client.XiDataAccessProvider._workstationName">
             <summary>
                 Used in Xi Context initialization.
             </summary>
         </member>
-        <member name="F:Ssz.Xi.Client.XiDataProvider._contextParams">
+        <member name="F:Ssz.Xi.Client.XiDataAccessProvider._contextParams">
             <summary>
                 Used in Xi Context initialization.
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.HdaAddItem(System.String,System.Object)">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.HdaAddItem(System.String,System.Object)">
             <summary>        
                 valueSubscription.Update() is called from сallbackDoer.
             </summary>
             <param name="elementId"></param>
             <param name="valueSubscription"></param>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.HdaRemoveItem(System.Object)">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.HdaRemoveItem(System.Object)">
             <summary>        
                 If valueSubscription is not subscribed - does nothing.
             </summary>
             <param name="valueSubscription"></param>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.HdaReadElementValueJournals(System.DateTime,System.DateTime,System.UInt32,Ssz.Utils.DataSource.TypeId,System.Object[],System.Action{Ssz.Utils.DataSource.ValueStatusTimestamp[][]})">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.HdaReadElementValueJournals(System.DateTime,System.DateTime,System.UInt32,Ssz.Utils.DataAccess.TypeId,System.Object[],System.Action{Ssz.Utils.DataAccess.ValueStatusTimestamp[][]})">
             <summary>
             
             </summary>
@@ -4317,12 +4317,12 @@
             <param name="valueSubscriptionsCollection"></param>
             <param name="setResultAction"></param>
         </member>
-        <member name="E:Ssz.Xi.Client.XiDataProvider.EventNotification">
+        <member name="E:Ssz.Xi.Client.XiDataAccessProvider.EventNotification">
             <summary>
                 Is called using сallbackDoer, see Initialize(..).        
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataProvider.AckAlarms(Ssz.Utils.DataSource.EventId[])">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.AckAlarms(Ssz.Utils.DataAccess.EventId[])">
             <summary>
                 events != null
             </summary>

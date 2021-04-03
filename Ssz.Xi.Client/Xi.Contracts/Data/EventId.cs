@@ -35,7 +35,7 @@ namespace Xi.Contracts.Data
 
 		}
 
-		public EventId(Ssz.Utils.DataSource.EventId eventId)
+		public EventId(Ssz.Utils.DataAccess.EventId eventId)
 		{
 			SourceId = new InstanceId("", "", eventId.SourceElementId);
 			if (eventId.MultiplexedAlarmContainer != null)
@@ -96,9 +96,9 @@ namespace Xi.Contracts.Data
 		/// </summary>
 		[DataMember] public Nullable<DateTime> TimeLastActive;
 
-		public Ssz.Utils.DataSource.EventId ToEventId()
+		public Ssz.Utils.DataAccess.EventId ToEventId()
 		{
-			var eventId = new Ssz.Utils.DataSource.EventId();
+			var eventId = new Ssz.Utils.DataAccess.EventId();
 			eventId.SourceElementId = SourceId != null ? SourceId.LocalId ?? "" : "";
 			if (MultiplexedAlarmContainer != null)
 			{

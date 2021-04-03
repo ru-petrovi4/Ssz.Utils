@@ -7,7 +7,7 @@ using Ssz.DataGrpc.Client.ClientListItems;
 using Microsoft.Extensions.Logging;
 using Ssz.DataGrpc.Client.ClientLists;
 using Ssz.DataGrpc.Common;
-using Ssz.Utils.DataSource;
+using Ssz.Utils.DataAccess;
 
 namespace Ssz.DataGrpc.Client.Managers
 {

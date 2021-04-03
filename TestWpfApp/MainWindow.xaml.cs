@@ -1,5 +1,5 @@
 ﻿using Ssz.Utils;
-using Ssz.Utils.DataSource;
+using Ssz.Utils.DataAccess;
 using Ssz.WpfHmi.Common.ControlsRuntime.GenericRuntime;
 using Ssz.WpfHmi.Common.ModelData.Events;
 using Ssz.Xi.Client;
@@ -36,11 +36,11 @@ namespace TestWpfApp
             _alarmsListViewModel = new AlarmsListViewModel();
             MainAlarmListControl.MainDataGrid.ItemsSource = _alarmsListViewModel.Alarms;
 
-            App.DataProvider.Initialize(this, true, @"http://localhost:60080/SszCtcmXiServer/ServerDiscovery", "TestWpfApp", Environment.MachineName, "", new CaseInsensitiveDictionary<string>());
-            App.DataProvider.EventNotification += XiDataProviderOnEventNotification;
-            App.DataProvider.Disconnected += XiDataProviderOnDisconnected;
+            App.DataAccessProvider.Initialize(this, true, @"http://localhost:60080/SszCtcmXiServer/ServerDiscovery", "TestWpfApp", Environment.MachineName, "", new CaseInsensitiveDictionary<string>());
+            App.DataAccessProvider.EventNotification += XiDataAccessProviderOnEventNotification;
+            App.DataAccessProvider.Disconnected += XiDataAccessProviderOnDisconnected;
 
-            _valueSubscription = new ValueSubscription(App.DataProvider,
+            _valueSubscription = new ValueSubscription(App.DataAccessProvider,
                 "BP2.propTransmValueDspl",
                 (oldValue, newValue) =>
                 {
@@ -48,14 +48,14 @@ namespace TestWpfApp
                 });
         }
 
-        private void XiDataProviderOnDisconnected()
+        private void XiDataAccessProviderOnDisconnected()
         {
             _alarmsListViewModel.Clear();
 
             EventSourceModel.Instance.Clear();
         }
 
-        private async void XiDataProviderOnEventNotification(EventMessage[] newEventMessages)
+        private async void XiDataAccessProviderOnEventNotification(EventMessage[] newEventMessages)
         {
             List<AlarmInfoViewModelBase> newAlarmInfoViewModels = new List<AlarmInfoViewModelBase>();
             foreach (EventMessage eventMessage in newEventMessages.Where(em => em != null).OrderBy(em => em.OccurrenceTime))
@@ -79,7 +79,7 @@ namespace TestWpfApp
         {
             _valueSubscription.Dispose();
 
-            App.DataProvider.Close();
+            App.DataAccessProvider.Close();
 
             base.OnClosed(e);
         }

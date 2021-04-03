@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ssz.Utils.DataSource
+namespace Ssz.Utils.DataAccess
 {    
     public class ValueSubscription : IValueSubscription, IDisposable
     {
@@ -15,7 +15,7 @@ namespace Ssz.Utils.DataSource
         ///     Is used to subscribe for value updating and to write values.
         ///     valueChangedAction(oldValue, newValue) is invoked when Value property changed. Initial Value property is Any(null).        
         /// </summary>
-        public ValueSubscription(IDataProvider dataProvider, string id, Action<Any, Any>? valueChangedAction = null)
+        public ValueSubscription(IDataAccessProvider dataProvider, string id, Action<Any, Any>? valueChangedAction = null)
         {
             _dataProvider = dataProvider;
             Id = id ?? @"";
@@ -79,7 +79,7 @@ namespace Ssz.Utils.DataSource
 
         #region private fields
 
-        private readonly IDataProvider _dataProvider;
+        private readonly IDataAccessProvider _dataProvider;
         private Action<Any, Any>? _valueChangedAction;
 
         #endregion

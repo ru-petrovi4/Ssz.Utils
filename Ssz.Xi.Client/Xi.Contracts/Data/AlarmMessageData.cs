@@ -55,10 +55,10 @@ namespace Xi.Contracts.Data
 		/// </summary>
 		[DataMember] public Nullable<DateTime> TimeLastActive;
 
-		public Ssz.Utils.DataSource.AlarmMessageData ToAlarmMessageData()
+		public Ssz.Utils.DataAccess.AlarmMessageData ToAlarmMessageData()
 		{
-			var alarmMessageData = new Ssz.Utils.DataSource.AlarmMessageData();
-			alarmMessageData.AlarmState = (Ssz.Utils.DataSource.AlarmState)AlarmState;
+			var alarmMessageData = new Ssz.Utils.DataAccess.AlarmMessageData();
+			alarmMessageData.AlarmState = (Ssz.Utils.DataAccess.AlarmState)AlarmState;
 			alarmMessageData.AlarmStateChange = AlarmStateChange;
 			if (TimeLastActive != null)
 			{

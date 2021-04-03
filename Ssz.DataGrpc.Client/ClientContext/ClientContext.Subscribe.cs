@@ -5,7 +5,7 @@ using Ssz.DataGrpc.Server;
 using Ssz.DataGrpc.Client.ClientListItems;
 using Ssz.DataGrpc.Common;
 using System.Linq;
-using Ssz.Utils.DataSource;
+using Ssz.Utils.DataAccess;
 
 namespace Ssz.DataGrpc.Client
 {

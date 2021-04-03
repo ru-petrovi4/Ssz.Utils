@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ssz.Utils.DataSource
+namespace Ssz.Utils.DataAccess
 {
-    public interface IDataProvider
+    public interface IDataAccessProvider
     {
         string ServerAddress { get; }
 
@@ -23,7 +23,7 @@ namespace Ssz.Utils.DataSource
 
         bool IsInitialized { get; }
 
-        Guid ModelDataGuid { get; }
+        Guid DataGuid { get; }
         
         event Action ValueSubscriptionsUpdated;
 

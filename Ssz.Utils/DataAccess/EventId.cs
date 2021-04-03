@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ssz.Utils.DataSource
+namespace Ssz.Utils.DataAccess
 {
     public class EventId
     {

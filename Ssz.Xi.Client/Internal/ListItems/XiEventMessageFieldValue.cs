@@ -1,4 +1,4 @@
-using Ssz.Utils.DataSource;
+using Ssz.Utils.DataAccess;
 using Ssz.Xi.Client.Api;
 using Xi.Contracts.Data;
 
@@ -16,7 +16,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         /// </summary>
         /// <param name="name"> The name of the field. </param>
         /// <param name="dataTypeId"> The data type of the field. </param>
-        public XiEventMessageFieldValue(string name, Ssz.Utils.DataSource.TypeId dataTypeId)
+        public XiEventMessageFieldValue(string name, Ssz.Utils.DataAccess.TypeId dataTypeId)
         {
             Name = name;
             DataTypeId = dataTypeId;
@@ -40,7 +40,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         /// <summary>
         ///     This property defines the data type of the field.
         /// </summary>
-        public Ssz.Utils.DataSource.TypeId DataTypeId { get; set; }
+        public Ssz.Utils.DataAccess.TypeId DataTypeId { get; set; }
 
         /// <summary>
         ///     This property contains the value of the field.

@@ -1,4 +1,4 @@
-﻿using Ssz.Utils.DataSource;
+﻿using Ssz.Utils.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +11,9 @@ namespace Ssz.DataGrpc.Server
     {
         #region public functions
 
-        public Utils.DataSource.EventMessage ToEventMessage()
+        public Utils.DataAccess.EventMessage ToEventMessage()
         {
-            var eventInfo = new Utils.DataSource.EventMessage(EventId.ToEventId());
+            var eventInfo = new Utils.DataAccess.EventMessage(EventId.ToEventId());
             eventInfo.OccurrenceTime = OccurrenceTime.ToDateTime();
             eventInfo.EventType = (EventType)EventType;
             eventInfo.TextMessage = TextMessage;

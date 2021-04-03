@@ -68,7 +68,7 @@ namespace Xi.Contracts.Data
             LocalId = id;
         }
 
-        public TypeId(Ssz.Utils.DataSource.TypeId typeId)
+        public TypeId(Ssz.Utils.DataAccess.TypeId typeId)
         {
             SchemaType = typeId.SchemaType;
             Namespace = typeId.Namespace;
@@ -232,9 +232,9 @@ namespace Xi.Contracts.Data
             return typeIdString ?? "";
         }
 
-        public Ssz.Utils.DataSource.TypeId ToTypeId()
+        public Ssz.Utils.DataAccess.TypeId ToTypeId()
         {
-            var typeId = new Ssz.Utils.DataSource.TypeId();
+            var typeId = new Ssz.Utils.DataAccess.TypeId();
             typeId.SchemaType = SchemaType ?? @"";
             typeId.Namespace = Namespace ?? @"";
             typeId.LocalId = LocalId ?? @"";

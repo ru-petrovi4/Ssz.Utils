@@ -5,14 +5,14 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using Ssz.Utils;
-using Ssz.Utils.DataSource;
+using Ssz.Utils.DataAccess;
 using Ssz.Xi.Client.Api;
 using Xi.Contracts.Constants;
 using Xi.Contracts.Data;
 
 namespace Ssz.Xi.Client
 {
-    public partial class XiDataProvider : IDataProvider, IDispatcher
+    public partial class XiDataAccessProvider : IDataAccessProvider, IDispatcher
     {
         #region public functions
 
@@ -87,7 +87,7 @@ namespace Ssz.Xi.Client
 
         public bool IsInitialized { get; private set; }
 
-        public Guid ModelDataGuid { get; private set; }
+        public Guid DataGuid { get; private set; }
 
         /// <summary>
         ///     Is called using сallbackDoer, see Initialize(..).
@@ -412,7 +412,7 @@ namespace Ssz.Xi.Client
                                 {
                                     valueSubscription.Update(new Any(null));
                                 }
-                                ModelDataGuid = Guid.NewGuid();
+                                DataGuid = Guid.NewGuid();
 
                                 ValueSubscriptionsUpdated();
                             });
@@ -538,7 +538,7 @@ namespace Ssz.Xi.Client
 
                     changedValueSubscription.Update(changedValues[i].Value);                    
                 }
-                ModelDataGuid = Guid.NewGuid();
+                DataGuid = Guid.NewGuid();
             }
 
             ValueSubscriptionsUpdated();
