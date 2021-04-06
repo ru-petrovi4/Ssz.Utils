@@ -35,17 +35,15 @@ namespace Ssz.Utils
             if (left == null && right == null) return true;
             if (left == null || right == null) return false;
             return String.Equals(left, right, StringComparison.InvariantCultureIgnoreCase);
-        }
-
+        }        
+            
         /// <summary>
         ///     returns replaces count.
         ///     oldValue != String.Empty
         /// </summary>
-        public static int ReplaceIgnoreCase(ref string? str, string oldValue, string newValue)
+        public static int ReplaceIgnoreCase(ref string str, string oldValue, string newValue)
         {
-            if (oldValue == @"") throw new ArgumentException(@"oldValue");
-
-            if (String.IsNullOrEmpty(str)) return 0;
+            if (str == @"") return 0;
 
             int index = str.IndexOf(oldValue, StringComparison.InvariantCultureIgnoreCase);
             if (index == -1) return 0;
