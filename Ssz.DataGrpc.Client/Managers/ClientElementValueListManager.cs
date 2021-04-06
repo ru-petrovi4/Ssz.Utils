@@ -233,7 +233,7 @@ namespace Ssz.DataGrpc.Client.Managers
                 
                 if (modelItem.DataGrpcListItemWrapper == null ||
                     modelItem.DataGrpcListItemWrapper.DataGrpcListItem == null ||
-                    modelItem.DataGrpcListItemWrapper.DataGrpcListItem.ResultCode != DataGrpcFaultCodes.S_OK)
+                    modelItem.DataGrpcListItemWrapper.DataGrpcListItem.ResultCode != DataGrpcResultCodes.S_OK)
                 {
                     result.Add(clientObj);
                     continue;
@@ -287,7 +287,7 @@ namespace Ssz.DataGrpc.Client.Managers
             ModelItem? modelItem;
             if (!ModelItemsDictionary.TryGetValue(clientObj, out modelItem)) return;
             
-            if (modelItem.DataGrpcListItemWrapper == null || modelItem.DataGrpcListItemWrapper.DataGrpcListItem == null || modelItem.DataGrpcListItemWrapper.DataGrpcListItem.ResultCode != DataGrpcFaultCodes.S_OK)
+            if (modelItem.DataGrpcListItemWrapper == null || modelItem.DataGrpcListItemWrapper.DataGrpcListItem == null || modelItem.DataGrpcListItemWrapper.DataGrpcListItem.ResultCode != DataGrpcResultCodes.S_OK)
             {
                 return;
             }

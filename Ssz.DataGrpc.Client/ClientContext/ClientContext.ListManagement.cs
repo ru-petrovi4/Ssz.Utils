@@ -48,7 +48,7 @@ namespace Ssz.DataGrpc.Client
                 if (listParams != null) request.ListParams.Add(listParams);
                 var reply = _resourceManagementClient.DefineList(request);
                 SetResourceManagementLastCallUtc();
-                if (reply.Result.ResultCode == DataGrpcFaultCodes.S_OK)
+                if (reply.Result.ResultCode == DataGrpcResultCodes.S_OK)
                 {
                     dataGrpcList.ListClientAlias = listClientAlias;
                     dataGrpcList.ListServerAlias = reply.Result.ServerAlias;

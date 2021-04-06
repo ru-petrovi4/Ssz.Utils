@@ -132,7 +132,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
                                 break;
                         }
                     }
-                    item.HasWritten(DataGrpcFaultCodes.S_OK);
+                    item.HasWritten(DataGrpcResultCodes.S_OK);
                 }
             }
 

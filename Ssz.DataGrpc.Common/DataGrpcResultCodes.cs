@@ -1,22 +1,6 @@
 ﻿namespace Ssz.DataGrpc.Common
-{
-    /// <summary>
-    ///     <para>
-    ///         This class defines standard Xi success and fault codes.
-    ///         Xi servers can report error to the client as:
-    ///     </para>
-    ///     <para>a)    Exceptions, if the handling of a request completely fails</para>
-    ///     <para>b)    Result codes. These are uint values that hold any HResult code.</para>
-    ///     <para>c)    Status codes. These are used only in methods that return data values. </para>
-    ///     <para>    The uint status code merges OPC quality and a subset of HResult codes. </para>
-    ///     <para>    Additional error info can be passed in the associated ErrorInfo object.</para>
-    ///     <para>
-    ///         NOTE: Entries in this file should have a corresponding entry in either ErrorCodes.xml
-    ///         or ErrorCodesOpc.xml except Win32/COM error code values that are defined here with the
-    ///         exact values from WinError.h or other Microsoft defined error codes.
-    ///     </para>
-    /// </summary>
-    public static class DataGrpcFaultCodes
+{    
+    public static class DataGrpcResultCodes
     {
         #region public functions
 
@@ -459,6 +443,27 @@
         ///     Information is not available
         /// </summary>
         public const uint OPC_E_NOINFO = 0xC0040206;
+
+        /// <summary>
+        /// This method provides functionality like the SUCCEEDED macro.
+        /// </summary>
+        /// <param name="resultCode"></param>
+        /// <returns></returns>
+        static public bool Succeeded(uint resultCode)
+        {
+            //return (0 == (0x80000000u & errorCode));
+            return resultCode == S_OK || resultCode == S_FALSE;
+        }
+
+        /// <summary>
+        /// This method provides functionality like the FAILED marco.
+        /// </summary>
+        /// <param name="resultCode"></param>
+        /// <returns></returns>
+        static public bool Failed(uint resultCode)
+        {
+            return !Succeeded(resultCode);
+        }
 
         #endregion
     }

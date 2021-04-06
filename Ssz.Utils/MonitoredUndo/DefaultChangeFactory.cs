@@ -21,7 +21,7 @@ namespace Ssz.Utils.MonitoredUndo
         /// <param name="oldValue">The old value of the property.</param>
         /// <param name="newValue">The new value of the property.</param>
         /// <returns>A Change that can be added to the UndoRoot's undo stack.</returns>
-        public virtual Change? GetChange(object instance, string propertyName, object oldValue, object newValue)
+        public virtual Change? GetChange(object instance, string propertyName, object? oldValue, object? newValue)
         {
             var undoMetadata = instance as IUndoMetadata;
             if (null != undoMetadata)
@@ -42,7 +42,7 @@ namespace Ssz.Utils.MonitoredUndo
         /// <param name="propertyName">The property name that changed. (Case sensitive, used by reflection.)</param>
         /// <param name="oldValue">The old value of the property.</param>
         /// <param name="newValue">The new value of the property.</param>
-        public virtual void OnChanging(object instance, string propertyName, object oldValue, object newValue)
+        public virtual void OnChanging(object instance, string propertyName, object? oldValue, object? newValue)
         {
             OnChanging(instance, propertyName, oldValue, newValue, propertyName);
         }
@@ -55,7 +55,7 @@ namespace Ssz.Utils.MonitoredUndo
         /// <param name="oldValue">The old value of the property.</param>
         /// <param name="newValue">The new value of the property.</param>
         /// <param name="descriptionOfChange">A description of this change.</param>
-        public virtual void OnChanging(object instance, string propertyName, object oldValue, object newValue,
+        public virtual void OnChanging(object instance, string propertyName, object? oldValue, object? newValue,
             string descriptionOfChange)
         {
             var supportsUndo = instance as ISupportsUndo;

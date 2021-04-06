@@ -17,7 +17,7 @@ namespace Ssz.Utils.MonitoredUndo
         /// <param name="oldValue">The original value of the property.</param>
         /// <param name="newValue">The new value of the property.</param>
         /// <returns>A boolean, indicating whether the field should be tracked for undo / redo.</returns>
-        bool CanUndoProperty(string propertyName, object oldValue, object newValue);
+        bool CanUndoProperty(string propertyName, object? oldValue, object? newValue);
 
         /// <summary>
         ///     Can be used by undo services to determine whether the specified field can be undone.

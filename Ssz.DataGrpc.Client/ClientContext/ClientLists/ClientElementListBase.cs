@@ -124,7 +124,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
                             listItem.IsReadable = r.IsReadable;
                             listItem.IsWritable = r.IsWritable;
 
-                            if (listItem.ResultCode == DataGrpcFaultCodes.S_OK || listItem.ResultCode == DataGrpcFaultCodes.S_FALSE)
+                            if (listItem.ResultCode == DataGrpcResultCodes.S_OK || listItem.ResultCode == DataGrpcResultCodes.S_FALSE)
                             {
                                 listItem.IsInServerList = true;                                
                             }
@@ -207,7 +207,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
                                 aliasResultList.Find(ar => ar.ServerAlias == removedListItem.ServerAlias);
                             if (aliasResult != null)
                             {
-                                if (aliasResult.ResultCode == DataGrpcFaultCodes.E_ALIASNOTFOUND)
+                                if (aliasResult.ResultCode == DataGrpcResultCodes.E_ALIASNOTFOUND)
                                 {
                                     // server doesn't have the item if result code is E_ALIASNOTFOUND, so ok to take it out here
                                     ListItemsManager.Remove(removedListItem.ClientAlias);
