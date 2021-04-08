@@ -76,7 +76,7 @@ namespace Ssz.DataGrpc.Client.Managers
                                     {
                                         var o = dataGrpcElementValueListItem.Obj as DataGrpcListItemWrapper;
                                         if (o == null) throw new InvalidOperationException();
-                                        foreach (var modelItem in o.ModelItems)
+                                        foreach (var modelItem in o.ClientObjectInfosCollection)
                                         {
                                             modelItem.ForceNotifyClientObj = false;
                                             if (modelItem.ClientObj != null)
@@ -123,7 +123,7 @@ namespace Ssz.DataGrpc.Client.Managers
                     var changedValues = new List<ValueStatusTimestamp>();
                     foreach (DataGrpcListItemWrapper dataGrpcListItemWrapper in DataGrpcListItemWrappersDictionary.Values)
                     {                        
-                        foreach (var modelItem in dataGrpcListItemWrapper.ModelItems)
+                        foreach (var modelItem in dataGrpcListItemWrapper.ClientObjectInfosCollection)
                         {
                             if (modelItem.ForceNotifyClientObj)
                             {
@@ -191,7 +191,7 @@ namespace Ssz.DataGrpc.Client.Managers
                 {
                     var o = dataGrpcElementValueListItem.Obj as DataGrpcListItemWrapper;
                     if (o == null) throw new InvalidOperationException();
-                    foreach (var modelItem in o.ModelItems)
+                    foreach (var modelItem in o.ClientObjectInfosCollection)
                     {
                         if (modelItem.ClientObj != null)
                         {
@@ -224,7 +224,7 @@ namespace Ssz.DataGrpc.Client.Managers
             {
                 i++;
 
-                ModelItem? modelItem;
+                ClientObjectInfo? modelItem;
                 if (!ModelItemsDictionary.TryGetValue(clientObj, out modelItem))
                 {
                     result.Add(clientObj);
@@ -258,7 +258,7 @@ namespace Ssz.DataGrpc.Client.Managers
                 {
                     var o = dataGrpcElementValueListItem.Obj as DataGrpcListItemWrapper;
                     if (o == null) throw new InvalidOperationException();
-                    foreach (var modelItem in o.ModelItems)
+                    foreach (var modelItem in o.ClientObjectInfosCollection)
                     {
                         if (modelItem.ClientObj != null)
                         {
@@ -284,7 +284,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
             if (DataGrpcList == null || DataGrpcList.Disposed) return;
 
-            ModelItem? modelItem;
+            ClientObjectInfo? modelItem;
             if (!ModelItemsDictionary.TryGetValue(clientObj, out modelItem)) return;
             
             if (modelItem.DataGrpcListItemWrapper == null || modelItem.DataGrpcListItemWrapper.DataGrpcListItem == null || modelItem.DataGrpcListItemWrapper.DataGrpcListItem.ResultCode != DataGrpcResultCodes.S_OK)

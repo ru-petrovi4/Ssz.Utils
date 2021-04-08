@@ -88,10 +88,10 @@ namespace Ssz.DataGrpc.Client.Managers
                     var serverAliases = new List<uint>();
                     foreach (var valueSubscription in valueSubscriptionsCollection)
                     {
-                        var modelItem = GetModelItem(valueSubscription);
-                        if (modelItem != null && modelItem.DataGrpcListItemWrapper != null && modelItem.DataGrpcListItemWrapper.DataGrpcListItem != null)
+                        var clientObjectInfo = GetClientObjectInfo(valueSubscription);
+                        if (clientObjectInfo != null && clientObjectInfo.DataGrpcListItemWrapper != null && clientObjectInfo.DataGrpcListItemWrapper.DataGrpcListItem != null)
                         {
-                            serverAliases.Add(modelItem.DataGrpcListItemWrapper.DataGrpcListItem.ServerAlias);
+                            serverAliases.Add(clientObjectInfo.DataGrpcListItemWrapper.DataGrpcListItem.ServerAlias);
                         }
                         else
                         {

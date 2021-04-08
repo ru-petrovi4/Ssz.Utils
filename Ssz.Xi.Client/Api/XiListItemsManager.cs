@@ -300,7 +300,7 @@ namespace Ssz.Xi.Client.Api
         #region private fields
 
         private readonly Dictionary<object, ModelItem> _modelItemsDictionary =
-            new Dictionary<object, ModelItem>(256, ReferenceEqualityComparer<object>.Default);
+            new Dictionary<object, ModelItem>(256, ReferenceEqualityComparer.Instance);
 
         private readonly CaseInsensitiveDictionary<XiListItemWrapper> _xiListItemWrappersDictionary =
             new CaseInsensitiveDictionary<XiListItemWrapper>(256);

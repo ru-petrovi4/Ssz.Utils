@@ -33,12 +33,12 @@ namespace Ssz.DataGrpc.Client.Managers
         {
             Logger.LogDebug("DataGrpcListItemsManager.AddItem() " + elementId); 
 
-            ModelItem? modelItem;
-            if (!_modelItemsDictionary.TryGetValue(clientObj, out modelItem))
+            ClientObjectInfo? clientObjectInfo;
+            if (!_clientObjectInfosDictionary.TryGetValue(clientObj, out clientObjectInfo))
             {                
-                modelItem = new ModelItem(elementId);
-                _modelItemsDictionary.Add(clientObj, modelItem);
-                modelItem.ClientObj = clientObj;
+                clientObjectInfo = new ClientObjectInfo(elementId);
+                _clientObjectInfosDictionary.Add(clientObj, clientObjectInfo);
+                clientObjectInfo.ClientObj = clientObj;
 
                 _dataGrpcItemsMustBeAddedOrRemoved = true;
             }
@@ -55,12 +55,12 @@ namespace Ssz.DataGrpc.Client.Managers
         /// <param name="clientObj"></param>
         public void RemoveItem(object clientObj)
         {
-            ModelItem? modelItem;
-            if (_modelItemsDictionary.TryGetValue(clientObj, out modelItem))
+            ClientObjectInfo? clientObjectInfo;
+            if (_clientObjectInfosDictionary.TryGetValue(clientObj, out clientObjectInfo))
             {
-                _modelItemsToRemove.Add(modelItem);
-                _modelItemsDictionary.Remove(clientObj);
-                modelItem.ClientObj = null;
+                _clientObjectInfosToRemove.Add(clientObjectInfo);
+                _clientObjectInfosDictionary.Remove(clientObj);
+                clientObjectInfo.ClientObj = null;
 
                 _dataGrpcItemsMustBeAddedOrRemoved = true;
             }
@@ -81,7 +81,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
             DataGrpcList = null;
 
-            _modelItemsToRemove.Clear();
+            _clientObjectInfosToRemove.Clear();
 
             _dataGrpcItemsMustBeAddedOrRemoved = true;
         }
@@ -101,17 +101,12 @@ namespace Ssz.DataGrpc.Client.Managers
 
         protected bool UnsubscribeItemsFromServer { get; }
 
-        protected ModelItem? GetModelItem(object clientObj)
+        protected ClientObjectInfo? GetClientObjectInfo(object clientObj)
         {
-            ModelItem? modelItem;
-            _modelItemsDictionary.TryGetValue(clientObj, out modelItem);
-            return modelItem;
-        }
-
-        protected IEnumerable<ModelItem> GetAllModelItems()
-        {
-            return ModelItemsDictionary.Values;
-        }
+            ClientObjectInfo? clientObjectInfo;
+            _clientObjectInfosDictionary.TryGetValue(clientObj, out clientObjectInfo);
+            return clientObjectInfo;
+        }        
 
         /// <summary>
         ///     Returns whether connection errors occur.
@@ -121,20 +116,20 @@ namespace Ssz.DataGrpc.Client.Managers
         {
             bool connectionError = false;
             
-            foreach (ModelItem modelItem in _modelItemsDictionary.Values)
+            foreach (ClientObjectInfo clientObjectInfo in _clientObjectInfosDictionary.Values)
             {
-                if (modelItem.DataGrpcListItemWrapper == null)
+                if (clientObjectInfo.DataGrpcListItemWrapper == null)
                 {
-                    var elementId = modelItem.ElementId;
+                    var elementId = clientObjectInfo.ElementId;
                     DataGrpcListItemWrapper? dataGrpcListItemWrapper;
                     if (!_dataGrpcListItemWrappersDictionary.TryGetValue(elementId, out dataGrpcListItemWrapper))
                     {
                         dataGrpcListItemWrapper = new DataGrpcListItemWrapper();
                         _dataGrpcListItemWrappersDictionary.Add(elementId, dataGrpcListItemWrapper);
                     }
-                    modelItem.ForceNotifyClientObj = true;
-                    modelItem.DataGrpcListItemWrapper = dataGrpcListItemWrapper;
-                    dataGrpcListItemWrapper.ModelItems.Add(modelItem);
+                    clientObjectInfo.ForceNotifyClientObj = true;
+                    clientObjectInfo.DataGrpcListItemWrapper = dataGrpcListItemWrapper;
+                    dataGrpcListItemWrapper.ClientObjectInfosCollection.Add(clientObjectInfo);
                 }                
             }
 
@@ -191,9 +186,9 @@ namespace Ssz.DataGrpc.Client.Managers
                         if (!dataGrpcListItemWrapper.ConnectionError)
                         {
                             dataGrpcListItemWrapper.ConnectionError = true;
-                            foreach (ModelItem modelItem in dataGrpcListItemWrapper.ModelItems)
+                            foreach (ClientObjectInfo clientObjectInfo in dataGrpcListItemWrapper.ClientObjectInfosCollection)
                             {
-                                modelItem.ForceNotifyClientObj = true;
+                                clientObjectInfo.ForceNotifyClientObj = true;
                             }
                         }                        
                         dataGrpcListItemWrapper.InvalidId = false;
@@ -210,9 +205,9 @@ namespace Ssz.DataGrpc.Client.Managers
                         if (!dataGrpcListItemWrapper.InvalidId)
                         {
                             dataGrpcListItemWrapper.InvalidId = true;
-                            foreach (ModelItem modelItem in dataGrpcListItemWrapper.ModelItems)
+                            foreach (ClientObjectInfo clientObjectInfo in dataGrpcListItemWrapper.ClientObjectInfosCollection)
                             {
-                                modelItem.ForceNotifyClientObj = true;
+                                clientObjectInfo.ForceNotifyClientObj = true;
                             }
                         }                        
                         dataGrpcListItemWrapper.ConnectionError = false;
@@ -225,9 +220,9 @@ namespace Ssz.DataGrpc.Client.Managers
                             if (!dataGrpcListItemWrapper.InvalidId)
                             {
                                 dataGrpcListItemWrapper.InvalidId = true;
-                                foreach (ModelItem modelItem in dataGrpcListItemWrapper.ModelItems)
+                                foreach (ClientObjectInfo clientObjectInfo in dataGrpcListItemWrapper.ClientObjectInfosCollection)
                                 {
-                                    modelItem.ForceNotifyClientObj = true;
+                                    clientObjectInfo.ForceNotifyClientObj = true;
                                 }
                             }
                             dataGrpcListItemWrapper.ConnectionError = false;
@@ -236,30 +231,30 @@ namespace Ssz.DataGrpc.Client.Managers
                         {
                             dataGrpcListItemWrapper.InvalidId = false;
                             dataGrpcListItemWrapper.ConnectionError = false;
-                            foreach (ModelItem modelItem in dataGrpcListItemWrapper.ModelItems)
+                            foreach (ClientObjectInfo clientObjectInfo in dataGrpcListItemWrapper.ClientObjectInfosCollection)
                             {
-                                modelItem.ForceNotifyClientObj = false;
+                                clientObjectInfo.ForceNotifyClientObj = false;
                             }
                         }                        
                     }
                 }
             }
 
-            if (_modelItemsToRemove.Count > 0)
+            if (_clientObjectInfosToRemove.Count > 0)
             {
-                foreach (ModelItem modelItem in _modelItemsToRemove)
+                foreach (ClientObjectInfo clientObjectInfo in _clientObjectInfosToRemove)
                 {
-                    var dataGrpcListItemWrapper = modelItem.DataGrpcListItemWrapper;
+                    var dataGrpcListItemWrapper = clientObjectInfo.DataGrpcListItemWrapper;
                     if (dataGrpcListItemWrapper != null)
                     {
-                        var modelItems = dataGrpcListItemWrapper.ModelItems;
-                        modelItems.Remove(modelItem);
-                        modelItem.DataGrpcListItemWrapper = null;
+                        var clientObjectInfos = dataGrpcListItemWrapper.ClientObjectInfosCollection;
+                        clientObjectInfos.Remove(clientObjectInfo);
+                        clientObjectInfo.DataGrpcListItemWrapper = null;
                         if (UnsubscribeItemsFromServer)
                         {
                             // Remove DataGrpc Item
                             var dataGrpcListItem = dataGrpcListItemWrapper.DataGrpcListItem;
-                            if (modelItems.Count == 0 && dataGrpcListItem != null)
+                            if (clientObjectInfos.Count == 0 && dataGrpcListItem != null)
                             {
                                 dataGrpcListItem.PrepareForRemove();
                                 dataGrpcListItem.Obj = null;
@@ -291,7 +286,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
         protected void SubscribeFinal()
         {
-            _modelItemsToRemove.Clear();
+            _clientObjectInfosToRemove.Clear();
         }
 
         protected bool DataGrpcItemsMustBeAddedOrRemoved
@@ -300,9 +295,9 @@ namespace Ssz.DataGrpc.Client.Managers
             set { _dataGrpcItemsMustBeAddedOrRemoved = value; }
         }
 
-        protected Dictionary<object, ModelItem> ModelItemsDictionary
+        protected Dictionary<object, ClientObjectInfo> ModelItemsDictionary
         {
-            get { return _modelItemsDictionary; }
+            get { return _clientObjectInfosDictionary; }
         }
 
         protected CaseInsensitiveDictionary<DataGrpcListItemWrapper> DataGrpcListItemWrappersDictionary
@@ -316,20 +311,20 @@ namespace Ssz.DataGrpc.Client.Managers
 
         #region private fields
 
-        private readonly Dictionary<object, ModelItem> _modelItemsDictionary =
-            new Dictionary<object, ModelItem>(256, ReferenceEqualityComparer<object>.Default);
+        private readonly Dictionary<object, ClientObjectInfo> _clientObjectInfosDictionary =
+            new Dictionary<object, ClientObjectInfo>(256, ReferenceEqualityComparer.Instance);
 
         private readonly CaseInsensitiveDictionary<DataGrpcListItemWrapper> _dataGrpcListItemWrappersDictionary =
             new CaseInsensitiveDictionary<DataGrpcListItemWrapper>(256);
 
         private volatile bool _dataGrpcItemsMustBeAddedOrRemoved;
-        private readonly List<ModelItem> _modelItemsToRemove = new List<ModelItem>(256);        
+        private readonly List<ClientObjectInfo> _clientObjectInfosToRemove = new List<ClientObjectInfo>(256);        
 
         #endregion
 
         public class DataGrpcListItemWrapper
         {            
-            public readonly List<ModelItem> ModelItems = new List<ModelItem>();
+            public readonly List<ClientObjectInfo> ClientObjectInfosCollection = new List<ClientObjectInfo>();
 
             public TDataGrpcListItem? DataGrpcListItem { get; set; }
 
@@ -338,14 +333,14 @@ namespace Ssz.DataGrpc.Client.Managers
             public bool InvalidId;
         }
 
-        public class ModelItem
+        public class ClientObjectInfo
         {
             #region construction and destruction
             
             /// <summary>            
             /// </summary>
             /// <param name="elementId"></param>
-            public ModelItem(string elementId)
+            public ClientObjectInfo(string elementId)
             {
                 ElementId = elementId;                
             }
