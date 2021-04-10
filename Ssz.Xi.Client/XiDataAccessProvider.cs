@@ -284,7 +284,7 @@ namespace Ssz.Xi.Client
         ///     If call to server failed (exception or passthroughResult == null or passthroughResult.ResultCode != 0), setResultAction(null) is called.        
         /// </summary>
         public void Passthrough(string recipientId, string passthroughName,
-            byte[] dataToSend, Action<byte[]?> setResultAction)
+            byte[] dataToSend, Action<IEnumerable<byte>?> setResultAction)
         {
             BeginInvoke(ct =>
             {

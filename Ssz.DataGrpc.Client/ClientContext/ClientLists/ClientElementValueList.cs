@@ -174,12 +174,12 @@ namespace Ssz.DataGrpc.Client.ClientLists
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
 
-            if (elementValuesCollection.Guid != @"" && _incompleteElementValuesCollectionCollection.Count > 0)
+            if (elementValuesCollection.Guid != @"" && _incompleteElementValuesCollection.Count > 0)
             {
-                var beginElementValuesCollection = _incompleteElementValuesCollectionCollection.TryGetValue(elementValuesCollection.Guid);
+                var beginElementValuesCollection = _incompleteElementValuesCollection.TryGetValue(elementValuesCollection.Guid);
                 if (beginElementValuesCollection != null)
                 {
-                    _incompleteElementValuesCollectionCollection.Remove(elementValuesCollection.Guid);
+                    _incompleteElementValuesCollection.Remove(elementValuesCollection.Guid);
                     beginElementValuesCollection.Add(elementValuesCollection);
                     elementValuesCollection = beginElementValuesCollection;
                 }
@@ -187,7 +187,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
 
             if (elementValuesCollection.NextCollectionGuid != @"")
             {
-                _incompleteElementValuesCollectionCollection[elementValuesCollection.NextCollectionGuid] = elementValuesCollection;
+                _incompleteElementValuesCollection[elementValuesCollection.NextCollectionGuid] = elementValuesCollection;
 
                 return null;
             }
@@ -285,7 +285,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
         ///     This data member holds the last exception message encountered by the
         ///     InformationReport callback when calling valuesUpdateEvent().
         /// </summary>
-        private CaseInsensitiveDictionary<ElementValuesCollection> _incompleteElementValuesCollectionCollection = new CaseInsensitiveDictionary<ElementValuesCollection>();
+        private CaseInsensitiveDictionary<ElementValuesCollection> _incompleteElementValuesCollection = new CaseInsensitiveDictionary<ElementValuesCollection>();
 
         #endregion
     }

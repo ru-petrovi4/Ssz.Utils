@@ -138,8 +138,7 @@ namespace Ssz.Utils.Wpf
 
             while (myEnumerator.MoveNext())
             {
-                if (
-                    StringHelper.CompareIgnoreCase(myEnumerator.Current.FullFileName, fullFileName))
+                if (String.Equals(myEnumerator.Current.FullFileName, fullFileName, StringComparison.InvariantCultureIgnoreCase))
                 {
                     RecentFilesCollection.RemoveAt(i);
                     return;

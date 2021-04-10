@@ -4,6 +4,7 @@ using System.Linq;
 using Google.Protobuf;
 using Ssz.DataGrpc.Client.Data;
 using Ssz.DataGrpc.Server;
+using Ssz.Utils;
 
 namespace Ssz.DataGrpc.Client
 {
@@ -84,7 +85,7 @@ namespace Ssz.DataGrpc.Client
             }
         }
 
-        public PassthroughResult Passthrough(string recipientId, string passthroughName, byte[] dataToSend)
+        public uint Passthrough(string recipientId, string passthroughName, byte[] dataToSend, out IEnumerable<byte> returnData)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
 
@@ -99,13 +100,40 @@ namespace Ssz.DataGrpc.Client
                     PassthroughName = passthroughName,
                     DataToSend = ByteString.CopyFrom(dataToSend)
                 };
-                PassthroughReply reply = _resourceManagementClient.Passthrough(request);
-                SetResourceManagementLastCallUtc();
-                return new PassthroughResult
-                {
-                    ResultCode = reply.ResultCode,
-                    ReturnData = reply.ReturnData.ToByteArray()
-                };
+                while (true)
+                {                    
+                    PassthroughReply reply = _resourceManagementClient.Passthrough(request);
+                    SetResourceManagementLastCallUtc();
+                    IEnumerable<byte>? returnDataTemp = null;
+                    if (reply.Guid != @"" && _incompletePassthroughRepliesCollection.Count > 0)
+                    {
+                        var beginPassthroughReply = _incompletePassthroughRepliesCollection.TryGetValue(reply.Guid);
+                        if (beginPassthroughReply != null)
+                        {
+                            _incompletePassthroughRepliesCollection.Remove(reply.Guid);
+                            returnDataTemp = beginPassthroughReply.Concat(reply.ReturnData);
+                        }
+                    }
+                    if (returnDataTemp == null)
+                    {
+                        returnDataTemp = reply.ReturnData;
+                    }
+
+                    if (reply.NextGuid != @"")
+                    {
+                        _incompletePassthroughRepliesCollection[reply.NextGuid] = returnDataTemp;
+
+                        request = new PassthroughRequest
+                        {
+                            ContextId = _serverContextId                            
+                        };
+
+                        continue;
+                    }
+
+                    returnData = returnDataTemp;
+                    return reply.ResultCode;
+                }                
             }
             catch (Exception ex)
             {
@@ -115,5 +143,15 @@ namespace Ssz.DataGrpc.Client
         }
 
         #endregion
+
+        #region private fields
+
+        /// <summary>
+        ///     This data member holds the last exception message encountered by the
+        ///     InformationReport callback when calling valuesUpdateEvent().
+        /// </summary>
+        private CaseInsensitiveDictionary<IEnumerable<byte>> _incompletePassthroughRepliesCollection = new CaseInsensitiveDictionary<IEnumerable<byte>>();
+
+        #endregion        
     }
 }

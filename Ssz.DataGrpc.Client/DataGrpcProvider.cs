@@ -297,18 +297,19 @@ namespace Ssz.DataGrpc.Client
         ///     If call to server failed (exception or passthroughResult.ResultCode != 0), setResultAction(null) is called.        
         /// </summary>
         public void Passthrough(string recipientId, string passthroughName, byte[] dataToSend,
-            Action<byte[]?> setResultAction)
+            Action<IEnumerable<byte>?> setResultAction)
         {
             BeginInvoke(ct =>
             {
-                byte[]? result;
+                IEnumerable<byte>? result;
                 try
-                {                   
-                    PassthroughResult passthroughResult = _clientConnectionManager.Passthrough(recipientId, passthroughName,
-                        dataToSend);
-                    if (passthroughResult.ResultCode == 0) // SUCCESS
+                {
+                    IEnumerable<byte> returnData;
+                    uint resultCode = _clientConnectionManager.Passthrough(recipientId, passthroughName,
+                        dataToSend, out returnData);
+                    if (DataGrpcResultCodes.Succeeded(resultCode))
                     {
-                        result = passthroughResult.ReturnData;
+                        result = returnData;
                     }
                     else
                     {

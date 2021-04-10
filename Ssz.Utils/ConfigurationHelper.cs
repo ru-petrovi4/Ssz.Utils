@@ -20,25 +20,34 @@ namespace Ssz.Utils
         ///     SystemCultureInfo field is used in Utils.Any class when func param stringIsLocalized = True.
         /// </summary>
         public static CultureInfo SystemCultureInfo { get; private set; } = CultureInfo.InvariantCulture;
+        
+        public static IConfiguration? Configuration { get; private set; }
 
         /// <summary>
         ///     appSettings.json -> AppSettings section.
         /// </summary>
-        public static IConfiguration AppSettings { get; private set; } = new ConfigurationBuilder()
-            .AddJsonFile(@"appSettings.json", optional: true, reloadOnChange: true)
-            .Build()
-            .GetSection(@"AppSettings");
+        public static IConfiguration AppSettings
+        {
+            get
+            {
+                if (Configuration == null) throw new InvalidOperationException();
+                return Configuration.GetSection(@"AppSettings");
+            }
+        }
 
         /// <summary>
+        ///     If configuration is unknown, use new ConfigurationBuilder().AddJsonFile(@"appSettings.json", optional: true, reloadOnChange: true).Build() 
         ///     Initializes SystemCultureInfo field to operating system culture.        
         ///     Sets CurrentUICulture from appSettings.json -> AppSettings -> UICulture for all threads, if setting exists.
         ///     Otherwise, CurrentUICulture remains unchanged.
         /// </summary>
-        public static void InitializeCulture()
-        {            
+        /// <param name="configuration"></param>
+        public static void Initialize(IConfiguration configuration)
+        {
+            Configuration = configuration;
             SystemCultureInfo = Thread.CurrentThread.CurrentCulture;
             
-            string uiCultureName = AppSettings.GetSection("UICulture").Value;
+            string uiCultureName = AppSettings["UICulture"];
             if (!String.IsNullOrWhiteSpace(uiCultureName))
             {
                 try
@@ -57,3 +66,9 @@ namespace Ssz.Utils
         #endregion
     }
 }
+
+
+ //= new ConfigurationBuilder()
+ //           .AddJsonFile(@"appSettings.json", optional: true, reloadOnChange: true)
+ //           .Build()
+ //           .GetSection(@"AppSettings");

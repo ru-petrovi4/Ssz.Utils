@@ -2021,12 +2021,14 @@
                 appSettings.json -> AppSettings section.
             </summary>
         </member>
-        <member name="M:Ssz.Utils.ConfigurationHelper.InitializeCulture">
+        <member name="M:Ssz.Utils.ConfigurationHelper.Initialize(Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
+                If configuration is unknown, use new ConfigurationBuilder().AddJsonFile(@"appSettings.json", optional: true, reloadOnChange: true).Build() 
                 Initializes SystemCultureInfo field to operating system culture.        
                 Sets CurrentUICulture from appSettings.json -> AppSettings -> UICulture for all threads, if setting exists.
                 Otherwise, CurrentUICulture remains unchanged.
             </summary>
+            <param name="configuration"></param>
         </member>
         <member name="T:Ssz.Utils.CsvHelper">
             <summary>
@@ -3611,12 +3613,6 @@
             <param name="func"></param>
             <returns></returns>
         </member>
-        <member name="T:Ssz.Utils.ReferenceEqualityComparer`1">
-            <summary>
-                A generic object comparerer that would only use object's reference,
-                ignoring any <see cref="T:System.IEquatable`1" /> or <see cref="M:System.Object.Equals(System.Object)" />  overrides.
-            </summary>
-        </member>
         <member name="T:Ssz.Utils.Serialization.IOwnedDataSerializable">
             <summary>
                 Interface which allows a class to save/retrieve their internal data to/from an existing
@@ -4794,13 +4790,6 @@
                 Object is null or String.Empty
             </summary>
             <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Ssz.Utils.StringHelper.CompareIgnoreCase(System.String,System.String)">
-            <summary>        
-            </summary>
-            <param name="left"></param>
-            <param name="right"></param>
             <returns></returns>
         </member>
         <member name="M:Ssz.Utils.StringHelper.ReplaceIgnoreCase(System.String@,System.String,System.String)">

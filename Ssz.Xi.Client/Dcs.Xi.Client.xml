@@ -4240,7 +4240,7 @@
             <param name="valueSubscription"></param>
             <param name="value"></param>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Passthrough(System.String,System.String,System.Byte[],System.Action{System.Byte[]})">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Passthrough(System.String,System.String,System.Byte[],System.Action{System.Collections.Generic.IEnumerable{System.Byte}})">
             <summary>        
                 setResultAction(..) is called using сallbackDoer, see Initialize(..).
                 If call to server failed (exception or passthroughResult == null or passthroughResult.ResultCode != 0), setResultAction(null) is called.        

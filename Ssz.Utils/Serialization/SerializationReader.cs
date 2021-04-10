@@ -344,7 +344,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="context"></param>
         /// <returns></returns>
         public List<T> ReadListOfOwnedDataSerializable<T>(Func<T> func,
-            object context)
+            object? context)
             where T : IOwnedDataSerializable
         {
             int count = ReadInt32();

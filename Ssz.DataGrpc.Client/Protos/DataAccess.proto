@@ -339,6 +339,8 @@ message PassthroughRequest {
 }
 
 message PassthroughReply {  
-  uint32 result_code = 1;
-  bytes return_data = 2;
+  string guid = 1;
+  string next_guid = 2;
+  uint32 result_code = 3;
+  bytes return_data = 4;
 }

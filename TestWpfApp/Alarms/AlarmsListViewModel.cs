@@ -125,7 +125,7 @@ namespace Ssz.WpfHmi.Common.ControlsRuntime.GenericRuntime
         private static bool ProcessAlarm(IList<AlarmInfoViewModel> alarmsList, AlarmInfoViewModel newAlarm)
         {            
             IEnumerable<AlarmInfoViewModel> alarmsSameEventSourceObject = alarmsList.Where(a =>
-                    StringHelper.CompareIgnoreCase(a.Tag, newAlarm.Tag)
+                    String.Equals(a.Tag, newAlarm.Tag, StringComparison.InvariantCultureIgnoreCase)
                     ).ToArray();
 
             var alarmsToRemove = new List<AlarmInfoViewModel>();

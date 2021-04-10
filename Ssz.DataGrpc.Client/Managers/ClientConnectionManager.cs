@@ -228,15 +228,15 @@ namespace Ssz.DataGrpc.Client.Managers
         {
         }*/
 
-        public PassthroughResult Passthrough(string recipientId,
-                                      string passthroughName, byte[] dataToSend)
+        public uint Passthrough(string recipientId,
+                                      string passthroughName, byte[] dataToSend, out IEnumerable<byte> returnData)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataGrpcServerProxy.");
 
             if (_connectionInfo == null) throw new ConnectionDoesNotExistException();
             
             return _connectionInfo.ClientContext.Passthrough(recipientId,
-                                      passthroughName, dataToSend);
+                                      passthroughName, dataToSend, out returnData);
         }
 
         /// <summary>

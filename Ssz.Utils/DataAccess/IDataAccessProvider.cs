@@ -47,7 +47,7 @@ namespace Ssz.Utils.DataAccess
         void Write(IValueSubscription valueSubscription, Any value);
 
         void Passthrough(string recipientId, string passthroughName, byte[] dataToSend,
-            Action<byte[]?> setResultAction);
+            Action<IEnumerable<byte>?> setResultAction);
 
         void HdaAddItem(string elementId, object valueSubscription);
 

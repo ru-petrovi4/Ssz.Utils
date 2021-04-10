@@ -22,7 +22,7 @@ namespace Ssz.Utils.Wpf
             if (ReferenceEquals(left, right)) return true;
             if (ReferenceEquals(null, right)) return false;
             if (ReferenceEquals(null, left)) return false;
-            return StringHelper.CompareIgnoreCase(left.FullName, right.FullName);
+            return String.Equals(left.FullName, right.FullName, StringComparison.InvariantCultureIgnoreCase);
         }
 
         /// <summary>

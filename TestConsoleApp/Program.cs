@@ -1,4 +1,5 @@
-﻿using Ssz.Utils;
+﻿using Microsoft.Extensions.Configuration;
+using Ssz.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +16,20 @@ namespace TestConsoleApp
         //static string _s2 = "m9zyvlcodIYY+B1j2FK21mmvchyFfylNjO/jjtTU9Cg=";
         static void Main(string[] args)
         {
+            var cr = new ConfigurationBuilder().AddJsonFile(@"appSettings.json", optional: true, reloadOnChange: true).Build();
+            ConfigurationHelper.Initialize(cr);
+
+            var ar = new byte[2];
+            ar[1] = 1;
+            Memory<byte> memory = ar;
+            var memory2 = memory.Slice(1);
+            Console.WriteLine(memory2.Span[0]);
+            ar[1] = 2;
+            Console.WriteLine(memory2.Span[0]);
+
             var r = new TaskCompletionSource<int>();
 
-            
-            Task.Run(async () => 
+            Task.Run(async () =>
             {
                 try
                 {
@@ -36,13 +47,14 @@ namespace TestConsoleApp
             }
             );
 
-            //r.SetException(new InvalidOperationException());
-            r.TrySetCanceled();
+            ////r.SetException(new InvalidOperationException());
+            //r.TrySetCanceled();
+            r.SetResult(5);
 
             Console.ReadKey();
 
 
-            //onfigurationHelper.InitializeCulture();
+            //
             //var bytes0 = System.Convert.FromBase64String(_s0);
             //var bytes1 = System.Convert.FromBase64String(_s1);
             //var bytes2 = System.Convert.FromBase64String(_s2);
