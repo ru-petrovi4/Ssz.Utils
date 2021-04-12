@@ -87,7 +87,7 @@ namespace Xi.Contracts
 		/// The values being reported.
 		/// </param>
 		[OperationContract(IsOneWay = true)]
-		void ElementValuesCallback(string contextId, uint listId, DataValueArraysWithAlias updatedValues);
+		void InformationReport(string contextId, uint listId, DataValueArraysWithAlias updatedValues);
 
 		/// <summary>
 		/// <para>This callback method is implemented by the client to 
@@ -114,7 +114,7 @@ namespace Xi.Contracts
 		/// The list of alarms/events are being reported, transferred as an array.
 		/// </param>
 		[OperationContract(IsOneWay = true)]
-		void EventMessagesCallback(string contextId, uint listId, EventMessage[] eventList);
+		void EventNotification(string contextId, uint listId, EventMessage[] eventList);
 
 		/// <summary>
 		/// This method returns the results of invoking an asynchronous passthrough.

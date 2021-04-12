@@ -302,14 +302,14 @@ namespace Xi.Contracts.Data
 		[EnumMember] ICallback_Abort                               = 0x0000100000000000,
 
 		/// <summary>
-		/// The server supports the ICallback.ElementValuesCallback() method.
+		/// The server supports the ICallback.InformationReport() method.
 		/// </summary>
-		[EnumMember] ICallback_ElementValuesCallback                   = 0x0000200000000000,
+		[EnumMember] ICallback_InformationReport = 0x0000200000000000,
 
 		/// <summary>
-		/// The server supports the ICallback.EventMessagesCallback() method.
+		/// The server supports the ICallback.EventNotification() method.
 		/// </summary>
-		[EnumMember] ICallback_EventMessagesCallback                   = 0x0000400000000000,
+		[EnumMember] ICallback_EventNotification = 0x0000400000000000,
 
 		/// <summary>
 		/// The server supports the ICallback.PassthroughCallback() method.
@@ -399,7 +399,7 @@ namespace Xi.Contracts.Data
 		[EnumMember] CallbackDataServerMethodProfile = BasicDataServerMethodProfile
 													 | ICallback_Abort
 													 | IRegisterForCallback_SetCallback
-													 | ICallback_ElementValuesCallback,
+													 | ICallback_InformationReport,
 
 		/// <summary>
 		/// The methods required of all data servers that support polling and callbacks.
@@ -408,7 +408,7 @@ namespace Xi.Contracts.Data
 												 | IPoll_PollDataChanges
 												 | IRegisterForCallback_SetCallback
 												 | ICallback_Abort
-												 | ICallback_ElementValuesCallback,
+												 | ICallback_InformationReport,
 
 		/// <summary>
 		/// The methods required of all event servers.
@@ -429,7 +429,7 @@ namespace Xi.Contracts.Data
 		[EnumMember] CallbackEventServerMethodProfile = BasicEventServerMethodProfile
 													  | IRegisterForCallback_SetCallback
 													  | ICallback_Abort
-													  | ICallback_EventMessagesCallback,
+													  | ICallback_EventNotification,
 
 		/// <summary>
 		/// The methods required of all event servers that support polling and callbacks.
@@ -438,7 +438,7 @@ namespace Xi.Contracts.Data
 												  | IPoll_PollDataChanges
 												  | IRegisterForCallback_SetCallback
 												  | ICallback_Abort
-												  | ICallback_EventMessagesCallback,
+												  | ICallback_EventNotification,
 
 		/// <summary>
 		/// The methods required of all data journals.

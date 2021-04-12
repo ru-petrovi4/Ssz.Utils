@@ -68,7 +68,7 @@ namespace Ssz.Xi.Client.Internal
         /// <param name="contextId"> The context identifier. </param>
         /// <param name="clientListId"> The client identifier of the list for which data changes are being reported. </param>
         /// <param name="updatedValues"> The values being reported. </param>
-        void ICallback.ElementValuesCallback(string contextId, uint clientListId, DataValueArraysWithAlias updatedValues)
+        void ICallback.InformationReport(string contextId, uint clientListId, DataValueArraysWithAlias updatedValues)
         {
             XiContext? context = XiContext.LookUpContext(contextId);
             if (context != null)
@@ -93,7 +93,7 @@ namespace Ssz.Xi.Client.Internal
         /// <param name="contextId"> The context identifier. </param>
         /// <param name="clientListId"> The client identifier of the list for which alarms/events are being reported. </param>
         /// <param name="eventsArray"> The list of alarms/events are being reported. </param>
-        void ICallback.EventMessagesCallback(string contextId, uint clientListId, EventMessage[] eventsArray)
+        void ICallback.EventNotification(string contextId, uint clientListId, EventMessage[] eventsArray)
         {
             XiContext? context = XiContext.LookUpContext(contextId);
             if (context != null)
