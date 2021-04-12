@@ -16,42 +16,57 @@ namespace TestConsoleApp
         //static string _s2 = "m9zyvlcodIYY+B1j2FK21mmvchyFfylNjO/jjtTU9Cg=";
         static void Main(string[] args)
         {
-            var cr = new ConfigurationBuilder().AddJsonFile(@"appSettings.json", optional: true, reloadOnChange: true).Build();
-            ConfigurationHelper.Initialize(cr);
-
-            var ar = new byte[2];
-            ar[1] = 1;
-            Memory<byte> memory = ar;
-            var memory2 = memory.Slice(1);
-            Console.WriteLine(memory2.Span[0]);
-            ar[1] = 2;
-            Console.WriteLine(memory2.Span[0]);
-
-            var r = new TaskCompletionSource<int>();
-
-            Task.Run(async () =>
+            var q = new Queue<int>();
+            q.Enqueue(1);
+            q.Enqueue(2);
+            q.Enqueue(3);
+            Console.WriteLine(q.Count);
+            foreach (var i in q)
             {
-                try
-                {
-                    var result = await r.Task;
-                    Console.WriteLine(result);
-                }
-                catch (InvalidOperationException ex)
-                {
-                    Console.WriteLine("InvalidOperationException " + ex.GetType());
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Exception " + ex.GetType());
-                }
+                Console.WriteLine(i);
             }
-            );
+            Console.WriteLine(q.Count);
+            //Console.WriteLine(q.Dequeue());
+            //Console.WriteLine(q.Dequeue());
+            //Console.WriteLine(q.Dequeue());
+            //Console.WriteLine(q.Dequeue());
+            //Console.WriteLine(q.Count);
+            //var cr = new ConfigurationBuilder().AddJsonFile(@"appSettings.json", optional: true, reloadOnChange: true).Build();
+            //ConfigurationHelper.Initialize(cr);
+
+            //var ar = new byte[2];
+            //ar[1] = 1;
+            //Memory<byte> memory = ar;
+            //var memory2 = memory.Slice(1);
+            //Console.WriteLine(memory2.Span[0]);
+            //ar[1] = 2;
+            //Console.WriteLine(memory2.Span[0]);
+
+            //var r = new TaskCompletionSource<int>();
+
+            //Task.Run(async () =>
+            //{
+            //    try
+            //    {
+            //        var result = await r.Task;
+            //        Console.WriteLine(result);
+            //    }
+            //    catch (InvalidOperationException ex)
+            //    {
+            //        Console.WriteLine("InvalidOperationException " + ex.GetType());
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Console.WriteLine("Exception " + ex.GetType());
+            //    }
+            //}
+            //);
 
             ////r.SetException(new InvalidOperationException());
             //r.TrySetCanceled();
-            r.SetResult(5);
+            //r.SetResult(5);
 
-            Console.ReadKey();
+            //Console.ReadKey();
 
 
             //

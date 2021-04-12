@@ -18,7 +18,7 @@ namespace Ssz.Utils.DataAccess
         public ValueSubscription(IDataAccessProvider dataProvider, string id, Action<Any, Any>? valueChangedAction = null)
         {
             _dataProvider = dataProvider;
-            Id = id ?? @"";
+            Id = id;
             _valueChangedAction = valueChangedAction;
 
             ModelId = _dataProvider.AddItem(Id, this);
