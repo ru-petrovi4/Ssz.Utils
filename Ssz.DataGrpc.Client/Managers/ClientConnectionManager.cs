@@ -373,13 +373,13 @@ namespace Ssz.DataGrpc.Client.Managers
                             ContextInfo serverContextInfo = reader.Current.ContextInfo;
                             _connectionInfo.ClientContext.ServerContextInfo = serverContextInfo;
                             break;
-                        case CallbackMessage.OptionalMessageOneofCase.InformationReport:
-                            InformationReport informationReport = reader.Current.InformationReport;
-                            _connectionInfo.ClientContext.InformationReport(informationReport.ListClientAlias, informationReport.ElementValuesCollection);
+                        case CallbackMessage.OptionalMessageOneofCase.ElementValuesCallback:
+                            ElementValuesCallback elementValuesCallback = reader.Current.ElementValuesCallback;
+                            _connectionInfo.ClientContext.ElementValuesCallback(elementValuesCallback.ListClientAlias, elementValuesCallback.ElementValuesCollection);
                             break;
-                        case CallbackMessage.OptionalMessageOneofCase.EventNotification:
-                            EventNotification eventNotification = reader.Current.EventNotification;
-                            _connectionInfo.ClientContext.EventNotification(eventNotification.ListClientAlias, eventNotification.EventMessagesCollection);
+                        case CallbackMessage.OptionalMessageOneofCase.EventMessagesCallback:
+                            EventMessagesCallback eventMessagesCallback = reader.Current.EventMessagesCallback;
+                            _connectionInfo.ClientContext.EventMessagesCallback(eventMessagesCallback.ListClientAlias, eventMessagesCallback.EventMessagesCollection);
                             break;
                     }
                 }                

@@ -16,10 +16,10 @@ namespace Ssz.DataGrpc.Client
         /// <summary>
         ///     Is called using сallbackDispatcher, see Initialize(..).        
         /// </summary>
-        public event Action<Utils.DataAccess.EventMessage[]> EventNotification
+        public event Action<Utils.DataAccess.EventMessage[]> EventMessagesCallback
         {
-            add { BeginInvoke(ct => _clientEventListManager.EventNotification += value); }
-            remove { BeginInvoke(ct => _clientEventListManager.EventNotification -= value); }
+            add { BeginInvoke(ct => _clientEventListManager.EventMessagesCallback += value); }
+            remove { BeginInvoke(ct => _clientEventListManager.EventMessagesCallback -= value); }
         }
 
         /// <summary>
@@ -30,14 +30,14 @@ namespace Ssz.DataGrpc.Client
         {
             BeginInvoke(ct =>
             {
-                if (!_onEventNotificationSubscribed)
+                if (!_onEventMessagesCallbackSubscribed)
                 {
-                    _onEventNotificationSubscribed = true;
-                    _clientEventListManager.EventNotification += OnEventNotification;
+                    _onEventMessagesCallbackSubscribed = true;
+                    _clientEventListManager.EventMessagesCallback += OnEventMessagesCallback;
                 }
 
                 ClientEventList? dataGrpcEventList =
-                    _clientEventListManager.GetRelatedClientEventList(OnEventNotification);
+                    _clientEventListManager.GetRelatedClientEventList(OnEventMessagesCallback);
 
                 if (dataGrpcEventList == null) return;
 
@@ -59,7 +59,7 @@ namespace Ssz.DataGrpc.Client
 
         #region private functions
 
-        private void OnEventNotification(IEnumerable<Utils.DataAccess.EventMessage> obj)
+        private void OnEventMessagesCallback(IEnumerable<Utils.DataAccess.EventMessage> obj)
         {
         }
 
@@ -68,7 +68,7 @@ namespace Ssz.DataGrpc.Client
         #region private fields
 
         private readonly ClientEventListManager _clientEventListManager;
-        private bool _onEventNotificationSubscribed;
+        private bool _onEventMessagesCallbackSubscribed;
 
         #endregion
     }

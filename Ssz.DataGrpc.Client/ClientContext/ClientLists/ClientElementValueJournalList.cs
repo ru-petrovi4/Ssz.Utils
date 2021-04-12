@@ -157,7 +157,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
 
         /// <summary>
         ///     This data member holds the last exception message encountered by the
-        ///     InformationReport callback when calling valuesUpdateEvent().
+        ///     ElementValuesCallback callback when calling valuesUpdateEvent().
         /// </summary>
         private CaseInsensitiveDictionary<ElementValueJournalsCollection> _incompleteElementValueJournalsCollectionCollection = new CaseInsensitiveDictionary<ElementValueJournalsCollection>();
 

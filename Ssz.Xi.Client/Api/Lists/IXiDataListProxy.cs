@@ -50,6 +50,6 @@ namespace Ssz.Xi.Client.Api.Lists
         /// </summary>
         IXiDataListItem[] PollDataChanges();
         
-        event XiInformationReportEventHandler InformationReport;
+        event XiElementValuesCallbackEventHandler ElementValuesCallback;
     }
 }

@@ -318,7 +318,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         ///     or fires the event to notify the Xi client of data updates.
         /// </summary>
         /// <param name="dataValueArraysWithAlias"> </param>
-        public List<IXiDataListItem>? OnInformationReport(DataValueArraysWithAlias? dataValueArraysWithAlias)
+        public List<IXiDataListItem>? OnElementValuesCallback(DataValueArraysWithAlias? dataValueArraysWithAlias)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiDataList.");
 
@@ -326,12 +326,12 @@ namespace Ssz.Xi.Client.Internal.Lists
         }
 
         /// <summary>
-        ///     Throws or invokes InformationReport event.
+        ///     Throws or invokes ElementValuesCallback event.
         ///     changedListItems != null, changedValues != null
         /// </summary>
         /// <param name="changedListItems"></param>
         /// <param name="changedValues"></param>
-        public void RaiseInformationReportEvent(IEnumerable<IXiDataListItem> changedListItems,
+        public void RaiseElementValuesCallbackEvent(IEnumerable<IXiDataListItem> changedListItems,
             IEnumerable<ValueStatusTimestamp> changedValues)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiDataList.");
@@ -341,20 +341,20 @@ namespace Ssz.Xi.Client.Internal.Lists
 
             try
             {
-                XiInformationReportEventHandler informationReport = InformationReport;
-                if (informationReport != null)
-                    informationReport(this, changedListItems.ToArray(), changedValues.ToArray());
+                XiElementValuesCallbackEventHandler elementValuesCallback = ElementValuesCallback;
+                if (elementValuesCallback != null)
+                    elementValuesCallback(this, changedListItems.ToArray(), changedValues.ToArray());
             }
             catch (Exception ex)
             {
-                _lastInformationReportExceptionMessage = ex.Message;
+                _lastElementValuesCallbackExceptionMessage = ex.Message;
             }
         }
 
         /// <summary>
         ///     Xi clients subscribe to this event to obtain the data update callbacks.
         /// </summary>
-        public event XiInformationReportEventHandler InformationReport = delegate { };
+        public event XiElementValuesCallbackEventHandler ElementValuesCallback = delegate { };
 
         public IEnumerable<IXiDataListItem> ListItems
         {
@@ -459,9 +459,9 @@ namespace Ssz.Xi.Client.Internal.Lists
 
         /// <summary>
         ///     This data member holds the last exception message encountered by the
-        ///     InformationReport callback when calling valuesUpdateEvent().
+        ///     ElementValuesCallback callback when calling valuesUpdateEvent().
         /// </summary>
-        private static string? _lastInformationReportExceptionMessage;
+        private static string? _lastElementValuesCallbackExceptionMessage;
 
         #endregion
     }

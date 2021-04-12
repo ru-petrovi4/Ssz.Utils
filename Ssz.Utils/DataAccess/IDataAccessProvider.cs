@@ -56,7 +56,7 @@ namespace Ssz.Utils.DataAccess
         void HdaReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerDataObject, TypeId calculation, object[] valueSubscriptionsCollection,
             Action<ValueStatusTimestamp[][]?> setResultAction);
 
-        event Action<EventMessage[]> EventNotification;
+        event Action<EventMessage[]> EventMessagesCallback;
 
         void AckAlarms(EventId[] events);
     }

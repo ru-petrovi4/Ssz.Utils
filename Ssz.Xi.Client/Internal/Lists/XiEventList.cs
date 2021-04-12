@@ -55,11 +55,11 @@ namespace Ssz.Xi.Client.Internal.Lists
             // TODO: enable the following four lines to test new sorting algorithms for event messages
             // this tests the initial sort
             //EventMessage[] eventsArray = GetEventMessages();
-            //EventNotification(eventsArray);
+            //EventMessagesCallback(eventsArray);
 
             // this tests the sort of the new messages and their merge into the Event List
             //eventsArray = GetEventMessages2();
-            //EventNotification(eventsArray);
+            //EventMessagesCallback(eventsArray);
         }
 
         protected override void Dispose(bool disposing)
@@ -267,7 +267,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         }
 
         /// <summary>
-        ///   This method returns a list of event messages that can be submitted to EventNotification() for testing
+        ///   This method returns a list of event messages that can be submitted to EventMessagesCallback() for testing
         ///   The event messages created can be reorganized to allow for different ordering that have to be sorted
         /// </summary>
         /// <returns> A list of event messages </returns>
@@ -933,7 +933,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         }
 
         /// <summary>
-        ///   This method returns a list of event messages that can be submitted to EventNotification() for testing
+        ///   This method returns a list of event messages that can be submitted to EventMessagesCallback() for testing
         ///   The event messages created can be reorganized to allow for different ordering that have to be sorted
         /// </summary>
         /// <returns> </returns>
@@ -1314,7 +1314,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         ///     alarm already in the list, or the deletion of an alarm from the list constitutes a
         ///     change to the list.
         ///     <para>
-        ///         Once the poll completes, this method calls the EventNotification() method to add the received events to the
+        ///         Once the poll completes, this method calls the EventMessagesCallback() method to add the received events to the
         ///         event list.
         ///     </para>
         /// </summary>
@@ -1357,7 +1357,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         ///     </para>
         /// </summary>
         /// <param name="eventMessages"> </param>
-        public List<IXiEventListItem> EventNotification(EventMessage[]? eventMessages)
+        public List<IXiEventListItem> EventMessagesCallback(EventMessage[]? eventMessages)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiEventList.");
 
@@ -1448,33 +1448,33 @@ namespace Ssz.Xi.Client.Internal.Lists
             }
 
             // roll the event notification count over to 1
-            _eventNotificationCount = (_eventNotificationCount == uint.MaxValue) ? 1 : _eventNotificationCount + 1;
+            _eventMessagesCallbackCount = (_eventMessagesCallbackCount == uint.MaxValue) ? 1 : _eventMessagesCallbackCount + 1;
 
             return newEventListItems;*/
         }
 
         /// <summary>
-        ///     Throws or invokes EventNotificationEvent.        
+        ///     Throws or invokes EventMessagesCallbackEvent.        
         /// </summary>
         /// <param name="newEventListItems"></param>
-        public void RaiseEventNotificationEvent(IEnumerable<IXiEventListItem> newEventListItems)
+        public void RaiseEventMessagesCallbackEvent(IEnumerable<IXiEventListItem> newEventListItems)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiEventList.");
 
             try
             {
-                EventNotificationEvent(this, newEventListItems);
+                EventMessagesCallbackEvent(this, newEventListItems);
             }
             catch (Exception ex)
             {
-                _lastEventNotificationExceptionMessage = ex.Message;
+                _lastEventMessagesCallbackExceptionMessage = ex.Message;
             }
         }
 
         /// <summary>
         ///     This event is used to notify the client application when new events are received.
         /// </summary>
-        public event XiEventNotificationEventHandler EventNotificationEvent = delegate { };
+        public event XiEventMessagesCallbackEventHandler EventMessagesCallbackEvent = delegate { };
 
         /// <summary>
         ///     All events should be kept for at least this time span.
@@ -1507,9 +1507,9 @@ namespace Ssz.Xi.Client.Internal.Lists
         /////     This property provides a count of the number of notification events (callbacks)
         /////     that have been issued to the client application for this list.
         ///// </summary>
-        //public uint EventNotificationCount
+        //public uint EventMessagesCallbackCount
         //{
-        //    get { return _eventNotificationCount; }
+        //    get { return _eventMessagesCallbackCount; }
         //}
 
         ///// <summary>
@@ -1917,9 +1917,9 @@ namespace Ssz.Xi.Client.Internal.Lists
 
         /// <summary>
         ///     This data member holds the last exception message encountered by the
-        ///     InformationReport callback when calling valuesUpdateEvent().
+        ///     ElementValuesCallback callback when calling valuesUpdateEvent().
         /// </summary>
-        private static string? _lastEventNotificationExceptionMessage;
+        private static string? _lastEventMessagesCallbackExceptionMessage;
 
         // TODO: Update the methods in this region if the ordering of the Event List is to be changed
 

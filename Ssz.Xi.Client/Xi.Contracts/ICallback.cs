@@ -73,7 +73,7 @@ namespace Xi.Contracts
 		/// ServerStatus. </para>
 		/// <para>Finally, if the server does not have any values to send within the time period 
 		/// established with the IRegisterForCallback.SetCallback() method, then the server should 
-		/// call the InformationReport() method with a null updatedValues parameter, and the client 
+		/// call the ElementValuesCallback() method with a null updatedValues parameter, and the client 
 		/// should interpret this call as a keep-alive for the ICallback endpoint connection. </para>
 		/// </summary>
 		/// <param name="contextId">
@@ -87,7 +87,7 @@ namespace Xi.Contracts
 		/// The values being reported.
 		/// </param>
 		[OperationContract(IsOneWay = true)]
-		void InformationReport(string contextId, uint listId, DataValueArraysWithAlias updatedValues);
+		void ElementValuesCallback(string contextId, uint listId, DataValueArraysWithAlias updatedValues);
 
 		/// <summary>
 		/// <para>This callback method is implemented by the client to 
@@ -114,7 +114,7 @@ namespace Xi.Contracts
 		/// The list of alarms/events are being reported, transferred as an array.
 		/// </param>
 		[OperationContract(IsOneWay = true)]
-		void EventNotification(string contextId, uint listId, EventMessage[] eventList);
+		void EventMessagesCallback(string contextId, uint listId, EventMessage[] eventList);
 
 		/// <summary>
 		/// This method returns the results of invoking an asynchronous passthrough.

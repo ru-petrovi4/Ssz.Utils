@@ -9,6 +9,6 @@ namespace Ssz.Xi.Client.Api.EventHandlers
     /// </summary>
     /// <param name="eventList"> The IXiEventList that is sending the alarms and events to the client application. </param>
     /// <param name="newListItems"> The alarms and events that are being sent to the client application. </param>
-    public delegate void XiEventNotificationEventHandler(
+    public delegate void XiEventMessagesCallbackEventHandler(
         IXiEventListProxy eventList, IEnumerable<IXiEventListItem> newListItems);
 }

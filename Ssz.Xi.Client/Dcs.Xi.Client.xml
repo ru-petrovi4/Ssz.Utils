@@ -4,14 +4,14 @@
         <name>Ssz.Xi.Client</name>
     </assembly>
     <members>
-        <member name="T:Ssz.Xi.Client.Api.EventHandlers.XiEventNotificationEventHandler">
+        <member name="T:Ssz.Xi.Client.Api.EventHandlers.XiEventMessagesCallbackEventHandler">
             <summary>
                 This delegate defines the callback for reporting new alarms and events to the client application
             </summary>
             <param name="eventList"> The IXiEventList that is sending the alarms and events to the client application. </param>
             <param name="newListItems"> The alarms and events that are being sent to the client application. </param>
         </member>
-        <member name="T:Ssz.Xi.Client.Api.EventHandlers.XiInformationReportEventHandler">
+        <member name="T:Ssz.Xi.Client.Api.EventHandlers.XiElementValuesCallbackEventHandler">
             <summary>
                 This delegate defines the callback for reporting data updates to the client application.
             </summary>
@@ -263,7 +263,7 @@
             </summary>
             <param name="filterSet"></param>
         </member>
-        <member name="E:Ssz.Xi.Client.Api.Lists.IXiEventListProxy.EventNotificationEvent">
+        <member name="E:Ssz.Xi.Client.Api.Lists.IXiEventListProxy.EventMessagesCallbackEvent">
             <summary>
                 This event is used to notify the client application when new events are received.
             </summary>
@@ -355,14 +355,14 @@
                 No throw.
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.Api.XiDataListItemsManager.Subscribe(Ssz.Xi.Client.Api.XiServerProxy,Ssz.Utils.IDispatcher,Ssz.Xi.Client.Api.XiDataListItemsManager.InformationReportEventHandler,System.Boolean,System.Threading.CancellationToken)">
+        <member name="M:Ssz.Xi.Client.Api.XiDataListItemsManager.Subscribe(Ssz.Xi.Client.Api.XiServerProxy,Ssz.Utils.IDispatcher,Ssz.Xi.Client.Api.XiDataListItemsManager.ElementValuesCallbackEventHandler,System.Boolean,System.Threading.CancellationToken)">
             <summary>
                 Creates List, adds/removes items.
                 No throw.
             </summary>
             <param name="xiServerProxy"></param>
             <param name="сallbackDoer"></param>
-            <param name="informationReportEventHandler"></param>
+            <param name="elementValuesCallbackEventHandler"></param>
             <param name="callbackable"></param>
             <param name="ct"></param>
         </member>
@@ -395,7 +395,7 @@
             <param name="value"></param>
             <param name="timestampUtc"></param>
         </member>
-        <member name="T:Ssz.Xi.Client.Api.XiDataListItemsManager.InformationReportEventHandler">
+        <member name="T:Ssz.Xi.Client.Api.XiDataListItemsManager.ElementValuesCallbackEventHandler">
             <summary>
                 This delegate defines the callback for reporting data updates to the client application.
             </summary>
@@ -1832,7 +1832,7 @@
                 </para>
                 <para> 3) historical values that meet the list filter criteria, including the deadband. </para>
                 <para>
-                    This method returns the list of changed values to the client application using the InformationReport
+                    This method returns the list of changed values to the client application using the ElementValuesCallback
                     callback.. The list of changed values is null if this is a keep-alive. The following two standard data objects
                     can also be returned.
                 </para>
@@ -1865,7 +1865,7 @@
                     deleted from the list when they transition to inactive and acknowledged.
                 </para>
                 <para>
-                    This method return a list of event messages to the client application via the EventNotification callback
+                    This method return a list of event messages to the client application via the EventMessagesCallback callback
                     method. The list consists of alarm/event messages for new alarms/events in the Event List, and alarm/event
                     messages that represent state changes to alarms that are already in the list, including alarm/event messages
                     that identify state changes that caused alarms to tbe deleted from the list.
@@ -1903,7 +1903,7 @@
             </param>
             <param name="reason"> The reason the context is being closed. </param>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.Context.XiContext.InformationReport(System.UInt32,Xi.Contracts.Data.DataValueArraysWithAlias)">
+        <member name="M:Ssz.Xi.Client.Internal.Context.XiContext.ElementValuesCallback(System.UInt32,Xi.Contracts.Data.DataValueArraysWithAlias)">
             <summary>
                 <para> No throws.</para>
                 <para> This callback method is implemented by the client to receive data changes. </para>
@@ -1930,7 +1930,7 @@
             <param name="clientListId"> The client identifier of the list for which data changes are being reported. </param>
             <param name="updatedValues"> The values being reported. </param>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.Context.XiContext.EventNotification(System.UInt32,Xi.Contracts.Data.EventMessage[])">
+        <member name="M:Ssz.Xi.Client.Internal.Context.XiContext.EventMessagesCallback(System.UInt32,Xi.Contracts.Data.EventMessage[])">
             <summary>
                 <para> This callback method is implemented by the client to receive alarms and events. </para>
                 <para>
@@ -1956,9 +1956,9 @@
                 supplied in the request, and a byte array. It is up to the client application to interpret this byte array.
             </param>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.Context.XiContext.InformationReportInternal(Ssz.Xi.Client.Internal.Lists.XiDataList,Xi.Contracts.Data.DataValueArraysWithAlias)">
+        <member name="M:Ssz.Xi.Client.Internal.Context.XiContext.ElementValuesCallbackInternal(Ssz.Xi.Client.Internal.Lists.XiDataList,Xi.Contracts.Data.DataValueArraysWithAlias)">
             <summary>
-                <para> Invokes DataList.InformationReport event, if changed items count > 0. </para>  
+                <para> Invokes DataList.ElementValuesCallback event, if changed items count > 0. </para>  
                 <para> No throws. If error, returns null. Otherwise changed IXiDataListItems (not null, but possibly zero-lenghth). </para>        
                 <para> This callback method is implemented by the client to receive data changes. </para>
                 <para>
@@ -1984,9 +1984,9 @@
             <param name="dataList"> The client identifier of the list for which data changes are being reported. </param>
             <param name="updatedValues"> The values being reported. </param>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.Context.XiContext.EventNotificationInternal(Ssz.Xi.Client.Internal.Lists.XiEventList,Xi.Contracts.Data.EventMessage[])">
+        <member name="M:Ssz.Xi.Client.Internal.Context.XiContext.EventMessagesCallbackInternal(Ssz.Xi.Client.Internal.Lists.XiEventList,Xi.Contracts.Data.EventMessage[])">
             <summary>
-                <para> Invokes EventList.EventNotificationEvent, if new items count > 0. </para>
+                <para> Invokes EventList.EventMessagesCallbackEvent, if new items count > 0. </para>
                 <para> No throws. If error, returns null. Otherwise new IXiEventListItems (not null, but possibly zero-lenghth). </para>
                 <para> This callback method is implemented by the client to receive alarms and events. </para>
                 <para>
@@ -3178,7 +3178,7 @@
                 <para> 3) historical values that meet the list filter criteria, including the deadband. </para>
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.Lists.XiDataList.OnInformationReport(Xi.Contracts.Data.DataValueArraysWithAlias)">
+        <member name="M:Ssz.Xi.Client.Internal.Lists.XiDataList.OnElementValuesCallback(Xi.Contracts.Data.DataValueArraysWithAlias)">
             <summary>
                 result != null.
                 This method is invoked as part of the callback processing.  It then invokes
@@ -3186,15 +3186,15 @@
             </summary>
             <param name="dataValueArraysWithAlias"> </param>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.Lists.XiDataList.RaiseInformationReportEvent(System.Collections.Generic.IEnumerable{Ssz.Xi.Client.Api.ListItems.IXiDataListItem},System.Collections.Generic.IEnumerable{Ssz.Utils.DataAccess.ValueStatusTimestamp})">
+        <member name="M:Ssz.Xi.Client.Internal.Lists.XiDataList.RaiseElementValuesCallbackEvent(System.Collections.Generic.IEnumerable{Ssz.Xi.Client.Api.ListItems.IXiDataListItem},System.Collections.Generic.IEnumerable{Ssz.Utils.DataAccess.ValueStatusTimestamp})">
             <summary>
-                Throws or invokes InformationReport event.
+                Throws or invokes ElementValuesCallback event.
                 changedListItems != null, changedValues != null
             </summary>
             <param name="changedListItems"></param>
             <param name="changedValues"></param>
         </member>
-        <member name="E:Ssz.Xi.Client.Internal.Lists.XiDataList.InformationReport">
+        <member name="E:Ssz.Xi.Client.Internal.Lists.XiDataList.ElementValuesCallback">
             <summary>
                 Xi clients subscribe to this event to obtain the data update callbacks.
             </summary>
@@ -3209,10 +3209,10 @@
             <param name="readValueArrays"> The new values. </param>
             <param name="returnChangedListItems"> </param>
         </member>
-        <member name="F:Ssz.Xi.Client.Internal.Lists.XiDataList._lastInformationReportExceptionMessage">
+        <member name="F:Ssz.Xi.Client.Internal.Lists.XiDataList._lastElementValuesCallbackExceptionMessage">
             <summary>
                 This data member holds the last exception message encountered by the
-                InformationReport callback when calling valuesUpdateEvent().
+                ElementValuesCallback callback when calling valuesUpdateEvent().
             </summary>
         </member>
         <member name="T:Ssz.Xi.Client.Internal.Lists.XiEventList">
@@ -3259,7 +3259,7 @@
                 alarm already in the list, or the deletion of an alarm from the list constitutes a
                 change to the list.
                 <para>
-                    Once the poll completes, this method calls the EventNotification() method to add the received events to the
+                    Once the poll completes, this method calls the EventMessagesCallback() method to add the received events to the
                     event list.
                 </para>
             </summary>
@@ -3268,7 +3268,7 @@
                 used to select event messages to return.
             </param>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.Lists.XiEventList.EventNotification(Xi.Contracts.Data.EventMessage[])">
+        <member name="M:Ssz.Xi.Client.Internal.Lists.XiEventList.EventMessagesCallback(Xi.Contracts.Data.EventMessage[])">
             <summary>
                 <para> result != null </para>
                 <para>
@@ -3298,13 +3298,13 @@
             </summary>
             <param name="eventMessages"> </param>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.Lists.XiEventList.RaiseEventNotificationEvent(System.Collections.Generic.IEnumerable{Ssz.Xi.Client.Api.ListItems.IXiEventListItem})">
+        <member name="M:Ssz.Xi.Client.Internal.Lists.XiEventList.RaiseEventMessagesCallbackEvent(System.Collections.Generic.IEnumerable{Ssz.Xi.Client.Api.ListItems.IXiEventListItem})">
             <summary>
-                Throws or invokes EventNotificationEvent.        
+                Throws or invokes EventMessagesCallbackEvent.        
             </summary>
             <param name="newEventListItems"></param>
         </member>
-        <member name="E:Ssz.Xi.Client.Internal.Lists.XiEventList.EventNotificationEvent">
+        <member name="E:Ssz.Xi.Client.Internal.Lists.XiEventList.EventMessagesCallbackEvent">
             <summary>
                 This event is used to notify the client application when new events are received.
             </summary>
@@ -3340,10 +3340,10 @@
                 EvemtNotification method.
             </summary>
         </member>
-        <member name="F:Ssz.Xi.Client.Internal.Lists.XiEventList._lastEventNotificationExceptionMessage">
+        <member name="F:Ssz.Xi.Client.Internal.Lists.XiEventList._lastEventMessagesCallbackExceptionMessage">
             <summary>
                 This data member holds the last exception message encountered by the
-                InformationReport callback when calling valuesUpdateEvent().
+                ElementValuesCallback callback when calling valuesUpdateEvent().
             </summary>
         </member>
         <member name="F:Ssz.Xi.Client.Internal.Lists.XiEventList._CategorySpecificFieldDict">
@@ -3614,7 +3614,7 @@
             <param name="serverStatus"> The ServerStatus object that describes the server that is shutting down. </param>
             <param name="reason"> The reason the context is being closed. </param>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.XiCallback.Xi#Contracts#ICallback#InformationReport(System.String,System.UInt32,Xi.Contracts.Data.DataValueArraysWithAlias)">
+        <member name="M:Ssz.Xi.Client.Internal.XiCallback.Xi#Contracts#ICallback#ElementValuesCallback(System.String,System.UInt32,Xi.Contracts.Data.DataValueArraysWithAlias)">
             <summary>
                 <para> This callback method is implemented by the client to receive data changes. </para>
                 <para>
@@ -3641,7 +3641,7 @@
             <param name="clientListId"> The client identifier of the list for which data changes are being reported. </param>
             <param name="updatedValues"> The values being reported. </param>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.XiCallback.Xi#Contracts#ICallback#EventNotification(System.String,System.UInt32,Xi.Contracts.Data.EventMessage[])">
+        <member name="M:Ssz.Xi.Client.Internal.XiCallback.Xi#Contracts#ICallback#EventMessagesCallback(System.String,System.UInt32,Xi.Contracts.Data.EventMessage[])">
             <summary>
                 <para> This callback method is implemented by the client to receive alarms and events. </para>
                 <para>
@@ -4256,7 +4256,7 @@
             <summary>
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.XiDataListItemsManagerOnInformationReport(System.Object[],Ssz.Utils.DataAccess.ValueStatusTimestamp[])">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.XiDataListItemsManagerOnElementValuesCallback(System.Object[],Ssz.Utils.DataAccess.ValueStatusTimestamp[])">
             <summary>
                 Called using сallbackDoer.
             </summary>
@@ -4317,7 +4317,7 @@
             <param name="valueSubscriptionsCollection"></param>
             <param name="setResultAction"></param>
         </member>
-        <member name="E:Ssz.Xi.Client.XiDataAccessProvider.EventNotification">
+        <member name="E:Ssz.Xi.Client.XiDataAccessProvider.EventMessagesCallback">
             <summary>
                 Is called using сallbackDoer, see Initialize(..).        
             </summary>
@@ -10819,14 +10819,14 @@
             The server supports the ICallback.Abort() method.
             </summary>
         </member>
-        <member name="F:Xi.Contracts.Data.XiMethods.ICallback_InformationReport">
+        <member name="F:Xi.Contracts.Data.XiMethods.ICallback_ElementValuesCallback">
             <summary>
-            The server supports the ICallback.InformationReport() method.
+            The server supports the ICallback.ElementValuesCallback() method.
             </summary>
         </member>
-        <member name="F:Xi.Contracts.Data.XiMethods.ICallback_EventNotification">
+        <member name="F:Xi.Contracts.Data.XiMethods.ICallback_EventMessagesCallback">
             <summary>
-            The server supports the ICallback.EventNotification() method.
+            The server supports the ICallback.EventMessagesCallback() method.
             </summary>
         </member>
         <member name="F:Xi.Contracts.Data.XiMethods.ICallback_PassthroughCallback">
@@ -11137,7 +11137,7 @@
             The reason the context is being closed.
             </param>
         </member>
-        <member name="M:Xi.Contracts.ICallback.InformationReport(System.String,System.UInt32,Xi.Contracts.Data.DataValueArraysWithAlias)">
+        <member name="M:Xi.Contracts.ICallback.ElementValuesCallback(System.String,System.UInt32,Xi.Contracts.Data.DataValueArraysWithAlias)">
             <summary>
             <para>This callback method is implemented by the client 
             to receive data changes. </para> 
@@ -11159,7 +11159,7 @@
             ServerStatus. </para>
             <para>Finally, if the server does not have any values to send within the time period 
             established with the IRegisterForCallback.SetCallback() method, then the server should 
-            call the InformationReport() method with a null updatedValues parameter, and the client 
+            call the ElementValuesCallback() method with a null updatedValues parameter, and the client 
             should interpret this call as a keep-alive for the ICallback endpoint connection. </para>
             </summary>
             <param name="contextId">
@@ -11173,7 +11173,7 @@
             The values being reported.
             </param>
         </member>
-        <member name="M:Xi.Contracts.ICallback.EventNotification(System.String,System.UInt32,Xi.Contracts.Data.EventMessage[])">
+        <member name="M:Xi.Contracts.ICallback.EventMessagesCallback(System.String,System.UInt32,Xi.Contracts.Data.EventMessage[])">
             <summary>
             <para>This callback method is implemented by the client to 
             receive alarms and events.</para> 

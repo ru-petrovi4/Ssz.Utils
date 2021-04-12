@@ -40,7 +40,7 @@ namespace Ssz.DataGrpc.Client.Managers
             bool allOk = true;
 
             foreach (
-                var kvp in _eventNotificationEventHandlers)
+                var kvp in _eventMessagesCallbackEventHandlers)
             {
                 if (ct.IsCancellationRequested) return;
                 if (kvp.Value.P != null) continue;
@@ -65,9 +65,9 @@ namespace Ssz.DataGrpc.Client.Managers
 
                     try
                     {
-                        Action<Utils.DataAccess.EventMessage[]> eventNotificationEventHandler = kvp.Key;
+                        Action<Utils.DataAccess.EventMessage[]> eventMessagesCallbackEventHandler = kvp.Key;
 
-                        dataGrpcEventList.EventNotificationEvent +=
+                        dataGrpcEventList.EventMessagesCallbackEvent +=
                             (ClientEventList eventList, ClientEventListItem[] newListItems) =>
                             {
                                 if (ct.IsCancellationRequested) return;
@@ -75,7 +75,7 @@ namespace Ssz.DataGrpc.Client.Managers
                                 {
                                     try
                                     {
-                                        сallbackDispatcher.BeginInvoke(ct => eventNotificationEventHandler(
+                                        сallbackDispatcher.BeginInvoke(ct => eventMessagesCallbackEventHandler(
                                             newListItems.Select(li => li.EventMessage.ToEventMessage()).ToArray()));
                                     }
                                     catch (Exception)
@@ -111,9 +111,9 @@ namespace Ssz.DataGrpc.Client.Managers
         /// </summary>
         public void PollChanges()
         {
-            foreach (var kvp in _eventNotificationEventHandlers)
+            foreach (var kvp in _eventMessagesCallbackEventHandlers)
             {
-                ClientEventList? dataGrpcEventList = _eventNotificationEventHandlers[kvp.Key].P;
+                ClientEventList? dataGrpcEventList = _eventMessagesCallbackEventHandlers[kvp.Key].P;
 
                 if (dataGrpcEventList == null || dataGrpcEventList.Disposed) continue;
                 try
@@ -129,14 +129,14 @@ namespace Ssz.DataGrpc.Client.Managers
         public void Unsubscribe()
         {
             foreach (
-                var kvp in _eventNotificationEventHandlers)
+                var kvp in _eventMessagesCallbackEventHandlers)
             {
-                ClientEventList? dataGrpcEventList = _eventNotificationEventHandlers[kvp.Key].P;
+                ClientEventList? dataGrpcEventList = _eventMessagesCallbackEventHandlers[kvp.Key].P;
 
                 if (dataGrpcEventList != null)
                     dataGrpcEventList.Dispose();
 
-                _eventNotificationEventHandlers[kvp.Key].P = null;
+                _eventMessagesCallbackEventHandlers[kvp.Key].P = null;
             }
 
             _dataGrpcEventItemsMustBeAdded = true;
@@ -145,22 +145,22 @@ namespace Ssz.DataGrpc.Client.Managers
         public ClientEventList? GetRelatedClientEventList(Action<IEnumerable<Utils.DataAccess.EventMessage>> eventHandler)
         {
             ClientEventListPointer? dataGrpcEventListPointer;
-            if (!_eventNotificationEventHandlers.TryGetValue(eventHandler, out dataGrpcEventListPointer)) return null;
+            if (!_eventMessagesCallbackEventHandlers.TryGetValue(eventHandler, out dataGrpcEventListPointer)) return null;
             return dataGrpcEventListPointer.P;
         }
 
-        public event Action<Utils.DataAccess.EventMessage[]> EventNotification
+        public event Action<Utils.DataAccess.EventMessage[]> EventMessagesCallback
         {
             add
             {
-                _eventNotificationEventHandlers.Add(value, new ClientEventListPointer());
+                _eventMessagesCallbackEventHandlers.Add(value, new ClientEventListPointer());
                 _dataGrpcEventItemsMustBeAdded = true;
             }
             remove
             {
                 ClientEventListPointer? dataGrpcEventListPointer;
-                if (!_eventNotificationEventHandlers.TryGetValue(value, out dataGrpcEventListPointer)) return;
-                _eventNotificationEventHandlers.Remove(value);
+                if (!_eventMessagesCallbackEventHandlers.TryGetValue(value, out dataGrpcEventListPointer)) return;
+                _eventMessagesCallbackEventHandlers.Remove(value);
                 if (dataGrpcEventListPointer.P != null)
                 {
                     try
@@ -187,7 +187,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
         private volatile bool _dataGrpcEventItemsMustBeAdded;
 
-        private readonly Dictionary<Action<Utils.DataAccess.EventMessage[]>, ClientEventListPointer> _eventNotificationEventHandlers =
+        private readonly Dictionary<Action<Utils.DataAccess.EventMessage[]>, ClientEventListPointer> _eventMessagesCallbackEventHandlers =
             new Dictionary<Action<Utils.DataAccess.EventMessage[]>, ClientEventListPointer>();
 
         #endregion

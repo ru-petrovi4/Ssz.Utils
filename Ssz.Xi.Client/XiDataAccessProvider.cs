@@ -213,7 +213,7 @@ namespace Ssz.Xi.Client
             {
                 if (_xiServerProxy == null) throw new InvalidOperationException();
                 _xiDataListItemsManager.Subscribe(_xiServerProxy, _сallbackDispatcher,
-                    XiDataListItemsManagerOnInformationReport, true, ct);
+                    XiDataListItemsManagerOnElementValuesCallback, true, ct);
                 object[]? changedValueSubscriptions = _xiDataListItemsManager.PollChanges();
                 IDispatcher? сallbackDoer = _сallbackDispatcher;
                 if (сallbackDoer != null)
@@ -242,7 +242,7 @@ namespace Ssz.Xi.Client
             {
                 if (_xiServerProxy == null) throw new InvalidOperationException();
                 _xiDataListItemsManager.Subscribe(_xiServerProxy, _сallbackDispatcher,
-                    XiDataListItemsManagerOnInformationReport, true, ct);                
+                    XiDataListItemsManagerOnElementValuesCallback, true, ct);                
                 object[] failedValueSubscriptions = _xiDataListItemsManager.Write(valueSubscriptions, values, utcNow);
 
                 if (setResultAction != null)
@@ -274,7 +274,7 @@ namespace Ssz.Xi.Client
             {
                 if (_xiServerProxy == null) throw new InvalidOperationException();
                 _xiDataListItemsManager.Subscribe(_xiServerProxy, _сallbackDispatcher,
-                    XiDataListItemsManagerOnInformationReport, true, ct);
+                    XiDataListItemsManagerOnElementValuesCallback, true, ct);
                 _xiDataListItemsManager.Write(valueSubscription, value, utcNow);
             });
         }
@@ -354,7 +354,7 @@ namespace Ssz.Xi.Client
 
             Logger.Verbose("Disconnecting");
 
-            if (_onEventNotificationSubscribed) _xiEventListItemsManager.EventNotification -= OnEventNotification;
+            if (_onEventMessagesCallbackSubscribed) _xiEventListItemsManager.EventMessagesCallback -= OnEventMessagesCallback;
             _xiServerProxy.Dispose();
             _xiServerProxy = null;
 
@@ -476,7 +476,7 @@ namespace Ssz.Xi.Client
 
             if (ct.IsCancellationRequested) return;
             _xiDataListItemsManager.Subscribe(_xiServerProxy, _сallbackDispatcher,
-                XiDataListItemsManagerOnInformationReport, _elementValueListCallbackIsEnabled, ct);
+                XiDataListItemsManagerOnElementValuesCallback, _elementValueListCallbackIsEnabled, ct);
             _xiEventListItemsManager.Subscribe(_xiServerProxy, _сallbackDispatcher, true, ct);
 
             if (ct.IsCancellationRequested) return;
@@ -525,7 +525,7 @@ namespace Ssz.Xi.Client
         /// </summary>
         /// <param name="changedClientObjs"></param>
         /// <param name="changedValues"></param>
-        private void XiDataListItemsManagerOnInformationReport(object[] changedClientObjs,
+        private void XiDataListItemsManagerOnElementValuesCallback(object[] changedClientObjs,
             ValueStatusTimestamp[] changedValues)
         {
             if (changedClientObjs != null)

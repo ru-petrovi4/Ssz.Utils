@@ -148,7 +148,7 @@ namespace Ssz.DataGrpc.Client
 
         /// <summary>
         ///     This data member holds the last exception message encountered by the
-        ///     InformationReport callback when calling valuesUpdateEvent().
+        ///     ElementValuesCallback callback when calling valuesUpdateEvent().
         /// </summary>
         private CaseInsensitiveDictionary<IEnumerable<byte>> _incompletePassthroughRepliesCollection = new CaseInsensitiveDictionary<IEnumerable<byte>>();
 

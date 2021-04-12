@@ -38,7 +38,7 @@ namespace Ssz.DataGrpc.Client
                     PollElementValuesChangesReply reply = _resourceManagementClient.PollElementValuesChanges(request);
                     SetResourceManagementLastCallUtc();
 
-                    var changedItems = InformationReportInternal(tagValueList, reply.ElementValuesCollection);
+                    var changedItems = ElementValuesCallbackInternal(tagValueList, reply.ElementValuesCollection);
                     if (changedItems != null) return changedItems;
                 }
             }
@@ -72,7 +72,7 @@ namespace Ssz.DataGrpc.Client
                     PollEventsChangesReply reply = _resourceManagementClient.PollEventsChanges(request);
                     SetResourceManagementLastCallUtc();
 
-                    var newItems = EventNotificationInternal(eventList, reply.EventMessagesCollection);
+                    var newItems = EventMessagesCallbackInternal(eventList, reply.EventMessagesCollection);
                     if (newItems != null) return newItems;
                 }
             }
@@ -88,13 +88,13 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         /// <param name="clientListId"></param>
         /// <param name="elementValuesCollection"></param>
-        public void InformationReport(uint clientListId, ElementValuesCollection elementValuesCollection)
+        public void ElementValuesCallback(uint clientListId, ElementValuesCollection elementValuesCollection)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
             ClientElementValueList datalist = GetElementValueList(clientListId);
 
-            InformationReportInternal(datalist, elementValuesCollection);
+            ElementValuesCallbackInternal(datalist, elementValuesCollection);
         }
 
         /// <summary>
@@ -102,13 +102,13 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         /// <param name="clientListId"></param>
         /// <param name="eventMessagesCollection"></param>
-        public void EventNotification(uint clientListId, EventMessagesCollection eventMessagesCollection)
+        public void EventMessagesCallback(uint clientListId, EventMessagesCollection eventMessagesCollection)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
             ClientEventList eventList = GetEventList(clientListId);
 
-            EventNotificationInternal(eventList, eventMessagesCollection);
+            EventMessagesCallbackInternal(eventList, eventMessagesCollection);
         }
 
         #endregion
@@ -121,9 +121,9 @@ namespace Ssz.DataGrpc.Client
         /// <param name="dataList"></param>
         /// <param name="elementValuesCollections"></param>
         /// <returns></returns>
-        private ClientElementValueListItem[]? InformationReportInternal(ClientElementValueList dataList, ElementValuesCollection elementValuesCollections)
+        private ClientElementValueListItem[]? ElementValuesCallbackInternal(ClientElementValueList dataList, ElementValuesCollection elementValuesCollections)
         {
-            ClientElementValueListItem[]? changedListItems = dataList.OnInformationReport(elementValuesCollections);
+            ClientElementValueListItem[]? changedListItems = dataList.OnElementValuesCallback(elementValuesCollections);
             if (changedListItems != null && changedListItems.Length > 0)
             {
                 List<ValueStatusTimestamp> changedValuesList = new List<ValueStatusTimestamp>(changedListItems.Length);
@@ -131,7 +131,7 @@ namespace Ssz.DataGrpc.Client
                 {
                     changedValuesList.Add(changedListItem.ValueStatusTimestamp);
                 }
-                dataList.RaiseInformationReportEvent(changedListItems, changedValuesList.ToArray());
+                dataList.RaiseElementValuesCallbackEvent(changedListItems, changedValuesList.ToArray());
             }
             return changedListItems;
         }
@@ -142,12 +142,12 @@ namespace Ssz.DataGrpc.Client
         /// <param name="eventList"></param>
         /// <param name="eventMessages"></param>
         /// <returns></returns>
-        private ClientEventListItem[]? EventNotificationInternal(ClientEventList eventList, EventMessagesCollection eventMessagesCollection)
+        private ClientEventListItem[]? EventMessagesCallbackInternal(ClientEventList eventList, EventMessagesCollection eventMessagesCollection)
         {
-            ClientEventListItem[]? newEventListItems = eventList.EventNotification(eventMessagesCollection);
+            ClientEventListItem[]? newEventListItems = eventList.EventMessagesCallback(eventMessagesCollection);
             if (newEventListItems != null && newEventListItems.Length > 0)
             {
-                eventList.RaiseEventNotificationEvent(newEventListItems);
+                eventList.RaiseEventMessagesCallbackEvent(newEventListItems);
             }
             return newEventListItems;
         }

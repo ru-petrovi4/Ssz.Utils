@@ -32,7 +32,7 @@ namespace Ssz.Xi.Client.Api.Lists
         /// <summary>
         ///     This event is used to notify the client application when new events are received.
         /// </summary>
-        event XiEventNotificationEventHandler EventNotificationEvent;
+        event XiEventMessagesCallbackEventHandler EventMessagesCallbackEvent;
 
         /// <summary>
         ///     <para>This method is used to acknowledge one or more alarms.</para>

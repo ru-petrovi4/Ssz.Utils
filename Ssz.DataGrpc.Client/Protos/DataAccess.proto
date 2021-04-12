@@ -55,12 +55,12 @@ message ContextInfo {
   State state = 1;  
 }
 
-message InformationReport {    
+message ElementValuesCallback {    
   uint32 list_client_alias = 1;
   ElementValuesCollection element_values_collection = 2;
 }
 
-message EventNotification {
+message EventMessagesCallback {
   uint32 list_client_alias = 1;
   EventMessagesCollection event_messages_collection = 2;
 }
@@ -72,8 +72,8 @@ message SubscribeForCallbackRequest {
 message CallbackMessage {
   oneof optional_message {    
     ContextInfo context_info = 1;
-    InformationReport information_report = 2;
-    EventNotification event_notification = 3;
+    ElementValuesCallback element_values_callback = 2;
+    EventMessagesCallback event_messages_callback = 3;
   }
 }
 

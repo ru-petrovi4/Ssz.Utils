@@ -30,11 +30,11 @@ namespace Ssz.DataGrpc.Client.Managers
         /// </summary>
         /// <param name="clientConnectionManager"></param>
         /// <param name="сallbackDispatcher"></param>
-        /// <param name="informationReportEventHandler"></param>
+        /// <param name="elementValuesCallbackEventHandler"></param>
         /// <param name="callbackIsEnabled"></param>
         /// <param name="ct"></param>
         public void Subscribe(ClientConnectionManager clientConnectionManager, IDispatcher? сallbackDispatcher,
-            InformationReportEventHandler informationReportEventHandler, bool callbackIsEnabled, CancellationToken ct)
+            ElementValuesCallbackEventHandler elementValuesCallbackEventHandler, bool callbackIsEnabled, CancellationToken ct)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace Ssz.DataGrpc.Client.Managers
                     {
                         if (firstTimeDataConnection)
                         {
-                            DataGrpcList.InformationReport +=
+                            DataGrpcList.ElementValuesCallback +=
                                 (ClientElementValueList dataList, ClientElementValueListItem[] items,
                                     ValueStatusTimestamp[] values) =>
                                 {
@@ -88,15 +88,15 @@ namespace Ssz.DataGrpc.Client.Managers
                                         i++;
                                     }
                                     if (ct.IsCancellationRequested) return;
-                                    Logger.LogDebug("DataGrpcList.InformationReport");
+                                    Logger.LogDebug("DataGrpcList.ElementValuesCallback");
                                     if (сallbackDispatcher != null)
                                     {
                                         try
                                         {
                                             сallbackDispatcher.BeginInvoke(ct =>
                                             {
-                                                Logger.LogDebug("DataGrpcList.InformationReport dispatched");
-                                                informationReportEventHandler(changedClientObjs.ToArray(), changedValues.ToArray());
+                                                Logger.LogDebug("DataGrpcList.ElementValuesCallback dispatched");
+                                                elementValuesCallbackEventHandler(changedClientObjs.ToArray(), changedValues.ToArray());
                                             });
                                         }
                                         catch (Exception)
@@ -157,7 +157,7 @@ namespace Ssz.DataGrpc.Client.Managers
                             try
                             {
                                 сallbackDispatcher.BeginInvoke(ct =>
-                                    informationReportEventHandler(changedClientObjs.ToArray(), changedValues.ToArray()));
+                                    elementValuesCallbackEventHandler(changedClientObjs.ToArray(), changedValues.ToArray()));
                             }
                             catch (Exception)
                             {
@@ -330,7 +330,7 @@ namespace Ssz.DataGrpc.Client.Managers
         /// <summary>
         ///     This delegate defines the callback for reporting data updates to the client application.
         /// </summary>
-        public delegate void InformationReportEventHandler(
+        public delegate void ElementValuesCallbackEventHandler(
             object[] changedClientObjs, ValueStatusTimestamp[] changedValues);
     }
 }

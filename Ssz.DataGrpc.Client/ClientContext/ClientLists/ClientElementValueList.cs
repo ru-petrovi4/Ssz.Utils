@@ -170,7 +170,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// </summary>
         /// <param name="elementValuesCollection"></param>
         /// <returns></returns>
-        public ClientElementValueListItem[]? OnInformationReport(ElementValuesCollection elementValuesCollection)
+        public ClientElementValueListItem[]? OnElementValuesCallback(ElementValuesCollection elementValuesCollection)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
 
@@ -249,18 +249,18 @@ namespace Ssz.DataGrpc.Client.ClientLists
         }
 
         /// <summary>
-        ///     Throws or invokes InformationReport event.        
+        ///     Throws or invokes ElementValuesCallback event.        
         /// </summary>
         /// <param name="changedListItems"></param>
         /// <param name="changedValues"></param>
-        public void RaiseInformationReportEvent(ClientElementValueListItem[] changedListItems,
+        public void RaiseElementValuesCallbackEvent(ClientElementValueListItem[] changedListItems,
             ValueStatusTimestamp[] changedValues)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
 
             try
             {
-                InformationReport(this, changedListItems, changedValues);
+                ElementValuesCallback(this, changedListItems, changedValues);
             }
             catch
             {
@@ -270,7 +270,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// <summary>
         ///     DataGrpc clients subscribe to this event to obtain the data update callbacks.
         /// </summary>
-        public event InformationReportEventHandler InformationReport = delegate { };
+        public event ElementValuesCallbackEventHandler ElementValuesCallback = delegate { };
 
         public IEnumerable<ClientElementValueListItem> ListItems
         {
@@ -283,7 +283,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
 
         /// <summary>
         ///     This data member holds the last exception message encountered by the
-        ///     InformationReport callback when calling valuesUpdateEvent().
+        ///     ElementValuesCallback callback when calling valuesUpdateEvent().
         /// </summary>
         private CaseInsensitiveDictionary<ElementValuesCollection> _incompleteElementValuesCollection = new CaseInsensitiveDictionary<ElementValuesCollection>();
 

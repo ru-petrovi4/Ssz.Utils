@@ -65,7 +65,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// </summary>
         /// <param name="eventMessagesCollection"></param>
         /// <returns></returns>
-        public ClientEventListItem[]? EventNotification(EventMessagesCollection eventMessagesCollection)
+        public ClientEventListItem[]? EventMessagesCallback(EventMessagesCollection eventMessagesCollection)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
@@ -100,16 +100,16 @@ namespace Ssz.DataGrpc.Client.ClientLists
         }
 
         /// <summary>
-        ///     Throws or invokes EventNotificationEvent.        
+        ///     Throws or invokes EventMessagesCallbackEvent.        
         /// </summary>
         /// <param name="newEventListItems"></param>
-        public void RaiseEventNotificationEvent(ClientEventListItem[] newEventListItems)
+        public void RaiseEventMessagesCallbackEvent(ClientEventListItem[] newEventListItems)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
             try
             {
-                EventNotificationEvent(this, newEventListItems);
+                EventMessagesCallbackEvent(this, newEventListItems);
             }
             catch
             {
@@ -120,7 +120,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// <summary>
         ///     This event is used to notify the client application when new events are received.
         /// </summary>
-        public event EventNotificationEventHandler EventNotificationEvent = delegate { };
+        public event EventMessagesCallbackEventHandler EventMessagesCallbackEvent = delegate { };
 
         #endregion
 
@@ -128,7 +128,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
 
         /// <summary>
         ///     This data member holds the last exception message encountered by the
-        ///     InformationReport callback when calling valuesUpdateEvent().
+        ///     ElementValuesCallback callback when calling valuesUpdateEvent().
         /// </summary>
         private CaseInsensitiveDictionary<EventMessagesCollection> _incompleteEventMessagesCollectionCollection = new CaseInsensitiveDictionary<EventMessagesCollection>();
 

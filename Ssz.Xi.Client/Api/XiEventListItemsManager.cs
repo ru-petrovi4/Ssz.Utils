@@ -29,7 +29,7 @@ namespace Ssz.Xi.Client.Api
             bool allOk = true;
 
             foreach (
-                var kvp in _eventNotificationEventHandlers)
+                var kvp in _eventMessagesCallbackEventHandlers)
             {
                 if (ct.IsCancellationRequested) return;
                 if (kvp.Value.P != null) continue;
@@ -72,9 +72,9 @@ namespace Ssz.Xi.Client.Api
 
                     try
                     {
-                        Action<Ssz.Utils.DataAccess.EventMessage[]> eventNotificationEventHandler = kvp.Key;
+                        Action<Ssz.Utils.DataAccess.EventMessage[]> eventMessagesCallbackEventHandler = kvp.Key;
 
-                        xiEventList.EventNotificationEvent +=
+                        xiEventList.EventMessagesCallbackEvent +=
                             (IXiEventListProxy eventList, IEnumerable<IXiEventListItem> newListItems) =>
                             {
                                 if (ct.IsCancellationRequested) return;
@@ -82,7 +82,7 @@ namespace Ssz.Xi.Client.Api
                                 {
                                     try
                                     {
-                                        сallbackDoer.BeginInvoke(ct => eventNotificationEventHandler(
+                                        сallbackDoer.BeginInvoke(ct => eventMessagesCallbackEventHandler(
                                             newListItems.Select(li => li.EventMessage).ToArray()));
                                     }
                                     catch (Exception)
@@ -119,9 +119,9 @@ namespace Ssz.Xi.Client.Api
         public void PollChanges()
         {
             foreach (
-                var kvp in _eventNotificationEventHandlers)
+                var kvp in _eventMessagesCallbackEventHandlers)
             {
-                IXiEventListProxy? xiEventList = _eventNotificationEventHandlers[kvp.Key].P;
+                IXiEventListProxy? xiEventList = _eventMessagesCallbackEventHandlers[kvp.Key].P;
 
                 if (xiEventList == null || xiEventList.Disposed) continue;
                 if (xiEventList.Pollable)
@@ -144,9 +144,9 @@ namespace Ssz.Xi.Client.Api
         public void PollChangesIfNotCallbackable()
         {
             foreach (
-                var kvp in _eventNotificationEventHandlers)
+                var kvp in _eventMessagesCallbackEventHandlers)
             {
-                IXiEventListProxy? xiEventList = _eventNotificationEventHandlers[kvp.Key].P;
+                IXiEventListProxy? xiEventList = _eventMessagesCallbackEventHandlers[kvp.Key].P;
 
                 if (xiEventList == null || xiEventList.Disposed) continue;
                 if (xiEventList.Pollable && !xiEventList.Callbackable)
@@ -165,14 +165,14 @@ namespace Ssz.Xi.Client.Api
         public void Unsubscribe()
         {
             foreach (
-                var kvp in _eventNotificationEventHandlers)
+                var kvp in _eventMessagesCallbackEventHandlers)
             {
-                IXiEventListProxy? xiEventList = _eventNotificationEventHandlers[kvp.Key].P;
+                IXiEventListProxy? xiEventList = _eventMessagesCallbackEventHandlers[kvp.Key].P;
 
                 if (xiEventList != null)
                     xiEventList.Dispose();
 
-                _eventNotificationEventHandlers[kvp.Key].P = null;
+                _eventMessagesCallbackEventHandlers[kvp.Key].P = null;
             }
 
             _xiEventItemsMustBeAdded = true;
@@ -181,22 +181,22 @@ namespace Ssz.Xi.Client.Api
         public IXiEventListProxy? GetRelatedXiEventList(Action<Ssz.Utils.DataAccess.EventMessage[]> eventHandler)
         {
             XiEventListPointer? xiEventListPointer;
-            if (!_eventNotificationEventHandlers.TryGetValue(eventHandler, out xiEventListPointer)) return null;
+            if (!_eventMessagesCallbackEventHandlers.TryGetValue(eventHandler, out xiEventListPointer)) return null;
             return xiEventListPointer.P;
         }
 
-        public event Action<Ssz.Utils.DataAccess.EventMessage[]> EventNotification
+        public event Action<Ssz.Utils.DataAccess.EventMessage[]> EventMessagesCallback
         {
             add
             {
-                _eventNotificationEventHandlers.Add(value, new XiEventListPointer());
+                _eventMessagesCallbackEventHandlers.Add(value, new XiEventListPointer());
                 _xiEventItemsMustBeAdded = true;
             }
             remove
             {
                 XiEventListPointer? xiEventListPointer;
-                if (!_eventNotificationEventHandlers.TryGetValue(value, out xiEventListPointer)) return;
-                _eventNotificationEventHandlers.Remove(value);
+                if (!_eventMessagesCallbackEventHandlers.TryGetValue(value, out xiEventListPointer)) return;
+                _eventMessagesCallbackEventHandlers.Remove(value);
                 if (xiEventListPointer.P != null)
                 {
                     try
@@ -226,7 +226,7 @@ namespace Ssz.Xi.Client.Api
         
         private volatile bool _xiEventItemsMustBeAdded;
 
-        private readonly Dictionary<Action<Ssz.Utils.DataAccess.EventMessage[]>, XiEventListPointer> _eventNotificationEventHandlers =
+        private readonly Dictionary<Action<Ssz.Utils.DataAccess.EventMessage[]>, XiEventListPointer> _eventMessagesCallbackEventHandlers =
             new Dictionary<Action<Ssz.Utils.DataAccess.EventMessage[]>, XiEventListPointer>();
 
         private string _xiSystem = "";

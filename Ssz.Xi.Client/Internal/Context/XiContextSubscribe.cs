@@ -34,7 +34,7 @@ namespace Ssz.Xi.Client.Internal.Context
         ///     </para>
         ///     <para> 3) historical values that meet the list filter criteria, including the deadband. </para>
         ///     <para>
-        ///         This method returns the list of changed values to the client application using the InformationReport
+        ///         This method returns the list of changed values to the client application using the ElementValuesCallback
         ///         callback.. The list of changed values is null if this is a keep-alive. The following two standard data objects
         ///         can also be returned.
         ///     </para>
@@ -76,7 +76,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 }
             }
 
-            IXiDataListItem[]? changedListItems = InformationReportInternal(dataList, readValueList);
+            IXiDataListItem[]? changedListItems = ElementValuesCallbackInternal(dataList, readValueList);
             if (changedListItems == null) throw new Exception("PollDataChanges() error.");
             return changedListItems;
         }
@@ -95,7 +95,7 @@ namespace Ssz.Xi.Client.Internal.Context
         ///         deleted from the list when they transition to inactive and acknowledged.
         ///     </para>
         ///     <para>
-        ///         This method return a list of event messages to the client application via the EventNotification callback
+        ///         This method return a list of event messages to the client application via the EventMessagesCallback callback
         ///         method. The list consists of alarm/event messages for new alarms/events in the Event List, and alarm/event
         ///         messages that represent state changes to alarms that are already in the list, including alarm/event messages
         ///         that identify state changes that caused alarms to tbe deleted from the list.
@@ -146,7 +146,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 }
             }
 
-            IXiEventListItem[]? newEventListItems = EventNotificationInternal(eventList, eventMessages);
+            IXiEventListItem[]? newEventListItems = EventMessagesCallbackInternal(eventList, eventMessages);
             if (newEventListItems == null) throw new Exception("PollEventChanges() error.");
             return newEventListItems;
         }
@@ -196,7 +196,7 @@ namespace Ssz.Xi.Client.Internal.Context
         /// </summary>
         /// <param name="clientListId"> The client identifier of the list for which data changes are being reported. </param>
         /// <param name="updatedValues"> The values being reported. </param>
-        public void InformationReport(uint clientListId, DataValueArraysWithAlias updatedValues)
+        public void ElementValuesCallback(uint clientListId, DataValueArraysWithAlias updatedValues)
         {
             if (_disposed) return;
 
@@ -205,7 +205,7 @@ namespace Ssz.Xi.Client.Internal.Context
             XiDataList? datalist = GetDataList(clientListId);
             if (datalist == null) return;
 
-            InformationReportInternal(datalist, updatedValues);
+            ElementValuesCallbackInternal(datalist, updatedValues);
         }
 
         /// <summary>
@@ -222,7 +222,7 @@ namespace Ssz.Xi.Client.Internal.Context
         /// </summary>
         /// <param name="clientListId"> The client identifier of the list for which alarms/events are being reported. </param>
         /// <param name="eventMessages"> The array of alarms/events are being reported. </param>
-        public void EventNotification(uint clientListId, EventMessage[] eventMessages)
+        public void EventMessagesCallback(uint clientListId, EventMessage[] eventMessages)
         {
             if (_disposed) return;
 
@@ -230,7 +230,7 @@ namespace Ssz.Xi.Client.Internal.Context
 
             XiEventList eventList = GetEventList(clientListId);
 
-            EventNotificationInternal(eventList, eventMessages);
+            EventMessagesCallbackInternal(eventList, eventMessages);
         }
 
         /// <summary>
@@ -251,7 +251,7 @@ namespace Ssz.Xi.Client.Internal.Context
         #region private functions
 
         /// <summary>
-        ///     <para> Invokes DataList.InformationReport event, if changed items count > 0. </para>  
+        ///     <para> Invokes DataList.ElementValuesCallback event, if changed items count > 0. </para>  
         ///     <para> No throws. If error, returns null. Otherwise changed IXiDataListItems (not null, but possibly zero-lenghth). </para>        
         ///     <para> This callback method is implemented by the client to receive data changes. </para>
         ///     <para>
@@ -276,13 +276,13 @@ namespace Ssz.Xi.Client.Internal.Context
         /// </summary>
         /// <param name="dataList"> The client identifier of the list for which data changes are being reported. </param>
         /// <param name="updatedValues"> The values being reported. </param>
-        private IXiDataListItem[]? InformationReportInternal(XiDataList? dataList, DataValueArraysWithAlias? updatedValues)
+        private IXiDataListItem[]? ElementValuesCallbackInternal(XiDataList? dataList, DataValueArraysWithAlias? updatedValues)
         {
             if (dataList == null || dataList.Disposed) return null;
 
             try
             {
-                List<IXiDataListItem>? changedListItems = dataList.OnInformationReport(updatedValues);
+                List<IXiDataListItem>? changedListItems = dataList.OnElementValuesCallback(updatedValues);
                 if (changedListItems == null) return null;
                 if (changedListItems.Count > 0)
                 {
@@ -291,7 +291,7 @@ namespace Ssz.Xi.Client.Internal.Context
                     {
                         changedValuesList.Add(changedListItem.ValueStatusTimestamp);
                     }
-                    dataList.RaiseInformationReportEvent(changedListItems, changedValuesList);
+                    dataList.RaiseElementValuesCallbackEvent(changedListItems, changedValuesList);
                 }
                 return changedListItems.ToArray();
             }
@@ -302,7 +302,7 @@ namespace Ssz.Xi.Client.Internal.Context
         }
 
         /// <summary>
-        ///     <para> Invokes EventList.EventNotificationEvent, if new items count > 0. </para>
+        ///     <para> Invokes EventList.EventMessagesCallbackEvent, if new items count > 0. </para>
         ///     <para> No throws. If error, returns null. Otherwise new IXiEventListItems (not null, but possibly zero-lenghth). </para>
         ///     <para> This callback method is implemented by the client to receive alarms and events. </para>
         ///     <para>
@@ -317,16 +317,16 @@ namespace Ssz.Xi.Client.Internal.Context
         /// </summary>
         /// <param name="eventList"> The client identifier of the list for which alarms/events are being reported. </param>
         /// <param name="eventMessages"> The array of alarms/events are being reported. </param>
-        private IXiEventListItem[]? EventNotificationInternal(XiEventList eventList, EventMessage[]? eventMessages)
+        private IXiEventListItem[]? EventMessagesCallbackInternal(XiEventList eventList, EventMessage[]? eventMessages)
         {
             if (eventList == null || eventList.Disposed) return null;
 
             try
             {
-                List<IXiEventListItem> newEventListItems = eventList.EventNotification(eventMessages);
+                List<IXiEventListItem> newEventListItems = eventList.EventMessagesCallback(eventMessages);
                 if (newEventListItems.Count > 0)
                 {
-                    eventList.RaiseEventNotificationEvent(newEventListItems);
+                    eventList.RaiseEventMessagesCallbackEvent(newEventListItems);
                 }
                 return newEventListItems.ToArray();
             }

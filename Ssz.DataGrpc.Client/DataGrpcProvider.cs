@@ -225,7 +225,7 @@ namespace Ssz.DataGrpc.Client
             BeginInvoke(ct =>
             {                
                 _clientElementValueListManager.Subscribe(_clientConnectionManager, _сallbackDispatcher,
-                    ClientElementValueListItemsManagerOnInformationReport, true, ct);
+                    ClientElementValueListItemsManagerOnElementValuesCallback, true, ct);
                 object[]? changedValueSubscriptions = _clientElementValueListManager.PollChanges();
                 IDispatcher? сallbackDispatcher = _сallbackDispatcher;
                 if (сallbackDispatcher != null)
@@ -254,7 +254,7 @@ namespace Ssz.DataGrpc.Client
             BeginInvoke(ct =>
             {                
                 _clientElementValueListManager.Subscribe(_clientConnectionManager, _сallbackDispatcher,
-                    ClientElementValueListItemsManagerOnInformationReport, true, ct);                
+                    ClientElementValueListItemsManagerOnElementValuesCallback, true, ct);                
                 object[] failedValueSubscriptions = _clientElementValueListManager.Write(valueSubscriptions, values, utcNow);
 
                 if (setResultAction != null)
@@ -286,7 +286,7 @@ namespace Ssz.DataGrpc.Client
             BeginInvoke(ct =>
             {                
                 _clientElementValueListManager.Subscribe(_clientConnectionManager, _сallbackDispatcher,
-                    ClientElementValueListItemsManagerOnInformationReport, true, ct);
+                    ClientElementValueListItemsManagerOnElementValuesCallback, true, ct);
                 _clientElementValueListManager.Write(valueSubscription, value, utcNow);
             }
             );
@@ -366,7 +366,7 @@ namespace Ssz.DataGrpc.Client
 
             _logger.LogDebug("Disconnecting");
 
-            if (_onEventNotificationSubscribed) _clientEventListManager.EventNotification -= OnEventNotification;            
+            if (_onEventMessagesCallbackSubscribed) _clientEventListManager.EventMessagesCallback -= OnEventMessagesCallback;            
 
             _logger.LogDebug("End Disconnecting");
         }        
@@ -481,7 +481,7 @@ namespace Ssz.DataGrpc.Client
 
             if (ct.IsCancellationRequested) return;
             _clientElementValueListManager.Subscribe(_clientConnectionManager, _сallbackDispatcher,
-                ClientElementValueListItemsManagerOnInformationReport, _elementValueListCallbackIsEnabled, ct);
+                ClientElementValueListItemsManagerOnElementValuesCallback, _elementValueListCallbackIsEnabled, ct);
             _clientEventListManager.Subscribe(_clientConnectionManager, _сallbackDispatcher, true, ct);
 
             if (ct.IsCancellationRequested) return;
@@ -514,7 +514,7 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         /// <param name="changedClientObjs"></param>
         /// <param name="changedValues"></param>
-        private void ClientElementValueListItemsManagerOnInformationReport(object[] changedClientObjs,
+        private void ClientElementValueListItemsManagerOnElementValuesCallback(object[] changedClientObjs,
             ValueStatusTimestamp[] changedValues)
         {
             if (changedClientObjs != null)

@@ -15,10 +15,10 @@ namespace Ssz.Xi.Client
         /// <summary>
         ///     Is called using сallbackDoer, see Initialize(..).        
         /// </summary>
-        public event Action<Ssz.Utils.DataAccess.EventMessage[]> EventNotification
+        public event Action<Ssz.Utils.DataAccess.EventMessage[]> EventMessagesCallback
         {
-            add { BeginInvoke(ct => _xiEventListItemsManager.EventNotification += value); }
-            remove { BeginInvoke(ct => _xiEventListItemsManager.EventNotification -= value); }
+            add { BeginInvoke(ct => _xiEventListItemsManager.EventMessagesCallback += value); }
+            remove { BeginInvoke(ct => _xiEventListItemsManager.EventMessagesCallback -= value); }
         }
 
         /// <summary>
@@ -29,14 +29,14 @@ namespace Ssz.Xi.Client
         {
             BeginInvoke(ct =>
             {
-                if (!_onEventNotificationSubscribed)
+                if (!_onEventMessagesCallbackSubscribed)
                 {
-                    _onEventNotificationSubscribed = true;
-                    _xiEventListItemsManager.EventNotification += OnEventNotification;
+                    _onEventMessagesCallbackSubscribed = true;
+                    _xiEventListItemsManager.EventMessagesCallback += OnEventMessagesCallback;
                 }
 
                 IXiEventListProxy? eventListProxy =
-                    _xiEventListItemsManager.GetRelatedXiEventList(OnEventNotification);
+                    _xiEventListItemsManager.GetRelatedXiEventList(OnEventMessagesCallback);
 
                 if (eventListProxy == null) return;
 
@@ -57,7 +57,7 @@ namespace Ssz.Xi.Client
 
         #region private functions
 
-        private void OnEventNotification(Ssz.Utils.DataAccess.EventMessage[] obj)
+        private void OnEventMessagesCallback(Ssz.Utils.DataAccess.EventMessage[] obj)
         {
         }
 
@@ -66,7 +66,7 @@ namespace Ssz.Xi.Client
         #region private fields
 
         private readonly XiEventListItemsManager _xiEventListItemsManager = new XiEventListItemsManager();
-        private bool _onEventNotificationSubscribed;
+        private bool _onEventMessagesCallbackSubscribed;
 
         #endregion
     }

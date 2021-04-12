@@ -22,11 +22,11 @@ namespace Ssz.Xi.Client.Api
         /// </summary>
         /// <param name="xiServerProxy"></param>
         /// <param name="сallbackDoer"></param>
-        /// <param name="informationReportEventHandler"></param>
+        /// <param name="elementValuesCallbackEventHandler"></param>
         /// <param name="callbackable"></param>
         /// <param name="ct"></param>
         public void Subscribe(XiServerProxy xiServerProxy, IDispatcher? сallbackDoer,
-            InformationReportEventHandler informationReportEventHandler, bool callbackable, CancellationToken ct)
+            ElementValuesCallbackEventHandler elementValuesCallbackEventHandler, bool callbackable, CancellationToken ct)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace Ssz.Xi.Client.Api
                     {
                         if (firstTimeDataConnection)
                         {
-                            XiList.InformationReport +=
+                            XiList.ElementValuesCallback +=
                                 (IXiDataListProxy dataList, IXiDataListItem[] items,
                                     ValueStatusTimestamp[] values) =>
                                 {
@@ -78,15 +78,15 @@ namespace Ssz.Xi.Client.Api
                                         i++;
                                     }
                                     if (ct.IsCancellationRequested) return;
-                                    Logger.Verbose("XiList.InformationReport");
+                                    Logger.Verbose("XiList.ElementValuesCallback");
                                     if (сallbackDoer != null)
                                     {
                                         try
                                         {
                                             сallbackDoer.BeginInvoke(ct =>
                                             {
-                                                Logger.Verbose("XiList.InformationReport dispatched");
-                                                informationReportEventHandler(changedClientObjs.ToArray(), changedValues.ToArray());
+                                                Logger.Verbose("XiList.ElementValuesCallback dispatched");
+                                                elementValuesCallbackEventHandler(changedClientObjs.ToArray(), changedValues.ToArray());
                                             });
                                         }
                                         catch (Exception)
@@ -151,7 +151,7 @@ namespace Ssz.Xi.Client.Api
                             try
                             {
                                 сallbackDoer.BeginInvoke(ct =>
-                                    informationReportEventHandler(changedClientObjs.ToArray(), changedValues.ToArray()));
+                                    elementValuesCallbackEventHandler(changedClientObjs.ToArray(), changedValues.ToArray()));
                             }
                             catch (Exception)
                             {
@@ -349,7 +349,7 @@ namespace Ssz.Xi.Client.Api
         /// <summary>
         ///     This delegate defines the callback for reporting data updates to the client application.
         /// </summary>
-        public delegate void InformationReportEventHandler(
+        public delegate void ElementValuesCallbackEventHandler(
             object[] changedClientObjs, ValueStatusTimestamp[] changedValues);
     }
 }
