@@ -13,7 +13,7 @@ namespace Ssz.Utils.DataAccess
         ///     When item don't exist in data source, invokes with new Any(DBNull.Value)
         ///     When disconnected from data source, invokes with new Any(null).
         /// </summary>
-        void Update(ValueStatusTimestamp vst);
+        void Update(ValueStatusTimestamp valueStatusTimestamp);
 
         /// <summary>
         ///     Property to use internally in ModelDataProvider. You need to

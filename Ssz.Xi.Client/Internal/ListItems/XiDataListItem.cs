@@ -87,16 +87,16 @@ namespace Ssz.Xi.Client.Internal.ListItems
         ///     client application issues the data list CommitDataObjectWrites() method
         ///     to write them to the server in a single call.
         /// </summary>
-        /// <param name="vst"> The data value to be written. </param>
+        /// <param name="valueStatusTimestamp"> The data value to be written. </param>
         /// <returns> Returns TRUE if the data object is writable, otherwise FALSE. </returns>
-        public bool PrepareForWrite(ValueStatusTimestamp vst)
+        public bool PrepareForWrite(ValueStatusTimestamp valueStatusTimestamp)
         {
             if (!IsWritable)
             {
                 _pendingWriteValueStatusTimestamp = null;
                 return false;
             }
-            _pendingWriteValueStatusTimestamp = vst;
+            _pendingWriteValueStatusTimestamp = valueStatusTimestamp;
             return true;
         }
 

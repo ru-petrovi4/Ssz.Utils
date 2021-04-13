@@ -51,11 +51,11 @@ namespace Ssz.Utils.DataAccess
         /// 
         /// </summary>
         /// <param name="value"></param>
-        void IValueSubscription.Update(ValueStatusTimestamp vst)
+        void IValueSubscription.Update(ValueStatusTimestamp valueStatusTimestamp)
         {
-            if (Vst == vst) return;
-            if (_valueChangedAction != null) _valueChangedAction(vst, Vst);
-            Vst = vst;
+            if (ValueStatusTimestamp == valueStatusTimestamp) return;
+            if (_valueChangedAction != null) _valueChangedAction(valueStatusTimestamp, ValueStatusTimestamp);
+            ValueStatusTimestamp = valueStatusTimestamp;
         }
 
         /// <summary>
@@ -66,15 +66,15 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         /// 
         /// </summary>
-        public ValueStatusTimestamp Vst { get; private set; } = new ValueStatusTimestamp();
+        public ValueStatusTimestamp ValueStatusTimestamp { get; private set; } = new ValueStatusTimestamp();
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="value"></param>
-        public void Write(ValueStatusTimestamp vst)
+        public void Write(ValueStatusTimestamp valueStatusTimestamp)
         {
-            DataAccessProvider.Write(this, vst);
+            DataAccessProvider.Write(this, valueStatusTimestamp);
         }
 
         #endregion

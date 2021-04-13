@@ -37,15 +37,15 @@ namespace Ssz.Utils.DataAccess
         ///     Callback Thread.
         /// </summary>
         /// <param name="value"></param>
-        void IValueSubscription.Update(ValueStatusTimestamp vst)
+        void IValueSubscription.Update(ValueStatusTimestamp valueStatusTimestamp)
         {
-            if (vst.StatusCode == StatusCodes.Unknown) return;
+            if (valueStatusTimestamp.StatusCode == StatusCodes.Unknown) return;
 
             _dataProvider.RemoveItem(this);            
 
             if (_setValueAction != null)
             {
-                _setValueAction(vst);
+                _setValueAction(valueStatusTimestamp);
                 _setValueAction = null;
             }
         }

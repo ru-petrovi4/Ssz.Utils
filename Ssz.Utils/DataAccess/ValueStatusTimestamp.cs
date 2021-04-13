@@ -7,7 +7,22 @@ using System.Threading.Tasks;
 namespace Ssz.Utils.DataAccess
 {
     public class ValueStatusTimestamp
-    { 
+    {
+        #region construction and destruction
+
+        public ValueStatusTimestamp()
+        {            
+        }
+
+        public ValueStatusTimestamp(Any value, uint statusCode, DateTime timestampUtc)
+        {
+            Value = value;
+            StatusCode = statusCode;
+            TimestampUtc = timestampUtc;
+        }
+
+        #endregion
+
         #region public functions
 
         /// <summary>
@@ -82,7 +97,7 @@ namespace Ssz.Utils.DataAccess
         
         public uint StatusCode;
         
-        public DateTime TimestampUtc;
+        public DateTime TimestampUtc;        
 
         #endregion
     }

@@ -96,11 +96,11 @@ namespace Ssz.Xi.Client.Internal.ListItems
         /// <summary>
         ///     This method removes a value set from the historical data object
         /// </summary>
-        /// <param name="vstSet"> The value set to remove </param>
-        public void Remove(IXiDataJournalValueStatusTimestampSet vstSet)
+        /// <param name="valueStatusTimestampSet"> The value set to remove </param>
+        public void Remove(IXiDataJournalValueStatusTimestampSet valueStatusTimestampSet)
         {
-            if (vstSet.CalculationTypeId.LocalId == null) return;
-            _xiValueStatusTimestampSetsDictionary.Remove(vstSet.CalculationTypeId.LocalId);
+            if (valueStatusTimestampSet.CalculationTypeId.LocalId == null) return;
+            _xiValueStatusTimestampSetsDictionary.Remove(valueStatusTimestampSet.CalculationTypeId.LocalId);
         }
 
         /// <summary>

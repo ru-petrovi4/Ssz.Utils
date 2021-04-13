@@ -88,7 +88,7 @@
             <summary>
                 This method removes a value set from the historical data object
             </summary>
-            <param name="vstSet"> The value set to remove </param>
+            <param name="valueStatusTimestampSet"> The value set to remove </param>
         </member>
         <member name="P:Ssz.Xi.Client.Api.ListItems.IXiDataListItem.PreparedForTouch">
             <summary>
@@ -2631,7 +2631,7 @@
             <summary>
                 This method removes a value set from the historical data object
             </summary>
-            <param name="vstSet"> The value set to remove </param>
+            <param name="valueStatusTimestampSet"> The value set to remove </param>
         </member>
         <member name="M:Ssz.Xi.Client.Internal.ListItems.XiDataJournalListItem.SetPropertyValues(Xi.Contracts.Data.JournalDataPropertyValue[])">
             <summary>

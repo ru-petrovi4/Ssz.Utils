@@ -21,7 +21,7 @@
         /// <summary>
         ///     This method removes a value set from the historical data object
         /// </summary>
-        /// <param name="vstSet"> The value set to remove </param>
-        void Remove(IXiDataJournalValueStatusTimestampSet vstSet);
+        /// <param name="valueStatusTimestampSet"> The value set to remove </param>
+        void Remove(IXiDataJournalValueStatusTimestampSet valueStatusTimestampSet);
     }
 }

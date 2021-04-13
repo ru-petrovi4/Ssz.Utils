@@ -81,9 +81,9 @@ namespace Ssz.Xi.Client
                     var modelItem = _xiDataJournalListItemsManager.GetModelItem(valueSubscription);
                     if (modelItem != null && modelItem.XiListItemWrapper != null && modelItem.XiListItemWrapper.XiListItem != null)
                     {
-                        ValueStatusTimestamp[] vstSet =
+                        ValueStatusTimestamp[] valueStatusTimestampSet =
                             modelItem.XiListItemWrapper.XiListItem.GetExistingOrNewValueStatusTimestampSet().ToArray();
-                        result.Add(vstSet);
+                        result.Add(valueStatusTimestampSet);
                     }
                     else
                     {

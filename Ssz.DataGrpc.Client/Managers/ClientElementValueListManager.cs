@@ -212,9 +212,9 @@ namespace Ssz.DataGrpc.Client.Managers
         ///     If connection error, no throw and returns all clientObjs. 
         /// </summary>
         /// <param name="clientObjs"></param>
-        /// <param name="vsts"></param>
+        /// <param name="valueStatusTimestamps"></param>
         /// <returns></returns>
-        public object[] Write(object[] clientObjs, ValueStatusTimestamp[] vsts)
+        public object[] Write(object[] clientObjs, ValueStatusTimestamp[] valueStatusTimestamps)
         {
             if (DataGrpcList == null || DataGrpcList.Disposed) return clientObjs;
 
@@ -239,7 +239,7 @@ namespace Ssz.DataGrpc.Client.Managers
                     continue;
                 }
                 ClientElementValueListItem dataGrpcElementValueListItem = modelItem.DataGrpcListItemWrapper.DataGrpcListItem;
-                dataGrpcElementValueListItem.PrepareForWrite(vsts[i]);
+                dataGrpcElementValueListItem.PrepareForWrite(valueStatusTimestamps[i]);
             }
 
             IEnumerable<ClientElementValueListItem>? failedItems = null;
@@ -275,8 +275,8 @@ namespace Ssz.DataGrpc.Client.Managers
         /// 
         /// </summary>
         /// <param name="clientObj"></param>
-        /// <param name="vst"></param>
-        public void Write(object clientObj, ValueStatusTimestamp vst)
+        /// <param name="valueStatusTimestamp"></param>
+        public void Write(object clientObj, ValueStatusTimestamp valueStatusTimestamp)
         {
             if (DataGrpcList == null || DataGrpcList.Disposed) return;
 
@@ -292,7 +292,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
             try
             {                
-                dataGrpcElementValueListItem.PrepareForWrite(vst);
+                dataGrpcElementValueListItem.PrepareForWrite(valueStatusTimestamp);
 
                 try
                 {

@@ -226,9 +226,9 @@ namespace Ssz.Xi.Client.Api
         ///     If connection error, no throw and returns all clientObjs.    
         /// </summary>
         /// <param name="clientObjs"></param>
-        /// <param name="vsts"></param>
+        /// <param name="valueStatusTimestamps"></param>
         /// <returns></returns>
-        public object[] Write(object[] clientObjs, ValueStatusTimestamp[] vsts)
+        public object[] Write(object[] clientObjs, ValueStatusTimestamp[] valueStatusTimestamps)
         {
             if (XiList == null || XiList.Disposed) return clientObjs;
 
@@ -253,7 +253,7 @@ namespace Ssz.Xi.Client.Api
                     continue;
                 }
                 IXiDataListItem xiDataListItem = modelItem.XiListItemWrapper.XiListItem;
-                xiDataListItem.PrepareForWrite(vsts[i]);
+                xiDataListItem.PrepareForWrite(valueStatusTimestamps[i]);
             }
 
             IEnumerable<IXiDataListItem>? failedItems = null;
@@ -286,7 +286,7 @@ namespace Ssz.Xi.Client.Api
         }
 
         
-        public void Write(object clientObj, ValueStatusTimestamp vst)
+        public void Write(object clientObj, ValueStatusTimestamp valueStatusTimestamp)
         {
             if (XiList == null || XiList.Disposed) return;
 
@@ -302,7 +302,7 @@ namespace Ssz.Xi.Client.Api
 
             try
             {                
-                xiDataListItem.PrepareForWrite(vst);
+                xiDataListItem.PrepareForWrite(valueStatusTimestamp);
 
                 try
                 {

@@ -234,14 +234,14 @@ namespace Ssz.Xi.Client
         ///     setResultAction(failedValueSubscriptions) is called, failedValueSubscriptions != null.
         ///     If connection error, failedValueSubscriptions is all clientObjs.        
         /// </summary>
-        public void Write(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] vsts, Action<IValueSubscription[]>? setResultAction)
+        public void Write(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps, Action<IValueSubscription[]>? setResultAction)
         {
             BeginInvoke(ct =>
             {
                 if (_xiServerProxy == null) throw new InvalidOperationException();
                 _xiDataListItemsManager.Subscribe(_xiServerProxy, _сallbackDispatcher,
                     XiDataListItemsManagerOnElementValuesCallback, true, ct);                
-                object[] failedValueSubscriptions = _xiDataListItemsManager.Write(valueSubscriptions, vsts);
+                object[] failedValueSubscriptions = _xiDataListItemsManager.Write(valueSubscriptions, valueStatusTimestamps);
 
                 if (setResultAction != null)
                 {
@@ -264,14 +264,14 @@ namespace Ssz.Xi.Client
         /// </summary>
         /// <param name="valueSubscription"></param>
         /// <param name="value"></param>
-        public void Write(IValueSubscription valueSubscription, ValueStatusTimestamp vst)
+        public void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp)
         {
             BeginInvoke(ct =>
             {
                 if (_xiServerProxy == null) throw new InvalidOperationException();
                 _xiDataListItemsManager.Subscribe(_xiServerProxy, _сallbackDispatcher,
                     XiDataListItemsManagerOnElementValuesCallback, true, ct);
-                _xiDataListItemsManager.Write(valueSubscription, vst);
+                _xiDataListItemsManager.Write(valueSubscription, valueStatusTimestamp);
             });
         }
 
