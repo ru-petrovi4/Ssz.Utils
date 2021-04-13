@@ -6,21 +6,21 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils.DataAccess
 {
-    public class HdaValueSubscription : IDisposable
+    public class ValueJournalSubscription : IDisposable
     {
         #region construction and destruction
         
-        public HdaValueSubscription(IDataAccessProvider dataProvider, string id)
+        public ValueJournalSubscription(IDataAccessProvider dataProvider, string id)
         {
             _dataProvider = dataProvider;
             Id = id;            
 
-            _dataProvider.HdaAddItem(Id, this);
+            _dataProvider.JournalAddItem(Id, this);
         }
 
         public void Dispose()
         {
-            _dataProvider.HdaRemoveItem(this);
+            _dataProvider.JournalRemoveItem(this);
         }
 
         #endregion

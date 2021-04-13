@@ -36,7 +36,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="localeId"></param>
         /// <param name="systemNameToConnect"></param>
         /// <param name="contextParams"></param>
-        public ClientContext(ILogger<DataGrpcProvider> logger,
+        public ClientContext(ILogger<GrpcDataAccessProvider> logger,
             DataAccess.DataAccessClient resourceManagementClient,            
             string applicationName,
             string workstationName,            
@@ -299,7 +299,7 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         private bool _disposed;
 
-        private ILogger<DataGrpcProvider> _logger;
+        private ILogger<GrpcDataAccessProvider> _logger;
 
         /// <summary>
         ///     This data member is the Endpoint Discovery object used to access the server for its

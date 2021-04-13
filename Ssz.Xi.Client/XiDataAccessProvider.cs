@@ -89,6 +89,8 @@ namespace Ssz.Xi.Client
 
         public Guid DataGuid { get; private set; }
 
+        public object? Obj { get; set; }
+
         /// <summary>
         ///     Is called using сallbackDoer, see Initialize(..).
         /// </summary>

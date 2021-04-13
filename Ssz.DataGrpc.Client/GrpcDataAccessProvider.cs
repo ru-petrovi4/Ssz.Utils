@@ -14,11 +14,11 @@ using Ssz.Utils.DataAccess;
 
 namespace Ssz.DataGrpc.Client
 {
-    public partial class DataGrpcProvider : IDataAccessProvider, IDispatcher
+    public partial class GrpcDataAccessProvider : IDataAccessProvider, IDispatcher
     {
         #region construction and destruction
 
-        public DataGrpcProvider(ILogger<DataGrpcProvider> logger)
+        public GrpcDataAccessProvider(ILogger<GrpcDataAccessProvider> logger)
         {
             _logger = logger;
 
@@ -105,6 +105,8 @@ namespace Ssz.DataGrpc.Client
         public bool IsInitialized { get; private set; }
 
         public Guid DataGuid { get; private set; }
+
+        public object? Obj { get; set; }
 
         /// <summary>
         ///     Is called using сallbackDispatcher, see Initialize(..).
@@ -533,7 +535,7 @@ namespace Ssz.DataGrpc.Client
 
         #region private fields
 
-        private ILogger<DataGrpcProvider> _logger;
+        private ILogger<GrpcDataAccessProvider> _logger;
 
         /// <summary>
         ///     DataGrpc Server connection string.

@@ -35,7 +35,7 @@ namespace Ssz.DataGrpc.Client.Managers
     {
         #region construction and destruction
 
-        public ClientConnectionManager(ILogger<DataGrpcProvider> logger)
+        public ClientConnectionManager(ILogger<GrpcDataAccessProvider> logger)
         {
             _logger = logger;
         }
@@ -396,7 +396,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
         private bool _disposed;
 
-        private ILogger<DataGrpcProvider> _logger;
+        private ILogger<GrpcDataAccessProvider> _logger;
 
         private ConnectionInfo? _connectionInfo;
 

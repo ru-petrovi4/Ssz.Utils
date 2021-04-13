@@ -24,7 +24,9 @@ namespace Ssz.Utils.DataAccess
         bool IsInitialized { get; }
 
         Guid DataGuid { get; }
-        
+
+        object? Obj { get; set; }
+
         event Action ValueSubscriptionsUpdated;
 
         event Action Connected;
@@ -49,15 +51,15 @@ namespace Ssz.Utils.DataAccess
         void Passthrough(string recipientId, string passthroughName, byte[] dataToSend,
             Action<IEnumerable<byte>?> setResultAction);
 
-        void HdaAddItem(string elementId, object valueSubscription);
+        void JournalAddItem(string elementId, object valueJournalSubscription);
 
-        void HdaRemoveItem(object valueSubscription);
+        void JournalRemoveItem(object valueJournalSubscription);
 
-        void HdaReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerDataObject, TypeId calculation, object[] valueSubscriptionsCollection,
+        void ReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerDataObject, TypeId calculation, object[] valueJournalSubscriptions,
             Action<ValueStatusTimestamp[][]?> setResultAction);
 
         event Action<EventMessage[]> EventMessagesCallback;
 
-        void AckAlarms(EventId[] events);
+        void AckAlarms(EventId[] eventIds);
     }
 }

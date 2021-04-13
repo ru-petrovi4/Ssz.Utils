@@ -9,7 +9,7 @@ using Ssz.Utils.DataAccess;
 
 namespace Ssz.DataGrpc.Client
 {
-    public partial class DataGrpcProvider
+    public partial class GrpcDataAccessProvider
     {
         #region public functions
 
@@ -21,12 +21,8 @@ namespace Ssz.DataGrpc.Client
             add { BeginInvoke(ct => _clientEventListManager.EventMessagesCallback += value); }
             remove { BeginInvoke(ct => _clientEventListManager.EventMessagesCallback -= value); }
         }
-
-        /// <summary>
-        ///     
-        /// </summary>
-        /// <param name="events"></param>
-        public void AckAlarms(Ssz.Utils.DataAccess.EventId[] events)
+        
+        public void AckAlarms(Ssz.Utils.DataAccess.EventId[] eventIds)
         {
             BeginInvoke(ct =>
             {
@@ -45,7 +41,7 @@ namespace Ssz.DataGrpc.Client
                 {
                     if (dataGrpcEventList.Disposed) return;
 
-                    dataGrpcEventList.AcknowledgeAlarms(@"", @"", events);
+                    dataGrpcEventList.AcknowledgeAlarms(@"", @"", eventIds);
                 }
                 catch (Exception ex)
                 {

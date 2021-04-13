@@ -15,7 +15,7 @@ namespace Ssz.DataGrpc.Client.Managers
     {
         #region construction and destruction
 
-        protected ClientElementListManagerBase(ILogger<DataGrpcProvider> logger, bool unsubscribeItemsFromServer)
+        protected ClientElementListManagerBase(ILogger<GrpcDataAccessProvider> logger, bool unsubscribeItemsFromServer)
         {
             Logger = logger;
             UnsubscribeItemsFromServer = unsubscribeItemsFromServer;
@@ -95,7 +95,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
         #region protected functions
 
-        protected ILogger<DataGrpcProvider> Logger { get; }
+        protected ILogger<GrpcDataAccessProvider> Logger { get; }
 
         protected TDataGrpcList? DataGrpcList { get; set; }
 

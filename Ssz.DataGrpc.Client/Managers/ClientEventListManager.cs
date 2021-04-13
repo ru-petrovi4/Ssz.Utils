@@ -15,7 +15,7 @@ namespace Ssz.DataGrpc.Client.Managers
     {
         #region construction and destruction
 
-        public ClientEventListManager(ILogger<DataGrpcProvider> logger)
+        public ClientEventListManager(ILogger<GrpcDataAccessProvider> logger)
         {
             Logger = logger;
         }
@@ -179,7 +179,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
         #region protected functions
 
-        protected ILogger<DataGrpcProvider> Logger { get; }
+        protected ILogger<GrpcDataAccessProvider> Logger { get; }
 
         #endregion
 

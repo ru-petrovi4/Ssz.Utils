@@ -9,7 +9,7 @@ using Ssz.Utils.DataAccess;
 
 namespace Ssz.DataGrpc.Client
 {
-    public partial class DataGrpcProvider
+    public partial class GrpcDataAccessProvider
     {
         #region public functions
 
@@ -18,7 +18,7 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         /// <param name="elementId"></param>
         /// <param name="valueSubscription"></param>
-        public void HdaAddItem(string elementId, object valueSubscription)
+        public void JournalAddItem(string elementId, object valueSubscription)
         {
             BeginInvoke(ct =>
             {
@@ -32,7 +32,7 @@ namespace Ssz.DataGrpc.Client
         ///     If valueSubscription is not subscribed - does nothing.
         /// </summary>
         /// <param name="valueSubscription"></param>
-        public void HdaRemoveItem(object valueSubscription)
+        public void JournalRemoveItem(object valueSubscription)
         {
             BeginInvoke(ct =>
             {
@@ -50,7 +50,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="calculation"></param>
         /// <param name="valueSubscriptionsCollection"></param>
         /// <param name="setResultAction"></param>
-        public void HdaReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerDataObject, Ssz.Utils.DataAccess.TypeId calculation, object[] valueSubscriptionsCollection,
+        public void ReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerDataObject, Ssz.Utils.DataAccess.TypeId calculation, object[] valueSubscriptionsCollection,
             Action<ValueStatusTimestamp[][]?> setResultAction)
         {
             BeginInvoke(ct =>

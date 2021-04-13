@@ -21,7 +21,7 @@ namespace Ssz.Xi.Client
         /// </summary>
         /// <param name="elementId"></param>
         /// <param name="valueSubscription"></param>
-        public void HdaAddItem(string elementId, object valueSubscription)
+        public void JournalAddItem(string elementId, object valueSubscription)
         {
             _xiDataJournalListItemsManager.AddItem(elementId, valueSubscription);
             if (_xiServerProxy == null) throw new InvalidOperationException();
@@ -32,7 +32,7 @@ namespace Ssz.Xi.Client
         ///     If valueSubscription is not subscribed - does nothing.
         /// </summary>
         /// <param name="valueSubscription"></param>
-        public void HdaRemoveItem(object valueSubscription)
+        public void JournalRemoveItem(object valueSubscription)
         {
             _xiDataJournalListItemsManager.RemoveItem(valueSubscription);
         }
@@ -46,7 +46,7 @@ namespace Ssz.Xi.Client
         /// <param name="calculation"></param>
         /// <param name="valueSubscriptionsCollection"></param>
         /// <param name="setResultAction"></param>
-        public void HdaReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerDataObject, Ssz.Utils.DataAccess.TypeId calculation, object[] valueSubscriptionsCollection,
+        public void ReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerDataObject, Ssz.Utils.DataAccess.TypeId calculation, object[] valueSubscriptionsCollection,
             Action<ValueStatusTimestamp[][]?> setResultAction)
         {
             var xiList = _xiDataJournalListItemsManager.XiList;

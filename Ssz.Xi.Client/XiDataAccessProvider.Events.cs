@@ -20,12 +20,8 @@ namespace Ssz.Xi.Client
             add { BeginInvoke(ct => _xiEventListItemsManager.EventMessagesCallback += value); }
             remove { BeginInvoke(ct => _xiEventListItemsManager.EventMessagesCallback -= value); }
         }
-
-        /// <summary>
-        ///     events != null
-        /// </summary>
-        /// <param name="events"></param>
-        public void AckAlarms(Ssz.Utils.DataAccess.EventId[] events)
+        
+        public void AckAlarms(Ssz.Utils.DataAccess.EventId[] eventIds)
         {
             BeginInvoke(ct =>
             {
@@ -44,7 +40,7 @@ namespace Ssz.Xi.Client
                 {
                     if (eventListProxy.Disposed) return;
 
-                    eventListProxy.AcknowledgeAlarms(null, null, events.Select(e => new EventId(e)).ToList());
+                    eventListProxy.AcknowledgeAlarms(null, null, eventIds.Select(e => new EventId(e)).ToList());
                 }
                 catch (Exception ex)
                 {

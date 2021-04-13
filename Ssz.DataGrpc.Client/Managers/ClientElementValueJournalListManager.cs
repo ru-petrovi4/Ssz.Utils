@@ -14,7 +14,7 @@ namespace Ssz.DataGrpc.Client.Managers
     {
         #region construction and destruction
 
-        public ClientElementValueJournalListManager(ILogger<DataGrpcProvider> logger) :
+        public ClientElementValueJournalListManager(ILogger<GrpcDataAccessProvider> logger) :
             base(logger, true)
         {
         }
