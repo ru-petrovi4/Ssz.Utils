@@ -247,15 +247,13 @@ namespace Ssz.DataGrpc.Client
         ///     setResultAction(failedValueSubscriptions) is called, failedValueSubscriptions != null.
         ///     If connection error, failedValueSubscriptions is all clientObjs.        
         /// </summary>
-        public void Write(IValueSubscription[] valueSubscriptions, Any[] values, Action<IValueSubscription[]>? setResultAction)
+        public void Write(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] vsts, Action<IValueSubscription[]>? setResultAction)
         {
-            DateTime utcNow = DateTime.UtcNow;
-
             BeginInvoke(ct =>
             {                
                 _clientElementValueListManager.Subscribe(_clientConnectionManager, _сallbackDispatcher,
                     ClientElementValueListItemsManagerOnElementValuesCallback, true, ct);                
-                object[] failedValueSubscriptions = _clientElementValueListManager.Write(valueSubscriptions, values, utcNow);
+                object[] failedValueSubscriptions = _clientElementValueListManager.Write(valueSubscriptions, vsts);
 
                 if (setResultAction != null)
                 {
@@ -279,15 +277,13 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         /// <param name="valueSubscription"></param>
         /// <param name="value"></param>
-        public void Write(IValueSubscription valueSubscription, Any value)
+        public void Write(IValueSubscription valueSubscription, ValueStatusTimestamp vst)
         {
-            DateTime utcNow = DateTime.UtcNow;
-
             BeginInvoke(ct =>
             {                
                 _clientElementValueListManager.Subscribe(_clientConnectionManager, _сallbackDispatcher,
                     ClientElementValueListItemsManagerOnElementValuesCallback, true, ct);
-                _clientElementValueListManager.Write(valueSubscription, value, utcNow);
+                _clientElementValueListManager.Write(valueSubscription, vst);
             }
             );
         }
@@ -418,7 +414,7 @@ namespace Ssz.DataGrpc.Client
                             {
                                 foreach (IValueSubscription valueSubscription in valueSubscriptions)
                                 {
-                                    valueSubscription.Update(new Any(null));
+                                    valueSubscription.Update(new ValueStatusTimestamp());
                                 }
                                 DataGuid = Guid.NewGuid();
 
@@ -525,7 +521,7 @@ namespace Ssz.DataGrpc.Client
                     if (changedValueSubscription.Obj == null) continue;
                     //var valueSubscriptionObj = (ValueSubscriptionObj)changedValueSubscription.Obj;
 
-                    changedValueSubscription.Update(changedValues[i].Value);                    
+                    changedValueSubscription.Update(changedValues[i]);                    
                 }
                 DataGuid = Guid.NewGuid();
             }

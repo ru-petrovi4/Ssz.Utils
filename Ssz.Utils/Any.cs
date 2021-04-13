@@ -275,15 +275,16 @@ namespace Ssz.Utils
 
         /// <summary>
         ///     Uses ValueAsDouble(false), ValueAsInt32(false), ValueAsString(false) depending of ValueStorageType.
+        ///     Returns true if diff is less than or equal deadband.
         /// </summary>
         /// <param name="that"></param>
         /// <returns></returns>
-        public bool Compare(Any that)
+        public bool Compare(Any that, double deadband = 0.0)
         {            
             switch (ValueStorageType)
             {
                 case StorageType.Double:
-                    return ValueAsDouble(false) == that.ValueAsDouble(false);                    
+                    return Math.Abs(ValueAsDouble(false) - that.ValueAsDouble(false)) <= deadband;                    
                 case StorageType.UInt32:
                     return ValueAsInt32(false) == that.ValueAsInt32(false);                    
                 case StorageType.Object:
@@ -302,6 +303,16 @@ namespace Ssz.Utils
             if (obj == null || !(obj is Any)) return false;
 
             return this == (Any) obj;
+        }
+
+        /// <summary>
+        ///     Strictly copare, no conversions
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public bool Equals(Any that)
+        {
+            return this == that;
         }
 
         /// <summary>        

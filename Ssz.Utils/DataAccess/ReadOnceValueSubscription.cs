@@ -11,7 +11,7 @@ namespace Ssz.Utils.DataAccess
         ///     Is used to one-time read value.
         ///     Callback is invoked when value is not null (value.ValueTypeCode != TypeCode.Empty)        
         /// </summary>
-        public ReadOnceValueSubscription(IDataAccessProvider dataProvider, string id, Action<Any>? setValueAction)
+        public ReadOnceValueSubscription(IDataAccessProvider dataProvider, string id, Action<ValueStatusTimestamp>? setValueAction)
         {
             _dataProvider = dataProvider;
             _setValueAction = setValueAction;
@@ -37,15 +37,15 @@ namespace Ssz.Utils.DataAccess
         ///     Callback Thread.
         /// </summary>
         /// <param name="value"></param>
-        void IValueSubscription.Update(Any value)
+        void IValueSubscription.Update(ValueStatusTimestamp vst)
         {
-            if (value.ValueTypeCode == TypeCode.Empty) return;
+            if (vst.StatusCode == StatusCodes.Unknown) return;
 
             _dataProvider.RemoveItem(this);            
 
             if (_setValueAction != null)
             {
-                _setValueAction(value);
+                _setValueAction(vst);
                 _setValueAction = null;
             }
         }
@@ -55,7 +55,7 @@ namespace Ssz.Utils.DataAccess
         #region private fields
 
         private IDataAccessProvider _dataProvider;
-        private Action<Any>? _setValueAction;
+        private Action<ValueStatusTimestamp>? _setValueAction;
 
         #endregion
     }

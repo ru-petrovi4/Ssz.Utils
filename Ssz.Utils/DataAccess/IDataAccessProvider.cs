@@ -42,9 +42,9 @@ namespace Ssz.Utils.DataAccess
 
         void PollElementValuesChanges(Action<IValueSubscription[]?> setResultAction);
 
-        void Write(IValueSubscription[] valueSubscriptions, Any[] values, Action<IValueSubscription[]>? setResultAction);
+        void Write(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] vsts, Action<IValueSubscription[]>? setResultAction);
         
-        void Write(IValueSubscription valueSubscription, Any value);
+        void Write(IValueSubscription valueSubscription, ValueStatusTimestamp vst);
 
         void Passthrough(string recipientId, string passthroughName, byte[] dataToSend,
             Action<IEnumerable<byte>?> setResultAction);

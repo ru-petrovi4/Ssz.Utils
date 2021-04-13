@@ -15,18 +15,18 @@ namespace Ssz.Utils.DataAccess
         ///     Is used to subscribe for value updating and to write values.
         ///     valueChangedAction(oldValue, newValue) is invoked when Value property changed. Initial Value property is Any(null).        
         /// </summary>
-        public ValueSubscription(IDataAccessProvider dataProvider, string id, Action<Any, Any>? valueChangedAction = null)
+        public ValueSubscription(IDataAccessProvider dataAccessProvider, string id, Action<ValueStatusTimestamp, ValueStatusTimestamp>? valueChangedAction = null)
         {
-            _dataProvider = dataProvider;
+            DataAccessProvider = dataAccessProvider;
             Id = id;
             _valueChangedAction = valueChangedAction;
 
-            ModelId = _dataProvider.AddItem(Id, this);
+            ModelId = DataAccessProvider.AddItem(Id, this);
         }
 
         public void Dispose()
         {
-            _dataProvider.RemoveItem(this);
+            DataAccessProvider.RemoveItem(this);
 
             _valueChangedAction = null;
         }
@@ -35,10 +35,12 @@ namespace Ssz.Utils.DataAccess
 
         #region public functions
 
+        public IDataAccessProvider DataAccessProvider { get; }
+
         /// <summary>
         ///     Id actually used for subscription. Initialized after constructor.       
         /// </summary>
-        public string ModelId { get; private set; }
+        public string ModelId { get; }
 
         /// <summary>
         /// 
@@ -49,38 +51,37 @@ namespace Ssz.Utils.DataAccess
         /// 
         /// </summary>
         /// <param name="value"></param>
-        void IValueSubscription.Update(Any value)
+        void IValueSubscription.Update(ValueStatusTimestamp vst)
         {
-            if (Value == value) return;
-            if (_valueChangedAction != null) _valueChangedAction(Value, value);
-            Value = value;
+            if (Vst == vst) return;
+            if (_valueChangedAction != null) _valueChangedAction(vst, Vst);
+            Vst = vst;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public string Id { get; private set; }
+        public string Id { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        public Any Value { get; private set; }
+        public ValueStatusTimestamp Vst { get; private set; } = new ValueStatusTimestamp();
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="value"></param>
-        public void Write(Any value)
+        public void Write(ValueStatusTimestamp vst)
         {
-            _dataProvider.Write(this, value);
+            DataAccessProvider.Write(this, vst);
         }
 
         #endregion
 
         #region private fields
-
-        private readonly IDataAccessProvider _dataProvider;
-        private Action<Any, Any>? _valueChangedAction;
+        
+        private Action<ValueStatusTimestamp, ValueStatusTimestamp>? _valueChangedAction;
 
         #endregion
     }

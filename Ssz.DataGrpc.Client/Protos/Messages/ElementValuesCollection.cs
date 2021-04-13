@@ -29,7 +29,7 @@ namespace Ssz.DataGrpc.Server
             ObjectStatusCodes.Add(elementValuesCollection.ObjectStatusCodes);
             ObjectTimestamps.Add(elementValuesCollection.ObjectTimestamps);
             ObjectValues = Google.Protobuf.ByteString.CopyFrom(
-                ObjectValues.ToByteArray().Concat(elementValuesCollection.ObjectValues.ToByteArray()).ToArray()
+                ObjectValues.Concat(elementValuesCollection.ObjectValues).ToArray()
                 );
         }
 

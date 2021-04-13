@@ -84,16 +84,16 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         ///     client application issues the data list CommitDataObjectWrites() method
         ///     to write them to the server in a single call.
         /// </summary>
-        /// <param name="valueStatusTimestamp"> The data value to be written. </param>
+        /// <param name="vst"> The data value to be written. </param>
         /// <returns> Returns TRUE if the data object is writable, otherwise FALSE. </returns>
-        public bool PrepareForWrite(ValueStatusTimestamp valueStatusTimestamp)
+        public bool PrepareForWrite(ValueStatusTimestamp vst)
         {
             if (!IsWritable)
             {
                 _pendingWriteValueStatusTimestamp = null;
                 return false;
             }
-            _pendingWriteValueStatusTimestamp = valueStatusTimestamp;
+            _pendingWriteValueStatusTimestamp = vst;
             return true;
         }
 
@@ -101,17 +101,6 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         {
             _pendingWriteValueStatusTimestamp = null;
             _resultCodeWrite = resultCodeWrite;
-        }
-
-        public bool PrepareForRead()
-        {            
-            PreparedForRead = true;
-            return true;
-        }
-
-        public void HasRead()
-        {
-            PreparedForRead = false;
         }
 
         /// <summary>

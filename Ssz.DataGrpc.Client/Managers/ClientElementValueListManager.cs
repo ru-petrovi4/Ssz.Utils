@@ -209,12 +209,12 @@ namespace Ssz.DataGrpc.Client.Managers
 
         /// <summary>
         ///     Returns clientObjs whose write failed.
-        ///     If connection error, no throw and returns all clientObjs.        
+        ///     If connection error, no throw and returns all clientObjs. 
         /// </summary>
         /// <param name="clientObjs"></param>
-        /// <param name="values"></param>
-        /// <param name="timestampUtc"></param>
-        public object[] Write(object[] clientObjs, Any[] values, DateTime timestampUtc)
+        /// <param name="vsts"></param>
+        /// <returns></returns>
+        public object[] Write(object[] clientObjs, ValueStatusTimestamp[] vsts)
         {
             if (DataGrpcList == null || DataGrpcList.Disposed) return clientObjs;
 
@@ -239,7 +239,7 @@ namespace Ssz.DataGrpc.Client.Managers
                     continue;
                 }
                 ClientElementValueListItem dataGrpcElementValueListItem = modelItem.DataGrpcListItemWrapper.DataGrpcListItem;
-                dataGrpcElementValueListItem.PrepareForWrite(ValueStatusTimestampHelper.NewValueStatusTimestamp(values[i], timestampUtc));
+                dataGrpcElementValueListItem.PrepareForWrite(vsts[i]);
             }
 
             IEnumerable<ClientElementValueListItem>? failedItems = null;
@@ -272,16 +272,12 @@ namespace Ssz.DataGrpc.Client.Managers
         }
 
         /// <summary>
-        ///     clientObj != null
-        ///     No throw.
+        /// 
         /// </summary>
         /// <param name="clientObj"></param>
-        /// <param name="value"></param>
-        /// <param name="timestampUtc"></param>
-        public void Write(object clientObj, Any value, DateTime timestampUtc)
+        /// <param name="vst"></param>
+        public void Write(object clientObj, ValueStatusTimestamp vst)
         {
-            if (clientObj == null) throw new ArgumentNullException(@"clientObj");
-
             if (DataGrpcList == null || DataGrpcList.Disposed) return;
 
             ClientObjectInfo? modelItem;
@@ -296,7 +292,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
             try
             {                
-                dataGrpcElementValueListItem.PrepareForWrite(ValueStatusTimestampHelper.NewValueStatusTimestamp(value, timestampUtc));
+                dataGrpcElementValueListItem.PrepareForWrite(vst);
 
                 try
                 {

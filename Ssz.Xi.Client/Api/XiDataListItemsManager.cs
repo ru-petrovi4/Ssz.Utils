@@ -223,12 +223,12 @@ namespace Ssz.Xi.Client.Api
 
         /// <summary>
         ///     Returns clientObjs whose write failed.
-        ///     If connection error, no throw and returns all clientObjs.        
+        ///     If connection error, no throw and returns all clientObjs.    
         /// </summary>
         /// <param name="clientObjs"></param>
-        /// <param name="values"></param>
-        /// <param name="timestampUtc"></param>
-        public object[] Write(object[] clientObjs, Any[] values, DateTime timestampUtc)
+        /// <param name="vsts"></param>
+        /// <returns></returns>
+        public object[] Write(object[] clientObjs, ValueStatusTimestamp[] vsts)
         {
             if (XiList == null || XiList.Disposed) return clientObjs;
 
@@ -253,7 +253,7 @@ namespace Ssz.Xi.Client.Api
                     continue;
                 }
                 IXiDataListItem xiDataListItem = modelItem.XiListItemWrapper.XiListItem;
-                xiDataListItem.PrepareForWrite(ValueStatusTimestampHelper.NewValueStatusTimestamp(values[i], timestampUtc));
+                xiDataListItem.PrepareForWrite(vsts[i]);
             }
 
             IEnumerable<IXiDataListItem>? failedItems = null;
@@ -285,17 +285,9 @@ namespace Ssz.Xi.Client.Api
             return result.ToArray();
         }
 
-        /// <summary>
-        ///     clientObj != null
-        ///     No throw.
-        /// </summary>
-        /// <param name="clientObj"></param>
-        /// <param name="value"></param>
-        /// <param name="timestampUtc"></param>
-        public void Write(object clientObj, Any value, DateTime timestampUtc)
+        
+        public void Write(object clientObj, ValueStatusTimestamp vst)
         {
-            if (clientObj == null) throw new ArgumentNullException(@"clientObj");
-
             if (XiList == null || XiList.Disposed) return;
 
             ModelItem? modelItem;
@@ -310,7 +302,7 @@ namespace Ssz.Xi.Client.Api
 
             try
             {                
-                xiDataListItem.PrepareForWrite(ValueStatusTimestampHelper.NewValueStatusTimestamp(value, timestampUtc));
+                xiDataListItem.PrepareForWrite(vst);
 
                 try
                 {

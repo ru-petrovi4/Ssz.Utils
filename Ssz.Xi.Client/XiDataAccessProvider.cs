@@ -234,16 +234,14 @@ namespace Ssz.Xi.Client
         ///     setResultAction(failedValueSubscriptions) is called, failedValueSubscriptions != null.
         ///     If connection error, failedValueSubscriptions is all clientObjs.        
         /// </summary>
-        public void Write(IValueSubscription[] valueSubscriptions, Any[] values, Action<IValueSubscription[]>? setResultAction)
+        public void Write(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] vsts, Action<IValueSubscription[]>? setResultAction)
         {
-            DateTime utcNow = DateTime.UtcNow;
-
             BeginInvoke(ct =>
             {
                 if (_xiServerProxy == null) throw new InvalidOperationException();
                 _xiDataListItemsManager.Subscribe(_xiServerProxy, _сallbackDispatcher,
                     XiDataListItemsManagerOnElementValuesCallback, true, ct);                
-                object[] failedValueSubscriptions = _xiDataListItemsManager.Write(valueSubscriptions, values, utcNow);
+                object[] failedValueSubscriptions = _xiDataListItemsManager.Write(valueSubscriptions, vsts);
 
                 if (setResultAction != null)
                 {
@@ -266,16 +264,14 @@ namespace Ssz.Xi.Client
         /// </summary>
         /// <param name="valueSubscription"></param>
         /// <param name="value"></param>
-        public void Write(IValueSubscription valueSubscription, Any value)
+        public void Write(IValueSubscription valueSubscription, ValueStatusTimestamp vst)
         {
-            DateTime utcNow = DateTime.UtcNow;
-
             BeginInvoke(ct =>
             {
                 if (_xiServerProxy == null) throw new InvalidOperationException();
                 _xiDataListItemsManager.Subscribe(_xiServerProxy, _сallbackDispatcher,
                     XiDataListItemsManagerOnElementValuesCallback, true, ct);
-                _xiDataListItemsManager.Write(valueSubscription, value, utcNow);
+                _xiDataListItemsManager.Write(valueSubscription, vst);
             });
         }
 
@@ -410,7 +406,7 @@ namespace Ssz.Xi.Client
                             {
                                 foreach (IValueSubscription valueSubscription in valueSubscriptions)
                                 {
-                                    valueSubscription.Update(new Any(null));
+                                    valueSubscription.Update(new ValueStatusTimestamp());
                                 }
                                 DataGuid = Guid.NewGuid();
 
@@ -536,7 +532,7 @@ namespace Ssz.Xi.Client
                     if (changedValueSubscription.Obj == null) continue;
                     //var valueSubscriptionObj = (ValueSubscriptionObj)changedValueSubscription.Obj;
 
-                    changedValueSubscription.Update(changedValues[i].Value);                    
+                    changedValueSubscription.Update(changedValues[i]);                    
                 }
                 DataGuid = Guid.NewGuid();
             }

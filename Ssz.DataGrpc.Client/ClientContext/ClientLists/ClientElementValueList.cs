@@ -280,11 +280,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
         #endregion
 
         #region private fields
-
-        /// <summary>
-        ///     This data member holds the last exception message encountered by the
-        ///     ElementValuesCallback callback when calling valuesUpdateEvent().
-        /// </summary>
+        
         private CaseInsensitiveDictionary<ElementValuesCollection> _incompleteElementValuesCollection = new CaseInsensitiveDictionary<ElementValuesCollection>();
 
         #endregion
