@@ -60,6 +60,6 @@ namespace Ssz.Utils.DataAccess
 
         event Action<EventMessage[]> EventMessagesCallback;
 
-        void AckAlarms(EventId[] eventIds);
+        void AckAlarms(string operatorName, string comment, EventId[] eventIdsToAck);
     }
 }

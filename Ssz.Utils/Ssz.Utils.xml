@@ -91,11 +91,13 @@
             <param name="right"></param>
             <returns></returns>
         </member>
-        <member name="M:Ssz.Utils.Any.Compare(Ssz.Utils.Any)">
+        <member name="M:Ssz.Utils.Any.Compare(Ssz.Utils.Any,System.Double)">
             <summary>
                 Uses ValueAsDouble(false), ValueAsInt32(false), ValueAsString(false) depending of ValueStorageType.
+                Returns true if diff is less than or equal deadband.
             </summary>
             <param name="that"></param>
+            <param name="deadband"></param>
             <returns></returns>
         </member>
         <member name="M:Ssz.Utils.Any.Equals(System.Object)">
@@ -103,6 +105,13 @@
                 Strictly copare, no conversions
             </summary>
             <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Any.Equals(Ssz.Utils.Any)">
+            <summary>
+                Strictly copare, no conversions
+            </summary>
+            <param name="that"></param>
             <returns></returns>
         </member>
         <member name="M:Ssz.Utils.Any.GetHashCode">
@@ -2327,19 +2336,13 @@
             One or more of the Requested Fields has changed.
             </summary>
         </member>
-        <member name="M:Ssz.Utils.DataAccess.IValueSubscription.Update(Ssz.Utils.Any)">
-            <summary>        
-                When item don't exist in data source, invokes with new Any(DBNull.Value)
-                When disconnected from data source, invokes with new Any(null).
-            </summary>
-        </member>
         <member name="P:Ssz.Utils.DataAccess.IValueSubscription.Obj">
             <summary>
                 Property to use internally in ModelDataProvider. You need to
                 implement this field, but you shouldn't change its value.
             </summary>
         </member>
-        <member name="M:Ssz.Utils.DataAccess.ReadOnceValueSubscription.#ctor(Ssz.Utils.DataAccess.IDataAccessProvider,System.String,System.Action{Ssz.Utils.Any})">
+        <member name="M:Ssz.Utils.DataAccess.ReadOnceValueSubscription.#ctor(Ssz.Utils.DataAccess.IDataAccessProvider,System.String,System.Action{Ssz.Utils.DataAccess.ValueStatusTimestamp})">
             <summary>
                 Is used to one-time read value.
                 Callback is invoked when value is not null (value.ValueTypeCode != TypeCode.Empty)        
@@ -2355,11 +2358,11 @@
             
             </summary>
         </member>
-        <member name="M:Ssz.Utils.DataAccess.ReadOnceValueSubscription.Ssz#Utils#DataAccess#IValueSubscription#Update(Ssz.Utils.Any)">
+        <member name="M:Ssz.Utils.DataAccess.ReadOnceValueSubscription.Ssz#Utils#DataAccess#IValueSubscription#Update(Ssz.Utils.DataAccess.ValueStatusTimestamp)">
             <summary>
-                Callback Thread.
+            
             </summary>
-            <param name="value"></param>
+            <param name="valueStatusTimestamp"></param>
         </member>
         <member name="M:Ssz.Utils.DataAccess.TypeId.#ctor(System.Type)">
             <summary>
@@ -2369,6 +2372,11 @@
                 The .NET / CLI Type for which the TypeId is being constructed.
             </param>
         </member>
+        <member name="P:Ssz.Utils.DataAccess.ValueJournalSubscription.Id">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="M:Ssz.Utils.DataAccess.ValueStatusTimestamp.ToString">
             <summary>
                 Provides an simple overload for the ToString() method that combines the
@@ -2376,7 +2384,30 @@
             </summary>
             <returns> </returns>
         </member>
-        <member name="M:Ssz.Utils.DataAccess.ValueSubscription.#ctor(Ssz.Utils.DataAccess.IDataAccessProvider,System.String,System.Action{Ssz.Utils.Any,Ssz.Utils.Any})">
+        <member name="M:Ssz.Utils.DataAccess.ValueStatusTimestamp.op_Equality(Ssz.Utils.DataAccess.ValueStatusTimestamp,Ssz.Utils.DataAccess.ValueStatusTimestamp)">
+            <summary>        
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.DataAccess.ValueStatusTimestamp.op_Inequality(Ssz.Utils.DataAccess.ValueStatusTimestamp,Ssz.Utils.DataAccess.ValueStatusTimestamp)">
+            <summary>        
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.DataAccess.ValueStatusTimestamp.Compare(Ssz.Utils.DataAccess.ValueStatusTimestamp,System.Double)">
+            <summary>
+                Uses ValueAsDouble(false), ValueAsInt32(false), ValueAsString(false) depending of ValueStorageType.
+                Returns true if diff is less than or equal deadband.
+            </summary>
+            <param name="that"></param>
+            <param name="deadband"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.DataAccess.ValueSubscription.#ctor(Ssz.Utils.DataAccess.IDataAccessProvider,System.String,System.Action{Ssz.Utils.DataAccess.ValueStatusTimestamp,Ssz.Utils.DataAccess.ValueStatusTimestamp})">
             <summary>
                 Is used to subscribe for value updating and to write values.
                 valueChangedAction(oldValue, newValue) is invoked when Value property changed. Initial Value property is Any(null).        
@@ -2392,27 +2423,27 @@
             
             </summary>
         </member>
-        <member name="M:Ssz.Utils.DataAccess.ValueSubscription.Ssz#Utils#DataAccess#IValueSubscription#Update(Ssz.Utils.Any)">
+        <member name="M:Ssz.Utils.DataAccess.ValueSubscription.Ssz#Utils#DataAccess#IValueSubscription#Update(Ssz.Utils.DataAccess.ValueStatusTimestamp)">
             <summary>
             
             </summary>
-            <param name="value"></param>
+            <param name="valueStatusTimestamp"></param>
         </member>
         <member name="P:Ssz.Utils.DataAccess.ValueSubscription.Id">
             <summary>
             
             </summary>
         </member>
-        <member name="P:Ssz.Utils.DataAccess.ValueSubscription.Value">
+        <member name="P:Ssz.Utils.DataAccess.ValueSubscription.ValueStatusTimestamp">
             <summary>
             
             </summary>
         </member>
-        <member name="M:Ssz.Utils.DataAccess.ValueSubscription.Write(Ssz.Utils.Any)">
+        <member name="M:Ssz.Utils.DataAccess.ValueSubscription.Write(Ssz.Utils.DataAccess.ValueStatusTimestamp)">
             <summary>
             
             </summary>
-            <param name="value"></param>
+            <param name="valueStatusTimestamp"></param>
         </member>
         <member name="M:Ssz.Utils.DynamicExpression.Initialize(System.Type[])">
             <summary>

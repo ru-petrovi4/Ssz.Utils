@@ -246,23 +246,28 @@ namespace Ssz.Xi.Client.Internal.Lists
                     if (item.PendingWriteValueStatusTimestamp != null &&
                         item.PendingWriteValueStatusTimestamp.StatusCode != StatusCodes.Unknown)
                     {
+                        var statusCode = XiStatusCode.MakeStatusCode(
+                            XiStatusCode.MakeStatusByte((byte)XiStatusCodeStatusBits.GoodNonSpecific, 0),
+                            XiStatusCode.MakeFlagsByte((byte)XiStatusCodeHistoricalValueType.NotUsed, false, false,
+                                XiStatusCodeAdditionalDetailType.NotUsed),
+                            0);
                         switch (item.PendingWriteValueStatusTimestamp.Value.ValueStorageType)
                         {
                             case Any.StorageType.Double:
                                 writeValueArrays.SetDouble(dblIdx++, item.ServerAlias,
-                                    item.PendingWriteValueStatusTimestamp.StatusCode,
+                                    statusCode,
                                     item.PendingWriteValueStatusTimestamp.TimestampUtc,
                                     item.PendingWriteValueStatusTimestamp.Value.StorageDouble);
                                 break;
                             case Any.StorageType.UInt32:
                                 writeValueArrays.SetUint(intIdx++, item.ServerAlias,
-                                    item.PendingWriteValueStatusTimestamp.StatusCode,
+                                    statusCode,
                                     item.PendingWriteValueStatusTimestamp.TimestampUtc,
                                     item.PendingWriteValueStatusTimestamp.Value.StorageUInt32);
                                 break;
                             case Any.StorageType.Object:
                                 writeValueArrays.SetObject(objIdx++, item.ServerAlias,
-                                    item.PendingWriteValueStatusTimestamp.StatusCode,
+                                    statusCode,
                                     item.PendingWriteValueStatusTimestamp.TimestampUtc,
                                     item.PendingWriteValueStatusTimestamp.Value.StorageObject);
                                 break;

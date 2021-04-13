@@ -41,7 +41,7 @@ namespace Ssz.WpfHmi.Common.ControlsCommon
                 }
             }
 
-            if (eventIds.Count > 0) App.DataAccessProvider.AckAlarms(eventIds.ToArray());
+            if (eventIds.Count > 0) App.DataAccessProvider.AckAlarms("", "", eventIds.ToArray());
         }
 
         #endregion

@@ -40,13 +40,13 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// </summary>
         /// <param name="operatorName"></param>
         /// <param name="comment"></param>
-        /// <param name="alarmsToAck"></param>
+        /// <param name="eventIdsToAck"></param>
         /// <returns></returns>
-        public EventIdResult[] AcknowledgeAlarms(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] alarmsToAck)
+        public EventIdResult[] AckAlarms(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
-            return Context.AcknowledgeAlarms(ListServerAlias, operatorName, comment, alarmsToAck);
+            return Context.AckAlarms(ListServerAlias, operatorName, comment, eventIdsToAck);
         }
 
         /// <summary>

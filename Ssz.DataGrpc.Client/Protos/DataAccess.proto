@@ -33,7 +33,7 @@ service DataAccess {
 
   rpc WriteValues (WriteValuesRequest) returns (WriteValuesReply);
 
-  rpc AcknowledgeAlarms (AcknowledgeAlarmsRequest) returns (AcknowledgeAlarmsReply);
+  rpc AckAlarms (AckAlarmsRequest) returns (AckAlarmsReply);
 
   rpc Passthrough (PassthroughRequest) returns (PassthroughReply);
 }
@@ -314,15 +314,15 @@ message WriteValuesReply {
   repeated AliasResult results = 1;
 }
 
-message AcknowledgeAlarmsRequest {
+message AckAlarmsRequest {
   string context_id = 1;
   uint32 list_server_alias = 2; 
   string operator_name = 3;
   string comment = 4;
-  repeated EventId alarms_to_ack = 5;
+  repeated EventId event_ids_to_ack = 5;
 }
 
-message AcknowledgeAlarmsReply {  
+message AckAlarmsReply {  
   repeated EventIdResult results = 1;
 }
 

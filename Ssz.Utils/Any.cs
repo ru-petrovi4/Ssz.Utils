@@ -278,6 +278,7 @@ namespace Ssz.Utils
         ///     Returns true if diff is less than or equal deadband.
         /// </summary>
         /// <param name="that"></param>
+        /// <param name="deadband"></param>
         /// <returns></returns>
         public bool Compare(Any that, double deadband = 0.0)
         {            
@@ -308,7 +309,7 @@ namespace Ssz.Utils
         /// <summary>
         ///     Strictly copare, no conversions
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="that"></param>
         /// <returns></returns>
         public bool Equals(Any that)
         {

@@ -22,7 +22,7 @@ namespace Ssz.DataGrpc.Client
             remove { BeginInvoke(ct => _clientEventListManager.EventMessagesCallback -= value); }
         }
         
-        public void AckAlarms(Ssz.Utils.DataAccess.EventId[] eventIds)
+        public void AckAlarms(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
         {
             BeginInvoke(ct =>
             {
@@ -41,7 +41,7 @@ namespace Ssz.DataGrpc.Client
                 {
                     if (dataGrpcEventList.Disposed) return;
 
-                    dataGrpcEventList.AcknowledgeAlarms(@"", @"", eventIds);
+                    dataGrpcEventList.AckAlarms(operatorName, comment, eventIdsToAck);
                 }
                 catch (Exception ex)
                 {

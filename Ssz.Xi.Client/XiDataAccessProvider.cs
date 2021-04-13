@@ -262,10 +262,11 @@ namespace Ssz.Xi.Client
             });
         }
 
-        /// <summary>        
+        /// <summary>
+        ///
         /// </summary>
         /// <param name="valueSubscription"></param>
-        /// <param name="value"></param>
+        /// <param name="valueStatusTimestamp"></param>
         public void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp)
         {
             BeginInvoke(ct =>

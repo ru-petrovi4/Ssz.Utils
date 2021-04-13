@@ -34,9 +34,9 @@ namespace Ssz.Utils.DataAccess
         object? IValueSubscription.Obj { get; set; }
 
         /// <summary>
-        ///     Callback Thread.
+        /// 
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="valueStatusTimestamp"></param>
         void IValueSubscription.Update(ValueStatusTimestamp valueStatusTimestamp)
         {
             if (valueStatusTimestamp.StatusCode == StatusCodes.Unknown) return;

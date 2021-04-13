@@ -306,17 +306,6 @@
             </summary>
             <returns> List Items than was not added or null. </returns>
         </member>
-        <member name="T:Ssz.Xi.Client.Api.ValueStatusTimestampHelper">
-            <summary>
-                The Xi Data Value class is the Client Base representation of data values.
-            </summary>
-        </member>
-        <member name="M:Ssz.Xi.Client.Api.ValueStatusTimestampHelper.NewValueStatusTimestamp(Ssz.Utils.Any,System.DateTime)">
-            <summary>
-                It creates a data value
-                with a good status and DateTime.MinValue timestamp.
-            </summary>
-        </member>
         <member name="T:Ssz.Xi.Client.Api.XiCategorySpecificFields">
             <summary>
                 This class defines the list of category=specific fields that the client can request the server to add to event
@@ -377,23 +366,14 @@
                 No throw.
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.Api.XiDataListItemsManager.Write(System.Object[],Ssz.Utils.Any[],System.DateTime)">
+        <member name="M:Ssz.Xi.Client.Api.XiDataListItemsManager.Write(System.Object[],Ssz.Utils.DataAccess.ValueStatusTimestamp[])">
             <summary>
                 Returns clientObjs whose write failed.
-                If connection error, no throw and returns all clientObjs.        
+                If connection error, no throw and returns all clientObjs.    
             </summary>
             <param name="clientObjs"></param>
-            <param name="values"></param>
-            <param name="timestampUtc"></param>
-        </member>
-        <member name="M:Ssz.Xi.Client.Api.XiDataListItemsManager.Write(System.Object,Ssz.Utils.Any,System.DateTime)">
-            <summary>
-                clientObj != null
-                No throw.
-            </summary>
-            <param name="clientObj"></param>
-            <param name="value"></param>
-            <param name="timestampUtc"></param>
+            <param name="valueStatusTimestamps"></param>
+            <returns></returns>
         </member>
         <member name="T:Ssz.Xi.Client.Api.XiDataListItemsManager.ElementValuesCallbackEventHandler">
             <summary>
@@ -2739,7 +2719,7 @@
                 client application issues the data list CommitDataObjectWrites() method
                 to write them to the server in a single call.
             </summary>
-            <param name="xiValueStatusTimestamp"> The data value to be written. </param>
+            <param name="valueStatusTimestamp"> The data value to be written. </param>
             <returns> Returns TRUE if the data object is writable, otherwise FALSE. </returns>
         </member>
         <member name="P:Ssz.Xi.Client.Internal.ListItems.XiDataListItem.ValueStatusTimestamp">
@@ -2782,7 +2762,7 @@
                 This data member is the private representation of the PendingWriteDataValue property.
             </summary>
         </member>
-        <member name="F:Ssz.Xi.Client.Internal.ListItems.XiDataListItem._xiValueStatusTimestamp">
+        <member name="F:Ssz.Xi.Client.Internal.ListItems.XiDataListItem._valueStatusTimestamp">
             <summary>
                 This data member is the private representation of the DataValue property.
             </summary>
@@ -3614,7 +3594,7 @@
             <param name="serverStatus"> The ServerStatus object that describes the server that is shutting down. </param>
             <param name="reason"> The reason the context is being closed. </param>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.XiCallback.Xi#Contracts#ICallback#ElementValuesCallback(System.String,System.UInt32,Xi.Contracts.Data.DataValueArraysWithAlias)">
+        <member name="M:Ssz.Xi.Client.Internal.XiCallback.Xi#Contracts#ICallback#InformationReport(System.String,System.UInt32,Xi.Contracts.Data.DataValueArraysWithAlias)">
             <summary>
                 <para> This callback method is implemented by the client to receive data changes. </para>
                 <para>
@@ -3641,7 +3621,7 @@
             <param name="clientListId"> The client identifier of the list for which data changes are being reported. </param>
             <param name="updatedValues"> The values being reported. </param>
         </member>
-        <member name="M:Ssz.Xi.Client.Internal.XiCallback.Xi#Contracts#ICallback#EventMessagesCallback(System.String,System.UInt32,Xi.Contracts.Data.EventMessage[])">
+        <member name="M:Ssz.Xi.Client.Internal.XiCallback.Xi#Contracts#ICallback#EventNotification(System.String,System.UInt32,Xi.Contracts.Data.EventMessage[])">
             <summary>
                 <para> This callback method is implemented by the client to receive alarms and events. </para>
                 <para>
@@ -4227,18 +4207,19 @@
                 If call to server failed setResultAction(null) is called, otherwise setResultAction(changedValueSubscriptions) is called.        
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Write(Ssz.Utils.DataAccess.IValueSubscription[],Ssz.Utils.Any[],System.Action{Ssz.Utils.DataAccess.IValueSubscription[]})">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Write(Ssz.Utils.DataAccess.IValueSubscription[],Ssz.Utils.DataAccess.ValueStatusTimestamp[],System.Action{Ssz.Utils.DataAccess.IValueSubscription[]})">
             <summary>        
                 setResultAction(..) is called using сallbackDoer, see Initialize(..).
                 setResultAction(failedValueSubscriptions) is called, failedValueSubscriptions != null.
                 If connection error, failedValueSubscriptions is all clientObjs.        
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Write(Ssz.Utils.DataAccess.IValueSubscription,Ssz.Utils.Any)">
-            <summary>        
-            </summary>
-            <param name="valueSubscription"></param>
-            <param name="value"></param>
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Write(Ssz.Utils.DataAccess.IValueSubscription,Ssz.Utils.DataAccess.ValueStatusTimestamp)">
+             <summary>
+            
+             </summary>
+             <param name="valueSubscription"></param>
+             <param name="valueStatusTimestamp"></param>
         </member>
         <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Passthrough(System.String,System.String,System.Byte[],System.Action{System.Collections.Generic.IEnumerable{System.Byte}})">
             <summary>        
@@ -4293,20 +4274,25 @@
                 Used in Xi Context initialization.
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.HdaAddItem(System.String,System.Object)">
+        <member name="E:Ssz.Xi.Client.XiDataAccessProvider.EventMessagesCallback">
+            <summary>
+                Is called using сallbackDoer, see Initialize(..).        
+            </summary>
+        </member>
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.JournalAddItem(System.String,System.Object)">
             <summary>        
                 valueSubscription.Update() is called from сallbackDoer.
             </summary>
             <param name="elementId"></param>
             <param name="valueSubscription"></param>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.HdaRemoveItem(System.Object)">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.JournalRemoveItem(System.Object)">
             <summary>        
                 If valueSubscription is not subscribed - does nothing.
             </summary>
             <param name="valueSubscription"></param>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.HdaReadElementValueJournals(System.DateTime,System.DateTime,System.UInt32,Ssz.Utils.DataAccess.TypeId,System.Object[],System.Action{Ssz.Utils.DataAccess.ValueStatusTimestamp[][]})">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.ReadElementValueJournals(System.DateTime,System.DateTime,System.UInt32,Ssz.Utils.DataAccess.TypeId,System.Object[],System.Action{Ssz.Utils.DataAccess.ValueStatusTimestamp[][]})">
             <summary>
             
             </summary>
@@ -4316,17 +4302,6 @@
             <param name="calculation"></param>
             <param name="valueSubscriptionsCollection"></param>
             <param name="setResultAction"></param>
-        </member>
-        <member name="E:Ssz.Xi.Client.XiDataAccessProvider.EventMessagesCallback">
-            <summary>
-                Is called using сallbackDoer, see Initialize(..).        
-            </summary>
-        </member>
-        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.AckAlarms(Ssz.Utils.DataAccess.EventId[])">
-            <summary>
-                events != null
-            </summary>
-            <param name="events"></param>
         </member>
         <member name="T:Xi.Contracts.Constants.AlarmStateChangeCodes">
             <summary>
@@ -10819,14 +10794,14 @@
             The server supports the ICallback.Abort() method.
             </summary>
         </member>
-        <member name="F:Xi.Contracts.Data.XiMethods.ICallback_ElementValuesCallback">
+        <member name="F:Xi.Contracts.Data.XiMethods.ICallback_InformationReport">
             <summary>
-            The server supports the ICallback.ElementValuesCallback() method.
+            The server supports the ICallback.InformationReport() method.
             </summary>
         </member>
-        <member name="F:Xi.Contracts.Data.XiMethods.ICallback_EventMessagesCallback">
+        <member name="F:Xi.Contracts.Data.XiMethods.ICallback_EventNotification">
             <summary>
-            The server supports the ICallback.EventMessagesCallback() method.
+            The server supports the ICallback.EventNotification() method.
             </summary>
         </member>
         <member name="F:Xi.Contracts.Data.XiMethods.ICallback_PassthroughCallback">
@@ -11137,7 +11112,7 @@
             The reason the context is being closed.
             </param>
         </member>
-        <member name="M:Xi.Contracts.ICallback.ElementValuesCallback(System.String,System.UInt32,Xi.Contracts.Data.DataValueArraysWithAlias)">
+        <member name="M:Xi.Contracts.ICallback.InformationReport(System.String,System.UInt32,Xi.Contracts.Data.DataValueArraysWithAlias)">
             <summary>
             <para>This callback method is implemented by the client 
             to receive data changes. </para> 
@@ -11173,7 +11148,7 @@
             The values being reported.
             </param>
         </member>
-        <member name="M:Xi.Contracts.ICallback.EventMessagesCallback(System.String,System.UInt32,Xi.Contracts.Data.EventMessage[])">
+        <member name="M:Xi.Contracts.ICallback.EventNotification(System.String,System.UInt32,Xi.Contracts.Data.EventMessage[])">
             <summary>
             <para>This callback method is implemented by the client to 
             receive alarms and events.</para> 

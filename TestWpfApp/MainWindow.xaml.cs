@@ -37,14 +37,14 @@ namespace TestWpfApp
             MainAlarmListControl.MainDataGrid.ItemsSource = _alarmsListViewModel.Alarms;
 
             App.DataAccessProvider.Initialize(this, true, @"http://localhost:60080/SszCtcmXiServer/ServerDiscovery", "TestWpfApp", Environment.MachineName, "", new CaseInsensitiveDictionary<string>());
-            App.DataAccessProvider.EventNotification += XiDataAccessProviderOnEventNotification;
+            App.DataAccessProvider.EventMessagesCallback += XiDataAccessProviderOnEventMessagesCallback;
             App.DataAccessProvider.Disconnected += XiDataAccessProviderOnDisconnected;
 
             _valueSubscription = new ValueSubscription(App.DataAccessProvider,
                 "BP2.propTransmValueDspl",
-                (oldValue, newValue) =>
+                (oldVst, newVst) =>
                 {
-                    MainTextBlock.Text = newValue.ValueAsString(true);
+                    MainTextBlock.Text = newVst.Value.ValueAsString(true);
                 });
         }
 
@@ -55,7 +55,7 @@ namespace TestWpfApp
             EventSourceModel.Instance.Clear();
         }
 
-        private async void XiDataAccessProviderOnEventNotification(EventMessage[] newEventMessages)
+        private async void XiDataAccessProviderOnEventMessagesCallback(EventMessage[] newEventMessages)
         {
             List<AlarmInfoViewModelBase> newAlarmInfoViewModels = new List<AlarmInfoViewModelBase>();
             foreach (EventMessage eventMessage in newEventMessages.Where(em => em != null).OrderBy(em => em.OccurrenceTime))

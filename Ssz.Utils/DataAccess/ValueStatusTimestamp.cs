@@ -87,6 +87,7 @@ namespace Ssz.Utils.DataAccess
         ///     Returns true if diff is less than or equal deadband.
         /// </summary>
         /// <param name="that"></param>
+        /// <param name="deadband"></param>
         /// <returns></returns>
         public bool Compare(ValueStatusTimestamp that, double deadband = 0.0)
         {

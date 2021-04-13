@@ -132,9 +132,9 @@ namespace TestWpfApp.Alarms
                     var tagCompleted = new TaskCompletionSource<string>();
                     var descCompleted = new TaskCompletionSource<string>();
                     new ReadOnceValueSubscription(App.DataAccessProvider, varName + ".propTag",
-                               any => tagCompleted.SetResult(any.ValueAsString(false)));
+                               vst => tagCompleted.SetResult(vst.Value.ValueAsString(false)));
                     new ReadOnceValueSubscription(App.DataAccessProvider, varName + ".propDescription",
-                               any => descCompleted.SetResult(any.ValueAsString(false)));
+                               vst => descCompleted.SetResult(vst.Value.ValueAsString(false)));
                     tag = await tagCompleted.Task ?? @"";
                     desc = await descCompleted.Task ?? @"";
                     area = @"";

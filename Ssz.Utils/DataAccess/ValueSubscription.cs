@@ -50,7 +50,7 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="valueStatusTimestamp"></param>
         void IValueSubscription.Update(ValueStatusTimestamp valueStatusTimestamp)
         {
             if (ValueStatusTimestamp == valueStatusTimestamp) return;
@@ -71,7 +71,7 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="valueStatusTimestamp"></param>
         public void Write(ValueStatusTimestamp valueStatusTimestamp)
         {
             DataAccessProvider.Write(this, valueStatusTimestamp);

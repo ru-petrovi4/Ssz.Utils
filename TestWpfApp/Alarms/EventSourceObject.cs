@@ -122,11 +122,11 @@ namespace Ssz.WpfHmi.Common.ModelData.Events
             if (App.DataAccessProvider.IsConnected)
             {
                 bool anyUnacked = AnyUnacked();
-                subscriber.Update(new Any(anyUnacked));
+                subscriber.Update(new ValueStatusTimestamp(new Any(anyUnacked), StatusCodes.Good, DateTime.UtcNow));
             }
             else
             {
-                subscriber.Update(new Any(null));
+                subscriber.Update(new ValueStatusTimestamp());
             }
         }
 
@@ -152,11 +152,11 @@ namespace Ssz.WpfHmi.Common.ModelData.Events
             if (App.DataAccessProvider.IsConnected)
             {
                 uint maxCategory = GetActiveAlarmsMaxCategory();
-                subscriber.Update(new Any(maxCategory));
+                subscriber.Update(new ValueStatusTimestamp(new Any(maxCategory), StatusCodes.Good, DateTime.UtcNow));
             }
             else
             {
-                subscriber.Update(new Any(null));
+                subscriber.Update(new ValueStatusTimestamp());
             }
         }
 
@@ -182,11 +182,11 @@ namespace Ssz.WpfHmi.Common.ModelData.Events
             if (App.DataAccessProvider.IsConnected)
             {
                 Brush alarmBrush = GetAlarmBrush();
-                subscriber.Update(new Any(alarmBrush));
+                subscriber.Update(new ValueStatusTimestamp(new Any(alarmBrush), StatusCodes.Good, DateTime.UtcNow));
             }
             else
             {
-                subscriber.Update(new Any(null));
+                subscriber.Update(new ValueStatusTimestamp());
             }
         }
 
@@ -212,11 +212,11 @@ namespace Ssz.WpfHmi.Common.ModelData.Events
             if (App.DataAccessProvider.IsConnected)
             {
                 AlarmConditionType alarmConditionType = GetAlarmConditionType();
-                subscriber.Update(new Any(alarmConditionType));
+                subscriber.Update(new ValueStatusTimestamp(new Any(alarmConditionType), StatusCodes.Good, DateTime.UtcNow));
             }
             else
             {
-                subscriber.Update(new Any(null));
+                subscriber.Update(new ValueStatusTimestamp());
             }
         }
 
