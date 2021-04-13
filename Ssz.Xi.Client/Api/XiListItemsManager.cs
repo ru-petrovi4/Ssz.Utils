@@ -62,7 +62,7 @@ namespace Ssz.Xi.Client.Api
             {
                 xiListItemWrapper.XiListItem = null;
                 xiListItemWrapper.ConnectionError = false;
-                xiListItemWrapper.InvalidId = false;
+                xiListItemWrapper.ItemDoesNotExist = false;
             }            
 
             XiList = null;
@@ -131,7 +131,7 @@ namespace Ssz.Xi.Client.Api
             foreach (var kvp in _xiListItemWrappersDictionary)
             {
                 XiListItemWrapper xiListItemWrapper = kvp.Value;
-                if (xiListItemWrapper.XiListItem == null && !xiListItemWrapper.InvalidId)
+                if (xiListItemWrapper.XiListItem == null && !xiListItemWrapper.ItemDoesNotExist)
                 {
                     xiListItemWrappersToAdd.Add(xiListItemWrapper);
                     TXiListItem? xiListItem = null;
@@ -185,7 +185,7 @@ namespace Ssz.Xi.Client.Api
                                 modelItem.ForceNotifyClientObj = true;
                             }
                         }                        
-                        xiListItemWrapper.InvalidId = false;
+                        xiListItemWrapper.ItemDoesNotExist = false;
                         xiListItemWrapper.XiListItem = null;
                     }
                 }
@@ -196,9 +196,9 @@ namespace Ssz.Xi.Client.Api
                         var xiListItemWrapper = notAddedXiListItem.Obj as XiListItemWrapper;
                         if (xiListItemWrapper == null) throw new InvalidOperationException();
                         xiListItemWrappersToAdd.Remove(xiListItemWrapper);
-                        if (!xiListItemWrapper.InvalidId)
+                        if (!xiListItemWrapper.ItemDoesNotExist)
                         {
-                            xiListItemWrapper.InvalidId = true;
+                            xiListItemWrapper.ItemDoesNotExist = true;
                             foreach (ModelItem modelItem in xiListItemWrapper.ModelItems)
                             {
                                 modelItem.ForceNotifyClientObj = true;
@@ -211,9 +211,9 @@ namespace Ssz.Xi.Client.Api
                     {
                         if (xiListItemWrapper.XiListItem == null)
                         {
-                            if (!xiListItemWrapper.InvalidId)
+                            if (!xiListItemWrapper.ItemDoesNotExist)
                             {
-                                xiListItemWrapper.InvalidId = true;
+                                xiListItemWrapper.ItemDoesNotExist = true;
                                 foreach (ModelItem modelItem in xiListItemWrapper.ModelItems)
                                 {
                                     modelItem.ForceNotifyClientObj = true;
@@ -223,7 +223,7 @@ namespace Ssz.Xi.Client.Api
                         }
                         else
                         {
-                            xiListItemWrapper.InvalidId = false;
+                            xiListItemWrapper.ItemDoesNotExist = false;
                             xiListItemWrapper.ConnectionError = false;
                             foreach (ModelItem modelItem in xiListItemWrapper.ModelItems)
                             {
@@ -318,7 +318,7 @@ namespace Ssz.Xi.Client.Api
 
             public bool ConnectionError;
 
-            public bool InvalidId;
+            public bool ItemDoesNotExist;
         }
 
         public class ModelItem

@@ -130,10 +130,10 @@ namespace Ssz.DataGrpc.Client.Managers
                                 modelItem.ForceNotifyClientObj = false;
                                 if (modelItem.ClientObj != null)
                                 {
-                                    if (dataGrpcListItemWrapper.InvalidId)
+                                    if (dataGrpcListItemWrapper.ItemDoesNotExist)
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(ValueStatusTimestampHelper.NewValueStatusTimestamp(new Any(DBNull.Value), utcNow));
+                                        changedValues.Add(new ValueStatusTimestamp(new Any(), StatusCodes.ItemDoesNotExist, utcNow));
                                     }
                                     else if (dataGrpcListItemWrapper.DataGrpcListItem != null)
                                     {
@@ -143,7 +143,7 @@ namespace Ssz.DataGrpc.Client.Managers
                                     else
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(ValueStatusTimestampHelper.NewValueStatusTimestamp(new Any(null), utcNow));
+                                        changedValues.Add(new ValueStatusTimestamp(new Any(), StatusCodes.Unknown, utcNow));
                                     }                                                                                                  
                                 }                                
                             }

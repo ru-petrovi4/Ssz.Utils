@@ -76,7 +76,7 @@ namespace Ssz.DataGrpc.Client.Managers
             {
                 dataGrpcListItemWrapper.DataGrpcListItem = null;
                 dataGrpcListItemWrapper.ConnectionError = false;
-                dataGrpcListItemWrapper.InvalidId = false;
+                dataGrpcListItemWrapper.ItemDoesNotExist = false;
             }            
 
             DataGrpcList = null;
@@ -137,7 +137,7 @@ namespace Ssz.DataGrpc.Client.Managers
             foreach (var kvp in _dataGrpcListItemWrappersDictionary)
             {
                 DataGrpcListItemWrapper dataGrpcListItemWrapper = kvp.Value;
-                if (dataGrpcListItemWrapper.DataGrpcListItem == null && !dataGrpcListItemWrapper.InvalidId)
+                if (dataGrpcListItemWrapper.DataGrpcListItem == null && !dataGrpcListItemWrapper.ItemDoesNotExist)
                 {
                     dataGrpcListItemWrappersToAdd.Add(dataGrpcListItemWrapper);
                     TDataGrpcListItem? dataGrpcListItem = null;
@@ -191,7 +191,7 @@ namespace Ssz.DataGrpc.Client.Managers
                                 clientObjectInfo.ForceNotifyClientObj = true;
                             }
                         }                        
-                        dataGrpcListItemWrapper.InvalidId = false;
+                        dataGrpcListItemWrapper.ItemDoesNotExist = false;
                         dataGrpcListItemWrapper.DataGrpcListItem = null;
                     }
                 }
@@ -202,9 +202,9 @@ namespace Ssz.DataGrpc.Client.Managers
                         var dataGrpcListItemWrapper = notAddedDataGrpcListItem.Obj as DataGrpcListItemWrapper;
                         if (dataGrpcListItemWrapper == null) throw new InvalidOperationException();
                         dataGrpcListItemWrappersToAdd.Remove(dataGrpcListItemWrapper);
-                        if (!dataGrpcListItemWrapper.InvalidId)
+                        if (!dataGrpcListItemWrapper.ItemDoesNotExist)
                         {
-                            dataGrpcListItemWrapper.InvalidId = true;
+                            dataGrpcListItemWrapper.ItemDoesNotExist = true;
                             foreach (ClientObjectInfo clientObjectInfo in dataGrpcListItemWrapper.ClientObjectInfosCollection)
                             {
                                 clientObjectInfo.ForceNotifyClientObj = true;
@@ -217,9 +217,9 @@ namespace Ssz.DataGrpc.Client.Managers
                     {
                         if (dataGrpcListItemWrapper.DataGrpcListItem == null)
                         {
-                            if (!dataGrpcListItemWrapper.InvalidId)
+                            if (!dataGrpcListItemWrapper.ItemDoesNotExist)
                             {
-                                dataGrpcListItemWrapper.InvalidId = true;
+                                dataGrpcListItemWrapper.ItemDoesNotExist = true;
                                 foreach (ClientObjectInfo clientObjectInfo in dataGrpcListItemWrapper.ClientObjectInfosCollection)
                                 {
                                     clientObjectInfo.ForceNotifyClientObj = true;
@@ -229,7 +229,7 @@ namespace Ssz.DataGrpc.Client.Managers
                         }
                         else
                         {
-                            dataGrpcListItemWrapper.InvalidId = false;
+                            dataGrpcListItemWrapper.ItemDoesNotExist = false;
                             dataGrpcListItemWrapper.ConnectionError = false;
                             foreach (ClientObjectInfo clientObjectInfo in dataGrpcListItemWrapper.ClientObjectInfosCollection)
                             {
@@ -330,7 +330,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
             public bool ConnectionError;
 
-            public bool InvalidId;
+            public bool ItemDoesNotExist;
         }
 
         public class ClientObjectInfo

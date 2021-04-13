@@ -9,10 +9,6 @@ namespace Ssz.Utils.DataAccess
 {
     public interface IValueSubscription
     {
-        /// <summary>        
-        ///     When item don't exist in data source, invokes with new Any(DBNull.Value)
-        ///     When disconnected from data source, invokes with new Any(null).
-        /// </summary>
         void Update(ValueStatusTimestamp valueStatusTimestamp);
 
         /// <summary>

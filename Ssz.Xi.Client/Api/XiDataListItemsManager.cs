@@ -124,10 +124,10 @@ namespace Ssz.Xi.Client.Api
                                 modelItem.ForceNotifyClientObj = false;
                                 if (modelItem.ClientObj != null)
                                 {
-                                    if (xiListItemWrapper.InvalidId)
+                                    if (xiListItemWrapper.ItemDoesNotExist)
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(ValueStatusTimestampHelper.NewValueStatusTimestamp(new Any(DBNull.Value), utcNow));
+                                        changedValues.Add(new ValueStatusTimestamp(new Any(), StatusCodes.ItemDoesNotExist, utcNow));
                                     }
                                     else if (xiListItemWrapper.XiListItem != null)
                                     {
@@ -137,7 +137,7 @@ namespace Ssz.Xi.Client.Api
                                     else
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(ValueStatusTimestampHelper.NewValueStatusTimestamp(new Any(null), utcNow));
+                                        changedValues.Add(new ValueStatusTimestamp(new Any(), StatusCodes.Unknown, utcNow));
                                     }                                                                                                  
                                 }                                
                             }
