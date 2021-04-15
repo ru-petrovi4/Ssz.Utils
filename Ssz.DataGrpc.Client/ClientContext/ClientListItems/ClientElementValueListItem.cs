@@ -1,5 +1,6 @@
 using System;
 using Ssz.DataGrpc.Common;
+using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 
 namespace Ssz.DataGrpc.Client.ClientListItems
@@ -37,9 +38,9 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         /// <param name="valueUInt32"> The value </param>
         public void UpdateValue(uint valueUInt32, uint statusCode, DateTime timestampUtc)
         {
-            ValueStatusTimestamp.Value.Set(valueUInt32, ValueTypeCode, false);
-            ValueStatusTimestamp.StatusCode = statusCode;
-            ValueStatusTimestamp.TimestampUtc = timestampUtc;
+            var any = new Any();
+            any.Set(valueUInt32, ValueTypeCode, false);
+            _valueStatusTimestamp = new ValueStatusTimestamp(any, statusCode, timestampUtc);
             IncrementUpdateCount();
         }
 
@@ -54,9 +55,9 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         /// <param name="valueDouble"> The value </param>
         public void UpdateValue(double valueDouble, uint statusCode, DateTime timestampUtc)
         {
-            ValueStatusTimestamp.Value.Set(valueDouble, ValueTypeCode, false);
-            ValueStatusTimestamp.StatusCode = statusCode;
-            ValueStatusTimestamp.TimestampUtc = timestampUtc;
+            var any = new Any();
+            any.Set(valueDouble, ValueTypeCode, false);
+            _valueStatusTimestamp = new ValueStatusTimestamp(any, statusCode, timestampUtc);
             IncrementUpdateCount();
         }
 
@@ -71,9 +72,8 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         /// <param name="valueObject"> The value </param>
         public void UpdateValue(object? valueObject, uint statusCode, DateTime timestampUtc)
         {
-            ValueStatusTimestamp.Value.Set(valueObject);
-            ValueStatusTimestamp.StatusCode = statusCode;
-            ValueStatusTimestamp.TimestampUtc = timestampUtc;
+            var any = new Any(valueObject);            
+            _valueStatusTimestamp = new ValueStatusTimestamp(any, statusCode, timestampUtc);
             IncrementUpdateCount();
         }
 

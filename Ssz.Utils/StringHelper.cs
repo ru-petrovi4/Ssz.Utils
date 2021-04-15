@@ -70,6 +70,18 @@ namespace Ssz.Utils
 
         /// <summary>        
         /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static bool CompareIgnoreCase(string? left, string? right)
+        {
+            if (left == null && right == null) return true;
+            if (left == null || right == null) return false;
+            return String.Equals(left, right, StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        /// <summary>        
+        /// </summary>
         /// <param name="str"></param>
         /// <param name="value"></param>
         /// <returns></returns>

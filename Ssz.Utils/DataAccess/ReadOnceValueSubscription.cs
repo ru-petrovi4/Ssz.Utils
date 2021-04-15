@@ -9,7 +9,7 @@ namespace Ssz.Utils.DataAccess
 
         /// <summary>
         ///     Is used to one-time read value.
-        ///     Callback is invoked when value is not null (value.ValueTypeCode != TypeCode.Empty)        
+        ///     Callback is invoked when valueStatusTimestamp.StatusCode != StatusCodes.Unknown       
         /// </summary>
         public ReadOnceValueSubscription(IDataAccessProvider dataProvider, string id, Action<ValueStatusTimestamp>? setValueAction)
         {

@@ -14,24 +14,22 @@ namespace Ssz.Utils.DataAccess
         {            
         }
 
-        public TypeId(string schemaType, string nameSpace, string id)
+        public TypeId(string schemaType, string nameSpace, string localId)
         {
             SchemaType = schemaType;
             Namespace = nameSpace;
-            LocalId = id;
+            LocalId = localId;
         }
 
         /// <summary>
         ///     Construct a Type LocalId given a .NET / CLI Type.
         /// </summary>
-        /// <param name="id">
+        /// <param name="type">
         ///     The .NET / CLI Type for which the TypeId is being constructed.
         /// </param>
-        public TypeId(Type id)
+        public TypeId(Type type)
         {
-            SchemaType = @"";
-            Namespace = @"";
-            LocalId = id.ToString();
+            LocalId = type.ToString();
         }
 
         #endregion        
@@ -43,6 +41,11 @@ namespace Ssz.Utils.DataAccess
         public string Namespace { get; set; } = @"";
 
         public string LocalId { get; set; } = @"";
+
+        public bool Compare(TypeId that)
+        {            
+            return SchemaType == that.SchemaType && Namespace == that.Namespace && LocalId == that.LocalId;
+        }
 
         #endregion        
     }

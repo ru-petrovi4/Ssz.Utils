@@ -13,7 +13,7 @@ namespace Ssz.Utils.DataAccess
 
         /// <summary>
         ///     Is used to subscribe for value updating and to write values.
-        ///     valueChangedAction(oldValue, newValue) is invoked when Value property changed. Initial Value property is Any(null).        
+        ///     valueChangedAction(oldValue, newValue) is invoked when Value property changed. Initial Value property is new ValueStatusTimestamp(), Any(null) and Unknown status.        
         /// </summary>
         public ValueSubscription(IDataAccessProvider dataAccessProvider, string id, Action<ValueStatusTimestamp, ValueStatusTimestamp>? valueChangedAction = null)
         {

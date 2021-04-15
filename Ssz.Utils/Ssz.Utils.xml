@@ -2345,7 +2345,7 @@
         <member name="M:Ssz.Utils.DataAccess.ReadOnceValueSubscription.#ctor(Ssz.Utils.DataAccess.IDataAccessProvider,System.String,System.Action{Ssz.Utils.DataAccess.ValueStatusTimestamp})">
             <summary>
                 Is used to one-time read value.
-                Callback is invoked when value is not null (value.ValueTypeCode != TypeCode.Empty)        
+                Callback is invoked when valueStatusTimestamp.StatusCode != StatusCodes.Unknown       
             </summary>
         </member>
         <member name="P:Ssz.Utils.DataAccess.ReadOnceValueSubscription.ModelId">
@@ -2368,7 +2368,7 @@
             <summary>
                 Construct a Type LocalId given a .NET / CLI Type.
             </summary>
-            <param name="id">
+            <param name="type">
                 The .NET / CLI Type for which the TypeId is being constructed.
             </param>
         </member>
@@ -2410,7 +2410,7 @@
         <member name="M:Ssz.Utils.DataAccess.ValueSubscription.#ctor(Ssz.Utils.DataAccess.IDataAccessProvider,System.String,System.Action{Ssz.Utils.DataAccess.ValueStatusTimestamp,Ssz.Utils.DataAccess.ValueStatusTimestamp})">
             <summary>
                 Is used to subscribe for value updating and to write values.
-                valueChangedAction(oldValue, newValue) is invoked when Value property changed. Initial Value property is Any(null).        
+                valueChangedAction(oldValue, newValue) is invoked when Value property changed. Initial Value property is new ValueStatusTimestamp(), Any(null) and Unknown status.        
             </summary>
         </member>
         <member name="P:Ssz.Utils.DataAccess.ValueSubscription.ModelId">
@@ -3644,6 +3644,12 @@
             <param name="func"></param>
             <returns></returns>
         </member>
+        <member name="T:Ssz.Utils.ReferenceEqualityComparer`1">
+            <summary>
+                A generic object comparerer that would only use object's reference,
+                ignoring any <see cref="T:System.IEquatable`1" /> or <see cref="M:System.Object.Equals(System.Object)" />  overrides.
+            </summary>
+        </member>
         <member name="T:Ssz.Utils.Serialization.IOwnedDataSerializable">
             <summary>
                 Interface which allows a class to save/retrieve their internal data to/from an existing
@@ -4835,6 +4841,13 @@
             </summary>
             <param name="str"></param>
             <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.StringHelper.CompareIgnoreCase(System.String,System.String)">
+            <summary>        
+            </summary>
+            <param name="left"></param>
+            <param name="right"></param>
             <returns></returns>
         </member>
         <member name="M:Ssz.Utils.StringHelper.StartsWithIgnoreCase(System.String,System.String)">

@@ -82,10 +82,9 @@ namespace Ssz.DataGrpc.Client.ClientLists
 
             foreach (ClientElementValueListItem item in ListItemsManager)
             {
-                if (item.PendingWriteValueStatusTimestamp != null &&
-                    item.PendingWriteValueStatusTimestamp.Value.ValueTypeCode != TypeCode.Empty)
+                if (item.PendingWriteValueStatusTimestamp != null)
                 {
-                    switch (item.PendingWriteValueStatusTimestamp.Value.ValueStorageType)
+                    switch (item.PendingWriteValueStatusTimestamp.Value.Value.ValueStorageType)
                     {
                         case Any.StorageType.Double:
                             dblCount += 1;
@@ -107,28 +106,28 @@ namespace Ssz.DataGrpc.Client.ClientLists
                 foreach (var kvp in writeValueDictionary)
                 {
                     ClientElementValueListItem item = kvp.Value;
-                    if (item.PendingWriteValueStatusTimestamp != null &&
-                        item.PendingWriteValueStatusTimestamp.Value.ValueTypeCode != TypeCode.Empty)
+                    if (item.PendingWriteValueStatusTimestamp != null)
                     {
-                        switch (item.PendingWriteValueStatusTimestamp.Value.ValueStorageType)
+                        ValueStatusTimestamp pendingWriteValueStatusTimestamp = item.PendingWriteValueStatusTimestamp.Value;                        
+                        switch (item.PendingWriteValueStatusTimestamp.Value.Value.ValueStorageType)
                         {
                             case Any.StorageType.Double:
                                 writeElementValuesCollectionManager.AddDouble(item.ServerAlias,
-                                    item.PendingWriteValueStatusTimestamp.StatusCode,
-                                    item.PendingWriteValueStatusTimestamp.TimestampUtc,
-                                    item.PendingWriteValueStatusTimestamp.Value.StorageDouble);
+                                    pendingWriteValueStatusTimestamp.StatusCode,
+                                    pendingWriteValueStatusTimestamp.TimestampUtc,
+                                    pendingWriteValueStatusTimestamp.Value.StorageDouble);
                                 break;
                             case Any.StorageType.UInt32:
                                 writeElementValuesCollectionManager.AddUint(item.ServerAlias,
-                                    item.PendingWriteValueStatusTimestamp.StatusCode,
-                                    item.PendingWriteValueStatusTimestamp.TimestampUtc,
-                                    item.PendingWriteValueStatusTimestamp.Value.StorageUInt32);
+                                    pendingWriteValueStatusTimestamp.StatusCode,
+                                    pendingWriteValueStatusTimestamp.TimestampUtc,
+                                    pendingWriteValueStatusTimestamp.Value.StorageUInt32);
                                 break;
                             case Any.StorageType.Object:
                                 writeElementValuesCollectionManager.AddObject(item.ServerAlias,
-                                    item.PendingWriteValueStatusTimestamp.StatusCode,
-                                    item.PendingWriteValueStatusTimestamp.TimestampUtc,
-                                    item.PendingWriteValueStatusTimestamp.Value.StorageObject);
+                                    pendingWriteValueStatusTimestamp.StatusCode,
+                                    pendingWriteValueStatusTimestamp.TimestampUtc,
+                                    pendingWriteValueStatusTimestamp.Value.StorageObject);
                                 break;
                         }
                     }

@@ -6,13 +6,9 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils.DataAccess
 {
-    public class ValueStatusTimestamp
+    public struct ValueStatusTimestamp
     {
         #region construction and destruction
-
-        public ValueStatusTimestamp()
-        {            
-        }
 
         public ValueStatusTimestamp(Any value, uint statusCode, DateTime timestampUtc)
         {
@@ -52,10 +48,8 @@ namespace Ssz.Utils.DataAccess
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static bool operator ==(ValueStatusTimestamp? left, ValueStatusTimestamp? right)
+        public static bool operator ==(ValueStatusTimestamp left, ValueStatusTimestamp right)
         {
-            if (ReferenceEquals(left, right)) return true;
-            if (ReferenceEquals(null, left) || ReferenceEquals(null, right)) return false;            
             return left.Equals(right);
         }
 
@@ -64,17 +58,15 @@ namespace Ssz.Utils.DataAccess
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static bool operator !=(ValueStatusTimestamp? left, ValueStatusTimestamp? right)
+        public static bool operator !=(ValueStatusTimestamp left, ValueStatusTimestamp right)
         {
             return !(left == right);
         }
 
         public override bool Equals(object? obj)
-        {
-            ValueStatusTimestamp? other = obj as ValueStatusTimestamp;
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Equals(other);
+        {            
+            if (!(obj is ValueStatusTimestamp)) return false;            
+            return Equals((ValueStatusTimestamp)obj);
         }
 
         public bool Equals(ValueStatusTimestamp that)

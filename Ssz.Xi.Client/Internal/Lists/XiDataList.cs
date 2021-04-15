@@ -216,9 +216,9 @@ namespace Ssz.Xi.Client.Internal.Lists
             foreach (XiDataListItem item in ListItemsManager)
             {
                 if (item.PendingWriteValueStatusTimestamp != null &&
-                    item.PendingWriteValueStatusTimestamp.StatusCode != StatusCodes.Unknown)
+                    item.PendingWriteValueStatusTimestamp.Value.StatusCode != StatusCodes.Unknown)
                 {
-                    switch (item.PendingWriteValueStatusTimestamp.Value.ValueStorageType)
+                    switch (item.PendingWriteValueStatusTimestamp.Value.Value.ValueStorageType)
                     {
                         case Any.StorageType.Double:
                             dblCount += 1;
@@ -244,32 +244,32 @@ namespace Ssz.Xi.Client.Internal.Lists
                 {
                     XiDataListItem item = kvp.Value;
                     if (item.PendingWriteValueStatusTimestamp != null &&
-                        item.PendingWriteValueStatusTimestamp.StatusCode != StatusCodes.Unknown)
+                        item.PendingWriteValueStatusTimestamp.Value.StatusCode != StatusCodes.Unknown)
                     {
                         var statusCode = XiStatusCode.MakeStatusCode(
                             XiStatusCode.MakeStatusByte((byte)XiStatusCodeStatusBits.GoodNonSpecific, 0),
                             XiStatusCode.MakeFlagsByte((byte)XiStatusCodeHistoricalValueType.NotUsed, false, false,
                                 XiStatusCodeAdditionalDetailType.NotUsed),
                             0);
-                        switch (item.PendingWriteValueStatusTimestamp.Value.ValueStorageType)
+                        switch (item.PendingWriteValueStatusTimestamp.Value.Value.ValueStorageType)
                         {
                             case Any.StorageType.Double:
                                 writeValueArrays.SetDouble(dblIdx++, item.ServerAlias,
                                     statusCode,
-                                    item.PendingWriteValueStatusTimestamp.TimestampUtc,
-                                    item.PendingWriteValueStatusTimestamp.Value.StorageDouble);
+                                    item.PendingWriteValueStatusTimestamp.Value.TimestampUtc,
+                                    item.PendingWriteValueStatusTimestamp.Value.Value.StorageDouble);
                                 break;
                             case Any.StorageType.UInt32:
                                 writeValueArrays.SetUint(intIdx++, item.ServerAlias,
                                     statusCode,
-                                    item.PendingWriteValueStatusTimestamp.TimestampUtc,
-                                    item.PendingWriteValueStatusTimestamp.Value.StorageUInt32);
+                                    item.PendingWriteValueStatusTimestamp.Value.TimestampUtc,
+                                    item.PendingWriteValueStatusTimestamp.Value.Value.StorageUInt32);
                                 break;
                             case Any.StorageType.Object:
                                 writeValueArrays.SetObject(objIdx++, item.ServerAlias,
                                     statusCode,
-                                    item.PendingWriteValueStatusTimestamp.TimestampUtc,
-                                    item.PendingWriteValueStatusTimestamp.Value.StorageObject);
+                                    item.PendingWriteValueStatusTimestamp.Value.TimestampUtc,
+                                    item.PendingWriteValueStatusTimestamp.Value.Value.StorageObject);
                                 break;
                         }
                     }
