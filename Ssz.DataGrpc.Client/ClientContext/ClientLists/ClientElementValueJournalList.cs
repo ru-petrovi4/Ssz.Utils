@@ -99,7 +99,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
                 if (beginElementValueJournalsCollection != null)
                 {
                     _incompleteElementValueJournalsCollectionCollection.Remove(elementValueJournalsCollection.Guid);
-                    beginElementValueJournalsCollection.Add(elementValueJournalsCollection);
+                    beginElementValueJournalsCollection.CombineWith(elementValueJournalsCollection);
                     elementValueJournalsCollection = beginElementValueJournalsCollection;
                 }
             }

@@ -10,12 +10,12 @@ namespace Ssz.DataGrpc.Server
     {
         #region public functions
 
-        public void Add(EventMessagesCollection eventMessagesCollection)
+        public void CombineWith(EventMessagesCollection nextEventMessagesCollection)
         {
-            Guid = eventMessagesCollection.Guid;
-            NextCollectionGuid = eventMessagesCollection.NextCollectionGuid;
+            Guid = nextEventMessagesCollection.Guid;
+            NextCollectionGuid = nextEventMessagesCollection.NextCollectionGuid;
 
-            EventMessages.Add(eventMessagesCollection.EventMessages);
+            EventMessages.Add(nextEventMessagesCollection.EventMessages);
         }
 
         #endregion

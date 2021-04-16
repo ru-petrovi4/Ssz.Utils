@@ -75,7 +75,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
                 if (beginEventMessagesCollection != null)
                 {
                     _incompleteEventMessagesCollectionCollection.Remove(eventMessagesCollection.Guid);
-                    beginEventMessagesCollection.Add(eventMessagesCollection);
+                    beginEventMessagesCollection.CombineWith(eventMessagesCollection);
                     eventMessagesCollection = beginEventMessagesCollection;
                 }
             }

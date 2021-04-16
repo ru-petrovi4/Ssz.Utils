@@ -10,12 +10,12 @@ namespace Ssz.DataGrpc.Server
     {
         #region public functions
 
-        public void Add(ElementValueJournalsCollection elementValueJournalsCollection)
+        public void CombineWith(ElementValueJournalsCollection nextElementValueJournalsCollection)
         {
-            Guid = elementValueJournalsCollection.Guid;
-            NextCollectionGuid = elementValueJournalsCollection.NextCollectionGuid;
+            Guid = nextElementValueJournalsCollection.Guid;
+            NextCollectionGuid = nextElementValueJournalsCollection.NextCollectionGuid;
 
-            for (int i = 0; i < elementValueJournalsCollection.ElementValueJournals.Count; i++)
+            for (int i = 0; i < nextElementValueJournalsCollection.ElementValueJournals.Count; i++)
             {
                 ElementValueJournal elementValueJournal;
                 if (i < ElementValueJournals.Count)
@@ -27,23 +27,8 @@ namespace Ssz.DataGrpc.Server
                     elementValueJournal = new ElementValueJournal();
                     ElementValueJournals.Add(elementValueJournal);
                 }
-                Add(elementValueJournal, elementValueJournalsCollection.ElementValueJournals[i]);
+                elementValueJournal.CombineWith(nextElementValueJournalsCollection.ElementValueJournals[i]);
             }            
-        }
-
-        #endregion
-
-        #region private functions
-
-        private static void Add(ElementValueJournal thisElementValueJournal, ElementValueJournal elementValueJournal)
-        {
-            thisElementValueJournal.DoubleStatusCodes.Add(elementValueJournal.DoubleStatusCodes);
-            thisElementValueJournal.DoubleTimestamps.Add(elementValueJournal.DoubleTimestamps);
-            thisElementValueJournal.DoubleValues.Add(elementValueJournal.DoubleValues);
-
-            thisElementValueJournal.UintStatusCodes.Add(elementValueJournal.UintStatusCodes);
-            thisElementValueJournal.UintTimestamps.Add(elementValueJournal.UintTimestamps);
-            thisElementValueJournal.UintValues.Add(elementValueJournal.UintValues);
         }
 
         #endregion

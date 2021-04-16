@@ -179,7 +179,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
                 if (beginElementValuesCollection != null)
                 {
                     _incompleteElementValuesCollection.Remove(elementValuesCollection.Guid);
-                    beginElementValuesCollection.Add(elementValuesCollection);
+                    beginElementValuesCollection.CombineWith(elementValuesCollection);
                     elementValuesCollection = beginElementValuesCollection;
                 }
             }
