@@ -93,47 +93,57 @@ namespace Ssz.DataGrpc.Client
 
             try
             {
-                var request = new PassthroughRequest
+                var passthroughDataToSendFull = new PassthroughData();
+                passthroughDataToSendFull.Data = ByteString.CopyFrom(dataToSend);
+                returnData = new byte[0];
+                uint resultCode = 0;                
+                foreach (var passthroughDataToSend in passthroughDataToSendFull.SplitForCorrectGrpcMessageSize())
                 {
-                    ContextId = _serverContextId,
-                    RecipientId = recipientId,
-                    PassthroughName = passthroughName,
-                    DataToSend = ByteString.CopyFrom(dataToSend)
-                };
-                while (true)
-                {                    
-                    PassthroughReply reply = _resourceManagementClient.Passthrough(request);
-                    SetResourceManagementLastCallUtc();
-                    IEnumerable<byte>? returnDataTemp = null;
-                    if (reply.Guid != @"" && _incompletePassthroughRepliesCollection.Count > 0)
+                    var request = new PassthroughRequest
                     {
-                        var beginPassthroughReply = _incompletePassthroughRepliesCollection.TryGetValue(reply.Guid);
-                        if (beginPassthroughReply != null)
+                        ContextId = _serverContextId,
+                        RecipientId = recipientId,
+                        PassthroughName = passthroughName,
+                        DataToSend = passthroughDataToSend
+                    };                    
+                    while (true)
+                    {
+                        PassthroughReply reply = _resourceManagementClient.Passthrough(request);
+                        request.DataToSend = new PassthroughData();
+                        SetResourceManagementLastCallUtc();
+                        IEnumerable<byte>? returnDataTemp = null;
+                        if (reply.ReturnData.Guid != @"" && _incompletePassthroughRepliesCollection.Count > 0)
                         {
-                            _incompletePassthroughRepliesCollection.Remove(reply.Guid);
-                            returnDataTemp = beginPassthroughReply.Concat(reply.ReturnData);
+                            var beginPassthroughReply = _incompletePassthroughRepliesCollection.TryGetValue(reply.ReturnData.Guid);
+                            if (beginPassthroughReply != null)
+                            {
+                                _incompletePassthroughRepliesCollection.Remove(reply.ReturnData.Guid);
+                                returnDataTemp = beginPassthroughReply.Concat(reply.ReturnData.Data);
+                            }
                         }
-                    }
-                    if (returnDataTemp == null)
-                    {
-                        returnDataTemp = reply.ReturnData;
-                    }
-
-                    if (reply.NextGuid != @"")
-                    {
-                        _incompletePassthroughRepliesCollection[reply.NextGuid] = returnDataTemp;
-
-                        request = new PassthroughRequest
+                        if (returnDataTemp == null)
                         {
-                            ContextId = _serverContextId                            
-                        };
+                            returnDataTemp = reply.ReturnData.Data;
+                        }
 
-                        continue;
+                        if (reply.ReturnData.NextGuid != @"")
+                        {
+                            _incompletePassthroughRepliesCollection[reply.ReturnData.NextGuid] = returnDataTemp;
+
+                            request = new PassthroughRequest
+                            {
+                                ContextId = _serverContextId
+                            };
+
+                            continue;
+                        }
+
+                        returnData = returnDataTemp;
+                        resultCode = reply.ResultCode;                        
+                        break;
                     }
-
-                    returnData = returnDataTemp;
-                    return reply.ResultCode;
                 }                
+                return resultCode;
             }
             catch (Exception ex)
             {
@@ -145,11 +155,7 @@ namespace Ssz.DataGrpc.Client
         #endregion
 
         #region private fields
-
-        /// <summary>
-        ///     This data member holds the last exception message encountered by the
-        ///     ElementValuesCallback callback when calling valuesUpdateEvent().
-        /// </summary>
+        
         private CaseInsensitiveDictionary<IEnumerable<byte>> _incompletePassthroughRepliesCollection = new CaseInsensitiveDictionary<IEnumerable<byte>>();
 
         #endregion        

@@ -20,12 +20,12 @@ namespace TestConsoleApp
             q.Enqueue(1);
             q.Enqueue(2);
             q.Enqueue(3);
-            Console.WriteLine(q.Count);
-            foreach (var i in q)
+            
+            foreach (var i in q.Skip(4).Take(3))
             {
                 Console.WriteLine(i);
             }
-            Console.WriteLine(q.Count);
+            //Console.WriteLine(q.Count);
             //Console.WriteLine(q.Dequeue());
             //Console.WriteLine(q.Dequeue());
             //Console.WriteLine(q.Dequeue());

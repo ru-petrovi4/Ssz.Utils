@@ -331,16 +331,20 @@ message EventIdResult {
   EventId event_id = 2;
 }
 
+message PassthroughData {  
+  string guid = 1;
+  string next_guid = 2;  
+  bytes data = 3;
+}
+
 message PassthroughRequest {
   string context_id = 1;
   string recipient_id = 2;
   string passthrough_name = 3;
-  bytes data_to_send = 4;
+  PassthroughData data_to_send = 4;
 }
 
-message PassthroughReply {  
-  string guid = 1;
-  string next_guid = 2;
-  uint32 result_code = 3;
-  bytes return_data = 4;
+message PassthroughReply {
+  uint32 result_code = 1;
+  PassthroughData return_data = 2;
 }

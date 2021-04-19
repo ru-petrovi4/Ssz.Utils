@@ -9,6 +9,7 @@ using System.IO;
 using Ssz.Utils.Serialization;
 using Ssz.DataGrpc.Client.Data;
 using Ssz.Utils.DataAccess;
+using Google.Protobuf.WellKnownTypes;
 
 namespace Ssz.DataGrpc.Client.ClientLists
 {
@@ -69,88 +70,65 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// 
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<ClientElementValueListItem>? CommitWriteElementValueListItems()
+        public IEnumerable<ClientElementValueListItem> CommitWriteElementValueListItems()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
 
-            ElementValuesCollectionManager? writeElementValuesCollectionManager = null;
-            var writeValueDictionary = new Dictionary<uint, ClientElementValueListItem>();
-
-            int uintCount = 0;
-            int dblCount = 0;
-            int objCount = 0;
-
-            foreach (ClientElementValueListItem item in ListItemsManager)
+            var fullElementValuesCollection = new ElementValuesCollection();
+            using (var memoryStream = new MemoryStream(1024))
             {
-                if (item.PendingWriteValueStatusTimestamp != null)
+                using (var writer = new SerializationWriter(memoryStream))
                 {
-                    switch (item.PendingWriteValueStatusTimestamp.Value.Value.ValueStorageType)
+                    foreach (ClientElementValueListItem item in ListItemsManager)
                     {
-                        case Any.StorageType.Double:
-                            dblCount += 1;
-                            break;
-                        case Any.StorageType.UInt32:
-                            uintCount += 1;
-                            break;
-                        case Any.StorageType.Object:
-                            objCount += 1;
-                            break;
-                    }
+                        if (item.PendingWriteValueStatusTimestamp == null) continue;
 
-                    writeValueDictionary.Add(item.ClientAlias, item);
-                }
-            }
-            if (0 < dblCount || 0 < uintCount || 0 < objCount)
-            {
-                writeElementValuesCollectionManager = new ElementValuesCollectionManager(dblCount, uintCount, objCount);
-                foreach (var kvp in writeValueDictionary)
-                {
-                    ClientElementValueListItem item = kvp.Value;
-                    if (item.PendingWriteValueStatusTimestamp != null)
-                    {
-                        ValueStatusTimestamp pendingWriteValueStatusTimestamp = item.PendingWriteValueStatusTimestamp.Value;                        
-                        switch (item.PendingWriteValueStatusTimestamp.Value.Value.ValueStorageType)
+                        uint alias = item.ServerAlias;
+                        ValueStatusTimestamp valueStatusTimestamp = item.PendingWriteValueStatusTimestamp.Value;
+
+                        switch (valueStatusTimestamp.Value.ValueStorageType)
                         {
-                            case Any.StorageType.Double:
-                                writeElementValuesCollectionManager.AddDouble(item.ServerAlias,
-                                    pendingWriteValueStatusTimestamp.StatusCode,
-                                    pendingWriteValueStatusTimestamp.TimestampUtc,
-                                    pendingWriteValueStatusTimestamp.Value.StorageDouble);
+                            case Ssz.Utils.Any.StorageType.Double:
+                                fullElementValuesCollection.DoubleAliases.Add(alias);
+                                fullElementValuesCollection.DoubleStatusCodes.Add(valueStatusTimestamp.StatusCode);
+                                fullElementValuesCollection.DoubleTimestamps.Add(Timestamp.FromDateTime(valueStatusTimestamp.TimestampUtc));
+                                fullElementValuesCollection.DoubleValues.Add(valueStatusTimestamp.Value.StorageDouble);
                                 break;
-                            case Any.StorageType.UInt32:
-                                writeElementValuesCollectionManager.AddUint(item.ServerAlias,
-                                    pendingWriteValueStatusTimestamp.StatusCode,
-                                    pendingWriteValueStatusTimestamp.TimestampUtc,
-                                    pendingWriteValueStatusTimestamp.Value.StorageUInt32);
+                            case Ssz.Utils.Any.StorageType.UInt32:
+                                fullElementValuesCollection.UintAliases.Add(alias);
+                                fullElementValuesCollection.UintStatusCodes.Add(valueStatusTimestamp.StatusCode);
+                                fullElementValuesCollection.UintTimestamps.Add(Timestamp.FromDateTime(valueStatusTimestamp.TimestampUtc));
+                                fullElementValuesCollection.UintValues.Add(valueStatusTimestamp.Value.StorageUInt32);
                                 break;
-                            case Any.StorageType.Object:
-                                writeElementValuesCollectionManager.AddObject(item.ServerAlias,
-                                    pendingWriteValueStatusTimestamp.StatusCode,
-                                    pendingWriteValueStatusTimestamp.TimestampUtc,
-                                    pendingWriteValueStatusTimestamp.Value.StorageObject);
+                            case Ssz.Utils.Any.StorageType.Object:
+                                fullElementValuesCollection.ObjectAliases.Add(alias);
+                                fullElementValuesCollection.ObjectStatusCodes.Add(valueStatusTimestamp.StatusCode);
+                                fullElementValuesCollection.ObjectTimestamps.Add(Timestamp.FromDateTime(valueStatusTimestamp.TimestampUtc));
+                                writer.WriteObject(valueStatusTimestamp.Value.StorageObject);
                                 break;
                         }
+                        item.HasWritten(DataGrpcResultCodes.S_OK);
                     }
-                    item.HasWritten(DataGrpcResultCodes.S_OK);
                 }
+                memoryStream.Position = 0;
+                fullElementValuesCollection.ObjectValues = Google.Protobuf.ByteString.FromStream(memoryStream);
             }
 
-            var listDataGrpcValues = new List<ClientElementValueListItem>();
-            if (writeElementValuesCollectionManager != null)
+            var result = new List<ClientElementValueListItem>();
+            foreach (ElementValuesCollection elementValuesCollection in fullElementValuesCollection.SplitForCorrectGrpcMessageSize())
             {
-                AliasResult[] listAliasesResult = Context.WriteData(ListServerAlias, writeElementValuesCollectionManager.GetElementValuesCollection());
+                AliasResult[] listAliasesResult = Context.WriteData(ListServerAlias, elementValuesCollection);
                 foreach (AliasResult aliasResult in listAliasesResult)
                 {
                     ClientElementValueListItem? item = null;
-                    if (writeValueDictionary.TryGetValue(aliasResult.ClientAlias, out item))
+                    if (ListItemsManager.TryGetValue(aliasResult.ClientAlias, out item))
                     {
                         item.HasWritten(aliasResult.ResultCode);
-                        listDataGrpcValues.Add(item);
+                        result.Add(item);
                     }
                 }
             }
-            writeValueDictionary.Clear();
-            return (0 != listDataGrpcValues.Count) ? listDataGrpcValues : null;
+            return result;
         }
 
         /// <summary>

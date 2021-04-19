@@ -242,7 +242,7 @@ namespace Ssz.DataGrpc.Client.Managers
                 dataGrpcElementValueListItem.PrepareForWrite(valueStatusTimestamps[i]);
             }
 
-            IEnumerable<ClientElementValueListItem>? failedItems = null;
+            IEnumerable<ClientElementValueListItem> failedItems;
             try
             {
                 failedItems = DataGrpcList.CommitWriteElementValueListItems();
@@ -252,18 +252,15 @@ namespace Ssz.DataGrpc.Client.Managers
                 return clientObjs;
             }
 
-            if (failedItems != null)
+            foreach (var dataGrpcElementValueListItem in failedItems)
             {
-                foreach (var dataGrpcElementValueListItem in failedItems)
+                var o = dataGrpcElementValueListItem.Obj as DataGrpcListItemWrapper;
+                if (o == null) throw new InvalidOperationException();
+                foreach (var modelItem in o.ClientObjectInfosCollection)
                 {
-                    var o = dataGrpcElementValueListItem.Obj as DataGrpcListItemWrapper;
-                    if (o == null) throw new InvalidOperationException();
-                    foreach (var modelItem in o.ClientObjectInfosCollection)
+                    if (modelItem.ClientObj != null)
                     {
-                        if (modelItem.ClientObj != null)
-                        {
-                            result.Add(modelItem.ClientObj);
-                        }
+                        result.Add(modelItem.ClientObj);
                     }
                 }
             }
