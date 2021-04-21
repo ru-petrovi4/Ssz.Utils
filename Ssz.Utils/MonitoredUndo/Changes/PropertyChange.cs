@@ -60,9 +60,9 @@ namespace Ssz.Utils.MonitoredUndo.Changes
                 if (p == null) throw new InvalidOperationException();
                 p.SetValue(Target, OldValue, null);
             }
-            catch (Exception e)
+            catch
             {
-                Logger.Verbose(e);
+                //Logger.Verbose(e);
             }
         }
 
@@ -74,9 +74,9 @@ namespace Ssz.Utils.MonitoredUndo.Changes
                 if (p == null) throw new InvalidOperationException();
                 p.SetValue(Target, NewValue, null);
             }
-            catch (Exception e)
+            catch
             {
-                Logger.Verbose(e);
+                //Logger.Verbose(e);
             }
         }
 

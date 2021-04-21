@@ -30,7 +30,8 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
     {
       try
       {
-        new EnvironmentPermission( PermissionState.Unrestricted ).Demand();
+                // WARNING
+        //new EnvironmentPermission( PermissionState.Unrestricted ).Demand();
         _zoom = new Cursor( ResourceHelper.LoadResourceStream( Assembly.GetExecutingAssembly(), "Zoombox/Resources/Zoom.cur" ) );
         _zoomRelative = new Cursor( ResourceHelper.LoadResourceStream( Assembly.GetExecutingAssembly(), "Zoombox/Resources/ZoomRelative.cur" ) );
       }

@@ -56,9 +56,9 @@ namespace Ssz.Utils
                     CultureInfo.DefaultThreadCurrentUICulture = uiCultureInfo;
                     Thread.CurrentThread.CurrentUICulture = uiCultureInfo;
                 }
-                catch (Exception ex)
+                catch
                 {
-                    Logger.Error(ex, "App settings file error. UI Culture not found: " + uiCultureName);
+                    //Logger.Error(ex, "App settings file error. UI Culture not found: " + uiCultureName);
                 }
             }
         }

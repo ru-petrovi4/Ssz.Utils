@@ -635,7 +635,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
       TimeSpan timeInterval = TimeInterval;
       List<TimeItem> timeItemList = new List<TimeItem>();
 
-      if( time != null && endTime != null && timeInterval != null && timeInterval.Ticks > 0 )
+      if(timeInterval.Ticks > 0 )
       {
         while( time <= endTime )
         {

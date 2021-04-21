@@ -55,7 +55,8 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
     {
       try
       {
-        new UIPermission( PermissionState.Unrestricted ).Demand();
+                // WARNING
+                //new UIPermission( PermissionState.Unrestricted ).Demand();
         _cacheBits[ ( int )CacheBits.HasUIPermission ] = true;
       }
       catch( SecurityException )

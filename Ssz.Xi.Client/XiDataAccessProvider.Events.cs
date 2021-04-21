@@ -42,9 +42,9 @@ namespace Ssz.Xi.Client
 
                     eventListProxy.AcknowledgeAlarms(operatorName, comment, eventIdsToAck.Select(e => new EventId(e)).ToList());
                 }
-                catch (Exception ex)
+                catch
                 {
-                    Logger.Error(ex);
+                    //Logger.Error(ex);
                 }
             });
         }

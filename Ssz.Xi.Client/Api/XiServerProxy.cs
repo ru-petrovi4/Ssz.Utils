@@ -181,9 +181,9 @@ namespace Ssz.Xi.Client.Api
                     {
                         throw;
                     }
-                    catch (Exception e)
+                    catch
                     {
-                        Logger.Verbose(e, "Exception while connecting to {0}", resourceManagementServiceEndpoint.Address);
+                        //Logger?.LogDebug(e, "Exception while connecting to {0}", resourceManagementServiceEndpoint.Address);
                     }
                 }
 
@@ -616,9 +616,9 @@ namespace Ssz.Xi.Client.Api
                 _xiServerInfo.Dispose();
                 _xiServerInfo = null;
             }
-            catch (Exception ex)
+            catch
             {
-                Logger.Warning(ex, "ConcludeXiContextInternal exception.");
+                //Logger?.LogWarning(ex, "ConcludeXiContextInternal exception.");
             }
         }
 

@@ -20,7 +20,7 @@ namespace Ssz.DataGrpc.Client
 
         public GrpcDataAccessProvider(ILogger<GrpcDataAccessProvider> logger)
         {
-            _logger = logger;
+            Logger = logger;
 
             _clientConnectionManager = new ClientConnectionManager(logger);
 
@@ -32,6 +32,8 @@ namespace Ssz.DataGrpc.Client
         #endregion
 
         #region public functions
+
+        public ILogger<GrpcDataAccessProvider> Logger { get; }
 
         /// <summary>
         ///     DataGrpc Server connection string.
@@ -140,7 +142,7 @@ namespace Ssz.DataGrpc.Client
         {
             Close();            
 
-            _logger.LogDebug("Starting ModelDataProvider. сallbackDispatcher != null " + (сallbackDispatcher != null).ToString());
+            Logger.LogDebug("Starting ModelDataProvider. сallbackDispatcher != null " + (сallbackDispatcher != null).ToString());
 
             _сallbackDispatcher = сallbackDispatcher;
             _elementValueListCallbackIsEnabled = elementValueListCallbackIsEnabled;
@@ -195,7 +197,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="valueSubscription"></param>
         public string AddItem(string elementId, IValueSubscription valueSubscription)
         {
-            _logger.LogDebug("DataGrpcProvider.AddItem() " + elementId);
+            Logger.LogDebug("DataGrpcProvider.AddItem() " + elementId);
 
             valueSubscription.Obj = new ValueSubscriptionObj
             {
@@ -356,17 +358,17 @@ namespace Ssz.DataGrpc.Client
                 OnLoopInWorkingThread(ct);
             }
 
-            _logger.LogDebug("Unsubscribing");
+            Logger.LogDebug("Unsubscribing");
 
             UnsubscribeInWorkingThread();
 
-            _logger.LogDebug("End Unsubscribing");
+            Logger.LogDebug("End Unsubscribing");
 
-            _logger.LogDebug("Disconnecting");
+            Logger.LogDebug("Disconnecting");
 
             if (_onEventMessagesCallbackSubscribed) _clientEventListManager.EventMessagesCallback -= OnEventMessagesCallback;            
 
-            _logger.LogDebug("End Disconnecting");
+            Logger.LogDebug("End Disconnecting");
         }        
 
         private void OnLoopInWorkingThread(CancellationToken ct)
@@ -386,7 +388,7 @@ namespace Ssz.DataGrpc.Client
 
                     #region notify subscribers disconnected
 
-                    Logger.Info("DataGrpcProvider diconnected");
+                    Logger.LogInformation("DataGrpcProvider diconnected");
 
                     _isConnected = false;
                     Action disconnected = Disconnected;
@@ -449,9 +451,9 @@ namespace Ssz.DataGrpc.Client
                         _clientConnectionManager.InitiateConnection(_serverAddress, _applicationName,
                             _workstationName, _systemNameToConnect, _contextParams);                        
 
-                        _logger.LogDebug("End Connecting");
+                        Logger.LogDebug("End Connecting");
 
-                        Logger.Info("DataGrpcProvider connected to " + _serverAddress);
+                        Logger.LogInformation("DataGrpcProvider connected to " + _serverAddress);
 
                         _isConnected = true;
                         Action connected = Connected;
@@ -470,7 +472,7 @@ namespace Ssz.DataGrpc.Client
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogDebug(ex, "");
+                        Logger.LogDebug(ex, "");
 
                         _lastFailedConnectionDateTimeUtc = DateTime.UtcNow;
                     }
@@ -533,9 +535,7 @@ namespace Ssz.DataGrpc.Client
 
         #endregion
 
-        #region private fields
-
-        private ILogger<GrpcDataAccessProvider> _logger;
+        #region private fields        
 
         /// <summary>
         ///     DataGrpc Server connection string.

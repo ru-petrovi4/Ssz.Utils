@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using Ssz.Xi.Client.Api.ListItems;
@@ -78,14 +79,14 @@ namespace Ssz.Xi.Client.Api
                                         i++;
                                     }
                                     if (ct.IsCancellationRequested) return;
-                                    Logger.Verbose("XiList.ElementValuesCallback");
+                                    Logger?.LogDebug("XiList.ElementValuesCallback");
                                     if (сallbackDoer != null)
                                     {
                                         try
                                         {
                                             сallbackDoer.BeginInvoke(ct =>
                                             {
-                                                Logger.Verbose("XiList.ElementValuesCallback dispatched");
+                                                Logger?.LogDebug("XiList.ElementValuesCallback dispatched");
                                                 elementValuesCallbackEventHandler(changedClientObjs.ToArray(), changedValues.ToArray());
                                             });
                                         }
@@ -107,7 +108,7 @@ namespace Ssz.Xi.Client.Api
                 }
                 catch (Exception ex)
                 {
-                    Logger.Warning(ex);
+                    Logger?.LogWarning(ex, "Exception");
                     connectionError = true;
                 }
 
@@ -314,7 +315,7 @@ namespace Ssz.Xi.Client.Api
             }
             catch (Exception ex)
             {
-                Logger.Warning(ex);
+                Logger?.LogWarning(ex, "Exception");
             }
         }
 

@@ -702,7 +702,7 @@ namespace Ssz.Xi.Client.Internal
         {
             if (0 == serviceEndpoints.Count)
             {
-                Logger.Verbose("null == serviceEndpoints || 0 == serviceEndpoints.Count");
+                //Logger?.LogDebug("null == serviceEndpoints || 0 == serviceEndpoints.Count");
                 return serviceEndpoints;
             }
             List<ServiceEndpoint> listServiceEndpoints;

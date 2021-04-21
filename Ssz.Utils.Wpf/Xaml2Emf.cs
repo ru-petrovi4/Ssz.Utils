@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,7 +20,9 @@ namespace Ssz.Utils.Wpf
 {
     public static class Xaml2Emf
     {
-        #region public functions        
+        #region public functions  
+        
+        public static ILogger? Logger { get; set; }
 
         public static void RealizeFrameworkElement(FrameworkElement fe)
         {
@@ -277,13 +280,13 @@ namespace Ssz.Utils.Wpf
                     if (intersects) break;
                 }
                 if (intersects)
-                    Logger.Warning("DrawingGroup.Opacity creates translucency between overlapping children");
+                    Xaml2Emf.Logger?.LogWarning("DrawingGroup.Opacity creates translucency between overlapping children");
             }
             foreach (Drawing d in drawing.Children) d.RenderTo(graphics, opacity*drawing.Opacity);
             graphics.EndContainer(gc);
-            if (drawing.OpacityMask != null) Logger.Warning("DrawingGroup OpacityMask ignored.");
-            if (drawing.BitmapEffect != null) Logger.Warning("DrawingGroup BitmapEffect ignored.");
-            if (drawing.GuidelineSet != null) Logger.Warning("DrawingGroup GuidelineSet ignored.");
+            if (drawing.OpacityMask != null) Xaml2Emf.Logger?.LogWarning("DrawingGroup OpacityMask ignored.");
+            if (drawing.BitmapEffect != null) Xaml2Emf.Logger?.LogWarning("DrawingGroup BitmapEffect ignored.");
+            if (drawing.GuidelineSet != null) Xaml2Emf.Logger?.LogWarning("DrawingGroup GuidelineSet ignored.");
         }
 
         private static void RenderTo(this GeometryDrawing drawing, d.Graphics graphics, double opacity)
@@ -345,7 +348,7 @@ namespace Ssz.Utils.Wpf
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "graphics")]
         private static void RenderTo(this VideoDrawing drawing, d.Graphics graphics, double opacity)
         {
-            Logger.Warning("Ignoring Video at {0}", drawing.Bounds);
+            Xaml2Emf.Logger?.LogWarning("Ignoring Video at {0}", drawing.Bounds);
         }
 
         #endregion
@@ -492,13 +495,13 @@ namespace Ssz.Utils.Wpf
 
         public static d.Brush ToGdiPlus(this DrawingBrush brush, Rect bounds)
         {
-            Logger.Warning("Ignoring {0} at {1}", brush.GetType(), bounds);
+            Xaml2Emf.Logger?.LogWarning("Ignoring {0} at {1}", brush.GetType(), bounds);
             return new d.SolidBrush(d.Color.FromArgb(0, 255, 255, 255));
         }
 
         public static d.Brush ToGdiPlus(this VisualBrush brush, Rect bounds)
         {
-            Logger.Warning("Ignoring {0} at {1}", brush.GetType(), bounds);
+            Xaml2Emf.Logger?.LogWarning("Ignoring {0} at {1}", brush.GetType(), bounds);
             return new d.SolidBrush(d.Color.FromArgb(0, 255, 255, 255));
         }
 
@@ -546,16 +549,16 @@ namespace Ssz.Utils.Wpf
                     }
                     catch (OutOfMemoryException oom)
                     {
-                        Logger.Warning("Unsupported image format: {0}", oom.Message);
+                        Xaml2Emf.Logger?.LogWarning("Unsupported image format: {0}", oom.Message);
                     }
                     catch (FileNotFoundException fnf)
                     {
-                        Logger.Warning("Image file not found: {0}", fnf.Message);
+                        Xaml2Emf.Logger?.LogWarning("Image file not found: {0}", fnf.Message);
                     }
                 else
-                    Logger.Warning("Unable to access image: {0}", url);
+                    Xaml2Emf.Logger?.LogWarning("Unable to access image: {0}", url);
             else
-                Logger.Warning("Unable to resolve image: {0}", me);
+                Xaml2Emf.Logger?.LogWarning("Unable to resolve image: {0}", me);
             return null;
         }
 
@@ -772,7 +775,7 @@ namespace Ssz.Utils.Wpf
             foreach (PathFigure pf in pg.Figures)
             {
                 if (!pf.IsFilled)
-                    Logger.Warning("Unfilled path figures not supported, use null brush instead.");
+                    Xaml2Emf.Logger?.LogWarning("Unfilled path figures not supported, use null brush instead.");
                 path.StartFigure();
                 d.PointF lastPoint = pf.StartPoint.ToGdiPlus();
                 foreach (PathSegment ps in pf.Segments)
@@ -801,7 +804,7 @@ namespace Ssz.Utils.Wpf
         public static d.PointF AddToPath(this PathSegment segment, d.PointF startPoint, d2.GraphicsPath path)
         {            
             if (!segment.IsStroked)
-                Logger.Warning("Unstroked path segments not supported, use null pen instead.");
+                Xaml2Emf.Logger?.LogWarning("Unstroked path segments not supported, use null pen instead.");
             // Except that they are used unecessarily on beziers auto-generated from arcs.
             //if (ps.IsSmoothJoin)
             //	Warning("Smooth join path segments not supported, use Pen.LineJoin=Round instead.");

@@ -1059,7 +1059,8 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
       try
       {
-        new UIPermission( UIPermissionClipboard.AllClipboard ).Demand();
+                // WARNING
+                //new UIPermission( UIPermissionClipboard.AllClipboard ).Demand();
         Clipboard.SetText( sb.ToString() );
       }
       catch( SecurityException )

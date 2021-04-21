@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Ssz.Utils;
 using Ssz.Xi.Client.Api.ListItems;
 using Ssz.Xi.Client.Api.Lists;
@@ -16,6 +17,8 @@ namespace Ssz.Xi.Client.Api
     {
         #region public functions
 
+        public ILogger? Logger { get; set; }
+
         /// <summary>
         ///     id != null, valueSubscription != null
         /// </summary>
@@ -25,7 +28,7 @@ namespace Ssz.Xi.Client.Api
         {
             if (id == null) throw new ArgumentNullException(@"id");
 
-            Logger.Verbose("XiListItemsManager.AddItem() " + id); 
+            Logger?.LogDebug("XiListItemsManager.AddItem() " + id); 
 
             ModelItem? modelItem;
             if (!_modelItemsDictionary.TryGetValue(clientObj, out modelItem))

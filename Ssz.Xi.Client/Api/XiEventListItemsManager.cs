@@ -101,9 +101,9 @@ namespace Ssz.Xi.Client.Api
                         allOk = false;
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
-                    Logger.Warning(ex);
+                    //Logger?.LogWarning(ex);
                 }
 
                 kvp.Value.P = xiEventList;
@@ -203,9 +203,9 @@ namespace Ssz.Xi.Client.Api
                     {
                         xiEventListPointer.P.Dispose();
                     }
-                    catch (Exception ex)
+                    catch
                     {
-                        Logger.Warning(ex);
+                        //Logger?.LogWarning(ex);
                     }
                 }
             }

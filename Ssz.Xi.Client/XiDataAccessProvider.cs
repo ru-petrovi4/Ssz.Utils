@@ -123,7 +123,7 @@ namespace Ssz.Xi.Client
         {
             Close();            
 
-            Logger.Verbose("Starting ModelDataProvider. сallbackDoer != null " + (сallbackDispatcher != null).ToString());
+            //Logger?.LogDebug("Starting ModelDataProvider. сallbackDoer != null " + (сallbackDispatcher != null).ToString());
 
             _сallbackDispatcher = сallbackDispatcher;
             _elementValueListCallbackIsEnabled = elementValueListCallbackIsEnabled;
@@ -182,7 +182,7 @@ namespace Ssz.Xi.Client
         /// <param name="valueSubscription"></param>
         public string AddItem(string elementId, IValueSubscription valueSubscription)
         {
-            Logger.Verbose("XiDataProvider.AddItem() " + elementId);
+            //Logger?.LogDebug("XiDataProvider.AddItem() " + elementId);
 
             valueSubscription.Obj = new ValueSubscriptionObj
             {
@@ -345,19 +345,19 @@ namespace Ssz.Xi.Client
                 OnLoopInWorkingThread(ct);
             }
 
-            Logger.Verbose("Unsubscribing");
+            //Logger?.LogDebug("Unsubscribing");
 
             UnsubscribeInWorkingThread();
 
-            Logger.Verbose("End Unsubscribing");
+            //Logger?.LogDebug("End Unsubscribing");
 
-            Logger.Verbose("Disconnecting");
+            //Logger?.LogDebug("Disconnecting");
 
             if (_onEventMessagesCallbackSubscribed) _xiEventListItemsManager.EventMessagesCallback -= OnEventMessagesCallback;
             _xiServerProxy.Dispose();
             _xiServerProxy = null;
 
-            Logger.Verbose("End Disconnecting");
+            //Logger?.LogDebug("End Disconnecting");
         }        
 
         private void OnLoopInWorkingThread(CancellationToken ct)
@@ -379,7 +379,7 @@ namespace Ssz.Xi.Client
 
                     #region notify subscribers disconnected
 
-                    Logger.Info("XiDataProvider diconnected");
+                    //Logger.Info("XiDataProvider diconnected");
 
                     _isConnected = false;
                     Action disconnected = Disconnected;
@@ -437,17 +437,17 @@ namespace Ssz.Xi.Client
                             workstationName += @"?" + xiContextParamsString;
                         }
 
-                        Logger.Verbose("Connecting. Endpoint: {0}. ApplicationName: {1}. WorkstationName: {2}",
-                            _serverAddress,
-                            _applicationName,
-                            workstationName);
+                        //Logger?.LogDebug("Connecting. Endpoint: {0}. ApplicationName: {1}. WorkstationName: {2}",
+                        //    _serverAddress,
+                        //    _applicationName,
+                         //   workstationName);
 
                         _xiServerProxy.InitiateXiContext(_serverAddress, _applicationName,
                             workstationName, this);                        
 
-                        Logger.Verbose("End Connecting");
+                        //Logger?.LogDebug("End Connecting");
 
-                        Logger.Info("XiDataProvider connected to " + _serverAddress);
+                        //Logger.Info("XiDataProvider connected to " + _serverAddress);
 
                         _isConnected = true;
                         Action connected = Connected;
@@ -464,9 +464,9 @@ namespace Ssz.Xi.Client
                             }
                         }
                     }
-                    catch (Exception ex)
+                    catch
                     {
-                        Logger.Verbose(ex);
+                        //Logger?.LogDebug(ex);
 
                         _lastFailedConnectionDateTimeUtc = DateTime.UtcNow;
                     }

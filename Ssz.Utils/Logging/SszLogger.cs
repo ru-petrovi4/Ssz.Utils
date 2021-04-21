@@ -57,6 +57,8 @@ namespace Ssz.Utils.Logging
 
         #endregion
 
+        #region public functions
+
         public SszLoggerOptions Options { get; set; }
 
         public IDisposable? BeginScope<TState>(TState state) => default;
@@ -65,7 +67,7 @@ namespace Ssz.Utils.Logging
         {
             if (Options.LogLevel == LogLevel.None) return false;
             return logLevel >= Options.LogLevel;
-        }   
+        }
 
         public void Log<TState>(
             LogLevel logLevel,
@@ -106,7 +108,7 @@ namespace Ssz.Utils.Logging
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"[{eventId.Id,2}: {logLevel,-12}]");
 
-                Console.ForegroundColor = originalColor;                
+                Console.ForegroundColor = originalColor;
                 Console.WriteLine(line);
             }
             lock (_logFileTextWriter)
@@ -114,8 +116,10 @@ namespace Ssz.Utils.Logging
                 _logFileTextWriter.WriteLine($"[{eventId.Id,2}: {logLevel,-12}]");
 
                 _logFileTextWriter.WriteLine(line);
-            }                       
+            }
         }
+
+        #endregion        
 
         #region private functions
 

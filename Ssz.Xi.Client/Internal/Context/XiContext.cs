@@ -895,7 +895,7 @@ namespace Ssz.Xi.Client.Internal.Context
                     new XiContextNotificationData(XiContextNotificationType.EndpointDisconnected,
                         ex);
 
-                Logger.Verbose(ex);
+                //Logger?.LogDebug(ex);
             }
             else if (ex is CommunicationException)
             {

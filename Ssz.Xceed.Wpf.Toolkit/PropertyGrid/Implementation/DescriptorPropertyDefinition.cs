@@ -38,8 +38,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 
     private readonly object _selectedObject;
     private readonly PropertyDescriptor _propertyDescriptor;
-    private readonly DependencyPropertyDescriptor _dpDescriptor;
-    private readonly MarkupObject _markupObject;
+    private readonly DependencyPropertyDescriptor _dpDescriptor;    
 
     #endregion
 
@@ -128,7 +127,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
     protected override object ComputeAdvancedOptionsTooltip()
     {
       object tooltip;
-      UpdateAdvanceOptionsForItem( _markupObject, SelectedObject as DependencyObject, _dpDescriptor, out tooltip );
+      UpdateAdvanceOptionsForItem( null, SelectedObject as DependencyObject, _dpDescriptor, out tooltip );
 
       return tooltip;
     }

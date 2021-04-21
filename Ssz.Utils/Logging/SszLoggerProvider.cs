@@ -12,9 +12,7 @@ namespace Ssz.Utils.Logging
     [ProviderAlias("SszLogger")]
     public sealed class SszLoggerProvider : ILoggerProvider
     {
-        private SszLoggerOptions _options;
-        private readonly ConcurrentDictionary<string, SszLogger> _loggers =
-            new ConcurrentDictionary<string, SszLogger>();
+        #region construction and destruction
 
         public SszLoggerProvider(SszLoggerOptions options) =>
             _options = options;
@@ -31,6 +29,10 @@ namespace Ssz.Utils.Logging
             });
         }
 
+        #endregion
+
+        #region public functions
+
         public ILogger CreateLogger(string categoryName) =>
             _loggers.GetOrAdd(categoryName, name => new SszLogger(name, _options));
 
@@ -42,5 +44,16 @@ namespace Ssz.Utils.Logging
             }
             _loggers.Clear();
         }
+
+        #endregion        
+
+        #region private fields
+
+        private SszLoggerOptions _options;
+
+        private readonly ConcurrentDictionary<string, SszLogger> _loggers =
+            new ConcurrentDictionary<string, SszLogger>();
+
+        #endregion
     }
 }

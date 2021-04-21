@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Logging;
 using Ssz.Utils;
 using Ssz.Xi.Client.Api.ListItems;
 using Ssz.Xi.Client.Api.Lists;
@@ -54,7 +55,7 @@ namespace Ssz.Xi.Client.Api
                 }
                 catch (Exception ex)
                 {
-                    Logger.Warning(ex);
+                    Logger?.LogWarning(ex, "Exception");
                     connectionError = true;
                 }
 

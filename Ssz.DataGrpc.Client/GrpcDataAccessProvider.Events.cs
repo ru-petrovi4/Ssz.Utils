@@ -6,6 +6,7 @@ using Ssz.DataGrpc.Client.Managers;
 using Ssz.DataGrpc.Server;
 using Ssz.DataGrpc.Client.ClientLists;
 using Ssz.Utils.DataAccess;
+using Microsoft.Extensions.Logging;
 
 namespace Ssz.DataGrpc.Client
 {
@@ -45,7 +46,7 @@ namespace Ssz.DataGrpc.Client
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error(ex);
+                    Logger.LogError(ex, "Exception");
                 }
             }
             );

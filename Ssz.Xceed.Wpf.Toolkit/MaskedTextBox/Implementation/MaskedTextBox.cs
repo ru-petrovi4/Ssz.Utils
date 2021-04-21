@@ -1170,7 +1170,8 @@ namespace Ssz.Xceed.Wpf.Toolkit
       string selectedText = this.GetSelectedText();
       try
       {
-        new UIPermission( UIPermissionClipboard.AllClipboard ).Demand();
+                // WARNING
+        //new UIPermission( UIPermissionClipboard.AllClipboard ).Demand();
 
         if( selectedText.Length == 0 )
         {

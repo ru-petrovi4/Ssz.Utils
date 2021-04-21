@@ -92,9 +92,9 @@ namespace Ssz.Utils.Wpf
                         }
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
-                    Logger.Error("Saving Recent to Registry failed: " + ex.Message);
+                    //Logger.Error("Saving Recent to Registry failed: " + ex.Message);
                 }
             }
 
@@ -199,9 +199,9 @@ namespace Ssz.Utils.Wpf
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                Logger.Error("Saving Recent to Registry failed: " + ex.Message);
+                //Logger.Error("Saving Recent to Registry failed: " + ex.Message);
             }
         }
 
@@ -281,9 +281,9 @@ namespace Ssz.Utils.Wpf
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                Logger.Error("Loading Recent from Registry failed: " + ex.Message);
+                //Logger.Error("Loading Recent from Registry failed: " + ex.Message);
             }
         }
 
