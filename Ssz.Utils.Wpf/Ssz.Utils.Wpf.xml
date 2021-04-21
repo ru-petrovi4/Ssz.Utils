@@ -97,11 +97,6 @@
                 For using in VS editor
             </summary>
         </member>
-        <member name="M:Ssz.Utils.Wpf.LocationMindfulWindows.LocationMindfulWindow.#ctor">
-            <summary>
-                For using in VS editor
-            </summary>
-        </member>
         <member name="M:Ssz.Utils.Wpf.LocationMindfulWindows.WindowSlot.InitializeWindow(Ssz.Utils.Wpf.LocationMindfulWindows.ILocationMindfulWindow,System.String,System.Double,System.Double)">
             <summary>        
             </summary>
@@ -896,6 +891,36 @@
             </summary>
             <param name="fileName"></param>
             <param name="drawing"></param>
+        </member>
+        <member name="T:XamlGeneratedNamespace.GeneratedInternalTypeHelper">
+            <summary>
+            GeneratedInternalTypeHelper
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateInstance(System.Type,System.Globalization.CultureInfo)">
+            <summary>
+            CreateInstance
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            GetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.SetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            SetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateDelegate(System.Type,System.Object,System.String)">
+            <summary>
+            CreateDelegate
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.AddEventHandler(System.Reflection.EventInfo,System.Object,System.Delegate)">
+            <summary>
+            AddEventHandler
+            </summary>
         </member>
     </members>
 </doc>

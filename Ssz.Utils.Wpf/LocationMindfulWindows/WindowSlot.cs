@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -29,10 +30,25 @@ namespace Ssz.Utils.Wpf.LocationMindfulWindows
             WindowSlot? freeWindowSlot = windowSlots.FirstOrDefault(slot => !slot.Occupied);
             if (freeWindowSlot == null)
             {
+                var rect = new Rect(Double.NaN, Double.NaN, Double.NaN, Double.NaN);
+                if (window.Category != "")
+                {
+                    RegistryKey? registryKey = GetOrCreateSszRegistryKey();
+                    if (registryKey != null)
+                    {
+                        string? rectString = registryKey.GetValue(window.Category) as string;
+                        if (rectString != null)
+                        {
+                            var registryRect = (RegistryRect)NameValueCollectionValueSerializer<RegistryRect>.Instance.ConvertFromString(rectString);
+                            rect = new Rect(registryRect.X, registryRect.Y, registryRect.Width, registryRect.Height);
+                        }
+                    }
+                }
+
                 freeWindowSlot = new WindowSlot
                 {
                     Num = windowSlots.Count,
-                    Location = new Rect(Double.NaN, Double.NaN, Double.NaN, Double.NaN)
+                    Location = rect
                 };
                 windowSlots.Add(freeWindowSlot);
             }
@@ -109,13 +125,44 @@ namespace Ssz.Utils.Wpf.LocationMindfulWindows
         {
             List<WindowSlot> windowSlots = WindowSlotsDictionary[window.Category];
 
+            var rect = new Rect(window.Left, window.Top, window.Width, window.Height);
             windowSlots[window.SlotNum].Occupied = false;
-            windowSlots[window.SlotNum].Location = new Rect(window.Left, window.Top, window.Width, window.Height);
+            windowSlots[window.SlotNum].Location = rect;
+
+            if (window.Category != "")
+            {
+                RegistryKey? registryKey = GetOrCreateSszRegistryKey();
+                if (registryKey != null)
+                {
+                    string rectString = NameValueCollectionValueSerializer<RegistryRect>.Instance.ConvertToString(
+                        new RegistryRect { X = rect.X, Y = rect.Y, Width = rect.Width, Height = rect.Height }
+                        );
+                    registryKey.SetValue(window.Category, rectString);
+                }
+            }
         }
 
         public int Num { get; set; }
         public bool Occupied { get; set; }
         public Rect Location { get; set; }
+
+        #endregion
+
+        #region private functions
+
+        private const string SszSubKeyString = @"SOFTWARE\Ssz\LocationMindfulWindows";
+
+        private static RegistryKey? GetOrCreateSszRegistryKey()
+        {            
+            try
+            {
+                return Registry.CurrentUser.CreateSubKey(SszSubKeyString);
+            }
+            catch (Exception)
+            {
+            }
+            return null;
+        }
 
         #endregion
 
@@ -125,5 +172,16 @@ namespace Ssz.Utils.Wpf.LocationMindfulWindows
             new CaseInsensitiveDictionary<List<WindowSlot>>();
 
         #endregion
+
+        private class RegistryRect
+        {
+            public double Width { get; set; }
+
+            public double Height { get; set; }
+
+            public double X { get; set; }
+
+            public double Y { get; set; }
+        }
     }
 }

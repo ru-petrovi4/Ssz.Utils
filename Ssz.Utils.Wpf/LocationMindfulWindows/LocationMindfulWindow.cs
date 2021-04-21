@@ -5,14 +5,7 @@ namespace Ssz.Utils.Wpf.LocationMindfulWindows
 {
     public class LocationMindfulWindow : Window, ILocationMindfulWindow
     {
-        #region construction and destruction
-
-        /// <summary>
-        ///     For using in VS editor
-        /// </summary>
-        public LocationMindfulWindow()
-        {
-        }
+        #region construction and destruction        
 
         public LocationMindfulWindow(string category, double initialWidth = Double.NaN,
             double initialHeight = Double.NaN)

@@ -201,9 +201,9 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="nameValueCollection"></param>
-        public static void SetNameValueCollection(object? obj, CaseInsensitiveDictionary<string?>? nameValueCollection)
+        public static void SetNameValueCollection(ref object obj, CaseInsensitiveDictionary<string?>? nameValueCollection)
         {
-            if (obj == null || nameValueCollection == null) return;
+            if (nameValueCollection == null) return;
             foreach (var kvp in nameValueCollection)
             {
                 obj.SetPropertyValue(kvp.Key, kvp.Value);

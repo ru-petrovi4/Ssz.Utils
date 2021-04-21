@@ -40,8 +40,8 @@ namespace Ssz.Utils.Wpf
         /// <returns></returns>
         public object ConvertFromString(string value)
         {
-            var result = Activator.CreateInstance<T>();
-            NameValueCollectionHelper.SetNameValueCollection(result, NameValueCollectionHelper.Parse(value));
+            object result = Activator.CreateInstance<T>();
+            NameValueCollectionHelper.SetNameValueCollection(ref result, NameValueCollectionHelper.Parse(value));
             return result;
         }
 
@@ -63,6 +63,11 @@ namespace Ssz.Utils.Wpf
         /// <param name="context"></param>
         /// <returns></returns>
         public override string ConvertToString(object value, IValueSerializerContext context)
+        {
+            return ConvertToString(value);
+        }
+
+        public string ConvertToString(object value)
         {
             return
                 NameValueCollectionHelper.GetNameValueCollectionString(
