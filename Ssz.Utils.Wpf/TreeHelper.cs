@@ -58,7 +58,7 @@ namespace Ssz.Utils.Wpf
         /// <param name="parent"></param>
         /// <param name="additionalCheck"></param>
         /// <returns></returns>
-        public static IEnumerable<T> FindChilds<T>(DependencyObject parent, Func<T, bool>? additionalCheck = null)
+        public static IEnumerable<T> FindChilds<T>(DependencyObject? parent, Func<T, bool>? additionalCheck = null)
             where T : class
         {
             var result = new List<T>();

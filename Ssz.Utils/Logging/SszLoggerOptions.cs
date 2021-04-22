@@ -15,7 +15,7 @@ namespace Ssz.Utils.Logging
 
         public LogLevel LogLevel { get; set; } = LogLevel.Trace;
 
-        public string LogsDirectory { get; set; } = @"%ALLUSERSPROFILE%\Application Data\Ssz";
+        public string LogsDirectory { get; set; } = @"%ProgramData%\Ssz\Logs";
 
         public bool DuplicateInConsole { get; set; } = false;
 

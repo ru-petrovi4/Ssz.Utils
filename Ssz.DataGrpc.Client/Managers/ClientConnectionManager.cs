@@ -118,15 +118,12 @@ namespace Ssz.DataGrpc.Client.Managers
 #else
             TimeSpan contextTimeout = new TimeSpan(0, 0, 30);
 #endif
-            GrpcChannel? grpcChannel = null;
-            AsyncServerStreamingCall<CallbackMessage>? callbackMessageStream = null;
+            GrpcChannel? grpcChannel = null;            
             try
             {
                 grpcChannel = GrpcChannel.ForAddress(serverAddress);
 
-                var resourceManagementClient = new DataAccess.DataAccessClient(grpcChannel);
-
-                callbackMessageStream = resourceManagementClient.SubscribeForCallback(new SubscribeForCallbackRequest());                
+                var resourceManagementClient = new DataAccess.DataAccessClient(grpcChannel);                               
 
                 var clientContext = new ClientContext(_logger,
                             resourceManagementClient,                            
@@ -138,7 +135,7 @@ namespace Ssz.DataGrpc.Client.Managers
                             contextParams
                             );
 
-                _connectionInfo = new ConnectionInfo(grpcChannel, resourceManagementClient, callbackMessageStream, clientContext);
+                _connectionInfo = new ConnectionInfo(grpcChannel, resourceManagementClient, clientContext);
             }
             catch
             { 
@@ -146,16 +143,10 @@ namespace Ssz.DataGrpc.Client.Managers
                 {                    
                     grpcChannel.Dispose();
                 }
-                if (callbackMessageStream != null)
-                {
-                    callbackMessageStream.Dispose();
-                }
-
                 throw;
             }
 
-            _connectionInfo.ClientContext.ContextNotifyEvent += ClientContextOnContextNotifyEvent;
-            var task = ReadCallbackMessagesAsync(callbackMessageStream.ResponseStream);
+            _connectionInfo.ClientContext.ContextNotifyEvent += ClientContextOnContextNotifyEvent;            
         }
 
         /// <summary>
@@ -318,8 +309,7 @@ namespace Ssz.DataGrpc.Client.Managers
             if (_connectionInfo == null) return;
 
             _connectionInfo.ClientContext.ContextNotifyEvent -= ClientContextOnContextNotifyEvent;
-            _connectionInfo.ClientContext.Dispose();
-            _connectionInfo.CallbackMessageStream.Dispose();
+            _connectionInfo.ClientContext.Dispose();            
             _connectionInfo.GrpcChannel.Dispose();
             _connectionInfo = null;
         }
@@ -342,54 +332,6 @@ namespace Ssz.DataGrpc.Client.Managers
             }
         }
 
-        private async Task ReadCallbackMessagesAsync(IAsyncStreamReader<CallbackMessage> reader)
-        {
-            while (true)
-            {
-                if (_connectionInfo == null) return;
-
-                try
-                {
-                    if (!await reader.MoveNext()) return;
-                }
-                //catch (RpcException e) when (e.StatusCode == StatusCode.NotFound)
-                //{
-                //    break;
-                //}
-                //catch (OperationCanceledException)
-                //{
-                //    break;
-                //}
-                catch
-                {
-                    return;
-                }
-
-                try
-                {                    
-                    switch (reader.Current.OptionalMessageCase)
-                    {                       
-                        case CallbackMessage.OptionalMessageOneofCase.ContextInfo:
-                            ContextInfo serverContextInfo = reader.Current.ContextInfo;
-                            _connectionInfo.ClientContext.ServerContextInfo = serverContextInfo;
-                            break;
-                        case CallbackMessage.OptionalMessageOneofCase.ElementValuesCallback:
-                            ElementValuesCallback elementValuesCallback = reader.Current.ElementValuesCallback;
-                            _connectionInfo.ClientContext.ElementValuesCallback(elementValuesCallback.ListClientAlias, elementValuesCallback.ElementValuesCollection);
-                            break;
-                        case CallbackMessage.OptionalMessageOneofCase.EventMessagesCallback:
-                            EventMessagesCallback eventMessagesCallback = reader.Current.EventMessagesCallback;
-                            _connectionInfo.ClientContext.EventMessagesCallback(eventMessagesCallback.ListClientAlias, eventMessagesCallback.EventMessagesCollection);
-                            break;
-                    }
-                }                
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Callback message exception.");
-                }
-            }
-        }
-
         #endregion
 
         #region private fields
@@ -405,21 +347,17 @@ namespace Ssz.DataGrpc.Client.Managers
         private class ConnectionInfo
         {
             public ConnectionInfo(GrpcChannel grpcChannel,
-                DataAccess.DataAccessClient resourceManagementClient,
-                AsyncServerStreamingCall<CallbackMessage> callbackMessageStream,
+                DataAccess.DataAccessClient resourceManagementClient,                
                 ClientContext clientContext)
             {
                 GrpcChannel = grpcChannel;
-                ResourceManagementClient = resourceManagementClient;
-                CallbackMessageStream = callbackMessageStream;
+                ResourceManagementClient = resourceManagementClient;                
                 ClientContext = clientContext;
             }
 
             public readonly GrpcChannel GrpcChannel;
 
             public readonly DataAccess.DataAccessClient ResourceManagementClient;
-
-            public readonly AsyncServerStreamingCall<CallbackMessage> CallbackMessageStream;
             
             public readonly ClientContext ClientContext;
         }        

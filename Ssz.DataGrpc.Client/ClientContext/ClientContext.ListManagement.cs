@@ -272,7 +272,11 @@ namespace Ssz.DataGrpc.Client
             ClientListRoot? dataGrpcListRoot;
             _lists.TryGetValue(clientListId, out dataGrpcListRoot);
             var result = dataGrpcListRoot as ClientElementValueList;
-            if (result == null) throw new InvalidOperationException();
+            if (result == null)
+            {
+                //_logger.
+                throw new InvalidOperationException();
+            }
             return result;
         }
 

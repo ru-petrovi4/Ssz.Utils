@@ -9,6 +9,8 @@ using Ssz.DataGrpc.Server;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using Ssz.DataGrpc.Client.Data;
+using System.Threading.Tasks;
+using Ssz.DataGrpc.Client.ClientLists;
 
 namespace Ssz.DataGrpc.Client
 {
@@ -69,7 +71,14 @@ namespace Ssz.DataGrpc.Client
 
             SetResourceManagementLastCallUtc();
 
+            _callbackMessageStream = resourceManagementClient.SubscribeForCallback(new SubscribeForCallbackRequest
+                {
+                    ContextId = _serverContextId
+                });
+
             _serverContextIsOperational = true;
+
+            var task = ReadCallbackMessagesAsync(_callbackMessageStream.ResponseStream);
         }
 
         /// <summary>
@@ -109,6 +118,8 @@ namespace Ssz.DataGrpc.Client
 
             if (disposing)
             {
+                _callbackMessageStream?.Dispose();
+
                 if (_serverContextIsOperational)
                 {
                     _serverContextIsOperational = false;
@@ -147,7 +158,7 @@ namespace Ssz.DataGrpc.Client
             {
                 return _serverContextInfo;
             }
-            set
+            private set
             {
                 _serverContextInfo = value;
                 if (_serverContextInfo != null && _serverContextInfo.State == State.Aborting)
@@ -290,68 +301,83 @@ namespace Ssz.DataGrpc.Client
             }           
         }
 
+        private async Task ReadCallbackMessagesAsync(IAsyncStreamReader<CallbackMessage> reader)
+        {
+            while (true)
+            {
+                if (_serverContextIsOperational) return;
+
+                try
+                {
+                    if (!await reader.MoveNext()) return;
+                }
+                //catch (RpcException e) when (e.StatusCode == StatusCode.NotFound)
+                //{
+                //    break;
+                //}
+                //catch (OperationCanceledException)
+                //{
+                //    break;
+                //}
+                catch
+                {
+                    return;
+                }
+
+                try
+                {
+                    switch (reader.Current.OptionalMessageCase)
+                    {
+                        case CallbackMessage.OptionalMessageOneofCase.ContextInfo:
+                            ContextInfo serverContextInfo = reader.Current.ContextInfo;
+                            ServerContextInfo = serverContextInfo;
+                            break;
+                        case CallbackMessage.OptionalMessageOneofCase.ElementValuesCallback:
+                            ElementValuesCallback elementValuesCallback = reader.Current.ElementValuesCallback;
+                            ClientElementValueList datalist = GetElementValueList(elementValuesCallback.ListClientAlias);
+                            ElementValuesCallback(datalist, elementValuesCallback.ElementValuesCollection);                            
+                            break;
+                        case CallbackMessage.OptionalMessageOneofCase.EventMessagesCallback:
+                            EventMessagesCallback eventMessagesCallback = reader.Current.EventMessagesCallback;
+                            ClientEventList eventList = GetEventList(eventMessagesCallback.ListClientAlias);
+                            EventMessagesCallback(eventList, eventMessagesCallback.EventMessagesCollection);
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Callback message exception.");
+                }
+            }
+        }
+
         #endregion
 
         #region private fields
 
-        /// <summary>
-        ///     This member indicates, when TRUE, that the object has been disposed by the Dispose(bool isDisposing) method.
-        /// </summary>
         private bool _disposed;
 
         private ILogger<GrpcDataAccessProvider> _logger;
-
-        /// <summary>
-        ///     This data member is the Endpoint Discovery object used to access the server for its
-        ///     connection information. The Endpoint Discovery object retrieves the endpoints of the
-        ///     server that are used for browsing, reading, writing, and subscribing.  It also sorts
-        ///     them into the preferred order of use. For example, if the client and server are on the
-        ///     same machine, the netPipe endpoints will sort to the top.
-        /// </summary>
+        
         private DataAccess.DataAccessClient _resourceManagementClient;
-
-        /// <summary>
-        ///     This data member represents the ApplicationName public property
-        /// </summary>
-        private readonly string _applicationName;        
-
-        /// <summary>
-        ///     This data member represents the WorkstationName public property
-        /// </summary>
+        
+        private readonly string _applicationName;
+        
         private readonly string _workstationName;
-
-        /// <summary>
-        ///     This data member is the private representation of the ContextId interface property.
-        /// </summary>
+        
         private readonly string _serverContextId;
-
-        /// <summary>
-        ///     This data member is the private representation of the public ContextIimeout property
-        /// </summary>
+        
         private readonly uint _serverContextTimeoutMs;
-
-        /// <summary>
-        ///     This data member is the private representation of the LocaleId interface property.
-        /// </summary>
+        
         private readonly uint _localeId;
-
-        /// <summary>
-        ///     The time of receipt of the response to the last successful IResourceManagement call.
-        /// </summary>
-        private DateTime _resourceManagementLastCallUtc;
         
-        /// <summary>
-        ///     This data member contains the Server Description for this DataGrpc Context.  Is set by
-        ///     the GetContextInfo() method during context establishment.
-        /// </summary>
-        private ContextInfo? _serverContextInfo;        
-
-        /// <summary>
-        ///     Inidicates, when TRUE, that the context is closing or has completed closing
-        ///     and will not accept any more requests on the context.
-        /// </summary>
-        private volatile bool _serverContextIsOperational; 
+        private DateTime _resourceManagementLastCallUtc;        
         
+        private ContextInfo? _serverContextInfo;
+
+        private AsyncServerStreamingCall<CallbackMessage>? _callbackMessageStream;
+        
+        private volatile bool _serverContextIsOperational;
 
         private ClientContextNotificationData? _pendingContextNotificationData;
 

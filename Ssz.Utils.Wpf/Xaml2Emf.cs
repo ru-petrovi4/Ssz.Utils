@@ -33,8 +33,10 @@ namespace Ssz.Utils.Wpf
             fe.UpdateLayout();
         }
 
-        public static Drawing? GetDrawingFromObj(object obj)
+        public static Drawing? GetDrawingFromObj(object? obj)
         {
+            if (obj == null) return null;
+
             Drawing? drawing = FindDrawing(obj);
             if (drawing != null) return drawing;
 
