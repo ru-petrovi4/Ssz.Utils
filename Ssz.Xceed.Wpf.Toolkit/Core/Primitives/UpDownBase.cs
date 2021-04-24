@@ -339,7 +339,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
       }
     }
 
-    public bool PropertyGridRefreshDisabled { get; set; }
+    public bool RefreshForPropertyGridIsDisabled { get; set; }
 
     private static object OnCoerceValue( DependencyObject o, object basevalue )
     {
@@ -709,11 +709,11 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
     #endregion //Methods
 
-    public void OnPropertyGridRefresh()
+    public void RefreshForPropertyGrid()
     {
     }
 
-    public void OnEndEditing()
+    public void EndEditInPropertyGrid()
     {  
     }
   }

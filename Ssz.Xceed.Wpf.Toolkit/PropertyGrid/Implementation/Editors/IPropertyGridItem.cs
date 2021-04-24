@@ -9,10 +9,10 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Implementation.Editors
 {
     public interface IPropertyGridItem
     {
-        bool PropertyGridRefreshDisabled { get; set; }
+        bool RefreshForPropertyGridIsDisabled { get; set; }
 
-        void OnPropertyGridRefresh();
+        void RefreshForPropertyGrid();
 
-        void OnEndEditing();
+        void EndEditInPropertyGrid();
     }
 }

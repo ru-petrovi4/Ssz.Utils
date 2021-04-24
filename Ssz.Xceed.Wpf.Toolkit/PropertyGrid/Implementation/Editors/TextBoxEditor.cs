@@ -42,13 +42,13 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Editors
       DefaultStyleKeyProperty.OverrideMetadata( typeof( PropertyGridEditorTextBox ), new FrameworkPropertyMetadata( typeof( PropertyGridEditorTextBox ) ) );
     }
 
-    public bool PropertyGridRefreshDisabled { get; set; }
+    public bool RefreshForPropertyGridIsDisabled { get; set; }
 
-    public void OnPropertyGridRefresh()
+    public void RefreshForPropertyGrid()
     {
     }
 
-    public void OnEndEditing()
+    public void EndEditInPropertyGrid()
     {  
     }
   }

@@ -872,13 +872,13 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
       _containerHelper.UpdateValuesFromSource();
     }
 
-    public void OnEndEditing()
+    public void EndEditInPropertyGrid()
     {
       Keyboard.Focus(this);
 
       foreach (IPropertyGridItem child in Ssz.Utils.Wpf.TreeHelper.FindChilds<IPropertyGridItem>(this))
         {
-            child.OnEndEditing();
+            child.EndEditInPropertyGrid();
         }
     }
 

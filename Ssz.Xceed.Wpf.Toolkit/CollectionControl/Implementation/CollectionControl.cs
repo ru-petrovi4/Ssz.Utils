@@ -171,9 +171,9 @@ namespace Ssz.Xceed.Wpf.Toolkit
             {
                 var cancelEventArgs = new CancelEventArgs();
 
-                objectPropertyGrid.OnEndEditing();
+                objectPropertyGrid.EndEditInPropertyGrid();
 
-                ((CollectionControl)d).Refresh();
+                ((CollectionControl)d).RefreshForPropertyGrid();
             }
             objectPropertyGrid.SelectedObject = e.NewValue;
         }
@@ -237,7 +237,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
       CommandBindings.Add( new CommandBinding( ComponentCommands.MoveUp, MoveUp, CanMoveUp ) );
 
       _dispatcherTimer = new DispatcherTimer(new TimeSpan(0, 0, 2), DispatcherPriority.Background,
-          (sender, e) => Refresh(),
+          (sender, e) => RefreshForPropertyGrid(),
           Dispatcher);
 
       _dispatcherTimer.Start();
@@ -495,9 +495,9 @@ namespace Ssz.Xceed.Wpf.Toolkit
     {
         _dispatcherTimer.Stop();
 
-       _objectPropertyGrid.OnEndEditing();
+       _objectPropertyGrid.EndEditInPropertyGrid();
 
-        Refresh();
+        RefreshForPropertyGrid();
 
       IList originalList = ComputeItemsSource();
       if( originalList == null )
@@ -533,17 +533,17 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
     #endregion //Methods
 
-        private void Refresh()
+        private void RefreshForPropertyGrid()
         {
             var item = _objectPropertyGrid.SelectedObject as IPropertyGridItem;
-            if (item == null || item.PropertyGridRefreshDisabled) return;
+            if (item == null || item.RefreshForPropertyGridIsDisabled) return;
 
             foreach (IPropertyGridItem child in TreeHelper.FindChilds<IPropertyGridItem>(_objectPropertyGrid))
             {
-                child.OnPropertyGridRefresh();
+                child.RefreshForPropertyGrid();
             }
 
-            item.OnPropertyGridRefresh();
+            item.RefreshForPropertyGrid();
         }
 
     private readonly DispatcherTimer _dispatcherTimer;
