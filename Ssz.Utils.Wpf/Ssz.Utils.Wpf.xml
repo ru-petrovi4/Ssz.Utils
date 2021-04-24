@@ -6,13 +6,13 @@
     <members>
         <member name="M:Ssz.Utils.Wpf.ClipboardHelper.ParseClipboardData">
             <summary>        
-                Uses CultureHelper.SystemCultureInfo.
+                Uses ConfigurationHelper.SystemCultureInfo.
             </summary>
             <returns></returns>
         </member>
         <member name="M:Ssz.Utils.Wpf.ClipboardHelper.SetClipboardData(System.Collections.Generic.List{System.String[]})">
             <summary>
-                Uses CultureHelper.SystemCultureInfo
+                Uses ConfigurationHelper.SystemCultureInfo
             </summary>
             <param name="data"></param>
         </member>
@@ -248,7 +248,7 @@
                 Set this property to change default value (optional).
             </summary>
         </member>
-        <member name="P:Ssz.Utils.Wpf.RecentFilesCollectionManager.CurrentDir">
+        <member name="P:Ssz.Utils.Wpf.RecentFilesCollectionManager.CurrentDirectory">
             <summary>
                 Set current directory.
                 Default value is program current directory which is set when
@@ -891,36 +891,6 @@
             </summary>
             <param name="fileName"></param>
             <param name="drawing"></param>
-        </member>
-        <member name="T:XamlGeneratedNamespace.GeneratedInternalTypeHelper">
-            <summary>
-            GeneratedInternalTypeHelper
-            </summary>
-        </member>
-        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateInstance(System.Type,System.Globalization.CultureInfo)">
-            <summary>
-            CreateInstance
-            </summary>
-        </member>
-        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Globalization.CultureInfo)">
-            <summary>
-            GetPropertyValue
-            </summary>
-        </member>
-        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.SetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Object,System.Globalization.CultureInfo)">
-            <summary>
-            SetPropertyValue
-            </summary>
-        </member>
-        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateDelegate(System.Type,System.Object,System.String)">
-            <summary>
-            CreateDelegate
-            </summary>
-        </member>
-        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.AddEventHandler(System.Reflection.EventInfo,System.Object,System.Delegate)">
-            <summary>
-            AddEventHandler
-            </summary>
         </member>
     </members>
 </doc>

@@ -217,9 +217,9 @@ namespace TestWpfApp.Alarms
 
                 return new[] { alarmInfoViewModel };
             }
-            catch (Exception ex)
+            catch
             {
-                Logger.Error(ex, "DataAccessProviderOnEventNotificationEvent method error.");
+                //Logger.Error(ex, "DataAccessProviderOnEventNotificationEvent method error.");
             }
 
             return null;

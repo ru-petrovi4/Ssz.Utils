@@ -1,7 +1,7 @@
 ﻿/////////////////////////////////////////////////////////////////////////////
 //
 //                              COPYRIGHT (c) 2016
-//                          HONEYWELL INTERNATIONAL INC.
+//                          SSZ INTERNATIONAL INC.
 //                              ALL RIGHTS RESERVED
 //
 //	Legal rights of Ssz International Inc. in this software is distinct from

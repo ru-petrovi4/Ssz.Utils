@@ -40,7 +40,7 @@ namespace Ssz.Utils.Wpf
         #region construction and destruction
 
         public RecentFilesCollectionManager(string registryPath, int maxNumberOfFiles, int maxDisplayLength,
-            string currentDirectory)
+            string? currentDirectory)
         {
             // keep reference to owner window
             RecentFilesCollection = new ObservableCollection<RecentFile>();
@@ -175,7 +175,7 @@ namespace Ssz.Utils.Wpf
         ///     Set this property to change default value (optional)
         ///     after call to Initialize.
         /// </summary>
-        public string CurrentDir
+        public string? CurrentDirectory
         {
             get { return _currentDirectory; }
         }
@@ -297,7 +297,7 @@ namespace Ssz.Utils.Wpf
 
         private readonly int _maxDisplayLength; // maximum length of file name for display
 
-        private readonly string _currentDirectory; // current directory
+        private readonly string? _currentDirectory; // current directory
 
         private const string RegEntryName = "file"; // entry name to keep Recent (file0, file1...)
 

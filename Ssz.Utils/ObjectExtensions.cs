@@ -75,17 +75,14 @@ namespace Ssz.Utils
         /// <summary>
         ///     Sets value of 'obj' concatenated with expression.
         ///     Returns True if succeeded.
-        ///     expression examples: ".Name", ".SubObjects[0].Name"
-        ///     obj != null
+        ///     expression examples: ".Name", ".SubObjects[0].Name"        
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="expression"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static bool SetValue(this object obj, string expression, object value)
+        public static bool SetValue(this object obj, string? expression, object? value)
         {
-            if (obj == null) throw new ArgumentNullException(@"obj");
-
             if (String.IsNullOrEmpty(expression)) return false;
 
             object o = obj;

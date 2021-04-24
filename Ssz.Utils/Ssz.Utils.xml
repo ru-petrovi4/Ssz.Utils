@@ -7,7 +7,7 @@
         <member name="T:Ssz.Utils.Any">
             <summary>
                 If func param stringIsLocalized = false, InvariantCulture is used.
-                If func param stringIsLocalized = true, CultureHelper.SystemCultureInfo is used, which is corresponds operating system culture (see CultureHelper class).
+                If func param stringIsLocalized = true, ConfigurationHelper.SystemCultureInfo is used, which is corresponds operating system culture (see CultureHelper class).
             </summary>
         </member>
         <member name="T:Ssz.Utils.Any.StorageType">
@@ -1755,7 +1755,7 @@
             <param name="obj"></param>
             <returns></returns>
         </member>
-        <member name="M:Ssz.Utils.NameValueCollectionHelper.SetNameValueCollection(System.Object,Ssz.Utils.CaseInsensitiveDictionary{System.String})">
+        <member name="M:Ssz.Utils.NameValueCollectionHelper.SetNameValueCollection(System.Object@,Ssz.Utils.CaseInsensitiveDictionary{System.String})">
             <summary>        
             </summary>
             <param name="obj"></param>
@@ -1797,8 +1797,7 @@
             <summary>
                 Sets value of 'obj' concatenated with expression.
                 Returns True if succeeded.
-                expression examples: ".Name", ".SubObjects[0].Name"
-                obj != null
+                expression examples: ".Name", ".SubObjects[0].Name"        
             </summary>
             <param name="obj"></param>
             <param name="expression"></param>

@@ -16,7 +16,7 @@ namespace Ssz.Utils.Wpf
         #region public functions
 
         /// <summary>        
-        ///     Uses CultureHelper.SystemCultureInfo.
+        ///     Uses ConfigurationHelper.SystemCultureInfo.
         /// </summary>
         /// <returns></returns>
         public static List<string?[]> ParseClipboardData()
@@ -41,7 +41,7 @@ namespace Ssz.Utils.Wpf
         }
 
         /// <summary>
-        ///     Uses CultureHelper.SystemCultureInfo
+        ///     Uses ConfigurationHelper.SystemCultureInfo
         /// </summary>
         /// <param name="data"></param>
         public static void SetClipboardData(List<string[]> data)
