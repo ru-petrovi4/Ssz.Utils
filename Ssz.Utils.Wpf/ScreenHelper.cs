@@ -26,13 +26,16 @@ namespace Ssz.Utils.Wpf
         {
             var result = new List<Rect>();
 
-            Screen[] screens = Screen.AllScreens.OrderByDescending(s => s.Primary).ThenBy(s => s.DeviceName).ToArray();
-
-            foreach (Screen screen in screens)
+            if (OperatingSystem.IsWindowsVersionAtLeast(7))
             {
-                Rect workingArea = screen.WorkingArea;
-                result.Add(new Rect(workingArea.Left / ScreenScaleX, workingArea.Top / ScreenScaleY,
-                    workingArea.Width / ScreenScaleX, workingArea.Height / ScreenScaleY));
+                WindowsScreen[] screens = WindowsScreen.AllScreens.OrderByDescending(s => s.Primary).ThenBy(s => s.DeviceName).ToArray();
+
+                foreach (WindowsScreen screen in screens)
+                {
+                    Rect workingArea = screen.WorkingArea;
+                    result.Add(new Rect(workingArea.Left / ScreenScaleX, workingArea.Top / ScreenScaleY,
+                        workingArea.Width / ScreenScaleX, workingArea.Height / ScreenScaleY));
+                }
             }
 
             return result.ToArray();
@@ -44,12 +47,19 @@ namespace Ssz.Utils.Wpf
         /// <returns></returns>
         public static Rect GetPrimarySystemScreen()
         {
-            var result = new List<Rect>();
+            if (OperatingSystem.IsWindowsVersionAtLeast(7))
+            {
+                var result = new List<Rect>();
 
-            Rect workingArea = Screen.AllScreens.First(s => s.Primary).WorkingArea;
+                Rect workingArea = WindowsScreen.AllScreens.First(s => s.Primary).WorkingArea;
 
-            return new Rect(workingArea.Left / ScreenScaleX, workingArea.Top / ScreenScaleY,
-                    workingArea.Width / ScreenScaleX, workingArea.Height / ScreenScaleY);            
+                return new Rect(workingArea.Left / ScreenScaleX, workingArea.Top / ScreenScaleY,
+                        workingArea.Width / ScreenScaleX, workingArea.Height / ScreenScaleY);
+            }
+            else
+            {
+                return new Rect();
+            }
         }
 
         /// <summary>
@@ -219,9 +229,12 @@ namespace Ssz.Utils.Wpf
 
         private static void DefineScreenScale()
         {
-            Screen primaryScreen = Screen.AllScreens.Where(s => s.Primary).First();
-            _screenScaleX = primaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
-            _screenScaleY = primaryScreen.Bounds.Height / SystemParameters.PrimaryScreenHeight;            
+            if (OperatingSystem.IsWindowsVersionAtLeast(7))
+            {
+                WindowsScreen primaryScreen = WindowsScreen.AllScreens.Where(s => s.Primary).First();
+                _screenScaleX = primaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
+                _screenScaleY = primaryScreen.Bounds.Height / SystemParameters.PrimaryScreenHeight;
+            }
         }
 
         private static double GetDistance(double x1, double y1, double x2, double y2)

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5.0-windows</TargetFramework>    
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);NU5125</NoWarn>    
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>    
+    <Company>SSZ</Company>
+    <Version>1.0.1</Version>    
+  </PropertyGroup>
+  <PropertyGroup>
+    <Description>Fluent.Ribbon is a library that implements an Office-like user interface for the Windows Presentation Foundation (WPF). It provides controls such as RibbonTabControl, Backstage, Gallery, QuickAccessToolbar, ScreenTip and so on.</Description>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DefaultItemExcludes>$(DefaultItemExcludes);**/*.Template.xaml</DefaultItemExcludes>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <!-- We also have to exclude controls in release mode to reduce binary size -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);**/Controls/*.xaml</DefaultItemExcludes>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="**/*.fx;**/*.json" Exclude="$(BaseIntermediateOutputPath)/**/*" />
+    <None Include="**/Controls/*.xaml" />
+    <None Include="**/Styles.txt" />
+    <EmbeddedResource Include="**/*.Template.xaml" />
+    <EmbeddedResource Include="**/GeneratorParameters.json" />
+    <UpToDateCheckInput Include="**/*.xaml" />
+  </ItemGroup>  
+  <ItemGroup Condition="$(DefineConstants.Contains(NETCOREAPP)) == false">
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationTypes" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="5.0.0" />   
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ControlzEx\ControlzEx.csproj" />
+  </ItemGroup>
+
+  <!-- NuGet 
+  <PropertyGroup>
+    <PackageId>Fluent.Ribbon</PackageId>
+    <Authors>Bastian Schmidt</Authors>
+    <PackageLicenseFile>license/License.txt</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/fluentribbon/Fluent.Ribbon</PackageProjectUrl>
+    <PackageIcon>Logo.png</PackageIcon>
+    <PackageIconUrl>https://raw.githubusercontent.com/fluentribbon/Fluent.Ribbon/master/Images/Logo/Logo_128x128.png</PackageIconUrl>
+    <PackageTags>fluent;office;ribbon;ribbonwindow;backstage;UI;XAML;Toolkit;Library;.NET;OSS;OpenSource;fluentribbon</PackageTags>
+    <PackageReleaseNotes>https://github.com/fluentribbon/Fluent.Ribbon/blob/develop/Changelog.md</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/fluentribbon/Fluent.Ribbon.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <GenerateLibraryLayout>true</GenerateLibraryLayout>
+  </PropertyGroup>
+-->
+  
+
+
+  <!-- 
+  Delete generated color scheme XAML files when user explicitly executes Build>Clean
+  command in Visual Studio.
+  
+  https://stackoverflow.com/questions/5102661/need-a-post-clean-event-in-visual-studio 
+  -->
+  <Target Name="MyDistClean" AfterTargets="Clean">
+    <ItemGroup>
+      <ThemeFiles Include="$(MSBuildProjectDirectory)/Themes/Themes/Dark.*" />
+      <ThemeFiles Include="$(MSBuildProjectDirectory)/Themes/Themes/Light.*" />
+      <ThemeFiles Include="$(MSBuildProjectDirectory)/Themes/Themes/Colorful.*" />
+    </ItemGroup>
+    <Message Text="Deleting XAML Color Scheme files..." Importance="high" />
+    <Delete Files="$(ThemeFiles)" ContinueOnError="true" />
+  </Target>
+</Project>

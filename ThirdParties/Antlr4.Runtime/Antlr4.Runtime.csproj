@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Antlr4.Runtime.Standard</AssemblyName>
+    <BaseIntermediateOutputPath>obj\net35\</BaseIntermediateOutputPath>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>..\..\..\bin\Packages_Debug\</OutputPath>
+    <DocumentationFile>..\..\..\bin\Packages_Debug\Antlr4.Runtime.Standard.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>..\..\..\bin\Packages_Release\</OutputPath>
+    <DocumentationFile>..\..\..\bin\Packages_Release\Antlr4.Runtime.Standard.xml</DocumentationFile>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Sharpen\Compat\SerializableAttribute.cs" />
+  </ItemGroup>
+</Project>

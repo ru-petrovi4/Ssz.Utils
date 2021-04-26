@@ -805,74 +805,6 @@
             InitializeComponent
             </summary>
         </member>
-        <member name="T:Ssz.Utils.Wpf.WpfScreenHelper.Screen">
-            <summary>
-            Represents a display device or multiple display devices on a single system.
-            </summary>
-        </member>
-        <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.Screen.AllScreens">
-            <summary>
-            Gets an array of all displays on the system.
-            </summary>
-            <returns>An enumerable of type Screen, containing all displays on the system.</returns>
-        </member>
-        <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.Screen.Bounds">
-            <summary>
-            Gets the bounds of the display.
-            </summary>
-            <returns>A <see cref="T:System.Windows.Rect" />, representing the bounds of the display.</returns>
-        </member>
-        <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.Screen.DeviceName">
-            <summary>
-            Gets the device name associated with a display.
-            </summary>
-            <returns>The device name associated with a display.</returns>
-        </member>
-        <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.Screen.Primary">
-            <summary>
-            Gets a value indicating whether a particular display is the primary device.
-            </summary>
-            <returns>true if this display is primary; otherwise, false.</returns>
-        </member>
-        <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.Screen.PrimaryScreen">
-            <summary>
-            Gets the primary display.
-            </summary>
-            <returns>The primary display.</returns>
-        </member>
-        <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.Screen.WorkingArea">
-            <summary>
-            Gets the working area of the display. The working area is the desktop area of the display, excluding taskbars, docked windows, and docked tool bars.
-            </summary>
-            <returns>A <see cref="T:System.Windows.Rect" />, representing the working area of the display.</returns>
-        </member>
-        <member name="M:Ssz.Utils.Wpf.WpfScreenHelper.Screen.FromHandle(System.IntPtr)">
-            <summary>
-            Retrieves a Screen for the display that contains the largest portion of the specified control.
-            </summary>
-            <param name="hwnd">The window handle for which to retrieve the Screen.</param>
-            <returns>A Screen for the display that contains the largest region of the object. In multiple display environments where no display contains any portion of the specified window, the display closest to the object is returned.</returns>
-        </member>
-        <member name="M:Ssz.Utils.Wpf.WpfScreenHelper.Screen.FromPoint(System.Windows.Point)">
-            <summary>
-            Retrieves a Screen for the display that contains the specified point.
-            </summary>
-            <param name="point">A <see cref="T:System.Windows.Point" /> that specifies the location for which to retrieve a Screen.</param>
-            <returns>A Screen for the display that contains the point. In multiple display environments where no display contains the point, the display closest to the specified point is returned.</returns>
-        </member>
-        <member name="M:Ssz.Utils.Wpf.WpfScreenHelper.Screen.Equals(System.Object)">
-            <summary>
-            Gets or sets a value indicating whether the specified object is equal to this Screen.
-            </summary>
-            <param name="obj">The object to compare to this Screen.</param>
-            <returns>true if the specified object is equal to this Screen; otherwise, false.</returns>
-        </member>
-        <member name="M:Ssz.Utils.Wpf.WpfScreenHelper.Screen.GetHashCode">
-            <summary>
-            Computes and retrieves a hash code for an object.
-            </summary>
-            <returns>A hash code for an object.</returns>
-        </member>
         <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.SystemInformation.VirtualScreen">
             <summary>
             Gets the bounds of the virtual screen.
@@ -884,6 +816,75 @@
             Gets the size, in pixels, of the working area of the screen.
             </summary>
             <returns>A <see cref="T:System.Windows.Rect" /> that represents the size, in pixels, of the working area of the screen.</returns>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen">
+            <summary>
+            Represents a display device or multiple display devices on a single system.
+            [assembly:SupportedOSPlatform("windows")]
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.AllScreens">
+            <summary>
+            Gets an array of all displays on the system.
+            </summary>
+            <returns>An enumerable of type Screen, containing all displays on the system.</returns>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.Bounds">
+            <summary>
+            Gets the bounds of the display.
+            </summary>
+            <returns>A <see cref="T:System.Windows.Rect" />, representing the bounds of the display.</returns>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.DeviceName">
+            <summary>
+            Gets the device name associated with a display.
+            </summary>
+            <returns>The device name associated with a display.</returns>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.Primary">
+            <summary>
+            Gets a value indicating whether a particular display is the primary device.
+            </summary>
+            <returns>true if this display is primary; otherwise, false.</returns>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.PrimaryScreen">
+            <summary>
+            Gets the primary display.
+            </summary>
+            <returns>The primary display.</returns>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.WorkingArea">
+            <summary>
+            Gets the working area of the display. The working area is the desktop area of the display, excluding taskbars, docked windows, and docked tool bars.
+            </summary>
+            <returns>A <see cref="T:System.Windows.Rect" />, representing the working area of the display.</returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.FromHandle(System.IntPtr)">
+            <summary>
+            Retrieves a Screen for the display that contains the largest portion of the specified control.
+            </summary>
+            <param name="hwnd">The window handle for which to retrieve the Screen.</param>
+            <returns>A Screen for the display that contains the largest region of the object. In multiple display environments where no display contains any portion of the specified window, the display closest to the object is returned.</returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.FromPoint(System.Windows.Point)">
+            <summary>
+            Retrieves a Screen for the display that contains the specified point.
+            </summary>
+            <param name="point">A <see cref="T:System.Windows.Point" /> that specifies the location for which to retrieve a Screen.</param>
+            <returns>A Screen for the display that contains the point. In multiple display environments where no display contains the point, the display closest to the specified point is returned.</returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.Equals(System.Object)">
+            <summary>
+            Gets or sets a value indicating whether the specified object is equal to this Screen.
+            </summary>
+            <param name="obj">The object to compare to this Screen.</param>
+            <returns>true if the specified object is equal to this Screen; otherwise, false.</returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.GetHashCode">
+            <summary>
+            Computes and retrieves a hash code for an object.
+            </summary>
+            <returns>A hash code for an object.</returns>
         </member>
         <member name="M:Ssz.Utils.Wpf.Xaml2Emf.CreateEmf(System.String,System.Windows.Media.Drawing)">
             <summary>
