@@ -75,7 +75,7 @@ namespace HelixToolkit.Wpf
                 if (!bb.WorldDepthOffset.Equals(0))
                 {
                     var viewPoint = (Point4D)bb.Position * this.visualToDsSolutionion;
-                    screenPoint = new Point4D(viewPoint.X, viewPoint.Y, viewPoint.Z + bb.WorldDepthOffset, viewPoint.W) * this.dssolutionionToScreen;
+                    screenPoint = new Point4D(viewPoint.X, viewPoint.Y, viewPoint.Z + bb.WorldDepthOffset, viewPoint.W) * this.projectionToScreen;
                 }
                 else
                 {
@@ -140,7 +140,7 @@ namespace HelixToolkit.Wpf
                 if (!bb.WorldDepthOffset.Equals(0))
                 {
                     var viewPoint = (Point4D)bb.Position * this.visualToDsSolutionion;
-                    screenPoint = new Point4D(viewPoint.X, viewPoint.Y, viewPoint.Z + bb.WorldDepthOffset, viewPoint.W) * this.dssolutionionToScreen;
+                    screenPoint = new Point4D(viewPoint.X, viewPoint.Y, viewPoint.Z + bb.WorldDepthOffset, viewPoint.W) * this.projectionToScreen;
                 }
                 else
                 {

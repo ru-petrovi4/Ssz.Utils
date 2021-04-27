@@ -214,9 +214,9 @@ namespace HelixToolkit.Wpf
 
             var created = DateTime.Now;
             var createdString = created.ToString("u").Replace(' ', 'T');
-            var dsSolutionionCamera = viewport.Camera as DsSolutionionCamera;
+            var ProjectionCamera = viewport.Camera as ProjectionCamera;
             var upAxis = "Z_UP";
-            if (dsSolutionionCamera != null && dsSolutionionCamera.UpDirection.Y > dsSolutionionCamera.UpDirection.Z)
+            if (ProjectionCamera != null && ProjectionCamera.UpDirection.Y > ProjectionCamera.UpDirection.Z)
             {
                 upAxis = "Y_UP";
             }
@@ -341,14 +341,14 @@ namespace HelixToolkit.Wpf
         /// <param name="writer">The writer.</param>
         /// <param name="model">The model.</param>
         /// <param name="transform">The transform.</param>
-        /// <exception cref="System.InvalidDesignTaskException">Model is not a MeshGeometry3D.</exception>
+        /// <exception cref="System.InvalidOperationException">Model is not a MeshGeometry3D.</exception>
         // ReSharper disable once UnusedParameter.Local
         private void ExportGeometry(XmlWriter writer, GeometryModel3D model, Transform3D transform)
         {
             var mg = model.Geometry as MeshGeometry3D;
             if (mg == null)
             {
-                throw new InvalidDesignTaskException("Model is not a MeshGeometry3D.");
+                throw new InvalidOperationException("Model is not a MeshGeometry3D.");
             }
 
             writer.WriteStartElement("geometry");
@@ -539,14 +539,14 @@ namespace HelixToolkit.Wpf
         /// <param name="writer">The writer.</param>
         /// <param name="gm">The model.</param>
         /// <param name="transform">The transform.</param>
-        /// <exception cref="System.InvalidDesignTaskException">Model is not a MeshGeometry3D.</exception>
+        /// <exception cref="System.InvalidOperationException">Model is not a MeshGeometry3D.</exception>
         // ReSharper disable once UnusedParameter.Local
         private void ExportNode(XmlWriter writer, GeometryModel3D gm, Transform3D transform)
         {
             var mg = gm.Geometry as MeshGeometry3D;
             if (mg == null)
             {
-                throw new InvalidDesignTaskException("Model is not a MeshGeometry3D.");
+                throw new InvalidOperationException("Model is not a MeshGeometry3D.");
             }
 
             string geometryId = this.geometries[mg];

@@ -40,7 +40,7 @@ namespace HelixToolkit.Wpf
         /// <summary>
         /// The dsSolutionion to screen transformation matrix.
         /// </summary>
-        protected Matrix3D dsSolutionionToScreen;
+        protected Matrix3D projectionToScreen;
 
         /// <summary>
         /// The viewport
@@ -89,7 +89,7 @@ namespace HelixToolkit.Wpf
                 this.viewport = this.visual.GetViewport3D();
             }
 
-            var newDsSolutionionToScreen = this.viewport.GetDsSolutionionMatrix() * this.viewport.GetViewportTransform();
+            var newDsSolutionionToScreen = this.viewport.GetProjectionMatrix() * this.viewport.GetViewportTransform();
 
             if (!newDsSolutionionToScreen.HasInverse)
             {
@@ -100,7 +100,7 @@ namespace HelixToolkit.Wpf
                        
             this.visualToScreen = newTransform;
             this.screenToVisual = newTransform.Inverse();
-            this.dssolutionionToScreen = newDsSolutionionToScreen;
+            this.projectionToScreen = newDsSolutionionToScreen;
             this.visualToDsSolutionion = newVisualToDsSolutionion;
 
             return true;

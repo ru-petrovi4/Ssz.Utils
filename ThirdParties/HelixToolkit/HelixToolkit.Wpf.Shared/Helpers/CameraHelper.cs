@@ -40,7 +40,7 @@ namespace HelixToolkit.Wpf
         /// <param name="animationTime">
         /// Animation time in milliseconds.
         /// </param>
-        public static void AnimateTo(this DsSolutionionCamera camera, Point3D newPosition, Vector3D newDirection, Vector3D newUpDirection, double animationTime)
+        public static void AnimateTo(this ProjectionCamera camera, Point3D newPosition, Vector3D newDirection, Vector3D newUpDirection, double animationTime)
         {
             var fromPosition = camera.Position;
             var fromDirection = camera.LookDirection;
@@ -59,8 +59,8 @@ namespace HelixToolkit.Wpf
                     DecelerationRatio = 0.5,
                     FillBehavior = FillBehavior.Stop
                 };
-                a1.Completed += (s, a) => camera.BeginAnimation(DsSolutionionCamera.PositionProperty, null);
-                camera.BeginAnimation(DsSolutionionCamera.PositionProperty, a1);
+                a1.Completed += (s, a) => camera.BeginAnimation(ProjectionCamera.PositionProperty, null);
+                camera.BeginAnimation(ProjectionCamera.PositionProperty, a1);
 
                 var a2 = new Vector3DAnimation(
                     fromDirection, newDirection, new Duration(TimeSpan.FromMilliseconds(animationTime)))
@@ -69,8 +69,8 @@ namespace HelixToolkit.Wpf
                     DecelerationRatio = 0.5,
                     FillBehavior = FillBehavior.Stop
                 };
-                a2.Completed += (s, a) => camera.BeginAnimation(DsSolutionionCamera.LookDirectionProperty, null);
-                camera.BeginAnimation(DsSolutionionCamera.LookDirectionProperty, a2);
+                a2.Completed += (s, a) => camera.BeginAnimation(ProjectionCamera.LookDirectionProperty, null);
+                camera.BeginAnimation(ProjectionCamera.LookDirectionProperty, a2);
 
                 var a3 = new Vector3DAnimation(
                     fromUpDirection, newUpDirection, new Duration(TimeSpan.FromMilliseconds(animationTime)))
@@ -79,8 +79,8 @@ namespace HelixToolkit.Wpf
                     DecelerationRatio = 0.5,
                     FillBehavior = FillBehavior.Stop
                 };
-                a3.Completed += (s, a) => camera.BeginAnimation(DsSolutionionCamera.UpDirectionProperty, null);
-                camera.BeginAnimation(DsSolutionionCamera.UpDirectionProperty, a3);
+                a3.Completed += (s, a) => camera.BeginAnimation(ProjectionCamera.UpDirectionProperty, null);
+                camera.BeginAnimation(ProjectionCamera.UpDirectionProperty, a3);
             }
         }
 
@@ -130,7 +130,7 @@ namespace HelixToolkit.Wpf
         /// <param name="animationTime">
         /// The animation time.
         /// </param>
-        public static void ChangeDirection(this DsSolutionionCamera camera, Vector3D newLookDirection, Vector3D newUpDirection, double animationTime)
+        public static void ChangeDirection(this ProjectionCamera camera, Vector3D newLookDirection, Vector3D newUpDirection, double animationTime)
         {
             var target = camera.Position + camera.LookDirection;
             var length = camera.LookDirection.Length;
@@ -144,7 +144,7 @@ namespace HelixToolkit.Wpf
         /// <param name="source">The source camera.</param>
         /// <param name="dest">The destination camera.</param>
         /// <param name="copyNearFarPlaneDistances">Copy near and far plane distances if set to <c>true</c>.</param>
-        public static void Copy(this DsSolutionionCamera source, DsSolutionionCamera dest, bool copyNearFarPlaneDistances = true)
+        public static void Copy(this ProjectionCamera source, ProjectionCamera dest, bool copyNearFarPlaneDistances = true)
         {
             if (source == null || dest == null)
             {
@@ -212,7 +212,7 @@ namespace HelixToolkit.Wpf
         /// <param name="distance">
         /// New length of the LookDirection vector.
         /// </param>
-        public static void CopyDirectionOnly(this DsSolutionionCamera source, DsSolutionionCamera dest, double distance)
+        public static void CopyDirectionOnly(this ProjectionCamera source, ProjectionCamera dest, double distance)
         {
             if (source == null || dest == null)
             {
@@ -252,34 +252,34 @@ namespace HelixToolkit.Wpf
         {
             var matrixCamera = camera as MatrixCamera;
             var perspectiveCamera = camera as PerspectiveCamera;
-            var dsSolutionionCamera = camera as DsSolutionionCamera;
+            var ProjectionCamera = camera as ProjectionCamera;
             var orthographicCamera = camera as OrthographicCamera;
             var sb = new StringBuilder();
             sb.AppendLine(camera.GetType().Name);
-            if (dsSolutionionCamera != null)
+            if (ProjectionCamera != null)
             {
                 sb.AppendLine(
                     string.Format(
                         CultureInfo.InvariantCulture,
                         "LookDirection:\t{0:0.000},{1:0.000},{2:0.000}",
-                        dsSolutionionCamera.LookDirection.X,
-                        dsSolutionionCamera.LookDirection.Y,
-                        dsSolutionionCamera.LookDirection.Z));
+                        ProjectionCamera.LookDirection.X,
+                        ProjectionCamera.LookDirection.Y,
+                        ProjectionCamera.LookDirection.Z));
                 sb.AppendLine(
                     string.Format(
                         CultureInfo.InvariantCulture,
                         "UpDirection:\t{0:0.000},{1:0.000},{2:0.000}",
-                        dsSolutionionCamera.UpDirection.X,
-                        dsSolutionionCamera.UpDirection.Y,
-                        dsSolutionionCamera.UpDirection.Z));
+                        ProjectionCamera.UpDirection.X,
+                        ProjectionCamera.UpDirection.Y,
+                        ProjectionCamera.UpDirection.Z));
                 sb.AppendLine(
                     string.Format(
                         CultureInfo.InvariantCulture,
                         "Position:\t\t{0:0.000},{1:0.000},{2:0.000}",
-                        dsSolutionionCamera.Position.X,
-                        dsSolutionionCamera.Position.Y,
-                        dsSolutionionCamera.Position.Z));
-                var target = dsSolutionionCamera.Position + dsSolutionionCamera.LookDirection;
+                        ProjectionCamera.Position.X,
+                        ProjectionCamera.Position.Y,
+                        ProjectionCamera.Position.Z));
+                var target = ProjectionCamera.Position + ProjectionCamera.LookDirection;
                 sb.AppendLine(
                     string.Format(
                         CultureInfo.InvariantCulture,
@@ -289,9 +289,9 @@ namespace HelixToolkit.Wpf
                         target.Z));
                 sb.AppendLine(
                     string.Format(
-                        CultureInfo.InvariantCulture, "NearPlaneDist:\t{0}", dsSolutionionCamera.NearPlaneDistance));
+                        CultureInfo.InvariantCulture, "NearPlaneDist:\t{0}", ProjectionCamera.NearPlaneDistance));
                 sb.AppendLine(
-                    string.Format(CultureInfo.InvariantCulture, "FarPlaneDist:\t{0}", dsSolutionionCamera.FarPlaneDistance));
+                    string.Format(CultureInfo.InvariantCulture, "FarPlaneDist:\t{0}", ProjectionCamera.FarPlaneDistance));
             }
 
             if (perspectiveCamera != null)
@@ -308,8 +308,8 @@ namespace HelixToolkit.Wpf
 
             if (matrixCamera != null)
             {
-                sb.AppendLine("DsSolutionionMatrix:");
-                sb.AppendLine(matrixCamera.DsSolutionionMatrix.ToString(CultureInfo.InvariantCulture));
+                sb.AppendLine("ProjectionMatrix:");
+                sb.AppendLine(matrixCamera.ProjectionMatrix.ToString(CultureInfo.InvariantCulture));
                 sb.AppendLine("ViewMatrix:");
                 sb.AppendLine(matrixCamera.ViewMatrix.ToString(CultureInfo.InvariantCulture));
             }
@@ -329,7 +329,7 @@ namespace HelixToolkit.Wpf
         /// <param name="animationTime">
         /// The animation time.
         /// </param>
-        public static void LookAt(this DsSolutionionCamera camera, Point3D target, double animationTime)
+        public static void LookAt(this ProjectionCamera camera, Point3D target, double animationTime)
         {
             LookAt(camera, target, camera.LookDirection, animationTime);
         }
@@ -349,7 +349,7 @@ namespace HelixToolkit.Wpf
         /// <param name="animationTime">
         /// The animation time.
         /// </param>
-        public static void LookAt(this DsSolutionionCamera camera, Point3D target, Vector3D newLookDirection, double animationTime)
+        public static void LookAt(this ProjectionCamera camera, Point3D target, Vector3D newLookDirection, double animationTime)
         {
             LookAt(camera, target, newLookDirection, camera.UpDirection, animationTime);
         }
@@ -372,7 +372,7 @@ namespace HelixToolkit.Wpf
         /// <param name="animationTime">
         /// The animation time.
         /// </param>
-        public static void LookAt(this DsSolutionionCamera camera, Point3D target, Vector3D newLookDirection, Vector3D newUpDirection, double animationTime)
+        public static void LookAt(this ProjectionCamera camera, Point3D target, Vector3D newLookDirection, Vector3D newUpDirection, double animationTime)
         {
             var newPosition = target - newLookDirection;
 
@@ -405,7 +405,7 @@ namespace HelixToolkit.Wpf
         /// <param name="animationTime">
         /// The animation time.
         /// </param>
-        public static void LookAt(this DsSolutionionCamera camera, Point3D target, double distance, double animationTime)
+        public static void LookAt(this ProjectionCamera camera, Point3D target, double distance, double animationTime)
         {
             Vector3D d = camera.LookDirection;
             d.Normalize();
@@ -497,17 +497,17 @@ namespace HelixToolkit.Wpf
                 return matrixCamera.ViewMatrix;
             }
 
-            var dsSolutionionCamera = camera as DsSolutionionCamera;
-            if (dsSolutionionCamera != null)
+            var ProjectionCamera = camera as ProjectionCamera;
+            if (ProjectionCamera != null)
             {
-                var zaxis = -dsSolutionionCamera.LookDirection;
+                var zaxis = -ProjectionCamera.LookDirection;
                 zaxis.Normalize();
 
-                var xaxis = Vector3D.CrossProduct(dsSolutionionCamera.UpDirection, zaxis);
+                var xaxis = Vector3D.CrossProduct(ProjectionCamera.UpDirection, zaxis);
                 xaxis.Normalize();
 
                 var yaxis = Vector3D.CrossProduct(zaxis, xaxis);
-                var pos = (Vector3D)dsSolutionionCamera.Position;
+                var pos = (Vector3D)ProjectionCamera.Position;
 
                 return new Matrix3D(
                     xaxis.X,
@@ -537,7 +537,7 @@ namespace HelixToolkit.Wpf
         /// <param name="camera">The camera.</param>
         /// <param name="aspectRatio">The aspect ratio.</param>
         /// <returns>The dsSolutionion matrix.</returns>
-        public static Matrix3D GetDsSolutionionMatrix(this Camera camera, double aspectRatio)
+        public static Matrix3D GetProjectionMatrix(this Camera camera, double aspectRatio)
         {
             if (camera == null)
             {
@@ -581,7 +581,7 @@ namespace HelixToolkit.Wpf
             var matrixCamera = camera as MatrixCamera;
             if (matrixCamera != null)
             {
-                return matrixCamera.DsSolutionionMatrix;
+                return matrixCamera.ProjectionMatrix;
             }
 
             throw new HelixToolkitException("Unknown camera type.");
@@ -616,7 +616,7 @@ namespace HelixToolkit.Wpf
             }
 
             m.Append(GetViewMatrix(camera));
-            m.Append(GetDsSolutionionMatrix(camera, aspectRatio));
+            m.Append(GetProjectionMatrix(camera, aspectRatio));
             return m;
         }
 
@@ -652,7 +652,7 @@ namespace HelixToolkit.Wpf
         /// <param name="viewport">The viewport.</param>
         /// <param name="animationTime">The animation time.</param>
         public static void FitView(
-            this DsSolutionionCamera camera,
+            this ProjectionCamera camera,
             Viewport3D viewport,
             double animationTime = 0)
         {
@@ -678,7 +678,7 @@ namespace HelixToolkit.Wpf
         /// <param name="lookDirection">The look direction.</param>
         /// <param name="upDirection">The up direction.</param>
         /// <param name="animationTime">The animation time.</param>
-        public static void FitView(this DsSolutionionCamera camera, Viewport3D viewport, Vector3D lookDirection, Vector3D upDirection, double animationTime = 0)
+        public static void FitView(this ProjectionCamera camera, Viewport3D viewport, Vector3D lookDirection, Vector3D upDirection, double animationTime = 0)
         {
             var bounds = Visual3DHelper.FindBounds(viewport.Children);
             var diagonal = new Vector3D(bounds.SizeX, bounds.SizeY, bounds.SizeZ);
@@ -703,7 +703,7 @@ namespace HelixToolkit.Wpf
         /// <param name="animationTime">
         /// The animation time.
         /// </param>
-        public static void ZoomExtents(this DsSolutionionCamera camera, Viewport3D viewport, double animationTime = 0)
+        public static void ZoomExtents(this ProjectionCamera camera, Viewport3D viewport, double animationTime = 0)
         {
             var bounds = Visual3DHelper.FindBounds(viewport.Children);
             var diagonal = new Vector3D(bounds.SizeX, bounds.SizeY, bounds.SizeZ);
@@ -732,7 +732,7 @@ namespace HelixToolkit.Wpf
         /// The animation time.
         /// </param>
         public static void ZoomExtents(
-            this DsSolutionionCamera camera,
+            this ProjectionCamera camera,
             Viewport3D viewport,
             Rect3D bounds,
             double animationTime = 0)
@@ -760,7 +760,7 @@ namespace HelixToolkit.Wpf
         /// <param name="lookDirection">The look direction.</param>
         /// <param name="upDirection">The up direction.</param>
         /// <param name="animationTime">The animation time.</param>
-        public static void FitView(this DsSolutionionCamera camera, Viewport3D viewport, Rect3D bounds, Vector3D lookDirection, Vector3D upDirection, double animationTime = 0)
+        public static void FitView(this ProjectionCamera camera, Viewport3D viewport, Rect3D bounds, Vector3D lookDirection, Vector3D upDirection, double animationTime = 0)
         {
             var diagonal = new Vector3D(bounds.SizeX, bounds.SizeY, bounds.SizeZ);
             var center = bounds.Location + (diagonal * 0.5);
@@ -787,7 +787,7 @@ namespace HelixToolkit.Wpf
         /// The animation time.
         /// </param>
         public static void ZoomExtents(
-            DsSolutionionCamera camera,
+            ProjectionCamera camera,
             Viewport3D viewport,
             Point3D center,
             double radius,
@@ -818,7 +818,7 @@ namespace HelixToolkit.Wpf
         /// <param name="upDirection">The up direction.</param>
         /// <param name="animationTime">The animation time.</param>
         public static void FitView(
-            DsSolutionionCamera camera,
+            ProjectionCamera camera,
             Viewport3D viewport,
             Point3D center,
             double radius,
@@ -874,7 +874,7 @@ namespace HelixToolkit.Wpf
         /// <param name="zoomRectangle">
         /// The zoom rectangle.
         /// </param>
-        public static void ZoomToRectangle(this DsSolutionionCamera camera, Viewport3D viewport, Rect zoomRectangle)
+        public static void ZoomToRectangle(this ProjectionCamera camera, Viewport3D viewport, Rect zoomRectangle)
         {
             var topLeftRay = Viewport3DHelper.Point2DtoRay3D(viewport, zoomRectangle.TopLeft);
             var topRightRay = Viewport3DHelper.Point2DtoRay3D(viewport, zoomRectangle.TopRight);

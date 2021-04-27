@@ -15,7 +15,7 @@ namespace HelixToolkit.Wpf
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Documents;
-    using System.Windows.DsControls;
+    using System.Windows.Shapes;
 
     /// <summary>
     /// Provides a color axis for a numeric value range.
@@ -230,7 +230,7 @@ namespace HelixToolkit.Wpf
                         break;
                 }
 
-                var l = new System.Windows.DsControls.Line
+                var l = new System.Windows.Shapes.Line
                             {
                                 X1 = p0.X,
                                 X2 = p1.X,

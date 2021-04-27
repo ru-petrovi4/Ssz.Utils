@@ -386,13 +386,13 @@ namespace HelixToolkit.Wpf
         /// </summary>
         /// <param name="writer">The writer.</param>
         /// <param name="c">The camera.</param>
-        /// <exception cref="System.InvalidDesignTaskException">Only perspective cameras are supported.</exception>
+        /// <exception cref="System.InvalidOperationException">Only perspective cameras are supported.</exception>
         protected override void ExportCamera(KerkytheaWriter writer, Camera c)
         {
             var pc = c as PerspectiveCamera;
             if (pc == null)
             {
-                throw new InvalidDesignTaskException("Only perspective cameras are supported.");
+                throw new InvalidOperationException("Only perspective cameras are supported.");
             }
 
             const string name = "Camera #1";

@@ -82,11 +82,11 @@ namespace HelixToolkit.Wpf
         /// <returns> A ClosestVertexResult containing the distance to the 2D point and the closest 3D vertex point for each geometry/model </returns>
         public IEnumerable<ClosestVertexResult> FindClosestHits(Point pointToHitTest)
         {
-            DsSolutionionCamera camera = mViewPort3D.Camera as DsSolutionionCamera;
+            ProjectionCamera camera = mViewPort3D.Camera as ProjectionCamera;
 
             if (camera == null)
             {
-                throw new InvalidDesignTaskException("No dsSolutionion camera defined. Cannot find rectangle hits.");
+                throw new InvalidOperationException("No dsSolutionion camera defined. Cannot find rectangle hits.");
             }
 
             List<ClosestVertexResult> results = new List<ClosestVertexResult>();

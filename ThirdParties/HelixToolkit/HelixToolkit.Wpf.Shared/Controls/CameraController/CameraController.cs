@@ -35,7 +35,7 @@ namespace HelixToolkit.Wpf
         /// </summary>
         public static readonly DependencyProperty CameraProperty = DependencyProperty.Register(
             "Camera",
-            typeof(DsSolutionionCamera),
+            typeof(ProjectionCamera),
             typeof(CameraController),
             new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, CameraChanged));
 
@@ -63,7 +63,7 @@ namespace HelixToolkit.Wpf
         /// Identifies the <see cref="DefaultCamera"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty DefaultCameraProperty = DependencyProperty.Register(
-            "DefaultCamera", typeof(DsSolutionionCamera), typeof(CameraController), new UIPropertyMetadata(null));
+            "DefaultCamera", typeof(ProjectionCamera), typeof(CameraController), new UIPropertyMetadata(null));
 
         /// <summary>
         /// Identifies the <see cref="Enabled"/> dependency property.
@@ -579,7 +579,7 @@ namespace HelixToolkit.Wpf
         /// <summary>
         /// Gets ActualCamera.
         /// </summary>
-        public DsSolutionionCamera ActualCamera
+        public ProjectionCamera ActualCamera
         {
             get
             {
@@ -590,7 +590,7 @@ namespace HelixToolkit.Wpf
 
                 if (this.Viewport != null)
                 {
-                    return this.Viewport.Camera as DsSolutionionCamera;
+                    return this.Viewport.Camera as ProjectionCamera;
                 }
 
                 return null;
@@ -600,11 +600,11 @@ namespace HelixToolkit.Wpf
         /// <summary>
         /// Gets or sets Camera.
         /// </summary>
-        public DsSolutionionCamera Camera
+        public ProjectionCamera Camera
         {
             get
             {
-                return (DsSolutionionCamera)this.GetValue(CameraProperty);
+                return (ProjectionCamera)this.GetValue(CameraProperty);
             }
 
             set
@@ -730,11 +730,11 @@ namespace HelixToolkit.Wpf
         /// Gets or sets the default camera (used when resetting the view).
         /// </summary>
         /// <value> The default camera. </value>
-        public DsSolutionionCamera DefaultCamera
+        public ProjectionCamera DefaultCamera
         {
             get
             {
-                return (DsSolutionionCamera)this.GetValue(DefaultCameraProperty);
+                return (ProjectionCamera)this.GetValue(DefaultCameraProperty);
             }
 
             set
@@ -2301,11 +2301,11 @@ namespace HelixToolkit.Wpf
 
             switch (e.Key)
             {
-                case Key.GraphicUp:
+                case Key.PageUp:
                     this.AddZoomForce(-0.1 * f * this.GraphicUpDownZoomSensitivity);
                     e.Handled = true;
                     break;
-                case Key.GraphicDown:
+                case Key.PageDown:
                     this.AddZoomForce(0.1 * f * this.GraphicUpDownZoomSensitivity);
                     e.Handled = true;
                     break;

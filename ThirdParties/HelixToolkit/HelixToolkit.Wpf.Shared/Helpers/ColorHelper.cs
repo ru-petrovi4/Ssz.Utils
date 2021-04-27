@@ -350,7 +350,7 @@ namespace HelixToolkit.Wpf
         {
             if (hsv.Length != 3)
             {
-                throw new InvalidDesignTaskException("Wrong length of hsv array.");
+                throw new InvalidOperationException("Wrong length of hsv array.");
             }
 
             return HsvToColor(hsv[0], hsv[1], hsv[2]);

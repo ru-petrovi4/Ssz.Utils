@@ -15,7 +15,7 @@ namespace HelixToolkit.Wpf
     using System.Windows.Controls;
     using System.Windows.Documents;
     using System.Windows.Media;
-    using System.Windows.DsControls;
+    using System.Windows.Shapes;
 
     /// <summary>
     /// The base class for color axes.
@@ -256,7 +256,7 @@ namespace HelixToolkit.Wpf
             this.Canvas.Children.Add(r);
 
             this.Canvas.Children.Add(
-                new System.Windows.DsControls.Line
+                new System.Windows.Shapes.Line
                     {
                         Stroke = this.Foreground,
                         StrokeThickness = 1,
@@ -267,7 +267,7 @@ namespace HelixToolkit.Wpf
                         Y2 = this.ColorArea.Bottom
                     });
             this.Canvas.Children.Add(
-                new System.Windows.DsControls.Line
+                new System.Windows.Shapes.Line
                     {
                         Stroke = this.Foreground,
                         StrokeThickness = 1,

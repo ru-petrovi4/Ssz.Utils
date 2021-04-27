@@ -145,7 +145,7 @@ namespace HelixToolkit.Wpf
         {
             if (this.Points.Count < 3)
             {
-                throw new InvalidDesignTaskException("At least three points required in the polygon to find a normal.");
+                throw new InvalidOperationException("At least three points required in the polygon to find a normal.");
             }
 
             Vector3D v1 = this.Points[1] - this.Points[0];

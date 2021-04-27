@@ -22,7 +22,7 @@ namespace HelixToolkit.Wpf
         /// <param name="camera">
         /// The camera.
         /// </param>
-        public CameraSetting(DsSolutionionCamera camera)
+        public CameraSetting(ProjectionCamera camera)
         {
             this.Position = camera.Position;
             this.LookDirection = camera.LookDirection;
@@ -83,7 +83,7 @@ namespace HelixToolkit.Wpf
         /// <param name="camera">
         /// The camera to update.
         /// </param>
-        public void UpdateCamera(DsSolutionionCamera camera)
+        public void UpdateCamera(ProjectionCamera camera)
         {
             camera.Position = this.Position;
             camera.LookDirection = this.LookDirection;

@@ -123,35 +123,35 @@ namespace HelixToolkit.Wpf
             this.rotateYManipulator = new RotateManipulator { Axis = new Vector3D(0, 1, 0), Color = Colors.Green };
             this.rotateZManipulator = new RotateManipulator { Axis = new Vector3D(0, 0, 1), Color = Colors.Blue };
 
-            BindingDesignTasks.SetBinding(this, TransformProperty, new Binding("TargetTransform") { Source = this });
+            BindingOperations.SetBinding(this, TransformProperty, new Binding("TargetTransform") { Source = this });
 
-            BindingDesignTasks.SetBinding(
+            BindingOperations.SetBinding(
                 this.translateXManipulator,
                 Manipulator.TargetTransformProperty,
                 new Binding("TargetTransform") { Source = this });
-            BindingDesignTasks.SetBinding(
+            BindingOperations.SetBinding(
                 this.translateYManipulator,
                 Manipulator.TargetTransformProperty,
                 new Binding("TargetTransform") { Source = this });
-            BindingDesignTasks.SetBinding(
+            BindingOperations.SetBinding(
                 this.translateZManipulator,
                 Manipulator.TargetTransformProperty,
                 new Binding("TargetTransform") { Source = this });
-            BindingDesignTasks.SetBinding(
+            BindingOperations.SetBinding(
                 this.rotateXManipulator, RotateManipulator.DiameterProperty, new Binding("Diameter") { Source = this });
-            BindingDesignTasks.SetBinding(
+            BindingOperations.SetBinding(
                 this.rotateYManipulator, RotateManipulator.DiameterProperty, new Binding("Diameter") { Source = this });
-            BindingDesignTasks.SetBinding(
+            BindingOperations.SetBinding(
                 this.rotateZManipulator, RotateManipulator.DiameterProperty, new Binding("Diameter") { Source = this });
-            BindingDesignTasks.SetBinding(
+            BindingOperations.SetBinding(
                 this.rotateXManipulator,
                 Manipulator.TargetTransformProperty,
                 new Binding("TargetTransform") { Source = this });
-            BindingDesignTasks.SetBinding(
+            BindingOperations.SetBinding(
                 this.rotateYManipulator,
                 Manipulator.TargetTransformProperty,
                 new Binding("TargetTransform") { Source = this });
-            BindingDesignTasks.SetBinding(
+            BindingOperations.SetBinding(
                 this.rotateZManipulator,
                 Manipulator.TargetTransformProperty,
                 new Binding("TargetTransform") { Source = this });
@@ -366,8 +366,8 @@ namespace HelixToolkit.Wpf
         /// </param>
         public virtual void Bind(ModelVisual3D source)
         {
-            BindingDesignTasks.SetBinding(this, TargetTransformProperty, new Binding("Transform") { Source = source });
-            BindingDesignTasks.SetBinding(this, TransformProperty, new Binding("Transform") { Source = source });
+            BindingOperations.SetBinding(this, TargetTransformProperty, new Binding("Transform") { Source = source });
+            BindingOperations.SetBinding(this, TransformProperty, new Binding("Transform") { Source = source });
         }
 
         /// <summary>
@@ -375,8 +375,8 @@ namespace HelixToolkit.Wpf
         /// </summary>
         public virtual void UnBind()
         {
-            BindingDesignTasks.ClearBinding(this, TargetTransformProperty);
-            BindingDesignTasks.ClearBinding(this, TransformProperty);
+            BindingOperations.ClearBinding(this, TargetTransformProperty);
+            BindingOperations.ClearBinding(this, TransformProperty);
         }
 
         /// <summary>

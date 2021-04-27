@@ -159,7 +159,7 @@ namespace HelixToolkit.Wpf
                 obj = VisualTreeHelper.GetParent(obj);
             }
 
-            throw new InvalidDesignTaskException("The visual is not added to a Viewport3D.");
+            throw new InvalidOperationException("The visual is not added to a Viewport3D.");
         }
 
         /// <summary>
@@ -224,7 +224,7 @@ namespace HelixToolkit.Wpf
                 obj = VisualTreeHelper.GetParent(obj);
             }
 
-            throw new InvalidDesignTaskException("The visual is not added to a Viewport3D.");
+            throw new InvalidOperationException("The visual is not added to a Viewport3D.");
 
             // At this point, we know obj is Viewport3DVisual
         }

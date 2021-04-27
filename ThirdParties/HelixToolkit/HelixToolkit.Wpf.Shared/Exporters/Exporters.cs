@@ -64,7 +64,7 @@ namespace HelixToolkit.Wpf
                 case ".stl":
                     return new StlExporter();
                 default:
-                    throw new InvalidDesignTaskException("File format not supported.");
+                    throw new InvalidOperationException("File format not supported.");
             }
         }
     }

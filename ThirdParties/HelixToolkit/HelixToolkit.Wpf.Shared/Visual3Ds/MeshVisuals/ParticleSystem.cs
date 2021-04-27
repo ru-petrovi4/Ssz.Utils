@@ -18,7 +18,7 @@ namespace HelixToolkit.Wpf
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using System.Windows.Media.Media3D;
-    using System.Windows.DsControls;
+    using System.Windows.Shapes;
 
     /// <summary>
     /// Renders a simple particle system within the limitations of WPF.
@@ -170,7 +170,7 @@ namespace HelixToolkit.Wpf
         /// <summary>
         /// The camera.
         /// </summary>
-        private DsSolutionionCamera camera;
+        private ProjectionCamera camera;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ParticleSystem"/> class.
@@ -575,7 +575,7 @@ namespace HelixToolkit.Wpf
             if (this.camera == null)
             {
                 var viewport = this.GetViewport3D();
-                this.camera = (DsSolutionionCamera)viewport.Camera;
+                this.camera = (ProjectionCamera)viewport.Camera;
             }
 
             // calculate coordinate system for particle planes

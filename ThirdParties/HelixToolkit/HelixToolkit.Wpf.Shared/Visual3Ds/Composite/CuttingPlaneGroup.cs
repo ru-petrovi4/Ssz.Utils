@@ -183,7 +183,7 @@ namespace HelixToolkit.Wpf
         /// <param name="model">The model.</param>
         /// <param name="transform">The transform.</param>
         /// <param name="updateRequired">An update is required if set to <c>true</c>.</param>
-        /// <exception cref="System.InvalidDesignTaskException">No inverse transform.</exception>
+        /// <exception cref="System.InvalidOperationException">No inverse transform.</exception>
         /// <exception cref="System.NotImplementedException"></exception>
         private void ApplyCuttingPlanesToModel(GeometryModel3D model, Transform3D transform, bool updateRequired)
         {
@@ -229,7 +229,7 @@ namespace HelixToolkit.Wpf
                 var inverseTransform = transform.Inverse;
                 if (inverseTransform == null)
                 {
-                    throw new InvalidDesignTaskException("No inverse transform.");
+                    throw new InvalidOperationException("No inverse transform.");
                 }
 
                 switch (this.DesignTask)

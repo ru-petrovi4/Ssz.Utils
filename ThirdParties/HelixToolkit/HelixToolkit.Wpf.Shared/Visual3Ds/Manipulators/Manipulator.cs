@@ -84,8 +84,8 @@ namespace HelixToolkit.Wpf
         protected Manipulator()
         {
             this.Model = new GeometryModel3D();
-            BindingDesignTasks.SetBinding(this.Model, GeometryModel3D.MaterialProperty, new Binding("Material") { Source = this });
-            BindingDesignTasks.SetBinding(this.Model, GeometryModel3D.BackMaterialProperty, new Binding("BackMaterial") { Source = this });
+            BindingOperations.SetBinding(this.Model, GeometryModel3D.MaterialProperty, new Binding("Material") { Source = this });
+            BindingOperations.SetBinding(this.Model, GeometryModel3D.BackMaterialProperty, new Binding("BackMaterial") { Source = this });
             this.Visual3DModel = this.Model;
         }
 
@@ -194,7 +194,7 @@ namespace HelixToolkit.Wpf
         /// <summary>
         ///   Gets or sets the camera.
         /// </summary>
-        protected DsSolutionionCamera Camera { get; set; }
+        protected ProjectionCamera Camera { get; set; }
 
         /// <summary>
         ///   Gets or sets the hit plane normal.
@@ -219,8 +219,8 @@ namespace HelixToolkit.Wpf
         /// </param>
         public virtual void Bind(ModelVisual3D source)
         {
-            BindingDesignTasks.SetBinding(this, TargetTransformProperty, new Binding("Transform") { Source = source });
-            BindingDesignTasks.SetBinding(this, Visual3D.TransformProperty, new Binding("Transform") { Source = source });
+            BindingOperations.SetBinding(this, TargetTransformProperty, new Binding("Transform") { Source = source });
+            BindingOperations.SetBinding(this, Visual3D.TransformProperty, new Binding("Transform") { Source = source });
         }
 
         /// <summary>
@@ -228,8 +228,8 @@ namespace HelixToolkit.Wpf
         /// </summary>
         public virtual void UnBind()
         {
-            BindingDesignTasks.ClearBinding(this, TargetTransformProperty);
-            BindingDesignTasks.ClearBinding(this, Visual3D.TransformProperty);
+            BindingOperations.ClearBinding(this, TargetTransformProperty);
+            BindingOperations.ClearBinding(this, Visual3D.TransformProperty);
         }
 
         /// <summary>
@@ -279,11 +279,11 @@ namespace HelixToolkit.Wpf
         {
             base.OnMouseDown(e);
             this.ParentViewport = Visual3DHelper.GetViewport3D(this);
-            this.Camera = this.ParentViewport.Camera as DsSolutionionCamera;
-            var dsSolutionionCamera = this.Camera;
-            if (dsSolutionionCamera != null)
+            this.Camera = this.ParentViewport.Camera as ProjectionCamera;
+            var ProjectionCamera = this.Camera;
+            if (ProjectionCamera != null)
             {
-                this.HitPlaneNormal = dsSolutionionCamera.LookDirection;
+                this.HitPlaneNormal = ProjectionCamera.LookDirection;
             }
 
             this.CaptureMouse();

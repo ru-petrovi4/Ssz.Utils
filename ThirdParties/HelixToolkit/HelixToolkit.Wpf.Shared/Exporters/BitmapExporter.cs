@@ -74,7 +74,7 @@ namespace HelixToolkit.Wpf
         /// </summary>
         /// <param name="viewport">The viewport.</param>
         /// <param name="stream">The output stream.</param>
-        /// <exception cref="System.InvalidDesignTaskException">Not supported file format.</exception>
+        /// <exception cref="System.InvalidOperationException">Not supported file format.</exception>
         public void Export(Viewport3D viewport, Stream stream)
         {
             var background = this.Background ?? Brushes.Transparent;
@@ -93,7 +93,7 @@ namespace HelixToolkit.Wpf
                     encoder = new PngBitmapEncoder();
                     break;
                 default:
-                    throw new InvalidDesignTaskException("Not supported file format.");
+                    throw new InvalidOperationException("Not supported file format.");
             }
 
             encoder.Frames.Add(BitmapFrame.Create(bmp));

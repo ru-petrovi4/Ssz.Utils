@@ -281,7 +281,7 @@ namespace HelixToolkit.Wpf
         /// Identifies the <see cref="DefaultCamera"/> dependency property.
         /// </summary>
         public static readonly DependencyProperty DefaultCameraProperty = DependencyProperty.Register(
-            "DefaultCamera", typeof(DsSolutionionCamera), typeof(HelixViewport3D), new UIPropertyMetadata(null));
+            "DefaultCamera", typeof(ProjectionCamera), typeof(HelixViewport3D), new UIPropertyMetadata(null));
 
         /// <summary>
         /// Identifies the <see cref="FieldOfViewText"/> dependency property.
@@ -1044,7 +1044,7 @@ namespace HelixToolkit.Wpf
             this.perspectiveCamera.Reset();
             this.orthographicCamera.Reset();
 
-            this.Camera = this.Orthographic ? (DsSolutionionCamera)this.orthographicCamera : this.perspectiveCamera;
+            this.Camera = this.Orthographic ? (ProjectionCamera)this.orthographicCamera : this.perspectiveCamera;
 
             // http://blogs.msdn.com/wpfsdk/archive/2007/01/15/maximizing-wpf-3d-performance-on-tier-2-hardware.aspx
             // RenderOptions.EdgeMode?
@@ -1157,11 +1157,11 @@ namespace HelixToolkit.Wpf
         /// <value>
         /// The camera.
         /// </value>
-        public DsSolutionionCamera Camera
+        public ProjectionCamera Camera
         {
             get
             {
-                return this.Viewport.Camera as DsSolutionionCamera;
+                return this.Viewport.Camera as ProjectionCamera;
             }
 
             set
@@ -1530,11 +1530,11 @@ namespace HelixToolkit.Wpf
         /// <value>
         /// The default camera.
         /// </value>
-        public DsSolutionionCamera DefaultCamera
+        public ProjectionCamera DefaultCamera
         {
             get
             {
-                return (DsSolutionionCamera)this.GetValue(DefaultCameraProperty);
+                return (ProjectionCamera)this.GetValue(DefaultCameraProperty);
             }
 
             set
@@ -3781,7 +3781,7 @@ namespace HelixToolkit.Wpf
         {
             // var vm = Viewport3DHelper.GetViewMatrix(Camera);
             // double ar = ActualWidth / ActualHeight;
-            // var pm = Viewport3DHelper.GetDsSolutionionMatrix(Camera, ar);
+            // var pm = Viewport3DHelper.GetProjectionMatrix(Camera, ar);
             // double w = 2 / pm.M11;
             // pm.OffsetX = -1
             // ;

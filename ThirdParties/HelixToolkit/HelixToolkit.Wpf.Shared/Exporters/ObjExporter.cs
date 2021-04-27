@@ -255,7 +255,7 @@ namespace HelixToolkit.Wpf
         {
             if (this.MaterialsFile == null)
             {
-                throw new InvalidDesignTaskException("The `MaterialsFile` property must be set.");
+                throw new InvalidOperationException("The `MaterialsFile` property must be set.");
             }
 
             var writer = new StreamWriter(stream);

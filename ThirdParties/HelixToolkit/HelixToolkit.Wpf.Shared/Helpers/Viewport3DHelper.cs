@@ -19,7 +19,7 @@ namespace HelixToolkit.Wpf
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using System.Windows.Media.Media3D;
-    using System.Windows.DsControls;
+    using System.Windows.Shapes;
 
     /// <summary>
     /// Provides extension methods for <see cref="Viewport3D"/>.
@@ -149,7 +149,7 @@ namespace HelixToolkit.Wpf
         /// </returns>
         public static IList<HitResult> FindHits(this Viewport3D viewport, Point position)
         {
-            var camera = viewport.Camera as DsSolutionionCamera;
+            var camera = viewport.Camera as ProjectionCamera;
             if (camera == null)
             {
                 return null;
@@ -205,11 +205,11 @@ namespace HelixToolkit.Wpf
         public static IEnumerable<RectangleHitResult> FindHits(this Viewport3D viewport, Rect rectangle, SelectionHitMode mode)
         {
             const double Tolerance = 1e-10;
-            var camera = viewport.Camera as DsSolutionionCamera;
+            var camera = viewport.Camera as ProjectionCamera;
 
             if (camera == null)
             {
-                throw new InvalidDesignTaskException("No dsSolutionion camera defined. Cannot find rectangle hits.");
+                throw new InvalidOperationException("No dsSolutionion camera defined. Cannot find rectangle hits.");
             }
 
             if (rectangle.Width < Tolerance && rectangle.Height < Tolerance)
@@ -291,7 +291,7 @@ namespace HelixToolkit.Wpf
         /// </returns>
         public static bool FindNearest(this Viewport3D viewport, Point position, out Point3D point, out Vector3D normal, out DependencyObject visual)
         {
-            var camera = viewport.Camera as DsSolutionionCamera;
+            var camera = viewport.Camera as ProjectionCamera;
             if (camera == null)
             {
                 point = new Point3D();
@@ -546,9 +546,9 @@ namespace HelixToolkit.Wpf
         /// </summary>
         /// <param name="viewport">The viewport.</param>
         /// <returns>A <see cref="Matrix3D"/>.</returns>
-        public static Matrix3D GetDsSolutionionMatrix(this Viewport3D viewport)
+        public static Matrix3D GetProjectionMatrix(this Viewport3D viewport)
         {
-            return viewport.Camera.GetDsSolutionionMatrix(viewport.ActualHeight / viewport.ActualWidth);
+            return viewport.Camera.GetProjectionMatrix(viewport.ActualHeight / viewport.ActualWidth);
         }
 
         /// <summary>
@@ -726,7 +726,7 @@ namespace HelixToolkit.Wpf
                 for (int j = 0; j < m; j++)
                 {
                     // change the camera viewport and scaling
-                    var pm = originalCamera.GetDsSolutionionMatrix(ar);
+                    var pm = originalCamera.GetProjectionMatrix(ar);
                     if (originalCamera is OrthographicCamera)
                     {
                         pm.OffsetX = m - 1 - (i * 2);
@@ -938,7 +938,7 @@ namespace HelixToolkit.Wpf
         /// </returns>
         public static Point3D? UnDsSolution(this Viewport3D viewport, Point p)
         {
-            var pc = viewport.Camera as DsSolutionionCamera;
+            var pc = viewport.Camera as ProjectionCamera;
             if (pc == null)
             {
                 return null;

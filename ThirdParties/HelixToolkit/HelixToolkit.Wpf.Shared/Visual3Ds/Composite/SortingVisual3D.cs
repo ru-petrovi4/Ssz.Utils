@@ -279,7 +279,7 @@ namespace HelixToolkit.Wpf
                 return;
             }
 
-            var cam = vp.Camera as DsSolutionionCamera;
+            var cam = vp.Camera as ProjectionCamera;
             if (cam == null)
             {
                 return;

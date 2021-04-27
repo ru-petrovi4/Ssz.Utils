@@ -14,7 +14,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlzEx", "ThirdParties\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.WindowsAPICodePack", "ThirdParties\Ssz.WindowsAPICodePack\Ssz.WindowsAPICodePack.csproj", "{4409B1DF-7EAC-4350-9AD9-314CBB8778FC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HelixToolkit", "HelixToolkit", "{A1A00CE1-2B1A-4D82-9CCD-5DFECA6804EA}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "HelixToolkit.Shared", "ThirdParties\HelixToolkit\HelixToolkit.Shared\HelixToolkit.Shared.shproj", "{4EE18E80-7609-4FFF-BD4B-F02728EC0688}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "HelixToolkit.Wpf.Shared", "ThirdParties\HelixToolkit\HelixToolkit.Wpf.Shared\HelixToolkit.Wpf.Shared.shproj", "{342788CD-C98C-4856-99F3-E38BCEACB2B7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelixToolkit.Wpf", "ThirdParties\HelixToolkit\HelixToolkit.Wpf\HelixToolkit.Wpf.csproj", "{167A7C1B-3AEE-47D1-BF53-34D48CA97138}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		ThirdParties\HelixToolkit\HelixToolkit.Shared\HelixToolkit.Shared.projitems*{167a7c1b-3aee-47d1-bf53-34d48ca97138}*SharedItemsImports = 5
+		ThirdParties\HelixToolkit\HelixToolkit.Wpf.Shared\HelixToolkit.Wpf.Shared.projitems*{167a7c1b-3aee-47d1-bf53-34d48ca97138}*SharedItemsImports = 5
+		ThirdParties\HelixToolkit\HelixToolkit.Wpf.Shared\HelixToolkit.Wpf.Shared.projitems*{342788cd-c98c-4856-99f3-e38bceacb2b7}*SharedItemsImports = 13
+		ThirdParties\HelixToolkit\HelixToolkit.Shared\HelixToolkit.Shared.projitems*{4ee18e80-7609-4fff-bd4b-f02728ec0688}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -32,9 +46,18 @@ Global
 		{4409B1DF-7EAC-4350-9AD9-314CBB8778FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4409B1DF-7EAC-4350-9AD9-314CBB8778FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4409B1DF-7EAC-4350-9AD9-314CBB8778FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{167A7C1B-3AEE-47D1-BF53-34D48CA97138}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{167A7C1B-3AEE-47D1-BF53-34D48CA97138}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{167A7C1B-3AEE-47D1-BF53-34D48CA97138}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{167A7C1B-3AEE-47D1-BF53-34D48CA97138}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4EE18E80-7609-4FFF-BD4B-F02728EC0688} = {A1A00CE1-2B1A-4D82-9CCD-5DFECA6804EA}
+		{342788CD-C98C-4856-99F3-E38BCEACB2B7} = {A1A00CE1-2B1A-4D82-9CCD-5DFECA6804EA}
+		{167A7C1B-3AEE-47D1-BF53-34D48CA97138} = {A1A00CE1-2B1A-4D82-9CCD-5DFECA6804EA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F9111D02-6686-4C78-A576-F826925964E2}

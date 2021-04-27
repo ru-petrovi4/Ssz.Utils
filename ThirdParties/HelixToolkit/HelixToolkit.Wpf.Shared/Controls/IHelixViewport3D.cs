@@ -21,7 +21,7 @@ namespace HelixToolkit.Wpf
         /// Gets the camera.
         /// </summary>
         /// <value>The camera.</value>
-        DsSolutionionCamera Camera { get; }
+        ProjectionCamera Camera { get; }
 
         /// <summary>
         /// Gets the camera controller.

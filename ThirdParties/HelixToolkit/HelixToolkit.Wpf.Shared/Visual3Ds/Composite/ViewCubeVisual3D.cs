@@ -711,7 +711,7 @@ namespace HelixToolkit.Wpf
 
             if (this.Viewport != null)
             {
-                var camera = this.Viewport.Camera as DsSolutionionCamera;
+                var camera = this.Viewport.Camera as ProjectionCamera;
                 if (camera != null)
                 {
                     var target = camera.Position + camera.LookDirection;

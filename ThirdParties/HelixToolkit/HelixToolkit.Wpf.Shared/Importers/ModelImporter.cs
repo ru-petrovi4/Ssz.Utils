@@ -42,7 +42,7 @@ namespace HelixToolkit.Wpf
         /// <param name="dispatcher">The dispatcher used to create the model.</param>
         /// <param name="freeze">Freeze the model if set to <c>true</c>.</param>
         /// <returns>A model.</returns>
-        /// <exception cref="System.InvalidDesignTaskException">File format not supported.</exception>
+        /// <exception cref="System.InvalidOperationException">File format not supported.</exception>
         public Model3DGroup Load(string path, Dispatcher dispatcher = null, bool freeze = false)
         {
             if (path == null)
@@ -108,7 +108,7 @@ namespace HelixToolkit.Wpf
                         break;
                     }
                 default:
-                    throw new InvalidDesignTaskException("File format not supported.");
+                    throw new InvalidOperationException("File format not supported.");
             }
 
             //if (!freeze)

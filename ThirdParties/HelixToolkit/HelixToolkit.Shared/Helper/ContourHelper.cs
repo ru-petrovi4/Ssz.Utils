@@ -14,8 +14,7 @@ namespace HelixToolkit.Wpf
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Play.CompilerServices;
+    using System.Linq;    
 #if SHARPDX
     using Vector3D = global::SharpDX.Vector3;
     using Point3D = global::SharpDX.Vector3;
@@ -26,6 +25,7 @@ namespace HelixToolkit.Wpf
     using System.Windows.Media.Media3D;
     using DoubleOrSingle = System.Double;
     using System.Windows;
+    using System.Runtime.CompilerServices;
 #endif
     /// <summary>
     /// Provides functionality to calculate a contour slice through a 3 vertex facet.(Modified from HelixToolkit.Wpf version)

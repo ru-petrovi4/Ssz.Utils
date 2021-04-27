@@ -1701,7 +1701,7 @@ namespace HelixToolkit.Wpf
         {
             if (points.Count % 2 != 0)
             {
-                throw new InvalidDesignTaskException("The number of points should be even.");
+                throw new InvalidOperationException("The number of points should be even.");
             }
             var p10 = p1 - p0;
             var axisY = SharedFunctions.CrossProduct(ref axisX, ref p10);
@@ -1782,7 +1782,7 @@ namespace HelixToolkit.Wpf
 
                 if (pc.Count != n)
                 {
-                    throw new InvalidDesignTaskException(AllCurvesShouldHaveTheSameNumberOfPoints);
+                    throw new InvalidOperationException(AllCurvesShouldHaveTheSameNumberOfPoints);
                 }
 
                 // add the points
@@ -2267,12 +2267,12 @@ namespace HelixToolkit.Wpf
 
             if (quadNormals != null && quadNormals.Count != quadPositions.Count)
             {
-                throw new InvalidDesignTaskException(WrongNumberOfNormals);
+                throw new InvalidOperationException(WrongNumberOfNormals);
             }
 
             if (quadTextureCoordinates != null && quadTextureCoordinates.Count != quadPositions.Count)
             {
-                throw new InvalidDesignTaskException(WrongNumberOfTextureCoordinates);
+                throw new InvalidOperationException(WrongNumberOfTextureCoordinates);
             }
 
             Debug.Assert(quadPositions.Count > 0 && quadPositions.Count % 4 == 0, "Wrong number of positions.");
@@ -2914,7 +2914,7 @@ namespace HelixToolkit.Wpf
 
             if (textureValues != null && textureValues.Count != section.Count)
             {
-                throw new InvalidDesignTaskException(WrongNumberOfTextureCoordinates);
+                throw new InvalidOperationException(WrongNumberOfTextureCoordinates);
             }
 
             axis.Normalize();
@@ -3410,17 +3410,17 @@ namespace HelixToolkit.Wpf
 
             if (trianglePositions.Count % 3 != 0)
             {
-                throw new InvalidDesignTaskException(WrongNumberOfPositions);
+                throw new InvalidOperationException(WrongNumberOfPositions);
             }
 
             if (triangleNormals != null && triangleNormals.Count != trianglePositions.Count)
             {
-                throw new InvalidDesignTaskException(WrongNumberOfNormals);
+                throw new InvalidOperationException(WrongNumberOfNormals);
             }
 
             if (triangleTextureCoordinates != null && triangleTextureCoordinates.Count != trianglePositions.Count)
             {
-                throw new InvalidDesignTaskException(WrongNumberOfTextureCoordinates);
+                throw new InvalidOperationException(WrongNumberOfTextureCoordinates);
             }
 
             int index0 = this.positions.Count;
@@ -3486,12 +3486,12 @@ namespace HelixToolkit.Wpf
 
             if (stripNormals != null && stripNormals.Count != stripPositions.Count)
             {
-                throw new InvalidDesignTaskException(WrongNumberOfNormals);
+                throw new InvalidOperationException(WrongNumberOfNormals);
             }
 
             if (stripTextureCoordinates != null && stripTextureCoordinates.Count != stripPositions.Count)
             {
-                throw new InvalidDesignTaskException(WrongNumberOfTextureCoordinates);
+                throw new InvalidOperationException(WrongNumberOfTextureCoordinates);
             }
 
             int index0 = this.positions.Count;
@@ -3611,12 +3611,12 @@ namespace HelixToolkit.Wpf
         {
             if (values != null && values.Count == 0)
             {
-                throw new InvalidDesignTaskException(WrongNumberOfTextureCoordinates);
+                throw new InvalidOperationException(WrongNumberOfTextureCoordinates);
             }
 
             if (diameters != null && diameters.Count == 0)
             {
-                throw new InvalidDesignTaskException(WrongNumberOfDiameters);
+                throw new InvalidOperationException(WrongNumberOfDiameters);
             }
 
             int index0 = this.positions.Count;
@@ -3754,17 +3754,17 @@ namespace HelixToolkit.Wpf
         {
             if (values != null && values.Count == 0)
             {
-                throw new InvalidDesignTaskException(WrongNumberOfTextureCoordinates);
+                throw new InvalidOperationException(WrongNumberOfTextureCoordinates);
             }
 
             if (diameters != null && diameters.Count == 0)
             {
-                throw new InvalidDesignTaskException(WrongNumberOfDiameters);
+                throw new InvalidOperationException(WrongNumberOfDiameters);
             }
 
             if (angles != null && angles.Count == 0)
             {
-                throw new InvalidDesignTaskException(WrongNumberOfAngles);
+                throw new InvalidOperationException(WrongNumberOfAngles);
             }
 
             int index0 = this.positions.Count;
@@ -3924,22 +3924,22 @@ namespace HelixToolkit.Wpf
 
             if (this.normals != null && normalsToAppend == null)
             {
-                throw new InvalidDesignTaskException(SourceMeshNormalsShouldNotBeNull);
+                throw new InvalidOperationException(SourceMeshNormalsShouldNotBeNull);
             }
 
             if (this.textureCoordinates != null && textureCoordinatesToAppend == null)
             {
-                throw new InvalidDesignTaskException(SourceMeshTextureCoordinatesShouldNotBeNull);
+                throw new InvalidOperationException(SourceMeshTextureCoordinatesShouldNotBeNull);
             }
 
             if (normalsToAppend != null && normalsToAppend.Count != positionsToAppend.Count)
             {
-                throw new InvalidDesignTaskException(WrongNumberOfNormals);
+                throw new InvalidOperationException(WrongNumberOfNormals);
             }
 
             if (textureCoordinatesToAppend != null && textureCoordinatesToAppend.Count != positionsToAppend.Count)
             {
-                throw new InvalidDesignTaskException(WrongNumberOfTextureCoordinates);
+                throw new InvalidOperationException(WrongNumberOfTextureCoordinates);
             }
 
             int index0 = this.positions.Count;
@@ -4611,12 +4611,12 @@ namespace HelixToolkit.Wpf
 
             if (this.normals != null && this.positions.Count != this.normals.Count)
             {
-                throw new InvalidDesignTaskException(WrongNumberOfNormals);
+                throw new InvalidOperationException(WrongNumberOfNormals);
             }
 
             if (this.textureCoordinates != null && this.positions.Count != this.textureCoordinates.Count)
             {
-                throw new InvalidDesignTaskException(WrongNumberOfTextureCoordinates);
+                throw new InvalidOperationException(WrongNumberOfTextureCoordinates);
             }
 
             var mg = new MeshGeometry3D

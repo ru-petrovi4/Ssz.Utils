@@ -57,11 +57,11 @@ namespace HelixToolkit.Wpf
         /// Gets the camera.
         /// </summary>
         /// <value>The camera.</value>
-        protected DsSolutionionCamera Camera
+        protected ProjectionCamera Camera
         {
             get
             {
-                return this.Viewport.Camera as DsSolutionionCamera;
+                return this.Viewport.Camera as ProjectionCamera;
             }
         }
 
