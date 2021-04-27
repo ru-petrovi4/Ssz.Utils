@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MeshBuilder.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -1146,7 +1146,7 @@ namespace HelixToolkit.Wpf
                 basePoints.Add(newPoint);
                 this.positions.Add(newPoint);
             }
-            // Angle of DsSolutioned Isosceles triangle
+            // Angle of Projected Isosceles triangle
             var gamma = (DoubleOrSingle)Math.Acos(1 - (sideLength * sideLength / (2 * radiusSphere * radiusSphere)));
             // Base Upper Points
             foreach (var point in basePoints)

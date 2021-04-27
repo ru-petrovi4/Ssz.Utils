@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="OxyImage.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -164,7 +164,7 @@ namespace OxyPlot
                     throw new NotImplementedException();
 
                 default:
-                    throw new InvalidDesignTaskException("Image format not supported");
+                    throw new InvalidOperationException("Image format not supported");
             }
         }
 
@@ -209,7 +209,7 @@ namespace OxyPlot
                     throw new NotImplementedException();
 
                 default:
-                    throw new InvalidDesignTaskException("Image format not supported");
+                    throw new InvalidOperationException("Image format not supported");
             }
         }
 

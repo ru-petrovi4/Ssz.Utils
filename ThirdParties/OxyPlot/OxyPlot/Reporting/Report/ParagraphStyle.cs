@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ParagraphStyle.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -55,9 +55,9 @@ namespace OxyPlot.Reporting
         private double? lineSpacing;
 
         /// <summary>
-        /// The graphic break before.
+        /// The page break before.
         /// </summary>
-        private bool? graphicBreakBefore;
+        private bool? pageBreakBefore;
 
         /// <summary>
         /// The right indentation.
@@ -241,20 +241,20 @@ namespace OxyPlot.Reporting
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether there should be a graphic break before the paragraph.
+        /// Gets or sets a value indicating whether there should be a page break before the paragraph.
         /// </summary>
-        public bool GraphicBreakBefore
+        public bool PageBreakBefore
         {
             get
             {
-                if (this.dsgraphicBreakBefore != null)
+                if (this.pageBreakBefore != null)
                 {
-                    return this.dsgraphicBreakBefore.Value;
+                    return this.pageBreakBefore.Value;
                 }
 
                 if (this.BasedOn != null)
                 {
-                    return this.BasedOn.GraphicBreakBefore;
+                    return this.BasedOn.PageBreakBefore;
                 }
 
                 return false;
@@ -262,7 +262,7 @@ namespace OxyPlot.Reporting
 
             set
             {
-                this.dsgraphicBreakBefore = value;
+                this.pageBreakBefore = value;
             }
         }
 

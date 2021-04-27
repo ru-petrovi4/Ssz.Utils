@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="VrmlExporter.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -19,7 +19,7 @@ namespace HelixToolkit.Wpf
     /// </summary>
     /// <remarks>
     /// See <a href="http://en.wikipedia.org/wiki/Vrml">Wikipedia</a>, <a href="http://en.wikipedia.org/wiki/Web3D">Web3D</a>,
-    /// <a href="http://cic.nist.gov/vrml/vbdetect.html">VRML addon/browser detector</a>,
+    /// <a href="http://cic.nist.gov/vrml/vbdetect.html">VRML plugin/browser detector</a>,
     /// and <a href="http://openvrml.org/">openvrml.org</a>.
     /// </remarks>
     public class VrmlExporter : Exporter<StreamWriter>
@@ -72,7 +72,7 @@ namespace HelixToolkit.Wpf
 
             // writer.WriteLine("Transform {");
             // todo: add transform from model.Transform and inheritedTransform
-            writer.WriteLine("DsControl {");
+            writer.WriteLine("Shape {");
 
             writer.WriteLine("  appearance Appearance {");
 
@@ -110,7 +110,7 @@ namespace HelixToolkit.Wpf
             writer.WriteLine("    ]");
             writer.WriteLine("  }"); // IndexedFaceSet
 
-            writer.WriteLine("}"); // DsControl
+            writer.WriteLine("}"); // Shape
 
             // writer.WriteLine("}"); // Transform
         }

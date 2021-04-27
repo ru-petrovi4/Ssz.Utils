@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MarkerType.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -58,7 +58,7 @@ namespace OxyPlot
         Star,
 
         /// <summary>
-        /// Render markers by a custom dsControl (defined by outline).
+        /// Render markers by a custom shape (defined by outline).
         /// </summary>
         Custom
     }

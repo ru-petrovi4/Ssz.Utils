@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Viewport3DHelper.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -209,7 +209,7 @@ namespace HelixToolkit.Wpf
 
             if (camera == null)
             {
-                throw new InvalidOperationException("No dsSolutionion camera defined. Cannot find rectangle hits.");
+                throw new InvalidOperationException("No projection camera defined. Cannot find rectangle hits.");
             }
 
             if (rectangle.Width < Tolerance && rectangle.Height < Tolerance)
@@ -423,7 +423,7 @@ namespace HelixToolkit.Wpf
         }
 
         /// <summary>
-        /// Gets the camera transform (viewport and dsSolutionion).
+        /// Gets the camera transform (viewport and projection).
         /// </summary>
         /// <param name="viewport">
         /// The viewport.
@@ -542,7 +542,7 @@ namespace HelixToolkit.Wpf
         }
 
         /// <summary>
-        /// Gets the dsSolutionion matrix.
+        /// Gets the projection matrix.
         /// </summary>
         /// <param name="viewport">The viewport.</param>
         /// <returns>A <see cref="Matrix3D"/>.</returns>
@@ -910,9 +910,9 @@ namespace HelixToolkit.Wpf
         /// A 3D point.
         /// </returns>
         /// <remarks>
-        /// Maps window coordinates to object coordinates like <code>gluUnDsSolution</code>.
+        /// Maps window coordinates to object coordinates like <code>gluUnProject</code>.
         /// </remarks>
-        public static Point3D? UnDsSolution(this Viewport3D viewport, Point p, Point3D position, Vector3D normal)
+        public static Point3D? UnProject(this Viewport3D viewport, Point p, Point3D position, Vector3D normal)
         {
             var ray = GetRay(viewport, p);
             if (ray == null)
@@ -936,7 +936,7 @@ namespace HelixToolkit.Wpf
         /// <returns>
         /// A 3D point.
         /// </returns>
-        public static Point3D? UnDsSolution(this Viewport3D viewport, Point p)
+        public static Point3D? UnProject(this Viewport3D viewport, Point p)
         {
             var pc = viewport.Camera as ProjectionCamera;
             if (pc == null)
@@ -944,7 +944,7 @@ namespace HelixToolkit.Wpf
                 return null;
             }
 
-            return UnDsSolution(viewport, p, pc.Position + pc.LookDirection, pc.LookDirection);
+            return UnProject(viewport, p, pc.Position + pc.LookDirection, pc.LookDirection);
         }
 
         /// <summary>

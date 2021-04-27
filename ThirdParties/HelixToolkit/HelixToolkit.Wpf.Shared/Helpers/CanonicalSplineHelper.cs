@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="CanonicalSplineHelper.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -160,8 +160,8 @@ namespace HelixToolkit.Wpf
             double t2,
             double tolerance)
         {
-            // See Petzold, "Programming Microsoft Windows with C#", graphics 645-646 or
-            // Petzold, "Programming Microsoft Windows with Microsoft Visual Basic .NET", graphics 638-639
+            // See Petzold, "Programming Microsoft Windows with C#", pages 645-646 or
+            // Petzold, "Programming Microsoft Windows with Microsoft Visual Basic .NET", pages 638-639
             // for derivation of the following formulas:
             double sx1 = t1 * (pt2.X - pt0.X);
             double sy1 = t1 * (pt2.Y - pt0.Y);

@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="CodeTree.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -17,7 +17,7 @@ namespace OxyPlot
     /// <summary>
     /// The code tree.
     /// </summary>
-    /// <remarks>The code is a c# port of Nayuki Minase's DEFLATE dsSolution at <a href="https://github.com/nayuki/DEFLATE">GitHub</a>.
+    /// <remarks>The code is a c# port of Nayuki Minase's DEFLATE project at <a href="https://github.com/nayuki/DEFLATE">GitHub</a>.
     /// Original source code: <a href="https://github.com/nayuki/DEFLATE/blob/master/src/nayuki/deflate/CodeTree.java">CodeTree.java</a>.</remarks>
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Reviewed. Suppression is OK here.")]
     internal class CodeTree

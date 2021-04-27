@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PlotController.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -60,12 +60,12 @@ namespace OxyPlot
             this.BindMouseWheel(OxyModifierKeys.Control, PlotCommands.ZoomWheelFine);
             this.BindKeyDown(OxyKey.Add, PlotCommands.ZoomIn);
             this.BindKeyDown(OxyKey.Subtract, PlotCommands.ZoomOut);
-            this.BindKeyDown(OxyKey.GraphicUp, PlotCommands.ZoomIn);
-            this.BindKeyDown(OxyKey.GraphicDown, PlotCommands.ZoomOut);
+            this.BindKeyDown(OxyKey.PageUp, PlotCommands.ZoomIn);
+            this.BindKeyDown(OxyKey.PageDown, PlotCommands.ZoomOut);
             this.BindKeyDown(OxyKey.Add, OxyModifierKeys.Control, PlotCommands.ZoomInFine);
             this.BindKeyDown(OxyKey.Subtract, OxyModifierKeys.Control, PlotCommands.ZoomOutFine);
-            this.BindKeyDown(OxyKey.GraphicUp, OxyModifierKeys.Control, PlotCommands.ZoomInFine);
-            this.BindKeyDown(OxyKey.GraphicDown, OxyModifierKeys.Control, PlotCommands.ZoomOutFine);
+            this.BindKeyDown(OxyKey.PageUp, OxyModifierKeys.Control, PlotCommands.ZoomInFine);
+            this.BindKeyDown(OxyKey.PageDown, OxyModifierKeys.Control, PlotCommands.ZoomOutFine);
         }
     }
 }

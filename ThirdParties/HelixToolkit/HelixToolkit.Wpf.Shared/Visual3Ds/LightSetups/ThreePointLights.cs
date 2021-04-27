@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ThreePointLights.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -357,7 +357,7 @@ namespace HelixToolkit.Wpf
             // NOTE: Be sure to stop and do test-renders here. Your "one light" scene (with just the key light) should have a
             // nice balance and contrast between light and dark, and shading that uses all of the grays in between. Your
             // "one light" should look almost like the final rendering, except that the shadows are pitch black and it has
-            // very harsh contrast - see the GIF animation at the top of this graphic, while it only has the Key light visible.
+            // very harsh contrast - see the GIF animation at the top of this page, while it only has the Key light visible.
             var tKey1 = new RotateTransform3D(new AxisAngleRotation3D(up, this.KeyLightSideAngle));
             var tKey2 = new RotateTransform3D(new AxisAngleRotation3D(right, this.KeyLightAngle));
             var keyLightDirection = front * this.Distance;

@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MagnitudeAxis.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -70,7 +70,7 @@ namespace OxyPlot.Axes
             var angleAxis = yaxis as AngleAxis;
             if (angleAxis == null)
             {
-                throw new InvalidDesignTaskException("Polar angle axis not defined!");
+                throw new InvalidOperationException("Polar angle axis not defined!");
             }
 
             x -= this.MidPoint.x;
@@ -122,7 +122,7 @@ namespace OxyPlot.Axes
             var angleAxis = yaxis as AngleAxis;
             if (angleAxis == null)
             {
-                throw new InvalidDesignTaskException("Polar angle axis not defined!");
+                throw new InvalidOperationException("Polar angle axis not defined!");
             }
 
             var r = (x - this.Offset) * this.Scale;

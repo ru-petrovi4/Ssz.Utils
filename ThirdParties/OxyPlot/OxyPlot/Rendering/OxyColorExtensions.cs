@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="OxyColorExtensions.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -132,7 +132,7 @@ namespace OxyPlot
         /// </summary>
         /// <param name="color">The color.</param>
         /// <returns>The color as an unsigned integer.</returns>
-        [CLSCompliant(false)]
+        
         public static uint ToUint(this OxyColor color)
         {
             var u = (uint)color.A << 24;

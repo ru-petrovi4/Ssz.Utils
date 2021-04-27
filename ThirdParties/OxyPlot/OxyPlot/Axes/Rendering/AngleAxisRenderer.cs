@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="AngleAxisRenderer.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -32,7 +32,7 @@ namespace OxyPlot.Axes
         /// </summary>
         /// <param name="axis">The axis.</param>
         /// <param name="pass">The render pass.</param>
-        /// <exception cref="System.InvalidDesignTaskException">Magnitude axis not defined.</exception>
+        /// <exception cref="System.InvalidOperationException">Magnitude axis not defined.</exception>
         public override void Render(Axis axis, int pass)
         {
             var angleAxis = (AngleAxis)axis;
@@ -43,7 +43,7 @@ namespace OxyPlot.Axes
 
             if (magnitudeAxis == null)
             {
-                throw new InvalidDesignTaskException("Magnitude axis not defined.");
+                throw new InvalidOperationException("Magnitude axis not defined.");
             }
 
             var scaledStartAngle = angleAxis.StartAngle / angleAxis.Scale;

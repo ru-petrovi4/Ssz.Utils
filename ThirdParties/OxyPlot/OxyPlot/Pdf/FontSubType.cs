@@ -1,18 +1,18 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="FontSubType.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
 // <summary>
-//   Defines the graphic size.
+//   Defines the page size.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
 namespace OxyPlot
 {
     /// <summary>
-    /// Defines the graphic size.
+    /// Defines the page size.
     /// </summary>
-    public enum GraphicSize
+    public enum PageSize
     {
         /// <summary>
         /// ISO A4 size (595pt x 842pt).
@@ -31,9 +31,9 @@ namespace OxyPlot
     }
 
     /// <summary>
-    /// Defines the graphic orientation.
+    /// Defines the page orientation.
     /// </summary>
-    public enum GraphicOrientation
+    public enum PageOrientation
     {
         /// <summary>
         /// Portrait orientation (where the height is greater than the width).
@@ -52,7 +52,7 @@ namespace OxyPlot
     public enum LineCap
     {
         /// <summary>
-        /// Butt cap. The stroke is squared off at the endpoint of the path. There is no dsSolutionion beyond the end of the path.
+        /// Butt cap. The stroke is squared off at the endpoint of the path. There is no projection beyond the end of the path.
         /// </summary>
         Butt = 0,
 
@@ -62,13 +62,13 @@ namespace OxyPlot
         Round = 1,
 
         /// <summary>
-        /// DsSolutioning square cap. The stroke continues beyond the endpoint of the path for a distance equal to half the line width and is squared off.
+        /// Projecting square cap. The stroke continues beyond the endpoint of the path for a distance equal to half the line width and is squared off.
         /// </summary>
-        DsSolutioningSquare = 2
+        ProjectingSquare = 2
     }
 
 /*    /// <summary>
-    /// Defines the dsControl that joins two lines or segments.
+    /// Defines the shape that joins two lines or segments.
     /// </summary>
     public enum LineJoin
     {
@@ -78,12 +78,12 @@ namespace OxyPlot
         Miter = 0,
 
         /// <summary>
-        /// Round join. An arc of a circle with a diameter equal to the line width is drawn around the point where the two segments meet, connecting the outer edges of the strokes for the two segments. This pieslice-dsControld figure is filled in, producing a rounded corner.
+        /// Round join. An arc of a circle with a diameter equal to the line width is drawn around the point where the two segments meet, connecting the outer edges of the strokes for the two segments. This pieslice-shaped figure is filled in, producing a rounded corner.
         /// </summary>
         Round = 1,
 
         /// <summary>
-        /// Bevel join. The two segments are finished with butt caps (see “Line Cap Style” on graphic 216) and the resulting notch beyond the ends of the segments is filled with a triangle.
+        /// Bevel join. The two segments are finished with butt caps (see “Line Cap Style” on page 216) and the resulting notch beyond the ends of the segments is filled with a triangle.
         /// </summary>
         Bevel = 2
     }*/
@@ -105,7 +105,7 @@ namespace OxyPlot
     public enum FontEncoding
     {
         /// <summary>
-        /// Windows Code Graphic 1252, often called the “Windows ANSI” encoding. This is the standard Windows encoding for Latin text in
+        /// Windows Code Page 1252, often called the “Windows ANSI” encoding. This is the standard Windows encoding for Latin text in
         /// Western writing systems. PDF has a predefined encoding named WinAnsiEncoding that can be used with both Type 1 and TrueType fonts.
         /// </summary>
         WinAnsiEncoding

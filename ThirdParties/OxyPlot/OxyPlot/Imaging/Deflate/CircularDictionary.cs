@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="CircularDictionary.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -15,7 +15,7 @@ namespace OxyPlot
     /// <summary>
     /// Provides a circular dictionary.
     /// </summary>
-    /// <remarks>The code is a c# port of the DEFLATE dsSolution by Nayuki Minase at <a href="https://github.com/nayuki/DEFLATE">github</a>.
+    /// <remarks>The code is a c# port of the DEFLATE project by Nayuki Minase at <a href="https://github.com/nayuki/DEFLATE">github</a>.
     /// Original source code: <a href="https://github.com/nayuki/DEFLATE/blob/master/src/nayuki/deflate/CircularDictionary.java">CircularDictionary.java</a>.</remarks>
     internal class CircularDictionary
     {

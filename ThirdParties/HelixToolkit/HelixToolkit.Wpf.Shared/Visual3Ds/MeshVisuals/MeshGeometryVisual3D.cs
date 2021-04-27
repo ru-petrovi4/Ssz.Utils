@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MeshGeometryVisual3D.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -24,7 +24,7 @@ namespace HelixToolkit.Wpf
             DependencyProperty.Register("MeshGeometry", typeof(MeshGeometry3D), typeof(MeshGeometryVisual3D), new PropertyMetadata(null, GeometryChanged));
 
         /// <summary>
-        /// Gets or sets the <see cref="MeshGeometry3D"/> defining the dsControl of the visual.
+        /// Gets or sets the <see cref="MeshGeometry3D"/> defining the shape of the visual.
         /// </summary>
         public MeshGeometry3D MeshGeometry
         {

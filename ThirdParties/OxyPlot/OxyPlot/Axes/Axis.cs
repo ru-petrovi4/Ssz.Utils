@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Axis.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -737,7 +737,7 @@ namespace OxyPlot.Axes
 
             if (this.AbsoluteMaximum <= this.AbsoluteMinimum)
             {
-                throw new InvalidDesignTaskException("AbsoluteMaximum should be larger than AbsoluteMinimum.");
+                throw new InvalidOperationException("AbsoluteMaximum should be larger than AbsoluteMinimum.");
             }
         }
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows.Media;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;

@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="BillboardGeometryBuilder.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -74,7 +74,7 @@ namespace HelixToolkit.Wpf
                 Point4D screenPoint;
                 if (!bb.WorldDepthOffset.Equals(0))
                 {
-                    var viewPoint = (Point4D)bb.Position * this.visualToDsSolutionion;
+                    var viewPoint = (Point4D)bb.Position * this.visualToProjection;
                     screenPoint = new Point4D(viewPoint.X, viewPoint.Y, viewPoint.Z + bb.WorldDepthOffset, viewPoint.W) * this.projectionToScreen;
                 }
                 else
@@ -139,7 +139,7 @@ namespace HelixToolkit.Wpf
                 Point4D screenPoint;
                 if (!bb.WorldDepthOffset.Equals(0))
                 {
-                    var viewPoint = (Point4D)bb.Position * this.visualToDsSolutionion;
+                    var viewPoint = (Point4D)bb.Position * this.visualToProjection;
                     screenPoint = new Point4D(viewPoint.X, viewPoint.Y, viewPoint.Z + bb.WorldDepthOffset, viewPoint.W) * this.projectionToScreen;
                 }
                 else

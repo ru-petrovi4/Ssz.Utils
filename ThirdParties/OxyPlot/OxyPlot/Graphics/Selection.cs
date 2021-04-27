@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Selection.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -118,7 +118,7 @@ namespace OxyPlot
             var si = new SelectionItem(index, feature);
             if (!this.selection.ContainsKey(si))
             {
-                throw new InvalidDesignTaskException("Item " + index + " and feature " + feature + " is not selected. Cannot unselect.");
+                throw new InvalidOperationException("Item " + index + " and feature " + feature + " is not selected. Cannot unselect.");
             }
 
             this.selection.Remove(si);

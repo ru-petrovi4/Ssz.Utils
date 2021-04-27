@@ -1,4 +1,4 @@
-<d3:IsolineGraphBase x:Class="Microsoft.Research.DynamicDataDisplay.Charts.IsolineTrackingGraph"
+﻿<d3:IsolineGraphBase x:Class="Microsoft.Research.DynamicDataDisplay.Charts.IsolineTrackingGraph"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:d3="clr-namespace:Microsoft.Research.DynamicDataDisplay.Charts.Isolines"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">

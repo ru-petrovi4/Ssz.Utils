@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="SelectableElement.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -152,7 +152,7 @@ namespace OxyPlot
         {
             if (this.SelectionMode == SelectionMode.All)
             {
-                throw new InvalidDesignTaskException("Use the Select() method when using SelectionMode.All");
+                throw new InvalidOperationException("Use the Select() method when using SelectionMode.All");
             }
 
             this.EnsureSelection();
@@ -173,7 +173,7 @@ namespace OxyPlot
         {
             if (this.SelectionMode == SelectionMode.All)
             {
-                throw new InvalidDesignTaskException("Use the Unselect() method when using SelectionMode.All");
+                throw new InvalidOperationException("Use the Unselect() method when using SelectionMode.All");
             }
 
             this.EnsureSelection();

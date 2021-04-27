@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ListFiller.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -87,7 +87,7 @@ namespace OxyPlot
                         pi[i] = t.GetProperty(p.Key);
                         if (pi[i] == null)
                         {
-                            throw new InvalidDesignTaskException(
+                            throw new InvalidOperationException(
                                 string.Format("Could not find field {0} on type {1}", p.Key, t));
                         }
 

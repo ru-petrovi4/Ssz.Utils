@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="NamespaceDoc.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -12,7 +12,7 @@ namespace OxyPlot.Wpf
     /// <summary>
     /// The OxyPlot.Wpf namespace contains WPF controls and PNG export functionality based on WPF.
     /// </summary>
-    [System.Play.CompilerServices.CompilerGenerated]
+    [System.Runtime.CompilerServices.CompilerGenerated]
     internal class NamespaceDoc
     {
     }

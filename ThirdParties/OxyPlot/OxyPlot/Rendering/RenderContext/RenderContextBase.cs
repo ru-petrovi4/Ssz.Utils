@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="RenderContextBase.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -68,7 +68,7 @@ namespace OxyPlot
         /// <param name="thickness">The stroke thickness.</param>
         /// <param name="dashArray">The dash array.</param>
         /// <param name="lineJoin">The line join type.</param>
-        /// <param name="aliased">if set to <c>true</c> the dsControl will be aliased.</param>
+        /// <param name="aliased">if set to <c>true</c> the shape will be aliased.</param>
         public abstract void DrawLine(
             IList<ScreenPoint> points,
             OxyColor stroke,
@@ -86,7 +86,7 @@ namespace OxyPlot
         /// <param name="thickness">The stroke thickness.</param>
         /// <param name="dashArray">The dash array.</param>
         /// <param name="lineJoin">The line join type.</param>
-        /// <param name="aliased">If set to <c>true</c> the dsControl will be aliased.</param>
+        /// <param name="aliased">If set to <c>true</c> the shape will be aliased.</param>
         public virtual void DrawLineSegments(
             IList<ScreenPoint> points,
             OxyColor stroke,
@@ -110,7 +110,7 @@ namespace OxyPlot
         /// <param name="thickness">The stroke thickness.</param>
         /// <param name="dashArray">The dash array.</param>
         /// <param name="lineJoin">The line join type.</param>
-        /// <param name="aliased">If set to <c>true</c> the dsControl will be aliased.</param>
+        /// <param name="aliased">If set to <c>true</c> the shape will be aliased.</param>
         public abstract void DrawPolygon(
             IList<ScreenPoint> points,
             OxyColor fill,
@@ -130,7 +130,7 @@ namespace OxyPlot
         /// <param name="thickness">The stroke thickness.</param>
         /// <param name="dashArray">The dash array.</param>
         /// <param name="lineJoin">The line join type.</param>
-        /// <param name="aliased">if set to <c>true</c> the dsControl will be aliased.</param>
+        /// <param name="aliased">if set to <c>true</c> the shape will be aliased.</param>
         public virtual void DrawPolygons(
             IList<IList<ScreenPoint>> polygons,
             OxyColor fill,

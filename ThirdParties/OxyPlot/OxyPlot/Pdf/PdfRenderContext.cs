@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PdfRenderContext.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -38,7 +38,7 @@ namespace OxyPlot
         public PdfRenderContext(double width, double height, OxyColor background)
         {
             this.doc = new PortableDocument();
-            this.doc.AddGraphic(width, height);
+            this.doc.AddPage(width, height);
             this.RendersToScreen = false;
 
             if (background.IsVisible())
@@ -73,7 +73,7 @@ namespace OxyPlot
                 return;
             }
 
-            double y = this.doc.GraphicHeight - rect.Bottom;
+            double y = this.doc.PageHeight - rect.Bottom;
             if (isStroked)
             {
                 this.SetLineWidth(thickness);
@@ -103,7 +103,7 @@ namespace OxyPlot
         /// <param name="thickness">The stroke thickness.</param>
         /// <param name="dashArray">The dash array.</param>
         /// <param name="lineJoin">The line join type.</param>
-        /// <param name="aliased">if set to <c>true</c> the dsControl will be aliased.</param>
+        /// <param name="aliased">if set to <c>true</c> the shape will be aliased.</param>
         public override void DrawLine(
             IList<ScreenPoint> points,
             OxyColor stroke,
@@ -120,7 +120,7 @@ namespace OxyPlot
             }
 
             this.doc.SetLineJoin(Convert(lineJoin));
-            var h = this.doc.GraphicHeight;
+            var h = this.doc.PageHeight;
             this.doc.MoveTo(points[0].X, h - points[0].Y);
             for (int i = 1; i < points.Count; i++)
             {
@@ -143,7 +143,7 @@ namespace OxyPlot
         /// <param name="thickness">The stroke thickness.</param>
         /// <param name="dashArray">The dash array.</param>
         /// <param name="lineJoin">The line join type.</param>
-        /// <param name="aliased">If set to <c>true</c> the dsControl will be aliased.</param>
+        /// <param name="aliased">If set to <c>true</c> the shape will be aliased.</param>
         public override void DrawPolygon(
             IList<ScreenPoint> points,
             OxyColor fill,
@@ -160,7 +160,7 @@ namespace OxyPlot
                 return;
             }
 
-            var h = this.doc.GraphicHeight;
+            var h = this.doc.PageHeight;
             this.doc.MoveTo(points[0].X, h - points[0].Y);
             for (int i = 1; i < points.Count; i++)
             {
@@ -215,7 +215,7 @@ namespace OxyPlot
                 return;
             }
 
-            double y = this.doc.GraphicHeight - rect.Bottom;
+            double y = this.doc.PageHeight - rect.Bottom;
             if (isStroked)
             {
                 this.SetLineWidth(thickness);
@@ -304,7 +304,7 @@ namespace OxyPlot
                 dy = -height;
             }
 
-            double y = this.doc.GraphicHeight - p.Y;
+            double y = this.doc.PageHeight - p.Y;
 
             this.doc.Translate(p.X, y);
             if (Math.Abs(rotate) > 1e-6)
@@ -401,8 +401,8 @@ namespace OxyPlot
             double width = image.Width / srcWidth * destWidth;
             double y = destY - (srcY / srcHeight * destHeight);
             double height = image.Height / srcHeight * destHeight;
-            this.doc.SetClippingRectangle(destX, this.doc.GraphicHeight - (destY - destHeight), destWidth, destHeight);
-            this.doc.Translate(x, this.doc.GraphicHeight - (y + height));
+            this.doc.SetClippingRectangle(destX, this.doc.PageHeight - (destY - destHeight), destWidth, destHeight);
+            this.doc.Translate(x, this.doc.PageHeight - (y + height));
             this.doc.Scale(width, height);
             this.doc.DrawImage(image);
             this.doc.RestoreState();

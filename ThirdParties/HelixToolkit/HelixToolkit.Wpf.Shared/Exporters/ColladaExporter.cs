@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ColladaExporter.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -80,7 +80,7 @@ namespace HelixToolkit.Wpf
             //// http://www.khronos.org/collada/
             //// https://collada.org/mediawiki/index.php/COLLADA_-_Digital_Asset_and_FX_Exchange_Schema
             //// https://collada.org/mediawiki/index.php/COLLADA.net
-            //// http://www.mogware.com/index.php?graphic=collada.NET
+            //// http://www.mogware.com/index.php?page=collada.NET
             //// http://www.okino.com/conv/exp_collada.htm
 
             var writer = this.Create(stream);
@@ -181,7 +181,7 @@ namespace HelixToolkit.Wpf
             // }
 
             // writer.WriteStartElement("Transform");
-            // writer.WriteStartElement("DsControl");
+            // writer.WriteStartElement("Shape");
             // writer.WriteStartElement("IndexedFaceSet");
             // writer.WriteAttributeString("coordIndex", indices.ToString());
             // writer.WriteStartElement("Coordinate");
@@ -196,7 +196,7 @@ namespace HelixToolkit.Wpf
             // writer.WriteEndElement();
             // writer.WriteEndElement(); // Appearance
 
-            // writer.WriteEndElement(); // DsControl
+            // writer.WriteEndElement(); // Shape
             // writer.WriteEndElement(); // Transform
         }
 
@@ -214,9 +214,9 @@ namespace HelixToolkit.Wpf
 
             var created = DateTime.Now;
             var createdString = created.ToString("u").Replace(' ', 'T');
-            var ProjectionCamera = viewport.Camera as ProjectionCamera;
+            var projectionCamera = viewport.Camera as ProjectionCamera;
             var upAxis = "Z_UP";
-            if (ProjectionCamera != null && ProjectionCamera.UpDirection.Y > ProjectionCamera.UpDirection.Z)
+            if (projectionCamera != null && projectionCamera.UpDirection.Y > projectionCamera.UpDirection.Z)
             {
                 upAxis = "Y_UP";
             }

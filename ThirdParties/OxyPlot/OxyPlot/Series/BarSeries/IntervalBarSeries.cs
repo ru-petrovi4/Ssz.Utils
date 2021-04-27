@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="IntervalBarSeries.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -420,7 +420,7 @@ namespace OxyPlot.Series
             var categoryAxis = this.YAxis as CategoryAxis;
             if (categoryAxis == null)
             {
-                throw new InvalidDesignTaskException("No category axis defined.");
+                throw new InvalidOperationException("No category axis defined.");
             }
 
             return categoryAxis;

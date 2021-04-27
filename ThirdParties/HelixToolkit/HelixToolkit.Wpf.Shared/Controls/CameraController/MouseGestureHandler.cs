@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="MouseGestureHandler.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -317,7 +317,7 @@ namespace HelixToolkit.Wpf
         }
 
         /// <summary>
-        /// Un dsSolutions a point from the screen (2D) to a point on plane (3D)
+        /// Un projects a point from the screen (2D) to a point on plane (3D)
         /// </summary>
         /// <param name="p">
         /// The 2D point.
@@ -331,7 +331,7 @@ namespace HelixToolkit.Wpf
         /// <returns>
         /// A 3D point.
         /// </returns>
-        public Point3D? UnDsSolution(Point p, Point3D position, Vector3D normal)
+        public Point3D? UnProject(Point p, Point3D position, Vector3D normal)
         {
             Ray3D ray = this.GetRay(p);
             if (ray == null)
@@ -344,7 +344,7 @@ namespace HelixToolkit.Wpf
         }
 
         /// <summary>
-        /// Un dsSolutions a point from the screen (2D) to a point on the plane trough the camera target point.
+        /// Un projects a point from the screen (2D) to a point on the plane trough the camera target point.
         /// </summary>
         /// <param name="p">
         /// The 2D point.
@@ -352,9 +352,9 @@ namespace HelixToolkit.Wpf
         /// <returns>
         /// A 3D point.
         /// </returns>
-        public Point3D? UnDsSolution(Point p)
+        public Point3D? UnProject(Point p)
         {
-            return this.UnDsSolution(p, this.CameraTarget, this.CameraLookDirection);
+            return this.UnProject(p, this.CameraTarget, this.CameraLookDirection);
         }
 
         /// <summary>
@@ -468,7 +468,7 @@ namespace HelixToolkit.Wpf
         /// <returns>
         /// The 2D point.
         /// </returns>
-        protected Point DsSolution(Point3D p)
+        protected Point Project(Point3D p)
         {
             return this.Viewport.Point3DtoPoint2D(p);
         }
@@ -482,7 +482,7 @@ namespace HelixToolkit.Wpf
         private void SetMouseDownPoint(Point position)
         {
             this.MouseDownPoint = position;
-            this.MouseDownPoint3D = this.UnDsSolution(this.MouseDownPoint);
+            this.MouseDownPoint3D = this.UnProject(this.MouseDownPoint);
             NearestPointInCamera nearestPoint = new Closest3DPointHitTester(this.Controller.Viewport, this.Controller.RotataAroundClosestVertexComplexity)
                 .CalculateMouseDownNearestPoint(position, Controller.SnapMouseDownPoint);
             this.MouseDownNearestPoint2D = nearestPoint.MouseDownNearestPoint2D;

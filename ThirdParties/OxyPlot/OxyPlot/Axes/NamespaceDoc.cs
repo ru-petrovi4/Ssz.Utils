@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="NamespaceDoc.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -12,7 +12,7 @@ namespace OxyPlot.Axes
     /// <summary>
     /// The OxyPlot.Axes namespace contains classes that represents the axes of the plots.
     /// </summary>
-    [System.Play.CompilerServices.CompilerGenerated]
+    [System.Runtime.CompilerServices.CompilerGenerated]
     internal class NamespaceDoc
     {
         //// This class is used by the API documentation system.

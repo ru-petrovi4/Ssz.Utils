@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="CameraController.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -181,11 +181,11 @@ namespace HelixToolkit.Wpf
                 "MoveSensitivity", typeof(double), typeof(CameraController), new UIPropertyMetadata(1.0));
 
         /// <summary>
-        /// Identifies the <see cref="GraphicUpDownZoomSensitivity"/> dependency property.
+        /// Identifies the <see cref="PageUpDownZoomSensitivity"/> dependency property.
         /// </summary>
-        public static readonly DependencyProperty GraphicUpDownZoomSensitivityProperty =
+        public static readonly DependencyProperty PageUpDownZoomSensitivityProperty =
             DependencyProperty.Register(
-                "GraphicUpDownZoomSensitivity", typeof(double), typeof(CameraController), new UIPropertyMetadata(1.0));
+                "PageUpDownZoomSensitivity", typeof(double), typeof(CameraController), new UIPropertyMetadata(1.0));
 
         /// <summary>
         /// Identifies the <see cref="PanCursor"/> dependency property.
@@ -1025,22 +1025,22 @@ namespace HelixToolkit.Wpf
         }
 
         /// <summary>
-        /// Gets or sets the sensitivity for zoom by the graphic up and graphic down keys.
+        /// Gets or sets the sensitivity for zoom by the page up and page down keys.
         /// </summary>
         /// <value> The zoom sensitivity. </value>
         /// <remarks>
         /// Use -1 to invert the zoom direction.
         /// </remarks>
-        public double GraphicUpDownZoomSensitivity
+        public double PageUpDownZoomSensitivity
         {
             get
             {
-                return (double)this.GetValue(GraphicUpDownZoomSensitivityProperty);
+                return (double)this.GetValue(PageUpDownZoomSensitivityProperty);
             }
 
             set
             {
-                this.SetValue(GraphicUpDownZoomSensitivityProperty, value);
+                this.SetValue(PageUpDownZoomSensitivityProperty, value);
             }
         }
 
@@ -1935,7 +1935,7 @@ namespace HelixToolkit.Wpf
 
             if (this.IsTouchZoomEnabled && n == 2)
             {
-                var zoomAroundPoint = this.zoomHandler.UnDsSolution(
+                var zoomAroundPoint = this.zoomHandler.UnProject(
                     e.ManipulationOrigin, this.zoomHandler.Origin, this.CameraLookDirection);
                 if (zoomAroundPoint != null)
                 {
@@ -2302,11 +2302,11 @@ namespace HelixToolkit.Wpf
             switch (e.Key)
             {
                 case Key.PageUp:
-                    this.AddZoomForce(-0.1 * f * this.GraphicUpDownZoomSensitivity);
+                    this.AddZoomForce(-0.1 * f * this.PageUpDownZoomSensitivity);
                     e.Handled = true;
                     break;
                 case Key.PageDown:
-                    this.AddZoomForce(0.1 * f * this.GraphicUpDownZoomSensitivity);
+                    this.AddZoomForce(0.1 * f * this.PageUpDownZoomSensitivity);
                     e.Handled = true;
                     break;
                 case Key.Back:

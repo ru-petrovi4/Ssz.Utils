@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ReportStyle.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -48,8 +48,8 @@ namespace OxyPlot.Reporting
             this.HeaderStyles[3].FontSize = 12;
             this.HeaderStyles[4].FontSize = 11;
 
-            this.HeaderStyles[0].GraphicBreakBefore = true;
-            this.HeaderStyles[1].GraphicBreakBefore = false;
+            this.HeaderStyles[0].PageBreakBefore = true;
+            this.HeaderStyles[1].PageBreakBefore = false;
 
             this.BodyTextStyle = new ParagraphStyle { BasedOn = this.DefaultStyle };
             this.FigureTextStyle = new ParagraphStyle { BasedOn = this.DefaultStyle, Italic = true };
@@ -100,7 +100,7 @@ namespace OxyPlot.Reporting
         public ParagraphStyle[] HeaderStyles { get; set; }
 
         /// <summary>
-        /// Gets or sets the graphic margins (mm).
+        /// Gets or sets the page margins (mm).
         /// </summary>
         public OxyThickness Margins { get; set; }
 

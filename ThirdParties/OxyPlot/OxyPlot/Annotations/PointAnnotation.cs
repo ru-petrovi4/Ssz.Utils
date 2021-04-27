@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PointAnnotation.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -12,7 +12,7 @@ namespace OxyPlot.Annotations
     /// <summary>
     /// Represents an annotation that shows a point.
     /// </summary>
-    public class PointAnnotation : DsControlAnnotation
+    public class PointAnnotation : ShapeAnnotation
     {
         /// <summary>
         /// The position transformed to screen coordinates.
@@ -26,7 +26,7 @@ namespace OxyPlot.Annotations
         {
             this.Size = 4;
             this.TextMargin = 2;
-            this.DsControl = MarkerType.Circle;
+            this.Shape = MarkerType.Circle;
             this.TextVerticalAlignment = VerticalAlignment.Top;
         }
 
@@ -51,13 +51,13 @@ namespace OxyPlot.Annotations
         public double TextMargin { get; set; }
 
         /// <summary>
-        /// Gets or sets the dsControl of the rendered point.
+        /// Gets or sets the shape of the rendered point.
         /// </summary>
-        /// <value>The dsControl.</value>
-        public MarkerType DsControl { get; set; }
+        /// <value>The shape.</value>
+        public MarkerType Shape { get; set; }
 
         /// <summary>
-        /// Gets or sets a custom polygon outline for the point marker. Set <see cref="DsControl" /> to <see cref="MarkerType.Custom" /> to use this property.
+        /// Gets or sets a custom polygon outline for the point marker. Set <see cref="Shape" /> to <see cref="MarkerType.Custom" /> to use this property.
         /// </summary>
         /// <value>A polyline. The default is <c>null</c>.</value>
         public ScreenPoint[] CustomOutline { get; set; }
@@ -76,7 +76,7 @@ namespace OxyPlot.Annotations
             // clip to the area defined by the axes
             var clippingRectangle = this.GetClippingRect();
 
-            rc.DrawMarker(clippingRectangle, this.screenPosition, this.DsControl, this.CustomOutline, this.Size, this.Fill, this.Stroke, this.StrokeThickness);
+            rc.DrawMarker(clippingRectangle, this.screenPosition, this.Shape, this.CustomOutline, this.Size, this.Fill, this.Stroke, this.StrokeThickness);
 
             if (!string.IsNullOrEmpty(this.Text))
             {

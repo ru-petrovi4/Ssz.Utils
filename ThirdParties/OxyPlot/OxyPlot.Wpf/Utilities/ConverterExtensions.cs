@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ConverterExtensions.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -316,10 +316,10 @@ namespace OxyPlot.Wpf
                     return OxyKey.O;
                 case Key.P:
                     return OxyKey.P;
-                case Key.GraphicDown:
-                    return OxyKey.GraphicDown;
-                case Key.GraphicUp:
-                    return OxyKey.GraphicUp;
+                case Key.PageDown:
+                    return OxyKey.PageDown;
+                case Key.PageUp:
+                    return OxyKey.PageUp;
                 case Key.Q:
                     return OxyKey.Q;
                 case Key.R:

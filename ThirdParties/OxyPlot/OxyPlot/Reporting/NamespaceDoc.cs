@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="NamespaceDoc.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -9,7 +9,7 @@
 
 namespace OxyPlot.Reporting
 {
-    using System.Play.CompilerServices;
+    using System.Runtime.CompilerServices;
 
     /// <summary>
     /// The OxyPlot.Reporting namespace contains a simple report model.

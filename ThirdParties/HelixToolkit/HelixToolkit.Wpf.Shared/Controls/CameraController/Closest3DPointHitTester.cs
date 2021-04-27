@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -32,7 +32,7 @@ namespace HelixToolkit.Wpf
         /// Returns the 3D point that the user most likely clicked on.
         /// Returns the closest intersection with a mesh, if possible.
         /// If useClosestMeshIfPossible is true it will otherwise returns the mesh vertex that is closest to the clicked 2D screen coordinate, if possible.
-        /// Returns the undsSolutioned position otherwise.
+        /// Returns the unprojected position otherwise.
         /// Also returns the 2D point corresponding to the returned 3D point.
         /// </summary>
         /// <param name="position"> The point in screen coordinates to calculate the closest vertices for. </param>
@@ -53,8 +53,8 @@ namespace HelixToolkit.Wpf
                 }
             }
 
-            Point3D? undsSolutionedPosition = mViewPort3D.UnDsSolution(position);
-            return new NearestPointInCamera(position, undsSolutionedPosition);
+            Point3D? unprojectedPosition = mViewPort3D.UnProject(position);
+            return new NearestPointInCamera(position, unprojectedPosition);
         }
 
         public ClosestVertexResult ResultOfClosestPointHit2D(Point position)
@@ -86,7 +86,7 @@ namespace HelixToolkit.Wpf
 
             if (camera == null)
             {
-                throw new InvalidOperationException("No dsSolutionion camera defined. Cannot find rectangle hits.");
+                throw new InvalidOperationException("No projection camera defined. Cannot find rectangle hits.");
             }
 
             List<ClosestVertexResult> results = new List<ClosestVertexResult>();

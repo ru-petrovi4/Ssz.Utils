@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="SvgExporter.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -21,7 +21,7 @@ namespace OxyPlot.Wpf
         /// </summary>
         public SvgExporter()
         {
-            this.TextMeasurer = new DsControlsRenderContext(new Canvas());
+            this.TextMeasurer = new ShapesRenderContext(new Canvas());
         }
     }
 }

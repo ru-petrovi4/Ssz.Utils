@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="EllipseAnnotation.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -12,7 +12,7 @@ namespace OxyPlot.Annotations
     /// <summary>
     /// Represents an annotation that shows an ellipse.
     /// </summary>
-    public class EllipseAnnotation : DsControlAnnotation
+    public class EllipseAnnotation : ShapeAnnotation
     {
         /// <summary>
         /// The rectangle transformed to screen coordinates.

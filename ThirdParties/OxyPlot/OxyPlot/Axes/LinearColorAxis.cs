@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="LinearColorAxis.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -167,7 +167,7 @@ namespace OxyPlot.Axes
 
             if (this.Palette == null)
             {
-                throw new InvalidDesignTaskException("No Palette defined for color axis.");
+                throw new InvalidOperationException("No Palette defined for color axis.");
             }
 
             if (pass == 0)

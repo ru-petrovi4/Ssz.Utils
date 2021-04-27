@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PolygonAnnotation.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -15,7 +15,7 @@ namespace OxyPlot.Annotations
     /// <summary>
     /// Represents an annotation that shows a polygon.
     /// </summary>
-    public class PolygonAnnotation : DsControlAnnotation
+    public class PolygonAnnotation : ShapeAnnotation
     {
         /// <summary>
         /// The polygon points transformed to screen coordinates.

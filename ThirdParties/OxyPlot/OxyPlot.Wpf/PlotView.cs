@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PlotView.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -106,7 +106,7 @@ namespace OxyPlot.Wpf
         /// <summary>
         /// The render context
         /// </summary>
-        private DsControlsRenderContext renderContext;
+        private ShapesRenderContext renderContext;
 
         /// <summary>
         /// The zoom control.
@@ -419,7 +419,7 @@ namespace OxyPlot.Wpf
             this.canvas = new Canvas();
             this.grid.Children.Add(this.canvas);
             this.canvas.UpdateLayout();
-            this.renderContext = new DsControlsRenderContext(this.canvas);
+            this.renderContext = new ShapesRenderContext(this.canvas);
 
             this.overlays = new Canvas();
             this.grid.Children.Add(this.overlays);
@@ -763,7 +763,7 @@ namespace OxyPlot.Wpf
         }
 
         /// <summary>
-        /// Performs the copy designTask.
+        /// Performs the copy operation.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The <see cref="System.Windows.Input.ExecutedRoutedEventArgs" /> instance containing the event data.</param>
@@ -846,7 +846,7 @@ namespace OxyPlot.Wpf
                 {
                     if (this.currentModel.PlotView != null)
                     {
-                        throw new InvalidDesignTaskException(
+                        throw new InvalidOperationException(
                             "This PlotModel is already in use by some other PlotView control.");
                     }
                 }

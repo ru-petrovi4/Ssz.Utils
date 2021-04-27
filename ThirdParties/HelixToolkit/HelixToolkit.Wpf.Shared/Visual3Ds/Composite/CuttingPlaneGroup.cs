@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="CuttingPlaneGroup.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -17,17 +17,17 @@ namespace HelixToolkit.Wpf
     using System.Windows.Media.Media3D;
 
     /// <summary>
-    /// Defines the cutting designTask.
+    /// Defines the cutting operation.
     /// </summary>
-    public enum CuttingDesignTask
+    public enum CuttingOperation
     {
         /// <summary>
-        /// The intersect designTask.
+        /// The intersect operation.
         /// </summary>
         Intersect,
 
         /// <summary>
-        /// The subtract designTask.
+        /// The subtract operation.
         /// </summary>
         Subtract,
     }
@@ -44,10 +44,10 @@ namespace HelixToolkit.Wpf
             "IsEnabled", typeof(bool), typeof(CuttingPlaneGroup), new UIPropertyMetadata(false, IsEnabledChanged));
 
         /// <summary>
-        /// Identifies the <see cref="DesignTask"/> dependency property.
+        /// Identifies the <see cref="Operation"/> dependency property.
         /// </summary>
-        public static readonly DependencyProperty DesignTaskProperty =
-            DependencyProperty.Register("DesignTask", typeof(CuttingDesignTask), typeof(CuttingPlaneGroup), new PropertyMetadata(CuttingDesignTask.Intersect, DesignTaskChanged));
+        public static readonly DependencyProperty OperationProperty =
+            DependencyProperty.Register("Operation", typeof(CuttingOperation), typeof(CuttingPlaneGroup), new PropertyMetadata(CuttingOperation.Intersect, OperationChanged));
 
         /// <summary>
         /// The cut geometries.
@@ -86,7 +86,7 @@ namespace HelixToolkit.Wpf
         /// </value>
         /// <remarks>
         /// The the intersection of all the cutting planes will be used to
-        /// intersect/subtract (defined in <see cref="DesignTask" /> all child visuals of the <see cref="CuttingPlaneGroup" />.
+        /// intersect/subtract (defined in <see cref="Operation" /> all child visuals of the <see cref="CuttingPlaneGroup" />.
         /// </remarks>
         public List<Plane3D> CuttingPlanes { get; set; }
 
@@ -107,13 +107,13 @@ namespace HelixToolkit.Wpf
         }
 
         /// <summary>
-        /// Gets or sets the cutting designTask.
+        /// Gets or sets the cutting operation.
         /// </summary>
-        /// <value>The designTask.</value>
-        public CuttingDesignTask DesignTask
+        /// <value>The operation.</value>
+        public CuttingOperation Operation
         {
-            get { return (CuttingDesignTask)this.GetValue(DesignTaskProperty); }
-            set { this.SetValue(DesignTaskProperty, value); }
+            get { return (CuttingOperation)this.GetValue(OperationProperty); }
+            set { this.SetValue(OperationProperty, value); }
         }
 
         /// <summary>
@@ -152,11 +152,11 @@ namespace HelixToolkit.Wpf
         }
 
         /// <summary>
-        /// Handles changes to the <see cref="DesignTask" /> property.
+        /// Handles changes to the <see cref="Operation" /> property.
         /// </summary>
         /// <param name="d">The sender.</param>
         /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs" /> instance containing the event data.</param>
-        private static void DesignTaskChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OperationChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             ((CuttingPlaneGroup)d).ApplyCuttingGeometries(true);
         }
@@ -232,9 +232,9 @@ namespace HelixToolkit.Wpf
                     throw new InvalidOperationException("No inverse transform.");
                 }
 
-                switch (this.DesignTask)
+                switch (this.Operation)
                 {
-                    case CuttingDesignTask.Intersect:
+                    case CuttingOperation.Intersect:
 
                         var intersectedGeometry = originalMeshGeometry;
 
@@ -246,7 +246,7 @@ namespace HelixToolkit.Wpf
 
                         newGeometry = intersectedGeometry;
                         break;
-                    case CuttingDesignTask.Subtract:
+                    case CuttingOperation.Subtract:
                         var builder = new MeshBuilder(originalMeshGeometry.Normals.Any(), originalMeshGeometry.TextureCoordinates.Any());
 
                         // Calculate the union of all complement intersections

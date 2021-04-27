@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="CuttingEarsTriangulator.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -27,7 +27,7 @@ namespace HelixToolkit.Wpf
     /// References
     /// <a href="http://en.wikipedia.org/wiki/Polygon_triangulation"></a>
     /// <a href="http://computacion.cs.cinvestav.mx/~anzures/geom/triangulation.php"></a>
-    /// <a href="http://www.codedsSolution.com/KB/recipes/cspolygontriangulation.aspx"></a>
+    /// <a href="http://www.codeproject.com/KB/recipes/cspolygontriangulation.aspx"></a>
     /// </remarks>
     public static class CuttingEarsTriangulator
     {

@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="XamlExporter.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -45,7 +45,7 @@ namespace OxyPlot.Wpf
             g.Arrange(new Rect(0, 0, width, height));
             g.UpdateLayout();
 
-            var rc = new DsControlsRenderContext(c) { UseStreamGeometry = false };
+            var rc = new ShapesRenderContext(c) { UseStreamGeometry = false };
             model.Update(true);
             model.Render(rc, width, height);
 

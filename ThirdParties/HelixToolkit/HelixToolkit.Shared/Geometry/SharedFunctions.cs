@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using System;
 using System.Runtime.CompilerServices;
 #if SHARPDX
@@ -15,7 +15,6 @@ namespace HelixToolkit.Wpf.SharpDX
 namespace HelixToolkit.Wpf
 #endif
 {
-    using System.Runtime.CompilerServices;
 #if SHARPDX
     using global::SharpDX;
     using Vector3D = global::SharpDX.Vector3;
@@ -29,7 +28,7 @@ namespace HelixToolkit.Wpf
     using DoubleOrSingle = System.Double;
 #endif
     /// <summary>
-    /// Functions for the Shared DsSolutions to simplify the Code
+    /// Functions for the Shared Projects to simplify the Code
     /// </summary>
     internal static class SharedFunctions
     {

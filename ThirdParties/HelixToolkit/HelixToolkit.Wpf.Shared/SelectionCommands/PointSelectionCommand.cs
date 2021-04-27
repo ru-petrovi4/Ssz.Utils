@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PointSelectionCommand.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -74,7 +74,7 @@ namespace HelixToolkit.Wpf
         }
 
         /// <summary>
-        /// The customized complete designTask when the manipulation is completed.
+        /// The customized complete operation when the manipulation is completed.
         /// </summary>
         /// <param name="e">
         /// The <see cref="ManipulationEventArgs"/> instance containing the event data.

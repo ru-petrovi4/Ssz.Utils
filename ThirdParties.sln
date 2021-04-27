@@ -24,6 +24,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelixToolkit.Wpf", "ThirdPa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Research.DynamicDataDisplay", "ThirdParties\Microsoft.Research.DynamicDataDisplay\Microsoft.Research.DynamicDataDisplay.csproj", "{AD003A2F-14E7-44EF-BAD9-DE9E42B00356}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OxyPlot", "OxyPlot", "{C2E85F99-47A1-45D0-BD18-400D0B9D013E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OxyPlot", "ThirdParties\OxyPlot\OxyPlot\OxyPlot.csproj", "{EF118234-8BD3-4B31-831E-23D504E9C792}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OxyPlot.Wpf", "ThirdParties\OxyPlot\OxyPlot.Wpf\OxyPlot.Wpf.csproj", "{FA534E20-0831-4B8A-8D34-0C3442A1901C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickGraph", "ThirdParties\QuickGraph\QuickGraph.csproj", "{E6E35456-07FB-48A3-8C46-81A18B65BBAF}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		ThirdParties\HelixToolkit\HelixToolkit.Shared\HelixToolkit.Shared.projitems*{167a7c1b-3aee-47d1-bf53-34d48ca97138}*SharedItemsImports = 5
@@ -56,6 +64,18 @@ Global
 		{AD003A2F-14E7-44EF-BAD9-DE9E42B00356}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD003A2F-14E7-44EF-BAD9-DE9E42B00356}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD003A2F-14E7-44EF-BAD9-DE9E42B00356}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF118234-8BD3-4B31-831E-23D504E9C792}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF118234-8BD3-4B31-831E-23D504E9C792}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF118234-8BD3-4B31-831E-23D504E9C792}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF118234-8BD3-4B31-831E-23D504E9C792}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA534E20-0831-4B8A-8D34-0C3442A1901C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA534E20-0831-4B8A-8D34-0C3442A1901C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA534E20-0831-4B8A-8D34-0C3442A1901C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA534E20-0831-4B8A-8D34-0C3442A1901C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6E35456-07FB-48A3-8C46-81A18B65BBAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6E35456-07FB-48A3-8C46-81A18B65BBAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6E35456-07FB-48A3-8C46-81A18B65BBAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6E35456-07FB-48A3-8C46-81A18B65BBAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -64,6 +84,8 @@ Global
 		{4EE18E80-7609-4FFF-BD4B-F02728EC0688} = {A1A00CE1-2B1A-4D82-9CCD-5DFECA6804EA}
 		{342788CD-C98C-4856-99F3-E38BCEACB2B7} = {A1A00CE1-2B1A-4D82-9CCD-5DFECA6804EA}
 		{167A7C1B-3AEE-47D1-BF53-34D48CA97138} = {A1A00CE1-2B1A-4D82-9CCD-5DFECA6804EA}
+		{EF118234-8BD3-4B31-831E-23D504E9C792} = {C2E85F99-47A1-45D0-BD18-400D0B9D013E}
+		{FA534E20-0831-4B8A-8D34-0C3442A1901C} = {C2E85F99-47A1-45D0-BD18-400D0B9D013E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F9111D02-6686-4C78-A576-F826925964E2}

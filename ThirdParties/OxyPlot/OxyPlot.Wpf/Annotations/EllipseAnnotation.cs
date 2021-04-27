@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="EllipseAnnotation.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -14,7 +14,7 @@ namespace OxyPlot.Wpf
     /// <summary>
     /// This is a WPF wrapper of OxyPlot.EllipseAnnotation
     /// </summary>
-    public class EllipseAnnotation : DsControlAnnotation
+    public class EllipseAnnotation : ShapeAnnotation
     {
         /// <summary>
         /// Identifies the <see cref="X"/> dependency property.

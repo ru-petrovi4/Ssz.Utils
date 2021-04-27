@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="SvgWriter.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -166,7 +166,7 @@ namespace OxyPlot
         /// <param name="style">The style.</param>
         public void WriteEllipse(double x, double y, double width, double height, string style)
         {
-            // http://www.w3.org/TR/SVG/dsControls.html#EllipseElement
+            // http://www.w3.org/TR/SVG/shapes.html#EllipseElement
             this.WriteStartElement("ellipse");
             this.WriteAttributeString("cx", x + (width / 2));
             this.WriteAttributeString("cy", y + (height / 2));
@@ -254,7 +254,7 @@ namespace OxyPlot
         /// <param name="image">The image.</param>
         public void WriteImage(double x, double y, double width, double height, OxyImage image)
         {
-            // http://www.w3.org/TR/SVG/dsControls.html#ImageElement
+            // http://www.w3.org/TR/SVG/shapes.html#ImageElement
             this.WriteStartElement("image");
             this.WriteAttributeString("x", x);
             this.WriteAttributeString("y", y);
@@ -280,7 +280,7 @@ namespace OxyPlot
         /// <param name="style">The style.</param>
         public void WriteLine(ScreenPoint p1, ScreenPoint p2, string style)
         {
-            // http://www.w3.org/TR/SVG/dsControls.html#LineElement
+            // http://www.w3.org/TR/SVG/shapes.html#LineElement
             // http://www.w3schools.com/svg/svg_line.asp
             this.WriteStartElement("line");
             this.WriteAttributeString("x1", p1.X);
@@ -299,7 +299,7 @@ namespace OxyPlot
         /// <param name="style">The style.</param>
         public void WritePolygon(IEnumerable<ScreenPoint> points, string style)
         {
-            // http://www.w3.org/TR/SVG/dsControls.html#PolygonElement
+            // http://www.w3.org/TR/SVG/shapes.html#PolygonElement
             this.WriteStartElement("polygon");
             this.WriteAttributeString("points", this.PointsToString(points));
             this.WriteAttributeString("style", style);
@@ -314,7 +314,7 @@ namespace OxyPlot
         /// <param name="style">The style.</param>
         public void WritePolyline(IEnumerable<ScreenPoint> pts, string style)
         {
-            // http://www.w3.org/TR/SVG/dsControls.html#PolylineElement
+            // http://www.w3.org/TR/SVG/shapes.html#PolylineElement
             this.WriteStartElement("polyline");
             this.WriteAttributeString("points", this.PointsToString(pts));
             this.WriteAttributeString("style", style);
@@ -332,7 +332,7 @@ namespace OxyPlot
         /// <param name="style">The style.</param>
         public void WriteRectangle(double x, double y, double width, double height, string style)
         {
-            // http://www.w3.org/TR/SVG/dsControls.html#RectangleElement
+            // http://www.w3.org/TR/SVG/shapes.html#RectangleElement
             this.WriteStartElement("rect");
             this.WriteAttributeString("x", x);
             this.WriteAttributeString("y", y);

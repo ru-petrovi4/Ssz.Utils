@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PortableDocument.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -51,9 +51,9 @@ namespace OxyPlot
         private readonly PortableDocumentObject catalog;
 
         /// <summary>
-        /// The graphics object.
+        /// The pages object.
         /// </summary>
-        private readonly PortableDocumentObject graphics;
+        private readonly PortableDocumentObject pages;
 
         /// <summary>
         /// The metadata object.
@@ -81,14 +81,14 @@ namespace OxyPlot
         private readonly Dictionary<string, object> extgstate;
 
         /// <summary>
-        /// The graphic reference objects.
+        /// The page reference objects.
         /// </summary>
-        private readonly IList<PortableDocumentObject> graphicReferences = new List<PortableDocumentObject>();
+        private readonly IList<PortableDocumentObject> pageReferences = new List<PortableDocumentObject>();
 
         /// <summary>
-        /// The current graphic contents
+        /// The current page contents
         /// </summary>
-        private PortableDocumentObject currentGraphicContents;
+        private PortableDocumentObject currentPageContents;
 
         /// <summary>
         /// The current font
@@ -109,8 +109,8 @@ namespace OxyPlot
             this.metadata["/CreationDate"] = DateTime.Now;
 
             this.catalog = this.AddObject(PdfWriter.ObjectType.Catalog);
-            this.dsgraphics = this.AddObject(PdfWriter.ObjectType.Graphics);
-            this.catalog["/Graphics"] = this.dsgraphics;
+            this.pages = this.AddObject(PdfWriter.ObjectType.Pages);
+            this.catalog["/Pages"] = this.pages;
 
             this.fonts = new Dictionary<string, object>();
             this.xobjects = new Dictionary<string, object>();
@@ -129,16 +129,16 @@ namespace OxyPlot
         }
 
         /// <summary>
-        /// Gets the width of the current graphic.
+        /// Gets the width of the current page.
         /// </summary>
         /// <value>The width measured in points (1/72 inch).</value>
-        public double GraphicWidth { get; private set; }
+        public double PageWidth { get; private set; }
 
         /// <summary>
-        /// Gets the height of the current graphic.
+        /// Gets the height of the current page.
         /// </summary>
         /// <value>The height measured in points (1/72 inch).</value>
-        public double GraphicHeight { get; private set; }
+        public double PageHeight { get; private set; }
 
         /// <summary>
         /// Sets the title property.
@@ -283,7 +283,7 @@ namespace OxyPlot
         /// <param name="y1">The y1.</param>
         /// <remarks>Begin a new subpath by moving the current point to coordinates (x, y), omitting any connecting line segment.
         /// If the previous path construction operator in the current path was also m, the new m overrides it;
-        /// no vestige of the previous m designTask remains in the path.</remarks>
+        /// no vestige of the previous m operation remains in the path.</remarks>
         public void MoveTo(double x1, double y1)
         {
             this.AppendLine("{0:0.####} {1:0.####} m", x1, y1);
@@ -482,7 +482,7 @@ namespace OxyPlot
         /// <remarks>Close the current subpath by appending a straight line segment from the current point
         /// to the starting point of the subpath. If the current subpath is already closed, h does nothing.
         /// This operator terminates the current subpath. Appending another segment to the current
-        /// path begins a new subpath, even if the new segment begins at the endpoint reached by the h designTask.</remarks>
+        /// path begins a new subpath, even if the new segment begins at the endpoint reached by the h operation.</remarks>
         public void CloseSubPath()
         {
             this.AppendLine("h");
@@ -744,56 +744,56 @@ namespace OxyPlot
         }
 
         /// <summary>
-        /// Adds a graphic.
+        /// Adds a page.
         /// </summary>
-        /// <param name="graphicSize">The graphic size.</param>
-        /// <param name="graphicOrientation">The graphic orientation.</param>
-        public void AddGraphic(GraphicSize graphicSize, GraphicOrientation graphicOrientation = GraphicOrientation.Portrait)
+        /// <param name="pageSize">The page size.</param>
+        /// <param name="pageOrientation">The page orientation.</param>
+        public void AddPage(PageSize pageSize, PageOrientation pageOrientation = PageOrientation.Portrait)
         {
             double shortLength = double.NaN, longLength = double.NaN;
-            switch (graphicSize)
+            switch (pageSize)
             {
-                case GraphicSize.A4:
+                case PageSize.A4:
                     shortLength = 595;
                     longLength = 842;
                     break;
-                case GraphicSize.A3:
+                case PageSize.A3:
                     shortLength = 842;
                     longLength = 1190;
                     break;
-                case GraphicSize.Letter:
+                case PageSize.Letter:
                     shortLength = 612;
                     longLength = 792;
                     break;
             }
 
-            if (graphicOrientation == GraphicOrientation.Portrait)
+            if (pageOrientation == PageOrientation.Portrait)
             {
-                this.AddGraphic(shortLength, longLength);
+                this.AddPage(shortLength, longLength);
             }
             else
             {
-                this.AddGraphic(longLength, shortLength);
+                this.AddPage(longLength, shortLength);
             }
         }
 
         /// <summary>
-        /// Adds a graphic specified by width and height.
+        /// Adds a page specified by width and height.
         /// </summary>
-        /// <param name="width">The graphic width in points.</param>
-        /// <param name="height">The graphic height in points.</param>
-        public void AddGraphic(double width = 595, double height = 842)
+        /// <param name="width">The page width in points.</param>
+        /// <param name="height">The page height in points.</param>
+        public void AddPage(double width = 595, double height = 842)
         {
-            this.GraphicWidth = width;
-            this.GraphicHeight = height;
-            this.currentGraphicContents = this.AddObject();
+            this.PageWidth = width;
+            this.PageHeight = height;
+            this.currentPageContents = this.AddObject();
 
-            var graphic1 = this.AddObject(PdfWriter.ObjectType.Graphic);
-            graphic1["/Parent"] = this.dsgraphics;
-            graphic1["/MediaBox"] = new[] { 0d, 0d, width, height };
-            graphic1["/Contents"] = this.currentGraphicContents;
-            graphic1["/Resources"] = this.resources;
-            this.dsgraphicReferences.Add(graphic1);
+            var page1 = this.AddObject(PdfWriter.ObjectType.Page);
+            page1["/Parent"] = this.pages;
+            page1["/MediaBox"] = new[] { 0d, 0d, width, height };
+            page1["/Contents"] = this.currentPageContents;
+            page1["/Resources"] = this.resources;
+            this.pageReferences.Add(page1);
         }
 
         /// <summary>
@@ -804,9 +804,9 @@ namespace OxyPlot
         {
             using (var w = new PdfWriter(s))
             {
-                // update the Graphics dictionary
-                this.dsgraphics["/Count"] = this.dsgraphicReferences.Count;
-                this.dsgraphics["/Kids"] = this.dsgraphicReferences;
+                // update the Pages dictionary
+                this.pages["/Count"] = this.pageReferences.Count;
+                this.pages["/Kids"] = this.pageReferences;
 
                 // HEADER
                 w.WriteLine("%PDF-1.3");
@@ -1131,35 +1131,35 @@ namespace OxyPlot
         }
 
         /// <summary>
-        /// Appends a line to the current graphic contents.
+        /// Appends a line to the current page contents.
         /// </summary>
         /// <param name="format">The format string.</param>
         /// <param name="args">The arguments.</param>
-        /// <exception cref="System.InvalidDesignTaskException">Cannot add content before a graphic has been added.</exception>
+        /// <exception cref="System.InvalidOperationException">Cannot add content before a page has been added.</exception>
         private void AppendLine(string format, params object[] args)
         {
-            if (this.currentGraphicContents == null)
+            if (this.currentPageContents == null)
             {
-                throw new InvalidDesignTaskException("Cannot add content before a graphic has been added.");
+                throw new InvalidOperationException("Cannot add content before a page has been added.");
             }
 
-            this.currentGraphicContents.AppendLine(format, args);
+            this.currentPageContents.AppendLine(format, args);
         }
 
         /// <summary>
-        /// Appends text to the current graphic contents.
+        /// Appends text to the current page contents.
         /// </summary>
         /// <param name="format">The format string.</param>
         /// <param name="args">The arguments.</param>
-        /// <exception cref="System.InvalidDesignTaskException">Cannot add content before a graphic has been added.</exception>
+        /// <exception cref="System.InvalidOperationException">Cannot add content before a page has been added.</exception>
         private void Append(string format, params object[] args)
         {
-            if (this.currentGraphicContents == null)
+            if (this.currentPageContents == null)
             {
-                throw new InvalidDesignTaskException("Cannot add content before a graphic has been added.");
+                throw new InvalidOperationException("Cannot add content before a page has been added.");
             }
 
-            this.currentGraphicContents.Append(format, args);
+            this.currentPageContents.Append(format, args);
         }
 
         /// <summary>

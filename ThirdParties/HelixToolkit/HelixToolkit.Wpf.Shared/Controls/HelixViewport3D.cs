@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="HelixViewport3D.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -467,11 +467,11 @@ namespace HelixToolkit.Wpf
                 new UIPropertyMetadata(new KeyGesture(Key.O, ModifierKeys.Control | ModifierKeys.Shift)));
 
         /// <summary>
-        /// Identifies the <see cref="GraphicUpDownZoomSensitivity"/> dependency property.
+        /// Identifies the <see cref="PageUpDownZoomSensitivity"/> dependency property.
         /// </summary>
-        public static readonly DependencyProperty GraphicUpDownZoomSensitivityProperty =
+        public static readonly DependencyProperty PageUpDownZoomSensitivityProperty =
             DependencyProperty.Register(
-                "GraphicUpDownZoomSensitivity", typeof(double), typeof(HelixViewport3D), new UIPropertyMetadata(1.0));
+                "PageUpDownZoomSensitivity", typeof(double), typeof(HelixViewport3D), new UIPropertyMetadata(1.0));
 
         /// <summary>
         /// Identifies the <see cref="PanCursor"/> dependency property.
@@ -2136,7 +2136,7 @@ namespace HelixToolkit.Wpf
         }
 
         /// <summary>
-        /// Gets or sets the sensitivity for zoom by the graphic up and graphic down keys.
+        /// Gets or sets the sensitivity for zoom by the page up and page down keys.
         /// </summary>
         /// <value>
         /// The zoom sensitivity.
@@ -2144,16 +2144,16 @@ namespace HelixToolkit.Wpf
         /// <remarks>
         /// Use -1 to invert the zoom direction.
         /// </remarks>
-        public double GraphicUpDownZoomSensitivity
+        public double PageUpDownZoomSensitivity
         {
             get
             {
-                return (double)this.GetValue(GraphicUpDownZoomSensitivityProperty);
+                return (double)this.GetValue(PageUpDownZoomSensitivityProperty);
             }
 
             set
             {
-                this.SetValue(GraphicUpDownZoomSensitivityProperty, value);
+                this.SetValue(PageUpDownZoomSensitivityProperty, value);
             }
         }
 
@@ -3582,9 +3582,9 @@ namespace HelixToolkit.Wpf
         /// </summary>
         /// <param name="e">Information about the change.</param>
         /// <exception cref="System.NotImplementedException">
-        /// Move designTask not implemented.
+        /// Move operation not implemented.
         /// or
-        /// Replace designTask not implemented.
+        /// Replace operation not implemented.
         /// </exception>
         protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e)
         {
@@ -3595,13 +3595,13 @@ namespace HelixToolkit.Wpf
                     break;
 
                 case NotifyCollectionChangedAction.Move:
-                    throw new NotImplementedException("Move designTask not implemented.");
+                    throw new NotImplementedException("Move operation not implemented.");
                 case NotifyCollectionChangedAction.Remove:
                     this.RemoveItems(e.OldItems);
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
-                    throw new NotImplementedException("Replace designTask not implemented.");
+                    throw new NotImplementedException("Replace operation not implemented.");
                 case NotifyCollectionChangedAction.Reset:
                     this.Children.Clear();
                     break;
@@ -3657,7 +3657,7 @@ namespace HelixToolkit.Wpf
         private void UpdateCursorPosition(Point pt)
         {
             this.CursorOnElementPosition = this.FindNearestPoint(pt);
-            this.CursorPosition = this.Viewport.UnDsSolution(pt);
+            this.CursorPosition = this.Viewport.UnProject(pt);
 
             // Calculate the cursor ray
             Point3D cursorNearPlanePoint;

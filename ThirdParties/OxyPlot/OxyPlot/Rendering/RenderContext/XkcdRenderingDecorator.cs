@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="XkcdRenderingDecorator.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -79,7 +79,7 @@ namespace OxyPlot
         /// <param name="thickness">The stroke thickness.</param>
         /// <param name="dashArray">The dash array.</param>
         /// <param name="lineJoin">The line join type.</param>
-        /// <param name="aliased">if set to <c>true</c> the dsControl will be aliased.</param>
+        /// <param name="aliased">if set to <c>true</c> the shape will be aliased.</param>
         public override void DrawLine(
             IList<ScreenPoint> points,
             OxyColor stroke,
@@ -101,7 +101,7 @@ namespace OxyPlot
         /// <param name="thickness">The stroke thickness.</param>
         /// <param name="dashArray">The dash array.</param>
         /// <param name="lineJoin">The line join type.</param>
-        /// <param name="aliased">If set to <c>true</c> the dsControl will be aliased.</param>
+        /// <param name="aliased">If set to <c>true</c> the shape will be aliased.</param>
         public override void DrawPolygon(
             IList<ScreenPoint> points,
             OxyColor fill,
@@ -384,7 +384,7 @@ namespace OxyPlot
         private double[] FirWin(int nunmtaps, double cutoff)
         {
             // http://docs.scipy.org/doc/scipy-0.13.0/reference/generated/scipy.signal.firwin.html
-            // http://www.labbookgraphics.co.uk/audio/firWindowing.html
+            // http://www.labbookpages.co.uk/audio/firWindowing.html
             return null;
         }
 

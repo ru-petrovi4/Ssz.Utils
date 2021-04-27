@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="KerkytheaExporter.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -421,7 +421,7 @@ namespace HelixToolkit.Wpf
             writer.WriteParameter("Lens Samples", this.LensSamples);
             writer.WriteParameter("Blades", 6);
             writer.WriteParameter("Diaphragm", "Circular");
-            writer.WriteParameter("DsSolutionion", "Planar");
+            writer.WriteParameter("Projection", "Planar");
 
             writer.WriteEndObject();
         }
@@ -513,7 +513,7 @@ namespace HelixToolkit.Wpf
 
             writer.WriteStartObject("./Lights/" + name, "Default Light", name, "Light");
             {
-                string stype = "DsSolutionor Light";
+                string stype = "Projector Light";
                 if (s != null)
                 {
                     stype = "Spot Light";
@@ -547,7 +547,7 @@ namespace HelixToolkit.Wpf
                     writer.WriteParameter("Hot Spot", s.InnerConeAngle);
                 }
 
-                // DirectionalLight (DsSolutionor Light)
+                // DirectionalLight (Projector Light)
                 if (d != null)
                 {
                     writer.WriteParameter("Width", 2.0);
@@ -688,7 +688,7 @@ namespace HelixToolkit.Wpf
             writer.WriteParameter("./Location/Date", "0/0/2007");
             writer.WriteParameter("./Location/Time", "12:0:0");
             writer.WriteParameter("./Background Image/Filename", "[No Bitmap]");
-            writer.WriteParameter("./Background Image/DsSolutionion", "UV");
+            writer.WriteParameter("./Background Image/Projection", "UV");
             writer.WriteParameter("./Background Image/Offset X", 0.0);
             writer.WriteParameter("./Background Image/Offset Y", 0.0);
             writer.WriteParameter("./Background Image/Scale X", 1.0);
@@ -1132,7 +1132,7 @@ namespace HelixToolkit.Wpf
             {
                 writer.WriteStartObject("./" + name + "/Bitmap Texture", "Bitmap Texture", string.Empty, "Texture");
                 writer.WriteParameter("Filename", filename);
-                writer.WriteParameter("DsSolutionion", "UV");
+                writer.WriteParameter("Projection", "UV");
                 writer.WriteParameter("Offset X", 0.0);
                 writer.WriteParameter("Offset Y", 0.0);
                 writer.WriteParameter("Scale X", 1.0);

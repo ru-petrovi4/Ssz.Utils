@@ -1,4 +1,4 @@
-
+﻿
 namespace Microsoft.Research.DynamicDataDisplay.Navigation
 {
 	internal static class WindowsMessages  {

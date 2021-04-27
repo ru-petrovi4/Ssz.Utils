@@ -145,16 +145,16 @@ namespace HelixToolkit.Wpf
                 this.light.Color = this.Color;
             }
 
-            var ProjectionCamera = this.camera as ProjectionCamera;
-            if (ProjectionCamera != null)
+            var projectionCamera = this.camera as ProjectionCamera;
+            if (projectionCamera != null)
             {
-                var y = ProjectionCamera.LookDirection;
-                var x = Vector3D.CrossProduct(ProjectionCamera.LookDirection, ProjectionCamera.UpDirection);
+                var y = projectionCamera.LookDirection;
+                var x = Vector3D.CrossProduct(projectionCamera.LookDirection, projectionCamera.UpDirection);
                 x.Normalize();
                 y.Normalize();
                 var z = Vector3D.CrossProduct(x, y);
-                var lightPosition = ProjectionCamera.Position + (this.Position.X * x) + (this.Position.Y * y) + (this.Position.Z * z);
-                var target = ProjectionCamera.Position + ProjectionCamera.LookDirection;
+                var lightPosition = projectionCamera.Position + (this.Position.X * x) + (this.Position.Y * y) + (this.Position.Z * z);
+                var target = projectionCamera.Position + projectionCamera.LookDirection;
                 var lightDirection = target - lightPosition;
                 lightDirection.Normalize();
 

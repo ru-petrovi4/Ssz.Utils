@@ -1,4 +1,4 @@
-namespace HelixToolkit.Wpf
+﻿namespace HelixToolkit.Wpf
 {
     using System.Windows;
     using System.Windows.Media.Media3D;

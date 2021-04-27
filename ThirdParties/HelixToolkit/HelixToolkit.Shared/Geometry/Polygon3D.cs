@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -81,7 +81,7 @@ namespace HelixToolkit.Wpf
 
         //// http://en.wikipedia.org/wiki/Polygon_triangulation
         //// http://en.wikipedia.org/wiki/Monotone_polygon
-        //// http://www.codedsSolution.com/KB/recipes/hgrd.aspx LGPL
+        //// http://www.codeproject.com/KB/recipes/hgrd.aspx LGPL
         //// http://www.springerlink.com/content/g805787811vr1v9v/
 
         /// <summary>

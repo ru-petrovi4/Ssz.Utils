@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ElementCollection{T}.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -103,12 +103,12 @@ namespace OxyPlot
         /// Adds an item to the collection.
         /// </summary>
         /// <param name="item">The object to add to the collection.</param>
-        /// <exception cref="System.InvalidDesignTaskException">The element cannot be added, it already belongs to a PlotModel.</exception>
+        /// <exception cref="System.InvalidOperationException">The element cannot be added, it already belongs to a PlotModel.</exception>
         public void Add(T item)
         {
             if (item.Parent != null)
             {
-                throw new InvalidDesignTaskException("The element cannot be added, it already belongs to a PlotModel.");
+                throw new InvalidOperationException("The element cannot be added, it already belongs to a PlotModel.");
             }
 
             item.Parent = this.parent;
@@ -174,12 +174,12 @@ namespace OxyPlot
         /// </summary>
         /// <param name="index">The zero-based index at which <paramref name="item" /> should be inserted.</param>
         /// <param name="item">The object to insert into the collection.</param>
-        /// <exception cref="System.InvalidDesignTaskException">The element cannot be inserted, it already belongs to a PlotModel.</exception>
+        /// <exception cref="System.InvalidOperationException">The element cannot be inserted, it already belongs to a PlotModel.</exception>
         public void Insert(int index, T item)
         {
             if (item.Parent != null)
             {
-                throw new InvalidDesignTaskException("The element cannot be inserted, it already belongs to a PlotModel.");
+                throw new InvalidOperationException("The element cannot be inserted, it already belongs to a PlotModel.");
             }
 
             item.Parent = this.parent;

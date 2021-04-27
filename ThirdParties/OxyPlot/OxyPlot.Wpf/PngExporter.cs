@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PngExporter.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -131,7 +131,7 @@ namespace OxyPlot.Wpf
             canvas.Measure(new Size(canvas.Width, canvas.Height));
             canvas.Arrange(new Rect(0, 0, canvas.Width, canvas.Height));
 
-            var rc = new DsControlsRenderContext(canvas) { RendersToScreen = false };
+            var rc = new ShapesRenderContext(canvas) { RendersToScreen = false };
 #if !NET35
             rc.TextFormattingMode = TextFormattingMode.Ideal;
 #endif

@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="XYAxisSeries.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -683,12 +683,12 @@ namespace OxyPlot.Series
         {
             if (this.XAxis == null)
             {
-                throw new InvalidDesignTaskException("XAxis not defined.");
+                throw new InvalidOperationException("XAxis not defined.");
             }
 
             if (this.YAxis == null)
             {
-                throw new InvalidDesignTaskException("YAxis not defined.");
+                throw new InvalidOperationException("YAxis not defined.");
             }
         }
     }

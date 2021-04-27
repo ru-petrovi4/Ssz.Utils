@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="RectangleAnnotation.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -12,7 +12,7 @@ namespace OxyPlot.Annotations
     /// <summary>
     /// Represents an annotation that shows a rectangle.
     /// </summary>
-    public class RectangleAnnotation : DsControlAnnotation
+    public class RectangleAnnotation : ShapeAnnotation
     {
         /// <summary>
         /// The rectangle transformed to screen coordinates.

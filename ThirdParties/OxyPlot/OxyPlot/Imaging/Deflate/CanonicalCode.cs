@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="CanonicalCode.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -17,7 +17,7 @@ namespace OxyPlot
     /// A canonical Huffman code. Immutable. Code length 0 means no code.
     /// </summary>
     /// <remarks><p>
-    /// The code is a c# port of the DEFLATE dsSolution by Nayuki Minase at <a href="https://github.com/nayuki/DEFLATE">github</a>.
+    /// The code is a c# port of the DEFLATE project by Nayuki Minase at <a href="https://github.com/nayuki/DEFLATE">github</a>.
     /// Original source code: <a href="https://github.com/nayuki/DEFLATE/blob/master/src/nayuki/deflate/CircularDictionary.java">CircularDictionary.java</a>.
     /// </p>
     /// <p>

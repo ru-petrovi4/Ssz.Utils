@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ReflectionPath.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -42,7 +42,7 @@ namespace OxyPlot
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <returns>The value.</returns>
-        /// <exception cref="System.InvalidDesignTaskException">Could not find property.</exception>
+        /// <exception cref="System.InvalidOperationException">Could not find property.</exception>
         public object GetValue(object instance)
         {
             var current = instance;
@@ -62,7 +62,7 @@ namespace OxyPlot
 
                 if (pi == null)
                 {
-                    throw new InvalidDesignTaskException("Could not find property " + this.items[i] + " in " + current);
+                    throw new InvalidOperationException("Could not find property " + this.items[i] + " in " + current);
                 }
 
                 current = pi.GetValue(current, null);

@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Manipulator.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -247,7 +247,7 @@ namespace HelixToolkit.Wpf
         }
 
         /// <summary>
-        /// DsSolutions the point on the hit plane.
+        /// Projects the point on the hit plane.
         /// </summary>
         /// <param name="p">
         /// The p.
@@ -263,7 +263,7 @@ namespace HelixToolkit.Wpf
         /// </returns>
         protected virtual Point3D? GetHitPlanePoint(Point p, Point3D hitPlaneOrigin, Vector3D hitPlaneNormal)
         {
-            return Viewport3DHelper.UnDsSolution(this.ParentViewport, p, hitPlaneOrigin, hitPlaneNormal);
+            return Viewport3DHelper.UnProject(this.ParentViewport, p, hitPlaneOrigin, hitPlaneNormal);
         }
 
         /// <summary>
@@ -280,10 +280,10 @@ namespace HelixToolkit.Wpf
             base.OnMouseDown(e);
             this.ParentViewport = Visual3DHelper.GetViewport3D(this);
             this.Camera = this.ParentViewport.Camera as ProjectionCamera;
-            var ProjectionCamera = this.Camera;
-            if (ProjectionCamera != null)
+            var projectionCamera = this.Camera;
+            if (projectionCamera != null)
             {
-                this.HitPlaneNormal = ProjectionCamera.LookDirection;
+                this.HitPlaneNormal = projectionCamera.LookDirection;
             }
 
             this.CaptureMouse();

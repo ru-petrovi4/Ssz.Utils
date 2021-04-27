@@ -69,7 +69,7 @@
                                 MaximumFieldOfView="{TemplateBinding MaximumFieldOfView}"
                                 MinimumFieldOfView="{TemplateBinding MinimumFieldOfView}"
                                 ModelUpDirection="{TemplateBinding ModelUpDirection}"
-                                GraphicUpDownZoomSensitivity="{TemplateBinding GraphicUpDownZoomSensitivity}"
+                                PageUpDownZoomSensitivity="{TemplateBinding PageUpDownZoomSensitivity}"
                                 PanCursor="{TemplateBinding PanCursor}"
                                 RotateAroundMouseDownPoint="{TemplateBinding RotateAroundMouseDownPoint}"
                                 RotateCursor="{TemplateBinding RotateCursor}"

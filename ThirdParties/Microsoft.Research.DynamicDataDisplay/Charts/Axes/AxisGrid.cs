@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 using Microsoft.Research.DynamicDataDisplay.Charts;
 using System.Windows.Controls;

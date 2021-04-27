@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="OxyColor.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -106,7 +106,7 @@ namespace OxyPlot
         /// </summary>
         /// <param name="color">The unsigned integer color value.</param>
         /// <returns>The <see cref="OxyColor" />.</returns>
-        [CLSCompliant(false)]
+        
         public static OxyColor FromUInt32(uint color)
         {
             var a = (byte)(color >> 24);
@@ -125,7 +125,7 @@ namespace OxyPlot
         {
             if (hsv.Length != 3)
             {
-                throw new InvalidDesignTaskException("Wrong length of hsv array.");
+                throw new InvalidOperationException("Wrong length of hsv array.");
             }
 
             return FromHsv(hsv[0], hsv[1], hsv[2]);
@@ -289,7 +289,7 @@ namespace OxyPlot
         {
             if (obj == null)
             {
-                throw new InvalidDesignTaskException("Should not compare against null!");
+                throw new InvalidOperationException("Should not compare against null!");
             }
 
             if (obj.GetType() != typeof(OxyColor))

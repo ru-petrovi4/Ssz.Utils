@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PolygonAnnotation.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -15,7 +15,7 @@ namespace OxyPlot.Wpf
     /// <summary>
     /// This is a WPF wrapper of OxyPlot.PolygonAnnotation
     /// </summary>
-    public class PolygonAnnotation : DsControlAnnotation
+    public class PolygonAnnotation : ShapeAnnotation
     {
         /// <summary>
         /// Identifies the <see cref="LineJoin"/> dependency property.

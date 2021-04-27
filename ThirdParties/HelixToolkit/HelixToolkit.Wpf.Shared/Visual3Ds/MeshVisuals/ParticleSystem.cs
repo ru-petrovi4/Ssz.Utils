@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ParticleSystem.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -589,7 +589,7 @@ namespace HelixToolkit.Wpf
             x.Normalize();
             y.Normalize();
 
-            // find alive particles and sort by distance from camera (dsSolutioned to look direction, nearest particles last)
+            // find alive particles and sort by distance from camera (projected to look direction, nearest particles last)
             var sortedParticles = this.particles.OrderBy(p => -Vector3D.DotProduct(p.Position - cameraPosition, this.camera.LookDirection));
 
             int j = 0;

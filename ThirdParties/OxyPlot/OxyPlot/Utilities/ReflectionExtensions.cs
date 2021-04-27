@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ReflectionExtensions.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -25,7 +25,7 @@ namespace OxyPlot
 #if UNIVERSAL
         public static PropertyInfo GetProperty(this Type type, string name)
         {
-            return type.GetPlayProperty(name);
+            return type.GetRuntimeProperty(name);
         }
         public static MethodInfo GetSetMethod(this PropertyInfo pi)
         {
@@ -33,11 +33,11 @@ namespace OxyPlot
         }
         public static IEnumerable<PropertyInfo> GetProperties(this Type type)
         {
-            return type.GetPlayProperties();
+            return type.GetRuntimeProperties();
         }
         public static IEnumerable<FieldInfo> GetFields(this Type type)
         {
-            return type.GetPlayFields();
+            return type.GetRuntimeFields();
         }
 #endif
         /// <summary>
@@ -47,7 +47,7 @@ namespace OxyPlot
         /// <param name="target">The target list to be filled.</param>
         /// <param name="source">The source target.</param>
         /// <param name="propertyName">The property name.</param>
-        /// <exception cref="System.InvalidDesignTaskException">Could not find property.</exception>
+        /// <exception cref="System.InvalidOperationException">Could not find property.</exception>
         public static void AddRange<T>(this List<T> target, IEnumerable source, string propertyName)
         {
             var pi = new ReflectionPath(propertyName);

@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="TrackerControl.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -13,7 +13,7 @@ namespace OxyPlot.Wpf
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Media;
-    using System.Windows.DsControls;
+    using System.Windows.Shapes;
 
     /// <summary>
     /// The tracker control.
@@ -370,7 +370,7 @@ namespace OxyPlot.Wpf
 
             if (this.contentContainer == null)
             {
-                throw new InvalidDesignTaskException(
+                throw new InvalidOperationException(
                     string.Format(
                         "The TrackerControl template must contain a content container with name +'{0}'",
                         PartContentcontainer));
@@ -378,13 +378,13 @@ namespace OxyPlot.Wpf
 
             if (this.path == null)
             {
-                throw new InvalidDesignTaskException(
+                throw new InvalidOperationException(
                     string.Format("The TrackerControl template must contain a Path with name +'{0}'", PartPath));
             }
 
             if (this.content == null)
             {
-                throw new InvalidDesignTaskException(
+                throw new InvalidOperationException(
                     string.Format(
                         "The TrackerControl template must contain a ContentPresenter with name +'{0}'", PartContent));
             }
@@ -435,7 +435,7 @@ namespace OxyPlot.Wpf
                 return;
             }
 
-            // throw new InvalidDesignTaskException("The TrackerControl must have a Canvas parent.");
+            // throw new InvalidOperationException("The TrackerControl must have a Canvas parent.");
             double canvasWidth = parent.ActualWidth;
             double canvasHeight = parent.ActualHeight;
 

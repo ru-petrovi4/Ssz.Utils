@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PdfWriter.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -46,14 +46,14 @@ namespace OxyPlot
             Catalog,
 
             /// <summary>
-            /// The Graphics type.
+            /// The Pages type.
             /// </summary>
-            Graphics,
+            Pages,
 
             /// <summary>
-            /// The Graphic type.
+            /// The Page type.
             /// </summary>
-            Graphic,
+            Page,
 
             /// <summary>
             /// The Font type.

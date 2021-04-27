@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="OxyKey.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -80,14 +80,14 @@ namespace OxyPlot
         Right,
 
         /// <summary>
-        /// The Graphic up key.
+        /// The Page up key.
         /// </summary>
-        GraphicUp,
+        PageUp,
 
         /// <summary>
-        /// The Graphic down key.
+        /// The Page down key.
         /// </summary>
-        GraphicDown,
+        PageDown,
 
         /// <summary>
         /// The A key.

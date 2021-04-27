@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PlotModel.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -1215,7 +1215,7 @@ namespace OxyPlot
         /// <param name="key">The axis key.</param>
         /// <param name="defaultAxis">The default axis.</param>
         /// <returns>The axis, or the defaultAxis if the key is not specified.</returns>
-        /// <exception cref="System.InvalidDesignTaskException">Cannot find axis with the specified key.</exception>
+        /// <exception cref="System.InvalidOperationException">Cannot find axis with the specified key.</exception>
         public Axis GetAxisOrDefault(string key, Axis defaultAxis)
         {
             if (key != null)
@@ -1223,7 +1223,7 @@ namespace OxyPlot
                 var axis = this.Axes.FirstOrDefault(a => a.Key == key);
                 if (axis == null)
                 {
-                    throw new InvalidDesignTaskException(string.Format("Cannot find axis with Key = \"{0}\"", key));
+                    throw new InvalidOperationException(string.Format("Cannot find axis with Key = \"{0}\"", key));
                 }
 
                 return axis;

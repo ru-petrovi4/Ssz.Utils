@@ -1,9 +1,9 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="SubchainSamplingPolygonTriangulation.cs" company="Helix Toolkit">
-//   Copyright (c) 2021 Franz Spitaler
+//   Copyright (c) 2016 Franz Spitaler
 // </copyright>
 // <summary>
-//   A polygon triangulator for simple polygons with no holes. Expected play is O(n log n)
+//   A polygon triangulator for simple polygons with no holes. Expected runtime is O(n log n)
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 #if SHARPDX
@@ -40,7 +40,7 @@ namespace HelixToolkit.Wpf
     /// <remarks>
     /// Based on http://www.cs.uu.nl/docs/vakken/ga/slides3.pdf
     /// References
-    /// https://www.cs.deltaSimb.edu/~suri/cs235/Triangulation.pdf
+    /// https://www.cs.ucsb.edu/~suri/cs235/Triangulation.pdf
     /// </remarks>
     public static class SweepLinePolygonTriangulator
     {

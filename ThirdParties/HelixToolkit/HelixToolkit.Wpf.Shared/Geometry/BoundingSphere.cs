@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="BoundingSphere.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -24,7 +24,7 @@ namespace HelixToolkit.Wpf
         //// http://www.ep.liu.se/ecp/034/009/ecp083409.pdf
         //// http://blogs.agi.com/insight3d/index.php/2008/02/04/a-bounding/
         //// http://realtimecollisiondetection.net/blog/?p=20
-        //// http://www.gamedev.net/graphic/resources/_/technical/graphics-programming-and-theory/welzl-r2484
+        //// http://www.gamedev.net/page/resources/_/technical/graphics-programming-and-theory/welzl-r2484
         //// http://softsurfer.com/Archive/algorithm_0107/algorithm_0107.htm#Bounding Ball
 
         /// <summary>

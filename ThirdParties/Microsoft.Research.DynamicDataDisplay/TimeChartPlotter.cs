@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.Research.DynamicDataDisplay;
 using System.Windows;
 using Microsoft.Research.DynamicDataDisplay.Navigation;

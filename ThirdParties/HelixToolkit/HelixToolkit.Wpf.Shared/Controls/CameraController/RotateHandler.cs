@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="RotateHandler.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -378,7 +378,7 @@ namespace HelixToolkit.Wpf
         }
 
         /// <summary>
-        /// DsSolutions a screen position to the trackball unit sphere.
+        /// Projects a screen position to the trackball unit sphere.
         /// </summary>
         /// <param name="point">
         /// The screen position.
@@ -392,7 +392,7 @@ namespace HelixToolkit.Wpf
         /// <returns>
         /// A trackball coordinate.
         /// </returns>
-        private static Vector3D DsSolutionToTrackball(Point point, double w, double h)
+        private static Vector3D ProjectToTrackball(Point point, double w, double h)
         {
             // Use the diagonal for scaling, making sure that the whole client area is inside the trackball
             double r = Math.Sqrt(w * w + h * h) / 2;
@@ -501,8 +501,8 @@ namespace HelixToolkit.Wpf
         {
             // http://viewport3d.com/trackball.htm
             // http://www.codeplex.com/3DTools/Thread/View.aspx?ThreadId=22310
-            Vector3D v1 = DsSolutionToTrackball(p1, this.ViewportWidth, this.ViewportHeight);
-            Vector3D v2 = DsSolutionToTrackball(p2, this.ViewportWidth, this.ViewportHeight);
+            Vector3D v1 = ProjectToTrackball(p1, this.ViewportWidth, this.ViewportHeight);
+            Vector3D v2 = ProjectToTrackball(p2, this.ViewportWidth, this.ViewportHeight);
 
             // transform the trackball coordinates to view space
             Vector3D viewZ = this.CameraLookDirection;

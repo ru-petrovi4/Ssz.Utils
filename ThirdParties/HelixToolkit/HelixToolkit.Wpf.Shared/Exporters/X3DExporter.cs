@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="X3DExporter.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -129,7 +129,7 @@ namespace HelixToolkit.Wpf
             }
 
             writer.WriteStartElement("Transform");
-            writer.WriteStartElement("DsControl");
+            writer.WriteStartElement("Shape");
             writer.WriteStartElement("IndexedFaceSet");
             writer.WriteAttributeString("coordIndex", triangleIndices.ToString());
             writer.WriteStartElement("Coordinate");
@@ -144,7 +144,7 @@ namespace HelixToolkit.Wpf
             writer.WriteEndElement();
             writer.WriteEndElement(); // Appearance
 
-            writer.WriteEndElement(); // DsControl
+            writer.WriteEndElement(); // Shape
             writer.WriteEndElement(); // Transform
         }
 
@@ -165,14 +165,14 @@ namespace HelixToolkit.Wpf
         <Scene>
         <Viewpoint description='Pyramid' orientation='0 1 0 .2' position='4 0 25' fieldOfView='0.7854'/>
         <Transform translation='0 -5 0'>
-        <DsControl>
+        <Shape>
         <IndexedFaceSet coordIndex='0 1 2 -1 1 3 2 -1 2 3 0 -1 3 1 0'>
         <Coordinate point='0 0 0 10 0 0 5 0 8.3 5 8.3 2.8'/>
         </IndexedFaceSet>
         <Appearance>
         <Material diffuseColor='0.8 0.8 0.2' specularColor='0 0 0.5'/>
         </Appearance>
-        </DsControl>
+        </Shape>
         </Transform>
         </Scene>
         </X3D>

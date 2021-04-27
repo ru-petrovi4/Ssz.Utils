@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System;
 using Microsoft.Research.DynamicDataDisplay.Common.Auxiliary;
 

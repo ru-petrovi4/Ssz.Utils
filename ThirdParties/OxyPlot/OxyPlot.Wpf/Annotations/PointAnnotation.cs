@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PointAnnotation.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -14,7 +14,7 @@ namespace OxyPlot.Wpf
     /// <summary>
     /// This is a WPF wrapper of <see cref="OxyPlot.Annotations.PointAnnotation" />.
     /// </summary>
-    public class PointAnnotation : DsControlAnnotation
+    public class PointAnnotation : ShapeAnnotation
     {
         /// <summary>
         /// Identifies the <see cref="X"/> dependency property.
@@ -41,10 +41,10 @@ namespace OxyPlot.Wpf
             "TextMargin", typeof(double), typeof(PointAnnotation), new PropertyMetadata(2d, AppearanceChanged));
 
         /// <summary>
-        /// Identifies the <see cref="DsControl"/> dependency property.
+        /// Identifies the <see cref="Shape"/> dependency property.
         /// </summary>
-        public static readonly DependencyProperty DsControlProperty = DependencyProperty.Register(
-            "DsControl", typeof(MarkerType), typeof(PointAnnotation), new PropertyMetadata(MarkerType.Circle, AppearanceChanged));
+        public static readonly DependencyProperty ShapeProperty = DependencyProperty.Register(
+            "Shape", typeof(MarkerType), typeof(PointAnnotation), new PropertyMetadata(MarkerType.Circle, AppearanceChanged));
         
         /// <summary>
         /// Initializes static members of the <see cref="PointAnnotation"/> class.
@@ -96,18 +96,18 @@ namespace OxyPlot.Wpf
         }
 
         /// <summary>
-        /// Gets or sets the dsControl.
+        /// Gets or sets the shape.
         /// </summary>
-        public MarkerType DsControl
+        public MarkerType Shape
         {
             get
             {
-                return (MarkerType)this.GetValue(DsControlProperty);
+                return (MarkerType)this.GetValue(ShapeProperty);
             }
 
             set
             {
-                this.SetValue(DsControlProperty, value);
+                this.SetValue(ShapeProperty, value);
             }
         }
 
@@ -165,7 +165,7 @@ namespace OxyPlot.Wpf
             a.Y = this.Y;
             a.Size = this.Size;
             a.TextMargin = this.TextMargin;
-            a.DsControl = this.DsControl;
+            a.Shape = this.Shape;
         }
     }
 }

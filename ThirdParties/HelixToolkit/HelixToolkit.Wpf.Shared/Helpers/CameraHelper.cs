@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="CameraHelper.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -252,34 +252,34 @@ namespace HelixToolkit.Wpf
         {
             var matrixCamera = camera as MatrixCamera;
             var perspectiveCamera = camera as PerspectiveCamera;
-            var ProjectionCamera = camera as ProjectionCamera;
+            var projectionCamera = camera as ProjectionCamera;
             var orthographicCamera = camera as OrthographicCamera;
             var sb = new StringBuilder();
             sb.AppendLine(camera.GetType().Name);
-            if (ProjectionCamera != null)
+            if (projectionCamera != null)
             {
                 sb.AppendLine(
                     string.Format(
                         CultureInfo.InvariantCulture,
                         "LookDirection:\t{0:0.000},{1:0.000},{2:0.000}",
-                        ProjectionCamera.LookDirection.X,
-                        ProjectionCamera.LookDirection.Y,
-                        ProjectionCamera.LookDirection.Z));
+                        projectionCamera.LookDirection.X,
+                        projectionCamera.LookDirection.Y,
+                        projectionCamera.LookDirection.Z));
                 sb.AppendLine(
                     string.Format(
                         CultureInfo.InvariantCulture,
                         "UpDirection:\t{0:0.000},{1:0.000},{2:0.000}",
-                        ProjectionCamera.UpDirection.X,
-                        ProjectionCamera.UpDirection.Y,
-                        ProjectionCamera.UpDirection.Z));
+                        projectionCamera.UpDirection.X,
+                        projectionCamera.UpDirection.Y,
+                        projectionCamera.UpDirection.Z));
                 sb.AppendLine(
                     string.Format(
                         CultureInfo.InvariantCulture,
                         "Position:\t\t{0:0.000},{1:0.000},{2:0.000}",
-                        ProjectionCamera.Position.X,
-                        ProjectionCamera.Position.Y,
-                        ProjectionCamera.Position.Z));
-                var target = ProjectionCamera.Position + ProjectionCamera.LookDirection;
+                        projectionCamera.Position.X,
+                        projectionCamera.Position.Y,
+                        projectionCamera.Position.Z));
+                var target = projectionCamera.Position + projectionCamera.LookDirection;
                 sb.AppendLine(
                     string.Format(
                         CultureInfo.InvariantCulture,
@@ -289,9 +289,9 @@ namespace HelixToolkit.Wpf
                         target.Z));
                 sb.AppendLine(
                     string.Format(
-                        CultureInfo.InvariantCulture, "NearPlaneDist:\t{0}", ProjectionCamera.NearPlaneDistance));
+                        CultureInfo.InvariantCulture, "NearPlaneDist:\t{0}", projectionCamera.NearPlaneDistance));
                 sb.AppendLine(
-                    string.Format(CultureInfo.InvariantCulture, "FarPlaneDist:\t{0}", ProjectionCamera.FarPlaneDistance));
+                    string.Format(CultureInfo.InvariantCulture, "FarPlaneDist:\t{0}", projectionCamera.FarPlaneDistance));
             }
 
             if (perspectiveCamera != null)
@@ -476,7 +476,7 @@ namespace HelixToolkit.Wpf
         }
 
         /// <summary>
-        /// Obtains the view transform matrix for a camera. (see graphic 327)
+        /// Obtains the view transform matrix for a camera. (see page 327)
         /// </summary>
         /// <param name="camera">
         /// Camera to obtain the ViewMatrix for
@@ -497,17 +497,17 @@ namespace HelixToolkit.Wpf
                 return matrixCamera.ViewMatrix;
             }
 
-            var ProjectionCamera = camera as ProjectionCamera;
-            if (ProjectionCamera != null)
+            var projectionCamera = camera as ProjectionCamera;
+            if (projectionCamera != null)
             {
-                var zaxis = -ProjectionCamera.LookDirection;
+                var zaxis = -projectionCamera.LookDirection;
                 zaxis.Normalize();
 
-                var xaxis = Vector3D.CrossProduct(ProjectionCamera.UpDirection, zaxis);
+                var xaxis = Vector3D.CrossProduct(projectionCamera.UpDirection, zaxis);
                 xaxis.Normalize();
 
                 var yaxis = Vector3D.CrossProduct(zaxis, xaxis);
-                var pos = (Vector3D)ProjectionCamera.Position;
+                var pos = (Vector3D)projectionCamera.Position;
 
                 return new Matrix3D(
                     xaxis.X,
@@ -532,11 +532,11 @@ namespace HelixToolkit.Wpf
         }
 
         /// <summary>
-        /// Gets the dsSolutionion matrix for the specified camera.
+        /// Gets the projection matrix for the specified camera.
         /// </summary>
         /// <param name="camera">The camera.</param>
         /// <param name="aspectRatio">The aspect ratio.</param>
-        /// <returns>The dsSolutionion matrix.</returns>
+        /// <returns>The projection matrix.</returns>
         public static Matrix3D GetProjectionMatrix(this Camera camera, double aspectRatio)
         {
             if (camera == null)
@@ -588,11 +588,11 @@ namespace HelixToolkit.Wpf
         }
 
         /// <summary>
-        /// Gets the combined view and dsSolutionion transform.
+        /// Gets the combined view and projection transform.
         /// </summary>
         /// <param name="camera">The camera.</param>
         /// <param name="aspectRatio">The aspect ratio.</param>
-        /// <returns>The total view and dsSolutionion transform.</returns>
+        /// <returns>The total view and projection transform.</returns>
         public static Matrix3D GetTotalTransform(this Camera camera, double aspectRatio)
         {
             var m = Matrix3D.Identity;

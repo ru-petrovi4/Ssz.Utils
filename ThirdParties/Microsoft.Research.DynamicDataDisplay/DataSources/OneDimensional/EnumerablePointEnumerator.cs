@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Windows;
 
 namespace Microsoft.Research.DynamicDataDisplay.DataSources

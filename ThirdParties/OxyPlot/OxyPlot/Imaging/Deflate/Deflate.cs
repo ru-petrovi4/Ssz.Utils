@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Deflate.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -15,7 +15,7 @@ namespace OxyPlot
     /// <summary>
     /// Implements DEFLATE decompression.
     /// </summary>
-    /// <remarks>The code is a c# port of the DEFLATE dsSolution by Nayuki Minase at <a href="https://github.com/nayuki/DEFLATE">github</a>.
+    /// <remarks>The code is a c# port of the DEFLATE project by Nayuki Minase at <a href="https://github.com/nayuki/DEFLATE">github</a>.
     /// Original source code: <a href="https://github.com/nayuki/DEFLATE/blob/master/src/nayuki/deflate/Decompressor.java"><c>Decompressor.java</c></a>.</remarks>
     public class Deflate
     {
@@ -297,7 +297,7 @@ namespace OxyPlot
         {
             if (litLenCode == null)
             {
-                throw new InvalidDesignTaskException();
+                throw new InvalidOperationException();
             }
 
             while (true)
@@ -367,7 +367,7 @@ namespace OxyPlot
                 }
                 else
                 {
-                    throw new InvalidDesignTaskException();
+                    throw new InvalidOperationException();
                 }
             }
         }

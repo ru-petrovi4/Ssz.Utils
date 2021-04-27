@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="RectangleAnnotation.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -14,7 +14,7 @@ namespace OxyPlot.Wpf
     /// <summary>
     /// This is a WPF wrapper of OxyPlot.RectangleAnnotation
     /// </summary>
-    public class RectangleAnnotation : DsControlAnnotation
+    public class RectangleAnnotation : ShapeAnnotation
     {
         /// <summary>
         /// Identifies the <see cref="MaximumX"/> dependency property.

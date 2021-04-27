@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="AngleAxis.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -90,10 +90,10 @@ namespace OxyPlot.Axes
         /// <param name="y">The y coordinate.</param>
         /// <param name="yaxis">The y-axis.</param>
         /// <returns>The data point.</returns>
-        /// <exception cref="System.InvalidDesignTaskException">Angle axis should always be the y-axis.</exception>
+        /// <exception cref="System.InvalidOperationException">Angle axis should always be the y-axis.</exception>
         public override DataPoint InverseTransform(double x, double y, Axis yaxis)
         {
-            throw new InvalidDesignTaskException("Angle axis should always be the y-axis.");
+            throw new InvalidOperationException("Angle axis should always be the y-axis.");
         }
 
         /// <summary>
@@ -132,7 +132,7 @@ namespace OxyPlot.Axes
         /// <returns>The transformed point.</returns>
         public override ScreenPoint Transform(double x, double y, Axis yaxis)
         {
-            throw new InvalidDesignTaskException("Angle axis should always be the y-axis.");
+            throw new InvalidOperationException("Angle axis should always be the y-axis.");
         }
 
         /// <summary>

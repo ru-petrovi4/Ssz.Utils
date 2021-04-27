@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="IRenderContext.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -49,7 +49,7 @@ namespace OxyPlot
         /// <param name="thickness">The stroke thickness (in device independent units, 1/96 inch).</param>
         /// <param name="dashArray">The dash array (in device independent units, 1/96 inch). Use <c>null</c> to get a solid line.</param>
         /// <param name="lineJoin">The line join type.</param>
-        /// <param name="aliased">if set to <c>true</c> the dsControl will be aliased.</param>
+        /// <param name="aliased">if set to <c>true</c> the shape will be aliased.</param>
         void DrawLine(
             IList<ScreenPoint> points,
             OxyColor stroke,
@@ -67,7 +67,7 @@ namespace OxyPlot
         /// <param name="thickness">The stroke thickness (in device independent units, 1/96 inch).</param>
         /// <param name="dashArray">The dash array (in device independent units, 1/96 inch).</param>
         /// <param name="lineJoin">The line join type.</param>
-        /// <param name="aliased">if set to <c>true</c> the dsControl will be aliased.</param>
+        /// <param name="aliased">if set to <c>true</c> the shape will be aliased.</param>
         void DrawLineSegments(
             IList<ScreenPoint> points,
             OxyColor stroke,
@@ -105,7 +105,7 @@ namespace OxyPlot
         /// <param name="thickness">The stroke thickness (in device independent units, 1/96 inch).</param>
         /// <param name="dashArray">The dash array (in device independent units, 1/96 inch).</param>
         /// <param name="lineJoin">The line join type.</param>
-        /// <param name="aliased">if set to <c>true</c> the dsControl will be aliased.</param>
+        /// <param name="aliased">if set to <c>true</c> the shape will be aliased.</param>
         void DrawPolygons(
             IList<IList<ScreenPoint>> polygons,
             OxyColor fill,

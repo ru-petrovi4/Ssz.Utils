@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ScreenGeometryBuilder.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -33,12 +33,12 @@ namespace HelixToolkit.Wpf
         protected Matrix3D visualToScreen;
 
         /// <summary>
-        /// The visual to dsSolutionion transformation matrix.
+        /// The visual to projection transformation matrix.
         /// </summary>
-        protected Matrix3D visualToDsSolutionion;
+        protected Matrix3D visualToProjection;
 
         /// <summary>
-        /// The dsSolutionion to screen transformation matrix.
+        /// The projection to screen transformation matrix.
         /// </summary>
         protected Matrix3D projectionToScreen;
 
@@ -89,19 +89,19 @@ namespace HelixToolkit.Wpf
                 this.viewport = this.visual.GetViewport3D();
             }
 
-            var newDsSolutionionToScreen = this.viewport.GetProjectionMatrix() * this.viewport.GetViewportTransform();
+            var newProjectionToScreen = this.viewport.GetProjectionMatrix() * this.viewport.GetViewportTransform();
 
-            if (!newDsSolutionionToScreen.HasInverse)
+            if (!newProjectionToScreen.HasInverse)
             {
                 return false;
             }
             
-            var newVisualToDsSolutionion = newTransform * newDsSolutionionToScreen.Inverse();
+            var newVisualToProjection = newTransform * newProjectionToScreen.Inverse();
                        
             this.visualToScreen = newTransform;
             this.screenToVisual = newTransform.Inverse();
-            this.projectionToScreen = newDsSolutionionToScreen;
-            this.visualToDsSolutionion = newVisualToDsSolutionion;
+            this.projectionToScreen = newProjectionToScreen;
+            this.visualToProjection = newVisualToProjection;
 
             return true;
             

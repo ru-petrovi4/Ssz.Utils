@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PanHandler.cs" company="Helix Toolkit">
 //   Copyright (c) 2014 Helix Toolkit contributors
 // </copyright>
@@ -41,7 +41,7 @@ namespace HelixToolkit.Wpf
         public override void Delta(ManipulationEventArgs e)
         {
             base.Delta(e);
-            var thisPoint3D = this.UnDsSolution(e.CurrentPosition, this.panPoint3D, this.Controller.CameraLookDirection);
+            var thisPoint3D = this.UnProject(e.CurrentPosition, this.panPoint3D, this.Controller.CameraLookDirection);
 
             if (this.LastPoint3D == null || thisPoint3D == null)
             {
@@ -52,7 +52,7 @@ namespace HelixToolkit.Wpf
             this.Pan(delta3D);
 
             this.LastPoint = e.CurrentPosition;
-            this.LastPoint3D = this.UnDsSolution(e.CurrentPosition, this.panPoint3D, this.Controller.CameraLookDirection);
+            this.LastPoint3D = this.UnProject(e.CurrentPosition, this.panPoint3D, this.Controller.CameraLookDirection);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace HelixToolkit.Wpf
         {
             var mousePoint = this.LastPoint + delta;
 
-            var thisPoint3D = this.UnDsSolution(mousePoint, this.panPoint3D, this.Controller.CameraLookDirection);
+            var thisPoint3D = this.UnProject(mousePoint, this.panPoint3D, this.Controller.CameraLookDirection);
 
             if (this.LastPoint3D == null || thisPoint3D == null)
             {
@@ -96,7 +96,7 @@ namespace HelixToolkit.Wpf
             Vector3D delta3D = this.LastPoint3D.Value - thisPoint3D.Value;
             this.Pan(delta3D);
 
-            this.LastPoint3D = this.UnDsSolution(mousePoint, this.panPoint3D, this.Controller.CameraLookDirection);
+            this.LastPoint3D = this.UnProject(mousePoint, this.panPoint3D, this.Controller.CameraLookDirection);
 
             this.LastPoint = mousePoint;
         }
@@ -114,7 +114,7 @@ namespace HelixToolkit.Wpf
                 this.panPoint3D = this.MouseDownNearestPoint3D.Value;
             }
 
-            this.LastPoint3D = this.UnDsSolution(this.MouseDownPoint, this.panPoint3D, this.Controller.CameraLookDirection);
+            this.LastPoint3D = this.UnProject(this.MouseDownPoint, this.panPoint3D, this.Controller.CameraLookDirection);
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PngDecoder.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -224,7 +224,7 @@ namespace OxyPlot
 
             if (ms.Position != ms.Length)
             {
-                throw new InvalidDesignTaskException();
+                throw new InvalidOperationException();
             }
 
             return pixels;

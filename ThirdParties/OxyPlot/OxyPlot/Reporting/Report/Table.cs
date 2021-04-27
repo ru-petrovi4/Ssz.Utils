@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
+﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Table.cs" company="OxyPlot">
 //   Copyright (c) 2014 OxyPlot contributors
 // </copyright>
@@ -56,7 +56,7 @@ namespace OxyPlot.Reporting
         /// <summary>
         /// Gets or sets the width of the table (mm).
         /// NaN: auto width.
-        /// 0..-1: fraction of graphic width.
+        /// 0..-1: fraction of page width.
         /// </summary>
         public double Width { get; set; }
 
