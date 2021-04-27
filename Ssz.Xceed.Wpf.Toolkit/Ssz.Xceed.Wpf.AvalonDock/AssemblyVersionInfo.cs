@@ -15,10 +15,10 @@
   ***********************************************************************************/
 
 #pragma warning disable 0436
-[assembly: System.Reflection.AssemblyVersion( _Ssz.XceedVersionInfo.Version )]
+[assembly: System.Reflection.AssemblyVersion( _SszXceedVersionInfo.Version )]
 #pragma warning restore 0436
 
-internal static class _Ssz.XceedVersionInfo
+internal static class _SszXceedVersionInfo
 {
   [System.Diagnostics.CodeAnalysis.SuppressMessage( "Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields" )]
   public const string BaseVersion = "3.6";

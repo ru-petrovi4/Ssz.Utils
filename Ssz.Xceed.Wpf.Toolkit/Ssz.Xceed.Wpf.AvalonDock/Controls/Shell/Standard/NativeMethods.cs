@@ -1353,7 +1353,7 @@ namespace Standard
 
   internal sealed class SafeFindHandle : SafeHandleZeroOrMinusOneIsInvalid
   {
-    [SecurityPermission( SecurityAction.LinkDemand, UnmanagedCode = true )]
+    //[SecurityPermission( SecurityAction.LinkDemand, UnmanagedCode = true )]
     private SafeFindHandle() : base( true ) { }
 
     protected override bool ReleaseHandle()
@@ -1403,7 +1403,7 @@ namespace Standard
 
     private SafeDC() : base( true ) { }
 
-    [ReliabilityContract( Consistency.WillNotCorruptState, Cer.MayFail )]
+    //[ReliabilityContract( Consistency.WillNotCorruptState, Cer.MayFail )]
     protected override bool ReleaseHandle()
     {
       if( _created )
@@ -1526,7 +1526,7 @@ namespace Standard
   {
     private SafeHBITMAP() : base( true ) { }
 
-    [ReliabilityContract( Consistency.WillNotCorruptState, Cer.MayFail )]
+    //[ReliabilityContract( Consistency.WillNotCorruptState, Cer.MayFail )]
     protected override bool ReleaseHandle()
     {
       return NativeMethods.DeleteObject( handle );
@@ -1537,7 +1537,7 @@ namespace Standard
   {
     private SafeGdiplusStartupToken() : base( true ) { }
 
-    [ReliabilityContract( Consistency.WillNotCorruptState, Cer.MayFail )]
+    // [ReliabilityContract( Consistency.WillNotCorruptState, Cer.MayFail )]
     protected override bool ReleaseHandle()
     {
       Status s = NativeMethods.GdiplusShutdown( this.handle );
@@ -1606,7 +1606,7 @@ namespace Standard
     }
 
     [SuppressMessage( "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes" )]
-    [ReliabilityContract( Consistency.WillNotCorruptState, Cer.MayFail )]
+    //[ReliabilityContract( Consistency.WillNotCorruptState, Cer.MayFail )]
     protected override bool ReleaseHandle()
     {
       try
@@ -2829,7 +2829,7 @@ namespace Standard
 
     [SuppressMessage( "Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode" )]
     [DllImport( "kernel32.dll" )]
-    [ReliabilityContract( Consistency.WillNotCorruptState, Cer.Success )]
+    //[ReliabilityContract( Consistency.WillNotCorruptState, Cer.Success )]
     [return: MarshalAs( UnmanagedType.Bool )]
     public static extern bool FindClose( IntPtr handle );
 
@@ -2965,7 +2965,7 @@ namespace Standard
     public static IntPtr GetStockObject( StockObject fnObject )
     {
       IntPtr retPtr = _GetStockObject( fnObject );
-      if( retPtr == null )
+      if( retPtr.ToInt32() == 0 )
       {
         HRESULT.ThrowLastError();
       }

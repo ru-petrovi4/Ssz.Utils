@@ -22,24 +22,6 @@ using System.Windows;
 using System.Windows.Markup;
 using System;
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-[assembly: AssemblyTitle( "Ssz.Xceed Toolkit for WPF - AvalonDock Metro Theme" )]
-[assembly: AssemblyDescription( "This assembly implements the Metro Theme for the AvalonDock layout system." )]
-
-[assembly: AssemblyCompany( "Ssz.Xceed Software Inc." )]
-[assembly: AssemblyProduct( "Ssz.Xceed Toolkit for WPF - AvalonDock" )]
-[assembly: AssemblyCopyright( "Copyright (C) Ssz.Xceed Software Inc. 2007-2018" )]
-
-
-
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
-[assembly: CLSCompliant( true )]
-
 //In order to begin building localizable applications, set 
 //<UICulture>CultureYouAreCodingWith</UICulture> in your .csproj file
 //inside a <PropertyGroup>.  For example, if you are using US english
@@ -62,8 +44,8 @@ using System;
 
 [assembly: XmlnsDefinition( "http://schemas.xceed.com/wpf/xaml/avalondock", "Ssz.Xceed.Wpf.AvalonDock.Themes" )]
 
-#pragma warning disable 1699
-[assembly: AssemblyDelaySign( false )]
-[assembly: AssemblyKeyFile( @"..\..\sn.snk" )]
-[assembly: AssemblyKeyName( "" )]
-#pragma warning restore 1699
+//#pragma warning disable 1699
+//[assembly: AssemblyDelaySign( false )]
+//[assembly: AssemblyKeyFile( @"..\..\sn.snk" )]
+//[assembly: AssemblyKeyName( "" )]
+//#pragma warning restore 1699

@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net5.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
     <OutputType>Library</OutputType>
     <RootNamespace>Ssz.Xceed.Wpf.AvalonDock.Themes</RootNamespace>
     <ExpressionBlendVersion>4.0.20901.0</ExpressionBlendVersion>
@@ -68,9 +69,5 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\PinRestore_Black.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
   </ItemGroup>
 </Project>

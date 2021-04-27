@@ -14,7 +14,7 @@
 
   ***********************************************************************************/
 
-internal static class _Ssz.XceedVersionInfoCommon
+internal static class _SszXceedVersionInfoCommon
 {
 [System.Diagnostics.CodeAnalysis.SuppressMessage( "Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields" )]
   public const string Build = ".*";
