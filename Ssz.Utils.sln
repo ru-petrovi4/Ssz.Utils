@@ -16,31 +16,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.Utils.Wpf", "Ssz.Utils.Wpf\Ssz.Utils.Wpf.csproj", "{E3D12E83-C32E-476E-85F5-567F1F79342C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.WindowsAPICodePack", "Ssz.WindowsAPICodePack\Ssz.WindowsAPICodePack.csproj", "{B8824661-A67C-465F-BEE3-6F7CE22F609C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.Xi.Client", "Ssz.Xi.Client\Ssz.Xi.Client.csproj", "{7E62E059-B934-47AE-831D-D4A6D540E0E7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.DataGrpc.Client", "Ssz.DataGrpc.Client\Ssz.DataGrpc.Client.csproj", "{D2EE9282-9023-47A7-95AC-742C0A967879}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.DataGrpc.Common", "Ssz.DataGrpc.Common\Ssz.DataGrpc.Common.csproj", "{835C7431-FE4C-412E-AFFA-C07CB0219FAF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ThirdParties", "ThirdParties", "{D3B098A3-C292-407B-9FD8-B732E3B6F702}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fluent.Ribbon", "ThirdParties\Fluent.Ribbon\Fluent.Ribbon.csproj", "{E62116C2-4E46-49FD-969B-6921CF722C71}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlzEx", "ThirdParties\ControlzEx\ControlzEx.csproj", "{626BAF88-9FA1-49DC-943F-E0E8FD1E42F3}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ssz.Xceed.Wpf.Toolkit", "Ssz.Xceed.Wpf.Toolkit", "{55FAE16F-C97A-4F28-B3CB-EAD6DC3E6D8F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.Xceed.Wpf.Toolkit", "Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.Toolkit.csproj", "{A2EF2AD9-3F19-4DE9-87E7-92515690C5D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ssz.Xceed.Wpf.AvalonDock", "Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.AvalonDock\Ssz.Xceed.Wpf.AvalonDock.csproj", "{DB81988F-E0F2-45A0-A1FD-8C37F3D35244}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.Xceed.Wpf.AvalonDock", "Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.AvalonDock\Ssz.Xceed.Wpf.AvalonDock.csproj", "{DB81988F-E0F2-45A0-A1FD-8C37F3D35244}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ssz.Xceed.Wpf.AvalonDock.Themes.Aero", "Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.AvalonDock.Themes.Aero\Ssz.Xceed.Wpf.AvalonDock.Themes.Aero.csproj", "{BA72CCE0-A9FB-4995-B496-7FEC5C87B85B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.Xceed.Wpf.AvalonDock.Themes.Aero", "Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.AvalonDock.Themes.Aero\Ssz.Xceed.Wpf.AvalonDock.Themes.Aero.csproj", "{BA72CCE0-A9FB-4995-B496-7FEC5C87B85B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ssz.Xceed.Wpf.AvalonDock.Themes.Metro", "Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.AvalonDock.Themes.Metro\Ssz.Xceed.Wpf.AvalonDock.Themes.Metro.csproj", "{89286EB4-B4A1-418C-839A-067B00F442D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.Xceed.Wpf.AvalonDock.Themes.Metro", "Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.AvalonDock.Themes.Metro\Ssz.Xceed.Wpf.AvalonDock.Themes.Metro.csproj", "{89286EB4-B4A1-418C-839A-067B00F442D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ssz.Xceed.Wpf.AvalonDock.Themes.VS2010", "Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.AvalonDock.Themes.VS2010\Ssz.Xceed.Wpf.AvalonDock.Themes.VS2010.csproj", "{B3FC3E21-5F2D-4581-AEA2-59F671CFFC21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.Xceed.Wpf.AvalonDock.Themes.VS2010", "Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.AvalonDock.Themes.VS2010\Ssz.Xceed.Wpf.AvalonDock.Themes.VS2010.csproj", "{B3FC3E21-5F2D-4581-AEA2-59F671CFFC21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,10 +56,6 @@ Global
 		{E3D12E83-C32E-476E-85F5-567F1F79342C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3D12E83-C32E-476E-85F5-567F1F79342C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3D12E83-C32E-476E-85F5-567F1F79342C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B8824661-A67C-465F-BEE3-6F7CE22F609C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B8824661-A67C-465F-BEE3-6F7CE22F609C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B8824661-A67C-465F-BEE3-6F7CE22F609C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B8824661-A67C-465F-BEE3-6F7CE22F609C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7E62E059-B934-47AE-831D-D4A6D540E0E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7E62E059-B934-47AE-831D-D4A6D540E0E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E62E059-B934-47AE-831D-D4A6D540E0E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -80,14 +68,6 @@ Global
 		{835C7431-FE4C-412E-AFFA-C07CB0219FAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{835C7431-FE4C-412E-AFFA-C07CB0219FAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{835C7431-FE4C-412E-AFFA-C07CB0219FAF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E62116C2-4E46-49FD-969B-6921CF722C71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E62116C2-4E46-49FD-969B-6921CF722C71}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E62116C2-4E46-49FD-969B-6921CF722C71}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E62116C2-4E46-49FD-969B-6921CF722C71}.Release|Any CPU.Build.0 = Release|Any CPU
-		{626BAF88-9FA1-49DC-943F-E0E8FD1E42F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{626BAF88-9FA1-49DC-943F-E0E8FD1E42F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{626BAF88-9FA1-49DC-943F-E0E8FD1E42F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{626BAF88-9FA1-49DC-943F-E0E8FD1E42F3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A2EF2AD9-3F19-4DE9-87E7-92515690C5D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A2EF2AD9-3F19-4DE9-87E7-92515690C5D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2EF2AD9-3F19-4DE9-87E7-92515690C5D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -113,8 +93,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{E62116C2-4E46-49FD-969B-6921CF722C71} = {D3B098A3-C292-407B-9FD8-B732E3B6F702}
-		{626BAF88-9FA1-49DC-943F-E0E8FD1E42F3} = {D3B098A3-C292-407B-9FD8-B732E3B6F702}
 		{A2EF2AD9-3F19-4DE9-87E7-92515690C5D2} = {55FAE16F-C97A-4F28-B3CB-EAD6DC3E6D8F}
 		{DB81988F-E0F2-45A0-A1FD-8C37F3D35244} = {55FAE16F-C97A-4F28-B3CB-EAD6DC3E6D8F}
 		{BA72CCE0-A9FB-4995-B496-7FEC5C87B85B} = {55FAE16F-C97A-4F28-B3CB-EAD6DC3E6D8F}
