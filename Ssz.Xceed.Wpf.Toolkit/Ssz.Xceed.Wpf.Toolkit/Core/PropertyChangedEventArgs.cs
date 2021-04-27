@@ -19,52 +19,35 @@ using System.Windows;
 
 namespace Ssz.Xceed.Wpf.Toolkit.Core
 {
-  public class PropertyChangedEventArgs<T> : RoutedEventArgs
-  {
-    #region Constructors
-
-    public PropertyChangedEventArgs( RoutedEvent Event, T oldValue, T newValue )
-      : base()
+    public class PropertyChangedEventArgs<T> : RoutedEventArgs
     {
-      _oldValue = oldValue;
-      _newValue = newValue;
-      this.RoutedEvent = Event;
+        #region Constructors
+
+        public PropertyChangedEventArgs(RoutedEvent Event, T oldValue, T newValue)
+        {
+            OldValue = oldValue;
+            NewValue = newValue;
+            RoutedEvent = Event;
+        }
+
+        #endregion
+
+        protected override void InvokeEventHandler(Delegate genericHandler, object genericTarget)
+        {
+            var handler = (PropertyChangedEventHandler<T>) genericHandler;
+            handler(genericTarget, this);
+        }
+
+        #region NewValue Property
+
+        public T NewValue { get; }
+
+        #endregion
+
+        #region OldValue Property
+
+        public T OldValue { get; }
+
+        #endregion
     }
-
-    #endregion
-
-    #region NewValue Property
-
-    public T NewValue
-    {
-      get
-      {
-        return _newValue;
-      }
-    }
-
-    private readonly T _newValue;
-
-    #endregion
-
-    #region OldValue Property
-
-    public T OldValue
-    {
-      get
-      {
-        return _oldValue;
-      }
-    }
-
-    private readonly T _oldValue;
-
-    #endregion
-
-    protected override void InvokeEventHandler( Delegate genericHandler, object genericTarget )
-    {
-      PropertyChangedEventHandler<T> handler = ( PropertyChangedEventHandler<T> )genericHandler;
-      handler( genericTarget, this );
-    }
-  }
 }

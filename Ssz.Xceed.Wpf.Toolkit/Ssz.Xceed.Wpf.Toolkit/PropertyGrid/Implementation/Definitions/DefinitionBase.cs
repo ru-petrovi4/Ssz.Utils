@@ -15,46 +15,31 @@
   ***********************************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Collections;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Converters;
+using System.Linq.Expressions;
 using System.Windows;
 using Ssz.Xceed.Wpf.Toolkit.Core.Utilities;
-using System.Linq.Expressions;
 
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 {
-  public abstract class DefinitionBase : DependencyObject
-  {
-    private bool _isLocked;
-
-    internal bool IsLocked
+    public abstract class DefinitionBase : DependencyObject
     {
-      get { return _isLocked; }
-    }
+        internal bool IsLocked { get; private set; }
 
-    internal void ThrowIfLocked<TMember>( Expression<Func<TMember>> propertyExpression )
-    {
-      if( this.IsLocked )
-      {
-        string propertyName = ReflectionHelper.GetPropertyOrFieldName( propertyExpression );
-        string message = string.Format(
-            @"Cannot modify {0} once the definition has beed added to a collection.",
-            propertyName );
-        throw new InvalidOperationException( message );
-      }
-    }
+        internal void ThrowIfLocked<TMember>(Expression<Func<TMember>> propertyExpression)
+        {
+            if (IsLocked)
+            {
+                var propertyName = ReflectionHelper.GetPropertyOrFieldName(propertyExpression);
+                var message = string.Format(
+                    @"Cannot modify {0} once the definition has beed added to a collection.",
+                    propertyName);
+                throw new InvalidOperationException(message);
+            }
+        }
 
-    internal virtual void Lock()
-    {
-      if( !_isLocked )
-      {
-        _isLocked = true;
-      }
+        internal virtual void Lock()
+        {
+            if (!IsLocked) IsLocked = true;
+        }
     }
-  }
 }

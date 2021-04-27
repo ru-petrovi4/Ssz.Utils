@@ -14,39 +14,32 @@
 
   ***********************************************************************************/
 
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 {
-  public class ContextMenuEx : ContextMenu
-  {
-    #region Constructors
-
-    static ContextMenuEx()
+    public class ContextMenuEx : ContextMenu
     {
+        #region Constructors
+
+        #endregion
+
+        #region Overrides
+
+        protected override DependencyObject GetContainerForItemOverride()
+        {
+            return new MenuItemEx();
+        }
+
+        protected override void OnOpened(RoutedEventArgs e)
+        {
+            BindingOperations.GetBindingExpression(this, ItemsSourceProperty).UpdateTarget();
+
+            base.OnOpened(e);
+        }
+
+        #endregion
     }
-
-    public ContextMenuEx()
-    {
-    }
-
-    #endregion
-
-    #region Overrides
-
-    protected override System.Windows.DependencyObject GetContainerForItemOverride()
-    {
-      return new MenuItemEx();
-    }
-
-    protected override void OnOpened( System.Windows.RoutedEventArgs e )
-    {
-      BindingOperations.GetBindingExpression( this, ItemsSourceProperty ).UpdateTarget();
-
-      base.OnOpened( e );
-    }
-
-    #endregion
-  }
 }

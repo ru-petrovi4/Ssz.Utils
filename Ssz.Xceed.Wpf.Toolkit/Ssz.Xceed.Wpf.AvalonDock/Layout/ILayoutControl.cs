@@ -16,11 +16,8 @@
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 {
-  public interface ILayoutControl
-  {
-    ILayoutElement Model
+    public interface ILayoutControl
     {
-      get;
+        ILayoutElement Model { get; }
     }
-  }
 }

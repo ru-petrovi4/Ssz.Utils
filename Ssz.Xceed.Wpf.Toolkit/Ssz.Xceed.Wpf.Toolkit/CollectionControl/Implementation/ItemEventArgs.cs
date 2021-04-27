@@ -14,42 +14,30 @@
 
   ***********************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 
 namespace Ssz.Xceed.Wpf.Toolkit
 {
-  public class ItemEventArgs : RoutedEventArgs
-  {
-    #region Protected Members
-
-    private object _item;
-
-    #endregion
-
-    #region Constructor
-
-    internal ItemEventArgs( RoutedEvent routedEvent, object newItem )
-      : base( routedEvent )
+    public class ItemEventArgs : RoutedEventArgs
     {
-      _item = newItem;
+        #region Protected Members
+
+        #endregion
+
+        #region Constructor
+
+        internal ItemEventArgs(RoutedEvent routedEvent, object newItem)
+            : base(routedEvent)
+        {
+            Item = newItem;
+        }
+
+        #endregion
+
+        #region Property Item
+
+        public object Item { get; }
+
+        #endregion
     }
-
-    #endregion
-
-    #region Property Item
-
-    public object Item
-    {
-      get
-      {
-        return _item;
-      }
-    }
-
-    #endregion
-  }
 }

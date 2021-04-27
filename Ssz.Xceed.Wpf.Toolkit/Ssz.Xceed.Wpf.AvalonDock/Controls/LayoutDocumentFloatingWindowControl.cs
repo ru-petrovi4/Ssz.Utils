@@ -15,153 +15,134 @@
   ***********************************************************************************/
 
 using System;
-using Ssz.Xceed.Wpf.AvalonDock.Layout;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using Microsoft.Windows.Shell;
+using Ssz.Xceed.Wpf.AvalonDock.Layout;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 {
-  public class LayoutDocumentFloatingWindowControl : LayoutFloatingWindowControl
-  {
-    #region Members
-
-    private LayoutDocumentFloatingWindow _model;
-
-    #endregion
-
-    #region Constructors
-
-    static LayoutDocumentFloatingWindowControl()
+    public class LayoutDocumentFloatingWindowControl : LayoutFloatingWindowControl
     {
-      DefaultStyleKeyProperty.OverrideMetadata( typeof( LayoutDocumentFloatingWindowControl ), new FrameworkPropertyMetadata( typeof( LayoutDocumentFloatingWindowControl ) ) );
-    }
+        #region Members
 
-    internal LayoutDocumentFloatingWindowControl( LayoutDocumentFloatingWindow model, bool isContentImmutable )
-       : base( model, isContentImmutable )
-    {
-      _model = model;
-      UpdateThemeResources();
-    }
+        private readonly LayoutDocumentFloatingWindow _model;
 
-    internal LayoutDocumentFloatingWindowControl( LayoutDocumentFloatingWindow model )
-        : this( model, false )
-    {
-    }
+        #endregion
 
-    #endregion
+        #region Properties
 
-    #region Properties
+        public LayoutItem RootDocumentLayoutItem => _model.Root.Manager.GetLayoutItemFromModel(_model.RootDocument);
 
-    public LayoutItem RootDocumentLayoutItem
-    {
-      get
-      {
-        return _model.Root.Manager.GetLayoutItemFromModel( _model.RootDocument );
-      }
-    }
+        #endregion
 
-    #endregion
+        #region Constructors
 
-    #region Overrides
+        static LayoutDocumentFloatingWindowControl()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(LayoutDocumentFloatingWindowControl),
+                new FrameworkPropertyMetadata(typeof(LayoutDocumentFloatingWindowControl)));
+        }
 
-    public override ILayoutElement Model
-    {
-      get
-      {
-        return _model;
-      }
-    }
+        internal LayoutDocumentFloatingWindowControl(LayoutDocumentFloatingWindow model, bool isContentImmutable)
+            : base(model, isContentImmutable)
+        {
+            _model = model;
+            UpdateThemeResources();
+        }
 
-    protected override void OnInitialized( EventArgs e )
-    {
-      base.OnInitialized( e );
+        internal LayoutDocumentFloatingWindowControl(LayoutDocumentFloatingWindow model)
+            : this(model, false)
+        {
+        }
 
-      if( _model.RootDocument == null )
-      {
-        InternalClose();
-      }
-      else
-      {
-        var manager = _model.Root.Manager;
+        #endregion
 
-        Content = manager.CreateUIElementForModel( _model.RootDocument );
+        #region Overrides
 
-        _model.RootDocumentChanged += new EventHandler( _model_RootDocumentChanged );
-      }
-    }
+        public override ILayoutElement Model => _model;
 
-    protected override IntPtr FilterMessage( IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled )
-    {
-      switch( msg )
-      {
-        case Win32Helper.WM_NCLBUTTONDOWN: //Left button down on title -> start dragging over docking manager
-          if( wParam.ToInt32() == Win32Helper.HT_CAPTION )
-          {
-            if( _model.RootDocument != null )
-              _model.RootDocument.IsActive = true;
-          }
-          break;
-        case Win32Helper.WM_NCRBUTTONUP:
-          if( wParam.ToInt32() == Win32Helper.HT_CAPTION )
-          {
-            if( OpenContextMenu() )
-              handled = true;
-            if( _model.Root.Manager.ShowSystemMenu )
-              WindowChrome.GetWindowChrome( this ).ShowSystemMenu = !handled;
+        protected override void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+
+            if (_model.RootDocument == null)
+            {
+                InternalClose();
+            }
             else
-              WindowChrome.GetWindowChrome( this ).ShowSystemMenu = false;
-          }
-          break;
+            {
+                var manager = _model.Root.Manager;
 
-      }
+                Content = manager.CreateUIElementForModel(_model.RootDocument);
 
-      return base.FilterMessage( hwnd, msg, wParam, lParam, ref handled );
+                _model.RootDocumentChanged += _model_RootDocumentChanged;
+            }
+        }
+
+        protected override IntPtr FilterMessage(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            switch (msg)
+            {
+                case Win32Helper.WM_NCLBUTTONDOWN: //Left button down on title -> start dragging over docking manager
+                    if (wParam.ToInt32() == Win32Helper.HT_CAPTION)
+                        if (_model.RootDocument != null)
+                            _model.RootDocument.IsActive = true;
+                    break;
+                case Win32Helper.WM_NCRBUTTONUP:
+                    if (wParam.ToInt32() == Win32Helper.HT_CAPTION)
+                    {
+                        if (OpenContextMenu())
+                            handled = true;
+                        if (_model.Root.Manager.ShowSystemMenu)
+                            WindowChrome.GetWindowChrome(this).ShowSystemMenu = !handled;
+                        else
+                            WindowChrome.GetWindowChrome(this).ShowSystemMenu = false;
+                    }
+
+                    break;
+            }
+
+            return base.FilterMessage(hwnd, msg, wParam, lParam, ref handled);
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            var root = Model.Root;
+            root.Manager.RemoveFloatingWindow(this);
+            root.CollectGarbage();
+
+            base.OnClosed(e);
+
+            if (!CloseInitiatedByUser) root.FloatingWindows.Remove(_model);
+
+            _model.RootDocumentChanged -= _model_RootDocumentChanged;
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void _model_RootDocumentChanged(object sender, EventArgs e)
+        {
+            if (_model.RootDocument == null) InternalClose();
+        }
+
+        private bool OpenContextMenu()
+        {
+            var ctxMenu = _model.Root.Manager.DocumentContextMenu;
+            if (ctxMenu != null && RootDocumentLayoutItem != null)
+            {
+                ctxMenu.PlacementTarget = null;
+                ctxMenu.Placement = PlacementMode.MousePoint;
+                ctxMenu.DataContext = RootDocumentLayoutItem;
+                ctxMenu.IsOpen = true;
+                return true;
+            }
+
+            return false;
+        }
+
+        #endregion
     }
-
-    protected override void OnClosed( EventArgs e )
-    {
-      var root = Model.Root;
-      root.Manager.RemoveFloatingWindow( this );
-      root.CollectGarbage();
-
-      base.OnClosed( e );
-
-      if( !CloseInitiatedByUser )
-      {
-        root.FloatingWindows.Remove( _model );
-      }
-
-      _model.RootDocumentChanged -= new EventHandler( _model_RootDocumentChanged );
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    private void _model_RootDocumentChanged( object sender, EventArgs e )
-    {
-      if( _model.RootDocument == null )
-      {
-        InternalClose();
-      }
-    }
-
-    private bool OpenContextMenu()
-    {
-      var ctxMenu = _model.Root.Manager.DocumentContextMenu;
-      if( ctxMenu != null && RootDocumentLayoutItem != null )
-      {
-        ctxMenu.PlacementTarget = null;
-        ctxMenu.Placement = PlacementMode.MousePoint;
-        ctxMenu.DataContext = RootDocumentLayoutItem;
-        ctxMenu.IsOpen = true;
-        return true;
-      }
-
-      return false;
-    }
-
-    #endregion
-  }
 }

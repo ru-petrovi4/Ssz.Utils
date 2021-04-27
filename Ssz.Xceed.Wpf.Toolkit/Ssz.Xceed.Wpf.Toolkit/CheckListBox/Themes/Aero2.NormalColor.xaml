@@ -26,8 +26,10 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:CheckListBox}">
-                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                        <ScrollViewer Padding="{TemplateBinding Padding}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <ScrollViewer Padding="{TemplateBinding Padding}" VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Auto">
                             <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                         </ScrollViewer>
                     </Border>
@@ -37,10 +39,12 @@
 
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static themes:ResourceKeys.ControlMouseOverBorderKey}}" />
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static themes:ResourceKeys.ControlMouseOverBorderKey}}" />
             </Trigger>
             <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static themes:ResourceKeys.ControlSelectedBorderKey}}" />
+                <Setter Property="BorderBrush"
+                        Value="{DynamicResource {x:Static themes:ResourceKeys.ControlSelectedBorderKey}}" />
             </Trigger>
         </Style.Triggers>
     </Style>

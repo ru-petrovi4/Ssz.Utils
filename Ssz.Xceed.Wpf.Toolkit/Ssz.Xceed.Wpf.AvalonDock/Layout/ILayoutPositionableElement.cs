@@ -18,74 +18,39 @@ using System.Windows;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 {
-  internal interface ILayoutPositionableElement : ILayoutElement, ILayoutElementForFloatingWindow
-  {
-    GridLength DockWidth
+    internal interface ILayoutPositionableElement : ILayoutElement, ILayoutElementForFloatingWindow
     {
-      get;
-      set;
+        GridLength DockWidth { get; set; }
+
+        GridLength DockHeight { get; set; }
+
+        double DockMinWidth { get; set; }
+
+        double DockMinHeight { get; set; }
+
+        bool AllowDuplicateContent { get; set; }
+
+        bool IsVisible { get; }
     }
 
-    GridLength DockHeight
+
+    internal interface ILayoutPositionableElementWithActualSize
     {
-      get;
-      set;
+        double ActualWidth { get; set; }
+
+        double ActualHeight { get; set; }
     }
 
-    double DockMinWidth
+    internal interface ILayoutElementForFloatingWindow
     {
-      get; set;
-    }
-    double DockMinHeight
-    {
-      get; set;
-    }
+        double FloatingWidth { get; set; }
 
-    bool AllowDuplicateContent
-    {
-      get; set;
-    }
+        double FloatingHeight { get; set; }
 
-    bool IsVisible
-    {
-      get;
-    }
-  }
+        double FloatingLeft { get; set; }
 
+        double FloatingTop { get; set; }
 
-  internal interface ILayoutPositionableElementWithActualSize
-  {
-    double ActualWidth
-    {
-      get; set;
+        bool IsMaximized { get; set; }
     }
-    double ActualHeight
-    {
-      get; set;
-    }
-  }
-
-  internal interface ILayoutElementForFloatingWindow
-  {
-    double FloatingWidth
-    {
-      get; set;
-    }
-    double FloatingHeight
-    {
-      get; set;
-    }
-    double FloatingLeft
-    {
-      get; set;
-    }
-    double FloatingTop
-    {
-      get; set;
-    }
-    bool IsMaximized
-    {
-      get; set;
-    }
-  }
 }

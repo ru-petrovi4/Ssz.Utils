@@ -28,7 +28,8 @@
     <conv:TimeFormatToDateTimeFormatConverter x:Key="TimeFormatToDateTimeFormatConverter" />
 
     <DataTemplate x:Key="DefaultWatermarkTemplate">
-        <ContentControl Content="{Binding}" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Focusable="False" Margin="0,0,3,0" />
+        <ContentControl Content="{Binding}" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                        Focusable="False" Margin="0,0,3,0" />
     </DataTemplate>
 
     <Style x:Key="TimePickerToggleButtonStyle" TargetType="ToggleButton">
@@ -37,11 +38,11 @@
                 <ControlTemplate TargetType="ToggleButton">
                     <Grid SnapsToDevicePixels="True">
                         <chrome:ButtonChrome x:Name="ToggleButtonChrome"
-                                       CornerRadius="0"
-                                       RenderChecked="{Binding IsOpen, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:TimePicker}}"
-                                       RenderEnabled="{Binding IsEnabled, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:TimePicker}}"
-                                       RenderMouseOver="{TemplateBinding IsMouseOver}"
-                                       RenderPressed="{TemplateBinding IsPressed}">
+                                             CornerRadius="0"
+                                             RenderChecked="{Binding IsOpen, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:TimePicker}}"
+                                             RenderEnabled="{Binding IsEnabled, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:TimePicker}}"
+                                             RenderMouseOver="{TemplateBinding IsMouseOver}"
+                                             RenderPressed="{TemplateBinding IsPressed}">
 
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -49,17 +50,21 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
 
                                 <Grid x:Name="arrowGlyph" IsHitTestVisible="False" Grid.Column="1" Margin="5">
-                                    <Path x:Name="Arrow" Width="7" Height="4" Data="M 0,1 C0,1 0,0 0,0 0,0 3,0 3,0 3,0 3,1 3,1 3,1 4,1 4,1 4,1 4,0 4,0 4,0 7,0 7,0 7,0 7,1 7,1 7,1 6,1 6,1 6,1 6,2 6,2 6,2 5,2 5,2 5,2 5,3 5,3 5,3 4,3 4,3 4,3 4,4 4,4 4,4 3,4 3,4 3,4 3,3 3,3 3,3 2,3 2,3 2,3 2,2 2,2 2,2 1,2 1,2 1,2 1,1 1,1 1,1 0,1 0,1 z" Fill="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                                    <Path x:Name="Arrow" Width="7" Height="4"
+                                          Data="M 0,1 C0,1 0,0 0,0 0,0 3,0 3,0 3,0 3,1 3,1 3,1 4,1 4,1 4,1 4,0 4,0 4,0 7,0 7,0 7,0 7,1 7,1 7,1 6,1 6,1 6,1 6,2 6,2 6,2 5,2 5,2 5,2 5,3 5,3 5,3 4,3 4,3 4,3 4,4 4,4 4,4 3,4 3,4 3,4 3,3 3,3 3,3 2,3 2,3 2,3 2,2 2,2 2,2 1,2 1,2 1,2 1,1 1,1 1,1 0,1 0,1 z"
+                                          Fill="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
                                 </Grid>
                             </Grid>
                         </chrome:ButtonChrome>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Fill" TargetName="Arrow" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                            <Setter Property="Fill" TargetName="Arrow"
+                                    Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -71,7 +76,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
-                    <Border Name="Border" BorderThickness="1"  SnapsToDevicePixels="true">
+                    <Border Name="Border" BorderThickness="1" SnapsToDevicePixels="true">
                         <ContentPresenter Margin="4" />
                     </Border>
                     <ControlTemplate.Triggers>
@@ -130,42 +135,43 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <local:DateTimeUpDown x:Name="PART_TimeUpDown" 
-                                              BorderThickness="1,1,0,1"
-                                              Background="{TemplateBinding Background}"
-                                              Foreground="{TemplateBinding Foreground}"
-                                              ContextMenu="{TemplateBinding ContextMenu}"
-                                              AllowSpin="{TemplateBinding AllowSpin}"
-                                              TabIndex="{TemplateBinding TabIndex}"
-                                              Padding="{TemplateBinding Padding}"
-                                              Format="{TemplateBinding Format, Converter={StaticResource TimeFormatToDateTimeFormatConverter}}"
-                                              FormatString="{TemplateBinding FormatString}"
-                                              ShowButtonSpinner="{TemplateBinding ShowButtonSpinner}"
-                                              Value="{Binding Value, RelativeSource={RelativeSource TemplatedParent}}"
-                                              Minimum="{Binding Minimum, RelativeSource={RelativeSource TemplatedParent}}"
-                                              Maximum="{Binding Maximum, RelativeSource={RelativeSource TemplatedParent}}"
-                                              ClipValueToMinMax="{Binding ClipValueToMinMax, RelativeSource={RelativeSource TemplatedParent}}"
-                                              Watermark="{TemplateBinding Watermark}"
-                                              WatermarkTemplate="{TemplateBinding WatermarkTemplate}" 
-                                              TextAlignment="{TemplateBinding TextAlignment}"/>
+                                <local:DateTimeUpDown x:Name="PART_TimeUpDown"
+                                                      BorderThickness="1,1,0,1"
+                                                      Background="{TemplateBinding Background}"
+                                                      Foreground="{TemplateBinding Foreground}"
+                                                      ContextMenu="{TemplateBinding ContextMenu}"
+                                                      AllowSpin="{TemplateBinding AllowSpin}"
+                                                      TabIndex="{TemplateBinding TabIndex}"
+                                                      Padding="{TemplateBinding Padding}"
+                                                      Format="{TemplateBinding Format, Converter={StaticResource TimeFormatToDateTimeFormatConverter}}"
+                                                      FormatString="{TemplateBinding FormatString}"
+                                                      ShowButtonSpinner="{TemplateBinding ShowButtonSpinner}"
+                                                      Value="{Binding Value, RelativeSource={RelativeSource TemplatedParent}}"
+                                                      Minimum="{Binding Minimum, RelativeSource={RelativeSource TemplatedParent}}"
+                                                      Maximum="{Binding Maximum, RelativeSource={RelativeSource TemplatedParent}}"
+                                                      ClipValueToMinMax="{Binding ClipValueToMinMax, RelativeSource={RelativeSource TemplatedParent}}"
+                                                      Watermark="{TemplateBinding Watermark}"
+                                                      WatermarkTemplate="{TemplateBinding WatermarkTemplate}"
+                                                      TextAlignment="{TemplateBinding TextAlignment}" />
                                 <ToggleButton x:Name="_timePickerToggleButton"
-                                      Grid.Column="1"
-                                      Focusable="False"
-                                      IsChecked="{Binding IsOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                                      Style="{StaticResource TimePickerToggleButtonStyle}"
-                                      IsHitTestVisible="{Binding IsOpen, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource InverseBoolConverter}}" />
+                                              Grid.Column="1"
+                                              Focusable="False"
+                                              IsChecked="{Binding IsOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                              Style="{StaticResource TimePickerToggleButtonStyle}"
+                                              IsHitTestVisible="{Binding IsOpen, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource InverseBoolConverter}}" />
                             </Grid>
                             <Popup x:Name="PART_Popup"
-                            IsOpen="{Binding IsChecked, ElementName=_timePickerToggleButton}"
-                            StaysOpen="False">
-                                <Border BorderThickness="1" Background="{StaticResource PanelBackgroundBrush}" BorderBrush="{StaticResource PopupDarkBorderBrush}">
+                                   IsOpen="{Binding IsChecked, ElementName=_timePickerToggleButton}"
+                                   StaysOpen="False">
+                                <Border BorderThickness="1" Background="{StaticResource PanelBackgroundBrush}"
+                                        BorderBrush="{StaticResource PopupDarkBorderBrush}">
                                     <Grid>
                                         <ListBox x:Name="PART_TimeListItems"
-                                       BorderThickness="0"
-                                       Width="150"
-                                       Height="130"
-                                       DisplayMemberPath="Display"
-                                       ItemContainerStyle="{StaticResource TimeItemStyle}" />
+                                                 BorderThickness="0"
+                                                 Width="150"
+                                                 Height="130"
+                                                 DisplayMemberPath="Display"
+                                                 ItemContainerStyle="{StaticResource TimeItemStyle}" />
                                     </Grid>
                                 </Border>
                             </Popup>
@@ -173,12 +179,14 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                            <Setter Property="Foreground"
+                                    Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                         </Trigger>
                         <Trigger Property="IsFocused" Value="True">
-                           <Setter TargetName="PART_TimeUpDown" Property="FocusManager.FocusedElement" Value="{Binding ElementName=PART_TimeUpDown}" />
+                            <Setter TargetName="PART_TimeUpDown" Property="FocusManager.FocusedElement"
+                                    Value="{Binding ElementName=PART_TimeUpDown}" />
                         </Trigger>
-                  </ControlTemplate.Triggers>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

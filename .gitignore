@@ -1,5 +1,6 @@
 **/.klocwork/
 **/.vs/
+**/.idea/
 **/Bin/
 **/Bin_Debug/
 **/Setup/Output/

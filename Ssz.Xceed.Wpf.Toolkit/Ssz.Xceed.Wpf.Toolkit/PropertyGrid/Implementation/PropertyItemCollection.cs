@@ -14,153 +14,143 @@
 
   ***********************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Data;
-using System;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
-using System.Linq;
-using System.Collections;
 using Ssz.Xceed.Wpf.Toolkit.Core.Utilities;
 
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 {
-  public class PropertyItemCollection : ReadOnlyObservableCollection<PropertyItem>
-  {
-    internal static readonly string CategoryPropertyName;
-    internal static readonly string CategoryOrderPropertyName;
-    internal static readonly string PropertyOrderPropertyName;
-    internal static readonly string DisplayNamePropertyName;
-
-    private bool _preventNotification;
-
-    static PropertyItemCollection()
+    public class PropertyItemCollection : ReadOnlyObservableCollection<PropertyItem>
     {
-      PropertyItem p = null;
-      CategoryPropertyName = ReflectionHelper.GetPropertyOrFieldName( () => p.Category );
-      CategoryOrderPropertyName = ReflectionHelper.GetPropertyOrFieldName( () => p.CategoryOrder );
-      PropertyOrderPropertyName = ReflectionHelper.GetPropertyOrFieldName( () => p.PropertyOrder );
-      DisplayNamePropertyName = ReflectionHelper.GetPropertyOrFieldName( () => p.DisplayName );
-    }
+        internal static readonly string CategoryPropertyName;
+        internal static readonly string CategoryOrderPropertyName;
+        internal static readonly string PropertyOrderPropertyName;
+        internal static readonly string DisplayNamePropertyName;
 
-    public PropertyItemCollection(ObservableCollection<PropertyItem> editableCollection)
-      :base(editableCollection)
-    {
-      EditableCollection = editableCollection;
-    }
+        private bool _preventNotification;
 
-    internal Predicate<object> FilterPredicate
-    {
-      get { return GetDefaultView().Filter; }
-      set { GetDefaultView().Filter = value; }
-    }
-
-    public ObservableCollection<PropertyItem> EditableCollection { get; private set; }
-
-    private ICollectionView GetDefaultView()
-    {
-      return CollectionViewSource.GetDefaultView( this );
-    }
-
-    public void GroupBy( string name )
-    {
-      GetDefaultView().GroupDescriptions.Add( new PropertyGroupDescription( name ) );
-    }
-
-    public void SortBy( string name, ListSortDirection sortDirection )
-    {
-      GetDefaultView().SortDescriptions.Add( new SortDescription( name, sortDirection ) );
-    }
-
-    public void Filter( string text )
-    {
-      Predicate<object> filter = PropertyItemCollection.CreateFilter( text );
-      GetDefaultView().Filter = filter;
-    }
-
-    protected override void OnCollectionChanged( NotifyCollectionChangedEventArgs args )
-    {
-      if( _preventNotification )
-        return;
-
-      base.OnCollectionChanged( args );
-    }
-
-    internal void UpdateItems( IEnumerable<PropertyItem> newItems )
-    {
-      if( newItems == null )
-        throw new ArgumentNullException( "newItems" );
-
-      _preventNotification = true;
-      using( GetDefaultView().DeferRefresh() )
-      {
-        EditableCollection.Clear();
-        foreach( var item in newItems )
+        static PropertyItemCollection()
         {
-          this.EditableCollection.Add( item );
-        }
-      }
-      _preventNotification = false;
-      OnCollectionChanged( new NotifyCollectionChangedEventArgs( NotifyCollectionChangedAction.Reset ) );
-    }
-
-    internal void UpdateCategorization( GroupDescription groupDescription, bool isPropertyGridCategorized )
-    {
-      // Compute Display Order relative to PropertyOrderAttributes on PropertyItem
-      // which could be different in Alphabetical or Categorized mode.
-      foreach( PropertyItem item in this.Items )
-      {
-        item.DescriptorDefinition.DisplayOrder = item.DescriptorDefinition.ComputeDisplayOrderInternal( isPropertyGridCategorized );
-        item.PropertyOrder = item.DescriptorDefinition.DisplayOrder;
-      }
-
-      // Clear view values
-      ICollectionView view = this.GetDefaultView();
-      using( view.DeferRefresh() )
-      {
-        view.GroupDescriptions.Clear();
-        view.SortDescriptions.Clear();
-
-        // Update view values
-        if( groupDescription != null )
-        {
-          view.GroupDescriptions.Add( groupDescription );
-          SortBy( CategoryOrderPropertyName, ListSortDirection.Ascending );
-          SortBy( CategoryPropertyName, ListSortDirection.Ascending );
+            PropertyItem p = null;
+            CategoryPropertyName = ReflectionHelper.GetPropertyOrFieldName(() => p.Category);
+            CategoryOrderPropertyName = ReflectionHelper.GetPropertyOrFieldName(() => p.CategoryOrder);
+            PropertyOrderPropertyName = ReflectionHelper.GetPropertyOrFieldName(() => p.PropertyOrder);
+            DisplayNamePropertyName = ReflectionHelper.GetPropertyOrFieldName(() => p.DisplayName);
         }
 
-        SortBy( PropertyOrderPropertyName, ListSortDirection.Ascending );
-        SortBy( DisplayNamePropertyName, ListSortDirection.Ascending );
-      }
-    }
-
-    internal void RefreshView()
-    {
-      GetDefaultView().Refresh();
-    }
-
-    internal static Predicate<object> CreateFilter( string text )
-    {
-      Predicate<object> filter = null;
-
-      if( !string.IsNullOrEmpty( text ) )
-      {
-        filter = ( item ) =>
+        public PropertyItemCollection(ObservableCollection<PropertyItem> editableCollection)
+            : base(editableCollection)
         {
-          var property = item as PropertyItem;
-          if( property.DisplayName != null )
-          {
-            return property.DisplayName.ToLower().StartsWith( text.ToLower() );
-          }
+            EditableCollection = editableCollection;
+        }
 
-          return false;
-        };
-      }
+        internal Predicate<object> FilterPredicate
+        {
+            get => GetDefaultView().Filter;
+            set => GetDefaultView().Filter = value;
+        }
 
-      return filter;
+        public ObservableCollection<PropertyItem> EditableCollection { get; }
+
+        private ICollectionView GetDefaultView()
+        {
+            return CollectionViewSource.GetDefaultView(this);
+        }
+
+        public void GroupBy(string name)
+        {
+            GetDefaultView().GroupDescriptions.Add(new PropertyGroupDescription(name));
+        }
+
+        public void SortBy(string name, ListSortDirection sortDirection)
+        {
+            GetDefaultView().SortDescriptions.Add(new SortDescription(name, sortDirection));
+        }
+
+        public void Filter(string text)
+        {
+            var filter = CreateFilter(text);
+            GetDefaultView().Filter = filter;
+        }
+
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs args)
+        {
+            if (_preventNotification)
+                return;
+
+            base.OnCollectionChanged(args);
+        }
+
+        internal void UpdateItems(IEnumerable<PropertyItem> newItems)
+        {
+            if (newItems == null)
+                throw new ArgumentNullException("newItems");
+
+            _preventNotification = true;
+            using (GetDefaultView().DeferRefresh())
+            {
+                EditableCollection.Clear();
+                foreach (var item in newItems) EditableCollection.Add(item);
+            }
+
+            _preventNotification = false;
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        internal void UpdateCategorization(GroupDescription groupDescription, bool isPropertyGridCategorized)
+        {
+            // Compute Display Order relative to PropertyOrderAttributes on PropertyItem
+            // which could be different in Alphabetical or Categorized mode.
+            foreach (var item in Items)
+            {
+                item.DescriptorDefinition.DisplayOrder =
+                    item.DescriptorDefinition.ComputeDisplayOrderInternal(isPropertyGridCategorized);
+                item.PropertyOrder = item.DescriptorDefinition.DisplayOrder;
+            }
+
+            // Clear view values
+            var view = GetDefaultView();
+            using (view.DeferRefresh())
+            {
+                view.GroupDescriptions.Clear();
+                view.SortDescriptions.Clear();
+
+                // Update view values
+                if (groupDescription != null)
+                {
+                    view.GroupDescriptions.Add(groupDescription);
+                    SortBy(CategoryOrderPropertyName, ListSortDirection.Ascending);
+                    SortBy(CategoryPropertyName, ListSortDirection.Ascending);
+                }
+
+                SortBy(PropertyOrderPropertyName, ListSortDirection.Ascending);
+                SortBy(DisplayNamePropertyName, ListSortDirection.Ascending);
+            }
+        }
+
+        internal void RefreshView()
+        {
+            GetDefaultView().Refresh();
+        }
+
+        internal static Predicate<object> CreateFilter(string text)
+        {
+            Predicate<object> filter = null;
+
+            if (!string.IsNullOrEmpty(text))
+                filter = item =>
+                {
+                    var property = item as PropertyItem;
+                    if (property.DisplayName != null) return property.DisplayName.ToLower().StartsWith(text.ToLower());
+
+                    return false;
+                };
+
+            return filter;
+        }
     }
-  }
 }

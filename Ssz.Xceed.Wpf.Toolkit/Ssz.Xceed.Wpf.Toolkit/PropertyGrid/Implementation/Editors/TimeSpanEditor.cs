@@ -14,24 +14,22 @@
 
   ***********************************************************************************/
 
-using System;
-using System.Globalization;
 using System.Windows.Data;
 using Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Converters;
 
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Editors
 {
-  public class TimeSpanEditor : DateTimeUpDownEditor
-  {
-    protected override void SetControlProperties()
+    public class TimeSpanEditor : DateTimeUpDownEditor
     {
-      base.SetControlProperties();
-      Editor.Format = DateTimeFormat.LongTime;
-    }
+        protected override void SetControlProperties()
+        {
+            base.SetControlProperties();
+            Editor.Format = DateTimeFormat.LongTime;
+        }
 
-    protected override IValueConverter CreateValueConverter()
-    {
-      return new EditorTimeSpanConverter();
+        protected override IValueConverter CreateValueConverter()
+        {
+            return new EditorTimeSpanConverter();
+        }
     }
-  }
 }

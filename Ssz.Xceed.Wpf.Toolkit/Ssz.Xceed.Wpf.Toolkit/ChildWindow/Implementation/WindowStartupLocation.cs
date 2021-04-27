@@ -16,9 +16,9 @@
 
 namespace Ssz.Xceed.Wpf.Toolkit
 {
-  public enum WindowStartupLocation
-  {
-    Center,
-    Manual
-  }
+    public enum WindowStartupLocation
+    {
+        Center,
+        Manual
+    }
 }

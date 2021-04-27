@@ -18,15 +18,8 @@ using System.Windows.Input;
 
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Commands
 {
-  public class PropertyGridCommands
-  {
-    private static RoutedCommand _clearFilterCommand = new RoutedCommand();
-    public static RoutedCommand ClearFilter
+    public class PropertyGridCommands
     {
-      get
-      {
-        return _clearFilterCommand;
-      }
+        public static RoutedCommand ClearFilter { get; } = new();
     }
-  }
 }

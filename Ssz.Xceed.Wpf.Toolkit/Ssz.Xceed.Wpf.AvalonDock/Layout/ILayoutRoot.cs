@@ -18,49 +18,26 @@ using System.Collections.ObjectModel;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 {
-  public interface ILayoutRoot
-  {
-    DockingManager Manager
+    public interface ILayoutRoot
     {
-      get;
-    }
+        DockingManager Manager { get; }
 
-    LayoutPanel RootPanel
-    {
-      get;
-    }
+        LayoutPanel RootPanel { get; }
 
-    LayoutAnchorSide TopSide
-    {
-      get;
-    }
-    LayoutAnchorSide LeftSide
-    {
-      get;
-    }
-    LayoutAnchorSide RightSide
-    {
-      get;
-    }
-    LayoutAnchorSide BottomSide
-    {
-      get;
-    }
+        LayoutAnchorSide TopSide { get; }
 
-    LayoutContent ActiveContent
-    {
-      get; set;
-    }
+        LayoutAnchorSide LeftSide { get; }
 
-    ObservableCollection<LayoutFloatingWindow> FloatingWindows
-    {
-      get;
-    }
-    ObservableCollection<LayoutAnchorable> Hidden
-    {
-      get;
-    }
+        LayoutAnchorSide RightSide { get; }
 
-    void CollectGarbage();
-  }
+        LayoutAnchorSide BottomSide { get; }
+
+        LayoutContent ActiveContent { get; set; }
+
+        ObservableCollection<LayoutFloatingWindow> FloatingWindows { get; }
+
+        ObservableCollection<LayoutAnchorable> Hidden { get; }
+
+        void CollectGarbage();
+    }
 }

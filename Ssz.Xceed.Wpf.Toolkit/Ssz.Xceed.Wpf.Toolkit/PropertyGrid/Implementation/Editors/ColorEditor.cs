@@ -15,31 +15,34 @@
   ***********************************************************************************/
 
 using System.Windows;
+
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Editors
 {
-  public class ColorEditor : TypeEditor<ColorPicker>
-  {
-    protected override ColorPicker CreateEditor()
+    public class ColorEditor : TypeEditor<ColorPicker>
     {
-      return new PropertyGridEditorColorPicker();
+        protected override ColorPicker CreateEditor()
+        {
+            return new PropertyGridEditorColorPicker();
+        }
+
+        protected override void SetControlProperties()
+        {
+            Editor.BorderThickness = new Thickness(0);
+            Editor.DisplayColorAndName = true;
+        }
+
+        protected override void SetValueDependencyProperty()
+        {
+            ValueProperty = ColorPicker.SelectedColorProperty;
+        }
     }
 
-    protected override void SetControlProperties()
+    public class PropertyGridEditorColorPicker : ColorPicker
     {
-      Editor.BorderThickness = new System.Windows.Thickness( 0 );
-      Editor.DisplayColorAndName = true;
+        static PropertyGridEditorColorPicker()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(PropertyGridEditorColorPicker),
+                new FrameworkPropertyMetadata(typeof(PropertyGridEditorColorPicker)));
+        }
     }
-    protected override void SetValueDependencyProperty()
-    {
-      ValueProperty = ColorPicker.SelectedColorProperty;
-    }
-  }
-
-  public class PropertyGridEditorColorPicker : ColorPicker
-  {
-    static PropertyGridEditorColorPicker()
-    {
-      DefaultStyleKeyProperty.OverrideMetadata( typeof( PropertyGridEditorColorPicker ), new FrameworkPropertyMetadata( typeof( PropertyGridEditorColorPicker ) ) );
-    }
-  }
 }

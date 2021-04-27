@@ -19,122 +19,100 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using Ssz.Xceed.Wpf.AvalonDock.Layout;
 using System.Windows.Threading;
+using Ssz.Xceed.Wpf.AvalonDock.Layout;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 {
-  internal abstract class DropTarget<T> : DropTargetBase, IDropTarget where T : FrameworkElement
-  {
-    #region Members
-
-    private Rect[] _detectionRect;
-    private T _targetElement;
-    private DropTargetType _type;
-
-    #endregion
-
-    #region Constructors
-
-    protected DropTarget( T targetElement, Rect detectionRect, DropTargetType type )
+    internal abstract class DropTarget<T> : DropTargetBase, IDropTarget where T : FrameworkElement
     {
-      _targetElement = targetElement;
-      _detectionRect = new Rect[] { detectionRect };
-      _type = type;
-    }
+        #region Members
 
-    protected DropTarget( T targetElement, IEnumerable<Rect> detectionRects, DropTargetType type )
-    {
-      _targetElement = targetElement;
-      _detectionRect = detectionRects.ToArray();
-      _type = type;
-    }
+        #endregion
 
-    #endregion
+        #region Constructors
 
-    #region Properties
+        protected DropTarget(T targetElement, Rect detectionRect, DropTargetType type)
+        {
+            TargetElement = targetElement;
+            DetectionRects = new[] {detectionRect};
+            Type = type;
+        }
 
-    public Rect[] DetectionRects
-    {
-      get
-      {
-        return _detectionRect;
-      }
-    }
+        protected DropTarget(T targetElement, IEnumerable<Rect> detectionRects, DropTargetType type)
+        {
+            TargetElement = targetElement;
+            DetectionRects = detectionRects.ToArray();
+            Type = type;
+        }
 
-    public T TargetElement
-    {
-      get
-      {
-        return _targetElement;
-      }
-    }    
+        #endregion
 
-    public DropTargetType Type
-    {
-      get
-      {
-        return _type;
-      }
-    }
+        #region Properties
 
-    #endregion
+        public Rect[] DetectionRects { get; }
 
-    #region Overrides
+        public T TargetElement { get; }
 
-    protected virtual void Drop( LayoutAnchorableFloatingWindow floatingWindow )
-    {
-    }
+        public DropTargetType Type { get; }
 
-    protected virtual void Drop( LayoutDocumentFloatingWindow floatingWindow )
-    {
-    }
+        #endregion
 
-    #endregion
+        #region Overrides
 
-    #region Public Methods
+        protected virtual void Drop(LayoutAnchorableFloatingWindow floatingWindow)
+        {
+        }
 
-    public void Drop( LayoutFloatingWindow floatingWindow )
-    {
-      var root = floatingWindow.Root;
-      var currentActiveContent = floatingWindow.Root.ActiveContent;
-      var fwAsAnchorable = floatingWindow as LayoutAnchorableFloatingWindow;
+        protected virtual void Drop(LayoutDocumentFloatingWindow floatingWindow)
+        {
+        }
 
-      if( fwAsAnchorable != null )
-      {
-        this.Drop( fwAsAnchorable );
-      }
-      else
-      {
-        var fwAsDocument = floatingWindow as LayoutDocumentFloatingWindow;
-        this.Drop( fwAsDocument );
-      }
+        #endregion
 
-      Dispatcher.BeginInvoke( new Action( () =>
+        #region Public Methods
+
+        public void Drop(LayoutFloatingWindow floatingWindow)
+        {
+            var root = floatingWindow.Root;
+            var currentActiveContent = floatingWindow.Root.ActiveContent;
+            var fwAsAnchorable = floatingWindow as LayoutAnchorableFloatingWindow;
+
+            if (fwAsAnchorable != null)
             {
-              currentActiveContent.IsSelected = false;
-              currentActiveContent.IsActive = false;
-              currentActiveContent.IsActive = true;
-            } ), DispatcherPriority.Background );
+                Drop(fwAsAnchorable);
+            }
+            else
+            {
+                var fwAsDocument = floatingWindow as LayoutDocumentFloatingWindow;
+                Drop(fwAsDocument);
+            }
+
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                currentActiveContent.IsSelected = false;
+                currentActiveContent.IsActive = false;
+                currentActiveContent.IsActive = true;
+            }), DispatcherPriority.Background);
+        }
+
+        public virtual bool HitTest(Point dragPoint)
+        {
+            return DetectionRects.Any(dr => dr.Contains(dragPoint));
+        }
+
+        public abstract Geometry GetPreviewPath(OverlayWindow overlayWindow, LayoutFloatingWindow floatingWindow);
+
+        public void DragEnter()
+        {
+            SetIsDraggingOver(TargetElement, true);
+        }
+
+        public void DragLeave()
+        {
+            SetIsDraggingOver(TargetElement, false);
+        }
+
+        #endregion
     }
-
-    public virtual bool HitTest( Point dragPoint )
-    {
-      return _detectionRect.Any( dr => dr.Contains( dragPoint ) );
-    }
-
-    public abstract Geometry GetPreviewPath( OverlayWindow overlayWindow, LayoutFloatingWindow floatingWindow );
-
-    public void DragEnter()
-    {
-      SetIsDraggingOver( TargetElement, true );
-    }
-
-    public void DragLeave()
-    {
-      SetIsDraggingOver( TargetElement, false );
-    }
-
-    #endregion
-  }
 }

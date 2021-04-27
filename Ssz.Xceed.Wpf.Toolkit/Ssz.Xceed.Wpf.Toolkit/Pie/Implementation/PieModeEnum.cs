@@ -16,10 +16,10 @@
 
 namespace Ssz.Xceed.Wpf.Toolkit
 {
-  public enum PieMode
-  {
-    Manual,
-    EndAngle,
-    Slice,
-  }
+    public enum PieMode
+    {
+        Manual,
+        EndAngle,
+        Slice
+    }
 }

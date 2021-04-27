@@ -18,11 +18,8 @@ using System.Windows;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 {
-  internal interface IOverlayWindowArea
-  {
-    Rect ScreenDetectionArea
+    internal interface IOverlayWindowArea
     {
-      get;
+        Rect ScreenDetectionArea { get; }
     }
-  }
 }

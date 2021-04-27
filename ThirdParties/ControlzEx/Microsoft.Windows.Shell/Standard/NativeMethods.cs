@@ -746,7 +746,7 @@ namespace ControlzEx.Standard
     /// </summary>
     [Obsolete(ControlzEx.DesignerConstants.Win32ElementWarning)]
     [Flags]
-    [CLSCompliant(false)]
+    
     public enum CS : uint
     {
         VREDRAW = 0x0001,
@@ -769,7 +769,7 @@ namespace ControlzEx.Standard
     /// </summary>
     [Obsolete(ControlzEx.DesignerConstants.Win32ElementWarning)]
     [Flags]
-    [CLSCompliant(false)]
+    
     public enum WS : uint
     {
         OVERLAPPED = 0x00000000,
@@ -987,7 +987,7 @@ namespace ControlzEx.Standard
     /// </summary>
     [Flags]
     [Obsolete(ControlzEx.DesignerConstants.Win32ElementWarning)]
-    [CLSCompliant(false)]
+    
     public enum WS_EX : uint
     {
         None = 0,
@@ -1058,7 +1058,7 @@ namespace ControlzEx.Standard
     /// "FILEOP_FLAGS", FOF_*.
     /// </summary>
     [Obsolete(ControlzEx.DesignerConstants.Win32ElementWarning)]
-    [CLSCompliant(false)]
+    
     public enum FOF : ushort
     {
         MULTIDESTFILES = 0x0001,
@@ -1084,7 +1084,7 @@ namespace ControlzEx.Standard
     /// </summary>
     [Obsolete(ControlzEx.DesignerConstants.Win32ElementWarning)]
     [Flags]
-    [CLSCompliant(false)]
+    
     public enum MF : uint
     {
         /// <summary>
@@ -1099,7 +1099,7 @@ namespace ControlzEx.Standard
 
     /// <summary>Specifies the type of visual style attribute to set on a window.</summary>
     [Obsolete(ControlzEx.DesignerConstants.Win32ElementWarning)]
-    [CLSCompliant(false)]
+    
     public enum WINDOWTHEMEATTRIBUTETYPE : uint
     {
         /// <summary>Non-client area window attributes will be set.</summary>
@@ -1158,7 +1158,7 @@ namespace ControlzEx.Standard
     /// </summary>
     [Obsolete(ControlzEx.DesignerConstants.Win32ElementWarning)]
     [Flags]
-    [CLSCompliant(false)]
+    
     public enum WTNCA : uint
     {
         /// <summary>Prevents the window caption from being drawn.</summary>
@@ -1182,7 +1182,7 @@ namespace ControlzEx.Standard
     /// </summary>
     [Obsolete(ControlzEx.DesignerConstants.Win32ElementWarning)]
     [Flags]
-    [CLSCompliant(false)]
+    
     public enum SWP : uint
     {
         /// <summary>
@@ -1389,7 +1389,7 @@ namespace ControlzEx.Standard
     /// Shell_NotifyIcon messages.  NIM_*
     /// </summary>
     [Obsolete(ControlzEx.DesignerConstants.Win32ElementWarning)]
-    [CLSCompliant(false)]
+    
     public enum NIM : uint
     {
         ADD = 0,
@@ -1427,7 +1427,7 @@ namespace ControlzEx.Standard
     /// </summary>
     [Obsolete(ControlzEx.DesignerConstants.Win32ElementWarning)]
     [Flags]
-    [CLSCompliant(false)]
+    
     public enum NIF : uint
     {
         MESSAGE = 0x0001,
@@ -1961,7 +1961,7 @@ namespace ControlzEx.Standard
         // double-null terminated arrays of LPWSTRS
         public string pFrom;
         public string pTo;
-        [CLSCompliant(false)]
+        
         [MarshalAs(UnmanagedType.U2)]
         public FOF fFlags;
         [MarshalAs(UnmanagedType.Bool)]
@@ -2010,7 +2010,7 @@ namespace ControlzEx.Standard
         public int cbSize;
         public IntPtr hWnd;
         public int uID;
-        [CLSCompliant(false)]
+        
         public NIF uFlags;
         public int uCallbackMessage;
         public IntPtr hIcon;
@@ -2022,18 +2022,18 @@ namespace ControlzEx.Standard
         /// NIS_HIDDEN = 1.  The icon is hidden.
         /// NIS_SHAREDICON = 2.  The icon is shared.
         /// </summary>
-        [CLSCompliant(false)]
+        
         public uint dwState;
-        [CLSCompliant(false)]
+        
         public uint dwStateMask;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
         public char[] szInfo = new char[256];
         // Prior to Vista this was a union of uTimeout and uVersion.  As of Vista, uTimeout has been deprecated.
-        [CLSCompliant(false)]
+        
         public uint uVersion;  // Used with Shell_NotifyIcon flag NIM_SETVERSION.
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 64)]
         public char[] szInfoTitle = new char[64];
-        [CLSCompliant(false)]
+        
         public uint dwInfoFlags;
         public Guid guidItem;
         // Vista only
@@ -2121,7 +2121,7 @@ namespace ControlzEx.Standard
     public struct WTA_OPTIONS
     {
         // public static readonly uint Size = (uint)Marshal.SizeOf(typeof(WTA_OPTIONS));
-        [CLSCompliant(false)]
+        
         public const uint Size = 8;
 
         /// <summary>
@@ -2129,7 +2129,7 @@ namespace ControlzEx.Standard
         /// Can be a combination of the WTNCA constants.
         /// </summary>
         [FieldOffset(0)]
-        [CLSCompliant(false)]
+        
         public WTNCA dwFlags;
 
         /// <summary>
@@ -2138,7 +2138,7 @@ namespace ControlzEx.Standard
         /// If the bit is 1, the flag will be added.
         /// </summary>
         [FieldOffset(4)]
-        [CLSCompliant(false)]
+        
         public WTNCA dwMask;
     }
 
@@ -2393,7 +2393,7 @@ namespace ControlzEx.Standard
         public int y;
         public int cx;
         public int cy;
-        [CLSCompliant(false)]
+        
         public SWP flags;
 
         /// <inheritdoc />
@@ -2466,7 +2466,7 @@ namespace ControlzEx.Standard
     public struct WNDCLASSEX
     {
         public int cbSize;
-        [CLSCompliant(false)]
+        
         public CS style;
         public WndProc lpfnWndProc;
         public int cbClsExtra;
@@ -2491,15 +2491,15 @@ namespace ControlzEx.Standard
         public RECT rcClient;
         public int dwStyle;
         public int dwExStyle;
-        [CLSCompliant(false)]
+        
         public uint dwWindowStatus;
-        [CLSCompliant(false)]
+        
         public uint cxWindowBorders;
-        [CLSCompliant(false)]
+        
         public uint cyWindowBorders;
-        [CLSCompliant(false)]
+        
         public ushort atomWindowType;
-        [CLSCompliant(false)]
+        
         public ushort wCreatorVersion;
     }
 
@@ -2519,14 +2519,14 @@ namespace ControlzEx.Standard
     [StructLayout(LayoutKind.Sequential)]
     public struct INPUT
     {
-        [CLSCompliant(false)]
+        
         public uint type;
         public MOUSEINPUT mi;
     }
 
     [Obsolete(ControlzEx.DesignerConstants.Win32ElementWarning)]
     [StructLayout(LayoutKind.Sequential)]
-    [CLSCompliant(false)]
+    
     public struct UNSIGNED_RATIO
     {
         public uint uiNumerator;
@@ -2535,7 +2535,7 @@ namespace ControlzEx.Standard
 
     [Obsolete(ControlzEx.DesignerConstants.Win32ElementWarning)]
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    [CLSCompliant(false)]
+    
     public struct DWM_TIMING_INFO
     {
         public int cbSize;
@@ -2684,7 +2684,7 @@ namespace ControlzEx.Standard
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool _AdjustWindowRectEx(ref RECT lpRect, WS dwStyle, [MarshalAs(UnmanagedType.Bool)] bool bMenu, WS_EX dwExStyle);
 
-        [CLSCompliant(false)]
+        
         public static RECT AdjustWindowRectEx(RECT lpRect, WS dwStyle, bool bMenu, WS_EX dwExStyle)
         {
             // Native version modifies the parameter in place.
@@ -2896,7 +2896,7 @@ namespace ControlzEx.Standard
             IntPtr hInstance,
             IntPtr lpParam);
 
-        [CLSCompliant(false)]
+        
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static IntPtr CreateWindowEx(
             WS_EX dwExStyle,
@@ -2946,7 +2946,7 @@ namespace ControlzEx.Standard
         [DllImport("dwmapi.dll", EntryPoint = "DwmGetColorizationColor", PreserveSig = true)]
         private static extern HRESULT _DwmGetColorizationColor(out uint pcrColorization, [Out, MarshalAs(UnmanagedType.Bool)] out bool pfOpaqueBlend);
 
-        [CLSCompliant(false)]
+        
         public static bool DwmGetColorizationColor(out uint pcrColorization, out bool pfOpaqueBlend)
         {
             // Make this call safe to make on downlevel OSes...
@@ -2973,7 +2973,7 @@ namespace ControlzEx.Standard
         [DllImport("dwmapi.dll", EntryPoint = "DwmGetCompositionTimingInfo")]
         private static extern HRESULT _DwmGetCompositionTimingInfo(IntPtr hwnd, ref DWM_TIMING_INFO pTimingInfo);
 
-        [CLSCompliant(false)]
+        
         public static DWM_TIMING_INFO? DwmGetCompositionTimingInfo(IntPtr hwnd)
         {
             if (!Utility.IsOSVistaOrNewer)
@@ -3034,7 +3034,7 @@ namespace ControlzEx.Standard
         [DllImport("user32.dll", EntryPoint = "EnableMenuItem")]
         private static extern int _EnableMenuItem(IntPtr hMenu, SC uIDEnableItem, MF uEnable);
 
-        [CLSCompliant(false)]
+        
         public static MF EnableMenuItem(IntPtr hMenu, SC uIDEnableItem, MF uEnable)
         {
             // Returns the previous state of the menu item, or -1 if the menu item does not exist.
@@ -3046,7 +3046,7 @@ namespace ControlzEx.Standard
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool _RemoveMenu(IntPtr hMenu, uint uPosition, uint uFlags);
 
-        [CLSCompliant(false)]
+        
         public static void RemoveMenu(IntPtr hMenu, SC uPosition, MF uFlags)
         {
             if (!_RemoveMenu(hMenu, (uint)uPosition, (uint)uFlags))
@@ -3357,14 +3357,14 @@ namespace ControlzEx.Standard
         public static extern int GetSystemMetrics(SM nIndex);
 
         [DllImport("kernel32.dll")]
-        [CLSCompliant(false)]
+        
         public static extern uint GetCurrentThreadId();
 
         public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        [CLSCompliant(false)]
+        
         public static extern bool EnumThreadWindows(uint dwThreadId, EnumWindowsProc lpfn, IntPtr lParam);
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -3393,25 +3393,25 @@ namespace ControlzEx.Standard
             return info;
         }
 
-        [CLSCompliant(false)]
+        
         public static WS GetWindowStyle(IntPtr hWnd)
         {
             return (WS)GetWindowLongPtr(hWnd, GWL.STYLE);
         }
 
-        [CLSCompliant(false)]
+        
         public static WS_EX GetWindowStyleEx(IntPtr hWnd)
         {
             return (WS_EX)GetWindowLongPtr(hWnd, GWL.EXSTYLE);
         }
 
-        [CLSCompliant(false)]
+        
         public static WS SetWindowStyle(IntPtr hWnd, WS dwNewLong)
         {
             return (WS)SetWindowLongPtr(hWnd, GWL.STYLE, (IntPtr)(int)dwNewLong);
         }
 
-        [CLSCompliant(false)]
+        
         public static WS_EX SetWindowStyleEx(IntPtr hWnd, WS_EX dwNewLong)
         {
             return (WS_EX)SetWindowLongPtr(hWnd, GWL.EXSTYLE, (IntPtr)(int)dwNewLong);
@@ -3508,7 +3508,7 @@ namespace ControlzEx.Standard
         /// Specifies the size, in bytes, of the data pointed to by pvAttribute.
         /// </param>
         [DllImport("uxtheme.dll", PreserveSig = false)]
-        [CLSCompliant(false)]
+        
         public static extern void SetWindowThemeAttribute([In] IntPtr hwnd, [In] WINDOWTHEMEATTRIBUTETYPE eAttribute, [In] ref WTA_OPTIONS pvAttribute, [In] uint cbAttribute);
 
         [DllImport("user32.dll", EntryPoint = "GetWindowLong", SetLastError = true)]
@@ -3648,11 +3648,11 @@ namespace ControlzEx.Standard
         private static extern IntPtr _LocalFree(IntPtr hMem);
 
         [DllImport("user32.dll")]
-        [CLSCompliant(false)]
+        
         public static extern IntPtr MonitorFromWindow(IntPtr hwnd, MonitorOptions dwFlags);
 
         [DllImport("user32.dll")]
-        [CLSCompliant(false)]
+        
         public static extern IntPtr MonitorFromPoint(POINT pt, MonitorOptions dwFlags);
 
         /// <summary>
@@ -3669,7 +3669,7 @@ namespace ControlzEx.Standard
         /// If the rectangle does not intersect a display monitor, the return value depends on the value of dwFlags.
         /// </returns>
         [DllImport("user32.dll")]
-        [CLSCompliant(false)]
+        
         public static extern IntPtr MonitorFromRect([In] ref RECT lprc, MonitorOptions dwFlags);
 
         /// <summary>
@@ -3683,7 +3683,7 @@ namespace ControlzEx.Standard
         /// <param name="fuLoad">This parameter can be one or more of the following values.</param>
         /// <returns>If the function succeeds, the return value is the requested value.If the function fails, the return value is zero. To get extended error information, call GetLastError. </returns>
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        [CLSCompliant(false)]
+        
         public static extern IntPtr LoadImage(IntPtr hinst, IntPtr lpszName, uint uType, int cxDesired, int cyDesired, uint fuLoad);
 
         [DllImport("user32.dll")]
@@ -3693,18 +3693,18 @@ namespace ControlzEx.Standard
         public static extern IntPtr SetFocus(IntPtr hWnd);
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        [CLSCompliant(false)]
+        
         public static extern int ToUnicode(uint virtualKey, uint scanCode, byte[] keyStates, [MarshalAs(UnmanagedType.LPArray)][Out] char[] chars, int charMaxCount, uint flags);
 
         [DllImport("user32.dll")]
         public static extern bool GetKeyboardState(byte[] lpKeyState);
 
         [DllImport("user32.dll")]
-        [CLSCompliant(false)]
+        
         public static extern uint MapVirtualKey(uint uCode, MapType uMapType);
 
         // ReSharper disable InconsistentNaming
-        [CLSCompliant(false)]
+        
         public enum MapType : uint
         {
             MAPVK_VK_TO_VSC = 0x0,
@@ -3795,11 +3795,11 @@ namespace ControlzEx.Standard
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        [CLSCompliant(false)]
+        
         public static extern bool FlashWindowEx(ref FLASHWINFO flashInfo);
 
         [StructLayout(LayoutKind.Sequential)]
-        [CLSCompliant(false)]
+        
         public struct FLASHWINFO
         {
             public uint cbSize;
@@ -3809,7 +3809,7 @@ namespace ControlzEx.Standard
             public uint dwTimeout;
         }
 
-        [CLSCompliant(false)]
+        
         public enum FlashWindowFlag : uint
         {
             /// <summary>
@@ -3900,7 +3900,7 @@ namespace ControlzEx.Standard
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool _SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, SWP uFlags);
 
-        [CLSCompliant(false)]
+        
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, SWP uFlags)
         {
@@ -3973,7 +3973,7 @@ namespace ControlzEx.Standard
         */
         // Currently it's only used with TPM_RETURNCMD, so making the signature match that.
         [DllImport("user32.dll")]
-        [CLSCompliant(false)]
+        
         public static extern uint TrackPopupMenuEx(IntPtr hmenu, uint fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
 
         [DllImport("gdi32.dll", EntryPoint = "SelectObject", SetLastError = true)]
@@ -4099,7 +4099,7 @@ namespace ControlzEx.Standard
         public static extern IntPtr FindWindow(string lpClassName, string? lpWindowName);
 
         [DllImport("shell32.dll", CallingConvention = CallingConvention.StdCall)]
-        [CLSCompliant(false)]
+        
         public static extern uint SHAppBarMessage(int dwMessage, ref APPBARDATA pData);
 
         #region Win7 declarations
@@ -4117,7 +4117,7 @@ namespace ControlzEx.Standard
 
         [DllImport("shell32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        [CLSCompliant(false)]
+        
         public static extern bool Shell_NotifyIcon(NIM dwMessage, [In] NOTIFYICONDATA lpdata);
 
         #endregion

@@ -14,36 +14,35 @@
 
   ***********************************************************************************/
 
+using System;
+using System.Windows;
+
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Editors
 {
-  public class PrimitiveTypeCollectionEditor : TypeEditor<PrimitiveTypeCollectionControl>
-  {
-    protected override void SetControlProperties()
+    public class PrimitiveTypeCollectionEditor : TypeEditor<PrimitiveTypeCollectionControl>
     {
-      Editor.BorderThickness = new System.Windows.Thickness( 0 );
-      Editor.Content = "(Collection)";
+        protected override void SetControlProperties()
+        {
+            Editor.BorderThickness = new Thickness(0);
+            Editor.Content = "(Collection)";
+        }
+
+        protected override void SetValueDependencyProperty()
+        {
+            ValueProperty = PrimitiveTypeCollectionControl.ItemsSourceProperty;
+        }
+
+        protected override void ResolveValueBinding(PropertyItem propertyItem)
+        {
+            var type = propertyItem.PropertyType;
+            Editor.ItemsSourceType = type;
+
+            if (type.BaseType == typeof(Array))
+                Editor.ItemType = type.GetElementType();
+            else
+                Editor.ItemType = type.GetGenericArguments()[0];
+
+            base.ResolveValueBinding(propertyItem);
+        }
     }
-
-    protected override void SetValueDependencyProperty()
-    {
-      ValueProperty = PrimitiveTypeCollectionControl.ItemsSourceProperty;
-    }
-
-    protected override void ResolveValueBinding( PropertyItem propertyItem )
-    {
-      var type = propertyItem.PropertyType;
-      Editor.ItemsSourceType = type;
-
-      if( type.BaseType == typeof( System.Array ) )
-      {
-        Editor.ItemType = type.GetElementType();
-      }
-      else
-      {
-        Editor.ItemType = type.GetGenericArguments()[ 0 ];
-      }
-
-      base.ResolveValueBinding( propertyItem );
-    }
-  }
 }

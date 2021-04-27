@@ -18,31 +18,25 @@ using System.ComponentModel;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Layout.Serialization
 {
-  public class LayoutSerializationCallbackEventArgs : CancelEventArgs
-  {
-    #region constructor
-
-    public LayoutSerializationCallbackEventArgs( LayoutContent model, object previousContent )
+    public class LayoutSerializationCallbackEventArgs : CancelEventArgs
     {
-      Cancel = false;
-      Model = model;
-      Content = previousContent;
+        #region constructor
+
+        public LayoutSerializationCallbackEventArgs(LayoutContent model, object previousContent)
+        {
+            Cancel = false;
+            Model = model;
+            Content = previousContent;
+        }
+
+        #endregion
+
+        #region Properties
+
+        public LayoutContent Model { get; }
+
+        public object Content { get; set; }
+
+        #endregion
     }
-
-    #endregion
-
-    #region Properties
-
-    public LayoutContent Model
-    {
-      get; private set;
-    }
-
-    public object Content
-    {
-      get; set;
-    }
-
-    #endregion
-  }
 }

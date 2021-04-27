@@ -15,92 +15,94 @@
   ***********************************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Windows;
 
 namespace Ssz.Xceed.Wpf.Toolkit.Core
 {
-  public class VersionResourceDictionary : ResourceDictionary, ISupportInitialize
-  {
-    private int _initializingCount;
-    private string _assemblyName;
-    private string _sourcePath;
-
-
-    public VersionResourceDictionary() { }
-
-    public VersionResourceDictionary(string assemblyName, string sourcePath)
+    public class VersionResourceDictionary : ResourceDictionary, ISupportInitialize
     {
-      ( ( ISupportInitialize )this ).BeginInit();
-      this.AssemblyName = assemblyName;
-      this.SourcePath = sourcePath;
-      ( ( ISupportInitialize )this ).EndInit();
-    }
+        private string _assemblyName;
+        private int _initializingCount;
+        private string _sourcePath;
 
-    public string AssemblyName
-    {
-      get { return _assemblyName; }
-      set 
-      {
-        this.EnsureInitialization();
-        _assemblyName = value; 
-      }
-    }
 
-    public string SourcePath
-    {
-      get { return _sourcePath; }
-      set 
-      {
-        this.EnsureInitialization();
-        _sourcePath = value; 
-      }
-    }
+        public VersionResourceDictionary()
+        {
+        }
 
-    private void EnsureInitialization()
-    {
-      if( _initializingCount <= 0 )
-        throw new InvalidOperationException( "VersionResourceDictionary properties can only be set while initializing" );
-    }
+        public VersionResourceDictionary(string assemblyName, string sourcePath)
+        {
+            ((ISupportInitialize) this).BeginInit();
+            AssemblyName = assemblyName;
+            SourcePath = sourcePath;
+            ((ISupportInitialize) this).EndInit();
+        }
 
-    void ISupportInitialize.BeginInit()
-    {
-      base.BeginInit();
-      _initializingCount++;
-    }
+        public string AssemblyName
+        {
+            get => _assemblyName;
+            set
+            {
+                EnsureInitialization();
+                _assemblyName = value;
+            }
+        }
 
-    void ISupportInitialize.EndInit()
-    {
-      _initializingCount--;
-      Debug.Assert( _initializingCount >= 0 );
+        public string SourcePath
+        {
+            get => _sourcePath;
+            set
+            {
+                EnsureInitialization();
+                _sourcePath = value;
+            }
+        }
 
-      if( _initializingCount <= 0 )
-      {
-        if( this.Source != null )
-          throw new InvalidOperationException( "Source property cannot be initialized on the VersionResourceDictionary" );
+        void ISupportInitialize.BeginInit()
+        {
+            base.BeginInit();
+            _initializingCount++;
+        }
 
-        if( string.IsNullOrEmpty( this.AssemblyName ) || string.IsNullOrEmpty( this.SourcePath ) )
-          throw new InvalidOperationException( "AssemblyName and SourcePath must be set during initialization" );
+        void ISupportInitialize.EndInit()
+        {
+            _initializingCount--;
+            Debug.Assert(_initializingCount >= 0);
+
+            if (_initializingCount <= 0)
+            {
+                if (Source != null)
+                    throw new InvalidOperationException(
+                        "Source property cannot be initialized on the VersionResourceDictionary");
+
+                if (string.IsNullOrEmpty(AssemblyName) || string.IsNullOrEmpty(SourcePath))
+                    throw new InvalidOperationException(
+                        "AssemblyName and SourcePath must be set during initialization");
 
                 //Using an absolute path is necessary in VS2015 for themes different than Windows 8.
                 //string uriStr = string.Format( @"pack://application:,,,/{0};v{1};component/{2}", this.AssemblyName, "2.1.0.0", this.SourcePath );
-                string uriStr = string.Format(@"pack://application:,,,/{0};component/{1}", this.AssemblyName, this.SourcePath);
-                this.Source = new Uri( uriStr, UriKind.Absolute );
-      }
+                var uriStr = string.Format(@"pack://application:,,,/{0};component/{1}", AssemblyName, SourcePath);
+                Source = new Uri(uriStr, UriKind.Absolute);
+            }
 
-      base.EndInit();
+            base.EndInit();
+        }
+
+        private void EnsureInitialization()
+        {
+            if (_initializingCount <= 0)
+                throw new InvalidOperationException(
+                    "VersionResourceDictionary properties can only be set while initializing");
+        }
+
+
+        private enum InitState
+        {
+            NotInitialized,
+            Initializing,
+            Initialized
+        }
     }
-
-
-    private enum InitState
-    {
-      NotInitialized,
-      Initializing,
-      Initialized
-    };
-  }
 }

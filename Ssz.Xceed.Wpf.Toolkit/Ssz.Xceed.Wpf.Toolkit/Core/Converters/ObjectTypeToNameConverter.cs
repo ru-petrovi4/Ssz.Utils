@@ -15,30 +15,31 @@
   ***********************************************************************************/
 
 using System;
+using System.Globalization;
 using System.Windows.Data;
 
 namespace Ssz.Xceed.Wpf.Toolkit.Core.Converters
 {
-  public class ObjectTypeToNameConverter : IValueConverter
-  {
-    public object Convert( object value, Type targetType, object parameter, System.Globalization.CultureInfo culture )
+    public class ObjectTypeToNameConverter : IValueConverter
     {
-      if( value != null )
-      {
-        string valueString = value.ToString();
-        if( string.IsNullOrEmpty( valueString )
-         || string.IsNullOrWhiteSpace( valueString )
-         || ( valueString == value.GetType().UnderlyingSystemType.ToString() ) )
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-          return value.GetType().Name;
+            if (value != null)
+            {
+                var valueString = value.ToString();
+                if (string.IsNullOrEmpty(valueString)
+                    || string.IsNullOrWhiteSpace(valueString)
+                    || valueString == value.GetType().UnderlyingSystemType.ToString())
+                    return value.GetType().Name;
+                return value;
+            }
+
+            return null;
         }
-        return value; 
-      }
-      return null;
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
-    public object ConvertBack( object value, Type targetType, object parameter, System.Globalization.CultureInfo culture )
-    {
-      throw new NotImplementedException();
-    }
-  }
 }

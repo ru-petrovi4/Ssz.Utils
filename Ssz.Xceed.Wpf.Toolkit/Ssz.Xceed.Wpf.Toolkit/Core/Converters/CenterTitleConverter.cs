@@ -15,14 +15,10 @@
   ***********************************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Data;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace Ssz.Xceed.Wpf.Toolkit.Core.Converters
 {
@@ -31,16 +27,16 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Converters
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             // Parameters: DesiredSize, WindowWidth, HeaderColumns
-            double titleTextWidth = ((Size)values[0]).Width;
-            double windowWidth = (double)values[1];
+            var titleTextWidth = ((Size) values[0]).Width;
+            var windowWidth = (double) values[1];
 
-            ColumnDefinitionCollection headerColumns = (ColumnDefinitionCollection)values[2];
-            double titleColWidth = headerColumns[2].ActualWidth;
-            double buttonsColWidth = headerColumns[3].ActualWidth;
+            var headerColumns = (ColumnDefinitionCollection) values[2];
+            var titleColWidth = headerColumns[2].ActualWidth;
+            var buttonsColWidth = headerColumns[3].ActualWidth;
 
 
             // Result (1) Title is Centered across all HeaderColumns
-            if ((titleTextWidth + buttonsColWidth * 2) < windowWidth)
+            if (titleTextWidth + buttonsColWidth * 2 < windowWidth)
                 return 1;
 
             // Result (2) Title is Centered in HeaderColumns[2]

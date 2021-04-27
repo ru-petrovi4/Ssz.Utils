@@ -22,28 +22,26 @@ using System.Windows.Data;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Converters
 {
-  public class AnchorableContextMenuHideVisibilityConverter : IMultiValueConverter
-  {
-    public object Convert( object[] values, Type targetType, object parameter, CultureInfo culture )
+    public class AnchorableContextMenuHideVisibilityConverter : IMultiValueConverter
     {
-      if( ( values.Count() == 2 )
-        && ( values[ 0 ] != DependencyProperty.UnsetValue )
-        && ( values[ 1 ] != DependencyProperty.UnsetValue )
-        && ( values[ 1 ] is bool ) )
-      {
-        var canClose = ( bool )values[ 1 ];
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values.Count() == 2
+                && values[0] != DependencyProperty.UnsetValue
+                && values[1] != DependencyProperty.UnsetValue
+                && values[1] is bool)
+            {
+                var canClose = (bool) values[1];
 
-        return canClose ? Visibility.Collapsed : values[ 0 ];
-      }
-      else
-      {
-        return values[ 0 ];
-      }
-    }
+                return canClose ? Visibility.Collapsed : values[0];
+            }
 
-    public object[] ConvertBack( object value, Type[] targetTypes, object parameter, CultureInfo culture )
-    {
-      throw new NotImplementedException();
+            return values[0];
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
-  }
 }

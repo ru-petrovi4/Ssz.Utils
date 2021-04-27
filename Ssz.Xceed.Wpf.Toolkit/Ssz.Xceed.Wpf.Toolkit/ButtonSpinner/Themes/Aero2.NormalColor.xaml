@@ -43,47 +43,61 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:ButtonSpinner}">
-                    <Border x:Name="Border" SnapsToDevicePixels="True" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" >
+                    <Border x:Name="Border" SnapsToDevicePixels="True" Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <ContentPresenter Focusable="False" Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                            <ContentPresenter Focusable="False" Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
 
-                            <Grid Grid.Column="1" Visibility="{TemplateBinding ShowButtonSpinner, Converter={StaticResource BooleanToVisibilityConverter}}" Width="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}">
+                            <Grid Grid.Column="1"
+                                  Visibility="{TemplateBinding ShowButtonSpinner, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                  Width="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
 
                                 <RepeatButton x:Name="PART_IncreaseButton"
-                                   Style="{DynamicResource {x:Static themes:ResourceKeys.SpinnerButtonStyleKey}}"
-                                   IsTabStop="{TemplateBinding IsTabStop}" ContentTemplate="{StaticResource IncreaseGlyphNormalKey}" />
+                                              Style="{DynamicResource {x:Static themes:ResourceKeys.SpinnerButtonStyleKey}}"
+                                              IsTabStop="{TemplateBinding IsTabStop}"
+                                              ContentTemplate="{StaticResource IncreaseGlyphNormalKey}" />
 
                                 <RepeatButton x:Name="PART_DecreaseButton"
-                                   Grid.Row="1"
-                                   Style="{DynamicResource {x:Static themes:ResourceKeys.SpinnerButtonStyleKey}}"
-                                   IsTabStop="{TemplateBinding IsTabStop}" ContentTemplate="{StaticResource DecreaseGlyphNormalKey}" />
+                                              Grid.Row="1"
+                                              Style="{DynamicResource {x:Static themes:ResourceKeys.SpinnerButtonStyleKey}}"
+                                              IsTabStop="{TemplateBinding IsTabStop}"
+                                              ContentTemplate="{StaticResource DecreaseGlyphNormalKey}" />
 
                             </Grid>
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static themes:ResourceKeys.ControlMouseOverBorderKey}}" />
+                            <Setter Property="BorderBrush"
+                                    Value="{DynamicResource {x:Static themes:ResourceKeys.ControlMouseOverBorderKey}}" />
                         </Trigger>
                         <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static themes:ResourceKeys.ControlSelectedBorderKey}}" />
+                            <Setter Property="BorderBrush"
+                                    Value="{DynamicResource {x:Static themes:ResourceKeys.ControlSelectedBorderKey}}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Background" Value="{DynamicResource {x:Static themes:ResourceKeys.ControlDisabledBackgroundKey}}" />
+                            <Setter Property="Background"
+                                    Value="{DynamicResource {x:Static themes:ResourceKeys.ControlDisabledBackgroundKey}}" />
                         </Trigger>
                         <Trigger SourceName="PART_IncreaseButton" Property="IsEnabled" Value="False">
-                            <Setter TargetName="PART_IncreaseButton" Property="ContentTemplate" Value="{StaticResource IncreaseGlyphDisabledKey}" />
+                            <Setter TargetName="PART_IncreaseButton" Property="ContentTemplate"
+                                    Value="{StaticResource IncreaseGlyphDisabledKey}" />
                         </Trigger>
                         <Trigger SourceName="PART_DecreaseButton" Property="IsEnabled" Value="False">
-                            <Setter TargetName="PART_DecreaseButton" Property="ContentTemplate" Value="{StaticResource DecreaseGlyphDisabledKey}" />
+                            <Setter TargetName="PART_DecreaseButton" Property="ContentTemplate"
+                                    Value="{StaticResource DecreaseGlyphDisabledKey}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

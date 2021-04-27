@@ -23,102 +23,85 @@ using Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 {
-  internal class ObjectContainerHelper : ObjectContainerHelperBase
-  {
-    private object _selectedObject;
-
-    public ObjectContainerHelper( IPropertyContainer propertyContainer, object selectedObject )
-      : base( propertyContainer )
+    internal class ObjectContainerHelper : ObjectContainerHelperBase
     {
-      _selectedObject = selectedObject;
-    }
-
-    private object SelectedObject
-    {
-      get
-      {
-        return _selectedObject;
-      }
-    }
-
-    protected override string GetDefaultPropertyName()
-    {
-      object selectedObject = SelectedObject;
-      return ( selectedObject != null ) ? ObjectContainerHelperBase.GetDefaultPropertyName( SelectedObject ) : ( string )null;
-    }
-
-    protected override IEnumerable<PropertyItem> GenerateSubPropertiesCore()
-    {
-      var propertyItems = new List<PropertyItem>();
-
-      if( SelectedObject != null )
-      {
-        try
+        public ObjectContainerHelper(IPropertyContainer propertyContainer, object selectedObject)
+            : base(propertyContainer)
         {
-          List<PropertyDescriptor> descriptors = ObjectContainerHelperBase.GetPropertyDescriptors( SelectedObject );
-          foreach( var descriptor in descriptors )
-          {
-            var propertyDef = this.GetPropertyDefinition( descriptor );
-            bool isBrowsable = descriptor.IsBrowsable && this.PropertyContainer.AutoGenerateProperties;
-            if( propertyDef != null )
-            {
-              isBrowsable = propertyDef.IsBrowsable.GetValueOrDefault( isBrowsable );
-            }
-            if( isBrowsable )
-            {
-              propertyItems.Add( this.CreatePropertyItem( descriptor, propertyDef ) );
-            }
-          }
-        }
-        catch( Exception e )
-        {
-          //TODO: handle this some how
-          Debug.WriteLine( "Property creation failed" );
-          Debug.WriteLine( e.StackTrace );
-        }
-      }
-
-      return propertyItems;
-    }
-
-
-    private PropertyItem CreatePropertyItem( PropertyDescriptor property, PropertyDefinition propertyDef )
-    {
-      DescriptorPropertyDefinition definition = new DescriptorPropertyDefinition( property, SelectedObject, this.PropertyContainer.IsCategorized );
-      definition.InitProperties();
-
-      this.InitializeDescriptorDefinition( definition, propertyDef );
-
-      PropertyItem propertyItem = new PropertyItem( definition );
-      Debug.Assert( SelectedObject != null );
-      propertyItem.Instance = SelectedObject;
-      propertyItem.CategoryOrder = this.GetCategoryOrder( definition.CategoryValue );
-
-      return propertyItem;
-    }
-
-    private int GetCategoryOrder( object categoryValue )
-    {
-      Debug.Assert( SelectedObject != null );
-
-      if( categoryValue == null )
-        return int.MaxValue;
-
-      int order = int.MaxValue;
-        object selectedObject = SelectedObject;
-        CategoryOrderAttribute[] orderAttributes = ( selectedObject != null )
-          ? ( CategoryOrderAttribute[] )selectedObject.GetType().GetCustomAttributes( typeof( CategoryOrderAttribute ), true )
-          : new CategoryOrderAttribute[ 0 ];
-
-        var orderAttribute = orderAttributes
-          .FirstOrDefault( ( a ) => object.Equals( a.CategoryValue, categoryValue ) );
-
-        if( orderAttribute != null )
-        {
-          order = orderAttribute.Order;
+            SelectedObject = selectedObject;
         }
 
-      return order;
+        private object SelectedObject { get; }
+
+        protected override string GetDefaultPropertyName()
+        {
+            var selectedObject = SelectedObject;
+            return selectedObject != null ? GetDefaultPropertyName(SelectedObject) : null;
+        }
+
+        protected override IEnumerable<PropertyItem> GenerateSubPropertiesCore()
+        {
+            var propertyItems = new List<PropertyItem>();
+
+            if (SelectedObject != null)
+                try
+                {
+                    var descriptors = GetPropertyDescriptors(SelectedObject);
+                    foreach (var descriptor in descriptors)
+                    {
+                        var propertyDef = GetPropertyDefinition(descriptor);
+                        var isBrowsable = descriptor.IsBrowsable && PropertyContainer.AutoGenerateProperties;
+                        if (propertyDef != null) isBrowsable = propertyDef.IsBrowsable.GetValueOrDefault(isBrowsable);
+                        if (isBrowsable) propertyItems.Add(CreatePropertyItem(descriptor, propertyDef));
+                    }
+                }
+                catch (Exception e)
+                {
+                    //TODO: handle this some how
+                    Debug.WriteLine("Property creation failed");
+                    Debug.WriteLine(e.StackTrace);
+                }
+
+            return propertyItems;
+        }
+
+
+        private PropertyItem CreatePropertyItem(PropertyDescriptor property, PropertyDefinition propertyDef)
+        {
+            var definition =
+                new DescriptorPropertyDefinition(property, SelectedObject, PropertyContainer.IsCategorized);
+            definition.InitProperties();
+
+            InitializeDescriptorDefinition(definition, propertyDef);
+
+            var propertyItem = new PropertyItem(definition);
+            Debug.Assert(SelectedObject != null);
+            propertyItem.Instance = SelectedObject;
+            propertyItem.CategoryOrder = GetCategoryOrder(definition.CategoryValue);
+
+            return propertyItem;
+        }
+
+        private int GetCategoryOrder(object categoryValue)
+        {
+            Debug.Assert(SelectedObject != null);
+
+            if (categoryValue == null)
+                return int.MaxValue;
+
+            var order = int.MaxValue;
+            var selectedObject = SelectedObject;
+            var orderAttributes = selectedObject != null
+                ? (CategoryOrderAttribute[]) selectedObject.GetType()
+                    .GetCustomAttributes(typeof(CategoryOrderAttribute), true)
+                : new CategoryOrderAttribute[0];
+
+            var orderAttribute = orderAttributes
+                .FirstOrDefault(a => Equals(a.CategoryValue, categoryValue));
+
+            if (orderAttribute != null) order = orderAttribute.Order;
+
+            return order;
+        }
     }
-  }
 }

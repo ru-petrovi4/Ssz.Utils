@@ -18,10 +18,11 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:core="clr-namespace:Ssz.Xceed.Wpf.Toolkit.Core">
 
-   <ResourceDictionary.MergedDictionaries>
-      <core:VersionResourceDictionary AssemblyName="Ssz.Xceed.Wpf.Toolkit" SourcePath="Themes/Aero/Brushes_NormalColor.xaml"/>
-      <core:VersionResourceDictionary AssemblyName="Ssz.Xceed.Wpf.Toolkit"
-                                      SourcePath="Themes/Aero/Buttons_NormalColor.xaml"/>
-   </ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary.MergedDictionaries>
+        <core:VersionResourceDictionary AssemblyName="Ssz.Xceed.Wpf.Toolkit"
+                                        SourcePath="Themes/Aero/Brushes_NormalColor.xaml" />
+        <core:VersionResourceDictionary AssemblyName="Ssz.Xceed.Wpf.Toolkit"
+                                        SourcePath="Themes/Aero/Buttons_NormalColor.xaml" />
+    </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

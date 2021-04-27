@@ -19,98 +19,91 @@ using System.Collections.Generic;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 {
-  internal class FullWeakDictionary<K, V> where K : class
-  {
-    #region Members
-
-    private List<WeakReference> _keys = new List<WeakReference>();
-    private List<WeakReference> _values = new List<WeakReference>();
-
-    #endregion
-
-    #region Constructors
-
-    public FullWeakDictionary()
+    internal class FullWeakDictionary<K, V> where K : class
     {
-    }
+        #region Constructors
 
-    #endregion
+        #endregion
 
-    #region Public Methods
+        #region Members
 
-    public V this[ K key ]
-    {
-      get
-      {
-        V valueToReturn;
-        if( !GetValue( key, out valueToReturn ) )
-          throw new ArgumentException();
-        return valueToReturn;
-      }
-      set
-      {
-        SetValue( key, value );
-      }
-    }
+        private readonly List<WeakReference> _keys = new();
+        private readonly List<WeakReference> _values = new();
 
-    public bool ContainsKey( K key )
-    {
-      CollectGarbage();
-      return -1 != _keys.FindIndex( k => k.GetValueOrDefault<K>() == key );
-    }
+        #endregion
 
-    public void SetValue( K key, V value )
-    {
-      CollectGarbage();
-      int vIndex = _keys.FindIndex( k => k.GetValueOrDefault<K>() == key );
-      if( vIndex > -1 )
-        _values[ vIndex ] = new WeakReference( value );
-      else
-      {
-        _values.Add( new WeakReference( value ) );
-        _keys.Add( new WeakReference( key ) );
-      }
-    }
+        #region Public Methods
 
-    public bool GetValue( K key, out V value )
-    {
-      CollectGarbage();
-      int vIndex = _keys.FindIndex( k => k.GetValueOrDefault<K>() == key );
-      value = default( V );
-      if( vIndex == -1 )
-        return false;
-      value = _values[ vIndex ].GetValueOrDefault<V>();
-      return true;
-    }
-
-    void CollectGarbage()
-    {
-      int vIndex = 0;
-
-      do
-      {
-        vIndex = _keys.FindIndex( vIndex, k => !k.IsAlive );
-        if( vIndex >= 0 )
+        public V this[K key]
         {
-          _keys.RemoveAt( vIndex );
-          _values.RemoveAt( vIndex );
+            get
+            {
+                V valueToReturn;
+                if (!GetValue(key, out valueToReturn))
+                    throw new ArgumentException();
+                return valueToReturn;
+            }
+            set => SetValue(key, value);
         }
-      }
-      while( vIndex >= 0 );
 
-      vIndex = 0;
-      do
-      {
-        vIndex = _values.FindIndex( vIndex, v => !v.IsAlive );
-        if( vIndex >= 0 )
+        public bool ContainsKey(K key)
         {
-          _values.RemoveAt( vIndex );
-          _keys.RemoveAt( vIndex );
+            CollectGarbage();
+            return -1 != _keys.FindIndex(k => k.GetValueOrDefault<K>() == key);
         }
-      }
-      while( vIndex >= 0 );
-    }
 
-    #endregion
-  }
+        public void SetValue(K key, V value)
+        {
+            CollectGarbage();
+            var vIndex = _keys.FindIndex(k => k.GetValueOrDefault<K>() == key);
+            if (vIndex > -1)
+            {
+                _values[vIndex] = new WeakReference(value);
+            }
+            else
+            {
+                _values.Add(new WeakReference(value));
+                _keys.Add(new WeakReference(key));
+            }
+        }
+
+        public bool GetValue(K key, out V value)
+        {
+            CollectGarbage();
+            var vIndex = _keys.FindIndex(k => k.GetValueOrDefault<K>() == key);
+            value = default;
+            if (vIndex == -1)
+                return false;
+            value = _values[vIndex].GetValueOrDefault<V>();
+            return true;
+        }
+
+        private void CollectGarbage()
+        {
+            var vIndex = 0;
+
+            do
+            {
+                vIndex = _keys.FindIndex(vIndex, k => !k.IsAlive);
+                if (vIndex >= 0)
+                {
+                    _keys.RemoveAt(vIndex);
+                    _values.RemoveAt(vIndex);
+                }
+            } while (vIndex >= 0);
+
+            vIndex = 0;
+            do
+            {
+                vIndex = _values.FindIndex(vIndex, v => !v.IsAlive);
+                if (vIndex >= 0)
+                {
+                    _values.RemoveAt(vIndex);
+                    _keys.RemoveAt(vIndex);
+                }
+            } while (vIndex >= 0);
+        }
+
+        #endregion
+    }
 }

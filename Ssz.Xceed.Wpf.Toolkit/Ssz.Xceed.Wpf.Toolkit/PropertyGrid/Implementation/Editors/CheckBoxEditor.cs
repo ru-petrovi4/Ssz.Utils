@@ -16,35 +16,36 @@
 
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Editors
 {
-  public class CheckBoxEditor : TypeEditor<CheckBox>
-  {
-    protected override CheckBox CreateEditor()
+    public class CheckBoxEditor : TypeEditor<CheckBox>
     {
-      return new PropertyGridEditorCheckBox();
+        protected override CheckBox CreateEditor()
+        {
+            return new PropertyGridEditorCheckBox();
+        }
+
+        protected override void SetControlProperties()
+        {
+            Editor.Margin = new Thickness(5, 0, 0, 0);
+            Editor.MaxWidth = 15;
+            Editor.HorizontalAlignment = HorizontalAlignment.Left;
+        }
+
+        protected override void SetValueDependencyProperty()
+        {
+            ValueProperty = ToggleButton.IsCheckedProperty;
+        }
     }
 
-    protected override void SetControlProperties()
+    public class PropertyGridEditorCheckBox : CheckBox
     {
-      Editor.Margin = new Thickness( 5, 0, 0, 0 );
-      Editor.MaxWidth = 15;
-      Editor.HorizontalAlignment = HorizontalAlignment.Left;
+        static PropertyGridEditorCheckBox()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(PropertyGridEditorCheckBox),
+                new FrameworkPropertyMetadata(typeof(PropertyGridEditorCheckBox)));
+        }
     }
-
-    protected override void SetValueDependencyProperty()
-    {
-      ValueProperty = CheckBox.IsCheckedProperty;
-    }
-  }
-
-  public class PropertyGridEditorCheckBox : CheckBox
-  {
-    static PropertyGridEditorCheckBox()
-    {
-      DefaultStyleKeyProperty.OverrideMetadata( typeof( PropertyGridEditorCheckBox ), new FrameworkPropertyMetadata( typeof( PropertyGridEditorCheckBox ) ) );
-    }
-  }
 }
-

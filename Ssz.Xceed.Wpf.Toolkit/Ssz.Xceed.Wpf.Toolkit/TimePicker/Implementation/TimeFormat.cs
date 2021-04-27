@@ -16,10 +16,10 @@
 
 namespace Ssz.Xceed.Wpf.Toolkit
 {
-  public enum TimeFormat
-  {
-    Custom,
-    ShortTime,
-    LongTime
-  }
+    public enum TimeFormat
+    {
+        Custom,
+        ShortTime,
+        LongTime
+    }
 }

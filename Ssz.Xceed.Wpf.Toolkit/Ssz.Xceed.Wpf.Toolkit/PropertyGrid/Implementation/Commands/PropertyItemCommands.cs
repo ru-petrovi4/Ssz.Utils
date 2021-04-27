@@ -18,15 +18,8 @@ using System.Windows.Input;
 
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Commands
 {
-  public static class PropertyItemCommands
-  {
-    private static RoutedCommand _resetValueCommand = new RoutedCommand();
-    public static RoutedCommand ResetValue
+    public static class PropertyItemCommands
     {
-      get
-      {
-        return _resetValueCommand;
-      }
+        public static RoutedCommand ResetValue { get; } = new();
     }
-  }
 }

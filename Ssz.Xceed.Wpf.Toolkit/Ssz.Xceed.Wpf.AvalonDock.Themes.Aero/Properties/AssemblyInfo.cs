@@ -14,13 +14,8 @@
 
   ***********************************************************************************/
 
-using System.Reflection;
-using System.Resources;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Markup;
-using System;
 
 //In order to begin building localizable applications, set 
 //<UICulture>CultureYouAreCodingWith</UICulture> in your .csproj file
@@ -42,11 +37,10 @@ using System;
 )]
 
 
-[assembly: XmlnsDefinition( "http://schemas.xceed.com/wpf/xaml/avalondock", "Ssz.Xceed.Wpf.AvalonDock.Themes" )]
+[assembly: XmlnsDefinition("http://schemas.xceed.com/wpf/xaml/avalondock", "Ssz.Xceed.Wpf.AvalonDock.Themes")]
 
 //#pragma warning disable 1699
 //[assembly: AssemblyDelaySign( false )]
 //[assembly: AssemblyKeyFile( @"..\..\sn.snk" )]
 //[assembly: AssemblyKeyName( "" )]
 //#pragma warning restore 1699
-

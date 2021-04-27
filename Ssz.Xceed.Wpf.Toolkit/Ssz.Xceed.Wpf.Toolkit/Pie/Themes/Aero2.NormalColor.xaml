@@ -22,8 +22,8 @@
     <!-- Pie                                                                             -->
     <!-- =============================================================================== -->
 
-    <Style TargetType="{x:Type local:Pie}" >
-       <Setter Property="Fill" Value="Black" />
+    <Style TargetType="{x:Type local:Pie}">
+        <Setter Property="Fill" Value="Black" />
     </Style>
 
 </ResourceDictionary>

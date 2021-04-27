@@ -16,61 +16,44 @@
 
 using System.Reflection;
 using System.Security;
-using System.Security.Permissions;
 using System.Windows.Input;
 using Ssz.Xceed.Wpf.Toolkit.Core.Utilities;
 
 namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
 {
-  public class ZoomboxCursors
-  {
-    #region Constructors
-
-    static ZoomboxCursors()
+    public class ZoomboxCursors
     {
-      try
-      {
+        #region Constructors
+
+        static ZoomboxCursors()
+        {
+            try
+            {
                 // WARNING
-        //new EnvironmentPermission( PermissionState.Unrestricted ).Demand();
-        _zoom = new Cursor( ResourceHelper.LoadResourceStream( Assembly.GetExecutingAssembly(), "Zoombox/Resources/Zoom.cur" ) );
-        _zoomRelative = new Cursor( ResourceHelper.LoadResourceStream( Assembly.GetExecutingAssembly(), "Zoombox/Resources/ZoomRelative.cur" ) );
-      }
-      catch( SecurityException )
-      {
-        // partial trust, so just use default cursors
-      }
+                //new EnvironmentPermission( PermissionState.Unrestricted ).Demand();
+                Zoom = new Cursor(ResourceHelper.LoadResourceStream(Assembly.GetExecutingAssembly(),
+                    "Zoombox/Resources/Zoom.cur"));
+                ZoomRelative = new Cursor(ResourceHelper.LoadResourceStream(Assembly.GetExecutingAssembly(),
+                    "Zoombox/Resources/ZoomRelative.cur"));
+            }
+            catch (SecurityException)
+            {
+                // partial trust, so just use default cursors
+            }
+        }
+
+        #endregion
+
+        #region Zoom Static Property
+
+        public static Cursor Zoom { get; set; } = Cursors.Arrow;
+
+        #endregion
+
+        #region ZoomRelative Static Property
+
+        public static Cursor ZoomRelative { get; set; } = Cursors.Arrow;
+
+        #endregion
     }
-
-    #endregion
-
-    #region Zoom Static Property
-
-    public static Cursor Zoom
-    {
-      get
-      {
-        return _zoom;
-      }
-      set { _zoom = value; }
-    }
-
-    private static Cursor _zoom = Cursors.Arrow;
-
-    #endregion
-
-    #region ZoomRelative Static Property
-
-    public static Cursor ZoomRelative
-    {
-      get
-      {
-        return _zoomRelative;
-      }
-        set { _zoomRelative = value; }
-    }
-
-    private static Cursor _zoomRelative = Cursors.Arrow;
-
-    #endregion
-  }
 }

@@ -21,72 +21,65 @@ using Ssz.Xceed.Wpf.Toolkit.Primitives;
 
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Editors
 {
-  public abstract class TypeEditor<T> : ITypeEditor where T : FrameworkElement, new()
-  {
-    #region Properties
-
-    protected T Editor
+    public abstract class TypeEditor<T> : ITypeEditor where T : FrameworkElement, new()
     {
-      get;
-      set;
+        #region ITypeEditor Members
+
+        public virtual FrameworkElement ResolveEditor(PropertyItem propertyItem)
+        {
+            Editor = CreateEditor();
+            SetValueDependencyProperty();
+            SetControlProperties();
+            ResolveValueBinding(propertyItem);
+            return Editor;
+        }
+
+        #endregion //ITypeEditor Members
+
+        #region Properties
+
+        protected T Editor { get; set; }
+
+        protected DependencyProperty ValueProperty { get; set; }
+
+        #endregion //Properties
+
+        #region Methods
+
+        protected virtual T CreateEditor()
+        {
+            return new();
+        }
+
+        protected virtual IValueConverter CreateValueConverter()
+        {
+            return null;
+        }
+
+        protected virtual void ResolveValueBinding(PropertyItem propertyItem)
+        {
+            var binding = new Binding("Value");
+            binding.Source = propertyItem;
+            if (Editor is InputBase) binding.UpdateSourceTrigger = UpdateSourceTrigger.LostFocus;
+            else if (Editor is TextBox) binding.UpdateSourceTrigger = UpdateSourceTrigger.LostFocus;
+            else binding.UpdateSourceTrigger = UpdateSourceTrigger.Default;
+            binding.Mode = propertyItem.IsReadOnly ? BindingMode.OneWay : BindingMode.TwoWay;
+            binding.Converter = CreateValueConverter();
+            BindingOperations.SetBinding(Editor, ValueProperty, binding);
+
+            binding = new Binding("IsValueEditorEnabled");
+            binding.Source = propertyItem;
+            binding.Mode = BindingMode.OneWay;
+            BindingOperations.SetBinding(Editor, UIElement.IsEnabledProperty, binding);
+        }
+
+        protected virtual void SetControlProperties()
+        {
+            //TODO: implement in derived class
+        }
+
+        protected abstract void SetValueDependencyProperty();
+
+        #endregion //Methods
     }
-    protected DependencyProperty ValueProperty
-    {
-      get;
-      set;
-    }
-
-    #endregion //Properties
-
-    #region ITypeEditor Members
-
-    public virtual FrameworkElement ResolveEditor( PropertyItem propertyItem )
-    {
-      Editor = this.CreateEditor();
-      SetValueDependencyProperty();
-      SetControlProperties();
-      ResolveValueBinding( propertyItem );
-      return Editor;
-    }
-
-      #endregion //ITypeEditor Members
-
-    #region Methods
-
-    protected virtual T CreateEditor()
-    {
-      return new T();
-    }
-
-    protected virtual IValueConverter CreateValueConverter()
-    {
-      return null;
-    }
-
-    protected virtual void ResolveValueBinding( PropertyItem propertyItem )
-    {
-      var binding = new Binding( "Value" );
-      binding.Source = propertyItem;
-      if (Editor is InputBase) binding.UpdateSourceTrigger = UpdateSourceTrigger.LostFocus;
-      else if (Editor is TextBox) binding.UpdateSourceTrigger = UpdateSourceTrigger.LostFocus;
-      else binding.UpdateSourceTrigger = UpdateSourceTrigger.Default;
-      binding.Mode = propertyItem.IsReadOnly ? BindingMode.OneWay : BindingMode.TwoWay;
-      binding.Converter = CreateValueConverter();
-      BindingOperations.SetBinding(Editor, ValueProperty, binding);
-
-      binding = new Binding( "IsValueEditorEnabled" );
-      binding.Source = propertyItem;
-      binding.Mode = BindingMode.OneWay;
-      BindingOperations.SetBinding(Editor, FrameworkElement.IsEnabledProperty, binding);
-    }
-
-    protected virtual void SetControlProperties()
-    {
-      //TODO: implement in derived class
-    }
-
-    protected abstract void SetValueDependencyProperty();
-
-    #endregion //Methods
-  }
 }

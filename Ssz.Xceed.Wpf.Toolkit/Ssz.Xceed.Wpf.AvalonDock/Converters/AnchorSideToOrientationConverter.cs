@@ -15,28 +15,29 @@
   ***********************************************************************************/
 
 using System;
-using System.Windows.Data;
+using System.Globalization;
 using System.Windows.Controls;
+using System.Windows.Data;
 using Ssz.Xceed.Wpf.AvalonDock.Layout;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Converters
 {
-  [ValueConversion( typeof( AnchorSide ), typeof( Orientation ) )]
-  public class AnchorSideToOrientationConverter : IValueConverter
-  {
-    public object Convert( object value, Type targetType, object parameter, System.Globalization.CultureInfo culture )
+    [ValueConversion(typeof(AnchorSide), typeof(Orientation))]
+    public class AnchorSideToOrientationConverter : IValueConverter
     {
-      AnchorSide side = ( AnchorSide )value;
-      if( side == AnchorSide.Left ||
-          side == AnchorSide.Right )
-        return Orientation.Vertical;
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var side = (AnchorSide) value;
+            if (side == AnchorSide.Left ||
+                side == AnchorSide.Right)
+                return Orientation.Vertical;
 
-      return Orientation.Horizontal;
-    }
+            return Orientation.Horizontal;
+        }
 
-    public object ConvertBack( object value, Type targetType, object parameter, System.Globalization.CultureInfo culture )
-    {
-      throw new NotImplementedException();
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
-  }
 }

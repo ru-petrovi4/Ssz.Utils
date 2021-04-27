@@ -17,11 +17,8 @@
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 {
-  public interface ILayoutPanelElement : ILayoutElement
-  {
-    bool IsVisible
+    public interface ILayoutPanelElement : ILayoutElement
     {
-      get;
+        bool IsVisible { get; }
     }
-  }
 }

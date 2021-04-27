@@ -22,53 +22,48 @@ using Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Converters;
 
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 {
-  public abstract class PropertyDefinitionBase : DefinitionBase
-  {
-    private IList _targetProperties;
-
-    internal PropertyDefinitionBase()
+    public abstract class PropertyDefinitionBase : DefinitionBase
     {
-      _targetProperties = new List<object>();
-    }
+        private IList _targetProperties;
 
-    [TypeConverter(typeof(ListConverter))]
-    public IList TargetProperties 
-    {
-      get { return _targetProperties; }
-      set 
-      {
-        this.ThrowIfLocked( () => this.TargetProperties );
-        _targetProperties = value; 
-      }
-    }
-
-    internal override void Lock()
-    {
-      if( this.IsLocked )
-        return;
-
-      base.Lock();
-
-      // Just create a new copy of the properties target to ensure 
-      // that the list doesn't ever get modified.
-
-      List<object> newList = new List<object>();
-      if( _targetProperties != null )
-      {
-        foreach( object p in _targetProperties )
+        internal PropertyDefinitionBase()
         {
-          object prop = p;
-          // Convert all TargetPropertyType to Types
-          var targetType = prop as TargetPropertyType;
-          if( targetType != null )
-          {
-            prop = targetType.Type;
-          }
-          newList.Add( prop );
+            _targetProperties = new List<object>();
         }
-      }
 
-      _targetProperties = new ReadOnlyCollection<object>( newList );
+        [TypeConverter(typeof(ListConverter))]
+        public IList TargetProperties
+        {
+            get => _targetProperties;
+            set
+            {
+                ThrowIfLocked(() => TargetProperties);
+                _targetProperties = value;
+            }
+        }
+
+        internal override void Lock()
+        {
+            if (IsLocked)
+                return;
+
+            base.Lock();
+
+            // Just create a new copy of the properties target to ensure 
+            // that the list doesn't ever get modified.
+
+            var newList = new List<object>();
+            if (_targetProperties != null)
+                foreach (var p in _targetProperties)
+                {
+                    var prop = p;
+                    // Convert all TargetPropertyType to Types
+                    var targetType = prop as TargetPropertyType;
+                    if (targetType != null) prop = targetType.Type;
+                    newList.Add(prop);
+                }
+
+            _targetProperties = new ReadOnlyCollection<object>(newList);
+        }
     }
-  }
 }

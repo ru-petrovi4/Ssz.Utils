@@ -18,36 +18,29 @@ using System.Windows.Media;
 
 namespace Ssz.Xceed.Wpf.Toolkit
 {
-  public class ColorItem
-  {
-    public Color Color
+    public class ColorItem
     {
-      get;
-      set;
-    }
-    public string Name
-    {
-      get;
-      set;
-    }
+        public ColorItem(Color color, string name)
+        {
+            Color = color;
+            Name = name;
+        }
 
-    public ColorItem( Color color, string name )
-    {
-      Color = color;
-      Name = name;
-    }
+        public Color Color { get; set; }
 
-    public override bool Equals(object obj)
-    {
-      var ci = obj as ColorItem;
-      if (ci == null)
-          return false;
-      return ( ci.Color.Equals( Color ) && ci.Name.Equals( Name ) );
-    }
+        public string Name { get; set; }
 
-    public override int GetHashCode()
-    {
-      return this.Color.GetHashCode() ^ this.Name.GetHashCode();
+        public override bool Equals(object obj)
+        {
+            var ci = obj as ColorItem;
+            if (ci == null)
+                return false;
+            return ci.Color.Equals(Color) && ci.Name.Equals(Name);
+        }
+
+        public override int GetHashCode()
+        {
+            return Color.GetHashCode() ^ Name.GetHashCode();
+        }
     }
-  }
 }

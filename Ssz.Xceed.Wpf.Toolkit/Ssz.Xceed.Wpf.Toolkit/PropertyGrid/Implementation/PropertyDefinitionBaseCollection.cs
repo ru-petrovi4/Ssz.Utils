@@ -19,61 +19,70 @@ using System.Collections.ObjectModel;
 
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 {
-  public class PropertyDefinitionCollection : PropertyDefinitionBaseCollection<PropertyDefinition> { }
-  public class EditorDefinitionCollection : PropertyDefinitionBaseCollection<EditorDefinitionBase> { }
-
-
-  public abstract class PropertyDefinitionBaseCollection<T> : DefinitionCollectionBase<T> where T : PropertyDefinitionBase
-  {
-    internal PropertyDefinitionBaseCollection() { }
-
-    public T this[ object propertyId ]
+    public class PropertyDefinitionCollection : PropertyDefinitionBaseCollection<PropertyDefinition>
     {
-      get
-      {
-        foreach( var item in Items )
+    }
+
+    public class EditorDefinitionCollection : PropertyDefinitionBaseCollection<EditorDefinitionBase>
+    {
+    }
+
+
+    public abstract class PropertyDefinitionBaseCollection<T> : DefinitionCollectionBase<T>
+        where T : PropertyDefinitionBase
+    {
+        internal PropertyDefinitionBaseCollection()
         {
-          if( item.TargetProperties.Contains( propertyId ) )
-            return item;
         }
 
-        return null;
-      }
+        public T this[object propertyId]
+        {
+            get
+            {
+                foreach (var item in Items)
+                    if (item.TargetProperties.Contains(propertyId))
+                        return item;
+
+                return null;
+            }
+        }
+
+        internal T GetRecursiveBaseTypes(Type type)
+        {
+            // If no definition for the current type, fall back on base type editor recursively.
+            T ret = null;
+            while (ret == null && type != null)
+            {
+                ret = this[type];
+                type = type.BaseType;
+            }
+
+            return ret;
+        }
     }
 
-    internal T GetRecursiveBaseTypes( Type type )
+    public abstract class DefinitionCollectionBase<T> : ObservableCollection<T> where T : DefinitionBase
     {
-      // If no definition for the current type, fall back on base type editor recursively.
-      T ret = null;
-      while( ret == null && type != null )
-      {
-        ret = this[ type ];
-        type = type.BaseType;
-      }
-      return ret;
+        internal DefinitionCollectionBase()
+        {
+        }
+
+        protected override void InsertItem(int index, T item)
+        {
+            if (item == null)
+                throw new InvalidOperationException(@"Cannot insert null items in the collection.");
+
+            item.Lock();
+            base.InsertItem(index, item);
+        }
+
+        protected override void SetItem(int index, T item)
+        {
+            if (item == null)
+                throw new InvalidOperationException(@"Cannot insert null items in the collection.");
+
+            item.Lock();
+            base.SetItem(index, item);
+        }
     }
-  }
-
-  public abstract class DefinitionCollectionBase<T> : ObservableCollection<T> where T : DefinitionBase
-  {
-    internal DefinitionCollectionBase() { }
-
-    protected override void InsertItem( int index, T item )
-    {
-      if( item == null )
-        throw new InvalidOperationException( @"Cannot insert null items in the collection." );
-
-      item.Lock();
-      base.InsertItem( index, item );
-    }
-
-    protected override void SetItem( int index, T item )
-    {
-      if( item == null )
-        throw new InvalidOperationException( @"Cannot insert null items in the collection." );
-
-      item.Lock();
-      base.SetItem( index, item );
-    }
-  }
 }

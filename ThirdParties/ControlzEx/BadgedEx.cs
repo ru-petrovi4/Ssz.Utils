@@ -24,7 +24,7 @@
     public class BadgedEx : ContentControl
     {
         public const string BadgeContainerPartName = "PART_BadgeContainer";
-        [CLSCompliant(false)]
+        
         // ReSharper disable once InconsistentNaming
 #pragma warning disable SA1309 // Field names should not begin with underscore
 #pragma warning disable SA1401 // Fields should be private

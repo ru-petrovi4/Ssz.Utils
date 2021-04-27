@@ -14,13 +14,12 @@
 
   ***********************************************************************************/
 
-using System.ComponentModel;
 using System.Windows;
 
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Editors
 {
-  public interface ITypeEditor
-  {
-    FrameworkElement ResolveEditor( PropertyItem propertyItem );
-  }
+    public interface ITypeEditor
+    {
+        FrameworkElement ResolveEditor(PropertyItem propertyItem);
+    }
 }

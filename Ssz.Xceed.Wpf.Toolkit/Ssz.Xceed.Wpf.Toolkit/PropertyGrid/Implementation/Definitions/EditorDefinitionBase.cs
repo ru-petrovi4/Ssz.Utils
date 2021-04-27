@@ -14,45 +14,38 @@
 
   ***********************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Collections;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Data;
 
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 {
-  public abstract class EditorDefinitionBase : PropertyDefinitionBase
-  {
-
-    internal EditorDefinitionBase() { }
-
-    internal FrameworkElement GenerateEditingElementInternal( PropertyItemBase propertyItem ) 
+    public abstract class EditorDefinitionBase : PropertyDefinitionBase
     {
-      return this.GenerateEditingElement( propertyItem );
-    }
+        internal EditorDefinitionBase()
+        {
+        }
 
-    protected virtual FrameworkElement GenerateEditingElement( PropertyItemBase propertyItem ) { return null; }
+        internal FrameworkElement GenerateEditingElementInternal(PropertyItemBase propertyItem)
+        {
+            return GenerateEditingElement(propertyItem);
+        }
 
-    internal void UpdateProperty( FrameworkElement element, DependencyProperty elementProp, DependencyProperty definitionProperty )
-    {
-      object currentValue = this.GetValue( definitionProperty );
-      object localValue = this.ReadLocalValue( definitionProperty );
-      // Avoid setting values if it does not affect anything 
-      // because setting a local value may prevent a style setter from being active.
-      if( ( localValue != DependencyProperty.UnsetValue )
-        || currentValue != element.GetValue( elementProp ) )
-      {
-        element.SetValue( elementProp, currentValue );
-      }
-      else
-      {
-        element.ClearValue( elementProp );
-      }
+        protected virtual FrameworkElement GenerateEditingElement(PropertyItemBase propertyItem)
+        {
+            return null;
+        }
+
+        internal void UpdateProperty(FrameworkElement element, DependencyProperty elementProp,
+            DependencyProperty definitionProperty)
+        {
+            var currentValue = GetValue(definitionProperty);
+            var localValue = ReadLocalValue(definitionProperty);
+            // Avoid setting values if it does not affect anything 
+            // because setting a local value may prevent a style setter from being active.
+            if (localValue != DependencyProperty.UnsetValue
+                || currentValue != element.GetValue(elementProp))
+                element.SetValue(elementProp, currentValue);
+            else
+                element.ClearValue(elementProp);
+        }
     }
-  }
 }

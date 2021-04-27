@@ -19,31 +19,31 @@ using System.ComponentModel;
 
 namespace Ssz.Xceed.Wpf.Toolkit.Media.Animation
 {
-  [TypeConverter( typeof( IterativeEquationConverter ) )]
-  public class IterativeEquation<T>
-  {
-    #region Constructors
-
-    public IterativeEquation( IterativeAnimationEquationDelegate<T> equation )
+    [TypeConverter(typeof(IterativeEquationConverter))]
+    public class IterativeEquation<T>
     {
-      _equation = equation;
+        #region Private Fields
+
+        private readonly IterativeAnimationEquationDelegate<T> _equation;
+
+        #endregion
+
+        public virtual T Evaluate(TimeSpan currentTime, T from, T to, TimeSpan duration)
+        {
+            return _equation(currentTime, from, to, duration);
+        }
+
+        #region Constructors
+
+        public IterativeEquation(IterativeAnimationEquationDelegate<T> equation)
+        {
+            _equation = equation;
+        }
+
+        internal IterativeEquation()
+        {
+        }
+
+        #endregion
     }
-
-    internal IterativeEquation()
-    {
-    }
-
-    #endregion
-
-    public virtual T Evaluate( TimeSpan currentTime, T from, T to, TimeSpan duration )
-    {
-      return _equation( currentTime, from, to, duration );
-    }
-
-    #region Private Fields
-
-    private readonly IterativeAnimationEquationDelegate<T> _equation;
-
-    #endregion
-  }
 }

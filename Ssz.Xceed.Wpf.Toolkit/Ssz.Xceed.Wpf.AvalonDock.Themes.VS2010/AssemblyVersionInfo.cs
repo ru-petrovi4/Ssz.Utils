@@ -14,19 +14,22 @@
 
   ***********************************************************************************/
 
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
+
 #pragma warning disable 0436
-[assembly: System.Reflection.AssemblyVersion( _SszXceedVersionInfo.Version )]
+[assembly: AssemblyVersion(_SszXceedVersionInfo.Version)]
 #pragma warning restore 0436
 
 internal static class _SszXceedVersionInfo
 {
-  [System.Diagnostics.CodeAnalysis.SuppressMessage( "Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields" )]
-  public const string BaseVersion = "3.6";
-  [System.Diagnostics.CodeAnalysis.SuppressMessage( "Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields" )]
-  public const string Version = BaseVersion + 
-  ".0.0";
-  [System.Diagnostics.CodeAnalysis.SuppressMessage( "Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields" )]
-  public const string PublicKeyToken = "ba83ff368b7563c6";
+    [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+    public const string BaseVersion = "3.6";
 
+    [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+    public const string Version = BaseVersion +
+                                  ".0.0";
 
+    [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+    public const string PublicKeyToken = "ba83ff368b7563c6";
 }

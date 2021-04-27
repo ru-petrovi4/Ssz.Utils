@@ -14,108 +14,91 @@
 
   ***********************************************************************************/
 
-using System.Linq;
-using System.Windows.Controls;
 using System.Collections.ObjectModel;
-using Ssz.Xceed.Wpf.AvalonDock.Layout;
+using System.Collections.Specialized;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
+using Ssz.Xceed.Wpf.AvalonDock.Layout;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 {
-  public class LayoutAnchorGroupControl : Control, ILayoutControl
-  {
-    #region Members
-
-    private ObservableCollection<LayoutAnchorControl> _childViews = new ObservableCollection<LayoutAnchorControl>();
-    private LayoutAnchorGroup _model;
-
-    #endregion
-
-    #region Constructors
-
-    static LayoutAnchorGroupControl()
+    public class LayoutAnchorGroupControl : Control, ILayoutControl
     {
-      DefaultStyleKeyProperty.OverrideMetadata( typeof( LayoutAnchorGroupControl ), new FrameworkPropertyMetadata( typeof( LayoutAnchorGroupControl ) ) );
-    }
+        #region Members
 
-    internal LayoutAnchorGroupControl( LayoutAnchorGroup model )
-    {
-      _model = model;
-      CreateChildrenViews();
+        private readonly LayoutAnchorGroup _model;
 
-      _model.Children.CollectionChanged += ( s, e ) => OnModelChildrenCollectionChanged( e );
-    }
+        #endregion
 
-    #endregion
+        #region Constructors
 
-    #region Properties
-
-    public ObservableCollection<LayoutAnchorControl> Children
-    {
-      get
-      {
-        return _childViews;
-      }
-    }
-
-    public ILayoutElement Model
-    {
-      get
-      {
-        return _model;
-      }
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    private void CreateChildrenViews()
-    {
-      var manager = _model.Root.Manager;
-      foreach( var childModel in _model.Children )
-      {
-        var lac = new LayoutAnchorControl( childModel );
-        lac.SetBinding( LayoutAnchorControl.TemplateProperty, new Binding( DockingManager.AnchorTemplateProperty.Name ) { Source = manager } );
-        _childViews.Add( lac );
-      }
-    }
-
-    private void OnModelChildrenCollectionChanged( System.Collections.Specialized.NotifyCollectionChangedEventArgs e )
-    {
-      if( e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove ||
-          e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Replace )
-      {
-        if( e.OldItems != null )
+        static LayoutAnchorGroupControl()
         {
-          {
-            foreach( var childModel in e.OldItems )
-              _childViews.Remove( _childViews.First( cv => cv.Model == childModel ) );
-          }
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(LayoutAnchorGroupControl),
+                new FrameworkPropertyMetadata(typeof(LayoutAnchorGroupControl)));
         }
-      }
 
-      if( e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Reset )
-        _childViews.Clear();
-
-      if( e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add ||
-          e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Replace )
-      {
-        if( e.NewItems != null )
+        internal LayoutAnchorGroupControl(LayoutAnchorGroup model)
         {
-          var manager = _model.Root.Manager;
-          int insertIndex = e.NewStartingIndex;
-          foreach( LayoutAnchorable childModel in e.NewItems )
-          {
-            var lac = new LayoutAnchorControl( childModel );
-            lac.SetBinding( LayoutAnchorControl.TemplateProperty, new Binding( DockingManager.AnchorTemplateProperty.Name ) { Source = manager } );
-            _childViews.Insert( insertIndex++, lac );
-          }
-        }
-      }
-    }
+            _model = model;
+            CreateChildrenViews();
 
-    #endregion
-  }
+            _model.Children.CollectionChanged += (s, e) => OnModelChildrenCollectionChanged(e);
+        }
+
+        #endregion
+
+        #region Properties
+
+        public ObservableCollection<LayoutAnchorControl> Children { get; } = new();
+
+        public ILayoutElement Model => _model;
+
+        #endregion
+
+        #region Private Methods
+
+        private void CreateChildrenViews()
+        {
+            var manager = _model.Root.Manager;
+            foreach (var childModel in _model.Children)
+            {
+                var lac = new LayoutAnchorControl(childModel);
+                lac.SetBinding(TemplateProperty,
+                    new Binding(DockingManager.AnchorTemplateProperty.Name) {Source = manager});
+                Children.Add(lac);
+            }
+        }
+
+        private void OnModelChildrenCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove ||
+                e.Action == NotifyCollectionChangedAction.Replace)
+                if (e.OldItems != null)
+                    foreach (var childModel in e.OldItems)
+                        Children.Remove(Children.First(cv => cv.Model == childModel));
+
+            if (e.Action == NotifyCollectionChangedAction.Reset)
+                Children.Clear();
+
+            if (e.Action == NotifyCollectionChangedAction.Add ||
+                e.Action == NotifyCollectionChangedAction.Replace)
+                if (e.NewItems != null)
+                {
+                    var manager = _model.Root.Manager;
+                    var insertIndex = e.NewStartingIndex;
+                    foreach (LayoutAnchorable childModel in e.NewItems)
+                    {
+                        var lac = new LayoutAnchorControl(childModel);
+                        lac.SetBinding(TemplateProperty,
+                            new Binding(DockingManager.AnchorTemplateProperty.Name) {Source = manager});
+                        Children.Insert(insertIndex++, lac);
+                    }
+                }
+        }
+
+        #endregion
+    }
 }

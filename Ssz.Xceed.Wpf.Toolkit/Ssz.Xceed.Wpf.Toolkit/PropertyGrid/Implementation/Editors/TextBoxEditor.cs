@@ -14,44 +14,41 @@
 
   ***********************************************************************************/
 
-using System.ComponentModel;
-using System.Windows.Controls;
 using System.Windows;
-using System.Windows.Data;
+using System.Windows.Controls;
 using Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Implementation.Editors;
 
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Editors
 {
     public class TextBoxEditor : TypeEditor<PropertyGridEditorTextBox>
-  {
+    {
         protected override PropertyGridEditorTextBox CreateEditor()
+        {
+            return new();
+        }
+
+        protected override void SetValueDependencyProperty()
+        {
+            ValueProperty = TextBox.TextProperty;
+        }
+    }
+
+    public class PropertyGridEditorTextBox : WatermarkTextBox, IPropertyGridItem
     {
-      return new PropertyGridEditorTextBox();
+        static PropertyGridEditorTextBox()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(PropertyGridEditorTextBox),
+                new FrameworkPropertyMetadata(typeof(PropertyGridEditorTextBox)));
+        }
+
+        public bool RefreshForPropertyGridIsDisabled { get; set; }
+
+        public void RefreshForPropertyGrid()
+        {
+        }
+
+        public void EndEditInPropertyGrid()
+        {
+        }
     }
-
-    protected override void SetValueDependencyProperty()
-    {
-      ValueProperty = TextBox.TextProperty;
-    }
-  }
-
-  public class PropertyGridEditorTextBox : WatermarkTextBox, IPropertyGridItem
-  {
-    static PropertyGridEditorTextBox()
-    {
-      DefaultStyleKeyProperty.OverrideMetadata( typeof( PropertyGridEditorTextBox ), new FrameworkPropertyMetadata( typeof( PropertyGridEditorTextBox ) ) );
-    }
-
-    public bool RefreshForPropertyGridIsDisabled { get; set; }
-
-    public void RefreshForPropertyGrid()
-    {
-    }
-
-    public void EndEditInPropertyGrid()
-    {  
-    }
-  }
-
-
 }

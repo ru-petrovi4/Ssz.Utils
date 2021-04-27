@@ -51,9 +51,13 @@
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate>
-                                            <Rectangle Stroke="{TemplateBinding BorderBrush}" Fill="{TemplateBinding Background}" Margin="{TemplateBinding Margin}" StrokeDashArray="4 3" StrokeThickness="0.5">
+                                            <Rectangle Stroke="{TemplateBinding BorderBrush}"
+                                                       Fill="{TemplateBinding Background}"
+                                                       Margin="{TemplateBinding Margin}" StrokeDashArray="4 3"
+                                                       StrokeThickness="0.5">
                                                 <Rectangle.RenderTransform>
-                                                    <TranslateTransform x:Name="_translateTransform" X="{Binding Left}" Y="{Binding Top}" />
+                                                    <TranslateTransform x:Name="_translateTransform" X="{Binding Left}"
+                                                                        Y="{Binding Top}" />
                                                 </Rectangle.RenderTransform>
                                             </Rectangle>
                                         </ControlTemplate>
@@ -64,34 +68,33 @@
 
                         <!-- Used for drag -->
                         <Grid x:Name="PART_WindowRoot"
-                          HorizontalAlignment="Left" 
-                          VerticalAlignment="Top" 
-                          MinWidth="{TemplateBinding MinWidth}"
-                          MinHeight="{TemplateBinding MinHeight}" 
-                          Width="{TemplateBinding Width}" 
-                          Height="{TemplateBinding Height}">
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Top"
+                              MinWidth="{TemplateBinding MinWidth}"
+                              MinHeight="{TemplateBinding MinHeight}"
+                              Width="{TemplateBinding Width}"
+                              Height="{TemplateBinding Height}">
 
-                            <prim:WindowControl x:Name="PART_WindowControl" 
-                                            Caption="{TemplateBinding Caption}" 
-                                            CaptionForeground="{TemplateBinding CaptionForeground}" 
-                                            CaptionShadowBrush="{TemplateBinding CaptionShadowBrush}" 
-                                            CaptionIcon="{TemplateBinding CaptionIcon}"
-                                            Background="{TemplateBinding Background}"
-                                            BorderBrush="{TemplateBinding BorderBrush}" 
-                                            BorderThickness="{TemplateBinding BorderThickness}" 
-                                            IsActive="{TemplateBinding IsActive}"
-                                            WindowBackground="{TemplateBinding WindowBackground}" 
-                                            WindowInactiveBackground="{TemplateBinding WindowInactiveBackground}" 
-                                            WindowBorderBrush="{TemplateBinding WindowBorderBrush}"
-                                            WindowBorderThickness="{TemplateBinding WindowBorderThickness}"
-                                            CloseButtonVisibility="{TemplateBinding CloseButtonVisibility}"
-                                            CloseButtonStyle="{TemplateBinding CloseButtonStyle}" 
-                                            WindowOpacity="{TemplateBinding WindowOpacity}" 
-                                            Content="{TemplateBinding Content}"
-                                            WindowStyle="{TemplateBinding WindowStyle}"
-                                            Width="{TemplateBinding Width}"
-                                            Height="{TemplateBinding Height}">
-                            </prim:WindowControl>
+                            <prim:WindowControl x:Name="PART_WindowControl"
+                                                Caption="{TemplateBinding Caption}"
+                                                CaptionForeground="{TemplateBinding CaptionForeground}"
+                                                CaptionShadowBrush="{TemplateBinding CaptionShadowBrush}"
+                                                CaptionIcon="{TemplateBinding CaptionIcon}"
+                                                Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                IsActive="{TemplateBinding IsActive}"
+                                                WindowBackground="{TemplateBinding WindowBackground}"
+                                                WindowInactiveBackground="{TemplateBinding WindowInactiveBackground}"
+                                                WindowBorderBrush="{TemplateBinding WindowBorderBrush}"
+                                                WindowBorderThickness="{TemplateBinding WindowBorderThickness}"
+                                                CloseButtonVisibility="{TemplateBinding CloseButtonVisibility}"
+                                                CloseButtonStyle="{TemplateBinding CloseButtonStyle}"
+                                                WindowOpacity="{TemplateBinding WindowOpacity}"
+                                                Content="{TemplateBinding Content}"
+                                                WindowStyle="{TemplateBinding WindowStyle}"
+                                                Width="{TemplateBinding Width}"
+                                                Height="{TemplateBinding Height}" />
                         </Grid>
                     </Grid>
 

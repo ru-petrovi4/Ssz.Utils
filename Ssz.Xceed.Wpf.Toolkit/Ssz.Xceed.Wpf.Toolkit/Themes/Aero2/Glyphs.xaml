@@ -23,45 +23,45 @@
 
     <DataTemplate x:Key="IncreaseGlyphNormalKey">
         <Path Width="7"
-            Height="4"
-            Data="{StaticResource UpArrowGeometry}"
-            Fill="{DynamicResource {x:Static themes:ResourceKeys.GlyphNormalForegroundKey}}"
-            SnapsToDevicePixels="True"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Focusable="False" />
+              Height="4"
+              Data="{StaticResource UpArrowGeometry}"
+              Fill="{DynamicResource {x:Static themes:ResourceKeys.GlyphNormalForegroundKey}}"
+              SnapsToDevicePixels="True"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Focusable="False" />
     </DataTemplate>
     <DataTemplate x:Key="IncreaseGlyphDisabledKey">
-        <Path	Width="7"
-            Height="4"
-            Data="{StaticResource UpArrowGeometry}"
-            Fill="{DynamicResource {x:Static themes:ResourceKeys.GlyphDisabledForegroundKey}}"
-            SnapsToDevicePixels="True"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Focusable="False" />
+        <Path Width="7"
+              Height="4"
+              Data="{StaticResource UpArrowGeometry}"
+              Fill="{DynamicResource {x:Static themes:ResourceKeys.GlyphDisabledForegroundKey}}"
+              SnapsToDevicePixels="True"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Focusable="False" />
     </DataTemplate>
 
     <DataTemplate x:Key="DecreaseGlyphNormalKey">
         <Path Width="7"
-            Height="4"
-            Data="{StaticResource DownArrowGeometry}"
-            Fill="{DynamicResource {x:Static themes:ResourceKeys.GlyphNormalForegroundKey}}"
-            SnapsToDevicePixels="True"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Focusable="False" />
+              Height="4"
+              Data="{StaticResource DownArrowGeometry}"
+              Fill="{DynamicResource {x:Static themes:ResourceKeys.GlyphNormalForegroundKey}}"
+              SnapsToDevicePixels="True"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Focusable="False" />
     </DataTemplate>
 
     <DataTemplate x:Key="DecreaseGlyphDisabledKey">
-        <Path	Width="7"
-            Height="4"
-            Data="{StaticResource DownArrowGeometry}"
-            Fill="{DynamicResource {x:Static themes:ResourceKeys.GlyphDisabledForegroundKey}}"
-            SnapsToDevicePixels="True"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Focusable="False" />
+        <Path Width="7"
+              Height="4"
+              Data="{StaticResource DownArrowGeometry}"
+              Fill="{DynamicResource {x:Static themes:ResourceKeys.GlyphDisabledForegroundKey}}"
+              SnapsToDevicePixels="True"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Focusable="False" />
     </DataTemplate>
 
 </ResourceDictionary>

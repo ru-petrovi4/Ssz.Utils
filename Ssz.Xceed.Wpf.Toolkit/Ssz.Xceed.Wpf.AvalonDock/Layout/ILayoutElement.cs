@@ -18,15 +18,10 @@ using System.ComponentModel;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 {
-  public interface ILayoutElement : INotifyPropertyChanged, INotifyPropertyChanging
-  {
-    ILayoutContainer Parent
+    public interface ILayoutElement : INotifyPropertyChanged, INotifyPropertyChanging
     {
-      get;
+        ILayoutContainer Parent { get; }
+
+        ILayoutRoot Root { get; }
     }
-    ILayoutRoot Root
-    {
-      get;
-    }
-  }
 }

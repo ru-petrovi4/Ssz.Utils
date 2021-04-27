@@ -21,102 +21,96 @@ using System.Windows.Media;
 
 namespace Ssz.Xceed.Wpf.Toolkit
 {
-  public class MagnifierAdorner : Adorner
-  {
-    #region Members
-
-    private Magnifier _magnifier;
-    private Point _currentMousePosition;
-
-    #endregion
-
-    #region Constructors
-
-    public MagnifierAdorner( UIElement element, Magnifier magnifier )
-      : base( element )
+    public class MagnifierAdorner : Adorner
     {
-      _magnifier = magnifier;
-      UpdateViewBox();
-      AddVisualChild( _magnifier );
+        #region Constructors
 
-      Loaded += ( s, e ) => InputManager.Current.PostProcessInput += OnProcessInput;
-      Unloaded += ( s, e ) => InputManager.Current.PostProcessInput -= OnProcessInput;
+        public MagnifierAdorner(UIElement element, Magnifier magnifier)
+            : base(element)
+        {
+            _magnifier = magnifier;
+            UpdateViewBox();
+            AddVisualChild(_magnifier);
+
+            Loaded += (s, e) => InputManager.Current.PostProcessInput += OnProcessInput;
+            Unloaded += (s, e) => InputManager.Current.PostProcessInput -= OnProcessInput;
+        }
+
+        #endregion
+
+        #region Members
+
+        private readonly Magnifier _magnifier;
+        private Point _currentMousePosition;
+
+        #endregion
+
+        #region Private/Internal methods
+
+        private void OnProcessInput(object sender, ProcessInputEventArgs e)
+        {
+            var pt = Mouse.GetPosition(this);
+
+            if (_currentMousePosition == pt)
+                return;
+
+            _currentMousePosition = pt;
+            UpdateViewBox();
+            InvalidateArrange();
+        }
+
+        internal void UpdateViewBox()
+        {
+            var viewBoxLocation = CalculateViewBoxLocation();
+            _magnifier.ViewBox = new Rect(viewBoxLocation, _magnifier.ViewBox.Size);
+        }
+
+        private Point CalculateViewBoxLocation()
+        {
+            double offsetX = 0, offsetY = 0;
+
+            var adorner = Mouse.GetPosition(this);
+            var element = Mouse.GetPosition(AdornedElement);
+
+            offsetX = element.X - adorner.X;
+            offsetY = element.Y - adorner.Y;
+
+            //An element will use the offset from its parent (StackPanel, Grid, etc.) to be rendered.
+            //When this element is put in a VisualBrush, the element will draw with that offset applied. 
+            //To fix this: we add that parent offset to Magnifier location.
+            var parentOffsetVector = VisualTreeHelper.GetOffset(_magnifier.Target);
+            var parentOffset = new Point(parentOffsetVector.X, parentOffsetVector.Y);
+
+            var left = _currentMousePosition.X - (_magnifier.ViewBox.Width / 2 + offsetX) + parentOffset.X;
+            var top = _currentMousePosition.Y - (_magnifier.ViewBox.Height / 2 + offsetY) + parentOffset.Y;
+            return new Point(left, top);
+        }
+
+        #endregion
+
+        #region Overrides
+
+        protected override Visual GetVisualChild(int index)
+        {
+            return _magnifier;
+        }
+
+        protected override int VisualChildrenCount => 1;
+
+        protected override Size MeasureOverride(Size constraint)
+        {
+            _magnifier.Measure(constraint);
+            return base.MeasureOverride(constraint);
+        }
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            var x = _currentMousePosition.X - _magnifier.Width / 2;
+            var y = _currentMousePosition.Y - _magnifier.Height / 2;
+            _magnifier.Arrange(new Rect(x, y, _magnifier.Width, _magnifier.Height));
+            return base.ArrangeOverride(finalSize);
+        }
+
+        #endregion
     }
-
-    #endregion
-
-    #region Private/Internal methods
-
-    private void OnProcessInput( object sender, ProcessInputEventArgs e )
-    {
-      Point pt = Mouse.GetPosition( this );
-
-      if( _currentMousePosition == pt )
-        return;
-
-      _currentMousePosition = pt;
-      UpdateViewBox();
-      InvalidateArrange();
-    }
-
-    internal void UpdateViewBox()
-    {
-      var viewBoxLocation = CalculateViewBoxLocation();
-      _magnifier.ViewBox = new Rect( viewBoxLocation, _magnifier.ViewBox.Size );
-    }
-
-    private Point CalculateViewBoxLocation()
-    {
-      double offsetX = 0, offsetY = 0;
-
-      Point adorner = Mouse.GetPosition( this );
-      Point element = Mouse.GetPosition( AdornedElement );
-
-      offsetX = element.X - adorner.X;
-      offsetY = element.Y - adorner.Y;
-
-      //An element will use the offset from its parent (StackPanel, Grid, etc.) to be rendered.
-      //When this element is put in a VisualBrush, the element will draw with that offset applied. 
-      //To fix this: we add that parent offset to Magnifier location.
-      Vector parentOffsetVector = VisualTreeHelper.GetOffset( _magnifier.Target );
-      Point parentOffset = new Point( parentOffsetVector.X, parentOffsetVector.Y );
-
-      double left = _currentMousePosition.X - ( ( _magnifier.ViewBox.Width / 2 ) + offsetX ) + parentOffset.X;
-      double top = _currentMousePosition.Y - ( ( _magnifier.ViewBox.Height / 2 ) + offsetY ) + parentOffset.Y;
-      return new Point( left, top );
-    }
-
-    #endregion
-
-    #region Overrides
-
-    protected override Visual GetVisualChild( int index )
-    {
-      return _magnifier;
-    }
-
-    protected override int VisualChildrenCount
-    {
-      get
-      {
-        return 1;
-      }
-    }
-
-    protected override Size MeasureOverride( Size constraint )
-    {
-      _magnifier.Measure( constraint );
-      return base.MeasureOverride( constraint );
-    }
-
-    protected override Size ArrangeOverride( Size finalSize )
-    {
-      double x = _currentMousePosition.X - ( _magnifier.Width / 2 );
-      double y = _currentMousePosition.Y - ( _magnifier.Height / 2 );
-      _magnifier.Arrange( new Rect( x, y, _magnifier.Width, _magnifier.Height ) );
-      return base.ArrangeOverride( finalSize );
-    }
-
-    #endregion
-  }
 }

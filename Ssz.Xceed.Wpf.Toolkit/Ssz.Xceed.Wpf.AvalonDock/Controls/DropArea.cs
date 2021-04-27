@@ -18,74 +18,47 @@ using System.Windows;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 {
-  public enum DropAreaType
-  {
-    DockingManager,
-    DocumentPane,
-    DocumentPaneGroup,
-    AnchorablePane,
-  }
-
-
-  public interface IDropArea
-  {
-    Rect DetectionRect
+    public enum DropAreaType
     {
-      get;
-    }
-    DropAreaType Type
-    {
-      get;
-    }
-  }
-
-  public class DropArea<T> : IDropArea where T : FrameworkElement
-  {
-    #region Members
-
-    private Rect _detectionRect;
-    private DropAreaType _type;
-    private T _element;
-
-    #endregion
-
-    #region Constructors
-
-    internal DropArea( T areaElement, DropAreaType type )
-    {
-      _element = areaElement;
-      _detectionRect = areaElement.GetScreenArea();
-      _type = type;
+        DockingManager,
+        DocumentPane,
+        DocumentPaneGroup,
+        AnchorablePane
     }
 
-    #endregion
 
-    #region Properties
-
-    public Rect DetectionRect
+    public interface IDropArea
     {
-      get
-      {
-        return _detectionRect;
-      }
-    }   
+        Rect DetectionRect { get; }
 
-    public DropAreaType Type
-    {
-      get
-      {
-        return _type;
-      }
+        DropAreaType Type { get; }
     }
 
-    public T AreaElement
+    public class DropArea<T> : IDropArea where T : FrameworkElement
     {
-      get
-      {
-        return _element;
-      }
-    }
+        #region Constructors
 
-    #endregion
-  }
+        internal DropArea(T areaElement, DropAreaType type)
+        {
+            AreaElement = areaElement;
+            DetectionRect = areaElement.GetScreenArea();
+            Type = type;
+        }
+
+        #endregion
+
+        #region Members
+
+        #endregion
+
+        #region Properties
+
+        public Rect DetectionRect { get; }
+
+        public DropAreaType Type { get; }
+
+        public T AreaElement { get; }
+
+        #endregion
+    }
 }

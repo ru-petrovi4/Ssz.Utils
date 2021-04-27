@@ -19,20 +19,16 @@ using Ssz.Xceed.Wpf.Toolkit.Primitives;
 
 namespace Ssz.Xceed.Wpf.Toolkit
 {
-  public class CheckListBox : Selector
-  {
-    #region Constructors
-
-    static CheckListBox()
+    public class CheckListBox : Selector
     {
-      DefaultStyleKeyProperty.OverrideMetadata( typeof( CheckListBox ), new FrameworkPropertyMetadata( typeof( CheckListBox ) ) );
+        #region Constructors
+
+        static CheckListBox()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(CheckListBox),
+                new FrameworkPropertyMetadata(typeof(CheckListBox)));
+        }
+
+        #endregion //Constructors
     }
-
-    public CheckListBox()
-    {
-
-    }
-
-    #endregion //Constructors
-  }
 }

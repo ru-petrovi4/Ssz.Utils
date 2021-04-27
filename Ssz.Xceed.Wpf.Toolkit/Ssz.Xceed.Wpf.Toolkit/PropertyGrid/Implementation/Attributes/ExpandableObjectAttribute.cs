@@ -18,7 +18,7 @@ using System;
 
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Attributes
 {
-  public class ExpandableObjectAttribute : Attribute
-  {
-  }
+    public class ExpandableObjectAttribute : Attribute
+    {
+    }
 }

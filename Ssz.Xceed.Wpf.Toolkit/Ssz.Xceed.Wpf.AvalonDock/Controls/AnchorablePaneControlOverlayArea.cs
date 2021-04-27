@@ -18,29 +18,27 @@ using System.Windows;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 {
-  public class AnchorablePaneControlOverlayArea : OverlayArea
-  {
-    #region Members
-
-    private LayoutAnchorablePaneControl _anchorablePaneControl;
-
-    #endregion
-
-    #region constructors
-
-    internal AnchorablePaneControlOverlayArea(
-        IOverlayWindow overlayWindow,
-        LayoutAnchorablePaneControl anchorablePaneControl )
-        : base( overlayWindow )
+    public class AnchorablePaneControlOverlayArea : OverlayArea
     {
+        #region Members
 
-      _anchorablePaneControl = anchorablePaneControl;
-      base.SetScreenDetectionArea( new Rect(
-          _anchorablePaneControl.PointToScreenDPI( new Point() ),
-          _anchorablePaneControl.TransformActualSizeToAncestor() ) );
+        private readonly LayoutAnchorablePaneControl _anchorablePaneControl;
 
+        #endregion
+
+        #region constructors
+
+        internal AnchorablePaneControlOverlayArea(
+            IOverlayWindow overlayWindow,
+            LayoutAnchorablePaneControl anchorablePaneControl)
+            : base(overlayWindow)
+        {
+            _anchorablePaneControl = anchorablePaneControl;
+            SetScreenDetectionArea(new Rect(
+                _anchorablePaneControl.PointToScreenDPI(new Point()),
+                _anchorablePaneControl.TransformActualSizeToAncestor()));
+        }
+
+        #endregion
     }
-
-    #endregion
-  }
 }

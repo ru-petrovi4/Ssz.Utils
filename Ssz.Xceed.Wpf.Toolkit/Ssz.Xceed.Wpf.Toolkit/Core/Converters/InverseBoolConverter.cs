@@ -15,24 +15,25 @@
   ***********************************************************************************/
 
 using System;
+using System.Globalization;
 using System.Windows.Data;
 
 namespace Ssz.Xceed.Wpf.Toolkit.Core.Converters
 {
-  public class InverseBoolConverter : IValueConverter
-  {
-    #region IValueConverter Members
-
-    public object Convert( object value, Type targetType, object parameter, System.Globalization.CultureInfo culture )
+    public class InverseBoolConverter : IValueConverter
     {
-      return !( bool )value;
-    }
+        #region IValueConverter Members
 
-    public object ConvertBack( object value, Type targetType, object parameter, System.Globalization.CultureInfo culture )
-    {
-      throw new NotImplementedException();
-    }
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return !(bool) value;
+        }
 
-    #endregion
-  }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+    }
 }

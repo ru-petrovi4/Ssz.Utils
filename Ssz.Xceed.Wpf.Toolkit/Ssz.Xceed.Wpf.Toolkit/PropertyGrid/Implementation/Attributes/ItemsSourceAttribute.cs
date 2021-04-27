@@ -18,28 +18,20 @@ using System;
 
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Attributes
 {
-  public class ItemsSourceAttribute : Attribute
-  {
-    public Type Type
+    public class ItemsSourceAttribute : Attribute
     {
-      get;
-      set;
-    }
+        public ItemsSourceAttribute(Type type, bool isEditable = false)
+        {
+            var valueSourceInterface = type.GetInterface(typeof(IItemsSource).FullName);
+            if (valueSourceInterface == null)
+                throw new ArgumentException("Type must implement the IItemsSource interface.", "type");
 
-    public bool IsEditable
-    {
-        get;
-        set;
-    }
+            Type = type;
+            IsEditable = isEditable;
+        }
 
-    public ItemsSourceAttribute(Type type, bool isEditable = false )
-    {
-      var valueSourceInterface = type.GetInterface( typeof( IItemsSource ).FullName );
-      if( valueSourceInterface == null )
-        throw new ArgumentException( "Type must implement the IItemsSource interface.", "type" );
+        public Type Type { get; set; }
 
-      Type = type;
-      IsEditable = isEditable;
+        public bool IsEditable { get; set; }
     }
-  }
 }

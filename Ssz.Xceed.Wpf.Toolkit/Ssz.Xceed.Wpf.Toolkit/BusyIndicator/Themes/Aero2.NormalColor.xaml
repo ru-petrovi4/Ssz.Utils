@@ -34,14 +34,18 @@
                 <VisualStateGroup x:Name="VisibilityStates">
                     <VisualState x:Name="Hidden">
                         <Storyboard>
-                            <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.001" Storyboard.TargetName="busycontent" Storyboard.TargetProperty="(UIElement.Visibility)">
+                            <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.001"
+                                                           Storyboard.TargetName="busycontent"
+                                                           Storyboard.TargetProperty="(UIElement.Visibility)">
                                 <DiscreteObjectKeyFrame KeyTime="00:00:00">
                                     <DiscreteObjectKeyFrame.Value>
                                         <Visibility>Collapsed</Visibility>
                                     </DiscreteObjectKeyFrame.Value>
                                 </DiscreteObjectKeyFrame>
                             </ObjectAnimationUsingKeyFrames>
-                            <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.001" Storyboard.TargetName="overlay" Storyboard.TargetProperty="(UIElement.Visibility)">
+                            <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.001"
+                                                           Storyboard.TargetName="overlay"
+                                                           Storyboard.TargetProperty="(UIElement.Visibility)">
                                 <DiscreteObjectKeyFrame KeyTime="00:00:00">
                                     <DiscreteObjectKeyFrame.Value>
                                         <Visibility>Collapsed</Visibility>
@@ -52,14 +56,18 @@
                     </VisualState>
                     <VisualState x:Name="Visible">
                         <Storyboard>
-                            <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.001" Storyboard.TargetName="busycontent" Storyboard.TargetProperty="(UIElement.Visibility)">
+                            <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.001"
+                                                           Storyboard.TargetName="busycontent"
+                                                           Storyboard.TargetProperty="(UIElement.Visibility)">
                                 <DiscreteObjectKeyFrame KeyTime="00:00:00">
                                     <DiscreteObjectKeyFrame.Value>
                                         <Visibility>Visible</Visibility>
                                     </DiscreteObjectKeyFrame.Value>
                                 </DiscreteObjectKeyFrame>
                             </ObjectAnimationUsingKeyFrames>
-                            <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.001" Storyboard.TargetName="overlay" Storyboard.TargetProperty="(UIElement.Visibility)">
+                            <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.001"
+                                                           Storyboard.TargetName="overlay"
+                                                           Storyboard.TargetProperty="(UIElement.Visibility)">
                                 <DiscreteObjectKeyFrame KeyTime="00:00:00">
                                     <DiscreteObjectKeyFrame.Value>
                                         <Visibility>Visible</Visibility>
@@ -72,7 +80,9 @@
                 <VisualStateGroup x:Name="BusyStatusStates">
                     <VisualState x:Name="Idle">
                         <Storyboard>
-                            <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.001" Storyboard.TargetName="content" Storyboard.TargetProperty="(Control.IsEnabled)">
+                            <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.001"
+                                                           Storyboard.TargetName="content"
+                                                           Storyboard.TargetProperty="(Control.IsEnabled)">
                                 <DiscreteObjectKeyFrame KeyTime="00:00:00">
                                     <DiscreteObjectKeyFrame.Value>
                                         <sys:Boolean>True</sys:Boolean>
@@ -83,7 +93,9 @@
                     </VisualState>
                     <VisualState x:Name="Busy">
                         <Storyboard>
-                            <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.001" Storyboard.TargetName="content" Storyboard.TargetProperty="(Control.IsEnabled)">
+                            <ObjectAnimationUsingKeyFrames BeginTime="00:00:00" Duration="00:00:00.001"
+                                                           Storyboard.TargetName="content"
+                                                           Storyboard.TargetProperty="(Control.IsEnabled)">
                                 <DiscreteObjectKeyFrame KeyTime="00:00:00">
                                     <DiscreteObjectKeyFrame.Value>
                                         <sys:Boolean>False</sys:Boolean>
@@ -94,19 +106,27 @@
                     </VisualState>
                 </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <ContentControl x:Name="content" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" IsTabStop="False" Focusable="False" />
+            <ContentControl x:Name="content" Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" IsTabStop="False"
+                            Focusable="False" />
             <Rectangle x:Name="overlay" Style="{TemplateBinding OverlayStyle}" />
             <ContentPresenter x:Name="busycontent">
                 <ContentPresenter.Content>
                     <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Border Background="White" BorderThickness="1" BorderBrush="{DynamicResource {x:Static themes:ResourceKeys.ControlNormalBorderKey}}" CornerRadius="0">
+                        <Border Background="White" BorderThickness="1"
+                                BorderBrush="{DynamicResource {x:Static themes:ResourceKeys.ControlNormalBorderKey}}"
+                                CornerRadius="0">
                             <Border Margin="1" Background="{TemplateBinding Background}" CornerRadius="0">
                                 <Grid MinWidth="150">
                                     <Grid.RowDefinitions>
                                         <RowDefinition />
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
-                                    <ContentPresenter Content="{TemplateBinding BusyContent}" ContentTemplate="{TemplateBinding BusyContentTemplate}" Margin="8" />
+                                    <ContentPresenter Content="{TemplateBinding BusyContent}"
+                                                      ContentTemplate="{TemplateBinding BusyContentTemplate}"
+                                                      Margin="8" />
                                     <ProgressBar Grid.Row="1" Style="{TemplateBinding ProgressBarStyle}" />
                                 </Grid>
                             </Border>

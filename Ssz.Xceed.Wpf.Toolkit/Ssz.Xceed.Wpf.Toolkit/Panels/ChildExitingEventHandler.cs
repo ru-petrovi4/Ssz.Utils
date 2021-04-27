@@ -16,5 +16,5 @@
 
 namespace Ssz.Xceed.Wpf.Toolkit.Panels
 {
-  public delegate void ChildExitingEventHandler( object sender, ChildExitingEventArgs e );
+    public delegate void ChildExitingEventHandler(object sender, ChildExitingEventArgs e);
 }

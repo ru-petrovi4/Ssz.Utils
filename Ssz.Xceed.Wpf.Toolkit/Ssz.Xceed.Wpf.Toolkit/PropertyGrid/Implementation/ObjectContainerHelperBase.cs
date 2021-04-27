@@ -15,463 +15,417 @@
   ***********************************************************************************/
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Input;
 using Ssz.Xceed.Wpf.Toolkit.Core.Utilities;
 using Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Editors;
-using System.Collections;
-using System.Collections.ObjectModel;
-using System.Windows.Controls.Primitives;
 
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 {
-  internal abstract class ObjectContainerHelperBase : ContainerHelperBase
-  {
-    // This is needed to work around the ItemsControl behavior.
-    // When ItemsControl is preparing its containers, it appears 
-    // that calling Refresh() on the CollectionView bound to
-    // the ItemsSource prevents the items from being displayed.
-    // This patch is to avoid such a behavior.
-    private bool _isPreparingItemFlag = false;
-    private PropertyItemCollection _propertyItemCollection;
-
-    public ObjectContainerHelperBase( IPropertyContainer propertyContainer)
-      : base( propertyContainer )
+    internal abstract class ObjectContainerHelperBase : ContainerHelperBase
     {
-      _propertyItemCollection = new PropertyItemCollection( new ObservableCollection<PropertyItem>() );
-      UpdateFilter();
-      UpdateCategorization();
+        // This is needed to work around the ItemsControl behavior.
+        // When ItemsControl is preparing its containers, it appears 
+        // that calling Refresh() on the CollectionView bound to
+        // the ItemsSource prevents the items from being displayed.
+        // This patch is to avoid such a behavior.
+        private bool _isPreparingItemFlag;
 
-    }
-
-    public override IList Properties
-    {
-      get { return _propertyItemCollection; }
-    }
-
-    private PropertyItem DefaultProperty
-    {
-      get 
-      {
-        PropertyItem defaultProperty = null;
-        var defaultName = this.GetDefaultPropertyName();
-        if( defaultName != null )
+        public ObjectContainerHelperBase(IPropertyContainer propertyContainer)
+            : base(propertyContainer)
         {
-          defaultProperty = _propertyItemCollection
-            .FirstOrDefault( ( prop ) => object.Equals( defaultName, prop.PropertyDescriptor.Name ) );
+            PropertyItems = new PropertyItemCollection(new ObservableCollection<PropertyItem>());
+            UpdateFilter();
+            UpdateCategorization();
         }
 
-        return defaultProperty;
-      }
-    }
+        public override IList Properties => PropertyItems;
 
-
-    protected PropertyItemCollection PropertyItems
-    {
-      get
-      {
-        return _propertyItemCollection;
-      }
-    }
-
-    public override PropertyItemBase ContainerFromItem( object item )
-    {
-      if( item == null )
-        return null;
-      // Exception case for ObjectContainerHelperBase. The "Item" may sometimes
-      // be identified as a string representing the property name or
-      // the PropertyItem itself.
-      Debug.Assert( item is PropertyItem || item is string );
-
-      var propertyItem = item as PropertyItem;
-      if( propertyItem != null )
-        return propertyItem;
-
-
-      var propertyStr = item as string;
-      if( propertyStr != null )
-        return PropertyItems.FirstOrDefault( ( prop ) => propertyStr == prop.PropertyDescriptor.Name );
-
-      return null;
-    }
-
-    public override object ItemFromContainer( PropertyItemBase container )
-    {
-      // Since this call is only used to update the PropertyGrid.SelectedProperty property,
-      // return the PropertyName.
-      var propertyItem = container as PropertyItem;
-      if( propertyItem == null )
-        return null;
-
-      return propertyItem.PropertyDescriptor.Name;
-    }
-
-    public override void  UpdateValuesFromSource()
-    {
-      foreach( PropertyItem item in PropertyItems )
-      {
-        item.DescriptorDefinition.UpdateValueFromSource();
-        item.ContainerHelper.UpdateValuesFromSource();
-      }
-    }
-
-    public void GenerateProperties()
-    {
-      if( PropertyItems.Count == 0 )
-      {
-        this.RegenerateProperties();
-      }
-    }
-
-    protected override void OnFilterChanged()
-    {
-      this.UpdateFilter();
-    }
-
-    protected override void OnCategorizationChanged()
-    {
-      UpdateCategorization();
-    }
-
-    protected override void OnAutoGeneratePropertiesChanged()
-    {
-      this.RegenerateProperties();
-    }
-
-    protected override void OnEditorDefinitionsChanged()
-    {
-      this.RegenerateProperties();
-    }
-
-    protected override void OnPropertyDefinitionsChanged()
-    {
-      this.RegenerateProperties();
-    }
-
-
-
-    private void UpdateFilter()
-    {
-      FilterInfo filterInfo = PropertyContainer.FilterInfo;
-
-      PropertyItems.FilterPredicate = filterInfo.Predicate
-        ?? PropertyItemCollection.CreateFilter( filterInfo.InputString );
-    }
-
-    private void UpdateCategorization()
-    {
-      _propertyItemCollection.UpdateCategorization( this.ComputeCategoryGroupDescription(), this.PropertyContainer.IsCategorized );
-    }
-
-    private GroupDescription ComputeCategoryGroupDescription()
-    {
-      if( !PropertyContainer.IsCategorized )
-        return null;
-      return new PropertyGroupDescription( PropertyItemCollection.CategoryPropertyName );
-    }
-
-    private string GetCategoryGroupingPropertyName()
-    {
-      var propGroup = this.ComputeCategoryGroupDescription() as PropertyGroupDescription;
-      return ( propGroup != null ) ? propGroup.PropertyName : null;
-    }
-
-    private void OnChildrenPropertyChanged( object sender, PropertyChangedEventArgs e )
-    {
-      if( ObjectContainerHelperBase.IsItemOrderingProperty( e.PropertyName )
-        || this.GetCategoryGroupingPropertyName() == e.PropertyName )
-      {
-        // Refreshing the view while Containers are generated will throw an exception
-        if( this.ChildrenItemsControl.ItemContainerGenerator.Status != GeneratorStatus.GeneratingContainers
-          && !_isPreparingItemFlag )
+        private PropertyItem DefaultProperty
         {
-          PropertyItems.RefreshView();
-        }
-      }
-    }
+            get
+            {
+                PropertyItem defaultProperty = null;
+                var defaultName = GetDefaultPropertyName();
+                if (defaultName != null)
+                    defaultProperty = PropertyItems
+                        .FirstOrDefault(prop => Equals(defaultName, prop.PropertyDescriptor.Name));
 
-    protected abstract string GetDefaultPropertyName();
-
-    protected abstract IEnumerable<PropertyItem> GenerateSubPropertiesCore();
-
-    private void RegenerateProperties()
-    {
-      IEnumerable<PropertyItem> subProperties = this.GenerateSubPropertiesCore();
-
-      var uiParent = PropertyContainer as UIElement;
-
-      foreach( var propertyItem in subProperties )
-      {
-        this.InitializePropertyItem( propertyItem );
-      }
-
-      //Remove the event callback from the previous children (if any)
-      foreach( var propertyItem in PropertyItems )
-      {
-        propertyItem.PropertyChanged -= OnChildrenPropertyChanged;
-      }
-
-
-      PropertyItems.UpdateItems( subProperties );
-
-      //Add the event callback to the new childrens
-      foreach( var propertyItem in PropertyItems )
-      {
-        propertyItem.PropertyChanged += OnChildrenPropertyChanged;
-      }
-
-      // Update the selected property on the property grid only.
-      PropertyGrid propertyGrid = PropertyContainer as PropertyGrid;
-      if( propertyGrid != null )
-      {
-        propertyGrid.SelectedPropertyItem = this.DefaultProperty;
-      }
-    }
-
-    protected static List<PropertyDescriptor> GetPropertyDescriptors( object instance )
-    {
-      PropertyDescriptorCollection descriptors;
-
-      TypeConverter tc = TypeDescriptor.GetConverter( instance );
-      if( tc == null || !tc.GetPropertiesSupported() )
-      {
-        if( instance is ICustomTypeDescriptor )
-          descriptors = ( ( ICustomTypeDescriptor )instance ).GetProperties();
-        else
-          descriptors = TypeDescriptor.GetProperties( instance.GetType() );
-      }
-      else
-      {
-        descriptors = tc.GetProperties( instance );
-      }
-
-      return ( descriptors != null )
-        ? descriptors.Cast<PropertyDescriptor>().ToList()
-        : null;
-    }
-
-    internal void InitializeDescriptorDefinition(
-      DescriptorPropertyDefinitionBase descriptorDef,
-      PropertyDefinition propertyDefinition )
-    {
-      if( descriptorDef == null )
-        throw new ArgumentNullException( "descriptorDef" );
-
-      if( propertyDefinition == null )
-        return;
-
-      // Values defined on PropertyDefinition have priority on the attributes
-      if( propertyDefinition != null )
-      {
-        if( propertyDefinition.Category != null )
-        {
-          descriptorDef.Category = propertyDefinition.Category;
-          descriptorDef.CategoryValue = propertyDefinition.Category;
+                return defaultProperty;
+            }
         }
 
-        if( propertyDefinition.Description != null )
+
+        protected PropertyItemCollection PropertyItems { get; }
+
+        public override PropertyItemBase ContainerFromItem(object item)
         {
-          descriptorDef.Description = propertyDefinition.Description;
+            if (item == null)
+                return null;
+            // Exception case for ObjectContainerHelperBase. The "Item" may sometimes
+            // be identified as a string representing the property name or
+            // the PropertyItem itself.
+            Debug.Assert(item is PropertyItem || item is string);
+
+            var propertyItem = item as PropertyItem;
+            if (propertyItem != null)
+                return propertyItem;
+
+
+            var propertyStr = item as string;
+            if (propertyStr != null)
+                return PropertyItems.FirstOrDefault(prop => propertyStr == prop.PropertyDescriptor.Name);
+
+            return null;
         }
 
-        if( propertyDefinition.DisplayName != null )
+        public override object ItemFromContainer(PropertyItemBase container)
         {
-          descriptorDef.DisplayName = propertyDefinition.DisplayName;
+            // Since this call is only used to update the PropertyGrid.SelectedProperty property,
+            // return the PropertyName.
+            var propertyItem = container as PropertyItem;
+            if (propertyItem == null)
+                return null;
+
+            return propertyItem.PropertyDescriptor.Name;
         }
 
-        if( propertyDefinition.DisplayOrder != null )
+        public override void UpdateValuesFromSource()
         {
-          descriptorDef.DisplayOrder = propertyDefinition.DisplayOrder.Value;
+            foreach (var item in PropertyItems)
+            {
+                item.DescriptorDefinition.UpdateValueFromSource();
+                item.ContainerHelper.UpdateValuesFromSource();
+            }
         }
 
-        if( propertyDefinition.IsExpandable != null )
+        public void GenerateProperties()
         {
-          descriptorDef.ExpandableAttribute = propertyDefinition.IsExpandable.Value;
+            if (PropertyItems.Count == 0) RegenerateProperties();
         }
-      }
-    }
 
-    private void InitializePropertyItem( PropertyItem propertyItem )
-    {
-      BindingOperations.ClearAllBindings(propertyItem);
-      DescriptorPropertyDefinitionBase pd = propertyItem.DescriptorDefinition;
-      propertyItem.PropertyDescriptor = pd.PropertyDescriptor;
-
-      if (String.IsNullOrWhiteSpace(pd.ValuePropertyPath)) propertyItem.IsReadOnly = pd.IsReadOnly;
-      else propertyItem.IsReadOnly = false;
-
-      propertyItem.DisplayName = pd.DisplayName;
-      propertyItem.Description = pd.Description;
-      propertyItem.Category = pd.Category;
-      propertyItem.PropertyOrder = pd.DisplayOrder;
-
-      //These properties can vary with the value. They need to be bound.
-      SetupDefinitionBinding( propertyItem, PropertyItemBase.IsExpandableProperty, pd, () => pd.IsExpandable, BindingMode.OneWay );
-      SetupDefinitionBinding( propertyItem, PropertyItemBase.AdvancedOptionsIconProperty, pd, () => pd.AdvancedOptionsIcon, BindingMode.OneWay );
-      SetupDefinitionBinding( propertyItem, PropertyItemBase.AdvancedOptionsTooltipProperty, pd, () => pd.AdvancedOptionsTooltip, BindingMode.OneWay );
-        if (!String.IsNullOrWhiteSpace(pd.ValuePropertyPath))
+        protected override void OnFilterChanged()
         {
-            if (pd.PropertyType.GetProperty(pd.ValuePropertyPath).CanWrite)
-                SetupDefinitionBinding(propertyItem, CustomPropertyItem.ValueProperty, pd.Value, pd.ValuePropertyPath,
-                    BindingMode.TwoWay);
+            UpdateFilter();
+        }
+
+        protected override void OnCategorizationChanged()
+        {
+            UpdateCategorization();
+        }
+
+        protected override void OnAutoGeneratePropertiesChanged()
+        {
+            RegenerateProperties();
+        }
+
+        protected override void OnEditorDefinitionsChanged()
+        {
+            RegenerateProperties();
+        }
+
+        protected override void OnPropertyDefinitionsChanged()
+        {
+            RegenerateProperties();
+        }
+
+
+        private void UpdateFilter()
+        {
+            var filterInfo = PropertyContainer.FilterInfo;
+
+            PropertyItems.FilterPredicate = filterInfo.Predicate
+                                            ?? PropertyItemCollection.CreateFilter(filterInfo.InputString);
+        }
+
+        private void UpdateCategorization()
+        {
+            PropertyItems.UpdateCategorization(ComputeCategoryGroupDescription(), PropertyContainer.IsCategorized);
+        }
+
+        private GroupDescription ComputeCategoryGroupDescription()
+        {
+            if (!PropertyContainer.IsCategorized)
+                return null;
+            return new PropertyGroupDescription(PropertyItemCollection.CategoryPropertyName);
+        }
+
+        private string GetCategoryGroupingPropertyName()
+        {
+            var propGroup = ComputeCategoryGroupDescription() as PropertyGroupDescription;
+            return propGroup != null ? propGroup.PropertyName : null;
+        }
+
+        private void OnChildrenPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (IsItemOrderingProperty(e.PropertyName)
+                || GetCategoryGroupingPropertyName() == e.PropertyName)
+                // Refreshing the view while Containers are generated will throw an exception
+                if (ChildrenItemsControl.ItemContainerGenerator.Status != GeneratorStatus.GeneratingContainers
+                    && !_isPreparingItemFlag)
+                    PropertyItems.RefreshView();
+        }
+
+        protected abstract string GetDefaultPropertyName();
+
+        protected abstract IEnumerable<PropertyItem> GenerateSubPropertiesCore();
+
+        private void RegenerateProperties()
+        {
+            var subProperties = GenerateSubPropertiesCore();
+
+            var uiParent = PropertyContainer as UIElement;
+
+            foreach (var propertyItem in subProperties) InitializePropertyItem(propertyItem);
+
+            //Remove the event callback from the previous children (if any)
+            foreach (var propertyItem in PropertyItems) propertyItem.PropertyChanged -= OnChildrenPropertyChanged;
+
+
+            PropertyItems.UpdateItems(subProperties);
+
+            //Add the event callback to the new childrens
+            foreach (var propertyItem in PropertyItems) propertyItem.PropertyChanged += OnChildrenPropertyChanged;
+
+            // Update the selected property on the property grid only.
+            var propertyGrid = PropertyContainer as PropertyGrid;
+            if (propertyGrid != null) propertyGrid.SelectedPropertyItem = DefaultProperty;
+        }
+
+        protected static List<PropertyDescriptor> GetPropertyDescriptors(object instance)
+        {
+            PropertyDescriptorCollection descriptors;
+
+            var tc = TypeDescriptor.GetConverter(instance);
+            if (tc == null || !tc.GetPropertiesSupported())
+            {
+                if (instance is ICustomTypeDescriptor)
+                    descriptors = ((ICustomTypeDescriptor) instance).GetProperties();
+                else
+                    descriptors = TypeDescriptor.GetProperties(instance.GetType());
+            }
             else
-                SetupDefinitionBinding(propertyItem, CustomPropertyItem.ValueProperty, pd.Value, pd.ValuePropertyPath,
-                    BindingMode.OneWay);
-        }
-        else
-        {
-            SetupDefinitionBinding(propertyItem, CustomPropertyItem.ValueProperty, pd, () => pd.Value, BindingMode.TwoWay);
-        }
-      if (!String.IsNullOrWhiteSpace(pd.IsValueEditorEnabledPropertyPath)) SetupDefinitionBinding(propertyItem, CustomPropertyItem.IsValueEditorEnabledProperty, pd.Value, pd.IsValueEditorEnabledPropertyPath, BindingMode.OneWay );
+            {
+                descriptors = tc.GetProperties(instance);
+            }
 
-      if( pd.CommandBindings != null )
-      {
-        foreach( CommandBinding commandBinding in pd.CommandBindings )
-        {
-          propertyItem.CommandBindings.Add( commandBinding );
-        }
-      }
-    }
-
-    private void SetupDefinitionBinding<T>(
-      PropertyItem propertyItem,
-      DependencyProperty itemProperty,
-      DescriptorPropertyDefinitionBase pd,
-      Expression<Func<T>> definitionProperty,
-      BindingMode bindingMode )
-    {
-      string sourceProperty = ReflectionHelper.GetPropertyOrFieldName( definitionProperty );
-      SetupDefinitionBinding( propertyItem, itemProperty, pd, sourceProperty, bindingMode );
-    }
-
-    private void SetupDefinitionBinding(
-      PropertyItem propertyItem,
-      DependencyProperty itemProperty,
-      object source,
-      string sourceProperty,
-      BindingMode bindingMode )
-    {
-        Binding binding = new Binding(sourceProperty)
-        {
-            Source = source,
-            Mode = bindingMode
-        };
-
-        propertyItem.SetBinding(itemProperty, binding);
-    }
-
-    private FrameworkElement GenerateChildrenEditorElement( PropertyItem propertyItem )
-    {
-      FrameworkElement editorElement = null;
-      DescriptorPropertyDefinitionBase pd = propertyItem.DescriptorDefinition;
-      object definitionKey = null;
-      Type definitionKeyAsType = definitionKey as Type;
-
-      ITypeEditor editor = pd.CreateAttributeEditor();
-      if( editor != null )
-        editorElement = editor.ResolveEditor( propertyItem );
-
-
-      if( editorElement == null && definitionKey == null )
-        editorElement = this.GenerateCustomEditingElement( propertyItem.PropertyDescriptor.Name, propertyItem );
-
-      if( editorElement == null && definitionKeyAsType == null )
-          editorElement = this.GenerateCustomEditingElement( propertyItem.PropertyType, propertyItem );
-
-      if( editorElement == null )
-      {
-        if( pd.IsReadOnly )
-          editor = new TextBlockEditor();
-
-        // Fallback: Use a default type editor.
-        if( editor == null )
-        {
-          editor = ( definitionKeyAsType != null )
-          ? PropertyGridUtilities.CreateDefaultEditor( definitionKeyAsType, null )
-          : pd.CreateDefaultEditor();
+            return descriptors != null
+                ? descriptors.Cast<PropertyDescriptor>().ToList()
+                : null;
         }
 
-        Debug.Assert( editor != null );
-
-        editorElement = editor.ResolveEditor( propertyItem );
-      }
-
-      return editorElement;
-    }
-
-    internal PropertyDefinition GetPropertyDefinition( PropertyDescriptor descriptor )
-    {
-      PropertyDefinition def = null;
-
-      var propertyDefs = this.PropertyContainer.PropertyDefinitions;
-      if( propertyDefs != null )
-      {
-        def = propertyDefs[ descriptor.Name ];
-        if( def == null )
+        internal void InitializeDescriptorDefinition(
+            DescriptorPropertyDefinitionBase descriptorDef,
+            PropertyDefinition propertyDefinition)
         {
-          def = propertyDefs.GetRecursiveBaseTypes( descriptor.PropertyType );
+            if (descriptorDef == null)
+                throw new ArgumentNullException("descriptorDef");
+
+            if (propertyDefinition == null)
+                return;
+
+            // Values defined on PropertyDefinition have priority on the attributes
+            if (propertyDefinition != null)
+            {
+                if (propertyDefinition.Category != null)
+                {
+                    descriptorDef.Category = propertyDefinition.Category;
+                    descriptorDef.CategoryValue = propertyDefinition.Category;
+                }
+
+                if (propertyDefinition.Description != null) descriptorDef.Description = propertyDefinition.Description;
+
+                if (propertyDefinition.DisplayName != null) descriptorDef.DisplayName = propertyDefinition.DisplayName;
+
+                if (propertyDefinition.DisplayOrder != null)
+                    descriptorDef.DisplayOrder = propertyDefinition.DisplayOrder.Value;
+
+                if (propertyDefinition.IsExpandable != null)
+                    descriptorDef.ExpandableAttribute = propertyDefinition.IsExpandable.Value;
+            }
         }
-      }
 
-      return def;
-    }
-
-
-    public override void PrepareChildrenPropertyItem( PropertyItemBase propertyItem, object item )
-    {
-      _isPreparingItemFlag = true;
-      base.PrepareChildrenPropertyItem( propertyItem, item );
-
-      if( propertyItem.Editor == null )
-      {
-        FrameworkElement editor = this.GenerateChildrenEditorElement( ( PropertyItem )propertyItem );
-        if( editor != null )
+        private void InitializePropertyItem(PropertyItem propertyItem)
         {
-          // Tag the editor as generated to know if we should clear it.
-          ContainerHelperBase.SetIsGenerated( editor, true );
-          propertyItem.Editor = editor;
+            BindingOperations.ClearAllBindings(propertyItem);
+            var pd = propertyItem.DescriptorDefinition;
+            propertyItem.PropertyDescriptor = pd.PropertyDescriptor;
+
+            if (string.IsNullOrWhiteSpace(pd.ValuePropertyPath)) propertyItem.IsReadOnly = pd.IsReadOnly;
+            else propertyItem.IsReadOnly = false;
+
+            propertyItem.DisplayName = pd.DisplayName;
+            propertyItem.Description = pd.Description;
+            propertyItem.Category = pd.Category;
+            propertyItem.PropertyOrder = pd.DisplayOrder;
+
+            //These properties can vary with the value. They need to be bound.
+            SetupDefinitionBinding(propertyItem, PropertyItemBase.IsExpandableProperty, pd, () => pd.IsExpandable,
+                BindingMode.OneWay);
+            SetupDefinitionBinding(propertyItem, PropertyItemBase.AdvancedOptionsIconProperty, pd,
+                () => pd.AdvancedOptionsIcon, BindingMode.OneWay);
+            SetupDefinitionBinding(propertyItem, PropertyItemBase.AdvancedOptionsTooltipProperty, pd,
+                () => pd.AdvancedOptionsTooltip, BindingMode.OneWay);
+            if (!string.IsNullOrWhiteSpace(pd.ValuePropertyPath))
+            {
+                if (pd.PropertyType.GetProperty(pd.ValuePropertyPath).CanWrite)
+                    SetupDefinitionBinding(propertyItem, CustomPropertyItem.ValueProperty, pd.Value,
+                        pd.ValuePropertyPath,
+                        BindingMode.TwoWay);
+                else
+                    SetupDefinitionBinding(propertyItem, CustomPropertyItem.ValueProperty, pd.Value,
+                        pd.ValuePropertyPath,
+                        BindingMode.OneWay);
+            }
+            else
+            {
+                SetupDefinitionBinding(propertyItem, CustomPropertyItem.ValueProperty, pd, () => pd.Value,
+                    BindingMode.TwoWay);
+            }
+
+            if (!string.IsNullOrWhiteSpace(pd.IsValueEditorEnabledPropertyPath))
+                SetupDefinitionBinding(propertyItem, CustomPropertyItem.IsValueEditorEnabledProperty, pd.Value,
+                    pd.IsValueEditorEnabledPropertyPath, BindingMode.OneWay);
+
+            if (pd.CommandBindings != null)
+                foreach (var commandBinding in pd.CommandBindings)
+                    propertyItem.CommandBindings.Add(commandBinding);
         }
-      }
-      _isPreparingItemFlag = false;
+
+        private void SetupDefinitionBinding<T>(
+            PropertyItem propertyItem,
+            DependencyProperty itemProperty,
+            DescriptorPropertyDefinitionBase pd,
+            Expression<Func<T>> definitionProperty,
+            BindingMode bindingMode)
+        {
+            var sourceProperty = ReflectionHelper.GetPropertyOrFieldName(definitionProperty);
+            SetupDefinitionBinding(propertyItem, itemProperty, pd, sourceProperty, bindingMode);
+        }
+
+        private void SetupDefinitionBinding(
+            PropertyItem propertyItem,
+            DependencyProperty itemProperty,
+            object source,
+            string sourceProperty,
+            BindingMode bindingMode)
+        {
+            var binding = new Binding(sourceProperty)
+            {
+                Source = source,
+                Mode = bindingMode
+            };
+
+            propertyItem.SetBinding(itemProperty, binding);
+        }
+
+        private FrameworkElement GenerateChildrenEditorElement(PropertyItem propertyItem)
+        {
+            FrameworkElement editorElement = null;
+            var pd = propertyItem.DescriptorDefinition;
+            object definitionKey = null;
+            var definitionKeyAsType = definitionKey as Type;
+
+            var editor = pd.CreateAttributeEditor();
+            if (editor != null)
+                editorElement = editor.ResolveEditor(propertyItem);
+
+
+            if (editorElement == null && definitionKey == null)
+                editorElement = GenerateCustomEditingElement(propertyItem.PropertyDescriptor.Name, propertyItem);
+
+            if (editorElement == null && definitionKeyAsType == null)
+                editorElement = GenerateCustomEditingElement(propertyItem.PropertyType, propertyItem);
+
+            if (editorElement == null)
+            {
+                if (pd.IsReadOnly)
+                    editor = new TextBlockEditor();
+
+                // Fallback: Use a default type editor.
+                if (editor == null)
+                    editor = definitionKeyAsType != null
+                        ? PropertyGridUtilities.CreateDefaultEditor(definitionKeyAsType, null)
+                        : pd.CreateDefaultEditor();
+
+                Debug.Assert(editor != null);
+
+                editorElement = editor.ResolveEditor(propertyItem);
+            }
+
+            return editorElement;
+        }
+
+        internal PropertyDefinition GetPropertyDefinition(PropertyDescriptor descriptor)
+        {
+            PropertyDefinition def = null;
+
+            var propertyDefs = PropertyContainer.PropertyDefinitions;
+            if (propertyDefs != null)
+            {
+                def = propertyDefs[descriptor.Name];
+                if (def == null) def = propertyDefs.GetRecursiveBaseTypes(descriptor.PropertyType);
+            }
+
+            return def;
+        }
+
+
+        public override void PrepareChildrenPropertyItem(PropertyItemBase propertyItem, object item)
+        {
+            _isPreparingItemFlag = true;
+            base.PrepareChildrenPropertyItem(propertyItem, item);
+
+            if (propertyItem.Editor == null)
+            {
+                var editor = GenerateChildrenEditorElement((PropertyItem) propertyItem);
+                if (editor != null)
+                {
+                    // Tag the editor as generated to know if we should clear it.
+                    SetIsGenerated(editor, true);
+                    propertyItem.Editor = editor;
+                }
+            }
+
+            _isPreparingItemFlag = false;
+        }
+
+        public override void ClearChildrenPropertyItem(PropertyItemBase propertyItem, object item)
+        {
+            if (propertyItem.Editor != null
+                && GetIsGenerated(propertyItem.Editor))
+                propertyItem.Editor = null;
+
+            base.ClearChildrenPropertyItem(propertyItem, item);
+        }
+
+        public override Binding CreateChildrenDefaultBinding(PropertyItemBase propertyItem)
+        {
+            var binding = new Binding("Value");
+            binding.Mode = ((PropertyItem) propertyItem).IsReadOnly ? BindingMode.OneWay : BindingMode.TwoWay;
+            return binding;
+        }
+
+        protected static string GetDefaultPropertyName(object instance)
+        {
+            var attributes = TypeDescriptor.GetAttributes(instance);
+            var defaultPropertyAttribute = (DefaultPropertyAttribute) attributes[typeof(DefaultPropertyAttribute)];
+            return defaultPropertyAttribute != null ? defaultPropertyAttribute.Name : null;
+        }
+
+        private static bool IsItemOrderingProperty(string propertyName)
+        {
+            return propertyName == PropertyItemCollection.DisplayNamePropertyName
+                   || propertyName == PropertyItemCollection.CategoryOrderPropertyName
+                   || propertyName == PropertyItemCollection.PropertyOrderPropertyName;
+        }
     }
-
-    public override void ClearChildrenPropertyItem( PropertyItemBase propertyItem, object item )
-    {
-      if( propertyItem.Editor != null 
-        && ContainerHelperBase.GetIsGenerated( propertyItem.Editor ) )
-      {
-        propertyItem.Editor = null;
-      }
-
-      base.ClearChildrenPropertyItem( propertyItem, item );
-    }
-
-    public override Binding CreateChildrenDefaultBinding( PropertyItemBase propertyItem )
-    {
-      Binding binding = new Binding( "Value" );
-      binding.Mode = ( ( ( PropertyItem )propertyItem ).IsReadOnly ) ? BindingMode.OneWay : BindingMode.TwoWay;
-      return binding;
-    }
-
-    protected static string GetDefaultPropertyName( object instance )
-    {
-      AttributeCollection attributes = TypeDescriptor.GetAttributes( instance );
-      DefaultPropertyAttribute defaultPropertyAttribute = ( DefaultPropertyAttribute )attributes[ typeof( DefaultPropertyAttribute ) ];
-      return defaultPropertyAttribute != null ? defaultPropertyAttribute.Name : null;
-    }
-
-    private static bool IsItemOrderingProperty( string propertyName )
-    {
-      return  propertyName == PropertyItemCollection.DisplayNamePropertyName 
-        || propertyName == PropertyItemCollection.CategoryOrderPropertyName 
-        || propertyName == PropertyItemCollection.PropertyOrderPropertyName ;
-    }
-
-  }
 }

@@ -18,16 +18,10 @@ using System.Windows;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 {
-  interface IOverlayWindowDropTarget
-  {
-    Rect ScreenDetectionArea
+    internal interface IOverlayWindowDropTarget
     {
-      get;
-    }
+        Rect ScreenDetectionArea { get; }
 
-    OverlayWindowDropTargetType Type
-    {
-      get;
+        OverlayWindowDropTargetType Type { get; }
     }
-  }
 }

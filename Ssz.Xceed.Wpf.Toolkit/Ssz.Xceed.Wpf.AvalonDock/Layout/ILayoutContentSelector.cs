@@ -16,26 +16,20 @@
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 {
-  public interface ILayoutContentSelector
-  {
-    #region Properties
-
-    int SelectedContentIndex
+    public interface ILayoutContentSelector
     {
-      get; set;
+        #region Methods
+
+        int IndexOf(LayoutContent content);
+
+        #endregion
+
+        #region Properties
+
+        int SelectedContentIndex { get; set; }
+
+        LayoutContent SelectedContent { get; }
+
+        #endregion
     }
-
-    LayoutContent SelectedContent
-    {
-      get;
-    }
-
-    #endregion
-
-    #region Methods
-
-    int IndexOf( LayoutContent content );
-
-    #endregion
-  }
 }

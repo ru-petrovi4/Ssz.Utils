@@ -46,7 +46,8 @@
         <ResourceDictionary Source="/Ssz.Xceed.Wpf.Toolkit;component/MultiLineTextEditor/Themes/Aero2.NormalColor.xaml" />
         <ResourceDictionary Source="/Ssz.Xceed.Wpf.Toolkit;component/NumericUpDown/Themes/Aero2.NormalColor.xaml" />
         <ResourceDictionary Source="/Ssz.Xceed.Wpf.Toolkit;component/Pie/Themes/Aero2.NormalColor.xaml" />
-        <ResourceDictionary Source="/Ssz.Xceed.Wpf.Toolkit;component/RichTextBoxFormatBar/Themes/Aero2.NormalColor.xaml" />
+        <ResourceDictionary
+            Source="/Ssz.Xceed.Wpf.Toolkit;component/RichTextBoxFormatBar/Themes/Aero2.NormalColor.xaml" />
         <ResourceDictionary Source="/Ssz.Xceed.Wpf.Toolkit;component/SplitButton/Themes/Aero2.NormalColor.xaml" />
         <ResourceDictionary Source="/Ssz.Xceed.Wpf.Toolkit;component/PropertyGrid/Themes/Aero2.NormalColor.xaml" />
 

@@ -21,7 +21,8 @@
 
 
     <DataTemplate x:Key="DefaultWatermarkTemplate">
-        <ContentControl Content="{Binding}" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Focusable="False" />
+        <ContentControl Content="{Binding}" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                        Focusable="False" />
     </DataTemplate>
 
 
@@ -45,16 +46,19 @@
                 <ControlTemplate TargetType="{x:Type local:WatermarkTextBox}">
                     <Grid>
 
-                        <Border x:Name="Border" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="0" Background="{TemplateBinding Background}" />
-                        <ScrollViewer x:Name="PART_ContentHost" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        <Border x:Name="Border" BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}" CornerRadius="0"
+                                Background="{TemplateBinding Background}" />
+                        <ScrollViewer x:Name="PART_ContentHost"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                         <ContentPresenter x:Name="PART_WatermarkHost"
-                                    Content="{TemplateBinding Watermark}"
-                                    ContentTemplate="{TemplateBinding WatermarkTemplate}"
-                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                    IsHitTestVisible="False"
-                                    Margin="{TemplateBinding Padding}"
-                                    Visibility="Collapsed" />
+                                          Content="{TemplateBinding Watermark}"
+                                          ContentTemplate="{TemplateBinding WatermarkTemplate}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          IsHitTestVisible="False"
+                                          Margin="{TemplateBinding Padding}"
+                                          Visibility="Collapsed" />
 
                     </Grid>
                     <ControlTemplate.Triggers>
@@ -68,13 +72,16 @@
                             </MultiTrigger.Setters>
                         </MultiTrigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource {x:Static themes:ResourceKeys.ControlMouseOverBorderKey}}" />
+                            <Setter TargetName="Border" Property="BorderBrush"
+                                    Value="{DynamicResource {x:Static themes:ResourceKeys.ControlMouseOverBorderKey}}" />
                         </Trigger>
                         <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource {x:Static themes:ResourceKeys.ControlSelectedBorderKey}}" />
+                            <Setter TargetName="Border" Property="BorderBrush"
+                                    Value="{DynamicResource {x:Static themes:ResourceKeys.ControlSelectedBorderKey}}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                            <Setter Property="Foreground"
+                                    Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -82,6 +89,6 @@
         </Setter>
     </Style>
 
-   <Style TargetType="{x:Type local:WatermarkTextBox}" BasedOn="{StaticResource WatermarkTextBox}" />
+    <Style TargetType="{x:Type local:WatermarkTextBox}" BasedOn="{StaticResource WatermarkTextBox}" />
 
 </ResourceDictionary>

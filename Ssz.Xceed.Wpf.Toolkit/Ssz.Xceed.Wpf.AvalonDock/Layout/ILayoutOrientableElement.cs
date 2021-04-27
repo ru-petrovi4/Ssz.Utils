@@ -18,11 +18,8 @@ using System.Windows.Controls;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 {
-  public interface ILayoutOrientableGroup : ILayoutGroup
-  {
-    Orientation Orientation
+    public interface ILayoutOrientableGroup : ILayoutGroup
     {
-      get; set;
+        Orientation Orientation { get; set; }
     }
-  }
 }

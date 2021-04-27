@@ -18,25 +18,26 @@ using System.Windows;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 {
-  public class DocumentPaneControlOverlayArea : OverlayArea
-  {
-    #region Members
-
-    private LayoutDocumentPaneControl _documentPaneControl;
-
-    #endregion
-
-    #region Constructors
-
-    internal DocumentPaneControlOverlayArea(
-        IOverlayWindow overlayWindow,
-        LayoutDocumentPaneControl documentPaneControl )
-        : base( overlayWindow )
+    public class DocumentPaneControlOverlayArea : OverlayArea
     {
-      _documentPaneControl = documentPaneControl;
-      base.SetScreenDetectionArea( new Rect(  _documentPaneControl.PointToScreenDPI( new Point() ),  _documentPaneControl.TransformActualSizeToAncestor() ) );
-    }
+        #region Members
 
-    #endregion
-  }
+        private readonly LayoutDocumentPaneControl _documentPaneControl;
+
+        #endregion
+
+        #region Constructors
+
+        internal DocumentPaneControlOverlayArea(
+            IOverlayWindow overlayWindow,
+            LayoutDocumentPaneControl documentPaneControl)
+            : base(overlayWindow)
+        {
+            _documentPaneControl = documentPaneControl;
+            SetScreenDetectionArea(new Rect(_documentPaneControl.PointToScreenDPI(new Point()),
+                _documentPaneControl.TransformActualSizeToAncestor()));
+        }
+
+        #endregion
+    }
 }

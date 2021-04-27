@@ -19,17 +19,13 @@ using Ssz.Xceed.Wpf.AvalonDock.Layout;
 
 namespace Ssz.Xceed.Wpf.AvalonDock
 {
-  class LayoutEventArgs : EventArgs
-  {
-    public LayoutEventArgs( LayoutRoot layoutRoot )
+    internal class LayoutEventArgs : EventArgs
     {
-      LayoutRoot = layoutRoot;
-    }
+        public LayoutEventArgs(LayoutRoot layoutRoot)
+        {
+            LayoutRoot = layoutRoot;
+        }
 
-    public LayoutRoot LayoutRoot
-    {
-      get;
-      private set;
+        public LayoutRoot LayoutRoot { get; }
     }
-  }
 }

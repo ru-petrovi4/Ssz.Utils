@@ -18,16 +18,16 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 
-    <DrawingBrush x:Key="AvalonDock_ThemeVS2010_BaseColor1" 
-                  TileMode="Tile"  
-                Viewport="0 0 5 5" 
-				ViewportUnits="Absolute" 
-				Stretch="None">
+    <DrawingBrush x:Key="AvalonDock_ThemeVS2010_BaseColor1"
+                  TileMode="Tile"
+                  Viewport="0 0 5 5"
+                  ViewportUnits="Absolute"
+                  Stretch="None">
         <DrawingBrush.Drawing>
             <DrawingGroup>
                 <GeometryDrawing Brush="#2C3D5A">
                     <GeometryDrawing.Geometry>
-                        <RectangleGeometry Rect="0,0,10,10"/>
+                        <RectangleGeometry Rect="0,0,10,10" />
                     </GeometryDrawing.Geometry>
                 </GeometryDrawing>
                 <GeometryDrawing>
@@ -54,17 +54,17 @@
         </DrawingBrush.Drawing>
     </DrawingBrush>
 
-    <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor2" 
-                     Color="White"/>
+    <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor2"
+                     Color="White" />
 
-    <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor3" 
-                     Color="Black"/>
+    <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor3"
+                     Color="Black" />
 
-    <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor4" 
-                     Color="Transparent"/>
+    <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor4"
+                     Color="Transparent" />
 
-    <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor5" 
-                     Color="#293955"/>
+    <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor5"
+                     Color="#293955" />
 
     <LinearGradientBrush x:Key="AvalonDock_ThemeVS2010_BaseColor6"
                          StartPoint="0,0"
@@ -89,25 +89,25 @@
     </LinearGradientBrush>
 
     <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor8"
-                     Color="White"/>
+                     Color="White" />
 
     <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor9"
-                     Color="#FFF5F4EA"/>
+                     Color="#FFF5F4EA" />
 
-    <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor10" 
-                     Color="White"/>
+    <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor10"
+                     Color="White" />
 
-    <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor11" 
+    <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor11"
                      Color="#FFBBC0C7" />
 
     <!--<SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor12"
                      Color="White"/>-->
 
     <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor13"
-                     Color="White"/>
+                     Color="White" />
 
     <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor14"
-                     Color="White"/>
+                     Color="White" />
 
     <LinearGradientBrush x:Key="AvalonDock_ThemeVS2010_BaseColor15"
                          StartPoint="0,0"
@@ -179,17 +179,17 @@
     </LinearGradientBrush>-->
 
     <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor28"
-                         Color="White"/>
+                     Color="White" />
 
-    <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor30" 
-        Color="#CED4DF"/>
+    <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor30"
+                     Color="#CED4DF" />
 
-    <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor31" 
-        Color="#FFE8A6"/>
+    <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor31"
+                     Color="#FFE8A6" />
 
     <!--<SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor32"
                      Color="Transparent"/>-->
 
     <SolidColorBrush x:Key="AvalonDock_ThemeVS2010_BaseColor33"
-        Color="#3D5277"/>    
+                     Color="#3D5277" />
 </ResourceDictionary>

@@ -20,61 +20,69 @@ using Ssz.Xceed.Wpf.Toolkit.Media.Animation;
 
 namespace Ssz.Xceed.Wpf.Toolkit.Panels
 {
-  public class DoubleAnimator : IterativeAnimator
-  {
-    #region Constructors
-
-    public DoubleAnimator( IterativeEquation<double> equation )
+    public class DoubleAnimator : IterativeAnimator
     {
-      _equation = equation;
-    }
+        #region Private Fields
 
-    #endregion
+        private readonly IterativeEquation<double> _equation; //null
 
-    public override Rect GetInitialChildPlacement( UIElement child, Rect currentPlacement,
-        Rect targetPlacement, AnimationPanel activeLayout, ref AnimationRate animationRate,
-        out object placementArgs, out bool isDone )
-    {
-      isDone = ( animationRate.HasSpeed && animationRate.Speed <= 0 ) || ( animationRate.HasDuration && animationRate.Duration.Ticks == 0 );
-      if( !isDone )
-      {
-        Vector startVector = new Vector( currentPlacement.Left + ( currentPlacement.Width / 2 ), currentPlacement.Top + ( currentPlacement.Height / 2 ) );
-        Vector finalVector = new Vector( targetPlacement.Left + ( targetPlacement.Width / 2 ), targetPlacement.Top + ( targetPlacement.Height / 2 ) );
-        Vector distanceVector = startVector - finalVector;
-        animationRate = new AnimationRate( animationRate.HasDuration ? animationRate.Duration
-            : TimeSpan.FromMilliseconds( distanceVector.Length / animationRate.Speed ) );
-      }
-      placementArgs = currentPlacement;
-      return currentPlacement;
-    }
+        #endregion
 
-    public override Rect GetNextChildPlacement( UIElement child, TimeSpan currentTime,
-        Rect currentPlacement, Rect targetPlacement, AnimationPanel activeLayout,
-        AnimationRate animationRate, ref object placementArgs, out bool isDone )
-    {
-      Rect result = targetPlacement;
-      isDone = true;
-      if( _equation != null )
-      {
-        Rect from = ( Rect )placementArgs;
-        TimeSpan duration = animationRate.Duration;
-        isDone = currentTime >= duration;
-        if( !isDone )
+        #region Constructors
+
+        public DoubleAnimator(IterativeEquation<double> equation)
         {
-          double x = _equation.Evaluate( currentTime, from.Left, targetPlacement.Left, duration );
-          double y = _equation.Evaluate( currentTime, from.Top, targetPlacement.Top, duration );
-          double width = Math.Max( 0, _equation.Evaluate( currentTime, from.Width, targetPlacement.Width, duration ) );
-          double height = Math.Max( 0, _equation.Evaluate( currentTime, from.Height, targetPlacement.Height, duration ) );
-          result = new Rect( x, y, width, height );
+            _equation = equation;
         }
-      }
-      return result;
+
+        #endregion
+
+        public override Rect GetInitialChildPlacement(UIElement child, Rect currentPlacement,
+            Rect targetPlacement, AnimationPanel activeLayout, ref AnimationRate animationRate,
+            out object placementArgs, out bool isDone)
+        {
+            isDone = animationRate.HasSpeed && animationRate.Speed <= 0 ||
+                     animationRate.HasDuration && animationRate.Duration.Ticks == 0;
+            if (!isDone)
+            {
+                var startVector = new Vector(currentPlacement.Left + currentPlacement.Width / 2,
+                    currentPlacement.Top + currentPlacement.Height / 2);
+                var finalVector = new Vector(targetPlacement.Left + targetPlacement.Width / 2,
+                    targetPlacement.Top + targetPlacement.Height / 2);
+                var distanceVector = startVector - finalVector;
+                animationRate = new AnimationRate(animationRate.HasDuration
+                    ? animationRate.Duration
+                    : TimeSpan.FromMilliseconds(distanceVector.Length / animationRate.Speed));
+            }
+
+            placementArgs = currentPlacement;
+            return currentPlacement;
+        }
+
+        public override Rect GetNextChildPlacement(UIElement child, TimeSpan currentTime,
+            Rect currentPlacement, Rect targetPlacement, AnimationPanel activeLayout,
+            AnimationRate animationRate, ref object placementArgs, out bool isDone)
+        {
+            var result = targetPlacement;
+            isDone = true;
+            if (_equation != null)
+            {
+                var from = (Rect) placementArgs;
+                var duration = animationRate.Duration;
+                isDone = currentTime >= duration;
+                if (!isDone)
+                {
+                    var x = _equation.Evaluate(currentTime, from.Left, targetPlacement.Left, duration);
+                    var y = _equation.Evaluate(currentTime, from.Top, targetPlacement.Top, duration);
+                    var width = Math.Max(0,
+                        _equation.Evaluate(currentTime, from.Width, targetPlacement.Width, duration));
+                    var height = Math.Max(0,
+                        _equation.Evaluate(currentTime, from.Height, targetPlacement.Height, duration));
+                    result = new Rect(x, y, width, height);
+                }
+            }
+
+            return result;
+        }
     }
-
-    #region Private Fields
-
-    private readonly IterativeEquation<double> _equation; //null
-
-    #endregion
-  }
 }

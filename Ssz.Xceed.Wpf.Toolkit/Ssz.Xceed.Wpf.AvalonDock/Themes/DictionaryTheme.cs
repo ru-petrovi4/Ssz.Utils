@@ -19,38 +19,34 @@ using System.Windows;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Themes
 {
-  public abstract class DictionaryTheme : Theme
-  {
-    #region Constructors
-
-    public DictionaryTheme()
+    public abstract class DictionaryTheme : Theme
     {
+        #region Properties
+
+        public ResourceDictionary ThemeResourceDictionary { get; }
+
+        #endregion
+
+        #region Overrides
+
+        public override Uri GetResourceUri()
+        {
+            return null;
+        }
+
+        #endregion
+
+        #region Constructors
+
+        public DictionaryTheme()
+        {
+        }
+
+        public DictionaryTheme(ResourceDictionary themeResourceDictionary)
+        {
+            ThemeResourceDictionary = themeResourceDictionary;
+        }
+
+        #endregion
     }
-
-    public DictionaryTheme( ResourceDictionary themeResourceDictionary )
-    {
-      this.ThemeResourceDictionary = themeResourceDictionary;
-    }
-
-    #endregion
-
-    #region Properties
-
-    public ResourceDictionary ThemeResourceDictionary
-    {
-      get;
-      private set;
-    }
-
-    #endregion
-
-    #region Overrides
-
-    public override Uri GetResourceUri()
-    {
-      return null;
-    }
-
-    #endregion
-  }
 }

@@ -15,197 +15,162 @@
   ***********************************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Data;
-using System.Collections;
-using Ssz.Xceed.Wpf.Toolkit.Core.Utilities;
-using System.Linq.Expressions;
-using System.Diagnostics;
 
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 {
-  [TemplatePart( Name = "content", Type = typeof( ContentControl ) )]
-  public class PropertyItem : CustomPropertyItem
-  {
-    private int _categoryOrder;
-
-    #region Properties
-
-    #region CategoryOrder
-
-    public int CategoryOrder
+    [TemplatePart(Name = "content", Type = typeof(ContentControl))]
+    public class PropertyItem : CustomPropertyItem
     {
-      get
-      {
-        return _categoryOrder;
-      }
-      internal set
-      {
-        if( _categoryOrder != value )
+        private int _categoryOrder;
+
+        #region Constructors
+
+        internal PropertyItem(DescriptorPropertyDefinitionBase definition)
         {
-          _categoryOrder = value;
-          // Notify the parent helper since this property may affect ordering.
-          this.RaisePropertyChanged( () => this.CategoryOrder );
+            if (definition == null)
+                throw new ArgumentNullException("definition");
+
+            DescriptorDefinition = definition;
+            ContainerHelper = definition.CreateContainerHelper(this);
+            definition.ContainerHelperInvalidated += OnDefinitionContainerHelperInvalidated;
         }
-      }
-    }
 
-    #endregion //CategoryOrder
+        #endregion //Constructors
 
-    #region IsReadOnly
+        #region Properties
 
-    /// <summary>
-    /// Identifies the IsReadOnly dependency property
-    /// </summary>
-    public static readonly DependencyProperty IsReadOnlyProperty =
-        DependencyProperty.Register( "IsReadOnly", typeof( bool ), typeof( PropertyItem ), new UIPropertyMetadata( false ) );
+        #region CategoryOrder
 
-    public bool IsReadOnly
-    {
-      get { return ( bool )GetValue( IsReadOnlyProperty ); }
-      set { SetValue( IsReadOnlyProperty, value ); }
-    }
-
-    #endregion //IsReadOnly
-
-    #region PropertyOrder
-
-    public static readonly DependencyProperty PropertyOrderProperty =
-        DependencyProperty.Register( "PropertyOrder", typeof( int ), typeof( PropertyItem ), new UIPropertyMetadata( 0 ) );
-
-    public int PropertyOrder
-    {
-      get { return ( int )GetValue( PropertyOrderProperty ); }
-      set { SetValue( PropertyOrderProperty, value ); }
-    }
-
-    #endregion //PropertyOrder
-
-    #region PropertyDescriptor
-
-    public PropertyDescriptor PropertyDescriptor
-    {
-      get;
-      internal set;
-    }
-
-    #endregion //PropertyDescriptor
-
-    #region PropertyType
-
-    public Type PropertyType
-    {
-      get
-      {
-        return ( PropertyDescriptor != null )
-          ? PropertyDescriptor.PropertyType
-          : null;
-      }
-    }
-
-    #endregion //PropertyType
-
-    #region DescriptorDefinition
-
-    public DescriptorPropertyDefinitionBase DescriptorDefinition
-    {
-      get;
-      private set;
-    }
-
-    #endregion DescriptorDefinition
-
-    #region Instance
-
-    public object Instance
-    {
-      get;
-      internal set;
-    }
-
-    #endregion //Instance
-
-    #endregion //Properties
-
-    #region Methods
-
-    protected override void OnIsExpandedChanged( bool oldValue, bool newValue )
-    {
-      if( newValue )
-      {
-        // This withholds the generation of all PropertyItem instances (recursively)
-        // until the PropertyItem is expanded.
-        var objectContainerHelper = ContainerHelper as ObjectContainerHelperBase;
-        if( objectContainerHelper != null )
+        public int CategoryOrder
         {
-          objectContainerHelper.GenerateProperties();
+            get => _categoryOrder;
+            internal set
+            {
+                if (_categoryOrder != value)
+                {
+                    _categoryOrder = value;
+                    // Notify the parent helper since this property may affect ordering.
+                    RaisePropertyChanged(() => CategoryOrder);
+                }
+            }
         }
-      }
-    }
 
-    protected override void OnEditorChanged( FrameworkElement oldValue, FrameworkElement newValue )
-    {
-      if( oldValue != null )
-        oldValue.DataContext = null;
+        #endregion //CategoryOrder
 
-      if( newValue != null )
-        newValue.DataContext = this;
-    }
+        #region IsReadOnly
 
-    protected override object OnCoerceValueChanged( object baseValue )
-    {
-      // Propagate error from DescriptorPropertyDefinitionBase to PropertyItem.Value
-      // to see the red error rectangle in the propertyGrid.
-        BindingExpression be = GetBindingExpression(ValueProperty);
-      if( ( be != null ) && be.DataItem is DescriptorPropertyDefinitionBase )
-      {
-        DescriptorPropertyDefinitionBase descriptor = be.DataItem as DescriptorPropertyDefinitionBase;
-        if( Validation.GetHasError( descriptor ) )
+        /// <summary>
+        ///     Identifies the IsReadOnly dependency property
+        /// </summary>
+        public static readonly DependencyProperty IsReadOnlyProperty =
+            DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(PropertyItem),
+                new UIPropertyMetadata(false));
+
+        public bool IsReadOnly
         {
-          ReadOnlyObservableCollection<ValidationError> errors = Validation.GetErrors( descriptor );
-          Validation.MarkInvalid( be, errors[ 0 ] );
+            get => (bool) GetValue(IsReadOnlyProperty);
+            set => SetValue(IsReadOnlyProperty, value);
         }
-      }
-      return baseValue;
+
+        #endregion //IsReadOnly
+
+        #region PropertyOrder
+
+        public static readonly DependencyProperty PropertyOrderProperty =
+            DependencyProperty.Register("PropertyOrder", typeof(int), typeof(PropertyItem), new UIPropertyMetadata(0));
+
+        public int PropertyOrder
+        {
+            get => (int) GetValue(PropertyOrderProperty);
+            set => SetValue(PropertyOrderProperty, value);
+        }
+
+        #endregion //PropertyOrder
+
+        #region PropertyDescriptor
+
+        public PropertyDescriptor PropertyDescriptor { get; internal set; }
+
+        #endregion //PropertyDescriptor
+
+        #region PropertyType
+
+        public Type PropertyType =>
+            PropertyDescriptor != null
+                ? PropertyDescriptor.PropertyType
+                : null;
+
+        #endregion //PropertyType
+
+        #region DescriptorDefinition
+
+        public DescriptorPropertyDefinitionBase DescriptorDefinition { get; }
+
+        #endregion DescriptorDefinition
+
+        #region Instance
+
+        public object Instance { get; internal set; }
+
+        #endregion //Instance
+
+        #endregion //Properties
+
+        #region Methods
+
+        protected override void OnIsExpandedChanged(bool oldValue, bool newValue)
+        {
+            if (newValue)
+            {
+                // This withholds the generation of all PropertyItem instances (recursively)
+                // until the PropertyItem is expanded.
+                var objectContainerHelper = ContainerHelper as ObjectContainerHelperBase;
+                if (objectContainerHelper != null) objectContainerHelper.GenerateProperties();
+            }
+        }
+
+        protected override void OnEditorChanged(FrameworkElement oldValue, FrameworkElement newValue)
+        {
+            if (oldValue != null)
+                oldValue.DataContext = null;
+
+            if (newValue != null)
+                newValue.DataContext = this;
+        }
+
+        protected override object OnCoerceValueChanged(object baseValue)
+        {
+            // Propagate error from DescriptorPropertyDefinitionBase to PropertyItem.Value
+            // to see the red error rectangle in the propertyGrid.
+            var be = GetBindingExpression(ValueProperty);
+            if (be != null && be.DataItem is DescriptorPropertyDefinitionBase)
+            {
+                var descriptor = be.DataItem as DescriptorPropertyDefinitionBase;
+                if (Validation.GetHasError(descriptor))
+                {
+                    var errors = Validation.GetErrors(descriptor);
+                    Validation.MarkInvalid(be, errors[0]);
+                }
+            }
+
+            return baseValue;
+        }
+
+        protected override void OnValueChanged(object oldValue, object newValue)
+        {
+            base.OnValueChanged(oldValue, newValue);
+        }
+
+        private void OnDefinitionContainerHelperInvalidated(object sender, EventArgs e)
+        {
+            var helper = DescriptorDefinition.CreateContainerHelper(this);
+            ContainerHelper = helper;
+            if (IsExpanded) helper.GenerateProperties();
+        }
+
+        #endregion
     }
-
-    protected override void OnValueChanged( object oldValue, object newValue )
-    {
-      base.OnValueChanged( oldValue, newValue );
-    }
-
-    private void OnDefinitionContainerHelperInvalidated( object sender, EventArgs e )
-    {
-      var helper = this.DescriptorDefinition.CreateContainerHelper( this );
-      this.ContainerHelper = helper;
-      if( this.IsExpanded )
-      {
-        helper.GenerateProperties();
-      }
-    }
-
-    #endregion
-
-    #region Constructors
-
-    internal PropertyItem( DescriptorPropertyDefinitionBase definition )
-      : base()
-    {
-      if( definition == null )
-        throw new ArgumentNullException( "definition" );
-
-      this.DescriptorDefinition = definition;
-      this.ContainerHelper = definition.CreateContainerHelper( this );
-      definition.ContainerHelperInvalidated += new EventHandler( OnDefinitionContainerHelperInvalidated );
-    }
-
-    #endregion //Constructors
-  }
 }

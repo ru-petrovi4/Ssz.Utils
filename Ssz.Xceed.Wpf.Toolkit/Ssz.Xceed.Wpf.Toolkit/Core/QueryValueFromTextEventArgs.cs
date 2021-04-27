@@ -15,53 +15,33 @@
   ***********************************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Ssz.Xceed.Wpf.Toolkit.Core
 {
-  public class QueryValueFromTextEventArgs : EventArgs
-  {
-    public QueryValueFromTextEventArgs( string text, object value )
+    public class QueryValueFromTextEventArgs : EventArgs
     {
-      m_text = text;
-      m_value = value;
+        public QueryValueFromTextEventArgs(string text, object value)
+        {
+            Text = text;
+            Value = value;
+        }
+
+        #region Text Property
+
+        public string Text { get; }
+
+        #endregion Text Property
+
+        #region Value Property
+
+        public object Value { get; set; }
+
+        #endregion Value Property
+
+        #region HasParsingError Property
+
+        public bool HasParsingError { get; set; }
+
+        #endregion HasParsingError Property
     }
-
-    #region Text Property
-
-    private string m_text;
-
-    public string Text
-    {
-      get { return m_text; }
-    }
-
-    #endregion Text Property
-
-    #region Value Property
-
-    private object m_value;
-
-    public object Value
-    {
-      get { return m_value; }
-      set { m_value = value; }
-    }
-
-    #endregion Value Property
-
-    #region HasParsingError Property
-
-    private bool m_hasParsingError;
-
-    public bool HasParsingError
-    {
-      get { return m_hasParsingError; }
-      set { m_hasParsingError = value; }
-    }
-
-    #endregion HasParsingError Property
-
-  }
 }

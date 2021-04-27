@@ -17,11 +17,8 @@
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 {
-  interface ILayoutPaneSerializable
-  {
-    string Id
+    internal interface ILayoutPaneSerializable
     {
-      get; set;
+        string Id { get; set; }
     }
-  }
 }

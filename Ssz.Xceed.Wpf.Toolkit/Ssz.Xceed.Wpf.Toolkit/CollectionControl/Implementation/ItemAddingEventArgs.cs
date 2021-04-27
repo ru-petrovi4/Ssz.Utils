@@ -14,39 +14,31 @@
 
   ***********************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Ssz.Xceed.Wpf.Toolkit.Core;
 using System.Windows;
+using Ssz.Xceed.Wpf.Toolkit.Core;
 
 namespace Ssz.Xceed.Wpf.Toolkit
 {
-  public class ItemAddingEventArgs : CancelRoutedEventArgs
-  {
-    #region Constructor
-
-    public ItemAddingEventArgs( RoutedEvent itemAddingEvent, object itemAdding )
-      : base( itemAddingEvent )
+    public class ItemAddingEventArgs : CancelRoutedEventArgs
     {
-      Item = itemAdding;
+        #region Constructor
+
+        public ItemAddingEventArgs(RoutedEvent itemAddingEvent, object itemAdding)
+            : base(itemAddingEvent)
+        {
+            Item = itemAdding;
+        }
+
+        #endregion
+
+        #region Properties
+
+        #region Item Property
+
+        public object Item { get; set; }
+
+        #endregion
+
+        #endregion //Properties
     }
-
-    #endregion
-
-    #region Properties
-
-    #region Item Property
-
-    public object Item
-    {
-      get;
-      set;
-    }
-
-    #endregion
-
-    #endregion //Properties
-  }
 }

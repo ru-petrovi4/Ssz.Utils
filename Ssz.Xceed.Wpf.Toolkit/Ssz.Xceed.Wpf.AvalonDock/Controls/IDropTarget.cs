@@ -20,29 +20,26 @@ using Ssz.Xceed.Wpf.AvalonDock.Layout;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 {
-  internal interface IDropTarget
-  {
-    #region Properties
-
-    DropTargetType Type
+    internal interface IDropTarget
     {
-      get;
+        #region Properties
+
+        DropTargetType Type { get; }
+
+        #endregion
+
+        #region Methods
+
+        Geometry GetPreviewPath(OverlayWindow overlayWindow, LayoutFloatingWindow floatingWindow);
+
+        bool HitTest(Point dragPoint);
+
+        void Drop(LayoutFloatingWindow floatingWindow);
+
+        void DragEnter();
+
+        void DragLeave();
+
+        #endregion
     }
-
-    #endregion
-
-    #region Methods
-
-    Geometry GetPreviewPath( OverlayWindow overlayWindow, LayoutFloatingWindow floatingWindow );
-
-    bool HitTest( Point dragPoint );
-
-    void Drop( LayoutFloatingWindow floatingWindow );
-
-    void DragEnter();
-
-    void DragLeave();
-
-    #endregion
-  }
 }

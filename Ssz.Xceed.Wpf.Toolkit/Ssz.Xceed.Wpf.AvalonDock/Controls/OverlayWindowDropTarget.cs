@@ -18,47 +18,36 @@ using System.Windows;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 {
-  public class OverlayWindowDropTarget : IOverlayWindowDropTarget
-  {
-    #region Members
-
-    private IOverlayWindowArea _overlayArea;
-    private Rect _screenDetectionArea;
-    private OverlayWindowDropTargetType _type;
-
-    #endregion
-
-    #region Constructors
-
-    internal OverlayWindowDropTarget( IOverlayWindowArea overlayArea, OverlayWindowDropTargetType targetType, FrameworkElement element )
+    public class OverlayWindowDropTarget : IOverlayWindowDropTarget
     {
-      _overlayArea = overlayArea;
-      _type = targetType;
-      _screenDetectionArea = new Rect( element.TransformToDeviceDPI( new Point() ), element.TransformActualSizeToAncestor() );
+        #region Constructors
+
+        internal OverlayWindowDropTarget(IOverlayWindowArea overlayArea, OverlayWindowDropTargetType targetType,
+            FrameworkElement element)
+        {
+            _overlayArea = overlayArea;
+            _type = targetType;
+            _screenDetectionArea = new Rect(element.TransformToDeviceDPI(new Point()),
+                element.TransformActualSizeToAncestor());
+        }
+
+        #endregion
+
+        #region Members
+
+        private IOverlayWindowArea _overlayArea;
+        private readonly Rect _screenDetectionArea;
+        private readonly OverlayWindowDropTargetType _type;
+
+        #endregion
+
+
+        #region IOverlayWindowDropTarget
+
+        Rect IOverlayWindowDropTarget.ScreenDetectionArea => _screenDetectionArea;
+
+        OverlayWindowDropTargetType IOverlayWindowDropTarget.Type => _type;
+
+        #endregion
     }
-
-    #endregion
-
-
-    #region IOverlayWindowDropTarget
-
-    Rect IOverlayWindowDropTarget.ScreenDetectionArea
-    {
-      get
-      {
-        return _screenDetectionArea;
-      }
-
-    }
-
-    OverlayWindowDropTargetType IOverlayWindowDropTarget.Type
-    {
-      get
-      {
-        return _type;
-      }
-    }
-
-    #endregion
-  }
 }

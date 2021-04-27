@@ -20,50 +20,50 @@
                     xmlns:conv="clr-namespace:Ssz.Xceed.Wpf.Toolkit.Mag.Converters"
                     xmlns:coreconv="clr-namespace:Ssz.Xceed.Wpf.Toolkit.Core.Converters">
 
-   <!-- =============================================================================== -->
-   <!-- Magnifier                                                                       -->
-   <!-- =============================================================================== -->
+    <!-- =============================================================================== -->
+    <!-- Magnifier                                                                       -->
+    <!-- =============================================================================== -->
 
-   <conv:RadiusConverter x:Key="RadiusConverter" />
-   <coreconv:BorderThicknessToStrokeThicknessConverter x:Key="BorderThicknessToStrokeThicknessConverter" />
+    <conv:RadiusConverter x:Key="RadiusConverter" />
+    <coreconv:BorderThicknessToStrokeThicknessConverter x:Key="BorderThicknessToStrokeThicknessConverter" />
 
-   <ControlTemplate x:Key="CircleTemplate" TargetType="{x:Type local:Magnifier}">
-      <Grid>
-         <Ellipse Fill="{TemplateBinding Background}" />
-         <Ellipse Stroke="{Binding Path=BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" 
-                  StrokeThickness="{Binding Path=BorderThickness, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BorderThicknessToStrokeThicknessConverter}}">
-            <Ellipse.Fill>
-               <VisualBrush x:Name="PART_VisualBrush"
-                            ViewboxUnits="Absolute"
-                            Visual="{Binding Path=Target, RelativeSource={RelativeSource TemplatedParent}}" />
-            </Ellipse.Fill>
-         </Ellipse>
-      </Grid>
-   </ControlTemplate>
+    <ControlTemplate x:Key="CircleTemplate" TargetType="{x:Type local:Magnifier}">
+        <Grid>
+            <Ellipse Fill="{TemplateBinding Background}" />
+            <Ellipse Stroke="{Binding Path=BorderBrush, RelativeSource={RelativeSource TemplatedParent}}"
+                     StrokeThickness="{Binding Path=BorderThickness, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BorderThicknessToStrokeThicknessConverter}}">
+                <Ellipse.Fill>
+                    <VisualBrush x:Name="PART_VisualBrush"
+                                 ViewboxUnits="Absolute"
+                                 Visual="{Binding Path=Target, RelativeSource={RelativeSource TemplatedParent}}" />
+                </Ellipse.Fill>
+            </Ellipse>
+        </Grid>
+    </ControlTemplate>
 
-   <ControlTemplate x:Key="RectangleTemplate" TargetType="{x:Type local:Magnifier}">
-      <Grid Background="{TemplateBinding Background}" >
-         <Rectangle Stroke="{Binding Path=BorderBrush, RelativeSource={RelativeSource TemplatedParent}}"
-                    StrokeThickness="{Binding Path=BorderThickness, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BorderThicknessToStrokeThicknessConverter}}">
-            <Rectangle.Fill>
-               <VisualBrush x:Name="PART_VisualBrush"
-                            ViewboxUnits="Absolute"
-                            Visual="{Binding Path=Target, RelativeSource={RelativeSource TemplatedParent}}" />
-            </Rectangle.Fill>
-         </Rectangle>
-      </Grid>
-   </ControlTemplate>
+    <ControlTemplate x:Key="RectangleTemplate" TargetType="{x:Type local:Magnifier}">
+        <Grid Background="{TemplateBinding Background}">
+            <Rectangle Stroke="{Binding Path=BorderBrush, RelativeSource={RelativeSource TemplatedParent}}"
+                       StrokeThickness="{Binding Path=BorderThickness, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BorderThicknessToStrokeThicknessConverter}}">
+                <Rectangle.Fill>
+                    <VisualBrush x:Name="PART_VisualBrush"
+                                 ViewboxUnits="Absolute"
+                                 Visual="{Binding Path=Target, RelativeSource={RelativeSource TemplatedParent}}" />
+                </Rectangle.Fill>
+            </Rectangle>
+        </Grid>
+    </ControlTemplate>
 
-   <Style TargetType="{x:Type local:Magnifier}">
-      <Setter Property="IsHitTestVisible" Value="False" />
-      <Style.Triggers>
-         <Trigger Property="FrameType" Value="Circle">
-            <Setter Property="Template" Value="{StaticResource CircleTemplate}" />
-         </Trigger>
-         <Trigger Property="FrameType" Value="Rectangle">
-            <Setter Property="Template" Value="{StaticResource RectangleTemplate}" />
-         </Trigger>
-      </Style.Triggers>
-   </Style>
+    <Style TargetType="{x:Type local:Magnifier}">
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Style.Triggers>
+            <Trigger Property="FrameType" Value="Circle">
+                <Setter Property="Template" Value="{StaticResource CircleTemplate}" />
+            </Trigger>
+            <Trigger Property="FrameType" Value="Rectangle">
+                <Setter Property="Template" Value="{StaticResource RectangleTemplate}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 
 </ResourceDictionary>

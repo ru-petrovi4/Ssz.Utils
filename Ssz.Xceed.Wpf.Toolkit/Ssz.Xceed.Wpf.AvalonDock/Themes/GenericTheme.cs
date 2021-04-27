@@ -18,11 +18,11 @@ using System;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Themes
 {
-  public class GenericTheme : Theme
-  {
-    public override Uri GetResourceUri()
+    public class GenericTheme : Theme
     {
-      return new Uri( "/Ssz.Xceed.Wpf.AvalonDock;component/Themes/generic.xaml", UriKind.Relative );
+        public override Uri GetResourceUri()
+        {
+            return new("/Ssz.Xceed.Wpf.AvalonDock;component/Themes/generic.xaml", UriKind.Relative);
+        }
     }
-  }
 }

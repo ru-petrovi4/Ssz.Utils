@@ -17,20 +17,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
 {
-  internal class ListUtilities
-  {
-    internal static Type GetListItemType( Type listType )
+    internal class ListUtilities
     {
-      Type iListOfT = listType.GetInterfaces().FirstOrDefault(
-        ( i ) => i.IsGenericType && i.GetGenericTypeDefinition() == typeof( IList<> ) );
+        internal static Type GetListItemType(Type listType)
+        {
+            var iListOfT = listType.GetInterfaces()
+                .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IList<>));
 
-      return ( iListOfT != null )
-        ? iListOfT.GetGenericArguments()[ 0 ]
-        : null;
+            return iListOfT != null
+                ? iListOfT.GetGenericArguments()[0]
+                : null;
+        }
     }
-  }
 }

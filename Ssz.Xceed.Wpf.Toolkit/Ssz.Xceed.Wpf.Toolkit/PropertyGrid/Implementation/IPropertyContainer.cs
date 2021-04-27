@@ -15,34 +15,24 @@
   ***********************************************************************************/
 
 
-using System.Collections.Generic;
-using System.Windows.Controls;
-using System.Collections;
-using System.ComponentModel;
-using System.Windows.Data;
-using System;
 using System.Windows;
+
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 {
-  internal interface IPropertyContainer
-  {
+    internal interface IPropertyContainer
+    {
+        ContainerHelperBase ContainerHelper { get; }
 
+        Style PropertyContainerStyle { get; }
 
+        EditorDefinitionCollection EditorDefinitions { get; }
 
+        PropertyDefinitionCollection PropertyDefinitions { get; }
 
+        bool IsCategorized { get; }
 
-    ContainerHelperBase ContainerHelper { get; }
+        bool AutoGenerateProperties { get; }
 
-    Style PropertyContainerStyle { get; }
-
-    EditorDefinitionCollection EditorDefinitions { get; }
-
-    PropertyDefinitionCollection PropertyDefinitions { get; }
-
-    bool IsCategorized { get; }
-
-    bool AutoGenerateProperties { get; }
-
-    FilterInfo FilterInfo { get; }
-  }
+        FilterInfo FilterInfo { get; }
+    }
 }

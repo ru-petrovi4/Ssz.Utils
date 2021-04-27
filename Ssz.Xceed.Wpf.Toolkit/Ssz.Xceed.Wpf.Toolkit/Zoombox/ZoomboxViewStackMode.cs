@@ -16,11 +16,11 @@
 
 namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
 {
-  public enum ZoomboxViewStackMode
-  {
-    Auto,
-    Default,
-    Disabled,
-    Manual,
-  }
+    public enum ZoomboxViewStackMode
+    {
+        Auto,
+        Default,
+        Disabled,
+        Manual
+    }
 }

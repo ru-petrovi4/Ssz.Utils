@@ -18,15 +18,15 @@ using System;
 
 namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
 {
-  public class ZoomboxViewException : Exception
-  {
-    #region Constructors
-
-    public ZoomboxViewException( string message ) 
-      : base( message )
+    public class ZoomboxViewException : Exception
     {
-    }
+        #region Constructors
 
-    #endregion
-  }
+        public ZoomboxViewException(string message)
+            : base(message)
+        {
+        }
+
+        #endregion
+    }
 }

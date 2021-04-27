@@ -14,43 +14,31 @@
 
   ***********************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Ssz.Xceed.Wpf.Toolkit.Core;
 using System.Windows;
+using Ssz.Xceed.Wpf.Toolkit.Core;
 
 namespace Ssz.Xceed.Wpf.Toolkit
 {
-  public class ItemDeletingEventArgs : CancelRoutedEventArgs
-  {
-    #region Private Members
-
-    private object _item;
-
-    #endregion
-
-    #region Constructor
-
-    public ItemDeletingEventArgs( RoutedEvent itemDeletingEvent, object itemDeleting )
-      : base( itemDeletingEvent )
+    public class ItemDeletingEventArgs : CancelRoutedEventArgs
     {
-      _item = itemDeleting;
+        #region Private Members
+
+        #endregion
+
+        #region Constructor
+
+        public ItemDeletingEventArgs(RoutedEvent itemDeletingEvent, object itemDeleting)
+            : base(itemDeletingEvent)
+        {
+            Item = itemDeleting;
+        }
+
+        #region Property Item
+
+        public object Item { get; }
+
+        #endregion
+
+        #endregion
     }
-
-    #region Property Item
-
-    public object Item
-    {
-      get
-      {
-        return _item;
-      }
-    }
-
-    #endregion
-
-    #endregion
-  }
 }

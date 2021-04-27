@@ -15,35 +15,36 @@
   ***********************************************************************************/
 
 using System;
+using System.Globalization;
 using System.Windows.Data;
 
 namespace Ssz.Xceed.Wpf.Toolkit.Core.Converters
 {
-  public class TimeFormatToDateTimeFormatConverter : IValueConverter
-  {
-    #region IValueConverter Members
-
-    public object Convert( object value, Type targetType, object parameter, System.Globalization.CultureInfo culture )
+    public class TimeFormatToDateTimeFormatConverter : IValueConverter
     {
-      TimeFormat timeFormat = ( TimeFormat )value;
-      switch( timeFormat )
-      {
-        case TimeFormat.Custom:
-          return DateTimeFormat.Custom;
-        case TimeFormat.ShortTime:
-          return DateTimeFormat.ShortTime;
-        case TimeFormat.LongTime:
-          return DateTimeFormat.LongTime;
-        default:
-          return DateTimeFormat.ShortTime;
-      }
-    }
+        #region IValueConverter Members
 
-    public object ConvertBack( object value, Type targetType, object parameter, System.Globalization.CultureInfo culture )
-    {
-      throw new NotImplementedException();
-    }
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var timeFormat = (TimeFormat) value;
+            switch (timeFormat)
+            {
+                case TimeFormat.Custom:
+                    return DateTimeFormat.Custom;
+                case TimeFormat.ShortTime:
+                    return DateTimeFormat.ShortTime;
+                case TimeFormat.LongTime:
+                    return DateTimeFormat.LongTime;
+                default:
+                    return DateTimeFormat.ShortTime;
+            }
+        }
 
-    #endregion
-  }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+    }
 }

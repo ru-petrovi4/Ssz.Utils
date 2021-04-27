@@ -14,40 +14,38 @@
 
   ***********************************************************************************/
 
-using System.ComponentModel;
-using System.Windows.Controls;
 using System.Windows;
-using System.Windows.Data;
+using System.Windows.Controls;
 using System.Windows.Media;
-using Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Implementation.Editors;
 
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Editors
 {
     public class TextBlockEditor : TypeEditor<TextBox>
-  {
+    {
         protected override TextBox CreateEditor()
-    {
-      return new PropertyGridEditorTextBlock();
-    }
+        {
+            return new PropertyGridEditorTextBlock();
+        }
 
-    protected override void SetValueDependencyProperty()
-    {
-      ValueProperty = TextBox.TextProperty;
-    }
+        protected override void SetValueDependencyProperty()
+        {
+            ValueProperty = TextBox.TextProperty;
+        }
 
-    protected override void SetControlProperties()
-    {
-      Editor.BorderThickness = new Thickness(0);
-        Editor.IsReadOnly = true;
-        Editor.Foreground = Brushes.Gray;
+        protected override void SetControlProperties()
+        {
+            Editor.BorderThickness = new Thickness(0);
+            Editor.IsReadOnly = true;
+            Editor.Foreground = Brushes.Gray;
+        }
     }
-  }
 
     public class PropertyGridEditorTextBlock : TextBox
-  {
-    static PropertyGridEditorTextBlock()
     {
-      DefaultStyleKeyProperty.OverrideMetadata( typeof( PropertyGridEditorTextBlock ), new FrameworkPropertyMetadata( typeof( PropertyGridEditorTextBlock ) ) );
+        static PropertyGridEditorTextBlock()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(PropertyGridEditorTextBlock),
+                new FrameworkPropertyMetadata(typeof(PropertyGridEditorTextBlock)));
+        }
     }
-  }
 }

@@ -331,7 +331,7 @@ namespace ControlzEx.Standard
         /// <summary>
         /// Create an HRESULT from an integer value.
         /// </summary>
-        [CLSCompliant(false)]
+        
         public HRESULT(uint i)
         {
             this.value = i;

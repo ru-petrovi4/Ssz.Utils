@@ -14,13 +14,8 @@
 
   ***********************************************************************************/
 
-using System.Reflection;
-using System.Resources;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Markup;
-using System;
 
 //In order to begin building localizable applications, set 
 //<UICulture>CultureYouAreCodingWith</UICulture> in your .csproj file
@@ -41,17 +36,15 @@ using System;
     // app, or any theme specific resource dictionaries)
 )]
 
-[assembly: XmlnsPrefix( "http://schemas.xceed.com/wpf/xaml/avalondock", "xcad" )]
-[assembly: XmlnsDefinition( "http://schemas.xceed.com/wpf/xaml/avalondock", "Ssz.Xceed.Wpf.AvalonDock" )]
-[assembly: XmlnsDefinition( "http://schemas.xceed.com/wpf/xaml/avalondock", "Ssz.Xceed.Wpf.AvalonDock.Controls" )]
-[assembly: XmlnsDefinition( "http://schemas.xceed.com/wpf/xaml/avalondock", "Ssz.Xceed.Wpf.AvalonDock.Converters" )]
-[assembly: XmlnsDefinition( "http://schemas.xceed.com/wpf/xaml/avalondock", "Ssz.Xceed.Wpf.AvalonDock.Layout" )]
-[assembly: XmlnsDefinition( "http://schemas.xceed.com/wpf/xaml/avalondock", "Ssz.Xceed.Wpf.AvalonDock.Themes" )]
+[assembly: XmlnsPrefix("http://schemas.xceed.com/wpf/xaml/avalondock", "xcad")]
+[assembly: XmlnsDefinition("http://schemas.xceed.com/wpf/xaml/avalondock", "Ssz.Xceed.Wpf.AvalonDock")]
+[assembly: XmlnsDefinition("http://schemas.xceed.com/wpf/xaml/avalondock", "Ssz.Xceed.Wpf.AvalonDock.Controls")]
+[assembly: XmlnsDefinition("http://schemas.xceed.com/wpf/xaml/avalondock", "Ssz.Xceed.Wpf.AvalonDock.Converters")]
+[assembly: XmlnsDefinition("http://schemas.xceed.com/wpf/xaml/avalondock", "Ssz.Xceed.Wpf.AvalonDock.Layout")]
+[assembly: XmlnsDefinition("http://schemas.xceed.com/wpf/xaml/avalondock", "Ssz.Xceed.Wpf.AvalonDock.Themes")]
 
 //#pragma warning disable 1699
 //[assembly: AssemblyDelaySign( false )]
 //[assembly: AssemblyKeyFile( @"..\..\sn.snk" )]
 //[assembly: AssemblyKeyName( "" )]
 //#pragma warning restore 1699
-
-

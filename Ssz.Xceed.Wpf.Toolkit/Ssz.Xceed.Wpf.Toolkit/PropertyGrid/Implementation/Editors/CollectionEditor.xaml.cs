@@ -15,41 +15,36 @@
   ***********************************************************************************/
 
 using System.Collections;
-using System.Linq;
-using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using Ssz.Utils.Wpf;
-using Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Implementation.Editors;
 
 namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Editors
 {
   /// <summary>
-  /// Interaction logic for CollectionEditor.xaml
+  ///     Interaction logic for CollectionEditor.xaml
   /// </summary>
-    public partial class CollectionEditor : UserControl, ITypeEditor
-  {
-    PropertyItem _item;
-
-    public CollectionEditor()
+  public partial class CollectionEditor : UserControl, ITypeEditor
     {
-      InitializeComponent();
-    }
+        private PropertyItem _item;
 
-      //VP
-    private void Button_Click( object sender, RoutedEventArgs e )
-    {
-      CollectionControlDialog editor = new CollectionControlDialog( _item.PropertyType, _item.DescriptorDefinition.NewItemTypes );
-        
-      editor.ItemsSource = _item.Value as IList;
-      editor.ShowDialog();
-    }
+        public CollectionEditor()
+        {
+            InitializeComponent();
+        }
 
-    public FrameworkElement ResolveEditor( PropertyItem propertyItem )
-    {
-      _item = propertyItem;
-      return this;
+        public FrameworkElement ResolveEditor(PropertyItem propertyItem)
+        {
+            _item = propertyItem;
+            return this;
+        }
+
+        //VP
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var editor = new CollectionControlDialog(_item.PropertyType, _item.DescriptorDefinition.NewItemTypes);
+
+            editor.ItemsSource = _item.Value as IList;
+            editor.ShowDialog();
+        }
     }
-  }
 }

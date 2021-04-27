@@ -15,176 +15,159 @@
   ***********************************************************************************/
 
 using System;
-using System.Globalization;
+using System.Diagnostics;
 using System.Linq;
+using System.Xml;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 {
-  [Serializable]
-  public class LayoutDocument : LayoutContent
-  {
-    #region Properties
-
-    #region CanMove
-
-    internal bool _canMove = true;
-    public bool CanMove
+    [Serializable]
+    public class LayoutDocument : LayoutContent
     {
-      get
-      {
-        return _canMove;
-      }
-      set
-      {
-        if( _canMove != value )
+        #region Internal Methods
+
+        internal bool CloseDocument()
         {
-          _canMove = value;
-          RaisePropertyChanged( "CanMove" );
+            if (TestCanClose())
+            {
+                CloseInternal();
+                return true;
+            }
+
+            return false;
         }
-      }
-    }
 
-    #endregion
+        #endregion
 
-    #region IsVisible
+        #region Properties
 
-    public bool IsVisible
-    {
-      get
-      {
-        return _isVisible;
-      }
-      internal set
-      {
-        _isVisible = value;
-      }
-    }
+        #region CanMove
 
-    private bool _isVisible = true;
+        internal bool _canMove = true;
 
-    #endregion
-
-    #region Description
-
-    private string _description = null;
-    public string Description
-    {
-      get
-      {
-        return _description;
-      }
-      set
-      {
-        if( _description != value )
+        public bool CanMove
         {
-          _description = value;
-          RaisePropertyChanged( "Description" );
+            get => _canMove;
+            set
+            {
+                if (_canMove != value)
+                {
+                    _canMove = value;
+                    RaisePropertyChanged("CanMove");
+                }
+            }
         }
-      }
-    }
 
-    #endregion
+        #endregion
 
-    #endregion
+        #region IsVisible
 
-    #region Overrides
+        public bool IsVisible
+        {
+            get => _isVisible;
+            internal set => _isVisible = value;
+        }
 
-    public override void WriteXml( System.Xml.XmlWriter writer )
-    {
-      base.WriteXml( writer );
+        private bool _isVisible = true;
 
-      if( !string.IsNullOrWhiteSpace( this.Description ) )
-        writer.WriteAttributeString( "Description", this.Description );
-      if( !CanMove )
-        writer.WriteAttributeString( "CanMove", CanMove.ToString() );
-    }
+        #endregion
 
-    public override void ReadXml( System.Xml.XmlReader reader )
-    {
-      if( reader.MoveToAttribute( "Description" ) )
-        this.Description = reader.Value;
-      if( reader.MoveToAttribute( "CanMove" ) )
-        CanMove = bool.Parse( reader.Value );
+        #region Description
 
-      base.ReadXml( reader );
-    }
+        private string _description;
 
-    public override void Close()
-    {
-      if( ( this.Root != null ) && ( this.Root.Manager != null ) )
-      {
-        var dockingManager = this.Root.Manager;
-        dockingManager._ExecuteCloseCommand( this );
-      }
-      else
-      {
-        this.CloseDocument();
-      }
-    }
+        public string Description
+        {
+            get => _description;
+            set
+            {
+                if (_description != value)
+                {
+                    _description = value;
+                    RaisePropertyChanged("Description");
+                }
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Overrides
+
+        public override void WriteXml(XmlWriter writer)
+        {
+            base.WriteXml(writer);
+
+            if (!string.IsNullOrWhiteSpace(Description))
+                writer.WriteAttributeString("Description", Description);
+            if (!CanMove)
+                writer.WriteAttributeString("CanMove", CanMove.ToString());
+        }
+
+        public override void ReadXml(XmlReader reader)
+        {
+            if (reader.MoveToAttribute("Description"))
+                Description = reader.Value;
+            if (reader.MoveToAttribute("CanMove"))
+                CanMove = bool.Parse(reader.Value);
+
+            base.ReadXml(reader);
+        }
+
+        public override void Close()
+        {
+            if (Root != null && Root.Manager != null)
+            {
+                var dockingManager = Root.Manager;
+                dockingManager._ExecuteCloseCommand(this);
+            }
+            else
+            {
+                CloseDocument();
+            }
+        }
 
 #if TRACE
         public override void ConsoleDump(int tab)
         {
-          System.Diagnostics.Trace.Write( new string( ' ', tab * 4 ) );
-          System.Diagnostics.Trace.WriteLine( "Document()" );
+            Trace.Write(new string(' ', tab * 4));
+            Trace.WriteLine("Document()");
         }
 #endif
 
-    protected override void InternalDock()
-    {
-      var root = Root as LayoutRoot;
-      LayoutDocumentPane documentPane = null;
-      if( root.LastFocusedDocument != null &&
-          root.LastFocusedDocument != this )
-      {
-        documentPane = root.LastFocusedDocument.Parent as LayoutDocumentPane;
-      }
+        protected override void InternalDock()
+        {
+            var root = Root as LayoutRoot;
+            LayoutDocumentPane documentPane = null;
+            if (root.LastFocusedDocument != null &&
+                root.LastFocusedDocument != this)
+                documentPane = root.LastFocusedDocument.Parent as LayoutDocumentPane;
 
-      if( documentPane == null )
-      {
-        documentPane = root.Descendents().OfType<LayoutDocumentPane>().FirstOrDefault();
-      }
+            if (documentPane == null) documentPane = root.Descendents().OfType<LayoutDocumentPane>().FirstOrDefault();
 
 
-      bool added = false;
-      if( root.Manager.LayoutUpdateStrategy != null )
-      {
-        added = root.Manager.LayoutUpdateStrategy.BeforeInsertDocument( root, this, documentPane );
-      }
+            var added = false;
+            if (root.Manager.LayoutUpdateStrategy != null)
+                added = root.Manager.LayoutUpdateStrategy.BeforeInsertDocument(root, this, documentPane);
 
-      if( !added )
-      {
-        if( documentPane == null )
-          throw new InvalidOperationException( "Layout must contains at least one LayoutDocumentPane in order to host documents" );
+            if (!added)
+            {
+                if (documentPane == null)
+                    throw new InvalidOperationException(
+                        "Layout must contains at least one LayoutDocumentPane in order to host documents");
 
-        documentPane.Children.Add( this );
-        added = true;
-      }
+                documentPane.Children.Add(this);
+                added = true;
+            }
 
-      if( root.Manager.LayoutUpdateStrategy != null )
-      {
-        root.Manager.LayoutUpdateStrategy.AfterInsertDocument( root, this );
-      }
+            if (root.Manager.LayoutUpdateStrategy != null)
+                root.Manager.LayoutUpdateStrategy.AfterInsertDocument(root, this);
 
 
-      base.InternalDock();
+            base.InternalDock();
+        }
+
+        #endregion
     }
-
-    #endregion
-
-    #region Internal Methods
-
-    internal bool CloseDocument()
-    {
-      if( this.TestCanClose() )
-      {
-        this.CloseInternal();
-        return true;
-      }
-
-      return false;
-    }
-
-    #endregion
-  }
 }
