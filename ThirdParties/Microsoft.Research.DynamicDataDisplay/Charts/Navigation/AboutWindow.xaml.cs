@@ -9,7 +9,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.DsControls;
+using System.Windows.Shapes;
 using System.Diagnostics;
 using System.Reflection;
 using Microsoft.Research.DynamicDataDisplay.Common.Auxiliary;

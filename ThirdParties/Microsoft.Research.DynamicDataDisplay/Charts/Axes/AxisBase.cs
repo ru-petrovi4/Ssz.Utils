@@ -154,7 +154,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 		/// Gets the screen coordinates of axis ticks.
 		/// </summary>
 		/// <value>The screen ticks.</value>
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public double[] ScreenTicks
 		{
@@ -165,7 +165,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 		/// Gets the screen coordinates of minor ticks.
 		/// </summary>
 		/// <value>The minor screen ticks.</value>
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public MinorTickInfo<double>[] MinorScreenTicks
 		{
@@ -177,7 +177,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 		/// Gets the axis control - actual UI representation of axis.
 		/// </summary>
 		/// <value>The axis control.</value>
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public AxisControl<T> AxisControl
 		{
 			get { return axisControl; }
@@ -187,7 +187,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 		/// Gets the ticks provider, which is used to generate ticks in given range.
 		/// </summary>
 		/// <value>The ticks provider.</value>
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public ITicksProvider<T> TicksProvider
 		{
 			get { return axisControl.TicksProvider; }
@@ -199,7 +199,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 		/// Should not be null.
 		/// </summary>
 		/// <value>The label provider.</value>
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		[NotNull]
 		public LabelProviderBase<T> LabelProvider
 		{
@@ -242,7 +242,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 		}
 
 		private Plotter plotter = null;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public Plotter Plotter
 		{
@@ -287,7 +287,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 		/// Should not be null.
 		/// </summary>
 		/// <value>The convert from double.</value>
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		[NotNull]
 		public Func<double, T> ConvertFromDouble
 		{
@@ -307,7 +307,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 		/// Should not be null.
 		/// </summary>
 		/// <value>The convert to double.</value>
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		[NotNull]
 		public Func<T, double> ConvertToDouble
 		{

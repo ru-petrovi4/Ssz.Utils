@@ -29,20 +29,20 @@ namespace Microsoft.Research.DynamicDataDisplay
 		/// Gets the viewport.
 		/// </summary>
 		/// <value>The viewport.</value>
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Viewport2D Viewport
 		{
 			get { return viewport; }
 		}
 
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public DataTransform DataTransform
 		{
 			get { return viewport.Transform.DataTransform; }
 			set { viewport.Transform = viewport.Transform.WithDataTransform(value); }
 		}
 
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public CoordinateTransform Transform
 		{
 			get { return viewport.Transform; }
@@ -54,7 +54,7 @@ namespace Microsoft.Research.DynamicDataDisplay
 			viewport.FitToView();
 		}
 
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Rect Visible
 		{
 			get { return viewport.Visible; }

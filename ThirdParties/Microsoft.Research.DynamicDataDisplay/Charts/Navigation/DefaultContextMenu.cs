@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows;
-using System.Windows.DsControls;
+using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Windows.Input;
 using System.Linq;
@@ -106,7 +106,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Navigation
 		/// Gets the static menu items.
 		/// </summary>
 		/// <value>The static menu items.</value>
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public ObservableCollection<object> StaticMenuItems
 		{
 			get { return null; }
@@ -224,7 +224,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Navigation
 			this.plotter = null;
 		}
 
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		Plotter IPlotterElement.Plotter
 		{
 			get { return plotter; }

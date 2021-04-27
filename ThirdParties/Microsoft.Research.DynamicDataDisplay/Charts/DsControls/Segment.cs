@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Media;
 using System.Windows;
-using System.Windows.DsControls;
+using System.Windows.Shapes;
 using Microsoft.Research.DynamicDataDisplay;
 
 namespace Microsoft.Research.DynamicDataDisplay.Charts
@@ -12,7 +12,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 	/// <summary>
 	/// Represents a segment with start and end points bound to viewport coordinates.
 	/// </summary>
-	public class Segment : ViewportDsControl
+	public class Segment : ViewportShape
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Segment"/> class.

@@ -11,7 +11,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 	/// <summary>
 	/// Represents a rectangle with corners bound to viewport coordinates.
 	/// </summary>
-	public sealed class RectangleHighlight : ViewportDsControl
+	public sealed class RectangleHighlight : ViewportShape
 	{
 		public RectangleHighlight() { }
 

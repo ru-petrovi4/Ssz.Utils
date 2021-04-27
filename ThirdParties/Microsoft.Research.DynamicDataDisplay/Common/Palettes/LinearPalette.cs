@@ -28,7 +28,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Common.Palettes
 		}
 
 		private List<ColorStep> colorSteps_XAML = new List<ColorStep>();
-		[DesignSerializationVisibility(DesignSerializationVisibility.Content)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public List<ColorStep> ColorSteps_XAML
 		{

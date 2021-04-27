@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.DsControls;
+using System.Windows.Shapes;
 using System.Diagnostics;
 using Microsoft.Research.DynamicDataDisplay.Common.Auxiliary;
 using Microsoft.Research.DynamicDataDisplay.Charts.Axes;

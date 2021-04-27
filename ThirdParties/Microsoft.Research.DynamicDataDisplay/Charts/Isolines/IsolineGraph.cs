@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.DsControls;
+using System.Windows.Shapes;
 using Microsoft.Research.DynamicDataDisplay.Charts.Isolines;
 using Microsoft.Research.DynamicDataDisplay.Common.Auxiliary;
 

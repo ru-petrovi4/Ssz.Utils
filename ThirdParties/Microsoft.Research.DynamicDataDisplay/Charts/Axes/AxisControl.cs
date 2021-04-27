@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.DsControls;
+using System.Windows.Shapes;
 using Microsoft.Research.DynamicDataDisplay.Common.Auxiliary;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -205,7 +205,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 		/// Gets or sets the range, which ticks are generated for.
 		/// </summary>
 		/// <value>The range.</value>
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Range<T> Range
 		{
 			get { return range; }
@@ -425,7 +425,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 		#endregion
 
 		private CoordinateTransform transform = CoordinateTransform.CreateDefault();
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public CoordinateTransform Transform
 		{
@@ -904,7 +904,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 		/// Should not be null.
 		/// </summary>
 		/// <value>The convert to double.</value>
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Func<T, double> ConvertToDouble
 		{
 			get { return convertToDouble; }
@@ -919,7 +919,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 
 		internal event EventHandler ScreenTicksChanged;
 		private double[] screenTicks;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public double[] ScreenTicks
 		{
@@ -927,7 +927,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 		}
 
 		private MinorTickInfo<double>[] minorScreenTicks;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public MinorTickInfo<double>[] MinorScreenTicks
 		{

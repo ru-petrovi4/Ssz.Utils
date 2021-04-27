@@ -48,7 +48,7 @@ namespace Microsoft.Research.DynamicDataDisplay
 	public abstract class PlotterElement : FrameworkElement, IPlotterElement
 	{
 		private Plotter plotter;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Plotter Plotter
 		{
 			get { return plotter; }

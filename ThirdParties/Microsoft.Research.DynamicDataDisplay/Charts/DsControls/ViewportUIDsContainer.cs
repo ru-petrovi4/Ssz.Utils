@@ -15,11 +15,11 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 		public Point PreviousPosition { get; internal set; }
 	}
 
-	public class ViewportUIDsContainer : ContentControl, IPlotterElement
+	public class ViewportUIContainer : ContentControl, IPlotterElement
 	{
-		static ViewportUIDsContainer()
+		static ViewportUIContainer()
 		{
-			Type type = typeof(ViewportUIDsContainer);
+			Type type = typeof(ViewportUIContainer);
 
 			// todo subscribe for properties changes
 			HorizontalContentAlignmentProperty.AddOwner(
@@ -43,12 +43,12 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 			DependencyProperty.Register(
 			  "Position",
 			  typeof(Point),
-			  typeof(ViewportUIDsContainer),
+			  typeof(ViewportUIContainer),
 			  new FrameworkPropertyMetadata(new Point(0, 0), OnPositionChanged));
 
 		private static void OnPositionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
-			ViewportUIDsContainer container = (ViewportUIDsContainer)d;
+			ViewportUIContainer container = (ViewportUIContainer)d;
 			container.OnPositionChanged(e);
 		}
 
@@ -73,7 +73,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 			DependencyProperty.Register(
 			  "Shift",
 			  typeof(Vector),
-			  typeof(ViewportUIDsContainer),
+			  typeof(ViewportUIContainer),
 			  new FrameworkPropertyMetadata(new Vector(), OnPositionChanged));
 
 		#region IPlotterElement Members

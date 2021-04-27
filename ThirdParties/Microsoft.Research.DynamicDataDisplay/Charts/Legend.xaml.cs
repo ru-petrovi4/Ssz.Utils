@@ -81,7 +81,7 @@ namespace Microsoft.Research.DynamicDataDisplay
 		#region Plotter attached & detached
 
 		private Plotter plotter;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Plotter Plotter
 		{
 			get { return plotter; }

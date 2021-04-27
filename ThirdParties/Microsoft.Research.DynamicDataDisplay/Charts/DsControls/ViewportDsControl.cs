@@ -3,27 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using System.Windows.DsControls;
+using System.Windows.Shapes;
 using System.Windows.Media;
 
 namespace Microsoft.Research.DynamicDataDisplay.Charts
 {
 	/// <summary>
-	/// ViewportDsControl is a base class for simple dsControls with viewport-bound coordinates.
+	/// ViewportShape is a base class for simple dsControls with viewport-bound coordinates.
 	/// </summary>
-	public abstract class ViewportDsControl : DsControl, IPlotterElement
+	public abstract class ViewportShape : Shape, IPlotterElement
 	{
-		static ViewportDsControl()
+		static ViewportShape()
 		{
-			Type type = typeof(ViewportDsControl);
-			DsControl.StrokeProperty.AddOwner(type, new FrameworkPropertyMetadata(Brushes.Blue));
-			DsControl.StrokeThicknessProperty.AddOwner(type, new FrameworkPropertyMetadata(2.0));
+			Type type = typeof(ViewportShape);
+			Shape.StrokeProperty.AddOwner(type, new FrameworkPropertyMetadata(Brushes.Blue));
+			Shape.StrokeThicknessProperty.AddOwner(type, new FrameworkPropertyMetadata(2.0));
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ViewportDsControl"/> class.
+		/// Initializes a new instance of the <see cref="ViewportShape"/> class.
 		/// </summary>
-		protected ViewportDsControl()
+		protected ViewportShape()
 		{
 		}
 

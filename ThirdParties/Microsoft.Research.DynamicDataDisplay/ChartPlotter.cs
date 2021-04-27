@@ -55,41 +55,41 @@ namespace Microsoft.Research.DynamicDataDisplay
 		#region Default charts
 
 		private MouseNavigation mouseNavigation;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public MouseNavigation MouseNavigation
 		{
 			get { return mouseNavigation; }
 		}
 
 		private KeyboardNavigation keyboardNavigation;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public KeyboardNavigation KeyboardNavigation
 		{
 			get { return keyboardNavigation; }
 		}
 
 		private DefaultContextMenu defaultContextMenu;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public DefaultContextMenu DefaultContextMenu
 		{
 			get { return defaultContextMenu; }
 		}
 
 		private AxisNavigation horizontalAxisNavigation;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public AxisNavigation HorizontalAxisNavigation
 		{
 			get { return horizontalAxisNavigation; }
 		}
 
 		private AxisNavigation verticalAxisNavigation;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public AxisNavigation VerticalAxisNavigation
 		{
 			get { return verticalAxisNavigation; }
 		}
 
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public AxisGrid AxisGrid
 		{
 			get { return axisGrid; }
@@ -147,7 +147,7 @@ namespace Microsoft.Research.DynamicDataDisplay
 
 		bool keepOldAxis = false;
 		bool updatingAxis = false;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IAxis VerticalAxis
 		{
 			get { return verticalAxis; }
@@ -208,7 +208,7 @@ namespace Microsoft.Research.DynamicDataDisplay
 		protected virtual void OnVerticalAxisChanged() { }
 		protected virtual void ValidateVerticalAxis(IAxis axis) { }
 
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IAxis HorizontalAxis
 		{
 			get { return horizontalAxis; }
@@ -319,7 +319,7 @@ namespace Microsoft.Research.DynamicDataDisplay
 			}
 		}
         
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Legend Legend
 		{
 		    get

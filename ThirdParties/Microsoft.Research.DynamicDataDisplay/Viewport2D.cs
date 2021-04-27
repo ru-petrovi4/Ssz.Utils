@@ -69,7 +69,7 @@ namespace Microsoft.Research.DynamicDataDisplay
 			CoerceValue(VisibleProperty);
 		}
 
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool IsFittedToView
 		{
 			get { return AutoFitToView && ReadLocalValue(VisibleProperty) == DependencyProperty.UnsetValue; }
@@ -83,7 +83,7 @@ namespace Microsoft.Research.DynamicDataDisplay
 			}
 		}
 
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Plotter2D Plotter
 		{
 			get { return plotter; }
@@ -94,7 +94,7 @@ namespace Microsoft.Research.DynamicDataDisplay
 			new MinimalSizeRestriction()
 		};
 
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public RestrictionCollection Restrictions
 		{
 			get { return restrictions; }
@@ -309,7 +309,7 @@ namespace Microsoft.Research.DynamicDataDisplay
 		}
 
 		private CoordinateTransform transform = CoordinateTransform.CreateDefault();
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		[NotNull]
 		public CoordinateTransform Transform
 		{
@@ -386,7 +386,7 @@ namespace Microsoft.Research.DynamicDataDisplay
 			this.plotter = null;
 		}
 
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		Plotter IPlotterElement.Plotter { get { return plotter; } }
 
 		#endregion

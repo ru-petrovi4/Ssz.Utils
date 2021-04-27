@@ -1,12 +1,12 @@
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.DsControls;
+using System.Windows.Shapes;
 
 namespace Microsoft.Research.DynamicDataDisplay.PointMarkers
 {
     /// <summary>Adds Circle element at every point of graph</summary>
-	public class CircleElementPointMarker : DsControlElementPointMarker {
+	public class CircleElementPointMarker : ShapeElementPointMarker {
         
         public override UIElement CreateMarker()
         {

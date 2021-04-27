@@ -3,7 +3,7 @@ using System.Windows.Media;
 using Microsoft.Research.DynamicDataDisplay.Charts;
 using System.Windows.Controls;
 using System;
-using System.Windows.DsControls;
+using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -229,7 +229,7 @@ namespace Microsoft.Research.DynamicDataDisplay
 		}
 
 		private Plotter plotter;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Plotter Plotter
 		{
 			get { return plotter; }

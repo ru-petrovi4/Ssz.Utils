@@ -237,7 +237,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Common
 			{
 				if (IsEmpty)
 				{
-					throw new InvalidDesignTaskException(Properties.Resources.CannotModifyEmptyRect);
+					throw new InvalidOperationException(Properties.Resources.CannotModifyEmptyRect);
 				}
 				xMin = value.X;
 				yMin = value.Y;
@@ -268,7 +268,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Common
 				{
 					if (IsEmpty)
 					{
-						throw new InvalidDesignTaskException(Properties.Resources.CannotModifyEmptyRect);
+						throw new InvalidOperationException(Properties.Resources.CannotModifyEmptyRect);
 					}
 					width = value.Width;
 					height = value.Height;

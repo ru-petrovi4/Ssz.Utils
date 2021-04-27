@@ -2,7 +2,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:l="clr-namespace:Microsoft.Research.DynamicDataDisplay.Charts">
 
-	<Style TargetType="{x:Type DsControl}" x:Key="linesPathStyle">
+	<Style TargetType="{x:Type Shape}" x:Key="linesPathStyle">
 		<Setter Property="Fill" Value="{x:Null}"/>
 		<Setter Property="Stroke" Value="{Binding l:RangeHighlight.Stroke}"/>
 		<Setter Property="StrokeDashArray" Value="{Binding l:RangeHighlight.StrokeDashArray}"/>

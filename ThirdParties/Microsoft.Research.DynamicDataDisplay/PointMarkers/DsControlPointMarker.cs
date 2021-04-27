@@ -5,7 +5,7 @@ namespace Microsoft.Research.DynamicDataDisplay.PointMarkers
 {
     /// <summary>Abstract class that extends PointMarker and contains
     /// marker property as Pen, Brush and Size</summary>
-	public abstract class DsControlPointMarker : PointMarker {
+	public abstract class ShapePointMarker : PointMarker {
 		/// <summary>Size of marker in points</summary>
 		public double Size {
 			get { return (double)GetValue(SizeProperty); }
@@ -16,7 +16,7 @@ namespace Microsoft.Research.DynamicDataDisplay.PointMarkers
 			DependencyProperty.Register(
 			  "Size",
 			  typeof(double),
-			  typeof(DsControlPointMarker),
+			  typeof(ShapePointMarker),
 			  new FrameworkPropertyMetadata(5.0));
 
 
@@ -30,7 +30,7 @@ namespace Microsoft.Research.DynamicDataDisplay.PointMarkers
 			DependencyProperty.Register(
 			  "Pen",
 			  typeof(Pen),
-			  typeof(DsControlPointMarker),
+			  typeof(ShapePointMarker),
 			  new FrameworkPropertyMetadata(null));
 
 
@@ -43,7 +43,7 @@ namespace Microsoft.Research.DynamicDataDisplay.PointMarkers
 			DependencyProperty.Register(
 			  "Fill",
 			  typeof(Brush),
-			  typeof(DsControlPointMarker),
+			  typeof(ShapePointMarker),
 			  new FrameworkPropertyMetadata(Brushes.Red));
 	}
 }

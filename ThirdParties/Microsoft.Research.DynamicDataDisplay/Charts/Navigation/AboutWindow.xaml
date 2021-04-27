@@ -15,7 +15,7 @@
                         <Setter Property="Foreground" Value="#FF00A010"/>
                     </Style>
 
-                    <Style TargetType="InlineUIDsContainer" x:Key="{x:Type InlineUIDsContainer}">
+                    <Style TargetType="InlineUIContainer" x:Key="{x:Type InlineUIContainer}">
                         <Setter Property="BaselineAlignment" Value="Center"/>
                     </Style>
 
@@ -35,31 +35,31 @@
                 <Paragraph>
                     <Hyperlink Foreground="#FF0A00A0" FontSize="16" Click="Hyperlink_Click" NavigateUri="http://dynamicdatadisplay.codeplex.com/">Dynamic Data Display</Hyperlink>
                     <Run Name="r1"/>
-                    <InlineUIDsContainer>
+                    <InlineUIContainer>
                         <RepeatButton Content="Shift" Style="{DynamicResource btn}"/>
-                    </InlineUIDsContainer>
+                    </InlineUIContainer>
                     <Run Name="r2"/>
-                    <InlineUIDsContainer>
+                    <InlineUIContainer>
                         <RepeatButton Content="Ctrl" Style="{DynamicResource btn}"/>
-                    </InlineUIDsContainer><Run Name="r3"/>
+                    </InlineUIContainer><Run Name="r3"/>
                 </Paragraph>
                 <Paragraph>
                     <Span>
                         <Run Name="r4" Style="{DynamicResource nav}"/>,
                     </Span>
                     <Run Name="r6"/>
-                    <InlineUIDsContainer>
+                    <InlineUIContainer>
                         <RepeatButton Style="{DynamicResource btn}" Content="+" Command="{x:Static l:ChartCommands.ZoomIn}" CommandTarget="{Binding}"/>
-                    </InlineUIDsContainer>
+                    </InlineUIContainer>
                     <Run Name="r5"/>
-                    <InlineUIDsContainer>
+                    <InlineUIContainer>
                         <RepeatButton Style="{DynamicResource btn}" Content="-" Command="{x:Static l:ChartCommands.ZoomOut}" CommandTarget="{Binding}"/>
-                    </InlineUIDsContainer>
+                    </InlineUIContainer>
                     <Run Name="r7"/>
                     <LineBreak/>
                     <Run Name="r8" Style="{DynamicResource nav}"/>
                     <Run Name="r9"/>
-                    <InlineUIDsContainer>
+                    <InlineUIContainer>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -80,40 +80,40 @@
                             <RepeatButton Grid.Column="2" Grid.Row="1" Style="{DynamicResource btn}" FontSize="16" 
                                           Content="→" Margin="2" Command="{x:Static l:ChartCommands.ScrollRight}" CommandTarget="{Binding}"/>
                         </Grid>
-                    </InlineUIDsContainer>
+                    </InlineUIContainer>
                     <Run Name="r10"/>
                     <LineBreak/>
-                    <InlineUIDsContainer>
+                    <InlineUIContainer>
                         <RepeatButton Style="{DynamicResource commandBtn}" Content="Ctrl"/>
-                    </InlineUIDsContainer>
+                    </InlineUIContainer>
                     <Run>+</Run>
                     <Run Name="r11" Style="{DynamicResource nav}"/>
                     <Run Name="r14"/>
                     <LineBreak/>
-                    <InlineUIDsContainer>
+                    <InlineUIContainer>
                         <RepeatButton Style="{DynamicResource commandBtn}" Content="Shift"/>
-                    </InlineUIDsContainer>
+                    </InlineUIContainer>
                     <Run>+</Run>
                     <Run Name="r12" Style="{DynamicResource nav}"/>
                     <Run Name="r13"/>
                     <LineBreak/>
-                    <InlineUIDsContainer>
+                    <InlineUIContainer>
                         <Button Style="{DynamicResource commandBtn}" Content="Home" Command="{x:Static l:ChartCommands.FitToView}" CommandTarget="{Binding}"/>
-                    </InlineUIDsContainer>
+                    </InlineUIContainer>
                     <Run Name="r15"/>
                     <LineBreak/>
-                    <InlineUIDsContainer>
+                    <InlineUIContainer>
                         <Button Style="{DynamicResource commandBtn}" Content="F11" Command="{x:Static l:ChartCommands.CopyScreenshot}" CommandTarget="{Binding}"/>
-                    </InlineUIDsContainer>
+                    </InlineUIContainer>
                     <Run Name="r16"/>
                     <LineBreak/>
-                    <InlineUIDsContainer>
+                    <InlineUIContainer>
                         <Button Style="{DynamicResource commandBtn}" Content="Ctrl" Command="{x:Static l:ChartCommands.SaveScreenshot}" CommandTarget="{Binding}"/>
-                    </InlineUIDsContainer>
+                    </InlineUIContainer>
                     <Run>+</Run>
-                    <InlineUIDsContainer>
+                    <InlineUIContainer>
                         <Button Style="{DynamicResource commandBtn}" Content="S" Command="{x:Static l:ChartCommands.SaveScreenshot}" CommandTarget="{Binding}"/>
-                    </InlineUIDsContainer>
+                    </InlineUIContainer>
                     <Run Name="r17"/>
                 </Paragraph>
                 <Paragraph TextAlignment="Center">

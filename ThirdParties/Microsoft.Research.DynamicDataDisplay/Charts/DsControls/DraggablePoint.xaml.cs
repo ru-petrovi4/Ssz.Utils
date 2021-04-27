@@ -10,16 +10,16 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.DsControls;
+using System.Windows.Shapes;
 using System.Windows.Controls.Primitives;
 using Microsoft.Research.DynamicDataDisplay;
 
-namespace Microsoft.Research.DynamicDataDisplay.Charts.DsControls
+namespace Microsoft.Research.DynamicDataDisplay.Charts.Shapes
 {
 	/// <summary>
 	/// Represents a simple draggable point with position bound to point in viewport coordinates, which allows to drag iself by mouse.
 	/// </summary>
-	public partial class DraggablePoint : ViewportUIDsContainer
+	public partial class DraggablePoint : ViewportUIContainer
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DraggablePoint"/> class.

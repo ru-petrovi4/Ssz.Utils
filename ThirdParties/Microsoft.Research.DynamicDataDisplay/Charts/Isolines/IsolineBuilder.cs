@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Diagnostics;
-using System.Play.Serialization;
+using System.Runtime.Serialization;
 using System.Windows;
 using System.Windows.Media;
 using Microsoft.Research.DynamicDataDisplay.Common.Auxiliary;
@@ -291,7 +291,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts.Isolines
 				case Edge.Bottom:
 					return GetPoint(value, lb, rb, rect.LeftBottom, rect.RightBottom);
 				default:
-					throw new InvalidDesignTaskException();
+					throw new InvalidOperationException();
 			}
 		}
 
@@ -320,7 +320,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts.Isolines
 				case Edge.Right:
 					return (i == edges.GetLength(0) - 2) || (edges[i + 1, j] & (byte)Edge.Left) != 0;
 				default:
-					throw new InvalidDesignTaskException();
+					throw new InvalidOperationException();
 			}
 		}
 
@@ -339,7 +339,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts.Isolines
 					edges[i + 1, j] |= (byte)Edge.Left;
 					break;
 				default:
-					throw new InvalidDesignTaskException();
+					throw new InvalidOperationException();
 			}
 		}
 
@@ -393,7 +393,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts.Isolines
 					y--;
 					return Edge.Top;
 				default:
-					throw new InvalidDesignTaskException();
+					throw new InvalidOperationException();
 			}
 		}
 
@@ -542,7 +542,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts.Isolines
 		private void VerifyDataSource()
 		{
 			if (dataSource == null)
-				throw new InvalidDesignTaskException(Properties.Resources.IsolinesDataSourceShouldBeSet);
+				throw new InvalidOperationException(Properties.Resources.IsolinesDataSourceShouldBeSet);
 		}
 
 		IsolineCollection segments;

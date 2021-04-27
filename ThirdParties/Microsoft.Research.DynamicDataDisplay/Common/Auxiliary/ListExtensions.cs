@@ -14,7 +14,7 @@ namespace Microsoft.Research.DynamicDataDisplay
 		internal static T GetLast<T>(this List<T> list)
 		{
 			if (list == null) throw new ArgumentNullException("list");
-			if (list.Count == 0) throw new InvalidDesignTaskException(Properties.Resources.CannotGetLastElement);
+			if (list.Count == 0) throw new InvalidOperationException(Properties.Resources.CannotGetLastElement);
 
 			return list[list.Count - 1];
 		}

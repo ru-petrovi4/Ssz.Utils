@@ -10,7 +10,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 	/// <summary>
 	/// Represents simple line bound to viewport coordinates.
 	/// </summary>
-	public abstract class SimpleLine : ViewportDsControl
+	public abstract class SimpleLine : ViewportShape
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SimpleLine"/> class.

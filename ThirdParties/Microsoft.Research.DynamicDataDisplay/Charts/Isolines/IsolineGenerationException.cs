@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Play.Serialization;
+using System.Runtime.Serialization;
 
 namespace Microsoft.Research.DynamicDataDisplay.Charts.Isolines
 {

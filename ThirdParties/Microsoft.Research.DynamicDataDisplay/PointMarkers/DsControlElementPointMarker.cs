@@ -6,7 +6,7 @@ namespace Microsoft.Research.DynamicDataDisplay.PointMarkers
 {
     /// <summary>Abstract class that extends ElementPointMarker and contains
     /// marker property as Pen, Brush and Size</summary>
-	public abstract class DsControlElementPointMarker : ElementPointMarker {
+	public abstract class ShapeElementPointMarker : ElementPointMarker {
 		/// <summary>Size of marker in points</summary>
 		public double Size {
 			get { return (double)GetValue(SizeProperty); }
@@ -17,7 +17,7 @@ namespace Microsoft.Research.DynamicDataDisplay.PointMarkers
 			DependencyProperty.Register(
 			  "Size",
 			  typeof(double),
-			  typeof(DsControlElementPointMarker),
+			  typeof(ShapeElementPointMarker),
 			  new FrameworkPropertyMetadata(5.0));
 
         /// <summary>Tooltip to show when cursor on over</summary>
@@ -31,7 +31,7 @@ namespace Microsoft.Research.DynamicDataDisplay.PointMarkers
             DependencyProperty.Register(
               "ToolTipText",
               typeof(string),
-              typeof(DsControlElementPointMarker),
+              typeof(ShapeElementPointMarker),
               new FrameworkPropertyMetadata(String.Empty));
 
 		/// <summary>Pen to outline marker</summary>
@@ -44,7 +44,7 @@ namespace Microsoft.Research.DynamicDataDisplay.PointMarkers
 			DependencyProperty.Register(
 			  "Pen",
 			  typeof(Pen),
-			  typeof(DsControlElementPointMarker),
+			  typeof(ShapeElementPointMarker),
 			  new FrameworkPropertyMetadata(null));
 
 
@@ -57,7 +57,7 @@ namespace Microsoft.Research.DynamicDataDisplay.PointMarkers
 			DependencyProperty.Register(
 			  "Brush",
 			  typeof(Brush),
-			  typeof(DsControlElementPointMarker),
+			  typeof(ShapeElementPointMarker),
 			  new FrameworkPropertyMetadata(Brushes.Red));
 
 		public Brush Fill
@@ -70,7 +70,7 @@ namespace Microsoft.Research.DynamicDataDisplay.PointMarkers
 			DependencyProperty.Register(
 			  "Fill",
 			  typeof(Brush),
-			  typeof(DsControlElementPointMarker),
+			  typeof(ShapeElementPointMarker),
 			  new FrameworkPropertyMetadata(Brushes.Red));
 	}
 }

@@ -75,7 +75,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 				return res;
 			}
 
-			throw new InvalidDesignTaskException(Properties.Resources.UnsupportedRangeInAxis);
+			throw new InvalidOperationException(Properties.Resources.UnsupportedRangeInAxis);
 		}
 
 		/// <summary>

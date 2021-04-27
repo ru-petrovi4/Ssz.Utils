@@ -6,7 +6,7 @@ using System.Windows.Media;
 using System.Windows;
 using Microsoft.Research.DynamicDataDisplay;
 
-namespace Microsoft.Research.DynamicDataDisplay.Charts.DsControls
+namespace Microsoft.Research.DynamicDataDisplay.Charts.Shapes
 {
 	/// <summary>
 	/// Paints an arrow with start and end points in viewport coordinates.

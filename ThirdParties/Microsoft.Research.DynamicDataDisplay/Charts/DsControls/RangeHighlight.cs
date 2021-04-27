@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Controls;
-using System.Windows.DsControls;
+using System.Windows.Shapes;
 using System.Windows.Data;
 using System.Diagnostics.CodeAnalysis;
 
@@ -23,7 +23,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 		/// </summary>
 		protected RangeHighlight()
 		{
-			Resources = new ResourceDictionary { Source = new Uri("/Microsoft.Research.DynamicDataDisplay;component/Charts/DsControls/RangeHighlightStyle.xaml", UriKind.Relative) };
+			Resources = new ResourceDictionary { Source = new Uri("/Microsoft.Research.DynamicDataDisplay;component/Charts/Shapes/RangeHighlightStyle.xaml", UriKind.Relative) };
 
 			Style = (Style)FindResource(typeof(RangeHighlight));
 			ApplyTemplate();
@@ -56,7 +56,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 			"Fill",
 			typeof(Brush),
 			typeof(RangeHighlight),
-			new PropertyMetadata(DsControl.FillProperty.DefaultMetadata.DefaultValue));
+			new PropertyMetadata(Shape.FillProperty.DefaultMetadata.DefaultValue));
 
 		public Brush Fill
 		{
@@ -68,7 +68,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 			"Stroke",
 			typeof(Brush),
 			typeof(RangeHighlight),
-			new PropertyMetadata(DsControl.StrokeProperty.DefaultMetadata.DefaultValue));
+			new PropertyMetadata(Shape.StrokeProperty.DefaultMetadata.DefaultValue));
 
 		public Brush Stroke
 		{
@@ -80,7 +80,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 			"StrokeThickness",
 			typeof(double),
 			typeof(RangeHighlight),
-			new PropertyMetadata(DsControl.StrokeThicknessProperty.DefaultMetadata.DefaultValue));
+			new PropertyMetadata(Shape.StrokeThicknessProperty.DefaultMetadata.DefaultValue));
 
 		public double StrokeThickness
 		{
@@ -92,7 +92,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 			"StrokeStartLineCap",
 			typeof(PenLineCap),
 			typeof(RangeHighlight),
-			new PropertyMetadata(DsControl.StrokeStartLineCapProperty.DefaultMetadata.DefaultValue));
+			new PropertyMetadata(Shape.StrokeStartLineCapProperty.DefaultMetadata.DefaultValue));
 
 		public PenLineCap StrokeStartLineCap
 		{
@@ -104,7 +104,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 			"StrokeEndLineCap",
 			typeof(PenLineCap),
 			typeof(RangeHighlight),
-			new PropertyMetadata(DsControl.StrokeEndLineCapProperty.DefaultMetadata.DefaultValue));
+			new PropertyMetadata(Shape.StrokeEndLineCapProperty.DefaultMetadata.DefaultValue));
 
 		public PenLineCap StrokeEndLineCap
 		{
@@ -116,7 +116,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 			"StrokeDashCap",
 			typeof(PenLineCap),
 			typeof(RangeHighlight),
-			new PropertyMetadata(DsControl.StrokeDashCapProperty.DefaultMetadata.DefaultValue));
+			new PropertyMetadata(Shape.StrokeDashCapProperty.DefaultMetadata.DefaultValue));
 
 		public PenLineCap StrokeDashCap
 		{
@@ -128,7 +128,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 			"StrokeLineJoin",
 			typeof(PenLineJoin),
 			typeof(RangeHighlight),
-			new PropertyMetadata(DsControl.StrokeLineJoinProperty.DefaultMetadata.DefaultValue));
+			new PropertyMetadata(Shape.StrokeLineJoinProperty.DefaultMetadata.DefaultValue));
 
 		public PenLineJoin StrokeLineJoin
 		{
@@ -140,7 +140,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 			"StrokeMiterLimit",
 			typeof(double),
 			typeof(RangeHighlight),
-			new PropertyMetadata(DsControl.StrokeMiterLimitProperty.DefaultMetadata.DefaultValue));
+			new PropertyMetadata(Shape.StrokeMiterLimitProperty.DefaultMetadata.DefaultValue));
 
 		public double StrokeMiterLimit
 		{
@@ -152,7 +152,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 			"StrokeDashOffset",
 			typeof(double),
 			typeof(RangeHighlight),
-			new PropertyMetadata(DsControl.StrokeDashOffsetProperty.DefaultMetadata.DefaultValue));
+			new PropertyMetadata(Shape.StrokeDashOffsetProperty.DefaultMetadata.DefaultValue));
 
 		public double StrokeDashOffset
 		{
@@ -164,7 +164,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 			"StrokeDashArray",
 			typeof(DoubleCollection),
 			typeof(RangeHighlight),
-			new PropertyMetadata(DsControl.StrokeDashArrayProperty.DefaultMetadata.DefaultValue));
+			new PropertyMetadata(Shape.StrokeDashArrayProperty.DefaultMetadata.DefaultValue));
 
 		[SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 		public DoubleCollection StrokeDashArray

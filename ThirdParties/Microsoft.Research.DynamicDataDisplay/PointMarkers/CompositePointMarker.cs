@@ -29,7 +29,7 @@ namespace Microsoft.Research.DynamicDataDisplay.PointMarkers
 
 
 		private readonly Collection<PointMarker> markers = new Collection<PointMarker>();
-		[DesignSerializationVisibility(DesignSerializationVisibility.Content)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
 		public Collection<PointMarker> Markers {
 			get { return markers; }
 		}

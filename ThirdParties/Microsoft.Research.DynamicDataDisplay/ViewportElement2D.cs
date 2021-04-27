@@ -263,7 +263,7 @@ namespace Microsoft.Research.DynamicDataDisplay
 		{
 			return Dispatcher.Invoke(
 						  DispatcherPriority.Send,
-						   (DispatcherDesignTaskCallback)delegate { return GetValue(property); },
+						   (DispatcherOperationCallback)delegate { return GetValue(property); },
 							property);
 		}
 

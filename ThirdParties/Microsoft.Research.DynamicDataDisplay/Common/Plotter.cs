@@ -222,7 +222,7 @@ namespace Microsoft.Research.DynamicDataDisplay
 			{
 				foreach (var property in GetPropertiesToSetBindingOn())
 				{
-					BindingDesignTasks.SetBinding(target, property, new Binding { Path = new PropertyPath(property.Name), Source = proxy, Mode = BindingMode.TwoWay });
+					BindingOperations.SetBinding(target, property, new Binding { Path = new PropertyPath(property.Name), Source = proxy, Mode = BindingMode.TwoWay });
 				}
 			}
 		}
@@ -233,7 +233,7 @@ namespace Microsoft.Research.DynamicDataDisplay
 			{
 				foreach (var property in GetPropertiesToSetBindingOn())
 				{
-					BindingDesignTasks.ClearBinding(target, property);
+					BindingOperations.ClearBinding(target, property);
 				}
 			}
 		}
@@ -300,7 +300,7 @@ namespace Microsoft.Research.DynamicDataDisplay
 		/// Provides access to Plotter's children charts.
 		/// </summary>
 		/// <value>The children.</value>
-		[DesignSerializationVisibility(DesignSerializationVisibility.Content)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
 		public ChildrenCollection Children
 		{
 			get { return children; }
@@ -337,14 +337,14 @@ namespace Microsoft.Research.DynamicDataDisplay
 
 					if (child.Plotter != null)
 					{
-						throw new InvalidDesignTaskException(Properties.Resources.PlotterElementAddedToAnotherPlotter);
+						throw new InvalidOperationException(Properties.Resources.PlotterElementAddedToAnotherPlotter);
 					}
 
 					child.OnPlotterAttached(this);
 
 					if (child.Plotter != this)
 					{
-						throw new InvalidDesignTaskException(Properties.Resources.InvalidParentPlotterValue);
+						throw new InvalidOperationException(Properties.Resources.InvalidParentPlotterValue);
 					}
 				}
 				finally
@@ -357,7 +357,7 @@ namespace Microsoft.Research.DynamicDataDisplay
 		private UIElement CreateVisualProxy(IPlotterElement child)
 		{
 			if (visualBindingCollection.Cache.ContainsKey(child))
-				throw new InvalidDesignTaskException(Properties.Resources.VisualBindingsWrongState);
+				throw new InvalidOperationException(Properties.Resources.VisualBindingsWrongState);
 
 			UIElement result = child as UIElement;
 
@@ -379,21 +379,21 @@ namespace Microsoft.Research.DynamicDataDisplay
 				{
 					if (child.Plotter != this)
 					{
-						throw new InvalidDesignTaskException(Properties.Resources.InvalidParentPlotterValueRemoving);
+						throw new InvalidOperationException(Properties.Resources.InvalidParentPlotterValueRemoving);
 					}
 
 					child.OnPlotterDetaching(this);
 
 					if (child.Plotter != null)
 					{
-						throw new InvalidDesignTaskException(Properties.Resources.ParentPlotterNotNull);
+						throw new InvalidOperationException(Properties.Resources.ParentPlotterNotNull);
 					}
 
 					visualBindingCollection.Cache.Remove(child);
 
 					if (addedVisualElements.ContainsKey(child) && addedVisualElements[child].Count > 0)
 					{
-						throw new InvalidDesignTaskException(String.Format(Properties.Resources.PlotterElementDidnotCleanedAfterItself, child.ToString()));
+						throw new InvalidOperationException(String.Format(Properties.Resources.PlotterElementDidnotCleanedAfterItself, child.ToString()));
 					}
 				}
 				finally
@@ -410,70 +410,70 @@ namespace Microsoft.Research.DynamicDataDisplay
 		#region Layout zones
 
 		private NotifyingCanvas parallelCanvas;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Canvas ParallelCanvas
 		{
 			get { return parallelCanvas; }
 		}
 
 		private NotifyingStackPanel headerPanel;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public StackPanel HeaderPanel
 		{
 			get { return headerPanel; }
 		}
 
 		private NotifyingStackPanel footerPanel;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public StackPanel FooterPanel
 		{
 			get { return footerPanel; }
 		}
 
 		private NotifyingStackPanel leftPanel;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public StackPanel LeftPanel
 		{
 			get { return leftPanel; }
 		}
 
 		private NotifyingStackPanel rightPanel;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public StackPanel RightPanel
 		{
 			get { return rightPanel; }
 		}
 
 		private NotifyingStackPanel topPanel;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public StackPanel TopPanel
 		{
 			get { return topPanel; }
 		}
 
 		private NotifyingStackPanel bottomPanel;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public StackPanel BottomPanel
 		{
 			get { return bottomPanel; }
 		}
 
 		private NotifyingCanvas mainCanvas;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Canvas MainCanvas
 		{
 			get { return mainCanvas; }
 		}
 
 		private NotifyingGrid centralGrid;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Grid CentralGrid
 		{
 			get { return centralGrid; }
 		}
 
 		private NotifyingGrid mainGrid;
-		[DesignSerializationVisibility(DesignSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Grid MainGrid
 		{
 			get { return mainGrid; }
