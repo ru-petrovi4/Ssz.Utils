@@ -21,7 +21,7 @@ namespace TestConsoleApp
             q.Enqueue(2);
             q.Enqueue(3);
             
-            foreach (var i in q.Skip(4).Take(3))
+            foreach (var i in Enumerable.Range(-5, 0))
             {
                 Console.WriteLine(i);
             }

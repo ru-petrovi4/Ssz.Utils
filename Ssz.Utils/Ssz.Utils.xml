@@ -615,6 +615,27 @@
             </summary>
             <param name="configuration"></param>
         </member>
+        <member name="M:Ssz.Utils.CsvDb.LoadData(System.Collections.Generic.List{System.String})">
+            <summary>
+                Loads data from .csv files on disk.
+            </summary>
+            <param name="errorFileNames"></param>
+        </member>
+        <member name="M:Ssz.Utils.CsvDb.SaveData">
+            <summary>
+                Saves data to .csv files on disk.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.CsvDb._csvDbData">
+            <summary>
+                File names end with .csv
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.CsvDb._changedFileNames">
+            <summary>
+                File names end with .csv
+            </summary>
+        </member>
         <member name="T:Ssz.Utils.CsvHelper">
             <summary>
             

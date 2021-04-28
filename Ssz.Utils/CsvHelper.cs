@@ -164,100 +164,99 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static CaseInsensitiveDictionary<List<string?>> LoadCsvFile(string fileFullName, bool includeFiles, Dictionary<Regex, string>? defines = null)
         {
-            var fileData = new CaseInsensitiveDictionary<List<string?>>();            
-                
-            if (File.Exists(fileFullName))
+            var fileData = new CaseInsensitiveDictionary<List<string?>>();
+
+            if (!File.Exists(fileFullName)) return fileData;
+            
+            if (defines == null) defines = new Dictionary<Regex, string>();
+            string? filePath = Path.GetDirectoryName(fileFullName);
+            using (var reader = new StreamReader(fileFullName, true))
             {
-                if (defines == null) defines = new Dictionary<Regex, string>();
-                string? filePath = Path.GetDirectoryName(fileFullName);
-                using (var reader = new StreamReader(fileFullName, true))
+                string line = "";
+                string? l;
+                while ((l = reader.ReadLine()) != null)
                 {
-                    string line = "";
-                    string? l;
-                    while ((l = reader.ReadLine()) != null)
+                    l = l.Trim();                        
+                    if (l.Length > 0 && l[l.Length - 1] == '\\')
                     {
-                        l = l.Trim();                        
-                        if (l.Length > 0 && l[l.Length - 1] == '\\')
-                        {
-                            line += l.Substring(0, l.Length - 1);
-                            continue;
-                        }
-                        else
-                        {
-                            line += l;
-                        }
-                        if (line == "") continue;
-                        if (includeFiles && StringHelper.StartsWithIgnoreCase(line, @"#include") && line.Length > 8)
-                        {
-                            var q1 = line.IndexOf('"', 8);
-                            if (q1 != -1 && q1 + 1 < line.Length)
-                            {
-                                var q2 = line.IndexOf('"', q1 + 1);
-                                if (q2 != -1 && q2 > q1 + 1)
-                                {
-                                    var includeFileName = line.Substring(q1 + 1, q2 - q1 - 1);
-                                    foreach (var kvp in LoadCsvFile(filePath + @"\" + includeFileName, false, defines))
-                                    {
-                                        fileData[kvp.Key] = kvp.Value;
-                                    }
-                                }
-                            }
-                        }
-                        else if (StringHelper.StartsWithIgnoreCase(line, @"#define") && line.Length > 7)
-                        {
-                            int q1 = 7;
-                            for (; q1 < line.Length; q1++)
-                            {
-                                char ch = line[q1];
-                                if (Char.IsWhiteSpace(ch)) continue;
-                                else break;
-                            }
-                            if (q1 < line.Length)
-                            {
-                                int q2 = q1 + 1;
-                                for (; q2 < line.Length; q2++)
-                                {
-                                    char ch = line[q2];
-                                    if (Char.IsWhiteSpace(ch)) break;
-                                    else continue;
-                                }
-                                string define = line.Substring(q1, q2 - q1);
-                                string subst = @"";
-                                if (q2 < line.Length - 1)
-                                {                                    
-                                    subst = ReplaceDefines(line.Substring(q2 + 1).Trim(), defines);
-                                }
-                                defines[new Regex(@"\b" + define + @"\b", RegexOptions.IgnoreCase)] = subst;
-                            }
-                        }
-                        else if (line[0] == '#')
-                        {
-                            // Comment, skip                            
-                        }
-                        else
-                        {
-                            List<string?> fields =
-                                ParseCsvLine(@",", ReplaceDefines(line, defines)).ToList();
-                            if (fields.Count > 0)
-                            {
-                                string? field0 = fields[0];
-                                if (String.IsNullOrEmpty(field0))
-                                {
-                                    if (fields.Count > 1)
-                                    {
-                                        fileData[@""] = fields;
-                                    }
-                                }
-                                else
-                                {
-                                    fileData[field0] = fields;
-                                }
-                            }
-                        }
-                        line = "";
+                        line += l.Substring(0, l.Length - 1);
+                        continue;
                     }
-                }                                
-            }            
+                    else
+                    {
+                        line += l;
+                    }
+                    if (line == "") continue;
+                    if (includeFiles && StringHelper.StartsWithIgnoreCase(line, @"#include") && line.Length > 8)
+                    {
+                        var q1 = line.IndexOf('"', 8);
+                        if (q1 != -1 && q1 + 1 < line.Length)
+                        {
+                            var q2 = line.IndexOf('"', q1 + 1);
+                            if (q2 != -1 && q2 > q1 + 1)
+                            {
+                                var includeFileName = line.Substring(q1 + 1, q2 - q1 - 1);
+                                foreach (var kvp in LoadCsvFile(filePath + @"\" + includeFileName, false, defines))
+                                {
+                                    fileData[kvp.Key] = kvp.Value;
+                                }
+                            }
+                        }
+                    }
+                    else if (StringHelper.StartsWithIgnoreCase(line, @"#define") && line.Length > 7)
+                    {
+                        int q1 = 7;
+                        for (; q1 < line.Length; q1++)
+                        {
+                            char ch = line[q1];
+                            if (Char.IsWhiteSpace(ch)) continue;
+                            else break;
+                        }
+                        if (q1 < line.Length)
+                        {
+                            int q2 = q1 + 1;
+                            for (; q2 < line.Length; q2++)
+                            {
+                                char ch = line[q2];
+                                if (Char.IsWhiteSpace(ch)) break;
+                                else continue;
+                            }
+                            string define = line.Substring(q1, q2 - q1);
+                            string subst = @"";
+                            if (q2 < line.Length - 1)
+                            {                                    
+                                subst = ReplaceDefines(line.Substring(q2 + 1).Trim(), defines);
+                            }
+                            defines[new Regex(@"\b" + define + @"\b", RegexOptions.IgnoreCase)] = subst;
+                        }
+                    }
+                    else if (line[0] == '#')
+                    {
+                        // Comment, skip                            
+                    }
+                    else
+                    {
+                        List<string?> fields =
+                            ParseCsvLine(@",", ReplaceDefines(line, defines)).ToList();
+                        if (fields.Count > 0)
+                        {
+                            string? field0 = fields[0];
+                            if (String.IsNullOrEmpty(field0))
+                            {
+                                if (fields.Count > 1)
+                                {
+                                    fileData[@""] = fields;
+                                }
+                            }
+                            else
+                            {
+                                fileData[field0] = fields;
+                            }
+                        }
+                    }
+                    line = "";
+                }
+            }         
 
             return fileData;
         }
