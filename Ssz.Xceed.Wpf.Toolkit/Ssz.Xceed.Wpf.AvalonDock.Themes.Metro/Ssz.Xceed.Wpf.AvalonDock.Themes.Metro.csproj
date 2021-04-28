@@ -2,10 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0-windows</TargetFramework>
     <Nullable>disable</Nullable>
-    <OutputType>Library</OutputType>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <UseWPF>true</UseWPF>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <UseWPF>true</UseWPF>    
   </PropertyGroup>
   <ItemGroup>
     <AppDesigner Include="Properties\" />

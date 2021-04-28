@@ -2,17 +2,11 @@
   <PropertyGroup>
     <TargetFramework>net5.0-windows</TargetFramework>
     <Nullable>disable</Nullable>
-    <OutputType>Library</OutputType>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <UseWPF>true</UseWPF>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <UseWPF>true</UseWPF>    
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DocumentationFile></DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile></AssemblyOriginatorKeyFile>
-  </PropertyGroup>
+  </PropertyGroup>  
   <ItemGroup>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
@@ -48,5 +42,18 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.Toolkit.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

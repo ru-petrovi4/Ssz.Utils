@@ -2,12 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0-windows</TargetFramework>
     <Nullable>disable</Nullable>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Ssz.Xceed.Wpf.AvalonDock.Themes</RootNamespace>
-    <ExpressionBlendVersion>4.0.20901.0</ExpressionBlendVersion>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <UseWPF>true</UseWPF>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <UseWPF>true</UseWPF>   
   </PropertyGroup>
   <ItemGroup>
     <AppDesigner Include="Properties\" />
