@@ -30,9 +30,10 @@ namespace Ssz.Utils
 
         /// <summary>
         ///     Loads data from .csv files on disk.
+        ///     resultWarnings are localized.
         /// </summary>
-        /// <param name="errorFileNames"></param>
-        public void LoadData(List<string>? errorFileNames = null)
+        /// <param name="resultWarnings"></param>
+        public void LoadData(List<string>? resultWarnings = null)
         {
             Clear();
 
@@ -42,11 +43,11 @@ namespace Ssz.Utils
                 try
                 {
                     string fileName = file.Name;
-                    _csvDbData[fileName] = CsvHelper.LoadCsvFile(file.FullName, true);
+                    _csvDbData[fileName] = CsvHelper.LoadCsvFile(file.FullName, true, null, resultWarnings);
                 }
                 catch (Exception ex)
                 {
-                    if (errorFileNames != null) errorFileNames.Add(file.FullName);
+                    if (resultWarnings != null) resultWarnings.Add(Properties.Resources.CsvDb_CsvFileReadingError + " " + file.FullName);
                     if (_logger != null) _logger.LogError(ex, "Read .csv file error. " + file.FullName);
                 }
         }

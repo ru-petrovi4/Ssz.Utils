@@ -155,18 +155,23 @@ namespace Ssz.Utils
         /// <summary>
         ///     First column in file is Key and must be unique.
         ///     Can contain include directives, defines and comments.
-        ///     If file does not exist returns empty result.
-        ///     All fields values are trimmed.         
+        ///     If file does not exist, returns empty result.
+        ///     resultWarnings are localized.
         /// </summary>
         /// <param name="fileFullName"></param>
         /// <param name="includeFiles"></param>
         /// <param name="defines"></param>
+        /// <param name="resultWarnings"></param>
         /// <returns></returns>
-        public static CaseInsensitiveDictionary<List<string?>> LoadCsvFile(string fileFullName, bool includeFiles, Dictionary<Regex, string>? defines = null)
+        public static CaseInsensitiveDictionary<List<string?>> LoadCsvFile(string fileFullName, bool includeFiles, Dictionary<Regex, string>? defines = null, List<string>? resultWarnings = null)
         {
             var fileData = new CaseInsensitiveDictionary<List<string?>>();
 
-            if (!File.Exists(fileFullName)) return fileData;
+            if (!File.Exists(fileFullName))
+            {
+                if (resultWarnings != null) resultWarnings.Add(Properties.Resources.CsvHelper_CsvFileDoesNotExist + " " + fileFullName);
+                return fileData;
+            }
             
             if (defines == null) defines = new Dictionary<Regex, string>();
             string? filePath = Path.GetDirectoryName(fileFullName);
@@ -196,8 +201,12 @@ namespace Ssz.Utils
                             if (q2 != -1 && q2 > q1 + 1)
                             {
                                 var includeFileName = line.Substring(q1 + 1, q2 - q1 - 1);
-                                foreach (var kvp in LoadCsvFile(filePath + @"\" + includeFileName, false, defines))
+                                foreach (var kvp in LoadCsvFile(filePath + @"\" + includeFileName, false, defines, resultWarnings))
                                 {
+                                    if (fileData.ContainsKey(kvp.Key))
+                                    {
+                                        if (resultWarnings != null) resultWarnings.Add(Properties.Resources.CsvHelper_CsvFileDuplicateKey + " " + fileFullName + " Key='" + kvp.Key + "'");
+                                    }
                                     fileData[kvp.Key] = kvp.Value;
                                 }
                             }
@@ -245,11 +254,19 @@ namespace Ssz.Utils
                             {
                                 if (fields.Count > 1)
                                 {
+                                    if (fileData.ContainsKey(@""))
+                                    {
+                                        if (resultWarnings != null) resultWarnings.Add(Properties.Resources.CsvHelper_CsvFileDuplicateKey + " " + fileFullName + " Key=''");
+                                    }
                                     fileData[@""] = fields;
                                 }
                             }
                             else
                             {
+                                if (fileData.ContainsKey(field0))
+                                {
+                                    if (resultWarnings != null) resultWarnings.Add(Properties.Resources.CsvHelper_CsvFileDuplicateKey + " " + fileFullName + " Key='" + field0 + "'");
+                                }
                                 fileData[field0] = fields;
                             }
                         }

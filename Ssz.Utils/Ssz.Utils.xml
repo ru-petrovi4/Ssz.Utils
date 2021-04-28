@@ -618,8 +618,9 @@
         <member name="M:Ssz.Utils.CsvDb.LoadData(System.Collections.Generic.List{System.String})">
             <summary>
                 Loads data from .csv files on disk.
+                resultWarnings are localized.
             </summary>
-            <param name="errorFileNames"></param>
+            <param name="resultWarnings"></param>
         </member>
         <member name="M:Ssz.Utils.CsvDb.SaveData">
             <summary>
@@ -677,16 +678,17 @@
             <param name="sourceString"></param>
             <returns></returns>
         </member>
-        <member name="M:Ssz.Utils.CsvHelper.LoadCsvFile(System.String,System.Boolean,System.Collections.Generic.Dictionary{System.Text.RegularExpressions.Regex,System.String})">
+        <member name="M:Ssz.Utils.CsvHelper.LoadCsvFile(System.String,System.Boolean,System.Collections.Generic.Dictionary{System.Text.RegularExpressions.Regex,System.String},System.Collections.Generic.List{System.String})">
             <summary>
                 First column in file is Key and must be unique.
                 Can contain include directives, defines and comments.
-                If file does not exist returns empty result.
-                All fields values are trimmed.         
+                If file does not exist, returns empty result.
+                resultWarnings are localized.
             </summary>
             <param name="fileFullName"></param>
             <param name="includeFiles"></param>
             <param name="defines"></param>
+            <param name="resultWarnings"></param>
             <returns></returns>
         </member>
         <member name="M:Ssz.Utils.CsvHelper.SaveCsvFile(System.String,Ssz.Utils.CaseInsensitiveDictionary{System.Collections.Generic.List{System.String}})">
@@ -2058,6 +2060,37 @@
             <param name="obj"></param>
             <param name="func"></param>
             <returns></returns>
+        </member>
+        <member name="T:Ssz.Utils.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Properties.Resources.CsvDb_CsvFileReadingError">
+            <summary>
+              Looks up a localized string similar to .csv file reading error..
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Properties.Resources.CsvHelper_CsvFileDoesNotExist">
+            <summary>
+              Looks up a localized string similar to .csv file does not exist..
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Properties.Resources.CsvHelper_CsvFileDuplicateKey">
+            <summary>
+              Looks up a localized string similar to .csv file contains duplicate key..
+            </summary>
         </member>
         <member name="T:Ssz.Utils.ReferenceEqualityComparer`1">
             <summary>
