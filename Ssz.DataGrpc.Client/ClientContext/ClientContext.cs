@@ -14,7 +14,6 @@ using Ssz.DataGrpc.Client.ClientLists;
 
 namespace Ssz.DataGrpc.Client
 {
-
     #region Context Management
 
     /// <summary>
@@ -39,6 +38,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="systemNameToConnect"></param>
         /// <param name="contextParams"></param>
         public ClientContext(ILogger<GrpcDataAccessProvider> logger,
+            IDispatcher callbackDispatcher,
             DataAccess.DataAccessClient resourceManagementClient,            
             string applicationName,
             string workstationName,            
@@ -48,6 +48,7 @@ namespace Ssz.DataGrpc.Client
             CaseInsensitiveDictionary<string> contextParams)
         {
             _logger = logger;
+            _callbackDispatcher = callbackDispatcher;
             _resourceManagementClient = resourceManagementClient;
             _applicationName = applicationName;
             _workstationName = workstationName;          
@@ -78,7 +79,10 @@ namespace Ssz.DataGrpc.Client
 
             _serverContextIsOperational = true;
 
-            var task = ReadCallbackMessagesAsync(_callbackMessageStream.ResponseStream);
+            Task.Run(async () =>
+            {
+                await ReadCallbackMessagesAsync(_callbackMessageStream.ResponseStream);
+            });
         }
 
         /// <summary>
@@ -324,30 +328,34 @@ namespace Ssz.DataGrpc.Client
                     return;
                 }
 
-                try
+                CallbackMessage current = reader.Current;
+                _callbackDispatcher.BeginInvoke(ct =>
                 {
-                    switch (reader.Current.OptionalMessageCase)
+                    try
                     {
-                        case CallbackMessage.OptionalMessageOneofCase.ContextInfo:
-                            ContextInfo serverContextInfo = reader.Current.ContextInfo;
-                            ServerContextInfo = serverContextInfo;
-                            break;
-                        case CallbackMessage.OptionalMessageOneofCase.ElementValuesCallback:
-                            ElementValuesCallback elementValuesCallback = reader.Current.ElementValuesCallback;
-                            ClientElementValueList datalist = GetElementValueList(elementValuesCallback.ListClientAlias);
-                            ElementValuesCallback(datalist, elementValuesCallback.ElementValuesCollection);                            
-                            break;
-                        case CallbackMessage.OptionalMessageOneofCase.EventMessagesCallback:
-                            EventMessagesCallback eventMessagesCallback = reader.Current.EventMessagesCallback;
-                            ClientEventList eventList = GetEventList(eventMessagesCallback.ListClientAlias);
-                            EventMessagesCallback(eventList, eventMessagesCallback.EventMessagesCollection);
-                            break;
+                        switch (current.OptionalMessageCase)
+                        {
+                            case CallbackMessage.OptionalMessageOneofCase.ContextInfo:
+                                ContextInfo serverContextInfo = current.ContextInfo;
+                                ServerContextInfo = serverContextInfo;
+                                break;
+                            case CallbackMessage.OptionalMessageOneofCase.ElementValuesCallback:
+                                ElementValuesCallback elementValuesCallback = current.ElementValuesCallback;
+                                ClientElementValueList datalist = GetElementValueList(elementValuesCallback.ListClientAlias);
+                                ElementValuesCallback(datalist, elementValuesCallback.ElementValuesCollection);
+                                break;
+                            case CallbackMessage.OptionalMessageOneofCase.EventMessagesCallback:
+                                EventMessagesCallback eventMessagesCallback = current.EventMessagesCallback;
+                                ClientEventList eventList = GetEventList(eventMessagesCallback.ListClientAlias);
+                                EventMessagesCallback(eventList, eventMessagesCallback.EventMessagesCollection);
+                                break;
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Callback message exception.");
-                }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Callback message exception.");
+                    }
+                });
             }
         }
 
@@ -358,7 +366,9 @@ namespace Ssz.DataGrpc.Client
         private bool _disposed;
 
         private ILogger<GrpcDataAccessProvider> _logger;
-        
+
+        private IDispatcher _callbackDispatcher;
+
         private DataAccess.DataAccessClient _resourceManagementClient;
         
         private readonly string _applicationName;

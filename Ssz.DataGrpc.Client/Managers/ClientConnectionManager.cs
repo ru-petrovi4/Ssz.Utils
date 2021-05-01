@@ -35,9 +35,10 @@ namespace Ssz.DataGrpc.Client.Managers
     {
         #region construction and destruction
 
-        public ClientConnectionManager(ILogger<GrpcDataAccessProvider> logger)
+        public ClientConnectionManager(ILogger<GrpcDataAccessProvider> logger, IDispatcher callbackDispatcher)
         {
             _logger = logger;
+            _callbackDispatcher = callbackDispatcher;
         }
 
         /// <summary>
@@ -136,6 +137,7 @@ namespace Ssz.DataGrpc.Client.Managers
                 var resourceManagementClient = new DataAccess.DataAccessClient(grpcChannel);                               
 
                 var clientContext = new ClientContext(_logger,
+                            _callbackDispatcher,
                             resourceManagementClient,                            
                             applicationName, 
                             workstationName,
@@ -349,6 +351,8 @@ namespace Ssz.DataGrpc.Client.Managers
         private bool _disposed;
 
         private ILogger<GrpcDataAccessProvider> _logger;
+
+        private IDispatcher _callbackDispatcher;
 
         private ConnectionInfo? _connectionInfo;
 

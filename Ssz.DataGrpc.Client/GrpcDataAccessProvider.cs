@@ -23,7 +23,7 @@ namespace Ssz.DataGrpc.Client
         {
             Logger = logger;
 
-            _clientConnectionManager = new ClientConnectionManager(logger);
+            _clientConnectionManager = new ClientConnectionManager(logger, this);
 
             _clientElementValueListManager = new ClientElementValueListManager(logger);
             _clientElementValueJournalListManager = new ClientElementValueJournalListManager(logger);
