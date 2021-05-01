@@ -95,6 +95,16 @@ namespace Ssz.DataGrpc.Client.Managers
 
         #region public functions
 
+        public GrpcChannel? GrpcChannel
+        {
+            get
+            {
+                if (_connectionInfo == null) return null;
+
+                return _connectionInfo.GrpcChannel; 
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>

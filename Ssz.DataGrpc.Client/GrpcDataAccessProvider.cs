@@ -11,6 +11,7 @@ using Ssz.DataGrpc.Client.Data;
 using Microsoft.Extensions.Logging;
 using Ssz.DataGrpc.Common;
 using Ssz.Utils.DataAccess;
+using Grpc.Net.Client;
 
 namespace Ssz.DataGrpc.Client
 {
@@ -102,6 +103,11 @@ namespace Ssz.DataGrpc.Client
         public bool IsConnected
         {
             get { return _isConnected; }
+        }
+
+        public GrpcChannel? GrpcChannel
+        {
+            get { return _clientConnectionManager.GrpcChannel; }
         }
 
         public bool IsInitialized { get; private set; }

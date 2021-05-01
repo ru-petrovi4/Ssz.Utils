@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace Ssz.Utils.Wpf
+namespace Ssz.Utils.Wpf.Converters
 {
     public class Int32ToColorConverter : IValueConverter
     {

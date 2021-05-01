@@ -1,5 +1,8 @@
 ﻿namespace Ssz.DataGrpc.Common
-{    
+{
+    /// <summary>
+    ///     S_OK and S_FALSE - success, others - fail.
+    /// </summary>
     public static class DataGrpcResultCodes
     {
         #region public functions
