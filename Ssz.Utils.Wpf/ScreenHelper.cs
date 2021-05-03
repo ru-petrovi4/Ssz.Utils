@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows;
+using System.Windows.Forms;
 using Point = System.Windows.Point;
 
 namespace Ssz.Utils.Wpf
@@ -26,16 +27,13 @@ namespace Ssz.Utils.Wpf
         {
             var result = new List<Rect>();
 
-            if (OperatingSystem.IsWindowsVersionAtLeast(7))
-            {
-                WindowsScreen[] screens = WindowsScreen.AllScreens.OrderByDescending(s => s.Primary).ThenBy(s => s.DeviceName).ToArray();
+            Screen[] screens = Screen.AllScreens.OrderByDescending(s => s.Primary).ThenBy(s => s.DeviceName).ToArray();
 
-                foreach (WindowsScreen screen in screens)
-                {
-                    Rect workingArea = screen.WorkingArea;
-                    result.Add(new Rect(workingArea.Left / ScreenScaleX, workingArea.Top / ScreenScaleY,
-                        workingArea.Width / ScreenScaleX, workingArea.Height / ScreenScaleY));
-                }
+            foreach (Screen screen in screens)
+            {
+                Rectangle workingArea = screen.WorkingArea;
+                result.Add(new Rect(workingArea.Left / ScreenScaleX, workingArea.Top / ScreenScaleY,
+                    workingArea.Width / ScreenScaleX, workingArea.Height / ScreenScaleY));
             }
 
             return result.ToArray();
@@ -47,19 +45,10 @@ namespace Ssz.Utils.Wpf
         /// <returns></returns>
         public static Rect GetPrimarySystemScreen()
         {
-            if (OperatingSystem.IsWindowsVersionAtLeast(7))
-            {
-                var result = new List<Rect>();
+            Rectangle workingArea = Screen.AllScreens.First(s => s.Primary).WorkingArea;
 
-                Rect workingArea = WindowsScreen.AllScreens.First(s => s.Primary).WorkingArea;
-
-                return new Rect(workingArea.Left / ScreenScaleX, workingArea.Top / ScreenScaleY,
-                        workingArea.Width / ScreenScaleX, workingArea.Height / ScreenScaleY);
-            }
-            else
-            {
-                return new Rect();
-            }
+            return new Rect(workingArea.Left / ScreenScaleX, workingArea.Top / ScreenScaleY,
+                    workingArea.Width / ScreenScaleX, workingArea.Height / ScreenScaleY);
         }
 
         /// <summary>
@@ -102,12 +91,14 @@ namespace Ssz.Utils.Wpf
 
         /// <summary>
         ///     Set window fully contained in rect.
-        ///     All values in WPF coordinates.        
+        ///     All values in WPF coordinates.
+        ///     window != null
         /// </summary>
         /// <param name="window"></param>
         /// <param name="rect"></param>
         public static void SetFullyVisible(Window window, Rect rect)
-        {            
+        {
+            if (window == null) throw new ArgumentNullException("window");
             if (Double.IsNaN(window.Left) || Double.IsNaN(window.Top) ||
                 Double.IsNaN(window.ActualWidth) || Double.IsNaN(window.ActualHeight) ||
                 rect == Rect.Empty) return;
@@ -138,7 +129,7 @@ namespace Ssz.Utils.Wpf
         public static Rect GetNearestSystemScreen(Point point)
         {
             double minDistance = Double.MaxValue;
-            Rect nearestSystemScreen = new Rect();
+            Rect nearestSystemScreen = Rect.Empty;
             foreach (Rect screen in GetSystemScreens())
             {
                 var distance = GetDistance(point.X, point.Y, screen.Left + screen.Width / 2, screen.Top + screen.Height / 2);
@@ -154,12 +145,15 @@ namespace Ssz.Utils.Wpf
         /// <summary>
         ///     Gets location of frameworkElement on system screen.
         ///     All values in WPF coordinates.
-        ///     Warning! frameworkElement.PointToScreen returns values in screen coordinates, not WPF coordinates.        
+        ///     Warning! frameworkElement.PointToScreen returns values in screen coordinates, not WPF coordinates.
+        ///     frameworkElement != null
         /// </summary>
         /// <param name="frameworkElement"></param>
         /// <returns></returns>
         public static Rect GetRect(FrameworkElement frameworkElement)
         {
+            if (frameworkElement == null) throw new ArgumentNullException("frameworkElement");
+
             var p1 = frameworkElement.PointToScreen(new Point(0, 0));
             var p2 = frameworkElement.PointToScreen(new Point(frameworkElement.ActualWidth, frameworkElement.ActualHeight));
             return new Rect(new Point(p1.X / ScreenScaleX, p1.Y / ScreenScaleY),
@@ -229,12 +223,9 @@ namespace Ssz.Utils.Wpf
 
         private static void DefineScreenScale()
         {
-            if (OperatingSystem.IsWindowsVersionAtLeast(7))
-            {
-                WindowsScreen primaryScreen = WindowsScreen.AllScreens.Where(s => s.Primary).First();
-                _screenScaleX = primaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
-                _screenScaleY = primaryScreen.Bounds.Height / SystemParameters.PrimaryScreenHeight;
-            }
+            Screen primaryScreen = Screen.AllScreens.Where(s => s.Primary).First();
+            _screenScaleX = primaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
+            _screenScaleY = primaryScreen.Bounds.Height / SystemParameters.PrimaryScreenHeight;
         }
 
         private static double GetDistance(double x1, double y1, double x2, double y2)

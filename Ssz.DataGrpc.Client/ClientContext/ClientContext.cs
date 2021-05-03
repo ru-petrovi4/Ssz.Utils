@@ -309,7 +309,7 @@ namespace Ssz.DataGrpc.Client
         {
             while (true)
             {
-                if (_serverContextIsOperational) return;
+                if (!_serverContextIsOperational) return;
 
                 try
                 {
