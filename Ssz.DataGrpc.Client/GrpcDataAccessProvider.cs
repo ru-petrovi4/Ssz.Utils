@@ -496,7 +496,7 @@ namespace Ssz.DataGrpc.Client
                 try
                 {
                     if (ct.IsCancellationRequested) return;
-                    _clientConnectionManager.Process(nowUtc);
+                    _clientConnectionManager.Process(ct, nowUtc);
                 }
                 catch
                 {

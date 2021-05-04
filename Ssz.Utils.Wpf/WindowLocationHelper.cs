@@ -79,6 +79,9 @@ namespace Ssz.Utils.Wpf
                 window.WindowStartupLocation = WindowStartupLocation.Manual;
                 window.Height = slotLocation.Height;
             }
+
+            window.Loaded += (sender, args) => WindowOnLoaded(window);
+            window.Closed += (sender, args) => WindowOnClosed(window);
         }
 
         public static bool TryActivateExistingWindow(string category)
@@ -98,9 +101,25 @@ namespace Ssz.Utils.Wpf
             occupiedWindowSlot.Window?.Activate();
 
             return true;
+        }   
+
+        #endregion
+
+        #region private functions
+
+        private static RegistryKey? GetOrCreateSszRegistryKey()
+        {
+            try
+            {
+                return Registry.CurrentUser.CreateSubKey(SszSubKeyString);
+            }
+            catch (Exception)
+            {
+            }
+            return null;
         }
 
-        public static void WindowOnLoaded(Window window)
+        private static void WindowOnLoaded(Window window)
         {
             Rect screen = ScreenHelper.GetNearestSystemScreen(new Point(window.Left + window.Width / 2, window.Top + window.Height / 2));
 
@@ -134,7 +153,7 @@ namespace Ssz.Utils.Wpf
             }
         }
 
-        public static void WindowOnClosed(Window window)
+        private static void WindowOnClosed(Window window)
         {
             WindowInfosDictionary.TryGetValue(window, out WindowInfo? windowInfo);
             if (windowInfo == null) return;
@@ -158,29 +177,13 @@ namespace Ssz.Utils.Wpf
                     registryKey.SetValue(windowInfo.Category, rectString);
                 }
             }
-        }        
-
-        #endregion
-
-        #region private functions
-
-        private const string SszSubKeyString = @"SOFTWARE\Ssz\LocationMindfulWindows";
-
-        private static RegistryKey? GetOrCreateSszRegistryKey()
-        {
-            try
-            {
-                return Registry.CurrentUser.CreateSubKey(SszSubKeyString);
-            }
-            catch (Exception)
-            {
-            }
-            return null;
         }
 
         #endregion
 
         #region private fields
+
+        private const string SszSubKeyString = @"SOFTWARE\Ssz\LocationMindfulWindows";
 
         private static readonly Dictionary<Window, WindowInfo> WindowInfosDictionary =
             new Dictionary<Window, WindowInfo>(ReferenceEqualityComparer<Window>.Default);

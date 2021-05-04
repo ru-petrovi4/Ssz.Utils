@@ -178,7 +178,9 @@ namespace Ssz.DataGrpc.Client
         ///     This method is used to
         ///     keep the context alive.
         /// </summary>
-        public void KeepContextAliveIfNeeded(DateTime nowUtc)
+        /// <param name="ct"></param>
+        /// <param name="nowUtc"></param>
+        public void KeepContextAliveIfNeeded(CancellationToken ct, DateTime nowUtc)
         {
             if (!_serverContextIsOperational) return;
                 
@@ -191,7 +193,7 @@ namespace Ssz.DataGrpc.Client
                     _resourceManagementClient.ClientKeepAlive(new ClientKeepAliveRequest
                     {
                         ContextId = _serverContextId
-                    });
+                    }, cancellationToken: ct);
                     
                     _resourceManagementLastCallUtc = nowUtc;
                 }

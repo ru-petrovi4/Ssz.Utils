@@ -294,18 +294,14 @@ namespace Ssz.DataGrpc.Client.Managers
                 return _connectionInfo.ClientContext.ServerContextId;
             }
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="nowUtc"></param>
-        public void Process(DateTime nowUtc)
+        
+        public void Process(CancellationToken ct, DateTime nowUtc)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataGrpcServerProxy.");
 
             if (_connectionInfo == null) throw new ConnectionDoesNotExistException();
 
-            _connectionInfo.ClientContext.KeepContextAliveIfNeeded(nowUtc);
+            _connectionInfo.ClientContext.KeepContextAliveIfNeeded(ct, nowUtc);
             _connectionInfo.ClientContext.ProcessPendingContextNotificationData();
         }
 
