@@ -4,22 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 
-namespace Ssz.Utils.Wpf.LocationMindfulWindows
+namespace Ssz.Utils.Wpf
 {
-    internal class WindowSlot
+    public static class WindowLocationHelper
     {
         #region public functions
 
-        /// <summary>        
-        /// </summary>
-        /// <param name="window"></param>
-        /// <param name="category"></param>
-        /// <param name="initialWidth"></param>
-        /// <param name="initialHeight"></param>
-        public static void InitializeWindow(ILocationMindfulWindow window, string category, double initialWidth,
-            double initialHeight)
+        public static void InitializeWindow(Window window, string category, double initialWidth = Double.NaN,
+            double initialHeight = Double.NaN)
         {
-            window.Category = category;
             List<WindowSlot>? windowSlots;
             if (!WindowSlotsDictionary.TryGetValue(category, out windowSlots))
             {
@@ -27,16 +20,16 @@ namespace Ssz.Utils.Wpf.LocationMindfulWindows
                 WindowSlotsDictionary[category] = windowSlots;
             }
 
-            WindowSlot? freeWindowSlot = windowSlots.FirstOrDefault(slot => !slot.Occupied);
+            WindowSlot? freeWindowSlot = windowSlots.FirstOrDefault(slot => slot.Window == null);
             if (freeWindowSlot == null)
             {
                 var rect = new Rect(Double.NaN, Double.NaN, Double.NaN, Double.NaN);
-                if (window.Category != "")
+                if (category != "")
                 {
                     RegistryKey? registryKey = GetOrCreateSszRegistryKey();
                     if (registryKey != null)
                     {
-                        string? rectString = registryKey.GetValue(window.Category) as string;
+                        string? rectString = registryKey.GetValue(category) as string;
                         if (rectString != null)
                         {
                             var registryRect = (RegistryRect)NameValueCollectionValueSerializer<RegistryRect>.Instance.ConvertFromString(rectString);
@@ -52,8 +45,9 @@ namespace Ssz.Utils.Wpf.LocationMindfulWindows
                 };
                 windowSlots.Add(freeWindowSlot);
             }
-            freeWindowSlot.Occupied = true;
-            window.SlotNum = freeWindowSlot.Num;
+            freeWindowSlot.Window = window;
+            var windowInfo = new WindowInfo(category, freeWindowSlot.Num);
+            WindowInfosDictionary[window] = windowInfo;
 
             Rect slotLocation = freeWindowSlot.Location;
             if (Double.IsNaN(slotLocation.Width) && !Double.IsNaN(initialWidth))
@@ -87,8 +81,27 @@ namespace Ssz.Utils.Wpf.LocationMindfulWindows
             }
         }
 
-        public static void WindowOnLoaded(ILocationMindfulWindow window)
-        {  
+        public static bool TryActivateExistingWindow(string category)
+        {
+            List<WindowSlot>? windowSlots;
+            if (!WindowSlotsDictionary.TryGetValue(category, out windowSlots))
+            {
+                return false;
+            }
+
+            WindowSlot? occupiedWindowSlot = windowSlots.FirstOrDefault(slot => slot.Window != null);
+            if (occupiedWindowSlot == null)
+            {
+                return false;
+            }
+
+            occupiedWindowSlot.Window?.Activate();
+
+            return true;
+        }
+
+        public static void WindowOnLoaded(Window window)
+        {
             Rect screen = ScreenHelper.GetNearestSystemScreen(new Point(window.Left + window.Width / 2, window.Top + window.Height / 2));
 
             if (screen != Rect.Empty)
@@ -121,15 +134,20 @@ namespace Ssz.Utils.Wpf.LocationMindfulWindows
             }
         }
 
-        public static void WindowOnClosed(ILocationMindfulWindow window)
+        public static void WindowOnClosed(Window window)
         {
-            List<WindowSlot> windowSlots = WindowSlotsDictionary[window.Category];
+            WindowInfosDictionary.TryGetValue(window, out WindowInfo? windowInfo);
+            if (windowInfo == null) return;
+            WindowInfosDictionary.Remove(window);
+
+            List<WindowSlot> windowSlots = WindowSlotsDictionary[windowInfo.Category];
 
             var rect = new Rect(window.Left, window.Top, window.Width, window.Height);
-            windowSlots[window.SlotNum].Occupied = false;
-            windowSlots[window.SlotNum].Location = rect;
+            var windowSlot = windowSlots[windowInfo.SlotNum];
+            windowSlot.Window = null;
+            windowSlot.Location = rect;
 
-            if (window.Category != "")
+            if (windowInfo.Category != "")
             {
                 RegistryKey? registryKey = GetOrCreateSszRegistryKey();
                 if (registryKey != null)
@@ -137,14 +155,10 @@ namespace Ssz.Utils.Wpf.LocationMindfulWindows
                     string rectString = NameValueCollectionValueSerializer<RegistryRect>.Instance.ConvertToString(
                         new RegistryRect { X = rect.X, Y = rect.Y, Width = rect.Width, Height = rect.Height }
                         );
-                    registryKey.SetValue(window.Category, rectString);
+                    registryKey.SetValue(windowInfo.Category, rectString);
                 }
             }
-        }
-
-        public int Num { get; set; }
-        public bool Occupied { get; set; }
-        public Rect Location { get; set; }
+        }        
 
         #endregion
 
@@ -153,7 +167,7 @@ namespace Ssz.Utils.Wpf.LocationMindfulWindows
         private const string SszSubKeyString = @"SOFTWARE\Ssz\LocationMindfulWindows";
 
         private static RegistryKey? GetOrCreateSszRegistryKey()
-        {            
+        {
             try
             {
                 return Registry.CurrentUser.CreateSubKey(SszSubKeyString);
@@ -167,6 +181,9 @@ namespace Ssz.Utils.Wpf.LocationMindfulWindows
         #endregion
 
         #region private fields
+
+        private static readonly Dictionary<Window, WindowInfo> WindowInfosDictionary =
+            new Dictionary<Window, WindowInfo>(ReferenceEqualityComparer<Window>.Default);
 
         private static readonly CaseInsensitiveDictionary<List<WindowSlot>> WindowSlotsDictionary =
             new CaseInsensitiveDictionary<List<WindowSlot>>();
@@ -182,6 +199,40 @@ namespace Ssz.Utils.Wpf.LocationMindfulWindows
             public double X { get; set; }
 
             public double Y { get; set; }
+        }
+
+        private class WindowSlot
+        {
+            #region public functions
+
+            public int Num { get; set; }
+
+            public Window? Window { get; set; }
+
+            public Rect Location { get; set; }
+
+            #endregion 
+        }
+
+        private class WindowInfo
+        {
+            #region construction and destruction
+
+            public WindowInfo(string category, int slotNum)
+            {
+                Category = category;
+                SlotNum = slotNum;
+            }
+
+            #endregion            
+
+            #region public functions
+
+            public string Category { get; }
+
+            public int SlotNum { get; }
+
+            #endregion            
         }
     }
 }
