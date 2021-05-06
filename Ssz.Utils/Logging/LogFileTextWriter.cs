@@ -104,7 +104,7 @@ namespace Ssz.Utils.Logging
                         }
                     }
                     sw.Write(_buffer.ToString());
-                    _buffer.Length = 0;
+                    _buffer.Clear();
                     sw.Close();
                 }
                 catch
