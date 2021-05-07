@@ -142,7 +142,7 @@ namespace Ssz.DataGrpc.Client.Managers
             _dataGrpcEventItemsMustBeAdded = true;
         }
 
-        public ClientEventList? GetRelatedClientEventList(Action<IEnumerable<Utils.DataAccess.EventMessage>> eventHandler)
+        public ClientEventList? GetRelatedClientEventList(Action<Utils.DataAccess.EventMessage[]> eventHandler)
         {
             ClientEventListPointer? dataGrpcEventListPointer;
             if (!_eventMessagesCallbackEventHandlers.TryGetValue(eventHandler, out dataGrpcEventListPointer)) return null;
@@ -188,7 +188,7 @@ namespace Ssz.DataGrpc.Client.Managers
         private volatile bool _dataGrpcEventItemsMustBeAdded;
 
         private readonly Dictionary<Action<Utils.DataAccess.EventMessage[]>, ClientEventListPointer> _eventMessagesCallbackEventHandlers =
-            new Dictionary<Action<Utils.DataAccess.EventMessage[]>, ClientEventListPointer>();
+            new ();
 
         #endregion
 

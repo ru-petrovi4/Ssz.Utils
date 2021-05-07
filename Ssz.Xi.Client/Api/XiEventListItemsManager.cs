@@ -92,7 +92,8 @@ namespace Ssz.Xi.Client.Api
                             };
 
                         if (callbackable) xiEventList.Callbackable = true;
-                        xiEventList.Pollable = true;                        
+                        xiEventList.Pollable = true;
+                        xiEventList.Writeable = true;
 
                         xiEventList.EnableListUpdating(true);
                     }
@@ -227,7 +228,7 @@ namespace Ssz.Xi.Client.Api
         private volatile bool _xiEventItemsMustBeAdded;
 
         private readonly Dictionary<Action<Ssz.Utils.DataAccess.EventMessage[]>, XiEventListPointer> _eventMessagesCallbackEventHandlers =
-            new Dictionary<Action<Ssz.Utils.DataAccess.EventMessage[]>, XiEventListPointer>();
+            new();
 
         private string _xiSystem = "";
 

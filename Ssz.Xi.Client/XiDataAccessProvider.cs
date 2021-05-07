@@ -327,7 +327,15 @@ namespace Ssz.Xi.Client
         /// <param name="action"></param>
         public void BeginInvoke(Action<CancellationToken> action)
         {
-            _actionsForWorkingThread += action;
+            Action<CancellationToken> actionsForWorkingThread2;
+            Action<CancellationToken> actionsForWorkingThread = _actionsForWorkingThread;
+            do
+            {
+                actionsForWorkingThread2 = actionsForWorkingThread;
+                Action<CancellationToken> actionsForWorkingThrea3 = (Action<CancellationToken>)Delegate.Combine(actionsForWorkingThread2, action);
+                actionsForWorkingThread = Interlocked.CompareExchange(ref _actionsForWorkingThread, actionsForWorkingThrea3, actionsForWorkingThread2);
+            }
+            while (actionsForWorkingThread != actionsForWorkingThread2);
         }
 
         #endregion
