@@ -28,10 +28,10 @@ namespace Ssz.DataGrpc.Client.Managers
         ///     No throw.
         /// </summary>
         /// <param name="clientConnectionManager"></param>
-        /// <param name="callbackDoer"></param>
-        public void Subscribe(ClientConnectionManager clientConnectionManager, IDispatcher? callbackDoer)
+        /// <param name="callbackDispatcher"></param>
+        public void Subscribe(ClientConnectionManager clientConnectionManager, IDispatcher? callbackDispatcher)
         {
-            _callbackDoer = callbackDoer;
+            _callbackDispatcher = callbackDispatcher;
 
             try
             {
@@ -111,12 +111,12 @@ namespace Ssz.DataGrpc.Client.Managers
                 result = null;
             }
 
-            IDispatcher? callbackDoer = _callbackDoer;
-            if (callbackDoer != null)
+            IDispatcher? callbackDispatcher = _callbackDispatcher;
+            if (callbackDispatcher != null)
             {
                 try
                 {
-                    callbackDoer.BeginInvoke(ct => setResultAction(result));
+                    callbackDispatcher.BeginInvoke(ct => setResultAction(result));
                 }
                 catch (Exception)
                 {
@@ -128,7 +128,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
         #region private fields
 
-        private IDispatcher? _callbackDoer;
+        private IDispatcher? _callbackDispatcher;
 
         #endregion
     }

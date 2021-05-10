@@ -19,22 +19,16 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         public event Action<Utils.DataAccess.EventMessage[]> EventMessagesCallback
         {
-            add { BeginInvoke(ct => _clientEventListManager.EventMessagesCallback += value); }
-            remove { BeginInvoke(ct => _clientEventListManager.EventMessagesCallback -= value); }
+            add { BeginInvoke(ct => ClientEventListManager.EventMessagesCallback += value); }
+            remove { BeginInvoke(ct => ClientEventListManager.EventMessagesCallback -= value); }
         }
         
         public void AckAlarms(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
         {
             BeginInvoke(ct =>
             {
-                if (!_onEventMessagesCallbackSubscribed)
-                {
-                    _onEventMessagesCallbackSubscribed = true;
-                    _clientEventListManager.EventMessagesCallback += OnEventMessagesCallback;
-                }
-
                 ClientEventList? dataGrpcEventList =
-                    _clientEventListManager.GetRelatedClientEventList(OnEventMessagesCallback);
+                    ClientEventListManager.GetRelatedClientEventList(OnEventMessagesCallbackInternal);
 
                 if (dataGrpcEventList == null) return;
 
@@ -54,18 +48,22 @@ namespace Ssz.DataGrpc.Client
 
         #endregion
 
-        #region private functions
+        #region protected functions
 
-        private void OnEventMessagesCallback(IEnumerable<Utils.DataAccess.EventMessage> obj)
+        protected ClientEventListManager ClientEventListManager { get; }
+
+        protected virtual void OnEventMessagesCallback(Utils.DataAccess.EventMessage[] newEventMessages)
         {
         }
 
         #endregion
 
-        #region private fields
+        #region private functions
 
-        private readonly ClientEventListManager _clientEventListManager;
-        private bool _onEventMessagesCallbackSubscribed;
+        private void OnEventMessagesCallbackInternal(Utils.DataAccess.EventMessage[] newEventMessages)
+        {
+            OnEventMessagesCallback(newEventMessages);
+        }
 
         #endregion
     }

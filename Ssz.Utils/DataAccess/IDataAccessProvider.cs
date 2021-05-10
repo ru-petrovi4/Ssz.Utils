@@ -33,7 +33,10 @@ namespace Ssz.Utils.DataAccess
 
         event Action Disconnected;
 
-        void Initialize(IDispatcher? сallbackDispatcher, bool elementValueListCallbackIsEnabled, string serverAddress,
+        void Initialize(IDispatcher? сallbackDispatcher,
+            bool elementValueListCallbackIsEnabled,
+            bool eventListCallbackIsEnabled,
+            string serverAddress,
             string applicationName, string workstationName, string systemNameToConnect, CaseInsensitiveDictionary<string> contextParams);
 
         void Close();

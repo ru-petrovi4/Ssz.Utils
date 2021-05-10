@@ -18,12 +18,12 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         /// <param name="elementId"></param>
         /// <param name="valueSubscription"></param>
-        public void JournalAddItem(string elementId, object valueSubscription)
+        public virtual void JournalAddItem(string elementId, object valueSubscription)
         {
             BeginInvoke(ct =>
             {
-                _clientElementValueJournalListManager.AddItem(elementId, valueSubscription);
-                _clientElementValueJournalListManager.Subscribe(_clientConnectionManager, _сallbackDispatcher);
+                ClientElementValueJournalListManager.AddItem(elementId, valueSubscription);
+                ClientElementValueJournalListManager.Subscribe(ClientConnectionManager, CallbackDispatcher);
             }
             );
         }
@@ -32,11 +32,11 @@ namespace Ssz.DataGrpc.Client
         ///     If valueSubscription is not subscribed - does nothing.
         /// </summary>
         /// <param name="valueSubscription"></param>
-        public void JournalRemoveItem(object valueSubscription)
+        public virtual void JournalRemoveItem(object valueSubscription)
         {
             BeginInvoke(ct =>
             {
-                _clientElementValueJournalListManager.RemoveItem(valueSubscription);
+                ClientElementValueJournalListManager.RemoveItem(valueSubscription);
             }
             );            
         }
@@ -50,12 +50,12 @@ namespace Ssz.DataGrpc.Client
         /// <param name="calculation"></param>
         /// <param name="valueSubscriptionsCollection"></param>
         /// <param name="setResultAction"></param>
-        public void ReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerDataObject, Ssz.Utils.DataAccess.TypeId calculation, object[] valueSubscriptionsCollection,
+        public virtual void ReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerDataObject, Ssz.Utils.DataAccess.TypeId calculation, object[] valueSubscriptionsCollection,
             Action<ValueStatusTimestamp[][]?> setResultAction)
         {
             BeginInvoke(ct =>
             {
-                _clientElementValueJournalListManager.HdaReadElementValueJournals(firstTimestampUtc, secondTimestampUtc, numValuesPerDataObject, calculation, valueSubscriptionsCollection,
+                ClientElementValueJournalListManager.HdaReadElementValueJournals(firstTimestampUtc, secondTimestampUtc, numValuesPerDataObject, calculation, valueSubscriptionsCollection,
                     setResultAction);
             }
             );            
@@ -63,9 +63,9 @@ namespace Ssz.DataGrpc.Client
 
         #endregion
 
-        #region private fields
+        #region protected functions
 
-        private readonly ClientElementValueJournalListManager _clientElementValueJournalListManager;
+        protected ClientElementValueJournalListManager ClientElementValueJournalListManager { get; }
 
         #endregion
     }

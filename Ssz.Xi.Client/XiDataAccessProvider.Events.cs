@@ -25,12 +25,6 @@ namespace Ssz.Xi.Client
         {
             BeginInvoke(ct =>
             {
-                if (!_onEventMessagesCallbackSubscribed)
-                {
-                    _onEventMessagesCallbackSubscribed = true;
-                    _xiEventListItemsManager.EventMessagesCallback += OnEventMessagesCallback;
-                }
-
                 IXiEventListProxy? eventListProxy =
                     _xiEventListItemsManager.GetRelatedXiEventList(OnEventMessagesCallback);
 
@@ -61,8 +55,7 @@ namespace Ssz.Xi.Client
 
         #region private fields
 
-        private readonly XiEventListItemsManager _xiEventListItemsManager = new XiEventListItemsManager();
-        private bool _onEventMessagesCallbackSubscribed;
+        private readonly XiEventListItemsManager _xiEventListItemsManager = new XiEventListItemsManager();        
 
         #endregion
     }

@@ -118,7 +118,10 @@ namespace Ssz.Xi.Client
         /// <param name="workstationName"></param>
         /// <param name="systemNameToConnect"></param>
         /// <param name="contextParams"></param>
-        public void Initialize(IDispatcher? сallbackDispatcher, bool elementValueListCallbackIsEnabled, string serverAddress,
+        public void Initialize(IDispatcher? сallbackDispatcher,
+            bool elementValueListCallbackIsEnabled,
+            bool eventListCallbackIsEnabled,
+            string serverAddress,
             string applicationName, string workstationName, string systemNameToConnect, CaseInsensitiveDictionary<string> contextParams)
         {
             Close();            
@@ -127,6 +130,7 @@ namespace Ssz.Xi.Client
 
             _сallbackDispatcher = сallbackDispatcher;
             _elementValueListCallbackIsEnabled = elementValueListCallbackIsEnabled;
+            _eventListCallbackIsEnabled = eventListCallbackIsEnabled;
             _serverAddress = serverAddress;
             _systemNameToConnect = systemNameToConnect;
             _xiDataListItemsManager.XiSystem = _systemNameToConnect;
@@ -337,27 +341,21 @@ namespace Ssz.Xi.Client
         private void WorkingThreadMain(CancellationToken ct)
         {
             _xiServerProxy = new XiServerProxy();
-            
+
+            if (_eventListCallbackIsEnabled) _xiEventListItemsManager.EventMessagesCallback += OnEventMessagesCallback;
+
             while (true)
             {
                 if (ct.WaitHandle.WaitOne(10)) break;
 
                 OnLoopInWorkingThread(ct);
-            }
-
-            //Logger?.LogDebug("Unsubscribing");
+            }            
 
             UnsubscribeInWorkingThread();
 
-            //Logger?.LogDebug("End Unsubscribing");
-
-            //Logger?.LogDebug("Disconnecting");
-
-            if (_onEventMessagesCallbackSubscribed) _xiEventListItemsManager.EventMessagesCallback -= OnEventMessagesCallback;
+            if (_eventListCallbackIsEnabled) _xiEventListItemsManager.EventMessagesCallback -= OnEventMessagesCallback;
             _xiServerProxy.Dispose();
             _xiServerProxy = null;
-
-            //Logger?.LogDebug("End Disconnecting");
         }        
 
         private void OnLoopInWorkingThread(CancellationToken cancellationToken)
@@ -565,6 +563,8 @@ namespace Ssz.Xi.Client
         ///     Used in Xi DataList initialization.
         /// </summary>
         private bool _elementValueListCallbackIsEnabled;
+
+        private bool _eventListCallbackIsEnabled;
 
         /// <summary>
         ///     Used in Xi Context initialization.
