@@ -1044,6 +1044,17 @@
             </summary>
             <param name="valueStatusTimestamp"></param>
         </member>
+        <member name="T:Ssz.Utils.IDispatcher">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.IDispatcher.BeginInvoke(System.Action{System.Threading.CancellationToken})">
+            <summary>
+            
+            </summary>
+            <param name="action"></param>
+        </member>
         <member name="M:Ssz.Utils.DynamicExpression.Initialize(System.Type[])">
             <summary>
                 Preconditions: predefinedTypes != Null.
@@ -1064,17 +1075,6 @@
             <param name="type"></param>
             <param name="instance"></param>
             <returns></returns>
-        </member>
-        <member name="T:Ssz.Utils.IDispatcher">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Ssz.Utils.IDispatcher.BeginInvoke(System.Action{System.Threading.CancellationToken})">
-            <summary>
-            
-            </summary>
-            <param name="action"></param>
         </member>
         <member name="T:Ssz.Utils.Logging.LogFileTextWriter">
             <summary>

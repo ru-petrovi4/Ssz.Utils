@@ -327,15 +327,7 @@ namespace Ssz.Xi.Client
         /// <param name="action"></param>
         public void BeginInvoke(Action<CancellationToken> action)
         {
-            Action<CancellationToken> actionsForWorkingThread2;
-            Action<CancellationToken> actionsForWorkingThread = _actionsForWorkingThread;
-            do
-            {
-                actionsForWorkingThread2 = actionsForWorkingThread;
-                Action<CancellationToken> actionsForWorkingThrea3 = (Action<CancellationToken>)Delegate.Combine(actionsForWorkingThread2, action);
-                actionsForWorkingThread = Interlocked.CompareExchange(ref _actionsForWorkingThread, actionsForWorkingThrea3, actionsForWorkingThread2);
-            }
-            while (actionsForWorkingThread != actionsForWorkingThread2);
+            _threadSafeDispatcher.BeginInvoke(action);
         }
 
         #endregion
@@ -368,16 +360,15 @@ namespace Ssz.Xi.Client
             //Logger?.LogDebug("End Disconnecting");
         }        
 
-        private void OnLoopInWorkingThread(CancellationToken ct)
+        private void OnLoopInWorkingThread(CancellationToken cancellationToken)
         {
-            var actionsForWorkingThread = Interlocked.Exchange(ref _actionsForWorkingThread, delegate { });
-            actionsForWorkingThread.Invoke(ct);
+            _threadSafeDispatcher.InvokeActionsInQueue(cancellationToken);
 
             DateTime nowUtc = DateTime.UtcNow;
 
             if (_xiServerProxy == null) throw new InvalidOperationException();
 
-            if (ct.IsCancellationRequested) return;
+            if (cancellationToken.IsCancellationRequested) return;
             if (!_xiServerProxy.ContextExists)
             {
                 IDispatcher? сallbackDoer;
@@ -394,7 +385,7 @@ namespace Ssz.Xi.Client
                     сallbackDoer = _сallbackDispatcher;
                     if (disconnected != null && сallbackDoer != null)
                     {
-                        if (ct.IsCancellationRequested) return;
+                        if (cancellationToken.IsCancellationRequested) return;
                         try
                         {
                             сallbackDoer.BeginInvoke(ct => disconnected());
@@ -410,7 +401,7 @@ namespace Ssz.Xi.Client
                     сallbackDoer = _сallbackDispatcher;
                     if (сallbackDoer != null)
                     {
-                        if (ct.IsCancellationRequested) return;
+                        if (cancellationToken.IsCancellationRequested) return;
                         try
                         {
                             сallbackDoer.BeginInvoke(ct =>
@@ -462,7 +453,7 @@ namespace Ssz.Xi.Client
                         сallbackDoer = _сallbackDispatcher;
                         if (connected != null && сallbackDoer != null)
                         {
-                            if (ct.IsCancellationRequested) return;
+                            if (cancellationToken.IsCancellationRequested) return;
                             try
                             {
                                 сallbackDoer.BeginInvoke(ct => connected());
@@ -481,17 +472,17 @@ namespace Ssz.Xi.Client
                 }
             }
 
-            if (ct.IsCancellationRequested) return;
+            if (cancellationToken.IsCancellationRequested) return;
             _xiDataListItemsManager.Subscribe(_xiServerProxy, _сallbackDispatcher,
-                XiDataListItemsManagerOnElementValuesCallback, _elementValueListCallbackIsEnabled, ct);
-            _xiEventListItemsManager.Subscribe(_xiServerProxy, _сallbackDispatcher, true, ct);
+                XiDataListItemsManagerOnElementValuesCallback, _elementValueListCallbackIsEnabled, cancellationToken);
+            _xiEventListItemsManager.Subscribe(_xiServerProxy, _сallbackDispatcher, true, cancellationToken);
 
-            if (ct.IsCancellationRequested) return;
+            if (cancellationToken.IsCancellationRequested) return;
             if (_xiServerProxy.ContextExists)
             {                
                 try
                 {
-                    if (ct.IsCancellationRequested) return;
+                    if (cancellationToken.IsCancellationRequested) return;
                     _xiServerProxy.KeepContextAlive(nowUtc);
                     
                     var timeDiffInMs = (uint) (nowUtc - _pollLastCallUtc).TotalMilliseconds;
@@ -499,7 +490,7 @@ namespace Ssz.Xi.Client
 
                     if (pollExpired)
                     {
-                        if (ct.IsCancellationRequested) return;
+                        if (cancellationToken.IsCancellationRequested) return;
 
                         if (_elementValueListCallbackIsEnabled)
                             _xiDataListItemsManager.PollChangesIfNotCallbackable();
@@ -597,7 +588,7 @@ namespace Ssz.Xi.Client
 
         private volatile IDispatcher? _сallbackDispatcher;
 
-        private Action<CancellationToken> _actionsForWorkingThread = delegate { };
+        private ThreadSafeDispatcher _threadSafeDispatcher = new();
 
         private DateTime _pollLastCallUtc = DateTime.MinValue;
         private int _pollIntervalMs = 1000; 

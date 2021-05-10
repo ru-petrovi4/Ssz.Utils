@@ -348,15 +348,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="action"></param>
         public void BeginInvoke(Action<CancellationToken> action)
         {
-            Action<CancellationToken> actionsForWorkingThread2;
-            Action<CancellationToken> actionsForWorkingThread = _actionsForWorkingThread;
-            do
-            {
-                actionsForWorkingThread2 = actionsForWorkingThread;
-                Action<CancellationToken> actionsForWorkingThrea3 = (Action<CancellationToken>)Delegate.Combine(actionsForWorkingThread2, action);
-                actionsForWorkingThread = Interlocked.CompareExchange(ref _actionsForWorkingThread, actionsForWorkingThrea3, actionsForWorkingThread2);
-            }
-            while (actionsForWorkingThread != actionsForWorkingThread2);
+            _threadSafeDispatcher.BeginInvoke(action);
         }
 
         #endregion
@@ -385,14 +377,13 @@ namespace Ssz.DataGrpc.Client
             Logger.LogDebug("End Disconnecting");
         }        
 
-        private void OnLoopInWorkingThread(CancellationToken ct)
+        private void OnLoopInWorkingThread(CancellationToken cancellationToken)
         {
-            var actionsForWorkingThread = Interlocked.Exchange(ref _actionsForWorkingThread, delegate { });
-            actionsForWorkingThread.Invoke(ct);
+            _threadSafeDispatcher.InvokeActionsInQueue(cancellationToken);
 
             DateTime nowUtc = DateTime.UtcNow;
 
-            if (ct.IsCancellationRequested) return;
+            if (cancellationToken.IsCancellationRequested) return;
             if (!_clientConnectionManager.ConnectionExists)
             {
                 IDispatcher? сallbackDispatcher;
@@ -409,7 +400,7 @@ namespace Ssz.DataGrpc.Client
                     сallbackDispatcher = _сallbackDispatcher;
                     if (disconnected != null && сallbackDispatcher != null)
                     {
-                        if (ct.IsCancellationRequested) return;
+                        if (cancellationToken.IsCancellationRequested) return;
                         try
                         {
                             сallbackDispatcher.BeginInvoke(ct => disconnected());
@@ -425,7 +416,7 @@ namespace Ssz.DataGrpc.Client
                     сallbackDispatcher = _сallbackDispatcher;
                     if (сallbackDispatcher != null)
                     {
-                        if (ct.IsCancellationRequested) return;
+                        if (cancellationToken.IsCancellationRequested) return;
                         try
                         {
                             сallbackDispatcher.BeginInvoke(ct =>
@@ -474,7 +465,7 @@ namespace Ssz.DataGrpc.Client
                         сallbackDispatcher = _сallbackDispatcher;
                         if (connected != null && сallbackDispatcher != null)
                         {
-                            if (ct.IsCancellationRequested) return;
+                            if (cancellationToken.IsCancellationRequested) return;
                             try
                             {
                                 сallbackDispatcher.BeginInvoke(ct => connected());
@@ -493,18 +484,18 @@ namespace Ssz.DataGrpc.Client
                 }
             }
 
-            if (ct.IsCancellationRequested) return;
+            if (cancellationToken.IsCancellationRequested) return;
             _clientElementValueListManager.Subscribe(_clientConnectionManager, _сallbackDispatcher,
-                ClientElementValueListItemsManagerOnElementValuesCallback, _elementValueListCallbackIsEnabled, ct);
-            _clientEventListManager.Subscribe(_clientConnectionManager, _сallbackDispatcher, true, ct);
+                ClientElementValueListItemsManagerOnElementValuesCallback, _elementValueListCallbackIsEnabled, cancellationToken);
+            _clientEventListManager.Subscribe(_clientConnectionManager, _сallbackDispatcher, true, cancellationToken);
 
-            if (ct.IsCancellationRequested) return;
+            if (cancellationToken.IsCancellationRequested) return;
             if (_clientConnectionManager.ConnectionExists)
             {                
                 try
                 {
-                    if (ct.IsCancellationRequested) return;
-                    _clientConnectionManager.Process(ct, nowUtc);
+                    if (cancellationToken.IsCancellationRequested) return;
+                    _clientConnectionManager.Process(cancellationToken, nowUtc);
                 }
                 catch
                 {
@@ -579,7 +570,7 @@ namespace Ssz.DataGrpc.Client
         /// <summary>
         ///     Used in DataGrpc Context initialization.
         /// </summary>
-        private CaseInsensitiveDictionary<string> _contextParams = new CaseInsensitiveDictionary<string>();
+        private CaseInsensitiveDictionary<string> _contextParams = new();
 
         private volatile bool _isConnected;
 
@@ -593,8 +584,8 @@ namespace Ssz.DataGrpc.Client
 
         private volatile IDispatcher? _сallbackDispatcher;
 
-        private Action<CancellationToken> _actionsForWorkingThread = delegate { };        
-        
+        private ThreadSafeDispatcher _threadSafeDispatcher = new();
+
         private DateTime _lastFailedConnectionDateTimeUtc = DateTime.MinValue;
 
         #endregion

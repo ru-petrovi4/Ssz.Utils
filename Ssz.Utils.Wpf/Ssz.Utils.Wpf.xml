@@ -92,19 +92,6 @@
             <param name="folder"></param>
             <param name="filesToSelect"></param>
         </member>
-        <member name="M:Ssz.Utils.Wpf.LocationMindfulWindows.LocationMindfulRibbonWindow.#ctor">
-            <summary>
-                For using in VS editor
-            </summary>
-        </member>
-        <member name="M:Ssz.Utils.Wpf.LocationMindfulWindows.WindowSlot.InitializeWindow(Ssz.Utils.Wpf.LocationMindfulWindows.ILocationMindfulWindow,System.String,System.Double,System.Double)">
-            <summary>        
-            </summary>
-            <param name="window"></param>
-            <param name="category"></param>
-            <param name="initialWidth"></param>
-            <param name="initialHeight"></param>
-        </member>
         <member name="M:Ssz.Utils.Wpf.NameValueCollectionTypeConverter`1.CanConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Type)">
             <summary>
                 Returns true if this type converter can convert from a given type.
@@ -418,7 +405,8 @@
         <member name="M:Ssz.Utils.Wpf.ScreenHelper.SetFullyVisible(System.Windows.Window,System.Windows.Rect)">
             <summary>
                 Set window fully contained in rect.
-                All values in WPF coordinates.        
+                All values in WPF coordinates.
+                window != null
             </summary>
             <param name="window"></param>
             <param name="rect"></param>
@@ -434,7 +422,8 @@
             <summary>
                 Gets location of frameworkElement on system screen.
                 All values in WPF coordinates.
-                Warning! frameworkElement.PointToScreen returns values in screen coordinates, not WPF coordinates.        
+                Warning! frameworkElement.PointToScreen returns values in screen coordinates, not WPF coordinates.
+                frameworkElement != null
             </summary>
             <param name="frameworkElement"></param>
             <returns></returns>
