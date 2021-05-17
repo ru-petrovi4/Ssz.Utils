@@ -223,4 +223,30 @@ namespace Ssz.Utils.DataAccess
 		/// </summary>
 		public const uint RequestedField = 0x80;
 	}
+
+	public enum AlarmCondition
+	{
+		None,
+		Low,
+		LowLow,
+		High,
+		HighHigh,
+		PVLevel,
+		DVLow,
+		DVHigh,
+		DigitalHigh,
+		DigitalLow,
+		NegativeRate,
+		PositiveRate,
+		OffNormal,
+		ChangeOfState,
+		CommandDisagree,
+		CommandFail,
+		Uncommanded,
+		Trip,
+		Interlock,
+		AnswerbackHigh,
+		AnswerbackLow,
+		Other,
+	}
 }
