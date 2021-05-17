@@ -107,17 +107,7 @@ namespace Ssz.Xi.Client
         ///     Occurs after disconnected from model.
         /// </summary>
         public event Action Disconnected = delegate { };
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="сallbackDispatcher"></param>
-        /// <param name="elementValueListCallbackIsEnabled"></param>
-        /// <param name="serverAddress"></param>
-        /// <param name="applicationName"></param>
-        /// <param name="workstationName"></param>
-        /// <param name="systemNameToConnect"></param>
-        /// <param name="contextParams"></param>
+        
         public void Initialize(IDispatcher? сallbackDispatcher,
             bool elementValueListCallbackIsEnabled,
             bool eventListCallbackIsEnabled,

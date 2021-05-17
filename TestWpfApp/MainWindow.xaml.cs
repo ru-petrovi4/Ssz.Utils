@@ -36,7 +36,7 @@ namespace TestWpfApp
             _alarmsListViewModel = new AlarmsListViewModel();
             MainAlarmListControl.MainDataGrid.ItemsSource = _alarmsListViewModel.Alarms;
 
-            App.DataAccessProvider.Initialize(this, true, @"http://localhost:60080/SszCtcmXiServer/ServerDiscovery", "TestWpfApp", Environment.MachineName, "", new CaseInsensitiveDictionary<string>());
+            App.DataAccessProvider.Initialize(this, true, true, @"http://localhost:60080/SszCtcmXiServer/ServerDiscovery", "TestWpfApp", Environment.MachineName, "", new CaseInsensitiveDictionary<string>());
             App.DataAccessProvider.EventMessagesCallback += XiDataAccessProviderOnEventMessagesCallback;
             App.DataAccessProvider.Disconnected += XiDataAccessProviderOnDisconnected;
 

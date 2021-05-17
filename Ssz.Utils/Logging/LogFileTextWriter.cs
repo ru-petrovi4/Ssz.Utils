@@ -24,34 +24,38 @@ namespace Ssz.Utils.Logging
             _logsDirectoryFullName = Environment.ExpandEnvironmentVariables(_options.LogsDirectory);
             if (!Directory.Exists(_logsDirectoryFullName)) Directory.CreateDirectory(_logsDirectoryFullName);
 
-            Process currentProcess = Process.GetCurrentProcess();
-            string? moduleName = currentProcess.MainModule?.ModuleName;
-            if (moduleName == null) throw new InvalidOperationException();
-            _exeFileName = new FileInfo(moduleName).Name;         
-
-            LogFileName = _logsDirectoryFullName + "\\" + _exeFileName + @"." + currentProcess.Id +
-                                 @".log";
-
-            _buffer = new StringBuilder();
-
-            #region DeleteOldFiles
-
-            string[] files = Directory.GetFiles(_logsDirectoryFullName, _exeFileName + @".*.log");
-
-            foreach (string file in files)
+            if (_options.LogsFileName != @"")
             {
-                try
-                {
-                    var f = new FileInfo(file);
-                    if (f.LastAccessTime < DateTime.Now.AddDays(-_options.DaysCountToStoreFiles))
-                        f.Delete();
-                }
-                catch
-                {
-                }
+                LogFileName = Path.Combine(_logsDirectoryFullName, _options.LogsFileName);                
             }
+            else
+            {
+                Process currentProcess = Process.GetCurrentProcess();
+                string? moduleName = currentProcess.MainModule?.ModuleName;
+                if (moduleName == null) throw new InvalidOperationException();
+                var exeFileName = new FileInfo(moduleName).Name;
 
-            #endregion
+                LogFileName = Path.Combine(_logsDirectoryFullName, exeFileName + @"." + currentProcess.Id + @".log");
+
+                #region DeleteOldFiles
+
+                string[] files = Directory.GetFiles(_logsDirectoryFullName, exeFileName + @".*.log");
+
+                foreach (string file in files)
+                {
+                    try
+                    {
+                        var f = new FileInfo(file);
+                        if (f.LastAccessTime < DateTime.Now.AddDays(-_options.DaysCountToStoreFiles))
+                            f.Delete();
+                    }
+                    catch
+                    {
+                    }
+                }
+
+                #endregion
+            }
         }
 
         /// <summary>
@@ -438,10 +442,9 @@ namespace Ssz.Utils.Logging
 
         private readonly SszLoggerOptions _options;
 
-        private readonly string _logsDirectoryFullName;
-        private readonly string _exeFileName;        
+        private readonly string _logsDirectoryFullName;           
 
-        private readonly StringBuilder _buffer;
+        private readonly StringBuilder _buffer = new();
 
         #endregion
     }

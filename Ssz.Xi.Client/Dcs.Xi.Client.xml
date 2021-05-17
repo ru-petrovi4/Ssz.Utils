@@ -4175,18 +4175,6 @@
                 Occurs after disconnected from model.
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Initialize(Ssz.Utils.IDispatcher,System.Boolean,System.String,System.String,System.String,System.String,Ssz.Utils.CaseInsensitiveDictionary{System.String})">
-            <summary>
-            
-            </summary>
-            <param name="сallbackDispatcher"></param>
-            <param name="elementValueListCallbackIsEnabled"></param>
-            <param name="serverAddress"></param>
-            <param name="applicationName"></param>
-            <param name="workstationName"></param>
-            <param name="systemNameToConnect"></param>
-            <param name="contextParams"></param>
-        </member>
         <member name="M:Ssz.Xi.Client.XiDataAccessProvider.AddItem(System.String,Ssz.Utils.DataAccess.IValueSubscription)">
             <summary>        
                 Returns id actully used for OPC subscription, always as original id.

@@ -17,6 +17,8 @@ namespace Ssz.Utils.Logging
 
         public string LogsDirectory { get; set; } = @"%ProgramData%\Ssz\Logs";
 
+        public string LogsFileName { get; set; } = @"";
+
         public bool DuplicateInConsole { get; set; } = false;
 
         public uint DaysCountToStoreFiles { get; set; } = 3;

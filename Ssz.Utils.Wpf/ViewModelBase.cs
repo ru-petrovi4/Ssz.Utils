@@ -31,16 +31,14 @@ namespace Ssz.Utils.Wpf
 	///		}
 	/// }
 	/// </code></example>
-	/// </remarks>
-	[Serializable]
+	/// </remarks>	
     public class ViewModelBase : INotifyPropertyChanged
     {
         #region Events and Delgates
 
  		/// <summary>
 		///     Notification that the value contained in a property has changed		
-		/// </summary>
-		[field: NonSerialized]
+		/// </summary>		
 		public event PropertyChangedEventHandler? PropertyChanged;
 
 		/// <summary>
@@ -48,7 +46,7 @@ namespace Ssz.Utils.Wpf
 		/// </summary>
 		public void ClearPropertyChangedEvent()
 		{
-			PropertyChanged = delegate { };
+			PropertyChanged = null;
 		}
 
 		#endregion
