@@ -42,6 +42,8 @@ namespace Ssz.Utils.Wpf.EventSourceModel
             _isDigital = that._isDigital;
             _tripValue = that._tripValue;
             _tripValueText = that._tripValueText;
+            AlarmConditionChanged = that.AlarmConditionChanged;
+            UnackedChanged = that.UnackedChanged;
         }
 
         #endregion
@@ -264,7 +266,11 @@ namespace Ssz.Utils.Wpf.EventSourceModel
             get { return _isDigital; }
             set { SetValue(ref _isDigital, value); }
         }
-        
+
+        public bool AlarmConditionChanged { get; set; }
+
+        public bool UnackedChanged { get; set; }
+
         public override string ToString()
         {
             return @"";
