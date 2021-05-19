@@ -19,7 +19,7 @@ namespace Ssz.Utils
         ///     If CultureHelper.InitializeCulture() is called, contains CultureInfo that corresponds operating system culture.
         ///     SystemCultureInfo field is used in Utils.Any class when func param stringIsLocalized = True.
         /// </summary>
-        public static CultureInfo SystemCultureInfo { get; private set; } = CultureInfo.InvariantCulture;
+        public static CultureInfo SystemCultureInfo { get; set; } = CultureInfo.InvariantCulture;
         
         public static IConfiguration? Configuration { get; private set; }
 

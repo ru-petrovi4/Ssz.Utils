@@ -285,7 +285,7 @@ namespace Ssz.Utils
         /// <param name="fileData"></param>
         public static void SaveCsvFile(string fileFullName, CaseInsensitiveDictionary<List<string?>> fileData)
         {
-            using (var writer = new StreamWriter(File.Create(fileFullName), Encoding.UTF8))
+            using (var writer = new StreamWriter(File.Create(fileFullName), new UTF8Encoding(true)))
             {
                 foreach (var fileLine in fileData.OrderBy(kvp => kvp.Key))
                 {
