@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic.FileIO;
 
 namespace Ssz.Utils
@@ -163,13 +164,14 @@ namespace Ssz.Utils
         /// <param name="defines"></param>
         /// <param name="resultWarnings"></param>
         /// <returns></returns>
-        public static CaseInsensitiveDictionary<List<string?>> LoadCsvFile(string fileFullName, bool includeFiles, Dictionary<Regex, string>? defines = null, List<string>? resultWarnings = null)
+        public static CaseInsensitiveDictionary<List<string?>> LoadCsvFile(string fileFullName, bool includeFiles, Dictionary<Regex, string>? defines = null, ILogger? logger = null)
         {
             var fileData = new CaseInsensitiveDictionary<List<string?>>();
 
             if (!File.Exists(fileFullName))
             {
-                if (resultWarnings != null) resultWarnings.Add(Properties.Resources.CsvHelper_CsvFileDoesNotExist + " " + fileFullName);
+                if (logger != null)
+                    logger.LogError(Properties.Resources.CsvHelper_CsvFileDoesNotExist + " " + fileFullName);
                 return fileData;
             }
             
@@ -201,11 +203,12 @@ namespace Ssz.Utils
                             if (q2 != -1 && q2 > q1 + 1)
                             {
                                 var includeFileName = line.Substring(q1 + 1, q2 - q1 - 1);
-                                foreach (var kvp in LoadCsvFile(filePath + @"\" + includeFileName, false, defines, resultWarnings))
+                                foreach (var kvp in LoadCsvFile(filePath + @"\" + includeFileName, false, defines, logger))
                                 {
                                     if (fileData.ContainsKey(kvp.Key))
                                     {
-                                        if (resultWarnings != null) resultWarnings.Add(Properties.Resources.CsvHelper_CsvFileDuplicateKey + " " + fileFullName + " Key='" + kvp.Key + "'");
+                                        if (logger != null)
+                                            logger.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + " " + fileFullName + " Key='" + kvp.Key + "'");
                                     }
                                     fileData[kvp.Key] = kvp.Value;
                                 }
@@ -256,7 +259,8 @@ namespace Ssz.Utils
                                 {
                                     if (fileData.ContainsKey(@""))
                                     {
-                                        if (resultWarnings != null) resultWarnings.Add(Properties.Resources.CsvHelper_CsvFileDuplicateKey + " " + fileFullName + " Key=''");
+                                        if (logger != null)
+                                            logger.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + " " + fileFullName + " Key=''");
                                     }
                                     fileData[@""] = fields;
                                 }
@@ -265,7 +269,8 @@ namespace Ssz.Utils
                             {
                                 if (fileData.ContainsKey(field0))
                                 {
-                                    if (resultWarnings != null) resultWarnings.Add(Properties.Resources.CsvHelper_CsvFileDuplicateKey + " " + fileFullName + " Key='" + field0 + "'");
+                                    if (logger != null)
+                                        logger.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + " " + fileFullName + " Key='" + field0 + "'");
                                 }
                                 fileData[field0] = fields;
                             }

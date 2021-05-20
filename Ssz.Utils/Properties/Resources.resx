@@ -120,6 +120,9 @@
   <data name="CsvDb_CsvFileReadingError" xml:space="preserve">
     <value>.csv file reading error.</value>
   </data>
+  <data name="CsvDb_CsvFileWritingError" xml:space="preserve">
+    <value>.csv file writing error.</value>
+  </data>
   <data name="CsvHelper_CsvFileDoesNotExist" xml:space="preserve">
     <value>.csv file does not exist.</value>
   </data>

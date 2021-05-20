@@ -17,6 +17,9 @@ namespace Ssz.Utils.Logging
 
         public string LogsDirectory { get; set; } = @"%ProgramData%\Ssz\Logs";
 
+        /// <summary>
+        ///     If empty, .exe and process Id is used.
+        /// </summary>
         public string LogsFileName { get; set; } = @"";
 
         public bool DuplicateInConsole { get; set; } = false;

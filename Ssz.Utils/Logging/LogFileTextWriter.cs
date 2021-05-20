@@ -93,18 +93,18 @@ namespace Ssz.Utils.Logging
                     var fi = new FileInfo(LogFileName);
                     if (!fi.Exists)
                     {
-                        sw = File.CreateText(LogFileName);
+                        sw = new StreamWriter(LogFileName, false, new UTF8Encoding(true));
                     }
                     else
                     {
                         if (fi.Length > _options.LogFileMaxSizeInBytes)
                         {
                             fi.Delete();
-                            sw = File.CreateText(LogFileName);
+                            sw = new StreamWriter(LogFileName, false, new UTF8Encoding(true));
                         }
                         else
                         {
-                            sw = File.AppendText(LogFileName);
+                            sw = new StreamWriter(LogFileName, true, new UTF8Encoding(true));
                         }
                     }
                     sw.Write(_buffer.ToString());

@@ -3312,5 +3312,14 @@
             <param name="value"></param>
             <returns></returns>
         </member>
+        <member name="M:Ssz.Utils.TagsMap.GetFromOpcMap(System.String,System.String,System.String)">
+            <summary>
+                result.Count > 1
+            </summary>
+            <param name="tag"></param>
+            <param name="propertyPath"></param>
+            <param name="tagType"></param>
+            <returns></returns>
+        </member>
     </members>
 </doc>

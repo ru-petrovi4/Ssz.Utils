@@ -16,15 +16,14 @@ namespace TestConsoleApp
         //static string _s2 = "m9zyvlcodIYY+B1j2FK21mmvchyFfylNjO/jjtTU9Cg=";
         static void Main(string[] args)
         {
-            var q = new Queue<int>();
-            q.Enqueue(1);
-            q.Enqueue(2);
-            q.Enqueue(3);
-            
-            foreach (var i in Enumerable.Range(-5, 0))
-            {
-                Console.WriteLine(i);
-            }
+            var q = new CaseInsensitiveDictionary<string>();
+            q.Add("Э-2", "Ааа");
+            q.Add("ббб", "ааа");
+
+
+            Console.WriteLine(q.ContainsKey("Э-2"));
+
+
             //Console.WriteLine(q.Count);
             //Console.WriteLine(q.Dequeue());
             //Console.WriteLine(q.Dequeue());

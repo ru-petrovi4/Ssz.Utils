@@ -70,6 +70,15 @@ namespace Ssz.Utils.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .csv file writing error..
+        /// </summary>
+        internal static string CsvDb_CsvFileWritingError {
+            get {
+                return ResourceManager.GetString("CsvDb_CsvFileWritingError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .csv file does not exist..
         /// </summary>
         internal static string CsvHelper_CsvFileDoesNotExist {

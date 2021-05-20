@@ -33,22 +33,24 @@ namespace Ssz.Utils
         ///     resultWarnings are localized.
         /// </summary>
         /// <param name="resultWarnings"></param>
-        public void LoadData(List<string>? resultWarnings = null)
+        public void LoadData(ILogger? loadLogger = null)
         {
             Clear();
 
             if (_csvDbDirectoryInfo == null || !_csvDbDirectoryInfo.Exists) return;
 
+            var logger = loadLogger ?? _logger;
+
             foreach (FileInfo file in _csvDbDirectoryInfo.GetFiles(@"*.csv", SearchOption.TopDirectoryOnly))
                 try
                 {
                     string fileName = file.Name;
-                    _csvDbData[fileName] = CsvHelper.LoadCsvFile(file.FullName, true, null, resultWarnings);
+                    _csvDbData[fileName] = CsvHelper.LoadCsvFile(file.FullName, true, null, logger);
                 }
                 catch (Exception ex)
-                {
-                    if (resultWarnings != null) resultWarnings.Add(Properties.Resources.CsvDb_CsvFileReadingError + " " + file.FullName);
-                    if (_logger != null) _logger.LogError(ex, "Read .csv file error. " + file.FullName);
+                {                   
+                    if (logger != null)
+                        logger.LogError(ex, Properties.Resources.CsvDb_CsvFileReadingError + " " + file.FullName);                    
                 }
         }
 
@@ -165,7 +167,8 @@ namespace Ssz.Utils
                 }
                 catch (Exception ex)
                 {
-                    if (_logger != null) _logger.LogError(ex, "Write .csv file error. " + fileFullName);
+                    if (_logger != null)
+                        _logger.LogError(ex, Properties.Resources.CsvDb_CsvFileWritingError + " " + fileFullName);                   
                 }
             }
 
