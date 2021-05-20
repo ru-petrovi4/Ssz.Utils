@@ -615,12 +615,12 @@
             </summary>
             <param name="configuration"></param>
         </member>
-        <member name="M:Ssz.Utils.CsvDb.LoadData(System.Collections.Generic.List{System.String})">
+        <member name="M:Ssz.Utils.CsvDb.LoadData(Microsoft.Extensions.Logging.ILogger)">
             <summary>
                 Loads data from .csv files on disk.
                 resultWarnings are localized.
             </summary>
-            <param name="resultWarnings"></param>
+            <param name="loadLogger"></param>
         </member>
         <member name="M:Ssz.Utils.CsvDb.SaveData">
             <summary>
@@ -678,7 +678,7 @@
             <param name="sourceString"></param>
             <returns></returns>
         </member>
-        <member name="M:Ssz.Utils.CsvHelper.LoadCsvFile(System.String,System.Boolean,System.Collections.Generic.Dictionary{System.Text.RegularExpressions.Regex,System.String},System.Collections.Generic.List{System.String})">
+        <member name="M:Ssz.Utils.CsvHelper.LoadCsvFile(System.String,System.Boolean,System.Collections.Generic.Dictionary{System.Text.RegularExpressions.Regex,System.String},Microsoft.Extensions.Logging.ILogger)">
             <summary>
                 First column in file is Key and must be unique.
                 Can contain include directives, defines and comments.
@@ -688,7 +688,7 @@
             <param name="fileFullName"></param>
             <param name="includeFiles"></param>
             <param name="defines"></param>
-            <param name="resultWarnings"></param>
+            <param name="logger"></param>
             <returns></returns>
         </member>
         <member name="M:Ssz.Utils.CsvHelper.SaveCsvFile(System.String,Ssz.Utils.CaseInsensitiveDictionary{System.Collections.Generic.List{System.String}})">
@@ -1314,6 +1314,11 @@
         <member name="M:Ssz.Utils.Logging.SszLogger.Finalize">
             <summary>
                 The standard destructor invoked by the .NET garbage collector during Finalize.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Logging.SszLoggerOptions.LogsFileName">
+            <summary>
+                If empty, .exe and process Id is used.
             </summary>
         </member>
         <member name="T:Ssz.Utils.MonitoredUndo.ChangeKey`2">
@@ -2080,6 +2085,11 @@
         <member name="P:Ssz.Utils.Properties.Resources.CsvDb_CsvFileReadingError">
             <summary>
               Looks up a localized string similar to .csv file reading error..
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Properties.Resources.CsvDb_CsvFileWritingError">
+            <summary>
+              Looks up a localized string similar to .csv file writing error..
             </summary>
         </member>
         <member name="P:Ssz.Utils.Properties.Resources.CsvHelper_CsvFileDoesNotExist">

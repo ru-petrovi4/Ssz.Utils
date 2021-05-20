@@ -162,7 +162,7 @@ namespace Ssz.Utils
         /// <param name="fileFullName"></param>
         /// <param name="includeFiles"></param>
         /// <param name="defines"></param>
-        /// <param name="resultWarnings"></param>
+        /// <param name="logger"></param>
         /// <returns></returns>
         public static CaseInsensitiveDictionary<List<string?>> LoadCsvFile(string fileFullName, bool includeFiles, Dictionary<Regex, string>? defines = null, ILogger? logger = null)
         {

@@ -32,7 +32,7 @@ namespace Ssz.Utils
         ///     Loads data from .csv files on disk.
         ///     resultWarnings are localized.
         /// </summary>
-        /// <param name="resultWarnings"></param>
+        /// <param name="loadLogger"></param>
         public void LoadData(ILogger? loadLogger = null)
         {
             Clear();
