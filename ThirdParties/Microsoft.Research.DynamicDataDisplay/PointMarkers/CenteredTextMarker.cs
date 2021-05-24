@@ -20,7 +20,7 @@ namespace Microsoft.Research.DynamicDataDisplay.PointMarkers
 
 		public override void Render(DrawingContext dc, Point screenPoint) {
 			FormattedText textToDraw = new FormattedText(Text, Thread.CurrentThread.CurrentCulture,
-				 FlowDirection.LeftToRight, new Typeface("Arial"), 12, Brushes.Black);
+				 FlowDirection.LeftToRight, new Typeface("Arial"), 12, Brushes.Black, 1.0);
 
 			double width = textToDraw.Width;
 			double height = textToDraw.Height;
