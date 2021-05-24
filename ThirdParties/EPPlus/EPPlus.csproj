@@ -3,10 +3,8 @@
   <PropertyGroup>
     <TargetFrameworks>net5.0</TargetFrameworks>
     <Nullable>disable</Nullable>
-    <AssemblyVersion>4.5.3.3</AssemblyVersion>
-    <FileVersion>4.5.3.3</FileVersion>
-    <Version>4.5.3.3</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>4.5.3.4</Version>    
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/JanKallman/EPPlus</PackageProjectUrl>
     <Authors>Jan Källman</Authors>
