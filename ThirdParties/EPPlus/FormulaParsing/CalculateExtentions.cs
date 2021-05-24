@@ -40,13 +40,24 @@ using OfficeOpenXml.FormulaParsing.Exceptions;
 
 namespace OfficeOpenXml
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class CalculationExtension
     {
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="workbook"></param>
         public static void Calculate(this ExcelWorkbook workbook)
         {
             Calculate(workbook, new ExcelCalculationOption(){AllowCirculareReferences=false});
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="workbook"></param>
+        /// <param name="options"></param>
         public static void Calculate(this ExcelWorkbook workbook, ExcelCalculationOption options)
         {
             Init(workbook);
@@ -81,10 +92,19 @@ namespace OfficeOpenXml
 
             //workbook._isCalculated = true;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="worksheet"></param>
         public static void Calculate(this ExcelWorksheet worksheet)
         {
             Calculate(worksheet, new ExcelCalculationOption());
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="options"></param>
         public static void Calculate(this ExcelWorksheet worksheet, ExcelCalculationOption options)
         {
             Init(worksheet.Workbook);
@@ -99,10 +119,19 @@ namespace OfficeOpenXml
             }
             CalcChain(worksheet.Workbook, parser, dc);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="range"></param>
         public static void Calculate(this ExcelRangeBase range)
         {
             Calculate(range, new ExcelCalculationOption());
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="range"></param>
+        /// <param name="options"></param>
         public static void Calculate(this ExcelRangeBase range, ExcelCalculationOption options)
         {
             Init(range._workbook);
@@ -111,10 +140,23 @@ namespace OfficeOpenXml
             var dc = DependencyChainFactory.Create(range, options);
             CalcChain(range._workbook, parser, dc);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="Formula"></param>
+        /// <returns></returns>
         public static object Calculate(this ExcelWorksheet worksheet, string Formula)
         {
             return Calculate(worksheet, Formula, new ExcelCalculationOption());
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="Formula"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
         public static object Calculate(this ExcelWorksheet worksheet, string Formula, ExcelCalculationOption options)
         {
             try
@@ -155,11 +197,11 @@ namespace OfficeOpenXml
                     }
                     Thread.Sleep(0);
                 }
-                catch (FormatException fe)
+                catch (FormatException)
                 {
-                    throw (fe);
+                    throw;
                 }
-                catch(Exception e)
+                catch
                 {
                     var error = ExcelErrorValue.Parse(ExcelErrorValue.Values.Value);
                     SetValue(wb, item, error);

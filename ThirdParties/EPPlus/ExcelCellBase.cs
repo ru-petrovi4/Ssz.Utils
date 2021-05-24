@@ -126,14 +126,13 @@ namespace OfficeOpenXml
             var ret = string.Join("", tokens.Select(x => x.Value).ToArray());
             return ret;
         }
+
         /// <summary>
         /// Translate to R1C1
         /// </summary>
         /// <param name="part">the value to be translated</param>
         /// <param name="row"></param>
         /// <param name="col"></param>
-        /// <param name="rowIncr"></param>
-        /// <param name="colIncr"></param>
         /// <returns></returns>
         private static string ToR1C1(string part, int row, int col)
         {
@@ -189,9 +188,7 @@ namespace OfficeOpenXml
         /// </summary>
         /// <param name="part"></param>
         /// <param name="row"></param>
-        /// <param name="col"></param> 
-        /// <param name="rowIncr"></param>
-        /// <param name="colIncr"></param>
+        /// <param name="col"></param>
         /// <returns></returns>
         private static string ToAbs(string part, int row, int col)
         {
@@ -421,6 +418,12 @@ namespace OfficeOpenXml
         {
             return GetColumnLetter(iColumnNumber, false);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="iColumnNumber"></param>
+        /// <param name="fixedCol"></param>
+        /// <returns></returns>
         protected internal static string GetColumnLetter(int iColumnNumber, bool fixedCol)
         {
 
@@ -623,12 +626,24 @@ namespace OfficeOpenXml
             return col;
         }
         #region GetAddress
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Row"></param>
+        /// <param name="Absolute"></param>
+        /// <returns></returns>
         public static string GetAddressRow(int Row, bool Absolute = false)
         {
             if (Absolute)
                 return $"${Row}";
             return $"{Row}";
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Col"></param>
+        /// <param name="Absolute"></param>
+        /// <returns></returns>
         public static string GetAddressCol(int Col, bool Absolute = false)
         {
             var colLetter = GetColumnLetter(Col);
@@ -804,6 +819,11 @@ namespace OfficeOpenXml
         }
         #endregion
         #region IsValidCellAddress
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
         public static bool IsValidAddress(string address)
         {
             if (string.IsNullOrEmpty(address.Trim())) return false ;

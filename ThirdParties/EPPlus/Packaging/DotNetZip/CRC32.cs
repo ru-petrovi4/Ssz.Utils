@@ -659,7 +659,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Crc
         /// </summary>
         /// <remarks>
         ///   <para>
-        ///     Set this at any point before calling <see cref="Close()"/>.
+        ///     Set this at any point before calling Close/>.
         ///   </para>
         /// </remarks>
         public bool LeaveOpen
