@@ -627,6 +627,12 @@
                 Saves data to .csv files on disk.
             </summary>
         </member>
+        <member name="M:Ssz.Utils.CsvDb.LoadDataInternal(Microsoft.Extensions.Logging.ILogger)">
+            <summary>
+                Preconditions: state must be clear.
+            </summary>
+            <param name="loadLogger"></param>
+        </member>
         <member name="F:Ssz.Utils.CsvDb._csvDbData">
             <summary>
                 File names end with .csv

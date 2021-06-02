@@ -16,6 +16,8 @@ namespace Ssz.Utils
         {
             _logger = logger;
             _csvDbDirectoryInfo = csvDbDirectoryInfo;
+
+            LoadDataInternal(_logger);
         }
 
         #endregion
@@ -37,23 +39,8 @@ namespace Ssz.Utils
         {
             Clear();
 
-            if (_csvDbDirectoryInfo == null || !_csvDbDirectoryInfo.Exists) return;
-
-            var logger = loadLogger ?? _logger;
-
-            foreach (FileInfo file in _csvDbDirectoryInfo.GetFiles(@"*.csv", SearchOption.TopDirectoryOnly))
-                try
-                {
-                    string fileName = file.Name;
-                    _csvDbData[fileName] = CsvHelper.LoadCsvFile(file.FullName, true, null, logger);
-                }
-                catch (Exception ex)
-                {                   
-                    if (logger != null)
-                        logger.LogError(ex, Properties.Resources.CsvDb_CsvFileReadingError + " " + file.FullName);                    
-                }
+            LoadDataInternal(loadLogger ?? _logger);
         }
-
 
         public bool FileExists(string? fileName)
         {
@@ -61,7 +48,6 @@ namespace Ssz.Utils
 
             return _csvDbData.ContainsKey(fileName);
         }
-
 
         public bool FileClear(string? fileName)
         {
@@ -73,12 +59,10 @@ namespace Ssz.Utils
             return true;
         }
 
-
         public IEnumerable<string> GetFileNames()
         {
             return _csvDbData.Keys;
         }
-
 
         public CaseInsensitiveDictionary<List<string?>> GetValues(string? fileName)
         {
@@ -88,7 +72,6 @@ namespace Ssz.Utils
             if (!_csvDbData.TryGetValue(fileName, out fileData)) return new CaseInsensitiveDictionary<List<string?>>();
             return fileData;
         }
-
 
         public List<string?> GetValues(string? fileName, string key)
         {
@@ -101,7 +84,6 @@ namespace Ssz.Utils
             return fileLine;
         }
 
-
         public string? GetValue(string? fileName, string key, int column)
         {
             if (string.IsNullOrWhiteSpace(fileName) || column < 0) return null;
@@ -113,7 +95,6 @@ namespace Ssz.Utils
             if (column >= fileLine.Count) return null;
             return fileLine[column];
         }
-
 
         public void SetValue(string? fileName, string key, int column, string? value)
         {
@@ -177,9 +158,35 @@ namespace Ssz.Utils
 
         #endregion
 
+        #region private functions
+
+        /// <summary>
+        ///     Preconditions: state must be clear.
+        /// </summary>
+        /// <param name="loadLogger"></param>
+        public void LoadDataInternal(ILogger? loadLogger)
+        {
+            if (_csvDbDirectoryInfo == null || !_csvDbDirectoryInfo.Exists) return;
+
+            foreach (FileInfo file in _csvDbDirectoryInfo.GetFiles(@"*.csv", SearchOption.TopDirectoryOnly))
+                try
+                {
+                    string fileName = file.Name;
+                    _csvDbData[fileName] = CsvHelper.LoadCsvFile(file.FullName, true, null, loadLogger);
+                }
+                catch (Exception ex)
+                {
+                    if (loadLogger != null)
+                        loadLogger.LogError(ex, Properties.Resources.CsvDb_CsvFileReadingError + " " + file.FullName);
+                }
+        }
+
+        #endregion
+
         #region private fields
 
         private ILogger<CsvDb>? _logger;
+
         private DirectoryInfo? _csvDbDirectoryInfo;
 
         /// <summary>

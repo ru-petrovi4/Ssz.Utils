@@ -6,7 +6,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Company>SSZ</Company>
-    <Version>1.0.50</Version>
+    <Version>1.0.51</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
