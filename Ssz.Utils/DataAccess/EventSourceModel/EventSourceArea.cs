@@ -3,15 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Ssz.Utils.Wpf.EventSourceModel
+namespace Ssz.Utils.EventSourceModel
 {
     public class EventSourceArea
     {
         #region construction and destruction
 
         public EventSourceArea(string area, IDataAccessProvider dataAccessProvider)
-        {            
-            _area = area;
+        {
+            Area = area;
             _dataAccessProvider = dataAccessProvider;
         }
 
@@ -20,8 +20,9 @@ namespace Ssz.Utils.Wpf.EventSourceModel
         #region public functions        
 
         public event Action<Any>? AlarmUnackedSubscribers;
-        public event Action<Any>? AlarmCategorySubscribers;
-        public event Action<Any>? AlarmBrushSubscribers;
+        public event Action<Any>? AlarmCategorySubscribers;       
+
+        public string Area { get; }
 
         public int UnackedAlarmsCount;
         
@@ -66,22 +67,10 @@ namespace Ssz.Utils.Wpf.EventSourceModel
             }
         }
 
-        public void NotifyAlarmBrushSubscribers()
-        {
-            var alarmBrushSubscribers = AlarmBrushSubscribers;
-            if (alarmBrushSubscribers != null)
-            {
-                alarmBrushSubscribers(new Any(null));
-            }
-            /* TODO
-            */
-        }
-
         #endregion
 
         #region private fields
-
-        private readonly string _area;
+        
         private readonly IDataAccessProvider _dataAccessProvider;
 
         #endregion        

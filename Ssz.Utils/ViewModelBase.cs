@@ -4,9 +4,8 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Windows.Data;
 
-namespace Ssz.Utils.Wpf
+namespace Ssz.Utils
 {
 	/// <summary>
 	/// The ViewModelBase is a core class in the MVVM pattern to allow a ViewModel class
@@ -193,7 +192,7 @@ namespace Ssz.Utils.Wpf
 		[DebuggerStepThrough]
 		private void VerifyPropertyName(string propertyName)
 		{
-			if (propertyName == Binding.IndexerName) return;
+			if (propertyName == @"Item") return;
 			// Verify that the property name matches a real,  
 			// public, instance property on this object.
 

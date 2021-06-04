@@ -2,7 +2,7 @@
 using System.Xml.Serialization;
 using Ssz.Utils.DataAccess;
 
-namespace Ssz.Utils.Wpf.EventSourceModel
+namespace Ssz.Utils.DataAccess
 {
     public class AlarmInfoViewModelBase : ViewModelBase
     {

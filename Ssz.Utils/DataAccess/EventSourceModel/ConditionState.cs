@@ -1,6 +1,7 @@
+using Ssz.Utils.DataAccess;
 using System;
 
-namespace Ssz.Utils.Wpf.EventSourceModel
+namespace Ssz.Utils.EventSourceModel
 {
     public class ConditionState
     {

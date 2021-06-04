@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Ssz.Utils.DataAccess;
 
-namespace Ssz.Utils.Wpf.EventSourceModel
+namespace Ssz.Utils.EventSourceModel
 {
     /// <summary>
     ///     UI thread.
@@ -12,10 +12,9 @@ namespace Ssz.Utils.Wpf.EventSourceModel
     {
         #region construction and destruction
 
-        public EventSourceModel(IDataAccessProvider dataAccessProvider, AlarmTypeBrushesBase alarmTypeBrushes)
+        public EventSourceModel(IDataAccessProvider dataAccessProvider)
         {
-            _dataAccessProvider = dataAccessProvider;
-            _alarmTypeBrushes = alarmTypeBrushes;
+            _dataAccessProvider = dataAccessProvider;            
 
             _dataAccessProvider.Connected += Clear;
             _dataAccessProvider.Disconnected += Clear;
@@ -68,8 +67,7 @@ namespace Ssz.Utils.Wpf.EventSourceModel
             {
                 eventSourceObject.AlarmConditions.Clear();
                 eventSourceObject.NotifyAlarmUnackedSubscribers();
-                eventSourceObject.NotifyAlarmCategorySubscribers();
-                eventSourceObject.NotifyAlarmBrushSubscribers();
+                eventSourceObject.NotifyAlarmCategorySubscribers();                
                 eventSourceObject.NotifyAlarmConditionTypeSubscribers();
             }
             foreach (EventSourceArea eventSourceArea in _eventSourceAreasDictionary.Values)
@@ -77,8 +75,7 @@ namespace Ssz.Utils.Wpf.EventSourceModel
                 eventSourceArea.UnackedAlarmsCount = 0;
                 eventSourceArea.ActiveAlarmsCategories.Clear();
                 eventSourceArea.NotifyAlarmUnackedSubscribers();
-                eventSourceArea.NotifyAlarmCategorySubscribers();
-                eventSourceArea.NotifyAlarmBrushSubscribers();
+                eventSourceArea.NotifyAlarmCategorySubscribers();                
             }
         }
 
@@ -166,8 +163,7 @@ namespace Ssz.Utils.Wpf.EventSourceModel
             eventSourceObject.NormalCondition.Unacked = unacked;
 
             eventSourceObject.NotifyAlarmUnackedSubscribers();
-            eventSourceObject.NotifyAlarmCategorySubscribers();
-            eventSourceObject.NotifyAlarmBrushSubscribers();
+            eventSourceObject.NotifyAlarmCategorySubscribers();           
             eventSourceObject.NotifyAlarmConditionTypeSubscribers();
 
             return true;
@@ -249,7 +245,7 @@ namespace Ssz.Utils.Wpf.EventSourceModel
             }
 
             //The tag doesn't already exist.  Create a new EventSourceObject and add it to our dictionary
-            var newEventSourceObject = new EventSourceObject(tag, _dataAccessProvider, _alarmTypeBrushes);
+            var newEventSourceObject = new EventSourceObject(tag, _dataAccessProvider);
             _eventSourceObjectsDictionary[tag] = newEventSourceObject;
 
             EventSourceArea overviewEventSourceArea = GetEventSourceArea(@"");
@@ -291,8 +287,7 @@ namespace Ssz.Utils.Wpf.EventSourceModel
 
         #region private fields
 
-        private readonly IDataAccessProvider _dataAccessProvider;
-        private readonly AlarmTypeBrushesBase _alarmTypeBrushes;
+        private readonly IDataAccessProvider _dataAccessProvider;        
 
         private readonly CaseInsensitiveDictionary<EventSourceObject> _eventSourceObjectsDictionary =
             new();

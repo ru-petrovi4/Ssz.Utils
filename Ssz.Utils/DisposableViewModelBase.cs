@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace Ssz.Utils.Wpf
+namespace Ssz.Utils
 {
     /// <summary>
     /// 

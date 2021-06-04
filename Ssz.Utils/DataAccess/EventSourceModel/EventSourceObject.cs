@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Media;
 using Ssz.Utils.DataAccess;
 
-namespace Ssz.Utils.Wpf.EventSourceModel
+namespace Ssz.Utils.EventSourceModel
 {
     /// <summary>
     /// A class to handle Alarm and Event notifications
@@ -13,27 +12,27 @@ namespace Ssz.Utils.Wpf.EventSourceModel
     {
         #region construction and destruction
 
-        public EventSourceObject(string tag, IDataAccessProvider dataAccessProvider, AlarmTypeBrushesBase alarmTypeBrushes)
+        public EventSourceObject(string tag, IDataAccessProvider dataAccessProvider)
         {
-            _tag = tag;
-            _dataAccessProvider = dataAccessProvider;
-            _alarmTypeBrushes = alarmTypeBrushes;
+            Tag = tag;
+            _dataAccessProvider = dataAccessProvider;            
         }
 
         #endregion
 
-        #region public functions        
+        #region public functions       
+        
+        public string Tag { get; }
 
         public event Action<Any>? AlarmUnackedSubscribers;
-        public event Action<Any>? AlarmCategorySubscribers;
-        public event Action<Any>? AlarmBrushSubscribers;
+        public event Action<Any>? AlarmCategorySubscribers;        
         public event Action<Any>? AlarmConditionTypeSubscribers;
 
-        public Dictionary<AlarmCondition, ConditionState> AlarmConditions { get; } = new Dictionary<AlarmCondition, ConditionState>();
+        public Dictionary<AlarmCondition, ConditionState> AlarmConditions { get; } = new();
 
         public ConditionState NormalCondition { get; } = new ConditionState();
 
-        public CaseInsensitiveDictionary<EventSourceArea> EventSourceAreas { get; } = new CaseInsensitiveDictionary<EventSourceArea>();
+        public CaseInsensitiveDictionary<EventSourceArea> EventSourceAreas { get; } = new();
         
         /// <summary>
         /// Indicates if any alarms on this EventSource are unacknowledged.
@@ -161,36 +160,6 @@ namespace Ssz.Utils.Wpf.EventSourceModel
             }
         }
 
-        public void NotifyAlarmBrushSubscribers()
-        {
-            var alarmBrushSubscribers = AlarmBrushSubscribers;
-            if (alarmBrushSubscribers != null)
-            {
-                if (_dataAccessProvider.IsConnected)
-                {
-                    Brush alarmBrush = GetAlarmBrush();
-                    alarmBrushSubscribers(new Any(alarmBrush));
-                }
-                else
-                {
-                    alarmBrushSubscribers(new Any(null));
-                }
-            }
-        }
-
-        public void NotifyAlarmBrushSubscriber(IValueSubscription subscriber)
-        {
-            if (_dataAccessProvider.IsConnected)
-            {
-                Brush alarmBrush = GetAlarmBrush();
-                subscriber.Update(new ValueStatusTimestamp(new Any(alarmBrush), StatusCodes.Good, DateTime.UtcNow));
-            }
-            else
-            {
-                subscriber.Update(new ValueStatusTimestamp());
-            }
-        }
-
         public void NotifyAlarmConditionTypeSubscribers()
         {
             var alarmConditionTypeSubscribers = AlarmConditionTypeSubscribers;
@@ -221,49 +190,11 @@ namespace Ssz.Utils.Wpf.EventSourceModel
             }
         }
 
-        #endregion
+        #endregion        
 
-        #region private functions
-
-        private Brush GetAlarmBrush()
-        {
-            if (AnyUnacked())
-            {
-                switch (GetActiveAlarmsMaxCategory())
-                {
-                    case 0:
-                        return _alarmTypeBrushes.AlarmCategory0BlinkingBrush;                        
-                    case 1:
-                        return _alarmTypeBrushes.AlarmCategory1BlinkingBrush;                        
-                    case 2:
-                        return _alarmTypeBrushes.AlarmCategory2BlinkingBrush;                        
-                    default:
-                        return _alarmTypeBrushes.AlarmCategory1BlinkingBrush;                        
-                }
-            }
-            else // Acked
-            {
-                switch (GetActiveAlarmsMaxCategory())
-                {
-                    case 0:
-                        return _alarmTypeBrushes.AlarmCategory0Brush;                        
-                    case 1:
-                        return _alarmTypeBrushes.AlarmCategory1Brush;                        
-                    case 2:
-                        return _alarmTypeBrushes.AlarmCategory2Brush;                        
-                    default:
-                        return _alarmTypeBrushes.AlarmCategory1Brush;                        
-                }
-            }
-        }
-
-        #endregion
-
-        #region private fields
+        #region private fields        
         
-        private readonly string _tag;
-        public readonly IDataAccessProvider _dataAccessProvider;
-        private readonly AlarmTypeBrushesBase _alarmTypeBrushes;
+        public readonly IDataAccessProvider _dataAccessProvider;        
 
         #endregion
     }
