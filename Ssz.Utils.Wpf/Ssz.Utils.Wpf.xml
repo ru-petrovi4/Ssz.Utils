@@ -148,6 +148,80 @@
             A quick reference to determine if the value is a digital value.
             </summary>
         </member>
+        <member name="P:Ssz.Utils.Wpf.EventSourceModel.EventSourceArea.ActiveAlarmsCategories">
+            <summary>
+                [AlarmCategory, Count]
+            </summary>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.EventSourceModel.EventSourceModel">
+            <summary>
+                UI thread.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.EventSourceModel.EventSourceModel.Dispose">
+            <summary>
+                This is the implementation of the IDisposable.Dispose method.  The client
+                application should invoke this method when this instance is no longer needed.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.EventSourceModel.EventSourceModel.Dispose(System.Boolean)">
+            <summary>
+                This method is invoked when the IDisposable.Dispose or Finalize actions are
+                requested.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.EventSourceModel.EventSourceModel.Finalize">
+            <summary>
+                Invoked by the .NET Framework while doing heap managment (Finalize).
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.EventSourceModel.EventSourceModel.ProcessEventSourceObject(Ssz.Utils.Wpf.EventSourceModel.EventSourceObject,Ssz.Utils.DataAccess.AlarmCondition,System.UInt32,System.Boolean,System.Boolean,System.DateTime,System.Boolean@,System.Boolean@)">
+            <summary>
+                condition != Normal
+                Returns true if active or unacked state of any condition changed.
+            </summary>
+            <returns>
+                true if active or unacked state of any condition changed
+                false if the alarm state remains the same
+            </returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.EventSourceModel.EventSourceModel.GetEventSourceArea(System.String)">
+            <summary>
+                null or Empty area is for root Area.
+                result != null
+            </summary>
+            <remarks>
+            Retrieves the EventSourceArea object for the specified area name. If the area is not already being requested, 
+            a new EventSourceArea is created, associated with that area name, and returned to the caller.
+            </remarks>
+            <param name="area"></param>
+            <returns>
+            An EventSourceArea. Either the existing one, or a newly created one
+            </returns>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.EventSourceModel.EventSourceObject">
+            <summary>
+            A class to handle Alarm and Event notifications
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.EventSourceModel.EventSourceObject.AnyUnacked">
+            <summary>
+            Indicates if any alarms on this EventSource are unacknowledged.
+            </summary>
+            <returns>
+            true if any alarms are in the Unack state
+            false if all the alarms have been acknowledged
+            </returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.EventSourceModel.EventSourceObject.AnyActive">
+            <summary>
+            Indicates if any alarms on this EventSource are active.
+            </summary>
+            <returns>
+            true if any alarms are in the Active state
+            false if all the alarms are not in the Active state
+            </returns>
+        </member>
         <member name="M:Ssz.Utils.Wpf.FileSystemHelper.Compare(System.IO.FileSystemInfo,System.IO.FileSystemInfo)">
             <summary>
             

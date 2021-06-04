@@ -1,241 +1,270 @@
-//using Ssz.Utils.DataAccess;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Windows.Media;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Media;
+using Ssz.Utils.DataAccess;
 
-//namespace Ssz.Utils.Wpf.EventSourceModel
-//{
-//    public class EventSourceObject
-//    {
-//        #region construction and destruction
+namespace Ssz.Utils.Wpf.EventSourceModel
+{
+    /// <summary>
+    /// A class to handle Alarm and Event notifications
+    /// </summary>
+    public class EventSourceObject
+    {
+        #region construction and destruction
 
-//        public EventSourceObject(string tag)
-//        {
-//            Tag = tag;
-//        }
+        public EventSourceObject(string tag, IDataAccessProvider dataAccessProvider, AlarmTypeBrushesBase alarmTypeBrushes)
+        {
+            _tag = tag;
+            _dataAccessProvider = dataAccessProvider;
+            _alarmTypeBrushes = alarmTypeBrushes;
+        }
 
-//        #endregion
+        #endregion
 
-//        #region private functions
+        #region public functions        
 
-//        private Brush? GetAlarmBrush()
-//        {
-//            //if (AlarmTagTypeBrushes == null)
-//            //    AlarmTagTypeBrushes = DsSolution.Instance.GetDataEngine().GetAlarmTagTypeInfo(Tag)
-//            //        .GetAlarmTagTypeBrushes();
+        public event Action<Any>? AlarmUnackedSubscribers;
+        public event Action<Any>? AlarmCategorySubscribers;
+        public event Action<Any>? AlarmBrushSubscribers;
+        public event Action<Any>? AlarmConditionTypeSubscribers;
 
-//            if (AnyUnacked())
-//                switch (GetActiveAlarmsMaxCategory())
-//                {
-//                    case 0:
-//                        return AlarmTagTypeBrushes.AlarmCategory0BlinkingBrush;
-//                    case 1:
-//                        return AlarmTagTypeBrushes.AlarmCategory1BlinkingBrush;
-//                    case 2:
-//                        return AlarmTagTypeBrushes.AlarmCategory2BlinkingBrush;
-//                    default:
-//                        return AlarmTagTypeBrushes.AlarmCategory1BlinkingBrush;
-//                }
+        public Dictionary<AlarmCondition, ConditionState> AlarmConditions { get; } = new Dictionary<AlarmCondition, ConditionState>();
 
-//            switch (GetActiveAlarmsMaxCategory())
-//            {
-//                case 0:
-//                    return AlarmTagTypeBrushes.AlarmCategory0Brush;
-//                case 1:
-//                    return AlarmTagTypeBrushes.AlarmCategory1Brush;
-//                case 2:
-//                    return AlarmTagTypeBrushes.AlarmCategory2Brush;
-//                default:
-//                    return AlarmTagTypeBrushes.AlarmCategory1Brush;
-//            }
-//        }
+        public ConditionState NormalCondition { get; } = new ConditionState();
 
-//        #endregion
+        public CaseInsensitiveDictionary<EventSourceArea> EventSourceAreas { get; } = new CaseInsensitiveDictionary<EventSourceArea>();
+        
+        /// <summary>
+        /// Indicates if any alarms on this EventSource are unacknowledged.
+        /// </summary>
+        /// <returns>
+        /// true if any alarms are in the Unack state
+        /// false if all the alarms have been acknowledged
+        /// </returns>
+        public bool AnyUnacked()
+        {
+            foreach (var kvp in AlarmConditions)
+            {
+                if (kvp.Value.Unacked)
+                {
+                    //We found one guy who is unacknowledged, so we can return true;
+                    return true;
+                }
+            }
+            return false;
+        }
+        /// <summary>
+        /// Indicates if any alarms on this EventSource are active.
+        /// </summary>
+        /// <returns>
+        /// true if any alarms are in the Active state
+        /// false if all the alarms are not in the Active state
+        /// </returns>
+        public bool AnyActive()
+        {
+            foreach (var kvp in AlarmConditions)
+            {
+                if (kvp.Value.Active)
+                {
+                    //We found at least one guy who is active, so we can return true;
+                    return true;
+                }
+            }
+            return false;
+        }
 
-//        #region public functions
+        public uint GetActiveAlarmsMaxCategory()
+        {
+            uint maxCategory = 0;
+            foreach (var kvp in AlarmConditions)
+            {
+                if (kvp.Value.Active && kvp.Value.CategoryId > maxCategory)
+                {
+                    maxCategory = kvp.Value.CategoryId;
+                }
+            }
+            return maxCategory;
+        }
 
-//        public event Action<ValueStatusTimestamp>? AlarmUnackedSubscribers;
-//        public event Action<ValueStatusTimestamp>? AlarmCategorySubscribers;
-//        public event Action<ValueStatusTimestamp>? AlarmBrushSubscribers;
-//        public event Action<ValueStatusTimestamp>? AlarmConditionTypeSubscribers;
-//        public readonly Dictionary<AlarmConditionType, ConditionState> AlarmConditions = new();
-//        public readonly ConditionState NormalCondition = new();
-//        public readonly CaseInsensitiveDictionary<EventSourceArea> EventSourceAreas = new();
+        public AlarmCondition GetAlarmConditionType()
+        {
+            var activeConditions = AlarmConditions.Where(kvp => kvp.Value.Active).ToArray();
+            if (activeConditions.Length > 0)
+            {
+                var kvp = activeConditions.OrderByDescending(i => i.Value.CategoryId).ThenByDescending(i => i.Value.ActiveOccurrenceTime).First();
+                return kvp.Key;
+            }
+            else
+            {
+                return AlarmCondition.None;
+            }            
+        }
 
+        public void NotifyAlarmUnackedSubscribers()
+        {
+            var alarmUnackedSubscribers = AlarmUnackedSubscribers;
+            if (alarmUnackedSubscribers != null)
+            {
+                if (_dataAccessProvider.IsConnected)
+                {
+                    bool anyUnacked = AnyUnacked();
+                    alarmUnackedSubscribers(new Any(anyUnacked));
+                }
+                else
+                {
+                    alarmUnackedSubscribers(new Any(null));
+                }
+            }
+        }
 
-//        public string Tag { get; }
+        public void NotifyAlarmUnackedSubscriber(IValueSubscription subscriber)
+        {
+            if (_dataAccessProvider.IsConnected)
+            {
+                bool anyUnacked = AnyUnacked();
+                subscriber.Update(new ValueStatusTimestamp(new Any(anyUnacked), StatusCodes.Good, DateTime.UtcNow));
+            }
+            else
+            {
+                subscriber.Update(new ValueStatusTimestamp());
+            }
+        }
 
+        public void NotifyAlarmCategorySubscribers()
+        {
+            var alarmCategorySubscribers = AlarmCategorySubscribers;
+            if (alarmCategorySubscribers != null)
+            {
+                if (_dataAccessProvider.IsConnected)
+                {
+                    uint maxCategory = GetActiveAlarmsMaxCategory();
+                    alarmCategorySubscribers(new Any(maxCategory));
+                }
+                else
+                {
+                    alarmCategorySubscribers(new Any(null));
+                }
+            }
+        }
 
-//        public AlarmTagTypeBrushes? AlarmTagTypeBrushes { get; set; }
+        public void NotifyAlarmCategorySubscriber(IValueSubscription subscriber)
+        {
+            if (_dataAccessProvider.IsConnected)
+            {
+                uint maxCategory = GetActiveAlarmsMaxCategory();
+                subscriber.Update(new ValueStatusTimestamp(new Any(maxCategory), StatusCodes.Good, DateTime.UtcNow));
+            }
+            else
+            {
+                subscriber.Update(new ValueStatusTimestamp());
+            }
+        }
 
+        public void NotifyAlarmBrushSubscribers()
+        {
+            var alarmBrushSubscribers = AlarmBrushSubscribers;
+            if (alarmBrushSubscribers != null)
+            {
+                if (_dataAccessProvider.IsConnected)
+                {
+                    Brush alarmBrush = GetAlarmBrush();
+                    alarmBrushSubscribers(new Any(alarmBrush));
+                }
+                else
+                {
+                    alarmBrushSubscribers(new Any(null));
+                }
+            }
+        }
 
-//        public bool AnyUnacked()
-//        {
-//            foreach (var kvp in AlarmConditions)
-//                if (kvp.Value.Unacked)
-//                    //We found one guy who is unacknowledged, so we can return true;
-//                    return true;
-//            return false;
-//        }
+        public void NotifyAlarmBrushSubscriber(IValueSubscription subscriber)
+        {
+            if (_dataAccessProvider.IsConnected)
+            {
+                Brush alarmBrush = GetAlarmBrush();
+                subscriber.Update(new ValueStatusTimestamp(new Any(alarmBrush), StatusCodes.Good, DateTime.UtcNow));
+            }
+            else
+            {
+                subscriber.Update(new ValueStatusTimestamp());
+            }
+        }
 
+        public void NotifyAlarmConditionTypeSubscribers()
+        {
+            var alarmConditionTypeSubscribers = AlarmConditionTypeSubscribers;
+            if (alarmConditionTypeSubscribers != null)
+            {
+                if (_dataAccessProvider.IsConnected)
+                {
+                    AlarmCondition alarmConditionType = GetAlarmConditionType();
+                    alarmConditionTypeSubscribers(new Any(alarmConditionType));
+                }
+                else
+                {
+                    alarmConditionTypeSubscribers(new Any(null));
+                }
+            }
+        }
 
-//        public bool AnyActive()
-//        {
-//            foreach (var kvp in AlarmConditions)
-//                if (kvp.Value.Active)
-//                    //We found at least one guy who is active, so we can return true;
-//                    return true;
-//            return false;
-//        }
+        public void NotifyAlarmConditionTypeSubscriber(IValueSubscription subscriber)
+        {
+            if (_dataAccessProvider.IsConnected)
+            {
+                AlarmCondition alarmConditionType = GetAlarmConditionType();
+                subscriber.Update(new ValueStatusTimestamp(new Any(alarmConditionType), StatusCodes.Good, DateTime.UtcNow));
+            }
+            else
+            {
+                subscriber.Update(new ValueStatusTimestamp());
+            }
+        }
 
-//        public uint GetActiveAlarmsMaxCategory()
-//        {
-//            uint maxCategory = 0;
-//            foreach (var kvp in AlarmConditions)
-//                if (kvp.Value.Active && kvp.Value.CategoryId > maxCategory)
-//                    maxCategory = kvp.Value.CategoryId;
-//            return maxCategory;
-//        }
+        #endregion
 
-//        public AlarmConditionType GetAlarmConditionType()
-//        {
-//            var activeConditions = AlarmConditions.Where(kvp => kvp.Value.Active).ToArray();
-//            if (activeConditions.Length > 0)
-//            {
-//                var kvp = activeConditions.OrderByDescending(i => i.Value.CategoryId)
-//                    .ThenByDescending(i => i.Value.ActiveOccurrenceTime).First();
-//                return kvp.Key;
-//            }
+        #region private functions
 
-//            return AlarmConditionType.None;
-//        }
+        private Brush GetAlarmBrush()
+        {
+            if (AnyUnacked())
+            {
+                switch (GetActiveAlarmsMaxCategory())
+                {
+                    case 0:
+                        return _alarmTypeBrushes.AlarmCategory0BlinkingBrush;                        
+                    case 1:
+                        return _alarmTypeBrushes.AlarmCategory1BlinkingBrush;                        
+                    case 2:
+                        return _alarmTypeBrushes.AlarmCategory2BlinkingBrush;                        
+                    default:
+                        return _alarmTypeBrushes.AlarmCategory1BlinkingBrush;                        
+                }
+            }
+            else // Acked
+            {
+                switch (GetActiveAlarmsMaxCategory())
+                {
+                    case 0:
+                        return _alarmTypeBrushes.AlarmCategory0Brush;                        
+                    case 1:
+                        return _alarmTypeBrushes.AlarmCategory1Brush;                        
+                    case 2:
+                        return _alarmTypeBrushes.AlarmCategory2Brush;                        
+                    default:
+                        return _alarmTypeBrushes.AlarmCategory1Brush;                        
+                }
+            }
+        }
 
-//        public void NotifyAlarmUnackedSubscribers()
-//        {
-//            var alarmUnackedSubscribers = AlarmUnackedSubscribers;
-//            if (alarmUnackedSubscribers != null)
-//            {
-//                if (DsDataAccessProvider.Instance.IsConnected)
-//                {
-//                    var anyUnacked = AnyUnacked();
-//                    alarmUnackedSubscribers(new ValueStatusTimestamp(new Any(anyUnacked), StatusCodes.Good,
-//                        DateTime.UtcNow));
-//                }
-//                else
-//                {
-//                    alarmUnackedSubscribers(new ValueStatusTimestamp());
-//                }
-//            }
-//        }
+        #endregion
 
-//        public void NotifyAlarmUnackedSubscriber(IValueSubscription subscriber)
-//        {
-//            if (DsDataAccessProvider.Instance.IsConnected)
-//            {
-//                var anyUnacked = AnyUnacked();
-//                subscriber.Update(new ValueStatusTimestamp(new Any(anyUnacked), StatusCodes.Good, DateTime.UtcNow));
-//            }
-//            else
-//            {
-//                subscriber.Update(new ValueStatusTimestamp());
-//            }
-//        }
+        #region private fields
+        
+        private readonly string _tag;
+        public readonly IDataAccessProvider _dataAccessProvider;
+        private readonly AlarmTypeBrushesBase _alarmTypeBrushes;
 
-//        public void NotifyAlarmCategorySubscribers()
-//        {
-//            var alarmCategorySubscribers = AlarmCategorySubscribers;
-//            if (alarmCategorySubscribers != null)
-//            {
-//                if (DsDataAccessProvider.Instance.IsConnected)
-//                {
-//                    var maxCategory = GetActiveAlarmsMaxCategory();
-//                    alarmCategorySubscribers(new ValueStatusTimestamp(new Any(maxCategory), StatusCodes.Good,
-//                        DateTime.UtcNow));
-//                }
-//                else
-//                {
-//                    alarmCategorySubscribers(new ValueStatusTimestamp());
-//                }
-//            }
-//        }
-
-//        public void NotifyAlarmCategorySubscriber(IValueSubscription subscriber)
-//        {
-//            if (DsDataAccessProvider.Instance.IsConnected)
-//            {
-//                var maxCategory = GetActiveAlarmsMaxCategory();
-//                subscriber.Update(new ValueStatusTimestamp(new Any(maxCategory), StatusCodes.Good, DateTime.UtcNow));
-//            }
-//            else
-//            {
-//                subscriber.Update(new ValueStatusTimestamp());
-//            }
-//        }
-
-//        public void NotifyAlarmBrushSubscribers()
-//        {
-//            var alarmBrushSubscribers = AlarmBrushSubscribers;
-//            if (alarmBrushSubscribers != null)
-//            {
-//                if (DsDataAccessProvider.Instance.IsConnected)
-//                {
-//                    var alarmBrush = GetAlarmBrush();
-//                    alarmBrushSubscribers(new ValueStatusTimestamp(new Any(alarmBrush), StatusCodes.Good,
-//                        DateTime.UtcNow));
-//                }
-//                else
-//                {
-//                    alarmBrushSubscribers(new ValueStatusTimestamp());
-//                }
-//            }
-//        }
-
-//        public void NotifyAlarmBrushSubscriber(IValueSubscription subscriber)
-//        {
-//            if (DsDataAccessProvider.Instance.IsConnected)
-//            {
-//                var alarmBrush = GetAlarmBrush();
-//                subscriber.Update(new ValueStatusTimestamp(new Any(alarmBrush), StatusCodes.Good, DateTime.UtcNow));
-//            }
-//            else
-//            {
-//                subscriber.Update(new ValueStatusTimestamp());
-//            }
-//        }
-
-//        public void NotifyAlarmConditionTypeSubscribers()
-//        {
-//            var alarmConditionTypeSubscribers = AlarmConditionTypeSubscribers;
-//            if (alarmConditionTypeSubscribers != null)
-//            {
-//                if (DsDataAccessProvider.Instance.IsConnected)
-//                {
-//                    var alarmConditionType = GetAlarmConditionType();
-//                    alarmConditionTypeSubscribers(new ValueStatusTimestamp(new Any(alarmConditionType),
-//                        StatusCodes.Good, DateTime.UtcNow));
-//                }
-//                else
-//                {
-//                    alarmConditionTypeSubscribers(new ValueStatusTimestamp());
-//                }
-//            }
-//        }
-
-//        public void NotifyAlarmConditionTypeSubscriber(IValueSubscription subscriber)
-//        {
-//            if (DsDataAccessProvider.Instance.IsConnected)
-//            {
-//                var alarmConditionType = GetAlarmConditionType();
-//                subscriber.Update(new ValueStatusTimestamp(new Any(alarmConditionType), StatusCodes.Good,
-//                    DateTime.UtcNow));
-//            }
-//            else
-//            {
-//                subscriber.Update(new ValueStatusTimestamp());
-//            }
-//        }
-
-//        #endregion
-//    }
-//}
+        #endregion
+    }
+}

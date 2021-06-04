@@ -1,431 +1,305 @@
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-
-//namespace Ssz.Utils.Wpf.EventSourceModel
-//{
-//    public class EventSourceModel
-//    {
-//        #region private functions
-
-//        private void OnConnectedOrDisconnected()
-//        {
-//            foreach (EventSourceObject eventSourceObject in _eventSourceObjectsDictionary.Values)
-//            {
-//                eventSourceObject.AlarmConditions.Clear();
-//                eventSourceObject.NotifyAlarmUnackedSubscribers();
-//                eventSourceObject.NotifyAlarmCategorySubscribers();
-//                eventSourceObject.NotifyAlarmBrushSubscribers();
-//                eventSourceObject.NotifyAlarmConditionTypeSubscribers();
-//            }
-
-//            foreach (EventSourceArea eventSourceArea in _eventSourceAreasDictionary.Values)
-//            {
-//                eventSourceArea.UnackedAlarmsCount = 0;
-//                eventSourceArea.ActiveAlarmsCategories.Clear();
-//                eventSourceArea.NotifyAlarmUnackedSubscribers();
-//                eventSourceArea.NotifyAlarmCategorySubscribers();
-//                eventSourceArea.NotifyAlarmBrushSubscribers();
-//            }
-//        }
-
-//        #endregion
-
-//        #region public functions
-
-//        public event Action? BeforeStateLoad;
-
-//        public void Initialize()
-//        {
-//            DsDataAccessProvider.Instance.Connected += OnConnectedOrDisconnected;
-//            DsDataAccessProvider.Instance.Disconnected += OnConnectedOrDisconnected;
-//            OnConnectedOrDisconnected();
-//        }
-
-//        public void Close()
-//        {
-//            DsDataAccessProvider.Instance.Connected -= OnConnectedOrDisconnected;
-//            DsDataAccessProvider.Instance.Disconnected -= OnConnectedOrDisconnected;
-//        }
-
-
-//        public bool ProcessEventSourceObject(EventSourceObject eventSourceObject, AlarmConditionType alarmConditionType,
-//            uint categoryId, bool active, bool unacked, DateTime occurrenceTime)
-//        {
-//            Dictionary<AlarmConditionType, ConditionState> alarmConditions = eventSourceObject.AlarmConditions;
-
-//            ConditionState? conditionState;
-//            if (alarmConditions.TryGetValue(alarmConditionType, out conditionState))
-//            {
-//                if (conditionState.Active == active && conditionState.Unacked == unacked)
-//                    //We found the existing condition, but have determined that nothing has changed
-//                    //in the condition.
-//                    return false;
-
-//                //Something has changed in the condition.  Update the condition with the new alarm state
-//                conditionState.Active = active;
-//                conditionState.Unacked = unacked;
-//                if (active) conditionState.ActiveOccurrenceTime = occurrenceTime;
-
-//                if (!active && !unacked) //Moved into the Inactive-Acknowledged state
-//                    //Remove this condition from the list since our alarm is no longer an alarm
-//                    alarmConditions.Remove(alarmConditionType);
-//            }
-//            else
-//            {
-//                if (!active)
-//                    //A new alarm that is already inactive - weird?
-//                    return false; //An odd state - we didn't find anything so return false.
-
-//                //This condition doesn't already exist.  This means we are a new alarm
-//                //Normally this will be a newly active alarm.  Occasionally it will be an
-//                //inactive but unacknowledged alarm.  This second situation is a bit odd but
-//                //can occur if we have newly connected to an AE server that has 
-//                //unacknowledged-inactive alarms.  In both cases it is a valid alarm that we 
-//                //want to continue to track.  Add it to our list.
-//                var newConditionState = new ConditionState
-//                    {Active = active, Unacked = unacked, CategoryId = categoryId};
-//                if (active) newConditionState.ActiveOccurrenceTime = occurrenceTime;
-//                alarmConditions.Add(alarmConditionType, newConditionState);
-//            }
-
-//            if (!active)
-//                eventSourceObject.NormalCondition.Active = !alarmConditions.Any(c => c.Value.Active);
-//            else
-//                eventSourceObject.NormalCondition.Active = false;
-
-//            eventSourceObject.NormalCondition.Unacked = unacked;
-
-//            eventSourceObject.NotifyAlarmUnackedSubscribers();
-//            eventSourceObject.NotifyAlarmCategorySubscribers();
-//            eventSourceObject.NotifyAlarmBrushSubscribers();
-//            eventSourceObject.NotifyAlarmConditionTypeSubscribers();
-
-//            return true;
-//        }
-
-//        public void OnBeforeStateLoad()
-//        {
-//            var beforeStateLoad = BeforeStateLoad;
-//            if (beforeStateLoad != null) beforeStateLoad();
-
-//            foreach (EventSourceObject eventSourceObject in _eventSourceObjectsDictionary.Values)
-//            {
-//                eventSourceObject.AlarmConditions.Clear();
-//                eventSourceObject.NotifyAlarmUnackedSubscribers();
-//                eventSourceObject.NotifyAlarmCategorySubscribers();
-//                eventSourceObject.NotifyAlarmBrushSubscribers();
-//                eventSourceObject.NotifyAlarmConditionTypeSubscribers();
-//            }
-
-//            foreach (EventSourceArea eventSourceArea in _eventSourceAreasDictionary.Values)
-//            {
-//                eventSourceArea.UnackedAlarmsCount = 0;
-//                eventSourceArea.ActiveAlarmsCategories.Clear();
-//                eventSourceArea.NotifyAlarmUnackedSubscribers();
-//                eventSourceArea.NotifyAlarmCategorySubscribers();
-//                eventSourceArea.NotifyAlarmBrushSubscribers();
-//            }
-//        }
-
-//        public void OnAlarmsListChanged()
-//        {
-//            foreach (EventSourceArea eventSourceArea in _eventSourceAreasDictionary.Values)
-//            {
-//                eventSourceArea.UnackedAlarmsCount = 0;
-//                eventSourceArea.ActiveAlarmsCategories.Clear();
-//            }
-
-//            foreach (EventSourceObject eventSourceObject in _eventSourceObjectsDictionary.Values)
-//            {
-//                if (eventSourceObject.AnyUnacked())
-//                    foreach (EventSourceArea eventSourceArea in eventSourceObject.EventSourceAreas.Values)
-//                        eventSourceArea.UnackedAlarmsCount += 1;
-
-//                var maxCategory = eventSourceObject.GetActiveAlarmsMaxCategory();
-//                if (maxCategory > 0)
-//                    foreach (EventSourceArea eventSourceArea in eventSourceObject.EventSourceAreas.Values)
-//                    {
-//                        int activeAlarmsCount;
-//                        if (!eventSourceArea.ActiveAlarmsCategories.TryGetValue(maxCategory, out activeAlarmsCount))
-//                            eventSourceArea.ActiveAlarmsCategories[maxCategory] = 1;
-//                        else
-//                            eventSourceArea.ActiveAlarmsCategories[maxCategory] = activeAlarmsCount + 1;
-//                    }
-//            }
-
-//            foreach (EventSourceArea eventSourceArea in _eventSourceAreasDictionary.Values)
-//            {
-//                eventSourceArea.NotifyAlarmUnackedSubscribers();
-//                eventSourceArea.NotifyAlarmCategorySubscribers();
-//            }
-//        }
-
-
-//        public EventSourceArea GetEventSourceArea(string area)
-//        {
-//            if (string.IsNullOrEmpty(area)) area = @"";
-
-//            EventSourceArea? eventSourceArea;
-//            if (!_eventSourceAreasDictionary.TryGetValue(area, out eventSourceArea))
-//            {
-//                eventSourceArea = new EventSourceArea();
-//                _eventSourceAreasDictionary[area] = eventSourceArea;
-//            }
-
-//            return eventSourceArea;
-//        }
-
-
-//        public EventSourceObject GetEventSourceObject(string tag)
-//        {
-//            EventSourceObject? existingEventSourceObject;
-//            if (_eventSourceObjectsDictionary.TryGetValue(tag, out existingEventSourceObject))
-//                //We already have this tag in our list.  Just return the existing object.
-//                return existingEventSourceObject;
-
-//            //The tag doesn't already exist.  Create a new EventSourceObject and add it to our dictionary
-//            var newEventSourceObject = new EventSourceObject(tag);
-//            _eventSourceObjectsDictionary[tag] = newEventSourceObject;
-
-//            EventSourceArea overviewEventSourceArea = GetEventSourceArea(@"");
-//            newEventSourceObject.EventSourceAreas[@""] = overviewEventSourceArea;
-
-//            var dsConstants = DsSolution.Instance.AllGraphicsCacheGetAllConstantsValues().TryGetValue(tag);
-//            if (dsConstants != null)
-//            {
-//                IEnumerable<DsGraphicDrawing> dsGraphicDrawings = dsConstants
-//                    .Select(i =>
-//                        (DsGraphicDrawing) (i.CompoundDsControl.GetParentDrawing() ??
-//                                            throw new InvalidOperationException()))
-//                    .Distinct(ReferenceEqualityComparer<DsGraphicDrawing>.Default);
-
-//                foreach (DsGraphicDrawing dsGraphicDrawing in dsGraphicDrawings)
-//                {
-//                    EventSourceArea eventSourceArea = GetEventSourceArea(dsGraphicDrawing.Name);
-//                    eventSourceArea.IsGraphic = true;
-//                    newEventSourceObject.EventSourceAreas[dsGraphicDrawing.Name] = eventSourceArea;
-//                }
-//            }
-
-//            return newEventSourceObject;
-//        }
-
-
-//        public void AlarmUnackedAddItem(string? tagOrGraphicName, IValueSubscription valueSubscription)
-//        {
-//            if (string.IsNullOrEmpty(tagOrGraphicName))
-//            {
-//                EventSourceArea eventSourceArea = GetEventSourceArea(@"");
-//                eventSourceArea.AlarmUnackedSubscribers += valueSubscription.Update;
-//                eventSourceArea.NotifyAlarmUnackedSubscribers();
-//                return;
-//            }
-
-//            CaseInsensitiveDictionary<DsGraphicDrawing> dsGraphicDrawings =
-//                DsSolution.Instance.AllGraphicsCache;
-//            if (dsGraphicDrawings.ContainsKey(tagOrGraphicName))
-//            {
-//                EventSourceArea eventSourceArea = GetEventSourceArea(tagOrGraphicName);
-//                eventSourceArea.IsGraphic = true;
-//                eventSourceArea.AlarmUnackedSubscribers += valueSubscription.Update;
-//                eventSourceArea.NotifyAlarmUnackedSubscribers();
-//                return;
-//            }
-
-//            EventSourceObject eventSourceObject = GetEventSourceObject(tagOrGraphicName);
-//            eventSourceObject.AlarmUnackedSubscribers += valueSubscription.Update;
-//            eventSourceObject.NotifyAlarmUnackedSubscriber(valueSubscription);
-//        }
-
-
-//        public void AlarmUnackedRemoveItem(string tagOrGraphicName, IValueSubscription valueSubscription)
-//        {
-//            if (string.IsNullOrEmpty(tagOrGraphicName))
-//            {
-//                EventSourceArea eventSourceArea = GetEventSourceArea(@"");
-//                eventSourceArea.AlarmUnackedSubscribers -= valueSubscription.Update;
-//                return;
-//            }
-
-//            CaseInsensitiveDictionary<DsGraphicDrawing> dsGraphicDrawings =
-//                DsSolution.Instance.AllGraphicsCache;
-//            if (dsGraphicDrawings.ContainsKey(tagOrGraphicName))
-//            {
-//                EventSourceArea eventSourceArea = GetEventSourceArea(tagOrGraphicName);
-//                eventSourceArea.IsGraphic = true;
-//                eventSourceArea.AlarmUnackedSubscribers -= valueSubscription.Update;
-//                return;
-//            }
-
-//            EventSourceObject eventSourceObject = GetEventSourceObject(tagOrGraphicName);
-//            eventSourceObject.AlarmUnackedSubscribers -= valueSubscription.Update;
-//        }
-
-
-//        public void AlarmCategoryAddItem(string tagOrGraphicName, IValueSubscription valueSubscription)
-//        {
-//            if (string.IsNullOrEmpty(tagOrGraphicName))
-//            {
-//                EventSourceArea eventSourceArea = GetEventSourceArea(@"");
-//                eventSourceArea.AlarmCategorySubscribers += valueSubscription.Update;
-//                eventSourceArea.NotifyAlarmCategorySubscribers();
-//                return;
-//            }
-
-//            CaseInsensitiveDictionary<DsGraphicDrawing> dsGraphicDrawings =
-//                DsSolution.Instance.AllGraphicsCache;
-//            if (dsGraphicDrawings.ContainsKey(tagOrGraphicName))
-//            {
-//                EventSourceArea eventSourceArea = GetEventSourceArea(tagOrGraphicName);
-//                eventSourceArea.IsGraphic = true;
-//                eventSourceArea.AlarmCategorySubscribers += valueSubscription.Update;
-//                eventSourceArea.NotifyAlarmCategorySubscribers();
-//                return;
-//            }
-
-//            EventSourceObject eventSourceObject = GetEventSourceObject(tagOrGraphicName);
-//            eventSourceObject.AlarmCategorySubscribers += valueSubscription.Update;
-//            eventSourceObject.NotifyAlarmCategorySubscriber(valueSubscription);
-//        }
-
-
-//        public void AlarmCategoryRemoveItem(string tagOrGraphicName, IValueSubscription valueSubscription)
-//        {
-//            if (string.IsNullOrEmpty(tagOrGraphicName))
-//            {
-//                EventSourceArea eventSourceArea = GetEventSourceArea(@"");
-//                eventSourceArea.AlarmCategorySubscribers -= valueSubscription.Update;
-//                return;
-//            }
-
-//            CaseInsensitiveDictionary<DsGraphicDrawing> dsGraphicDrawings =
-//                DsSolution.Instance.AllGraphicsCache;
-//            if (dsGraphicDrawings.ContainsKey(tagOrGraphicName))
-//            {
-//                EventSourceArea eventSourceArea = GetEventSourceArea(tagOrGraphicName);
-//                eventSourceArea.IsGraphic = true;
-//                eventSourceArea.AlarmCategorySubscribers -= valueSubscription.Update;
-//                return;
-//            }
-
-//            EventSourceObject eventSourceObject = GetEventSourceObject(tagOrGraphicName);
-//            eventSourceObject.AlarmCategorySubscribers -= valueSubscription.Update;
-//        }
-
-
-//        public void AlarmBrushAddItem(string tagOrGraphicName, IValueSubscription valueSubscription)
-//        {
-//            if (string.IsNullOrEmpty(tagOrGraphicName))
-//            {
-//                EventSourceArea eventSourceArea = GetEventSourceArea(@"");
-//                eventSourceArea.AlarmBrushSubscribers += valueSubscription.Update;
-//                eventSourceArea.NotifyAlarmBrushSubscribers();
-//                return;
-//            }
-
-//            CaseInsensitiveDictionary<DsGraphicDrawing> dsGraphicDrawings =
-//                DsSolution.Instance.AllGraphicsCache;
-//            if (dsGraphicDrawings.ContainsKey(tagOrGraphicName))
-//            {
-//                EventSourceArea eventSourceArea = GetEventSourceArea(tagOrGraphicName);
-//                eventSourceArea.IsGraphic = true;
-//                eventSourceArea.AlarmBrushSubscribers += valueSubscription.Update;
-//                eventSourceArea.NotifyAlarmBrushSubscribers();
-//                return;
-//            }
-
-//            EventSourceObject eventSourceObject = GetEventSourceObject(tagOrGraphicName);
-//            eventSourceObject.AlarmBrushSubscribers += valueSubscription.Update;
-//            eventSourceObject.NotifyAlarmBrushSubscriber(valueSubscription);
-//        }
-
-
-//        public void AlarmBrushRemoveItem(string tagOrGraphicName, IValueSubscription valueSubscription)
-//        {
-//            if (string.IsNullOrEmpty(tagOrGraphicName))
-//            {
-//                EventSourceArea eventSourceArea = GetEventSourceArea(@"");
-//                eventSourceArea.AlarmBrushSubscribers -= valueSubscription.Update;
-//                return;
-//            }
-
-//            CaseInsensitiveDictionary<DsGraphicDrawing> dsGraphicDrawings =
-//                DsSolution.Instance.AllGraphicsCache;
-//            if (dsGraphicDrawings.ContainsKey(tagOrGraphicName))
-//            {
-//                EventSourceArea eventSourceArea = GetEventSourceArea(tagOrGraphicName);
-//                eventSourceArea.IsGraphic = true;
-//                eventSourceArea.AlarmBrushSubscribers -= valueSubscription.Update;
-//                return;
-//            }
-
-//            EventSourceObject eventSourceObject = GetEventSourceObject(tagOrGraphicName);
-//            eventSourceObject.AlarmBrushSubscribers -= valueSubscription.Update;
-//        }
-
-
-//        public void AlarmConditionTypeAddItem(string tag, IValueSubscription valueSubscription)
-//        {
-//            if (string.IsNullOrEmpty(tag)) return;
-
-//            EventSourceObject eventSourceObject = GetEventSourceObject(tag);
-//            eventSourceObject.AlarmConditionTypeSubscribers += valueSubscription.Update;
-//            eventSourceObject.NotifyAlarmConditionTypeSubscriber(valueSubscription);
-//        }
-
-
-//        public void AlarmConditionTypeRemoveItem(string tag, IValueSubscription valueSubscription)
-//        {
-//            if (string.IsNullOrEmpty(tag)) return;
-
-//            EventSourceObject eventSourceObject = GetEventSourceObject(tag);
-//            eventSourceObject.AlarmConditionTypeSubscribers -= valueSubscription.Update;
-//        }
-
-//        public void GetExistingAlarmInfoViewModels(Action<IEnumerable<AlarmInfoViewModelBase>> alarmNotification)
-//        {
-//            var alarmInfoViewModels = new List<AlarmInfoViewModelBase>();
-//            foreach (var kvp in _eventSourceObjectsDictionary)
-//            {
-//                string userTagsFileName = DsSolution.Instance.PlayInfo.UserTagsFileName;
-//                if (!string.IsNullOrEmpty(userTagsFileName))
-//                {
-//                    var tag = DsSolution.Instance.CsvDbFileGetValue(userTagsFileName, kvp.Key, 0);
-//                    if (tag == null) continue;
-//                }
-
-//                EventSourceObject eventSourceObject = kvp.Value;
-//                var alarmInfoViewModelsForObject = new List<AlarmInfoViewModelBase>();
-//                foreach (var condition in eventSourceObject.AlarmConditions.Values.OrderByDescending(
-//                    cs => cs.CategoryId))
-//                    if (!condition.Active && condition.Unacked &&
-//                        condition.LastAlarmInfoViewModel != null)
-//                        alarmInfoViewModelsForObject.Add(condition.LastAlarmInfoViewModel);
-//                foreach (var condition in eventSourceObject.AlarmConditions.Values.OrderBy(cs => cs.CategoryId))
-//                    if (condition.Active &&
-//                        condition.LastAlarmInfoViewModel != null)
-//                        alarmInfoViewModelsForObject.Add(condition.LastAlarmInfoViewModel);
-//                if (eventSourceObject.NormalCondition.Active && eventSourceObject.NormalCondition.Unacked &&
-//                    eventSourceObject.NormalCondition.LastAlarmInfoViewModel != null)
-//                    alarmInfoViewModelsForObject.Add(eventSourceObject.NormalCondition.LastAlarmInfoViewModel);
-//                if (alarmInfoViewModelsForObject.Count > 0)
-//                    alarmInfoViewModels.AddRange(alarmInfoViewModelsForObject);
-//            }
-
-//            if (alarmInfoViewModels.Count > 0) alarmNotification(alarmInfoViewModels);
-//        }
-
-//        #endregion
-
-//        #region private fields
-
-//        private readonly CaseInsensitiveDictionary<EventSourceObject> _eventSourceObjectsDictionary =
-//            new();
-
-//        private readonly CaseInsensitiveDictionary<EventSourceArea> _eventSourceAreasDictionary =
-//            new();
-
-//        #endregion
-//    }
-//}
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Ssz.Utils.DataAccess;
+
+namespace Ssz.Utils.Wpf.EventSourceModel
+{
+    /// <summary>
+    ///     UI thread.
+    /// </summary>
+    public class EventSourceModel : IDisposable
+    {
+        #region construction and destruction
+
+        public EventSourceModel(IDataAccessProvider dataAccessProvider, AlarmTypeBrushesBase alarmTypeBrushes)
+        {
+            _dataAccessProvider = dataAccessProvider;
+            _alarmTypeBrushes = alarmTypeBrushes;
+
+            _dataAccessProvider.Connected += Clear;
+            _dataAccessProvider.Disconnected += Clear;
+        }
+
+        /// <summary>
+        ///     This is the implementation of the IDisposable.Dispose method.  The client
+        ///     application should invoke this method when this instance is no longer needed.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        ///     This method is invoked when the IDisposable.Dispose or Finalize actions are
+        ///     requested.
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (Disposed) return;
+
+            if (disposing)
+            {
+                _dataAccessProvider.Connected -= Clear;
+                _dataAccessProvider.Disconnected -= Clear;
+            }
+
+            Disposed = true;
+        }
+
+        /// <summary>
+        ///     Invoked by the .NET Framework while doing heap managment (Finalize).
+        /// </summary>
+        ~EventSourceModel()
+        {
+            Dispose(false);
+        }
+
+        #endregion
+
+        #region public functions
+
+        public bool Disposed { get; private set; }
+
+        public void Clear()
+        {
+            foreach (EventSourceObject eventSourceObject in _eventSourceObjectsDictionary.Values)
+            {
+                eventSourceObject.AlarmConditions.Clear();
+                eventSourceObject.NotifyAlarmUnackedSubscribers();
+                eventSourceObject.NotifyAlarmCategorySubscribers();
+                eventSourceObject.NotifyAlarmBrushSubscribers();
+                eventSourceObject.NotifyAlarmConditionTypeSubscribers();
+            }
+            foreach (EventSourceArea eventSourceArea in _eventSourceAreasDictionary.Values)
+            {
+                eventSourceArea.UnackedAlarmsCount = 0;
+                eventSourceArea.ActiveAlarmsCategories.Clear();
+                eventSourceArea.NotifyAlarmUnackedSubscribers();
+                eventSourceArea.NotifyAlarmCategorySubscribers();
+                eventSourceArea.NotifyAlarmBrushSubscribers();
+            }
+        }
+
+        /// <summary>
+        ///     condition != Normal
+        ///     Returns true if active or unacked state of any condition changed.
+        /// </summary>
+        /// <returns>
+        ///     true if active or unacked state of any condition changed
+        ///     false if the alarm state remains the same
+        /// </returns>
+        public bool ProcessEventSourceObject(EventSourceObject eventSourceObject, AlarmCondition alarmCondition,
+            uint categoryId, bool active, bool unacked, DateTime occurrenceTime, 
+            out bool alarmConditionChanged,
+            out bool unackedChanged)
+        {
+            alarmConditionChanged = false;
+            unackedChanged = false;
+
+            Dictionary<AlarmCondition, ConditionState> alarmConditions = eventSourceObject.AlarmConditions;
+            
+            ConditionState? conditionState;
+            if (alarmConditions.TryGetValue(alarmCondition, out conditionState))
+            {
+                if (conditionState.Active == active && conditionState.Unacked == unacked)
+                {
+                    //We found the existing condition, but have determined that nothing has changed
+                    //in the condition.
+                    return false;
+                }
+
+                //Something has changed in the condition.  Update the condition with the new alarm state
+                if (conditionState.Active != active)
+                {
+                    conditionState.Active = active;
+                    alarmConditionChanged = true;
+                }
+                
+                if (conditionState.Unacked != unacked)
+                {
+                    conditionState.Unacked = unacked;
+                    unackedChanged = true;
+                }
+                
+                if (active) conditionState.ActiveOccurrenceTime = occurrenceTime;
+
+                if (!active && !unacked) //Moved into the Inactive-Acknowledged state
+                {
+                    //Remove this condition from the list since our alarm is no longer an alarm
+                    alarmConditions.Remove(alarmCondition);
+                }
+            }
+            else
+            {
+                if (!active) 
+                {
+                    //A new alarm that is already inactive - weird?
+                    return false;    //An odd state - we didn't find anything so return false.
+                }
+
+                alarmConditionChanged = true;
+                if (unacked)
+                    unackedChanged = true;
+
+                //This condition doesn't already exist.  This means we are a new alarm
+                //Normally this will be a newly active alarm.  Occasionally it will be an
+                //inactive but unacknowledged alarm.  This second situation is a bit odd but
+                //can occur if we have newly connected to an AE server that has 
+                //unacknowledged-inactive alarms.  In both cases it is a valid alarm that we 
+                //want to continue to track.  Add it to our list.
+                var newConditionState = new ConditionState { Active = active, Unacked = unacked, CategoryId = categoryId };
+                if (active) newConditionState.ActiveOccurrenceTime = occurrenceTime;
+                alarmConditions.Add(alarmCondition, newConditionState);
+            }
+
+            if (!active)
+            {
+                eventSourceObject.NormalCondition.Active = !alarmConditions.Any(c => c.Value.Active);
+            }
+            else
+            {
+                eventSourceObject.NormalCondition.Active = false;
+            }
+
+            eventSourceObject.NormalCondition.Unacked = unacked;
+
+            eventSourceObject.NotifyAlarmUnackedSubscribers();
+            eventSourceObject.NotifyAlarmCategorySubscribers();
+            eventSourceObject.NotifyAlarmBrushSubscribers();
+            eventSourceObject.NotifyAlarmConditionTypeSubscribers();
+
+            return true;
+        }
+        
+        public void OnAlarmsListChanged()
+        {
+            foreach (EventSourceArea eventSourceArea in _eventSourceAreasDictionary.Values)
+            {
+                eventSourceArea.UnackedAlarmsCount = 0;
+                eventSourceArea.ActiveAlarmsCategories.Clear();
+            }
+
+            foreach (EventSourceObject eventSourceObject in _eventSourceObjectsDictionary.Values)
+            {
+                if (eventSourceObject.AnyUnacked())
+                {
+                    foreach (EventSourceArea eventSourceArea in eventSourceObject.EventSourceAreas.Values)
+                    {
+                        eventSourceArea.UnackedAlarmsCount += 1;
+                    }
+                }
+
+                uint maxCategory = eventSourceObject.GetActiveAlarmsMaxCategory();
+                if (maxCategory > 0)
+                {
+                    foreach (EventSourceArea eventSourceArea in eventSourceObject.EventSourceAreas.Values)
+                    {
+                        int activeAlarmsCount;
+                        if (!eventSourceArea.ActiveAlarmsCategories.TryGetValue(maxCategory, out activeAlarmsCount))
+                        {
+                            eventSourceArea.ActiveAlarmsCategories[maxCategory] = 1;
+                        }
+                        else
+                        {
+                            eventSourceArea.ActiveAlarmsCategories[maxCategory] = activeAlarmsCount + 1;
+                        }
+                    }
+                }
+            }
+
+            foreach (EventSourceArea eventSourceArea in _eventSourceAreasDictionary.Values)
+            {
+                eventSourceArea.NotifyAlarmUnackedSubscribers();
+                eventSourceArea.NotifyAlarmCategorySubscribers();
+            }
+        }
+
+        /// <summary>
+        ///     null or Empty area is for root Area.
+        ///     result != null
+        /// </summary>
+        /// <remarks>
+        /// Retrieves the EventSourceArea object for the specified area name. If the area is not already being requested, 
+        /// a new EventSourceArea is created, associated with that area name, and returned to the caller.
+        /// </remarks>
+        /// <param name="area"></param>
+        /// <returns>
+        /// An EventSourceArea. Either the existing one, or a newly created one
+        /// </returns>
+        public EventSourceArea GetEventSourceArea(string area)
+        {
+            EventSourceArea? eventSourceArea;
+            if (!_eventSourceAreasDictionary.TryGetValue(area, out eventSourceArea))
+            {
+                eventSourceArea = new EventSourceArea(area, _dataAccessProvider);
+                _eventSourceAreasDictionary[area] = eventSourceArea;
+            }
+            return eventSourceArea;
+        }
+       
+        public EventSourceObject GetEventSourceObject(string tag)
+        {
+            EventSourceObject? existingEventSourceObject;
+            if (_eventSourceObjectsDictionary.TryGetValue(tag, out existingEventSourceObject))
+            {
+                //We already have this tag in our list.  Just return the existing object.
+                return existingEventSourceObject;
+            }
+
+            //The tag doesn't already exist.  Create a new EventSourceObject and add it to our dictionary
+            var newEventSourceObject = new EventSourceObject(tag, _dataAccessProvider, _alarmTypeBrushes);
+            _eventSourceObjectsDictionary[tag] = newEventSourceObject;
+
+            EventSourceArea overviewEventSourceArea = GetEventSourceArea(@"");
+            newEventSourceObject.EventSourceAreas[@""] = overviewEventSourceArea;
+
+            return newEventSourceObject;
+        }
+
+        public void GetExistingAlarmInfoViewModels(Action<IEnumerable<AlarmInfoViewModelBase>> alarmNotification)
+        {
+            var alarmInfoViewModels = new List<AlarmInfoViewModelBase>();
+            foreach (var kvp in _eventSourceObjectsDictionary)
+            {
+                EventSourceObject eventSourceObject = kvp.Value;
+                var alarmInfoViewModelsForObject = new List<AlarmInfoViewModelBase>();
+                foreach (var condition in eventSourceObject.AlarmConditions.Values.OrderByDescending(cs => cs.CategoryId))
+                {
+                    if (!condition.Active && condition.Unacked &&
+                        condition.LastAlarmInfoViewModel != null)
+                        alarmInfoViewModelsForObject.Add(condition.LastAlarmInfoViewModel);
+                }
+                foreach (var condition in eventSourceObject.AlarmConditions.Values.OrderBy(cs => cs.CategoryId))
+                {
+                    if (condition.Active &&
+                        condition.LastAlarmInfoViewModel != null)
+                        alarmInfoViewModelsForObject.Add(condition.LastAlarmInfoViewModel);
+                }
+                if (eventSourceObject.NormalCondition.Active && eventSourceObject.NormalCondition.Unacked &&
+                    eventSourceObject.NormalCondition.LastAlarmInfoViewModel != null)
+                        alarmInfoViewModelsForObject.Add(eventSourceObject.NormalCondition.LastAlarmInfoViewModel);
+                if (alarmInfoViewModelsForObject.Count > 0)
+                    alarmInfoViewModels.AddRange(alarmInfoViewModelsForObject);
+            }
+
+            if (alarmInfoViewModels.Count > 0) alarmNotification(alarmInfoViewModels);
+        }
+
+        #endregion
+
+        #region private fields
+
+        private readonly IDataAccessProvider _dataAccessProvider;
+        private readonly AlarmTypeBrushesBase _alarmTypeBrushes;
+
+        private readonly CaseInsensitiveDictionary<EventSourceObject> _eventSourceObjectsDictionary =
+            new();
+
+        private readonly CaseInsensitiveDictionary<EventSourceArea> _eventSourceAreasDictionary =
+            new();        
+
+        #endregion
+    }
+}

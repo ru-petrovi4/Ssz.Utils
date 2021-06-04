@@ -1,69 +1,89 @@
-//using Ssz.Utils.DataAccess;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
+﻿using Ssz.Utils.DataAccess;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-//namespace Ssz.Utils.Wpf.EventSourceModel
-//{
-//    public class EventSourceArea
-//    {
-//        #region public functions
+namespace Ssz.Utils.Wpf.EventSourceModel
+{
+    public class EventSourceArea
+    {
+        #region construction and destruction
 
-//        public event Action<ValueStatusTimestamp>? AlarmUnackedSubscribers;
-//        public event Action<ValueStatusTimestamp>? AlarmCategorySubscribers;
-//        public event Action<ValueStatusTimestamp>? AlarmBrushSubscribers;
-//        public int UnackedAlarmsCount;
-//        public bool IsGraphic;
+        public EventSourceArea(string area, IDataAccessProvider dataAccessProvider)
+        {            
+            _area = area;
+            _dataAccessProvider = dataAccessProvider;
+        }
 
+        #endregion
 
-//        public readonly Dictionary<uint, int> ActiveAlarmsCategories = new();
+        #region public functions        
 
-//        public void NotifyAlarmUnackedSubscribers()
-//        {
-//            var alarmUnackedSubscribers = AlarmUnackedSubscribers;
-//            if (alarmUnackedSubscribers != null)
-//            {
-//                if (DsDataAccessProvider.Instance.IsConnected)
-//                {
-//                    var anyUnacked = UnackedAlarmsCount > 0;
-//                    alarmUnackedSubscribers(new ValueStatusTimestamp(new Any(anyUnacked), StatusCodes.Good,
-//                        DateTime.UtcNow));
-//                }
-//                else
-//                {
-//                    alarmUnackedSubscribers(new ValueStatusTimestamp());
-//                }
-//            }
-//        }
+        public event Action<Any>? AlarmUnackedSubscribers;
+        public event Action<Any>? AlarmCategorySubscribers;
+        public event Action<Any>? AlarmBrushSubscribers;
 
-//        public void NotifyAlarmCategorySubscribers()
-//        {
-//            var alarmCategorySubscribers = AlarmCategorySubscribers;
-//            if (alarmCategorySubscribers != null)
-//            {
-//                if (DsDataAccessProvider.Instance.IsConnected)
-//                {
-//                    uint maxCategory = 0;
-//                    if (ActiveAlarmsCategories.Count > 0)
-//                        maxCategory = ActiveAlarmsCategories.Keys.Max();
-//                    alarmCategorySubscribers(new ValueStatusTimestamp(new Any(maxCategory), StatusCodes.Good,
-//                        DateTime.UtcNow));
-//                }
-//                else
-//                {
-//                    alarmCategorySubscribers(new ValueStatusTimestamp());
-//                }
-//            }
-//        }
+        public int UnackedAlarmsCount;
+        
+        /// <summary>
+        ///     [AlarmCategory, Count]
+        /// </summary>
+        public Dictionary<uint, int> ActiveAlarmsCategories { get; } = new();        
 
-//        public void NotifyAlarmBrushSubscribers()
-//        {
-//            var alarmBrushSubscribers = AlarmBrushSubscribers;
-//            if (alarmBrushSubscribers != null) alarmBrushSubscribers(new ValueStatusTimestamp());
-//            /* TODO
-//            */
-//        }
+        public void NotifyAlarmUnackedSubscribers()
+        {
+            var alarmUnackedSubscribers = AlarmUnackedSubscribers;
+            if (alarmUnackedSubscribers != null)
+            {
+                if (_dataAccessProvider.IsConnected)
+                {
+                    bool anyUnacked = UnackedAlarmsCount > 0;
+                    alarmUnackedSubscribers(new Any(anyUnacked));
+                }
+                else
+                {
+                    alarmUnackedSubscribers(new Any(null));
+                }
+            }
+        }
 
-//        #endregion
-//    }
-//}
+        public void NotifyAlarmCategorySubscribers()
+        {
+            var alarmCategorySubscribers = AlarmCategorySubscribers;
+            if (alarmCategorySubscribers != null)
+            {
+                if (_dataAccessProvider.IsConnected)
+                {
+                    uint maxCategory = 0;
+                    if (ActiveAlarmsCategories.Count > 0)
+                        maxCategory = ActiveAlarmsCategories.Keys.Max();
+                    alarmCategorySubscribers(new Any(maxCategory));
+                }
+                else
+                {
+                    alarmCategorySubscribers(new Any(null));
+                }
+            }
+        }
+
+        public void NotifyAlarmBrushSubscribers()
+        {
+            var alarmBrushSubscribers = AlarmBrushSubscribers;
+            if (alarmBrushSubscribers != null)
+            {
+                alarmBrushSubscribers(new Any(null));
+            }
+            /* TODO
+            */
+        }
+
+        #endregion
+
+        #region private fields
+
+        private readonly string _area;
+        private readonly IDataAccessProvider _dataAccessProvider;
+
+        #endregion        
+    }
+}
