@@ -146,7 +146,7 @@ namespace Ssz.WpfHmi.Common.ControlsRuntime.GenericRuntime
             {
                 alarmsToRemove.AddRange(alarmsSameEventSourceObject);
 
-                var eventSourceObject = App.EventSourceModel.GetEventSourceObject(newAlarm.Tag);
+                var eventSourceObject = App.EventSourceModel.GetEventSourceObject(newAlarm.Tag, newAlarm.Area);
                 var activeConditions = eventSourceObject.AlarmConditions.Where(kvp => kvp.Value.Active).ToArray();
                 if (activeConditions.Length > 0)
                 {

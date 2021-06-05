@@ -227,11 +227,17 @@ namespace Ssz.Utils.EventSourceModel
         }
 
         /// <summary>
-        ///     Gets or creates EventSourceObject with assosiated root Area.
+        ///     Gets or creates EventSourceObject.
+        ///     area can contain '/' chars. 
+        ///     Adds all necessary areas to a new object: 
+        ///     area=String.Empty - root area, 
+        ///     all parent areas,
+        ///     leaf area.        
         /// </summary>
         /// <param name="tag"></param>
+        /// <param name="area"></param>
         /// <returns></returns>
-        public EventSourceObject GetEventSourceObject(string tag)
+        public EventSourceObject GetEventSourceObject(string tag, string area)
         {
             EventSourceObject? existingEventSourceObject;
             if (_eventSourceObjectsDictionary.TryGetValue(tag, out existingEventSourceObject))
@@ -246,6 +252,16 @@ namespace Ssz.Utils.EventSourceModel
 
             EventSourceArea overviewEventSourceArea = GetEventSourceArea(@"");
             newEventSourceObject.EventSourceAreas[@""] = overviewEventSourceArea;
+            if (area != @"")
+            {
+                string parentArea = @"";
+                foreach (string areaPart in area.Split('\\', '/'))
+                {
+                    if (parentArea == @"") parentArea = areaPart;
+                    else parentArea += "/" + areaPart;
+                    newEventSourceObject.EventSourceAreas[parentArea] = GetEventSourceArea(parentArea);
+                }
+            }
 
             return newEventSourceObject;
         }

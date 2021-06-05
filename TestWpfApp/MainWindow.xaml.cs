@@ -18,7 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using TestWpfApp.Alarms;
+
 
 
 namespace TestWpfApp
@@ -59,7 +59,7 @@ namespace TestWpfApp
             List<AlarmInfoViewModelBase> newAlarmInfoViewModels = new List<AlarmInfoViewModelBase>();
             foreach (EventMessage eventMessage in newEventMessages.Where(em => em != null).OrderBy(em => em.OccurrenceTime))
             {
-                var alarmInfoViewModels = await CtcmModelEngine.ProcessEventMessage(eventMessage);
+                var alarmInfoViewModels = await DeltaSimHelper.ProcessEventMessage(App.EventSourceModel, eventMessage);
                 if (alarmInfoViewModels != null)
                 {
                     newAlarmInfoViewModels.AddRange(alarmInfoViewModels);

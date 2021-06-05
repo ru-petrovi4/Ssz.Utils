@@ -800,6 +800,15 @@
             A quick reference to determine if the value is a digital value.
             </summary>
         </member>
+        <member name="M:Ssz.Utils.DataAccess.DeltaSimHelper.ProcessEventMessage(Ssz.Utils.EventSourceModel.EventSourceModel,Ssz.Utils.DataAccess.EventMessage,Microsoft.Extensions.Logging.ILogger)">
+            <summary>
+                Returns new AlarmInfoViewModels or null.
+            </summary>
+            <param name="eventSourceModel"></param>
+            <param name="eventMessage"></param>
+            <param name="logger"></param>
+            <returns></returns>
+        </member>
         <member name="F:Ssz.Utils.DataAccess.EventId.MultiplexedAlarmContainer">
             <summary>
             The TypeId of the container for alarms with multiple conditions, 
@@ -1178,11 +1187,17 @@
             <param name="area"></param>
             <returns></returns>        
         </member>
-        <member name="M:Ssz.Utils.EventSourceModel.EventSourceModel.GetEventSourceObject(System.String)">
+        <member name="M:Ssz.Utils.EventSourceModel.EventSourceModel.GetEventSourceObject(System.String,System.String)">
             <summary>
-                Gets or creates EventSourceObject with assosiated root Area.
+                Gets or creates EventSourceObject.
+                area can contain '/' chars. 
+                Adds all necessary areas to a new object: 
+                area=String.Empty - root area, 
+                all parent areas,
+                leaf area.        
             </summary>
             <param name="tag"></param>
+            <param name="area"></param>
             <returns></returns>
         </member>
         <member name="T:Ssz.Utils.EventSourceModel.EventSourceObject">
