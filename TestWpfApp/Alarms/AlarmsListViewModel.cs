@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Ssz.Utils;
+using Ssz.Utils.DataAccess;
 using Ssz.Utils.Wpf;
-using Ssz.WpfHmi.Common.ModelData;
-using Ssz.WpfHmi.Common.ModelData.Events;
-using Ssz.WpfHmi.Common.ModelEngines;
 using TestWpfApp;
 
 namespace Ssz.WpfHmi.Common.ControlsRuntime.GenericRuntime
@@ -72,10 +70,10 @@ namespace Ssz.WpfHmi.Common.ControlsRuntime.GenericRuntime
                 {
                     AlarmInfoViewModel alarm = _alarms[i];
                     alarm.Num = i + 1;
-                    if (alarm.Unacked)
+                    if (alarm.AlarmIsUnacked)
                         unackedAlarmsCount++;
-                    if ((alarm.Active || alarm.Unacked) &&
-                        alarm.CurrentAlarmCondition != AlarmConditionType.None)
+                    if ((alarm.AlarmIsActive || alarm.AlarmIsUnacked) &&
+                        alarm.CurrentAlarmCondition != AlarmCondition.None)
                         activeOrUnackedAlarmsCount++;
                 }
                 UnackedAlarmsCount = unackedAlarmsCount;
@@ -88,7 +86,7 @@ namespace Ssz.WpfHmi.Common.ControlsRuntime.GenericRuntime
                     _highPriorityAlarms[i].Num = i + 1;
                 }
 
-                AlarmInfoViewModel[] last5UnackedAlarms = _alarms.Where(a => a.Unacked && a.CategoryId > 0).Take(5).ToArray();
+                AlarmInfoViewModel[] last5UnackedAlarms = _alarms.Where(a => a.AlarmIsUnacked && a.CategoryId > 0).Take(5).ToArray();
                 if (!last5UnackedAlarms.SequenceEqual(_last5UnackedAlarms))
                 {
                     _last5UnackedAlarms.Clear();
@@ -130,13 +128,13 @@ namespace Ssz.WpfHmi.Common.ControlsRuntime.GenericRuntime
 
             var alarmsToRemove = new List<AlarmInfoViewModel>();
 
-            if (newAlarm.CurrentAlarmCondition == AlarmConditionType.None)
+            if (newAlarm.CurrentAlarmCondition == AlarmCondition.None)
             {
-                if (newAlarm.Unacked)
+                if (newAlarm.AlarmIsUnacked)
                 {
                     foreach (AlarmInfoViewModel a in alarmsSameEventSourceObject)
                     {
-                        a.Active = false;                        
+                        a.AlarmIsActive = false;                        
                     }
                 }
                 else
@@ -148,15 +146,15 @@ namespace Ssz.WpfHmi.Common.ControlsRuntime.GenericRuntime
             {
                 alarmsToRemove.AddRange(alarmsSameEventSourceObject);
 
-                var eventSourceObject = EventSourceModel.Instance.GetEventSourceObject(newAlarm.Tag);
+                var eventSourceObject = App.EventSourceModel.GetEventSourceObject(newAlarm.Tag);
                 var activeConditions = eventSourceObject.AlarmConditions.Where(kvp => kvp.Value.Active).ToArray();
                 if (activeConditions.Length > 0)
                 {
                     var kvp = activeConditions.OrderByDescending(i => i.Value.CategoryId).ThenByDescending(i => i.Value.ActiveOccurrenceTime).First();
                     newAlarm.CategoryId = kvp.Value.CategoryId;
                     newAlarm.CurrentAlarmCondition = kvp.Key;
-                    newAlarm.Active = kvp.Value.Active;
-                    newAlarm.Unacked = kvp.Value.Unacked;                    
+                    newAlarm.AlarmIsActive = kvp.Value.Active;
+                    newAlarm.AlarmIsUnacked = kvp.Value.Unacked;                    
 
                     alarmsList.Insert(0, newAlarm);
                 }
@@ -168,8 +166,8 @@ namespace Ssz.WpfHmi.Common.ControlsRuntime.GenericRuntime
                         var kvp = unackedConditions.OrderByDescending(i => i.Value.CategoryId).ThenByDescending(i => i.Value.ActiveOccurrenceTime).First();
                         newAlarm.CategoryId = kvp.Value.CategoryId;
                         newAlarm.CurrentAlarmCondition = kvp.Key;
-                        newAlarm.Active = kvp.Value.Active;
-                        newAlarm.Unacked = kvp.Value.Unacked;
+                        newAlarm.AlarmIsActive = kvp.Value.Active;
+                        newAlarm.AlarmIsUnacked = kvp.Value.Unacked;
 
                         alarmsList.Insert(0, newAlarm);
                     }

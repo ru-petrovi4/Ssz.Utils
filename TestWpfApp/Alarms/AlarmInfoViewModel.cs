@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using Ssz.Utils.DataAccess;
 using Ssz.Utils.Wpf;
-using Ssz.WpfHmi.Common.ModelData.Events;
 using Ssz.WpfHmi.Common.ModelEngines;
 using Xi.Contracts.Data;
 
@@ -86,19 +86,19 @@ namespace Ssz.WpfHmi.Common.ControlsRuntime.GenericRuntime
         {
             switch (CurrentAlarmCondition)
             {
-                case AlarmConditionType.LowLow:
+                case Utils.DataAccess.AlarmCondition.LowLow:
                     ConditionString = @"LL";
                     break;
-                case AlarmConditionType.Low:
+                case Utils.DataAccess.AlarmCondition.Low:
                     ConditionString = @"L";
                     break;
-                case AlarmConditionType.None:
+                case Utils.DataAccess.AlarmCondition.None:
                     ConditionString = @"NR";
                     break;
-                case AlarmConditionType.High:
+                case Utils.DataAccess.AlarmCondition.High:
                     ConditionString = @"H";
                     break;
-                case AlarmConditionType.HighHigh:
+                case Utils.DataAccess.AlarmCondition.HighHigh:
                     ConditionString = @"HH";
                     break;
                 default:
@@ -115,7 +115,7 @@ namespace Ssz.WpfHmi.Common.ControlsRuntime.GenericRuntime
                 return;
             }
 
-            if (Unacked)
+            if (AlarmIsUnacked)
             {
                 switch (CategoryId)
                 {

@@ -1,4 +1,5 @@
 ﻿using Ssz.Utils.DataAccess;
+using Ssz.Utils.EventSourceModel;
 using Ssz.Xi.Client;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ namespace TestWpfApp
     public partial class App : Application
     {
         public static readonly IDataAccessProvider DataAccessProvider = new XiDataAccessProvider();
+
+        public static readonly EventSourceModel EventSourceModel = new EventSourceModel(DataAccessProvider);
     }
     
 }

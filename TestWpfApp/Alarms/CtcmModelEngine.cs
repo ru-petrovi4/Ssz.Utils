@@ -1,6 +1,6 @@
 ﻿using Ssz.Utils;
 using Ssz.Utils.DataAccess;
-using Ssz.WpfHmi.Common.ModelData.Events;
+using Ssz.Utils.EventSourceModel;
 using Ssz.Xi.Client;
 using System;
 using System.Collections.Generic;
@@ -55,7 +55,7 @@ namespace TestWpfApp.Alarms
                 string tag;
                 string desc;
                 string area;
-                AlarmConditionType condition;
+                AlarmCondition condition;
                 bool isDigital = false;
                 string varName = eventMessage.EventId?.SourceElementId ?? "";
                 bool active = eventMessage.AlarmMessageData.AlarmState.HasFlag(AlarmState.Active);
@@ -66,54 +66,54 @@ namespace TestWpfApp.Alarms
                 switch (eventMessage.EventId?.Conditions[0].LocalId)
                 {
                     case "LoLo":
-                        condition = AlarmConditionType.LowLow;
+                        condition = AlarmCondition.LowLow;
                         break;
                     case "Lo":
-                        condition = AlarmConditionType.Low;
+                        condition = AlarmCondition.Low;
                         break;
                     case "None":
-                        condition = AlarmConditionType.None;
+                        condition = AlarmCondition.None;
                         break;
                     case "Hi":
-                        condition = AlarmConditionType.High;
+                        condition = AlarmCondition.High;
                         break;
                     case "HiHi":
-                        condition = AlarmConditionType.HighHigh;
+                        condition = AlarmCondition.HighHigh;
                         break;
                     case "AlarmByChngPosLo":
-                        condition = AlarmConditionType.ChangeOfState;
+                        condition = AlarmCondition.ChangeOfState;
                         isDigital = true;
                         break;
                     case "AlarmByChngPosLoLo":
-                        condition = AlarmConditionType.ChangeOfState;
+                        condition = AlarmCondition.ChangeOfState;
                         isDigital = true;
                         break;
                     case "AlarmByChngPosHi":
-                        condition = AlarmConditionType.ChangeOfState;
+                        condition = AlarmCondition.ChangeOfState;
                         isDigital = true;
                         break;
                     case "AlarmByChngPosHiHi":
-                        condition = AlarmConditionType.ChangeOfState;
+                        condition = AlarmCondition.ChangeOfState;
                         isDigital = true;
                         break;
                     case "AlarmByPos_LoLo":
-                        condition = AlarmConditionType.OffNormal;
+                        condition = AlarmCondition.OffNormal;
                         isDigital = true;
                         break;
                     case "AlarmByPos_Low":
-                        condition = AlarmConditionType.OffNormal;
+                        condition = AlarmCondition.OffNormal;
                         isDigital = true;
                         break;
                     case "AlarmByPos_High":
-                        condition = AlarmConditionType.OffNormal;
+                        condition = AlarmCondition.OffNormal;
                         isDigital = true;
                         break;
                     case "AlarmByPos_HiHi":
-                        condition = AlarmConditionType.OffNormal;
+                        condition = AlarmCondition.OffNormal;
                         isDigital = true;
                         break;
                     default:
-                        condition = AlarmConditionType.Other;
+                        condition = AlarmCondition.Other;
                         break;
                 }
 
@@ -141,17 +141,17 @@ namespace TestWpfApp.Alarms
                 }
                 
 
-                EventSourceObject eventSourceObject = EventSourceModel.Instance.GetEventSourceObject(tag);                
+                EventSourceObject eventSourceObject = App.EventSourceModel.GetEventSourceObject(tag);                
 
-                if (condition != AlarmConditionType.None)
+                if (condition != AlarmCondition.None)
                 {
-                    bool changed = EventSourceModel.Instance.ProcessEventSourceObject(eventSourceObject, condition, categoryId,
-                            active, unacked, eventMessage.OccurrenceTime);                    
+                    bool changed = App.EventSourceModel.ProcessEventSourceObject(eventSourceObject, condition, categoryId,
+                            active, unacked, eventMessage.OccurrenceTime, out bool alarmConditionChanged, out bool unackedChanged);                    
                     if (!changed) return null;
                 }
 
                 ConditionState? conditionState;
-                if (condition != AlarmConditionType.None)
+                if (condition != AlarmCondition.None)
                 {
                     eventSourceObject.AlarmConditions.TryGetValue(condition, out conditionState);
                 }
@@ -164,8 +164,8 @@ namespace TestWpfApp.Alarms
                 if (conditionState != null && conditionState.LastAlarmInfoViewModel != null)
                 {
                     alarmInfoViewModel = conditionState.LastAlarmInfoViewModel;
-                    alarmInfoViewModel.Active = active;
-                    alarmInfoViewModel.Unacked = unacked;
+                    alarmInfoViewModel.AlarmIsActive = active;
+                    alarmInfoViewModel.AlarmIsUnacked = unacked;
                     alarmInfoViewModel.OccurrenceTime = eventMessage.OccurrenceTime;
                     alarmInfoViewModel.TimeLastActive = eventMessage.AlarmMessageData.TimeLastActive.Value;
                     alarmInfoViewModel.Tag = tag;
@@ -183,8 +183,8 @@ namespace TestWpfApp.Alarms
                 {
                     alarmInfoViewModel = new AlarmInfoViewModelBase
                     {
-                        Active = active,
-                        Unacked = unacked,
+                        AlarmIsActive = active,
+                        AlarmIsUnacked = unacked,
                         OccurrenceTime = eventMessage.OccurrenceTime,
                         TimeLastActive = eventMessage.AlarmMessageData.TimeLastActive.Value,
                         Tag = tag,
@@ -201,11 +201,11 @@ namespace TestWpfApp.Alarms
 
                     if (!String.IsNullOrEmpty(area))
                     {
-                        var eventSourceArea = EventSourceModel.Instance.GetEventSourceArea(area);
+                        var eventSourceArea = App.EventSourceModel.GetEventSourceArea(area);
                         eventSourceObject.EventSourceAreas[area] = eventSourceArea;                        
                     }
 
-                    if (condition == AlarmConditionType.None)
+                    if (condition == AlarmCondition.None)
                     {
                         eventSourceObject.NormalCondition.LastAlarmInfoViewModel = alarmInfoViewModel;                        
                     }

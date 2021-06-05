@@ -4,10 +4,7 @@ using System.Linq;
 using Ssz.Utils.DataAccess;
 
 namespace Ssz.Utils.EventSourceModel
-{
-    /// <summary>
-    ///     UI thread.
-    /// </summary>
+{    
     public class EventSourceModel : IDisposable
     {
         #region construction and destruction
@@ -213,17 +210,11 @@ namespace Ssz.Utils.EventSourceModel
         }
 
         /// <summary>
-        ///     null or Empty area is for root Area.
-        ///     result != null
+        ///     Gets or creates EventSourceArea.
+        ///     Empty area is for root Area.
         /// </summary>
-        /// <remarks>
-        /// Retrieves the EventSourceArea object for the specified area name. If the area is not already being requested, 
-        /// a new EventSourceArea is created, associated with that area name, and returned to the caller.
-        /// </remarks>
         /// <param name="area"></param>
-        /// <returns>
-        /// An EventSourceArea. Either the existing one, or a newly created one
-        /// </returns>
+        /// <returns></returns>        
         public EventSourceArea GetEventSourceArea(string area)
         {
             EventSourceArea? eventSourceArea;
@@ -234,7 +225,12 @@ namespace Ssz.Utils.EventSourceModel
             }
             return eventSourceArea;
         }
-       
+
+        /// <summary>
+        ///     Gets or creates EventSourceObject with assosiated root Area.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <returns></returns>
         public EventSourceObject GetEventSourceObject(string tag)
         {
             EventSourceObject? existingEventSourceObject;

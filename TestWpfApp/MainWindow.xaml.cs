@@ -1,7 +1,6 @@
 ﻿using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using Ssz.WpfHmi.Common.ControlsRuntime.GenericRuntime;
-using Ssz.WpfHmi.Common.ModelData.Events;
 using Ssz.Xi.Client;
 using System;
 using System.Collections.Generic;
@@ -52,7 +51,7 @@ namespace TestWpfApp
         {
             _alarmsListViewModel.Clear();
 
-            EventSourceModel.Instance.Clear();
+            App.EventSourceModel.Clear();
         }
 
         private async void XiDataAccessProviderOnEventMessagesCallback(EventMessage[] newEventMessages)
@@ -71,7 +70,7 @@ namespace TestWpfApp
             {
                 _alarmsListViewModel.OnAlarmNotification(newAlarmInfoViewModels);
 
-                EventSourceModel.Instance.OnAlarmsListChanged();
+                App.EventSourceModel.OnAlarmsListChanged();
             }
         }
 

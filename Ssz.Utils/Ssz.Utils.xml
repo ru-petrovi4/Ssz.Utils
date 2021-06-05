@@ -1143,11 +1143,6 @@
                 [AlarmCategory, Count]
             </summary>
         </member>
-        <member name="T:Ssz.Utils.EventSourceModel.EventSourceModel">
-            <summary>
-                UI thread.
-            </summary>
-        </member>
         <member name="M:Ssz.Utils.EventSourceModel.EventSourceModel.Dispose">
             <summary>
                 This is the implementation of the IDisposable.Dispose method.  The client
@@ -1177,17 +1172,18 @@
         </member>
         <member name="M:Ssz.Utils.EventSourceModel.EventSourceModel.GetEventSourceArea(System.String)">
             <summary>
-                null or Empty area is for root Area.
-                result != null
+                Gets or creates EventSourceArea.
+                Empty area is for root Area.
             </summary>
-            <remarks>
-            Retrieves the EventSourceArea object for the specified area name. If the area is not already being requested, 
-            a new EventSourceArea is created, associated with that area name, and returned to the caller.
-            </remarks>
             <param name="area"></param>
-            <returns>
-            An EventSourceArea. Either the existing one, or a newly created one
-            </returns>
+            <returns></returns>        
+        </member>
+        <member name="M:Ssz.Utils.EventSourceModel.EventSourceModel.GetEventSourceObject(System.String)">
+            <summary>
+                Gets or creates EventSourceObject with assosiated root Area.
+            </summary>
+            <param name="tag"></param>
+            <returns></returns>
         </member>
         <member name="T:Ssz.Utils.EventSourceModel.EventSourceObject">
             <summary>
