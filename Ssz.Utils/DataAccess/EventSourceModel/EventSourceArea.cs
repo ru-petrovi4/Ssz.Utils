@@ -19,8 +19,8 @@ namespace Ssz.Utils.EventSourceModel
 
         #region public functions        
 
-        public event Action<Any>? AlarmUnackedSubscribers;
-        public event Action<Any>? AlarmCategorySubscribers;       
+        public event Action<ValueStatusTimestamp>? AlarmUnackedChanged;
+        public event Action<ValueStatusTimestamp>? AlarmCategoryChanged;       
 
         public string Area { get; }
 
@@ -33,36 +33,36 @@ namespace Ssz.Utils.EventSourceModel
 
         public void NotifyAlarmUnackedSubscribers()
         {
-            var alarmUnackedSubscribers = AlarmUnackedSubscribers;
-            if (alarmUnackedSubscribers != null)
+            var alarmUnackedChanged = AlarmUnackedChanged;
+            if (alarmUnackedChanged != null)
             {
                 if (_dataAccessProvider.IsConnected)
                 {
                     bool anyUnacked = UnackedAlarmsCount > 0;
-                    alarmUnackedSubscribers(new Any(anyUnacked));
+                    alarmUnackedChanged(new ValueStatusTimestamp(new Any(anyUnacked), StatusCodes.Good, DateTime.UtcNow));
                 }
                 else
                 {
-                    alarmUnackedSubscribers(new Any(null));
+                    alarmUnackedChanged(new ValueStatusTimestamp());
                 }
             }
         }
 
         public void NotifyAlarmCategorySubscribers()
         {
-            var alarmCategorySubscribers = AlarmCategorySubscribers;
-            if (alarmCategorySubscribers != null)
+            var alarmCategoryChanged = AlarmCategoryChanged;
+            if (alarmCategoryChanged != null)
             {
                 if (_dataAccessProvider.IsConnected)
                 {
                     uint maxCategory = 0;
                     if (ActiveAlarmsCategories.Count > 0)
                         maxCategory = ActiveAlarmsCategories.Keys.Max();
-                    alarmCategorySubscribers(new Any(maxCategory));
+                    alarmCategoryChanged(new ValueStatusTimestamp(new Any(maxCategory), StatusCodes.Good, DateTime.UtcNow));
                 }
                 else
                 {
-                    alarmCategorySubscribers(new Any(null));
+                    alarmCategoryChanged(new ValueStatusTimestamp());
                 }
             }
         }

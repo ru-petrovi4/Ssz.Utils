@@ -24,9 +24,9 @@ namespace Ssz.Utils.EventSourceModel
         
         public string Tag { get; }
 
-        public event Action<Any>? AlarmUnackedSubscribers;
-        public event Action<Any>? AlarmCategorySubscribers;        
-        public event Action<Any>? AlarmConditionTypeSubscribers;
+        public event Action<ValueStatusTimestamp>? AlarmUnackedChanged;
+        public event Action<ValueStatusTimestamp>? AlarmCategoryChanged;        
+        public event Action<ValueStatusTimestamp>? AlarmConditionTypeChanged;
 
         public Dictionary<AlarmCondition, ConditionState> AlarmConditions { get; } = new();
 
@@ -102,17 +102,17 @@ namespace Ssz.Utils.EventSourceModel
 
         public void NotifyAlarmUnackedSubscribers()
         {
-            var alarmUnackedSubscribers = AlarmUnackedSubscribers;
-            if (alarmUnackedSubscribers != null)
+            var alarmUnackedChanged = AlarmUnackedChanged;
+            if (alarmUnackedChanged != null)
             {
                 if (_dataAccessProvider.IsConnected)
                 {
                     bool anyUnacked = AnyUnacked();
-                    alarmUnackedSubscribers(new Any(anyUnacked));
+                    alarmUnackedChanged(new ValueStatusTimestamp(new Any(anyUnacked), StatusCodes.Good, DateTime.UtcNow));
                 }
                 else
                 {
-                    alarmUnackedSubscribers(new Any(null));
+                    alarmUnackedChanged(new ValueStatusTimestamp());
                 }
             }
         }
@@ -132,17 +132,17 @@ namespace Ssz.Utils.EventSourceModel
 
         public void NotifyAlarmCategorySubscribers()
         {
-            var alarmCategorySubscribers = AlarmCategorySubscribers;
-            if (alarmCategorySubscribers != null)
+            var alarmCategoryChanged = AlarmCategoryChanged;
+            if (alarmCategoryChanged != null)
             {
                 if (_dataAccessProvider.IsConnected)
                 {
                     uint maxCategory = GetActiveAlarmsMaxCategory();
-                    alarmCategorySubscribers(new Any(maxCategory));
+                    alarmCategoryChanged(new ValueStatusTimestamp(new Any(maxCategory), StatusCodes.Good, DateTime.UtcNow));
                 }
                 else
                 {
-                    alarmCategorySubscribers(new Any(null));
+                    alarmCategoryChanged(new ValueStatusTimestamp());
                 }
             }
         }
@@ -162,17 +162,17 @@ namespace Ssz.Utils.EventSourceModel
 
         public void NotifyAlarmConditionTypeSubscribers()
         {
-            var alarmConditionTypeSubscribers = AlarmConditionTypeSubscribers;
-            if (alarmConditionTypeSubscribers != null)
+            var alarmConditionTypeChanged = AlarmConditionTypeChanged;
+            if (alarmConditionTypeChanged != null)
             {
                 if (_dataAccessProvider.IsConnected)
                 {
                     AlarmCondition alarmConditionType = GetAlarmConditionType();
-                    alarmConditionTypeSubscribers(new Any(alarmConditionType));
+                    alarmConditionTypeChanged(new ValueStatusTimestamp(new Any(alarmConditionType), StatusCodes.Good, DateTime.UtcNow));
                 }
                 else
                 {
-                    alarmConditionTypeSubscribers(new Any(null));
+                    alarmConditionTypeChanged(new ValueStatusTimestamp());
                 }
             }
         }
