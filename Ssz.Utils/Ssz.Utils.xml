@@ -1179,17 +1179,15 @@
                 false if the alarm state remains the same
             </returns>
         </member>
-        <member name="M:Ssz.Utils.EventSourceModel.EventSourceModel.GetEventSourceArea(System.String)">
-            <summary>
-                Gets or creates EventSourceArea.
+        <member name="M:Ssz.Utils.EventSourceModel.EventSourceModel.GetOrCreateEventSourceArea(System.String)">
+            <summary>        
                 Empty area is for root Area.
             </summary>
             <param name="area"></param>
             <returns></returns>        
         </member>
-        <member name="M:Ssz.Utils.EventSourceModel.EventSourceModel.GetEventSourceObject(System.String,System.String)">
-            <summary>
-                Gets or creates EventSourceObject.
+        <member name="M:Ssz.Utils.EventSourceModel.EventSourceModel.GetOrCreateEventSourceObject(System.String,System.String)">
+            <summary>        
                 area can contain '/' chars. 
                 Adds all necessary areas to a new object: 
                 area=String.Empty - root area, 

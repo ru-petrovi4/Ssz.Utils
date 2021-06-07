@@ -147,7 +147,7 @@ namespace Ssz.Utils.DataAccess
                     }
                 }
 
-                EventSourceObject eventSourceObject = eventSourceModel.GetEventSourceObject(tag, areas);
+                EventSourceObject eventSourceObject = eventSourceModel.GetOrCreateEventSourceObject(tag, areas);
 
                 if (condition != AlarmCondition.None)
                 {

@@ -58,16 +58,22 @@ namespace Ssz.Utils.EventSourceModel
 
         public bool Disposed { get; private set; }
 
+        public CaseInsensitiveDictionary<EventSourceObject> EventSourceObjectsDictionary { get; } =
+            new();
+
+        public CaseInsensitiveDictionary<EventSourceArea> EventSourceAreasDictionary { get; } =
+            new();
+
         public void Clear()
         {
-            foreach (EventSourceObject eventSourceObject in _eventSourceObjectsDictionary.Values)
+            foreach (EventSourceObject eventSourceObject in EventSourceObjectsDictionary.Values)
             {
                 eventSourceObject.AlarmConditions.Clear();
                 eventSourceObject.NotifyAlarmUnackedSubscribers();
                 eventSourceObject.NotifyAlarmCategorySubscribers();                
                 eventSourceObject.NotifyAlarmConditionTypeSubscribers();
             }
-            foreach (EventSourceArea eventSourceArea in _eventSourceAreasDictionary.Values)
+            foreach (EventSourceArea eventSourceArea in EventSourceAreasDictionary.Values)
             {
                 eventSourceArea.UnackedAlarmsCount = 0;
                 eventSourceArea.ActiveAlarmsCategories.Clear();
@@ -168,13 +174,13 @@ namespace Ssz.Utils.EventSourceModel
         
         public void OnAlarmsListChanged()
         {
-            foreach (EventSourceArea eventSourceArea in _eventSourceAreasDictionary.Values)
+            foreach (EventSourceArea eventSourceArea in EventSourceAreasDictionary.Values)
             {
                 eventSourceArea.UnackedAlarmsCount = 0;
                 eventSourceArea.ActiveAlarmsCategories.Clear();
             }
 
-            foreach (EventSourceObject eventSourceObject in _eventSourceObjectsDictionary.Values)
+            foreach (EventSourceObject eventSourceObject in EventSourceObjectsDictionary.Values)
             {
                 if (eventSourceObject.AnyUnacked())
                 {
@@ -202,32 +208,30 @@ namespace Ssz.Utils.EventSourceModel
                 }
             }
 
-            foreach (EventSourceArea eventSourceArea in _eventSourceAreasDictionary.Values)
+            foreach (EventSourceArea eventSourceArea in EventSourceAreasDictionary.Values)
             {
                 eventSourceArea.NotifyAlarmUnackedSubscribers();
                 eventSourceArea.NotifyAlarmCategorySubscribers();
             }
         }
 
-        /// <summary>
-        ///     Gets or creates EventSourceArea.
+        /// <summary>        
         ///     Empty area is for root Area.
         /// </summary>
         /// <param name="area"></param>
         /// <returns></returns>        
-        public EventSourceArea GetEventSourceArea(string area)
+        public EventSourceArea GetOrCreateEventSourceArea(string area)
         {
             EventSourceArea? eventSourceArea;
-            if (!_eventSourceAreasDictionary.TryGetValue(area, out eventSourceArea))
+            if (!EventSourceAreasDictionary.TryGetValue(area, out eventSourceArea))
             {
                 eventSourceArea = new EventSourceArea(area, _dataAccessProvider);
-                _eventSourceAreasDictionary[area] = eventSourceArea;
+                EventSourceAreasDictionary[area] = eventSourceArea;
             }
             return eventSourceArea;
         }
 
-        /// <summary>
-        ///     Gets or creates EventSourceObject.
+        /// <summary>        
         ///     area can contain '/' chars. 
         ///     Adds all necessary areas to a new object: 
         ///     area=String.Empty - root area, 
@@ -237,10 +241,10 @@ namespace Ssz.Utils.EventSourceModel
         /// <param name="tag"></param>
         /// <param name="area"></param>
         /// <returns></returns>
-        public EventSourceObject GetEventSourceObject(string tag, string area)
+        public EventSourceObject GetOrCreateEventSourceObject(string tag, string area)
         {
             EventSourceObject? existingEventSourceObject;
-            if (_eventSourceObjectsDictionary.TryGetValue(tag, out existingEventSourceObject))
+            if (EventSourceObjectsDictionary.TryGetValue(tag, out existingEventSourceObject))
             {
                 //We already have this tag in our list.  Just return the existing object.
                 return existingEventSourceObject;
@@ -248,9 +252,9 @@ namespace Ssz.Utils.EventSourceModel
 
             //The tag doesn't already exist.  Create a new EventSourceObject and add it to our dictionary
             var newEventSourceObject = new EventSourceObject(tag, _dataAccessProvider);
-            _eventSourceObjectsDictionary[tag] = newEventSourceObject;
+            EventSourceObjectsDictionary[tag] = newEventSourceObject;
 
-            EventSourceArea overviewEventSourceArea = GetEventSourceArea(@"");
+            EventSourceArea overviewEventSourceArea = GetOrCreateEventSourceArea(@"");
             newEventSourceObject.EventSourceAreas[@""] = overviewEventSourceArea;
             if (area != @"")
             {
@@ -259,7 +263,7 @@ namespace Ssz.Utils.EventSourceModel
                 {
                     if (parentArea == @"") parentArea = areaPart;
                     else parentArea += "/" + areaPart;
-                    newEventSourceObject.EventSourceAreas[parentArea] = GetEventSourceArea(parentArea);
+                    newEventSourceObject.EventSourceAreas[parentArea] = GetOrCreateEventSourceArea(parentArea);
                 }
             }
 
@@ -269,7 +273,7 @@ namespace Ssz.Utils.EventSourceModel
         public void GetExistingAlarmInfoViewModels(Action<IEnumerable<AlarmInfoViewModelBase>> alarmNotification)
         {
             var alarmInfoViewModels = new List<AlarmInfoViewModelBase>();
-            foreach (var kvp in _eventSourceObjectsDictionary)
+            foreach (var kvp in EventSourceObjectsDictionary)
             {
                 EventSourceObject eventSourceObject = kvp.Value;
                 var alarmInfoViewModelsForObject = new List<AlarmInfoViewModelBase>();
@@ -300,12 +304,6 @@ namespace Ssz.Utils.EventSourceModel
         #region private fields
 
         private readonly IDataAccessProvider _dataAccessProvider;        
-
-        private readonly CaseInsensitiveDictionary<EventSourceObject> _eventSourceObjectsDictionary =
-            new();
-
-        private readonly CaseInsensitiveDictionary<EventSourceArea> _eventSourceAreasDictionary =
-            new();        
 
         #endregion
     }
