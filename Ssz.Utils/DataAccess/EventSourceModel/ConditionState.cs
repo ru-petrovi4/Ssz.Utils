@@ -13,6 +13,11 @@ namespace Ssz.Utils.EventSourceModel
         public DateTime ActiveOccurrenceTime;
         public AlarmInfoViewModelBase? LastAlarmInfoViewModel;
 
+        /// <summary>
+        ///     You can use this property as temp storage.
+        /// </summary>
+        public object? Obj { get; set; }
+
         #endregion
     }
 }

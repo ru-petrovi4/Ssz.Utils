@@ -1152,6 +1152,11 @@
             </summary>
             <param name="valueStatusTimestamp"></param>
         </member>
+        <member name="P:Ssz.Utils.EventSourceModel.ConditionState.Obj">
+            <summary>
+                You can use this property as temp storage.
+            </summary>
+        </member>
         <member name="P:Ssz.Utils.EventSourceModel.EventSourceArea.Obj">
             <summary>
                 You can use this property as temp storage.

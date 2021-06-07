@@ -27,7 +27,7 @@ namespace Ssz.Utils.EventSourceModel
         /// <summary>
         ///     You can use this property as temp storage.
         /// </summary>
-        object? Obj { get; set; }
+        public object? Obj { get; set; }
 
         public int UnackedAlarmsCount;
         
