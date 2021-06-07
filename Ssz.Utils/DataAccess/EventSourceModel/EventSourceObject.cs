@@ -24,6 +24,11 @@ namespace Ssz.Utils.EventSourceModel
         
         public string Tag { get; }
 
+        /// <summary>
+        ///     You can use this property as temp storage.
+        /// </summary>
+        object? Obj { get; set; }
+
         public event Action<ValueStatusTimestamp>? AlarmUnackedChanged;
         public event Action<ValueStatusTimestamp>? AlarmCategoryChanged;        
         public event Action<ValueStatusTimestamp>? AlarmConditionTypeChanged;

@@ -1038,6 +1038,11 @@
             One or more of the Requested Fields has changed.
             </summary>
         </member>
+        <member name="P:Ssz.Utils.DataAccess.IDataAccessProvider.Obj">
+            <summary>
+                You can use this property as temp storage.
+            </summary>
+        </member>
         <member name="P:Ssz.Utils.DataAccess.IValueSubscription.Obj">
             <summary>
                 Property to use internally in ModelDataProvider. You need to
@@ -1147,6 +1152,11 @@
             </summary>
             <param name="valueStatusTimestamp"></param>
         </member>
+        <member name="P:Ssz.Utils.EventSourceModel.EventSourceArea.Obj">
+            <summary>
+                You can use this property as temp storage.
+            </summary>
+        </member>
         <member name="P:Ssz.Utils.EventSourceModel.EventSourceArea.ActiveAlarmsCategories">
             <summary>
                 [AlarmCategory, Count]
@@ -1201,6 +1211,11 @@
         <member name="T:Ssz.Utils.EventSourceModel.EventSourceObject">
             <summary>
             A class to handle Alarm and Event notifications
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.EventSourceModel.EventSourceObject.Obj">
+            <summary>
+                You can use this property as temp storage.
             </summary>
         </member>
         <member name="M:Ssz.Utils.EventSourceModel.EventSourceObject.AnyUnacked">

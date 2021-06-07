@@ -25,6 +25,9 @@ namespace Ssz.Utils.DataAccess
 
         Guid DataGuid { get; }
 
+        /// <summary>
+        ///     You can use this property as temp storage.
+        /// </summary>
         object? Obj { get; set; }
 
         event Action ValueSubscriptionsUpdated;

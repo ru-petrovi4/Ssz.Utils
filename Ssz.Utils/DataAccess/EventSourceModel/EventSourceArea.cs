@@ -24,6 +24,11 @@ namespace Ssz.Utils.EventSourceModel
 
         public string Area { get; }
 
+        /// <summary>
+        ///     You can use this property as temp storage.
+        /// </summary>
+        object? Obj { get; set; }
+
         public int UnackedAlarmsCount;
         
         /// <summary>
