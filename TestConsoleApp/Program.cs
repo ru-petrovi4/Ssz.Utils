@@ -16,12 +16,10 @@ namespace TestConsoleApp
         //static string _s2 = "m9zyvlcodIYY+B1j2FK21mmvchyFfylNjO/jjtTU9Cg=";
         static void Main(string[] args)
         {
-            var q = new CaseInsensitiveDictionary<string>();
-            q.Add("Э-2", "Ааа");
-            q.Add("ббб", "ааа");
+            
 
 
-            Console.WriteLine(q.ContainsKey("Э-2"));
+            Console.WriteLine(DateTime.Now.ToString("dd") + DateTime.Now.ToString("MM"));
 
 
             //Console.WriteLine(q.Count);

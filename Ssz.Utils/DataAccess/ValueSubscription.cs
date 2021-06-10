@@ -54,7 +54,7 @@ namespace Ssz.Utils.DataAccess
         void IValueSubscription.Update(ValueStatusTimestamp valueStatusTimestamp)
         {
             if (ValueStatusTimestamp == valueStatusTimestamp) return;
-            if (_valueChangedAction != null) _valueChangedAction(valueStatusTimestamp, ValueStatusTimestamp);
+            if (_valueChangedAction != null) _valueChangedAction(ValueStatusTimestamp, valueStatusTimestamp);
             ValueStatusTimestamp = valueStatusTimestamp;
         }
 
