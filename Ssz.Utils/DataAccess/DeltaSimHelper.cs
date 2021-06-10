@@ -72,7 +72,7 @@ namespace Ssz.Utils.DataAccess
                 string eu = "";
                 AlarmCondition condition;
                 bool isDigital = false;
-                string varName = eventMessage.EventId?.SourceElementId ?? "";
+                string sourceElementId = eventMessage.EventId?.SourceElementId ?? "";
                 bool active = eventMessage.AlarmMessageData.AlarmState.HasFlag(AlarmState.Active);
                 bool unacked = eventMessage.AlarmMessageData.AlarmState.HasFlag(AlarmState.Unacked);
                 uint categoryId = eventMessage.CategoryId;
@@ -96,6 +96,12 @@ namespace Ssz.Utils.DataAccess
                         break;
                     case "HiHi":
                         condition = AlarmCondition.HighHigh;
+                        break;
+                    case "PositiveRate":
+                        condition = AlarmCondition.PositiveRate;
+                        break;
+                    case "NegativeRate":
+                        condition = AlarmCondition.NegativeRate;
                         break;
                     case "AlarmByChngPosLo":
                         condition = AlarmCondition.ChangeOfState;
@@ -145,6 +151,10 @@ namespace Ssz.Utils.DataAccess
                         level = xmlReader.GetAttribute("Level") ?? "";
                         eu = xmlReader.GetAttribute("EU") ?? "";
                     }
+                }
+                else
+                {
+                    tag = sourceElementId;
                 }
 
                 EventSourceObject eventSourceObject = eventSourceModel.GetOrCreateEventSourceObject(tag, areas);
