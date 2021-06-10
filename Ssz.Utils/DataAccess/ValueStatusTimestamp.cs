@@ -102,5 +102,8 @@ namespace Ssz.Utils.DataAccess
         public const uint ItemDoesNotExist = 1;
 
         public const uint Good = 2;
+
+        public static bool IsGood(uint statusCode) => statusCode >= Good;
+
     }
 }
