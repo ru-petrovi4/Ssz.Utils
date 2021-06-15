@@ -14,6 +14,44 @@ namespace Ssz.Xi.Client
 {
     public partial class XiDataAccessProvider : IDataAccessProvider, IDispatcher
     {
+        #region construction and destruction
+        
+        /// <summary>
+        ///     This is the implementation of the IDisposable.Dispose method.  The client
+        ///     application should invoke this method when this instance is no longer needed.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        ///     This method is invoked when the IDisposable.Dispose or Finalize actions are
+        ///     requested.
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Close();
+            }
+
+            Disposed = true;
+        }
+
+        /// <summary>
+        ///     Invoked by the .NET Framework while doing heap managment (Finalize).
+        /// </summary>
+        ~XiDataAccessProvider()
+        {
+            Dispose(false);
+        }
+
+        public bool Disposed { get; private set; }
+
+        #endregion
+
         #region public functions
 
         /// <summary>

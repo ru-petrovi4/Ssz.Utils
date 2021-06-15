@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils.DataAccess
 {
-    public interface IDataAccessProvider
+    public interface IDataAccessProvider: IDisposable
     {
         string ServerAddress { get; }
 
