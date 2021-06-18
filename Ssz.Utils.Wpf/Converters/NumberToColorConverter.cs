@@ -5,22 +5,22 @@ using System.Windows.Media;
 
 namespace Ssz.Utils.Wpf.Converters
 {
-    public class Int32ToColorConverter : IValueConverter
+    public class NumberToColorConverter : IValueConverter
     {
         #region public functions
 
-        public static readonly Int32ToColorConverter Instanse = new Int32ToColorConverter();
+        public static readonly NumberToColorConverter Instanse = new NumberToColorConverter();
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var colors = parameter as Color[];
-            if (value is int && colors != null)
+            var colors = parameter as Color[];            
+            if (colors != null)
             {
-                var idx = (int) value;
-                if (idx >= 0 && idx < colors.Length)
-                    return colors[idx];
+                var intValue = new Any(value).ValueAsInt32(false);                
+                if (intValue >= 0 && intValue < colors.Length)
+                    return colors[intValue];
             }
-            return Colors.Red;
+            return Colors.Transparent;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

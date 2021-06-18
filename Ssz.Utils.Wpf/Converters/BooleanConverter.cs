@@ -53,11 +53,11 @@ namespace Ssz.Utils.Wpf.Converters
         {
             if (value == null) return OnNull;
             if (OnTrue == null && OnFalse == null) return OnNotNull;
-            if (string.Equals(value.ToString(), true.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            var boolValue = new Any(value).ValueAsBoolean(false);
+            if (boolValue)
                 return OnTrue;
-            if (string.Equals(value.ToString(), false.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            else
                 return OnFalse;
-            return OnNotNull;
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
