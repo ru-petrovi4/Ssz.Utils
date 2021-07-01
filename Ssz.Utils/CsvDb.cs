@@ -12,12 +12,45 @@ namespace Ssz.Utils
     {
         #region construction and destruction
 
-        public CsvDb(ILogger<CsvDb>? logger = null, DirectoryInfo? csvDbDirectoryInfo = null)
+        /// <summary>
+        ///     If csvDbDirectoryInfo == null, directory is not used.
+        ///     If !csvDbDirectoryInfo.Exists, directory is created when saving files.
+        ///     If dispatcher != null monitors fileSystem
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="csvDbDirectoryInfo"></param>
+        /// <param name="dispatcher"></param>
+        public CsvDb(ILogger<CsvDb>? logger = null, DirectoryInfo? csvDbDirectoryInfo = null, IDispatcher? dispatcher = null)
         {
             _logger = logger;
             _csvDbDirectoryInfo = csvDbDirectoryInfo;
+            _dispatcher = dispatcher;
+
+            if (_csvDbDirectoryInfo != null && _dispatcher != null)
+                try
+                {
+                    _fileSystemWatcher.Created += FileSystemWatcherOnEvent;
+                    _fileSystemWatcher.Changed += FileSystemWatcherOnEvent;
+                    _fileSystemWatcher.Deleted += FileSystemWatcherOnEvent;
+                    _fileSystemWatcher.Renamed += FileSystemWatcherOnEvent;
+                    _fileSystemWatcher.Path = _csvDbDirectoryInfo.FullName;
+                    _fileSystemWatcher.EnableRaisingEvents = true;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "AppSettings:FilesStoreRoot directory error. Please, specify correct directory and restart service.");
+                }
+
 
             LoadDataInternal(_logger);
+        }
+
+        private void FileSystemWatcherOnEvent(object sender, FileSystemEventArgs e)
+        {            
+            _dispatcher!.BeginInvoke(ct =>
+            {
+                LoadData();
+            });
         }
 
         #endregion
@@ -136,6 +169,8 @@ namespace Ssz.Utils
 
             if (!_csvDbDirectoryInfo.Exists) _csvDbDirectoryInfo.Create();
 
+            _fileSystemWatcher.EnableRaisingEvents = false;
+
             foreach (string fileName in _changedFileNames)
             {
                 string fileFullName = _csvDbDirectoryInfo.FullName + @"\" + fileName;
@@ -155,6 +190,8 @@ namespace Ssz.Utils
             }
 
             _changedFileNames.Clear();
+
+            _fileSystemWatcher.EnableRaisingEvents = true;
         }
 
         #endregion
@@ -190,6 +227,8 @@ namespace Ssz.Utils
 
         private DirectoryInfo? _csvDbDirectoryInfo;
 
+        private IDispatcher? _dispatcher;
+
         /// <summary>
         ///     File names end with .csv
         /// </summary>
@@ -200,6 +239,8 @@ namespace Ssz.Utils
         ///     File names end with .csv
         /// </summary>
         private readonly HashSet<string> _changedFileNames = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+
+        private readonly FileSystemWatcher _fileSystemWatcher = new();
 
         #endregion
     }

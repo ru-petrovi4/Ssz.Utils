@@ -31,42 +31,42 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="resourceManagementClient"></param>
-        /// <param name="applicationName"></param>
-        /// <param name="workstationName"></param>
-        /// <param name="serverContextTimeoutMs"></param>
-        /// <param name="localeId"></param>
+        /// <param name="clientApplicationName"></param>
+        /// <param name="clientWorkstationName"></param>
+        /// <param name="requestedServerContextTimeoutMs"></param>
+        /// <param name="requestedServerLocaleId"></param>
         /// <param name="systemNameToConnect"></param>
         /// <param name="contextParams"></param>
         public ClientContext(ILogger<GrpcDataAccessProvider> logger,
             IDispatcher callbackDispatcher,
             DataAccess.DataAccessClient resourceManagementClient,            
-            string applicationName,
-            string workstationName,            
-            uint serverContextTimeoutMs,
-            uint localeId,
+            string clientApplicationName,
+            string clientWorkstationName,            
+            uint requestedServerContextTimeoutMs,
+            uint requestedServerLocaleId,
             string systemNameToConnect,
             CaseInsensitiveDictionary<string> contextParams)
         {
             _logger = logger;
             _callbackDispatcher = callbackDispatcher;
             _resourceManagementClient = resourceManagementClient;
-            _applicationName = applicationName;
-            _workstationName = workstationName;          
+            _applicationName = clientApplicationName;
+            _workstationName = clientWorkstationName;          
 
             var initiateRequest = new InitiateRequest
             {
-                ApplicationName = applicationName,
-                WorkstationName = workstationName,
-                ContextTimeoutMs = serverContextTimeoutMs,
-                LocaleId = localeId,
+                ClientApplicationName = clientApplicationName,
+                ClientWorkstationName = clientWorkstationName,
+                RequestedServerContextTimeoutMs = requestedServerContextTimeoutMs,
+                RequestedServerLocaleId = requestedServerLocaleId,
             };
             initiateRequest.SystemNameToConnect = systemNameToConnect;
             initiateRequest.ContextParams.Add(contextParams);
 
             InitiateReply initiateReply = _resourceManagementClient.Initiate(initiateRequest);
             _serverContextId = initiateReply.ContextId;
-            _serverContextTimeoutMs = initiateReply.ContextTimeoutMs;
-            _localeId = initiateReply.LocaleId;
+            _serverContextTimeoutMs = initiateReply.ServerContextTimeoutMs;
+            _serverLocaleId = initiateReply.ServerLocaleId;
 
             if (_serverContextId == @"") throw new Exception("Server returns empty contextId.");
 
@@ -248,7 +248,7 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         public uint LocaleId
         {
-            get { return _localeId; }
+            get { return _serverLocaleId; }
         }
 
         /// <summary>
@@ -381,7 +381,7 @@ namespace Ssz.DataGrpc.Client
         
         private readonly uint _serverContextTimeoutMs;
         
-        private readonly uint _localeId;
+        private readonly uint _serverLocaleId;
         
         private DateTime _resourceManagementLastCallUtc;        
         

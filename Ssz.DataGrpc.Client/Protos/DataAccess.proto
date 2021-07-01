@@ -31,7 +31,7 @@ service DataAccess {
 
   rpc ReadElementValueJournals (ReadElementValueJournalsRequest) returns (ReadElementValueJournalsReply);
 
-  rpc WriteValues (WriteValuesRequest) returns (WriteValuesReply);
+  rpc WriteElementValues (WriteElementValuesRequest) returns (WriteElementValuesReply);
 
   rpc AckAlarms (AckAlarmsRequest) returns (AckAlarmsReply);
 
@@ -78,18 +78,18 @@ message CallbackMessage {
 }
 
 message InitiateRequest {
-  string application_name = 1;
-  string workstation_name = 2;     
-  uint32 context_timeout_ms = 3;
-  uint32 locale_id = 4;
+  string client_application_name = 1;
+  string client_workstation_name = 2;     
+  uint32 requested_server_context_timeout_ms = 3;
+  uint32 requested_server_locale_id = 4;
   string system_name_to_connect = 5; 
   map<string, string> context_params = 6;
 }
 
 message InitiateReply {
   string context_id = 1;
-  uint32 context_timeout_ms = 2;
-  uint32 locale_id = 3;
+  uint32 server_context_timeout_ms = 2;
+  uint32 server_locale_id = 3;
 }
 
 message ConcludeRequest {
@@ -304,13 +304,13 @@ message ElementValueJournal {
   repeated uint32 uint_values = 6;
 }
 
-message WriteValuesRequest {
+message WriteElementValuesRequest {
   string context_id = 1;
   uint32 list_server_alias = 2; 
   ElementValuesCollection element_values_collection = 3; 
 }
 
-message WriteValuesReply {  
+message WriteElementValuesReply {  
   repeated AliasResult results = 1;
 }
 

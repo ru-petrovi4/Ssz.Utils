@@ -13,9 +13,9 @@ namespace Ssz.Utils.DataAccess
 
         string SystemNameToConnect { get; }
 
-        string ApplicationName { get; }
+        string ClientApplicationName { get; }
 
-        string WorkstationName { get; }
+        string ClientWorkstationName { get; }
 
         CaseInsensitiveDictionary<string> ContextParams { get; }
 
@@ -40,7 +40,7 @@ namespace Ssz.Utils.DataAccess
             bool elementValueListCallbackIsEnabled,
             bool eventListCallbackIsEnabled,
             string serverAddress,
-            string applicationName, string workstationName, string systemNameToConnect, CaseInsensitiveDictionary<string> contextParams);
+            string clientApplicationName, string clientWorkstationName, string systemNameToConnect, CaseInsensitiveDictionary<string> contextParams);
 
         void Close();
         

@@ -31,13 +31,13 @@ namespace Ssz.DataGrpc.Client
 
             try
             {
-                var request = new WriteValuesRequest
+                var request = new WriteElementValuesRequest
                 {
                     ContextId = _serverContextId,
                     ListServerAlias = listServerAlias,
                     ElementValuesCollection = elementValuesCollection
                 };
-                WriteValuesReply reply = _resourceManagementClient.WriteValues(request);
+                WriteElementValuesReply reply = _resourceManagementClient.WriteElementValues(request);
                 SetResourceManagementLastCallUtc();
                 return reply.Results.ToArray();                
             }

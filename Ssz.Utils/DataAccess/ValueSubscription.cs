@@ -66,7 +66,7 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         /// 
         /// </summary>
-        public ValueStatusTimestamp ValueStatusTimestamp { get; private set; } = new ValueStatusTimestamp();
+        public ValueStatusTimestamp ValueStatusTimestamp { get; private set; }
 
         /// <summary>
         /// 

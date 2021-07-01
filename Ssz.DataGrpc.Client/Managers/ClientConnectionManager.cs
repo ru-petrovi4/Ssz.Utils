@@ -110,13 +110,13 @@ namespace Ssz.DataGrpc.Client.Managers
         /// 
         /// </summary>
         /// <param name="serverAddress"></param>
-        /// <param name="applicationName"></param>
-        /// <param name="workstationName"></param>
+        /// <param name="clientApplicationName"></param>
+        /// <param name="clientWorkstationName"></param>
         /// <param name="systemNameToConnect"></param>
         /// <param name="contextParams"></param>
         public void InitiateConnection(string serverAddress,
-            string applicationName,
-            string workstationName,
+            string clientApplicationName,
+            string clientWorkstationName,
             string systemNameToConnect,
             CaseInsensitiveDictionary<string> contextParams)
         {
@@ -125,9 +125,9 @@ namespace Ssz.DataGrpc.Client.Managers
             if (_connectionInfo != null) throw new Exception(@"DataGrpc context already exists.");
 
 #if DEBUG            
-            TimeSpan contextTimeout = new TimeSpan(0, 30, 0);
+            TimeSpan requestedServerContextTimeoutMs = new TimeSpan(0, 30, 0);
 #else
-            TimeSpan contextTimeout = new TimeSpan(0, 0, 30);
+            TimeSpan requestedServerContextTimeoutMs = new TimeSpan(0, 0, 30);
 #endif
             GrpcChannel? grpcChannel = null;            
             try
@@ -139,9 +139,9 @@ namespace Ssz.DataGrpc.Client.Managers
                 var clientContext = new ClientContext(_logger,
                             _callbackDispatcher,
                             resourceManagementClient,                            
-                            applicationName, 
-                            workstationName,
-                            (uint)contextTimeout.TotalMilliseconds,
+                            clientApplicationName, 
+                            clientWorkstationName,
+                            (uint)requestedServerContextTimeoutMs.TotalMilliseconds,
                             (uint)Thread.CurrentThread.CurrentCulture.LCID,
                             systemNameToConnect,
                             contextParams

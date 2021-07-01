@@ -81,7 +81,7 @@ namespace Ssz.Xi.Client
         /// <summary>
         ///     Used in Xi Context initialization.
         /// </summary>
-        public string ApplicationName
+        public string ClientApplicationName
         {
             get
             {
@@ -93,7 +93,7 @@ namespace Ssz.Xi.Client
         /// <summary>
         ///     Used in Xi Context initialization.
         /// </summary>
-        public string WorkstationName
+        public string ClientWorkstationName
         {
             get
             {
@@ -150,7 +150,7 @@ namespace Ssz.Xi.Client
             bool elementValueListCallbackIsEnabled,
             bool eventListCallbackIsEnabled,
             string serverAddress,
-            string applicationName, string workstationName, string systemNameToConnect, CaseInsensitiveDictionary<string> contextParams)
+            string clientApplicationName, string clientWorkstationName, string systemNameToConnect, CaseInsensitiveDictionary<string> contextParams)
         {
             Close();            
 
@@ -164,8 +164,8 @@ namespace Ssz.Xi.Client
             _xiDataListItemsManager.XiSystem = _systemNameToConnect;
             _xiEventListItemsManager.XiSystem = _systemNameToConnect;
             _xiDataJournalListItemsManager.XiSystem = _systemNameToConnect;
-            _applicationName = applicationName;            
-            _workstationName = workstationName;            
+            _applicationName = clientApplicationName;            
+            _workstationName = clientWorkstationName;            
             if (contextParams != null) _contextParams = contextParams;            
 
             //string pollIntervalMsString =
@@ -376,17 +376,21 @@ namespace Ssz.Xi.Client
             {
                 if (ct.WaitHandle.WaitOne(10)) break;
 
-                OnLoopInWorkingThread(ct);
+                Execute(ct);
             }            
 
-            UnsubscribeInWorkingThread();
+            Unsubscribe();
 
             if (_eventListCallbackIsEnabled) _xiEventListItemsManager.EventMessagesCallback -= OnEventMessagesCallback;
             _xiServerProxy.Dispose();
             _xiServerProxy = null;
-        }        
+        }
 
-        private void OnLoopInWorkingThread(CancellationToken cancellationToken)
+        /// <summary>
+        ///     On loop in working thread.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        private void Execute(CancellationToken cancellationToken)
         {
             _threadSafeDispatcher.InvokeActionsInQueue(cancellationToken);
 
@@ -400,7 +404,7 @@ namespace Ssz.Xi.Client
                 IDispatcher? сallbackDoer;
                 if (_isConnected)
                 {
-                    UnsubscribeInWorkingThread();
+                    Unsubscribe();
 
                     #region notify subscribers disconnected
 
@@ -533,8 +537,9 @@ namespace Ssz.Xi.Client
         }
 
         /// <summary>
+        ///     Working thread.
         /// </summary>
-        private void UnsubscribeInWorkingThread()
+        private void Unsubscribe()
         { 
             _xiDataListItemsManager.Unsubscribe();
             _xiEventListItemsManager.Unsubscribe();

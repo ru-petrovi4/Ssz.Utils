@@ -97,24 +97,24 @@ namespace Ssz.DataGrpc.Client
         /// <summary>
         ///     Used in DataGrpc Context initialization.
         /// </summary>
-        public string ApplicationName
+        public string ClientApplicationName
         {
             get
             {
                 if (!IsInitialized) throw new Exception("Not Initialized");
-                return _applicationName;
+                return _clientApplicationName;
             }
         }
 
         /// <summary>
         ///     Used in DataGrpc Context initialization.
         /// </summary>
-        public string WorkstationName
+        public string ClientWorkstationName
         {
             get
             {
                 if (!IsInitialized) throw new Exception("Not Initialized");
-                return _workstationName;
+                return _clientWorkstationName;
             }
         }
 
@@ -173,15 +173,15 @@ namespace Ssz.DataGrpc.Client
         /// <param name="сallbackDispatcher"></param>
         /// <param name="elementValueListCallbackIsEnabled"></param>
         /// <param name="serverAddress"></param>
-        /// <param name="applicationName"></param>
-        /// <param name="workstationName"></param>
+        /// <param name="clientApplicationName"></param>
+        /// <param name="clientWorkstationName"></param>
         /// <param name="systemNames"></param>
         /// <param name="contextParams"></param>
         public virtual void Initialize(IDispatcher? сallbackDispatcher,
             bool elementValueListCallbackIsEnabled,
             bool eventListCallbackIsEnabled,
             string serverAddress,
-            string applicationName, string workstationName, string systemNameToConnect, CaseInsensitiveDictionary<string> contextParams)
+            string clientApplicationName, string clientWorkstationName, string systemNameToConnect, CaseInsensitiveDictionary<string> contextParams)
         {
             Close();            
 
@@ -191,8 +191,8 @@ namespace Ssz.DataGrpc.Client
             _elementValueListCallbackIsEnabled = elementValueListCallbackIsEnabled;
             _eventListCallbackIsEnabled = eventListCallbackIsEnabled;
             _serverAddress = serverAddress;            
-            _applicationName = applicationName;            
-            _workstationName = workstationName;
+            _clientApplicationName = clientApplicationName;            
+            _clientWorkstationName = clientWorkstationName;
             _systemNameToConnect = systemNameToConnect;
             _contextParams = contextParams;            
 
@@ -401,7 +401,11 @@ namespace Ssz.DataGrpc.Client
 
         protected DateTime LastValueSubscriptionsUpdatedDateTimeUtc { get; private set; } = DateTime.MinValue;
 
-        protected virtual void OnLoopInWorkingThread(CancellationToken cancellationToken)
+        /// <summary>
+        ///     On loop in working thread.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        protected virtual void Execute(CancellationToken cancellationToken)
         {
             _threadSafeDispatcher.InvokeActionsInQueue(cancellationToken);
 
@@ -413,7 +417,7 @@ namespace Ssz.DataGrpc.Client
                 IDispatcher? сallbackDispatcher;
                 if (_isConnected)
                 {
-                    UnsubscribeInWorkingThread();
+                    Unsubscribe();
 
                     #region notify subscribers disconnected
 
@@ -477,8 +481,8 @@ namespace Ssz.DataGrpc.Client
                         //}
 
 
-                        ClientConnectionManager.InitiateConnection(_serverAddress, _applicationName,
-                            _workstationName, _systemNameToConnect, _contextParams);
+                        ClientConnectionManager.InitiateConnection(_serverAddress, _clientApplicationName,
+                            _clientWorkstationName, _systemNameToConnect, _contextParams);
 
                         Logger.LogDebug("End Connecting");
 
@@ -533,7 +537,10 @@ namespace Ssz.DataGrpc.Client
         {            
         }
 
-        protected virtual void UnsubscribeInWorkingThread()
+        /// <summary>
+        ///     Working thread.
+        /// </summary>
+        protected virtual void Unsubscribe()
         {
             ClientElementValueListManager.Unsubscribe();
             ClientEventListManager.Unsubscribe();
@@ -582,10 +589,10 @@ namespace Ssz.DataGrpc.Client
             {
                 if (ct.WaitHandle.WaitOne(10)) break;
 
-                OnLoopInWorkingThread(ct);
+                Execute(ct);
             }
 
-            UnsubscribeInWorkingThread();
+            Unsubscribe();
 
             if (_eventListCallbackIsEnabled) ClientEventListManager.EventMessagesCallback -= OnEventMessagesCallbackInternal; 
         }        
@@ -607,7 +614,12 @@ namespace Ssz.DataGrpc.Client
         /// <summary>
         ///     Used in DataGrpc Context initialization.
         /// </summary>
-        private string _applicationName = "";
+        private string _clientApplicationName = "";
+
+        /// <summary>
+        ///     Used in DataGrpc Context initialization.
+        /// </summary>
+        private string _clientWorkstationName = "";
 
         /// <summary>
         ///     Used in DataGrpc ElementValueList initialization.
@@ -615,12 +627,7 @@ namespace Ssz.DataGrpc.Client
         private bool _elementValueListCallbackIsEnabled;
 
 
-        private bool _eventListCallbackIsEnabled;
-
-        /// <summary>
-        ///     Used in DataGrpc Context initialization.
-        /// </summary>
-        private string _workstationName = "";
+        private bool _eventListCallbackIsEnabled;        
 
         /// <summary>
         ///     Used in DataGrpc Context initialization.
