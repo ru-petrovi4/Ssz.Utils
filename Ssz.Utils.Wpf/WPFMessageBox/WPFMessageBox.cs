@@ -357,7 +357,13 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
             MessageBoxOptions options = MessageBoxOptions.None)
         {
             return WpfMessageBoxWindow.Show(
-                delegate(Window messageBoxWindow) { messageBoxWindow.Owner = owner; },
+                delegate(Window messageBoxWindow) {
+                    try
+                    {
+                        messageBoxWindow.Owner = owner;
+                    }
+                    catch { }
+                },
                 messageBoxText, caption, button, icon, defaultResult, options);
         }
 
