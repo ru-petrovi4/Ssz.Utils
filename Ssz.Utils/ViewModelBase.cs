@@ -192,7 +192,7 @@ namespace Ssz.Utils
 		[DebuggerStepThrough]
 		private void VerifyPropertyName(string propertyName)
 		{
-			if (propertyName == @"Item") return;
+			if (propertyName == @"Item[]") return;
 			// Verify that the property name matches a real,  
 			// public, instance property on this object.
 

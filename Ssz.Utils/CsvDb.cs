@@ -169,29 +169,32 @@ namespace Ssz.Utils
 
             if (!_csvDbDirectoryInfo.Exists) _csvDbDirectoryInfo.Create();
 
-            _fileSystemWatcher.EnableRaisingEvents = false;
-
-            foreach (string fileName in _changedFileNames)
+            if (_changedFileNames.Count > 0)
             {
-                string fileFullName = _csvDbDirectoryInfo.FullName + @"\" + fileName;
-                try
+                _fileSystemWatcher.EnableRaisingEvents = false;
+
+                foreach (string fileName in _changedFileNames)
                 {
-                    using (var writer = new StreamWriter(fileFullName, false, new UTF8Encoding(true)))
+                    string fileFullName = _csvDbDirectoryInfo.FullName + @"\" + fileName;
+                    try
                     {
-                        foreach (var fileLine in _csvDbData[fileName].OrderBy(kvp => kvp.Key))
-                            writer.WriteLine(CsvHelper.FormatForCsv(",", fileLine.Value.ToArray()));
+                        using (var writer = new StreamWriter(fileFullName, false, new UTF8Encoding(true)))
+                        {
+                            foreach (var fileLine in _csvDbData[fileName].OrderBy(kvp => kvp.Key))
+                                writer.WriteLine(CsvHelper.FormatForCsv(",", fileLine.Value.ToArray()));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        if (_logger != null)
+                            _logger.LogError(ex, Properties.Resources.CsvDb_CsvFileWritingError + " " + fileFullName);
                     }
                 }
-                catch (Exception ex)
-                {
-                    if (_logger != null)
-                        _logger.LogError(ex, Properties.Resources.CsvDb_CsvFileWritingError + " " + fileFullName);                   
-                }
-            }
 
-            _changedFileNames.Clear();
+                _changedFileNames.Clear();
 
-            _fileSystemWatcher.EnableRaisingEvents = true;
+                _fileSystemWatcher.EnableRaisingEvents = true;
+            }            
         }
 
         #endregion

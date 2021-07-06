@@ -636,6 +636,8 @@ namespace Ssz.DataGrpc.Client
 
         private volatile bool _isConnected;
 
+        private SemaphoreSlim _isConnectedSemaphoreSlim = new SemaphoreSlim(0, 1);
+
         private Thread? _workingThread;
 
         private CancellationTokenSource? _cancellationTokenSource;

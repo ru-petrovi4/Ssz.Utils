@@ -1777,7 +1777,12 @@ namespace Ssz.Utils
                                     break;
                             }
                             if (value != null)
-                                return Expression.Constant(value, type);
+                            {
+                                if (type.IsAssignableFrom(value.GetType()))
+                                    return Expression.Constant(value, type);
+                                else
+                                    return null;
+                            }                                
                         }
                     }
                 }
