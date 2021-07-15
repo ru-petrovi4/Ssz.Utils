@@ -136,8 +136,10 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         public bool IsConnected
         {
-            get { return _isConnected; }
+            get { return IsConnectedEvent.WaitOne(0); }
         }
+
+        public ManualResetEvent IsConnectedEvent { get; } = new ManualResetEvent(false);
 
         public GrpcChannel? GrpcChannel
         {
@@ -165,7 +167,7 @@ namespace Ssz.DataGrpc.Client
         ///     Is called using сallbackDispatcher, see Initialize(..).
         ///     Occurs after disconnected from model.
         /// </summary>
-        public event Action Disconnected = delegate { };
+        public event Action Disconnected = delegate { };        
 
         /// <summary>
         ///     You can set updateValueItems = false and invoke PollElementValuesChanges(...) manually.
@@ -205,8 +207,8 @@ namespace Ssz.DataGrpc.Client
             //}
 
             _cancellationTokenSource = new CancellationTokenSource();
-
-            _isConnected = false;
+            
+            IsConnectedEvent.Reset();
 
             _workingThread = new Thread(() => WorkingThreadMain(_cancellationTokenSource.Token));
             _workingThread.IsBackground = false;
@@ -415,7 +417,7 @@ namespace Ssz.DataGrpc.Client
             if (!ClientConnectionManager.ConnectionExists)
             {
                 IDispatcher? сallbackDispatcher;
-                if (_isConnected)
+                if (IsConnected)
                 {
                     Unsubscribe();
 
@@ -423,7 +425,7 @@ namespace Ssz.DataGrpc.Client
 
                     Logger.LogInformation("DataGrpcProvider diconnected");
 
-                    _isConnected = false;
+                    IsConnectedEvent.Reset();
                     Action disconnected = Disconnected;
                     сallbackDispatcher = CallbackDispatcher;
                     if (disconnected != null && сallbackDispatcher != null)
@@ -488,7 +490,7 @@ namespace Ssz.DataGrpc.Client
 
                         Logger.LogInformation("DataGrpcProvider connected to " + _serverAddress);
 
-                        _isConnected = true;
+                        IsConnectedEvent.Set();
                         Action connected = Connected;
                         сallbackDispatcher = CallbackDispatcher;
                         if (connected != null && сallbackDispatcher != null)

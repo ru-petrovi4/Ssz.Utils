@@ -38,7 +38,7 @@ namespace Ssz.Utils
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning(ex, "AppSettings:FilesStoreRoot directory error. Please, specify correct directory and restart service.");
+                    _logger.LogWarning(ex, "AppSettings FilesStoreRoot directory error. Please, specify correct directory and restart service.");
                 }
 
 

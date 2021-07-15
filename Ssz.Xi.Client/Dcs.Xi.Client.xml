@@ -4127,6 +4127,23 @@
                 Mex WsHttpBinding constructor parameter
             </summary>
         </member>
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Dispose">
+            <summary>
+                This is the implementation of the IDisposable.Dispose method.  The client
+                application should invoke this method when this instance is no longer needed.
+            </summary>
+        </member>
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Dispose(System.Boolean)">
+            <summary>
+                This method is invoked when the IDisposable.Dispose or Finalize actions are
+                requested.
+            </summary>
+        </member>
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Finalize">
+            <summary>
+                Invoked by the .NET Framework while doing heap managment (Finalize).
+            </summary>
+        </member>
         <member name="P:Ssz.Xi.Client.XiDataAccessProvider.ServerAddress">
             <summary>
                 Xi Server connection string.
@@ -4137,12 +4154,12 @@
                 Xi System Name.
             </summary>
         </member>
-        <member name="P:Ssz.Xi.Client.XiDataAccessProvider.ApplicationName">
+        <member name="P:Ssz.Xi.Client.XiDataAccessProvider.ClientApplicationName">
             <summary>
                 Used in Xi Context initialization.
             </summary>
         </member>
-        <member name="P:Ssz.Xi.Client.XiDataAccessProvider.WorkstationName">
+        <member name="P:Ssz.Xi.Client.XiDataAccessProvider.ClientWorkstationName">
             <summary>
                 Used in Xi Context initialization.
             </summary>
@@ -4221,8 +4238,15 @@
             </summary>
             <param name="action"></param>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.UnsubscribeInWorkingThread">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Execute(System.Threading.CancellationToken)">
             <summary>
+                On loop in working thread.
+            </summary>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Unsubscribe">
+            <summary>
+                Working thread.
             </summary>
         </member>
         <member name="M:Ssz.Xi.Client.XiDataAccessProvider.XiDataListItemsManagerOnElementValuesCallback(System.Object[],Ssz.Utils.DataAccess.ValueStatusTimestamp[])">

@@ -369,7 +369,8 @@ namespace Ssz.Utils.Wpf.ToggleSwitch
         ///</summary>
         public static readonly DependencyProperty IsCheckedProperty =
             DependencyProperty.Register("IsChecked", typeof(bool), typeof(ToggleSwitchBase),
-            new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnIsCheckedChanged));
+            new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                OnIsCheckedChanged, null, false, System.Windows.Data.UpdateSourceTrigger.PropertyChanged));
 
         ///<summary>
         /// Gets or sets whether the control is in the checked state.
@@ -528,7 +529,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch
         /// </summary>
         protected void OnClick()
         {
-            SetCurrentValue(IsCheckedProperty, !IsChecked);
+            SetCurrentValue(IsCheckedProperty, !IsChecked);            
         }
 
         /// <summary>

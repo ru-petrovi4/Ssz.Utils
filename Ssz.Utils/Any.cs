@@ -7,7 +7,7 @@ namespace Ssz.Utils
 {
     /// <summary>
     ///     If func param stringIsLocalized = false, InvariantCulture is used.
-    ///     If func param stringIsLocalized = true, ConfigurationHelper.SystemCultureInfo is used, which is corresponds operating system culture (see CultureHelper class).
+    ///     If func param stringIsLocalized = true, CultureHelper.SystemCultureInfo is used, which is corresponds operating system culture (see CultureHelper class).
     /// </summary>
     public struct Any
     {
@@ -2461,7 +2461,7 @@ namespace Ssz.Utils
 
         private static CultureInfo GetCultureInfo(bool localized)
         {
-            if (localized) return ConfigurationHelper.SystemCultureInfo;
+            if (localized) return CultureHelper.SystemCultureInfo;
             return CultureInfo.InvariantCulture;
         }
 

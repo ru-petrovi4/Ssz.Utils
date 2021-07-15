@@ -6,13 +6,13 @@
     <members>
         <member name="M:Ssz.Utils.Wpf.ClipboardHelper.ParseClipboardData">
             <summary>        
-                Uses ConfigurationHelper.SystemCultureInfo.
+                Uses CultureHelper.SystemCultureInfo.
             </summary>
             <returns></returns>
         </member>
         <member name="M:Ssz.Utils.Wpf.ClipboardHelper.SetClipboardData(System.Collections.Generic.List{System.String[]})">
             <summary>
-                Uses ConfigurationHelper.SystemCultureInfo
+                Uses CultureHelper.SystemCultureInfo
             </summary>
             <param name="data"></param>
         </member>
@@ -428,6 +428,951 @@
         <member name="M:Ssz.Utils.Wpf.SystemMenu.SystemMenuWindow.#ctor">
             <summary>
                 Initializes a new instance of the SystemMenuWindow class.
+            </summary>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder">
+            <summary>
+            A border that clips its contents.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder.CornerRadiusProperty">
+            <summary>
+            The corner radius property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder.ClipContentProperty">
+            <summary>
+            The clip content property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder._border">
+            <summary>
+            Stores the main border.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder._bottomLeftClip">
+            <summary>
+            Stores the clip responsible for clipping the bottom left corner.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder._bottomLeftContentControl">
+            <summary>
+            Stores the bottom left content control.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder._bottomRightClip">
+            <summary>
+            Stores the clip responsible for clipping the bottom right corner.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder._bottomRightContentControl">
+            <summary>
+            Stores the bottom right content control.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder._topLeftClip">
+            <summary>
+            Stores the clip responsible for clipping the top left corner.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder._topLeftContentControl">
+            <summary>
+            Stores the top left content control.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder._topRightClip">
+            <summary>
+            Stores the clip responsible for clipping the top right corner.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder._topRightContentControl">
+            <summary>
+            Stores the top right content control.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder.#ctor">
+            <summary>
+            ClippingBorder constructor.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder.CornerRadius">
+            <summary>
+            Gets or sets the border corner radius.
+            This is a thickness, as there is a problem parsing CornerRadius types.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder.ClipContent">
+            <summary>
+            Gets or sets a value indicating whether the content is clipped.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder.OnApplyTemplate">
+            <summary>
+            Gets the UI elements out of the template.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder.UpdateCornerRadius(System.Windows.CornerRadius)">
+            <summary>
+            Sets the corner radius.
+            </summary>
+            <param name="newCornerRadius">The new corner radius.</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder.UpdateClipContent(System.Boolean)">
+            <summary>
+            Updates whether the content is clipped.
+            </summary>
+            <param name="clipContent">Whether the content is clipped.</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder.CornerRadiusChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Updates the corner radius.
+            </summary>
+            <param name="dependencyObject">The clipping border.</param>
+            <param name="eventArgs">Dependency Property Changed Event Args</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder.ClipContentChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Updates the content clipping.
+            </summary>
+            <param name="dependencyObject">The clipping border.</param>
+            <param name="eventArgs">Dependency Property Changed Event Args</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder.ClippingBorderSizeChanged(System.Object,System.Windows.SizeChangedEventArgs)">
+            <summary>
+            Updates the clips.
+            </summary>
+            <param name="sender">The clipping border</param>
+            <param name="e">Size Changed Event Args.</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder.ContentControlSizeChanged(System.Object,System.Windows.SizeChangedEventArgs)">
+            <summary>
+            Updates the clip size.
+            </summary>
+            <param name="sender">A content control.</param>
+            <param name="e">Size Changed Event Args</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder.UpdateClipSize(System.Windows.Size)">
+            <summary>
+            Updates the clip size.
+            </summary>
+            <param name="size">The control size.</param>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder">
+            <summary>
+            Content control that draws a glow around its inside.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder.InnerGlowOpacityProperty">
+            <summary>
+            The inner glow opacity property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder.InnerGlowSizeProperty">
+            <summary>
+            The inner glow size property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder.CornerRadiusProperty">
+            <summary>
+            The corner radius property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder.InnerGlowColorProperty">
+            <summary>
+            The inner glow color.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder.ClipContentProperty">
+            <summary>
+            The clip content property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder.ContentZIndexProperty">
+            <summary>
+            The content z-index property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder._bottomGlow">
+            <summary>
+            Stores the bottom glow border.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder._bottomGlowStop0">
+            <summary>
+            Stores the bottom glow stop 0;
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder._bottomGlowStop1">
+            <summary>
+            Stores the bottom glow stop 1.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder._leftGlow">
+            <summary>
+            Stores the left glow border.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder._leftGlowStop0">
+            <summary>
+            Stores the left glow stop 0;
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder._leftGlowStop1">
+            <summary>
+            Stores the left glow stop 1;
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder._rightGlow">
+            <summary>
+            Stores the right glow border.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder._rightGlowStop0">
+            <summary>
+            Stores the right glow stop 0;
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder._rightGlowStop1">
+            <summary>
+            Stores the right glow stop 1.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder._topGlow">
+            <summary>
+            Stores the top glow border.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder._topGlowStop0">
+            <summary>
+            Stores the top glow stop 0;
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder._topGlowStop1">
+            <summary>
+            Stores the top glow stop 1;
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder.#ctor">
+            <summary>
+            InnerGlowBorder constructor.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder.ClipContent">
+            <summary>
+            Gets or sets a value indicating whether the content is clipped.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder.ContentZIndex">
+            <summary>
+            Gets or sets the content z-index. 0 for behind shadow, 1 for in-front.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder.InnerGlowOpacity">
+            <summary>
+            Gets or sets the inner glow opacity.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder.InnerGlowColor">
+            <summary>
+            Gets or sets the inner glow color.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder.InnerGlowSize">
+            <summary>
+            Gets or sets the inner glow size.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder.CornerRadius">
+            <summary>
+            Gets or sets the border corner radius.
+            This is a thickness, as there is a problem parsing CornerRadius types.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder.OnApplyTemplate">
+            <summary>
+            Gets the template parts out.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder.UpdateGlowColor(System.Windows.Media.Color)">
+            <summary>
+            Updates the inner glow color.
+            </summary>
+            <param name="color">The new color.</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder.UpdateGlowSize(System.Windows.Thickness)">
+            <summary>
+            Sets the glow size.
+            </summary>
+            <param name="newGlowSize">The new glow size.</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder.InnerGlowColorChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Updates the inner glow color when the DP changes.
+            </summary>
+            <param name="dependencyObject">The inner glow border.</param>
+            <param name="eventArgs">The new property event args.</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.InnerGlowBorder.InnerGlowSizeChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Updates the glow size.
+            </summary>
+            <param name="dependencyObject">The inner glow border.</param>
+            <param name="eventArgs">Dependency Property Changed Event Args</param>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder">
+            <summary>
+            Content control that draws and outer glow around itself.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder.OuterGlowOpacityProperty">
+            <summary>
+            The outer glow opacity property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder.OuterGlowSizeProperty">
+            <summary>
+            The outer glow size property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder.CornerRadiusProperty">
+            <summary>
+            The corner radius property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder.ShadowCornerRadiusProperty">
+            <summary>
+            The shadow corner radius property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder.OuterGlowColorProperty">
+            <summary>
+            The outer glow color.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder.ClipContentProperty">
+            <summary>
+            The clip content property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder._outerGlowBorder">
+            <summary>
+            Stores the outer glow border.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder._shadowHorizontal1">
+            <summary>
+            Stores the left gradient stop.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder._shadowHorizontal2">
+            <summary>
+            Stores the right gradient stop.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder._shadowOuterStop1">
+            <summary>
+            The top out gradient stop.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder._shadowOuterStop2">
+            <summary>
+            The bottom outer gradient stop.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder._shadowVertical1">
+            <summary>
+            Stores the top gradient stop.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder._shadowVertical2">
+            <summary>
+            Stores the bottom gradient stop.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder.#ctor">
+            <summary>
+            Out glow border constructor.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder.ClipContent">
+            <summary>
+            Gets or sets a value indicating whether the content is clipped.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder.OuterGlowOpacity">
+            <summary>
+            Gets or sets the outer glow opacity.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder.OuterGlowSize">
+            <summary>
+            Gets or sets the outer glow size.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder.OuterGlowColor">
+            <summary>
+            Gets or sets the outer glow color.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder.CornerRadius">
+            <summary>
+            Gets or sets the border corner radius.
+            This is a thickness, as there is a problem parsing CornerRadius types.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder.ShadowCornerRadius">
+            <summary>
+            Gets or sets the border corner radius.
+            This is a thickness, as there is a problem parsing CornerRadius types.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder.OnApplyTemplate">
+            <summary>
+            Gets the parts out of the template.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder.UpdateGlowSize(System.Double)">
+            <summary>
+            Updates the glow size.
+            </summary>
+            <param name="size">The new size.</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder.UpdateGlowColor(System.Windows.Media.Color)">
+            <summary>
+            Updates the outer glow color.
+            </summary>
+            <param name="color">The new color.</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder.OuterGlowColorChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Updates the outer glow color when the DP changes.
+            </summary>
+            <param name="dependencyObject">The outer glow border.</param>
+            <param name="eventArgs">The new property event args.</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder.OuterGlowContentControlSizeChanged(System.Object,System.Windows.SizeChangedEventArgs)">
+            <summary>
+            Updates the gradient stops on the drop shadow.
+            </summary>
+            <param name="sender">The outer glow border.</param>
+            <param name="e">Size changed event args.</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.Borders.OuterGlowBorder.UpdateStops(System.Windows.Size)">
+            <summary>
+            Updates the gradient stops.
+            </summary>
+            <param name="size">The size of the control.</param>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock">
+            <summary>
+            A control that displays text, with a drop shadow.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.DropShadowColorProperty">
+            <summary>
+            The drop shadow color property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.DropShadowOpacityProperty">
+            <summary>
+            The drop shadow opacity property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.TextProperty">
+            <summary>
+            The text property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.TextDecorationsProperty">
+            <summary>
+            The text decorations property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.TextWrappingProperty">
+            <summary>
+            The text wrapping property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.DropShadowDistanceProperty">
+            <summary>
+            The drop shadow distance property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.DropShadowAngleProperty">
+            <summary>
+            The drop shadow angle property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock._dropShadowBrush">
+            <summary>
+            Stores the drop shadow brush.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock._dropShadowTranslate">
+            <summary>
+            Stores the drop shadow translate transform.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.#ctor">
+            <summary>
+            DropShadowTextBlock constructor.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.DropShadowColor">
+            <summary>
+            Gets or sets the drop shadow color.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.DropShadowOpacity">
+            <summary>
+            Gets or sets the drop shadow opacity.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.Text">
+            <summary>
+            Gets or sets the link text.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.TextDecorations">
+            <summary>
+            Gets or sets the text decorations.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.TextWrapping">
+            <summary>
+            Gets or sets the text wrapping.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.DropShadowDistance">
+            <summary>
+            Gets or sets the drop shadow distance.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.DropShadowAngle">
+            <summary>
+            Gets or sets the drop shadow angle.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.OnApplyTemplate">
+            <summary>
+            Gets the UI elements out of the template.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.DegreesToRadians(System.Double)">
+            <summary>
+            Converts degrees into radians.
+            </summary>
+            <param name="degrees">The degree value.</param>
+            <returns>The degrees as radians.</returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.GetOffset(System.Double,System.Double)">
+            <summary>
+            Gets a point offset by a distance and angle (in degrees).
+            </summary>
+            <param name="angle">The angle in degrees.</param>
+            <param name="distance">The distance.</param>
+            <returns>The offset point.</returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.UpdateDropShadowPosition">
+            <summary>
+            Updates the drop shadow.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.UpdateDropShadowBrush">
+            <summary>
+            Updates the drop shadow brush.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.DropShadowDistanceChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Updates the drop shadow.
+            </summary>
+            <param name="dependencyObject">The drop shadow text block.</param>
+            <param name="eventArgs">Dependency Property Changed Event Args</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.DropShadowAngleChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Updates the drop shadow.
+            </summary>
+            <param name="dependencyObject">The drop shadow text block.</param>
+            <param name="eventArgs">Dependency Property Changed Event Args</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.DropShadowColorChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Updates the drop shadow.
+            </summary>
+            <param name="dependencyObject">The drop shadow text block.</param>
+            <param name="eventArgs">Dependency Property Changed Event Args</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.DropShadowTextBlock.DropShadowOpacityChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Updates the drop shadow.
+            </summary>
+            <param name="dependencyObject">The drop shadow text block.</param>
+            <param name="eventArgs">Dependency Property Changed Event Args</param>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.ToggleSwitch.HorizontalToggleSwitch">
+            <summary>
+             Horizontally oriented toggle switch control.
+            </summary>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase">
+            <summary>
+             Base class for the toggle switch control.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase._isMouseCaptured">
+            <summary>
+            True if the mouse has been captured by this control, false otherwise.
+            </summary> 
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase._isSpaceKeyDown">
+            <summary> 
+            True if the SPACE key is currently pressed, false otherwise. 
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase._isMouseLeftButtonDown">
+            <summary>
+            True if the mouse's left button is currently down, false otherwise. 
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase._mousePosition">
+            <summary> 
+            Last known position of the mouse with respect to this Button.
+            </summary> 
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase._suspendStateChanges">
+            <summary>
+            True if visual state changes are suspended; false otherwise. 
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.Offset">
+            <summary>
+            The current offset of the Thumb.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.CheckedOffset">
+            <summary>
+            The current offset of the Thumb when it's in the Checked state.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.UncheckedOffset">
+            <summary>
+            The current offset of the Thumb when it's in the Unchecked state.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.DragOffset">
+            <summary>
+            The offset of the thumb while it's being dragged.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.IsDragging">
+            <summary>
+            Gets or sets whether the thumb position is being manipulated.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.IsPressed">
+            <summary> 
+            Gets a value that indicates whether a ToggleSwitch is currently pressed.
+            </summary> 
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.ContentTemplateProperty">
+            <summary>
+             DependencyProperty for the <see cref="T:System.Windows.Controls.ControlTemplate">ControlTemplate</see> property.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.ContentTemplate">
+            <summary>
+             The template applied to the <see cref="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.CheckedContent">Checked</see> and <see cref="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.UncheckedContent">Unchecked</see> content properties.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.CheckedContentProperty">
+            <summary>
+             DependencyProperty for the <see cref="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.CheckedContent">CheckedContent</see> property.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.CheckedContent">
+            <summary>
+             The content shown on the checked side of the toggle switch
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.CheckedForegroundProperty">
+            <summary>
+             DependencyProperty for the <see cref="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.CheckedForeground">CheckedForeground</see> property.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.CheckedForeground">
+            <summary>
+             The brush used for the foreground of the checked side of the toggle switch.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.CheckedBackgroundProperty">
+            <summary>
+             DependencyProperty for the <see cref="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.CheckedBackground">CheckedBackground</see> property.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.CheckedBackground">
+            <summary>
+             The brush used for the background of the checked side of the toggle switch.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.UncheckedContentProperty">
+            <summary>
+             DependencyProperty for the <see cref="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.UncheckedContent">UncheckedContent</see> property.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.UncheckedContent">
+            <summary>
+             The content shown on the unchecked side of the toggle switch.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.UncheckedForegroundProperty">
+            <summary>
+             DependencyProperty for the <see cref="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.UncheckedForeground">UncheckedForeground</see> property.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.UncheckedForeground">
+            <summary>
+             The brush used for the foreground of the Unchecked side of the toggle switch.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.UncheckedBackgroundProperty">
+            <summary>
+             DependencyProperty for the <see cref="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.UncheckedBackground">UncheckedBackground</see> property.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.UncheckedBackground">
+            <summary>
+             The brush used for the background of the Unchecked side of the toggle switch.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.ElasticityProperty">
+            <summary>
+             DependencyProperty for the <see cref="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.Elasticity">Elasticity</see> property.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.Elasticity">
+            <summary>
+             Determines the percentage of the way the <see cref="T:System.Windows.Controls.Primitives.Thumb">thumb</see> must be dragged before the switch changes it's <see cref="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.IsChecked">IsChecked</see> state.
+            </summary>
+            <remarks>
+             This value must be within the range of 0.0 - 1.0. 
+            </remarks>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.ThumbTemplateProperty">
+            <summary>
+             DependencyProperty for the <see cref="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.ThumbTemplate">ThumbTemplate</see> property.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.ThumbTemplate">
+            <summary>
+             The <see cref="T:System.Windows.Controls.Primitives.Thumb">thumb's</see> control template.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.ThumbBrushProperty">
+            <summary>
+             DependencyProperty for the <see cref="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.ThumbBrush">ThumbBrush</see> property.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.ThumbBrush">
+            <summary>
+             The brush used to fill the <see cref="T:System.Windows.Controls.Primitives.Thumb">thumb</see>.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.ThumbSizeProperty">
+            <summary>
+             DependencyProperty for the <see cref="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.ThumbSize">ThumbSize</see> property.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.ThumbSize">
+            <summary>
+             The size of the toggle switch's <see cref="T:System.Windows.Controls.Primitives.Thumb">thumb</see>.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.IsCheckedProperty">
+            <summary>
+             DependencyProperty for the <see cref="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.IsChecked">IsChecked</see> property.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.IsChecked">
+            <summary>
+             Gets or sets whether the control is in the checked state.
+            </summary>
+        </member>
+        <member name="E:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.Unchecked">
+            <summary>
+             Event raised when the toggle switch is unchecked.
+            </summary>
+        </member>
+        <member name="E:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.Checked">
+            <summary>
+             Event raised when the toggle switch is checked.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.#ctor">
+            <summary> 
+            Initializes a new instance of the ToggleSwitchBase class.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.OnDragDelta(System.Object,System.Windows.Controls.Primitives.DragDeltaEventArgs)">
+            <summary>
+            Raised while dragging the <see cref="T:System.Windows.Controls.Primitives.Thumb">Thumb</see>.
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.OnDragCompleted(System.Object,System.Windows.Controls.Primitives.DragCompletedEventArgs)">
+            <summary>
+            Raised when the dragging of the <see cref="T:System.Windows.Controls.Primitives.Thumb">Thumb</see> has completed.
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.LayoutControls">
+            <summary>
+            Recalculated the layout of the control.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.GetTemplateChildren">
+            <summary>
+            Initializes the control's template parts.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.AddEventHandlers">
+            <summary>
+            Subscribe event listeners.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.RemoveEventHandlers">
+            <summary>
+            Unsubscribe event listeners.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.OnDragStarted(System.Object,System.Windows.Controls.Primitives.DragStartedEventArgs)">
+            <summary>
+            Raised when a drag has started on the <see cref="T:System.Windows.Controls.Primitives.Thumb">Thumb</see>.
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.OnClick">
+            <summary>
+            Called when the control is clicked.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.OnSizeChanged(System.Object,System.Windows.SizeChangedEventArgs)">
+            <summary>
+            Raised when the size of the control has changed.
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.CaptureMouseInternal">
+            <summary> 
+            Capture the mouse. 
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.ReleaseMouseCaptureInternal">
+            <summary>
+            Release mouse capture if we already had it. 
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.OnLayoutDependancyPropertyChanged(System.Windows.DependencyObject,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Raised when a dependency property that affects the control's layout has changed.
+            </summary>
+            <param name="d">The ToggleSwitch control</param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.OnIsEnabledChanged(System.Object,System.Windows.DependencyPropertyChangedEventArgs)">
+            <summary>
+            Called when the IsEnabled property changes.
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.OnLostFocus(System.Windows.RoutedEventArgs)">
+            <summary> 
+            Responds to the LostFocus event.
+            </summary> 
+            <param name="e">The event data for the LostFocus event.</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.OnKeyDown(System.Windows.Input.KeyEventArgs)">
+            <summary> 
+            Responds to the KeyDown event.
+            </summary> 
+            <param name="e">The event data for the KeyDown event.</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.OnKeyDownInternal(System.Windows.Input.Key)">
+            <summary> 
+            Handles the KeyDown event for ButtonBase.
+            </summary> 
+            <param name="key">
+            The keyboard key associated with the event.
+            </param> 
+            <returns>True if the event was handled, false otherwise.</returns>
+            <remarks>
+            This method exists for the purpose of unit testing since we can't 
+            set KeyEventArgs.Key to simulate key press events. 
+            </remarks>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.OnKeyUp(System.Windows.Input.KeyEventArgs)">
+            <summary> 
+            Responds to the KeyUp event. 
+            </summary>
+            <param name="e">The event data for the KeyUp event.</param> 
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.OnKeyUpInternal(System.Windows.Input.Key)">
+            <summary> 
+            Handles the KeyUp event for ButtonBase. 
+            </summary>
+            <param name="key">The keyboard key associated with the event.</param> 
+            <returns>True if the event was handled, false otherwise.</returns>
+            <remarks>
+            This method exists for the purpose of unit testing since we can't 
+            set KeyEventArgs.Key to simulate key press events.
+            </remarks>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.OnMouseLeftButtonDown(System.Windows.Input.MouseButtonEventArgs)">
+            <summary> 
+            Responds to the MouseLeftButtonDown event.
+            </summary>
+            <param name="e"> 
+            The event data for the MouseLeftButtonDown event.
+            </param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.OnMouseLeftButtonUp(System.Windows.Input.MouseButtonEventArgs)">
+            <summary> 
+            Responds to the MouseLeftButtonUp event.
+            </summary>
+            <param name="e"> 
+            The event data for the MouseLeftButtonUp event.
+            </param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.OnMouseMove(System.Windows.Input.MouseEventArgs)">
+            <summary> 
+            Responds to the MouseMove event.
+            </summary> 
+            <param name="e">The event data for the MouseMove event.</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.IsValidMousePosition">
+            <summary>
+            Determine if the mouse is above the button based on its last known 
+            position.
+            </summary>
+            <returns> 
+            True if the mouse is considered above the button, false otherwise. 
+            </returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.ChangeCheckStates(System.Boolean)">
+            <summary>
+            Updates the control's layout to reflect the current <see cref="P:Ssz.Utils.Wpf.ToggleSwitch.ToggleSwitchBase.IsChecked">IsChecked</see> state.
+            </summary>
+            <param name="useTransitions">Whether to use transitions during the layout change.</param>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.ToggleSwitch.VerticalToggleSwitch">
+            <summary>
+             Vertically oriented toggle switch control.
             </summary>
         </member>
         <member name="M:Ssz.Utils.Wpf.TreeHelper.FindChild``1(System.Windows.DependencyObject,System.String)">

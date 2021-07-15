@@ -7,7 +7,7 @@
         <member name="T:Ssz.Utils.Any">
             <summary>
                 If func param stringIsLocalized = false, InvariantCulture is used.
-                If func param stringIsLocalized = true, ConfigurationHelper.SystemCultureInfo is used, which is corresponds operating system culture (see CultureHelper class).
+                If func param stringIsLocalized = true, CultureHelper.SystemCultureInfo is used, which is corresponds operating system culture (see CultureHelper class).
             </summary>
         </member>
         <member name="T:Ssz.Utils.Any.StorageType">
@@ -589,36 +589,31 @@
             <param name="key"></param>
             <returns></returns>
         </member>
-        <member name="T:Ssz.Utils.ConfigurationHelper">
+        <member name="M:Ssz.Utils.ConfigurationHelper.GetValue``1(Microsoft.Extensions.Configuration.IConfiguration,System.String,``0)">
             <summary>
-            
+                Returns defaultValue if key value is null or empty.
             </summary>
-        </member>
-        <member name="P:Ssz.Utils.ConfigurationHelper.SystemCultureInfo">
-            <summary>
-                By default contains CultureInfo.InvariantCulture.
-                If CultureHelper.InitializeCulture() is called, contains CultureInfo that corresponds operating system culture.
-                SystemCultureInfo field is used in Utils.Any class when func param stringIsLocalized = True.
-            </summary>
-        </member>
-        <member name="P:Ssz.Utils.ConfigurationHelper.AppSettings">
-            <summary>
-                appSettings.json -> AppSettings section.
-            </summary>
-        </member>
-        <member name="M:Ssz.Utils.ConfigurationHelper.Initialize(Microsoft.Extensions.Configuration.IConfiguration)">
-            <summary>
-                If configuration is unknown, use new ConfigurationBuilder().AddJsonFile(@"appSettings.json", optional: true, reloadOnChange: true).Build() 
-                Initializes SystemCultureInfo field to operating system culture.        
-                Sets CurrentUICulture from appSettings.json -> AppSettings -> UICulture for all threads, if setting exists.
-                Otherwise, CurrentUICulture remains unchanged.
-            </summary>
+            <typeparam name="T"></typeparam>
             <param name="configuration"></param>
+            <param name="key"></param>
+            <param name="defaultValue"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.CsvDb.#ctor(Microsoft.Extensions.Logging.ILogger{Ssz.Utils.CsvDb},System.IO.DirectoryInfo,Ssz.Utils.IDispatcher)">
+            <summary>
+                If csvDbDirectoryInfo == null, directory is not used.
+                If !csvDbDirectoryInfo.Exists, directory is created when saving files.
+                If dispatcher != null monitors fileSystem
+            </summary>
+            <param name="logger"></param>
+            <param name="csvDbDirectoryInfo"></param>
+            <param name="dispatcher"></param>
         </member>
         <member name="M:Ssz.Utils.CsvDb.LoadData(Microsoft.Extensions.Logging.ILogger)">
             <summary>
                 Loads data from .csv files on disk.
                 resultWarnings are localized.
+                Uses loadLogger or logger from constructor.
             </summary>
             <param name="loadLogger"></param>
         </member>
@@ -711,6 +706,27 @@
             <param name="sourceString"></param>
             <param name="defines"></param>
             <returns></returns>
+        </member>
+        <member name="T:Ssz.Utils.CultureHelper">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.CultureHelper.SystemCultureInfo">
+            <summary>
+                By default contains CultureInfo.InvariantCulture.
+                If CultureHelper.InitializeCulture() is called, contains CultureInfo that corresponds operating system culture.
+                SystemCultureInfo field is used in Utils.Any class when func param stringIsLocalized = True.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.CultureHelper.Initialize(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+                If configuration is unknown, use new ConfigurationBuilder().AddJsonFile(@"appSettings.json", optional: true, reloadOnChange: true).Build() 
+                Initializes SystemCultureInfo field to operating system culture.        
+                Sets CurrentUICulture from configuration -> UICulture for all threads, if setting exists.
+                Otherwise, CurrentUICulture remains unchanged.
+            </summary>
+            <param name="configuration"></param>
         </member>
         <member name="M:Ssz.Utils.DataAccess.AlarmInfoViewModelBase.#ctor(Ssz.Utils.DataAccess.AlarmInfoViewModelBase)">
             <summary>
@@ -2233,6 +2249,14 @@
                 Releases object from internal list. Its handle becomes invalid.
                 index must be valid
             </summary>
+        </member>
+        <member name="M:Ssz.Utils.ObservableCollectionExtensions.Update``1(System.Collections.ObjectModel.ObservableCollection{``0},``0[])">
+            <summary>
+                Preconditions: source and destination are ordered by Id.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="source"></param>
+            <param name="destination"></param>
         </member>
         <member name="T:Ssz.Utils.OwnedDataSerializable">
             <summary>
