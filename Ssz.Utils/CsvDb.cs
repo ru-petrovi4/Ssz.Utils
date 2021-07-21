@@ -29,11 +29,13 @@ namespace Ssz.Utils
             if (_csvDbDirectoryInfo != null && _dispatcher != null)
                 try
                 {
-                    _fileSystemWatcher.Created += FileSystemWatcherOnEvent;
-                    _fileSystemWatcher.Changed += FileSystemWatcherOnEvent;
-                    _fileSystemWatcher.Deleted += FileSystemWatcherOnEvent;
-                    _fileSystemWatcher.Renamed += FileSystemWatcherOnEvent;
+                    _fileSystemWatcher.Created += FileSystemWatcherOnEventAsync;
+                    _fileSystemWatcher.Changed += FileSystemWatcherOnEventAsync;
+                    _fileSystemWatcher.Deleted += FileSystemWatcherOnEventAsync;
+                    _fileSystemWatcher.Renamed += FileSystemWatcherOnEventAsync;
                     _fileSystemWatcher.Path = _csvDbDirectoryInfo.FullName;
+                    _fileSystemWatcher.Filter = @"*.csv";
+                    _fileSystemWatcher.IncludeSubdirectories = false;
                     _fileSystemWatcher.EnableRaisingEvents = true;
                 }
                 catch (Exception ex)
@@ -43,15 +45,7 @@ namespace Ssz.Utils
 
 
             LoadDataInternal(_logger);
-        }
-
-        private void FileSystemWatcherOnEvent(object sender, FileSystemEventArgs e)
-        {            
-            _dispatcher!.BeginInvoke(ct =>
-            {
-                LoadData();
-            });
-        }
+        }        
 
         #endregion
 
@@ -201,11 +195,24 @@ namespace Ssz.Utils
 
         #region private functions
 
+        private async void FileSystemWatcherOnEventAsync(object sender, FileSystemEventArgs e)
+        {
+            if (_fileSystemWatcherOnEventIsProcessing) return;
+            _fileSystemWatcherOnEventIsProcessing = true;
+            await Task.Delay(1000);
+            _fileSystemWatcherOnEventIsProcessing = false;
+
+            _dispatcher!.BeginInvoke(ct =>
+            {
+                LoadData();
+            });
+        }
+
         /// <summary>
         ///     Preconditions: state must be clear.
         /// </summary>
         /// <param name="loadLogger"></param>
-        public void LoadDataInternal(ILogger? loadLogger)
+        private void LoadDataInternal(ILogger? loadLogger)
         {
             if (_csvDbDirectoryInfo == null || !_csvDbDirectoryInfo.Exists) return;
 
@@ -244,6 +251,8 @@ namespace Ssz.Utils
         private readonly HashSet<string> _changedFileNames = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
 
         private readonly FileSystemWatcher _fileSystemWatcher = new();
+
+        private volatile bool _fileSystemWatcherOnEventIsProcessing;
 
         #endregion
     }

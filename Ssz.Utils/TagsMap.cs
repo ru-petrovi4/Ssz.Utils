@@ -19,19 +19,45 @@ namespace Ssz.Utils
 
             _mapDictionary = mapDictionary;
             _tagsDictionary = tagsDictionary;
+
+            var values = _mapDictionary.TryGetValue("GenericTag");
+            if (values != null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
+                GenericTag = values[1] ?? @"";
+
+            values = _mapDictionary.TryGetValue("TagTypeSeparator");
+            if (values != null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
+                TagTypeSeparator = values[1] ?? @"";
+
+            values = _mapDictionary.TryGetValue("TagAndPropertySeparator");
+            if (values != null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
+                TagAndPropertySeparator = values[1] ?? @"";
         }
 
         #endregion
 
         #region public functions
 
-        public string GenericTag { get; set; } = "%(TAG)";
+        /// <summary>
+        ///     Can be configured in mapDictionary, 'GenericTag' key
+        /// </summary>
+        public string GenericTag { get; } = @"%(TAG)";
 
-        public string TagTypeSeparator { get; set; } = ":";
+        /// <summary>
+        ///     Can be configured in mapDictionary, 'TagTypeSeparator' key
+        /// </summary>
+        public string TagTypeSeparator { get; } = @":";
 
-        public string TagAndPropertySeparator { get; set; } = ".";
+        /// <summary>
+        ///     Can be configured in mapDictionary, 'TagAndPropertySeparator' key
+        /// </summary>
+        public string TagAndPropertySeparator { get; } = @".";
 
-        public string GetFromMap(string elementId)
+        /// <summary>
+        ///     result.Count > 1
+        /// </summary>
+        /// <param name="elementId"></param>
+        /// <returns></returns>
+        public List<string?> GetFromMap(string elementId)
         {
             string? tag;
             string? propertyPath;
@@ -51,9 +77,7 @@ namespace Ssz.Utils
                 tagType = null;
             }
 
-            List<string?> mapValues = GetFromOpcMap(tag, propertyPath, tagType);
-
-            return mapValues[1] ?? "";
+            return GetFromMap(tag, propertyPath, tagType);
         }
 
         #endregion
@@ -76,19 +100,19 @@ namespace Ssz.Utils
         /// <param name="propertyPath"></param>
         /// <param name="tagType"></param>
         /// <returns></returns>
-        private List<string?> GetFromOpcMap(string? tag, string? propertyPath, string? tagType)
+        private List<string?> GetFromMap(string? tag, string? propertyPath, string? tagType)
         {
-            string uiId = tag + propertyPath;
-            if (uiId == @"") return new List<string?> { @"", @"" };
+            string id = tag + propertyPath;
+            if (id == @"") return new List<string?> { @"", @"" };
 
-            var values = _mapDictionary.TryGetValue(uiId);
+            var values = _mapDictionary.TryGetValue(id);
             if (values != null)
             {
                 if (values.Count == 1) values.Add("");
                 return values;
             }
 
-            var result = new List<string?> { uiId };
+            var result = new List<string?> { id };
 
             if (!string.IsNullOrEmpty(propertyPath))
             {
@@ -129,7 +153,7 @@ namespace Ssz.Utils
             }
             else
             {
-                result.Add(uiId);
+                result.Add(id);
             }
 
             return result;

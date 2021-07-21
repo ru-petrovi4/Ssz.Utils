@@ -37,6 +37,7 @@ namespace Ssz.Utils.DataAccess
         event Action Disconnected;
 
         void Initialize(IDispatcher? сallbackDispatcher,
+            TagsMap? tagsMap,
             bool elementValueListCallbackIsEnabled,
             bool eventListCallbackIsEnabled,
             string serverAddress,

@@ -180,6 +180,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="systemNames"></param>
         /// <param name="contextParams"></param>
         public virtual void Initialize(IDispatcher? сallbackDispatcher,
+            TagsMap? tagsMap,
             bool elementValueListCallbackIsEnabled,
             bool eventListCallbackIsEnabled,
             string serverAddress,
@@ -190,6 +191,7 @@ namespace Ssz.DataGrpc.Client
             Logger.LogDebug("Starting ModelDataProvider. сallbackDispatcher != null " + (сallbackDispatcher != null).ToString());
 
             CallbackDispatcher = сallbackDispatcher;
+            _tagsMap = tagsMap;
             _elementValueListCallbackIsEnabled = elementValueListCallbackIsEnabled;
             _eventListCallbackIsEnabled = eventListCallbackIsEnabled;
             _serverAddress = serverAddress;            
@@ -622,6 +624,8 @@ namespace Ssz.DataGrpc.Client
         ///     Used in DataGrpc Context initialization.
         /// </summary>
         private string _clientWorkstationName = "";
+
+        private TagsMap? _tagsMap;
 
         /// <summary>
         ///     Used in DataGrpc ElementValueList initialization.
