@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Ssz.DataGrpc.Common;
 using Ssz.Utils.DataAccess;
 using Grpc.Net.Client;
+using System.Globalization;
 
 namespace Ssz.DataGrpc.Client
 {
@@ -150,6 +151,10 @@ namespace Ssz.DataGrpc.Client
 
         public Guid DataGuid { get; private set; }
 
+        public ElementIdsMap? ElementIdsMap { get; private set; }
+
+        public CaseInsensitiveDictionary<string> BackMapDictionary { get; } = new();
+
         public object? Obj { get; set; }
 
         /// <summary>
@@ -180,7 +185,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="systemNames"></param>
         /// <param name="contextParams"></param>
         public virtual void Initialize(IDispatcher? сallbackDispatcher,
-            TagsMap? tagsMap,
+            ElementIdsMap? elementIdsMap,
             bool elementValueListCallbackIsEnabled,
             bool eventListCallbackIsEnabled,
             string serverAddress,
@@ -191,14 +196,14 @@ namespace Ssz.DataGrpc.Client
             Logger.LogDebug("Starting ModelDataProvider. сallbackDispatcher != null " + (сallbackDispatcher != null).ToString());
 
             CallbackDispatcher = сallbackDispatcher;
-            _tagsMap = tagsMap;
+            ElementIdsMap = elementIdsMap;
             _elementValueListCallbackIsEnabled = elementValueListCallbackIsEnabled;
             _eventListCallbackIsEnabled = eventListCallbackIsEnabled;
             _serverAddress = serverAddress;            
             _clientApplicationName = clientApplicationName;            
             _clientWorkstationName = clientWorkstationName;
             _systemNameToConnect = systemNameToConnect;
-            _contextParams = contextParams;            
+            _contextParams = contextParams;
 
             //string pollIntervalMsString =
             //    ConfigurationManager.AppSettings["PollIntervalMs"];
@@ -207,6 +212,45 @@ namespace Ssz.DataGrpc.Client
             //{
             //    _pollIntervalMs = pollIntervalMs;
             //}
+
+            lock (ConstItemsDictionary)
+            {
+                ConstItemsDictionary.Clear();
+                BackMapDictionary.Clear();
+                if (ElementIdsMap != null)
+                {
+                    foreach (var values in ElementIdsMap.Map.Values)
+                    {
+                        if (values.Count >= 2)
+                        {
+                            var constAny = ElementIdsMap.TryGetConstValue(values[1]);
+                            if (constAny.HasValue)
+                            {
+                                ConstItemsDictionary[values[0] ?? ""] = new ConstItem { Value = constAny.Value };
+                            }
+                            else
+                            {
+                                BackMapDictionary[values[1] ?? ""] = values[0] ?? "";
+                            }
+                            continue;
+                        }
+
+                        for (int i = 2; i < values.Count; i++)
+                        {
+                            string v = values[i] ?? "";
+                            if ((StringHelper.StartsWithIgnoreCase(v, @"READCONVERTER") ||
+                                    StringHelper.StartsWithIgnoreCase(v, @"WRITECONVERTER"))
+                                && v.IndexOf('=') > 0) continue;
+
+                            var constAny = ElementIdsMap.TryGetConstValue(v);
+                            if (!constAny.HasValue)
+                            {
+                                BackMapDictionary[v] = values[0] ?? "";
+                            }
+                        }
+                    }
+                }
+            }
 
             _cancellationTokenSource = new CancellationTokenSource();
             
@@ -247,14 +291,154 @@ namespace Ssz.DataGrpc.Client
         {
             Logger.LogDebug("DataGrpcProvider.AddItem() " + elementId);
 
-            valueSubscription.Obj = new ValueSubscriptionObj
+            var callbackDispatcher = CallbackDispatcher;
+            if (!IsInitialized || callbackDispatcher == null) return elementId;
+
+            var valueSubscriptionObj = new ValueSubscriptionObj
             {
+                ValueSubscription = valueSubscription,
                 ElementId = elementId
             };
+            valueSubscription.Obj = valueSubscriptionObj;
 
-            BeginInvoke(ct => ClientElementValueListManager.AddItem(elementId, valueSubscription));
+            if (ElementIdsMap != null)
+            {
+                string? tag = null;
+                string? propertyPath = null;
+                string? tagType = null;
 
-            return elementId;
+                var constAny = ElementIdsMap.TryGetConstValue(elementId);
+                if (!constAny.HasValue)
+                {
+                    var separatorIndex = elementId.LastIndexOf(ElementIdsMap.TagAndPropertySeparator);
+                    if (separatorIndex > 0 && separatorIndex < elementId.Length - 1)
+                    {
+                        tag = elementId.Substring(0, separatorIndex);
+                        propertyPath = elementId.Substring(separatorIndex);
+                        tagType = ElementIdsMap.GetTagType(tag);
+                    }
+                    else
+                    {
+                        tag = elementId;
+                        propertyPath = null;
+                        tagType = null;
+                    }
+
+                    lock (ConstItemsDictionary)
+                    {
+                        var constItem = ConstItemsDictionaryTryGetValue(tag, propertyPath, tagType);
+                        if (constItem != null)
+                        {
+                            constItem.Subscribers.Add(valueSubscription);
+                            constAny = constItem.Value;
+                        }
+                    }
+                }
+
+                if (constAny.HasValue)
+                {
+                    try
+                    {
+                        callbackDispatcher.BeginInvoke(ct =>
+                            valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, StatusCodes.Good,
+                                DateTime.UtcNow)));
+                    }
+                    catch (Exception)
+                    {
+                    }
+
+                    return elementId;
+                }
+
+                valueSubscriptionObj.MapValues = ElementIdsMap.GetFromMap(tag, propertyPath, tagType, null);
+
+                var childValueSubscriptionsList = new List<ChildValueSubscription>();
+                var converter = new SszConverter();
+
+                for (var i = 1; i < valueSubscriptionObj.MapValues.Count; i++)
+                {
+                    string v = valueSubscriptionObj.MapValues[i] ?? "";
+
+                    int index;
+                    if ((StringHelper.StartsWithIgnoreCase(v, @"READCONVERTER") ||
+                         StringHelper.StartsWithIgnoreCase(v, @"WRITECONVERTER"))
+                        && (index = v.IndexOf('=')) > 0)
+                    {
+                        var values = v.Substring(index + 1).Split(new[] { "->" }, StringSplitOptions.None);
+                        switch (v.Substring(0, index).Trim().ToUpperInvariant())
+                        {
+                            case @"READCONVERTER":
+                                if (values.Length == 1)
+                                    converter.Statements.Add(new SszStatement(@"true", values[0].Trim(), 0));
+                                else // values.Length > 1
+                                    converter.Statements.Add(new SszStatement(values[0].Trim(),
+                                        values[1].Trim(), 0));
+                                break;
+                            case @"WRITECONVERTER":
+                                if (values.Length == 1)
+                                    converter.BackStatements.Add(new SszStatement(@"true", values[0].Trim(), 0));
+                                else if (values.Length == 2)
+                                    converter.BackStatements.Add(new SszStatement(values[0].Trim(),
+                                        values[1].Trim(), 0));
+                                else // values.Length > 2
+                                    converter.BackStatements.Add(new SszStatement(
+                                        values[0].Trim(),
+                                        values[1].Trim(),
+                                        new Any(values[2].Trim()).ValueAsInt32(false)));
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        var childValueSubscription = new ChildValueSubscription(valueSubscriptionObj, v, ElementIdsMap);
+                        childValueSubscriptionsList.Add(childValueSubscription);
+                    }
+                }
+
+                if (converter.Statements.Count == 0 && converter.BackStatements.Count == 0)
+                {
+                    converter = null;
+                }
+                //else
+                //{
+                //    converter.ParentItem = DsSolution.Instance;
+                //    converter.ReplaceConstants(DsSolution.Instance);
+                //}
+
+                if (childValueSubscriptionsList.Count > 1 || converter != null)
+                {
+                    valueSubscriptionObj.ChildValueSubscriptionsList = childValueSubscriptionsList;
+                    valueSubscriptionObj.Converter = converter;
+                    try
+                    {
+                        callbackDispatcher.BeginInvoke(ct => valueSubscriptionObj.ChildValueSubscriptionUpdated());
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+            }
+            else
+            {
+                valueSubscriptionObj.MapValues = new List<string?> { elementId, elementId };
+            }
+
+            BeginInvoke(ct =>
+            {
+                if (valueSubscriptionObj.ChildValueSubscriptionsList != null)
+                {
+                    foreach (var childValueSubscription in valueSubscriptionObj.ChildValueSubscriptionsList)
+                        if (!childValueSubscription.IsConst)
+                            ClientElementValueListManager.AddItem(childValueSubscription.MappedElementIdOrConst,
+                                childValueSubscription);
+                }
+                else
+                {
+                    ClientElementValueListManager.AddItem(valueSubscriptionObj.MapValues[1] ?? "", valueSubscription);
+                }
+            });
+
+            return valueSubscriptionObj.MapValues[1] ?? "";
         }
 
         /// <summary>        
@@ -263,9 +447,47 @@ namespace Ssz.DataGrpc.Client
         /// <param name="valueSubscription"></param>
         public virtual void RemoveItem(IValueSubscription valueSubscription)
         {
+            if (!IsInitialized) return;
+
+            var valueSubscriptionObj = valueSubscription.Obj as ValueSubscriptionObj;
+            if (valueSubscriptionObj == null) return;
+
+            valueSubscriptionObj.ValueSubscription = null;
             valueSubscription.Obj = null;
 
-            BeginInvoke(ct => ClientElementValueListManager.RemoveItem(valueSubscription));
+            var constAny = ElementIdsMap?.TryGetConstValue(valueSubscriptionObj.ElementId);
+            if (constAny.HasValue) return;
+
+            var disposable = valueSubscriptionObj.Converter as IDisposable;
+            if (disposable != null) disposable.Dispose();
+
+            lock (ConstItemsDictionary)
+            {
+                var constItem = ConstItemsDictionary.TryGetValue(valueSubscriptionObj.ElementId);
+                if (constItem != null)
+                {
+                    constItem.Subscribers.Remove(valueSubscription);
+                    return;
+                }
+            }
+
+            BeginInvoke(ct =>
+            {
+                if (valueSubscriptionObj.ChildValueSubscriptionsList != null)
+                {
+                    foreach (var childValueSubscription in valueSubscriptionObj.ChildValueSubscriptionsList)
+                    {
+                        if (!childValueSubscription.IsConst) ClientElementValueListManager.RemoveItem(childValueSubscription);
+                        childValueSubscription.ValueSubscriptionObj = null;
+                    }
+
+                    valueSubscriptionObj.ChildValueSubscriptionsList = null;
+                }
+                else
+                {
+                    ClientElementValueListManager.RemoveItem(valueSubscription);
+                }
+            });
         }
 
         /// <summary>        
@@ -294,7 +516,8 @@ namespace Ssz.DataGrpc.Client
             );
         }
 
-        /// <summary>        
+        /// <summary>     
+        ///     No values mapping and conversion.
         ///     setResultAction(..) is called using сallbackDispatcher, see Initialize(..).
         ///     setResultAction(failedValueSubscriptions) is called, failedValueSubscriptions != null.
         ///     If connection error, failedValueSubscriptions is all clientObjs.        
@@ -325,19 +548,119 @@ namespace Ssz.DataGrpc.Client
             );
         }
 
-        /// <summary>        
+        /// <summary>
+        ///     Writes to logger with Debug level.
         /// </summary>
         /// <param name="valueSubscription"></param>
-        /// <param name="value"></param>
-        public virtual void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp)
+        /// <param name="valueStatusTimestamp"></param>
+        /// <param name="alternativeLogger"></param>
+        public virtual void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? alternativeLogger)
         {
+            var callbackDispatcher = CallbackDispatcher;
+            if (!IsInitialized || callbackDispatcher == null) return;
+
+            if (!StatusCodes.IsGood(valueStatusTimestamp.StatusCode)) return;
+            var value = valueStatusTimestamp.Value;
+
+            var valueSubscriptionObj = valueSubscription.Obj as ValueSubscriptionObj;
+            if (valueSubscriptionObj == null) return;
+
+            var logger = alternativeLogger ?? Logger;
+
+            if (logger.IsEnabled(LogLevel.Debug))
+                logger.LogDebug("UI TAG: \"" + valueSubscriptionObj.ElementId + "\"; Value from UI: \"" +
+                                             value + "\"");
+
+            IValueSubscription[]? constItemValueSubscriptionsArray = null;
+            lock (ConstItemsDictionary)
+            {
+                var constItem = ConstItemsDictionary.TryGetValue(valueSubscriptionObj.ElementId);
+                if (constItem != null && constItem.Value.ValueAsObject() != DBNull.Value)
+                {
+                    constItem.Value = value;
+                    constItemValueSubscriptionsArray = constItem.Subscribers.ToArray();
+                }
+            }
+
+            if (constItemValueSubscriptionsArray != null)
+            {
+                try
+                {
+                    callbackDispatcher.BeginInvoke(ct =>
+                    {
+                        foreach (var constItemValueSubscription in constItemValueSubscriptionsArray)
+                            constItemValueSubscription.Update(valueStatusTimestamp);
+                    });
+                }
+                catch (Exception)
+                {
+                }
+
+                return;
+            }
+
+            object?[]? resultValues = null;
+            if (valueSubscriptionObj.ChildValueSubscriptionsList != null)
+            {
+                SszConverter converter;
+                if (valueSubscriptionObj.Converter != null)
+                    converter = valueSubscriptionObj.Converter;
+                else
+                    converter = SszConverter.Empty;
+                resultValues =
+                    converter.ConvertBack(value.ValueAsObject(),
+                        new Type?[valueSubscriptionObj.ChildValueSubscriptionsList.Count], logger);
+                if (resultValues.Length == 0) return;
+            }
+
+            var utcNow = DateTime.UtcNow;
+
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                if (valueSubscriptionObj.ChildValueSubscriptionsList != null)
+                {
+                    if (resultValues == null) throw new InvalidOperationException();
+                    for (var i = 0; i < resultValues.Length; i++)
+                    {
+                        var resultValue = resultValues[i];
+                        if (resultValue != SszConverter.DoNothing)
+                            logger.LogDebug("Model TAG: \"" +
+                                                         valueSubscriptionObj.ChildValueSubscriptionsList[i]
+                                                             .MappedElementIdOrConst + "\"; Write Value to Model: \"" +
+                                                         new Any(resultValue) + "\"");
+                    }
+                }
+                else
+                {
+                    if (value.ValueAsObject() != SszConverter.DoNothing)
+                        logger.LogDebug("Model TAG: \"" + valueSubscriptionObj.MapValues[1] +
+                                                     "\"; Write Value to Model: \"" + value + "\"");
+                }
+            }
+
             BeginInvoke(ct =>
-            {                
+            {
                 ClientElementValueListManager.Subscribe(ClientConnectionManager, CallbackDispatcher,
                     OnElementValuesCallback, true, ct);
-                ClientElementValueListManager.Write(valueSubscription, valueStatusTimestamp);
-            }
-            );
+
+                if (valueSubscriptionObj.ChildValueSubscriptionsList != null)
+                {
+                    if (resultValues == null) throw new InvalidOperationException();
+                    for (var i = 0; i < resultValues.Length; i++)
+                    {
+                        var resultValue = resultValues[i];
+                        if (resultValue != SszConverter.DoNothing)
+                            ClientElementValueListManager.Write(valueSubscriptionObj.ChildValueSubscriptionsList[i],
+                                new ValueStatusTimestamp(new Any(resultValue), StatusCodes.Good, DateTime.UtcNow));
+                    }
+                }
+                else
+                {
+                    if (value.ValueAsObject() != SszConverter.DoNothing)
+                        ClientElementValueListManager.Write(valueSubscription,
+                            new ValueStatusTimestamp(value, StatusCodes.Good, DateTime.UtcNow));
+                }
+            });
         }
 
         /// <summary>        
@@ -398,6 +721,8 @@ namespace Ssz.DataGrpc.Client
         #region protected functions
 
         protected IDispatcher? CallbackDispatcher { get; private set; }
+
+        protected CaseInsensitiveDictionary<ConstItem> ConstItemsDictionary { get; } = new();
 
         protected ClientConnectionManager ClientConnectionManager { get; }
 
@@ -581,6 +906,35 @@ namespace Ssz.DataGrpc.Client
             ValueSubscriptionsUpdated();
         }
 
+        protected ConstItem? ConstItemsDictionaryTryGetValue(string? tag, string? propertyPath,
+            string? tagType)
+        {
+            if (ElementIdsMap == null) return null;
+
+            string elementId = tag + propertyPath;
+            var constItem = ConstItemsDictionary.TryGetValue(elementId);
+            if (constItem != null) return constItem;
+
+            if (!string.IsNullOrEmpty(propertyPath))
+            {
+                ConstItem? templateConstItem = null;
+                if (!string.IsNullOrEmpty(tagType))
+                    templateConstItem = ConstItemsDictionary.TryGetValue(tagType +
+                        ElementIdsMap.TagTypeSeparator + ElementIdsMap.GenericTag + propertyPath);
+                if (templateConstItem == null)
+                    templateConstItem =
+                        ConstItemsDictionary.TryGetValue(ElementIdsMap.GenericTag + propertyPath);
+                if (templateConstItem != null)
+                {
+                    constItem = new ConstItem { Value = templateConstItem.Value };
+                    ConstItemsDictionary[elementId] = constItem;
+                    return constItem;
+                }
+            }
+
+            return null;
+        }
+
         #endregion        
 
         #region private functions
@@ -623,9 +977,7 @@ namespace Ssz.DataGrpc.Client
         /// <summary>
         ///     Used in DataGrpc Context initialization.
         /// </summary>
-        private string _clientWorkstationName = "";
-
-        private TagsMap? _tagsMap;
+        private string _clientWorkstationName = "";        
 
         /// <summary>
         ///     Used in DataGrpc ElementValueList initialization.
@@ -638,11 +990,7 @@ namespace Ssz.DataGrpc.Client
         /// <summary>
         ///     Used in DataGrpc Context initialization.
         /// </summary>
-        private CaseInsensitiveDictionary<string> _contextParams = new();
-
-        private volatile bool _isConnected;
-
-        private SemaphoreSlim _isConnectedSemaphoreSlim = new SemaphoreSlim(0, 1);
+        private CaseInsensitiveDictionary<string> _contextParams = new();        
 
         private Thread? _workingThread;
 
@@ -650,13 +998,94 @@ namespace Ssz.DataGrpc.Client
 
         private ThreadSafeDispatcher _threadSafeDispatcher = new();
 
-        private DateTime _lastFailedConnectionDateTimeUtc = DateTime.MinValue;
+        private DateTime _lastFailedConnectionDateTimeUtc = DateTime.MinValue;        
 
         #endregion
 
+        protected class ConstItem
+        {
+            public readonly HashSet<IValueSubscription> Subscribers = new(ReferenceEqualityComparer<object>.Default);
+
+            public Any Value;
+        }        
+
         private class ValueSubscriptionObj
-        {            
-            public string ElementId = "";
+        {
+            public List<ChildValueSubscription>? ChildValueSubscriptionsList;
+
+            public SszConverter? Converter;
+
+            public List<string?> MapValues = new();
+
+            public string ElementId = @"";
+
+            public IValueSubscription? ValueSubscription;
+
+            public void ChildValueSubscriptionUpdated()
+            {
+                if (ValueSubscription == null || ChildValueSubscriptionsList == null) return;
+
+                var values = new List<object?>();
+                foreach (var childValueSubscription in ChildValueSubscriptionsList)
+                    values.Add(childValueSubscription.Value.ValueAsObject());
+                SszConverter converter;
+                if (Converter != null)
+                    converter = Converter;
+                else
+                    converter = SszConverter.Empty;
+                var convertedValue = converter.Convert(values.ToArray(), null, null);
+                if (convertedValue == SszConverter.DoNothing) return;
+                ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), StatusCodes.Good,
+                    DateTime.UtcNow));
+            }
+        }
+
+        private class ChildValueSubscription : IValueSubscription
+        {
+            public readonly bool IsConst;
+
+            public readonly string MappedElementIdOrConst;
+
+            public Any Value;
+
+            public ValueSubscriptionObj? ValueSubscriptionObj;
+
+            public ChildValueSubscription(ValueSubscriptionObj valueSubscriptionObj, string mappedElementIdOrConst, ElementIdsMap? elementIdsMap)
+            {
+                ValueSubscriptionObj = valueSubscriptionObj;
+                MappedElementIdOrConst = mappedElementIdOrConst;
+
+                if (elementIdsMap != null)
+                {
+                    var constAny = elementIdsMap.TryGetConstValue(mappedElementIdOrConst);
+                    if (constAny.HasValue)
+                    {
+                        Value = constAny.Value;
+                        IsConst = true;
+                    }
+                }                
+            }
+
+            public object? Obj { get; set; }
+
+            public void Update(ValueStatusTimestamp valueStatusTimestamp)
+            {
+                switch (valueStatusTimestamp.StatusCode)
+                {
+                    case StatusCodes.Unknown:
+                        Value = new Any();
+                        break;
+                    case StatusCodes.ItemDoesNotExist:
+                        Value = new Any(DBNull.Value);
+                        break;
+                    default:
+                        Value = valueStatusTimestamp.Value;
+                        break;
+                }
+
+                if (ValueSubscriptionObj != null) 
+                    ValueSubscriptionObj.ChildValueSubscriptionUpdated();
+            }
         }
     }
 }

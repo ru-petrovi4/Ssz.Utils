@@ -74,7 +74,7 @@ namespace Ssz.Utils.DataAccess
         /// <param name="valueStatusTimestamp"></param>
         public void Write(ValueStatusTimestamp valueStatusTimestamp)
         {
-            DataAccessProvider.Write(this, valueStatusTimestamp);
+            DataAccessProvider.Write(this, valueStatusTimestamp, null);
         }
 
         #endregion

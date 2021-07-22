@@ -1,4 +1,5 @@
-﻿using Ssz.Utils;
+﻿using Microsoft.Extensions.Logging;
+using Ssz.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +38,7 @@ namespace Ssz.Utils.DataAccess
         event Action Disconnected;
 
         void Initialize(IDispatcher? сallbackDispatcher,
-            TagsMap? tagsMap,
+            ElementIdsMap? elementIdsMap,
             bool elementValueListCallbackIsEnabled,
             bool eventListCallbackIsEnabled,
             string serverAddress,
@@ -51,9 +52,15 @@ namespace Ssz.Utils.DataAccess
 
         void PollElementValuesChanges(Action<IValueSubscription[]?> setResultAction);
 
+        /// <summary>
+        ///     No values mapping and conversion.
+        /// </summary>
+        /// <param name="valueSubscriptions"></param>
+        /// <param name="valueStatusTimestamps"></param>
+        /// <param name="setResultAction"></param>
         void Write(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps, Action<IValueSubscription[]>? setResultAction);
         
-        void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp);
+        void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? alternativeLogger);
 
         void Passthrough(string recipientId, string passthroughName, byte[] dataToSend,
             Action<IEnumerable<byte>?> setResultAction);

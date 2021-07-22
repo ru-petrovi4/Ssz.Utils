@@ -42,10 +42,6 @@ namespace Ssz.Utils
             Dispose(false);
         }
 
-        #endregion
-
-        #region public functions
-
         /// <summary>
         /// 
         /// </summary>

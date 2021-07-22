@@ -613,9 +613,9 @@
             <summary>
                 Loads data from .csv files on disk.
                 resultWarnings are localized.
-                Uses loadLogger or logger from constructor.
+                Uses alternativeLogger or logger from constructor.
             </summary>
-            <param name="loadLogger"></param>
+            <param name="alternativeLogger"></param>
         </member>
         <member name="M:Ssz.Utils.CsvDb.SaveData">
             <summary>
@@ -1059,6 +1059,14 @@
                 You can use this property as temp storage.
             </summary>
         </member>
+        <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.Write(Ssz.Utils.DataAccess.IValueSubscription[],Ssz.Utils.DataAccess.ValueStatusTimestamp[],System.Action{Ssz.Utils.DataAccess.IValueSubscription[]})">
+            <summary>
+                No values mapping and conversion.
+            </summary>
+            <param name="valueSubscriptions"></param>
+            <param name="valueStatusTimestamps"></param>
+            <param name="setResultAction"></param>
+        </member>
         <member name="P:Ssz.Utils.DataAccess.IValueSubscription.Obj">
             <summary>
                 Property to use internally in ModelDataProvider. You need to
@@ -1314,6 +1322,39 @@
             </summary>
             <param name="type"></param>
             <param name="instance"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Ssz.Utils.ElementIdsMap.GenericTag">
+            <summary>
+                Can be configured in mapDictionary, 'GenericTag' key
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.ElementIdsMap.TagTypeSeparator">
+            <summary>
+                Can be configured in mapDictionary, 'TagTypeSeparator' key
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.ElementIdsMap.TagAndPropertySeparator">
+            <summary>
+                Can be configured in mapDictionary, 'TagAndPropertySeparator' key
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.ElementIdsMap.GetFromMap(System.String,Ssz.Utils.CsvDb)">
+            <summary>
+                result.Count > 1
+            </summary>
+            <param name="elementId"></param>
+            <param name="csvDb"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.ElementIdsMap.GetFromMap(System.String,System.String,System.String,Ssz.Utils.CsvDb)">
+            <summary>
+                result.Count > 1
+            </summary>
+            <param name="tag"></param>
+            <param name="propertyPath"></param>
+            <param name="tagType"></param>
+            <param name="csvDb"></param>
             <returns></returns>
         </member>
         <member name="T:Ssz.Utils.Logging.LogFileTextWriter">
@@ -3523,6 +3564,34 @@
                 Enum which is used for fast serialization. It stores information about a type or type/value.
             </summary>
         </member>
+        <member name="M:Ssz.Utils.SszExpression.Evaluate(System.Object[],System.Object,Microsoft.Extensions.Logging.ILogger)">
+            <summary>
+                Writes to logger with Debug level.
+            </summary>
+            <param name="dataSourceValues"></param>
+            <param name="userValue"></param>
+            <param name="logger"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.SszQueryHelper.FindFirstLevelSpecialText(System.String,System.Char,System.Boolean)">
+            <summary>
+                Searches special text like %(...) or $(...) in string.
+            </summary>
+            <param name="value"></param>
+            <param name="symbol"></param>
+            <param name="returnFirstOnly"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.SszQueryHelper.ComputeValueOfSszQueries(System.String,System.Func{System.String,System.String},Ssz.Utils.CsvDb)">
+            <summary>
+                Compute SSZ queries in string.
+                E.g. %(TAG), %(TAG => s[0].Substring(1)), %(tags.csv,%(TAG),1)
+            </summary>
+            <param name="originalString"></param>
+            <param name="getConstantValue"></param>
+            <param name="csvDb"></param>
+            <returns></returns>
+        </member>
         <member name="T:Ssz.Utils.StringHelper">
             <summary>
             
@@ -3568,15 +3637,6 @@
             </summary>
             <param name="str"></param>
             <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Ssz.Utils.TagsMap.GetFromOpcMap(System.String,System.String,System.String)">
-            <summary>
-                result.Count > 1
-            </summary>
-            <param name="tag"></param>
-            <param name="propertyPath"></param>
-            <param name="tagType"></param>
             <returns></returns>
         </member>
         <member name="T:Ssz.Utils.ViewModelBase">

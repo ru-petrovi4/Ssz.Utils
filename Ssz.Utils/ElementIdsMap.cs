@@ -8,27 +8,27 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils
 {
-    public class TagsMap
+    public class ElementIdsMap
     {
         #region construction and destruction
 
-        public TagsMap(CaseInsensitiveDictionary<List<string?>> mapDictionary,
-            CaseInsensitiveDictionary<List<string?>> tagsDictionary)
+        public ElementIdsMap(CaseInsensitiveDictionary<List<string?>> map,
+            CaseInsensitiveDictionary<List<string?>> tagInfos)
         {
             //_logger = logger;
 
-            _mapDictionary = mapDictionary;
-            _tagsDictionary = tagsDictionary;
+            Map = map;
+            TagInfos = tagInfos;
 
-            var values = _mapDictionary.TryGetValue("GenericTag");
+            var values = Map.TryGetValue("GenericTag");
             if (values != null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 GenericTag = values[1] ?? @"";
 
-            values = _mapDictionary.TryGetValue("TagTypeSeparator");
+            values = Map.TryGetValue("TagTypeSeparator");
             if (values != null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 TagTypeSeparator = values[1] ?? @"";
 
-            values = _mapDictionary.TryGetValue("TagAndPropertySeparator");
+            values = Map.TryGetValue("TagAndPropertySeparator");
             if (values != null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 TagAndPropertySeparator = values[1] ?? @"";
         }
@@ -52,12 +52,17 @@ namespace Ssz.Utils
         /// </summary>
         public string TagAndPropertySeparator { get; } = @".";
 
+        public CaseInsensitiveDictionary<List<string?>> Map { get; }
+
+        public CaseInsensitiveDictionary<List<string?>> TagInfos { get; }
+
         /// <summary>
         ///     result.Count > 1
         /// </summary>
         /// <param name="elementId"></param>
+        /// <param name="csvDb"></param>
         /// <returns></returns>
-        public List<string?> GetFromMap(string elementId)
+        public List<string?> GetFromMap(string elementId, CsvDb? csvDb)
         {
             string? tag;
             string? propertyPath;
@@ -77,20 +82,7 @@ namespace Ssz.Utils
                 tagType = null;
             }
 
-            return GetFromMap(tag, propertyPath, tagType);
-        }
-
-        #endregion
-
-        #region private functions
-
-        private string GetTagType(string? tag)
-        {
-            if (string.IsNullOrEmpty(tag)) return "";
-            var line = _tagsDictionary.TryGetValue(tag);
-            if (line == null) return "";
-            if (line.Count < 2) return "";
-            return line[1] ?? @"";
+            return GetFromMap(tag, propertyPath, tagType, csvDb);
         }
 
         /// <summary>
@@ -99,20 +91,21 @@ namespace Ssz.Utils
         /// <param name="tag"></param>
         /// <param name="propertyPath"></param>
         /// <param name="tagType"></param>
+        /// <param name="csvDb"></param>
         /// <returns></returns>
-        private List<string?> GetFromMap(string? tag, string? propertyPath, string? tagType)
+        public List<string?> GetFromMap(string? tag, string? propertyPath, string? tagType, CsvDb? csvDb)
         {
-            string id = tag + propertyPath;
-            if (id == @"") return new List<string?> { @"", @"" };
+            string elementId = tag + propertyPath;
+            if (elementId == @"") return new List<string?> { @"", @"" };
 
-            var values = _mapDictionary.TryGetValue(id);
+            var values = Map.TryGetValue(elementId);
             if (values != null)
             {
                 if (values.Count == 1) values.Add("");
                 return values;
             }
 
-            var result = new List<string?> { id };
+            var result = new List<string?> { elementId };
 
             if (!string.IsNullOrEmpty(propertyPath))
             {
@@ -120,25 +113,24 @@ namespace Ssz.Utils
 
                 if (!string.IsNullOrEmpty(tag))
                 {
-                    values = _mapDictionary.TryGetValue(tag);
+                    values = Map.TryGetValue(tag);
                     if (values != null && values.Count > 1 && values[1] != "") newTag = values[1];
                 }
 
                 values = null;
                 if (!string.IsNullOrEmpty(tagType))
-                    values = _mapDictionary.TryGetValue(tagType + TagTypeSeparator +
+                    values = Map.TryGetValue(tagType + TagTypeSeparator +
                                                           GenericTag + propertyPath);
                 if (values == null)
-                    values = _mapDictionary.TryGetValue(GenericTag + propertyPath);
+                    values = Map.TryGetValue(GenericTag + propertyPath);
                 if (values != null)
                 {
                     if (values.Count > 1)
-                    {                        
+                    {
                         for (var i = 1; i < values.Count; i++)
-                        {                            
-                            string v = values[i] ?? "";
-                            StringHelper.ReplaceIgnoreCase(ref v, GenericTag, (newTag ?? tag) ?? "");
-                            result.Add(v);
+                        {
+                            string? v = SszQueryHelper.ComputeValueOfSszQueries(values[i], constant => (newTag ?? tag) ?? "", csvDb);                            
+                            result.Add(v ?? @"");
                         }
                     }
                     else
@@ -153,10 +145,36 @@ namespace Ssz.Utils
             }
             else
             {
-                result.Add(id);
+                result.Add(elementId);
             }
 
             return result;
+        }
+
+        public Any? TryGetConstValue(string? mappedElementIdOrConst)
+        {
+            if (string.IsNullOrEmpty(mappedElementIdOrConst) || mappedElementIdOrConst.StartsWith(TagAndPropertySeparator) ||
+                mappedElementIdOrConst.EndsWith(TagAndPropertySeparator)) return new Any(DBNull.Value);
+
+            if (mappedElementIdOrConst.StartsWith("\"") && mappedElementIdOrConst.EndsWith("\""))
+            {
+                mappedElementIdOrConst = mappedElementIdOrConst.Substring(1, mappedElementIdOrConst.Length - 2);
+                return new Any(mappedElementIdOrConst);
+            }
+
+            var any = Any.ConvertToBestType(mappedElementIdOrConst, false);
+            if (any.ValueTypeCode != TypeCode.String) return any;
+
+            return null;
+        }
+
+        public string GetTagType(string? tag)
+        {
+            if (string.IsNullOrEmpty(tag)) return "";
+            var tagInfoValues = TagInfos.TryGetValue(tag);
+            if (tagInfoValues == null) return "";
+            if (tagInfoValues.Count < 2) return "";
+            return tagInfoValues[1] ?? @"";
         }
 
         #endregion
@@ -164,10 +182,6 @@ namespace Ssz.Utils
         #region private fields
 
         //private ILogger<CsvMap>? _logger;       
-
-        private CaseInsensitiveDictionary<List<string?>> _mapDictionary;
-
-        private CaseInsensitiveDictionary<List<string?>> _tagsDictionary;
 
         #endregion
     }

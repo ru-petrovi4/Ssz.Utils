@@ -16,9 +16,6 @@ namespace TestConsoleApp
         //static string _s2 = "m9zyvlcodIYY+B1j2FK21mmvchyFfylNjO/jjtTU9Cg=";
         static void Main(string[] args)
         {
-            
-
-
             Console.WriteLine(DateTime.Now.ToString("dd") + DateTime.Now.ToString("MM"));
 
 

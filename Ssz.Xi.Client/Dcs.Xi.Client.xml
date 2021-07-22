@@ -4219,12 +4219,13 @@
                 If connection error, failedValueSubscriptions is all clientObjs.        
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Write(Ssz.Utils.DataAccess.IValueSubscription,Ssz.Utils.DataAccess.ValueStatusTimestamp)">
-             <summary>
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Write(Ssz.Utils.DataAccess.IValueSubscription,Ssz.Utils.DataAccess.ValueStatusTimestamp,Microsoft.Extensions.Logging.ILogger)">
+            <summary>
             
-             </summary>
-             <param name="valueSubscription"></param>
-             <param name="valueStatusTimestamp"></param>
+            </summary>
+            <param name="valueSubscription"></param>
+            <param name="valueStatusTimestamp"></param>
+            <param name="alternativeLogger"></param>
         </member>
         <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Passthrough(System.String,System.String,System.Byte[],System.Action{System.Collections.Generic.IEnumerable{System.Byte}})">
             <summary>        

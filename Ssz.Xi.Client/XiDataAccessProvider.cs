@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using Ssz.Xi.Client.Api;
@@ -147,7 +148,7 @@ namespace Ssz.Xi.Client
         public event Action Disconnected = delegate { };
         
         public void Initialize(IDispatcher? сallbackDispatcher,
-            TagsMap? tagsMap,
+            ElementIdsMap? elementIdsMap,
             bool elementValueListCallbackIsEnabled,
             bool eventListCallbackIsEnabled,
             string serverAddress,
@@ -296,11 +297,12 @@ namespace Ssz.Xi.Client
         }
 
         /// <summary>
-        ///
+        /// 
         /// </summary>
         /// <param name="valueSubscription"></param>
         /// <param name="valueStatusTimestamp"></param>
-        public void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp)
+        /// <param name="alternativeLogger"></param>
+        public void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? alternativeLogger)
         {
             BeginInvoke(ct =>
             {
