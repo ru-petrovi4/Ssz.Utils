@@ -609,7 +609,7 @@ namespace Ssz.DataGrpc.Client
                     converter = SszConverter.Empty;
                 resultValues =
                     converter.ConvertBack(value.ValueAsObject(),
-                        new Type?[valueSubscriptionObj.ChildValueSubscriptionsList.Count], logger);
+                        valueSubscriptionObj.ChildValueSubscriptionsList.Count, logger);
                 if (resultValues.Length == 0) return;
             }
 
@@ -1033,7 +1033,7 @@ namespace Ssz.DataGrpc.Client
                     converter = Converter;
                 else
                     converter = SszConverter.Empty;
-                var convertedValue = converter.Convert(values.ToArray(), null, null);
+                var convertedValue = converter.Convert(values.ToArray(), null);
                 if (convertedValue == SszConverter.DoNothing) return;
                 ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), StatusCodes.Good,
                     DateTime.UtcNow));

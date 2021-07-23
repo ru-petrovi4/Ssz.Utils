@@ -15,74 +15,73 @@ namespace Ssz.Utils
 
         public static object DoNothing { get; } = new();
 
-        public object? NullOrEmptyValue { get; set; }
-
-        public string Format { get; set; } = @"";
-
-        public object? Convert(object?[]? values, Type? targetType, ILogger? logger)
+        public object? Convert(object?[]? values, ILogger? logger)
         {
             if (values == null || values.Length == 0)
                 return DoNothing;
 
-            if (BackStatements.Count > 0) _values = (object[])values.Clone();            
+            if (BackStatements.Count > 0)
+                _values = (object[])values.Clone();            
 
-            object? evaluatedValue;
+            object? resultValue;
 
             var firstTrue =
                 Statements.FirstOrDefault(
                     s => new Any(s.Condition.Evaluate(values, null, logger)).ValueAsBoolean(false));
             if (firstTrue != null)
-                evaluatedValue = firstTrue.Value.Evaluate(values, null, logger);
+                resultValue = firstTrue.Value.Evaluate(values, null, logger);
             else
-                evaluatedValue = values[0];
-
-            if (StringHelper.IsNullOrEmptyString(evaluatedValue)) return NullOrEmptyValue;
-            if (targetType == typeof(string))
-                evaluatedValue = new Any(evaluatedValue).ValueAsString(true, Format);
-            else
-                evaluatedValue = new Any(evaluatedValue).ValueAs(targetType, false, Format);
-            if (StringHelper.IsNullOrEmptyString(evaluatedValue)) return NullOrEmptyValue;
-            return evaluatedValue;
+                resultValue = values[0];
+            
+            return resultValue;
         }
 
-        public object?[] ConvertBack(object? value, Type?[] targetTypes, ILogger? logger)
+        public object?[] ConvertBack(object? value, int resultCount, ILogger? logger)
         {
-            if (targetTypes.Length == 0) return new object[0];
+            if (resultCount <= 0 || resultCount > 0xFFFF) return new object[0];
 
-            var resultValues = new object?[targetTypes.Length];
-            var resultValuesIsSet = new bool?[targetTypes.Length];
+            var resultValues = new object?[resultCount];
+            var conditionResults = new bool?[resultCount];
 
             foreach (SszStatement statement in BackStatements)
             {
                 var paramNum = statement.ParamNum;
-                if (paramNum >= 0 && paramNum < targetTypes.Length)
-                    if (resultValuesIsSet[paramNum] != true)
+                if (paramNum >= 0 && paramNum < resultCount)
+                    if (conditionResults[paramNum] != true)
                     {
                         if (new Any(statement.Condition.Evaluate(_values, value, logger)).ValueAsBoolean(false))
                         {
                             resultValues[paramNum] = statement.Value.Evaluate(_values, value, logger);
-                            resultValuesIsSet[paramNum] = true;
+                            conditionResults[paramNum] = true;
                         }
                         else
                         {
-                            resultValuesIsSet[paramNum] = false;
+                            conditionResults[paramNum] = false;
                         }
                     }
             }            
 
-            for (var paramNum = 0; paramNum < targetTypes.Length; paramNum++)
+            for (var paramNum = 0; paramNum < resultCount; paramNum++)
             {
-                if (resultValuesIsSet[paramNum] == null) resultValues[paramNum] = value;
-
-                if (resultValues[paramNum] == null)
+                var conditionResult = conditionResults[paramNum];
+                if (conditionResult == null)
                 {
-                    resultValues[paramNum] = DoNothing;
+                    resultValues[paramNum] = value;
+                    if (_values != null && paramNum < _values.Length)
+                        _values[paramNum] = value;
                 }
                 else
                 {
-                    if (_values != null && paramNum < _values.Length)
-                        _values[paramNum] = resultValues[paramNum];
-                }
+                    if (!conditionResult.Value)
+                    {
+                        resultValues[paramNum] = DoNothing;
+                    }
+                    else
+                    {
+                        if (_values != null && paramNum < _values.Length)
+                            _values[paramNum] = resultValues[paramNum];
+                    }
+                }                
             }
 
             return resultValues;
