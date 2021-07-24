@@ -153,8 +153,7 @@ namespace Ssz.Utils
 
         public Any? TryGetConstValue(string? mappedElementIdOrConst)
         {
-            if (string.IsNullOrEmpty(mappedElementIdOrConst) || mappedElementIdOrConst.StartsWith(TagAndPropertySeparator) ||
-                mappedElementIdOrConst.EndsWith(TagAndPropertySeparator)) return new Any(DBNull.Value);
+            if (string.IsNullOrEmpty(mappedElementIdOrConst)) return new Any(DBNull.Value);
 
             if (mappedElementIdOrConst.StartsWith("\"") && mappedElementIdOrConst.EndsWith("\""))
             {

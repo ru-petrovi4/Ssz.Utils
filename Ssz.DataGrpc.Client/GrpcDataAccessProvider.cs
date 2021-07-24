@@ -417,28 +417,33 @@ namespace Ssz.DataGrpc.Client
                     {
                     }
                 }
+
+                BeginInvoke(ct =>
+                {
+                    if (valueSubscriptionObj.ChildValueSubscriptionsList != null)
+                    {
+                        foreach (var childValueSubscription in valueSubscriptionObj.ChildValueSubscriptionsList)
+                            if (!childValueSubscription.IsConst)
+                                ClientElementValueListManager.AddItem(childValueSubscription.MappedElementIdOrConst,
+                                    childValueSubscription);
+                    }
+                    else
+                    {
+                        ClientElementValueListManager.AddItem(valueSubscriptionObj.MapValues[1] ?? "", valueSubscription);
+                    }
+                });
+
+                return valueSubscriptionObj.MapValues[1] ?? "";
             }
             else
             {
-                valueSubscriptionObj.MapValues = new List<string?> { elementId, elementId };
-            }
-
-            BeginInvoke(ct =>
-            {
-                if (valueSubscriptionObj.ChildValueSubscriptionsList != null)
+                BeginInvoke(ct =>
                 {
-                    foreach (var childValueSubscription in valueSubscriptionObj.ChildValueSubscriptionsList)
-                        if (!childValueSubscription.IsConst)
-                            ClientElementValueListManager.AddItem(childValueSubscription.MappedElementIdOrConst,
-                                childValueSubscription);
-                }
-                else
-                {
-                    ClientElementValueListManager.AddItem(valueSubscriptionObj.MapValues[1] ?? "", valueSubscription);
-                }
-            });
+                    ClientElementValueListManager.AddItem(elementId, valueSubscription);
+                });
 
-            return valueSubscriptionObj.MapValues[1] ?? "";
+                return elementId;
+            }            
         }
 
         /// <summary>        
@@ -477,7 +482,8 @@ namespace Ssz.DataGrpc.Client
                 {
                     foreach (var childValueSubscription in valueSubscriptionObj.ChildValueSubscriptionsList)
                     {
-                        if (!childValueSubscription.IsConst) ClientElementValueListManager.RemoveItem(childValueSubscription);
+                        if (!childValueSubscription.IsConst) 
+                            ClientElementValueListManager.RemoveItem(childValueSubscription);
                         childValueSubscription.ValueSubscriptionObj = null;
                     }
 
