@@ -87,9 +87,9 @@ namespace Ssz.Utils.Logging
         {
             if (_buffer.Length > 0)
             {
+                StreamWriter? sw = null;
                 try
-                {
-                    StreamWriter sw;
+                {                    
                     var fi = new FileInfo(LogFileName);
                     if (!fi.Exists)
                     {
@@ -108,11 +108,17 @@ namespace Ssz.Utils.Logging
                         }
                     }
                     sw.Write(_buffer.ToString());
-                    _buffer.Clear();
-                    sw.Close();
+                    _buffer.Clear();                    
                 }
                 catch
                 {
+                }
+                finally
+                {
+                    if (sw != null)
+                    {
+                        sw.Dispose();
+                    }
                 }
             }
         }
