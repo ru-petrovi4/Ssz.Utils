@@ -14,8 +14,7 @@ namespace Ssz.Utils
         #region construction and destruction
 
         public SszExpression()
-        {
-            _expressionString = @"";
+        {            
             IsValidInternal = false;
             _isUiToDataSourceWarning = false;
             _expressionType = ExpressinType.Const;
@@ -25,7 +24,7 @@ namespace Ssz.Utils
 
         public SszExpression(string expressionString)
         {
-            _expressionString = expressionString;
+            ExpressionString = expressionString;
         }
 
         public SszExpression(SszExpression that)
@@ -251,7 +250,7 @@ namespace Ssz.Utils
         private object[]? _lastDataSourceValues;
         private object? _lastUserValue;
 
-        private string _expressionString;        
+        private string _expressionString = @"";
         private bool _isUiToDataSourceWarning;
         private ExpressinType _expressionType;
         private LambdaExpression? _lambdaExpression;

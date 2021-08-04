@@ -483,8 +483,8 @@ namespace Ssz.DataGrpc.Client
                     foreach (var childValueSubscription in valueSubscriptionObj.ChildValueSubscriptionsList)
                     {
                         if (!childValueSubscription.IsConst) 
-                            ClientElementValueListManager.RemoveItem(childValueSubscription);
-                        childValueSubscription.ValueSubscriptionObj = null;
+                            ClientElementValueListManager.RemoveItem(childValueSubscription);                        
+                        childValueSubscription.Obj = null;
                     }
 
                     valueSubscriptionObj.ChildValueSubscriptionsList = null;
@@ -740,11 +740,9 @@ namespace Ssz.DataGrpc.Client
         ///     On loop in working thread.
         /// </summary>
         /// <param name="cancellationToken"></param>
-        protected virtual void Execute(CancellationToken cancellationToken)
+        protected virtual void DoWork(DateTime nowUtc, CancellationToken cancellationToken)
         {
             _threadSafeDispatcher.InvokeActionsInQueue(cancellationToken);
-
-            DateTime nowUtc = DateTime.UtcNow;
 
             if (cancellationToken.IsCancellationRequested) return;
             if (!ClientConnectionManager.ConnectionExists)
@@ -953,7 +951,9 @@ namespace Ssz.DataGrpc.Client
             {
                 if (ct.WaitHandle.WaitOne(10)) break;
 
-                Execute(ct);
+                var nowUtc = DateTime.UtcNow;
+
+                DoWork(nowUtc, ct);
             }
 
             Unsubscribe();
@@ -1052,13 +1052,11 @@ namespace Ssz.DataGrpc.Client
 
             public readonly string MappedElementIdOrConst;
 
-            public Any Value;
-
-            public ValueSubscriptionObj? ValueSubscriptionObj;
+            public Any Value;            
 
             public ChildValueSubscription(ValueSubscriptionObj valueSubscriptionObj, string mappedElementIdOrConst, ElementIdsMap? elementIdsMap)
             {
-                ValueSubscriptionObj = valueSubscriptionObj;
+                Obj = valueSubscriptionObj;
                 MappedElementIdOrConst = mappedElementIdOrConst;
 
                 if (elementIdsMap != null)
@@ -1089,8 +1087,8 @@ namespace Ssz.DataGrpc.Client
                         break;
                 }
 
-                if (ValueSubscriptionObj != null) 
-                    ValueSubscriptionObj.ChildValueSubscriptionUpdated();
+                if (Obj != null) 
+                    ((ValueSubscriptionObj)Obj).ChildValueSubscriptionUpdated();
             }
         }
     }

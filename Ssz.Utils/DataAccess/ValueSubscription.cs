@@ -13,13 +13,13 @@ namespace Ssz.Utils.DataAccess
 
         /// <summary>
         ///     Is used to subscribe for value updating and to write values.
-        ///     valueChangedAction(oldValue, newValue) is invoked when Value property changed. Initial Value property is new ValueStatusTimestamp(), Any(null) and Unknown status.        
+        ///     valueUpdated(oldValue, newValue) is invoked when Value property Updated. Initial Value property is new ValueStatusTimestamp(), Any(null) and Unknown status.        
         /// </summary>
-        public ValueSubscription(IDataAccessProvider dataAccessProvider, string id, Action<ValueStatusTimestamp, ValueStatusTimestamp>? valueChangedAction = null)
+        public ValueSubscription(IDataAccessProvider dataAccessProvider, string id, Action<ValueStatusTimestamp, ValueStatusTimestamp>? valueUpdated = null)
         {
             DataAccessProvider = dataAccessProvider;
             Id = id;
-            _valueChangedAction = valueChangedAction;
+            _valueUpdated = valueUpdated;
 
             ModelId = DataAccessProvider.AddItem(Id, this);
         }
@@ -28,7 +28,7 @@ namespace Ssz.Utils.DataAccess
         {
             DataAccessProvider.RemoveItem(this);
 
-            _valueChangedAction = null;
+            _valueUpdated = null;
         }
 
         #endregion
@@ -53,9 +53,9 @@ namespace Ssz.Utils.DataAccess
         /// <param name="valueStatusTimestamp"></param>
         void IValueSubscription.Update(ValueStatusTimestamp valueStatusTimestamp)
         {
-            if (ValueStatusTimestamp == valueStatusTimestamp) return;
-            if (_valueChangedAction != null) _valueChangedAction(ValueStatusTimestamp, valueStatusTimestamp);
-            ValueStatusTimestamp = valueStatusTimestamp;
+            var oldValueStatusTimestamp = ValueStatusTimestamp;
+            ValueStatusTimestamp = valueStatusTimestamp;            
+            if (_valueUpdated != null) _valueUpdated(oldValueStatusTimestamp, valueStatusTimestamp);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace Ssz.Utils.DataAccess
 
         #region private fields
         
-        private Action<ValueStatusTimestamp, ValueStatusTimestamp>? _valueChangedAction;
+        private Action<ValueStatusTimestamp, ValueStatusTimestamp>? _valueUpdated;
 
         #endregion
     }

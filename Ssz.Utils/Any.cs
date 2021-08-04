@@ -255,7 +255,14 @@ namespace Ssz.Utils
                 case StorageType.Object:
                     return left._storageObject == right._storageObject;
                 case StorageType.Double:
-                    return left._storageDouble == right._storageDouble;
+                    {
+                        double leftD = left.ValueAsDouble(false);
+                        double rightD = right.ValueAsDouble(false);
+                        if (Double.IsNaN(rightD)) return Double.IsNaN(leftD);
+                        if (Double.IsPositiveInfinity(rightD)) return Double.IsPositiveInfinity(leftD);
+                        if (Double.IsNegativeInfinity(rightD)) return Double.IsNegativeInfinity(leftD);
+                        return Math.Abs(leftD - rightD) <= Double.Epsilon * 100;                        
+                    }                    
                 case StorageType.UInt32:
                     return left._storageUInt32 == right._storageUInt32;
             }
@@ -285,7 +292,14 @@ namespace Ssz.Utils
             switch (ValueStorageType)
             {
                 case StorageType.Double:
-                    return Math.Abs(ValueAsDouble(false) - that.ValueAsDouble(false)) <= deadband;                    
+                    {
+                        double d = ValueAsDouble(false);
+                        double thatD = that.ValueAsDouble(false);
+                        if (Double.IsNaN(thatD)) return Double.IsNaN(d);
+                        if (Double.IsPositiveInfinity(thatD)) return Double.IsPositiveInfinity(d);
+                        if (Double.IsNegativeInfinity(thatD)) return Double.IsNegativeInfinity(d);
+                        return Math.Abs(thatD - d) <= deadband + Double.Epsilon * 100;
+                    }                                  
                 case StorageType.UInt32:
                     return ValueAsInt32(false) == that.ValueAsInt32(false);                    
                 case StorageType.Object:
