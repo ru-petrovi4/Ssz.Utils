@@ -34,6 +34,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.Xceed.Wpf.AvalonDock.Th
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.Xceed.Wpf.AvalonDock.Themes.VS2010", "Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.AvalonDock.Themes.VS2010\Ssz.Xceed.Wpf.AvalonDock.Themes.VS2010.csproj", "{B3FC3E21-5F2D-4581-AEA2-59F671CFFC21}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ssz.Utils.Net4", "Ssz.Utils.Net4\Ssz.Utils.Net4.csproj", "{F91A6025-E125-402B-95A6-FA483786C4B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +107,12 @@ Global
 		{B3FC3E21-5F2D-4581-AEA2-59F671CFFC21}.Release_Multiplatform|Any CPU.ActiveCfg = Release|Any CPU
 		{B3FC3E21-5F2D-4581-AEA2-59F671CFFC21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3FC3E21-5F2D-4581-AEA2-59F671CFFC21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F91A6025-E125-402B-95A6-FA483786C4B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F91A6025-E125-402B-95A6-FA483786C4B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F91A6025-E125-402B-95A6-FA483786C4B4}.Release_Multiplatform|Any CPU.ActiveCfg = Release|Any CPU
+		{F91A6025-E125-402B-95A6-FA483786C4B4}.Release_Multiplatform|Any CPU.Build.0 = Release|Any CPU
+		{F91A6025-E125-402B-95A6-FA483786C4B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F91A6025-E125-402B-95A6-FA483786C4B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

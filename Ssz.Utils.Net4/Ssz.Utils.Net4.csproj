@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F91A6025-E125-402B-95A6-FA483786C4B4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ssz.Utils.Net4</RootNamespace>
+    <AssemblyName>Ssz.Utils.Net4</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+	<Nullable>disable</Nullable>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Ssz.Utils.Net4.XML</DocumentationFile>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>  
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Any.cs" />
+    <Compile Include="Buffer.cs" />
+    <Compile Include="BytesArrayEqualityComparer.cs" />
+    <Compile Include="CacheService.cs" />
+    <Compile Include="CaseInsensitiveDictionary.cs" />
+    <Compile Include="CaseInsensitiveHashSet.cs" />
+    <Compile Include="ClipboardHelper.cs" />
+    <Compile Include="CommandLine\Attributes\AssemblyLicenseAttribute.cs" />
+    <Compile Include="CommandLine\Attributes\AssemblyUsageAttribute.cs" />
+    <Compile Include="CommandLine\Attributes\BaseOptionAttribute.cs" />
+    <Compile Include="CommandLine\Attributes\HelpOptionAttribute.cs" />
+    <Compile Include="CommandLine\Attributes\HelpVerbOptionAttribute.cs" />
+    <Compile Include="CommandLine\Attributes\MultiLineTextAttribute.cs" />
+    <Compile Include="CommandLine\Attributes\OptionArrayAttribute.cs" />
+    <Compile Include="CommandLine\Attributes\OptionAttribute.cs" />
+    <Compile Include="CommandLine\Attributes\OptionListAttribute.cs" />
+    <Compile Include="CommandLine\Attributes\ParserStateAttribute.cs" />
+    <Compile Include="CommandLine\Attributes\ValueListAttribute.cs" />
+    <Compile Include="CommandLine\Attributes\ValueOptionAttribute.cs" />
+    <Compile Include="CommandLine\Attributes\VerbOptionAttribute.cs" />
+    <Compile Include="CommandLine\BadOptionInfo.cs" />
+    <Compile Include="CommandLine\Extensions\CharExtensions.cs" />
+    <Compile Include="CommandLine\Extensions\StringExtensions.cs" />
+    <Compile Include="CommandLine\GlobalSuppressions.cs" />
+    <Compile Include="CommandLine\Infrastructure\Assumes.cs" />
+    <Compile Include="CommandLine\Infrastructure\Pair.cs" />
+    <Compile Include="CommandLine\Infrastructure\PopsicleSetter.cs" />
+    <Compile Include="CommandLine\Infrastructure\ReflectionCache.cs" />
+    <Compile Include="CommandLine\Infrastructure\ReflectionHelper.cs" />
+    <Compile Include="CommandLine\Infrastructure\SR.strings.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SR.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CommandLine\IParserState.cs" />
+    <Compile Include="CommandLine\Parser.cs" />
+    <Compile Include="CommandLine\ParserException.cs" />
+    <Compile Include="CommandLine\ParserSettings.cs" />
+    <Compile Include="CommandLine\ParserState.cs" />
+    <Compile Include="CommandLine\ParsingError.cs" />
+    <Compile Include="CommandLine\Parsing\ArgumentParser.cs" />
+    <Compile Include="CommandLine\Parsing\IArgumentEnumerator.cs" />
+    <Compile Include="CommandLine\Parsing\LongOptionParser.cs" />
+    <Compile Include="CommandLine\Parsing\OneCharStringEnumerator.cs" />
+    <Compile Include="CommandLine\Parsing\OptionGroupParser.cs" />
+    <Compile Include="CommandLine\Parsing\OptionInfo.cs" />
+    <Compile Include="CommandLine\Parsing\OptionMap.cs" />
+    <Compile Include="CommandLine\Parsing\PresentParserState.cs" />
+    <Compile Include="CommandLine\Parsing\PropertyWriter.cs" />
+    <Compile Include="CommandLine\Parsing\StringArrayEnumerator.cs" />
+    <Compile Include="CommandLine\Parsing\TargetCapabilitiesExtensions.cs" />
+    <Compile Include="CommandLine\Parsing\ValueMapper.cs" />
+    <Compile Include="CommandLine\Text\BaseSentenceBuilder.cs" />
+    <Compile Include="CommandLine\Text\CopyrightInfo.cs" />
+    <Compile Include="CommandLine\Text\EnglishSentenceBuilder.cs" />
+    <Compile Include="CommandLine\Text\FormatOptionHelpTextEventArgs.cs" />
+    <Compile Include="CommandLine\Text\HeadingInfo.cs" />
+    <Compile Include="CommandLine\Text\HelpText.cs" />
+    <Compile Include="CommandLine\Text\_ParsingErrorsHandler.cs" />
+    <Compile Include="CsvHelper.cs" />
+    <Compile Include="CultureHelper.cs" />
+    <Compile Include="DynamicLinq.cs" />
+    <Compile Include="FileSystemHelper.cs" />
+    <Compile Include="HmiWebParseFile.cs" />
+    <Compile Include="JetBrains.cs" />
+    <Compile Include="LeveledLock.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="LogFileTextWriter.cs" />
+    <Compile Include="MonitoredUndo\DefaultChangeFactory.cs" />
+    <Compile Include="MonitoredUndo\ChangeKey_T2.cs" />
+    <Compile Include="MonitoredUndo\ChangeKey_T3.cs" />
+    <Compile Include="MonitoredUndo\ChangeSet.cs" />
+    <Compile Include="MonitoredUndo\Changes\Change.cs" />
+    <Compile Include="MonitoredUndo\Changes\CollectionAddChange.cs" />
+    <Compile Include="MonitoredUndo\Changes\CollectionAddRemoveChangeBase.cs" />
+    <Compile Include="MonitoredUndo\Changes\CollectionChange.cs" />
+    <Compile Include="MonitoredUndo\Changes\CollectionMoveChange.cs" />
+    <Compile Include="MonitoredUndo\Changes\CollectionRemoveChange.cs" />
+    <Compile Include="MonitoredUndo\Changes\CollectionReplaceChange.cs" />
+    <Compile Include="MonitoredUndo\Changes\DelegateChange.cs" />
+    <Compile Include="MonitoredUndo\Changes\PropertyChange.cs" />
+    <Compile Include="MonitoredUndo\ISupportsUndo.cs" />
+    <Compile Include="MonitoredUndo\ISupportsUndoNotification.cs" />
+    <Compile Include="MonitoredUndo\IUndoMetadata.cs" />
+    <Compile Include="MonitoredUndo\UndoBatch.cs" />
+    <Compile Include="MonitoredUndo\UndoRoot.cs" />
+    <Compile Include="MonitoredUndo\UndoService.cs" />
+    <Compile Include="NameValueCollectionHelper.cs" />
+    <Compile Include="NameValueCollectionTypeConverter.cs" />
+    <Compile Include="NameValueCollectionValueSerializer.cs" />
+    <Compile Include="ObjectExtensions.cs" />
+    <Compile Include="ObjectManager.cs" />
+    <Compile Include="ObjectsCache.cs" />
+    <Compile Include="ReferenceEqualityComparer.cs" />
+    <Compile Include="OwnedDataSerializable.cs" />
+    <Compile Include="OwnedDataSerializableAndCloneable.cs" />
+    <Compile Include="OwnedDataSerializableExtensions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReferenceEqualityList.cs" />
+    <Compile Include="Serialization\IOwnedDataSerializable.cs" />
+    <Compile Include="Serialization\SerializationReader.cs" />
+    <Compile Include="Serialization\SerializationWriter.cs" />
+    <Compile Include="Serialization\SerializedType.cs" />
+    <Compile Include="StringHelper.cs" />
+    <Compile Include="ThreadDispatcher.cs" />
+    <Compile Include="WinApi\ApiHelper.cs" />
+    <Compile Include="WinApi\DisableTouchConversionToMouse.cs" />
+    <Compile Include="WinApi\Hook.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WinApi\HookType.cs" />
+    <Compile Include="WinApi\KeyboardKey.cs" />
+    <Compile Include="WinApi\LocalMessageHook.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WinApi\LowLevelKeyboardHook.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WinApi\LowLevelKeyboardMessage.cs" />
+    <Compile Include="WinApi\LowLevelMessage.cs" />
+    <Compile Include="WinApi\LowLevelMessageCallback.cs" />
+    <Compile Include="WinApi\LowLevelMouseHook.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WinApi\LowLevelMouseMessage.cs" />
+    <Compile Include="WinApi\POINT.cs" />
+    <Compile Include="WinApi\ProcessHelper.cs" />
+    <Compile Include="WinApi\RECT.cs" />
+    <Compile Include="WinApi\User32.cs" />
+    <Compile Include="WinApi\WindowMessage.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CommandLine\Infrastructure\SR.strings" />
+    <None Include="CommandLine\Infrastructure\SR.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SR.strings.cs</LastGenOutput>
+    </None>    
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

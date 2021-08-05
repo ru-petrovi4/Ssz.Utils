@@ -1141,7 +1141,7 @@
         <member name="M:Ssz.Utils.DataAccess.ValueSubscription.#ctor(Ssz.Utils.DataAccess.IDataAccessProvider,System.String,System.Action{Ssz.Utils.DataAccess.ValueStatusTimestamp,Ssz.Utils.DataAccess.ValueStatusTimestamp})">
             <summary>
                 Is used to subscribe for value updating and to write values.
-                valueChangedAction(oldValue, newValue) is invoked when Value property changed. Initial Value property is new ValueStatusTimestamp(), Any(null) and Unknown status.        
+                valueUpdated(oldValue, newValue) is invoked when Value property Updated. Initial Value property is new ValueStatusTimestamp(), Any(null) and Unknown status.        
             </summary>
         </member>
         <member name="P:Ssz.Utils.DataAccess.ValueSubscription.ModelId">
