@@ -13,6 +13,7 @@ using Ssz.DataGrpc.Common;
 using Ssz.Utils.DataAccess;
 using Grpc.Net.Client;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace Ssz.DataGrpc.Client
 {
@@ -256,9 +257,10 @@ namespace Ssz.DataGrpc.Client
             
             IsConnectedEvent.Reset();
 
-            _workingThread = new Thread(() => WorkingThreadMain(_cancellationTokenSource.Token));
-            _workingThread.IsBackground = false;
-            _workingThread.Start();
+            _workingTask = Task.Run(async () =>
+            {
+                await WorkingTaskMain(_cancellationTokenSource.Token);
+            });
 
             IsInitialized = true;
         }
@@ -278,7 +280,7 @@ namespace Ssz.DataGrpc.Client
                 _cancellationTokenSource = null;
             }
 
-            if (_workingThread != null) _workingThread.Join(30000);
+            if (_workingTask != null) _workingTask.Wait(30000);
         }
 
         /// <summary>        
@@ -943,13 +945,15 @@ namespace Ssz.DataGrpc.Client
 
         #region private functions
 
-        private void WorkingThreadMain(CancellationToken ct)
+        private async Task WorkingTaskMain(CancellationToken ct)
         {
             if (_eventListCallbackIsEnabled) ClientEventListManager.EventMessagesCallback += OnEventMessagesCallbackInternal;
 
             while (true)
             {
-                if (ct.WaitHandle.WaitOne(10)) break;
+                if (ct.IsCancellationRequested) break;
+                await Task.Delay(10);
+                if (ct.IsCancellationRequested) break;
 
                 var nowUtc = DateTime.UtcNow;
 
@@ -998,7 +1002,7 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         private CaseInsensitiveDictionary<string> _contextParams = new();        
 
-        private Thread? _workingThread;
+        private Task? _workingTask;
 
         private CancellationTokenSource? _cancellationTokenSource;
 

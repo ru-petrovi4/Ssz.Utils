@@ -4239,10 +4239,11 @@
             </summary>
             <param name="action"></param>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Execute(System.Threading.CancellationToken)">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.DoWork(System.DateTime,System.Threading.CancellationToken)">
             <summary>
-                On loop in working thread.
+            
             </summary>
+            <param name="nowUtc"></param>
             <param name="cancellationToken"></param>
         </member>
         <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Unsubscribe">

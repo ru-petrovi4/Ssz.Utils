@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
@@ -183,9 +184,10 @@ namespace Ssz.Xi.Client
 
             _isConnected = false;
 
-            _workingThread = new Thread(() => WorkingThreadMain(_cancellationTokenSource.Token));
-            _workingThread.IsBackground = false;
-            _workingThread.Start();
+            _workingTask = Task.Run(async () =>
+            {
+                await WorkingTaskMain(_cancellationTokenSource.Token);
+            });
 
             IsInitialized = true;
         }
@@ -205,7 +207,7 @@ namespace Ssz.Xi.Client
                 _cancellationTokenSource = null;
             }
 
-            if (_workingThread != null) _workingThread.Join(30000);
+            if (_workingTask != null) _workingTask.Wait(30000);
         }
 
         /// <summary>        
@@ -369,7 +371,7 @@ namespace Ssz.Xi.Client
 
         #region private functions
 
-        private void WorkingThreadMain(CancellationToken ct)
+        private async Task WorkingTaskMain(CancellationToken ct)
         {
             _xiServerProxy = new XiServerProxy();
 
@@ -377,9 +379,13 @@ namespace Ssz.Xi.Client
 
             while (true)
             {
-                if (ct.WaitHandle.WaitOne(10)) break;
+                if (ct.IsCancellationRequested) break;
+                await Task.Delay(10);
+                if (ct.IsCancellationRequested) break;
 
-                Execute(ct);
+                var nowUtc = DateTime.UtcNow;
+
+                DoWork(nowUtc, ct);
             }            
 
             Unsubscribe();
@@ -390,14 +396,13 @@ namespace Ssz.Xi.Client
         }
 
         /// <summary>
-        ///     On loop in working thread.
+        /// 
         /// </summary>
+        /// <param name="nowUtc"></param>
         /// <param name="cancellationToken"></param>
-        private void Execute(CancellationToken cancellationToken)
+        private void DoWork(DateTime nowUtc, CancellationToken cancellationToken)
         {
             _threadSafeDispatcher.InvokeActionsInQueue(cancellationToken);
-
-            DateTime nowUtc = DateTime.UtcNow;
 
             if (_xiServerProxy == null) throw new InvalidOperationException();
 
@@ -614,7 +619,7 @@ namespace Ssz.Xi.Client
 
         private volatile bool _isConnected;
 
-        private Thread? _workingThread;
+        private Task? _workingTask;
 
         private CancellationTokenSource? _cancellationTokenSource;
 
