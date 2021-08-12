@@ -273,6 +273,7 @@ namespace Ssz.DataGrpc.Client
 
             _contextParams = new CaseInsensitiveDictionary<string>();
             CallbackDispatcher = null;
+            ElementIdsMap = null;
 
             if (_cancellationTokenSource != null)
             {
@@ -281,6 +282,23 @@ namespace Ssz.DataGrpc.Client
             }
 
             if (_workingTask != null) _workingTask.Wait(30000);
+        }
+
+        /// <summary>
+        ///     Re-initializes this object with same settings.
+        ///     Items must be added again.
+        ///     If not initialized then does nothing.
+        /// </summary>
+        public void ReInitialize()
+        {
+            if (!IsInitialized) return;
+
+            Initialize(CallbackDispatcher,
+                ElementIdsMap,
+                _elementValueListCallbackIsEnabled,
+                _eventListCallbackIsEnabled,
+                _serverAddress,
+                _clientApplicationName, _clientWorkstationName, _systemNameToConnect, _contextParams);
         }
 
         /// <summary>        
