@@ -12,11 +12,46 @@ namespace Ssz.Utils
     {
         #region construction and destruction
 
-        public ElementIdsMap(CaseInsensitiveDictionary<List<string?>> map,
-            CaseInsensitiveDictionary<List<string?>> tagInfos)
+        /// <summary>
+        ///     Must be ititialized before first use.
+        /// </summary>
+        /// <param name="logger"></param>
+        public ElementIdsMap(ILogger<ElementIdsMap>? logger = null)
         {
-            //_logger = logger;
+            _logger = logger;
+        }
 
+        #endregion
+
+        #region public functions
+
+        /// <summary>
+        ///     Can be configured in mapDictionary, 'GenericTag' key
+        /// </summary>
+        public string GenericTag { get; private set; } = @"%(TAG)";
+
+        /// <summary>
+        ///     Can be configured in mapDictionary, 'TagTypeSeparator' key
+        /// </summary>
+        public string TagTypeSeparator { get; private set; } = @":";
+
+        /// <summary>
+        ///     Can be configured in mapDictionary, 'TagAndPropertySeparator' key
+        /// </summary>
+        public string TagAndPropertySeparator { get; private set; } = @".";
+
+        public CaseInsensitiveDictionary<List<string?>> Map { get; private set; } = null!;
+
+        public CaseInsensitiveDictionary<List<string?>> TagInfos { get; private set; } = null!;
+
+        /// <summary>
+        ///     Can be called multiple times. Other methods calls must be after this itinialization.
+        /// </summary>
+        /// <param name="map"></param>
+        /// <param name="tagInfos"></param>
+        public void Initialize(CaseInsensitiveDictionary<List<string?>> map,
+            CaseInsensitiveDictionary<List<string?>> tagInfos)
+        {            
             Map = map;
             TagInfos = tagInfos;
 
@@ -32,29 +67,6 @@ namespace Ssz.Utils
             if (values != null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 TagAndPropertySeparator = values[1] ?? @"";
         }
-
-        #endregion
-
-        #region public functions
-
-        /// <summary>
-        ///     Can be configured in mapDictionary, 'GenericTag' key
-        /// </summary>
-        public string GenericTag { get; } = @"%(TAG)";
-
-        /// <summary>
-        ///     Can be configured in mapDictionary, 'TagTypeSeparator' key
-        /// </summary>
-        public string TagTypeSeparator { get; } = @":";
-
-        /// <summary>
-        ///     Can be configured in mapDictionary, 'TagAndPropertySeparator' key
-        /// </summary>
-        public string TagAndPropertySeparator { get; } = @".";
-
-        public CaseInsensitiveDictionary<List<string?>> Map { get; }
-
-        public CaseInsensitiveDictionary<List<string?>> TagInfos { get; }
 
         /// <summary>
         ///     result.Count > 1
@@ -180,7 +192,7 @@ namespace Ssz.Utils
 
         #region private fields
 
-        //private ILogger<CsvMap>? _logger;       
+        private ILogger<ElementIdsMap>? _logger;       
 
         #endregion
     }

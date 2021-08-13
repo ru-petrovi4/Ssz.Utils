@@ -157,7 +157,7 @@ namespace Ssz.Utils
         ///     First column in file is Key and must be unique.
         ///     Can contain include directives, defines and comments.
         ///     If file does not exist, returns empty result.
-        ///     resultWarnings are localized.
+        ///     Logs with Error priority, messages are localized.
         /// </summary>
         /// <param name="fileFullName"></param>
         /// <param name="includeFiles"></param>

@@ -14,6 +14,7 @@ namespace Ssz.Utils.Serialization
     ///     A SerializationReader instance is used to read stored values and objects from a byte array.
     ///     Once an instance is created, use the various methods to read the required data.
     ///     The data read MUST be exactly the same type and in the same order as it was written.
+    ///     Disposing not disposes underlying stream.
     /// </summary>
     public class SerializationReader : IDisposable
     {

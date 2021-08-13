@@ -279,7 +279,7 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        /// 
+        ///     Use ReadByteArray() for reading.
         /// </summary>
         /// <param name="values"></param>
         public void Write(byte[] values)
@@ -1095,7 +1095,7 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Writes a non-null generic Dictionary into the stream.
+        ///     Writes a generic Dictionary into the stream.
         /// </summary>
         /// <remarks>
         ///     The key and value types themselves are not stored - they must be
@@ -1112,6 +1112,17 @@ namespace Ssz.Utils.Serialization
             WriteArrayInternal(value.Keys.ToArray(), typeof (TK));
             WriteArrayInternal(value.Values.ToArray(), typeof (TV));
         }
+
+        //public void WriteCaseInsensitiveDictionary<T>(CaseInsensitiveDictionary<T> value)
+        //    where T : class?
+        //{
+        //    Write(value.Count);
+        //    foreach (var kvp in value)
+        //    {
+        //        Write(kvp.Key);
+        //        WriteObject<T>(kvp.Value);
+        //    }
+        //}
 
         /// <summary>
         ///     Writes a BitArray value into the stream using the fewest number of bytes possible.
