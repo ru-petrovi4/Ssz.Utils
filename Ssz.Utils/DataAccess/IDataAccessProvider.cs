@@ -44,6 +44,13 @@ namespace Ssz.Utils.DataAccess
             string serverAddress,
             string clientApplicationName, string clientWorkstationName, string systemNameToConnect, CaseInsensitiveDictionary<string> contextParams);
 
+        /// <summary>
+        ///     Re-initializes this object with same settings.
+        ///     Items must be added again.
+        ///     If not initialized then does nothing.
+        /// </summary>
+        public void ReInitialize();
+
         void Close();
         
         string AddItem(string elementId, IValueSubscription valueSubscription);

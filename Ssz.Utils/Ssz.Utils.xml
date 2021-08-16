@@ -684,7 +684,7 @@
                 First column in file is Key and must be unique.
                 Can contain include directives, defines and comments.
                 If file does not exist, returns empty result.
-                resultWarnings are localized.
+                Logs with Error priority, messages are localized.
             </summary>
             <param name="fileFullName"></param>
             <param name="includeFiles"></param>
@@ -1059,6 +1059,13 @@
                 You can use this property as temp storage.
             </summary>
         </member>
+        <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.ReInitialize">
+            <summary>
+                Re-initializes this object with same settings.
+                Items must be added again.
+                If not initialized then does nothing.
+            </summary>
+        </member>
         <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.Write(Ssz.Utils.DataAccess.IValueSubscription[],Ssz.Utils.DataAccess.ValueStatusTimestamp[],System.Action{Ssz.Utils.DataAccess.IValueSubscription[]})">
             <summary>
                 No values mapping and conversion.
@@ -1324,6 +1331,12 @@
             <param name="instance"></param>
             <returns></returns>
         </member>
+        <member name="M:Ssz.Utils.ElementIdsMap.#ctor(Microsoft.Extensions.Logging.ILogger{Ssz.Utils.ElementIdsMap})">
+            <summary>
+                Must be ititialized before first use.
+            </summary>
+            <param name="logger"></param>
+        </member>
         <member name="P:Ssz.Utils.ElementIdsMap.GenericTag">
             <summary>
                 Can be configured in mapDictionary, 'GenericTag' key
@@ -1338,6 +1351,13 @@
             <summary>
                 Can be configured in mapDictionary, 'TagAndPropertySeparator' key
             </summary>
+        </member>
+        <member name="M:Ssz.Utils.ElementIdsMap.Initialize(Ssz.Utils.CaseInsensitiveDictionary{System.Collections.Generic.List{System.String}},Ssz.Utils.CaseInsensitiveDictionary{System.Collections.Generic.List{System.String}})">
+            <summary>
+                Can be called multiple times. Other methods calls must be after this itinialization.
+            </summary>
+            <param name="map"></param>
+            <param name="tagInfos"></param>
         </member>
         <member name="M:Ssz.Utils.ElementIdsMap.GetFromMap(System.String,Ssz.Utils.CsvDb)">
             <summary>
@@ -2422,6 +2442,7 @@
                 A SerializationReader instance is used to read stored values and objects from a byte array.
                 Once an instance is created, use the various methods to read the required data.
                 The data read MUST be exactly the same type and in the same order as it was written.
+                Disposing not disposes underlying stream.
             </summary>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationReader.#ctor(System.Byte[])">
@@ -2961,7 +2982,7 @@
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.Write(System.Byte[])">
             <summary>
-            
+                Use ReadByteArray() for reading.
             </summary>
             <param name="values"></param>
         </member>
@@ -3115,7 +3136,7 @@
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.Write``2(System.Collections.Generic.Dictionary{``0,``1})">
             <summary>
-                Writes a non-null generic Dictionary into the stream.
+                Writes a generic Dictionary into the stream.
             </summary>
             <remarks>
                 The key and value types themselves are not stored - they must be

@@ -4192,6 +4192,13 @@
                 Occurs after disconnected from model.
             </summary>
         </member>
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.ReInitialize">
+            <summary>
+                Re-initializes this object with same settings.
+                Items must be added again.
+                If not initialized then does nothing.
+            </summary>
+        </member>
         <member name="M:Ssz.Xi.Client.XiDataAccessProvider.AddItem(System.String,Ssz.Utils.DataAccess.IValueSubscription)">
             <summary>        
                 Returns id actully used for OPC subscription, always as original id.
@@ -4268,7 +4275,7 @@
                 Xi System Name.
             </summary>
         </member>
-        <member name="F:Ssz.Xi.Client.XiDataAccessProvider._applicationName">
+        <member name="F:Ssz.Xi.Client.XiDataAccessProvider._clientApplicationName">
             <summary>
                 Used in Xi Context initialization.
             </summary>
@@ -4278,7 +4285,7 @@
                 Used in Xi DataList initialization.
             </summary>
         </member>
-        <member name="F:Ssz.Xi.Client.XiDataAccessProvider._workstationName">
+        <member name="F:Ssz.Xi.Client.XiDataAccessProvider._clientWorkstationName">
             <summary>
                 Used in Xi Context initialization.
             </summary>

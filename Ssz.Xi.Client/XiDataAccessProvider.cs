@@ -88,7 +88,7 @@ namespace Ssz.Xi.Client
             get
             {
                 if (!IsInitialized) throw new Exception("Not Initialized");
-                return _applicationName;
+                return _clientApplicationName;
             }
         }
 
@@ -100,7 +100,7 @@ namespace Ssz.Xi.Client
             get
             {
                 if (!IsInitialized) throw new Exception("Not Initialized");
-                return _workstationName;
+                return _clientWorkstationName;
             }
         }
 
@@ -167,9 +167,9 @@ namespace Ssz.Xi.Client
             _xiDataListItemsManager.XiSystem = _systemNameToConnect;
             _xiEventListItemsManager.XiSystem = _systemNameToConnect;
             _xiDataJournalListItemsManager.XiSystem = _systemNameToConnect;
-            _applicationName = clientApplicationName;            
-            _workstationName = clientWorkstationName;            
-            if (contextParams != null) _contextParams = contextParams;            
+            _clientApplicationName = clientApplicationName;            
+            _clientWorkstationName = clientWorkstationName;            
+            _contextParams = contextParams;            
 
             //string pollIntervalMsString =
             //    ConfigurationManager.AppSettings["PollIntervalMs"];
@@ -190,7 +190,7 @@ namespace Ssz.Xi.Client
             });
 
             IsInitialized = true;
-        }
+        }        
 
         public void Close()
         {
@@ -208,6 +208,23 @@ namespace Ssz.Xi.Client
             }
 
             if (_workingTask != null) _workingTask.Wait(30000);
+        }
+
+        /// <summary>
+        ///     Re-initializes this object with same settings.
+        ///     Items must be added again.
+        ///     If not initialized then does nothing.
+        /// </summary>
+        public void ReInitialize()
+        {
+            if (!IsInitialized) return;
+
+            Initialize(_сallbackDispatcher,
+                null,
+                _elementValueListCallbackIsEnabled,
+                _eventListCallbackIsEnabled,
+                _serverAddress,
+                _clientApplicationName, _clientWorkstationName, _systemNameToConnect, _contextParams);
         }
 
         /// <summary>        
@@ -466,7 +483,7 @@ namespace Ssz.Xi.Client
                 {
                     try
                     {
-                        string workstationName = _workstationName;
+                        string workstationName = _clientWorkstationName;
                         string xiContextParamsString =
                             NameValueCollectionHelper.GetNameValueCollectionString(new CaseInsensitiveDictionary<string?>(_contextParams.Select(kvp => new KeyValuePair<string, string?>(kvp.Key, kvp.Value))));
                         if (!String.IsNullOrEmpty(xiContextParamsString))
@@ -479,7 +496,7 @@ namespace Ssz.Xi.Client
                         //    _applicationName,
                          //   workstationName);
 
-                        _xiServerProxy.InitiateXiContext(_serverAddress, _applicationName,
+                        _xiServerProxy.InitiateXiContext(_serverAddress, _clientApplicationName,
                             workstationName, this);                        
 
                         //Logger?.LogDebug("End Connecting");
@@ -598,7 +615,7 @@ namespace Ssz.Xi.Client
         /// <summary>
         ///     Used in Xi Context initialization.
         /// </summary>
-        private string _applicationName = "";
+        private string _clientApplicationName = "";
 
         /// <summary>
         ///     Used in Xi DataList initialization.
@@ -610,7 +627,7 @@ namespace Ssz.Xi.Client
         /// <summary>
         ///     Used in Xi Context initialization.
         /// </summary>
-        private string _workstationName = "";
+        private string _clientWorkstationName = "";
 
         /// <summary>
         ///     Used in Xi Context initialization.
