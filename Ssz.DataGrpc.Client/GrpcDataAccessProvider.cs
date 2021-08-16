@@ -770,7 +770,7 @@ namespace Ssz.DataGrpc.Client
                 IDispatcher? сallbackDispatcher;
                 if (IsConnected)
                 {
-                    Unsubscribe();
+                    Unsubscribe(false);
 
                     #region notify subscribers disconnected
 
@@ -893,11 +893,11 @@ namespace Ssz.DataGrpc.Client
         /// <summary>
         ///     Working thread.
         /// </summary>
-        protected virtual void Unsubscribe()
+        protected virtual void Unsubscribe(bool clearClientSubscriptions)
         {
-            ClientElementValueListManager.Unsubscribe();
+            ClientElementValueListManager.Unsubscribe(clearClientSubscriptions);
             ClientEventListManager.Unsubscribe();
-            ClientElementValueJournalListManager.Unsubscribe();
+            ClientElementValueJournalListManager.Unsubscribe(clearClientSubscriptions);
 
             ClientConnectionManager.CloseConnection();
         }
@@ -978,7 +978,7 @@ namespace Ssz.DataGrpc.Client
                 DoWork(nowUtc, ct);
             }
 
-            Unsubscribe();
+            Unsubscribe(true);
 
             if (_eventListCallbackIsEnabled) ClientEventListManager.EventMessagesCallback -= OnEventMessagesCallbackInternal; 
         }        

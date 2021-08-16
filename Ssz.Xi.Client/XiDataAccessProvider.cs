@@ -405,7 +405,7 @@ namespace Ssz.Xi.Client
                 DoWork(nowUtc, ct);
             }            
 
-            Unsubscribe();
+            Unsubscribe(true);
 
             if (_eventListCallbackIsEnabled) _xiEventListItemsManager.EventMessagesCallback -= OnEventMessagesCallback;
             _xiServerProxy.Dispose();
@@ -429,7 +429,7 @@ namespace Ssz.Xi.Client
                 IDispatcher? сallbackDoer;
                 if (_isConnected)
                 {
-                    Unsubscribe();
+                    Unsubscribe(false);
 
                     #region notify subscribers disconnected
 
@@ -564,11 +564,11 @@ namespace Ssz.Xi.Client
         /// <summary>
         ///     Working thread.
         /// </summary>
-        private void Unsubscribe()
+        private void Unsubscribe(bool clearClientSubscriptions)
         { 
-            _xiDataListItemsManager.Unsubscribe();
+            _xiDataListItemsManager.Unsubscribe(clearClientSubscriptions);
             _xiEventListItemsManager.Unsubscribe();
-            _xiDataJournalListItemsManager.Unsubscribe();
+            _xiDataJournalListItemsManager.Unsubscribe(clearClientSubscriptions);
 
             if (_xiServerProxy == null) throw new InvalidOperationException();
             _xiServerProxy.ConcludeXiContext();

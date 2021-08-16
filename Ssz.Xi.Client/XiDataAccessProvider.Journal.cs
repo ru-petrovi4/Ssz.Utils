@@ -78,7 +78,7 @@ namespace Ssz.Xi.Client
                 var result = new List<ValueStatusTimestamp[]>();
                 foreach (var valueSubscription in valueSubscriptionsCollection)
                 {
-                    var modelItem = _xiDataJournalListItemsManager.GetModelItem(valueSubscription);
+                    var modelItem = _xiDataJournalListItemsManager.GetClientObjectInfo(valueSubscription);
                     if (modelItem != null && modelItem.XiListItemWrapper != null && modelItem.XiListItemWrapper.XiListItem != null)
                     {
                         ValueStatusTimestamp[] valueStatusTimestampSet =

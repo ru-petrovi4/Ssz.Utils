@@ -70,14 +70,17 @@ namespace Ssz.DataGrpc.Client.Managers
             }
         }
 
-        public void Unsubscribe()
+        public void Unsubscribe(bool clearClientSubscriptions)
         {
             foreach (var dataGrpcListItemWrapper in _dataGrpcListItemWrappersDictionary.Values)
             {
                 dataGrpcListItemWrapper.DataGrpcListItem = null;
                 dataGrpcListItemWrapper.ConnectionError = false;
                 dataGrpcListItemWrapper.ItemDoesNotExist = false;
-            }            
+                if (clearClientSubscriptions) dataGrpcListItemWrapper.ClientObjectInfosCollection.Clear();
+            }
+
+            if (clearClientSubscriptions) _clientObjectInfosDictionary.Clear();
 
             DataGrpcList = null;
 

@@ -67,7 +67,7 @@ namespace Ssz.Xi.Client.Api
                                     {
                                         var o = xiDataListItem.Obj as XiListItemWrapper;
                                         if (o == null) throw new InvalidOperationException();
-                                        foreach (var modelItem in o.ModelItems)
+                                        foreach (var modelItem in o.ClientObjectInfosCollection)
                                         {
                                             modelItem.ForceNotifyClientObj = false;
                                             if (modelItem.ClientObj != null)
@@ -118,7 +118,7 @@ namespace Ssz.Xi.Client.Api
                     var changedValues = new List<ValueStatusTimestamp>();
                     foreach (XiListItemWrapper xiListItemWrapper in XiListItemWrappersDictionary.Values)
                     {                        
-                        foreach (var modelItem in xiListItemWrapper.ModelItems)
+                        foreach (var modelItem in xiListItemWrapper.ClientObjectInfosCollection)
                         {
                             if (modelItem.ForceNotifyClientObj)
                             {
@@ -186,7 +186,7 @@ namespace Ssz.Xi.Client.Api
                     {
                         var o = xiDataListItem.Obj as XiListItemWrapper;
                         if (o == null) throw new InvalidOperationException();
-                        foreach (var modelItem in o.ModelItems)
+                        foreach (var modelItem in o.ClientObjectInfosCollection)
                         {                            
                             if (modelItem.ClientObj != null)
                             {
@@ -239,8 +239,8 @@ namespace Ssz.Xi.Client.Api
             {
                 i++;
 
-                ModelItem? modelItem;
-                if (!ModelItemsDictionary.TryGetValue(clientObj, out modelItem))
+                ClientObjectInfo? modelItem;
+                if (!ClientObjectInfosDictionary.TryGetValue(clientObj, out modelItem))
                 {
                     result.Add(clientObj);
                     continue;
@@ -273,7 +273,7 @@ namespace Ssz.Xi.Client.Api
                 {
                     var o = xiDataListItem.Obj as XiListItemWrapper;
                     if (o == null) throw new InvalidOperationException();
-                    foreach (var modelItem in o.ModelItems)
+                    foreach (var modelItem in o.ClientObjectInfosCollection)
                     {
                         if (modelItem.ClientObj != null)
                         {
@@ -291,8 +291,8 @@ namespace Ssz.Xi.Client.Api
         {
             if (XiList == null || XiList.Disposed) return;
 
-            ModelItem? modelItem;
-            if (!ModelItemsDictionary.TryGetValue(clientObj, out modelItem)) return;
+            ClientObjectInfo? modelItem;
+            if (!ClientObjectInfosDictionary.TryGetValue(clientObj, out modelItem)) return;
             
             if (modelItem.XiListItemWrapper == null || modelItem.XiListItemWrapper.XiListItem == null || modelItem.XiListItemWrapper.XiListItem.ResultCode != XiFaultCodes.S_OK)
             {

@@ -30,11 +30,11 @@ namespace Ssz.Xi.Client.Api
 
             Logger?.LogDebug("XiListItemsManager.AddItem() " + id); 
 
-            ModelItem? modelItem;
-            if (!_modelItemsDictionary.TryGetValue(clientObj, out modelItem))
+            ClientObjectInfo? modelItem;
+            if (!_clientObjectInfosDictionary.TryGetValue(clientObj, out modelItem))
             {                
-                modelItem = new ModelItem(id);
-                _modelItemsDictionary.Add(clientObj, modelItem);
+                modelItem = new ClientObjectInfo(id);
+                _clientObjectInfosDictionary.Add(clientObj, modelItem);
                 modelItem.ClientObj = clientObj;
 
                 _xiItemsMustBeAddedOrRemoved = true;
@@ -48,50 +48,48 @@ namespace Ssz.Xi.Client.Api
         /// <param name="clientObj"></param>
         public void RemoveItem(object clientObj)
         {
-            ModelItem? modelItem;
-            if (_modelItemsDictionary.TryGetValue(clientObj, out modelItem))
+            ClientObjectInfo? modelItem;
+            if (_clientObjectInfosDictionary.TryGetValue(clientObj, out modelItem))
             {
-                _modelItemsToRemove.Add(modelItem);
-                _modelItemsDictionary.Remove(clientObj);
+                _clientObjectInfosToRemove.Add(modelItem);
+                _clientObjectInfosDictionary.Remove(clientObj);
                 modelItem.ClientObj = null;
 
                 _xiItemsMustBeAddedOrRemoved = true;
             }
         }
 
-        public void Unsubscribe()
+        public void Unsubscribe(bool clearClientSubscriptions)
         {
-            foreach (var xiListItemWrapper in _xiListItemWrappersDictionary.Values)
+            foreach (var dataListItemWrapper in _xiListItemWrappersDictionary.Values)
             {
-                xiListItemWrapper.XiListItem = null;
-                xiListItemWrapper.ConnectionError = false;
-                xiListItemWrapper.ItemDoesNotExist = false;
-            }            
+                dataListItemWrapper.XiListItem = null;
+                dataListItemWrapper.ConnectionError = false;
+                dataListItemWrapper.ItemDoesNotExist = false;
+                if (clearClientSubscriptions) dataListItemWrapper.ClientObjectInfosCollection.Clear();
+            }
+
+            if (clearClientSubscriptions) _clientObjectInfosDictionary.Clear();
 
             XiList = null;
 
-            _modelItemsToRemove.Clear();
+            _clientObjectInfosToRemove.Clear();
 
             _xiItemsMustBeAddedOrRemoved = true;
         }
 
-        public abstract InstanceId GetInstanceId(string id);
+        public abstract InstanceId GetInstanceId(string id);        
 
-        public IEnumerable<ModelItem> GetAllModelItems()
+        public ClientObjectInfo? GetClientObjectInfo(object clientObj)
         {
-            return ModelItemsDictionary.Values;
-        }
-
-        public ModelItem? GetModelItem(object clientObj)
-        {
-            ModelItem? modelItem;
-            _modelItemsDictionary.TryGetValue(clientObj, out modelItem);
-            return modelItem;
+            ClientObjectInfo? clientObjectInfo;
+            _clientObjectInfosDictionary.TryGetValue(clientObj, out clientObjectInfo);
+            return clientObjectInfo;
         }
 
         public IEnumerable<object> GetAllClientObjs()
         {
-            return ModelItemsDictionary.Values.Select(mi => mi.ClientObj).Where(o => o != null).OfType<object>();
+            return ClientObjectInfosDictionary.Values.Select(mi => mi.ClientObj).Where(o => o != null).OfType<object>();
         }
 
         /// <summary>
@@ -113,11 +111,11 @@ namespace Ssz.Xi.Client.Api
         {
             bool connectionError = false;
             
-            foreach (ModelItem modelItem in _modelItemsDictionary.Values)
+            foreach (ClientObjectInfo modelItem in _clientObjectInfosDictionary.Values)
             {
                 if (modelItem.XiListItemWrapper == null)
                 {
-                    var id = modelItem.Id;
+                    var id = modelItem.ElementId;
                     XiListItemWrapper? xiListItemWrapper;
                     if (!_xiListItemWrappersDictionary.TryGetValue(id, out xiListItemWrapper))
                     {
@@ -126,7 +124,7 @@ namespace Ssz.Xi.Client.Api
                     }
                     modelItem.ForceNotifyClientObj = true;
                     modelItem.XiListItemWrapper = xiListItemWrapper;
-                    xiListItemWrapper.ModelItems.Add(modelItem);
+                    xiListItemWrapper.ClientObjectInfosCollection.Add(modelItem);
                 }                
             }
 
@@ -183,7 +181,7 @@ namespace Ssz.Xi.Client.Api
                         if (!xiListItemWrapper.ConnectionError)
                         {
                             xiListItemWrapper.ConnectionError = true;
-                            foreach (ModelItem modelItem in xiListItemWrapper.ModelItems)
+                            foreach (ClientObjectInfo modelItem in xiListItemWrapper.ClientObjectInfosCollection)
                             {
                                 modelItem.ForceNotifyClientObj = true;
                             }
@@ -202,7 +200,7 @@ namespace Ssz.Xi.Client.Api
                         if (!xiListItemWrapper.ItemDoesNotExist)
                         {
                             xiListItemWrapper.ItemDoesNotExist = true;
-                            foreach (ModelItem modelItem in xiListItemWrapper.ModelItems)
+                            foreach (ClientObjectInfo modelItem in xiListItemWrapper.ClientObjectInfosCollection)
                             {
                                 modelItem.ForceNotifyClientObj = true;
                             }
@@ -217,7 +215,7 @@ namespace Ssz.Xi.Client.Api
                             if (!xiListItemWrapper.ItemDoesNotExist)
                             {
                                 xiListItemWrapper.ItemDoesNotExist = true;
-                                foreach (ModelItem modelItem in xiListItemWrapper.ModelItems)
+                                foreach (ClientObjectInfo modelItem in xiListItemWrapper.ClientObjectInfosCollection)
                                 {
                                     modelItem.ForceNotifyClientObj = true;
                                 }
@@ -228,7 +226,7 @@ namespace Ssz.Xi.Client.Api
                         {
                             xiListItemWrapper.ItemDoesNotExist = false;
                             xiListItemWrapper.ConnectionError = false;
-                            foreach (ModelItem modelItem in xiListItemWrapper.ModelItems)
+                            foreach (ClientObjectInfo modelItem in xiListItemWrapper.ClientObjectInfosCollection)
                             {
                                 modelItem.ForceNotifyClientObj = false;
                             }
@@ -237,16 +235,16 @@ namespace Ssz.Xi.Client.Api
                 }
             }
 
-            if (_modelItemsToRemove.Count > 0)
+            if (_clientObjectInfosToRemove.Count > 0)
             {
-                foreach (ModelItem modelItem in _modelItemsToRemove)
+                foreach (ClientObjectInfo clientObjectInfo in _clientObjectInfosToRemove)
                 {
-                    var xiListItemWrapper = modelItem.XiListItemWrapper;
+                    var xiListItemWrapper = clientObjectInfo.XiListItemWrapper;
                     if (xiListItemWrapper != null)
                     {
-                        var modelItems = xiListItemWrapper.ModelItems;
-                        modelItems.Remove(modelItem);
-                        modelItem.XiListItemWrapper = null;
+                        var modelItems = xiListItemWrapper.ClientObjectInfosCollection;
+                        modelItems.Remove(clientObjectInfo);
+                        clientObjectInfo.XiListItemWrapper = null;
                         /* // Remove Xi Item
                         var xiListItem = xiListItemWrapper.XiListItem;
                         if (modelItems.Count == 0 && xiListItem != null)
@@ -277,7 +275,7 @@ namespace Ssz.Xi.Client.Api
 
         protected void SubscribeFinal()
         {
-            _modelItemsToRemove.Clear();
+            _clientObjectInfosToRemove.Clear();
         }
 
         protected bool XiItemsMustBeAddedOrRemoved
@@ -286,9 +284,9 @@ namespace Ssz.Xi.Client.Api
             set { _xiItemsMustBeAddedOrRemoved = value; }
         }
 
-        protected Dictionary<object, ModelItem> ModelItemsDictionary
+        protected Dictionary<object, ClientObjectInfo> ClientObjectInfosDictionary
         {
-            get { return _modelItemsDictionary; }
+            get { return _clientObjectInfosDictionary; }
         }
 
         protected CaseInsensitiveDictionary<XiListItemWrapper> XiListItemWrappersDictionary
@@ -302,20 +300,20 @@ namespace Ssz.Xi.Client.Api
 
         #region private fields
 
-        private readonly Dictionary<object, ModelItem> _modelItemsDictionary =
-            new Dictionary<object, ModelItem>(256, ReferenceEqualityComparer.Instance);
+        private readonly Dictionary<object, ClientObjectInfo> _clientObjectInfosDictionary =
+            new Dictionary<object, ClientObjectInfo>(256, ReferenceEqualityComparer.Instance);
 
         private readonly CaseInsensitiveDictionary<XiListItemWrapper> _xiListItemWrappersDictionary =
             new CaseInsensitiveDictionary<XiListItemWrapper>(256);
 
         private volatile bool _xiItemsMustBeAddedOrRemoved;
-        private readonly List<ModelItem> _modelItemsToRemove = new List<ModelItem>(256);        
+        private readonly List<ClientObjectInfo> _clientObjectInfosToRemove = new List<ClientObjectInfo>(256);        
 
         #endregion
 
         public class XiListItemWrapper
         {            
-            public readonly List<ModelItem> ModelItems = new List<ModelItem>();
+            public readonly List<ClientObjectInfo> ClientObjectInfosCollection = new List<ClientObjectInfo>();
 
             public TXiListItem? XiListItem { get; set; }
 
@@ -324,23 +322,23 @@ namespace Ssz.Xi.Client.Api
             public bool ItemDoesNotExist;
         }
 
-        public class ModelItem
+        public class ClientObjectInfo
         {
             #region construction and destruction
             
             /// <summary>            
             /// </summary>
-            /// <param name="id"></param>
-            public ModelItem(string id)
+            /// <param name="elementId"></param>
+            public ClientObjectInfo(string elementId)
             {
-                Id = id;                
+                ElementId = elementId;                
             }
 
             #endregion
 
             #region public functions
             
-            public string Id { get; private set; }
+            public string ElementId { get; private set; }
             
             public XiListItemWrapper? XiListItemWrapper { get; set; }
 
