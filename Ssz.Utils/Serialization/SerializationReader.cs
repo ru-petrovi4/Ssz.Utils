@@ -140,12 +140,21 @@ namespace Ssz.Utils.Serialization
         {
             long originalPosition = _baseStream.Position;
             SerializedType typeCode = ReadTypeCode();
-            if (typeCode != SerializedType.BlockBegin) throw new Exception("Stream error.");
-            // it will store either the block length or remain as 0 if allowUpdateHeader is false
-            int blockSize = _binaryReader.ReadInt32();
-            int version = ReadInt32OptimizedOrNot();
-            _baseStream.Seek(originalPosition, SeekOrigin.Begin);
-            return version;
+            if (typeCode == SerializedType.BlockBeginWithVersion)
+            {
+                // it will store either the block length or remain as 0 if allowUpdateHeader is false
+                _binaryReader.ReadInt32();
+                int version = ReadInt32OptimizedOrNot();
+                _baseStream.Seek(originalPosition, SeekOrigin.Begin);
+                return version;
+            }
+            if (typeCode == SerializedType.BlockBegin)
+            {
+                // it will store either the block length or remain as 0 if allowUpdateHeader is false                
+                _baseStream.Seek(originalPosition, SeekOrigin.Begin);
+                return -1;
+            }
+            throw new Exception("Stream error.");
         }
 
         /// <summary>
@@ -156,14 +165,26 @@ namespace Ssz.Utils.Serialization
         public int BeginBlock()
         {
             SerializedType typeCode = ReadTypeCode();
-            if (typeCode != SerializedType.BlockBegin) throw new Exception("Stream error.");
-            // it will store either the block length or remain as 0 if allowUpdateHeader is false
-            int blockSize = _binaryReader.ReadInt32();
-            // Store the ending position of the block if allowUpdateHeader true
-            if (blockSize > 0) _blockEndingPositionsStack.Push(_baseStream.Position + blockSize);
-            else _blockEndingPositionsStack.Push(0);
-            int version = ReadInt32OptimizedOrNot();
-            return version;
+            if (typeCode == SerializedType.BlockBeginWithVersion)
+            {
+                // it will store either the block length or remain as 0 if allowUpdateHeader is false
+                int blockSize = _binaryReader.ReadInt32();
+                // Store the ending position of the block if allowUpdateHeader true
+                if (blockSize > 0) _blockEndingPositionsStack.Push(_baseStream.Position + blockSize);
+                else _blockEndingPositionsStack.Push(0);
+                int version = ReadInt32OptimizedOrNot();
+                return version;
+            }
+            if (typeCode == SerializedType.BlockBegin)
+            {
+                // it will store either the block length or remain as 0 if allowUpdateHeader is false
+                int blockSize = _binaryReader.ReadInt32();
+                // Store the ending position of the block if allowUpdateHeader true
+                if (blockSize > 0) _blockEndingPositionsStack.Push(_baseStream.Position + blockSize);
+                else _blockEndingPositionsStack.Push(0);
+                return -1;
+            }
+            throw new Exception("Stream error.");
         }
 
         /// <summary>
@@ -187,6 +208,14 @@ namespace Ssz.Utils.Serialization
                 if (incrementSkippedBytesCount) _skippedBytesCount += blockEndingPosition - _baseStream.Position;
                 _baseStream.Position = _blockEndingPositionsStack.Peek();
             }
+        }
+
+        public bool IsBlockEnding()
+        {
+            if (_blockEndingPositionsStack.Count == 0) return false;
+            long blockEndingPosition = _blockEndingPositionsStack.Peek();
+            if (blockEndingPosition == 0) return false;
+            return _baseStream.Position == blockEndingPosition;
         }
 
         /// <summary>
@@ -469,7 +498,47 @@ namespace Ssz.Utils.Serialization
             ThrowIfBlockEnding();
 
             return _binaryReader.ReadInt64();
-        }        
+        }
+
+        /// <summary>
+        ///     Returns a UInt64 value from the stream that was stored optimized.
+        /// </summary>
+        /// <returns> A UInt64 value. </returns>
+        public ulong ReadUInt64Optimized()
+        {
+            ulong result = 0;
+            int bitShift = 0;
+
+            while (true)
+            {
+                byte nextByte = _binaryReader.ReadByte();
+
+                result |= ((ulong)nextByte & 0x7f) << bitShift;
+                bitShift += 7;
+
+                if ((nextByte & 0x80) == 0) return result;
+            }
+        }
+
+        /// <summary>
+        ///     Returns an Int64 value from the stream that was stored optimized.
+        /// </summary>
+        /// <returns> An Int64 value. </returns>
+        public long ReadInt64Optimized()
+        {
+            long result = 0;
+            int bitShift = 0;
+
+            while (true)
+            {
+                byte nextByte = _binaryReader.ReadByte();
+
+                result |= ((long)nextByte & 0x7f) << bitShift;
+                bitShift += 7;
+
+                if ((nextByte & 0x80) == 0) return result;
+            }
+        }
 
         public float ReadSingle()
         {
@@ -700,46 +769,6 @@ namespace Ssz.Utils.Serialization
         private int ReadOptimizedInt32()
         {
             return _binaryReader.Read7BitEncodedInt();
-        }
-
-        /// <summary>
-        ///     Returns a UInt64 value from the stream that was stored optimized.
-        /// </summary>
-        /// <returns> A UInt64 value. </returns>
-        private ulong ReadOptimizedUInt64()
-        {            
-            ulong result = 0;
-            int bitShift = 0;
-
-            while (true)
-            {
-                byte nextByte = _binaryReader.ReadByte();
-
-                result |= ((ulong)nextByte & 0x7f) << bitShift;
-                bitShift += 7;
-
-                if ((nextByte & 0x80) == 0) return result;
-            }
-        }
-
-        /// <summary>
-        ///     Returns an Int64 value from the stream that was stored optimized.
-        /// </summary>
-        /// <returns> An Int64 value. </returns>
-        private long ReadOptimizedInt64()
-        {
-            long result = 0;
-            int bitShift = 0;
-
-            while (true)
-            {
-                byte nextByte = _binaryReader.ReadByte();
-
-                result |= ((long)nextByte & 0x7f) << bitShift;
-                bitShift += 7;
-
-                if ((nextByte & 0x80) == 0) return result;
-            }
         }
 
         /// <summary>
@@ -1089,9 +1118,9 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.ZeroInt64Type:
                     return (Int64) 0;
                 case SerializedType.OptimizedInt64Type:
-                    return ReadOptimizedInt64();
+                    return ReadInt64Optimized();
                 case SerializedType.OptimizedInt64NegativeType:
-                    return -ReadOptimizedInt64() - 1;
+                    return -ReadInt64Optimized() - 1;
                 case SerializedType.Int16Type:
                     return ReadInt16();
                 case SerializedType.ZeroInt16Type:
@@ -1126,7 +1155,7 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.ZeroUInt64Type:
                     return (UInt64) 0;
                 case SerializedType.OptimizedUInt64Type:
-                    return ReadOptimizedUInt64();
+                    return ReadUInt64Optimized();
                 case SerializedType.CharType:
                     return ReadChar();
                 case SerializedType.ZeroCharType:
@@ -1181,7 +1210,7 @@ namespace Ssz.Utils.Serialization
                     if ((underlyingType == typeof (int)) || (underlyingType == typeof (uint)) ||
                         (underlyingType == typeof (long)) || (underlyingType == typeof (ulong)))
                     {
-                        return Enum.ToObject(enumType, ReadOptimizedUInt64());
+                        return Enum.ToObject(enumType, ReadUInt64Optimized());
                     }
 
                     return Enum.ToObject(enumType, ReadUInt64());
@@ -1277,7 +1306,7 @@ namespace Ssz.Utils.Serialization
                     return new long[0];
                 default:
                     BitArray optimizeFlags = ReadTypedArrayOptimizeFlags(typeCode);
-                    var result = new long[ReadOptimizedInt64()];
+                    var result = new long[ReadInt64Optimized()];
 
                     for (int i = 0; i < result.Length; i++)
                     {
@@ -1288,7 +1317,7 @@ namespace Ssz.Utils.Serialization
                         }
                         else
                         {
-                            result[i] = ReadOptimizedInt64();
+                            result[i] = ReadInt64Optimized();
                         }
                     }
 
@@ -1382,7 +1411,7 @@ namespace Ssz.Utils.Serialization
                     return new ulong[0];
                 default:
                     BitArray optimizeFlags = ReadTypedArrayOptimizeFlags(typeCode);
-                    var result = new ulong[ReadOptimizedInt64()];
+                    var result = new ulong[ReadInt64Optimized()];
 
                     for (int i = 0; i < result.Length; i++)
                     {
@@ -1393,7 +1422,7 @@ namespace Ssz.Utils.Serialization
                         }
                         else
                         {
-                            result[i] = ReadOptimizedUInt64();
+                            result[i] = ReadUInt64Optimized();
                         }
                     }
 
@@ -1760,11 +1789,8 @@ namespace Ssz.Utils.Serialization
 
         public void Dispose()
         {
-            if (Version >= 0)
-            {
-                _serializationReader.ReadToBlockEnding();
-                _serializationReader.EndBlock();
-            }
+            _serializationReader.ReadToBlockEnding();
+            _serializationReader.EndBlock();
         }
 
         #endregion

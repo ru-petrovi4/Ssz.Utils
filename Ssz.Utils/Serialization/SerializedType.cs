@@ -155,10 +155,10 @@
         Reserved8,
         Reserved7,
         Reserved6,
-        Reserved5,
+        BlockBegin,
         OptimizedStringType, // String in strings dictionary
         StringDirect, // String type
-        BlockBegin, // Identifies block begin
-        BlockEnd, // Identifies block end
+        BlockBeginWithVersion, // Identifies block begin
+        BlockEnd, // Identifies block end        
     }
 }

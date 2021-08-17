@@ -8,7 +8,7 @@ namespace Ssz.Utils
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class CaseInsensitiveDictionary<T> : Dictionary<string, T>
-        where T : class?
+        where T : class?      
     {
         #region construction and destruction
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ssz.Utils.Serialization;
+using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Markup;
@@ -9,7 +10,7 @@ namespace Ssz.Utils
     ///     If func param stringIsLocalized = false, InvariantCulture is used.
     ///     If func param stringIsLocalized = true, CultureHelper.SystemCultureInfo is used, which is corresponds operating system culture (see CultureHelper class).
     /// </summary>
-    public struct Any
+    public struct Any : IOwnedDataSerializable
     {
         #region StorageType enum
         
@@ -1098,6 +1099,42 @@ namespace Ssz.Utils
                 {
                 }
                 return null;
+            }
+        }
+
+        public void SerializeOwnedData(SerializationWriter writer, object? context)
+        {
+            writer.Write((byte)_typeCode);
+            switch (ValueStorageType)
+            {
+                case StorageType.Double:
+                    writer.Write(_storageDouble);                    
+                    break;
+                case StorageType.UInt32:
+                    writer.Write(_storageUInt32);
+                    break;
+                case StorageType.Object:
+                    writer.WriteObject(_storageObject);
+                    break;
+            }
+        }
+
+        public void DeserializeOwnedData(SerializationReader reader, object? context)
+        {
+            _typeCode = (TypeCode)reader.ReadByte();
+            switch (ValueStorageType)
+            {
+                case StorageType.Double:
+                    _storageDouble = reader.ReadDouble();
+                    _storageObject = null;
+                    break;
+                case StorageType.UInt32:
+                    _storageUInt32 = reader.ReadUInt32();
+                    _storageObject = null;
+                    break;
+                case StorageType.Object:
+                    _storageObject = reader.ReadObject();
+                    break;
             }
         }
 

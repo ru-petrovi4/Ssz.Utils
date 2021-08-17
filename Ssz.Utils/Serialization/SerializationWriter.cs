@@ -31,7 +31,7 @@ namespace Ssz.Utils.Serialization
 
             _baseStream = baseStream;
             _optimizeSize = optimizeSize;
-            _binaryWriter = new BinaryWriterEx(_baseStream);            
+            _binaryWriter = new BinaryWriter(_baseStream);            
 
             if (!_optimizeSize)
             {
@@ -124,17 +124,28 @@ namespace Ssz.Utils.Serialization
         public Stream BaseStream { get { return _baseStream; } }
 
         /// <summary>
-        ///     Begins Block
+        ///     Begins Block        
         /// </summary>
         /// <param name="version"></param>
-        public void BeginBlock(int version)
+        public void BeginBlock(int version = -1)
         {
-            WriteSerializedType(SerializedType.BlockBegin);
-            // it will store the block length
-            _binaryWriter.Write(0);
-            // Store the begin position of the block
-            _blockBeginPositionsStack.Push(_baseStream.Position);
-            WriteOptimizedOrNot(version);
+            if (version >= 0)
+            {
+                WriteSerializedType(SerializedType.BlockBeginWithVersion);
+                // it will store the block length
+                _binaryWriter.Write(0);
+                // Store the begin position of the block
+                _blockBeginPositionsStack.Push(_baseStream.Position);
+                WriteOptimizedOrNot(version);
+            }
+            else
+            {
+                WriteSerializedType(SerializedType.BlockBegin);
+                // it will store the block length
+                _binaryWriter.Write(0);
+                // Store the begin position of the block
+                _blockBeginPositionsStack.Push(_baseStream.Position);                
+            }                
         }
 
         /// <summary>
@@ -155,11 +166,11 @@ namespace Ssz.Utils.Serialization
         /// </summary>
         /// <param name="version"></param>
         /// <returns></returns>
-        public IDisposable EnterBlock(int version)
+        public IDisposable EnterBlock(int version = -1)
         {
             return new Block(this, version);
         }        
-         
+
         /// <summary>
         ///     Writes a four-byte floating-point value to the current stream and advances the
         ///     stream position by four bytes.
@@ -189,7 +200,70 @@ namespace Ssz.Utils.Serialization
         {
             _binaryWriter.Write(value);
         }
-           
+
+        /// <summary>
+        ///     Write a UInt64 value using the fewest number of bytes possible.
+        /// </summary>
+        /// <remarks>
+        ///     0x0000000000000000 - 0x000000000000007f (0 to 127) takes 1 byte
+        ///     0x0000000000000080 - 0x00000000000003FF (128 to 16,383) takes 2 bytes
+        ///     0x0000000000000400 - 0x00000000001FFFFF (16,384 to 2,097,151) takes 3 bytes
+        ///     0x0000000000200000 - 0x000000000FFFFFFF (2,097,152 to 268,435,455) takes 4 bytes
+        ///     0x0000000010000000 - 0x00000007FFFFFFFF (268,435,456 to 34,359,738,367) takes 5 bytes
+        ///     0x0000000800000000 - 0x000003FFFFFFFFFF (34,359,738,368 to 4,398,046,511,103) takes 6 bytes
+        ///     0x0000040000000000 - 0x0001FFFFFFFFFFFF (4,398,046,511,104 to 562,949,953,421,311) takes 7 bytes
+        ///     0x0002000000000000 - 0x00FFFFFFFFFFFFFF (562,949,953,421,312 to 72,057,594,037,927,935) takes 8 bytes
+        ///     ------------------------------------------------------------------
+        ///     0x0100000000000000 - 0x7FFFFFFFFFFFFFFF (72,057,594,037,927,936 to 9,223,372,036,854,775,807) takes 9 bytes
+        ///     0x7FFFFFFFFFFFFFFF - 0xFFFFFFFFFFFFFFFF (9,223,372,036,854,775,807 and above) takes 10 bytes
+        ///     Only call this method if the value is known to be between 0 and
+        ///     72,057,594,037,927,935 otherwise use Write(UInt64 value)
+        /// </remarks>
+        /// <param name="value"> The UInt64 to store. Must be between 0 and 72,057,594,037,927,935 inclusive. </param>
+        public void WriteOptimized(ulong value)
+        {
+            while (value >= 0x80)
+            {
+                _binaryWriter.Write((byte)(value | 0x80));
+                value >>= 7;
+            }
+
+            _binaryWriter.Write((byte)value);
+        }
+
+        /// <summary>
+        ///     Write an Int64 value using the fewest number of bytes possible.
+        /// </summary>
+        /// <remarks>
+        ///     0x0000000000000000 - 0x000000000000007f (0 to 127) takes 1 byte
+        ///     0x0000000000000080 - 0x00000000000003FF (128 to 16,383) takes 2 bytes
+        ///     0x0000000000000400 - 0x00000000001FFFFF (16,384 to 2,097,151) takes 3 bytes
+        ///     0x0000000000200000 - 0x000000000FFFFFFF (2,097,152 to 268,435,455) takes 4 bytes
+        ///     0x0000000010000000 - 0x00000007FFFFFFFF (268,435,456 to 34,359,738,367) takes 5 bytes
+        ///     0x0000000800000000 - 0x000003FFFFFFFFFF (34,359,738,368 to 4,398,046,511,103) takes 6 bytes
+        ///     0x0000040000000000 - 0x0001FFFFFFFFFFFF (4,398,046,511,104 to 562,949,953,421,311) takes 7 bytes
+        ///     0x0002000000000000 - 0x00FFFFFFFFFFFFFF (562,949,953,421,312 to 72,057,594,037,927,935) takes 8 bytes
+        ///     ------------------------------------------------------------------
+        ///     0x0100000000000000 - 0x7FFFFFFFFFFFFFFF (72,057,594,037,927,936 to 9,223,372,036,854,775,807) takes 9 bytes
+        ///     0x7FFFFFFFFFFFFFFF - 0xFFFFFFFFFFFFFFFF (9,223,372,036,854,775,807 and above) takes 10 bytes
+        ///     All negative numbers take 10 bytes
+        ///     Only call this method if the value is known to be between 0 and
+        ///     72,057,594,037,927,935 otherwise use Write(Int64 value)
+        /// </remarks>
+        /// <param name="value"> The Int64 to store. Must be between 0 and 72,057,594,037,927,935 inclusive. </param>
+        public void WriteOptimized(long value)
+        {
+            var unsignedValue = unchecked((ulong)value);
+
+            while (unsignedValue >= 0x80)
+            {
+                _binaryWriter.Write((byte)(unsignedValue | 0x80));
+                unsignedValue >>= 7;
+            }
+
+            _binaryWriter.Write((byte)unsignedValue);
+        }
+
         /// <summary>
         ///     Writes a four-byte unsigned integer to the current stream and advances the stream
         ///     position by four bytes.
@@ -1304,70 +1378,7 @@ namespace Ssz.Utils.Serialization
         private void WriteOptimized(int value)
         {
             _binaryWriter.Write7BitEncodedInt(value);
-        }
-
-        /// <summary>
-        ///     Write a UInt64 value using the fewest number of bytes possible.
-        /// </summary>
-        /// <remarks>
-        ///     0x0000000000000000 - 0x000000000000007f (0 to 127) takes 1 byte
-        ///     0x0000000000000080 - 0x00000000000003FF (128 to 16,383) takes 2 bytes
-        ///     0x0000000000000400 - 0x00000000001FFFFF (16,384 to 2,097,151) takes 3 bytes
-        ///     0x0000000000200000 - 0x000000000FFFFFFF (2,097,152 to 268,435,455) takes 4 bytes
-        ///     0x0000000010000000 - 0x00000007FFFFFFFF (268,435,456 to 34,359,738,367) takes 5 bytes
-        ///     0x0000000800000000 - 0x000003FFFFFFFFFF (34,359,738,368 to 4,398,046,511,103) takes 6 bytes
-        ///     0x0000040000000000 - 0x0001FFFFFFFFFFFF (4,398,046,511,104 to 562,949,953,421,311) takes 7 bytes
-        ///     0x0002000000000000 - 0x00FFFFFFFFFFFFFF (562,949,953,421,312 to 72,057,594,037,927,935) takes 8 bytes
-        ///     ------------------------------------------------------------------
-        ///     0x0100000000000000 - 0x7FFFFFFFFFFFFFFF (72,057,594,037,927,936 to 9,223,372,036,854,775,807) takes 9 bytes
-        ///     0x7FFFFFFFFFFFFFFF - 0xFFFFFFFFFFFFFFFF (9,223,372,036,854,775,807 and above) takes 10 bytes
-        ///     Only call this method if the value is known to be between 0 and
-        ///     72,057,594,037,927,935 otherwise use Write(UInt64 value)
-        /// </remarks>
-        /// <param name="value"> The UInt64 to store. Must be between 0 and 72,057,594,037,927,935 inclusive. </param>
-        private void WriteOptimized(ulong value)
-        {
-            while (value >= 0x80)
-            {
-                _binaryWriter.Write((byte)(value | 0x80));
-                value >>= 7;
-            }
-
-            _binaryWriter.Write((byte)value);
-        }
-
-        /// <summary>
-        ///     Write an Int64 value using the fewest number of bytes possible.
-        /// </summary>
-        /// <remarks>
-        ///     0x0000000000000000 - 0x000000000000007f (0 to 127) takes 1 byte
-        ///     0x0000000000000080 - 0x00000000000003FF (128 to 16,383) takes 2 bytes
-        ///     0x0000000000000400 - 0x00000000001FFFFF (16,384 to 2,097,151) takes 3 bytes
-        ///     0x0000000000200000 - 0x000000000FFFFFFF (2,097,152 to 268,435,455) takes 4 bytes
-        ///     0x0000000010000000 - 0x00000007FFFFFFFF (268,435,456 to 34,359,738,367) takes 5 bytes
-        ///     0x0000000800000000 - 0x000003FFFFFFFFFF (34,359,738,368 to 4,398,046,511,103) takes 6 bytes
-        ///     0x0000040000000000 - 0x0001FFFFFFFFFFFF (4,398,046,511,104 to 562,949,953,421,311) takes 7 bytes
-        ///     0x0002000000000000 - 0x00FFFFFFFFFFFFFF (562,949,953,421,312 to 72,057,594,037,927,935) takes 8 bytes
-        ///     ------------------------------------------------------------------
-        ///     0x0100000000000000 - 0x7FFFFFFFFFFFFFFF (72,057,594,037,927,936 to 9,223,372,036,854,775,807) takes 9 bytes
-        ///     0x7FFFFFFFFFFFFFFF - 0xFFFFFFFFFFFFFFFF (9,223,372,036,854,775,807 and above) takes 10 bytes
-        ///     All negative numbers take 10 bytes
-        ///     Only call this method if the value is known to be between 0 and
-        ///     72,057,594,037,927,935 otherwise use Write(Int64 value)
-        /// </remarks>
-        /// <param name="value"> The Int64 to store. Must be between 0 and 72,057,594,037,927,935 inclusive. </param>
-        private void WriteOptimized(long value)
-        {
-            var unsignedValue = unchecked((ulong) value);
-
-            while (unsignedValue >= 0x80)
-            {
-                _binaryWriter.Write((byte) (unsignedValue | 0x80));
-                unsignedValue >>= 7;
-            }
-
-            _binaryWriter.Write((byte) unsignedValue);
-        }        
+        }                
 
         private void WriteOptimizedOrNot(uint value)
         {
@@ -1377,7 +1388,7 @@ namespace Ssz.Utils.Serialization
             }
             else
             {
-                WriteOptimized(value);
+                _binaryWriter.Write7BitEncodedInt(unchecked((int)value));
             }
         }
 
@@ -1389,7 +1400,7 @@ namespace Ssz.Utils.Serialization
             }
             else
             {
-                WriteOptimized(value);
+                _binaryWriter.Write7BitEncodedInt(value);
             }
         }
 
@@ -2702,7 +2713,7 @@ namespace Ssz.Utils.Serialization
 
         private readonly bool _optimizeSize;
         
-        private readonly BinaryWriterEx _binaryWriter;
+        private readonly BinaryWriter _binaryWriter;
         
         private readonly Stack<long> _blockBeginPositionsStack = new Stack<long>();
 
@@ -2710,27 +2721,7 @@ namespace Ssz.Utils.Serialization
         private Dictionary<string, int>? _stringsDictionary;
         private List<string>? _stringsList;
 
-        #endregion
-
-        private class BinaryWriterEx : BinaryWriter
-        {
-            public BinaryWriterEx(Stream output) : base(output)
-            {
-            }
-
-            public BinaryWriterEx(Stream output, Encoding encoding) : base(output, encoding)
-            {
-            }
-
-            public BinaryWriterEx(Stream output, Encoding encoding, bool leaveOpen) : base(output, encoding, leaveOpen)
-            {
-            }
-
-            public new void Write7BitEncodedInt(int value)
-            {
-                base.Write7BitEncodedInt(value);
-            }
-        }
+        #endregion        
 
         private class Block : IDisposable
         {
