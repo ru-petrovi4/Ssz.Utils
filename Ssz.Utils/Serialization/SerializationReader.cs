@@ -287,6 +287,24 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     Throws if saved object not correct type;
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T? ReadOwnedDataSerializableAndRecreatable<T>(object? context)
+            where T : class, IOwnedDataSerializable, new()
+        {
+            ThrowIfBlockEnding();
+
+            var serializedType = (SerializedType)_binaryReader.ReadByte();
+            if (serializedType == SerializedType.NullType) return null;
+
+            var t = new T();
+            t.DeserializeOwnedData(this, context);
+            return t;
+         }
+
+        /// <summary>
         ///     Called ReadOptimizedString().        
         /// </summary>
         /// <returns> A string value. </returns>
