@@ -161,23 +161,7 @@ namespace Ssz.Utils
             }
 
             return result;
-        }
-
-        public Any? TryGetConstValue(string? mappedElementIdOrConst)
-        {
-            if (string.IsNullOrEmpty(mappedElementIdOrConst)) return new Any(DBNull.Value);
-
-            if (mappedElementIdOrConst.StartsWith("\"") && mappedElementIdOrConst.EndsWith("\""))
-            {
-                mappedElementIdOrConst = mappedElementIdOrConst.Substring(1, mappedElementIdOrConst.Length - 2);
-                return new Any(mappedElementIdOrConst);
-            }
-
-            var any = Any.ConvertToBestType(mappedElementIdOrConst, false);
-            if (any.ValueTypeCode != TypeCode.String) return any;
-
-            return null;
-        }
+        }        
 
         public string GetTagType(string? tag)
         {
@@ -186,6 +170,22 @@ namespace Ssz.Utils
             if (tagInfoValues == null) return "";
             if (tagInfoValues.Count < 2) return "";
             return tagInfoValues[1] ?? @"";
+        }
+
+        public static Any? TryGetConstValue(string? elementIdOrConst)
+        {
+            if (string.IsNullOrEmpty(elementIdOrConst)) return new Any(DBNull.Value);
+
+            if (elementIdOrConst.StartsWith("\"") && elementIdOrConst.EndsWith("\""))
+            {
+                elementIdOrConst = elementIdOrConst.Substring(1, elementIdOrConst.Length - 2);
+                return new Any(elementIdOrConst);
+            }
+
+            var any = Any.ConvertToBestType(elementIdOrConst, false);
+            if (any.ValueTypeCode != TypeCode.String) return any;
+
+            return null;
         }
 
         #endregion

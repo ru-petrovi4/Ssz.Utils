@@ -410,7 +410,7 @@ namespace Ssz.DataGrpc.Client
                     }
                     else
                     {
-                        var childValueSubscription = new ChildValueSubscription(valueSubscriptionObj, v, ElementIdsMap);
+                        var childValueSubscription = new ChildValueSubscription(valueSubscriptionObj, v);
                         childValueSubscriptionsList.Add(childValueSubscription);
                     }
                 }
@@ -480,7 +480,7 @@ namespace Ssz.DataGrpc.Client
             valueSubscriptionObj.ValueSubscription = null;
             valueSubscription.Obj = null;
 
-            var constAny = ElementIdsMap?.TryGetConstValue(valueSubscriptionObj.ElementId);
+            var constAny = ElementIdsMap.TryGetConstValue(valueSubscriptionObj.ElementId);
             if (constAny.HasValue) return;
 
             var disposable = valueSubscriptionObj.Converter as IDisposable;
@@ -1076,20 +1076,17 @@ namespace Ssz.DataGrpc.Client
 
             public Any Value;            
 
-            public ChildValueSubscription(ValueSubscriptionObj valueSubscriptionObj, string mappedElementIdOrConst, ElementIdsMap? elementIdsMap)
+            public ChildValueSubscription(ValueSubscriptionObj valueSubscriptionObj, string mappedElementIdOrConst)
             {
                 Obj = valueSubscriptionObj;
                 MappedElementIdOrConst = mappedElementIdOrConst;
 
-                if (elementIdsMap != null)
+                var constAny = ElementIdsMap.TryGetConstValue(mappedElementIdOrConst);
+                if (constAny.HasValue)
                 {
-                    var constAny = elementIdsMap.TryGetConstValue(mappedElementIdOrConst);
-                    if (constAny.HasValue)
-                    {
-                        Value = constAny.Value;
-                        IsConst = true;
-                    }
-                }                
+                    Value = constAny.Value;
+                    IsConst = true;
+                }
             }
 
             public object? Obj { get; set; }
