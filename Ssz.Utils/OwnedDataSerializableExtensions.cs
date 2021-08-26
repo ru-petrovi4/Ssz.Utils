@@ -16,7 +16,7 @@ namespace Ssz.Utils
         /// <param name="func"></param>
         /// <returns></returns>
         public static T CloneUsingSerialization<T>(this T obj, Func<T>? func = null)
-            where T : class, IOwnedDataSerializable, ICloneable
+            where T : class, IOwnedDataSerializable
         {
             using (var memoryStream = new MemoryStream(1024))
             {
