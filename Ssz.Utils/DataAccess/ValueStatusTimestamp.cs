@@ -77,13 +77,14 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         ///     Uses ValueAsDouble(false), ValueAsInt32(false), ValueAsString(false) depending of ValueStorageType.
         ///     Returns true if diff is less than or equal deadband.
+        ///     TimestampUtc is NOT compared.
         /// </summary>
         /// <param name="that"></param>
         /// <param name="deadband"></param>
         /// <returns></returns>
         public bool Compare(ValueStatusTimestamp that, double deadband = 0.0)
         {
-            return StatusCode == that.StatusCode && TimestampUtc == that.TimestampUtc && Value.Compare(that.Value, deadband);
+            return StatusCode == that.StatusCode && Value.Compare(that.Value, deadband);
         }
 
         public Any Value;
