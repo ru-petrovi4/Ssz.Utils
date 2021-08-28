@@ -150,7 +150,14 @@ namespace Ssz.DataGrpc.Client
 
         public bool IsInitialized { get; private set; }
 
+        /// <summary>
+        ///     If guid the same, the data is guaranteed not to have changed.
+        /// </summary>
         public Guid DataGuid { get; private set; }
+
+        public DateTime LastFailedConnectionDateTimeUtc => _lastFailedConnectionDateTimeUtc;
+
+        public DateTime LastSuccessfulConnectionDateTimeUtc => _lastSuccessfulConnectionDateTimeUtc;
 
         public ElementIdsMap? ElementIdsMap { get; private set; }
 
@@ -205,6 +212,8 @@ namespace Ssz.DataGrpc.Client
             _clientWorkstationName = clientWorkstationName;
             _systemNameToConnect = systemNameToConnect;
             _contextParams = contextParams;
+
+            _lastSuccessfulConnectionDateTimeUtc = DateTime.UtcNow;
 
             //string pollIntervalMsString =
             //    ConfigurationManager.AppSettings["PollIntervalMs"];
@@ -860,7 +869,7 @@ namespace Ssz.DataGrpc.Client
                     {
                         Logger.LogDebug(ex, "");
 
-                        _lastFailedConnectionDateTimeUtc = DateTime.UtcNow;
+                        _lastFailedConnectionDateTimeUtc = nowUtc;
 
                         OnInitiateConnectionException(ex);
                     }
@@ -875,6 +884,7 @@ namespace Ssz.DataGrpc.Client
             if (cancellationToken.IsCancellationRequested) return;
             if (ClientConnectionManager.ConnectionExists)
             {
+                _lastSuccessfulConnectionDateTimeUtc = nowUtc;
                 try
                 {
                     if (cancellationToken.IsCancellationRequested) return;
@@ -1026,7 +1036,9 @@ namespace Ssz.DataGrpc.Client
 
         private ThreadSafeDispatcher _threadSafeDispatcher = new();
 
-        private DateTime _lastFailedConnectionDateTimeUtc = DateTime.MinValue;        
+        private DateTime _lastFailedConnectionDateTimeUtc = DateTime.MinValue;
+
+        private DateTime _lastSuccessfulConnectionDateTimeUtc = DateTime.MinValue;
 
         #endregion
 

@@ -127,7 +127,14 @@ namespace Ssz.Xi.Client
 
         public bool IsInitialized { get; private set; }
 
+        /// <summary>
+        ///     If guid the same, the data is guaranteed not to have changed.
+        /// </summary>
         public Guid DataGuid { get; private set; }
+
+        public DateTime LastFailedConnectionDateTimeUtc => _lastFailedConnectionDateTimeUtc;
+
+        public DateTime LastSuccessfulConnectionDateTimeUtc => _lastSuccessfulConnectionDateTimeUtc;
 
         public object? Obj { get; set; }
 
@@ -169,7 +176,9 @@ namespace Ssz.Xi.Client
             _xiDataJournalListItemsManager.XiSystem = _systemNameToConnect;
             _clientApplicationName = clientApplicationName;            
             _clientWorkstationName = clientWorkstationName;            
-            _contextParams = contextParams;            
+            _contextParams = contextParams;
+
+            _lastSuccessfulConnectionDateTimeUtc = DateTime.UtcNow;
 
             //string pollIntervalMsString =
             //    ConfigurationManager.AppSettings["PollIntervalMs"];
@@ -522,7 +531,7 @@ namespace Ssz.Xi.Client
                     {
                         //Logger?.LogDebug(ex);
 
-                        _lastFailedConnectionDateTimeUtc = DateTime.UtcNow;
+                        _lastFailedConnectionDateTimeUtc = nowUtc;
                     }
                 }
             }
@@ -534,7 +543,8 @@ namespace Ssz.Xi.Client
 
             if (cancellationToken.IsCancellationRequested) return;
             if (_xiServerProxy.ContextExists)
-            {                
+            {
+                _lastSuccessfulConnectionDateTimeUtc = nowUtc;
                 try
                 {
                     if (cancellationToken.IsCancellationRequested) return;
@@ -649,8 +659,12 @@ namespace Ssz.Xi.Client
         private ThreadSafeDispatcher _threadSafeDispatcher = new();
 
         private DateTime _pollLastCallUtc = DateTime.MinValue;
+
         private int _pollIntervalMs = 1000; 
+
         private DateTime _lastFailedConnectionDateTimeUtc = DateTime.MinValue;
+
+        private DateTime _lastSuccessfulConnectionDateTimeUtc = DateTime.MinValue;
 
         #endregion
 

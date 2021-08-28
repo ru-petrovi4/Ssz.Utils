@@ -24,7 +24,14 @@ namespace Ssz.Utils.DataAccess
 
         bool IsInitialized { get; }
 
+        /// <summary>
+        ///     If guid the same, the data is guaranteed not to have changed.
+        /// </summary>
         Guid DataGuid { get; }
+
+        DateTime LastFailedConnectionDateTimeUtc { get; }
+
+        DateTime LastSuccessfulConnectionDateTimeUtc { get; }
 
         /// <summary>
         ///     You can use this property as temp storage.
