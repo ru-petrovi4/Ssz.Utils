@@ -13,7 +13,7 @@ namespace Ssz.Utils
         #region construction and destruction
 
         /// <summary>
-        ///     Must be ititialized before first use.
+        ///     Must be initialized before first use.
         /// </summary>
         /// <param name="logger"></param>
         public ElementIdsMap(ILogger<ElementIdsMap>? logger = null)

@@ -1172,6 +1172,7 @@ namespace Ssz.Utils.Serialization
 
         /// <summary>
         ///     Writes list of same not null objects. 
+        ///     use ReadListOfOwnedDataSerializable for reading.
         /// </summary>        
         /// <param name="values"></param>
         /// <param name="context"></param>

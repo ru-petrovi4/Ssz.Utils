@@ -386,7 +386,8 @@ namespace Ssz.Utils.Serialization
 
         /// <summary>
         ///     Reads list of same objects.
-        ///     func is constructor function.       
+        ///     func is constructor function.      
+        ///     Use WriteListOfOwnedDataSerializable for reading.
         /// </summary>        
         /// <param name="func"></param>
         /// <param name="context"></param>
