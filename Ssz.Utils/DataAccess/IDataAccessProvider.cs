@@ -2,13 +2,18 @@
 using Ssz.Utils;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Ssz.Utils.DataAccess
 {
-    public interface IDataAccessProvider: IDisposable
+    /// <summary>
+    ///     Must notify changes in IsInitialized, IsConnected and IsDisconnected properties.
+    /// </summary>
+    public interface IDataAccessProvider: INotifyPropertyChanged, IDisposable
     {
         string ServerAddress { get; }
 
@@ -20,18 +25,22 @@ namespace Ssz.Utils.DataAccess
 
         CaseInsensitiveDictionary<string> ContextParams { get; }
 
-        bool IsConnected { get; }
-
         bool IsInitialized { get; }
 
-        /// <summary>
-        ///     If guid the same, the data is guaranteed not to have changed.
-        /// </summary>
-        Guid DataGuid { get; }
+        bool IsConnected { get; }
+
+        bool IsDisconnected { get; }        
+
+        EventWaitHandle IsConnectedEventWaitHandle { get; }
 
         DateTime LastFailedConnectionDateTimeUtc { get; }
 
         DateTime LastSuccessfulConnectionDateTimeUtc { get; }
+
+        /// <summary>
+        ///     If guid the same, the data is guaranteed not to have changed.
+        /// </summary>
+        Guid DataGuid { get; }        
 
         /// <summary>
         ///     You can use this property as temp storage.
@@ -39,10 +48,6 @@ namespace Ssz.Utils.DataAccess
         object? Obj { get; set; }
 
         event Action ValueSubscriptionsUpdated;
-
-        event Action Connected;
-
-        event Action Disconnected;
 
         void Initialize(IDispatcher? сallbackDispatcher,
             ElementIdsMap? elementIdsMap,

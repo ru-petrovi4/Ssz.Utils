@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.DataGrpc.Client
 {
-    public partial class GrpcDataAccessProvider : IDataAccessProvider, IDispatcher
+    public partial class GrpcDataAccessProvider : ViewModelBase, IDataAccessProvider, IDispatcher
     {
         #region construction and destruction
 
@@ -131,33 +131,41 @@ namespace Ssz.DataGrpc.Client
                 if (!IsInitialized) throw new Exception("Not Initialized");
                 return _contextParams;
             }
-        }
-
-        /// <summary>
-        ///     Is connected to Model Data Source.
-        /// </summary>
-        public bool IsConnected
-        {
-            get { return IsConnectedEvent.WaitOne(0); }
-        }
-
-        public ManualResetEvent IsConnectedEvent { get; } = new ManualResetEvent(false);
+        }               
 
         public GrpcChannel? GrpcChannel
         {
             get { return ClientConnectionManager.GrpcChannel; }
         }
+        
+        public bool IsInitialized
+        {
+            get { return _isInitialized; }
+            private set { SetValue(ref _isInitialized, value); }
+        }
 
-        public bool IsInitialized { get; private set; }
+        public bool IsConnected
+        {
+            get { return _isConnected; }
+            private set { SetValue(ref _isConnected, value); }
+        }
+
+        public bool IsDisconnected
+        {
+            get { return _isDisconnected; }
+            private set { SetValue(ref _isDisconnected, value); }
+        }
+
+        public EventWaitHandle IsConnectedEventWaitHandle => _isConnectedEventWaitHandle;        
+
+        public DateTime LastFailedConnectionDateTimeUtc => _lastFailedConnectionDateTimeUtc;
+
+        public DateTime LastSuccessfulConnectionDateTimeUtc => _lastSuccessfulConnectionDateTimeUtc;
 
         /// <summary>
         ///     If guid the same, the data is guaranteed not to have changed.
         /// </summary>
         public Guid DataGuid { get; private set; }
-
-        public DateTime LastFailedConnectionDateTimeUtc => _lastFailedConnectionDateTimeUtc;
-
-        public DateTime LastSuccessfulConnectionDateTimeUtc => _lastSuccessfulConnectionDateTimeUtc;
 
         public ElementIdsMap? ElementIdsMap { get; private set; }
 
@@ -171,28 +179,16 @@ namespace Ssz.DataGrpc.Client
         public event Action ValueSubscriptionsUpdated = delegate { };
 
         /// <summary>
-        ///     Is called using сallbackDispatcher, see Initialize(..).
-        ///     Occurs after connected to model.
-        /// </summary>
-        public event Action Connected = delegate { };
-
-        /// <summary>
-        ///     Is called using сallbackDispatcher, see Initialize(..).
-        ///     Occurs after disconnected from model.
-        /// </summary>
-        public event Action Disconnected = delegate { };        
-
-        /// <summary>
         ///     You can set updateValueItems = false and invoke PollElementValuesChanges(...) manually.
         /// </summary>
-        /// <param name="сallbackDispatcher"></param>
+        /// <param name="callbackDispatcher"></param>
         /// <param name="elementValueListCallbackIsEnabled"></param>
         /// <param name="serverAddress"></param>
         /// <param name="clientApplicationName"></param>
         /// <param name="clientWorkstationName"></param>
         /// <param name="systemNames"></param>
         /// <param name="contextParams"></param>
-        public virtual void Initialize(IDispatcher? сallbackDispatcher,
+        public virtual void Initialize(IDispatcher? callbackDispatcher,
             ElementIdsMap? elementIdsMap,
             bool elementValueListCallbackIsEnabled,
             bool eventListCallbackIsEnabled,
@@ -201,9 +197,9 @@ namespace Ssz.DataGrpc.Client
         {
             Close();            
 
-            Logger.LogDebug("Starting ModelDataProvider. сallbackDispatcher != null " + (сallbackDispatcher != null).ToString());
+            Logger.LogDebug("Starting ModelDataProvider. сallbackDispatcher != null " + (callbackDispatcher != null).ToString());
 
-            CallbackDispatcher = сallbackDispatcher;
+            CallbackDispatcher = callbackDispatcher;
             ElementIdsMap = elementIdsMap;
             _elementValueListCallbackIsEnabled = elementValueListCallbackIsEnabled;
             _eventListCallbackIsEnabled = eventListCallbackIsEnabled;
@@ -262,9 +258,7 @@ namespace Ssz.DataGrpc.Client
                 }
             }
 
-            _cancellationTokenSource = new CancellationTokenSource();
-            
-            IsConnectedEvent.Reset();
+            _cancellationTokenSource = new CancellationTokenSource();            
 
             _workingTask = Task.Run(async () =>
             {
@@ -777,28 +771,13 @@ namespace Ssz.DataGrpc.Client
             if (!ClientConnectionManager.ConnectionExists)
             {
                 IDispatcher? сallbackDispatcher;
-                if (IsConnected)
+                if (_isConnectedEventWaitHandle.WaitOne(0))
                 {
                     Unsubscribe(false);
 
                     #region notify subscribers disconnected
 
-                    Logger.LogInformation("DataGrpcProvider diconnected");
-
-                    IsConnectedEvent.Reset();
-                    Action disconnected = Disconnected;
-                    сallbackDispatcher = CallbackDispatcher;
-                    if (disconnected != null && сallbackDispatcher != null)
-                    {
-                        if (cancellationToken.IsCancellationRequested) return;
-                        try
-                        {
-                            сallbackDispatcher.BeginInvoke(ct => disconnected());
-                        }
-                        catch (Exception)
-                        {
-                        }
-                    }
+                    Logger.LogInformation("DataGrpcProvider diconnected");                    
 
                     IEnumerable<IValueSubscription> valueSubscriptions =
                         ClientElementValueListManager.GetAllClientObjs().OfType<IValueSubscription>();
@@ -850,15 +829,18 @@ namespace Ssz.DataGrpc.Client
 
                         Logger.LogInformation("DataGrpcProvider connected to " + _serverAddress);
 
-                        IsConnectedEvent.Set();
-                        Action connected = Connected;
+                        _isConnectedEventWaitHandle.Set();                        
                         сallbackDispatcher = CallbackDispatcher;
-                        if (connected != null && сallbackDispatcher != null)
+                        if (сallbackDispatcher != null)
                         {
                             if (cancellationToken.IsCancellationRequested) return;
                             try
                             {
-                                сallbackDispatcher.BeginInvoke(ct => connected());
+                                сallbackDispatcher.BeginInvoke(ct =>
+                                {
+                                    IsConnected = true;
+                                    IsDisconnected = false;
+                                });
                             }
                             catch (Exception)
                             {
@@ -905,6 +887,24 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         protected virtual void Unsubscribe(bool clearClientSubscriptions)
         {
+            _isConnectedEventWaitHandle.Reset();
+
+            var сallbackDispatcher = CallbackDispatcher;
+            if (сallbackDispatcher != null)
+            {                
+                try
+                {
+                    сallbackDispatcher.BeginInvoke(ct =>
+                    {
+                        IsConnected = false;
+                        IsDisconnected = true;
+                    });
+                }
+                catch (Exception)
+                {
+                }
+            }
+
             ClientElementValueListManager.Unsubscribe(clearClientSubscriptions);
             ClientEventListManager.Unsubscribe();
             ClientElementValueJournalListManager.Unsubscribe(clearClientSubscriptions);
@@ -991,11 +991,19 @@ namespace Ssz.DataGrpc.Client
             Unsubscribe(true);
 
             if (_eventListCallbackIsEnabled) ClientEventListManager.EventMessagesCallback -= OnEventMessagesCallbackInternal; 
-        }        
+        }
 
         #endregion
 
-        #region private fields        
+        #region private fields     
+
+        private bool _isInitialized;
+
+        private bool _isConnected;
+
+        private bool _isDisconnected = true;
+
+        private readonly ManualResetEvent _isConnectedEventWaitHandle = new ManualResetEvent(false);
 
         /// <summary>
         ///     DataGrpc Server connection string.

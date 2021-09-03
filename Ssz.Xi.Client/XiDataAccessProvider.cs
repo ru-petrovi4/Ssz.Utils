@@ -14,7 +14,7 @@ using Xi.Contracts.Data;
 
 namespace Ssz.Xi.Client
 {
-    public partial class XiDataAccessProvider : IDataAccessProvider, IDispatcher
+    public partial class XiDataAccessProvider : ViewModelBase, IDataAccessProvider, IDispatcher
     {
         #region construction and destruction
         
@@ -117,24 +117,34 @@ namespace Ssz.Xi.Client
             }
         }
 
-        /// <summary>
-        ///     Is connected to Model Data Source.
-        /// </summary>
+        public bool IsInitialized
+        {
+            get { return _isInitialized; }
+            private set { SetValue(ref _isInitialized, value); }
+        }
+
         public bool IsConnected
         {
             get { return _isConnected; }
+            private set { SetValue(ref _isConnected, value); }
         }
 
-        public bool IsInitialized { get; private set; }
+        public bool IsDisconnected
+        {
+            get { return _isDisconnected; }
+            private set { SetValue(ref _isDisconnected, value); }
+        }
+
+        public EventWaitHandle IsConnectedEventWaitHandle => _isConnectedEventWaitHandle;        
+
+        public DateTime LastFailedConnectionDateTimeUtc => _lastFailedConnectionDateTimeUtc;
+
+        public DateTime LastSuccessfulConnectionDateTimeUtc => _lastSuccessfulConnectionDateTimeUtc;
 
         /// <summary>
         ///     If guid the same, the data is guaranteed not to have changed.
         /// </summary>
         public Guid DataGuid { get; private set; }
-
-        public DateTime LastFailedConnectionDateTimeUtc => _lastFailedConnectionDateTimeUtc;
-
-        public DateTime LastSuccessfulConnectionDateTimeUtc => _lastSuccessfulConnectionDateTimeUtc;
 
         public object? Obj { get; set; }
 
@@ -142,20 +152,8 @@ namespace Ssz.Xi.Client
         ///     Is called using сallbackDoer, see Initialize(..).
         /// </summary>
         public event Action ValueSubscriptionsUpdated = delegate { };
-
-        /// <summary>
-        ///     Is called using сallbackDoer, see Initialize(..).
-        ///     Occurs after connected to model.
-        /// </summary>
-        public event Action Connected = delegate { };
-
-        /// <summary>
-        ///     Is called using сallbackDoer, see Initialize(..).
-        ///     Occurs after disconnected from model.
-        /// </summary>
-        public event Action Disconnected = delegate { };
         
-        public void Initialize(IDispatcher? сallbackDispatcher,
+        public void Initialize(IDispatcher? callbackDispatcher,
             ElementIdsMap? elementIdsMap,
             bool elementValueListCallbackIsEnabled,
             bool eventListCallbackIsEnabled,
@@ -166,7 +164,7 @@ namespace Ssz.Xi.Client
 
             //Logger?.LogDebug("Starting ModelDataProvider. сallbackDoer != null " + (сallbackDispatcher != null).ToString());
 
-            _сallbackDispatcher = сallbackDispatcher;
+            _callbackDispatcher = callbackDispatcher;
             _elementValueListCallbackIsEnabled = elementValueListCallbackIsEnabled;
             _eventListCallbackIsEnabled = eventListCallbackIsEnabled;
             _serverAddress = serverAddress;
@@ -191,8 +189,6 @@ namespace Ssz.Xi.Client
 
             _cancellationTokenSource = new CancellationTokenSource();
 
-            _isConnected = false;
-
             _workingTask = Task.Run(async () =>
             {
                 await WorkingTaskMain(_cancellationTokenSource.Token);
@@ -208,7 +204,7 @@ namespace Ssz.Xi.Client
             IsInitialized = false;
 
             _contextParams = new CaseInsensitiveDictionary<string>();
-            _сallbackDispatcher = null;
+            _callbackDispatcher = null;
 
             if (_cancellationTokenSource != null)
             {
@@ -228,7 +224,7 @@ namespace Ssz.Xi.Client
         {
             if (!IsInitialized) return;
 
-            Initialize(_сallbackDispatcher,
+            Initialize(_callbackDispatcher,
                 null,
                 _elementValueListCallbackIsEnabled,
                 _eventListCallbackIsEnabled,
@@ -276,10 +272,10 @@ namespace Ssz.Xi.Client
             BeginInvoke(ct =>
             {
                 if (_xiServerProxy == null) throw new InvalidOperationException();
-                _xiDataListItemsManager.Subscribe(_xiServerProxy, _сallbackDispatcher,
+                _xiDataListItemsManager.Subscribe(_xiServerProxy, _callbackDispatcher,
                     XiDataListItemsManagerOnElementValuesCallback, true, ct);
                 object[]? changedValueSubscriptions = _xiDataListItemsManager.PollChanges();
-                IDispatcher? сallbackDoer = _сallbackDispatcher;
+                IDispatcher? сallbackDoer = _callbackDispatcher;
                 if (сallbackDoer != null)
                 {
                     try
@@ -303,13 +299,13 @@ namespace Ssz.Xi.Client
             BeginInvoke(ct =>
             {
                 if (_xiServerProxy == null) throw new InvalidOperationException();
-                _xiDataListItemsManager.Subscribe(_xiServerProxy, _сallbackDispatcher,
+                _xiDataListItemsManager.Subscribe(_xiServerProxy, _callbackDispatcher,
                     XiDataListItemsManagerOnElementValuesCallback, true, ct);                
                 object[] failedValueSubscriptions = _xiDataListItemsManager.Write(valueSubscriptions, valueStatusTimestamps);
 
                 if (setResultAction != null)
                 {
-                    IDispatcher? сallbackDoer = _сallbackDispatcher;
+                    IDispatcher? сallbackDoer = _callbackDispatcher;
                     if (сallbackDoer != null)
                     {
                         try
@@ -335,7 +331,7 @@ namespace Ssz.Xi.Client
             BeginInvoke(ct =>
             {
                 if (_xiServerProxy == null) throw new InvalidOperationException();
-                _xiDataListItemsManager.Subscribe(_xiServerProxy, _сallbackDispatcher,
+                _xiDataListItemsManager.Subscribe(_xiServerProxy, _callbackDispatcher,
                     XiDataListItemsManagerOnElementValuesCallback, true, ct);
                 _xiDataListItemsManager.Write(valueSubscription, valueStatusTimestamp);
             });
@@ -370,7 +366,7 @@ namespace Ssz.Xi.Client
                     result = null;
                 }
 
-                IDispatcher? сallbackDoer = _сallbackDispatcher;
+                IDispatcher? сallbackDoer = _callbackDispatcher;
                 if (сallbackDoer != null)
                 {
                     try
@@ -435,40 +431,25 @@ namespace Ssz.Xi.Client
             if (cancellationToken.IsCancellationRequested) return;
             if (!_xiServerProxy.ContextExists)
             {
-                IDispatcher? сallbackDoer;
-                if (_isConnected)
+                IDispatcher? сallbackDispatcher;
+                if (_isConnectedEventWaitHandle.WaitOne(0))
                 {
                     Unsubscribe(false);
 
                     #region notify subscribers disconnected
 
-                    //Logger.Info("XiDataProvider diconnected");
-
-                    _isConnected = false;
-                    Action disconnected = Disconnected;
-                    сallbackDoer = _сallbackDispatcher;
-                    if (disconnected != null && сallbackDoer != null)
-                    {
-                        if (cancellationToken.IsCancellationRequested) return;
-                        try
-                        {
-                            сallbackDoer.BeginInvoke(ct => disconnected());
-                        }
-                        catch (Exception)
-                        {
-                        }
-                    }
+                    //Logger.Info("XiDataProvider diconnected");                    
 
                     IEnumerable<IValueSubscription> valueSubscriptions =
                         _xiDataListItemsManager.GetAllClientObjs().OfType<IValueSubscription>();
 
-                    сallbackDoer = _сallbackDispatcher;
-                    if (сallbackDoer != null)
+                    сallbackDispatcher = _callbackDispatcher;
+                    if (сallbackDispatcher != null)
                     {
                         if (cancellationToken.IsCancellationRequested) return;
                         try
                         {
-                            сallbackDoer.BeginInvoke(ct =>
+                            сallbackDispatcher.BeginInvoke(ct =>
                             {
                                 foreach (IValueSubscription valueSubscription in valueSubscriptions)
                                 {
@@ -506,21 +487,24 @@ namespace Ssz.Xi.Client
                          //   workstationName);
 
                         _xiServerProxy.InitiateXiContext(_serverAddress, _clientApplicationName,
-                            workstationName, this);                        
+                            workstationName, this);
 
                         //Logger?.LogDebug("End Connecting");
 
                         //Logger.Info("XiDataProvider connected to " + _serverAddress);
 
-                        _isConnected = true;
-                        Action connected = Connected;
-                        сallbackDoer = _сallbackDispatcher;
-                        if (connected != null && сallbackDoer != null)
+                        _isConnectedEventWaitHandle.Set();
+                        сallbackDispatcher = _callbackDispatcher;
+                        if (сallbackDispatcher != null)
                         {
                             if (cancellationToken.IsCancellationRequested) return;
                             try
                             {
-                                сallbackDoer.BeginInvoke(ct => connected());
+                                сallbackDispatcher.BeginInvoke(ct =>
+                                {
+                                    IsConnected = true;
+                                    IsDisconnected = false;
+                                });
                             }
                             catch (Exception)
                             {
@@ -537,9 +521,9 @@ namespace Ssz.Xi.Client
             }
 
             if (cancellationToken.IsCancellationRequested) return;
-            _xiDataListItemsManager.Subscribe(_xiServerProxy, _сallbackDispatcher,
+            _xiDataListItemsManager.Subscribe(_xiServerProxy, _callbackDispatcher,
                 XiDataListItemsManagerOnElementValuesCallback, _elementValueListCallbackIsEnabled, cancellationToken);
-            _xiEventListItemsManager.Subscribe(_xiServerProxy, _сallbackDispatcher, true, cancellationToken);
+            _xiEventListItemsManager.Subscribe(_xiServerProxy, _callbackDispatcher, true, cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) return;
             if (_xiServerProxy.ContextExists)
@@ -575,7 +559,25 @@ namespace Ssz.Xi.Client
         ///     Working thread.
         /// </summary>
         private void Unsubscribe(bool clearClientSubscriptions)
-        { 
+        {
+            _isConnectedEventWaitHandle.Reset();
+
+            var сallbackDispatcher = _callbackDispatcher;
+            if (сallbackDispatcher != null)
+            {
+                try
+                {
+                    сallbackDispatcher.BeginInvoke(ct =>
+                    {
+                        IsConnected = false;
+                        IsDisconnected = true;
+                    });
+                }
+                catch (Exception)
+                {
+                }
+            }
+
             _xiDataListItemsManager.Unsubscribe(clearClientSubscriptions);
             _xiEventListItemsManager.Unsubscribe();
             _xiDataJournalListItemsManager.Unsubscribe(clearClientSubscriptions);
@@ -612,6 +614,14 @@ namespace Ssz.Xi.Client
 
         #region private fields
 
+        private bool _isInitialized;
+
+        private bool _isConnected;
+
+        private bool _isDisconnected = true;
+
+        private readonly ManualResetEvent _isConnectedEventWaitHandle = new ManualResetEvent(false);
+
         /// <summary>
         ///     Xi Server connection string.
         /// </summary>
@@ -642,9 +652,7 @@ namespace Ssz.Xi.Client
         /// <summary>
         ///     Used in Xi Context initialization.
         /// </summary>
-        private CaseInsensitiveDictionary<string> _contextParams = new CaseInsensitiveDictionary<string>();
-
-        private volatile bool _isConnected;
+        private CaseInsensitiveDictionary<string> _contextParams = new CaseInsensitiveDictionary<string>();        
 
         private Task? _workingTask;
 
@@ -654,7 +662,7 @@ namespace Ssz.Xi.Client
 
         private readonly XiDataListItemsManager _xiDataListItemsManager = new XiDataListItemsManager();
 
-        private volatile IDispatcher? _сallbackDispatcher;
+        private volatile IDispatcher? _callbackDispatcher;
 
         private ThreadSafeDispatcher _threadSafeDispatcher = new();
 

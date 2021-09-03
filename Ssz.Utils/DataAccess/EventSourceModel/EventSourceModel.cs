@@ -11,11 +11,10 @@ namespace Ssz.Utils.EventSourceModel
 
         public EventSourceModel(IDataAccessProvider dataAccessProvider)
         {
-            _dataAccessProvider = dataAccessProvider;            
+            _dataAccessProvider = dataAccessProvider;
 
-            _dataAccessProvider.Connected += Clear;
-            _dataAccessProvider.Disconnected += Clear;
-        }
+            _dataAccessProvider.PropertyChanged += DataAccessProviderOnPropertyChanged;
+        }        
 
         /// <summary>
         ///     This is the implementation of the IDisposable.Dispose method.  The client
@@ -37,8 +36,7 @@ namespace Ssz.Utils.EventSourceModel
 
             if (disposing)
             {
-                _dataAccessProvider.Connected -= Clear;
-                _dataAccessProvider.Disconnected -= Clear;
+                _dataAccessProvider.PropertyChanged -= DataAccessProviderOnPropertyChanged;
             }
 
             Disposed = true;
@@ -300,6 +298,20 @@ namespace Ssz.Utils.EventSourceModel
         }
 
         #endregion
+
+        #region private fields
+
+        private void DataAccessProviderOnPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs args)
+        {
+            switch (args.PropertyName)
+            {
+                case @"IsConnected":
+                    Clear();
+                    break;
+            }            
+        }
+
+        #endregion        
 
         #region private fields
 
