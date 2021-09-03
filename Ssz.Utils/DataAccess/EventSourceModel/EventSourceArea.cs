@@ -44,7 +44,7 @@ namespace Ssz.Utils.EventSourceModel
                 if (_dataAccessProvider.IsConnected)
                 {
                     bool anyUnacked = UnackedAlarmsCount > 0;
-                    alarmUnackedChanged(new ValueStatusTimestamp(new Any(anyUnacked), StatusCodes.Good, DateTime.UtcNow));
+                    alarmUnackedChanged(new ValueStatusTimestamp(new Any(anyUnacked), ValueStatusCode.Good, DateTime.UtcNow));
                 }
                 else
                 {
@@ -63,7 +63,7 @@ namespace Ssz.Utils.EventSourceModel
                     uint maxCategory = 0;
                     if (ActiveAlarmsCategories.Count > 0)
                         maxCategory = ActiveAlarmsCategories.Keys.Max();
-                    alarmCategoryChanged(new ValueStatusTimestamp(new Any(maxCategory), StatusCodes.Good, DateTime.UtcNow));
+                    alarmCategoryChanged(new ValueStatusTimestamp(new Any(maxCategory), ValueStatusCode.Good, DateTime.UtcNow));
                 }
                 else
                 {

@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Ssz.DataGrpc.Client.ClientLists;
-using Ssz.DataGrpc.Common;
-using Ssz.DataGrpc.Server;
 using Ssz.Utils.DataAccess;
+using Ssz.DataGrpc.Server;
 
 namespace Ssz.DataGrpc.Client
 {

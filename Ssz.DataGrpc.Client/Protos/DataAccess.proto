@@ -107,7 +107,7 @@ message ClientKeepAliveReply {
 }
 
 message AliasResult {
-  uint32 result_code = 1;
+  uint32 status_code = 1;
   uint32 client_alias = 2; 
   uint32 server_alias = 3; 
 }
@@ -172,8 +172,7 @@ message EnableListCallbackRequest {
   bool enable = 3;
 }
 
-message EnableListCallbackReply {
-  uint32 result_code = 1;
+message EnableListCallbackReply {  
   bool enabled = 2;
 }
 
@@ -182,8 +181,7 @@ message TouchListRequest {
   uint32 list_server_alias = 2;
 }
 
-message TouchListReply {
-  uint32 result_code = 1;  
+message TouchListReply {  
 }
 
 message ElementValuesCollection {
@@ -191,17 +189,17 @@ message ElementValuesCollection {
   string next_collection_guid = 2;
 
   repeated uint32 double_aliases = 3;
-  repeated uint32 double_status_codes = 4;
+  repeated uint32 double_value_status_codes = 4;
   repeated google.protobuf.Timestamp double_timestamps = 5;
   repeated double double_values = 6;
 
   repeated uint32 uint_aliases = 7;
-  repeated uint32 uint_status_codes = 8;
+  repeated uint32 uint_value_status_codes = 8;
   repeated google.protobuf.Timestamp uint_timestamps = 9;
   repeated uint32 uint_values = 10;
 
   repeated uint32 object_aliases = 11;
-  repeated uint32 object_status_codes = 12;
+  repeated uint32 object_value_status_codes = 12;
   repeated google.protobuf.Timestamp object_timestamps = 13;
   bytes object_values = 14;  
 }
@@ -295,11 +293,11 @@ message ElementValueJournalsCollection {
 }
 
 message ElementValueJournal {
-  repeated uint32 double_status_codes = 1;
+  repeated uint32 double_value_status_codes = 1;
   repeated google.protobuf.Timestamp double_timestamps = 2;
   repeated double double_values = 3;
   
-  repeated uint32 uint_status_codes = 4;
+  repeated uint32 uint_value_status_codes = 4;
   repeated google.protobuf.Timestamp uint_timestamps = 5;
   repeated uint32 uint_values = 6;
 }
@@ -327,7 +325,7 @@ message AckAlarmsReply {
 }
 
 message EventIdResult {
-  uint32 result_code = 1;
+  uint32 status_code = 1;
   EventId event_id = 2;
 }
 
@@ -344,7 +342,6 @@ message PassthroughRequest {
   PassthroughData data_to_send = 4;
 }
 
-message PassthroughReply {
-  uint32 result_code = 1;
-  PassthroughData return_data = 2;
+message PassthroughReply {  
+  PassthroughData return_data = 1;
 }

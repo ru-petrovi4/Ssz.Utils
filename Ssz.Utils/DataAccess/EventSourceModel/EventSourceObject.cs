@@ -113,7 +113,7 @@ namespace Ssz.Utils.EventSourceModel
                 if (_dataAccessProvider.IsConnected)
                 {
                     bool anyUnacked = AnyUnacked();
-                    alarmUnackedChanged(new ValueStatusTimestamp(new Any(anyUnacked), StatusCodes.Good, DateTime.UtcNow));
+                    alarmUnackedChanged(new ValueStatusTimestamp(new Any(anyUnacked), ValueStatusCode.Good, DateTime.UtcNow));
                 }
                 else
                 {
@@ -127,7 +127,7 @@ namespace Ssz.Utils.EventSourceModel
             if (_dataAccessProvider.IsConnected)
             {
                 bool anyUnacked = AnyUnacked();
-                subscriber.Update(new ValueStatusTimestamp(new Any(anyUnacked), StatusCodes.Good, DateTime.UtcNow));
+                subscriber.Update(new ValueStatusTimestamp(new Any(anyUnacked), ValueStatusCode.Good, DateTime.UtcNow));
             }
             else
             {
@@ -143,7 +143,7 @@ namespace Ssz.Utils.EventSourceModel
                 if (_dataAccessProvider.IsConnected)
                 {
                     uint maxCategory = GetActiveAlarmsMaxCategory();
-                    alarmCategoryChanged(new ValueStatusTimestamp(new Any(maxCategory), StatusCodes.Good, DateTime.UtcNow));
+                    alarmCategoryChanged(new ValueStatusTimestamp(new Any(maxCategory), ValueStatusCode.Good, DateTime.UtcNow));
                 }
                 else
                 {
@@ -157,7 +157,7 @@ namespace Ssz.Utils.EventSourceModel
             if (_dataAccessProvider.IsConnected)
             {
                 uint maxCategory = GetActiveAlarmsMaxCategory();
-                subscriber.Update(new ValueStatusTimestamp(new Any(maxCategory), StatusCodes.Good, DateTime.UtcNow));
+                subscriber.Update(new ValueStatusTimestamp(new Any(maxCategory), ValueStatusCode.Good, DateTime.UtcNow));
             }
             else
             {
@@ -173,7 +173,7 @@ namespace Ssz.Utils.EventSourceModel
                 if (_dataAccessProvider.IsConnected)
                 {
                     AlarmCondition alarmConditionType = GetAlarmConditionType();
-                    alarmConditionTypeChanged(new ValueStatusTimestamp(new Any(alarmConditionType), StatusCodes.Good, DateTime.UtcNow));
+                    alarmConditionTypeChanged(new ValueStatusTimestamp(new Any(alarmConditionType), ValueStatusCode.Good, DateTime.UtcNow));
                 }
                 else
                 {
@@ -187,7 +187,7 @@ namespace Ssz.Utils.EventSourceModel
             if (_dataAccessProvider.IsConnected)
             {
                 AlarmCondition alarmConditionType = GetAlarmConditionType();
-                subscriber.Update(new ValueStatusTimestamp(new Any(alarmConditionType), StatusCodes.Good, DateTime.UtcNow));
+                subscriber.Update(new ValueStatusTimestamp(new Any(alarmConditionType), ValueStatusCode.Good, DateTime.UtcNow));
             }
             else
             {

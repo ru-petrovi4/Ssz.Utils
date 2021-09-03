@@ -6,7 +6,7 @@ using Ssz.DataGrpc.Client.Managers;
 using Ssz.DataGrpc.Client.ClientListItems;
 using Ssz.DataGrpc.Server;
 using Ssz.Utils;
-using Ssz.DataGrpc.Common;
+using Ssz.Utils.DataAccess;
 using Ssz.DataGrpc.Client.Data;
 
 namespace Ssz.DataGrpc.Client.ClientLists

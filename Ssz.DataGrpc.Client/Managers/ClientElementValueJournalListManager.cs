@@ -3,10 +3,9 @@ using Ssz.Utils;
 using Ssz.DataGrpc.Client.ClientListItems;
 using Microsoft.Extensions.Logging;
 using Ssz.DataGrpc.Client.ClientLists;
-using Ssz.DataGrpc.Common;
+using Ssz.Utils.DataAccess;
 using System.Collections.Generic;
 using Ssz.DataGrpc.Server;
-using Ssz.Utils.DataAccess;
 
 namespace Ssz.DataGrpc.Client.Managers
 {

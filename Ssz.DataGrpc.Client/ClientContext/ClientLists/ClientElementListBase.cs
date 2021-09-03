@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using Ssz.Utils;
 using Ssz.DataGrpc.Client.ClientListItems;
 using Ssz.DataGrpc.Server;
-using Ssz.DataGrpc.Common;
+using Ssz.Utils.DataAccess;
+using Grpc.Core;
 
 namespace Ssz.DataGrpc.Client.ClientLists
 {
@@ -119,12 +120,12 @@ namespace Ssz.DataGrpc.Client.ClientLists
                         if (ListItemsManager.TryGetValue(r.AliasResult.ClientAlias, out listItem))
                         {
                             listItem.ServerAlias = r.AliasResult.ServerAlias;
-                            listItem.ResultCode = r.AliasResult.ResultCode;
+                            listItem.StatusCode = (StatusCode)r.AliasResult.StatusCode;
                             listItem.ValueTypeId = r.DataTypeId;
                             listItem.IsReadable = r.IsReadable;
                             listItem.IsWritable = r.IsWritable;
 
-                            if (listItem.ResultCode == DataGrpcResultCodes.S_OK || listItem.ResultCode == DataGrpcResultCodes.S_FALSE)
+                            if (listItem.StatusCode == StatusCode.OK)
                             {
                                 listItem.IsInServerList = true;                                
                             }
@@ -207,7 +208,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
                                 aliasResultList.Find(ar => ar.ServerAlias == removedListItem.ServerAlias);
                             if (aliasResult != null)
                             {
-                                if (aliasResult.ResultCode == DataGrpcResultCodes.E_ALIASNOTFOUND)
+                                if ((StatusCode)aliasResult.StatusCode == StatusCode.NotFound)
                                 {
                                     // server doesn't have the item if result code is E_ALIASNOTFOUND, so ok to take it out here
                                     ListItemsManager.Remove(removedListItem.ClientAlias);
@@ -218,7 +219,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
                                 else
                                     // otherwise the value was not deleted from the server, so add it to the list to return
                                 {
-                                    removedListItem.ResultCode = aliasResult.ResultCode;
+                                    removedListItem.StatusCode = (StatusCode)aliasResult.StatusCode;
                                     erroredDataGrpcValuesToReturn.Add(removedListItem);
                                 }
                             }

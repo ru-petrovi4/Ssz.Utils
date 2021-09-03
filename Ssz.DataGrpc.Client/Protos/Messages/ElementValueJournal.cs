@@ -12,11 +12,11 @@ namespace Ssz.DataGrpc.Server
 
         public void CombineWith(ElementValueJournal nextElementValueJournal)
         {
-            DoubleStatusCodes.Add(nextElementValueJournal.DoubleStatusCodes);
+            DoubleValueStatusCodes.Add(nextElementValueJournal.DoubleValueStatusCodes);
             DoubleTimestamps.Add(nextElementValueJournal.DoubleTimestamps);
             DoubleValues.Add(nextElementValueJournal.DoubleValues);
 
-            UintStatusCodes.Add(nextElementValueJournal.UintStatusCodes);
+            UintValueStatusCodes.Add(nextElementValueJournal.UintValueStatusCodes);
             UintTimestamps.Add(nextElementValueJournal.UintTimestamps);
             UintValues.Add(nextElementValueJournal.UintValues);
         }

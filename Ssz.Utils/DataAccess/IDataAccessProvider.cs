@@ -81,6 +81,13 @@ namespace Ssz.Utils.DataAccess
         
         void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? alternativeLogger);
 
+        /// <summary>
+        ///     Returns null if any errors.
+        /// </summary>
+        /// <param name="recipientId"></param>
+        /// <param name="passthroughName"></param>
+        /// <param name="dataToSend"></param>
+        /// <param name="setResultAction"></param>
         void Passthrough(string recipientId, string passthroughName, byte[] dataToSend,
             Action<IEnumerable<byte>?> setResultAction);
 

@@ -5,7 +5,8 @@ using System.ServiceModel;
 using Ssz.Utils;
 using Ssz.DataGrpc.Client.ClientLists;
 using Ssz.DataGrpc.Server;
-using Ssz.DataGrpc.Common;
+using Ssz.Utils.DataAccess;
+using Grpc.Core;
 
 namespace Ssz.DataGrpc.Client
 {
@@ -48,7 +49,7 @@ namespace Ssz.DataGrpc.Client
                 if (listParams != null) request.ListParams.Add(listParams);
                 var reply = _resourceManagementClient.DefineList(request);
                 SetResourceManagementLastCallUtc();
-                if (reply.Result.ResultCode == DataGrpcResultCodes.S_OK)
+                if ((StatusCode)reply.Result.StatusCode == StatusCode.OK)
                 {
                     dataGrpcList.ListClientAlias = listClientAlias;
                     dataGrpcList.ListServerAlias = reply.Result.ServerAlias;
@@ -234,7 +235,7 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         /// <param name="listServerAlias"> The identifier for the list to be touched. </param>
         /// <returns> The result code for the operation. See DataGrpcFaultCodes class for standardized result codes. </returns>
-        public uint TouchList(uint listServerAlias)
+        public void TouchList(uint listServerAlias)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -248,8 +249,7 @@ namespace Ssz.DataGrpc.Client
                     ListServerAlias = listServerAlias
                 };
                 var touchLisReply = _resourceManagementClient.TouchList(request);
-                SetResourceManagementLastCallUtc();
-                return touchLisReply.ResultCode;
+                SetResourceManagementLastCallUtc();                
             }
             catch (Exception ex)
             {

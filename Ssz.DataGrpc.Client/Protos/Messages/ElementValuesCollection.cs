@@ -16,17 +16,17 @@ namespace Ssz.DataGrpc.Server
             NextCollectionGuid = nextElementValuesCollection.NextCollectionGuid;
 
             DoubleAliases.Add(nextElementValuesCollection.DoubleAliases);
-            DoubleStatusCodes.Add(nextElementValuesCollection.DoubleStatusCodes);
+            DoubleValueStatusCodes.Add(nextElementValuesCollection.DoubleValueStatusCodes);
             DoubleTimestamps.Add(nextElementValuesCollection.DoubleTimestamps);
             DoubleValues.Add(nextElementValuesCollection.DoubleValues);
 
             UintAliases.Add(nextElementValuesCollection.UintAliases);
-            UintStatusCodes.Add(nextElementValuesCollection.UintStatusCodes);
+            UintValueStatusCodes.Add(nextElementValuesCollection.UintValueStatusCodes);
             UintTimestamps.Add(nextElementValuesCollection.UintTimestamps);
             UintValues.Add(nextElementValuesCollection.UintValues);
 
             ObjectAliases.Add(nextElementValuesCollection.ObjectAliases);
-            ObjectStatusCodes.Add(nextElementValuesCollection.ObjectStatusCodes);
+            ObjectValueStatusCodes.Add(nextElementValuesCollection.ObjectValueStatusCodes);
             ObjectTimestamps.Add(nextElementValuesCollection.ObjectTimestamps);
             ObjectValues = Google.Protobuf.ByteString.CopyFrom(
                 ObjectValues.Concat(nextElementValuesCollection.ObjectValues).ToArray()
@@ -61,17 +61,17 @@ namespace Ssz.DataGrpc.Server
                 }
 
                 elementValuesCollection.DoubleAliases.AddRange(DoubleAliases.Skip(doubleIndex).Take(MaxArrayLength));
-                elementValuesCollection.DoubleStatusCodes.AddRange(DoubleStatusCodes.Skip(doubleIndex).Take(MaxArrayLength));
+                elementValuesCollection.DoubleValueStatusCodes.AddRange(DoubleValueStatusCodes.Skip(doubleIndex).Take(MaxArrayLength));
                 elementValuesCollection.DoubleTimestamps.AddRange(DoubleTimestamps.Skip(doubleIndex).Take(MaxArrayLength));
                 elementValuesCollection.DoubleValues.AddRange(DoubleValues.Skip(doubleIndex).Take(MaxArrayLength));
 
                 elementValuesCollection.UintAliases.AddRange(UintAliases.Skip(uintIndex).Take(MaxArrayLength));
-                elementValuesCollection.UintStatusCodes.AddRange(UintStatusCodes.Skip(uintIndex).Take(MaxArrayLength));
+                elementValuesCollection.UintValueStatusCodes.AddRange(UintValueStatusCodes.Skip(uintIndex).Take(MaxArrayLength));
                 elementValuesCollection.UintTimestamps.AddRange(UintTimestamps.Skip(uintIndex).Take(MaxArrayLength));
                 elementValuesCollection.UintValues.AddRange(UintValues.Skip(uintIndex).Take(MaxArrayLength));
 
                 elementValuesCollection.ObjectAliases.AddRange(ObjectAliases.Skip(objectIndex).Take(MaxArrayLength));
-                elementValuesCollection.ObjectStatusCodes.AddRange(ObjectStatusCodes.Skip(objectIndex).Take(MaxArrayLength));
+                elementValuesCollection.ObjectValueStatusCodes.AddRange(ObjectValueStatusCodes.Skip(objectIndex).Take(MaxArrayLength));
                 elementValuesCollection.ObjectTimestamps.AddRange(ObjectTimestamps.Skip(objectIndex).Take(MaxArrayLength));
                 elementValuesCollection.ObjectValues = Google.Protobuf.ByteString.CopyFrom(
                     ObjectValues.Skip(objectByteIndex).Take(MaxByteStringLength).ToArray());

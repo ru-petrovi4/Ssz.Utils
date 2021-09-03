@@ -1,7 +1,8 @@
 using System;
 using Ssz.DataGrpc.Client.Data;
-using Ssz.DataGrpc.Common;
+using Ssz.Utils.DataAccess;
 using Ssz.DataGrpc.Server;
+using Grpc.Core;
 
 namespace Ssz.DataGrpc.Client.ClientListItems
 {
@@ -66,7 +67,7 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         ///     This property provides the DataGrpc TypeId for the value contained
         ///     in this list element.
         /// </summary>
-        public TypeId? ValueTypeId
+        public Ssz.DataGrpc.Server.TypeId? ValueTypeId
         {
             get { return _valueTypeId; }
             set
@@ -176,11 +177,11 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         public bool IsReadable { get; set; }
 
         /// <summary>
-        ///     The Result Code provides the latest status as provided by the DataGrpc Server.
+        ///     The Status Code provides the latest status as provided by the DataGrpc Server.
         ///     It is initially set to a failed state to indicated that the current value
         ///     is not valid.
         /// </summary>
-        public uint ResultCode { get; set; } = 0xFFFFFFFFu;
+        public StatusCode StatusCode { get; set; } = StatusCode.Unknown;
 
         /// <summary>
         ///     This property is the InstanceId of this DataGrpcList element if it has one.
@@ -230,7 +231,7 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         ///     This property provides the DataGrpc TypeId for the value contained
         ///     in this list element.
         /// </summary>
-        private TypeId? _valueTypeId;
+        private Ssz.DataGrpc.Server.TypeId? _valueTypeId;
 
         #endregion
     }

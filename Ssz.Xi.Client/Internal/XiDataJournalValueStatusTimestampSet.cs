@@ -216,7 +216,7 @@ namespace Ssz.Xi.Client.Internal
                     var xiValueStatusTimestamp = new ValueStatusTimestamp();
                     xiValueStatusTimestamp.Value.Set(journalDataValues.HistoricalValues.DoubleValues[idx],
                         _owningXiDataJournalListItem.ValueTypeCode, false);
-                    xiValueStatusTimestamp.StatusCode = journalDataValues.HistoricalValues.DoubleStatusCodes[idx];
+                    xiValueStatusTimestamp.ValueStatusCode = journalDataValues.HistoricalValues.DoubleStatusCodes[idx];
                     xiValueStatusTimestamp.TimestampUtc = journalDataValues.HistoricalValues.DoubleTimeStamps[idx];
 
                     _xiValueStatusTimestampsList.Add(xiValueStatusTimestamp);
@@ -231,7 +231,7 @@ namespace Ssz.Xi.Client.Internal
                     var xiValueStatusTimestamp = new ValueStatusTimestamp();
                     xiValueStatusTimestamp.Value.Set(journalDataValues.HistoricalValues.UintValues[idx],
                         _owningXiDataJournalListItem.ValueTypeCode, false);
-                    xiValueStatusTimestamp.StatusCode = journalDataValues.HistoricalValues.UintStatusCodes[idx];
+                    xiValueStatusTimestamp.ValueStatusCode = journalDataValues.HistoricalValues.UintStatusCodes[idx];
                     xiValueStatusTimestamp.TimestampUtc = journalDataValues.HistoricalValues.UintTimeStamps[idx];
 
                     _xiValueStatusTimestampsList.Add(xiValueStatusTimestamp);
@@ -245,7 +245,7 @@ namespace Ssz.Xi.Client.Internal
                 {
                     var xiValueStatusTimestamp = new ValueStatusTimestamp();
                     xiValueStatusTimestamp.Value.Set(journalDataValues.HistoricalValues.ObjectValues[idx]);
-                    xiValueStatusTimestamp.StatusCode = journalDataValues.HistoricalValues.ObjectStatusCodes[idx];
+                    xiValueStatusTimestamp.ValueStatusCode = journalDataValues.HistoricalValues.ObjectStatusCodes[idx];
                     xiValueStatusTimestamp.TimestampUtc = journalDataValues.HistoricalValues.ObjectTimeStamps[idx];
 
                     _xiValueStatusTimestampsList.Add(xiValueStatusTimestamp);

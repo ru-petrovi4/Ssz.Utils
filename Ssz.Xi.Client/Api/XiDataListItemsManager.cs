@@ -128,7 +128,7 @@ namespace Ssz.Xi.Client.Api
                                     if (xiListItemWrapper.ItemDoesNotExist)
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(new ValueStatusTimestamp(new Any(), StatusCodes.ItemDoesNotExist, utcNow));
+                                        changedValues.Add(new ValueStatusTimestamp(new Any(), ValueStatusCode.ItemDoesNotExist, utcNow));
                                     }
                                     else if (xiListItemWrapper.XiListItem != null)
                                     {
@@ -138,7 +138,7 @@ namespace Ssz.Xi.Client.Api
                                     else
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(new ValueStatusTimestamp(new Any(), StatusCodes.Unknown, utcNow));
+                                        changedValues.Add(new ValueStatusTimestamp(new Any(), ValueStatusCode.Unknown, utcNow));
                                     }                                                                                                  
                                 }                                
                             }

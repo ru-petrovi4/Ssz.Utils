@@ -4,12 +4,12 @@ using System.Linq;
 using Ssz.Utils;
 using Ssz.DataGrpc.Client.ClientListItems;
 using Ssz.DataGrpc.Server;
-using Ssz.DataGrpc.Common;
+using Ssz.Utils.DataAccess;
 using System.IO;
 using Ssz.Utils.Serialization;
 using Ssz.DataGrpc.Client.Data;
-using Ssz.Utils.DataAccess;
 using Google.Protobuf.WellKnownTypes;
+using Grpc.Core;
 
 namespace Ssz.DataGrpc.Client.ClientLists
 {
@@ -90,24 +90,24 @@ namespace Ssz.DataGrpc.Client.ClientLists
                         {
                             case Ssz.Utils.Any.StorageType.Double:
                                 fullElementValuesCollection.DoubleAliases.Add(alias);
-                                fullElementValuesCollection.DoubleStatusCodes.Add(valueStatusTimestamp.StatusCode);
+                                fullElementValuesCollection.DoubleValueStatusCodes.Add(valueStatusTimestamp.ValueStatusCode);
                                 fullElementValuesCollection.DoubleTimestamps.Add(Timestamp.FromDateTime(valueStatusTimestamp.TimestampUtc));
                                 fullElementValuesCollection.DoubleValues.Add(valueStatusTimestamp.Value.StorageDouble);
                                 break;
                             case Ssz.Utils.Any.StorageType.UInt32:
                                 fullElementValuesCollection.UintAliases.Add(alias);
-                                fullElementValuesCollection.UintStatusCodes.Add(valueStatusTimestamp.StatusCode);
+                                fullElementValuesCollection.UintValueStatusCodes.Add(valueStatusTimestamp.ValueStatusCode);
                                 fullElementValuesCollection.UintTimestamps.Add(Timestamp.FromDateTime(valueStatusTimestamp.TimestampUtc));
                                 fullElementValuesCollection.UintValues.Add(valueStatusTimestamp.Value.StorageUInt32);
                                 break;
                             case Ssz.Utils.Any.StorageType.Object:
                                 fullElementValuesCollection.ObjectAliases.Add(alias);
-                                fullElementValuesCollection.ObjectStatusCodes.Add(valueStatusTimestamp.StatusCode);
+                                fullElementValuesCollection.ObjectValueStatusCodes.Add(valueStatusTimestamp.ValueStatusCode);
                                 fullElementValuesCollection.ObjectTimestamps.Add(Timestamp.FromDateTime(valueStatusTimestamp.TimestampUtc));
                                 writer.WriteObject(valueStatusTimestamp.Value.StorageObject);
                                 break;
                         }
-                        item.HasWritten(DataGrpcResultCodes.S_OK);
+                        item.HasWritten(StatusCode.OK);
                     }
                 }
                 memoryStream.Position = 0;
@@ -123,7 +123,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
                     ClientElementValueListItem? item = null;
                     if (ListItemsManager.TryGetValue(aliasResult.ClientAlias, out item))
                     {
-                        item.HasWritten(aliasResult.ResultCode);
+                        item.HasWritten((StatusCode)aliasResult.StatusCode);
                         result.Add(item);
                     }
                 }
@@ -179,7 +179,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
                     if (item != null)
                     {
                         item.UpdateValue(elementValuesCollection.DoubleValues[index],
-                            elementValuesCollection.DoubleStatusCodes[index],
+                            elementValuesCollection.DoubleValueStatusCodes[index],
                             elementValuesCollection.DoubleTimestamps[index].ToDateTime()
                             );
                         changedListItems.Add(item);
@@ -192,7 +192,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
                     if (item != null)
                     {
                         item.UpdateValue(elementValuesCollection.UintValues[index],
-                            elementValuesCollection.UintStatusCodes[index],
+                            elementValuesCollection.UintValueStatusCodes[index],
                             elementValuesCollection.UintTimestamps[index].ToDateTime()
                             );
                         changedListItems.Add(item);
@@ -211,7 +211,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
                             if (item != null)
                             {
                                 item.UpdateValue(objectValue,
-                                    elementValuesCollection.ObjectStatusCodes[index],
+                                    elementValuesCollection.ObjectValueStatusCodes[index],
                                     elementValuesCollection.ObjectTimestamps[index].ToDateTime()
                                     );
                                 changedListItems.Add(item);

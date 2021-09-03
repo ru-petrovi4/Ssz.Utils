@@ -1,7 +1,7 @@
 using System;
-using Ssz.DataGrpc.Common;
-using Ssz.Utils;
 using Ssz.Utils.DataAccess;
+using Ssz.Utils;
+using Grpc.Core;
 
 namespace Ssz.DataGrpc.Client.ClientListItems
 {
@@ -97,10 +97,10 @@ namespace Ssz.DataGrpc.Client.ClientListItems
             return true;
         }
 
-        public void HasWritten(uint resultCodeWrite)
+        public void HasWritten(StatusCode writeStatusCode)
         {
             _pendingWriteValueStatusTimestamp = null;
-            _resultCodeWrite = resultCodeWrite;
+            _writeStatusCode = writeStatusCode;
         }
 
         /// <summary>
@@ -127,9 +127,9 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         ///     This property contains the result code associated with writing the PendingWriteValueStatusTimestamp.
         ///     See DataGrpcFaultCodes class for standardized result codes.
         /// </summary>
-        public uint ResultCodeWrite
+        public StatusCode WriteStatusCode
         {
-            get { return _resultCodeWrite; }
+            get { return _writeStatusCode; }
         }
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         /// </summary>
         private ValueStatusTimestamp? _pendingWriteValueStatusTimestamp;
 
-        private uint _resultCodeWrite;
+        private StatusCode _writeStatusCode;
 
         /// <summary>
         ///     This data member is the private representation of the DataValue property.

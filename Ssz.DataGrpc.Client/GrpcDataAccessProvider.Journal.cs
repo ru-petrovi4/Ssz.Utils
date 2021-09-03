@@ -4,7 +4,6 @@ using System.Linq;
 using Ssz.Utils;
 using Ssz.DataGrpc.Client.Managers;
 using Ssz.DataGrpc.Server;
-using Ssz.DataGrpc.Common;
 using Ssz.Utils.DataAccess;
 
 namespace Ssz.DataGrpc.Client

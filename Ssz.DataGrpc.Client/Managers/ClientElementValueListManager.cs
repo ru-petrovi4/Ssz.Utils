@@ -6,8 +6,8 @@ using Ssz.Utils;
 using Ssz.DataGrpc.Client.ClientListItems;
 using Microsoft.Extensions.Logging;
 using Ssz.DataGrpc.Client.ClientLists;
-using Ssz.DataGrpc.Common;
 using Ssz.Utils.DataAccess;
+using Grpc.Core;
 
 namespace Ssz.DataGrpc.Client.Managers
 {
@@ -133,7 +133,7 @@ namespace Ssz.DataGrpc.Client.Managers
                                     if (dataGrpcListItemWrapper.ItemDoesNotExist)
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(new ValueStatusTimestamp(new Any(), StatusCodes.ItemDoesNotExist, utcNow));
+                                        changedValues.Add(new ValueStatusTimestamp(new Any(), ValueStatusCode.ItemDoesNotExist, utcNow));
                                     }
                                     else if (dataGrpcListItemWrapper.DataGrpcListItem != null)
                                     {
@@ -143,7 +143,7 @@ namespace Ssz.DataGrpc.Client.Managers
                                     else
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(new ValueStatusTimestamp(new Any(), StatusCodes.Unknown, utcNow));
+                                        changedValues.Add(new ValueStatusTimestamp(new Any(), ValueStatusCode.Unknown, utcNow));
                                     }                                                                                                  
                                 }                                
                             }
@@ -233,7 +233,7 @@ namespace Ssz.DataGrpc.Client.Managers
                 
                 if (modelItem.DataGrpcListItemWrapper == null ||
                     modelItem.DataGrpcListItemWrapper.DataGrpcListItem == null ||
-                    modelItem.DataGrpcListItemWrapper.DataGrpcListItem.ResultCode != DataGrpcResultCodes.S_OK)
+                    modelItem.DataGrpcListItemWrapper.DataGrpcListItem.StatusCode != StatusCode.OK)
                 {
                     result.Add(clientObj);
                     continue;
@@ -280,7 +280,7 @@ namespace Ssz.DataGrpc.Client.Managers
             ClientObjectInfo? modelItem;
             if (!ModelItemsDictionary.TryGetValue(clientObj, out modelItem)) return;
             
-            if (modelItem.DataGrpcListItemWrapper == null || modelItem.DataGrpcListItemWrapper.DataGrpcListItem == null || modelItem.DataGrpcListItemWrapper.DataGrpcListItem.ResultCode != DataGrpcResultCodes.S_OK)
+            if (modelItem.DataGrpcListItemWrapper == null || modelItem.DataGrpcListItemWrapper.DataGrpcListItem == null || modelItem.DataGrpcListItemWrapper.DataGrpcListItem.StatusCode != StatusCode.OK)
             {
                 return;
             }

@@ -5,9 +5,8 @@ using System.Linq;
 using Ssz.DataGrpc.Client.Managers;
 using Ssz.DataGrpc.Client.ClientListItems;
 using Ssz.DataGrpc.Server;
-using Ssz.DataGrpc.Common;
-using Ssz.Utils;
 using Ssz.Utils.DataAccess;
+using Ssz.Utils;
 
 namespace Ssz.DataGrpc.Client.ClientLists
 {
@@ -118,22 +117,22 @@ namespace Ssz.DataGrpc.Client.ClientLists
                 {
                     var valuesList = new List<ValueStatusTimestamp>();
 
-                    for (int index = 0; index < elementValueJournal.DoubleStatusCodes.Count; index++)
+                    for (int index = 0; index < elementValueJournal.DoubleValueStatusCodes.Count; index++)
                     {
                         valuesList.Add(new ValueStatusTimestamp
                         {
                             Value = new Any(elementValueJournal.DoubleValues[index]),
-                            StatusCode = elementValueJournal.DoubleStatusCodes[index],
+                            ValueStatusCode = elementValueJournal.DoubleValueStatusCodes[index],
                             TimestampUtc = elementValueJournal.DoubleTimestamps[index].ToDateTime()
                         }
                         );
                     }
-                    for (int index = 0; index < elementValueJournal.UintStatusCodes.Count; index++)
+                    for (int index = 0; index < elementValueJournal.UintValueStatusCodes.Count; index++)
                     {
                         valuesList.Add(new ValueStatusTimestamp
                         {
                             Value = new Any(elementValueJournal.UintValues[index]),
-                            StatusCode = elementValueJournal.UintStatusCodes[index],
+                            ValueStatusCode = elementValueJournal.UintValueStatusCodes[index],
                             TimestampUtc = elementValueJournal.UintTimestamps[index].ToDateTime()
                         }
                         );

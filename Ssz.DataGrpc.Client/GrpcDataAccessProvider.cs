@@ -9,11 +9,11 @@ using Ssz.DataGrpc.Client.Managers;
 using Ssz.DataGrpc.Server;
 using Ssz.DataGrpc.Client.Data;
 using Microsoft.Extensions.Logging;
-using Ssz.DataGrpc.Common;
 using Ssz.Utils.DataAccess;
 using Grpc.Net.Client;
 using System.Globalization;
 using System.Threading.Tasks;
+using Grpc.Core;
 
 namespace Ssz.DataGrpc.Client
 {
@@ -363,7 +363,7 @@ namespace Ssz.DataGrpc.Client
                     try
                     {
                         callbackDispatcher.BeginInvoke(ct =>
-                            valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, StatusCodes.Good,
+                            valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, ValueStatusCode.Good,
                                 DateTime.UtcNow)));
                     }
                     catch (Exception)
@@ -588,7 +588,7 @@ namespace Ssz.DataGrpc.Client
             var callbackDispatcher = CallbackDispatcher;
             if (!IsInitialized || callbackDispatcher == null) return;
 
-            if (!StatusCodes.IsGood(valueStatusTimestamp.StatusCode)) return;
+            if (!ValueStatusCode.IsGood(valueStatusTimestamp.ValueStatusCode)) return;
             var value = valueStatusTimestamp.Value;
 
             var valueSubscriptionObj = valueSubscription.Obj as ValueSubscriptionObj;
@@ -680,14 +680,14 @@ namespace Ssz.DataGrpc.Client
                         var resultValue = resultValues[i];
                         if (resultValue != SszConverter.DoNothing)
                             ClientElementValueListManager.Write(valueSubscriptionObj.ChildValueSubscriptionsList[i],
-                                new ValueStatusTimestamp(new Any(resultValue), StatusCodes.Good, DateTime.UtcNow));
+                                new ValueStatusTimestamp(new Any(resultValue), ValueStatusCode.Good, DateTime.UtcNow));
                     }
                 }
                 else
                 {
                     if (value.ValueAsObject() != SszConverter.DoNothing)
                         ClientElementValueListManager.Write(valueSubscription,
-                            new ValueStatusTimestamp(value, StatusCodes.Good, DateTime.UtcNow));
+                            new ValueStatusTimestamp(value, ValueStatusCode.Good, DateTime.UtcNow));
                 }
             });
         }
@@ -701,24 +701,23 @@ namespace Ssz.DataGrpc.Client
         {
             BeginInvoke(ct =>
             {
-                IEnumerable<byte>? result;
+                IEnumerable<byte>? result;                
                 try
                 {
                     IEnumerable<byte> returnData;
-                    uint resultCode = ClientConnectionManager.Passthrough(recipientId, passthroughName,
+                    ClientConnectionManager.Passthrough(recipientId, passthroughName,
                         dataToSend, out returnData);
-                    if (DataGrpcResultCodes.Succeeded(resultCode))
-                    {
-                        result = returnData;
-                    }
-                    else
-                    {
-                        result = null;
-                    }
+                    result = returnData;                    
                 }
-                catch (Exception)
+                catch (RpcException ex)
                 {
-                    result = null;
+                    Logger.LogError(ex, ex.Status.Detail);
+                    result = null;                    
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "Passthrough exception.");
+                    result = null;                    
                 }
 
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
@@ -1083,7 +1082,7 @@ namespace Ssz.DataGrpc.Client
                     converter = SszConverter.Empty;
                 var convertedValue = converter.Convert(values.ToArray(), null);
                 if (convertedValue == SszConverter.DoNothing) return;
-                ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), StatusCodes.Good,
+                ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), ValueStatusCode.Good,
                     DateTime.UtcNow));
             }
         }
@@ -1113,12 +1112,12 @@ namespace Ssz.DataGrpc.Client
 
             public void Update(ValueStatusTimestamp valueStatusTimestamp)
             {
-                switch (valueStatusTimestamp.StatusCode)
+                switch (valueStatusTimestamp.ValueStatusCode)
                 {
-                    case StatusCodes.Unknown:
+                    case ValueStatusCode.Unknown:
                         Value = new Any();
                         break;
-                    case StatusCodes.ItemDoesNotExist:
+                    case ValueStatusCode.ItemDoesNotExist:
                         Value = new Any(DBNull.Value);
                         break;
                     default:

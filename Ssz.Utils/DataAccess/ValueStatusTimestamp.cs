@@ -10,10 +10,10 @@ namespace Ssz.Utils.DataAccess
     {
         #region construction and destruction
 
-        public ValueStatusTimestamp(Any value, uint statusCode, DateTime timestampUtc)
+        public ValueStatusTimestamp(Any value, uint valueStatusCode, DateTime timestampUtc)
         {
             Value = value;
-            StatusCode = statusCode;
+            ValueStatusCode = valueStatusCode;
             TimestampUtc = timestampUtc;
         }
 
@@ -34,7 +34,7 @@ namespace Ssz.Utils.DataAccess
             sb.Append(", TS = ");
             sb.Append(TimestampUtc.ToString("u"));
             sb.Append(", SC = 0x");
-            sb.Append(StatusCode.ToString("X4"));
+            sb.Append(ValueStatusCode.ToString("X4"));
             return sb.ToString();
         }
 
@@ -71,7 +71,7 @@ namespace Ssz.Utils.DataAccess
 
         public bool Equals(ValueStatusTimestamp that)
         {            
-            return StatusCode == that.StatusCode && TimestampUtc == that.TimestampUtc && Value == that.Value;
+            return ValueStatusCode == that.ValueStatusCode && TimestampUtc == that.TimestampUtc && Value == that.Value;
         }
 
         /// <summary>
@@ -84,19 +84,19 @@ namespace Ssz.Utils.DataAccess
         /// <returns></returns>
         public bool Compare(ValueStatusTimestamp that, double deadband = 0.0)
         {
-            return StatusCode == that.StatusCode && Value.Compare(that.Value, deadband);
+            return ValueStatusCode == that.ValueStatusCode && Value.Compare(that.Value, deadband);
         }
 
         public Any Value;
         
-        public uint StatusCode;
+        public uint ValueStatusCode;
         
         public DateTime TimestampUtc;        
 
         #endregion
     }
 
-    public static class StatusCodes
+    public static class ValueStatusCode
     {
         public const uint Unknown = 0;
 
@@ -104,7 +104,7 @@ namespace Ssz.Utils.DataAccess
 
         public const uint Good = 2;
 
-        public static bool IsGood(uint statusCode) => statusCode >= Good;
+        public static bool IsGood(uint valueStatusCode) => valueStatusCode >= Good;
 
     }
 }

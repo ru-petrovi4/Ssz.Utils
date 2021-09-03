@@ -112,11 +112,11 @@ namespace Ssz.DataGrpc.Client.ClientLists
         ///     </para>
         /// </summary>
         /// <returns> The result code for the operation. See DataGrpcFaultCodes class for standardized result codes. </returns>
-        public uint TouchList()
+        public void TouchList()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientListRoot.");
 
-            return _clientContext.TouchList(ListServerAlias);
+            _clientContext.TouchList(ListServerAlias);
         }
 
         /// <summary>

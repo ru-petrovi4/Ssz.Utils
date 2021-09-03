@@ -9,7 +9,7 @@ namespace Ssz.Utils.DataAccess
 
         /// <summary>
         ///     Is used to one-time read value.
-        ///     Callback is invoked when valueStatusTimestamp.StatusCode != StatusCodes.Unknown       
+        ///     Callback is invoked when valueStatusTimestamp.ValueStatusCode != StatusCodes.Unknown       
         /// </summary>
         public ReadOnceValueSubscription(IDataAccessProvider dataProvider, string id, Action<ValueStatusTimestamp>? setValueAction)
         {
@@ -39,7 +39,7 @@ namespace Ssz.Utils.DataAccess
         /// <param name="valueStatusTimestamp"></param>
         void IValueSubscription.Update(ValueStatusTimestamp valueStatusTimestamp)
         {
-            if (valueStatusTimestamp.StatusCode == StatusCodes.Unknown) return;
+            if (valueStatusTimestamp.ValueStatusCode == ValueStatusCode.Unknown) return;
 
             _dataProvider.RemoveItem(this);            
 

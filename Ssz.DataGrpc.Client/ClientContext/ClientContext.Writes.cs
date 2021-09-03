@@ -85,7 +85,7 @@ namespace Ssz.DataGrpc.Client
             }
         }
 
-        public uint Passthrough(string recipientId, string passthroughName, byte[] dataToSend, out IEnumerable<byte> returnData)
+        public void Passthrough(string recipientId, string passthroughName, byte[] dataToSend, out IEnumerable<byte> returnData)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
 
@@ -95,8 +95,7 @@ namespace Ssz.DataGrpc.Client
             {
                 var passthroughDataToSendFull = new PassthroughData();
                 passthroughDataToSendFull.Data = ByteString.CopyFrom(dataToSend);
-                returnData = new byte[0];
-                uint resultCode = 0;                
+                returnData = new byte[0];                            
                 foreach (var passthroughDataToSend in passthroughDataToSendFull.SplitForCorrectGrpcMessageSize())
                 {
                     var request = new PassthroughRequest
@@ -138,12 +137,10 @@ namespace Ssz.DataGrpc.Client
                             continue;
                         }
 
-                        returnData = returnDataTemp;
-                        resultCode = reply.ResultCode;                        
+                        returnData = returnDataTemp;                                           
                         break;
                     }
-                }                
-                return resultCode;
+                }                                
             }
             catch (Exception ex)
             {

@@ -1083,7 +1083,7 @@
         <member name="M:Ssz.Utils.DataAccess.ReadOnceValueSubscription.#ctor(Ssz.Utils.DataAccess.IDataAccessProvider,System.String,System.Action{Ssz.Utils.DataAccess.ValueStatusTimestamp})">
             <summary>
                 Is used to one-time read value.
-                Callback is invoked when valueStatusTimestamp.StatusCode != StatusCodes.Unknown       
+                Callback is invoked when valueStatusTimestamp.ValueStatusCode != StatusCodes.Unknown       
             </summary>
         </member>
         <member name="P:Ssz.Utils.DataAccess.ReadOnceValueSubscription.ModelId">

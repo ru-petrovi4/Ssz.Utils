@@ -1,4 +1,4 @@
-﻿namespace Ssz.DataGrpc.Common
+﻿namespace Ssz.Utils.DataAccess
 {
     /// <summary>
     ///     This enumeration specifies the standard types of lists.
