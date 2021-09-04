@@ -290,24 +290,19 @@ namespace Ssz.DataGrpc.Client
         /// <param name="ex"> The exception that was thrown. </param>
         private void ProcessRemoteMethodCallException(Exception ex)
         {   
-            if (ex is RpcException rpcException)
+            if (ex is RpcException)
             {
-                if (rpcException.StatusCode != StatusCode.InvalidArgument)
-                {
-                    _serverContextIsOperational = false;
+                _serverContextIsOperational = false;
 
-                    // if not a server shutdown, then throw the error message from the server
-                    //if (IsServerShutdownOrNoContextServerFault(ex as FaultException<DataGrpcFault>)) return;
-                    _pendingContextNotificationData = new ClientContextNotificationData(ClientContextNotificationType.ResourceManagementFail,
-                            ex);
-                 
-                    _logger.LogDebug(ex, "Exception. Client reconnecting..");
+                // if not a server shutdown, then throw the error message from the server
+                //if (IsServerShutdownOrNoContextServerFault(ex as FaultException<DataGrpcFault>)) return;
+                _pendingContextNotificationData = new ClientContextNotificationData(ClientContextNotificationType.ResourceManagementFail,
+                        ex);
 
-                    return;
-                }                
+                _logger.LogDebug(ex, "RpcException when server method call. Client reconnecting..");
             }
 
-            _logger.LogDebug(ex, "Exception");
+            _logger.LogDebug(ex, "Exception when server method call.");
         }
 
         private async Task ReadCallbackMessagesAsync(IAsyncStreamReader<CallbackMessage> reader)
