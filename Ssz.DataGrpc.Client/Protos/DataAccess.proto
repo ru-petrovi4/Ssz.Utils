@@ -81,7 +81,7 @@ message InitiateRequest {
   string client_application_name = 1;
   string client_workstation_name = 2;     
   uint32 requested_server_context_timeout_ms = 3;
-  uint32 requested_server_locale_id = 4;
+  string requested_server_culture_name = 4;
   string system_name_to_connect = 5; 
   map<string, string> context_params = 6;
 }
@@ -89,7 +89,7 @@ message InitiateRequest {
 message InitiateReply {
   string context_id = 1;
   uint32 server_context_timeout_ms = 2;
-  uint32 server_locale_id = 3;
+  string server_culture_name = 3;
 }
 
 message ConcludeRequest {

@@ -25,6 +25,8 @@ namespace Ssz.Utils.DataAccess
 
         CaseInsensitiveDictionary<string> ContextParams { get; }
 
+        string ContextId { get; }
+
         bool IsInitialized { get; }
 
         bool IsConnected { get; }

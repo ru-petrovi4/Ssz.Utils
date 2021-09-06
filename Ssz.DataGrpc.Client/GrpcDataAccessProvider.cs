@@ -131,7 +131,16 @@ namespace Ssz.DataGrpc.Client
                 if (!IsInitialized) throw new Exception("Not Initialized");
                 return _contextParams;
             }
-        }               
+        }
+
+        public string ContextId
+        {
+            get
+            {
+                if (!IsInitialized) throw new Exception("Not Initialized");
+                return ClientConnectionManager.ServerContextId;
+            }
+        }
 
         public GrpcChannel? GrpcChannel
         {

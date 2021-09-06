@@ -34,7 +34,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="clientApplicationName"></param>
         /// <param name="clientWorkstationName"></param>
         /// <param name="requestedServerContextTimeoutMs"></param>
-        /// <param name="requestedServerLocaleId"></param>
+        /// <param name="requestedServerCultureName"></param>
         /// <param name="systemNameToConnect"></param>
         /// <param name="contextParams"></param>
         public ClientContext(ILogger<GrpcDataAccessProvider> logger,
@@ -43,7 +43,7 @@ namespace Ssz.DataGrpc.Client
             string clientApplicationName,
             string clientWorkstationName,            
             uint requestedServerContextTimeoutMs,
-            uint requestedServerLocaleId,
+            string requestedServerCultureName,
             string systemNameToConnect,
             CaseInsensitiveDictionary<string> contextParams)
         {
@@ -58,7 +58,7 @@ namespace Ssz.DataGrpc.Client
                 ClientApplicationName = clientApplicationName,
                 ClientWorkstationName = clientWorkstationName,
                 RequestedServerContextTimeoutMs = requestedServerContextTimeoutMs,
-                RequestedServerLocaleId = requestedServerLocaleId,
+                RequestedServerCultureName = requestedServerCultureName,
             };
             initiateRequest.SystemNameToConnect = systemNameToConnect;
             initiateRequest.ContextParams.Add(contextParams);
@@ -66,7 +66,7 @@ namespace Ssz.DataGrpc.Client
             InitiateReply initiateReply = _resourceManagementClient.Initiate(initiateRequest);
             _serverContextId = initiateReply.ContextId;
             _serverContextTimeoutMs = initiateReply.ServerContextTimeoutMs;
-            _serverLocaleId = initiateReply.ServerLocaleId;
+            _serverCultureName = initiateReply.ServerCultureName;
 
             if (_serverContextId == @"") throw new Exception("Server returns empty contextId.");
 
@@ -246,9 +246,9 @@ namespace Ssz.DataGrpc.Client
         ///     This property is the Windows LocaleId (language/culture id) for the context.
         ///     Its default value is automatically set to the LocaleId of the calling client application.
         /// </summary>
-        public uint LocaleId
+        public string ServerCultureName
         {
-            get { return _serverLocaleId; }
+            get { return _serverCultureName; }
         }
 
         /// <summary>
@@ -379,7 +379,7 @@ namespace Ssz.DataGrpc.Client
         
         private readonly uint _serverContextTimeoutMs;
         
-        private readonly uint _serverLocaleId;
+        private readonly string _serverCultureName;
         
         private DateTime _resourceManagementLastCallUtc;        
         

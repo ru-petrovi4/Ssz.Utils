@@ -30,7 +30,7 @@ namespace Ssz.Utils
         /// <param name="configuration"></param>
         public static void Initialize(IConfiguration configuration)
         {            
-            SystemCultureInfo = Thread.CurrentThread.CurrentCulture;
+            SystemCultureInfo = CultureInfo.CurrentCulture;
             
             string uiCultureName = configuration["UICulture"];
             if (!String.IsNullOrWhiteSpace(uiCultureName))
@@ -39,12 +39,32 @@ namespace Ssz.Utils
                 {
                     var uiCultureInfo = new CultureInfo(uiCultureName);
                     CultureInfo.DefaultThreadCurrentUICulture = uiCultureInfo;
-                    Thread.CurrentThread.CurrentUICulture = uiCultureInfo;
+                    CultureInfo.CurrentUICulture = uiCultureInfo;
                 }
                 catch
                 {
                     //Logger.Error(ex, "App settings file error. UI Culture not found: " + uiCultureName);
                 }
+            }
+        }
+
+        /// <summary>
+        ///     Returns invariant culture for null or empty  or invalid cultureName.
+        ///     Uses Windows-user overrides, if any.
+        /// </summary>
+        /// <param name="cultureName"></param>
+        /// <returns></returns>
+        public static CultureInfo GetCultureInfo(string? cultureName)
+        {
+            if (String.IsNullOrEmpty(cultureName)) return CultureInfo.InvariantCulture;
+            try
+            {
+                return new CultureInfo(cultureName, true);
+            }
+            catch
+            {
+                //Logger.Error(ex, "Error: " + cultureName);
+                return CultureInfo.InvariantCulture;
             }
         }
 

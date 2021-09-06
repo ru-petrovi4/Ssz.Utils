@@ -11,6 +11,7 @@ using Ssz.DataGrpc.Client.Data;
 using System.Threading.Tasks;
 using Grpc.Core;
 using System.Linq;
+using System.Globalization;
 
 namespace Ssz.DataGrpc.Client.Managers
 {
@@ -142,7 +143,7 @@ namespace Ssz.DataGrpc.Client.Managers
                             clientApplicationName, 
                             clientWorkstationName,
                             (uint)requestedServerContextTimeoutMs.TotalMilliseconds,
-                            (uint)Thread.CurrentThread.CurrentCulture.LCID,
+                            CultureInfo.CurrentUICulture.Name,
                             systemNameToConnect,
                             contextParams
                             );
@@ -258,11 +259,10 @@ namespace Ssz.DataGrpc.Client.Managers
             }
         }
 
-        /// <summary>
-        ///     This property is the Windows LocaleId (language/culture id) for the context.
+        /// <summary>        
         ///     Its default value is automatically set to the LocaleId of the calling client application.
         /// </summary>
-        public uint LocaleId
+        public string ServerCultureName
         {
             get 
             {
@@ -270,7 +270,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
                 if (_connectionInfo == null) throw new ConnectionDoesNotExistException();
 
-                return _connectionInfo.ClientContext.LocaleId; 
+                return _connectionInfo.ClientContext.ServerCultureName; 
             }            
         }
 

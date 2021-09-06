@@ -117,6 +117,15 @@ namespace Ssz.Xi.Client
             }
         }
 
+        public string ContextId
+        {
+            get
+            {
+                if (!IsInitialized) throw new Exception("Not Initialized");
+                return _xiServerProxy!.ContextId;
+            }
+        }
+
         public bool IsInitialized
         {
             get { return _isInitialized; }
