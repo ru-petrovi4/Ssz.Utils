@@ -24,10 +24,16 @@ namespace Ssz.Utils
             while (actions != actions2);
         }
 
-        public void InvokeActionsInQueue(CancellationToken cancellationToken)
+        /// <summary>
+        ///     Returns Actions count
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public int InvokeActionsInQueue(CancellationToken cancellationToken)
         {
             var actions = Interlocked.Exchange(ref _actions, delegate { });
             actions.Invoke(cancellationToken);
+            return actions.GetInvocationList().Length;
         }
 
         #endregion
