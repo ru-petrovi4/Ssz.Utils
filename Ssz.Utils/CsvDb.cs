@@ -14,8 +14,8 @@ namespace Ssz.Utils
 
         /// <summary>
         ///     If csvDbDirectoryInfo == null, directory is not used.
-        ///     If !csvDbDirectoryInfo.Exists, directory is created when saving files.
-        ///     If dispatcher != null monitors fileSystem
+        ///     If !csvDbDirectoryInfo.Exists, directory is created.
+        ///     If dispatcher != null monitors csvDbDirectoryInfo
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="csvDbDirectoryInfo"></param>
@@ -26,23 +26,28 @@ namespace Ssz.Utils
             _csvDbDirectoryInfo = csvDbDirectoryInfo;
             _dispatcher = dispatcher;
 
-            if (_csvDbDirectoryInfo != null && _dispatcher != null)
-                try
-                {
-                    _fileSystemWatcher.Created += FileSystemWatcherOnEventAsync;
-                    _fileSystemWatcher.Changed += FileSystemWatcherOnEventAsync;
-                    _fileSystemWatcher.Deleted += FileSystemWatcherOnEventAsync;
-                    _fileSystemWatcher.Renamed += FileSystemWatcherOnEventAsync;
-                    _fileSystemWatcher.Path = _csvDbDirectoryInfo.FullName;
-                    _fileSystemWatcher.Filter = @"*.csv";
-                    _fileSystemWatcher.IncludeSubdirectories = false;
-                    _fileSystemWatcher.EnableRaisingEvents = true;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning(ex, "AppSettings FilesStore directory error. Please, specify correct directory and restart service.");
-                }
+            if (_csvDbDirectoryInfo != null)
+            {
+                if (!_csvDbDirectoryInfo.Exists)
+                    _csvDbDirectoryInfo.Create();
 
+                if (_dispatcher != null)
+                    try
+                    {
+                        _fileSystemWatcher.Created += FileSystemWatcherOnEventAsync;
+                        _fileSystemWatcher.Changed += FileSystemWatcherOnEventAsync;
+                        _fileSystemWatcher.Deleted += FileSystemWatcherOnEventAsync;
+                        _fileSystemWatcher.Renamed += FileSystemWatcherOnEventAsync;
+                        _fileSystemWatcher.Path = _csvDbDirectoryInfo.FullName;
+                        _fileSystemWatcher.Filter = @"*.csv";
+                        _fileSystemWatcher.IncludeSubdirectories = false;
+                        _fileSystemWatcher.EnableRaisingEvents = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "AppSettings FilesStore directory error. Please, specify correct directory and restart service.");
+                    }
+            }
 
             LoadDataInternal(_logger);
         }        
@@ -159,9 +164,7 @@ namespace Ssz.Utils
         /// </summary>
         public void SaveData()
         {
-            if (_csvDbDirectoryInfo == null) return;
-
-            if (!_csvDbDirectoryInfo.Exists) _csvDbDirectoryInfo.Create();
+            if (_csvDbDirectoryInfo == null) return;            
 
             if (_changedFileNames.Count > 0)
             {
@@ -214,7 +217,7 @@ namespace Ssz.Utils
         /// <param name="loadLogger"></param>
         private void LoadDataInternal(ILogger? loadLogger)
         {
-            if (_csvDbDirectoryInfo == null || !_csvDbDirectoryInfo.Exists) return;
+            if (_csvDbDirectoryInfo == null) return;
 
             foreach (FileInfo file in _csvDbDirectoryInfo.GetFiles(@"*.csv", SearchOption.TopDirectoryOnly))
                 try
