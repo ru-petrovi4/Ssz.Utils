@@ -56,11 +56,11 @@ namespace Ssz.Xi.Client.Internal.Lists
 
                 _endpoints.Clear();
 
-                if (!Context.ServerContextIsClosing)
+                if (!_context.ServerContextIsClosing)
                 {
                     try
                     {
-                        Context.RemoveList(this);
+                        _context.RemoveList(this);
                     }
                     catch (Exception)
                     {

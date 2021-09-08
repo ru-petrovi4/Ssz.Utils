@@ -421,9 +421,9 @@ namespace Ssz.Xi.Client
 
             Unsubscribe(true);
 
-            if (_eventListCallbackIsEnabled) _xiEventListItemsManager.EventMessagesCallback -= OnEventMessagesCallback;
             _xiServerProxy.Dispose();
             _xiServerProxy = null;
+            if (_eventListCallbackIsEnabled) _xiEventListItemsManager.EventMessagesCallback -= OnEventMessagesCallback;            
         }
 
         /// <summary>
@@ -587,12 +587,12 @@ namespace Ssz.Xi.Client
                 }
             }
 
-            _xiDataListItemsManager.Unsubscribe(clearClientSubscriptions);
-            _xiEventListItemsManager.Unsubscribe();
-            _xiDataJournalListItemsManager.Unsubscribe(clearClientSubscriptions);
-
             if (_xiServerProxy == null) throw new InvalidOperationException();
             _xiServerProxy.ConcludeXiContext();
+
+            _xiDataListItemsManager.Unsubscribe(clearClientSubscriptions);
+            _xiEventListItemsManager.Unsubscribe();
+            _xiDataJournalListItemsManager.Unsubscribe(clearClientSubscriptions);           
         }
 
         /// <summary>

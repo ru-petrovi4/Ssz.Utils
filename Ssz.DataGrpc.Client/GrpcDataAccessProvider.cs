@@ -913,11 +913,11 @@ namespace Ssz.DataGrpc.Client
                 }
             }
 
+            ClientConnectionManager.CloseConnection();
+
             ClientElementValueListManager.Unsubscribe(clearClientSubscriptions);
             ClientEventListManager.Unsubscribe();
-            ClientElementValueJournalListManager.Unsubscribe(clearClientSubscriptions);
-
-            ClientConnectionManager.CloseConnection();
+            ClientElementValueJournalListManager.Unsubscribe(clearClientSubscriptions);            
         }
 
         /// <summary>
