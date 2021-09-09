@@ -14,43 +14,34 @@ using Xi.Contracts.Data;
 
 namespace Ssz.Xi.Client
 {
-    public partial class XiDataAccessProvider : ViewModelBase, IDataAccessProvider, IDispatcher
+    public partial class XiDataAccessProvider : DisposableViewModelBase, IDataAccessProvider, IDispatcher
     {
         #region construction and destruction
-        
-        /// <summary>
-        ///     This is the implementation of the IDisposable.Dispose method.  The client
-        ///     application should invoke this method when this instance is no longer needed.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
 
         /// <summary>
         ///     This method is invoked when the IDisposable.Dispose or Finalize actions are
         ///     requested.
         /// </summary>
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
+            if (Disposed) return;
+
             if (disposing)
             {
                 Close();
             }
 
-            Disposed = true;
+            base.Dispose(disposing);
         }
 
-        /// <summary>
-        ///     Invoked by the .NET Framework while doing heap managment (Finalize).
-        /// </summary>
-        ~XiDataAccessProvider()
+        protected override async ValueTask DisposeAsyncCore()
         {
-            Dispose(false);
-        }
+            if (Disposed) return;
 
-        public bool Disposed { get; private set; }
+            await CloseAsync();
+
+            await base.DisposeAsyncCore();
+        }        
 
         #endregion
 
@@ -144,7 +135,7 @@ namespace Ssz.Xi.Client
             private set { SetValue(ref _isDisconnected, value); }
         }
 
-        public EventWaitHandle IsConnectedEventWaitHandle => _isConnectedEventWaitHandle;        
+        public EventWaitHandle IsConnectedEventWaitHandle => _isConnectedEventWaitHandle;
 
         public DateTime LastFailedConnectionDateTimeUtc => _lastFailedConnectionDateTimeUtc;
 
@@ -198,14 +189,20 @@ namespace Ssz.Xi.Client
 
             _cancellationTokenSource = new CancellationTokenSource();
 
-            _workingTask = Task.Run(async () =>
+            var previousWorkingTask = _workingTask;
+            _workingTask = Task.Factory.StartNew(() =>
             {
-                await WorkingTaskMain(_cancellationTokenSource.Token);
-            });
+                if (previousWorkingTask != null)
+                    previousWorkingTask.Wait();
+                WorkingTaskMainAsync(_cancellationTokenSource.Token).Wait();
+            }, TaskCreationOptions.LongRunning);
 
             IsInitialized = true;
-        }        
+        }
 
+        /// <summary>
+        ///     Tou can call Dispose() instead of this method.
+        /// </summary>
         public void Close()
         {
             if (!IsInitialized) return;
@@ -220,8 +217,17 @@ namespace Ssz.Xi.Client
                 _cancellationTokenSource.Cancel();
                 _cancellationTokenSource = null;
             }
+        }
 
-            if (_workingTask != null) _workingTask.Wait(30000);
+        /// <summary>
+        ///     Tou can call DisposeAsync() instead of this method.
+        /// </summary>
+        public async Task CloseAsync()
+        {
+            Close();
+
+            if (_workingTask != null)
+                await _workingTask;
         }
 
         /// <summary>
@@ -402,7 +408,7 @@ namespace Ssz.Xi.Client
 
         #region private functions
 
-        private async Task WorkingTaskMain(CancellationToken ct)
+        private async Task WorkingTaskMainAsync(CancellationToken ct)
         {
             _xiServerProxy = new XiServerProxy();
 
@@ -423,7 +429,7 @@ namespace Ssz.Xi.Client
 
             _xiServerProxy.Dispose();
             _xiServerProxy = null;
-            if (_eventListCallbackIsEnabled) _xiEventListItemsManager.EventMessagesCallback -= OnEventMessagesCallback;            
+            if (_eventListCallbackIsEnabled) _xiEventListItemsManager.EventMessagesCallback -= OnEventMessagesCallback;
         }
 
         /// <summary>
@@ -592,7 +598,7 @@ namespace Ssz.Xi.Client
 
             _xiDataListItemsManager.Unsubscribe(clearClientSubscriptions);
             _xiEventListItemsManager.Unsubscribe();
-            _xiDataJournalListItemsManager.Unsubscribe(clearClientSubscriptions);           
+            _xiDataJournalListItemsManager.Unsubscribe(clearClientSubscriptions);
         }
 
         /// <summary>

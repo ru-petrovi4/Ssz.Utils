@@ -1,12 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace Ssz.Utils
 {
     /// <summary>
     /// 
     /// </summary>
-    public class DisposableViewModelBase : ViewModelBase, IDisposable
+    public class DisposableViewModelBase : ViewModelBase, IDisposable, IAsyncDisposable
     {
         #region construction and destruction
 
@@ -16,8 +17,20 @@ namespace Ssz.Utils
         /// </summary>
         public void Dispose()
         {
-            Dispose(true);
+            Dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+        
+        public async ValueTask DisposeAsync()
+        {
+            if (Disposed) return;
+
+            await DisposeAsyncCore();
+
+            Dispose(disposing: false);
+#pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
+            GC.SuppressFinalize(this);
+#pragma warning restore CA1816 // Dispose methods should call SuppressFinalize
         }
 
         /// <summary>
@@ -26,6 +39,8 @@ namespace Ssz.Utils
         /// </summary>
         protected virtual void Dispose(bool disposing)
         {
+            if (Disposed) return;
+
             if (disposing)
             {
                 ClearPropertyChangedEvent();
@@ -34,12 +49,19 @@ namespace Ssz.Utils
             Disposed = true;
         }
 
+        protected virtual ValueTask DisposeAsyncCore()
+        {
+            ClearPropertyChangedEvent();
+
+            return ValueTask.CompletedTask;
+        }
+
         /// <summary>
         ///     Invoked by the .NET Framework while doing heap managment (Finalize).
         /// </summary>
         ~DisposableViewModelBase()
         {
-            Dispose(false);
+            Dispose(disposing: false);
         }
 
         /// <summary>

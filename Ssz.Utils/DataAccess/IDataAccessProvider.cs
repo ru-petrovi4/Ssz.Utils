@@ -13,7 +13,7 @@ namespace Ssz.Utils.DataAccess
     /// <summary>
     ///     Must notify changes in IsInitialized, IsConnected and IsDisconnected properties.
     /// </summary>
-    public interface IDataAccessProvider: INotifyPropertyChanged, IDisposable
+    public interface IDataAccessProvider: INotifyPropertyChanged, IDisposable, IAsyncDisposable
     {
         string ServerAddress { get; }
 
@@ -65,8 +65,16 @@ namespace Ssz.Utils.DataAccess
         /// </summary>
         public void ReInitialize();
 
+        /// <summary>
+        ///     Tou can call Dispose() instead of this method.
+        /// </summary>
         void Close();
-        
+
+        /// <summary>
+        ///     Tou can call DisposeAsync() instead of this method.
+        /// </summary>
+        Task CloseAsync();
+
         string AddItem(string elementId, IValueSubscription valueSubscription);
         
         void RemoveItem(IValueSubscription valueSubscription);

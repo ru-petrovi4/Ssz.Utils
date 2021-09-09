@@ -79,10 +79,10 @@ namespace Ssz.DataGrpc.Client
 
             _serverContextIsOperational = true;
 
-            Task.Run(async () =>
+            Task.Factory.StartNew(() =>
             {
-                await ReadCallbackMessagesAsync(_callbackMessageStream.ResponseStream);
-            });
+                ReadCallbackMessagesAsync(_callbackMessageStream.ResponseStream, _cancellationTokenSource.Token).Wait();
+            }, TaskCreationOptions.LongRunning);
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace Ssz.DataGrpc.Client
 
             if (disposing)
             {
-                _callbackMessageStream?.Dispose();
+                _cancellationTokenSource.Cancel();                                    
 
                 if (_serverContextIsOperational)
                 {
@@ -139,7 +139,7 @@ namespace Ssz.DataGrpc.Client
                     {
                     }
                 }
-            }        
+            }
 
             _disposed = true;
         }
@@ -292,6 +292,8 @@ namespace Ssz.DataGrpc.Client
         {   
             if (ex is RpcException)
             {
+                if (!_serverContextIsOperational) return;
+
                 _serverContextIsOperational = false;
 
                 // if not a server shutdown, then throw the error message from the server
@@ -305,15 +307,15 @@ namespace Ssz.DataGrpc.Client
             _logger.LogDebug(ex, "Exception when server method call.");
         }
 
-        private async Task ReadCallbackMessagesAsync(IAsyncStreamReader<CallbackMessage> reader)
+        private async Task ReadCallbackMessagesAsync(IAsyncStreamReader<CallbackMessage> reader, CancellationToken cancellationToken)
         {
             while (true)
             {
-                if (!_serverContextIsOperational) return;
+                if (!_serverContextIsOperational || cancellationToken.IsCancellationRequested) return;
 
                 try
                 {
-                    if (!await reader.MoveNext()) return;
+                    if (!await reader.MoveNext(cancellationToken)) return;
                 }
                 //catch (RpcException e) when (e.StatusCode == StatusCode.NotFound)
                 //{
@@ -328,9 +330,12 @@ namespace Ssz.DataGrpc.Client
                     return;
                 }
 
+                if (!_serverContextIsOperational || cancellationToken.IsCancellationRequested) return;
+
                 CallbackMessage current = reader.Current;
                 _callbackDispatcher.BeginInvoke(ct =>
                 {
+                    if (ct.IsCancellationRequested) return;
                     try
                     {
                         switch (current.OptionalMessageCase)
@@ -368,6 +373,8 @@ namespace Ssz.DataGrpc.Client
         private ILogger<GrpcDataAccessProvider> _logger;
 
         private IDispatcher _callbackDispatcher;
+
+        private readonly CancellationTokenSource _cancellationTokenSource = new();
 
         private DataAccess.DataAccessClient _resourceManagementClient;
         

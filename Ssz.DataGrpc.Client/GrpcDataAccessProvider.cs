@@ -17,7 +17,7 @@ using Grpc.Core;
 
 namespace Ssz.DataGrpc.Client
 {
-    public partial class GrpcDataAccessProvider : ViewModelBase, IDataAccessProvider, IDispatcher
+    public partial class GrpcDataAccessProvider : DisposableViewModelBase, IDataAccessProvider, IDispatcher
     {
         #region construction and destruction
 
@@ -29,42 +29,33 @@ namespace Ssz.DataGrpc.Client
 
             ClientElementValueListManager = new ClientElementValueListManager(logger);
             ClientElementValueJournalListManager = new ClientElementValueJournalListManager(logger);
-            ClientEventListManager = new ClientEventListManager(logger);
-        }
-
-        /// <summary>
-        ///     This is the implementation of the IDisposable.Dispose method.  The client
-        ///     application should invoke this method when this instance is no longer needed.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            ClientEventListManager = new ClientEventListManager(logger);            
         }
 
         /// <summary>
         ///     This method is invoked when the IDisposable.Dispose or Finalize actions are
         ///     requested.
         /// </summary>
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
+            if (Disposed) return;
+
             if (disposing)
-            {
+            { 
                 Close();
             }
 
-            Disposed = true;
+            base.Dispose(disposing);
         }
 
-        /// <summary>
-        ///     Invoked by the .NET Framework while doing heap managment (Finalize).
-        /// </summary>
-        ~GrpcDataAccessProvider()
+        protected override async ValueTask DisposeAsyncCore()
         {
-            Dispose(false);
-        }
+            if (Disposed) return;
 
-        public bool Disposed { get; private set; }
+            await CloseAsync();
+
+            await base.DisposeAsyncCore();
+        }
 
         #endregion
 
@@ -165,7 +156,7 @@ namespace Ssz.DataGrpc.Client
             private set { SetValue(ref _isDisconnected, value); }
         }
 
-        public EventWaitHandle IsConnectedEventWaitHandle => _isConnectedEventWaitHandle;        
+        public EventWaitHandle IsConnectedEventWaitHandle => _isConnectedEventWaitHandle;
 
         public DateTime LastFailedConnectionDateTimeUtc => _lastFailedConnectionDateTimeUtc;
 
@@ -267,16 +258,22 @@ namespace Ssz.DataGrpc.Client
                 }
             }
 
-            _cancellationTokenSource = new CancellationTokenSource();            
+            _cancellationTokenSource = new CancellationTokenSource();
 
-            _workingTask = Task.Run(async () =>
+            var previousWorkingTask = _workingTask;
+            _workingTask = Task.Factory.StartNew(() =>
             {
-                await WorkingTaskMain(_cancellationTokenSource.Token);
-            });
+                if (previousWorkingTask != null)
+                    previousWorkingTask.Wait();
+                WorkingTaskMainAsync(_cancellationTokenSource.Token).Wait();
+            }, TaskCreationOptions.LongRunning);
 
             IsInitialized = true;
         }
 
+        /// <summary>
+        ///     Tou can call Dispose() instead of this method.
+        /// </summary>
         public virtual void Close()
         {
             if (!IsInitialized) return;
@@ -292,8 +289,17 @@ namespace Ssz.DataGrpc.Client
                 _cancellationTokenSource.Cancel();
                 _cancellationTokenSource = null;
             }
+        }
 
-            if (_workingTask != null) _workingTask.Wait(30000);
+        /// <summary>
+        ///     Tou can call DisposeAsync() instead of this method.
+        /// </summary>
+        public async Task CloseAsync()
+        {
+            Close();
+
+            if (_workingTask != null)
+                await _workingTask;
         }
 
         /// <summary>
@@ -878,7 +884,7 @@ namespace Ssz.DataGrpc.Client
                 try
                 {
                     if (cancellationToken.IsCancellationRequested) return;
-                    ClientConnectionManager.Process(cancellationToken, nowUtc);
+                    ClientConnectionManager.DoWork(cancellationToken, nowUtc);
                 }
                 catch
                 {
@@ -981,7 +987,7 @@ namespace Ssz.DataGrpc.Client
 
         #region private functions
 
-        private async Task WorkingTaskMain(CancellationToken ct)
+        private async Task WorkingTaskMainAsync(CancellationToken ct)
         {
             if (_eventListCallbackIsEnabled) ClientEventListManager.EventMessagesCallback += OnEventMessagesCallbackInternal;
 
@@ -998,7 +1004,7 @@ namespace Ssz.DataGrpc.Client
 
             Unsubscribe(true);
 
-            if (_eventListCallbackIsEnabled) ClientEventListManager.EventMessagesCallback -= OnEventMessagesCallbackInternal; 
+            if (_eventListCallbackIsEnabled) ClientEventListManager.EventMessagesCallback -= OnEventMessagesCallbackInternal;
         }
 
         #endregion

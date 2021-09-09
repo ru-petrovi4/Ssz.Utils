@@ -295,7 +295,7 @@ namespace Ssz.DataGrpc.Client.Managers
             }
         }
         
-        public void Process(CancellationToken ct, DateTime nowUtc)
+        public void DoWork(CancellationToken ct, DateTime nowUtc)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataGrpcServerProxy.");
 
