@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Google.Protobuf;
+using Grpc.Core;
 using Ssz.DataGrpc.Client.Data;
 using Ssz.DataGrpc.Server;
 using Ssz.Utils;
@@ -149,11 +151,45 @@ namespace Ssz.DataGrpc.Client
             }            
         }
 
+        public async Task<StatusCode> CommandAsync(string recipientId, string commandName, string commandParams)
+        {
+            if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
+
+            if (!ServerContextIsOperational) throw new InvalidOperationException();
+
+            try
+            {
+                string callId = Guid.NewGuid().ToString();
+                var request = new CommandRequest
+                {
+                    CallId = callId,
+                    ContextId = _serverContextId,
+                    RecipientId = recipientId,
+                    CommandName = commandName,
+                    CommandParams = commandParams
+                };
+                var taskCompletionSource = new TaskCompletionSource<StatusCode>();
+                lock (_incompleteCommandCallsCollection)
+                {
+                    _incompleteCommandCallsCollection.Add(callId, taskCompletionSource);
+                }
+                CommandReply reply = await _resourceManagementClient.CommandAsync(request);
+                return await taskCompletionSource.Task;
+            }
+            catch (Exception ex)
+            {
+                ProcessRemoteMethodCallException(ex);
+                throw;
+            }
+        }
+
         #endregion
 
         #region private fields
-        
-        private CaseInsensitiveDictionary<IEnumerable<byte>> _incompletePassthroughRepliesCollection = new CaseInsensitiveDictionary<IEnumerable<byte>>();
+
+        private readonly CaseInsensitiveDictionary<IEnumerable<byte>> _incompletePassthroughRepliesCollection = new();
+
+        private readonly Dictionary<string, TaskCompletionSource<StatusCode>> _incompleteCommandCallsCollection = new();
 
         #endregion        
     }

@@ -243,6 +243,16 @@ namespace Ssz.DataGrpc.Client.Managers
                                       passthroughName, dataToSend, out returnData);
         }
 
+        public async Task<StatusCode> CommandAsync(string recipientId, string commandName, string commandParams)
+        {
+            if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataGrpcServerProxy.");
+
+            if (_connectionInfo == null) throw new ConnectionDoesNotExistException();
+
+            return await _connectionInfo.ClientContext.CommandAsync(recipientId,
+                                      commandName, commandParams);
+        }
+
         /// <summary>
         ///     This property specifies how long the context will stay alive in the server after a WCF
         ///     connection failure. The ClientBase will attempt reconnection during this period.

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Ssz.Utils;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xi.Contracts;
 using Xi.Contracts.Data;
 
@@ -125,6 +127,43 @@ namespace Ssz.Xi.Client.Internal.Context
 
             return passthroughResult;
         }
+
+        public async Task<bool> CommandAsync(string recipientId, string commandName, string commandParams)
+        {
+            if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
+
+            if (_writeEndpoint == null) throw new Exception("No Write Endpoint");
+
+            if (_writeEndpoint.Disposed) return false;
+
+            string contextId = ContextId;
+
+            _writeEndpoint.LastCallUtc = DateTime.UtcNow;
+
+            int invokeId;
+            var taskCompletionSource = new TaskCompletionSource<bool>();
+            lock (_incompleteCommandCallsCollection)
+            {
+                invokeId = (int)_incompleteCommandCallsCollection.Add(taskCompletionSource);
+            }
+            try
+            {
+                PassthroughResult? passthroughResult = _writeEndpoint.Proxy.Passthrough(contextId, recipientId, invokeId,
+                                      commandName, System.Text.Encoding.UTF8.GetBytes(commandParams));
+                return await taskCompletionSource.Task;
+            }
+            catch (Exception ex)
+            {
+                ProcessRemoteMethodCallException(ex);
+                throw;
+            }            
+        }
+
+        #endregion
+
+        #region private fields
+
+        private readonly ObjectManager<TaskCompletionSource<bool>> _incompleteCommandCallsCollection = new(256);
 
         #endregion
     }

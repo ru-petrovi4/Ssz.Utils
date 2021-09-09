@@ -5,6 +5,8 @@ using Ssz.DataGrpc.Server;
 using Ssz.DataGrpc.Client.ClientListItems;
 using Ssz.Utils.DataAccess;
 using System.Linq;
+using System.Threading.Tasks;
+using Grpc.Core;
 
 namespace Ssz.DataGrpc.Client
 {
@@ -121,6 +123,18 @@ namespace Ssz.DataGrpc.Client
                 eventList.RaiseEventMessagesCallbackEvent(newEventListItems);
             }
             return newEventListItems;
+        }
+
+        private void CommandCallback(string callId, StatusCode statusCode)
+        {
+            lock (_incompleteCommandCallsCollection)
+            {
+                if (_incompleteCommandCallsCollection.TryGetValue(callId, out TaskCompletionSource<StatusCode>? taskCompletionSource))
+                {
+                    taskCompletionSource.SetResult(statusCode);
+                    _incompleteCommandCallsCollection.Remove(callId);
+                }
+            }
         }
 
         #endregion

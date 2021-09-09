@@ -5,6 +5,7 @@ using System.ServiceModel.Description;
 using System.ServiceModel.Security;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Ssz.Utils;
 using Ssz.Xi.Client.Api.Lists;
 using Ssz.Xi.Client.Internal;
@@ -462,6 +463,16 @@ namespace Ssz.Xi.Client.Api
             _context.OpenEndpointForContract(typeof(IWrite).Name);
             return _context.Passthrough(recipientId, invokeId,
                                       passthroughName, dataToSend);
+        }
+
+        public async Task<bool> CommandAsync(string recipientId, string commandName, string commandParams)
+        {
+            if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
+
+            if (_context == null) throw new XiServerNotExistException();
+
+            _context.OpenEndpointForContract(typeof(IWrite).Name);
+            return await _context.CommandAsync(recipientId, commandName, commandParams);
         }
 
         /// <summary>

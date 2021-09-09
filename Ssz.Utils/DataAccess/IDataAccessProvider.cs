@@ -101,6 +101,27 @@ namespace Ssz.Utils.DataAccess
         void Passthrough(string recipientId, string passthroughName, byte[] dataToSend,
             Action<IEnumerable<byte>?> setResultAction);
 
+        /// <summary>
+        ///     Returns null if any errors.
+        /// </summary>
+        /// <param name="recipientId"></param>
+        /// <param name="passthroughName"></param>
+        /// <param name="dataToSend"></param>
+        /// <returns></returns>
+        Task<IEnumerable<byte>?> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend);
+
+        /// <summary>
+        ///     Returns true, if succeeded.
+        /// </summary>
+        /// <param name="recipientId"></param>
+        /// <param name="commandName"></param>
+        /// <param name="commandParams"></param>
+        /// <param name="setResultAction"></param>
+        void Command(string recipientId, string commandName, string commandParams,
+            Action<bool> setResultAction);
+
+        Task<bool> CommandAsync(string recipientId, string commandName, string commandParams);
+
         void JournalAddItem(string elementId, object valueJournalSubscription);
 
         void JournalRemoveItem(object valueJournalSubscription);

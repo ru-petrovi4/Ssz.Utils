@@ -41,7 +41,7 @@ namespace Ssz.Xi.Client
             await CloseAsync();
 
             await base.DisposeAsyncCore();
-        }        
+        }
 
         #endregion
 
@@ -393,6 +393,96 @@ namespace Ssz.Xi.Client
                     }
                 }
             });
+        }
+
+        /// <summary>
+        ///     Returns null if any errors.
+        /// </summary>
+        /// <param name="recipientId"></param>
+        /// <param name="passthroughName"></param>
+        /// <param name="dataToSend"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<byte>?> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
+        {
+            var taskCompletionSource = new TaskCompletionSource<IEnumerable<byte>?>();
+            BeginInvoke(ct =>
+            {
+                byte[]? result;
+                try
+                {
+                    if (_xiServerProxy == null) throw new InvalidOperationException();
+                    PassthroughResult? passthroughResult = _xiServerProxy.Passthrough(recipientId, 0, passthroughName,
+                        dataToSend);
+                    if (passthroughResult != null && passthroughResult.ResultCode == 0) // SUCCESS
+                    {
+                        result = passthroughResult.ReturnData;
+                    }
+                    else
+                    {
+                        result = null;
+                    }
+                }
+                catch (Exception)
+                {
+                    result = null;
+                }
+
+                taskCompletionSource.SetResult(result);
+            });
+            return await taskCompletionSource.Task;
+        }
+
+        public void Command(string recipientId, string commandName, string commandParams,
+            Action<bool> setResultAction)
+        {
+            BeginInvoke(async ct =>
+            {
+                bool result;
+                try
+                {
+                    if (_xiServerProxy == null) throw new InvalidOperationException();
+                    result = await _xiServerProxy.CommandAsync(recipientId, commandName,
+                        commandParams);                    
+                }
+                catch
+                {
+                    result = false;
+                }
+
+                IDispatcher? сallbackDoer = _callbackDispatcher;
+                if (сallbackDoer != null)
+                {
+                    try
+                    {
+                        сallbackDoer.BeginInvoke(ct => setResultAction(result));
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+            });
+        }
+
+        public async Task<bool> CommandAsync(string recipientId, string commandName, string commandParams)
+        {
+            var taskCompletionSource = new TaskCompletionSource<bool>();
+            BeginInvoke(async ct =>
+            {
+                bool result;
+                try
+                {
+                    if (_xiServerProxy == null) throw new InvalidOperationException();
+                    result = await _xiServerProxy.CommandAsync(recipientId, commandName,
+                        commandParams);
+                }
+                catch
+                {
+                    result = false;
+                }
+
+                taskCompletionSource.SetResult(result);
+            });
+            return await taskCompletionSource.Task;
         }
 
         /// <summary>

@@ -29,7 +29,7 @@ namespace Ssz.DataGrpc.Client
 
             ClientElementValueListManager = new ClientElementValueListManager(logger);
             ClientElementValueJournalListManager = new ClientElementValueJournalListManager(logger);
-            ClientEventListManager = new ClientEventListManager(logger);            
+            ClientEventListManager = new ClientEventListManager(logger);
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Ssz.DataGrpc.Client
             if (Disposed) return;
 
             if (disposing)
-            { 
+            {
                 Close();
             }
 
@@ -137,7 +137,7 @@ namespace Ssz.DataGrpc.Client
         {
             get { return ClientConnectionManager.GrpcChannel; }
         }
-        
+
         public bool IsInitialized
         {
             get { return _isInitialized; }
@@ -195,7 +195,7 @@ namespace Ssz.DataGrpc.Client
             string serverAddress,
             string clientApplicationName, string clientWorkstationName, string systemNameToConnect, CaseInsensitiveDictionary<string> contextParams)
         {
-            Close();            
+            Close();
 
             Logger.LogDebug("Starting ModelDataProvider. сallbackDispatcher != null " + (callbackDispatcher != null).ToString());
 
@@ -203,8 +203,8 @@ namespace Ssz.DataGrpc.Client
             ElementIdsMap = elementIdsMap;
             _elementValueListCallbackIsEnabled = elementValueListCallbackIsEnabled;
             _eventListCallbackIsEnabled = eventListCallbackIsEnabled;
-            _serverAddress = serverAddress;            
-            _clientApplicationName = clientApplicationName;            
+            _serverAddress = serverAddress;
+            _clientApplicationName = clientApplicationName;
             _clientWorkstationName = clientWorkstationName;
             _systemNameToConnect = systemNameToConnect;
             _contextParams = contextParams;
@@ -481,7 +481,7 @@ namespace Ssz.DataGrpc.Client
                 });
 
                 return elementId;
-            }            
+            }
         }
 
         /// <summary>        
@@ -520,8 +520,8 @@ namespace Ssz.DataGrpc.Client
                 {
                     foreach (var childValueSubscription in valueSubscriptionObj.ChildValueSubscriptionsList)
                     {
-                        if (!childValueSubscription.IsConst) 
-                            ClientElementValueListManager.RemoveItem(childValueSubscription);                        
+                        if (!childValueSubscription.IsConst)
+                            ClientElementValueListManager.RemoveItem(childValueSubscription);
                         childValueSubscription.Obj = null;
                     }
 
@@ -541,7 +541,7 @@ namespace Ssz.DataGrpc.Client
         public void PollElementValuesChanges(Action<IValueSubscription[]?> setResultAction)
         {
             BeginInvoke(ct =>
-            {                
+            {
                 ClientElementValueListManager.Subscribe(ClientConnectionManager, CallbackDispatcher,
                     OnElementValuesCallback, true, ct);
                 object[]? changedValueSubscriptions = ClientElementValueListManager.PollChanges();
@@ -555,7 +555,7 @@ namespace Ssz.DataGrpc.Client
                     catch (Exception)
                     {
                     }
-                }                
+                }
             }
             );
         }
@@ -569,9 +569,9 @@ namespace Ssz.DataGrpc.Client
         public virtual void Write(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps, Action<IValueSubscription[]>? setResultAction)
         {
             BeginInvoke(ct =>
-            {                
+            {
                 ClientElementValueListManager.Subscribe(ClientConnectionManager, CallbackDispatcher,
-                    OnElementValuesCallback, true, ct);                
+                    OnElementValuesCallback, true, ct);
                 object[] failedValueSubscriptions = ClientElementValueListManager.Write(valueSubscriptions, valueStatusTimestamps);
 
                 if (setResultAction != null)
@@ -708,31 +708,34 @@ namespace Ssz.DataGrpc.Client
         }
 
         /// <summary>        
-        ///     setResultAction(..) is called using сallbackDispatcher, see Initialize(..).
-        ///     If call to server failed (exception or passthroughResult.ResultCode != 0), setResultAction(null) is called.        
+        ///     Returns null if any errors.
         /// </summary>
+        /// <param name="recipientId"></param>
+        /// <param name="passthroughName"></param>
+        /// <param name="dataToSend"></param>
+        /// <param name="setResultAction"></param>
         public void Passthrough(string recipientId, string passthroughName, byte[] dataToSend,
             Action<IEnumerable<byte>?> setResultAction)
         {
             BeginInvoke(ct =>
             {
-                IEnumerable<byte>? result;                
+                IEnumerable<byte>? result;
                 try
                 {
                     IEnumerable<byte> returnData;
                     ClientConnectionManager.Passthrough(recipientId, passthroughName,
                         dataToSend, out returnData);
-                    result = returnData;                    
+                    result = returnData;
                 }
                 catch (RpcException ex)
                 {
                     Logger.LogError(ex, ex.Status.Detail);
-                    result = null;                    
+                    result = null;
                 }
                 catch (Exception ex)
                 {
                     Logger.LogError(ex, "Passthrough exception.");
-                    result = null;                    
+                    result = null;
                 }
 
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
@@ -746,8 +749,108 @@ namespace Ssz.DataGrpc.Client
                     {
                     }
                 }
-            }
-            );
+            });
+        }
+
+        /// <summary>
+        ///     Returns null if any errors.
+        /// </summary>
+        /// <param name="recipientId"></param>
+        /// <param name="passthroughName"></param>
+        /// <param name="dataToSend"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<byte>?> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
+        {
+            var taskCompletionSource = new TaskCompletionSource<IEnumerable<byte>?>();
+            BeginInvoke(ct =>
+            {
+                IEnumerable<byte>? result;
+                try
+                {
+                    IEnumerable<byte> returnData;
+                    ClientConnectionManager.Passthrough(recipientId, passthroughName,
+                        dataToSend, out returnData);
+                    result = returnData;
+                }
+                catch (RpcException ex)
+                {
+                    Logger.LogError(ex, ex.Status.Detail);
+                    result = null;
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "Passthrough exception.");
+                    result = null;
+                }
+
+                taskCompletionSource.SetResult(result);
+            });
+            return await taskCompletionSource.Task;
+        }
+
+        public void Command(string recipientId, string commandName, string commandParams,
+            Action<bool> setResultAction)
+        {
+            BeginInvoke(async ct =>
+            {
+                bool result;
+                try
+                {                    
+                    StatusCode statusCode = await ClientConnectionManager.CommandAsync(recipientId, commandName,
+                        commandParams);
+                    result = statusCode == StatusCode.OK;
+                }
+                catch (RpcException ex)
+                {
+                    Logger.LogError(ex, ex.Status.Detail);
+                    result = false;
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "Passthrough exception.");
+                    result = false;
+                }
+
+                IDispatcher? сallbackDispatcher = CallbackDispatcher;
+                if (сallbackDispatcher != null)
+                {
+                    try
+                    {
+                        сallbackDispatcher.BeginInvoke(ct => setResultAction(result));
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+            });
+        }
+
+        public async Task<bool> CommandAsync(string recipientId, string commandName, string commandParams)
+        {
+            var taskCompletionSource = new TaskCompletionSource<bool>();
+            BeginInvoke(async ct =>
+            {
+                bool result;
+                try
+                {
+                    StatusCode statusCode = await ClientConnectionManager.CommandAsync(recipientId, commandName,
+                        commandParams);
+                    result = statusCode == StatusCode.OK;
+                }
+                catch (RpcException ex)
+                {
+                    Logger.LogError(ex, ex.Status.Detail);
+                    result = false;
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "Passthrough exception.");
+                    result = false;
+                }
+
+                taskCompletionSource.SetResult(result);
+            });
+            return await taskCompletionSource.Task;
         }
 
         /// <summary>

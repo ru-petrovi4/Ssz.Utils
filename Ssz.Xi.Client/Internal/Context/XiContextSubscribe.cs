@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Ssz.Utils.DataAccess;
 using Ssz.Xi.Client.Api;
 using Ssz.Xi.Client.Api.ListItems;
@@ -243,7 +244,14 @@ namespace Ssz.Xi.Client.Internal.Context
         /// </param>
         public void PassthroughCallback(int invokeId, PassthroughResult passthroughResult)
         {
-            // TODO: Add code if the PassthroughCallback method is supported
+            lock (_incompleteCommandCallsCollection)
+            {
+                if (_incompleteCommandCallsCollection.TryGetValue((uint)invokeId, out TaskCompletionSource<bool>? taskCompletionSource))
+                {
+                    taskCompletionSource.SetResult(true);
+                    _incompleteCommandCallsCollection.Remove((uint)invokeId);
+                }
+            }
         }
 
         #endregion

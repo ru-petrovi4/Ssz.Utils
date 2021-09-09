@@ -354,6 +354,10 @@ namespace Ssz.DataGrpc.Client
                                 ClientEventList eventList = GetEventList(eventMessagesCallback.ListClientAlias);
                                 EventMessagesCallback(eventList, eventMessagesCallback.EventMessagesCollection);
                                 break;
+                            case CallbackMessage.OptionalMessageOneofCase.CommandCallback:
+                                CommandCallback commandCallback = current.CommandCallback;
+                                CommandCallback(commandCallback.CallId, (StatusCode)commandCallback.StatusCode);
+                                break;
                         }
                     }
                     catch (Exception ex)
@@ -362,7 +366,7 @@ namespace Ssz.DataGrpc.Client
                     }
                 });
             }
-        }
+        }        
 
         #endregion
 
