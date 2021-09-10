@@ -151,7 +151,7 @@ namespace Ssz.DataGrpc.Client
             }            
         }
 
-        public async Task<StatusCode> CommandAsync(string recipientId, string commandName, string commandParams)
+        public async Task<StatusCode> LongrunningPassthroughAsync(string recipientId, string passthroughName, string dataToSend)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
 
@@ -159,21 +159,21 @@ namespace Ssz.DataGrpc.Client
 
             try
             {
-                string callId = Guid.NewGuid().ToString();
-                var request = new CommandRequest
+                string invokeId = Guid.NewGuid().ToString();
+                var request = new LongrunningPassthroughRequest
                 {
-                    CallId = callId,
+                    InvokeId = invokeId,
                     ContextId = _serverContextId,
                     RecipientId = recipientId,
-                    CommandName = commandName,
-                    CommandParams = commandParams
+                    PassthroughName = passthroughName,
+                    DataToSend = dataToSend
                 };
                 var taskCompletionSource = new TaskCompletionSource<StatusCode>();
                 lock (_incompleteCommandCallsCollection)
                 {
-                    _incompleteCommandCallsCollection.Add(callId, taskCompletionSource);
+                    _incompleteCommandCallsCollection.Add(invokeId, taskCompletionSource);
                 }
-                CommandReply reply = await _resourceManagementClient.CommandAsync(request);
+                LongrunningPassthroughReply reply = await _resourceManagementClient.LongrunningPassthroughAsync(request);
                 return await taskCompletionSource.Task;
             }
             catch (Exception ex)
@@ -189,6 +189,9 @@ namespace Ssz.DataGrpc.Client
 
         private readonly CaseInsensitiveDictionary<IEnumerable<byte>> _incompletePassthroughRepliesCollection = new();
 
+        /// <summary>
+        ///     [InvokeId, TaskCompletionSource]
+        /// </summary>
         private readonly Dictionary<string, TaskCompletionSource<StatusCode>> _incompleteCommandCallsCollection = new();
 
         #endregion        

@@ -243,14 +243,14 @@ namespace Ssz.DataGrpc.Client.Managers
                                       passthroughName, dataToSend, out returnData);
         }
 
-        public async Task<StatusCode> CommandAsync(string recipientId, string commandName, string commandParams)
+        public async Task<StatusCode> LongrunningPassthroughAsync(string recipientId, string passthroughName, string dataToSend)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataGrpcServerProxy.");
 
             if (_connectionInfo == null) throw new ConnectionDoesNotExistException();
 
-            return await _connectionInfo.ClientContext.CommandAsync(recipientId,
-                                      commandName, commandParams);
+            return await _connectionInfo.ClientContext.LongrunningPassthroughAsync(recipientId,
+                                      passthroughName, dataToSend);
         }
 
         /// <summary>

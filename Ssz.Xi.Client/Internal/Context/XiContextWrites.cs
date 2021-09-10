@@ -100,7 +100,7 @@ namespace Ssz.Xi.Client.Internal.Context
             return listAliasResult;
         }
 
-        public PassthroughResult? Passthrough(string recipientId, int invokeId,
+        public PassthroughResult? Passthrough(string recipientId,
                                       string passthroughName, byte[] dataToSend)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
@@ -117,7 +117,7 @@ namespace Ssz.Xi.Client.Internal.Context
 
             try
             {
-                passthroughResult = _writeEndpoint.Proxy.Passthrough(contextId, recipientId, invokeId,
+                passthroughResult = _writeEndpoint.Proxy.Passthrough(contextId, recipientId, 0,
                                       passthroughName, dataToSend);
             }
             catch (Exception ex)
@@ -128,7 +128,7 @@ namespace Ssz.Xi.Client.Internal.Context
             return passthroughResult;
         }
 
-        public async Task<bool> CommandAsync(string recipientId, string commandName, string commandParams)
+        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, string dataToSend)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
@@ -149,7 +149,7 @@ namespace Ssz.Xi.Client.Internal.Context
             try
             {
                 PassthroughResult? passthroughResult = _writeEndpoint.Proxy.Passthrough(contextId, recipientId, invokeId,
-                                      commandName, System.Text.Encoding.UTF8.GetBytes(commandParams));
+                                      passthroughName, System.Text.Encoding.UTF8.GetBytes(dataToSend));
                 return await taskCompletionSource.Task;
             }
             catch (Exception ex)

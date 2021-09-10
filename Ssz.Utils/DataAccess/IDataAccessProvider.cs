@@ -114,13 +114,13 @@ namespace Ssz.Utils.DataAccess
         ///     Returns true, if succeeded.
         /// </summary>
         /// <param name="recipientId"></param>
-        /// <param name="commandName"></param>
-        /// <param name="commandParams"></param>
+        /// <param name="passthroughName"></param>
+        /// <param name="dataToSend"></param>
         /// <param name="setResultAction"></param>
-        void Command(string recipientId, string commandName, string commandParams,
+        void LongrunningPassthrough(string recipientId, string passthroughName, string dataToSend,
             Action<bool> setResultAction);
 
-        Task<bool> CommandAsync(string recipientId, string commandName, string commandParams);
+        Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, string dataToSend);
 
         void JournalAddItem(string elementId, object valueJournalSubscription);
 

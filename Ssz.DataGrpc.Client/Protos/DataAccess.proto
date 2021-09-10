@@ -37,7 +37,7 @@ service DataAccess {
 
   rpc Passthrough (PassthroughRequest) returns (PassthroughReply);
 
-  rpc Command (CommandRequest) returns (CommandReply);
+  rpc LongrunningPassthrough (LongrunningPassthroughRequest) returns (LongrunningPassthroughReply);
 }
 
 enum State
@@ -71,8 +71,8 @@ message SubscribeForCallbackRequest {
   string context_id = 1;
 }
 
-message CommandCallback {  
-  string call_id = 1;  
+message LongrunningPassthroughCallback {  
+  string invoke_id = 1;  
   uint32 status_code = 2;
 }
 
@@ -81,7 +81,7 @@ message CallbackMessage {
     ContextInfo context_info = 1;
     ElementValuesCallback element_values_callback = 2;
     EventMessagesCallback event_messages_callback = 3;
-    CommandCallback command_callback = 4;
+    LongrunningPassthroughCallback longrunning_passthrough_callback = 4;
   }
 }
 
@@ -354,13 +354,13 @@ message PassthroughReply {
   PassthroughData return_data = 1;
 }
 
-message CommandRequest {
-  string call_id = 1;
+message LongrunningPassthroughRequest {
+  string invoke_id = 1;
   string context_id = 2;
   string recipient_id = 3;
-  string command_name = 4;
-  string command_params = 5;
+  string passthrough_name = 4;
+  string data_to_send = 5;
 }
 
-message CommandReply {    
+message LongrunningPassthroughReply {    
 }

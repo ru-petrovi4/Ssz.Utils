@@ -354,9 +354,9 @@ namespace Ssz.DataGrpc.Client
                                 ClientEventList eventList = GetEventList(eventMessagesCallback.ListClientAlias);
                                 EventMessagesCallback(eventList, eventMessagesCallback.EventMessagesCollection);
                                 break;
-                            case CallbackMessage.OptionalMessageOneofCase.CommandCallback:
-                                CommandCallback commandCallback = current.CommandCallback;
-                                CommandCallback(commandCallback.CallId, (StatusCode)commandCallback.StatusCode);
+                            case CallbackMessage.OptionalMessageOneofCase.LongrunningPassthroughCallback:
+                                LongrunningPassthroughCallback longrunningPassthroughCallback = current.LongrunningPassthroughCallback;
+                                LongrunningPassthroughCallback(longrunningPassthroughCallback.InvokeId, (StatusCode)longrunningPassthroughCallback.StatusCode);
                                 break;
                         }
                     }

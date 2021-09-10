@@ -788,7 +788,7 @@ namespace Ssz.DataGrpc.Client
             return await taskCompletionSource.Task;
         }
 
-        public void Command(string recipientId, string commandName, string commandParams,
+        public void LongrunningPassthrough(string recipientId, string passthroughName, string dataToSend,
             Action<bool> setResultAction)
         {
             BeginInvoke(async ct =>
@@ -796,8 +796,8 @@ namespace Ssz.DataGrpc.Client
                 bool result;
                 try
                 {                    
-                    StatusCode statusCode = await ClientConnectionManager.CommandAsync(recipientId, commandName,
-                        commandParams);
+                    StatusCode statusCode = await ClientConnectionManager.LongrunningPassthroughAsync(recipientId, passthroughName,
+                        dataToSend);
                     result = statusCode == StatusCode.OK;
                 }
                 catch (RpcException ex)
@@ -825,7 +825,7 @@ namespace Ssz.DataGrpc.Client
             });
         }
 
-        public async Task<bool> CommandAsync(string recipientId, string commandName, string commandParams)
+        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, string dataToSend)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
             BeginInvoke(async ct =>
@@ -833,8 +833,8 @@ namespace Ssz.DataGrpc.Client
                 bool result;
                 try
                 {
-                    StatusCode statusCode = await ClientConnectionManager.CommandAsync(recipientId, commandName,
-                        commandParams);
+                    StatusCode statusCode = await ClientConnectionManager.LongrunningPassthroughAsync(recipientId, passthroughName,
+                        dataToSend);
                     result = statusCode == StatusCode.OK;
                 }
                 catch (RpcException ex)

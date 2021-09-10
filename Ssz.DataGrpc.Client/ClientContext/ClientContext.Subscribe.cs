@@ -125,14 +125,14 @@ namespace Ssz.DataGrpc.Client
             return newEventListItems;
         }
 
-        private void CommandCallback(string callId, StatusCode statusCode)
+        private void LongrunningPassthroughCallback(string invokeId, StatusCode statusCode)
         {
             lock (_incompleteCommandCallsCollection)
             {
-                if (_incompleteCommandCallsCollection.TryGetValue(callId, out TaskCompletionSource<StatusCode>? taskCompletionSource))
+                if (_incompleteCommandCallsCollection.TryGetValue(invokeId, out TaskCompletionSource<StatusCode>? taskCompletionSource))
                 {
                     taskCompletionSource.SetResult(statusCode);
-                    _incompleteCommandCallsCollection.Remove(callId);
+                    _incompleteCommandCallsCollection.Remove(invokeId);
                 }
             }
         }

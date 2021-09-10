@@ -453,7 +453,7 @@ namespace Ssz.Xi.Client.Api
             return _context.GetAlarmSummary(eventSourceId);
         }
 
-        public PassthroughResult? Passthrough(string recipientId, int invokeId,
+        public PassthroughResult? Passthrough(string recipientId,
                                       string passthroughName, byte[] dataToSend)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
@@ -461,18 +461,18 @@ namespace Ssz.Xi.Client.Api
             if (_context == null) throw new XiServerNotExistException();
 
             _context.OpenEndpointForContract(typeof(IWrite).Name);
-            return _context.Passthrough(recipientId, invokeId,
+            return _context.Passthrough(recipientId,
                                       passthroughName, dataToSend);
         }
 
-        public async Task<bool> CommandAsync(string recipientId, string commandName, string commandParams)
+        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, string dataToSend)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
 
             if (_context == null) throw new XiServerNotExistException();
 
             _context.OpenEndpointForContract(typeof(IWrite).Name);
-            return await _context.CommandAsync(recipientId, commandName, commandParams);
+            return await _context.LongrunningPassthroughAsync(recipientId, passthroughName, dataToSend);
         }
 
         /// <summary>

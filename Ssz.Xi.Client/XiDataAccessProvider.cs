@@ -365,7 +365,7 @@ namespace Ssz.Xi.Client
                 try
                 {
                     if (_xiServerProxy == null) throw new InvalidOperationException();
-                    PassthroughResult? passthroughResult = _xiServerProxy.Passthrough(recipientId, 0, passthroughName,
+                    PassthroughResult? passthroughResult = _xiServerProxy.Passthrough(recipientId, passthroughName,
                         dataToSend);
                     if (passthroughResult != null && passthroughResult.ResultCode == 0) // SUCCESS
                     {
@@ -411,7 +411,7 @@ namespace Ssz.Xi.Client
                 try
                 {
                     if (_xiServerProxy == null) throw new InvalidOperationException();
-                    PassthroughResult? passthroughResult = _xiServerProxy.Passthrough(recipientId, 0, passthroughName,
+                    PassthroughResult? passthroughResult = _xiServerProxy.Passthrough(recipientId, passthroughName,
                         dataToSend);
                     if (passthroughResult != null && passthroughResult.ResultCode == 0) // SUCCESS
                     {
@@ -432,7 +432,7 @@ namespace Ssz.Xi.Client
             return await taskCompletionSource.Task;
         }
 
-        public void Command(string recipientId, string commandName, string commandParams,
+        public void LongrunningPassthrough(string recipientId, string passthroughName, string dataToSend,
             Action<bool> setResultAction)
         {
             BeginInvoke(async ct =>
@@ -441,8 +441,8 @@ namespace Ssz.Xi.Client
                 try
                 {
                     if (_xiServerProxy == null) throw new InvalidOperationException();
-                    result = await _xiServerProxy.CommandAsync(recipientId, commandName,
-                        commandParams);                    
+                    result = await _xiServerProxy.LongrunningPassthroughAsync(recipientId, passthroughName,
+                        dataToSend);                    
                 }
                 catch
                 {
@@ -463,7 +463,7 @@ namespace Ssz.Xi.Client
             });
         }
 
-        public async Task<bool> CommandAsync(string recipientId, string commandName, string commandParams)
+        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, string dataToSend)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
             BeginInvoke(async ct =>
@@ -472,8 +472,8 @@ namespace Ssz.Xi.Client
                 try
                 {
                     if (_xiServerProxy == null) throw new InvalidOperationException();
-                    result = await _xiServerProxy.CommandAsync(recipientId, commandName,
-                        commandParams);
+                    result = await _xiServerProxy.LongrunningPassthroughAsync(recipientId, passthroughName,
+                        dataToSend);
                 }
                 catch
                 {
