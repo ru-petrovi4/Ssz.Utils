@@ -138,11 +138,7 @@ namespace Ssz.DataGrpc.Client
             get { return ClientConnectionManager.GrpcChannel; }
         }
 
-        public bool IsInitialized
-        {
-            get { return _isInitialized; }
-            private set { SetValue(ref _isInitialized, value); }
-        }
+        public bool IsInitialized { get; private set; }        
 
         public bool IsConnected
         {
@@ -1112,9 +1108,7 @@ namespace Ssz.DataGrpc.Client
 
         #endregion
 
-        #region private fields     
-
-        private bool _isInitialized;
+        #region private fields
 
         private bool _isConnected;
 

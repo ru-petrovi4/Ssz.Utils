@@ -117,11 +117,7 @@ namespace Ssz.Xi.Client
             }
         }
 
-        public bool IsInitialized
-        {
-            get { return _isInitialized; }
-            private set { SetValue(ref _isInitialized, value); }
-        }
+        public bool IsInitialized { get; private set; }
 
         public bool IsConnected
         {
@@ -718,8 +714,6 @@ namespace Ssz.Xi.Client
         #endregion
 
         #region private fields
-
-        private bool _isInitialized;
 
         private bool _isConnected;
 

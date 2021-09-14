@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Ssz.Utils.DataAccess
 {
     /// <summary>
-    ///     Must notify changes in IsInitialized, IsConnected and IsDisconnected properties.
+    ///     Must notify changes in IsConnected and IsDisconnected properties.
     /// </summary>
     public interface IDataAccessProvider: INotifyPropertyChanged, IDisposable, IAsyncDisposable
     {
@@ -40,7 +40,7 @@ namespace Ssz.Utils.DataAccess
         DateTime LastSuccessfulConnectionDateTimeUtc { get; }
 
         /// <summary>
-        ///     If guid the same, the data is guaranteed not to have changed.
+        ///     If guid the same, the data is guaranteed not changed.
         /// </summary>
         Guid DataGuid { get; }        
 
