@@ -38,6 +38,7 @@ namespace Ssz.Xi.Client.Internal
             XiContext? context = XiContext.LookUpContext(contextId);
             if (context != null)
             {
+                context.ServerContextIsClosing = true;
                 context.NotifyCallbackRecieved();
                 _xiCallbackDoer.BeginInvoke(ct => context.Abort(serverStatus, reason));
             }

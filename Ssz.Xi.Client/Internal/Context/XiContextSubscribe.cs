@@ -166,8 +166,7 @@ namespace Ssz.Xi.Client.Internal.Context
         /// </param>
         /// <param name="reason"> The reason the context is being closed. </param>
         public void Abort(ServerStatus serverStatus, string reason)
-        {
-            ServerContextIsClosing = true;
+        {            
             RaiseContextNotifyEvent(this,
                 new XiContextNotificationData(XiContextNotificationType.Shutdown, serverStatus));
         }

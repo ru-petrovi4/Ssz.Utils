@@ -238,13 +238,6 @@ namespace Ssz.Xi.Client.Internal.Context
 
             if (disposing)
             {
-                // remove the context from the list of contexts
-                if (_contextId != null)
-                    lock (StaticActiveContextsSyncRoot)
-                    {
-                        StaticActiveContexts.Remove(ContextId);
-                    }
-
                 // close the context with the server if necessary
                 if (_iResourceManagement != null)
                 {
@@ -252,7 +245,7 @@ namespace Ssz.Xi.Client.Internal.Context
                     {
                         try
                         {
-                            if (ContextId != null && !ServerContextIsClosing) _iResourceManagement.Conclude(ContextId);
+                            if (ContextId != @"" && !ServerContextIsClosing) _iResourceManagement.Conclude(ContextId);
                         }
                         catch
                         {
@@ -301,6 +294,13 @@ namespace Ssz.Xi.Client.Internal.Context
                 }
 
                 ServerContextIsClosing = true;
+
+                // remove the context from the list of contexts
+                if (ContextId != @"")
+                    lock (StaticActiveContextsSyncRoot)
+                    {
+                        StaticActiveContexts.Remove(ContextId);
+                    }
             }
 
             _iResourceManagement = null;
@@ -539,7 +539,7 @@ namespace Ssz.Xi.Client.Internal.Context
 
         /// <summary>
         ///     This property is the server-unique identifier of the context. It is returned by the server
-        ///     when the client application creates the context.
+        ///     when the client application creates the context.        
         /// </summary>
         public string ContextId
         {
@@ -633,7 +633,7 @@ namespace Ssz.Xi.Client.Internal.Context
         public bool ServerContextIsClosing
         {
             get { return _serverContextIsClosing; }
-            private set { _serverContextIsClosing = value; }
+            set { _serverContextIsClosing = value; }
         }
 
         /// <summary>
