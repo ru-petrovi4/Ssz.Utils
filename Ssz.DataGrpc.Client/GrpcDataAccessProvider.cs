@@ -1141,7 +1141,6 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         private bool _elementValueListCallbackIsEnabled;
 
-
         private bool _eventListCallbackIsEnabled;        
 
         /// <summary>

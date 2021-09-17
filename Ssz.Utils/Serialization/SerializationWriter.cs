@@ -1011,10 +1011,11 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Use ReadOwnedDataSerializableAndRecreatable<T> for read.
+        ///     Use ReadOwnedDataSerializableAndRecreatable.T for read.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
+        /// <param name="context"></param>
         public void WriteOwnedDataSerializableAndRecreatable<T>(T? value, object? context)
             where T : class, IOwnedDataSerializable, new()
         {
@@ -1029,7 +1030,7 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Use ReadObject<T> for read.
+        ///     Use ReadObject.T for read.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>

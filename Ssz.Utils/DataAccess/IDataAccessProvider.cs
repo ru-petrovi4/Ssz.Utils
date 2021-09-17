@@ -67,11 +67,13 @@ namespace Ssz.Utils.DataAccess
 
         /// <summary>
         ///     Tou can call Dispose() instead of this method.
+        ///     Closes without waiting working thread exit.
         /// </summary>
         void Close();
 
         /// <summary>
         ///     Tou can call DisposeAsync() instead of this method.
+        ///     Closes WITH waiting working thread exit.
         /// </summary>
         Task CloseAsync();
 

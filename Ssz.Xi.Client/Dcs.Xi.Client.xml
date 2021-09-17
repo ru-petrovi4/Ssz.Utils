@@ -492,10 +492,10 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Ssz.Xi.Client.Api.XiListItemsManager`2.ModelItem.#ctor(System.String)">
+        <member name="M:Ssz.Xi.Client.Api.XiListItemsManager`2.ClientObjectInfo.#ctor(System.String)">
             <summary>            
             </summary>
-            <param name="id"></param>
+            <param name="elementId"></param>
         </member>
         <member name="T:Ssz.Xi.Client.Api.XiServerProxy">
             <summary>
@@ -4127,21 +4127,10 @@
                 Mex WsHttpBinding constructor parameter
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Dispose">
-            <summary>
-                This is the implementation of the IDisposable.Dispose method.  The client
-                application should invoke this method when this instance is no longer needed.
-            </summary>
-        </member>
         <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Dispose(System.Boolean)">
             <summary>
                 This method is invoked when the IDisposable.Dispose or Finalize actions are
                 requested.
-            </summary>
-        </member>
-        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Finalize">
-            <summary>
-                Invoked by the .NET Framework while doing heap managment (Finalize).
             </summary>
         </member>
         <member name="P:Ssz.Xi.Client.XiDataAccessProvider.ServerAddress">
@@ -4170,9 +4159,9 @@
                 Can be null
             </summary>
         </member>
-        <member name="P:Ssz.Xi.Client.XiDataAccessProvider.IsConnected">
+        <member name="P:Ssz.Xi.Client.XiDataAccessProvider.DataGuid">
             <summary>
-                Is connected to Model Data Source.
+                If guid the same, the data is guaranteed not to have changed.
             </summary>
         </member>
         <member name="E:Ssz.Xi.Client.XiDataAccessProvider.ValueSubscriptionsUpdated">
@@ -4180,16 +4169,14 @@
                 Is called using сallbackDoer, see Initialize(..).
             </summary>
         </member>
-        <member name="E:Ssz.Xi.Client.XiDataAccessProvider.Connected">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Close">
             <summary>
-                Is called using сallbackDoer, see Initialize(..).
-                Occurs after connected to model.
+                Tou can call Dispose() instead of this method.
             </summary>
         </member>
-        <member name="E:Ssz.Xi.Client.XiDataAccessProvider.Disconnected">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.CloseAsync">
             <summary>
-                Is called using сallbackDoer, see Initialize(..).
-                Occurs after disconnected from model.
+                Tou can call DisposeAsync() instead of this method.
             </summary>
         </member>
         <member name="M:Ssz.Xi.Client.XiDataAccessProvider.ReInitialize">
@@ -4240,6 +4227,15 @@
                 If call to server failed (exception or passthroughResult == null or passthroughResult.ResultCode != 0), setResultAction(null) is called.        
             </summary>
         </member>
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.PassthroughAsync(System.String,System.String,System.Byte[])">
+            <summary>
+                Returns null if any errors.
+            </summary>
+            <param name="recipientId"></param>
+            <param name="passthroughName"></param>
+            <param name="dataToSend"></param>
+            <returns></returns>
+        </member>
         <member name="M:Ssz.Xi.Client.XiDataAccessProvider.BeginInvoke(System.Action{System.Threading.CancellationToken})">
             <summary>
                 Invokes Action in working thread with cancellation support.
@@ -4253,7 +4249,7 @@
             <param name="nowUtc"></param>
             <param name="cancellationToken"></param>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Unsubscribe">
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Unsubscribe(System.Boolean)">
             <summary>
                 Working thread.
             </summary>

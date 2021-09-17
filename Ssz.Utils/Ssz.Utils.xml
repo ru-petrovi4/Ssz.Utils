@@ -602,8 +602,8 @@
         <member name="M:Ssz.Utils.CsvDb.#ctor(Microsoft.Extensions.Logging.ILogger{Ssz.Utils.CsvDb},System.IO.DirectoryInfo,Ssz.Utils.IDispatcher)">
             <summary>
                 If csvDbDirectoryInfo == null, directory is not used.
-                If !csvDbDirectoryInfo.Exists, directory is created when saving files.
-                If dispatcher != null monitors fileSystem
+                If !csvDbDirectoryInfo.Exists, directory is created.
+                If dispatcher != null monitors csvDbDirectoryInfo
             </summary>
             <param name="logger"></param>
             <param name="csvDbDirectoryInfo"></param>
@@ -727,6 +727,14 @@
                 Otherwise, CurrentUICulture remains unchanged.
             </summary>
             <param name="configuration"></param>
+        </member>
+        <member name="M:Ssz.Utils.CultureHelper.GetCultureInfo(System.String)">
+            <summary>
+                Returns invariant culture for null or empty  or invalid cultureName.
+                Uses Windows-user overrides, if any.
+            </summary>
+            <param name="cultureName"></param>
+            <returns></returns>
         </member>
         <member name="M:Ssz.Utils.DataAccess.AlarmInfoViewModelBase.#ctor(Ssz.Utils.DataAccess.AlarmInfoViewModelBase)">
             <summary>
@@ -1054,6 +1062,16 @@
             One or more of the Requested Fields has changed.
             </summary>
         </member>
+        <member name="T:Ssz.Utils.DataAccess.IDataAccessProvider">
+            <summary>
+                Must notify changes in IsConnected and IsDisconnected properties.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.DataAccess.IDataAccessProvider.DataGuid">
+            <summary>
+                If guid the same, the data is guaranteed not changed.
+            </summary>
+        </member>
         <member name="P:Ssz.Utils.DataAccess.IDataAccessProvider.Obj">
             <summary>
                 You can use this property as temp storage.
@@ -1066,12 +1084,51 @@
                 If not initialized then does nothing.
             </summary>
         </member>
+        <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.Close">
+            <summary>
+                Tou can call Dispose() instead of this method.
+                Closes without waiting working thread exit.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.CloseAsync">
+            <summary>
+                Tou can call DisposeAsync() instead of this method.
+                Closes WITH waiting working thread exit.
+            </summary>
+        </member>
         <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.Write(Ssz.Utils.DataAccess.IValueSubscription[],Ssz.Utils.DataAccess.ValueStatusTimestamp[],System.Action{Ssz.Utils.DataAccess.IValueSubscription[]})">
             <summary>
                 No values mapping and conversion.
             </summary>
             <param name="valueSubscriptions"></param>
             <param name="valueStatusTimestamps"></param>
+            <param name="setResultAction"></param>
+        </member>
+        <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.Passthrough(System.String,System.String,System.Byte[],System.Action{System.Collections.Generic.IEnumerable{System.Byte}})">
+            <summary>
+                Returns null if any errors.
+            </summary>
+            <param name="recipientId"></param>
+            <param name="passthroughName"></param>
+            <param name="dataToSend"></param>
+            <param name="setResultAction"></param>
+        </member>
+        <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.PassthroughAsync(System.String,System.String,System.Byte[])">
+            <summary>
+                Returns null if any errors.
+            </summary>
+            <param name="recipientId"></param>
+            <param name="passthroughName"></param>
+            <param name="dataToSend"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.LongrunningPassthrough(System.String,System.String,System.String,System.Action{System.Boolean})">
+            <summary>
+                Returns true, if succeeded.
+            </summary>
+            <param name="recipientId"></param>
+            <param name="passthroughName"></param>
+            <param name="dataToSend"></param>
             <param name="setResultAction"></param>
         </member>
         <member name="P:Ssz.Utils.DataAccess.IValueSubscription.Obj">
@@ -1101,6 +1158,33 @@
             
             </summary>
             <param name="valueStatusTimestamp"></param>
+        </member>
+        <member name="T:Ssz.Utils.DataAccess.StandardListType">
+            <summary>
+                This enumeration specifies the standard types of lists.
+                The enumerated values between 0 and 4095 inclusive are reserved
+                for standard types.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataAccess.StandardListType.ElementValueList">
+            <summary>
+                The type of list that contains data objects.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataAccess.StandardListType.ElementValueJournalList">
+            <summary>
+                The type of list that contains historical data objects.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataAccess.StandardListType.EventList">
+            <summary>
+                The type of list that contains alarms and events.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataAccess.StandardListType.EventJournalList">
+            <summary>
+                The type of list that contains historical alarms and events.
+            </summary>
         </member>
         <member name="M:Ssz.Utils.DataAccess.TypeId.#ctor(System.Type)">
             <summary>
@@ -1140,6 +1224,7 @@
             <summary>
                 Uses ValueAsDouble(false), ValueAsInt32(false), ValueAsString(false) depending of ValueStorageType.
                 Returns true if diff is less than or equal deadband.
+                TimestampUtc is NOT compared.
             </summary>
             <param name="that"></param>
             <param name="deadband"></param>
@@ -1283,6 +1368,13 @@
             </summary>
             <param name="action"></param>
         </member>
+        <member name="M:Ssz.Utils.ThreadSafeDispatcher.InvokeActionsInQueue(System.Threading.CancellationToken)">
+            <summary>
+                Returns Actions count
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
         <member name="T:Ssz.Utils.DisposableViewModelBase">
             <summary>
             
@@ -1333,7 +1425,7 @@
         </member>
         <member name="M:Ssz.Utils.ElementIdsMap.#ctor(Microsoft.Extensions.Logging.ILogger{Ssz.Utils.ElementIdsMap})">
             <summary>
-                Must be ititialized before first use.
+                Must be initialized before first use.
             </summary>
             <param name="logger"></param>
         </member>
@@ -1376,6 +1468,12 @@
             <param name="tagType"></param>
             <param name="csvDb"></param>
             <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Journal.#ctor(Microsoft.Extensions.Logging.ILogger{Ssz.Utils.Journal})">
+            <summary>
+                Must be initialized before first use.
+            </summary>
+            <param name="logger"></param>
         </member>
         <member name="T:Ssz.Utils.Logging.LogFileTextWriter">
             <summary>
@@ -2538,6 +2636,13 @@
             <typeparam name="T"></typeparam>
             <returns></returns>
         </member>
+        <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadOwnedDataSerializableAndRecreatable``1(System.Object)">
+            <summary>
+                Throws if saved object not correct type;
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
         <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadString">
             <summary>
                 Called ReadOptimizedString().        
@@ -2567,7 +2672,8 @@
         <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadListOfOwnedDataSerializable``1(System.Func{``0},System.Object)">
             <summary>
                 Reads list of same objects.
-                func is constructor function.       
+                func is constructor function.      
+                Use WriteListOfOwnedDataSerializable for reading.
             </summary>        
             <param name="func"></param>
             <param name="context"></param>
@@ -2586,6 +2692,18 @@
                 Returns a BitArray or null from the stream.
             </summary>
             <returns> A BitArray instance. </returns>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadUInt64Optimized">
+            <summary>
+                Returns a UInt64 value from the stream that was stored optimized.
+            </summary>
+            <returns> A UInt64 value. </returns>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadInt64Optimized">
+            <summary>
+                Returns an Int64 value from the stream that was stored optimized.
+            </summary>
+            <returns> An Int64 value. </returns>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadOptimizedBitArray">
             <summary>
@@ -2628,18 +2746,6 @@
                 Returns an Int32 value from the stream that was stored optimized.
             </summary>
             <returns> An Int32 value. </returns>
-        </member>
-        <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadOptimizedUInt64">
-            <summary>
-                Returns a UInt64 value from the stream that was stored optimized.
-            </summary>
-            <returns> A UInt64 value. </returns>
-        </member>
-        <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadOptimizedInt64">
-            <summary>
-                Returns an Int64 value from the stream that was stored optimized.
-            </summary>
-            <returns> An Int64 value. </returns>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadUInt32OptimizedOrNot">
             <summary>
@@ -2879,7 +2985,7 @@
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.BeginBlock(System.Int32)">
             <summary>
-                Begins Block
+                Begins Block        
             </summary>
             <param name="version"></param>
         </member>
@@ -2915,6 +3021,49 @@
                 position by eight bytes.
             </summary>
             <param name="value"></param>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteOptimized(System.UInt64)">
+            <summary>
+                Write a UInt64 value using the fewest number of bytes possible.
+            </summary>
+            <remarks>
+                0x0000000000000000 - 0x000000000000007f (0 to 127) takes 1 byte
+                0x0000000000000080 - 0x00000000000003FF (128 to 16,383) takes 2 bytes
+                0x0000000000000400 - 0x00000000001FFFFF (16,384 to 2,097,151) takes 3 bytes
+                0x0000000000200000 - 0x000000000FFFFFFF (2,097,152 to 268,435,455) takes 4 bytes
+                0x0000000010000000 - 0x00000007FFFFFFFF (268,435,456 to 34,359,738,367) takes 5 bytes
+                0x0000000800000000 - 0x000003FFFFFFFFFF (34,359,738,368 to 4,398,046,511,103) takes 6 bytes
+                0x0000040000000000 - 0x0001FFFFFFFFFFFF (4,398,046,511,104 to 562,949,953,421,311) takes 7 bytes
+                0x0002000000000000 - 0x00FFFFFFFFFFFFFF (562,949,953,421,312 to 72,057,594,037,927,935) takes 8 bytes
+                ------------------------------------------------------------------
+                0x0100000000000000 - 0x7FFFFFFFFFFFFFFF (72,057,594,037,927,936 to 9,223,372,036,854,775,807) takes 9 bytes
+                0x7FFFFFFFFFFFFFFF - 0xFFFFFFFFFFFFFFFF (9,223,372,036,854,775,807 and above) takes 10 bytes
+                Only call this method if the value is known to be between 0 and
+                72,057,594,037,927,935 otherwise use Write(UInt64 value)
+            </remarks>
+            <param name="value"> The UInt64 to store. Must be between 0 and 72,057,594,037,927,935 inclusive. </param>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteOptimized(System.Int64)">
+            <summary>
+                Write an Int64 value using the fewest number of bytes possible.
+            </summary>
+            <remarks>
+                0x0000000000000000 - 0x000000000000007f (0 to 127) takes 1 byte
+                0x0000000000000080 - 0x00000000000003FF (128 to 16,383) takes 2 bytes
+                0x0000000000000400 - 0x00000000001FFFFF (16,384 to 2,097,151) takes 3 bytes
+                0x0000000000200000 - 0x000000000FFFFFFF (2,097,152 to 268,435,455) takes 4 bytes
+                0x0000000010000000 - 0x00000007FFFFFFFF (268,435,456 to 34,359,738,367) takes 5 bytes
+                0x0000000800000000 - 0x000003FFFFFFFFFF (34,359,738,368 to 4,398,046,511,103) takes 6 bytes
+                0x0000040000000000 - 0x0001FFFFFFFFFFFF (4,398,046,511,104 to 562,949,953,421,311) takes 7 bytes
+                0x0002000000000000 - 0x00FFFFFFFFFFFFFF (562,949,953,421,312 to 72,057,594,037,927,935) takes 8 bytes
+                ------------------------------------------------------------------
+                0x0100000000000000 - 0x7FFFFFFFFFFFFFFF (72,057,594,037,927,936 to 9,223,372,036,854,775,807) takes 9 bytes
+                0x7FFFFFFFFFFFFFFF - 0xFFFFFFFFFFFFFFFF (9,223,372,036,854,775,807 and above) takes 10 bytes
+                All negative numbers take 10 bytes
+                Only call this method if the value is known to be between 0 and
+                72,057,594,037,927,935 otherwise use Write(Int64 value)
+            </remarks>
+            <param name="value"> The Int64 to store. Must be between 0 and 72,057,594,037,927,935 inclusive. </param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.Write(System.UInt32)">
             <summary>
@@ -3082,9 +3231,17 @@
             </summary>
             <param name="value"> The object to store. </param>
         </member>
+        <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteOwnedDataSerializableAndRecreatable``1(``0,System.Object)">
+            <summary>
+                Use ReadOwnedDataSerializableAndRecreatable.T for read.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="value"></param>
+            <param name="context"></param>
+        </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteObject``1(``0)">
             <summary>
-            
+                Use ReadObject.T for read.
             </summary>
             <typeparam name="T"></typeparam>
             <param name="value"></param>
@@ -3130,6 +3287,7 @@
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteListOfOwnedDataSerializable``1(System.Collections.Generic.ICollection{``0},System.Object)">
             <summary>
                 Writes list of same not null objects. 
+                use ReadListOfOwnedDataSerializable for reading.
             </summary>        
             <param name="values"></param>
             <param name="context"></param>
@@ -3233,49 +3391,6 @@
                 268,435,455 otherwise use Write(Int32 value)
             </remarks>
             <param name="value"> The Int32 to store. Must be between 0 and 268,435,455 inclusive. </param>
-        </member>
-        <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteOptimized(System.UInt64)">
-            <summary>
-                Write a UInt64 value using the fewest number of bytes possible.
-            </summary>
-            <remarks>
-                0x0000000000000000 - 0x000000000000007f (0 to 127) takes 1 byte
-                0x0000000000000080 - 0x00000000000003FF (128 to 16,383) takes 2 bytes
-                0x0000000000000400 - 0x00000000001FFFFF (16,384 to 2,097,151) takes 3 bytes
-                0x0000000000200000 - 0x000000000FFFFFFF (2,097,152 to 268,435,455) takes 4 bytes
-                0x0000000010000000 - 0x00000007FFFFFFFF (268,435,456 to 34,359,738,367) takes 5 bytes
-                0x0000000800000000 - 0x000003FFFFFFFFFF (34,359,738,368 to 4,398,046,511,103) takes 6 bytes
-                0x0000040000000000 - 0x0001FFFFFFFFFFFF (4,398,046,511,104 to 562,949,953,421,311) takes 7 bytes
-                0x0002000000000000 - 0x00FFFFFFFFFFFFFF (562,949,953,421,312 to 72,057,594,037,927,935) takes 8 bytes
-                ------------------------------------------------------------------
-                0x0100000000000000 - 0x7FFFFFFFFFFFFFFF (72,057,594,037,927,936 to 9,223,372,036,854,775,807) takes 9 bytes
-                0x7FFFFFFFFFFFFFFF - 0xFFFFFFFFFFFFFFFF (9,223,372,036,854,775,807 and above) takes 10 bytes
-                Only call this method if the value is known to be between 0 and
-                72,057,594,037,927,935 otherwise use Write(UInt64 value)
-            </remarks>
-            <param name="value"> The UInt64 to store. Must be between 0 and 72,057,594,037,927,935 inclusive. </param>
-        </member>
-        <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteOptimized(System.Int64)">
-            <summary>
-                Write an Int64 value using the fewest number of bytes possible.
-            </summary>
-            <remarks>
-                0x0000000000000000 - 0x000000000000007f (0 to 127) takes 1 byte
-                0x0000000000000080 - 0x00000000000003FF (128 to 16,383) takes 2 bytes
-                0x0000000000000400 - 0x00000000001FFFFF (16,384 to 2,097,151) takes 3 bytes
-                0x0000000000200000 - 0x000000000FFFFFFF (2,097,152 to 268,435,455) takes 4 bytes
-                0x0000000010000000 - 0x00000007FFFFFFFF (268,435,456 to 34,359,738,367) takes 5 bytes
-                0x0000000800000000 - 0x000003FFFFFFFFFF (34,359,738,368 to 4,398,046,511,103) takes 6 bytes
-                0x0000040000000000 - 0x0001FFFFFFFFFFFF (4,398,046,511,104 to 562,949,953,421,311) takes 7 bytes
-                0x0002000000000000 - 0x00FFFFFFFFFFFFFF (562,949,953,421,312 to 72,057,594,037,927,935) takes 8 bytes
-                ------------------------------------------------------------------
-                0x0100000000000000 - 0x7FFFFFFFFFFFFFFF (72,057,594,037,927,936 to 9,223,372,036,854,775,807) takes 9 bytes
-                0x7FFFFFFFFFFFFFFF - 0xFFFFFFFFFFFFFFFF (9,223,372,036,854,775,807 and above) takes 10 bytes
-                All negative numbers take 10 bytes
-                Only call this method if the value is known to be between 0 and
-                72,057,594,037,927,935 otherwise use Write(Int64 value)
-            </remarks>
-            <param name="value"> The Int64 to store. Must be between 0 and 72,057,594,037,927,935 inclusive. </param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteOptimized(System.DateTime)">
             <summary>
