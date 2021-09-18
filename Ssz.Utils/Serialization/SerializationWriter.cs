@@ -1126,26 +1126,38 @@ namespace Ssz.Utils.Serialization
         //    _binaryWriter.Write(value.Height);
         //}
 
-        /// <summary>
-        ///     Writes a nullable array into the stream.
+        /// <summary>        
+        ///     Use ReadNullableArray<T>() for reading.
         /// </summary>
-        /// <remarks>
-        ///     Array type itself is not stored - it must be supplied
-        ///     at deserialization time.
-        /// </remarks>
-        /// <typeparam name="T"> Array Type. </typeparam>
-        /// <param name="value"> The generic List. </param>
-        public void WriteArray<T>(T[]? value)
+        /// <typeparam name="T"></typeparam>
+        /// <param name="values"></param>
+        public void WriteNullableArray<T>(T[]? values)
         {
-            if (value == null)
+            if (values == null)
             {
                 WriteSerializedType(SerializedType.NullType);
             }
             else
             {
-                WriteArrayInternal(value, typeof (T));
+                WriteArrayInternal(values, typeof (T));
             }
-        }        
+        }
+
+        /// <summary>
+        ///     Use ReadNullableByteArray() for reading.
+        /// </summary>
+        /// <param name="values"></param>
+        public void WriteNullableByteArray(byte[]? values)
+        {
+            if (values == null)
+            {
+                WriteSerializedType(SerializedType.NullType);
+            }
+            else
+            {
+                WriteArrayInternal(values);
+            }            
+        }
 
         /// <summary>
         ///     Writes a nullable generic List into the stream.
@@ -1700,9 +1712,8 @@ namespace Ssz.Utils.Serialization
 
         /// <summary>
         ///     Writes an Int16[] into the stream using the fewest possible bytes.
-        ///     values != null
         /// </summary>
-        /// <param name="values"> The Int16[] to store. </param>
+        /// <param name="values"></param>
         private void WriteOptimizedArrayInternal(short[] values)
         {
             BitArray optimizeFlags = AllFalseBitArray;
@@ -1740,9 +1751,8 @@ namespace Ssz.Utils.Serialization
 
         /// <summary>
         ///     Writes an Int32[] into the stream using the fewest possible bytes.
-        ///     values != null
         /// </summary>
-        /// <param name="values"> The Int32[] to store. </param>
+        /// <param name="values"></param>
         private void WriteOptimizedArrayInternal(int[] values)
         {
             BitArray optimizeFlags = AllFalseBitArray;
@@ -1780,9 +1790,8 @@ namespace Ssz.Utils.Serialization
 
         /// <summary>
         ///     Writes an Int64[] into the stream using the fewest possible bytes.
-        ///     values != null
         /// </summary>
-        /// <param name="values"> The Int64[] to store. </param>
+        /// <param name="values"></param>
         private void WriteOptimizedArrayInternal(long[] values)
         {
             BitArray optimizeFlags = AllFalseBitArray;
@@ -1820,9 +1829,8 @@ namespace Ssz.Utils.Serialization
 
         /// <summary>
         ///     Writes a UInt16[] into the stream using the fewest possible bytes.
-        ///     values != null
         /// </summary>
-        /// <param name="values"> The UInt16[] to store. </param>
+        /// <param name="values"></param>
         private void WriteOptimizedArrayInternal(ushort[] values)
         {
             BitArray optimizeFlags = AllFalseBitArray;
@@ -1860,9 +1868,8 @@ namespace Ssz.Utils.Serialization
 
         /// <summary>
         ///     Writes a UInt32[] into the stream using the fewest possible bytes.
-        ///     values != null
         /// </summary>
-        /// <param name="values"> The UInt32[] to store. </param>
+        /// <param name="values"></param>
         private void WriteOptimizedArrayInternal(uint[] values)
         {
             BitArray optimizeFlags = AllFalseBitArray;
@@ -1900,9 +1907,8 @@ namespace Ssz.Utils.Serialization
 
         /// <summary>
         ///     Writes a UInt64[] into the stream using the fewest possible bytes.
-        ///     values != null
         /// </summary>
-        /// <param name="values"> The UInt64[] to store. </param>
+        /// <param name="values"></param>
         private void WriteOptimizedArrayInternal(ulong[] values)
         {
             BitArray optimizeFlags = AllFalseBitArray;
@@ -1939,9 +1945,9 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     values != null
+        /// 
         /// </summary>
-        /// <param name="values"> The Single[] to store. </param>
+        /// <param name="values"></param>
         private void WriteArrayInternal(float[] values)
         {
             WriteOptimized(values.Length);
@@ -1953,9 +1959,9 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     values != null
+        /// 
         /// </summary>
-        /// <param name="values"> The Double[] to store. </param>
+        /// <param name="values"></param>
         private void WriteArrayInternal(double[] values)
         {
             WriteOptimized(values.Length);
@@ -1967,12 +1973,9 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     values != null
-        /// </summary>
-        /// <remarks>
         ///     All elements are stored optimized.
-        /// </remarks>
-        /// <param name="values"> The Decimal[] to store. </param>
+        /// </summary>
+        /// <param name="values"></param>
         private void WriteArrayInternal(decimal[] values)
         {
             WriteOptimized(values.Length);
@@ -1984,8 +1987,7 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Writes a DateTime[] into the stream using the fewest possible bytes.
-        ///     values != null
+        ///     Writes a DateTime[] into the stream using the fewest possible bytes.        
         /// </summary>
         /// <param name="values"> The DateTime[] to store. </param>
         private void WriteOptimizedArrayInternal(DateTime[] values)
@@ -2024,8 +2026,7 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Writes a TimeSpan[] into the stream using the fewest possible bytes.
-        ///     values != null
+        ///     Writes a TimeSpan[] into the stream using the fewest possible bytes.        
         /// </summary>
         /// <param name="values"> The TimeSpan[] to store. </param>
         private void WriteOptimizedArrayInternal(TimeSpan[] values)
@@ -2064,9 +2065,9 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     values != null
+        /// 
         /// </summary>
-        /// <param name="values"> The Guid[] to store. </param>
+        /// <param name="values"></param>
         private void WriteArrayInternal(Guid[] values)
         {
             WriteOptimized(values.Length);
@@ -2078,21 +2079,18 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     values != null
+        /// 
         /// </summary>
-        /// <remarks>
-        ///     Stored as a BitArray for optimization.
-        /// </remarks>
-        /// <param name="values"> The Boolean[] to store. </param>
+        /// <param name="values"></param>
         private void WriteArrayInternal(bool[] values)
         {
             WriteOptimized(new BitArray(values));
         }
 
         /// <summary>
-        ///     values != null
+        /// /
         /// </summary>
-        /// <param name="values"> The SByte[] to store. </param>
+        /// <param name="values"></param>
         private void WriteArrayInternal(sbyte[] values)
         {
             WriteOptimized(values.Length);
@@ -2104,9 +2102,9 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     values != null
+        /// 
         /// </summary>
-        /// <param name="values"> The Byte[] to store. </param>
+        /// <param name="values"></param>
         private void WriteArrayInternal(byte[] values)
         {
             WriteOptimized(values.Length);

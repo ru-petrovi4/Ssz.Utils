@@ -351,19 +351,36 @@ namespace Ssz.Utils.Serialization
         //}
 
         /// <summary>
-        ///     Returns an array populated with values from the stream or null.
+        ///     Use WriteNullableArray<T>(...) for writing.
         /// </summary>
-        /// <typeparam name="T"> The list Type. </typeparam>
-        /// <returns> A new generic List or null. </returns>
-        public T[]? ReadArray<T>()
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T[]? ReadNullableArray<T>()
         {
             ThrowIfBlockEnding();
 
             SerializedType typeCode = ReadTypeCode();
 
-            if (typeCode == SerializedType.NullType) return null;
+            if (typeCode == SerializedType.NullType)
+                return null;
 
             return (T[]?)ReadArrayInternal(typeCode, typeof(T));
+        }
+
+        /// <summary>
+        ///     Use WriteNullableByteArray(...) for writing.
+        /// </summary>
+        /// <returns></returns>
+        public byte[]? ReadNullableByteArray()
+        {
+            ThrowIfBlockEnding();
+
+            SerializedType typeCode = ReadTypeCode();
+
+            if (typeCode == SerializedType.NullType) 
+                return null;
+
+            return ReadByteArrayInternal();
         }
 
         /// <summary>
@@ -608,6 +625,10 @@ namespace Ssz.Utils.Serialization
             return _binaryReader.ReadBytes(count);
         }
 
+        /// <summary>
+        ///     Use Write(byte[] values) for writing.
+        /// </summary>
+        /// <returns></returns>
         public byte[] ReadByteArray()
         {
             ThrowIfBlockEnding();
