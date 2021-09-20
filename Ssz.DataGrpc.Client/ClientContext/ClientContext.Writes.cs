@@ -151,36 +151,49 @@ namespace Ssz.DataGrpc.Client
             }            
         }
 
-        public async Task<StatusCode> LongrunningPassthroughAsync(string recipientId, string passthroughName, string dataToSend)
+        public async Task<StatusCode> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
 
             if (!ServerContextIsOperational) throw new InvalidOperationException();
 
+            string invokeId = Guid.NewGuid().ToString();
             try
-            {
-                string invokeId = Guid.NewGuid().ToString();
-                var request = new LongrunningPassthroughRequest
-                {
-                    InvokeId = invokeId,
-                    ContextId = _serverContextId,
-                    RecipientId = recipientId,
-                    PassthroughName = passthroughName,
-                    DataToSend = dataToSend
-                };
+            {                
                 var taskCompletionSource = new TaskCompletionSource<StatusCode>();
-                lock (_incompleteCommandCallsCollection)
+                lock (_incompleteLongrunningPassthroughRequestsCollection)
                 {
-                    _incompleteCommandCallsCollection.Add(invokeId, taskCompletionSource);
+                    _incompleteLongrunningPassthroughRequestsCollection.Add(invokeId, taskCompletionSource);
                 }
-                LongrunningPassthroughReply reply = await _resourceManagementClient.LongrunningPassthroughAsync(request);
+
+                var passthroughDataToSendFull = new PassthroughData();
+                passthroughDataToSendFull.Data = ByteString.CopyFrom(dataToSend);                
+                foreach (var passthroughDataToSend in passthroughDataToSendFull.SplitForCorrectGrpcMessageSize())
+                {
+                    var request = new LongrunningPassthroughRequest
+                    {
+                        InvokeId = invokeId,
+                        ContextId = _serverContextId,
+                        RecipientId = recipientId,
+                        PassthroughName = passthroughName,
+                        DataToSend = passthroughDataToSend
+                    };
+                    
+                    LongrunningPassthroughReply reply = await _resourceManagementClient.LongrunningPassthroughAsync(request);
+                    SetResourceManagementLastCallUtc();
+                }
+
                 return await taskCompletionSource.Task;
             }
             catch (Exception ex)
             {
+                lock (_incompleteLongrunningPassthroughRequestsCollection)
+                {
+                    _incompleteLongrunningPassthroughRequestsCollection.Remove(invokeId);
+                }
                 ProcessRemoteMethodCallException(ex);
                 throw;
-            }
+            }            
         }
 
         #endregion
@@ -192,7 +205,7 @@ namespace Ssz.DataGrpc.Client
         /// <summary>
         ///     [InvokeId, TaskCompletionSource]
         /// </summary>
-        private readonly Dictionary<string, TaskCompletionSource<StatusCode>> _incompleteCommandCallsCollection = new();
+        private readonly Dictionary<string, TaskCompletionSource<StatusCode>> _incompleteLongrunningPassthroughRequestsCollection = new();
 
         #endregion        
     }

@@ -359,7 +359,7 @@ message LongrunningPassthroughRequest {
   string context_id = 2;
   string recipient_id = 3;
   string passthrough_name = 4;
-  string data_to_send = 5;
+  PassthroughData data_to_send = 5;
 }
 
 message LongrunningPassthroughReply {    

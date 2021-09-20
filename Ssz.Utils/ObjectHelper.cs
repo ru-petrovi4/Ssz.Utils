@@ -12,7 +12,7 @@ namespace Ssz.Utils
     /// <summary>
     /// 
     /// </summary>
-    public static class ObjectExtensions
+    public static class ObjectHelper
     {
         #region public functions
 
@@ -21,7 +21,7 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static IEnumerable<FieldInfo> GetAllFields(this object obj)
+        public static IEnumerable<FieldInfo> GetAllFields(object obj)
         {
             Type? type = obj.GetType();
             var fields = new List<FieldInfo>();
@@ -53,7 +53,7 @@ namespace Ssz.Utils
         /// <param name="obj"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static object? GetValue(this object obj, string? expression)
+        public static object? GetValue(object obj, string? expression)
         {
             if (String.IsNullOrEmpty(expression)) return null;
 
@@ -81,7 +81,7 @@ namespace Ssz.Utils
         /// <param name="expression"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static bool SetValue(this object obj, string? expression, object? value)
+        public static bool SetValue(object obj, string? expression, object? value)
         {
             if (String.IsNullOrEmpty(expression)) return false;
 
@@ -121,7 +121,7 @@ namespace Ssz.Utils
         /// <param name="propertyName"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static bool SetPropertyValue(this object obj, string? propertyName, object? value)
+        public static bool SetPropertyValue(object obj, string? propertyName, object? value)
         {
             if (String.IsNullOrEmpty(propertyName)) return false;
 
@@ -151,7 +151,7 @@ namespace Ssz.Utils
         ///     [Searchable(true)] attribute has higher priority.
         ///     If regex == null matches all properties.        
         /// </summary>
-        public static List<StringPropertyInfo> FindInStringBrowsableProperties(this object obj, Regex? regex)
+        public static List<StringPropertyInfo> FindInStringBrowsableProperties(object obj, Regex? regex)
         {
             var result = new List<StringPropertyInfo>();
 
@@ -211,7 +211,7 @@ namespace Ssz.Utils
         ///     Replaces in properties with [Searchable(true)] or [Browsable(true)] attributes.
         ///     [Searchable(true)] attribute has higher priority.        
         /// </summary>
-        public static List<StringPropertyInfo> ReplaceInStringBrowsableProperties(this object obj, Regex regex,
+        public static List<StringPropertyInfo> ReplaceInStringBrowsableProperties(object obj, Regex regex,
             string replacement)
         {
             if (replacement == null) replacement = @"";

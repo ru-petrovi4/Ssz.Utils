@@ -119,10 +119,10 @@ namespace Ssz.Utils.DataAccess
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <param name="setResultAction"></param>
-        void LongrunningPassthrough(string recipientId, string passthroughName, string dataToSend,
+        void LongrunningPassthrough(string recipientId, string passthroughName, byte[] dataToSend,
             Action<bool> setResultAction);
 
-        Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, string dataToSend);
+        Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend);
 
         void JournalAddItem(string elementId, object valueJournalSubscription);
 

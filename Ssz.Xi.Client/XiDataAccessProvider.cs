@@ -428,7 +428,7 @@ namespace Ssz.Xi.Client
             return await taskCompletionSource.Task;
         }
 
-        public void LongrunningPassthrough(string recipientId, string passthroughName, string dataToSend,
+        public void LongrunningPassthrough(string recipientId, string passthroughName, byte[] dataToSend,
             Action<bool> setResultAction)
         {
             BeginInvoke(async ct =>
@@ -459,7 +459,7 @@ namespace Ssz.Xi.Client
             });
         }
 
-        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, string dataToSend)
+        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
             BeginInvoke(async ct =>

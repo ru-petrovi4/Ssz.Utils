@@ -206,7 +206,7 @@ namespace Ssz.Utils
             if (nameValueCollection == null) return;
             foreach (var kvp in nameValueCollection)
             {
-                obj.SetPropertyValue(kvp.Key, kvp.Value);
+                ObjectHelper.SetPropertyValue(obj, kvp.Key, kvp.Value);
             }
         }
 

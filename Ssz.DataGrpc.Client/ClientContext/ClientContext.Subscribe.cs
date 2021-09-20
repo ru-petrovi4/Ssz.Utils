@@ -127,12 +127,12 @@ namespace Ssz.DataGrpc.Client
 
         private void LongrunningPassthroughCallback(string invokeId, StatusCode statusCode)
         {
-            lock (_incompleteCommandCallsCollection)
+            lock (_incompleteLongrunningPassthroughRequestsCollection)
             {
-                if (_incompleteCommandCallsCollection.TryGetValue(invokeId, out TaskCompletionSource<StatusCode>? taskCompletionSource))
+                if (_incompleteLongrunningPassthroughRequestsCollection.TryGetValue(invokeId, out TaskCompletionSource<StatusCode>? taskCompletionSource))
                 {
                     taskCompletionSource.SetResult(statusCode);
-                    _incompleteCommandCallsCollection.Remove(invokeId);
+                    _incompleteLongrunningPassthroughRequestsCollection.Remove(invokeId);
                 }
             }
         }
