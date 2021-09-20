@@ -1122,7 +1122,7 @@
             <param name="dataToSend"></param>
             <returns></returns>
         </member>
-        <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.LongrunningPassthrough(System.String,System.String,System.String,System.Action{System.Boolean})">
+        <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.LongrunningPassthrough(System.String,System.String,System.Byte[],System.Action{System.Boolean})">
             <summary>
                 Returns true, if succeeded.
             </summary>
@@ -2198,19 +2198,19 @@
             <summary>        
             </summary>
         </member>
-        <member name="T:Ssz.Utils.ObjectExtensions">
+        <member name="T:Ssz.Utils.ObjectHelper">
             <summary>
             
             </summary>
         </member>
-        <member name="M:Ssz.Utils.ObjectExtensions.GetAllFields(System.Object)">
+        <member name="M:Ssz.Utils.ObjectHelper.GetAllFields(System.Object)">
             <summary>
                 Returns all fields except that with Searchable(false) attribute.        
             </summary>
             <param name="obj"></param>
             <returns></returns>
         </member>
-        <member name="M:Ssz.Utils.ObjectExtensions.GetValue(System.Object,System.String)">
+        <member name="M:Ssz.Utils.ObjectHelper.GetValue(System.Object,System.String)">
             <summary>
                 Returns value of 'obj' concatenated with expression.
                 If ivalid expression returns null.
@@ -2220,7 +2220,7 @@
             <param name="expression"></param>
             <returns></returns>
         </member>
-        <member name="M:Ssz.Utils.ObjectExtensions.SetValue(System.Object,System.String,System.Object)">
+        <member name="M:Ssz.Utils.ObjectHelper.SetValue(System.Object,System.String,System.Object)">
             <summary>
                 Sets value of 'obj' concatenated with expression.
                 Returns True if succeeded.
@@ -2231,7 +2231,7 @@
             <param name="value"></param>
             <returns></returns>
         </member>
-        <member name="M:Ssz.Utils.ObjectExtensions.SetPropertyValue(System.Object,System.String,System.Object)">
+        <member name="M:Ssz.Utils.ObjectHelper.SetPropertyValue(System.Object,System.String,System.Object)">
             <summary>
                 Returns True if succeeded.
             </summary>
@@ -2240,20 +2240,20 @@
             <param name="value"></param>
             <returns></returns>
         </member>
-        <member name="M:Ssz.Utils.ObjectExtensions.FindInStringBrowsableProperties(System.Object,System.Text.RegularExpressions.Regex)">
+        <member name="M:Ssz.Utils.ObjectHelper.FindInStringBrowsableProperties(System.Object,System.Text.RegularExpressions.Regex)">
             <summary>
                 Searches in properties with [Searchable(true)] or [Browsable(true)] attributes.
                 [Searchable(true)] attribute has higher priority.
                 If regex == null matches all properties.        
             </summary>
         </member>
-        <member name="M:Ssz.Utils.ObjectExtensions.ReplaceInStringBrowsableProperties(System.Object,System.Text.RegularExpressions.Regex,System.String)">
+        <member name="M:Ssz.Utils.ObjectHelper.ReplaceInStringBrowsableProperties(System.Object,System.Text.RegularExpressions.Regex,System.String)">
             <summary>
                 Replaces in properties with [Searchable(true)] or [Browsable(true)] attributes.
                 [Searchable(true)] attribute has higher priority.        
             </summary>
         </member>
-        <member name="M:Ssz.Utils.ObjectExtensions.GetProperties(System.Object)">
+        <member name="M:Ssz.Utils.ObjectHelper.GetProperties(System.Object)">
             <summary>
                 Returns all Browsable properties of object.
                 SearchableAttribute can explicitly set whether to return or not the property.        
@@ -2417,62 +2417,6 @@
             <param name="source"></param>
             <param name="destination"></param>
         </member>
-        <member name="T:Ssz.Utils.OwnedDataSerializable">
-            <summary>
-                Abstract base class allows to save/retrieve their internal data to/from an existing
-                SerializationWriter/SerializationReader.
-                Implemented interface which specify that class can be recreated during deserialization using a default
-                constructor and then calling DeserializeOwnedData()
-            </summary>
-        </member>
-        <member name="M:Ssz.Utils.OwnedDataSerializable.SerializeOwnedData(Ssz.Utils.Serialization.SerializationWriter,System.Object)">
-            <summary>
-                Store internal data directly into a SerializationWriter.
-                Uses JsonSerializer.Serialize internally.
-                You can specify JsonSerializerOptions as context.
-            </summary>
-            <param name="writer"> The SerializationWriter to use </param>
-            <param name="context"> Optional context to use as a hint as to what to store (BitVector32 is useful) </param>
-        </member>
-        <member name="M:Ssz.Utils.OwnedDataSerializable.DeserializeOwnedData(Ssz.Utils.Serialization.SerializationReader,System.Object)">
-            <summary>
-                Retrieve internal data directly from a SerializationReader.
-                Uses JsonSerializer.Deserialize internally.
-                You can specify JsonSerializerOptions as context.
-            </summary>
-            <param name="reader"> The SerializationReader to use </param>
-            <param name="context"> Optional context to use as a hint as to what to retrieve (BitVector32 is useful) </param>
-        </member>
-        <member name="T:Ssz.Utils.OwnedDataSerializableAndCloneable">
-            <summary>
-                Abstract base class allows to save/retrieve their internal data to/from an existing
-                SerializationWriter/SerializationReader.
-                Implemented Equal method which based of comparing serialized data.
-                Implemented interface which specify that class can be recreated during deserialization using a default
-                constructor and then calling DeserializeOwnedData()
-            </summary>
-        </member>
-        <member name="M:Ssz.Utils.OwnedDataSerializableAndCloneable.Clone">
-            <summary>
-                Creates a new object that is a copy of the current instance.
-            </summary>
-            <returns>a new object that is a copy of the current instance. </returns>
-        </member>
-        <member name="M:Ssz.Utils.OwnedDataSerializableAndCloneable.Equals(System.Object)">
-            <summary>
-                Compares objects.
-            </summary>
-            <returns>Returns true if both references is equal or both objects have equal serialized data</returns>
-        </member>
-        <member name="M:Ssz.Utils.OwnedDataSerializableExtensions.CloneUsingSerialization``1(``0,System.Func{``0})">
-            <summary>
-                func is new object creator function, otherwise default constructor is used.
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="obj"></param>
-            <param name="func"></param>
-            <returns></returns>
-        </member>
         <member name="T:Ssz.Utils.Properties.Resources">
             <summary>
               A strongly-typed resource class, for looking up localized strings, etc.
@@ -2534,6 +2478,60 @@
             </summary>
             <param name="reader"> The SerializationReader to use </param>
             <param name="context"> Optional context to use as a hint as to what to retrieve </param>
+        </member>
+        <member name="T:Ssz.Utils.Serialization.OwnedDataSerializable">
+            <summary>
+                Implementation of serialization, which uses JsonSerializer internally.
+                Implemented Equal method which based of comparing serialized data.
+                Implemented ICloneable interface which based on serialized data.  
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.OwnedDataSerializable.SerializeOwnedData(Ssz.Utils.Serialization.SerializationWriter,System.Object)">
+            <summary>
+                Implementation of serialization, which uses JsonSerializer internally.        
+                You can specify JsonSerializerOptions as context.
+            </summary>
+            <param name="writer"> The SerializationWriter to use </param>
+            <param name="context"> Optional context to use as a hint as to what to store (BitVector32 is useful) </param>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.OwnedDataSerializable.DeserializeOwnedData(Ssz.Utils.Serialization.SerializationReader,System.Object)">
+            <summary>        
+                Implementation of serialization, which uses JsonSerializer internally.
+                You can specify JsonSerializerOptions as context.
+            </summary>
+            <param name="reader"> The SerializationReader to use </param>
+            <param name="context"> Optional context to use as a hint as to what to retrieve (BitVector32 is useful) </param>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.OwnedDataSerializable.Clone">
+            <summary>
+                Creates a new object that is a copy of the current instance.
+            </summary>
+            <returns>a new object that is a copy of the current instance. </returns>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.OwnedDataSerializable.Equals(System.Object)">
+            <summary>
+                Compares objects.
+            </summary>
+            <returns>Returns true if both references is equal or both objects have equal serialized data</returns>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.SerializationHelper.CloneUsingSerialization``1(``0,System.Func{``0})">
+            <summary>
+                func is new object creator function, otherwise default constructor is used.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="ownedDataSerializable"></param>
+            <param name="func"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.SerializationHelper.CreateFromOwnedData``1(System.Byte[],System.Func{``0})">
+            <summary>
+                func is new object creator function, otherwise default constructor is used.
+                If ownedData is null, returns null.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="ownedData"></param>
+            <param name="func"></param>
+            <returns></returns>
         </member>
         <member name="T:Ssz.Utils.Serialization.SerializationReader">
             <summary>
@@ -2655,12 +2653,18 @@
             </summary>
             <returns> A TimeSpan value. </returns>
         </member>
-        <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadArray``1">
+        <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadNullableArray``1">
             <summary>
-                Returns an array populated with values from the stream or null.
+                Use WriteNullableArray T (...) for writing.
             </summary>
-            <typeparam name="T"> The list Type. </typeparam>
-            <returns> A new generic List or null. </returns>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadNullableByteArray">
+            <summary>
+                Use WriteNullableByteArray(...) for writing.
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadList``1">
             <summary>
@@ -2704,6 +2708,12 @@
                 Returns an Int64 value from the stream that was stored optimized.
             </summary>
             <returns> An Int64 value. </returns>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadByteArray">
+            <summary>
+                Use Write(byte[] values) for writing.
+            </summary>
+            <returns></returns>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadOptimizedBitArray">
             <summary>
@@ -3259,16 +3269,18 @@
             </summary>
             <param name="value"> The TimeSpan value to store. </param>
         </member>
-        <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteArray``1(``0[])">
-            <summary>
-                Writes a nullable array into the stream.
+        <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteNullableArray``1(``0[])">
+            <summary>        
+                Use ReadNullableArray T () for reading.
             </summary>
-            <remarks>
-                Array type itself is not stored - it must be supplied
-                at deserialization time.
-            </remarks>
-            <typeparam name="T"> Array Type. </typeparam>
-            <param name="value"> The generic List. </param>
+            <typeparam name="T"></typeparam>
+            <param name="values"></param>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteNullableByteArray(System.Byte[])">
+            <summary>
+                Use ReadNullableByteArray() for reading.
+            </summary>
+            <param name="values"></param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.Write``1(System.Collections.Generic.IList{``0})">
             <summary>
@@ -3463,106 +3475,92 @@
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteOptimizedArrayInternal(System.Int16[])">
             <summary>
                 Writes an Int16[] into the stream using the fewest possible bytes.
-                values != null
             </summary>
-            <param name="values"> The Int16[] to store. </param>
+            <param name="values"></param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteOptimizedArrayInternal(System.Int32[])">
             <summary>
                 Writes an Int32[] into the stream using the fewest possible bytes.
-                values != null
             </summary>
-            <param name="values"> The Int32[] to store. </param>
+            <param name="values"></param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteOptimizedArrayInternal(System.Int64[])">
             <summary>
                 Writes an Int64[] into the stream using the fewest possible bytes.
-                values != null
             </summary>
-            <param name="values"> The Int64[] to store. </param>
+            <param name="values"></param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteOptimizedArrayInternal(System.UInt16[])">
             <summary>
                 Writes a UInt16[] into the stream using the fewest possible bytes.
-                values != null
             </summary>
-            <param name="values"> The UInt16[] to store. </param>
+            <param name="values"></param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteOptimizedArrayInternal(System.UInt32[])">
             <summary>
                 Writes a UInt32[] into the stream using the fewest possible bytes.
-                values != null
             </summary>
-            <param name="values"> The UInt32[] to store. </param>
+            <param name="values"></param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteOptimizedArrayInternal(System.UInt64[])">
             <summary>
                 Writes a UInt64[] into the stream using the fewest possible bytes.
-                values != null
             </summary>
-            <param name="values"> The UInt64[] to store. </param>
+            <param name="values"></param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteArrayInternal(System.Single[])">
             <summary>
-                values != null
+            
             </summary>
-            <param name="values"> The Single[] to store. </param>
+            <param name="values"></param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteArrayInternal(System.Double[])">
             <summary>
-                values != null
+            
             </summary>
-            <param name="values"> The Double[] to store. </param>
+            <param name="values"></param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteArrayInternal(System.Decimal[])">
             <summary>
-                values != null
-            </summary>
-            <remarks>
                 All elements are stored optimized.
-            </remarks>
-            <param name="values"> The Decimal[] to store. </param>
+            </summary>
+            <param name="values"></param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteOptimizedArrayInternal(System.DateTime[])">
             <summary>
-                Writes a DateTime[] into the stream using the fewest possible bytes.
-                values != null
+                Writes a DateTime[] into the stream using the fewest possible bytes.        
             </summary>
             <param name="values"> The DateTime[] to store. </param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteOptimizedArrayInternal(System.TimeSpan[])">
             <summary>
-                Writes a TimeSpan[] into the stream using the fewest possible bytes.
-                values != null
+                Writes a TimeSpan[] into the stream using the fewest possible bytes.        
             </summary>
             <param name="values"> The TimeSpan[] to store. </param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteArrayInternal(System.Guid[])">
             <summary>
-                values != null
+            
             </summary>
-            <param name="values"> The Guid[] to store. </param>
+            <param name="values"></param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteArrayInternal(System.Boolean[])">
             <summary>
-                values != null
+            
             </summary>
-            <remarks>
-                Stored as a BitArray for optimization.
-            </remarks>
-            <param name="values"> The Boolean[] to store. </param>
+            <param name="values"></param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteArrayInternal(System.SByte[])">
             <summary>
-                values != null
+            /
             </summary>
-            <param name="values"> The SByte[] to store. </param>
+            <param name="values"></param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteArrayInternal(System.Byte[])">
             <summary>
-                values != null
+            
             </summary>
-            <param name="values"> The Byte[] to store. </param>
+            <param name="values"></param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteArrayInternal(System.Char[])">
             <summary>

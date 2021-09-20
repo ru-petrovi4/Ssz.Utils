@@ -1127,7 +1127,7 @@ namespace Ssz.Utils.Serialization
         //}
 
         /// <summary>        
-        ///     Use ReadNullableArray<T>() for reading.
+        ///     Use ReadNullableArray T () for reading.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="values"></param>

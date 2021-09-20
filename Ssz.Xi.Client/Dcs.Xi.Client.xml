@@ -990,7 +990,7 @@
         <member name="P:Ssz.Xi.Client.Internal.Context.XiContext.ContextId">
             <summary>
                 This property is the server-unique identifier of the context. It is returned by the server
-                when the client application creates the context.
+                when the client application creates the context.        
             </summary>
         </member>
         <member name="P:Ssz.Xi.Client.Internal.Context.XiContext.LocaleId">

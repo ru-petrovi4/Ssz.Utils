@@ -351,7 +351,7 @@ namespace Ssz.Utils.Serialization
         //}
 
         /// <summary>
-        ///     Use WriteNullableArray<T>(...) for writing.
+        ///     Use WriteNullableArray T (...) for writing.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
