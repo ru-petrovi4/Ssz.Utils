@@ -38,6 +38,8 @@ service DataAccess {
   rpc Passthrough (PassthroughRequest) returns (PassthroughReply);
 
   rpc LongrunningPassthrough (LongrunningPassthroughRequest) returns (LongrunningPassthroughReply);
+
+  rpc CancelLongrunningPassthrough (CancelLongrunningPassthroughRequest) returns (CancelLongrunningPassthroughReply);
 }
 
 enum State
@@ -181,7 +183,7 @@ message EnableListCallbackRequest {
 }
 
 message EnableListCallbackReply {  
-  bool enabled = 2;
+  bool enabled = 1;
 }
 
 message TouchListRequest {
@@ -354,13 +356,21 @@ message PassthroughReply {
   PassthroughData return_data = 1;
 }
 
-message LongrunningPassthroughRequest {
-  string invoke_id = 1;
-  string context_id = 2;
+message LongrunningPassthroughRequest {  
+  string context_id = 1;
+  string invoke_id = 2;
   string recipient_id = 3;
   string passthrough_name = 4;
   PassthroughData data_to_send = 5;
 }
 
 message LongrunningPassthroughReply {    
+}
+
+message CancelLongrunningPassthroughRequest {
+  string context_id = 1;
+  string invoke_id = 2;  
+}
+
+message CancelLongrunningPassthroughReply {    
 }
