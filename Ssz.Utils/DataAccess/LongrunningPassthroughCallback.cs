@@ -10,7 +10,7 @@ namespace Ssz.Utils.DataAccess
     {
 		#region public functions		
 		
-		public string OperationId = @"";
+		public string InvokeId = @"";
 
 		public double ProgressPercent;
 

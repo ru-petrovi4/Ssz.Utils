@@ -129,16 +129,16 @@ namespace Ssz.DataGrpc.Client
         {
             lock (_incompleteLongrunningPassthroughRequestsCollection)
             {
-                if (_incompleteLongrunningPassthroughRequestsCollection.TryGetValue(longrunningPassthroughCallback.OperationId, out IncompleteLongrunningPassthroughRequest? incompleteLongrunningPassthroughRequest))
-                {
-                    var operationId = longrunningPassthroughCallback.OperationId ?? @"";
+                var invokeId = longrunningPassthroughCallback.InvokeId ?? @"";
+                if (_incompleteLongrunningPassthroughRequestsCollection.TryGetValue(invokeId, out IncompleteLongrunningPassthroughRequest? incompleteLongrunningPassthroughRequest))
+                {                    
                     var statusCode = (StatusCode)longrunningPassthroughCallback.StatusCode;
                     var callbackAction = incompleteLongrunningPassthroughRequest.CallbackAction;
                     if (callbackAction != null)
                     {
                         callbackAction(new Utils.DataAccess.LongrunningPassthroughCallback
                         {
-                            OperationId = operationId,
+                            InvokeId = invokeId,
                             ProgressPercent = longrunningPassthroughCallback.ProgressPercent,
                             ProgressLabel = longrunningPassthroughCallback.ProgressLabel ?? @"",
                             IsAborted = statusCode != StatusCode.OK
@@ -147,14 +147,14 @@ namespace Ssz.DataGrpc.Client
                     if (statusCode != StatusCode.OK)
                     {
                         incompleteLongrunningPassthroughRequest.TaskCompletionSource.SetResult(statusCode);
-                        _incompleteLongrunningPassthroughRequestsCollection.Remove(operationId);
+                        _incompleteLongrunningPassthroughRequestsCollection.Remove(invokeId);
                     }
                     else // statusCode == StatusCode.OK
                     {
                         if (longrunningPassthroughCallback.ProgressPercent > 99.9)
                         {
                             incompleteLongrunningPassthroughRequest.TaskCompletionSource.SetResult(StatusCode.OK);
-                            _incompleteLongrunningPassthroughRequestsCollection.Remove(operationId);
+                            _incompleteLongrunningPassthroughRequestsCollection.Remove(invokeId);
                         }
                     }                    
                 }

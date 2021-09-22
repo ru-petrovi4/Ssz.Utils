@@ -158,7 +158,7 @@ namespace Ssz.DataGrpc.Client
 
             if (!ServerContextIsOperational) throw new InvalidOperationException();
 
-            string operationId = Guid.NewGuid().ToString();
+            string invokeId = Guid.NewGuid().ToString();
             try
             {
                 var incompleteLongrunningPassthroughRequest = new IncompleteLongrunningPassthroughRequest
@@ -167,7 +167,7 @@ namespace Ssz.DataGrpc.Client
                 };
                 lock (_incompleteLongrunningPassthroughRequestsCollection)
                 {
-                    _incompleteLongrunningPassthroughRequestsCollection.Add(operationId, incompleteLongrunningPassthroughRequest);
+                    _incompleteLongrunningPassthroughRequestsCollection.Add(invokeId, incompleteLongrunningPassthroughRequest);
                 }
 
                 var passthroughDataToSendFull = new PassthroughData();
@@ -176,7 +176,7 @@ namespace Ssz.DataGrpc.Client
                 {
                     var request = new LongrunningPassthroughRequest
                     {
-                        OperationId = operationId,
+                        InvokeId = invokeId,
                         ContextId = _serverContextId,
                         RecipientId = recipientId,
                         PassthroughName = passthroughName,
@@ -193,7 +193,7 @@ namespace Ssz.DataGrpc.Client
             {
                 lock (_incompleteLongrunningPassthroughRequestsCollection)
                 {
-                    _incompleteLongrunningPassthroughRequestsCollection.Remove(operationId);
+                    _incompleteLongrunningPassthroughRequestsCollection.Remove(invokeId);
                 }
                 ProcessRemoteMethodCallException(ex);
                 throw;
