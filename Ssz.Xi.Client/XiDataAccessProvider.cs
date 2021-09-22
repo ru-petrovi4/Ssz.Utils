@@ -348,49 +348,6 @@ namespace Ssz.Xi.Client
             });
         }
 
-        /// <summary>        
-        ///     setResultAction(..) is called using сallbackDoer, see Initialize(..).
-        ///     If call to server failed (exception or passthroughResult == null or passthroughResult.ResultCode != 0), setResultAction(null) is called.        
-        /// </summary>
-        public void Passthrough(string recipientId, string passthroughName,
-            byte[] dataToSend, Action<IEnumerable<byte>?> setResultAction)
-        {
-            BeginInvoke(ct =>
-            {
-                byte[]? result;
-                try
-                {
-                    if (_xiServerProxy == null) throw new InvalidOperationException();
-                    PassthroughResult? passthroughResult = _xiServerProxy.Passthrough(recipientId, passthroughName,
-                        dataToSend);
-                    if (passthroughResult != null && passthroughResult.ResultCode == 0) // SUCCESS
-                    {
-                        result = passthroughResult.ReturnData;
-                    }
-                    else
-                    {
-                        result = null;
-                    }
-                }
-                catch (Exception)
-                {
-                    result = null;
-                }
-
-                IDispatcher? сallbackDoer = _callbackDispatcher;
-                if (сallbackDoer != null)
-                {
-                    try
-                    {
-                        сallbackDoer.BeginInvoke(ct => setResultAction(result));
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }
-            });
-        }
-
         /// <summary>
         ///     Returns null if any errors.
         /// </summary>
@@ -428,55 +385,54 @@ namespace Ssz.Xi.Client
             return await taskCompletionSource.Task;
         }
 
-        public void LongrunningPassthrough(string recipientId, string passthroughName, byte[] dataToSend,
-            Action<bool> setResultAction)
-        {
-            BeginInvoke(async ct =>
-            {
-                bool result;
-                try
-                {
-                    if (_xiServerProxy == null) throw new InvalidOperationException();
-                    result = await _xiServerProxy.LongrunningPassthroughAsync(recipientId, passthroughName,
-                        dataToSend);                    
-                }
-                catch
-                {
-                    result = false;
-                }
-
-                IDispatcher? сallbackDoer = _callbackDispatcher;
-                if (сallbackDoer != null)
-                {
-                    try
-                    {
-                        сallbackDoer.BeginInvoke(ct => setResultAction(result));
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }
-            });
-        }
-
-        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
+        /// <summary>
+        ///     Returns true if Aborted.
+        /// </summary>
+        /// <param name="recipientId"></param>
+        /// <param name="passthroughName"></param>
+        /// <param name="dataToSend"></param>
+        /// <param name="callbackAction"></param>
+        /// <returns></returns>
+        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend, 
+            Action<LongrunningPassthroughCallback>? callbackAction)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
             BeginInvoke(async ct =>
             {
-                bool result;
+                bool isAborted;
                 try
                 {
                     if (_xiServerProxy == null) throw new InvalidOperationException();
-                    result = await _xiServerProxy.LongrunningPassthroughAsync(recipientId, passthroughName,
-                        dataToSend);
+
+                    IDispatcher? сallbackDispatcher = _callbackDispatcher;
+                    Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
+                    if (callbackAction != null && сallbackDispatcher != null)
+                    {
+                        callbackActionDispatched = a =>
+                        {
+                            try
+                            {
+                                сallbackDispatcher.BeginInvoke(ct => callbackAction(a));
+                            }
+                            catch (Exception)
+                            {
+                            }
+                        };
+                    }
+                    else
+                    {
+                        callbackActionDispatched = null;
+                    }
+
+                    isAborted = await _xiServerProxy.LongrunningPassthroughAsync(recipientId, passthroughName,
+                        dataToSend, callbackActionDispatched);
                 }
                 catch
                 {
-                    result = false;
+                    isAborted = true;
                 }
 
-                taskCompletionSource.SetResult(result);
+                taskCompletionSource.SetResult(isAborted);
             });
             return await taskCompletionSource.Task;
         }

@@ -128,7 +128,16 @@ namespace Ssz.Xi.Client.Internal.Context
             return passthroughResult;
         }
 
-        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
+        /// <summary>
+        ///     Returns true if Aborted.
+        /// </summary>
+        /// <param name="recipientId"></param>
+        /// <param name="passthroughName"></param>
+        /// <param name="dataToSend"></param>
+        /// <param name="callbackAction"></param>
+        /// <returns></returns>
+        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend,
+            Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackAction)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
@@ -154,6 +163,10 @@ namespace Ssz.Xi.Client.Internal.Context
             }
             catch (Exception ex)
             {
+                lock (_incompleteCommandCallsCollection)
+                {
+                    _incompleteCommandCallsCollection.Remove((uint)invokeId);
+                }
                 ProcessRemoteMethodCallException(ex);
                 throw;
             }            

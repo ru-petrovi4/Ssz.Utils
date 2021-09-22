@@ -21,7 +21,7 @@ namespace Ssz.DataGrpc.Client
         {
             add { BeginInvoke(ct => ClientEventListManager.EventMessagesCallback += value); }
             remove { BeginInvoke(ct => ClientEventListManager.EventMessagesCallback -= value); }
-        }
+        }        
         
         public void AckAlarms(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
         {
@@ -68,3 +68,12 @@ namespace Ssz.DataGrpc.Client
         #endregion
     }
 }
+
+///// <summary>
+/////     Is called using сallbackDispatcher, see Initialize(..).        
+///// </summary>
+//public event Action<Utils.DataAccess.LongrunningPassthroughCallback> LongrunningPassthroughCallback
+//{
+//    add { BeginInvoke(ct => ClientEventListManager.LongrunningPassthroughCallback += value); }
+//    remove { BeginInvoke(ct => ClientEventListManager.LongrunningPassthroughCallback -= value); }
+//}

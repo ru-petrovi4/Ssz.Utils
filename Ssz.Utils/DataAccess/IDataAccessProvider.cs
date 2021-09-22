@@ -99,30 +99,18 @@ namespace Ssz.Utils.DataAccess
         /// <param name="recipientId"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
-        /// <param name="setResultAction"></param>
-        void Passthrough(string recipientId, string passthroughName, byte[] dataToSend,
-            Action<IEnumerable<byte>?> setResultAction);
-
-        /// <summary>
-        ///     Returns null if any errors.
-        /// </summary>
-        /// <param name="recipientId"></param>
-        /// <param name="passthroughName"></param>
-        /// <param name="dataToSend"></param>
         /// <returns></returns>
         Task<IEnumerable<byte>?> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend);
 
         /// <summary>
-        ///     Returns true, if succeeded.
+        ///     Returns true if Aborted.
         /// </summary>
         /// <param name="recipientId"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
-        /// <param name="setResultAction"></param>
-        void LongrunningPassthrough(string recipientId, string passthroughName, byte[] dataToSend,
-            Action<bool> setResultAction);
-
-        Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend);
+        /// <param name="callbackAction"></param>
+        /// <returns></returns>
+        Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend, Action<LongrunningPassthroughCallback>? callbackAction);
 
         void JournalAddItem(string elementId, object valueJournalSubscription);
 

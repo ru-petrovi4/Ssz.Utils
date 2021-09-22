@@ -703,51 +703,6 @@ namespace Ssz.DataGrpc.Client
             });
         }
 
-        /// <summary>        
-        ///     Returns null if any errors.
-        /// </summary>
-        /// <param name="recipientId"></param>
-        /// <param name="passthroughName"></param>
-        /// <param name="dataToSend"></param>
-        /// <param name="setResultAction"></param>
-        public void Passthrough(string recipientId, string passthroughName, byte[] dataToSend,
-            Action<IEnumerable<byte>?> setResultAction)
-        {
-            BeginInvoke(ct =>
-            {
-                IEnumerable<byte>? result;
-                try
-                {
-                    IEnumerable<byte> returnData;
-                    ClientConnectionManager.Passthrough(recipientId, passthroughName,
-                        dataToSend, out returnData);
-                    result = returnData;
-                }
-                catch (RpcException ex)
-                {
-                    Logger.LogError(ex, ex.Status.Detail);
-                    result = null;
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex, "Passthrough exception.");
-                    result = null;
-                }
-
-                IDispatcher? сallbackDispatcher = CallbackDispatcher;
-                if (сallbackDispatcher != null)
-                {
-                    try
-                    {
-                        сallbackDispatcher.BeginInvoke(ct => setResultAction(result));
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }
-            });
-        }
-
         /// <summary>
         ///     Returns null if any errors.
         /// </summary>
@@ -784,67 +739,59 @@ namespace Ssz.DataGrpc.Client
             return await taskCompletionSource.Task;
         }
 
-        public void LongrunningPassthrough(string recipientId, string passthroughName, byte[] dataToSend,
-            Action<bool> setResultAction)
-        {
-            BeginInvoke(async ct =>
-            {
-                bool result;
-                try
-                {                    
-                    StatusCode statusCode = await ClientConnectionManager.LongrunningPassthroughAsync(recipientId, passthroughName,
-                        dataToSend);
-                    result = statusCode == StatusCode.OK;
-                }
-                catch (RpcException ex)
-                {
-                    Logger.LogError(ex, ex.Status.Detail);
-                    result = false;
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex, "Passthrough exception.");
-                    result = false;
-                }
-
-                IDispatcher? сallbackDispatcher = CallbackDispatcher;
-                if (сallbackDispatcher != null)
-                {
-                    try
-                    {
-                        сallbackDispatcher.BeginInvoke(ct => setResultAction(result));
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }
-            });
-        }
-
-        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
+        /// <summary>
+        ///     Returns true if Aborted
+        /// </summary>
+        /// <param name="recipientId"></param>
+        /// <param name="passthroughName"></param>
+        /// <param name="dataToSend"></param>
+        /// <param name="callbackAction"></param>
+        /// <returns></returns>
+        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend,
+            Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackAction)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
             BeginInvoke(async ct =>
             {
-                bool result;
+                bool isAborted;
                 try
                 {
+                    IDispatcher? сallbackDispatcher = CallbackDispatcher;
+                    Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
+                    if (callbackAction != null && сallbackDispatcher != null)
+                    {
+                        callbackActionDispatched = a =>
+                        {
+                            try
+                            {
+                                сallbackDispatcher.BeginInvoke(ct => callbackAction(a));
+                            }
+                            catch (Exception)
+                            {
+                            }
+                        };
+                    }
+                    else
+                    {
+                        callbackActionDispatched = null;
+                    }
+
                     StatusCode statusCode = await ClientConnectionManager.LongrunningPassthroughAsync(recipientId, passthroughName,
-                        dataToSend);
-                    result = statusCode == StatusCode.OK;
+                        dataToSend, callbackActionDispatched);
+                    isAborted = statusCode != StatusCode.OK;
                 }
                 catch (RpcException ex)
                 {
                     Logger.LogError(ex, ex.Status.Detail);
-                    result = false;
+                    isAborted = true;
                 }
                 catch (Exception ex)
                 {
                     Logger.LogError(ex, "Passthrough exception.");
-                    result = false;
+                    isAborted = true;
                 }
 
-                taskCompletionSource.SetResult(result);
+                taskCompletionSource.SetResult(isAborted);
             });
             return await taskCompletionSource.Task;
         }

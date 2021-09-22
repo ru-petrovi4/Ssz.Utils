@@ -151,19 +151,23 @@ namespace Ssz.DataGrpc.Client
             }            
         }
 
-        public async Task<StatusCode> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
+        public async Task<StatusCode> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend,
+            Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackAction)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
 
             if (!ServerContextIsOperational) throw new InvalidOperationException();
 
-            string invokeId = Guid.NewGuid().ToString();
+            string operationId = Guid.NewGuid().ToString();
             try
-            {                
-                var taskCompletionSource = new TaskCompletionSource<StatusCode>();
+            {
+                var incompleteLongrunningPassthroughRequest = new IncompleteLongrunningPassthroughRequest
+                {
+                    CallbackAction = callbackAction
+                };
                 lock (_incompleteLongrunningPassthroughRequestsCollection)
                 {
-                    _incompleteLongrunningPassthroughRequestsCollection.Add(invokeId, taskCompletionSource);
+                    _incompleteLongrunningPassthroughRequestsCollection.Add(operationId, incompleteLongrunningPassthroughRequest);
                 }
 
                 var passthroughDataToSendFull = new PassthroughData();
@@ -172,7 +176,7 @@ namespace Ssz.DataGrpc.Client
                 {
                     var request = new LongrunningPassthroughRequest
                     {
-                        InvokeId = invokeId,
+                        OperationId = operationId,
                         ContextId = _serverContextId,
                         RecipientId = recipientId,
                         PassthroughName = passthroughName,
@@ -183,13 +187,13 @@ namespace Ssz.DataGrpc.Client
                     SetResourceManagementLastCallUtc();
                 }
 
-                return await taskCompletionSource.Task;
+                return await incompleteLongrunningPassthroughRequest.TaskCompletionSource.Task;
             }
             catch (Exception ex)
             {
                 lock (_incompleteLongrunningPassthroughRequestsCollection)
                 {
-                    _incompleteLongrunningPassthroughRequestsCollection.Remove(invokeId);
+                    _incompleteLongrunningPassthroughRequestsCollection.Remove(operationId);
                 }
                 ProcessRemoteMethodCallException(ex);
                 throw;
@@ -203,10 +207,17 @@ namespace Ssz.DataGrpc.Client
         private readonly CaseInsensitiveDictionary<IEnumerable<byte>> _incompletePassthroughRepliesCollection = new();
 
         /// <summary>
-        ///     [InvokeId, TaskCompletionSource]
+        ///     [InvokeId, IncompleteLongrunningPassthroughRequest]
         /// </summary>
-        private readonly Dictionary<string, TaskCompletionSource<StatusCode>> _incompleteLongrunningPassthroughRequestsCollection = new();
+        private readonly Dictionary<string, IncompleteLongrunningPassthroughRequest> _incompleteLongrunningPassthroughRequestsCollection = new();
 
         #endregion        
+
+        private class IncompleteLongrunningPassthroughRequest
+        {
+            public readonly TaskCompletionSource<StatusCode> TaskCompletionSource = new();
+
+            public Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? CallbackAction;
+        }
     }
 }

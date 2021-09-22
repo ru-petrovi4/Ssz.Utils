@@ -173,7 +173,7 @@ namespace Ssz.DataGrpc.Client.Managers
                     }
                 }
             }
-        }
+        }        
 
         #endregion
 
@@ -202,3 +202,35 @@ namespace Ssz.DataGrpc.Client.Managers
         }
     }
 }
+
+
+//public event Action<Utils.DataAccess.LongrunningPassthroughCallback> LongrunningPassthroughCallback
+//{
+//    add
+//    {
+//        _longrunningPassthroughCallbackEventHandlers.Add(value, new ClientEventListPointer());
+//        _dataGrpcEventItemsMustBeAdded = true;
+//    }
+//    remove
+//    {
+//        ClientEventListPointer? dataGrpcEventListPointer;
+//        if (!_longrunningPassthroughCallbackEventHandlers.TryGetValue(value, out dataGrpcEventListPointer)) return;
+//        _longrunningPassthroughCallbackEventHandlers.Remove(value);
+//        if (dataGrpcEventListPointer.P != null)
+//        {
+//            try
+//            {
+//                dataGrpcEventListPointer.P.Dispose();
+//            }
+//            catch (Exception ex)
+//            {
+//                Logger.LogWarning(ex, @"dataGrpcEventListPointer.P.Dispose() exception");
+//            }
+//        }
+//    }
+//}
+
+
+
+//private readonly Dictionary<Action<Utils.DataAccess.LongrunningPassthroughCallback>, ClientEventListPointer> _longrunningPassthroughCallbackEventHandlers =
+//    new();

@@ -356,7 +356,7 @@ namespace Ssz.DataGrpc.Client
                                 break;
                             case CallbackMessage.OptionalMessageOneofCase.LongrunningPassthroughCallback:
                                 LongrunningPassthroughCallback longrunningPassthroughCallback = current.LongrunningPassthroughCallback;
-                                LongrunningPassthroughCallback(longrunningPassthroughCallback.InvokeId, (StatusCode)longrunningPassthroughCallback.StatusCode);
+                                LongrunningPassthroughCallback(longrunningPassthroughCallback);
                                 break;
                         }
                     }

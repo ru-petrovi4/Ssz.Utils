@@ -1104,15 +1104,6 @@
             <param name="valueStatusTimestamps"></param>
             <param name="setResultAction"></param>
         </member>
-        <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.Passthrough(System.String,System.String,System.Byte[],System.Action{System.Collections.Generic.IEnumerable{System.Byte}})">
-            <summary>
-                Returns null if any errors.
-            </summary>
-            <param name="recipientId"></param>
-            <param name="passthroughName"></param>
-            <param name="dataToSend"></param>
-            <param name="setResultAction"></param>
-        </member>
         <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.PassthroughAsync(System.String,System.String,System.Byte[])">
             <summary>
                 Returns null if any errors.
@@ -1122,14 +1113,15 @@
             <param name="dataToSend"></param>
             <returns></returns>
         </member>
-        <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.LongrunningPassthrough(System.String,System.String,System.Byte[],System.Action{System.Boolean})">
+        <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.LongrunningPassthroughAsync(System.String,System.String,System.Byte[],System.Action{Ssz.Utils.DataAccess.LongrunningPassthroughCallback})">
             <summary>
-                Returns true, if succeeded.
+                Returns true if Aborted.
             </summary>
             <param name="recipientId"></param>
             <param name="passthroughName"></param>
             <param name="dataToSend"></param>
-            <param name="setResultAction"></param>
+            <param name="callbackAction"></param>
+            <returns></returns>
         </member>
         <member name="P:Ssz.Utils.DataAccess.IValueSubscription.Obj">
             <summary>

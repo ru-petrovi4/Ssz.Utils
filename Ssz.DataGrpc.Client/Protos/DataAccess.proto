@@ -74,8 +74,10 @@ message SubscribeForCallbackRequest {
 }
 
 message LongrunningPassthroughCallback {  
-  string invoke_id = 1;  
-  uint32 status_code = 2;
+  string operation_id = 1;
+  double progress_percent = 2;
+  string progress_label = 3;
+  uint32 status_code = 4;
 }
 
 message CallbackMessage {
@@ -358,7 +360,7 @@ message PassthroughReply {
 
 message LongrunningPassthroughRequest {  
   string context_id = 1;
-  string invoke_id = 2;
+  string operation_id = 2;
   string recipient_id = 3;
   string passthrough_name = 4;
   PassthroughData data_to_send = 5;
@@ -369,7 +371,7 @@ message LongrunningPassthroughReply {
 
 message CancelLongrunningPassthroughRequest {
   string context_id = 1;
-  string invoke_id = 2;  
+  string operation_id = 2;  
 }
 
 message CancelLongrunningPassthroughReply {    
