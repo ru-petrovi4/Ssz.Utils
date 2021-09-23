@@ -247,7 +247,7 @@ namespace Ssz.Xi.Client.Internal.Context
             {
                 if (_incompleteCommandCallsCollection.TryGetValue((uint)invokeId, out TaskCompletionSource<bool>? taskCompletionSource))
                 {
-                    taskCompletionSource.SetResult(false);
+                    taskCompletionSource.SetResult(true);
                     _incompleteCommandCallsCollection.Remove((uint)invokeId);
                 }
             }

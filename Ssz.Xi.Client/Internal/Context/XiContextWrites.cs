@@ -129,7 +129,7 @@ namespace Ssz.Xi.Client.Internal.Context
         }
 
         /// <summary>
-        ///     Returns true if Aborted.
+        ///     Returns true if succeeded.
         /// </summary>
         /// <param name="recipientId"></param>
         /// <param name="passthroughName"></param>

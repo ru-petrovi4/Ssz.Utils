@@ -740,7 +740,7 @@ namespace Ssz.DataGrpc.Client
         }
 
         /// <summary>
-        ///     Returns true if Aborted
+        ///     Returns true if succeeded.
         /// </summary>
         /// <param name="recipientId"></param>
         /// <param name="passthroughName"></param>
@@ -753,7 +753,7 @@ namespace Ssz.DataGrpc.Client
             var taskCompletionSource = new TaskCompletionSource<bool>();
             BeginInvoke(async ct =>
             {
-                bool isAborted;
+                bool succeeded;
                 try
                 {
                     IDispatcher? сallbackDispatcher = CallbackDispatcher;
@@ -778,20 +778,20 @@ namespace Ssz.DataGrpc.Client
 
                     StatusCode statusCode = await ClientConnectionManager.LongrunningPassthroughAsync(recipientId, passthroughName,
                         dataToSend, callbackActionDispatched);
-                    isAborted = statusCode != StatusCode.OK;
+                    succeeded = statusCode == StatusCode.OK;
                 }
                 catch (RpcException ex)
                 {
                     Logger.LogError(ex, ex.Status.Detail);
-                    isAborted = true;
+                    succeeded = false;
                 }
                 catch (Exception ex)
                 {
                     Logger.LogError(ex, "Passthrough exception.");
-                    isAborted = true;
+                    succeeded = false;
                 }
 
-                taskCompletionSource.SetResult(isAborted);
+                taskCompletionSource.SetResult(succeeded);
             });
             return await taskCompletionSource.Task;
         }

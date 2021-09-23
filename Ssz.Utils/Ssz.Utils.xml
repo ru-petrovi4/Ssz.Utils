@@ -732,6 +732,7 @@
             <summary>
                 Returns invariant culture for null or empty  or invalid cultureName.
                 Uses Windows-user overrides, if any.
+                No throws.
             </summary>
             <param name="cultureName"></param>
             <returns></returns>
@@ -1115,7 +1116,7 @@
         </member>
         <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.LongrunningPassthroughAsync(System.String,System.String,System.Byte[],System.Action{Ssz.Utils.DataAccess.LongrunningPassthroughCallback})">
             <summary>
-                Returns true if Aborted.
+                Returns true if succeeded.
             </summary>
             <param name="recipientId"></param>
             <param name="passthroughName"></param>

@@ -648,7 +648,7 @@
         </member>
         <member name="M:Ssz.Xi.Client.Api.XiServerProxy.LongrunningPassthroughAsync(System.String,System.String,System.Byte[],System.Action{Ssz.Utils.DataAccess.LongrunningPassthroughCallback})">
             <summary>
-                Returns true if Aborted.
+                Returns true if succeeded.
             </summary>
             <param name="recipientId"></param>
             <param name="passthroughName"></param>
@@ -2032,7 +2032,7 @@
         </member>
         <member name="M:Ssz.Xi.Client.Internal.Context.XiContext.LongrunningPassthroughAsync(System.String,System.String,System.Byte[],System.Action{Ssz.Utils.DataAccess.LongrunningPassthroughCallback})">
             <summary>
-                Returns true if Aborted.
+                Returns true if succeeded.
             </summary>
             <param name="recipientId"></param>
             <param name="passthroughName"></param>
@@ -4252,7 +4252,7 @@
         </member>
         <member name="M:Ssz.Xi.Client.XiDataAccessProvider.LongrunningPassthroughAsync(System.String,System.String,System.Byte[],System.Action{Ssz.Utils.DataAccess.LongrunningPassthroughCallback})">
             <summary>
-                Returns true if Aborted.
+                Returns true if succeeded.
             </summary>
             <param name="recipientId"></param>
             <param name="passthroughName"></param>

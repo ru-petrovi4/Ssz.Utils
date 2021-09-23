@@ -51,6 +51,7 @@ namespace Ssz.Utils
         /// <summary>
         ///     Returns invariant culture for null or empty  or invalid cultureName.
         ///     Uses Windows-user overrides, if any.
+        ///     No throws.
         /// </summary>
         /// <param name="cultureName"></param>
         /// <returns></returns>

@@ -386,7 +386,7 @@ namespace Ssz.Xi.Client
         }
 
         /// <summary>
-        ///     Returns true if Aborted.
+        ///     Returns true if succeeded.
         /// </summary>
         /// <param name="recipientId"></param>
         /// <param name="passthroughName"></param>
@@ -399,7 +399,7 @@ namespace Ssz.Xi.Client
             var taskCompletionSource = new TaskCompletionSource<bool>();
             BeginInvoke(async ct =>
             {
-                bool isAborted;
+                bool succeeded;
                 try
                 {
                     if (_xiServerProxy == null) throw new InvalidOperationException();
@@ -424,15 +424,15 @@ namespace Ssz.Xi.Client
                         callbackActionDispatched = null;
                     }
 
-                    isAborted = await _xiServerProxy.LongrunningPassthroughAsync(recipientId, passthroughName,
+                    succeeded = await _xiServerProxy.LongrunningPassthroughAsync(recipientId, passthroughName,
                         dataToSend, callbackActionDispatched);
                 }
                 catch
                 {
-                    isAborted = true;
+                    succeeded = false;
                 }
 
-                taskCompletionSource.SetResult(isAborted);
+                taskCompletionSource.SetResult(succeeded);
             });
             return await taskCompletionSource.Task;
         }

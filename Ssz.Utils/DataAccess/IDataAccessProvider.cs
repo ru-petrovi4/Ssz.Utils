@@ -103,7 +103,7 @@ namespace Ssz.Utils.DataAccess
         Task<IEnumerable<byte>?> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend);
 
         /// <summary>
-        ///     Returns true if Aborted.
+        ///     Returns true if succeeded.
         /// </summary>
         /// <param name="recipientId"></param>
         /// <param name="passthroughName"></param>
