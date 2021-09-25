@@ -305,10 +305,19 @@ namespace Ssz.Utils.Serialization
          }
 
         /// <summary>
-        ///     Called ReadOptimizedString().        
+        ///     Use Write(string value) for writing.
         /// </summary>
         /// <returns> A string value. </returns>
         public string ReadString()
+        {
+            return ReadOptimizedString()!;
+        }
+
+        /// <summary>
+        ///     Use WriteNullableString(string? value) for writing.
+        /// </summary>
+        /// <returns> A string value. </returns>
+        public string? ReadNullableString()
         {
             return ReadOptimizedString();
         }
@@ -404,7 +413,7 @@ namespace Ssz.Utils.Serialization
         /// <summary>
         ///     Reads list of same objects.
         ///     func is constructor function.      
-        ///     Use WriteListOfOwnedDataSerializable for reading.
+        ///     Use WriteListOfOwnedDataSerializable for writing.
         /// </summary>        
         /// <param name="func"></param>
         /// <param name="context"></param>
@@ -420,6 +429,21 @@ namespace Ssz.Utils.Serialization
                 var v = func();
                 v.DeserializeOwnedData(this, context);
                 result.Add(v);
+            }
+            return result;
+        }
+
+        /// <summary>
+        ///     Use WriteListOfStrings(...) for writing.
+        /// </summary>
+        /// <returns></returns>
+        public List<string> ReadListOfStrings()
+        {
+            int count = ReadInt32();
+            var result = new List<string>(count);
+            for (int i = 0; i < count; i++)
+            {                
+                result.Add(ReadString());
             }
             return result;
         }
@@ -927,7 +951,7 @@ namespace Ssz.Utils.Serialization
         ///     Returns a string value from the stream that was stored optimized.
         /// </summary>
         /// <returns> A string value. </returns>
-        private string ReadOptimizedString()
+        private string? ReadOptimizedString()
         {
             ThrowIfBlockEnding();
 
@@ -936,7 +960,7 @@ namespace Ssz.Utils.Serialization
             switch (typeCode)
             {
                 case SerializedType.NullType: // For compatibility
-                    return string.Empty;
+                    return null;
                 case SerializedType.EmptyStringType:
                     return string.Empty;
                 case SerializedType.SingleSpaceType:
@@ -976,7 +1000,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> A Type instance. </returns>
         private Type? ReadOptimizedType()
         {
-            return GetType(ReadOptimizedString(), true);
+            return GetType(ReadOptimizedString()!, true);
         }
 
         private void ThrowIfBlockEnding()
@@ -1177,7 +1201,7 @@ namespace Ssz.Utils.Serialization
                 {
                     var type = ReadOptimizedType();
                     if (type == null) return null;
-                    string s = ReadOptimizedString();
+                    string s = ReadOptimizedString()!;
                     return JsonSerializer.Deserialize(s, type);
                 }
                 case SerializedType.UInt16Type:
@@ -1229,7 +1253,7 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.BitArrayType:
                     return ReadOptimizedBitArray();
                 case SerializedType.TypeType:
-                    return GetType(ReadOptimizedString(), false);
+                    return GetType(ReadOptimizedString()!, false);
                 case SerializedType.ArrayListType:
                     return new ArrayList(ReadOptimizedObjectArray(typeof (object)));
                 case SerializedType.OwnedDataSerializableType:

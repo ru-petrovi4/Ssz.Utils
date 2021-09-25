@@ -753,29 +753,28 @@ namespace Ssz.DataGrpc.Client
             var taskCompletionSource = new TaskCompletionSource<bool>();
             BeginInvoke(async ct =>
             {
+                IDispatcher? сallbackDispatcher = CallbackDispatcher;
+                Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
+                if (callbackAction != null && сallbackDispatcher != null)
+                {
+                    callbackActionDispatched = a =>
+                    {
+                        try
+                        {
+                            сallbackDispatcher.BeginInvoke(ct => callbackAction(a));
+                        }
+                        catch (Exception)
+                        {
+                        }
+                    };
+                }
+                else
+                {
+                    callbackActionDispatched = null;
+                }
                 bool succeeded;
                 try
                 {
-                    IDispatcher? сallbackDispatcher = CallbackDispatcher;
-                    Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
-                    if (callbackAction != null && сallbackDispatcher != null)
-                    {
-                        callbackActionDispatched = a =>
-                        {
-                            try
-                            {
-                                сallbackDispatcher.BeginInvoke(ct => callbackAction(a));
-                            }
-                            catch (Exception)
-                            {
-                            }
-                        };
-                    }
-                    else
-                    {
-                        callbackActionDispatched = null;
-                    }
-
                     StatusCode statusCode = await ClientConnectionManager.LongrunningPassthroughAsync(recipientId, passthroughName,
                         dataToSend, callbackActionDispatched);
                     succeeded = statusCode == StatusCode.OK;
@@ -783,11 +782,25 @@ namespace Ssz.DataGrpc.Client
                 catch (RpcException ex)
                 {
                     Logger.LogError(ex, ex.Status.Detail);
+                    if (callbackActionDispatched != null)
+                    {
+                        callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
+                        {   
+                            Succeeded = false
+                        });
+                    }
                     succeeded = false;
                 }
                 catch (Exception ex)
                 {
                     Logger.LogError(ex, "Passthrough exception.");
+                    if (callbackActionDispatched != null)
+                    {
+                        callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
+                        {
+                            Succeeded = false
+                        });
+                    }
                     succeeded = false;
                 }
 

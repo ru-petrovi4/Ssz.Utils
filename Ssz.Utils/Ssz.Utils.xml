@@ -2636,7 +2636,13 @@
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadString">
             <summary>
-                Called ReadOptimizedString().        
+                Use Write(string value) for writing.
+            </summary>
+            <returns> A string value. </returns>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadNullableString">
+            <summary>
+                Use WriteNullableString(string? value) for writing.
             </summary>
             <returns> A string value. </returns>
         </member>
@@ -2670,10 +2676,16 @@
             <summary>
                 Reads list of same objects.
                 func is constructor function.      
-                Use WriteListOfOwnedDataSerializable for reading.
+                Use WriteListOfOwnedDataSerializable for writing.
             </summary>        
             <param name="func"></param>
             <param name="context"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadListOfStrings">
+            <summary>
+                Use WriteListOfStrings(...) for writing.
+            </summary>
             <returns></returns>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationReader.ReadDictionary``2(System.Collections.Generic.Dictionary{``0,``1})">
@@ -3251,7 +3263,13 @@
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.Write(System.String)">
             <summary>
-                This override to hide base BinaryWriter.Write(string).
+                Use ReadString() for reading.
+            </summary>
+            <param name="value"> The string to store. </param>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteNullableString(System.String)">
+            <summary>
+                Use ReadNullableString() for reading.
             </summary>
             <param name="value"> The string to store. </param>
         </member>
@@ -3291,11 +3309,18 @@
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteListOfOwnedDataSerializable``1(System.Collections.Generic.ICollection{``0},System.Object)">
             <summary>
-                Writes list of same not null objects. 
-                use ReadListOfOwnedDataSerializable for reading.
+                Writes list of same type not null objects. 
+                use ReadListOfOwnedDataSerializable(...) for reading.
             </summary>        
             <param name="values"></param>
             <param name="context"></param>
+        </member>
+        <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteListOfStrings(System.Collections.Generic.ICollection{System.String})">
+            <summary>
+                Writes list of strings. 
+                use ReadListOfStrings() for reading.
+            </summary>
+            <param name="values"></param>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.Write``2(System.Collections.Generic.Dictionary{``0,``1})">
             <summary>

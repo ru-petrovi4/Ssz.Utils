@@ -1088,10 +1088,19 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     This override to hide base BinaryWriter.Write(string).
+        ///     Use ReadString() for reading.
         /// </summary>
         /// <param name="value"> The string to store. </param>
         public void Write(string value)
+        {
+            WriteOptimized(value);
+        }
+
+        /// <summary>
+        ///     Use ReadNullableString() for reading.
+        /// </summary>
+        /// <param name="value"> The string to store. </param>
+        public void WriteNullableString(string? value)
         {
             WriteOptimized(value);
         }
@@ -1184,8 +1193,8 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Writes list of same not null objects. 
-        ///     use ReadListOfOwnedDataSerializable for reading.
+        ///     Writes list of same type not null objects. 
+        ///     use ReadListOfOwnedDataSerializable(...) for reading.
         /// </summary>        
         /// <param name="values"></param>
         /// <param name="context"></param>
@@ -1197,6 +1206,20 @@ namespace Ssz.Utils.Serialization
             foreach (var v in values)
             {
                 v.SerializeOwnedData(this, context);
+            }
+        }
+
+        /// <summary>
+        ///     Writes list of strings. 
+        ///     use ReadListOfStrings() for reading.
+        /// </summary>
+        /// <param name="values"></param>
+        public void WriteListOfStrings(ICollection<string> values)
+        {
+            Write(values.Count);
+            foreach (var v in values)
+            {
+                Write(v);
             }
         }
 
@@ -1624,7 +1647,7 @@ namespace Ssz.Utils.Serialization
         ///     The next 34,359,738,368 strings will use a 4 byte token. (only shown for completeness!!!)
         /// </summary>
         /// <param name="value"> The string to store. </param>
-        private void WriteOptimized(string value)
+        private void WriteOptimized(string? value)
         {
             if (value == null)
             {

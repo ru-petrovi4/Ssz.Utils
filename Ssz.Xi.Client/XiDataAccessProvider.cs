@@ -400,35 +400,42 @@ namespace Ssz.Xi.Client
             BeginInvoke(async ct =>
             {
                 bool succeeded;
+                IDispatcher? сallbackDispatcher = _callbackDispatcher;
+                Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
+                if (callbackAction != null && сallbackDispatcher != null)
+                {
+                    callbackActionDispatched = a =>
+                    {
+                        try
+                        {
+                            сallbackDispatcher.BeginInvoke(ct => callbackAction(a));
+                        }
+                        catch (Exception)
+                        {
+                        }
+                    };
+                }
+                else
+                {
+                    callbackActionDispatched = null;
+                }
+
                 try
                 {
                     if (_xiServerProxy == null) throw new InvalidOperationException();
-
-                    IDispatcher? сallbackDispatcher = _callbackDispatcher;
-                    Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
-                    if (callbackAction != null && сallbackDispatcher != null)
-                    {
-                        callbackActionDispatched = a =>
-                        {
-                            try
-                            {
-                                сallbackDispatcher.BeginInvoke(ct => callbackAction(a));
-                            }
-                            catch (Exception)
-                            {
-                            }
-                        };
-                    }
-                    else
-                    {
-                        callbackActionDispatched = null;
-                    }
 
                     succeeded = await _xiServerProxy.LongrunningPassthroughAsync(recipientId, passthroughName,
                         dataToSend, callbackActionDispatched);
                 }
                 catch
                 {
+                    if (callbackActionDispatched != null)
+                    {
+                        callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
+                        {
+                            Succeeded = false
+                        });
+                    }
                     succeeded = false;
                 }
 

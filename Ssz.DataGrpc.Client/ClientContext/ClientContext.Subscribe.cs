@@ -141,7 +141,7 @@ namespace Ssz.DataGrpc.Client
                             InvokeId = invokeId,
                             ProgressPercent = longrunningPassthroughCallback.ProgressPercent,
                             ProgressLabel = longrunningPassthroughCallback.ProgressLabel ?? @"",
-                            IsAborted = statusCode != StatusCode.OK
+                            Succeeded = statusCode == StatusCode.OK
                         });
                     }
                     if (statusCode != StatusCode.OK)
