@@ -10,7 +10,7 @@ namespace Ssz.Utils.Wpf
     {
         #region public functions
 
-        public static void InitializeWindow(Window window, string category, double initialWidth = Double.NaN,
+        public static void InitializeWindow(Window window, string category, bool rememberSize, double initialWidth = Double.NaN,
             double initialHeight = Double.NaN)
         {
             List<WindowSlot>? windowSlots;
@@ -69,16 +69,20 @@ namespace Ssz.Utils.Wpf
                 window.WindowStartupLocation = WindowStartupLocation.Manual;
                 window.Top = slotLocation.Y;
             }
-            if (Double.IsNaN(window.Width) && !Double.IsNaN(slotLocation.Width))
+
+            if (rememberSize)
             {
-                window.WindowStartupLocation = WindowStartupLocation.Manual;
-                window.Width = slotLocation.Width;
-            }
-            if (Double.IsNaN(window.Height) && !Double.IsNaN(slotLocation.Height))
-            {
-                window.WindowStartupLocation = WindowStartupLocation.Manual;
-                window.Height = slotLocation.Height;
-            }
+                if (Double.IsNaN(window.Width) && !Double.IsNaN(slotLocation.Width))
+                {
+                    window.WindowStartupLocation = WindowStartupLocation.Manual;
+                    window.Width = slotLocation.Width;
+                }
+                if (Double.IsNaN(window.Height) && !Double.IsNaN(slotLocation.Height))
+                {
+                    window.WindowStartupLocation = WindowStartupLocation.Manual;
+                    window.Height = slotLocation.Height;
+                }
+            }            
 
             window.Loaded += (sender, args) => WindowOnLoaded(window);
             window.Closed += (sender, args) => WindowOnClosed(window);
