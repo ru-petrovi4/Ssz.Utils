@@ -5,11 +5,27 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Ssz.Utils.Wpf
+namespace Ssz.Utils
 {
     public static class FileSystemHelper
     {
         #region public functions
+
+        /// <summary>
+        /// Returns true if <paramref name="path"/> starts with the path <paramref name="baseDirPath"/>.
+        /// The comparison is case-insensitive, handles / and \ slashes as folder separators and
+        /// only matches if the base dir folder name is matched exactly ("c:\foobar\file.txt" is not a sub path of "c:\foo").
+        /// </summary>
+        public static bool IsSubPathOf(string path, string baseDirPath)
+        {
+            string normalizedPath = Path.GetFullPath(path.Replace('/', '\\')
+                .WithEnding("\\"));
+
+            string normalizedBaseDirPath = Path.GetFullPath(baseDirPath.Replace('/', '\\')
+                .WithEnding("\\"));
+
+            return normalizedPath.StartsWith(normalizedBaseDirPath, StringComparison.InvariantCultureIgnoreCase);
+        }
 
         /// <summary>
         /// 
@@ -17,12 +33,15 @@ namespace Ssz.Utils.Wpf
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <returns></returns>
-        public static bool Compare(FileSystemInfo? left, FileSystemInfo? right)
+        public static bool Compare(string pathLeft, string pathRight)
         {
-            if (ReferenceEquals(left, right)) return true;
-            if (ReferenceEquals(null, right)) return false;
-            if (ReferenceEquals(null, left)) return false;
-            return String.Equals(left.FullName, right.FullName, StringComparison.InvariantCultureIgnoreCase);
+            string normalizedPathLeft = Path.GetFullPath(pathLeft.Replace('/', '\\')
+                .WithEnding("\\"));
+
+            string normalizedPathRight = Path.GetFullPath(pathRight.Replace('/', '\\')
+                .WithEnding("\\"));
+
+            return String.Equals(normalizedPathLeft, normalizedPathRight, StringComparison.InvariantCultureIgnoreCase);
         }
 
         /// <summary>
@@ -67,49 +86,6 @@ namespace Ssz.Utils.Wpf
                     throw;
                 else
                     return false;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="folder"></param>
-        /// <param name="filesToSelect"></param>
-        public static void OpenFolderInExplorerAndSelectFiles(string folder, params string[] filesToSelect)
-        {
-            IntPtr dir = ILCreateFromPath(folder);
-
-            var filesToSelectIntPtrs = new IntPtr[filesToSelect.Length];
-            for (int i = 0; i < filesToSelect.Length; i++)
-            {
-                filesToSelectIntPtrs[i] = ILCreateFromPath(filesToSelect[i]);
-            }
-
-            SHOpenFolderAndSelectItems(dir, (uint) filesToSelect.Length, filesToSelectIntPtrs, 0);
-            ReleaseComObject(dir);
-            ReleaseComObject(filesToSelectIntPtrs);
-        }
-
-        #endregion
-
-        #region private functions
-
-        [DllImport("shell32.dll", ExactSpelling = true)]
-        private static extern int SHOpenFolderAndSelectItems(
-            IntPtr pidlFolder,
-            uint cidl,
-            [In, MarshalAs(UnmanagedType.LPArray)] IntPtr[] apidl,
-            uint dwFlags);
-
-        [DllImport("shell32.dll", CharSet = CharSet.Auto)]
-        private static extern IntPtr ILCreateFromPath([MarshalAs(UnmanagedType.LPTStr)] string pszPath);
-
-        private static void ReleaseComObject(params object[] comObjs)
-        {
-            foreach (object obj in comObjs)
-            {
-                if (obj != null && Marshal.IsComObject(obj))
-                    Marshal.ReleaseComObject(obj);
             }
         }
 
