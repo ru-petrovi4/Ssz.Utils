@@ -12,6 +12,42 @@ namespace Ssz.Utils
         #region public functions
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sourcePath"></param>
+        /// <param name="targetPath"></param>
+        public static void MoveDirectory(string sourcePath, string targetPath)
+        {
+            sourcePath = sourcePath.TrimEnd('\\');
+            targetPath = targetPath.TrimEnd('\\');
+            var files = Directory.EnumerateFiles(sourcePath, "*", SearchOption.AllDirectories)
+                                 .GroupBy(s => Path.GetDirectoryName(s) ?? @"");
+            foreach (var folder in files)
+            {
+                var targetFolder = folder.Key.Replace(sourcePath, targetPath, StringComparison.InvariantCultureIgnoreCase);
+                //     Creates all directories and subdirectories in the specified path unless they
+                //     already exist.
+                Directory.CreateDirectory(targetFolder);
+                foreach (var file in folder)
+                {
+                    var targetFile = Path.Combine(targetFolder, Path.GetFileName(file));                   
+                    File.Move(file, targetFile, true);
+                }
+            }
+            Directory.Delete(sourcePath, true);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileOrDirectoryName"></param>
+        /// <returns></returns>
+        public static string ReplaceInvalidChars(string fileOrDirectoryName)
+        {
+            return string.Join("_", fileOrDirectoryName.Split(Path.GetInvalidFileNameChars()));
+        }        
+
+        /// <summary>
         /// Returns true if <paramref name="path"/> starts with the path <paramref name="baseDirPath"/>.
         /// The comparison is case-insensitive, handles / and \ slashes as folder separators and
         /// only matches if the base dir folder name is matched exactly ("c:\foobar\file.txt" is not a sub path of "c:\foo").
