@@ -39,7 +39,7 @@ service DataAccess {
 
   rpc LongrunningPassthrough (LongrunningPassthroughRequest) returns (LongrunningPassthroughReply);
 
-  rpc CancelLongrunningPassthrough (CancelLongrunningPassthroughRequest) returns (CancelLongrunningPassthroughReply);
+  rpc LongrunningPassthroughCancel (LongrunningPassthroughCancelRequest) returns (LongrunningPassthroughCancelReply);
 }
 
 enum State
@@ -369,10 +369,10 @@ message LongrunningPassthroughRequest {
 message LongrunningPassthroughReply {    
 }
 
-message CancelLongrunningPassthroughRequest {
+message LongrunningPassthroughCancelRequest {
   string context_id = 1;
   string invoke_id = 2;  
 }
 
-message CancelLongrunningPassthroughReply {    
+message LongrunningPassthroughCancelReply {    
 }

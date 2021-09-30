@@ -45,7 +45,37 @@ namespace Ssz.Utils
         public static string ReplaceInvalidChars(string fileOrDirectoryName)
         {
             return string.Join("_", fileOrDirectoryName.Split(Path.GetInvalidFileNameChars()));
-        }        
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileOrDirectoryName"></param>
+        /// <param name="throwIfFails"></param>
+        /// <returns></returns>
+        public static bool IsFileNameIsValid(string fileOrDirectoryName, bool throwIfFails = false)
+        {
+            try
+            {
+                //     Creates or overwrites a file in the specified path, specifying a buffer size
+                //     and options that describe how to create or overwrite the file.
+                using (FileStream fs = File.Create(
+                    Path.Combine(Path.GetTempPath(), fileOrDirectoryName),
+                    1,
+                    FileOptions.DeleteOnClose)
+                    )
+                {
+                }
+                return true;
+            }
+            catch
+            {
+                if (throwIfFails)
+                    throw;
+                else
+                    return false;
+            }
+        }
 
         /// <summary>
         /// Returns true if <paramref name="path"/> starts with the path <paramref name="baseDirPath"/>.
@@ -97,16 +127,16 @@ namespace Ssz.Utils
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="dirPath"></param>
+        /// <param name="directoryPath"></param>
         /// <param name="throwIfFails"></param>
         /// <returns></returns>
-        public static bool IsDirectoryWritable(string dirPath, bool throwIfFails = false)
+        public static bool IsDirectoryWritable(string directoryPath, bool throwIfFails = false)
         {
             try
             {
                 using (FileStream fs = File.Create(
                     Path.Combine(
-                        dirPath,
+                        directoryPath,
                         Path.GetRandomFileName()
                         ),
                     1,
