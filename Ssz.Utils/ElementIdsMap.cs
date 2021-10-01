@@ -74,7 +74,7 @@ namespace Ssz.Utils
         /// <param name="elementId"></param>
         /// <param name="csvDb"></param>
         /// <returns></returns>
-        public List<string?> GetFromMap(string elementId, CsvDb? csvDb)
+        public List<string?> GetFromMap(string elementId, CsvDb? csvDb = null)
         {
             string? tag;
             string? propertyPath;
@@ -105,7 +105,7 @@ namespace Ssz.Utils
         /// <param name="tagType"></param>
         /// <param name="csvDb"></param>
         /// <returns></returns>
-        public List<string?> GetFromMap(string? tag, string? propertyPath, string? tagType, CsvDb? csvDb)
+        public List<string?> GetFromMap(string? tag, string? propertyPath, string? tagType, CsvDb? csvDb = null)
         {
             string elementId = tag + propertyPath;
             if (elementId == @"") return new List<string?> { @"", @"" };

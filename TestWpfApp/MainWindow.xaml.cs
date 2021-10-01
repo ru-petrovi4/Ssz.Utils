@@ -37,7 +37,7 @@ namespace TestWpfApp
 
             App.DataAccessProvider.Initialize(this, null, true, true, @"http://localhost:60080/SszCtcmXiServer/ServerDiscovery", "TestWpfApp", Environment.MachineName, "", new CaseInsensitiveDictionary<string>());
             App.DataAccessProvider.EventMessagesCallback += XiDataAccessProviderOnEventMessagesCallback;
-            App.DataAccessProvider.Disconnected += XiDataAccessProviderOnDisconnected;
+            //App.DataAccessProvider.Disconnected += XiDataAccessProviderOnDisconnected;
 
             _valueSubscription = new ValueSubscription(App.DataAccessProvider,
                 "BP2.propTransmValueDspl",

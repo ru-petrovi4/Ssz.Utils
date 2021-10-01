@@ -1462,6 +1462,60 @@
             <param name="csvDb"></param>
             <returns></returns>
         </member>
+        <member name="M:Ssz.Utils.FileSystemHelper.MoveDirectory(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="sourcePath"></param>
+            <param name="targetPath"></param>
+        </member>
+        <member name="M:Ssz.Utils.FileSystemHelper.ReplaceInvalidChars(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="fileOrDirectoryName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.FileSystemHelper.IsFileNameIsValid(System.String,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="fileOrDirectoryName"></param>
+            <param name="throwIfFails"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.FileSystemHelper.IsSubPathOf(System.String,System.String)">
+            <summary>
+            Returns true if <paramref name="path"/> starts with the path <paramref name="baseDirPath"/>.
+            The comparison is case-insensitive, handles / and \ slashes as folder separators and
+            only matches if the base dir folder name is matched exactly ("c:\foobar\file.txt" is not a sub path of "c:\foo").
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.FileSystemHelper.Compare(System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="pathLeft"></param>
+            <param name="pathRight"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.FileSystemHelper.GetFilesByExtensions(System.IO.DirectoryInfo,System.IO.SearchOption,System.String[])">
+            <summary>
+            
+            </summary>
+            <param name="dir"></param>
+            <param name="searchOption"></param>
+            <param name="extensions"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.FileSystemHelper.IsDirectoryWritable(System.String,System.Boolean)">
+            <summary>
+            
+            </summary>
+            <param name="directoryPath"></param>
+            <param name="throwIfFails"></param>
+            <returns></returns>
+        </member>
         <member name="M:Ssz.Utils.Journal.#ctor(Microsoft.Extensions.Logging.ILogger{Ssz.Utils.Journal})">
             <summary>
                 Must be initialized before first use.
@@ -3748,6 +3802,19 @@
             <summary>
             
             </summary>
+        </member>
+        <member name="M:Ssz.Utils.StringHelper.WithEnding(System.String,System.String)">
+            <summary>
+            Returns <paramref name="str"/> with the minimal concatenation of <paramref name="ending"/> (starting from end) that
+            results in satisfying .EndsWith(ending).
+            </summary>
+            <example>"hel".WithEnding("llo") returns "hello", which is the result of "hel" + "lo".</example>
+        </member>
+        <member name="M:Ssz.Utils.StringHelper.Right(System.String,System.Int32)">
+            <summary>Gets the rightmost <paramref name="length" /> characters from a string.</summary>
+            <param name="value">The string to retrieve the substring from.</param>
+            <param name="length">The number of characters to retrieve.</param>
+            <returns>The substring.</returns>
         </member>
         <member name="M:Ssz.Utils.StringHelper.IsNullOrEmptyString(System.Object)">
             <summary>

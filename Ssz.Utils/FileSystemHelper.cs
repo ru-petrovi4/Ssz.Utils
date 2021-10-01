@@ -96,8 +96,8 @@ namespace Ssz.Utils
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="left"></param>
-        /// <param name="right"></param>
+        /// <param name="pathLeft"></param>
+        /// <param name="pathRight"></param>
         /// <returns></returns>
         public static bool Compare(string pathLeft, string pathRight)
         {

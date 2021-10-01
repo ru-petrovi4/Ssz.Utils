@@ -33,38 +33,6 @@
                 Invoked by the .NET Framework while doing heap managment (Finalize).
             </summary>
         </member>
-        <member name="M:Ssz.Utils.Wpf.FileSystemHelper.Compare(System.IO.FileSystemInfo,System.IO.FileSystemInfo)">
-            <summary>
-            
-            </summary>
-            <param name="left"></param>
-            <param name="right"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Ssz.Utils.Wpf.FileSystemHelper.GetFilesByExtensions(System.IO.DirectoryInfo,System.IO.SearchOption,System.String[])">
-            <summary>
-            
-            </summary>
-            <param name="dir"></param>
-            <param name="searchOption"></param>
-            <param name="extensions"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Ssz.Utils.Wpf.FileSystemHelper.IsDirectoryWritable(System.String,System.Boolean)">
-            <summary>
-            
-            </summary>
-            <param name="dirPath"></param>
-            <param name="throwIfFails"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Ssz.Utils.Wpf.FileSystemHelper.OpenFolderInExplorerAndSelectFiles(System.String,System.String[])">
-            <summary>
-            
-            </summary>
-            <param name="folder"></param>
-            <param name="filesToSelect"></param>
-        </member>
         <member name="M:Ssz.Utils.Wpf.NameValueCollectionTypeConverter`1.CanConvertFrom(System.ComponentModel.ITypeDescriptorContext,System.Type)">
             <summary>
                 Returns true if this type converter can convert from a given type.
@@ -1460,6 +1428,13 @@
             </summary>
             <param name="element"></param>
             <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WindowsExplorerHelper.OpenFolderInExplorerAndSelectFiles(System.String,System.String[])">
+            <summary>
+            
+            </summary>
+            <param name="folder"></param>
+            <param name="filesToSelect"></param>
         </member>
         <member name="T:Ssz.Utils.Wpf.WpfMessageBox.DelegateCommand">
             <summary>
