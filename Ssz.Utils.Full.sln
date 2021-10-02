@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.Utils", "Ssz.Utils\Ssz.Utils.csproj", "{0ADCF198-F0B0-4AF3-BC7D-1420291FE540}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestConsoleApp", "TestConsoleApp\TestConsoleApp.csproj", "{C57C1DB5-2F87-4672-A29F-B97048CE615D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestWpfApp", "TestWpfApp\TestWpfApp.csproj", "{9C51D2F4-1FE6-4B59-B036-2199024F7F70}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F1B8712C-6D2A-48C3-94DB-DA52207A4DDC}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -28,6 +32,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.Xceed.Wpf.AvalonDock.Th
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.Xceed.Wpf.AvalonDock.Themes.VS2010", "Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.AvalonDock.Themes.VS2010\Ssz.Xceed.Wpf.AvalonDock.Themes.VS2010.csproj", "{B3FC3E21-5F2D-4581-AEA2-59F671CFFC21}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ssz.Utils.Net4", "Ssz.Utils.Net4\Ssz.Utils.Net4.csproj", "{F91A6025-E125-402B-95A6-FA483786C4B4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +47,16 @@ Global
 		{0ADCF198-F0B0-4AF3-BC7D-1420291FE540}.Release_Multiplatform|Any CPU.Build.0 = Release|Any CPU
 		{0ADCF198-F0B0-4AF3-BC7D-1420291FE540}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0ADCF198-F0B0-4AF3-BC7D-1420291FE540}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C57C1DB5-2F87-4672-A29F-B97048CE615D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C57C1DB5-2F87-4672-A29F-B97048CE615D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C57C1DB5-2F87-4672-A29F-B97048CE615D}.Release_Multiplatform|Any CPU.ActiveCfg = Release|Any CPU
+		{C57C1DB5-2F87-4672-A29F-B97048CE615D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C57C1DB5-2F87-4672-A29F-B97048CE615D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C51D2F4-1FE6-4B59-B036-2199024F7F70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C51D2F4-1FE6-4B59-B036-2199024F7F70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C51D2F4-1FE6-4B59-B036-2199024F7F70}.Release_Multiplatform|Any CPU.ActiveCfg = Release|Any CPU
+		{9C51D2F4-1FE6-4B59-B036-2199024F7F70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C51D2F4-1FE6-4B59-B036-2199024F7F70}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E3D12E83-C32E-476E-85F5-567F1F79342C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E3D12E83-C32E-476E-85F5-567F1F79342C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3D12E83-C32E-476E-85F5-567F1F79342C}.Release_Multiplatform|Any CPU.ActiveCfg = Release|Any CPU
@@ -83,6 +99,12 @@ Global
 		{B3FC3E21-5F2D-4581-AEA2-59F671CFFC21}.Release_Multiplatform|Any CPU.ActiveCfg = Release|Any CPU
 		{B3FC3E21-5F2D-4581-AEA2-59F671CFFC21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3FC3E21-5F2D-4581-AEA2-59F671CFFC21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F91A6025-E125-402B-95A6-FA483786C4B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F91A6025-E125-402B-95A6-FA483786C4B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F91A6025-E125-402B-95A6-FA483786C4B4}.Release_Multiplatform|Any CPU.ActiveCfg = Release|Any CPU
+		{F91A6025-E125-402B-95A6-FA483786C4B4}.Release_Multiplatform|Any CPU.Build.0 = Release|Any CPU
+		{F91A6025-E125-402B-95A6-FA483786C4B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F91A6025-E125-402B-95A6-FA483786C4B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
