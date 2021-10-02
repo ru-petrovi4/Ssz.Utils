@@ -20,8 +20,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.Xi.Client", "Ssz.Xi.Cli
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.DataGrpc.Client", "Ssz.DataGrpc.Client\Ssz.DataGrpc.Client.csproj", "{D2EE9282-9023-47A7-95AC-742C0A967879}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.DataGrpc.Common", "Ssz.DataGrpc.Common\Ssz.DataGrpc.Common.csproj", "{835C7431-FE4C-412E-AFFA-C07CB0219FAF}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ssz.Xceed.Wpf.Toolkit", "Ssz.Xceed.Wpf.Toolkit", "{55FAE16F-C97A-4F28-B3CB-EAD6DC3E6D8F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.Xceed.Wpf.Toolkit", "Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.Toolkit.csproj", "{A2EF2AD9-3F19-4DE9-87E7-92515690C5D2}"
@@ -76,12 +74,6 @@ Global
 		{D2EE9282-9023-47A7-95AC-742C0A967879}.Release_Multiplatform|Any CPU.Build.0 = Release|Any CPU
 		{D2EE9282-9023-47A7-95AC-742C0A967879}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2EE9282-9023-47A7-95AC-742C0A967879}.Release|Any CPU.Build.0 = Release|Any CPU
-		{835C7431-FE4C-412E-AFFA-C07CB0219FAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{835C7431-FE4C-412E-AFFA-C07CB0219FAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{835C7431-FE4C-412E-AFFA-C07CB0219FAF}.Release_Multiplatform|Any CPU.ActiveCfg = Release|Any CPU
-		{835C7431-FE4C-412E-AFFA-C07CB0219FAF}.Release_Multiplatform|Any CPU.Build.0 = Release|Any CPU
-		{835C7431-FE4C-412E-AFFA-C07CB0219FAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{835C7431-FE4C-412E-AFFA-C07CB0219FAF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A2EF2AD9-3F19-4DE9-87E7-92515690C5D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A2EF2AD9-3F19-4DE9-87E7-92515690C5D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2EF2AD9-3F19-4DE9-87E7-92515690C5D2}.Release_Multiplatform|Any CPU.ActiveCfg = Release|Any CPU
