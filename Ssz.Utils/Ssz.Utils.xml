@@ -699,6 +699,13 @@
             <param name="fileFullName"></param>
             <param name="fileData"></param>
         </member>
+        <member name="M:Ssz.Utils.CsvHelper.SaveCsvFile(System.String,System.Collections.Generic.IEnumerable{System.Collections.Generic.IEnumerable{System.String}})">
+            <summary>
+            
+            </summary>
+            <param name="fileFullName"></param>
+            <param name="fileData"></param>
+        </member>
         <member name="M:Ssz.Utils.CsvHelper.ReplaceDefines(System.String,System.Collections.Generic.Dictionary{System.Text.RegularExpressions.Regex,System.String})">
             <summary>
                 sourceString != null, defines != null, result != null

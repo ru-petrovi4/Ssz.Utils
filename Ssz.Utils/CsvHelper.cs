@@ -299,6 +299,22 @@ namespace Ssz.Utils
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileFullName"></param>
+        /// <param name="fileData"></param>
+        public static void SaveCsvFile(string fileFullName, IEnumerable<IEnumerable<string?>> fileData)
+        {
+            using (var writer = new StreamWriter(File.Create(fileFullName), new UTF8Encoding(true)))
+            {
+                foreach (var fileLine in fileData)
+                {
+                    writer.WriteLine(FormatForCsv(",", fileLine));
+                }
+            }
+        }
+
         #endregion
 
         #region private functions
