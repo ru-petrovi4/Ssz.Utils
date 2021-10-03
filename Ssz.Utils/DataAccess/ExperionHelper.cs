@@ -79,11 +79,13 @@ namespace Ssz.Utils.DataAccess
                     case "PVLL":
                     case "LL":                    
                         condition = AlarmCondition.LowLow;
+                        categoryId = 2;
                         break;
                     case "PVLO":
                     case "LO":
                     case "L":
                         condition = AlarmCondition.Low;
+                        categoryId = 1;
                         break;
                     case "None":
                         condition = AlarmCondition.None;
@@ -92,10 +94,12 @@ namespace Ssz.Utils.DataAccess
                     case "HI":
                     case "H":
                         condition = AlarmCondition.High;
+                        categoryId = 1;
                         break;
                     case "HH":
                     case "PVHH":
                         condition = AlarmCondition.HighHigh;
+                        categoryId = 2;
                         break;
                     case "PositiveRate":
                         condition = AlarmCondition.PositiveRate;
@@ -137,6 +141,7 @@ namespace Ssz.Utils.DataAccess
                         break;
                     default:
                         condition = AlarmCondition.Other;
+                        categoryId = 1;
                         break;
                 }
 
