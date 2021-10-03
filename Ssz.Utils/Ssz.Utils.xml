@@ -1070,6 +1070,15 @@
             One or more of the Requested Fields has changed.
             </summary>
         </member>
+        <member name="M:Ssz.Utils.DataAccess.ExperionHelper.ProcessEventMessage(Ssz.Utils.EventSourceModel.EventSourceModel,Ssz.Utils.DataAccess.EventMessage,Microsoft.Extensions.Logging.ILogger)">
+            <summary>
+                Returns new AlarmInfoViewModels or null.
+            </summary>
+            <param name="eventSourceModel"></param>
+            <param name="eventMessage"></param>
+            <param name="logger"></param>
+            <returns></returns>
+        </member>
         <member name="T:Ssz.Utils.DataAccess.IDataAccessProvider">
             <summary>
                 Must notify changes in IsConnected and IsDisconnected properties.

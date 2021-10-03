@@ -91,9 +91,30 @@ namespace Ssz.Xi.Client.Api
                                 }
                             };
 
-                        if (callbackable) xiEventList.Callbackable = true;
-                        xiEventList.Pollable = true;
-                        xiEventList.Writeable = true;
+                        if (callbackable)
+                        {
+                            try
+                            {
+                                xiEventList.Callbackable = true;
+                            }
+                            catch
+                            {
+                            }                            
+                        }
+                        try
+                        {
+                            xiEventList.Pollable = true;
+                        }
+                        catch
+                        {
+                        }
+                        try
+                        {
+                            xiEventList.Writeable = true;
+                        }
+                        catch
+                        {
+                        }
 
                         xiEventList.EnableListUpdating(true);
                     }

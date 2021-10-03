@@ -95,10 +95,37 @@ namespace Ssz.Xi.Client.Api
                                         }
                                     }
                                 };
-                            if (callbackable) XiList.Callbackable = true;
-                            XiList.Pollable = true;
-                            XiList.Readable = true;
-                            XiList.Writeable = true;
+                            if (callbackable)
+                            {
+                                try
+                                {
+                                    XiList.Callbackable = true;
+                                }
+                                catch
+                                {
+                                }                                
+                            }
+                            try
+                            {
+                                XiList.Pollable = true;
+                            }
+                            catch
+                            {
+                            }                            
+                            try
+                            {
+                                XiList.Readable = true;
+                            }
+                            catch
+                            {
+                            }                            
+                            try
+                            {
+                                XiList.Writeable = true;
+                            }
+                            catch
+                            {
+                            }                            
 
                             XiList.EnableListUpdating(true);
                         }

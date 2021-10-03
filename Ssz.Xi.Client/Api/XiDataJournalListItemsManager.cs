@@ -47,7 +47,13 @@ namespace Ssz.Xi.Client.Api
                     {
                         if (firstTimeDataJournalConnection)
                         {
-                            XiList.Readable = true;
+                            try
+                            {
+                                XiList.Readable = true;
+                            }
+                            catch
+                            {
+                            }                            
                         }
 
                         XiList.EnableListUpdating(true);

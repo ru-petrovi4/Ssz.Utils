@@ -35,23 +35,45 @@ namespace TestWpfApp
             _alarmsListViewModel = new AlarmsListViewModel();
             MainAlarmListControl.MainDataGrid.ItemsSource = _alarmsListViewModel.Alarms;
 
-            App.DataAccessProvider.Initialize(this, null, true, true, @"http://localhost:60080/SszCtcmXiServer/ServerDiscovery", "TestWpfApp", Environment.MachineName, "", new CaseInsensitiveDictionary<string>());
+            var contextParams = new CaseInsensitiveDictionary<string>();
+            //contextParams.Add("SessionId", "ade2a090-d388-40ce-87fe-d5017cdf9c66");
+            //contextParams.Add("UserName", "valpo");
+            //contextParams.Add("UserRole", "TRAINEE");
+            //contextParams.Add("WindowsUserName", "valpo");            
+            App.DataAccessProvider.Initialize(this, null, true, true, @"http://SRVEPKS01B:60080/SimcodeOpcNetServer/ServerDiscovery", "TestWpfApp", Environment.MachineName, "", contextParams);
             App.DataAccessProvider.EventMessagesCallback += XiDataAccessProviderOnEventMessagesCallback;
-            //App.DataAccessProvider.Disconnected += XiDataAccessProviderOnDisconnected;
+            App.DataAccessProvider.PropertyChanged += DataAccessProviderOnPropertyChanged;
+            XiDataAccessProviderOnConnectedOrDisconnected();
 
             _valueSubscription = new ValueSubscription(App.DataAccessProvider,
-                "BP2.propTransmValueDspl",
+                "/ASSETS/PI/PI_D1.PV",
                 (oldVst, newVst) =>
                 {
                     MainTextBlock.Text = newVst.Value.ValueAsString(true);
                 });
         }
 
-        private void XiDataAccessProviderOnDisconnected()
+        private void DataAccessProviderOnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            _alarmsListViewModel.Clear();
+            if (e.PropertyName == @"IsConnected")
+            {
+                XiDataAccessProviderOnConnectedOrDisconnected();
+            }
+        }
 
-            App.EventSourceModel.Clear();
+        private void XiDataAccessProviderOnConnectedOrDisconnected()
+        {
+            if (App.DataAccessProvider.IsConnected)
+            {
+                Title = "Connected";
+            }
+            else
+            {
+                Title = "Disconnected";
+                _alarmsListViewModel.Clear();
+
+                App.EventSourceModel.Clear();
+            }            
         }
 
         private async void XiDataAccessProviderOnEventMessagesCallback(EventMessage[] newEventMessages)
@@ -59,7 +81,7 @@ namespace TestWpfApp
             List<AlarmInfoViewModelBase> newAlarmInfoViewModels = new List<AlarmInfoViewModelBase>();
             foreach (EventMessage eventMessage in newEventMessages.Where(em => em != null).OrderBy(em => em.OccurrenceTime))
             {
-                var alarmInfoViewModels = await DeltaSimHelper.ProcessEventMessage(App.EventSourceModel, eventMessage);
+                var alarmInfoViewModels = await ExperionHelper.ProcessEventMessage(App.EventSourceModel, eventMessage);
                 if (alarmInfoViewModels != null)
                 {
                     newAlarmInfoViewModels.AddRange(alarmInfoViewModels);
