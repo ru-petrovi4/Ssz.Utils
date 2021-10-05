@@ -101,8 +101,8 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static bool Compare(string? pathLeft, string? pathRight)
         {
-            if (pathLeft is null && pathRight is null) return true;
-            if (pathLeft is null || pathRight is null) return false;
+            if (String.IsNullOrEmpty(pathLeft) && String.IsNullOrEmpty(pathRight)) return true;
+            if (String.IsNullOrEmpty(pathLeft) || String.IsNullOrEmpty(pathRight)) return false;
 
             string normalizedPathLeft = Path.GetFullPath(pathLeft.Replace('/', '\\')
                 .WithEnding("\\"));
