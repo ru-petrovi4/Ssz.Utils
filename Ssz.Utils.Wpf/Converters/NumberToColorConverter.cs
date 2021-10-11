@@ -9,7 +9,7 @@ namespace Ssz.Utils.Wpf.Converters
     {
         #region public functions
 
-        public static readonly NumberToColorConverter Instanse = new NumberToColorConverter();
+        public static readonly NumberToColorConverter Instance = new NumberToColorConverter();
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

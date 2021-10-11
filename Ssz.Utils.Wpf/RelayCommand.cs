@@ -107,11 +107,7 @@ namespace Ssz.Utils.Wpf
 		/// </returns>
 		[DebuggerStepThrough]
         public bool CanExecute(object? parameter)
-        {
-			if (_targetExecuteMethod == null)
-			{
-				return false;  //No execute method defined so always fail
-			}
+        {	
             return _targetCanExecuteMethod == null || _targetCanExecuteMethod(parameter);
         }
 		/// <summary>
@@ -123,10 +119,7 @@ namespace Ssz.Utils.Wpf
 		/// <param name="parameter">The object to pass along to the execute command</param>
         public void Execute(object? parameter)
         {
-			if (_targetExecuteMethod != null)
-			{
-				_targetExecuteMethod(parameter);
-			}
+			_targetExecuteMethod(parameter);
 		}
 		/// <summary>
 		/// Notification when changes occur that affect whether or not the command should execute

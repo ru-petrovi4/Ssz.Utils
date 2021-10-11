@@ -5,24 +5,20 @@ using System.Windows.Data;
 
 namespace Ssz.Utils.Wpf.Converters
 {
-    public class BooleanConverter : DependencyObject, IValueConverter
+    public class BooleanToObjectConverter : DependencyObject, IValueConverter
     {
         #region public functions
 
         public static readonly DependencyProperty OnTrueProperty =
-            DependencyProperty.Register("OnTrue", typeof (object), typeof (BooleanConverter),
+            DependencyProperty.Register("OnTrue", typeof (object), typeof (BooleanToObjectConverter),
                 new PropertyMetadata(default(object)));
 
         public static readonly DependencyProperty OnFalseProperty =
-            DependencyProperty.Register("OnFalse", typeof (object), typeof (BooleanConverter),
+            DependencyProperty.Register("OnFalse", typeof (object), typeof (BooleanToObjectConverter),
                 new PropertyMetadata(default(object)));
 
         public static readonly DependencyProperty OnNullProperty =
-            DependencyProperty.Register("OnNull", typeof (object), typeof (BooleanConverter),
-                new PropertyMetadata(default(object)));
-
-        public static readonly DependencyProperty OnNotNullProperty =
-            DependencyProperty.Register("OnNotNull", typeof (object), typeof (BooleanConverter),
+            DependencyProperty.Register("OnNull", typeof (object), typeof (BooleanToObjectConverter),
                 new PropertyMetadata(default(object)));
 
         public object OnTrue
