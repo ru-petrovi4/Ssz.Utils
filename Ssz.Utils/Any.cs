@@ -912,6 +912,76 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="stringIsLocalized"></param>
         /// <returns></returns>
+        public UInt32 ValueAsUInt32(bool stringIsLocalized)
+        {
+            try
+            {
+                switch (_typeCode)
+                {
+                    case TypeCode.SByte:
+                        return (UInt32)(SByte)_storageUInt32;
+                    case TypeCode.Byte:
+                        return (UInt32)(Byte)_storageUInt32;
+                    case TypeCode.Int16:
+                        return (UInt32)(Int16)_storageUInt32;
+                    case TypeCode.UInt16:
+                        return (UInt32)(UInt16)_storageUInt32;
+                    case TypeCode.Int32:
+                        return (UInt32)(Int32)_storageUInt32;
+                    case TypeCode.UInt32:
+                        return (UInt32)(Int32)_storageUInt32;
+                    case TypeCode.Boolean:
+                        return _storageUInt32 != 0u ? 1u : 0u;
+                    case TypeCode.Char:
+                        return (UInt32)(Int32)_storageUInt32;
+                    case TypeCode.Single:
+                        return (UInt32)(Single)_storageDouble;
+                    case TypeCode.Double:
+                        return (UInt32)_storageDouble;
+                    case TypeCode.Empty:
+                        return 0;
+                    case TypeCode.DBNull:
+                        return 0;
+                    case TypeCode.Int64:
+                        if (_storageObject == null) throw new InvalidOperationException();
+                        return (UInt32)(Int64)_storageObject;
+                    case TypeCode.UInt64:
+                        if (_storageObject == null) throw new InvalidOperationException();
+                        return (UInt32)(UInt64)_storageObject;
+                    case TypeCode.Decimal:
+                        if (_storageObject == null) throw new InvalidOperationException();
+                        return (UInt32)(Decimal)_storageObject;
+                    case TypeCode.DateTime:
+                        return 0;
+                    case TypeCode.String:
+                        if (_storageObject == null) throw new InvalidOperationException();
+                        UInt32 result;
+                        if (!UInt32.TryParse((string)_storageObject, NumberStyles.Integer,
+                            GetCultureInfo(stringIsLocalized), out result))
+                        {
+                            return 0;
+                        }
+                        return result;
+                    case TypeCode.Object:
+                        if (_storageObject == null) throw new InvalidOperationException();
+                        object? obj = ObjectValueAs(_storageObject, typeof(UInt32), stringIsLocalized);
+                        if (obj == null) return 0;
+                        else return (UInt32)obj;
+                }
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+
+            throw new InvalidOperationException();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stringIsLocalized"></param>
+        /// <returns></returns>
         public Double ValueAsDouble(bool stringIsLocalized)
         {
             try

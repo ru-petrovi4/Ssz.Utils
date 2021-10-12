@@ -62,6 +62,7 @@ namespace Ssz.Utils
 
             double[] dDataSourceValues;
             int[] iDataSourceValues;
+            uint[] uDataSourceValues;
             bool[] bDataSourceValues;
             string[] sDataSourceValues;
 
@@ -72,6 +73,7 @@ namespace Ssz.Utils
             {
                 dDataSourceValues = new double[0];
                 iDataSourceValues = new int[0];
+                uDataSourceValues = new uint[0];
                 bDataSourceValues = new bool[0];
                 sDataSourceValues = new string[0];
             }
@@ -84,6 +86,10 @@ namespace Ssz.Utils
                     dataSourceValues.Select(
                             v => new Any(v).ValueAsInt32(false))
                         .ToArray();
+                uDataSourceValues =
+                    dataSourceValues.Select(
+                            v => new Any(v).ValueAsUInt32(false))
+                        .ToArray();
                 bDataSourceValues = dataSourceValues.Select(
                         v => new Any(v).ValueAsBoolean(false))
                     .ToArray();
@@ -94,6 +100,7 @@ namespace Ssz.Utils
 
             var dUserValue = new Any(userValue).ValueAsDouble(true);
             var iUserValue = new Any(userValue).ValueAsInt32(true);
+            var uUserValue = new Any(userValue).ValueAsUInt32(true);
             var bUserValue = new Any(userValue).ValueAsBoolean(true);
             string sUserValue = new Any(userValue).ValueAsString(false);
 
@@ -118,9 +125,9 @@ namespace Ssz.Utils
             {
                 try
                 {
-                    _lastResult = _delegate.DynamicInvoke(dDataSourceValues, iDataSourceValues, bDataSourceValues,
+                    _lastResult = _delegate.DynamicInvoke(dDataSourceValues, iDataSourceValues, uDataSourceValues, bDataSourceValues,
                         sDataSourceValues,
-                        dUserValue, iUserValue, bUserValue, sUserValue);
+                        dUserValue, iUserValue, uUserValue, bUserValue, sUserValue);
                 }
                 catch (Exception ex)
                 {
@@ -213,14 +220,16 @@ namespace Ssz.Utils
             {
                 ParameterExpression p1 = Expression.Parameter(typeof(double[]), "d");
                 ParameterExpression p2 = Expression.Parameter(typeof(int[]), "i");
-                ParameterExpression p3 = Expression.Parameter(typeof(bool[]), "b");
-                ParameterExpression p4 = Expression.Parameter(typeof(string[]), "s");
-                ParameterExpression p5 = Expression.Parameter(typeof(double), "userD");
-                ParameterExpression p6 = Expression.Parameter(typeof(int), "userI");
-                ParameterExpression p7 = Expression.Parameter(typeof(bool), "userB");
-                ParameterExpression p8 = Expression.Parameter(typeof(string), "userS");
+                ParameterExpression p3 = Expression.Parameter(typeof(int[]), "u");
+                ParameterExpression p4 = Expression.Parameter(typeof(bool[]), "b");
+                ParameterExpression p5 = Expression.Parameter(typeof(string[]), "s");
+                ParameterExpression p6 = Expression.Parameter(typeof(double), "userD");
+                ParameterExpression p7 = Expression.Parameter(typeof(int), "userI");
+                ParameterExpression p8 = Expression.Parameter(typeof(int), "userU");
+                ParameterExpression p9 = Expression.Parameter(typeof(bool), "userB");
+                ParameterExpression p10 = Expression.Parameter(typeof(string), "userS");
 
-                return DynamicExpression.ParseLambda(new[] { p1, p2, p3, p4, p5, p6, p7, p8 },
+                return DynamicExpression.ParseLambda(new[] { p1, p2, p3, p4, p5, p6, p7, p8, p9, p10 },
                     null,
                     expressionString);
             }
