@@ -3,9 +3,9 @@ using Ssz.Utils.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Ssz.Utils
 {
@@ -229,7 +229,7 @@ namespace Ssz.Utils
                 ParameterExpression p9 = Expression.Parameter(typeof(bool), "userB");
                 ParameterExpression p10 = Expression.Parameter(typeof(string), "userS");
 
-                return DynamicExpression.ParseLambda(new[] { p1, p2, p3, p4, p5, p6, p7, p8, p9, p10 },
+                return DynamicExpressionParser.ParseLambda(new[] { p1, p2, p3, p4, p5, p6, p7, p8, p9, p10 },
                     null,
                     expressionString);
             }

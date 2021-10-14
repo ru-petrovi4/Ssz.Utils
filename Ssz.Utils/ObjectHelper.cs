@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -60,7 +61,7 @@ namespace Ssz.Utils
             try
             {
                 ParameterExpression pObj = Expression.Parameter(obj.GetType(), @"obj");
-                LambdaExpression e = DynamicExpression.ParseLambda(new[] { pObj },
+                LambdaExpression e = DynamicExpressionParser.ParseLambda(new[] { pObj },
                     null,
                     @"obj" + expression);
                 Delegate d = e.Compile();
