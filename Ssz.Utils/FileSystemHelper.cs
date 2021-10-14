@@ -12,6 +12,16 @@ namespace Ssz.Utils
         #region public functions
 
         /// <summary>
+        ///     Preconditions: directory must exist. 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static bool IsDirectoryEmpty(string path)
+        {
+            return !Directory.EnumerateFileSystemEntries(path).Any();
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="sourcePath"></param>

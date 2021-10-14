@@ -220,12 +220,12 @@ namespace Ssz.Utils
             {
                 ParameterExpression p1 = Expression.Parameter(typeof(double[]), "d");
                 ParameterExpression p2 = Expression.Parameter(typeof(int[]), "i");
-                ParameterExpression p3 = Expression.Parameter(typeof(int[]), "u");
+                ParameterExpression p3 = Expression.Parameter(typeof(uint[]), "u");
                 ParameterExpression p4 = Expression.Parameter(typeof(bool[]), "b");
                 ParameterExpression p5 = Expression.Parameter(typeof(string[]), "s");
                 ParameterExpression p6 = Expression.Parameter(typeof(double), "userD");
                 ParameterExpression p7 = Expression.Parameter(typeof(int), "userI");
-                ParameterExpression p8 = Expression.Parameter(typeof(int), "userU");
+                ParameterExpression p8 = Expression.Parameter(typeof(uint), "userU");
                 ParameterExpression p9 = Expression.Parameter(typeof(bool), "userB");
                 ParameterExpression p10 = Expression.Parameter(typeof(string), "userS");
 

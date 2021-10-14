@@ -1841,6 +1841,9 @@ namespace Ssz.Utils.Serialization
         }
     }
 
+    /// <summary>
+    ///     Reads to block ending when Disposing.
+    /// </summary>
     public class Block : IDisposable
     {
         #region construction and destruction
@@ -1851,6 +1854,9 @@ namespace Ssz.Utils.Serialization
             Version = _serializationReader.BeginBlock();
         }
 
+        /// <summary>
+        ///     Reads to block ending.
+        /// </summary>
         public void Dispose()
         {
             _serializationReader.ReadToBlockEnding();
