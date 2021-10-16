@@ -1,11 +1,15 @@
 ﻿
+using System.Collections.Generic;
 using System.Linq.Dynamic.Core.Validation;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace System.Linq.Dynamic.Core.Parser
 {
     internal class TypeFinder : ITypeFinder
     {
+        private readonly IAssemblyHelper _assemblyHelper = new DefaultAssemblyHelper();
+
         private readonly IKeywordsHelper _keywordsHelper;
         private readonly ParsingConfig _parsingConfig;
 
@@ -16,13 +20,13 @@ namespace System.Linq.Dynamic.Core.Parser
 
             _keywordsHelper = keywordsHelper;
             _parsingConfig = parsingConfig;
-        }
+        }        
 
-        public Type? FindTypeByName(string name, ParameterExpression[]? expressions, bool forceUseCustomTypeProvider)
+        public Type? FindTypeByName(string typeName, ParameterExpression?[]? expressions, bool allowToUseAnyType)
         {
-            Check.NotEmpty(name, nameof(name));
+            Check.NotEmpty(typeName, nameof(typeName));
 
-            _keywordsHelper.TryGetValue(name, out object? type);
+            _keywordsHelper.TryGetValue(typeName, out object? type);
 
             Type? result = type as Type;
             if (result != null)
@@ -30,19 +34,14 @@ namespace System.Linq.Dynamic.Core.Parser
                 return result;
             }
 
-            if (expressions != null && TryResolveTypeUsingExpressions(name, expressions, out result))
+            if (expressions != null && TryResolveTypeUsingExpressions(typeName, expressions, out result))
             {
                 return result;
             }
 
-            return ResolveTypeByUsingCustomTypeProvider(name, forceUseCustomTypeProvider);
-        }
-
-        private Type? ResolveTypeByUsingCustomTypeProvider(string name, bool forceUseCustomTypeProvider)
-        {
-            if ((forceUseCustomTypeProvider || _parsingConfig.AllowNewToEvaluateAnyType) && _parsingConfig.CustomTypeProvider != null)
+            if (allowToUseAnyType)
             {
-                Type? resolvedType = _parsingConfig.CustomTypeProvider.ResolveType(name);
+                Type? resolvedType = ResolveType(typeName);
                 if (resolvedType != null)
                 {
                     return resolvedType;
@@ -51,16 +50,30 @@ namespace System.Linq.Dynamic.Core.Parser
                 // In case the type is not found based on fullname, try to get the type on simplename if allowed
                 if (_parsingConfig.ResolveTypesBySimpleName)
                 {
-                    return _parsingConfig.CustomTypeProvider.ResolveTypeBySimpleName(name);
+                    IEnumerable<Assembly> assemblies = _assemblyHelper.GetAssemblies();
+                    return TypeHelper.ResolveTypeBySimpleName(assemblies, typeName);                    
                 }
             }
-
+                
             return null;
         }
 
-        private bool TryResolveTypeUsingExpressions(string name, ParameterExpression[] expressions, out Type? result)
+        /// <summary>
+        /// Resolve any type by fullname which is registered in the current application domain.
+        /// </summary>
+        /// <param name="typeFullName">The typename to resolve.</param>
+        /// <returns>A resolved <see cref="Type"/> or null when not found.</returns>
+        private Type? ResolveType(string typeFullName)
         {
-            foreach (var expression in expressions.Where(e => e != null))
+            Check.NotEmpty(typeFullName, nameof(typeFullName));
+
+            IEnumerable<Assembly> assemblies = _assemblyHelper.GetAssemblies();
+            return TypeHelper.ResolveType(assemblies, typeFullName);
+        }          
+
+        private bool TryResolveTypeUsingExpressions(string name, ParameterExpression?[] expressions, out Type? result)
+        {
+            foreach (var expression in expressions.OfType<ParameterExpression>())
             {
                 if (name == expression.Type.Name)
                 {
@@ -74,10 +87,10 @@ namespace System.Linq.Dynamic.Core.Parser
                     return true;
                 }
 
-                if (_parsingConfig.ResolveTypesBySimpleName && _parsingConfig.CustomTypeProvider != null)
+                if (_parsingConfig.ResolveTypesBySimpleName)
                 {
                     string possibleFullName = $"{expression.Type.Namespace}.{name}";
-                    var resolvedType = _parsingConfig.CustomTypeProvider.ResolveType(possibleFullName);
+                    var resolvedType = ResolveType(possibleFullName);
                     if (resolvedType != null)
                     {
                         result = resolvedType;

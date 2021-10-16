@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq.Dynamic.Core.Parser;
 using System.Linq.Dynamic.Core.Validation;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -6,7 +7,7 @@ using System.Runtime.CompilerServices;
 namespace System.Linq.Dynamic.Core.CustomTypeProviders
 {
     /// <summary>
-    /// The default implementation for <see cref="IDynamicLinkCustomTypeProvider"/>.
+    /// The default implementation for <see cref="IDynamicLinqCustomTypeProvider"/>.
     /// 
     /// Scans the current AppDomain for all types marked with <see cref="DynamicLinqTypeAttribute"/>, and adds them as custom Dynamic Link types.
     ///
@@ -14,27 +15,28 @@ namespace System.Linq.Dynamic.Core.CustomTypeProviders
     ///
     /// This class is used as default for full .NET Framework, so not for .NET Core
     /// </summary>
-    public class DefaultDynamicLinqCustomTypeProvider : AbstractDynamicLinqCustomTypeProvider, IDynamicLinkCustomTypeProvider
+    public class DefaultDynamicLinqCustomTypeProvider : IDynamicLinqCustomTypeProvider
     {
         private readonly IAssemblyHelper _assemblyHelper = new DefaultAssemblyHelper();
-        private readonly bool _cacheCustomTypes;
+        /// <summary>
+        ///     Defines whether to cache the CustomTypes (including extension methods) which are found in the Application Domain.
+        /// </summary>
+        private readonly bool _useCache = true;
 
         private HashSet<Type>? _cachedCustomTypes;
         private Dictionary<Type, List<MethodInfo>>? _cachedExtensionMethods;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultDynamicLinqCustomTypeProvider"/> class.
-        /// </summary>
-        /// <param name="cacheCustomTypes">Defines whether to cache the CustomTypes (including extension methods) which are found in the Application Domain. Default set to 'true'.</param>
-        public DefaultDynamicLinqCustomTypeProvider(bool cacheCustomTypes = true)
+        /// </summary>        
+        public DefaultDynamicLinqCustomTypeProvider()
         {
-            _cacheCustomTypes = cacheCustomTypes;
         }
 
         /// <inheritdoc cref="IDynamicLinqCustomTypeProvider.GetCustomTypes"/>
         public virtual HashSet<Type> GetCustomTypes()
         {
-            if (_cacheCustomTypes)
+            if (_useCache)
             {
                 if (_cachedCustomTypes == null)
                 {
@@ -47,47 +49,29 @@ namespace System.Linq.Dynamic.Core.CustomTypeProviders
             return GetCustomTypesInternal();
         }
 
-        /// <inheritdoc cref="IDynamicLinqCustomTypeProvider.GetExtensionMethods"/>
-        public Dictionary<Type, List<MethodInfo>> GetExtensionMethods()
+        /// <inheritdoc cref="IDynamicLinqCustomTypeProvider.GetExtensionMethodsFromCustomTypes"/>
+        public Dictionary<Type, List<MethodInfo>> GetExtensionMethodsFromCustomTypes()
         {
-            if (_cacheCustomTypes)
+            if (_useCache)
             {
                 if (_cachedExtensionMethods == null)
                 {
-                    _cachedExtensionMethods = GetExtensionMethodsInternal();
+                    _cachedExtensionMethods = GetExtensionMethodsFromCustomTypesInternal();
                 }
 
                 return _cachedExtensionMethods;
             }
 
-            return GetExtensionMethodsInternal();
-        }
-
-        /// <inheritdoc cref="IDynamicLinqCustomTypeProvider.ResolveType"/>
-        public Type? ResolveType(string typeName)
-        {
-            Check.NotEmpty(typeName, nameof(typeName));
-
-            IEnumerable<Assembly> assemblies = _assemblyHelper.GetAssemblies();
-            return ResolveType(assemblies, typeName);
-        }
-
-        /// <inheritdoc cref="IDynamicLinqCustomTypeProvider.ResolveTypeBySimpleName"/>
-        public Type? ResolveTypeBySimpleName(string simpleTypeName)
-        {
-            Check.NotEmpty(simpleTypeName, nameof(simpleTypeName));
-
-            IEnumerable<Assembly> assemblies = _assemblyHelper.GetAssemblies();
-            return ResolveTypeBySimpleName(assemblies, simpleTypeName);
-        }
+            return GetExtensionMethodsFromCustomTypesInternal();
+        }        
 
         private HashSet<Type> GetCustomTypesInternal()
         {
-            IEnumerable<Assembly> assemblies = _assemblyHelper.GetAssemblies();
-            return new HashSet<Type>(FindTypesMarkedWithDynamicLinqTypeAttribute(assemblies));
+            IEnumerable<Assembly> assemblies = _assemblyHelper.GetAssemblies().Where(a => !a.IsDynamic);
+            return new HashSet<Type>(TypeHelper.GetAssemblyTypesWithDynamicLinqTypeAttribute(assemblies).Distinct());
         }
 
-        private Dictionary<Type, List<MethodInfo>> GetExtensionMethodsInternal()
+        private Dictionary<Type, List<MethodInfo>> GetExtensionMethodsFromCustomTypesInternal()
         {
             var types = GetCustomTypes();
 

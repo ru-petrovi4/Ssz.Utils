@@ -19,20 +19,6 @@ namespace System.Linq.Dynamic.Core.CustomTypeProviders
         /// Returns a list of custom extension methods that System.Linq.Dynamic.Core will understand.
         /// </summary>
         /// <returns>A list of custom extension methods that System.Linq.Dynamic.Core will understand.</returns>
-        Dictionary<Type, List<MethodInfo>> GetExtensionMethods();
-
-        /// <summary>
-        /// Resolve any type by fullname which is registered in the current application domain.
-        /// </summary>
-        /// <param name="typeName">The typename to resolve.</param>
-        /// <returns>A resolved <see cref="Type"/> or null when not found.</returns>
-        Type? ResolveType(string typeName);
-
-        /// <summary>
-        /// Resolve any type by the simple name which is registered in the current application domain.
-        /// </summary>
-        /// <param name="simpleTypeName">The typename to resolve.</param>
-        /// <returns>A resolved <see cref="Type"/> or null when not found.</returns>
-        Type? ResolveTypeBySimpleName(string simpleTypeName);
+        Dictionary<Type, List<MethodInfo>> GetExtensionMethodsFromCustomTypes();
     }
 }

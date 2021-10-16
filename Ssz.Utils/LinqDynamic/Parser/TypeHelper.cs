@@ -306,7 +306,7 @@ namespace System.Linq.Dynamic.Core.Parser
         {
             // Check.NotNull(type, nameof(type));
 
-            return IsNullableType(type) ? type.GetTypeInfo().GetGenericTypeArguments()[0] : type;
+            return IsNullableType(type) ? type.GetTypeInfo().GenericTypeArguments[0] : type;
         }
 
         public static Type GetUnderlyingType(Type type)
@@ -332,6 +332,95 @@ namespace System.Linq.Dynamic.Core.Parser
                 return types;
             }
             return GetSelfAndBaseClasses(type);
+        }
+
+        /// <summary>
+        /// Resolve any type which is registered in the current application domain.
+        /// </summary>
+        /// <param name="assemblies">The assemblies to inspect.</param>
+        /// <param name="typeFullName">The typename to resolve.</param>
+        /// <returns>A resolved <see cref="Type"/> or null when not found.</returns>
+        public static Type? ResolveType(IEnumerable<Assembly> assemblies, string typeFullName)
+        {
+            // Check.NotNull(assemblies, nameof(assemblies));
+            Check.NotEmpty(typeFullName, nameof(typeFullName));
+
+            foreach (var assembly in assemblies)
+            {
+                Type? resolvedType = assembly.GetType(typeFullName, false, true);
+                if (resolvedType != null)
+                {
+                    return resolvedType;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Resolve a type by the simple name which is registered in the current application domain.
+        /// </summary>
+        /// <param name="assemblies">The assemblies to inspect.</param>
+        /// <param name="typeSimpleName">The simple typename to resolve.</param>
+        /// <returns>A resolved <see cref="Type"/> or null when not found.</returns>
+        public static Type? ResolveTypeBySimpleName(IEnumerable<Assembly> assemblies, string typeSimpleName)
+        {
+            // Check.NotNull(assemblies, nameof(assemblies));
+            Check.NotEmpty(typeSimpleName, nameof(typeSimpleName));
+
+            foreach (var assembly in assemblies)
+            {
+                var fullNames = assembly.GetTypes().Select(t => t.FullName ?? @"").Distinct();
+                var firstMatchingFullname = fullNames.FirstOrDefault(fn => fn.EndsWith($".{typeSimpleName}"));
+
+                if (firstMatchingFullname != null)
+                {
+                    Type? resolvedType = assembly.GetType(firstMatchingFullname, false, true);
+                    if (resolvedType != null)
+                    {
+                        return resolvedType;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the assembly types annotated with <see cref="DynamicLinqTypeAttribute"/> in an Exception friendly way.
+        /// </summary>
+        /// <param name="assemblies">The assemblies to process.</param>
+        /// <returns><see cref="IEnumerable{Type}" /></returns>
+        public static IEnumerable<Type> GetAssemblyTypesWithDynamicLinqTypeAttribute(IEnumerable<Assembly> assemblies)
+        {
+            // Check.NotNull(assemblies, nameof(assemblies));
+
+            foreach (var assembly in assemblies)
+            {
+                Type?[]? definedTypes = null;
+
+                try
+                {
+                    definedTypes = assembly.ExportedTypes.Where(t => t.GetTypeInfo().IsDefined(typeof(DynamicLinqTypeAttribute), false)).ToArray();
+                }
+                catch (ReflectionTypeLoadException reflectionTypeLoadException)
+                {
+                    definedTypes = reflectionTypeLoadException.Types;
+                }
+                catch
+                {
+                    // Ignore all other exceptions
+                }
+
+                if (definedTypes != null)
+                {
+                    foreach (var definedType in definedTypes)
+                    {
+                        if (definedType != null)
+                            yield return definedType;
+                    }
+                }
+            }
         }
 
         private static IEnumerable<Type> GetSelfAndBaseClasses(Type? type)

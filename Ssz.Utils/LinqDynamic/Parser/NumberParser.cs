@@ -14,9 +14,9 @@ namespace System.Linq.Dynamic.Core.Parser
         /// Initializes a new instance of the <see cref="NumberParser"/> class.
         /// </summary>
         /// <param name="config">The ParsingConfig.</param>
-        public NumberParser(ParsingConfig? config)
+        public NumberParser(ParsingConfig config)
         {
-            _culture = config?.NumberParseCulture ?? CultureInfo.InvariantCulture;
+            _culture = config.NumberParseCulture;
         }
 
         /// <summary>

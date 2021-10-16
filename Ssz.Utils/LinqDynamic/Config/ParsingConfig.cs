@@ -12,38 +12,31 @@ namespace System.Linq.Dynamic.Core
     public class ParsingConfig
     {
         /// <summary>
-        /// Default ParsingConfig
+        ///     Default ParsingConfig
         /// </summary>
         public static ParsingConfig Default { get; } = new ParsingConfig();
 
-        /// <summary>Gets or sets if parameter, method, and properties resolution should be case sensitive or not (false by default).</summary>
-        public bool IsCaseSensitive { get; set; }
-
         /// <summary>
-        /// Default ParsingConfig for CosmosDb
+        ///     Gets or sets if parameter, method, and properties resolution should be case sensitive or not.
+        ///     False by default
         /// </summary>
-        public static ParsingConfig DefaultCosmosDb { get; } = new ParsingConfig
-        {
-            RenameEmptyParameterExpressionNames = true
-        };
+        public bool IsCaseSensitive { get; set; }        
 
-        private IDynamicLinkCustomTypeProvider? _customTypeProvider;
+        private IDynamicLinqCustomTypeProvider? _customTypeProvider;
 
         private IExpressionPromoter? _expressionPromoter;
 
         private IQueryableAnalyzer? _queryableAnalyzer;
 
         /// <summary>
-        /// Gets or sets the <see cref="IDynamicLinkCustomTypeProvider"/>.
+        /// Gets or sets the <see cref="IDynamicLinqCustomTypeProvider"/>.
         /// </summary>
-        public IDynamicLinkCustomTypeProvider CustomTypeProvider
+        public IDynamicLinqCustomTypeProvider CustomTypeProvider
         {
             get
-            {
-                // only use DefaultDynamicLinqCustomTypeProvider for full .NET Framework and NET Core App 2.x
+            {                
                 return _customTypeProvider ?? (_customTypeProvider = new DefaultDynamicLinqCustomTypeProvider());
             }
-
             set
             {
                 if (_customTypeProvider != value)
@@ -188,3 +181,12 @@ namespace System.Linq.Dynamic.Core
         public bool NullPropagatingUseDefaultValueForNonNullableValueTypes { get; set; } = false;
     }
 }
+
+
+///// <summary>
+///// Default ParsingConfig for CosmosDb
+///// </summary>
+//public static ParsingConfig DefaultCosmosDb { get; } = new ParsingConfig
+//{
+//    RenameEmptyParameterExpressionNames = true
+//};

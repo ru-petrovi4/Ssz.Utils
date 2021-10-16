@@ -4071,7 +4071,7 @@
         </member>
         <member name="T:System.Linq.Dynamic.Core.CustomTypeProviders.DefaultDynamicLinqCustomTypeProvider">
              <summary>
-             The default implementation for <see cref="T:System.Linq.Dynamic.Core.CustomTypeProviders.IDynamicLinkCustomTypeProvider"/>.
+             The default implementation for <see cref="T:System.Linq.Dynamic.Core.CustomTypeProviders.IDynamicLinqCustomTypeProvider"/>.
              
              Scans the current AppDomain for all types marked with <see cref="T:System.Linq.Dynamic.Core.CustomTypeProviders.DynamicLinqTypeAttribute"/>, and adds them as custom Dynamic Link types.
             
@@ -4103,7 +4103,7 @@
             Indicates to Dynamic Linq to consider the Type as a valid dynamic linq type.
             </summary>
         </member>
-        <member name="T:System.Linq.Dynamic.Core.CustomTypeProviders.IDynamicLinkCustomTypeProvider">
+        <member name="T:System.Linq.Dynamic.Core.CustomTypeProviders.IDynamicLinqCustomTypeProvider">
             <summary>
             Interface for providing functionality to find custom types for or resolve any type.
             Note that this interface will be marked obsolete in the next version. Use <see cref="T:System.Linq.Dynamic.Core.CustomTypeProviders.IDynamicLinqCustomTypeProvider"/> instead.
@@ -6296,7 +6296,7 @@
         </member>
         <member name="P:System.Linq.Dynamic.Core.ParsingConfig.CustomTypeProvider">
             <summary>
-            Gets or sets the <see cref="T:System.Linq.Dynamic.Core.CustomTypeProviders.IDynamicLinkCustomTypeProvider"/>.
+            Gets or sets the <see cref="T:System.Linq.Dynamic.Core.CustomTypeProviders.IDynamicLinqCustomTypeProvider"/>.
             </summary>
         </member>
         <member name="P:System.Linq.Dynamic.Core.ParsingConfig.ExpressionPromoter">

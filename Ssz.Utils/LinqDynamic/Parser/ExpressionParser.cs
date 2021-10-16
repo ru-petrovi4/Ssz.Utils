@@ -85,7 +85,7 @@ namespace System.Linq.Dynamic.Core.Parser
 
             _keywordsHelper = new KeywordsHelper(_parsingConfig);
             _textParser = new TextParser(_parsingConfig, expression);
-            _numberParser = new NumberParser(parsingConfig);
+            _numberParser = new NumberParser(_parsingConfig);
             _methodFinder = new MethodFinder(_parsingConfig);
             _expressionHelper = new ExpressionHelper(_parsingConfig);
             _typeFinder = new TypeFinder(_parsingConfig, _keywordsHelper);
@@ -169,7 +169,6 @@ namespace System.Linq.Dynamic.Core.Parser
             return expr;
         }
 
-#pragma warning disable 0219
         internal IList<DynamicOrdering> ParseOrdering(bool forceThenBy = false)
         {
             var orderings = new List<DynamicOrdering>();
@@ -210,7 +209,6 @@ namespace System.Linq.Dynamic.Core.Parser
             _textParser.ValidateToken(TokenId.End, Res.SyntaxError);
             return orderings;
         }
-#pragma warning restore 0219
 
         // ?: operator
         Expression ParseConditionalOperator()
@@ -1323,7 +1321,7 @@ namespace System.Linq.Dynamic.Core.Parser
                     _textParser.NextToken();
                 }
 
-                newType = _typeFinder.FindTypeByName(newTypeName, new[] { _it!, _parent!, _root! }, false);
+                newType = _typeFinder.FindTypeByName(newTypeName, new[] { _it, _parent, _root }, _parsingConfig.AllowNewToEvaluateAnyType);
                 if (newType == null)
                 {
                     throw ParseError(_textParser.CurrentToken.Pos, Res.TypeNotFound, newTypeName);
@@ -1358,7 +1356,7 @@ namespace System.Linq.Dynamic.Core.Parser
                 Expression expr = ParseConditionalOperator();
                 if (!arrayInitializer)
                 {
-                    string? propName;
+                    string? propName = null;
                     if (TokenIdentifierIs("as"))
                     {
                         _textParser.NextToken();
@@ -1377,14 +1375,15 @@ namespace System.Linq.Dynamic.Core.Parser
                             {
                                 propName = (string?)methodCallExpressionArgument.Value;
                             }
-                            else
-                            {
-                                throw ParseError(exprPos, Res.MissingAsClause);
-                            }
+                            //else
+                            //{
+                            //    throw ParseError(exprPos, Res.MissingAsClause);
+                            //}
                         }
                     }
 
-                    properties.Add(new DynamicProperty(propName!, expr.Type));
+                    if (propName != null)
+                        properties.Add(new DynamicProperty(propName, expr.Type));
                 }
 
                 expressions.Add(expr);
@@ -1436,6 +1435,33 @@ namespace System.Linq.Dynamic.Core.Parser
                 type = DynamicClassFactory.CreateType(properties, _createParameterCtor);
             }
 
+            ConstructorInfo? ctor;
+
+            if (properties.Count == 0 && expressions.Count > 0)
+            {
+                Type[] expressionTypes = expressions.Select(p => p.Type).ToArray();
+                ctor = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public, null, CallingConventions.HasThis, expressionTypes, null);
+                if (ctor != null)
+                {
+                    var parameters = ctor.GetParameters();
+                    if (parameters.Length == expressions.Count)
+                    {
+                        var expressionsPromoted = new List<Expression>();
+
+                        // Loop all expressions and promote if needed
+                        for (int i = 0; i < expressionTypes.Length; i++)
+                        {
+                            Type expressionType = parameters[i].ParameterType;
+
+                            // Promote from Type to Nullable Type if needed
+                            expressionsPromoted.Add(_parsingConfig.ExpressionPromoter.Promote(expressions[i], expressionType, true, true)!);
+                        }
+
+                        return Expression.New(ctor, expressionsPromoted);
+                    }
+                }
+            }            
+
             IEnumerable<PropertyInfo> propertyInfos = type.GetProperties();
             if (type.GetTypeInfo().BaseType == typeof(DynamicClass))
             {
@@ -1443,7 +1469,7 @@ namespace System.Linq.Dynamic.Core.Parser
             }
 
             Type[] propertyTypes = propertyInfos.Select(p => p.PropertyType).ToArray();
-            ConstructorInfo? ctor = type.GetConstructor(propertyTypes);
+            ctor = type.GetConstructor(propertyTypes);
             if (ctor != null && ctor.GetParameters().Length == expressions.Count)
             {
                 var expressionsPromoted = new List<Expression>();
@@ -1457,7 +1483,7 @@ namespace System.Linq.Dynamic.Core.Parser
                     expressionsPromoted.Add(_parsingConfig.ExpressionPromoter.Promote(expressions[i], propertyType, true, true)!);
                 }
 
-                return Expression.New(ctor, expressionsPromoted, (IEnumerable<MemberInfo>)propertyInfos);
+                return Expression.New(ctor, expressionsPromoted, propertyInfos);
             }
 
             MemberBinding[] bindings = new MemberBinding[properties.Count];
@@ -1655,7 +1681,7 @@ namespace System.Linq.Dynamic.Core.Parser
                     Type? enumerableType = TypeHelper.FindGenericType(typeof(IEnumerable<>), type);
                     if (enumerableType != null)
                     {
-                        Type elementType = enumerableType.GetTypeInfo().GetGenericTypeArguments()[0];
+                        Type elementType = enumerableType.GetTypeInfo().GenericTypeArguments[0];
                         return ParseEnumerable(expression, elementType, id, errorPos, type);
                     }
                 }
@@ -1668,7 +1694,7 @@ namespace System.Linq.Dynamic.Core.Parser
 
                     case 1:
                         MethodInfo method = (MethodInfo)mb!;
-                        if (!PredefinedTypesHelper.IsPredefinedType(_parsingConfig, method.DeclaringType!) && !(method.IsPublic && PredefinedTypesHelper.IsPredefinedType(_parsingConfig, method.ReturnType)))
+                        if (!PredefinedTypesHelper.IsPredefinedOrCustomType(_parsingConfig, method.DeclaringType!) && !(method.IsPublic && PredefinedTypesHelper.IsPredefinedOrCustomType(_parsingConfig, method.ReturnType)))
                         {
                             throw ParseError(errorPos, Res.MethodsAreInaccessible, TypeHelper.GetTypeName(method.DeclaringType!));
                         }
@@ -1875,7 +1901,7 @@ namespace System.Linq.Dynamic.Core.Parser
                 var bodyType = Expression.Lambda(args[0], innerIt).Body.Type;
                 var interfaces = bodyType.GetInterfaces().Union(new[] { bodyType });
                 Type interfaceType = interfaces.Single(i => i.Name == typeof(IEnumerable<>).Name);
-                Type resultType = interfaceType.GetTypeInfo().GetGenericTypeArguments()[0];
+                Type resultType = interfaceType.GetTypeInfo().GenericTypeArguments[0];
                 typeArgs = new[] { elementType, resultType };
             }
             else
@@ -1938,7 +1964,7 @@ namespace System.Linq.Dynamic.Core.Parser
                 throw ParseError(_textParser.CurrentToken.Pos, Res.FunctionRequiresOneNotNullArg, functionName, typeName);
             }
 
-            Type? resultType = _typeFinder.FindTypeByName(typeName, new[] { _it!, _parent!, _root! }, true);
+            Type? resultType = _typeFinder.FindTypeByName(typeName, new[] { _it, _parent, _root }, true);
             if (resultType == null)
             {
                 throw ParseError(_textParser.CurrentToken.Pos, Res.TypeNotFound, typeName);

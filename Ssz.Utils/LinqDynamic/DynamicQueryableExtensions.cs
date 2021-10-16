@@ -1851,7 +1851,7 @@ namespace System.Linq.Dynamic.Core
 
             //we have to adjust to lambda to return an IEnumerable<T> instead of whatever the actual property is.
             Type enumerableType = typeof(IEnumerable<>).MakeGenericType(resultType);
-            Type inputType = source.Expression.Type.GetTypeInfo().GetGenericTypeArguments()[0];
+            Type inputType = source.Expression.Type.GetTypeInfo().GenericTypeArguments[0];
             Type delegateType = typeof(Func<,>).MakeGenericType(inputType, enumerableType);
             lambda = Expression.Lambda(delegateType, lambda.Body, lambda.Parameters);
 
@@ -1890,7 +1890,7 @@ namespace System.Linq.Dynamic.Core
             LambdaExpression lambda = DynamicExpressionParser.ParseLambda(createParameterCtor, source.ElementType, null, selector, args);
 
             //we have to adjust to lambda to return an IEnumerable<T> instead of whatever the actual property is.
-            Type inputType = source.Expression.Type.GetTypeInfo().GetGenericTypeArguments()[0];
+            Type inputType = source.Expression.Type.GetTypeInfo().GenericTypeArguments[0];
             Type enumerableType = typeof(IEnumerable<>).MakeGenericType(typeof(TResult));
             Type delegateType = typeof(Func<,>).MakeGenericType(inputType, enumerableType);
             lambda = Expression.Lambda(delegateType, lambda.Body, lambda.Parameters);

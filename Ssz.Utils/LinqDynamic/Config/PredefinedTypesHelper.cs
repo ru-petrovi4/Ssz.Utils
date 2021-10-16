@@ -1,9 +1,11 @@
-﻿using System.Collections.Concurrent;
+﻿using Ssz.Utils;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq.Dynamic.Core.Parser;
 using System.Linq.Dynamic.Core.Validation;
 using System.Text.RegularExpressions;
 
-namespace System.Linq.Dynamic.Core.Parser
+namespace System.Linq.Dynamic.Core
 {
     internal static class PredefinedTypesHelper
     {
@@ -22,6 +24,9 @@ namespace System.Linq.Dynamic.Core.Parser
             { "float", typeof(float) }
         };
 
+        /// <summary>
+        ///     Can be used by full or simple type name.
+        /// </summary>
         public static readonly IDictionary<Type, int> PredefinedTypes = new ConcurrentDictionary<Type, int>(new Dictionary<Type, int> {
             { typeof(object), 0 },
             { typeof(bool), 0 },
@@ -38,18 +43,18 @@ namespace System.Linq.Dynamic.Core.Parser
             { typeof(float), 0 },
             { typeof(double), 0 },
             { typeof(decimal), 0 },
+            { typeof(Any), 0 },
+            { typeof(Convert), 0 },
             { typeof(DateTime), 0 },
             { typeof(DateTimeOffset), 0 },
             { typeof(TimeSpan), 0 },
             { typeof(Guid), 0 },
-            { typeof(Math), 0 },
-            { typeof(Convert), 0 },
+            { typeof(Math), 0 },            
             { typeof(Uri), 0 }
         });
 
         static PredefinedTypesHelper()
         {
-
             //System.Data.Entity is always here, so overwrite short name of it with EntityFramework if EntityFramework is found.
             //EF5(or 4.x??), System.Data.Objects.DataClasses.EdmFunctionAttribute
             //There is also an System.Data.Entity, Version=3.5.0.0, but no Functions.
@@ -64,7 +69,6 @@ namespace System.Linq.Dynamic.Core.Parser
             TryAdd("System.Data.Entity.SqlServer.SqlFunctions, EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", 2);
             TryAdd("System.Data.Entity.SqlServer.SqlSpatialFunctions, EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089", 2);
             //TryAdd($"Microsoft.EntityFrameworkCore.DynamicLinq.DynamicFunctions, Microsoft.EntityFrameworkCore.DynamicLinq, Version={Version}, Culture=neutral, PublicKeyToken=974e7e1b462f3693", 3);
-
         }
 
         private static void TryAdd(string typeName, int x)
@@ -83,7 +87,7 @@ namespace System.Linq.Dynamic.Core.Parser
             }
         }
 
-        public static bool IsPredefinedType(ParsingConfig config, Type type)
+        public static bool IsPredefinedOrCustomType(ParsingConfig config, Type type)
         {
             // Check.NotNull(config, nameof(config));
             // Check.NotNull(type, nameof(type));
@@ -94,8 +98,7 @@ namespace System.Linq.Dynamic.Core.Parser
                 return true;
             }
 
-            return config.CustomTypeProvider != null &&
-                   (config.CustomTypeProvider.GetCustomTypes().Contains(type) || config.CustomTypeProvider.GetCustomTypes().Contains(nonNullableType));
+            return config.CustomTypeProvider.GetCustomTypes().Contains(type) || config.CustomTypeProvider.GetCustomTypes().Contains(nonNullableType);
         }
     }
 }

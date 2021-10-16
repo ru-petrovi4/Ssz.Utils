@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq.Dynamic.Core.Parser;
 using System.Linq.Expressions;
 
-namespace System.Linq.Dynamic.Core.Parser
+namespace System.Linq.Dynamic.Core
 {
     internal class KeywordsHelper : IKeywordsHelper
     {
@@ -71,13 +72,13 @@ namespace System.Linq.Dynamic.Core.Parser
                 }
             }
 
-            if (config.CustomTypeProvider != null)
+            foreach (Type type in config.CustomTypeProvider.GetCustomTypes())
             {
-                foreach (Type type in config.CustomTypeProvider.GetCustomTypes())
+                if (!string.IsNullOrEmpty(type.FullName))
                 {
-                    _keywords[type.FullName!] = type;
-                    _keywords[type.Name] = type;
+                    _keywords[type.FullName] = type;
                 }
+                _keywords[type.Name] = type;
             }
         }
 

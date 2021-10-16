@@ -45,7 +45,7 @@ namespace System.Linq.Dynamic.Core.Parser.SupportedMethods
                 var methods = new List<MethodInfo>();
                 foreach (var t in SelfAndBaseTypes(type))
                 {
-                    if (_parsingConfig.CustomTypeProvider.GetExtensionMethods().TryGetValue(t, out var extensionMethodsOfType))
+                    if (_parsingConfig.CustomTypeProvider.GetExtensionMethodsFromCustomTypes().TryGetValue(t, out var extensionMethodsOfType))
                     {
                         methods.AddRange(extensionMethodsOfType.Where(m => m.Name.Equals(methodName, StringComparison.OrdinalIgnoreCase)));
                     }
