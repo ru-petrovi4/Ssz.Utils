@@ -28,8 +28,8 @@ namespace Ssz.Utils
 
             if (_csvDbDirectoryInfo != null)
             {
-                if (!_csvDbDirectoryInfo.Exists)
-                    _csvDbDirectoryInfo.Create();
+                // Creates all directories and subdirectories in the specified path unless they already exist.
+                Directory.CreateDirectory(_csvDbDirectoryInfo.FullName);
 
                 if (_dispatcher != null)
                     try

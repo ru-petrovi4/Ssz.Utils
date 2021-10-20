@@ -7,9 +7,12 @@ using System.Text;
 
 namespace Ssz.Utils
 {
+    /// <summary>    
+    ///     Use Directory.CreateDirectory(path) to create all directories and subdirectories in the specified path unless they already exist.
+    /// </summary>
     public static class FileSystemHelper
     {
-        #region public functions
+        #region public functions        
 
         /// <summary>
         ///     Preconditions: directory must exist. 
