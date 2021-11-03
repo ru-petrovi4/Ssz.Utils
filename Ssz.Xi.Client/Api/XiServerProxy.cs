@@ -473,7 +473,7 @@ namespace Ssz.Xi.Client.Api
         /// <param name="dataToSend"></param>
         /// <param name="callbackAction"></param>
         /// <returns></returns>
-        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend,
+        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend,
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackAction)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");

@@ -151,7 +151,7 @@ namespace Ssz.DataGrpc.Client
             }            
         }
 
-        public async Task<StatusCode> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend,
+        public async Task<StatusCode> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend,
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackAction)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
@@ -171,7 +171,8 @@ namespace Ssz.DataGrpc.Client
                 }
 
                 var passthroughDataToSendFull = new PassthroughData();
-                passthroughDataToSendFull.Data = ByteString.CopyFrom(dataToSend);                
+                if (dataToSend != null)
+                    passthroughDataToSendFull.Data = ByteString.CopyFrom(dataToSend);                
                 foreach (var passthroughDataToSend in passthroughDataToSendFull.SplitForCorrectGrpcMessageSize())
                 {
                     var request = new LongrunningPassthroughRequest

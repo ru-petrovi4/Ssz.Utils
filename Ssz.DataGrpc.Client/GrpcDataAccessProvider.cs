@@ -152,7 +152,7 @@ namespace Ssz.DataGrpc.Client
             private set { SetValue(ref _isDisconnected, value); }
         }
 
-        public EventWaitHandle IsConnectedEventWaitHandle => _isConnectedEventWaitHandle;
+        public EventWaitHandle IsConnectedEventWaitHandle { get; } = new ManualResetEvent(false);
 
         public DateTime LastFailedConnectionDateTimeUtc => _lastFailedConnectionDateTimeUtc;
 
@@ -747,7 +747,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="dataToSend"></param>
         /// <param name="callbackAction"></param>
         /// <returns></returns>
-        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend,
+        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend,
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackAction)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
@@ -844,7 +844,7 @@ namespace Ssz.DataGrpc.Client
             if (!ClientConnectionManager.ConnectionExists)
             {
                 IDispatcher? сallbackDispatcher;
-                if (_isConnectedEventWaitHandle.WaitOne(0))
+                if (IsConnectedEventWaitHandle.WaitOne(0))
                 {
                     Unsubscribe(false);
 
@@ -902,7 +902,7 @@ namespace Ssz.DataGrpc.Client
 
                         Logger.LogInformation("DataGrpcProvider connected to " + _serverAddress);
 
-                        _isConnectedEventWaitHandle.Set();                        
+                        IsConnectedEventWaitHandle.Set();                        
                         сallbackDispatcher = CallbackDispatcher;
                         if (сallbackDispatcher != null)
                         {
@@ -960,7 +960,7 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         protected virtual void Unsubscribe(bool clearClientSubscriptions)
         {
-            _isConnectedEventWaitHandle.Reset();
+            IsConnectedEventWaitHandle.Reset();
 
             var сallbackDispatcher = CallbackDispatcher;
             if (сallbackDispatcher != null)
@@ -1072,9 +1072,7 @@ namespace Ssz.DataGrpc.Client
 
         private bool _isConnected;
 
-        private bool _isDisconnected = true;
-
-        private readonly ManualResetEvent _isConnectedEventWaitHandle = new ManualResetEvent(false);
+        private bool _isDisconnected = true;        
 
         /// <summary>
         ///     DataGrpc Server connection string.

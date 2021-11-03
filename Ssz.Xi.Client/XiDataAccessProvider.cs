@@ -131,7 +131,7 @@ namespace Ssz.Xi.Client
             private set { SetValue(ref _isDisconnected, value); }
         }
 
-        public EventWaitHandle IsConnectedEventWaitHandle => _isConnectedEventWaitHandle;
+        public EventWaitHandle ReadyToInitiateTrainingSession_WaitHandle => _isConnectedEventWaitHandle;
 
         public DateTime LastFailedConnectionDateTimeUtc => _lastFailedConnectionDateTimeUtc;
 
@@ -393,7 +393,7 @@ namespace Ssz.Xi.Client
         /// <param name="dataToSend"></param>
         /// <param name="callbackAction"></param>
         /// <returns></returns>
-        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend, 
+        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend, 
             Action<LongrunningPassthroughCallback>? callbackAction)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();

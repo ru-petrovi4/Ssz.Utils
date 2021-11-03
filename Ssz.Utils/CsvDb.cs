@@ -66,6 +66,8 @@ namespace Ssz.Utils
         ///     Loads data from .csv files on disk.
         ///     resultWarnings are localized.
         ///     Uses alternativeLogger or logger from constructor.
+        ///     Data is loaded in constructor.
+        ///     Data is loaded when directory changes, if dispatcher in consructor != null.
         /// </summary>
         /// <param name="alternativeLogger"></param>
         public void LoadData(ILogger? alternativeLogger = null)
