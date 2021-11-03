@@ -131,7 +131,7 @@ namespace Ssz.Xi.Client
             private set { SetValue(ref _isDisconnected, value); }
         }
 
-        public EventWaitHandle ReadyToInitiateTrainingSession_WaitHandle => _isConnectedEventWaitHandle;
+        public EventWaitHandle IsConnectedEventWaitHandle => _isConnectedEventWaitHandle;
 
         public DateTime LastFailedConnectionDateTimeUtc => _lastFailedConnectionDateTimeUtc;
 
