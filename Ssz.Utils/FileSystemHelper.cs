@@ -12,7 +12,19 @@ namespace Ssz.Utils
     /// </summary>
     public static class FileSystemHelper
     {
-        #region public functions        
+        #region public functions    
+
+        /// <summary>
+        ///     Compares with tolerance 2 seconds.
+        /// </summary>
+        /// <param name="dateTimeUtc1"></param>
+        /// <param name="dateTimeUtc2"></param>
+        /// <returns></returns>
+        public static bool FileSystemTimeIsEquals(DateTime dateTimeUtc1, DateTime dateTimeUtc2)
+        {
+            long delta = Math.Abs(dateTimeUtc1.Ticks - dateTimeUtc2.Ticks);            
+            return delta < TimeSpan.TicksPerSecond * 2;
+        }
 
         /// <summary>
         ///     Preconditions: directory must exist. 

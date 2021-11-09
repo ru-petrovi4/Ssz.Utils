@@ -606,45 +606,69 @@
             <param name="defaultValue"></param>
             <returns></returns>
         </member>
-        <member name="M:Ssz.Utils.CsvDb.#ctor(Microsoft.Extensions.Logging.ILogger{Ssz.Utils.CsvDb},System.IO.DirectoryInfo,Ssz.Utils.IDispatcher)">
+        <member name="M:Ssz.Utils.CsvDb.#ctor(Microsoft.Extensions.Logging.ILogger{Ssz.Utils.CsvDb},Microsoft.Extensions.Logging.ILogger,System.IO.DirectoryInfo,Ssz.Utils.IDispatcher)">
             <summary>
+                userFriendlyLogger: Messages are localized. Priority is Information, Error, Warning.    
                 If csvDbDirectoryInfo == null, directory is not used.
                 If !csvDbDirectoryInfo.Exists, directory is created.
                 If dispatcher != null monitors csvDbDirectoryInfo
             </summary>
             <param name="logger"></param>
+            <param name="userFriendlyLogger"></param>
             <param name="csvDbDirectoryInfo"></param>
             <param name="dispatcher"></param>
         </member>
-        <member name="M:Ssz.Utils.CsvDb.LoadData(Microsoft.Extensions.Logging.ILogger)">
+        <member name="P:Ssz.Utils.CsvDb.UserFriendlyLogger">
             <summary>
-                Loads data from .csv files on disk.
-                resultWarnings are localized.
-                Uses alternativeLogger or logger from constructor.
+                Messages are localized. Priority is Information, Error, Warning.
+            </summary>
+        </member>
+        <member name="E:Ssz.Utils.CsvDb.CsvFileChanged">
+            <summary>
+                FileName in Upper-Case.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.CsvDb.LoadData">
+            <summary>
+                Loads data from .csv files on disk.        
                 Data is loaded in constructor.
                 Data is loaded when directory changes, if dispatcher in consructor != null.
             </summary>
-            <param name="alternativeLogger"></param>
+        </member>
+        <member name="M:Ssz.Utils.CsvDb.GetFileNames">
+            <summary>
+                Files names in Upper-Case.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.CsvDb.GetValues(System.String)">
+            <summary>
+                List.Count >= 1, List[0] != null
+            </summary>
+            <param name="fileName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.CsvDb.GetValues(System.String,System.String)">
+            <summary>
+                null or List.Count >= 1, List[0] != null
+            </summary>
+            <param name="fileName"></param>
+            <param name="key"></param>
+            <returns></returns>
         </member>
         <member name="M:Ssz.Utils.CsvDb.SaveData">
             <summary>
                 Saves data to .csv files on disk.
             </summary>
         </member>
-        <member name="M:Ssz.Utils.CsvDb.LoadDataInternal(Microsoft.Extensions.Logging.ILogger)">
+        <member name="F:Ssz.Utils.CsvDb._csvFilesCollection">
             <summary>
-                Preconditions: state must be clear.
-            </summary>
-            <param name="loadLogger"></param>
-        </member>
-        <member name="F:Ssz.Utils.CsvDb._csvDbData">
-            <summary>
-                File names end with .csv
+                [File name with .CSV extension in Upper-Case, CsvFile]
             </summary>
         </member>
-        <member name="F:Ssz.Utils.CsvDb._changedFileNames">
+        <member name="F:Ssz.Utils.CsvDb.CsvFile.IncludeFileNamesCollection">
             <summary>
-                File names end with .csv
+                File names in Upper-Case
             </summary>
         </member>
         <member name="T:Ssz.Utils.CsvHelper">
@@ -688,17 +712,20 @@
             <param name="sourceString"></param>
             <returns></returns>
         </member>
-        <member name="M:Ssz.Utils.CsvHelper.LoadCsvFile(System.String,System.Boolean,System.Collections.Generic.Dictionary{System.Text.RegularExpressions.Regex,System.String},Microsoft.Extensions.Logging.ILogger)">
+        <member name="M:Ssz.Utils.CsvHelper.LoadCsvFile(System.String,System.Boolean,System.Collections.Generic.Dictionary{System.Text.RegularExpressions.Regex,System.String},Microsoft.Extensions.Logging.ILogger,System.Collections.Generic.List{System.String})">
             <summary>
                 First column in file is Key and must be unique.
                 Can contain include directives, defines and comments.
                 If file does not exist, returns empty result.
-                Logs with Error priority, messages are localized.
+                userFriendlyLogger: Messages are localized. Priority is Information, Error, Warning.
+                includeFileNames: File names in Upper-Case.
+                Result: List.Count >= 1, List[0] != null
             </summary>
             <param name="fileFullName"></param>
             <param name="includeFiles"></param>
             <param name="defines"></param>
-            <param name="logger"></param>
+            <param name="userFriendlyLogger"></param>
+            <param name="includeFileNames"></param>
             <returns></returns>
         </member>
         <member name="M:Ssz.Utils.CsvHelper.SaveCsvFile(System.String,Ssz.Utils.CaseInsensitiveDictionary{System.Collections.Generic.List{System.String}})">
@@ -1470,6 +1497,14 @@
             <summary>    
                 Use Directory.CreateDirectory(path) to create all directories and subdirectories in the specified path unless they already exist.
             </summary>
+        </member>
+        <member name="M:Ssz.Utils.FileSystemHelper.FileSystemTimeIsEquals(System.DateTime,System.DateTime)">
+            <summary>
+                Compares with tolerance 2 seconds.
+            </summary>
+            <param name="dateTimeUtc1"></param>
+            <param name="dateTimeUtc2"></param>
+            <returns></returns>
         </member>
         <member name="M:Ssz.Utils.FileSystemHelper.IsDirectoryEmpty(System.String)">
             <summary>

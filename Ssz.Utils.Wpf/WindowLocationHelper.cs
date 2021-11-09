@@ -88,23 +88,28 @@ namespace Ssz.Utils.Wpf
             window.Closed += (sender, args) => WindowOnClosed(window);
         }
 
-        public static bool TryActivateExistingWindow(string category)
+        /// <summary>
+        ///     Returns existing window or null.
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        public static Window? TryActivateExistingWindow(string category)
         {
             List<WindowSlot>? windowSlots;
             if (!WindowSlotsDictionary.TryGetValue(category, out windowSlots))
             {
-                return false;
+                return null;
             }
 
             WindowSlot? occupiedWindowSlot = windowSlots.FirstOrDefault(slot => slot.Window != null);
             if (occupiedWindowSlot == null)
             {
-                return false;
+                return null;
             }
 
             occupiedWindowSlot.Window?.Activate();
 
-            return true;
+            return occupiedWindowSlot.Window;
         }   
 
         #endregion

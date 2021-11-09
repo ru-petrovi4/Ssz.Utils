@@ -1429,6 +1429,13 @@
             <param name="element"></param>
             <returns></returns>
         </member>
+        <member name="M:Ssz.Utils.Wpf.WindowLocationHelper.TryActivateExistingWindow(System.String)">
+            <summary>
+                Returns existing window or null.
+            </summary>
+            <param name="category"></param>
+            <returns></returns>
+        </member>
         <member name="M:Ssz.Utils.Wpf.WindowsExplorerHelper.OpenFolderInExplorerAndSelectFiles(System.String,System.String[])">
             <summary>
             
