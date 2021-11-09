@@ -114,7 +114,7 @@ namespace Ssz.Xi.Client.Internal.Lists
                     List<AddDataObjectResult>? result = Context.AddDataObjectsToList(ServerListId,
                         listInstanceIdsCollection);
 
-                    if (result != null)
+                    if (result is not null)
                     foreach (AddDataObjectResult r in result)
                     {
                         TXiDataAndDataJournalListItemBase? listItem = null;
@@ -198,21 +198,21 @@ namespace Ssz.Xi.Client.Internal.Lists
                     // Remove the items from the list in the server
                     List<AliasResult>? aliasResultList = null;
                     // a null list means all were successfully removed or are no longer defined in the server
-                    if (Context.ResourceManagement != null) // if still connected to the server
+                    if (Context.ResourceManagement is not null) // if still connected to the server
                         aliasResultList = Context.RemoveDataObjectsFromList(ServerListId, serverAliasesToRemove);
 
 
                     // Remove each value from the client list unless there was an error and it could not be removed
                     // if there were errors and the value could not be removed from the server
 
-                    if (aliasResultList != null && aliasResultList.Count > 0)
+                    if (aliasResultList is not null && aliasResultList.Count > 0)
                     {
                         foreach (TXiDataAndDataJournalListItemBase removedListItem in listItemsToRemove)
                         {
                             // look for the server alias since if the server did not find it, it will not return a client alias
                             AliasResult? aliasResult =
                                 aliasResultList.Find(ar => ar.ServerAlias == removedListItem.ServerAlias);
-                            if (aliasResult != null)
+                            if (aliasResult is not null)
                             {
                                 if (aliasResult.Result == XiFaultCodes.E_ALIASNOTFOUND)
                                 {

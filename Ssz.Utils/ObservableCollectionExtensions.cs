@@ -28,7 +28,7 @@ namespace Ssz.Utils
             foreach (T d in destination)
             {
                 var s = source.FirstOrDefault(i => String.Equals(i.Id, d.Id, StringComparison.InvariantCultureIgnoreCase));
-                if (s == null)
+                if (s is null)
                 {
                     d.IsAdded = true;
                 }

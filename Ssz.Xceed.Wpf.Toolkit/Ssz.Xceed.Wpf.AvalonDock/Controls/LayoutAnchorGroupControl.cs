@@ -76,7 +76,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         {
             if (e.Action == NotifyCollectionChangedAction.Remove ||
                 e.Action == NotifyCollectionChangedAction.Replace)
-                if (e.OldItems != null)
+                if (e.OldItems is not null)
                     foreach (var childModel in e.OldItems)
                         Children.Remove(Children.First(cv => cv.Model == childModel));
 
@@ -85,7 +85,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
             if (e.Action == NotifyCollectionChangedAction.Add ||
                 e.Action == NotifyCollectionChangedAction.Replace)
-                if (e.NewItems != null)
+                if (e.NewItems is not null)
                 {
                     var manager = _model.Root.Manager;
                     var insertIndex = e.NewStartingIndex;

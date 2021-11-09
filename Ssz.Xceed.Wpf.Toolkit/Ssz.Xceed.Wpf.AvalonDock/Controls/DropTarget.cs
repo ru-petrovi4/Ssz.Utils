@@ -78,7 +78,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             var currentActiveContent = floatingWindow.Root.ActiveContent;
             var fwAsAnchorable = floatingWindow as LayoutAnchorableFloatingWindow;
 
-            if (fwAsAnchorable != null)
+            if (fwAsAnchorable is not null)
             {
                 Drop(fwAsAnchorable);
             }

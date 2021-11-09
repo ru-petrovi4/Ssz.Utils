@@ -27,7 +27,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="optimizeSize"></param>
         public SerializationWriter(Stream baseStream, bool optimizeSize = false)            
         {
-            if (baseStream == null) throw new ArgumentNullException(@"baseStream");
+            if (baseStream is null) throw new ArgumentNullException(@"baseStream");
             if (!baseStream.CanSeek) throw new ArgumentException("baseStream must be seekable.");
 
             _baseStream = baseStream;
@@ -416,7 +416,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="context"> An arbtritrary object </param>
         public void Write(IOwnedDataSerializable target, object context)
         {
-            if (target == null) throw new ArgumentNullException(@"target");
+            if (target is null) throw new ArgumentNullException(@"target");
 
             target.SerializeOwnedData(this, context);
         }
@@ -466,7 +466,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="value"> The object to store. </param>
         public void WriteObject(object value)
         {
-            if (value == null)
+            if (value is null)
             {
                 WriteSerializedType(SerializedType.NullType);
                 return;
@@ -972,7 +972,7 @@ namespace Ssz.Utils.Serialization
         public void WriteObject<T>(T value)
             where T : class
         {
-            if (value == null)
+            if (value is null)
             {
                 WriteSerializedType(SerializedType.NullType);
                 return;
@@ -1083,7 +1083,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="value"> The generic List. </param>
         public void WriteArray<T>(T[] value)
         {
-            if (value == null)
+            if (value is null)
             {
                 WriteSerializedType(SerializedType.NullType);
             }
@@ -1107,7 +1107,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="value"> The generic List. </param>
         public void Write<T>(IList<T> value)
         {
-            if (value == null)
+            if (value is null)
             {
                 WriteSerializedType(SerializedType.NullType);
             }
@@ -1148,7 +1148,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="value"> The generic dictionary. </param>
         public void Write<TK, TV>(Dictionary<TK, TV> value)
         {
-            if (value == null) throw new ArgumentNullException(@"value");
+            if (value is null) throw new ArgumentNullException(@"value");
 
             WriteArrayInternal(value.Keys.ToArray(), typeof (TK));
             WriteArrayInternal(value.Values.ToArray(), typeof (TV));
@@ -1164,7 +1164,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="value"> The BitArray value to store. </param>
         public void Write(BitArray value)
         {
-            if (value == null)
+            if (value is null)
             {
                 WriteSerializedType(SerializedType.NullType);
             }
@@ -1616,7 +1616,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="value"> The string to store. </param>
         private void WriteOptimized(string value)
         {
-            if (value == null)
+            if (value is null)
             {
                 WriteSerializedType(SerializedType.NullType);
                 return;
@@ -1649,7 +1649,7 @@ namespace Ssz.Utils.Serialization
                 }
             }
 
-            if (_stringsDictionary == null)
+            if (_stringsDictionary is null)
             {
                 WriteSerializedType(SerializedType.StringDirect);
                 _binaryWriter.Write(value);
@@ -2488,15 +2488,15 @@ namespace Ssz.Utils.Serialization
             for (int i = 0; i < values.Length; i++)
             {
                 object value = values[i];
-                if (i < lastIndex && (value == null ? values[i + 1] == null : value.Equals(values[i + 1])))
+                if (i < lastIndex && (value is null ? values[i + 1] is null : value.Equals(values[i + 1])))
                 {
                     int duplicates = 1;
 
-                    if (value == null)
+                    if (value is null)
                     {
                         WriteSerializedType(SerializedType.NullSequenceType);
 
-                        for (i++; i < lastIndex && values[i + 1] == null; i++)
+                        for (i++; i < lastIndex && values[i + 1] is null; i++)
                         {
                             duplicates++;
                         }
@@ -2576,7 +2576,7 @@ namespace Ssz.Utils.Serialization
                 bool allObjectsSameType = true;
                 foreach (object v in values)
                 {
-                    if (v == null || v.GetType() != elementType)
+                    if (v is null || v.GetType() != elementType)
                     {
                         allObjectsSameType = false;
                         break;

@@ -10,7 +10,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Utils
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var radius = Double.Parse(value.ToString() ?? "", culture);
-            if (parameter != null)
+            if (parameter is not null)
             {
                 radius *= Double.Parse(parameter.ToString() ?? "", culture);
             }

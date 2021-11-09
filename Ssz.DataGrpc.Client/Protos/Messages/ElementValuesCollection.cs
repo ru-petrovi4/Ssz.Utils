@@ -53,7 +53,7 @@ namespace Ssz.DataGrpc.Server
                 objectByteIndex < ObjectValues.Length)
             {
                 var elementValuesCollection = new ElementValuesCollection();
-                if (prevElementValuesCollection != null)
+                if (prevElementValuesCollection is not null)
                 {
                     string guid = System.Guid.NewGuid().ToString();
                     prevElementValuesCollection.NextCollectionGuid = guid;

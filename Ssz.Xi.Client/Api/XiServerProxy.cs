@@ -101,7 +101,7 @@ namespace Ssz.Xi.Client.Api
         {
             if (_disposed) throw new ObjectDisposedException(@"Cannot access a disposed XiServerProxy.");
 
-            if (_context != null) throw new Exception(@"Xi context already exists.");
+            if (_context is not null) throw new Exception(@"Xi context already exists.");
 
             var binding = new BasicHttpBinding(BasicHttpSecurityMode.None)
             {
@@ -138,7 +138,7 @@ namespace Ssz.Xi.Client.Api
             // hostname/IP address used in this URL
             //ServerUri.ReconcileServerEntryWithServerDiscoveryUrl(serverEntry, serverDiscoveryEndpointHttpUrl);
 
-            if (serverEntry == null) throw new Exception(@"The requried Server Entry is null.");
+            if (serverEntry is null) throw new Exception(@"The requried Server Entry is null.");
 
             var serverDiscoveryEndpointHttpUri = new Uri(serverDiscoveryEndpointHttpUrl);
 
@@ -188,11 +188,11 @@ namespace Ssz.Xi.Client.Api
                     }
                 }
 
-                if (_context == null) throw new Exception("Failed to connect to the Xi Server.");
+                if (_context is null) throw new Exception("Failed to connect to the Xi Server.");
             }
             catch
             {
-                if (_context != null)
+                if (_context is not null)
                 {
                     _context.ContextNotifyEvent -= XiContext_ContextNotifyEvent;
                     _context.Dispose();
@@ -217,10 +217,10 @@ namespace Ssz.Xi.Client.Api
         {            
                 if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
 
-                if (_context != null) throw new XiClientBaseCancelException("Xi context already exists.");
+                if (_context is not null) throw new XiClientBaseCancelException("Xi context already exists.");
 
                 ServerEntry serverEntry = XiEndpointDiscovery.GetServerEntry(serverDiscoveryUrl);
-                if (serverEntry == null) throw new XiClientBaseCancelException("The requried Server Entry is null.");
+                if (serverEntry is null) throw new XiClientBaseCancelException("The requried Server Entry is null.");
 
                 try
                 {
@@ -238,7 +238,7 @@ namespace Ssz.Xi.Client.Api
                 try
                 {
                     ServiceEndpoint sep = _endpointDiscovery.ResourceManagementServiceEndpoints.SingleOrDefault(ep => ep.Binding.GetType() == bindingType);
-                    if (sep == null) throw new Exception("Failed to make connection using the specified Binding type.");
+                    if (sep is null) throw new Exception("Failed to make connection using the specified Binding type.");
                 
                     try
                     {
@@ -261,7 +261,7 @@ namespace Ssz.Xi.Client.Api
                 }
                 catch (Exception ex)
                 {
-                    if (_context != null)
+                    if (_context is not null)
                     {
                         _context.ContextNotifyEvent -= XiContext_ContextNotifyEvent;
                         _context.Dispose();
@@ -297,7 +297,7 @@ namespace Ssz.Xi.Client.Api
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
 
-            if (_context == null) throw new XiServerNotExistException();
+            if (_context is null) throw new XiServerNotExistException();
 
             return new XiDataList(_context, updateRate, bufferingRate, filterSet);
         }
@@ -313,7 +313,7 @@ namespace Ssz.Xi.Client.Api
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
 
-            if (_context == null) throw new XiServerNotExistException();
+            if (_context is null) throw new XiServerNotExistException();
 
             return new XiEventList(_context, updateRate, bufferingRate, filterSet);
         }
@@ -330,7 +330,7 @@ namespace Ssz.Xi.Client.Api
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
 
-            if (_context == null) throw new XiServerNotExistException();
+            if (_context is null) throw new XiServerNotExistException();
 
             return new XiDataJournalList(_context, updateRate, bufferingRate, filterSet);
         }
@@ -358,7 +358,7 @@ namespace Ssz.Xi.Client.Api
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
 
-            if (_context == null) throw new XiServerNotExistException();
+            if (_context is null) throw new XiServerNotExistException();
 
             return _context.Identify();
         }
@@ -372,7 +372,7 @@ namespace Ssz.Xi.Client.Api
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
 
-            if (_context == null) throw new XiServerNotExistException();
+            if (_context is null) throw new XiServerNotExistException();
 
             return _context.Status();
         }
@@ -389,7 +389,7 @@ namespace Ssz.Xi.Client.Api
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
 
-            if (_context == null) throw new XiServerNotExistException();
+            if (_context is null) throw new XiServerNotExistException();
 
             return _context.LookupResultCodes(resultCodes);
         }
@@ -433,7 +433,7 @@ namespace Ssz.Xi.Client.Api
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
 
-            if (_context == null) throw new XiServerNotExistException();
+            if (_context is null) throw new XiServerNotExistException();
 
             return _context.FindObjects(findCriteria, numberToReturn);
         }
@@ -448,7 +448,7 @@ namespace Ssz.Xi.Client.Api
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
 
-            if (_context == null) throw new XiServerNotExistException();
+            if (_context is null) throw new XiServerNotExistException();
 
             return _context.GetAlarmSummary(eventSourceId);
         }
@@ -458,7 +458,7 @@ namespace Ssz.Xi.Client.Api
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
 
-            if (_context == null) throw new XiServerNotExistException();
+            if (_context is null) throw new XiServerNotExistException();
 
             _context.OpenEndpointForContract(typeof(IWrite).Name);
             return _context.Passthrough(recipientId,
@@ -478,7 +478,7 @@ namespace Ssz.Xi.Client.Api
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
 
-            if (_context == null) throw new XiServerNotExistException();
+            if (_context is null) throw new XiServerNotExistException();
 
             _context.OpenEndpointForContract(typeof(IWrite).Name);
             return await _context.LongrunningPassthroughAsync(recipientId, passthroughName, dataToSend, callbackAction);
@@ -494,8 +494,8 @@ namespace Ssz.Xi.Client.Api
             {
                 if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
 
-                if (_context == null) throw new XiServerNotExistException();
-                if (_xiServerInfo == null) throw new InvalidOperationException();
+                if (_context is null) throw new XiServerNotExistException();
+                if (_xiServerInfo is null) throw new InvalidOperationException();
                 return _xiServerInfo.ServerEntry;
             }
         }
@@ -506,7 +506,7 @@ namespace Ssz.Xi.Client.Api
         public uint ContextOptions_
         {
             get { return _contextOptions; }
-            set { if (_context == null) _contextOptions = value; }
+            set { if (_context is null) _contextOptions = value; }
         }
 
         /// <summary>
@@ -516,7 +516,7 @@ namespace Ssz.Xi.Client.Api
         public uint LocaleId
         {
             get { return _localeId; }
-            set { if (_context == null) _localeId = value; }
+            set { if (_context is null) _localeId = value; }
         }
 
         /// <summary>
@@ -526,7 +526,7 @@ namespace Ssz.Xi.Client.Api
         public TimeSpan ContextTimeout
         {
             get { return _contextTimeout; }
-            set { if (_context == null) _contextTimeout = value; }
+            set { if (_context is null) _contextTimeout = value; }
         }
 
         /// <summary>
@@ -535,7 +535,7 @@ namespace Ssz.Xi.Client.Api
         /// </summary>
         public bool ContextExists
         {
-            get { return _context != null; }
+            get { return _context is not null; }
         }
 
         /// <summary>
@@ -548,7 +548,7 @@ namespace Ssz.Xi.Client.Api
             {
                 if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
 
-                if (_context == null) throw new XiServerNotExistException();
+                if (_context is null) throw new XiServerNotExistException();
 
                 return _context.StandardMib;
             }
@@ -567,7 +567,7 @@ namespace Ssz.Xi.Client.Api
         public uint KeepAliveSkipCount
         {
             get { return _keepAliveSkipCount; }
-            set { if (_context == null) _keepAliveSkipCount = value; }
+            set { if (_context is null) _keepAliveSkipCount = value; }
         }
 
         /// <summary>
@@ -584,7 +584,7 @@ namespace Ssz.Xi.Client.Api
         public TimeSpan CallbackRate
         {
             get { return _callbackRate; }
-            set { if (_context == null) _callbackRate = value; }
+            set { if (_context is null) _callbackRate = value; }
         }
 
         public string ContextId
@@ -593,7 +593,7 @@ namespace Ssz.Xi.Client.Api
             {
                 if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
 
-                if (_context == null) throw new XiServerNotExistException();
+                if (_context is null) throw new XiServerNotExistException();
 
                 return _context.ContextId;
             }
@@ -603,7 +603,7 @@ namespace Ssz.Xi.Client.Api
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
 
-            if (_context == null) throw new XiServerNotExistException();
+            if (_context is null) throw new XiServerNotExistException();
 
             _context.KeepContextAlive(nowUtc);
         }
@@ -617,7 +617,7 @@ namespace Ssz.Xi.Client.Api
         /// </summary>
         private void ConcludeXiContextInternal()
         {
-            if (_context == null) return;
+            if (_context is null) return;
 
             try
             {
@@ -632,7 +632,7 @@ namespace Ssz.Xi.Client.Api
                 {
                     list.Dispose();
                 }
-                if (_xiServerInfo == null) throw new InvalidOperationException();
+                if (_xiServerInfo is null) throw new InvalidOperationException();
                 _xiServerInfo.Dispose();
                 _xiServerInfo = null;
             }

@@ -33,7 +33,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Editors
         {
             var values = new List<object>();
 
-            if (enumType != null)
+            if (enumType is not null)
             {
                 var fields = enumType.GetFields().Where(x => x.IsLiteral);
                 foreach (var field in fields)

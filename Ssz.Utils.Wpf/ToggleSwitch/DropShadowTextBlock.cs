@@ -216,7 +216,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch
         /// </summary>
         internal void UpdateDropShadowPosition()
         {
-            if (_dropShadowTranslate != null)
+            if (_dropShadowTranslate is not null)
             {
                 Point offset = GetOffset(DropShadowAngle, DropShadowDistance);
 
@@ -230,7 +230,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch
         /// </summary>
         internal void UpdateDropShadowBrush()
         {
-            if (_dropShadowBrush != null)
+            if (_dropShadowBrush is not null)
             {
                 _dropShadowBrush.Color = DropShadowColor;
                 _dropShadowBrush.Opacity = DropShadowOpacity;

@@ -138,7 +138,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnCurrentPageChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var wizard = o as Wizard;
-            if (wizard != null)
+            if (wizard is not null)
                 wizard.OnCurrentPageChanged((WizardPage) e.OldValue, (WizardPage) e.NewValue);
         }
 
@@ -268,7 +268,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             base.OnInitialized(e);
 
-            if (Items.Count > 0 && CurrentPage == null)
+            if (Items.Count > 0 && CurrentPage is null)
                 CurrentPage = Items[0] as WizardPage;
         }
 
@@ -295,7 +295,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void CanExecuteCancelWizard(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (CurrentPage != null)
+            if (CurrentPage is not null)
             {
                 if (CurrentPage.CanCancel.HasValue)
                     e.CanExecute = CurrentPage.CanCancel.Value;
@@ -314,7 +314,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void CanExecuteFinishWizard(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (CurrentPage != null)
+            if (CurrentPage is not null)
             {
                 if (CurrentPage.CanFinish.HasValue)
                     e.CanExecute = CurrentPage.CanFinish.Value;
@@ -330,7 +330,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void CanExecuteRequestHelp(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (CurrentPage != null)
+            if (CurrentPage is not null)
             {
                 if (CurrentPage.CanHelp.HasValue)
                     e.CanExecute = CurrentPage.CanHelp.Value;
@@ -343,7 +343,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             WizardPage nextPage = null;
 
-            if (CurrentPage != null)
+            if (CurrentPage is not null)
             {
                 var eventArgs = new CancelRoutedEventArgs(NextEvent);
                 RaiseEvent(eventArgs);
@@ -351,7 +351,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
                     return;
 
                 //check next page
-                if (CurrentPage.NextPage != null)
+                if (CurrentPage.NextPage is not null)
                 {
                     nextPage = CurrentPage.NextPage;
                 }
@@ -370,7 +370,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void CanExecuteSelectNextPage(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (CurrentPage != null)
+            if (CurrentPage is not null)
             {
                 if (CurrentPage.CanSelectNextPage.HasValue) //check to see if page has overriden default behavior
                 {
@@ -388,7 +388,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             WizardPage previousPage = null;
 
-            if (CurrentPage != null)
+            if (CurrentPage is not null)
             {
                 var eventArgs = new CancelRoutedEventArgs(PreviousEvent);
                 RaiseEvent(eventArgs);
@@ -396,7 +396,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
                     return;
 
                 //check previous page
-                if (CurrentPage.PreviousPage != null)
+                if (CurrentPage.PreviousPage is not null)
                 {
                     previousPage = CurrentPage.PreviousPage;
                 }
@@ -415,7 +415,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void CanExecuteSelectPreviousPage(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (CurrentPage != null)
+            if (CurrentPage is not null)
             {
                 if (CurrentPage.CanSelectPreviousPage.HasValue) //check to see if page has overriden default behavior
                 {
@@ -537,7 +537,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private void CloseParentWindow(bool dialogResult)
         {
             var window = Window.GetWindow(this);
-            if (window != null)
+            if (window is not null)
             {
                 //we can only set the DialogResult if the window was opened as modal with the ShowDialog() method. Otherwise an exception would occur
                 if (ComponentDispatcher.IsThreadModal)
@@ -551,7 +551,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             var exists = false;
 
-            if (CurrentPage.NextPage != null) //check to see if a next page has been specified
+            if (CurrentPage.NextPage is not null) //check to see if a next page has been specified
             {
                 exists = true;
             }
@@ -571,7 +571,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             var exists = false;
 
-            if (CurrentPage.PreviousPage != null) //check to see if a previous page has been specified
+            if (CurrentPage.PreviousPage is not null) //check to see if a previous page has been specified
             {
                 exists = true;
             }

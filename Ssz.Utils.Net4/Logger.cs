@@ -22,7 +22,7 @@ namespace Ssz.Utils
 
         public static void SetLogLevels(SourceLevels sourceLevels)
         {
-            if (TraceSource == null) return;
+            if (TraceSource is null) return;
             try
             {
                 TraceSource.Switch.Level = sourceLevels;
@@ -34,7 +34,7 @@ namespace Ssz.Utils
 
         public static bool ShouldTrace(TraceEventType eventType)
         {
-            if (TraceSource == null) return false;
+            if (TraceSource is null) return false;
             try
             {
                 return TraceSource.Switch.ShouldTrace(eventType);
@@ -47,7 +47,7 @@ namespace Ssz.Utils
 
         public static void Critical(string message)
         {
-            if (TraceSource == null) return;
+            if (TraceSource is null) return;
             try
             {
                 TraceSource.TraceEvent(TraceEventType.Critical, 0, message);
@@ -59,7 +59,7 @@ namespace Ssz.Utils
 
         public static void Critical(string format, params object[] args)
         {
-            if (TraceSource == null) return;
+            if (TraceSource is null) return;
             try
             {
                 TraceSource.TraceEvent(TraceEventType.Critical, 0, format, args);
@@ -71,7 +71,7 @@ namespace Ssz.Utils
 
         public static void Critical(Exception e, string format = "", params object[] args)
         {
-            if (TraceSource == null) return;
+            if (TraceSource is null) return;
             try
             {
                 TraceException(TraceEventType.Critical, e, format, args);
@@ -83,7 +83,7 @@ namespace Ssz.Utils
 
         public static void Error(string message)
         {
-            if (TraceSource == null) return;
+            if (TraceSource is null) return;
             try
             {
                 TraceSource.TraceEvent(TraceEventType.Error, 0, message);
@@ -95,7 +95,7 @@ namespace Ssz.Utils
 
         public static void Error(string format, params object[] args)
         {
-            if (TraceSource == null) return;
+            if (TraceSource is null) return;
             try
             {
                 TraceSource.TraceEvent(TraceEventType.Error, 0, format, args);
@@ -107,7 +107,7 @@ namespace Ssz.Utils
 
         public static void Error(Exception e, string format = "", params object[] args)
         {
-            if (TraceSource == null) return;
+            if (TraceSource is null) return;
             try
             {
                 TraceException(TraceEventType.Error, e, format, args);
@@ -119,7 +119,7 @@ namespace Ssz.Utils
 
         public static void Warning(string message)
         {
-            if (TraceSource == null) return;
+            if (TraceSource is null) return;
             try
             {
                 TraceSource.TraceEvent(TraceEventType.Warning, 0, message);
@@ -131,7 +131,7 @@ namespace Ssz.Utils
 
         public static void Warning(string format, params object[] args)
         {
-            if (TraceSource == null) return;
+            if (TraceSource is null) return;
             try
             {
                 TraceSource.TraceEvent(TraceEventType.Warning, 0, format, args);
@@ -143,7 +143,7 @@ namespace Ssz.Utils
 
         public static void Warning(Exception e, string format = "", params object[] args)
         {
-            if (TraceSource == null) return;
+            if (TraceSource is null) return;
             try
             {
                 TraceException(TraceEventType.Warning, e, format, args);
@@ -155,7 +155,7 @@ namespace Ssz.Utils
 
         public static void Info(string message)
         {
-            if (TraceSource == null) return;
+            if (TraceSource is null) return;
             try
             {
                 TraceSource.TraceEvent(TraceEventType.Information, 0, message);
@@ -167,7 +167,7 @@ namespace Ssz.Utils
 
         public static void Info(string format, params object[] args)
         {
-            if (TraceSource == null) return;
+            if (TraceSource is null) return;
             try
             {
                 TraceSource.TraceEvent(TraceEventType.Information, 0, format, args);
@@ -179,7 +179,7 @@ namespace Ssz.Utils
 
         public static void Info(Exception e, string format = "", params object[] args)
         {
-            if (TraceSource == null) return;
+            if (TraceSource is null) return;
             try
             {
                 TraceException(TraceEventType.Information, e, format, args);
@@ -191,7 +191,7 @@ namespace Ssz.Utils
 
         public static void Verbose(string message)
         {
-            if (TraceSource == null) return;
+            if (TraceSource is null) return;
             try
             {
                 TraceSource.TraceEvent(TraceEventType.Verbose, 0, message);
@@ -203,7 +203,7 @@ namespace Ssz.Utils
 
         public static void Verbose(string format, params object[] args)
         {
-            if (TraceSource == null) return;
+            if (TraceSource is null) return;
             try
             {
                 TraceSource.TraceEvent(TraceEventType.Verbose, 0, format, args);
@@ -215,7 +215,7 @@ namespace Ssz.Utils
 
         public static void Verbose(Exception e, string format = "", params object[] args)
         {
-            if (TraceSource == null) return;
+            if (TraceSource is null) return;
             try
             {
                 TraceException(TraceEventType.Verbose, e, format, args);
@@ -227,7 +227,7 @@ namespace Ssz.Utils
 
         public static void Start(string message)
         {
-            if (TraceSource == null) return;
+            if (TraceSource is null) return;
             try
             {
                 TraceSource.TraceEvent(TraceEventType.Start, 0, message);
@@ -239,7 +239,7 @@ namespace Ssz.Utils
 
         public static void Start(string format, params object[] args)
         {
-            if (TraceSource == null) return;
+            if (TraceSource is null) return;
             try
             {
                 TraceSource.TraceEvent(TraceEventType.Start, 0, format, args);
@@ -251,7 +251,7 @@ namespace Ssz.Utils
 
         public static void Stop(string message)
         {
-            if (TraceSource == null) return;
+            if (TraceSource is null) return;
             try
             {
                 TraceSource.TraceEvent(TraceEventType.Stop, 0, message);
@@ -263,7 +263,7 @@ namespace Ssz.Utils
 
         public static void Stop(string format, params object[] args)
         {
-            if (TraceSource == null) return;
+            if (TraceSource is null) return;
             try
             {
                 TraceSource.TraceEvent(TraceEventType.Stop, 0, format, args);
@@ -280,7 +280,7 @@ namespace Ssz.Utils
         /// <returns> TraceCloser object to log exit of method </returns>
         public static IDisposable EnterMethod(params object[] args)
         {
-            if (TraceSource == null) return null;
+            if (TraceSource is null) return null;
 
             if (ShouldTrace(TraceEventType.Start))
             {

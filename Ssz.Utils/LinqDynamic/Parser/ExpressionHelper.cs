@@ -213,7 +213,7 @@ namespace System.Linq.Dynamic.Core.Parser
 
         public bool MemberExpressionIsDynamic(Expression expression)
         {
-            return expression is MemberExpression memberExpression && memberExpression.Member.GetCustomAttribute<DynamicAttribute>() != null;
+            return expression is MemberExpression memberExpression && memberExpression.Member.GetCustomAttribute<DynamicAttribute>() is not null;
         }
 
         public Expression ConvertToExpandoObjectAndCreateDynamicExpression(Expression expression, Type type, string propertyName)
@@ -224,7 +224,7 @@ namespace System.Linq.Dynamic.Core.Parser
         private MethodInfo? GetStaticMethod(string methodName, Expression left, Expression right)
         {
             var methodInfo = left.Type.GetMethod(methodName, new[] { left.Type, right.Type });
-            if (methodInfo == null)
+            if (methodInfo is null)
             {
                 methodInfo = right.Type.GetMethod(methodName, new[] { left.Type, right.Type });
             }
@@ -259,7 +259,7 @@ namespace System.Linq.Dynamic.Core.Parser
             // Reverse the list
             expressions.Reverse();
 
-            // Convert all expressions into '!= null' expressions (only if the type can be null)
+            // Convert all expressions into 'is not null' expressions (only if the type can be null)
             var binaryExpressions = expressions
                 .Where(expression => TypeHelper.TypeCanBeNull(expression.Type))
                 .Select(expression => Expression.NotEqual(expression, Expression.Constant(null)))
@@ -338,17 +338,17 @@ namespace System.Linq.Dynamic.Core.Parser
                 {
                     case MemberExpression memberExpression:
                         expression = GetMemberExpression(memberExpression.Expression!);
-                        expressionRecognized = expression != null;
+                        expressionRecognized = expression is not null;
                         break;
 
                     case MethodCallExpression methodCallExpression:
                         expression = GetMethodCallExpression(methodCallExpression);
-                        expressionRecognized = expression != null;
+                        expressionRecognized = expression is not null;
                         break;
 
                     case UnaryExpression unaryExpression:
                         expression = GetUnaryExpression(unaryExpression);
-                        expressionRecognized = expression != null;
+                        expressionRecognized = expression is not null;
                         break;
 
                     default:
@@ -367,7 +367,7 @@ namespace System.Linq.Dynamic.Core.Parser
 
         private static Expression? GetMethodCallExpression(MethodCallExpression methodCallExpression)
         {
-            if (methodCallExpression.Object != null)
+            if (methodCallExpression.Object is not null)
             {
                 // Something like: "np(FooValue.Zero().Length)"
                 return methodCallExpression.Object;

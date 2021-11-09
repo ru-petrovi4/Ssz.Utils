@@ -209,95 +209,14 @@
                 Called from Initialize.
             </summary>
         </member>
-        <member name="T:Ssz.Utils.Wpf.RelayCommand">
-             <summary>
-             The RelayCommand is a core class in the MVVM pattern to allow a ViewModel class
-             to implement the code associated with a command request that has been made by the View
-             </summary>
-             <remarks>
-             The RelayCommand implements the ICommand interface with its three methods (Execute, 
-             CanExecute, and CanExecuteChanged).
-             The intent is for the ViewModel class to create an instance of the RelayCommand class for 
-             each of the commands that are supported in the ViewModel so that when the DataBinding
-             from the View access the command property, the associated callback is made on the 
-             ViewModel so that it can execute the command.
-             
-             <example><code>
-             public class MyViewModel : INotifyPropertyChanged
-             {
-            		public MyViewModel()
-            		{
-            			//Hook the databound property to the method which does the work
-            			DoSomethingCommand = new RelayCommand(DoSomething);
-            		}
-            		
-            		///<summary>The property for the View to databind to.</summary>
-            		public RelayCommand DoSomethingCommand { get; private set; }
-            
-                 ///<summary>The method that does the work associated with the DoSomethingCommand databound property</summary>
-            		public void DoSomething()
-            		{
-            			//TODO - Implement the command here in my viewmodel class
-            		}
-             }
-             </code></example>
-             </remarks>
+        <member name="M:Ssz.Utils.Wpf.RelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object},System.Boolean)">
+            <summary>         ///     If autoDetectCanExecuteChanged = true, determines automatically when CanExecute changed, using CommandManager.RequerySuggested.         ///     Otherwise we must call NotifyCanExecuteChanged()         /// </summary>
+            <param name="executeMethod"></param>
+            <param name="canExecuteMethod"></param>
+            <param name="autoDetectCanExecuteChanged"></param> 
         </member>
-        <member name="M:Ssz.Utils.Wpf.RelayCommand.#ctor(System.Action)">
-            <summary>
-            Will callback on the provided method when Execute() is called
-            </summary>
-            <param name="executeMethod">The method to call which will execute the command</param>
-        </member>
-        <member name="M:Ssz.Utils.Wpf.RelayCommand.#ctor(System.Action{System.Object})">
-            <summary>
-            Will callback on the provided method when Execute() is called
-            </summary>
-            <param name="executeMethod">The method to call which will execute the command</param>
-        </member>
-        <member name="M:Ssz.Utils.Wpf.RelayCommand.#ctor(System.Action,System.Func{System.Boolean})">
-            <summary>
-            Will callback on the provided method when Execute() is called.
-            Will callback on the provided method when CanExecute() is called
-            </summary>
-            <param name="executeMethod">The method to call which will execute the command</param>
-            <param name="canExecuteMethod">The method to call to determine if Execute() can be called</param>
-        </member>
-        <member name="M:Ssz.Utils.Wpf.RelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object})">
-            <summary>
-            Will callback on the provided method when Execute() is called.
-            Will callback on the provided method when CanExecute() is called
-            </summary>
-            <param name="executeMethod">The method to call which will execute the command</param>
-            <param name="canExecuteMethod">The method to call to determine if Execute() can be called</param>
-        </member>
-        <member name="M:Ssz.Utils.Wpf.RelayCommand.CanExecute(System.Object)">
-            <summary>
-            Invokes the Func as defined in the RelayCommand's constructor 
-            </summary>
-            <remarks>
-            If the CanExecute callback has not been defined, then the Execute method
-            is always available to be called.
-            </remarks>
-            <param name="parameter">The parameter passed in from the caller</param>
-            <returns>
-            true if Execute() can be called
-            false if Execute() cannot be called
-            </returns>
-        </member>
-        <member name="M:Ssz.Utils.Wpf.RelayCommand.Execute(System.Object)">
-            <summary>
-            Invokes the action as defined in the RelayCommand's constructor 
-            </summary>
-            <remarks>
-            Calls back on the defined method
-            </remarks>
-            <param name="parameter">The object to pass along to the execute command</param>
-        </member>
-        <member name="E:Ssz.Utils.Wpf.RelayCommand.CanExecuteChanged">
-            <summary>
-            Notification when changes occur that affect whether or not the command should execute
-            </summary>
+        <member name="M:Ssz.Utils.Wpf.RelayCommand.NotifyCanExecuteChanged">
+            <summary>         ///     You need to call this method only when autoDetectCanExecuteChanged = false.         /// </summary> 
         </member>
         <member name="T:Ssz.Utils.Wpf.RotationViewbox.LayoutInvalidationCatcher">
             <summary>
@@ -317,7 +236,7 @@
             <summary>
                 Returns screens working areas in WPF coordinates.
                 First screen in array is primary screen.
-                result != null
+                result is not null
             </summary>
             <returns></returns>
         </member>
@@ -347,7 +266,7 @@
             <summary>
                 Set window fully contained in rect.
                 All values in WPF coordinates.
-                window != null
+                window is not null
             </summary>
             <param name="window"></param>
             <param name="rect"></param>
@@ -364,7 +283,7 @@
                 Gets location of frameworkElement on system screen.
                 All values in WPF coordinates.
                 Warning! frameworkElement.PointToScreen returns values in screen coordinates, not WPF coordinates.
-                frameworkElement != null
+                frameworkElement is not null
             </summary>
             <param name="frameworkElement"></param>
             <returns></returns>
@@ -1558,80 +1477,74 @@
             <returns>A <see cref="T:System.Windows.Rect" /> that represents the size, in pixels, of the working area of the screen.</returns>
         </member>
         <member name="T:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen">
-            <summary>
-            Represents a display device or multiple display devices on a single system.
-            [assembly:SupportedOSPlatform("windows")]
-            </summary>
+            <summary>     /// Represents a display device or multiple display devices on a single system.     /// [assembly:SupportedOSPlatform("windows")]     /// </summary> 
         </member>
         <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.AllScreens">
-            <summary>
-            Gets an array of all displays on the system.
-            </summary>
-            <returns>An enumerable of type Screen, containing all displays on the system.</returns>
+            <summary>         /// Gets an array of all displays on the system.         /// </summary>         /// <returns>An enumerable of type Screen, containing all displays on the system.</returns> 
         </member>
         <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.Bounds">
-            <summary>
-            Gets the bounds of the display.
-            </summary>
-            <returns>A <see cref="T:System.Windows.Rect" />, representing the bounds of the display.</returns>
+            <summary>         /// Gets the bounds of the display.         /// </summary>         /// <returns>A <see cref="T:System.Windows.Rect" />, representing the bounds of the display.</returns> 
         </member>
         <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.DeviceName">
-            <summary>
-            Gets the device name associated with a display.
-            </summary>
-            <returns>The device name associated with a display.</returns>
+            <summary>         /// Gets the device name associated with a display.         /// </summary>         /// <returns>The device name associated with a display.</returns> 
         </member>
         <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.Primary">
-            <summary>
-            Gets a value indicating whether a particular display is the primary device.
-            </summary>
-            <returns>true if this display is primary; otherwise, false.</returns>
+            <summary>         /// Gets a value indicating whether a particular display is the primary device.         /// </summary>         /// <returns>true if this display is primary; otherwise, false.</returns> 
         </member>
         <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.PrimaryScreen">
-            <summary>
-            Gets the primary display.
-            </summary>
-            <returns>The primary display.</returns>
+            <summary>         /// Gets the primary display.         /// </summary>         /// <returns>The primary display.</returns> 
         </member>
         <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.WorkingArea">
-            <summary>
-            Gets the working area of the display. The working area is the desktop area of the display, excluding taskbars, docked windows, and docked tool bars.
-            </summary>
-            <returns>A <see cref="T:System.Windows.Rect" />, representing the working area of the display.</returns>
+            <summary>         /// Gets the working area of the display. The working area is the desktop area of the display, excluding taskbars, docked windows, and docked tool bars.         /// </summary>         /// <returns>A <see cref="T:System.Windows.Rect" />, representing the working area of the display.</returns> 
         </member>
         <member name="M:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.FromHandle(System.IntPtr)">
-            <summary>
-            Retrieves a Screen for the display that contains the largest portion of the specified control.
-            </summary>
-            <param name="hwnd">The window handle for which to retrieve the Screen.</param>
-            <returns>A Screen for the display that contains the largest region of the object. In multiple display environments where no display contains any portion of the specified window, the display closest to the object is returned.</returns>
+            <summary>         /// Retrieves a Screen for the display that contains the largest portion of the specified control.         /// </summary>         /// <param name="hwnd">The window handle for which to retrieve the Screen.</param>         /// <returns>A Screen for the display that contains the largest region of the object. In multiple display environments where no display contains any portion of the specified window, the display closest to the object is returned.</returns> 
         </member>
         <member name="M:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.FromPoint(System.Windows.Point)">
-            <summary>
-            Retrieves a Screen for the display that contains the specified point.
-            </summary>
-            <param name="point">A <see cref="T:System.Windows.Point" /> that specifies the location for which to retrieve a Screen.</param>
-            <returns>A Screen for the display that contains the point. In multiple display environments where no display contains the point, the display closest to the specified point is returned.</returns>
+            <summary>         /// Retrieves a Screen for the display that contains the specified point.         /// </summary>         /// <param name="point">A <see cref="T:System.Windows.Point" /> that specifies the location for which to retrieve a Screen.</param>         /// <returns>A Screen for the display that contains the point. In multiple display environments where no display contains the point, the display closest to the specified point is returned.</returns> 
         </member>
         <member name="M:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.Equals(System.Object)">
-            <summary>
-            Gets or sets a value indicating whether the specified object is equal to this Screen.
-            </summary>
-            <param name="obj">The object to compare to this Screen.</param>
-            <returns>true if the specified object is equal to this Screen; otherwise, false.</returns>
+            <summary>         /// Gets or sets a value indicating whether the specified object is equal to this Screen.         /// </summary>         /// <param name="obj">The object to compare to this Screen.</param>         /// <returns>true if the specified object is equal to this Screen; otherwise, false.</returns> 
         </member>
         <member name="M:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.GetHashCode">
-            <summary>
-            Computes and retrieves a hash code for an object.
-            </summary>
-            <returns>A hash code for an object.</returns>
+            <summary>         /// Computes and retrieves a hash code for an object.         /// </summary>         /// <returns>A hash code for an object.</returns> 
         </member>
         <member name="M:Ssz.Utils.Wpf.Xaml2Emf.CreateEmf(System.String,System.Windows.Media.Drawing)">
             <summary>
-                drawing != null
+                drawing is not null
             </summary>
             <param name="fileName"></param>
             <param name="drawing"></param>
+        </member>
+        <member name="T:XamlGeneratedNamespace.GeneratedInternalTypeHelper">
+            <summary>
+            GeneratedInternalTypeHelper
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateInstance(System.Type,System.Globalization.CultureInfo)">
+            <summary>
+            CreateInstance
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            GetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.SetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            SetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateDelegate(System.Type,System.Object,System.String)">
+            <summary>
+            CreateDelegate
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.AddEventHandler(System.Reflection.EventInfo,System.Object,System.Delegate)">
+            <summary>
+            AddEventHandler
+            </summary>
         </member>
     </members>
 </doc>

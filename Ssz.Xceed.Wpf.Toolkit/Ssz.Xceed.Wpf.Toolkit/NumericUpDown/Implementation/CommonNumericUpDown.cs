@@ -34,16 +34,16 @@ namespace Ssz.Xceed.Wpf.Toolkit
         protected CommonNumericUpDown(FromText fromText, FromDecimal fromDecimal, Func<T, T, bool> fromLowerThan,
             Func<T, T, bool> fromGreaterThan)
         {
-            if (fromText == null)
+            if (fromText is null)
                 throw new ArgumentNullException("parseMethod");
 
-            if (fromDecimal == null)
+            if (fromDecimal is null)
                 throw new ArgumentNullException("fromDecimal");
 
-            if (fromLowerThan == null)
+            if (fromLowerThan is null)
                 throw new ArgumentNullException("fromLowerThan");
 
-            if (fromGreaterThan == null)
+            if (fromGreaterThan is null)
                 throw new ArgumentNullException("fromGreaterThan");
 
             _fromText = fromText;
@@ -83,7 +83,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private bool IsLowerThan(T? value1, T? value2)
         {
-            if (value1 == null || value2 == null)
+            if (value1 is null || value2 is null)
                 return false;
 
             return _fromLowerThan(value1.Value, value2.Value);
@@ -91,7 +91,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private bool IsGreaterThan(T? value1, T? value2)
         {
-            if (value1 == null || value2 == null)
+            if (value1 is null || value2 is null)
                 return false;
 
             return _fromGreaterThan(value1.Value, value2.Value);
@@ -195,7 +195,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         protected override string ConvertValueToText()
         {
-            if (Value == null)
+            if (Value is null)
                 return string.Empty;
 
             return Value.Value.ToString(FormatString, CultureInfo);
@@ -206,7 +206,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             var validDirections = ValidSpinDirections.None;
 
             // Null increment always prevents spin.
-            if (Increment != null && !IsReadOnly)
+            if (Increment is not null && !IsReadOnly)
             {
                 if (IsLowerThan(Value, Maximum) || !Value.HasValue)
                     validDirections = validDirections | ValidSpinDirections.Increase;
@@ -215,7 +215,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
                     validDirections = validDirections | ValidSpinDirections.Decrease;
             }
 
-            if (Spinner != null)
+            if (Spinner is not null)
                 Spinner.ValidSpinDirection = validDirections;
         }
 

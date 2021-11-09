@@ -35,15 +35,15 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
       [Conditional("DEBUG")]
         internal static void ValidatePublicPropertyName(object sourceObject, string propertyName)
         {
-            if (sourceObject == null)
+            if (sourceObject is null)
                 throw new ArgumentNullException("sourceObject");
 
-            if (propertyName == null)
+            if (propertyName is null)
                 throw new ArgumentNullException("propertyName");
 
             Debug.Assert(
                 sourceObject.GetType().GetProperty(propertyName,
-                    BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public) != null,
+                    BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public) is not null,
                 string.Format("Public property {0} not found on object of type {1}.", propertyName,
                     sourceObject.GetType().FullName));
         }
@@ -59,16 +59,16 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
       [Conditional("DEBUG")]
         internal static void ValidatePropertyName(object sourceObject, string propertyName)
         {
-            if (sourceObject == null)
+            if (sourceObject is null)
                 throw new ArgumentNullException("sourceObject");
 
-            if (propertyName == null)
+            if (propertyName is null)
                 throw new ArgumentNullException("propertyName");
 
             Debug.Assert(
                 sourceObject.GetType().GetProperty(propertyName,
                     BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public |
-                    BindingFlags.NonPublic) != null,
+                    BindingFlags.NonPublic) is not null,
                 string.Format("Public property {0} not found on object of type {1}.", propertyName,
                     sourceObject.GetType().FullName));
         }
@@ -80,7 +80,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
                 var fieldInfo = enumeration.GetType().GetField(enumeration.ToString());
                 var attributes =
                     fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), true) as DescriptionAttribute[];
-                if (attributes != null && attributes.Length > 0)
+                if (attributes is not null && attributes.Length > 0)
                 {
                     description = attributes[0].Description;
                     return true;
@@ -119,7 +119,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
         {
             propertyOrFieldName = null;
 
-            if (expression == null)
+            if (expression is null)
                 return false;
 
             propertyOrFieldName = expression.Member.Name;
@@ -133,7 +133,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
         {
             propertyOrFieldName = null;
 
-            if (expression == null)
+            if (expression is null)
                 return false;
 
             return TryGetPropertyOrFieldName(expression.Body as MemberExpression, out propertyOrFieldName);
@@ -142,7 +142,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
         public static bool IsPublicInstanceProperty(Type type, string propertyName)
         {
             var flags = BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public;
-            return type.GetProperty(propertyName, flags) != null;
+            return type.GetProperty(propertyName, flags) is not null;
         }
     }
 }

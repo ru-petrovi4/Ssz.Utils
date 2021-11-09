@@ -37,7 +37,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Commands
 
         public RelayCommand(Action<object> execute, Predicate<object> canExecute)
         {
-            if (execute == null)
+            if (execute is null)
                 throw new ArgumentNullException("execute");
 
             _execute = execute;
@@ -50,7 +50,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Commands
 
         public bool CanExecute(object parameter)
         {
-            return _canExecute == null ? true : _canExecute(parameter);
+            return _canExecute is null ? true : _canExecute(parameter);
         }
 
         public event EventHandler CanExecuteChanged

@@ -99,7 +99,7 @@ namespace Ssz.Xi.Client.Internal.Endpoints
         /// <returns> The results of the operation, including the negotiated keep-alive skip count and callback rate. </returns>
         public void SetCallback(string contextId, uint keepAliveSkipCount, TimeSpan callbackRate)
         {
-            if (_iRegisterForCallback == null) throw new Exception("No IRegisterForCallback Endpoint");
+            if (_iRegisterForCallback is null) throw new Exception("No IRegisterForCallback Endpoint");
 
             _keepAliveSkipCount = keepAliveSkipCount;
             _callbackRate = callbackRate;
@@ -118,7 +118,7 @@ namespace Ssz.Xi.Client.Internal.Endpoints
 
             /*
             var netTcpBinding = this.ServiceEndpoint.Binding as NetTcpBinding;
-            if (netTcpBinding != null)
+            if (netTcpBinding is not null)
             {
                 netTcpBinding.MaxBufferSize = 2147483647;
                 netTcpBinding.MaxReceivedMessageSize = 2147483647;
@@ -132,7 +132,7 @@ namespace Ssz.Xi.Client.Internal.Endpoints
             SetMaxItemsInObjectGraph(ServiceEndpoint.Contract.Operations, MaxItemsInObjectGraph);
 
             /*
-            if (Context.UserInfo != null)
+            if (Context.UserInfo is not null)
             {
                 XiClientCredentials.SetClientCredentials(Context.UserData, ServiceEndpoint,
                                                             cfIRegisterForCallback.Credentials, Context.UserInfo);
@@ -141,7 +141,7 @@ namespace Ssz.Xi.Client.Internal.Endpoints
 
             _iRegisterForCallback = cfIRegisterForCallback.CreateChannel();
 
-            return Channel != null;
+            return Channel is not null;
         }
 
         /// <summary>
@@ -152,7 +152,7 @@ namespace Ssz.Xi.Client.Internal.Endpoints
             get
             {
                 var result = _iRegisterForCallback as ICommunicationObject;
-                if (result == null) throw new InvalidOperationException();
+                if (result is null) throw new InvalidOperationException();
                 return result;
             }
         }

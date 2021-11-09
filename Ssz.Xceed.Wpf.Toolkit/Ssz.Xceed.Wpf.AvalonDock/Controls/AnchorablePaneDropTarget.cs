@@ -75,7 +75,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                     if (parentModelOrientable.Orientation == Orientation.Vertical)
                     {
                         var layoutAnchorablePaneGroup = floatingWindow.RootPanel;
-                        if (layoutAnchorablePaneGroup != null &&
+                        if (layoutAnchorablePaneGroup is not null &&
                             (layoutAnchorablePaneGroup.Children.Count == 1 ||
                              layoutAnchorablePaneGroup.Orientation == Orientation.Vertical))
                         {
@@ -123,7 +123,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                     if (parentModelOrientable.Orientation == Orientation.Vertical)
                     {
                         var layoutAnchorablePaneGroup = floatingWindow.RootPanel;
-                        if (layoutAnchorablePaneGroup != null &&
+                        if (layoutAnchorablePaneGroup is not null &&
                             (layoutAnchorablePaneGroup.Children.Count == 1 ||
                              layoutAnchorablePaneGroup.Orientation == Orientation.Vertical))
                         {
@@ -172,7 +172,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                     if (parentModelOrientable.Orientation == Orientation.Horizontal)
                     {
                         var layoutAnchorablePaneGroup = floatingWindow.RootPanel;
-                        if (layoutAnchorablePaneGroup != null &&
+                        if (layoutAnchorablePaneGroup is not null &&
                             (layoutAnchorablePaneGroup.Children.Count == 1 ||
                              layoutAnchorablePaneGroup.Orientation == Orientation.Horizontal))
                         {
@@ -221,7 +221,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                     if (parentModelOrientable.Orientation == Orientation.Horizontal)
                     {
                         var layoutAnchorablePaneGroup = floatingWindow.RootPanel;
-                        if (layoutAnchorablePaneGroup != null &&
+                        if (layoutAnchorablePaneGroup is not null &&
                             (layoutAnchorablePaneGroup.Children.Count == 1 ||
                              layoutAnchorablePaneGroup.Orientation == Orientation.Horizontal))
                         {

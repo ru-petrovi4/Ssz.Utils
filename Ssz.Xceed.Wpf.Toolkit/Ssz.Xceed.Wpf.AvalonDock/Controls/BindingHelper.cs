@@ -31,10 +31,10 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(dependencyObject.GetType()))
             {
                 var dpd = DependencyPropertyDescriptor.FromProperty(property);
-                if (dpd != null)
+                if (dpd is not null)
                 {
                     var binding = BindingOperations.GetBindingExpressionBase(dependencyObject, dpd.DependencyProperty);
-                    if (binding != null)
+                    if (binding is not null)
                         //if (property.Name == "DataContext" || binding.HasError || binding.Status != BindingStatus.Active)
                     {
                         // Ensure that no pending calls are in the dispatcher queue

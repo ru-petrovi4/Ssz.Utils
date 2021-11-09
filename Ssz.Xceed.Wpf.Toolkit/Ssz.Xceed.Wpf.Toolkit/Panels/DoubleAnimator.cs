@@ -65,7 +65,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             var result = targetPlacement;
             isDone = true;
-            if (_equation != null)
+            if (_equation is not null)
             {
                 var from = (Rect) placementArgs;
                 var duration = animationRate.Duration;

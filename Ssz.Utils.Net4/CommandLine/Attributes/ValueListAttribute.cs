@@ -54,7 +54,7 @@ namespace Ssz.Utils.CommandLine.Attributes
         public ValueListAttribute(Type concreteType)
             : this()
         {
-            if (concreteType == null)
+            if (concreteType is null)
             {
                 throw new ArgumentNullException("concreteType");
             }
@@ -99,7 +99,7 @@ namespace Ssz.Utils.CommandLine.Attributes
         {
             Type concreteType;
             PropertyInfo property = GetProperty(target, out concreteType);
-            if (property == null || concreteType == null)
+            if (property is null || concreteType is null)
             {
                 return null;
             }
@@ -113,7 +113,7 @@ namespace Ssz.Utils.CommandLine.Attributes
         {
             IList<Pair<PropertyInfo, ValueListAttribute>> list =
                 ReflectionHelper.RetrievePropertyList<ValueListAttribute>(target);
-            if (list == null || list.Count == 0)
+            if (list is null || list.Count == 0)
             {
                 return null;
             }
@@ -136,7 +136,7 @@ namespace Ssz.Utils.CommandLine.Attributes
             concreteType = null;
             IList<Pair<PropertyInfo, ValueListAttribute>> list =
                 ReflectionHelper.RetrievePropertyList<ValueListAttribute>(target);
-            if (list == null || list.Count == 0)
+            if (list is null || list.Count == 0)
             {
                 return null;
             }

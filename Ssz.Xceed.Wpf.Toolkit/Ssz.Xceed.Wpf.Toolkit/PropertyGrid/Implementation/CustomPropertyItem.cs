@@ -58,7 +58,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         private static object OnCoerceValueChanged(DependencyObject o, object baseValue)
         {
             var prop = o as CustomPropertyItem;
-            if (prop != null)
+            if (prop is not null)
                 return prop.OnCoerceValueChanged(baseValue);
 
             return baseValue;
@@ -72,7 +72,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         private static void OnValueChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var propertyItem = o as CustomPropertyItem;
-            if (propertyItem != null) propertyItem.OnValueChanged(e.OldValue, e.NewValue);
+            if (propertyItem is not null) propertyItem.OnValueChanged(e.OldValue, e.NewValue);
         }
 
         protected virtual void OnValueChanged(object oldValue, object newValue)

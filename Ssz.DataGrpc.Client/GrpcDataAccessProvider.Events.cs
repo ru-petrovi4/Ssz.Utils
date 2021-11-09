@@ -30,7 +30,7 @@ namespace Ssz.DataGrpc.Client
                 ClientEventList? dataGrpcEventList =
                     ClientEventListManager.GetRelatedClientEventList(OnEventMessagesCallbackInternal);
 
-                if (dataGrpcEventList == null) return;
+                if (dataGrpcEventList is null) return;
 
                 try
                 {

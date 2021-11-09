@@ -93,7 +93,7 @@ namespace Ssz.Utils.CommandLine.Attributes
                 return;
             }
 
-            if (LongName == null)
+            if (LongName is null)
             {
                 throw new ArgumentNullException("longName",
                     SR.ArgumentNullException_LongNameCannotBeNullWhenShortNameIsUndefined);

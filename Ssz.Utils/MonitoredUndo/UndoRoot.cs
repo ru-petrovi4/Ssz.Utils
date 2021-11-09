@@ -24,7 +24,7 @@ namespace Ssz.Utils.MonitoredUndo
         /// </param>
         public UndoRoot(object? root)
         {
-            if (root == null) return;
+            if (root is null) return;
 
             _root = new WeakReference(root);
             _undoStack = new Stack<ChangeSet>();
@@ -40,7 +40,7 @@ namespace Ssz.Utils.MonitoredUndo
         /// </summary>
         public void BeginChangeSetBatch(string batchDescription, bool consolidateChangesForSameInstance)
         {
-            if (_root == null) return;
+            if (_root is null) return;
 
             // We don't want to add additional changes representing the operations that happen when undoing or redoing a change.
             if (_isUndoingOrRedoing)
@@ -60,7 +60,7 @@ namespace Ssz.Utils.MonitoredUndo
         /// </summary>
         public void EndChangeSetBatch()
         {
-            if (_root == null) return;
+            if (_root is null) return;
 
             // We don't want to add additional changes representing the operations that happen when undoing or redoing a change.
             if (_isUndoingOrRedoing)
@@ -70,13 +70,13 @@ namespace Ssz.Utils.MonitoredUndo
 
             if (_isInBatchCounter == 0)
             {
-                if (_currentBatchChangeSet == null)
+                if (_currentBatchChangeSet is null)
                     throw new InvalidOperationException(
                         "Cannot perform an EndChangeSetBatch when the Undo Service is not collecting a batch of changes. The batch must be started first.");
 
                 if (_currentBatchChangeSet.Changes.Any())
                 {
-                    if (_undoStack == null) throw new InvalidOperationException();
+                    if (_undoStack is null) throw new InvalidOperationException();
                     _undoStack.Push(_currentBatchChangeSet);
                     OnUndoStackChanged();
                 }
@@ -94,7 +94,7 @@ namespace Ssz.Utils.MonitoredUndo
         /// </summary>
         public void Undo()
         {
-            if (_root == null) return;
+            if (_root is null) return;
 
             ChangeSet? last = _undoStack?.FirstOrDefault();
             if (null != last)
@@ -107,13 +107,13 @@ namespace Ssz.Utils.MonitoredUndo
         /// </summary>
         public void Undo(ChangeSet lastChangeToUndo)
         {
-            if (_root == null) return;
+            if (_root is null) return;
 
             if (IsInBatch)
                 throw new InvalidOperationException(
                     "Cannot perform an Undo when the Undo Service is collecting a batch of changes. The batch must be completed first.");
 
-            if (_undoStack == null) throw new InvalidOperationException();
+            if (_undoStack is null) throw new InvalidOperationException();
             if (!_undoStack.Contains(lastChangeToUndo))
                 throw new InvalidOperationException(
                     "The specified change does not exist in the list of undoable changes. Perhaps it has already been undone.");
@@ -135,7 +135,7 @@ namespace Ssz.Utils.MonitoredUndo
 
                     changeSet.Undo();
 
-                    if (_redoStack == null) throw new InvalidOperationException();
+                    if (_redoStack is null) throw new InvalidOperationException();
                     _redoStack.Push(changeSet);
                     OnRedoStackChanged();
                 } while (!done);
@@ -151,7 +151,7 @@ namespace Ssz.Utils.MonitoredUndo
         /// </summary>
         public void Redo()
         {
-            if (_root == null) return;
+            if (_root is null) return;
 
             ChangeSet? last = _redoStack?.FirstOrDefault();
             if (null != last)
@@ -163,13 +163,13 @@ namespace Ssz.Utils.MonitoredUndo
         /// </summary>
         public void Redo(ChangeSet lastChangeToRedo)
         {
-            if (_root == null) return;
+            if (_root is null) return;
 
             if (IsInBatch)
                 throw new InvalidOperationException(
                     "Cannot perform a Redo when the Undo Service is collecting a batch of changes. The batch must be completed first.");
 
-            if (_redoStack == null) throw new InvalidOperationException();
+            if (_redoStack is null) throw new InvalidOperationException();
             if (!_redoStack.Contains(lastChangeToRedo))
                 throw new InvalidOperationException(
                     "The specified change does not exist in the list of redoable changes. Perhaps it has already been redone.");
@@ -190,7 +190,7 @@ namespace Ssz.Utils.MonitoredUndo
 
                     changeSet.Redo();
 
-                    if (_undoStack == null) throw new InvalidOperationException();
+                    if (_undoStack is null) throw new InvalidOperationException();
                     _undoStack.Push(changeSet);
                     OnUndoStackChanged();
                 } while (!done);
@@ -209,7 +209,7 @@ namespace Ssz.Utils.MonitoredUndo
         /// <param name="description">The description of this change.</param>
         public void AddChange(Change change, string description)
         {
-            if (_root == null) return;
+            if (_root is null) return;
 
             // System.Diagnostics.Debug.WriteLine("Starting AddChange: " + description);
 
@@ -220,20 +220,20 @@ namespace Ssz.Utils.MonitoredUndo
             //  If batched, add to the current ChangeSet, otherwise add a new ChangeSet.
             if (IsInBatch)
             {
-                if (_currentBatchChangeSet == null) throw new InvalidOperationException();
+                if (_currentBatchChangeSet is null) throw new InvalidOperationException();
                 _currentBatchChangeSet.AddChange(change);
                 //System.Diagnostics.Debug.WriteLine("AddChange: BATCHED " + description);
             }
             else
             {
-                if (_undoStack == null) throw new InvalidOperationException();
+                if (_undoStack is null) throw new InvalidOperationException();
                 _undoStack.Push(new ChangeSet(this, description, change));
                 OnUndoStackChanged();
                 //System.Diagnostics.Debug.WriteLine("AddChange: " + description);
             }
 
             // Prune the RedoStack
-            if (_redoStack == null) throw new InvalidOperationException();
+            if (_redoStack is null) throw new InvalidOperationException();
             _redoStack.Clear();
             OnRedoStackChanged();
         }
@@ -244,7 +244,7 @@ namespace Ssz.Utils.MonitoredUndo
         /// <param name="changeSet">The ChangeSet to add.</param>
         public void AddChange(ChangeSet changeSet)
         {
-            if (_root == null) return;
+            if (_root is null) return;
 
             // System.Diagnostics.Debug.WriteLine("Starting AddChange: " + description);
 
@@ -255,7 +255,7 @@ namespace Ssz.Utils.MonitoredUndo
             //  If batched, add to the current ChangeSet, otherwise add a new ChangeSet.
             if (IsInBatch)
             {
-                if (_currentBatchChangeSet == null) throw new InvalidOperationException();
+                if (_currentBatchChangeSet is null) throw new InvalidOperationException();
                 foreach (Change chg in changeSet.Changes)
                 {
                     _currentBatchChangeSet.AddChange(chg);
@@ -264,29 +264,29 @@ namespace Ssz.Utils.MonitoredUndo
             }
             else
             {
-                if (_undoStack == null) throw new InvalidOperationException();
+                if (_undoStack is null) throw new InvalidOperationException();
                 _undoStack.Push(changeSet);
                 OnUndoStackChanged();
                 //System.Diagnostics.Debug.WriteLine("AddChange: " + description);
             }
 
             // Prune the RedoStack
-            if (_redoStack == null) throw new InvalidOperationException();
+            if (_redoStack is null) throw new InvalidOperationException();
             _redoStack.Clear();
             OnRedoStackChanged();
         }
 
         public void Clear()
         {
-            if (_root == null) return;
+            if (_root is null) return;
 
             if (IsInBatch || _isUndoingOrRedoing)
                 throw new InvalidOperationException(
                     "Unable to clear the undo history because the system is collecting a batch of changes, or is in the process of undoing / redoing a change.");
 
-            if (_undoStack == null) throw new InvalidOperationException();
+            if (_undoStack is null) throw new InvalidOperationException();
             _undoStack.Clear();
-            if (_redoStack == null) throw new InvalidOperationException();
+            if (_redoStack is null) throw new InvalidOperationException();
             _redoStack.Clear();
             OnUndoStackChanged();
             OnRedoStackChanged();
@@ -360,8 +360,8 @@ namespace Ssz.Utils.MonitoredUndo
         {
             get
             {
-                if (_root == null) return false;
-                if (_undoStack == null) throw new InvalidOperationException();
+                if (_root is null) return false;
+                if (_undoStack is null) throw new InvalidOperationException();
                 return _undoStack.Count > 0 && !IsInBatch;
             }
         }
@@ -370,8 +370,8 @@ namespace Ssz.Utils.MonitoredUndo
         {
             get
             {
-                if (_root == null) return false;
-                if (_redoStack == null) throw new InvalidOperationException();
+                if (_root is null) return false;
+                if (_redoStack is null) throw new InvalidOperationException();
                 return _redoStack.Count > 0 && !IsInBatch;
             }
         }

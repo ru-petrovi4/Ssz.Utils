@@ -30,7 +30,7 @@ namespace System.Linq.Dynamic.Core
         /// </returns>
         internal static bool IsNullOrWhiteSpace(string value)
         {
-            if (value == null)
+            if (value is null)
             {
                 return true;
             }

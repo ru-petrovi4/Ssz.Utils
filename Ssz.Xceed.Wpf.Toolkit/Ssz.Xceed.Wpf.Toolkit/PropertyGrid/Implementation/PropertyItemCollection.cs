@@ -87,7 +87,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 
         internal void UpdateItems(IEnumerable<PropertyItem> newItems)
         {
-            if (newItems == null)
+            if (newItems is null)
                 throw new ArgumentNullException("newItems");
 
             _preventNotification = true;
@@ -120,7 +120,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
                 view.SortDescriptions.Clear();
 
                 // Update view values
-                if (groupDescription != null)
+                if (groupDescription is not null)
                 {
                     view.GroupDescriptions.Add(groupDescription);
                     SortBy(CategoryOrderPropertyName, ListSortDirection.Ascending);
@@ -145,7 +145,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
                 filter = item =>
                 {
                     var property = item as PropertyItem;
-                    if (property.DisplayName != null) return property.DisplayName.ToLower().StartsWith(text.ToLower());
+                    if (property.DisplayName is not null) return property.DisplayName.ToLower().StartsWith(text.ToLower());
 
                     return false;
                 };

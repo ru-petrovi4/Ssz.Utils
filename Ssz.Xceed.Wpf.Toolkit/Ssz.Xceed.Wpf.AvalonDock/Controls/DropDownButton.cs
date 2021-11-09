@@ -35,7 +35,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         protected override void OnClick()
         {
-            if (DropDownContextMenu != null)
+            if (DropDownContextMenu is not null)
             {
                 //IsChecked = true;
                 DropDownContextMenu.PlacementTarget = this;
@@ -85,7 +85,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         protected virtual void OnDropDownContextMenuChanged(DependencyPropertyChangedEventArgs e)
         {
             var oldContextMenu = e.OldValue as ContextMenu;
-            if (oldContextMenu != null && IsChecked.GetValueOrDefault())
+            if (oldContextMenu is not null && IsChecked.GetValueOrDefault())
                 oldContextMenu.Closed -= OnContextMenuClosed;
         }
 

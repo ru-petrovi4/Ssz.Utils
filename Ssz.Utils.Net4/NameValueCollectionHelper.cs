@@ -79,7 +79,7 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static string GetNameValueCollectionString(CaseInsensitiveDictionary<string> nameValueCollection)
         {
-            if (nameValueCollection == null || nameValueCollection.Count == 0) return "";
+            if (nameValueCollection is null || nameValueCollection.Count == 0) return "";
 
             var items = new List<string>();
 
@@ -97,7 +97,7 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static bool CanGetNameValueCollection(object obj)
         {
-            if (obj == null) return false;
+            if (obj is null) return false;
 
             PropertyInfo[] props = obj.GetType().GetProperties();
             foreach (PropertyInfo prop in props)
@@ -128,7 +128,7 @@ namespace Ssz.Utils
                     {
                         ValueSerializer valueSerializer =
                             ValueSerializer.GetSerializerFor(propType);
-                        if (valueSerializer == null) return false;
+                        if (valueSerializer is null) return false;
                         if (!valueSerializer.CanConvertToString(propValue, null)) return false;
                     }
                 }
@@ -143,7 +143,7 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static CaseInsensitiveDictionary<string> GetNameValueCollection(object obj)
         {
-            if (obj == null) return null;
+            if (obj is null) return null;
 
             var result = new CaseInsensitiveDictionary<string>();
 
@@ -188,7 +188,7 @@ namespace Ssz.Utils
         /// <param name="nameValueCollection"></param>
         public static void SetNameValueCollection(object obj, CaseInsensitiveDictionary<string> nameValueCollection)
         {            
-            if (obj == null || nameValueCollection == null) return;
+            if (obj is null || nameValueCollection is null) return;
             foreach (var kvp in nameValueCollection)
             {
                 obj.SetPropertyValue(kvp.Key, kvp.Value);
@@ -200,13 +200,13 @@ namespace Ssz.Utils
         #region private functions
 
         /// <summary>
-        ///     If value == null, then result == null.
+        ///     If value is null, then result is null.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         private static string UrlEncode(string value)
         {
-            if (value == null) return null;
+            if (value is null) return null;
 
             value = value.Replace(@"%", @"%25");
             value = value.Replace(@"&", @"%26");
@@ -216,11 +216,11 @@ namespace Ssz.Utils
         }
 
         /// <summary>
-        ///     If value == null, then result == null.
+        ///     If value is null, then result is null.
         /// </summary>
         private static string UrlDecode(string value)
         {
-            if (value == null) return null;
+            if (value is null) return null;
 
             int count = value.Length;
             var urlDecoder = new UrlDecoder(count);
@@ -332,7 +332,7 @@ namespace Ssz.Utils
                                 else
                 */
                 {
-                    if (_byteBuffer == null)
+                    if (_byteBuffer is null)
                         _byteBuffer = new byte[_bufferSize];
 
                     _byteBuffer[_numBytes] = b;

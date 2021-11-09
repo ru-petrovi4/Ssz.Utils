@@ -76,7 +76,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnIsOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var dateTimePicker = (DateTimePicker) d;
-            if (dateTimePicker != null)
+            if (dateTimePicker is not null)
                 dateTimePicker.OnIsOpenChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 
@@ -171,20 +171,20 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             base.OnApplyTemplate();
 
-            if (_popup != null)
+            if (_popup is not null)
                 _popup.Opened -= Popup_Opened;
 
             _popup = GetTemplateChild(PART_Popup) as Popup;
 
-            if (_popup != null)
+            if (_popup is not null)
                 _popup.Opened += Popup_Opened;
 
-            if (_calendar != null)
+            if (_calendar is not null)
                 _calendar.SelectedDatesChanged -= Calendar_SelectedDatesChanged;
 
             _calendar = GetTemplateChild(PART_Calendar) as Calendar;
 
-            if (_calendar != null)
+            if (_calendar is not null)
             {
                 _calendar.SelectedDatesChanged += Calendar_SelectedDatesChanged;
                 _calendar.SelectedDate = Value ?? null;
@@ -206,7 +206,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         protected override void OnValueChanged(DateTime? oldValue, DateTime? newValue)
         {
-            if (_calendar != null && _calendar.SelectedDate != newValue)
+            if (_calendar is not null && _calendar.SelectedDate != newValue)
             {
                 _calendar.SelectedDate = newValue;
                 _calendar.DisplayDate = newValue ?? DateTime.Now;
@@ -269,7 +269,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             {
                 var newDate = (DateTime?) e.AddedItems[0];
 
-                if (Value != null && newDate != null && newDate.HasValue)
+                if (Value is not null && newDate is not null && newDate.HasValue)
                     // Only change the year, month, and day part of the value. Keep everything to the last "tick."
                     // "Milliseconds" aren't precise enough. Use a mathematical scheme instead.
                     newDate = newDate.Value.Date + Value.Value.TimeOfDay;
@@ -281,7 +281,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void Popup_Opened(object sender, EventArgs e)
         {
-            if (_calendar != null)
+            if (_calendar is not null)
                 _calendar.Focus();
         }
 
@@ -295,7 +295,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
                 IsOpen = false;
             ReleaseMouseCapture();
 
-            if (isFocusOnTextBox && TextBox != null)
+            if (isFocusOnTextBox && TextBox is not null)
                 TextBox.Focus();
         }
 

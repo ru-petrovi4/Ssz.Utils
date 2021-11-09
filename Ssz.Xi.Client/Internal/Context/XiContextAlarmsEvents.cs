@@ -23,7 +23,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_iResourceManagement == null) throw new InvalidOperationException();
+            if (_iResourceManagement is null) throw new InvalidOperationException();
             List<AlarmSummary>? alarmSummaries = null;
             try
             {

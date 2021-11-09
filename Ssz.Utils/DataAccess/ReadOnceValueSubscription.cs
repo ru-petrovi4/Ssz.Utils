@@ -43,7 +43,7 @@ namespace Ssz.Utils.DataAccess
 
             _dataProvider.RemoveItem(this);            
 
-            if (_setValueAction != null)
+            if (_setValueAction is not null)
             {
                 _setValueAction(valueStatusTimestamp);
                 _setValueAction = null;

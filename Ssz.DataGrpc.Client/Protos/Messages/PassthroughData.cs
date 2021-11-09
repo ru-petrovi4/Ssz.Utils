@@ -24,7 +24,7 @@ namespace Ssz.DataGrpc.Server
             while (index < Data.Length)
             {
                 var passthroughData = new PassthroughData();
-                if (prevPassthroughData != null)
+                if (prevPassthroughData is not null)
                 {
                     string guid = System.Guid.NewGuid().ToString();
                     prevPassthroughData.NextGuid = guid;

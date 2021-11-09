@@ -84,10 +84,10 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                     _content = value;
                     RaisePropertyChanged("Content");
 
-                    if (ContentId == null)
+                    if (ContentId is null)
                     {
                         var contentAsControl = _content as FrameworkElement;
-                        if (contentAsControl != null && !string.IsNullOrWhiteSpace(contentAsControl.Name))
+                        if (contentAsControl is not null && !string.IsNullOrWhiteSpace(contentAsControl.Name))
                             SetCurrentValue(ContentIdProperty, contentAsControl.Name);
                     }
                 }
@@ -110,7 +110,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         private static void OnContentIdPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
         {
             var layoutContent = obj as LayoutContent;
-            if (layoutContent != null)
+            if (layoutContent is not null)
                 layoutContent.OnContentIdPropertyChanged((string) args.OldValue, (string) args.NewValue);
         }
 
@@ -136,7 +136,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                     RaisePropertyChanging("IsSelected");
                     _isSelected = value;
                     var parentSelector = Parent as ILayoutContentSelector;
-                    if (parentSelector != null)
+                    if (parentSelector is not null)
                         parentSelector.SelectedContentIndex = _isSelected ? parentSelector.IndexOf(this) : -1;
                     OnIsSelectedChanged(oldValue, value);
                     RaisePropertyChanged("IsSelected");
@@ -150,7 +150,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         /// </summary>
         protected virtual void OnIsSelectedChanged(bool oldValue, bool newValue)
         {
-            if (IsSelectedChanged != null)
+            if (IsSelectedChanged is not null)
                 IsSelectedChanged(this, EventArgs.Empty);
         }
 
@@ -176,7 +176,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                     _isActive = value;
 
                     var root = Root;
-                    if (root != null && _isActive)
+                    if (root is not null && _isActive)
                         root.ActiveContent = this;
 
                     if (_isActive)
@@ -196,7 +196,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
             if (newValue)
                 LastActivationTimeStamp = DateTime.Now;
 
-            if (IsActiveChanged != null)
+            if (IsActiveChanged is not null)
                 IsActiveChanged(this, EventArgs.Empty);
         }
 
@@ -240,8 +240,8 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                     RaisePropertyChanged("PreviousContainer");
 
                     var paneSerializable = _previousContainer as ILayoutPaneSerializable;
-                    if (paneSerializable != null &&
-                        paneSerializable.Id == null)
+                    if (paneSerializable is not null &&
+                        paneSerializable.Id is null)
                         paneSerializable.Id = Guid.NewGuid().ToString();
                 }
             }
@@ -423,7 +423,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
         #region IsFloating
 
-        public bool IsFloating => this.FindParent<LayoutFloatingWindow>() != null;
+        public bool IsFloating => this.FindParent<LayoutFloatingWindow>() is not null;
 
         #endregion
 
@@ -511,10 +511,10 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         {
             var root = Root;
 
-            if (oldValue != null)
+            if (oldValue is not null)
                 IsSelected = false;
 
-            //if (root != null && _isActive && newValue == null)
+            //if (root is not null && _isActive && newValue is null)
             //    root.ActiveContent = null;
 
             base.OnParentChanging(oldValue, newValue);
@@ -522,14 +522,14 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
         protected override void OnParentChanged(ILayoutContainer oldValue, ILayoutContainer newValue)
         {
-            if (IsSelected && Parent != null && Parent is ILayoutContentSelector)
+            if (IsSelected && Parent is not null && Parent is ILayoutContentSelector)
             {
                 var parentSelector = Parent as ILayoutContentSelector;
                 parentSelector.SelectedContentIndex = parentSelector.IndexOf(this);
             }
 
             //var root = Root;
-            //if (root != null && _isActive)
+            //if (root is not null && _isActive)
             //    root.ActiveContent = this;
 
             base.OnParentChanged(oldValue, newValue);
@@ -596,7 +596,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
             if (!string.IsNullOrWhiteSpace(Title))
                 writer.WriteAttributeString("Title", Title);
 
-            //if (IconSource != null)
+            //if (IconSource is not null)
             //    writer.WriteAttributeString("IconSource", IconSource.ToString());
 
             if (IsSelected)
@@ -609,7 +609,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 writer.WriteAttributeString("ContentId", ContentId);
 
 
-            if (ToolTip != null && ToolTip is string)
+            if (ToolTip is not null && ToolTip is string)
                 if (!string.IsNullOrWhiteSpace((string) ToolTip))
                     writer.WriteAttributeString("ToolTip", (string) ToolTip);
 
@@ -630,14 +630,14 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 writer.WriteAttributeString("CanFloat", CanFloat.ToString());
 
 
-            if (LastActivationTimeStamp != null)
+            if (LastActivationTimeStamp is not null)
                 writer.WriteAttributeString("LastActivationTimeStamp",
                     LastActivationTimeStamp.Value.ToString(CultureInfo.InvariantCulture));
 
-            if (_previousContainer != null)
+            if (_previousContainer is not null)
             {
                 var paneSerializable = _previousContainer as ILayoutPaneSerializable;
-                if (paneSerializable != null)
+                if (paneSerializable is not null)
                 {
                     writer.WriteAttributeString("PreviousContainerId", paneSerializable.Id);
                     writer.WriteAttributeString("PreviousContainerIndex", _previousContainerIndex.ToString());
@@ -648,7 +648,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         public int CompareTo(LayoutContent other)
         {
             var contentAsComparable = Content as IComparable;
-            if (contentAsComparable != null) return contentAsComparable.CompareTo(other.Content);
+            if (contentAsComparable is not null) return contentAsComparable.CompareTo(other.Content);
 
             return string.Compare(Title, other.Title);
         }
@@ -658,8 +658,8 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         /// </summary>
         public void Float()
         {
-            if (PreviousContainer != null &&
-                PreviousContainer.FindParent<LayoutFloatingWindow>() != null)
+            if (PreviousContainer is not null &&
+                PreviousContainer.FindParent<LayoutFloatingWindow>() is not null)
             {
                 var currentContainer = Parent as ILayoutPane;
                 var currentContainerIndex = (currentContainer as ILayoutGroup).IndexOfChild(this);
@@ -693,7 +693,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         public void DockAsDocument()
         {
             var root = Root as LayoutRoot;
-            if (root == null)
+            if (root is null)
                 throw new InvalidOperationException();
             if (Parent is LayoutDocumentPane)
                 return;
@@ -705,12 +705,12 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
             }
 
             LayoutDocumentPane newParentPane;
-            if (root.LastFocusedDocument != null)
+            if (root.LastFocusedDocument is not null)
                 newParentPane = root.LastFocusedDocument.Parent as LayoutDocumentPane;
             else
                 newParentPane = root.Descendents().OfType<LayoutDocumentPane>().FirstOrDefault();
 
-            if (newParentPane != null)
+            if (newParentPane is not null)
             {
                 newParentPane.Children.Add(this);
                 root.CollectGarbage();
@@ -725,7 +725,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         /// </summary>
         public void Dock()
         {
-            if (PreviousContainer != null)
+            if (PreviousContainer is not null)
             {
                 var currentContainer = Parent;
                 var currentContainerIndex = currentContainer is ILayoutGroup
@@ -786,7 +786,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
             var root = Root;
             var parentAsContainer = Parent;
             parentAsContainer.RemoveChild(this);
-            if (root != null)
+            if (root is not null)
                 root.CollectGarbage();
 
             OnClosed();
@@ -794,13 +794,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
         protected virtual void OnClosed()
         {
-            if (Closed != null)
+            if (Closed is not null)
                 Closed(this, EventArgs.Empty);
         }
 
         protected virtual void OnClosing(CancelEventArgs args)
         {
-            if (Closing != null)
+            if (Closing is not null)
                 Closing(this, args);
         }
 

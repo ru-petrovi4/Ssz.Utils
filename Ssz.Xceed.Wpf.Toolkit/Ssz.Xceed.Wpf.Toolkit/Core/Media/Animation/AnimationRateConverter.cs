@@ -74,7 +74,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Media.Animation
             object value,
             Type destinationType)
         {
-            if (destinationType != null && value is AnimationRate)
+            if (destinationType is not null && value is AnimationRate)
             {
                 var rateValue = (AnimationRate) value;
 

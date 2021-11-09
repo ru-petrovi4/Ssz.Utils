@@ -65,7 +65,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                     var newLayoutDocumentPane = new LayoutDocumentPane(floatingWindow.RootDocument);
                     var parentModel = targetModel.Parent as LayoutDocumentPaneGroup;
 
-                    if (parentModel == null)
+                    if (parentModel is null)
                     {
                         var parentContainer = targetModel.Parent;
                         var newParentModel = new LayoutDocumentPaneGroup {Orientation = Orientation.Vertical};
@@ -104,7 +104,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                     var newLayoutDocumentPane = new LayoutDocumentPane(floatingWindow.RootDocument);
                     var parentModel = targetModel.Parent as LayoutDocumentPaneGroup;
 
-                    if (parentModel == null)
+                    if (parentModel is null)
                     {
                         var parentContainer = targetModel.Parent;
                         var newParentModel = new LayoutDocumentPaneGroup {Orientation = Orientation.Vertical};
@@ -143,7 +143,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                     var newLayoutDocumentPane = new LayoutDocumentPane(floatingWindow.RootDocument);
                     var parentModel = targetModel.Parent as LayoutDocumentPaneGroup;
 
-                    if (parentModel == null)
+                    if (parentModel is null)
                     {
                         var parentContainer = targetModel.Parent;
                         var newParentModel = new LayoutDocumentPaneGroup {Orientation = Orientation.Horizontal};
@@ -182,7 +182,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                     var newLayoutDocumentPane = new LayoutDocumentPane(floatingWindow.RootDocument);
                     var parentModel = targetModel.Parent as LayoutDocumentPaneGroup;
 
-                    if (parentModel == null)
+                    if (parentModel is null)
                     {
                         var parentContainer = targetModel.Parent;
                         var newParentModel = new LayoutDocumentPaneGroup {Orientation = Orientation.Horizontal};
@@ -262,7 +262,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                     var parentModel = targetModel.Parent as LayoutDocumentPaneGroup;
                     var newLayoutDocumentPane = new LayoutDocumentPane();
 
-                    if (parentModel == null)
+                    if (parentModel is null)
                     {
                         var parentContainer = targetModel.Parent;
                         var newParentModel = new LayoutDocumentPaneGroup {Orientation = Orientation.Vertical};
@@ -305,7 +305,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                     var parentModel = targetModel.Parent as LayoutDocumentPaneGroup;
                     var newLayoutDocumentPane = new LayoutDocumentPane();
 
-                    if (parentModel == null)
+                    if (parentModel is null)
                     {
                         var parentContainer = targetModel.Parent;
                         var newParentModel = new LayoutDocumentPaneGroup {Orientation = Orientation.Vertical};
@@ -348,7 +348,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                     var parentModel = targetModel.Parent as LayoutDocumentPaneGroup;
                     var newLayoutDocumentPane = new LayoutDocumentPane();
 
-                    if (parentModel == null)
+                    if (parentModel is null)
                     {
                         var parentContainer = targetModel.Parent;
                         var newParentModel = new LayoutDocumentPaneGroup {Orientation = Orientation.Horizontal};
@@ -391,7 +391,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                     var parentModel = targetModel.Parent as LayoutDocumentPaneGroup;
                     var newLayoutDocumentPane = new LayoutDocumentPane();
 
-                    if (parentModel == null)
+                    if (parentModel is null)
                     {
                         var parentContainer = targetModel.Parent;
                         var newParentModel = new LayoutDocumentPaneGroup {Orientation = Orientation.Horizontal};

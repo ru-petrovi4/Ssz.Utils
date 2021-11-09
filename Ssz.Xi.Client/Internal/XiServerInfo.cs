@@ -23,14 +23,14 @@ namespace Ssz.Xi.Client.Internal
 
         /// <summary>
         ///     This constructor creates an XiEndpointDiscovery instance from a ServerEntry
-        ///     Preconditions: serverEntry != null.
+        ///     Preconditions: serverEntry is not null.
         /// </summary>
         public XiServerInfo(ServerEntry serverEntry, List<EndpointConfigurationEx> endpointConfigurationExList, string host)
         {
             _serverEntry = serverEntry;
             _endpointConfigurationExList = endpointConfigurationExList;
 
-            if (_serverEntry.EndpointServerSettings != null)
+            if (_serverEntry.EndpointServerSettings is not null)
             foreach (EndpointConfiguration endpointConfiguration in _serverEntry.EndpointServerSettings)
             {
                 var endpointUri = new UriBuilder(endpointConfiguration.EndpointUrl ?? "");
@@ -48,15 +48,15 @@ namespace Ssz.Xi.Client.Internal
 
             #region store _allServiceEndpointsCollection in lists per contractTypeName
 
-            if (_allServiceEndpointsCollection != null)
+            if (_allServiceEndpointsCollection is not null)
                 foreach (ServiceEndpoint serviceEndpoint in _allServiceEndpointsCollection)
                 {
                     // TODO
-                    //if (serviceEndpoint.ListenUri == null) continue;
+                    //if (serviceEndpoint.ListenUri is null) continue;
                     /*
                     var listenUriBuilder = new UriBuilder(serviceEndpoint.ListenUri);
                     listenUriBuilder.Host = (new Uri(serverEntry.ServerDescription.ServerDiscoveryUrl)).Host;
-                    if (serviceEndpoint.Address.Identity != null)
+                    if (serviceEndpoint.Address.Identity is not null)
                         // there is an identity of the server (used with Kerberos)
                         serviceEndpoint.Address = new EndpointAddress(listenUriBuilder.Uri,
                             serviceEndpoint.Address.Identity);
@@ -135,7 +135,7 @@ namespace Ssz.Xi.Client.Internal
             #region update the endpoint settings with the EndpointConfiguration from the ServerEntry
 
             string? contractTypeName = null;
-            if (_serverEntry.EndpointServerSettings != null)
+            if (_serverEntry.EndpointServerSettings is not null)
             foreach (EndpointConfiguration endpointConfiguration in _serverEntry.EndpointServerSettings)
             {
                 // In case the server used the fully qualified contractTypeName name 
@@ -300,7 +300,7 @@ namespace Ssz.Xi.Client.Internal
         //                break;
         //            }
 
-        //            //if (serviceEndpoint.ListenUri != null)
+        //            //if (serviceEndpoint.ListenUri is not null)
         //            //{
         //            //    var ub = new UriBuilder(serviceEndpoint.ListenUri);
         //            //    if ((0 == string.Compare(serviceEndpoint.Contract.Name, contractType, true)) &&
@@ -329,12 +329,12 @@ namespace Ssz.Xi.Client.Internal
                 if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiEndpointDiscovery.");
 
                 var serviceEndpoints = new List<ServiceEndpoint>();
-                if (_allServiceEndpointsCollection != null)
+                if (_allServiceEndpointsCollection is not null)
                     foreach (ServiceEndpoint serviceEndpoint in _allServiceEndpointsCollection)
                     {
                         if (0 == string.Compare(serviceEndpoint.Contract.Name, contractType, true)) serviceEndpoints.Add(serviceEndpoint);
                         // TODO
-                        //if (serviceEndpoint.ListenUri != null)
+                        //if (serviceEndpoint.ListenUri is not null)
                         //{
                         //    var ub = new UriBuilder(serviceEndpoint.ListenUri);
                         //    if ((0 == string.Compare(serviceEndpoint.Contract.Name, contractType, true)) &&
@@ -522,7 +522,7 @@ namespace Ssz.Xi.Client.Internal
         ///// </summary>
         //private void FillAllServiceEndpointsCollection(List<MexEndpointInfo>? mexEndpoints)
         //{
-        //    if (mexEndpoints == null || mexEndpoints.Count == 0) return;
+        //    if (mexEndpoints is null || mexEndpoints.Count == 0) return;
 
         //    foreach (MexEndpointInfo mexEndpoinnt in mexEndpoints)
         //    {
@@ -595,7 +595,7 @@ namespace Ssz.Xi.Client.Internal
                         }
                             break;
                     }
-                    if (binding == null) continue;
+                    if (binding is null) continue;
                     var serviceEndpoint =
                         new ServiceEndpoint(new ContractDescription(endpointConfigurationEx.ContractType),
                             binding, new EndpointAddress(endpointConfigurationEx.EndpointUrl));
@@ -670,13 +670,13 @@ namespace Ssz.Xi.Client.Internal
         private IEnumerable<ServiceEndpoint> GetServiceEndpointsByBindingInternal(string contractType, Type bindingType)
         {
             var serviceEndpoints = new List<ServiceEndpoint>();
-            if (_allServiceEndpointsCollection != null)
+            if (_allServiceEndpointsCollection is not null)
             foreach (ServiceEndpoint serviceEndpoint in _allServiceEndpointsCollection)
             {
                 if ((string.Compare(serviceEndpoint.Contract.Name, contractType, true) == 0) &&
                         (serviceEndpoint.Binding.GetType() == bindingType)) serviceEndpoints.Add(serviceEndpoint);
                 // TODO
-                //if (serviceEndpoint.ListenUri != null)
+                //if (serviceEndpoint.ListenUri is not null)
                 //{
                 //    var ub = new UriBuilder(serviceEndpoint.ListenUri);
                 //    if ((string.Compare(serviceEndpoint.Contract.Name, contractType, true) == 0) &&
@@ -759,15 +759,15 @@ namespace Ssz.Xi.Client.Internal
             serviceEndpoint.Binding.ReceiveTimeout = epc.ReceiveTimeout;
 
             var bhBnd = serviceEndpoint.Binding as BasicHttpBinding;
-            if (bhBnd != null)
+            if (bhBnd is not null)
             {
                 bhBnd.MaxBufferSize = (int) epc.MaxBufferSize;
                 bhBnd.MaxReceivedMessageSize = epc.MaxBufferSize;
             }
             var wshBnd = serviceEndpoint.Binding as WSHttpBinding;
-            if (wshBnd != null) wshBnd.MaxReceivedMessageSize = (int) epc.MaxBufferSize;            
+            if (wshBnd is not null) wshBnd.MaxReceivedMessageSize = (int) epc.MaxBufferSize;            
             var tcpBnd = serviceEndpoint.Binding as NetTcpBinding;
-            if (tcpBnd != null)
+            if (tcpBnd is not null)
             {
                 tcpBnd.MaxBufferSize = (int) epc.MaxBufferSize;
                 tcpBnd.MaxReceivedMessageSize = epc.MaxBufferSize;

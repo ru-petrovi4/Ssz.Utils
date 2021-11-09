@@ -28,7 +28,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var brush = value as SolidColorBrush;
-            if (brush != null)
+            if (brush is not null)
                 return brush.Color;
 
             return default(Color);
@@ -36,7 +36,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value != null)
+            if (value is not null)
             {
                 var color = (Color) value;
                 return new SolidColorBrush(color);

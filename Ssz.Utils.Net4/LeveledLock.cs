@@ -132,7 +132,7 @@ namespace Ssz.Utils
                 return;
             }
 
-            if (currentLevelStack == null)
+            if (currentLevelStack is null)
             {
                 // We've never accessed the TLS data yet; construct a new Stack for our levels
                 // and stash it away in TLS.

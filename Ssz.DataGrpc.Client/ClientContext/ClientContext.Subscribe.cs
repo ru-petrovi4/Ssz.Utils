@@ -40,7 +40,7 @@ namespace Ssz.DataGrpc.Client
                     SetResourceManagementLastCallUtc();
 
                     var changedItems = ElementValuesCallback(tagValueList, reply.ElementValuesCollection);
-                    if (changedItems != null) return changedItems;
+                    if (changedItems is not null) return changedItems;
                 }
             }
             catch (Exception ex)
@@ -74,7 +74,7 @@ namespace Ssz.DataGrpc.Client
                     SetResourceManagementLastCallUtc();
 
                     var newItems = EventMessagesCallback(eventList, reply.EventMessagesCollection);
-                    if (newItems != null) return newItems;
+                    if (newItems is not null) return newItems;
                 }
             }
             catch (Exception ex)
@@ -97,7 +97,7 @@ namespace Ssz.DataGrpc.Client
         private ClientElementValueListItem[]? ElementValuesCallback(ClientElementValueList dataList, ElementValuesCollection elementValuesCollections)
         {
             ClientElementValueListItem[]? changedListItems = dataList.OnElementValuesCallback(elementValuesCollections);
-            if (changedListItems != null && changedListItems.Length > 0)
+            if (changedListItems is not null && changedListItems.Length > 0)
             {
                 List<ValueStatusTimestamp> changedValuesList = new List<ValueStatusTimestamp>(changedListItems.Length);
                 foreach (ClientElementValueListItem changedListItem in changedListItems)
@@ -118,7 +118,7 @@ namespace Ssz.DataGrpc.Client
         private ClientEventListItem[]? EventMessagesCallback(ClientEventList eventList, EventMessagesCollection eventMessagesCollection)
         {
             ClientEventListItem[]? newEventListItems = eventList.EventMessagesCallback(eventMessagesCollection);
-            if (newEventListItems != null && newEventListItems.Length > 0)
+            if (newEventListItems is not null && newEventListItems.Length > 0)
             {
                 eventList.RaiseEventMessagesCallbackEvent(newEventListItems);
             }
@@ -134,7 +134,7 @@ namespace Ssz.DataGrpc.Client
                 {                    
                     var statusCode = (StatusCode)longrunningPassthroughCallback.StatusCode;
                     var callbackAction = incompleteLongrunningPassthroughRequest.CallbackAction;
-                    if (callbackAction != null)
+                    if (callbackAction is not null)
                     {
                         callbackAction(new Utils.DataAccess.LongrunningPassthroughCallback
                         {

@@ -40,7 +40,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         private static void OnCultureInfoChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var inputBase = o as InputBase;
-            if (inputBase != null)
+            if (inputBase is not null)
                 inputBase.OnCultureInfoChanged((CultureInfo) e.OldValue, (CultureInfo) e.NewValue);
         }
 
@@ -64,7 +64,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         private static void OnReadOnlyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var inputBase = o as InputBase;
-            if (inputBase != null)
+            if (inputBase is not null)
                 inputBase.OnReadOnlyChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 
@@ -90,7 +90,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         private static void OnTextChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var inputBase = o as InputBase;
-            if (inputBase != null)
+            if (inputBase is not null)
                 inputBase.OnTextChanged((string) e.OldValue, (string) e.NewValue);
         }
 

@@ -71,7 +71,7 @@ namespace Ssz.Utils
 		/// <param name="propertyName">The property that needs to raise the PropertyChanged notification</param>		
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            if (propertyName != null) VerifyPropertyName(propertyName);
+            if (propertyName is not null) VerifyPropertyName(propertyName);
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -201,7 +201,7 @@ namespace Ssz.Utils
 			foreach (var part in parts)
 			{
 				var prop = TypeDescriptor.GetProperties(currentObjectType)[part];
-				if (prop == null)
+				if (prop is null)
 				{
 					throw new Exception("Invalid property name: " + propertyName);
 				}

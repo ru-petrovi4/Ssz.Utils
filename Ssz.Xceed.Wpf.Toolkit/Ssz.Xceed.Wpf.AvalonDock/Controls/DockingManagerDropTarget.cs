@@ -59,7 +59,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                     if (_manager.Layout.RootPanel.Orientation == Orientation.Horizontal)
                     {
                         var layoutAnchorablePaneGroup = floatingWindow.RootPanel;
-                        if (layoutAnchorablePaneGroup != null &&
+                        if (layoutAnchorablePaneGroup is not null &&
                             layoutAnchorablePaneGroup.Orientation == Orientation.Horizontal)
                         {
                             var childrenToTransfer = layoutAnchorablePaneGroup.Children.ToArray();
@@ -100,7 +100,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                     if (_manager.Layout.RootPanel.Orientation == Orientation.Horizontal)
                     {
                         var layoutAnchorablePaneGroup = floatingWindow.RootPanel;
-                        if (layoutAnchorablePaneGroup != null &&
+                        if (layoutAnchorablePaneGroup is not null &&
                             layoutAnchorablePaneGroup.Orientation == Orientation.Horizontal)
                         {
                             var childrenToTransfer = layoutAnchorablePaneGroup.Children.ToArray();
@@ -142,7 +142,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                     if (_manager.Layout.RootPanel.Orientation == Orientation.Vertical)
                     {
                         var layoutAnchorablePaneGroup = floatingWindow.RootPanel;
-                        if (layoutAnchorablePaneGroup != null &&
+                        if (layoutAnchorablePaneGroup is not null &&
                             layoutAnchorablePaneGroup.Orientation == Orientation.Vertical)
                         {
                             var childrenToTransfer = layoutAnchorablePaneGroup.Children.ToArray();
@@ -183,7 +183,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                     if (_manager.Layout.RootPanel.Orientation == Orientation.Vertical)
                     {
                         var layoutAnchorablePaneGroup = floatingWindow.RootPanel;
-                        if (layoutAnchorablePaneGroup != null &&
+                        if (layoutAnchorablePaneGroup is not null &&
                             layoutAnchorablePaneGroup.Orientation == Orientation.Vertical)
                         {
                             var childrenToTransfer = layoutAnchorablePaneGroup.Children.ToArray();

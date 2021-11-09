@@ -34,10 +34,10 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             bool isPropertyGridCategorized)
             : base(isPropertyGridCategorized)
         {
-            if (propertyDescriptor == null)
+            if (propertyDescriptor is null)
                 throw new ArgumentNullException("propertyDescriptor");
 
-            if (selectedObject == null)
+            if (selectedObject is null)
                 throw new ArgumentNullException("selectedObject");
 
             PropertyDescriptor = propertyDescriptor;
@@ -151,7 +151,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 
         protected override bool ComputeIsExpandable()
         {
-            return Value != null;
+            return Value is not null;
         }
 
         protected override IList<Type> ComputeNewItemTypes()
@@ -178,23 +178,23 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         internal override ITypeEditor CreateAttributeEditor()
         {
             var editorAttribute = GetAttribute<EditorAttribute>();
-            if (editorAttribute != null)
+            if (editorAttribute is not null)
             {
                 var type = Type.GetType(editorAttribute.EditorTypeName);
 
                 // If the editor does not have any public parameterless constructor, forget it.
                 if (typeof(ITypeEditor).IsAssignableFrom(type)
-                    && type.GetConstructor(new Type[0]) != null)
+                    && type.GetConstructor(new Type[0]) is not null)
                 {
                     var instance = Activator.CreateInstance(type) as ITypeEditor;
-                    Debug.Assert(instance != null, "Type was expected to be ITypeEditor with public constructor.");
-                    if (instance != null)
+                    Debug.Assert(instance is not null, "Type was expected to be ITypeEditor with public constructor.");
+                    if (instance is not null)
                         return instance;
                 }
             }
 
             var itemsSourceAttribute = GetAttribute<ItemsSourceAttribute>();
-            if (itemsSourceAttribute != null)
+            if (itemsSourceAttribute is not null)
                 return new ItemsSourceAttributeEditor(itemsSourceAttribute);
 
             return null;

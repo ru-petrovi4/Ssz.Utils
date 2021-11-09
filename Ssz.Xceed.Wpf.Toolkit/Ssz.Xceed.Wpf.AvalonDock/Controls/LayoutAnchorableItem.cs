@@ -37,7 +37,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private void _anchorable_IsVisibleChanged(object sender, EventArgs e)
         {
-            if (_anchorable != null && _anchorable.Root != null)
+            if (_anchorable is not null && _anchorable.Root is not null)
                 if (_visibilityReentrantFlag.CanEnter)
                     using (_visibilityReentrantFlag.Enter())
                     {
@@ -106,14 +106,14 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private bool CanExecuteHideCommand(object parameter)
         {
-            if (LayoutElement == null)
+            if (LayoutElement is null)
                 return false;
             return _anchorable.CanHide;
         }
 
         private void ExecuteHideCommand(object parameter)
         {
-            if (_anchorable != null && _anchorable.Root != null && _anchorable.Root.Manager != null)
+            if (_anchorable is not null && _anchorable.Root is not null && _anchorable.Root.Manager is not null)
                 _anchorable.Root.Manager._ExecuteHideCommand(_anchorable);
         }
 
@@ -164,10 +164,10 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private bool CanExecuteAutoHideCommand(object parameter)
         {
-            if (LayoutElement == null)
+            if (LayoutElement is null)
                 return false;
 
-            if (LayoutElement.FindParent<LayoutAnchorableFloatingWindow>() != null)
+            if (LayoutElement.FindParent<LayoutAnchorableFloatingWindow>() is not null)
                 return false; //is floating
 
             return _anchorable.CanAutoHide;
@@ -175,7 +175,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private void ExecuteAutoHideCommand(object parameter)
         {
-            if (_anchorable != null && _anchorable.Root != null && _anchorable.Root.Manager != null)
+            if (_anchorable is not null && _anchorable.Root is not null && _anchorable.Root.Manager is not null)
                 _anchorable.Root.Manager._ExecuteAutoHideCommand(_anchorable);
         }
 
@@ -226,9 +226,9 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private bool CanExecuteDockCommand(object parameter)
         {
-            if (LayoutElement == null)
+            if (LayoutElement is null)
                 return false;
-            return LayoutElement.FindParent<LayoutAnchorableFloatingWindow>() != null;
+            return LayoutElement.FindParent<LayoutAnchorableFloatingWindow>() is not null;
         }
 
         private void ExecuteDockCommand(object parameter)
@@ -270,7 +270,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         /// </summary>
         protected virtual void OnCanHideChanged(DependencyPropertyChangedEventArgs e)
         {
-            if (_anchorable != null)
+            if (_anchorable is not null)
                 _anchorable.CanHide = (bool) e.NewValue;
         }
 
@@ -298,7 +298,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         protected override bool CanExecuteDockAsDocumentCommand()
         {
             var canExecute = base.CanExecuteDockAsDocumentCommand();
-            if (canExecute && _anchorable != null)
+            if (canExecute && _anchorable is not null)
                 return _anchorable.CanDockAsTabbedDocument;
 
             return canExecute;
@@ -306,7 +306,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         protected override void Close()
         {
-            if (_anchorable.Root != null && _anchorable.Root.Manager != null)
+            if (_anchorable.Root is not null && _anchorable.Root.Manager is not null)
             {
                 var dockingManager = _anchorable.Root.Manager;
                 dockingManager._ExecuteCloseCommand(_anchorable);
@@ -337,11 +337,11 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         protected override void SetDefaultBindings()
         {
-            if (HideCommand == null)
+            if (HideCommand is null)
                 HideCommand = _defaultHideCommand;
-            if (AutoHideCommand == null)
+            if (AutoHideCommand is null)
                 AutoHideCommand = _defaultAutoHideCommand;
-            if (DockCommand == null)
+            if (DockCommand is null)
                 DockCommand = _defaultDockCommand;
 
             Visibility = _anchorable.IsVisible ? Visibility.Visible : Visibility.Hidden;
@@ -350,7 +350,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         protected override void OnVisibilityChanged()
         {
-            if (_anchorable != null && _anchorable.Root != null)
+            if (_anchorable is not null && _anchorable.Root is not null)
                 if (_visibilityReentrantFlag.CanEnter)
                     using (_visibilityReentrantFlag.Enter())
                     {

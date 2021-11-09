@@ -102,8 +102,8 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             var valueDataType = ValueDataType;
 
-            if (valueDataType != null)
-                if (m_unhandledLiteralsPositions != null
+            if (valueDataType is not null)
+                if (m_unhandledLiteralsPositions is not null
                     && m_unhandledLiteralsPositions.Count > 0)
                 {
                     text = m_maskedTextProvider.ToString(false, false, true, 0, m_maskedTextProvider.Length);
@@ -121,7 +121,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         protected override string QueryTextFromValueCore(object value)
         {
-            if (m_valueToStringMethodInfo != null && value != null)
+            if (m_valueToStringMethodInfo is not null && value is not null)
                 try
                 {
                     var text = (string) m_valueToStringMethodInfo.Invoke(value,
@@ -504,7 +504,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         [SuppressMessage("Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         private static object MaskCoerceValueCallback(DependencyObject sender, object value)
         {
-            if (value == null)
+            if (value is null)
                 value = string.Empty;
 
             if (value.Equals(string.Empty))
@@ -566,7 +566,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
             maskedTextBox.RefreshConversionHelpers();
 
-            if (maskedTextBox.ValueDataType != null)
+            if (maskedTextBox.ValueDataType is not null)
             {
                 var textFromValue = maskedTextBox.GetTextFromValue(maskedTextBox.Value);
                 maskedTextBox.m_maskedTextProvider.Set(textFromValue);
@@ -810,7 +810,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
                 // In IME Composition.  We must return an uncoerced value or else the IME decorator won't disappear after text input.
                 return value;
 
-            if (value == null)
+            if (value is null)
                 value = string.Empty;
 
             if (maskedTextBox.IsForcingText || maskedTextBox.m_maskIsNull)
@@ -899,7 +899,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
             // m_maskedTextProvider can be null in the designer. With WPF 3.5 SP1, sometimes, 
             // TextChanged will be triggered before OnInitialized is called.
-            if (m_maskedTextProvider != null)
+            if (m_maskedTextProvider is not null)
             {
                 SetIsMaskCompleted(m_maskedTextProvider.MaskCompleted);
                 SetIsMaskFull(m_maskedTextProvider.MaskFull);
@@ -920,7 +920,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
             var routedUICommand = e.Command as RoutedUICommand;
 
-            if (routedUICommand != null
+            if (routedUICommand is not null
                 && (routedUICommand.Name == "Space" || routedUICommand.Name == "ShiftSpace"))
             {
                 if (IsReadOnly)
@@ -996,7 +996,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             {
                 var routedUICommand = e.Command as RoutedUICommand;
 
-                if (routedUICommand != null
+                if (routedUICommand is not null
                     && (routedUICommand.Name == "Space" || routedUICommand.Name == "ShiftSpace"))
                 {
                     e.Handled = true;
@@ -1131,7 +1131,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
                 {
                     clipboardContent = (string) Clipboard.GetDataObject().GetData("System.String");
 
-                    if (clipboardContent != null)
+                    if (clipboardContent is not null)
                     {
                         var provider = (MaskedTextProvider) m_maskedTextProvider.Clone();
                         int caretIndex;
@@ -1284,7 +1284,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             if (IsInIMEComposition)
                 EndIMEComposition();
 
-            if (m_maskIsNull || m_maskedTextProvider == null || IsReadOnly)
+            if (m_maskIsNull || m_maskedTextProvider is null || IsReadOnly)
             {
                 base.OnTextInput(e);
                 return;
@@ -1407,7 +1407,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             var type = ValueDataType;
 
-            if (type == null || !IsNumericValueDataType)
+            if (type is null || !IsNumericValueDataType)
             {
                 FormatSpecifier = null;
                 m_valueToStringMethodInfo = null;
@@ -1433,7 +1433,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
             var numberFormatInfo = activeFormatProvider.GetFormat(typeof(NumberFormatInfo)) as NumberFormatInfo;
 
-            if (numberFormatInfo != null)
+            if (numberFormatInfo is not null)
             {
                 var negativeSign = numberFormatInfo.NegativeSign;
 
@@ -1533,7 +1533,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         protected virtual void OnAutoCompletingMask(AutoCompletingMaskEventArgs e)
         {
-            if (AutoCompletingMask != null)
+            if (AutoCompletingMask is not null)
                 AutoCompletingMask(this, e);
         }
 

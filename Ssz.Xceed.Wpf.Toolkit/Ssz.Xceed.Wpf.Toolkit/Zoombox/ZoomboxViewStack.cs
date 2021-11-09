@@ -274,7 +274,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
             var view = item is ZoomboxView
                 ? item as ZoomboxView
                 : ZoomboxViewConverter.Converter.ConvertFrom(item) as ZoomboxView;
-            if (view == null)
+            if (view is null)
                 throw new InvalidCastException(string.Format(ErrorMessages.GetMessage("UnableToConvertToZoomboxView"),
                     item));
 
@@ -299,7 +299,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
 
         private void MonitorSource(bool monitor)
         {
-            if (Source != null && Source is INotifyCollectionChanged)
+            if (Source is not null && Source is INotifyCollectionChanged)
             {
                 if (monitor)
                     CollectionChangedEventManager.AddListener(Source as INotifyCollectionChanged, this);

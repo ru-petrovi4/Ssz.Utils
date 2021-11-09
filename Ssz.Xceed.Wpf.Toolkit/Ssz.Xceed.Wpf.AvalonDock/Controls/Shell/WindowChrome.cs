@@ -127,7 +127,7 @@ namespace Microsoft.Windows.Shell
         private void _OnPropertyChangedThatRequiresRepaint()
         {
             var handler = PropertyChangedThatRequiresRepaint;
-            if (handler != null) handler(this, EventArgs.Empty);
+            if (handler is not null) handler(this, EventArgs.Empty);
         }
 
         internal event EventHandler PropertyChangedThatRequiresRepaint;
@@ -158,7 +158,7 @@ namespace Microsoft.Windows.Shell
             // If there isn't currently a worker associated with the Window then assign a new one.
             // There can be a many:1 relationship of to Window to WindowChrome objects, but a 1:1 for a Window and a WindowChromeWorker.
             var chromeWorker = WindowChromeWorker.GetWindowChromeWorker(window);
-            if (chromeWorker == null)
+            if (chromeWorker is null)
             {
                 chromeWorker = new WindowChromeWorker();
                 WindowChromeWorker.SetWindowChromeWorker(window, chromeWorker);
@@ -190,7 +190,7 @@ namespace Microsoft.Windows.Shell
         {
             Verify.IsNotNull(inputElement, "inputElement");
             var dobj = inputElement as DependencyObject;
-            if (dobj == null) throw new ArgumentException("The element must be a DependencyObject", "inputElement");
+            if (dobj is null) throw new ArgumentException("The element must be a DependencyObject", "inputElement");
             return (bool) dobj.GetValue(IsHitTestVisibleInChromeProperty);
         }
 
@@ -200,7 +200,7 @@ namespace Microsoft.Windows.Shell
         {
             Verify.IsNotNull(inputElement, "inputElement");
             var dobj = inputElement as DependencyObject;
-            if (dobj == null) throw new ArgumentException("The element must be a DependencyObject", "inputElement");
+            if (dobj is null) throw new ArgumentException("The element must be a DependencyObject", "inputElement");
             dobj.SetValue(IsHitTestVisibleInChromeProperty, hitTestVisible);
         }
 

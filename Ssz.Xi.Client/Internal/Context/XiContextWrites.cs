@@ -26,7 +26,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_writeEndpoint == null) throw new Exception("No Write Endpoint");
+            if (_writeEndpoint is null) throw new Exception("No Write Endpoint");
 
             if (_writeEndpoint.Disposed) return null;
 
@@ -77,7 +77,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_writeEndpoint == null) throw new Exception("No Write Endpoint");
+            if (_writeEndpoint is null) throw new Exception("No Write Endpoint");
 
             if (_writeEndpoint.Disposed) return null;
 
@@ -105,7 +105,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_writeEndpoint == null) throw new Exception("No Write Endpoint");
+            if (_writeEndpoint is null) throw new Exception("No Write Endpoint");
 
             if (_writeEndpoint.Disposed) return null;
 
@@ -141,7 +141,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_writeEndpoint == null) throw new Exception("No Write Endpoint");
+            if (_writeEndpoint is null) throw new Exception("No Write Endpoint");
 
             if (_writeEndpoint.Disposed) return false;
 

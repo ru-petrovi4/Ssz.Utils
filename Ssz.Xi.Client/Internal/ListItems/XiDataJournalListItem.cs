@@ -42,11 +42,11 @@ namespace Ssz.Xi.Client.Internal.ListItems
                 }
                 _xiValueStatusTimestampSetsDictionary.Clear();
 
-                if (_journalDataPropertyValueArray != null)
+                if (_journalDataPropertyValueArray is not null)
                 {
                     foreach (JournalDataPropertyValue propValue in _journalDataPropertyValueArray)
                     {
-                        if (propValue.PropertyValues != null)
+                        if (propValue.PropertyValues is not null)
                         {
                             propValue.PropertyValues.Clear();
                             propValue.PropertyValues = null;
@@ -99,7 +99,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         /// <param name="valueStatusTimestampSet"> The value set to remove </param>
         public void Remove(IXiDataJournalValueStatusTimestampSet valueStatusTimestampSet)
         {
-            if (valueStatusTimestampSet.CalculationTypeId.LocalId == null) return;
+            if (valueStatusTimestampSet.CalculationTypeId.LocalId is null) return;
             _xiValueStatusTimestampSetsDictionary.Remove(valueStatusTimestampSet.CalculationTypeId.LocalId);
         }
 

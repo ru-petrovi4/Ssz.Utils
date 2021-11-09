@@ -73,7 +73,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
         #region IsHostedInFloatingWindow
 
-        public bool IsHostedInFloatingWindow => this.FindParent<LayoutFloatingWindow>() != null;
+        public bool IsHostedInFloatingWindow => this.FindParent<LayoutFloatingWindow>() is not null;
 
         #endregion
 
@@ -174,13 +174,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         protected override void OnParentChanged(ILayoutContainer oldValue, ILayoutContainer newValue)
         {
             var oldGroup = oldValue as ILayoutGroup;
-            if (oldGroup != null)
+            if (oldGroup is not null)
                 oldGroup.ChildrenCollectionChanged -= OnParentChildrenCollectionChanged;
 
             RaisePropertyChanged("IsDirectlyHostedInFloatingWindow");
 
             var newGroup = newValue as ILayoutGroup;
-            if (newGroup != null)
+            if (newGroup is not null)
                 newGroup.ChildrenCollectionChanged += OnParentChildrenCollectionChanged;
 
             base.OnParentChanged(oldValue, newValue);
@@ -188,9 +188,9 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
         public override void WriteXml(XmlWriter writer)
         {
-            if (_id != null)
+            if (_id is not null)
                 writer.WriteAttributeString("Id", _id);
-            if (_name != null)
+            if (_name is not null)
                 writer.WriteAttributeString("Name", _name);
 
             base.WriteXml(writer);
@@ -227,7 +227,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         public int IndexOf(LayoutContent content)
         {
             var anchorableChild = content as LayoutAnchorable;
-            if (anchorableChild == null)
+            if (anchorableChild is null)
                 return -1;
 
             return Children.IndexOf(anchorableChild);
@@ -238,11 +238,11 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
             get
             {
                 var parentFloatingWindow = this.FindParent<LayoutAnchorableFloatingWindow>();
-                if (parentFloatingWindow != null)
+                if (parentFloatingWindow is not null)
                     return parentFloatingWindow.IsSinglePane;
 
                 return false;
-                //return Parent != null && Parent.ChildrenCount == 1 && Parent.Parent is LayoutFloatingWindow;
+                //return Parent is not null && Parent.ChildrenCount == 1 && Parent.Parent is LayoutFloatingWindow;
             }
         }
 

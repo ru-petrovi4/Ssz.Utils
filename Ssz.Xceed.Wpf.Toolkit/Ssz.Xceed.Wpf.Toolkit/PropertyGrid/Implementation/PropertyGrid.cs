@@ -117,10 +117,10 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         protected virtual void OnEditorDefinitionsChanged(EditorDefinitionCollection oldValue,
             EditorDefinitionCollection newValue)
         {
-            if (oldValue != null)
+            if (oldValue is not null)
                 CollectionChangedEventManager.RemoveListener(oldValue, _editorDefinitionsListener);
 
-            if (newValue != null)
+            if (newValue is not null)
                 CollectionChangedEventManager.AddListener(newValue, _editorDefinitionsListener);
 
             this.Notify(PropertyChanged, () => EditorDefinitions);
@@ -147,7 +147,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         private static void OnFilterChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var propertyGrid = o as PropertyGrid;
-            if (propertyGrid != null)
+            if (propertyGrid is not null)
                 propertyGrid.OnFilterChanged((string) e.OldValue, (string) e.NewValue);
         }
 
@@ -188,7 +188,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         private static void OnIsCategorizedChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var propertyGrid = o as PropertyGrid;
-            if (propertyGrid != null)
+            if (propertyGrid is not null)
                 propertyGrid.OnIsCategorizedChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 
@@ -215,13 +215,13 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         private static void OnNameColumnWidthChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var propertyGrid = o as PropertyGrid;
-            if (propertyGrid != null)
+            if (propertyGrid is not null)
                 propertyGrid.OnNameColumnWidthChanged((double) e.OldValue, (double) e.NewValue);
         }
 
         protected virtual void OnNameColumnWidthChanged(double oldValue, double newValue)
         {
-            if (_dragThumb != null)
+            if (_dragThumb is not null)
                 ((TranslateTransform) _dragThumb.RenderTransform).X = newValue;
         }
 
@@ -255,7 +255,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         private static void OnPropertyContainerStyleChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var owner = o as PropertyGrid;
-            if (owner != null)
+            if (owner is not null)
                 owner.OnPropertyContainerStyleChanged((Style) e.OldValue, (Style) e.NewValue);
         }
 
@@ -284,10 +284,10 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         protected virtual void OnPropertyDefinitionsChanged(PropertyDefinitionCollection oldValue,
             PropertyDefinitionCollection newValue)
         {
-            if (oldValue != null)
+            if (oldValue is not null)
                 CollectionChangedEventManager.RemoveListener(oldValue, _propertyDefinitionsListener);
 
-            if (newValue != null)
+            if (newValue is not null)
                 CollectionChangedEventManager.AddListener(newValue, _propertyDefinitionsListener);
 
             this.Notify(PropertyChanged, () => PropertyDefinitions);
@@ -327,7 +327,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         private static void OnSelectedObjectChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var propertyInspector = o as PropertyGrid;
-            if (propertyInspector != null)
+            if (propertyInspector is not null)
                 propertyInspector.OnSelectedObjectChanged(e.OldValue, e.NewValue);
         }
 
@@ -362,7 +362,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         private static void OnSelectedObjectTypeChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var propertyGrid = o as PropertyGrid;
-            if (propertyGrid != null)
+            if (propertyGrid is not null)
                 propertyGrid.OnSelectedObjectTypeChanged((Type) e.OldValue, (Type) e.NewValue);
         }
 
@@ -401,7 +401,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         private static object OnCoerceSelectedObjectName(DependencyObject o, object baseValue)
         {
             var propertyGrid = o as PropertyGrid;
-            if (propertyGrid != null)
+            if (propertyGrid is not null)
                 if (propertyGrid.SelectedObject is FrameworkElement && string.IsNullOrEmpty((string) baseValue))
                     return "<no name>";
 
@@ -411,7 +411,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         private static void OnSelectedObjectNameChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var propertyGrid = o as PropertyGrid;
-            if (propertyGrid != null)
+            if (propertyGrid is not null)
                 propertyGrid.SelectedObjectNameChanged((string) e.OldValue, (string) e.NewValue);
         }
 
@@ -440,20 +440,20 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         private static void OnSelectedPropertyItemChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var propertyGrid = o as PropertyGrid;
-            if (propertyGrid != null)
+            if (propertyGrid is not null)
                 propertyGrid.OnSelectedPropertyItemChanged((PropertyItemBase) e.OldValue,
                     (PropertyItemBase) e.NewValue);
         }
 
         protected virtual void OnSelectedPropertyItemChanged(PropertyItemBase oldValue, PropertyItemBase newValue)
         {
-            if (oldValue != null)
+            if (oldValue is not null)
                 oldValue.IsSelected = false;
 
-            if (newValue != null)
+            if (newValue is not null)
                 newValue.IsSelected = true;
 
-            SelectedProperty = newValue != null ? _containerHelper.ItemFromContainer(newValue) : null;
+            SelectedProperty = newValue is not null ? _containerHelper.ItemFromContainer(newValue) : null;
 
             RaiseEvent(new RoutedPropertyChangedEventArgs<PropertyItemBase>(oldValue, newValue,
                 SelectedPropertyItemChangedEvent));
@@ -482,7 +482,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         private static void OnSelectedPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
             var propertyGrid = sender as PropertyGrid;
-            if (propertyGrid != null) propertyGrid.OnSelectedPropertyChanged(args.OldValue, args.NewValue);
+            if (propertyGrid is not null) propertyGrid.OnSelectedPropertyChanged(args.OldValue, args.NewValue);
         }
 
         private void OnSelectedPropertyChanged(object oldValue, object newValue)
@@ -587,10 +587,10 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         {
             base.OnApplyTemplate();
 
-            if (_dragThumb != null)
+            if (_dragThumb is not null)
                 _dragThumb.DragDelta -= DragThumb_DragDelta;
             _dragThumb = GetTemplateChild(PART_DragThumb) as Thumb;
-            if (_dragThumb != null)
+            if (_dragThumb is not null)
                 _dragThumb.DragDelta += DragThumb_DragDelta;
 
             _containerHelper.ChildrenItemsControl = GetTemplateChild(PART_PropertyItemsControl) as PropertyItemsControl;
@@ -612,11 +612,11 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
             //hitting enter on textbox will update value of underlying source
-            if (SelectedPropertyItem != null && e.Key == Key.Enter && e.OriginalSource is TextBox)
+            if (SelectedPropertyItem is not null && e.Key == Key.Enter && e.OriginalSource is TextBox)
                 if (!(e.OriginalSource as TextBox).AcceptsReturn)
                 {
                     var be = ((TextBox) e.OriginalSource).GetBindingExpression(TextBox.TextProperty);
-                    if (be != null)
+                    if (be is not null)
                         be.UpdateSource();
                 }
         }
@@ -688,7 +688,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             // Keep a backup of the template element and initialize the
             // new helper with it.
             ItemsControl childrenItemsControl = null;
-            if (_containerHelper != null)
+            if (_containerHelper is not null)
             {
                 childrenItemsControl = _containerHelper.ChildrenItemsControl;
                 _containerHelper.ClearHelper();
@@ -716,7 +716,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 
         private void UpdateThumb()
         {
-            if (_dragThumb != null)
+            if (_dragThumb is not null)
             {
                 if (IsCategorized)
                     _dragThumb.Margin = new Thickness(6, 0, 0, 0);

@@ -179,7 +179,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         private static void OnMaximumChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var upDown = o as UpDownBase<T>;
-            if (upDown != null)
+            if (upDown is not null)
                 upDown.OnMaximumChanged((T) e.OldValue, (T) e.NewValue);
         }
 
@@ -191,7 +191,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         private static object OnCoerceMaximum(DependencyObject d, object baseValue)
         {
             var upDown = d as UpDownBase<T>;
-            if (upDown != null)
+            if (upDown is not null)
                 return upDown.OnCoerceMaximum((T) baseValue);
 
             return baseValue;
@@ -218,7 +218,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         private static void OnMinimumChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var upDown = o as UpDownBase<T>;
-            if (upDown != null)
+            if (upDown is not null)
                 upDown.OnMinimumChanged((T) e.OldValue, (T) e.NewValue);
         }
 
@@ -230,7 +230,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         private static object OnCoerceMinimum(DependencyObject d, object baseValue)
         {
             var upDown = d as UpDownBase<T>;
-            if (upDown != null)
+            if (upDown is not null)
                 return upDown.OnCoerceMinimum((T) baseValue);
 
             return baseValue;
@@ -290,7 +290,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         private static void OnMouseWheelActiveOnFocusChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var upDownBase = o as UpDownBase<T>;
-            if (upDownBase != null)
+            if (upDownBase is not null)
                 upDownBase.MouseWheelActiveTrigger = (bool) e.NewValue
                     ? MouseWheelActiveTrigger.Focused
                     : MouseWheelActiveTrigger.MouseOver;
@@ -340,7 +340,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         private static void OnValueChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var upDownBase = o as UpDownBase<T>;
-            if (upDownBase != null)
+            if (upDownBase is not null)
                 upDownBase.OnValueChanged((T) e.OldValue, (T) e.NewValue);
         }
 
@@ -361,7 +361,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
         protected override void OnAccessKey(AccessKeyEventArgs e)
         {
-            if (TextBox != null)
+            if (TextBox is not null)
                 TextBox.Focus();
 
             base.OnAccessKey(e);
@@ -372,19 +372,19 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
             base.OnApplyTemplate();
 
             TextBox = GetTemplateChild(PART_TextBox) as TextBox;
-            if (TextBox != null)
+            if (TextBox is not null)
             {
                 TextBox.Text = Text;
                 TextBox.LostFocus += TextBox_LostFocus;
                 TextBox.TextChanged += TextBox_TextChanged;
             }
 
-            if (Spinner != null)
+            if (Spinner is not null)
                 Spinner.Spin -= OnSpinnerSpin;
 
             Spinner = GetTemplateChild(PART_Spinner) as Spinner;
 
-            if (Spinner != null)
+            if (Spinner is not null)
                 Spinner.Spin += OnSpinnerSpin;
 
             SetValidSpinDirection();
@@ -446,7 +446,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
         protected virtual void OnSpin(SpinEventArgs e)
         {
-            if (e == null)
+            if (e is null)
                 throw new ArgumentNullException("e");
 
             if (e.Direction == SpinDirection.Increase)
@@ -470,7 +470,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
             // have no local value, no binding, and equal to the default value.
             var updateValueFromText =
                 ReadLocalValue(ValueProperty) == DependencyProperty.UnsetValue
-                && BindingOperations.GetBinding(this, ValueProperty) == null
+                && BindingOperations.GetBinding(this, ValueProperty) is null
                 && Equals(Value, ValueProperty.DefaultMetadata.DefaultValue);
 
             SyncTextAndValueProperties(updateValueFromText, Text, !updateValueFromText);
@@ -481,13 +481,13 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         /// </summary>
         internal void DoDecrement()
         {
-            if (Spinner == null || (Spinner.ValidSpinDirection & ValidSpinDirections.Decrease) ==
+            if (Spinner is null || (Spinner.ValidSpinDirection & ValidSpinDirections.Decrease) ==
                 ValidSpinDirections.Decrease)
             {
                 OnDecrement();
 
                 var ex = BindingOperations.GetBindingExpressionBase(this, ValueProperty);
-                if (ex != null) ex.UpdateSource();
+                if (ex is not null) ex.UpdateSource();
             }
         }
 
@@ -496,13 +496,13 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         /// </summary>
         internal void DoIncrement()
         {
-            if (Spinner == null || (Spinner.ValidSpinDirection & ValidSpinDirections.Increase) ==
+            if (Spinner is null || (Spinner.ValidSpinDirection & ValidSpinDirections.Increase) ==
                 ValidSpinDirections.Increase)
             {
                 OnIncrement();
 
                 var ex = BindingOperations.GetBindingExpressionBase(this, ValueProperty);
-                if (ex != null) ex.UpdateSource();
+                if (ex is not null) ex.UpdateSource();
             }
         }
 
@@ -529,7 +529,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
         private void RaiseInputValidationError(Exception e)
         {
-            if (InputValidationError != null)
+            if (InputValidationError is not null)
             {
                 var args = new InputValidationErrorEventArgs(e);
                 InputValidationError(this, args);
@@ -587,7 +587,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
                     if (!shouldKeepEmpty) Text = ConvertValueToText();
 
                     // Sync Text and textBox
-                    if (TextBox != null)
+                    if (TextBox is not null)
                         TextBox.Text = Text;
                 }
 
@@ -596,7 +596,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
                     // Text input was made from the user and the text
                     // repesents an invalid value. Disable the spinner
                     // in this case.
-                    if (Spinner != null) Spinner.ValidSpinDirection = ValidSpinDirections.None;
+                    if (Spinner is not null) Spinner.ValidSpinDirection = ValidSpinDirections.None;
                 }
                 else
                 {

@@ -20,7 +20,7 @@ namespace Ssz.Xi.Client.Internal.Context
 
         /// <summary>
         ///     <para> Throws or returns changed IXiDataListItems (not null, but possibly zero-lenghth). </para>
-        ///     <para> dataList != null </para>
+        ///     <para> dataList is not null </para>
         ///     <para>
         ///         This method is used to poll the endpoint for changes to a specific data list. It is also used as a
         ///         keep-alive for the poll endpoint by setting the listId parameter to 0. In this case, null is returned
@@ -54,11 +54,11 @@ namespace Ssz.Xi.Client.Internal.Context
         /// <param name="dataList"> The data list to poll. </param>
         public IXiDataListItem[] PollDataChanges(XiDataList dataList)
         {
-            if (dataList == null) throw new ArgumentNullException(@"dataList");
+            if (dataList is null) throw new ArgumentNullException(@"dataList");
 
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_pollEndpoint == null) throw new Exception("No Poll Endpoint.");
+            if (_pollEndpoint is null) throw new Exception("No Poll Endpoint.");
 
             if (_pollEndpoint.Disposed) throw new Exception("Poll Endpoint is Disposed.");
 
@@ -78,13 +78,13 @@ namespace Ssz.Xi.Client.Internal.Context
             }
 
             IXiDataListItem[]? changedListItems = ElementValuesCallbackInternal(dataList, readValueList);
-            if (changedListItems == null) throw new Exception("PollDataChanges() error.");
+            if (changedListItems is null) throw new Exception("PollDataChanges() error.");
             return changedListItems;
         }
 
         /// <summary>
         ///     <para> Throws or returns new IXiEventListItems (not null, but possibly zero-lenghth). </para>
-        ///     <para> eventList != null </para>
+        ///     <para> eventList is not null </para>
         ///     <para>
         ///         This method is used to poll the endpoint for changes to a specific event list. Event messages are sent when
         ///         there has been a change to the specified event list. A new alarm or event that has been added to the list, a
@@ -121,11 +121,11 @@ namespace Ssz.Xi.Client.Internal.Context
         /// </param>
         public IXiEventListItem[] PollEventChanges(XiEventList eventList, FilterSet? filterSet)
         {
-            if (eventList == null) throw new ArgumentNullException(@"eventList");            
+            if (eventList is null) throw new ArgumentNullException(@"eventList");            
 
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_pollEndpoint == null) throw new Exception("No Poll Endpoint");
+            if (_pollEndpoint is null) throw new Exception("No Poll Endpoint");
 
             if (_pollEndpoint.Disposed) throw new Exception("Poll Endpoint is Disposed.");
 
@@ -148,7 +148,7 @@ namespace Ssz.Xi.Client.Internal.Context
             }
 
             IXiEventListItem[]? newEventListItems = EventMessagesCallbackInternal(eventList, eventMessages);
-            if (newEventListItems == null) throw new Exception("PollEventChanges() error.");
+            if (newEventListItems is null) throw new Exception("PollEventChanges() error.");
             return newEventListItems;
         }
 
@@ -200,10 +200,10 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) return;
 
-            if (_callbackEndpoint != null) _callbackEndpoint.LastCallUtc = DateTime.UtcNow;
+            if (_callbackEndpoint is not null) _callbackEndpoint.LastCallUtc = DateTime.UtcNow;
 
             XiDataList? datalist = GetDataList(clientListId);
-            if (datalist == null) return;
+            if (datalist is null) return;
 
             ElementValuesCallbackInternal(datalist, updatedValues);
         }
@@ -226,7 +226,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) return;
 
-            if (_callbackEndpoint != null) _callbackEndpoint.LastCallUtc = DateTime.UtcNow;
+            if (_callbackEndpoint is not null) _callbackEndpoint.LastCallUtc = DateTime.UtcNow;
 
             XiEventList eventList = GetEventList(clientListId);
 
@@ -285,12 +285,12 @@ namespace Ssz.Xi.Client.Internal.Context
         /// <param name="updatedValues"> The values being reported. </param>
         private IXiDataListItem[]? ElementValuesCallbackInternal(XiDataList? dataList, DataValueArraysWithAlias? updatedValues)
         {
-            if (dataList == null || dataList.Disposed) return null;
+            if (dataList is null || dataList.Disposed) return null;
 
             try
             {
                 List<IXiDataListItem>? changedListItems = dataList.OnElementValuesCallback(updatedValues);
-                if (changedListItems == null) return null;
+                if (changedListItems is null) return null;
                 if (changedListItems.Count > 0)
                 {
                     List<ValueStatusTimestamp> changedValuesList = new List<ValueStatusTimestamp>(changedListItems.Count);
@@ -326,7 +326,7 @@ namespace Ssz.Xi.Client.Internal.Context
         /// <param name="eventMessages"> The array of alarms/events are being reported. </param>
         private IXiEventListItem[]? EventMessagesCallbackInternal(XiEventList eventList, EventMessage[]? eventMessages)
         {
-            if (eventList == null || eventList.Disposed) return null;
+            if (eventList is null || eventList.Disposed) return null;
 
             try
             {

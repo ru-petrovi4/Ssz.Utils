@@ -158,7 +158,7 @@ namespace Xi.Contracts.Data
 		public void SetDouble(int idx, uint clientAlias, 
 			uint statusCode, DateTime timestamp, double value)
 		{
-			if (DoubleAlias == null) throw new InvalidOperationException();
+			if (DoubleAlias is null) throw new InvalidOperationException();
 			DoubleAlias[idx] = clientAlias;
 			base.SetDouble(idx, statusCode, timestamp, value);
 		}
@@ -185,7 +185,7 @@ namespace Xi.Contracts.Data
 		public void SetUint(int idx, uint clientAlias, 
 			uint statusCode, DateTime timestamp, uint value)
 		{
-			if (UintAlias == null) throw new InvalidOperationException();
+			if (UintAlias is null) throw new InvalidOperationException();
 			UintAlias[idx] = clientAlias;
 			base.SetUint(idx, statusCode, timestamp, value);
 		}
@@ -212,7 +212,7 @@ namespace Xi.Contracts.Data
 		public void SetObject(int idx, uint clientAlias, uint statusCode, DateTime timestamp, 
 			object? value)
 		{
-			if (ObjectAlias == null) throw new InvalidOperationException();
+			if (ObjectAlias is null) throw new InvalidOperationException();
 			ObjectAlias[idx] = clientAlias;
 			base.SetObject(idx, statusCode, timestamp, value);
 		}
@@ -238,10 +238,10 @@ namespace Xi.Contracts.Data
 		public bool CreateDoubleArraysWithAlias(uint[]? clientAliasArray, uint[]? statusCodeArray,
 			DateTime[]? timestampArray, double[]? valueArray)
 		{
-			if (   (clientAliasArray == null)
-				|| (statusCodeArray == null)
-				|| (timestampArray == null)
-				|| (valueArray == null)
+			if (   (clientAliasArray is null)
+				|| (statusCodeArray is null)
+				|| (timestampArray is null)
+				|| (valueArray is null)
 			   )
 			{
 				DoubleAlias = null;
@@ -280,10 +280,10 @@ namespace Xi.Contracts.Data
 		public bool CreateUintArraysWithAlias(uint[] clientAliasArray, uint[] statusCodeArray,
 			DateTime[] timestampArray, uint[] valueArray)
 		{
-			if (   (clientAliasArray == null)
-				|| (statusCodeArray == null)
-				|| (timestampArray == null)
-				|| (valueArray == null)
+			if (   (clientAliasArray is null)
+				|| (statusCodeArray is null)
+				|| (timestampArray is null)
+				|| (valueArray is null)
 			   )
 			{
 				UintAlias = null;
@@ -322,10 +322,10 @@ namespace Xi.Contracts.Data
 		public bool CreateObjectArraysWithAlias(uint[] clientAliasArray, uint[] statusCodeArray,
 			DateTime[] timestampArray, object[] valueArray)
 		{
-			if (   (clientAliasArray == null)
-				|| (statusCodeArray == null)
-				|| (timestampArray == null)
-				|| (valueArray == null)
+			if (   (clientAliasArray is null)
+				|| (statusCodeArray is null)
+				|| (timestampArray is null)
+				|| (valueArray is null)
 			   )
 			{
 				ObjectAlias = null;

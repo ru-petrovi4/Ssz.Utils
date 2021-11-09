@@ -38,19 +38,19 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Converters
 
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            if (value == null)
+            if (value is null)
                 return null;
 
             var names = value as string;
 
             var list = new List<object>();
-            if (names == null && value != null)
+            if (names is null && value is not null)
             {
                 list.Add(value);
             }
             else
             {
-                if (names == null)
+                if (names is null)
                     return null;
 
                 foreach (var name in names.Split(',')) list.Add(name.Trim());
@@ -68,18 +68,18 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Converters
 
             var strs = (IList) value;
 
-            if (strs == null)
+            if (strs is null)
                 return null;
 
             var sb = new StringBuilder();
             var first = true;
             foreach (var o in strs)
             {
-                if (o == null)
+                if (o is null)
                     throw new InvalidOperationException("Property names cannot be null.");
 
                 var s = o as string;
-                if (s == null)
+                if (s is null)
                     throw new InvalidOperationException("Does not support serialization of non-string property names.");
 
                 if (s.Contains(','))

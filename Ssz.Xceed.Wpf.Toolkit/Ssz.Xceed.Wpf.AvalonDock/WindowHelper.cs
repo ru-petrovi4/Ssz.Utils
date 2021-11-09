@@ -25,13 +25,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock
     {
         public static bool IsAttachedToPresentationSource(this Visual element)
         {
-            return PresentationSource.FromVisual(element) != null;
+            return PresentationSource.FromVisual(element) is not null;
         }
 
         public static void SetParentToMainWindowOf(this Window window, Visual element)
         {
             var wndParent = Window.GetWindow(element);
-            if (wndParent != null)
+            if (wndParent is not null)
             {
                 window.Owner = wndParent;
             }
@@ -45,7 +45,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock
 
         public static IntPtr GetParentWindowHandle(this Window window)
         {
-            if (window.Owner != null)
+            if (window.Owner is not null)
                 return new WindowInteropHelper(window.Owner).Handle;
             return Win32Helper.GetOwner(new WindowInteropHelper(window).Handle);
         }
@@ -56,7 +56,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock
             hwnd = IntPtr.Zero;
             var wpfHandle = PresentationSource.FromVisual(element) as HwndSource;
 
-            if (wpfHandle == null)
+            if (wpfHandle is null)
                 return false;
 
             hwnd = Win32Helper.GetParent(wpfHandle.Handle);
@@ -67,7 +67,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock
 
         public static void SetParentWindowToNull(this Window window)
         {
-            if (window.Owner != null)
+            if (window.Owner is not null)
                 window.Owner = null;
             else
                 Win32Helper.SetOwner(new WindowInteropHelper(window).Handle, IntPtr.Zero);

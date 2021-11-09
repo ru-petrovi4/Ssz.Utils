@@ -199,14 +199,14 @@ namespace Ssz.DataGrpc.Client.ClientLists
                     // Remove each value from the client list unless there was an error and it could not be removed
                     // if there were errors and the value could not be removed from the server
 
-                    if (aliasResultList != null && aliasResultList.Count > 0)
+                    if (aliasResultList is not null && aliasResultList.Count > 0)
                     {
                         foreach (TClientElementListItemBase removedListItem in listItemsToRemove)
                         {
                             // look for the server alias since if the server did not find it, it will not return a client alias
                             AliasResult? aliasResult =
                                 aliasResultList.Find(ar => ar.ServerAlias == removedListItem.ServerAlias);
-                            if (aliasResult != null)
+                            if (aliasResult is not null)
                             {
                                 if ((StatusCode)aliasResult.StatusCode == StatusCode.NotFound)
                                 {

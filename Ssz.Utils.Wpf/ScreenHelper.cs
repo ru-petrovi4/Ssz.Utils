@@ -20,7 +20,7 @@ namespace Ssz.Utils.Wpf
         /// <summary>
         ///     Returns screens working areas in WPF coordinates.
         ///     First screen in array is primary screen.
-        ///     result != null
+        ///     result is not null
         /// </summary>
         /// <returns></returns>
         public static Rect[] GetSystemScreens()
@@ -92,13 +92,13 @@ namespace Ssz.Utils.Wpf
         /// <summary>
         ///     Set window fully contained in rect.
         ///     All values in WPF coordinates.
-        ///     window != null
+        ///     window is not null
         /// </summary>
         /// <param name="window"></param>
         /// <param name="rect"></param>
         public static void SetFullyVisible(Window window, Rect rect)
         {
-            if (window == null) throw new ArgumentNullException("window");
+            if (window is null) throw new ArgumentNullException("window");
             if (Double.IsNaN(window.Left) || Double.IsNaN(window.Top) ||
                 Double.IsNaN(window.ActualWidth) || Double.IsNaN(window.ActualHeight) ||
                 rect == Rect.Empty) return;
@@ -146,13 +146,13 @@ namespace Ssz.Utils.Wpf
         ///     Gets location of frameworkElement on system screen.
         ///     All values in WPF coordinates.
         ///     Warning! frameworkElement.PointToScreen returns values in screen coordinates, not WPF coordinates.
-        ///     frameworkElement != null
+        ///     frameworkElement is not null
         /// </summary>
         /// <param name="frameworkElement"></param>
         /// <returns></returns>
         public static Rect GetRect(FrameworkElement frameworkElement)
         {
-            if (frameworkElement == null) throw new ArgumentNullException("frameworkElement");
+            if (frameworkElement is null) throw new ArgumentNullException("frameworkElement");
 
             var p1 = frameworkElement.PointToScreen(new Point(0, 0));
             var p2 = frameworkElement.PointToScreen(new Point(frameworkElement.ActualWidth, frameworkElement.ActualHeight));
@@ -167,8 +167,8 @@ namespace Ssz.Utils.Wpf
         {
             get
             {
-                if (_screenScaleX == null) DefineScreenScale();
-                if (_screenScaleX == null) return 1;
+                if (_screenScaleX is null) DefineScreenScale();
+                if (_screenScaleX is null) return 1;
                 var value = _screenScaleX.Value;
                 if (Double.IsNaN(value) || Double.IsInfinity(value)) return 1;
                 return value;
@@ -182,8 +182,8 @@ namespace Ssz.Utils.Wpf
         {
             get
             {
-                if (_screenScaleY == null) DefineScreenScale();
-                if (_screenScaleY == null) return 1;
+                if (_screenScaleY is null) DefineScreenScale();
+                if (_screenScaleY is null) return 1;
                 var value = _screenScaleY.Value;
                 if (Double.IsNaN(value) || Double.IsInfinity(value)) return 1;
                 return value;

@@ -24,7 +24,7 @@ namespace Ssz.Utils.MonitoredUndo
         /// </param>
         public UndoRoot(object root)
         {
-            if (root == null) return;
+            if (root is null) return;
 
             _root = new WeakReference(root);
             _undoStack = new Stack<ChangeSet>();
@@ -40,7 +40,7 @@ namespace Ssz.Utils.MonitoredUndo
         /// </summary>
         public void BeginChangeSetBatch(string batchDescription, bool consolidateChangesForSameInstance)
         {
-            if (_root == null) return;
+            if (_root is null) return;
 
             // We don't want to add additional changes representing the operations that happen when undoing or redoing a change.
             if (_isUndoingOrRedoing)
@@ -60,7 +60,7 @@ namespace Ssz.Utils.MonitoredUndo
         /// </summary>
         public void EndChangeSetBatch()
         {
-            if (_root == null) return;
+            if (_root is null) return;
 
             // We don't want to add additional changes representing the operations that happen when undoing or redoing a change.
             if (_isUndoingOrRedoing)
@@ -70,7 +70,7 @@ namespace Ssz.Utils.MonitoredUndo
 
             if (_isInBatchCounter == 0)
             {
-                if (_currentBatchChangeSet == null)
+                if (_currentBatchChangeSet is null)
                     throw new InvalidOperationException(
                         "Cannot perform an EndChangeSetBatch when the Undo Service is not collecting a batch of changes. The batch must be started first.");
 
@@ -93,7 +93,7 @@ namespace Ssz.Utils.MonitoredUndo
         /// </summary>
         public void Undo()
         {
-            if (_root == null) return;
+            if (_root is null) return;
 
             ChangeSet last = _undoStack.FirstOrDefault();
             if (null != last)
@@ -106,7 +106,7 @@ namespace Ssz.Utils.MonitoredUndo
         /// </summary>
         public void Undo(ChangeSet lastChangeToUndo)
         {
-            if (_root == null) return;
+            if (_root is null) return;
 
             if (IsInBatch)
                 throw new InvalidOperationException(
@@ -148,7 +148,7 @@ namespace Ssz.Utils.MonitoredUndo
         /// </summary>
         public void Redo()
         {
-            if (_root == null) return;
+            if (_root is null) return;
 
             ChangeSet last = _redoStack.FirstOrDefault();
             if (null != last)
@@ -160,7 +160,7 @@ namespace Ssz.Utils.MonitoredUndo
         /// </summary>
         public void Redo(ChangeSet lastChangeToRedo)
         {
-            if (_root == null) return;
+            if (_root is null) return;
 
             if (IsInBatch)
                 throw new InvalidOperationException(
@@ -204,7 +204,7 @@ namespace Ssz.Utils.MonitoredUndo
         /// <param name="description">The description of this change.</param>
         public void AddChange(Change change, string description)
         {
-            if (_root == null) return;
+            if (_root is null) return;
 
             // System.Diagnostics.Debug.WriteLine("Starting AddChange: " + description);
 
@@ -236,7 +236,7 @@ namespace Ssz.Utils.MonitoredUndo
         /// <param name="changeSet">The ChangeSet to add.</param>
         public void AddChange(ChangeSet changeSet)
         {
-            if (_root == null) return;
+            if (_root is null) return;
 
             // System.Diagnostics.Debug.WriteLine("Starting AddChange: " + description);
 
@@ -267,7 +267,7 @@ namespace Ssz.Utils.MonitoredUndo
 
         public void Clear()
         {
-            if (_root == null) return;
+            if (_root is null) return;
 
             if (IsInBatch || _isUndoingOrRedoing)
                 throw new InvalidOperationException(
@@ -347,7 +347,7 @@ namespace Ssz.Utils.MonitoredUndo
         {
             get
             {
-                if (_root == null) return false;
+                if (_root is null) return false;
                 return _undoStack.Count > 0 && !IsInBatch;
             }
         }
@@ -356,7 +356,7 @@ namespace Ssz.Utils.MonitoredUndo
         {
             get
             {
-                if (_root == null) return false;
+                if (_root is null) return false;
                 return _redoStack.Count > 0 && !IsInBatch;
             }
         }

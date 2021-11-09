@@ -41,7 +41,7 @@ namespace Ssz.Utils.Wpf.Converters
 
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            if (value == null) return OnNull;            
+            if (value is null) return OnNull;            
             var boolValue = new Any(value).ValueAsBoolean(false);
             if (boolValue)
                 return OnTrue;
@@ -54,17 +54,17 @@ namespace Ssz.Utils.Wpf.Converters
             if (value == OnNull) return Default(targetType);            
             if (value == OnFalse) return false;
             if (value == OnTrue) return true;
-            if (value == null) return null;
+            if (value is null) return null;
 
-            if (OnNull != null &&
+            if (OnNull is not null &&
                 string.Equals(value.ToString(), OnNull.ToString(), StringComparison.CurrentCultureIgnoreCase))
                 return Default(targetType);
 
-            if (OnFalse != null &&
+            if (OnFalse is not null &&
                 string.Equals(value.ToString(), OnFalse.ToString(), StringComparison.CurrentCultureIgnoreCase))
                 return false;
 
-            if (OnTrue != null &&
+            if (OnTrue is not null &&
                 string.Equals(value.ToString(), OnTrue.ToString(), StringComparison.CurrentCultureIgnoreCase))
                 return true;
 

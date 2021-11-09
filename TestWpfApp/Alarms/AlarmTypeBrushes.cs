@@ -35,7 +35,7 @@ namespace Ssz.WpfHmi.Common.ModelEngines
         {
             SolidColorBrush? brush;
             _Brushes.TryGetValue(Tuple.Create(firstColor, secondColor), out brush);
-            if (brush == null)
+            if (brush is null)
             {
                 brush = new SolidColorBrush(firstColor);
 

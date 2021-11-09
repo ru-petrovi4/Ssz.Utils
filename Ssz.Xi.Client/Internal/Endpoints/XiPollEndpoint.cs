@@ -50,14 +50,14 @@ namespace Ssz.Xi.Client.Internal.Endpoints
             SetMaxItemsInObjectGraph(ServiceEndpoint.Contract.Operations, MaxItemsInObjectGraph);
 
             /*
-            if (Context.UserInfo != null)
+            if (Context.UserInfo is not null)
                 XiClientCredentials.SetClientCredentials(Context.UserData, ServiceEndpoint, cfIPoll.Credentials,
                                                             Context.UserInfo);
                 */
 
             _iPoll = cfIPoll.CreateChannel();
 
-            return Channel != null;
+            return Channel is not null;
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Ssz.Xi.Client.Internal.Endpoints
             get
             {
                 var result = _iPoll as ICommunicationObject;
-                if (result == null) throw new InvalidOperationException();
+                if (result is null) throw new InvalidOperationException();
                 return result;
             }
         }
@@ -84,7 +84,7 @@ namespace Ssz.Xi.Client.Internal.Endpoints
         {
             get 
             {
-                if (_iPoll == null) throw new InvalidOperationException();
+                if (_iPoll is null) throw new InvalidOperationException();
                 return _iPoll; 
             }
         }

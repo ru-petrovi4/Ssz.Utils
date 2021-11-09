@@ -50,7 +50,7 @@ namespace Ssz.DataGrpc.Client
                     SetResourceManagementLastCallUtc();
 
                     var result = dataGrpcElementValueJournalList.OnReadElementValueJournal(reply.ElementValueJournalsCollection);
-                    if (result != null) return result;
+                    if (result is not null) return result;
                 }
             }
             catch (Exception ex)

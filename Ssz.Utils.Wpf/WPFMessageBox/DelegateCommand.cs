@@ -35,7 +35,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
 
         public bool CanExecute()
         {
-            if (m_CanExecuteMethod != null) return m_CanExecuteMethod();
+            if (m_CanExecuteMethod is not null) return m_CanExecuteMethod();
             return true;
         }
 
@@ -44,7 +44,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
         /// </summary>
         public void Execute()
         {
-            if (m_ExecuteMethod != null) m_ExecuteMethod();
+            if (m_ExecuteMethod is not null) m_ExecuteMethod();
         }
 
         public void RaiseCanExecuteChanged()
@@ -66,13 +66,13 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
         {
             add
             {
-                if (value == null) return;
+                if (value is null) return;
                 if (!m_IsAutomaticRequeryDisabled) CommandManager.RequerySuggested += value;
                 CommandManagerHelper.AddWeakReferenceHandler(m_CanExecuteChangedHandlers, value, 2);
             }
             remove
             {
-                if (value == null) return;
+                if (value is null) return;
                 if (!m_IsAutomaticRequeryDisabled) CommandManager.RequerySuggested -= value;
                 CommandManagerHelper.RemoveWeakReferenceHandler(m_CanExecuteChangedHandlers, value);
             }
@@ -148,13 +148,13 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
 
         public bool CanExecute(T? parameter)
         {
-            if (m_CanExecuteMethod != null) return m_CanExecuteMethod(parameter);
+            if (m_CanExecuteMethod is not null) return m_CanExecuteMethod(parameter);
             return true;
         }
 
         public void Execute(T? parameter)
         {
-            if (m_ExecuteMethod != null) m_ExecuteMethod(parameter);
+            if (m_ExecuteMethod is not null) m_ExecuteMethod(parameter);
         }
 
         public void RaiseCanExecuteChanged()
@@ -167,7 +167,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
             // if T is of value type and the parameter is not
             // set yet, then return false if CanExecute delegate
             // exists, else return true
-            if (parameter == null && typeof (T).IsValueType) return (m_CanExecuteMethod == null);
+            if (parameter is null && typeof (T).IsValueType) return (m_CanExecuteMethod is null);
             return CanExecute((T?)parameter);
         }
 
@@ -180,13 +180,13 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
         {
             add
             {
-                if (value == null) return;
+                if (value is null) return;
                 if (!m_IsAutomaticRequeryDisabled) CommandManager.RequerySuggested += value;
                 CommandManagerHelper.AddWeakReferenceHandler(m_CanExecuteChangedHandlers, value, 2);
             }
             remove
             {
-                if (value == null) return;
+                if (value is null) return;
                 if (!m_IsAutomaticRequeryDisabled) CommandManager.RequerySuggested -= value;
                 CommandManagerHelper.RemoveWeakReferenceHandler(m_CanExecuteChangedHandlers, value);
             }
@@ -248,7 +248,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
 
         internal static Action<List<WeakReference>> CallWeakReferenceHandlers = x =>
         {
-            if (x != null)
+            if (x is not null)
             {
                 // Take a snapshot of the handlers before we call out to them since the handlers
                 // could cause the array to me modified while we are reading it.
@@ -260,7 +260,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
                 {
                     WeakReference __Reference = x[i];
                     var __Handler = __Reference.Target as EventHandler;
-                    if (__Handler == null)
+                    if (__Handler is null)
                     {
                         // Clean up old handlers that have been collected
                         x.RemoveAt(i);
@@ -283,37 +283,37 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
 
         internal static Action<List<WeakReference>> AddHandlersToRequerySuggested = x =>
         {
-            if (x != null)
+            if (x is not null)
             {
                 x.ForEach(y =>
                 {
                     var __Handler = y.Target as EventHandler;
-                    if (__Handler != null) CommandManager.RequerySuggested += __Handler;
+                    if (__Handler is not null) CommandManager.RequerySuggested += __Handler;
                 });
             }
         };
 
         internal static Action<List<WeakReference>> RemoveHandlersFromRequerySuggested = x =>
         {
-            if (x != null)
+            if (x is not null)
             {
                 x.ForEach(y =>
                 {
                     var __Handler = y.Target as EventHandler;
-                    if (__Handler != null) CommandManager.RequerySuggested -= __Handler;
+                    if (__Handler is not null) CommandManager.RequerySuggested -= __Handler;
                 });
             }
         };
 
         internal static Action<List<WeakReference>, EventHandler> RemoveWeakReferenceHandler = (x, y) =>
         {
-            if (x != null)
+            if (x is not null)
             {
                 for (int i = x.Count - 1; i >= 0; i--)
                 {
                     WeakReference __Reference = x[i];
                     var __ExistingHandler = __Reference.Target as EventHandler;
-                    if ((__ExistingHandler == null) || (__ExistingHandler == y))
+                    if ((__ExistingHandler is null) || (__ExistingHandler == y))
                     {
                         // Clean up old handlers that have been collected
                         // in addition to the handler that is to be removed.

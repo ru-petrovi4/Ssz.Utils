@@ -30,7 +30,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 
         internal PropertyItem(DescriptorPropertyDefinitionBase definition)
         {
-            if (definition == null)
+            if (definition is null)
                 throw new ArgumentNullException("definition");
 
             DescriptorDefinition = definition;
@@ -99,7 +99,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         #region PropertyType
 
         public Type PropertyType =>
-            PropertyDescriptor != null
+            PropertyDescriptor is not null
                 ? PropertyDescriptor.PropertyType
                 : null;
 
@@ -128,16 +128,16 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
                 // This withholds the generation of all PropertyItem instances (recursively)
                 // until the PropertyItem is expanded.
                 var objectContainerHelper = ContainerHelper as ObjectContainerHelperBase;
-                if (objectContainerHelper != null) objectContainerHelper.GenerateProperties();
+                if (objectContainerHelper is not null) objectContainerHelper.GenerateProperties();
             }
         }
 
         protected override void OnEditorChanged(FrameworkElement oldValue, FrameworkElement newValue)
         {
-            if (oldValue != null)
+            if (oldValue is not null)
                 oldValue.DataContext = null;
 
-            if (newValue != null)
+            if (newValue is not null)
                 newValue.DataContext = this;
         }
 
@@ -146,7 +146,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             // Propagate error from DescriptorPropertyDefinitionBase to PropertyItem.Value
             // to see the red error rectangle in the propertyGrid.
             var be = GetBindingExpression(ValueProperty);
-            if (be != null && be.DataItem is DescriptorPropertyDefinitionBase)
+            if (be is not null && be.DataItem is DescriptorPropertyDefinitionBase)
             {
                 var descriptor = be.DataItem as DescriptorPropertyDefinitionBase;
                 if (Validation.GetHasError(descriptor))

@@ -8,7 +8,7 @@ namespace System.Linq.Dynamic.Core.Parser
     {
         public static Type? FindGenericType(Type generic, Type? type)
         {
-            while (type != null && type != typeof(object))
+            while (type is not null && type != typeof(object))
             {
                 if (type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == generic)
                 {
@@ -20,7 +20,7 @@ namespace System.Linq.Dynamic.Core.Parser
                     foreach (Type interfaceType in type.GetInterfaces())
                     {
                         Type? found = FindGenericType(generic, interfaceType);
-                        if (found != null)
+                        if (found is not null)
                         {
                             return found;
                         }
@@ -348,7 +348,7 @@ namespace System.Linq.Dynamic.Core.Parser
             foreach (var assembly in assemblies)
             {
                 Type? resolvedType = assembly.GetType(typeFullName, false, true);
-                if (resolvedType != null)
+                if (resolvedType is not null)
                 {
                     return resolvedType;
                 }
@@ -373,10 +373,10 @@ namespace System.Linq.Dynamic.Core.Parser
                 var fullNames = assembly.GetTypes().Select(t => t.FullName ?? @"").Distinct();
                 var firstMatchingFullname = fullNames.FirstOrDefault(fn => fn.EndsWith($".{typeSimpleName}"));
 
-                if (firstMatchingFullname != null)
+                if (firstMatchingFullname is not null)
                 {
                     Type? resolvedType = assembly.GetType(firstMatchingFullname, false, true);
-                    if (resolvedType != null)
+                    if (resolvedType is not null)
                     {
                         return resolvedType;
                     }
@@ -412,11 +412,11 @@ namespace System.Linq.Dynamic.Core.Parser
                     // Ignore all other exceptions
                 }
 
-                if (definedTypes != null)
+                if (definedTypes is not null)
                 {
                     foreach (var definedType in definedTypes)
                     {
-                        if (definedType != null)
+                        if (definedType is not null)
                             yield return definedType;
                     }
                 }
@@ -425,7 +425,7 @@ namespace System.Linq.Dynamic.Core.Parser
 
         private static IEnumerable<Type> GetSelfAndBaseClasses(Type? type)
         {
-            while (type != null)
+            while (type is not null)
             {
                 yield return type;
                 type = type.GetTypeInfo().BaseType;
@@ -457,9 +457,9 @@ namespace System.Linq.Dynamic.Core.Parser
         public static bool IsDictionary(Type? type)
         {            
             return
-                FindGenericType(typeof(IDictionary<,>), type) != null ||
+                FindGenericType(typeof(IDictionary<,>), type) is not null ||
 
-                FindGenericType(typeof(IReadOnlyDictionary<,>), type) != null;
+                FindGenericType(typeof(IReadOnlyDictionary<,>), type) is not null;
         }
     }
 }

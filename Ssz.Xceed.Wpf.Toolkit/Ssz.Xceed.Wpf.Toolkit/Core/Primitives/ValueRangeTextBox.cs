@@ -100,7 +100,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
         #region IsInIMEComposition property
 
-        internal bool IsInIMEComposition => m_imePreCompositionCachedTextInfo != null;
+        internal bool IsInIMEComposition => m_imePreCompositionCachedTextInfo is not null;
 
         #endregion
 
@@ -176,12 +176,12 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         [SuppressMessage("Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         protected virtual void ValidateValue(object value)
         {
-            if (value == null)
+            if (value is null)
                 return;
 
             var validatingType = ValueDataType;
 
-            if (validatingType == null)
+            if (validatingType is null)
                 throw new InvalidOperationException(
                     "An attempt was made to set a value when the ValueDataType property is null.");
 
@@ -193,7 +193,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
         internal static bool IsNumericType(Type type)
         {
-            if (type == null)
+            if (type is null)
                 return false;
 
             if (type.IsValueType)
@@ -209,7 +209,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
         internal void StartIMEComposition()
         {
-            Debug.Assert(m_imePreCompositionCachedTextInfo == null,
+            Debug.Assert(m_imePreCompositionCachedTextInfo is null,
                 "EndIMEComposition should have been called before another IME Composition starts.");
 
             m_imePreCompositionCachedTextInfo = new CachedTextInfo(this);
@@ -235,7 +235,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         {
             var formatProvider = FormatProvider;
 
-            if (formatProvider != null)
+            if (formatProvider is not null)
                 return formatProvider;
 
             return CultureInfo.CurrentCulture;
@@ -245,7 +245,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         {
             var cultureInfo = GetActiveFormatProvider() as CultureInfo;
 
-            if (cultureInfo != null)
+            if (cultureInfo is not null)
                 return cultureInfo;
 
             return CultureInfo.CurrentCulture;
@@ -287,7 +287,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
         internal bool IsValueNull(object value)
         {
-            if (value == null || value == DBNull.Value)
+            if (value is null || value == DBNull.Value)
                 return true;
 
             var type = ValueDataType;
@@ -297,7 +297,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
             var nullValue = NullValue;
 
-            if (nullValue == null)
+            if (nullValue is null)
                 return false;
 
             if (nullValue.GetType() != type)
@@ -329,7 +329,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
         internal void RefreshValue()
         {
-            if (IsForcingValue || ValueDataType == null || IsInIMEComposition)
+            if (IsForcingValue || ValueDataType is null || IsInIMEComposition)
                 return;
 
             object value;
@@ -388,10 +388,10 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
             // actually converting a value from XAML.  Therefore, if the string will have a period as a
             // decimal separator.  If we were using the active format provider, we could end up expecting a coma
             // as the decimal separator and the ChangeType method would throw.
-            if (type == null)
+            if (type is null)
                 return null;
 
-            if (value != null && value != DBNull.Value
+            if (value is not null && value != DBNull.Value
                               && value.GetType() != type)
                 return Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
 
@@ -421,18 +421,18 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
                 value = Convert.ChangeType(value, type);
 
             // Validate the value against the range.
-            if (minValue != null)
+            if (minValue is not null)
             {
                 var minValueComparable = (IComparable) minValue;
 
-                if (maxValue != null && minValueComparable.CompareTo(maxValue) > 0)
+                if (maxValue is not null && minValueComparable.CompareTo(maxValue) > 0)
                     throw new ArgumentOutOfRangeException("minValue", "MaxValue must be greater than MinValue.");
 
                 if (minValueComparable.CompareTo(value) > 0)
                     throw new ArgumentOutOfRangeException("minValue", "Value must be greater than MinValue.");
             }
 
-            if (maxValue != null)
+            if (maxValue is not null)
             {
                 var maxValueComparable = (IComparable) maxValue;
 
@@ -555,12 +555,12 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
             if (!valueRangeTextBox.IsInitialized)
                 return DependencyProperty.UnsetValue;
 
-            if (value == null)
+            if (value is null)
                 return value;
 
             var type = valueRangeTextBox.ValueDataType;
 
-            if (type == null)
+            if (type is null)
                 throw new InvalidOperationException(
                     "An attempt was made to set a minimum value when the ValueDataType property is null.");
 
@@ -572,7 +572,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
             var comparable = value as IComparable;
 
-            if (comparable == null)
+            if (comparable is null)
                 throw new InvalidOperationException("MinValue does not implement the IComparable interface.");
 
             // ValidateValueInRange will throw if it must.
@@ -607,12 +607,12 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
             if (!valueRangeTextBox.IsInitialized)
                 return DependencyProperty.UnsetValue;
 
-            if (value == null)
+            if (value is null)
                 return value;
 
             var type = valueRangeTextBox.ValueDataType;
 
-            if (type == null)
+            if (type is null)
                 throw new InvalidOperationException(
                     "An attempt was made to set a maximum value when the ValueDataType property is null.");
 
@@ -624,7 +624,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
             var comparable = value as IComparable;
 
-            if (comparable == null)
+            if (comparable is null)
                 throw new InvalidOperationException("MaxValue does not implement the IComparable interface.");
 
             var minValue = valueRangeTextBox.MinValue;
@@ -659,12 +659,12 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
             if (!valueRangeTextBox.IsInitialized)
                 return DependencyProperty.UnsetValue;
 
-            if (value == null || value == DBNull.Value)
+            if (value is null || value == DBNull.Value)
                 return value;
 
             var type = valueRangeTextBox.ValueDataType;
 
-            if (type == null)
+            if (type is null)
                 throw new InvalidOperationException(
                     "An attempt was made to set a null value when the ValueDataType property is null.");
 
@@ -682,9 +682,9 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         {
             var valueRangeTextBox = sender as ValueRangeTextBox;
 
-            if (e.OldValue == null)
+            if (e.OldValue is null)
             {
-                if (valueRangeTextBox.Value == null)
+                if (valueRangeTextBox.Value is null)
                     valueRangeTextBox.RefreshValue();
             }
             else
@@ -806,7 +806,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         internal virtual void ValidateDataType(Type type)
         {
             // Null will always be valid and will reset the MinValue, MaxValue, NullValue and Value to null.
-            if (type == null)
+            if (type is null)
                 return;
 
             // We use InvariantCulture instead of the active format provider since the FormatProvider is only
@@ -817,34 +817,34 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
             var minValue = MinValue;
 
-            if (minValue != null && minValue.GetType() != type)
+            if (minValue is not null && minValue.GetType() != type)
                 minValue = Convert.ChangeType(minValue, type, CultureInfo.InvariantCulture);
 
             var maxValue = MaxValue;
 
-            if (maxValue != null && maxValue.GetType() != type)
+            if (maxValue is not null && maxValue.GetType() != type)
                 maxValue = Convert.ChangeType(maxValue, type, CultureInfo.InvariantCulture);
 
             var nullValue = NullValue;
 
-            if (nullValue != null && nullValue != DBNull.Value
+            if (nullValue is not null && nullValue != DBNull.Value
                                   && nullValue.GetType() != type)
                 nullValue = Convert.ChangeType(nullValue, type, CultureInfo.InvariantCulture);
 
             var value = Value;
 
-            if (value != null && value != DBNull.Value
+            if (value is not null && value != DBNull.Value
                               && value.GetType() != type)
                 value = Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
 
-            if (minValue != null || maxValue != null
-                                 || nullValue != null && nullValue != DBNull.Value)
+            if (minValue is not null || maxValue is not null
+                                 || nullValue is not null && nullValue != DBNull.Value)
             {
                 // Value comparaisons will occur.  Therefore, the aspiring data type must implement IComparable.
 
                 var iComparable = type.GetInterface("IComparable");
 
-                if (iComparable == null)
+                if (iComparable is null)
                     throw new InvalidOperationException(
                         "MinValue, MaxValue, and NullValue must implement the IComparable interface.");
             }
@@ -852,7 +852,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
         private void ConvertValuesToDataType(Type type)
         {
-            if (type == null)
+            if (type is null)
             {
                 MinValue = null;
                 MaxValue = null;
@@ -865,23 +865,23 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
             var minValue = MinValue;
 
-            if (minValue != null && minValue.GetType() != type)
+            if (minValue is not null && minValue.GetType() != type)
                 MinValue = ConvertValueToDataType(minValue, type);
 
             var maxValue = MaxValue;
 
-            if (maxValue != null && maxValue.GetType() != type)
+            if (maxValue is not null && maxValue.GetType() != type)
                 MaxValue = ConvertValueToDataType(maxValue, type);
 
             var nullValue = NullValue;
 
-            if (nullValue != null && nullValue != DBNull.Value
+            if (nullValue is not null && nullValue != DBNull.Value
                                   && nullValue.GetType() != type)
                 NullValue = ConvertValueToDataType(nullValue, type);
 
             var value = Value;
 
-            if (value != null && value != DBNull.Value
+            if (value is not null && value != DBNull.Value
                               && value.GetType() != type)
                 Value = ConvertValueToDataType(value, type);
         }
@@ -897,7 +897,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
             if (!valueRangeTextBox.IsInitialized)
                 return DependencyProperty.UnsetValue;
 
-            if (value == null)
+            if (value is null)
                 return string.Empty;
 
             return value;
@@ -984,14 +984,14 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
         protected virtual string QueryTextFromValueCore(object value)
         {
-            if (value == null || value == DBNull.Value)
+            if (value is null || value == DBNull.Value)
                 return string.Empty;
 
             var formatProvider = GetActiveFormatProvider();
 
             var cultureInfo = formatProvider as CultureInfo;
 
-            if (cultureInfo != null)
+            if (cultureInfo is not null)
             {
                 var converter = TypeDescriptor.GetConverter(value.GetType());
 
@@ -1014,7 +1014,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
         private void OnQueryTextFromValue(QueryTextFromValueEventArgs e)
         {
-            if (QueryTextFromValue != null)
+            if (QueryTextFromValue is not null)
                 QueryTextFromValue(this, e);
         }
 
@@ -1047,7 +1047,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
             text = text.Trim();
 
-            if (validatingType == null)
+            if (validatingType is null)
                 return true;
 
             if (!validatingType.IsValueType && validatingType != typeof(string))
@@ -1067,7 +1067,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
         private void OnQueryValueFromText(QueryValueFromTextEventArgs e)
         {
-            if (QueryValueFromText != null)
+            if (QueryValueFromText is not null)
                 QueryValueFromText(this, e);
         }
 

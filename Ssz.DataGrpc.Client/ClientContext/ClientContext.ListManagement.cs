@@ -46,7 +46,7 @@ namespace Ssz.DataGrpc.Client
                     ListClientAlias = listClientAlias,
                     ListType = dataGrpcList.ListType
                 };
-                if (listParams != null) request.ListParams.Add(listParams);
+                if (listParams is not null) request.ListParams.Add(listParams);
                 var reply = _resourceManagementClient.DefineList(request);
                 SetResourceManagementLastCallUtc();
                 if ((StatusCode)reply.Result.StatusCode == StatusCode.OK)
@@ -272,7 +272,7 @@ namespace Ssz.DataGrpc.Client
             ClientListRoot? dataGrpcListRoot;
             _lists.TryGetValue(clientListId, out dataGrpcListRoot);
             var result = dataGrpcListRoot as ClientElementValueList;
-            if (result == null)
+            if (result is null)
             {
                 //_logger.
                 throw new InvalidOperationException();
@@ -290,7 +290,7 @@ namespace Ssz.DataGrpc.Client
             ClientListRoot? dataGrpcListRoot;
             _lists.TryGetValue(clientListId, out dataGrpcListRoot);
             var result = dataGrpcListRoot as ClientElementValueJournalList;
-            if (result == null) throw new InvalidOperationException();
+            if (result is null) throw new InvalidOperationException();
             return result;
         }
 
@@ -304,7 +304,7 @@ namespace Ssz.DataGrpc.Client
             ClientListRoot? dataGrpcListRoot;
             _lists.TryGetValue(clientListId, out dataGrpcListRoot);            
             var result = dataGrpcListRoot as ClientEventList;
-            if (result == null) throw new InvalidOperationException();
+            if (result is null) throw new InvalidOperationException();
             return result;
         }
 

@@ -52,7 +52,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null || value.GetType() != typeof(Color))
+            if (value is null || value.GetType() != typeof(Color))
                 return null;
 
             var color = (Color) value;

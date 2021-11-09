@@ -26,10 +26,10 @@ namespace Ssz.Utils.Serialization
                 }
                 memoryStream.Position = 0;
                 T? clone;
-                if (func == null)
+                if (func is null)
                 {
                     clone = Activator.CreateInstance(ownedDataSerializable.GetType()) as T;
-                    if (clone == null) throw new InvalidOperationException();
+                    if (clone is null) throw new InvalidOperationException();
                 }
                 else
                 {
@@ -74,13 +74,13 @@ namespace Ssz.Utils.Serialization
         public static T? CreateFromOwnedData<T>(byte[]? ownedData, Func<T>? func = null)
             where T : class, IOwnedDataSerializable
         {
-            if (ownedData == null) return null;
+            if (ownedData is null) return null;
 
             T? result;
-            if (func == null)
+            if (func is null)
             {
                 result = Activator.CreateInstance(typeof (T)) as T;
-                if (result == null) throw new InvalidOperationException();
+                if (result is null) throw new InvalidOperationException();
             }
             else
             {

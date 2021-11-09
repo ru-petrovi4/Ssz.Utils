@@ -96,9 +96,9 @@ namespace Ssz.Xi.Client.Internal.Endpoints
         /// <returns> It returns FALSE if the connection is not or cannot be created. </returns>
         public static bool CreateChannelIfNotCreated(XiEndpointRoot endpoint)
         {
-            if (endpoint == null) throw new Exception("null Endpoint.");
+            if (endpoint is null) throw new Exception("null Endpoint.");
 
-            if (endpoint.Channel == null) return endpoint.CreateChannel();
+            if (endpoint.Channel is null) return endpoint.CreateChannel();
 
             return true;
         }
@@ -118,7 +118,7 @@ namespace Ssz.Xi.Client.Internal.Endpoints
                 foreach (OperationDescription op in operations)
                 {
                     var dataContractBehavior = op.Behaviors.Find<DataContractSerializerOperationBehavior>();
-                    if (dataContractBehavior != null)
+                    if (dataContractBehavior is not null)
                         dataContractBehavior.MaxItemsInObjectGraph = maxItemsInObjectGraph;
                 }
             }

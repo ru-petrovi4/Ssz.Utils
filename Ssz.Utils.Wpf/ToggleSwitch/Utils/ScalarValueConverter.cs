@@ -9,7 +9,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Utils
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var oldValue = Double.Parse(value.ToString() ?? "", culture);
-            if (parameter != null)
+            if (parameter is not null)
             {
                 oldValue *= Double.Parse(parameter.ToString() ?? "", culture);
             }
@@ -19,7 +19,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Utils
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var oldValue = Double.Parse(value.ToString() ?? "", culture);
-            if (parameter != null)
+            if (parameter is not null)
             {
                 oldValue /= Double.Parse(parameter.ToString() ?? "", culture);
             }

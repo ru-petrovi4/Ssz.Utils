@@ -66,7 +66,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         #region DesiredSize Property
 
-        public new Size DesiredSize => _switchParent != null ? _switchParent.DesiredSize : base.DesiredSize;
+        public new Size DesiredSize => _switchParent is not null ? _switchParent.DesiredSize : base.DesiredSize;
 
         #endregion
 
@@ -74,7 +74,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         public new Size RenderSize
         {
-            get => _switchParent != null ? _switchParent.RenderSize : base.RenderSize;
+            get => _switchParent is not null ? _switchParent.RenderSize : base.RenderSize;
             set => base.RenderSize = value;
         }
 
@@ -93,7 +93,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         #region InternalChildren Protected Property
 
         protected internal new UIElementCollection InternalChildren =>
-            _switchParent == null ? base.InternalChildren : _switchParent.ChildrenInternal;
+            _switchParent is null ? base.InternalChildren : _switchParent.ChildrenInternal;
 
         #endregion
 
@@ -106,7 +106,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         #region ChildrensParent Protected Property
 
-        protected PanelBase ChildrensParent => _switchParent != null ? (PanelBase) _switchParent : this;
+        protected PanelBase ChildrensParent => _switchParent is not null ? (PanelBase) _switchParent : this;
 
         #endregion
 
@@ -150,7 +150,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         protected bool HasLoaded
         {
-            get => _switchParent == null ? _cacheBits[(int) CacheBits.HasLoaded] : _switchParent.HasLoaded;
+            get => _switchParent is null ? _cacheBits[(int) CacheBits.HasLoaded] : _switchParent.HasLoaded;
             private set => _cacheBits[(int) CacheBits.HasLoaded] = value;
         }
 
@@ -169,7 +169,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         #region ItemsOwner Private Property
 
         private ItemsControl ItemsOwner =>
-            ItemsControl.GetItemsOwner(_switchParent == null ? this : (Panel) _switchParent);
+            ItemsControl.GetItemsOwner(_switchParent is null ? this : (Panel) _switchParent);
 
         #endregion
 
@@ -179,10 +179,10 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_switchParent != null)
+                if (_switchParent is not null)
                     return _switchParent.ExitingChildren;
 
-                if (_exitingChildren == null) _exitingChildren = new List<UIElement>();
+                if (_exitingChildren is null) _exitingChildren = new List<UIElement>();
 
                 return _exitingChildren;
             }
@@ -192,7 +192,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         public new void InvalidateArrange()
         {
-            if (_switchParent == null)
+            if (_switchParent is null)
                 base.InvalidateArrange();
             else
                 _switchParent.InvalidateArrange();
@@ -200,7 +200,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         public new void InvalidateMeasure()
         {
-            if (_switchParent == null)
+            if (_switchParent is null)
                 base.InvalidateMeasure();
             else
                 _switchParent.InvalidateMeasure();
@@ -208,7 +208,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         public new void InvalidateVisual()
         {
-            if (_switchParent == null)
+            if (_switchParent is null)
                 base.InvalidateVisual();
             else
                 _switchParent.InvalidateVisual();
@@ -225,14 +225,14 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         internal void BeginChildExit(UIElement child)
         {
             var state = GetChildState(child);
-            if (state != null)
+            if (state is not null)
             {
                 state.Type = AnimationType.Exit;
                 state.HasExitBegun = true;
 
                 ExitingChildren.Add(child);
 
-                if (_switchParent != null)
+                if (_switchParent is not null)
                     _switchParent.AddVisualChildInternal(child);
                 else
                     AddVisualChild(child);
@@ -242,7 +242,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
                 // begin the exit animation, if necessary
                 state.Animator = GetEffectiveAnimator(AnimationType.Exit);
-                if (state.Animator != null)
+                if (state.Animator is not null)
                 {
                     state.TargetPlacement = ceea.ExitTo.HasValue ? ceea.ExitTo.Value : Rect.Empty;
                     state.BeginTimestamp = DateTime.Now;
@@ -270,7 +270,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
             state.BeginTimestamp = DateTime.Now;
             state.TargetPlacement = placementRect;
             state.Animator = GetEffectiveAnimator(AnimationType.Template);
-            if (state.Animator != null && !state.TargetPlacement.IsEmpty)
+            if (state.Animator is not null && !state.TargetPlacement.IsEmpty)
             {
                 var rate = GetEffectiveAnimationRate(AnimationType.Template);
                 state.CurrentPlacement = state.Animator.GetInitialChildPlacement(grandchild, state.CurrentPlacement,
@@ -303,11 +303,11 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         internal static UIElement FindAncestorChildOfAnimationPanel(DependencyObject element, out AnimationPanel panel)
         {
             panel = null;
-            if (element == null)
+            if (element is null)
                 return null;
 
             var parent = VisualTreeHelper.GetParent(element);
-            if (parent == null)
+            if (parent is null)
                 return null;
 
             if (parent is AnimationPanel || parent is SwitchPanel)
@@ -379,7 +379,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
             try
             {
                 // determine if this arrange represents a layout switch for a SwitchPanel
-                if (!HasArranged && _switchParent != null)
+                if (!HasArranged && _switchParent is not null)
                 {
                     IsSwitchInProgress = true;
                     _switchParent.BeginLayoutSwitch();
@@ -452,7 +452,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         protected new void AddVisualChild(Visual child)
         {
-            if (_switchParent == null)
+            if (_switchParent is null)
                 base.AddVisualChild(child);
             else
                 _switchParent.AddVisualChildInternal(child);
@@ -470,7 +470,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
                 return ExitingChildren[exitIndex];
             }
 
-            return _switchParent == null ? base.GetVisualChild(index) : _switchParent.GetVisualChildInternal(index);
+            return _switchParent is null ? base.GetVisualChild(index) : _switchParent.GetVisualChildInternal(index);
         }
 
         protected virtual void OnNotifyVisualChildAdded(UIElement child)
@@ -492,7 +492,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
         {
             if (!IsRemovingInternalChild)
-                if (visualRemoved is UIElement && visualRemoved != null)
+                if (visualRemoved is UIElement && visualRemoved is not null)
                 {
                     IsRemovingInternalChild = true;
                     try
@@ -505,7 +505,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
                     }
                 }
 
-            if (_switchParent == null)
+            if (_switchParent is null)
             {
                 // The OnNotifyChildAdded/Removed methods get called for all animation panels within a 
                 // SwitchPanel.Layouts collection, regardless of whether they are the active layout 
@@ -523,7 +523,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         protected new void RemoveVisualChild(Visual child)
         {
-            if (_switchParent == null)
+            if (_switchParent is null)
                 base.RemoveVisualChild(child);
             else
                 _switchParent.RemoveVisualChildInternal(child);
@@ -540,7 +540,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
             {
                 child = parent;
                 parent = VisualTreeHelper.GetParent(child);
-            } while (parent != null && parent != ChildrensParent);
+            } while (parent is not null && parent != ChildrensParent);
 
             if (parent == ChildrensParent) index = ChildrensParent.Children.IndexOf((UIElement) child);
 
@@ -575,7 +575,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
                 var isDone = true;
                 object placementArgs;
                 if (state.Type != AnimationType.Enter) state.Animator = GetEffectiveAnimator(state.Type);
-                if (state.Animator != null && !state.TargetPlacement.IsEmpty)
+                if (state.Animator is not null && !state.TargetPlacement.IsEmpty)
                 {
                     var rate = GetEffectiveAnimationRate(state.Type);
                     state.CurrentPlacement = state.Animator.GetInitialChildPlacement(
@@ -605,7 +605,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
             // begin the enter animation, if necessary
             state.Animator = GetEffectiveAnimator(AnimationType.Enter);
-            if (state.Animator != null && ceea.EnterFrom.HasValue)
+            if (state.Animator is not null && ceea.EnterFrom.HasValue)
             {
                 state.CurrentPlacement = ceea.EnterFrom.Value;
                 state.BeginTimestamp = DateTime.Now;
@@ -631,7 +631,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
                 IsRemovingInternalChild = true;
                 try
                 {
-                    if (_switchParent != null)
+                    if (_switchParent is not null)
                         _switchParent.RemoveVisualChildInternal(child);
                     else
                         RemoveVisualChild(child);
@@ -651,7 +651,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             newStateCreated = false;
             var state = GetChildState(child);
-            if (state == null)
+            if (state is null)
             {
                 // if this is null, it's because this is the first time that
                 // the object has been arranged
@@ -666,41 +666,41 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         internal AnimationRate GetEffectiveAnimationRate(AnimationType animationType)
         {
-            var result = _switchParent == null ? DefaultAnimationRate : _switchParent.DefaultAnimationRate;
+            var result = _switchParent is null ? DefaultAnimationRate : _switchParent.DefaultAnimationRate;
             switch (animationType)
             {
                 case AnimationType.Enter:
                     if (EnterAnimationRate != AnimationRate.Default)
                         result = EnterAnimationRate;
-                    else if (_switchParent != null && _switchParent.EnterAnimationRate != AnimationRate.Default)
+                    else if (_switchParent is not null && _switchParent.EnterAnimationRate != AnimationRate.Default)
                         result = _switchParent.EnterAnimationRate;
                     break;
 
                 case AnimationType.Exit:
                     if (ExitAnimationRate != AnimationRate.Default)
                         result = ExitAnimationRate;
-                    else if (_switchParent != null && _switchParent.ExitAnimationRate != AnimationRate.Default)
+                    else if (_switchParent is not null && _switchParent.ExitAnimationRate != AnimationRate.Default)
                         result = _switchParent.ExitAnimationRate;
                     break;
 
                 case AnimationType.Layout:
                     if (LayoutAnimationRate != AnimationRate.Default)
                         result = LayoutAnimationRate;
-                    else if (_switchParent != null && _switchParent.LayoutAnimationRate != AnimationRate.Default)
+                    else if (_switchParent is not null && _switchParent.LayoutAnimationRate != AnimationRate.Default)
                         result = _switchParent.LayoutAnimationRate;
                     break;
 
                 case AnimationType.Switch:
                     if (SwitchAnimationRate != AnimationRate.Default)
                         result = SwitchAnimationRate;
-                    else if (_switchParent != null && _switchParent.SwitchAnimationRate != AnimationRate.Default)
+                    else if (_switchParent is not null && _switchParent.SwitchAnimationRate != AnimationRate.Default)
                         result = _switchParent.SwitchAnimationRate;
                     break;
 
                 case AnimationType.Template:
                     if (TemplateAnimationRate != AnimationRate.Default)
                         result = TemplateAnimationRate;
-                    else if (_switchParent != null && _switchParent.TemplateAnimationRate != AnimationRate.Default)
+                    else if (_switchParent is not null && _switchParent.TemplateAnimationRate != AnimationRate.Default)
                         result = _switchParent.TemplateAnimationRate;
                     break;
             }
@@ -710,11 +710,11 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         private IterativeAnimator GetEffectiveAnimator(AnimationType animationType)
         {
-            var result = _switchParent == null ? DefaultAnimator : _switchParent.DefaultAnimator;
+            var result = _switchParent is null ? DefaultAnimator : _switchParent.DefaultAnimator;
             switch (animationType)
             {
                 case AnimationType.Enter:
-                    if (EnterAnimator != IterativeAnimator.Default || _switchParent != null &&
+                    if (EnterAnimator != IterativeAnimator.Default || _switchParent is not null &&
                         _switchParent.EnterAnimator != IterativeAnimator.Default)
                         result = EnterAnimator == IterativeAnimator.Default
                             ? _switchParent.EnterAnimator
@@ -722,13 +722,13 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
                     break;
 
                 case AnimationType.Exit:
-                    if (ExitAnimator != IterativeAnimator.Default || _switchParent != null &&
+                    if (ExitAnimator != IterativeAnimator.Default || _switchParent is not null &&
                         _switchParent.ExitAnimator != IterativeAnimator.Default)
                         result = ExitAnimator == IterativeAnimator.Default ? _switchParent.ExitAnimator : ExitAnimator;
                     break;
 
                 case AnimationType.Layout:
-                    if (LayoutAnimator != IterativeAnimator.Default || _switchParent != null &&
+                    if (LayoutAnimator != IterativeAnimator.Default || _switchParent is not null &&
                         _switchParent.LayoutAnimator != IterativeAnimator.Default)
                         result = LayoutAnimator == IterativeAnimator.Default
                             ? _switchParent.LayoutAnimator
@@ -736,7 +736,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
                     break;
 
                 case AnimationType.Switch:
-                    if (_switchParent != null && !_switchParent.AreLayoutSwitchesAnimated)
+                    if (_switchParent is not null && !_switchParent.AreLayoutSwitchesAnimated)
                     {
                         result = null;
                     }
@@ -752,7 +752,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
                     break;
 
                 case AnimationType.Template:
-                    if (TemplateAnimator != IterativeAnimator.Default || _switchParent != null &&
+                    if (TemplateAnimator != IterativeAnimator.Default || _switchParent is not null &&
                         _switchParent.TemplateAnimator != IterativeAnimator.Default)
                         result = TemplateAnimator == IterativeAnimator.Default
                             ? _switchParent.TemplateAnimator
@@ -776,14 +776,14 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
             if (!IsActiveLayout)
                 return;
 
-            if (_currentChildren != null)
+            if (_currentChildren is not null)
                 foreach (UIElement child in _currentChildren)
                 {
-                    if (child == null)
+                    if (child is null)
                         continue;
 
                     var state = GetChildState(child);
-                    if (state != null)
+                    if (state is not null)
                     {
                         var t = DateTime.Now.Subtract(state.BeginTimestamp);
                         if (state.IsAnimating)
@@ -802,7 +802,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
             foreach (var grandchild in _animatingGrandchildren)
             {
                 var state = GetChildState(grandchild);
-                if (state != null && state.IsAnimating)
+                if (state is not null && state.IsAnimating)
                 {
                     var t = DateTime.Now.Subtract(state.BeginTimestamp);
                     bool isDone;
@@ -827,11 +827,11 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
                 var exitingChildren = new List<UIElement>(ExitingChildren);
                 foreach (var child in exitingChildren)
                 {
-                    if (child == null)
+                    if (child is null)
                         continue;
 
                     var state = GetChildState(child);
-                    if (state != null)
+                    if (state is not null)
                     {
                         var t = DateTime.Now.Subtract(state.BeginTimestamp);
                         if (state.IsAnimating)
@@ -852,7 +852,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         private void UpdateTrueArrange(UIElement child, ChildState state)
         {
             if (!state.TargetPlacement.IsEmpty)
-                child.Arrange(state.IsAnimating && state.Animator != null
+                child.Arrange(state.IsAnimating && state.Animator is not null
                     ? state.CurrentPlacement
                     : state.TargetPlacement);
 
@@ -1208,7 +1208,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         protected virtual void OnSwitchTemplateChanged(DependencyPropertyChangedEventArgs e)
         {
-            if (_switchParent != null && _switchParent.ActiveLayout == this) _switchParent.UpdateSwitchTemplate();
+            if (_switchParent is not null && _switchParent.ActiveLayout == this) _switchParent.UpdateSwitchTemplate();
         }
 
         #endregion
@@ -1264,7 +1264,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
                 // stop the animation pump if the value goes to 0
                 if (_animatingChildCount != 0 && value == 0)
                 {
-                    if (EndSwitchOnAnimationCompleted && _switchParent != null)
+                    if (EndSwitchOnAnimationCompleted && _switchParent is not null)
                     {
                         EndSwitchOnAnimationCompleted = false;
                         _switchParent.EndLayoutSwitch();
@@ -1296,12 +1296,12 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         protected RoutedEventArgs RaiseAnimationBegunEvent()
         {
-            return RaiseAnimationBegunEvent(_switchParent != null ? _switchParent : (UIElement) this);
+            return RaiseAnimationBegunEvent(_switchParent is not null ? _switchParent : (UIElement) this);
         }
 
         private static RoutedEventArgs RaiseAnimationBegunEvent(UIElement target)
         {
-            if (target == null)
+            if (target is null)
                 return null;
 
             var args = new RoutedEventArgs();
@@ -1326,12 +1326,12 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         protected RoutedEventArgs RaiseAnimationCompletedEvent()
         {
-            return RaiseAnimationCompletedEvent(_switchParent != null ? _switchParent : (UIElement) this);
+            return RaiseAnimationCompletedEvent(_switchParent is not null ? _switchParent : (UIElement) this);
         }
 
         private static RoutedEventArgs RaiseAnimationCompletedEvent(UIElement target)
         {
-            if (target == null)
+            if (target is null)
                 return null;
 
             var args = new RoutedEventArgs();
@@ -1362,7 +1362,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         internal static ChildEnteredEventArgs RaiseChildEnteredEvent(UIElement target, UIElement child,
             Rect arrangeRect)
         {
-            if (target == null)
+            if (target is null)
                 return null;
 
             var args = new ChildEnteredEventArgs(child, arrangeRect);
@@ -1393,7 +1393,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         private static ChildEnteringEventArgs RaiseChildEnteringEvent(UIElement target, UIElement child,
             Rect? EnterFrom, Rect ArrangeRect)
         {
-            if (target == null)
+            if (target is null)
                 return null;
 
             var args = new ChildEnteringEventArgs(child, EnterFrom, ArrangeRect);
@@ -1423,7 +1423,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         private static ChildExitedEventArgs RaiseChildExitedEvent(UIElement target, UIElement child)
         {
-            if (target == null)
+            if (target is null)
                 return null;
 
             var args = new ChildExitedEventArgs(child);
@@ -1454,7 +1454,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         private static ChildExitingEventArgs RaiseChildExitingEvent(UIElement target, UIElement child, Rect? exitTo,
             Rect arrangeRect)
         {
-            if (target == null)
+            if (target is null)
                 return null;
 
             var args = new ChildExitingEventArgs(child, exitTo, arrangeRect);
@@ -1484,7 +1484,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         internal static RoutedEventArgs RaiseSwitchLayoutActivatedEvent(UIElement target)
         {
-            if (target == null)
+            if (target is null)
                 return null;
 
             var args = new RoutedEventArgs();
@@ -1514,7 +1514,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         internal static RoutedEventArgs RaiseSwitchLayoutDeactivatedEvent(UIElement target)
         {
-            if (target == null)
+            if (target is null)
                 return null;
 
             var args = new RoutedEventArgs();

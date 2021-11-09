@@ -26,7 +26,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_backEaseIn == null) _backEaseIn = new DoubleAnimator(PennerEquations.BackEaseIn);
+                if (_backEaseIn is null) _backEaseIn = new DoubleAnimator(PennerEquations.BackEaseIn);
                 return _backEaseIn;
             }
         }
@@ -41,7 +41,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_backEaseInOut == null) _backEaseInOut = new DoubleAnimator(PennerEquations.BackEaseInOut);
+                if (_backEaseInOut is null) _backEaseInOut = new DoubleAnimator(PennerEquations.BackEaseInOut);
                 return _backEaseInOut;
             }
         }
@@ -56,7 +56,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_backEaseOut == null) _backEaseOut = new DoubleAnimator(PennerEquations.BackEaseOut);
+                if (_backEaseOut is null) _backEaseOut = new DoubleAnimator(PennerEquations.BackEaseOut);
                 return _backEaseOut;
             }
         }
@@ -71,7 +71,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_bounceEaseIn == null) _bounceEaseIn = new DoubleAnimator(PennerEquations.BounceEaseIn);
+                if (_bounceEaseIn is null) _bounceEaseIn = new DoubleAnimator(PennerEquations.BounceEaseIn);
                 return _bounceEaseIn;
             }
         }
@@ -86,7 +86,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_bounceEaseInOut == null) _bounceEaseInOut = new DoubleAnimator(PennerEquations.BounceEaseInOut);
+                if (_bounceEaseInOut is null) _bounceEaseInOut = new DoubleAnimator(PennerEquations.BounceEaseInOut);
                 return _bounceEaseInOut;
             }
         }
@@ -101,7 +101,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_bounceEaseOut == null) _bounceEaseOut = new DoubleAnimator(PennerEquations.BounceEaseOut);
+                if (_bounceEaseOut is null) _bounceEaseOut = new DoubleAnimator(PennerEquations.BounceEaseOut);
                 return _bounceEaseOut;
             }
         }
@@ -116,7 +116,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_circEaseIn == null) _circEaseIn = new DoubleAnimator(PennerEquations.CircEaseIn);
+                if (_circEaseIn is null) _circEaseIn = new DoubleAnimator(PennerEquations.CircEaseIn);
                 return _circEaseIn;
             }
         }
@@ -131,7 +131,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_circEaseInOut == null) _circEaseInOut = new DoubleAnimator(PennerEquations.CircEaseInOut);
+                if (_circEaseInOut is null) _circEaseInOut = new DoubleAnimator(PennerEquations.CircEaseInOut);
                 return _circEaseInOut;
             }
         }
@@ -146,7 +146,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_circEaseOut == null) _circEaseOut = new DoubleAnimator(PennerEquations.CircEaseOut);
+                if (_circEaseOut is null) _circEaseOut = new DoubleAnimator(PennerEquations.CircEaseOut);
                 return _circEaseOut;
             }
         }
@@ -161,7 +161,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_cubicEaseIn == null) _cubicEaseIn = new DoubleAnimator(PennerEquations.CubicEaseIn);
+                if (_cubicEaseIn is null) _cubicEaseIn = new DoubleAnimator(PennerEquations.CubicEaseIn);
                 return _cubicEaseIn;
             }
         }
@@ -176,7 +176,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_cubicEaseInOut == null) _cubicEaseInOut = new DoubleAnimator(PennerEquations.CubicEaseInOut);
+                if (_cubicEaseInOut is null) _cubicEaseInOut = new DoubleAnimator(PennerEquations.CubicEaseInOut);
                 return _cubicEaseInOut;
             }
         }
@@ -191,7 +191,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_cubicEaseOut == null) _cubicEaseOut = new DoubleAnimator(PennerEquations.CubicEaseOut);
+                if (_cubicEaseOut is null) _cubicEaseOut = new DoubleAnimator(PennerEquations.CubicEaseOut);
                 return _cubicEaseOut;
             }
         }
@@ -206,7 +206,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_elasticEaseIn == null) _elasticEaseIn = new DoubleAnimator(PennerEquations.ElasticEaseIn);
+                if (_elasticEaseIn is null) _elasticEaseIn = new DoubleAnimator(PennerEquations.ElasticEaseIn);
                 return _elasticEaseIn;
             }
         }
@@ -221,7 +221,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_elasticEaseInOut == null) _elasticEaseInOut = new DoubleAnimator(PennerEquations.ElasticEaseInOut);
+                if (_elasticEaseInOut is null) _elasticEaseInOut = new DoubleAnimator(PennerEquations.ElasticEaseInOut);
                 return _elasticEaseInOut;
             }
         }
@@ -236,7 +236,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_elasticEaseOut == null) _elasticEaseOut = new DoubleAnimator(PennerEquations.ElasticEaseOut);
+                if (_elasticEaseOut is null) _elasticEaseOut = new DoubleAnimator(PennerEquations.ElasticEaseOut);
                 return _elasticEaseOut;
             }
         }
@@ -251,7 +251,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_expoEaseIn == null) _expoEaseIn = new DoubleAnimator(PennerEquations.ExpoEaseIn);
+                if (_expoEaseIn is null) _expoEaseIn = new DoubleAnimator(PennerEquations.ExpoEaseIn);
                 return _expoEaseIn;
             }
         }
@@ -266,7 +266,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_expoEaseInOut == null) _expoEaseInOut = new DoubleAnimator(PennerEquations.ExpoEaseInOut);
+                if (_expoEaseInOut is null) _expoEaseInOut = new DoubleAnimator(PennerEquations.ExpoEaseInOut);
                 return _expoEaseInOut;
             }
         }
@@ -281,7 +281,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_expoEaseOut == null) _expoEaseOut = new DoubleAnimator(PennerEquations.ExpoEaseOut);
+                if (_expoEaseOut is null) _expoEaseOut = new DoubleAnimator(PennerEquations.ExpoEaseOut);
                 return _expoEaseOut;
             }
         }
@@ -296,7 +296,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_linear == null) _linear = new DoubleAnimator(PennerEquations.Linear);
+                if (_linear is null) _linear = new DoubleAnimator(PennerEquations.Linear);
                 return _linear;
             }
         }
@@ -311,7 +311,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_quadEaseIn == null) _quadEaseIn = new DoubleAnimator(PennerEquations.QuadEaseIn);
+                if (_quadEaseIn is null) _quadEaseIn = new DoubleAnimator(PennerEquations.QuadEaseIn);
                 return _quadEaseIn;
             }
         }
@@ -326,7 +326,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_quadEaseInOut == null) _quadEaseInOut = new DoubleAnimator(PennerEquations.QuadEaseInOut);
+                if (_quadEaseInOut is null) _quadEaseInOut = new DoubleAnimator(PennerEquations.QuadEaseInOut);
                 return _quadEaseInOut;
             }
         }
@@ -341,7 +341,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_quadEaseOut == null) _quadEaseOut = new DoubleAnimator(PennerEquations.QuadEaseOut);
+                if (_quadEaseOut is null) _quadEaseOut = new DoubleAnimator(PennerEquations.QuadEaseOut);
                 return _quadEaseOut;
             }
         }
@@ -356,7 +356,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_quartEaseIn == null) _quartEaseIn = new DoubleAnimator(PennerEquations.QuartEaseIn);
+                if (_quartEaseIn is null) _quartEaseIn = new DoubleAnimator(PennerEquations.QuartEaseIn);
                 return _quartEaseIn;
             }
         }
@@ -371,7 +371,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_quartEaseInOut == null) _quartEaseInOut = new DoubleAnimator(PennerEquations.QuartEaseInOut);
+                if (_quartEaseInOut is null) _quartEaseInOut = new DoubleAnimator(PennerEquations.QuartEaseInOut);
                 return _quartEaseInOut;
             }
         }
@@ -386,7 +386,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_quartEaseOut == null) _quartEaseOut = new DoubleAnimator(PennerEquations.QuartEaseOut);
+                if (_quartEaseOut is null) _quartEaseOut = new DoubleAnimator(PennerEquations.QuartEaseOut);
                 return _quartEaseOut;
             }
         }
@@ -401,7 +401,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_quintEaseIn == null) _quintEaseIn = new DoubleAnimator(PennerEquations.QuintEaseIn);
+                if (_quintEaseIn is null) _quintEaseIn = new DoubleAnimator(PennerEquations.QuintEaseIn);
                 return _quintEaseIn;
             }
         }
@@ -416,7 +416,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_quintEaseInOut == null) _quintEaseInOut = new DoubleAnimator(PennerEquations.QuintEaseInOut);
+                if (_quintEaseInOut is null) _quintEaseInOut = new DoubleAnimator(PennerEquations.QuintEaseInOut);
                 return _quintEaseInOut;
             }
         }
@@ -431,7 +431,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_quintEaseOut == null) _quintEaseOut = new DoubleAnimator(PennerEquations.QuintEaseOut);
+                if (_quintEaseOut is null) _quintEaseOut = new DoubleAnimator(PennerEquations.QuintEaseOut);
                 return _quintEaseOut;
             }
         }
@@ -446,7 +446,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_sineEaseIn == null) _sineEaseIn = new DoubleAnimator(PennerEquations.SineEaseIn);
+                if (_sineEaseIn is null) _sineEaseIn = new DoubleAnimator(PennerEquations.SineEaseIn);
                 return _sineEaseIn;
             }
         }
@@ -461,7 +461,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_sineEaseInOut == null) _sineEaseInOut = new DoubleAnimator(PennerEquations.SineEaseInOut);
+                if (_sineEaseInOut is null) _sineEaseInOut = new DoubleAnimator(PennerEquations.SineEaseInOut);
                 return _sineEaseInOut;
             }
         }
@@ -476,7 +476,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (_sineEaseOut == null) _sineEaseOut = new DoubleAnimator(PennerEquations.SineEaseOut);
+                if (_sineEaseOut is null) _sineEaseOut = new DoubleAnimator(PennerEquations.SineEaseOut);
                 return _sineEaseOut;
             }
         }

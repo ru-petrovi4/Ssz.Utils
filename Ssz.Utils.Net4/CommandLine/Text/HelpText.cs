@@ -263,7 +263,7 @@ namespace Ssz.Utils.CommandLine.Text
         {
             bool found;
             object instance = Parser.InternalGetVerbOptionsInstanceByName(verb, options, out found);
-            bool verbsIndex = verb == null || !found;
+            bool verbsIndex = verb is null || !found;
             object target = verbsIndex ? options : instance;
             return AutoBuild(target, current => DefaultParsingErrorsHandler(target, current), verbsIndex);
         }
@@ -286,7 +286,7 @@ namespace Ssz.Utils.CommandLine.Text
             }
 
             var parserState = (IParserState) list[0].Left.GetValue(options, null);
-            if (parserState == null || parserState.Errors.Count == 0)
+            if (parserState is null || parserState.Errors.Count == 0)
             {
                 return;
             }
@@ -399,7 +399,7 @@ namespace Ssz.Utils.CommandLine.Text
             }
 
             var parserState = (IParserState) list[0].Left.GetValue(options, null);
-            if (parserState == null || parserState.Errors.Count == 0)
+            if (parserState is null || parserState.Errors.Count == 0)
             {
                 return string.Empty;
             }
@@ -591,7 +591,7 @@ namespace Ssz.Utils.CommandLine.Text
 
         private static int GetLength(string value)
         {
-            if (value == null)
+            if (value is null)
             {
                 return 0;
             }
@@ -601,7 +601,7 @@ namespace Ssz.Utils.CommandLine.Text
 
         private static int GetLength(StringBuilder value)
         {
-            if (value == null)
+            if (value is null)
             {
                 return 0;
             }

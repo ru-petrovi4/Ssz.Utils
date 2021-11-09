@@ -26,7 +26,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
         protected virtual void OnChildrenCollectionChanged()
         {
-            if (ChildrenCollectionChanged != null)
+            if (ChildrenCollectionChanged is not null)
                 ChildrenCollectionChanged(this, EventArgs.Empty);
         }
 
@@ -34,13 +34,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         {
             OnChildrenTreeChanged(change);
             var parentGroup = Parent as LayoutGroupBase;
-            if (parentGroup != null)
+            if (parentGroup is not null)
                 parentGroup.NotifyChildrenTreeChanged(ChildrenTreeChange.TreeChanged);
         }
 
         protected virtual void OnChildrenTreeChanged(ChildrenTreeChange change)
         {
-            if (ChildrenTreeChanged != null)
+            if (ChildrenTreeChanged is not null)
                 ChildrenTreeChanged(this, new ChildrenTreeChangedEventArgs(change));
         }
 

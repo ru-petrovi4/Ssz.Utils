@@ -55,7 +55,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             {
                 PropertyItem defaultProperty = null;
                 var defaultName = GetDefaultPropertyName();
-                if (defaultName != null)
+                if (defaultName is not null)
                     defaultProperty = PropertyItems
                         .FirstOrDefault(prop => Equals(defaultName, prop.PropertyDescriptor.Name));
 
@@ -68,7 +68,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 
         public override PropertyItemBase ContainerFromItem(object item)
         {
-            if (item == null)
+            if (item is null)
                 return null;
             // Exception case for ObjectContainerHelperBase. The "Item" may sometimes
             // be identified as a string representing the property name or
@@ -76,12 +76,12 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             Debug.Assert(item is PropertyItem || item is string);
 
             var propertyItem = item as PropertyItem;
-            if (propertyItem != null)
+            if (propertyItem is not null)
                 return propertyItem;
 
 
             var propertyStr = item as string;
-            if (propertyStr != null)
+            if (propertyStr is not null)
                 return PropertyItems.FirstOrDefault(prop => propertyStr == prop.PropertyDescriptor.Name);
 
             return null;
@@ -92,7 +92,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             // Since this call is only used to update the PropertyGrid.SelectedProperty property,
             // return the PropertyName.
             var propertyItem = container as PropertyItem;
-            if (propertyItem == null)
+            if (propertyItem is null)
                 return null;
 
             return propertyItem.PropertyDescriptor.Name;
@@ -161,7 +161,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         private string GetCategoryGroupingPropertyName()
         {
             var propGroup = ComputeCategoryGroupDescription() as PropertyGroupDescription;
-            return propGroup != null ? propGroup.PropertyName : null;
+            return propGroup is not null ? propGroup.PropertyName : null;
         }
 
         private void OnChildrenPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -197,7 +197,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 
             // Update the selected property on the property grid only.
             var propertyGrid = PropertyContainer as PropertyGrid;
-            if (propertyGrid != null) propertyGrid.SelectedPropertyItem = DefaultProperty;
+            if (propertyGrid is not null) propertyGrid.SelectedPropertyItem = DefaultProperty;
         }
 
         protected static List<PropertyDescriptor> GetPropertyDescriptors(object instance)
@@ -205,7 +205,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             PropertyDescriptorCollection descriptors;
 
             var tc = TypeDescriptor.GetConverter(instance);
-            if (tc == null || !tc.GetPropertiesSupported())
+            if (tc is null || !tc.GetPropertiesSupported())
             {
                 if (instance is ICustomTypeDescriptor)
                     descriptors = ((ICustomTypeDescriptor) instance).GetProperties();
@@ -217,7 +217,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
                 descriptors = tc.GetProperties(instance);
             }
 
-            return descriptors != null
+            return descriptors is not null
                 ? descriptors.Cast<PropertyDescriptor>().ToList()
                 : null;
         }
@@ -226,29 +226,29 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             DescriptorPropertyDefinitionBase descriptorDef,
             PropertyDefinition propertyDefinition)
         {
-            if (descriptorDef == null)
+            if (descriptorDef is null)
                 throw new ArgumentNullException("descriptorDef");
 
-            if (propertyDefinition == null)
+            if (propertyDefinition is null)
                 return;
 
             // Values defined on PropertyDefinition have priority on the attributes
-            if (propertyDefinition != null)
+            if (propertyDefinition is not null)
             {
-                if (propertyDefinition.Category != null)
+                if (propertyDefinition.Category is not null)
                 {
                     descriptorDef.Category = propertyDefinition.Category;
                     descriptorDef.CategoryValue = propertyDefinition.Category;
                 }
 
-                if (propertyDefinition.Description != null) descriptorDef.Description = propertyDefinition.Description;
+                if (propertyDefinition.Description is not null) descriptorDef.Description = propertyDefinition.Description;
 
-                if (propertyDefinition.DisplayName != null) descriptorDef.DisplayName = propertyDefinition.DisplayName;
+                if (propertyDefinition.DisplayName is not null) descriptorDef.DisplayName = propertyDefinition.DisplayName;
 
-                if (propertyDefinition.DisplayOrder != null)
+                if (propertyDefinition.DisplayOrder is not null)
                     descriptorDef.DisplayOrder = propertyDefinition.DisplayOrder.Value;
 
-                if (propertyDefinition.IsExpandable != null)
+                if (propertyDefinition.IsExpandable is not null)
                     descriptorDef.ExpandableAttribute = propertyDefinition.IsExpandable.Value;
             }
         }
@@ -295,7 +295,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
                 SetupDefinitionBinding(propertyItem, CustomPropertyItem.IsValueEditorEnabledProperty, pd.Value,
                     pd.IsValueEditorEnabledPropertyPath, BindingMode.OneWay);
 
-            if (pd.CommandBindings != null)
+            if (pd.CommandBindings is not null)
                 foreach (var commandBinding in pd.CommandBindings)
                     propertyItem.CommandBindings.Add(commandBinding);
         }
@@ -335,28 +335,28 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             var definitionKeyAsType = definitionKey as Type;
 
             var editor = pd.CreateAttributeEditor();
-            if (editor != null)
+            if (editor is not null)
                 editorElement = editor.ResolveEditor(propertyItem);
 
 
-            if (editorElement == null && definitionKey == null)
+            if (editorElement is null && definitionKey is null)
                 editorElement = GenerateCustomEditingElement(propertyItem.PropertyDescriptor.Name, propertyItem);
 
-            if (editorElement == null && definitionKeyAsType == null)
+            if (editorElement is null && definitionKeyAsType is null)
                 editorElement = GenerateCustomEditingElement(propertyItem.PropertyType, propertyItem);
 
-            if (editorElement == null)
+            if (editorElement is null)
             {
                 if (pd.IsReadOnly)
                     editor = new TextBlockEditor();
 
                 // Fallback: Use a default type editor.
-                if (editor == null)
-                    editor = definitionKeyAsType != null
+                if (editor is null)
+                    editor = definitionKeyAsType is not null
                         ? PropertyGridUtilities.CreateDefaultEditor(definitionKeyAsType, null)
                         : pd.CreateDefaultEditor();
 
-                Debug.Assert(editor != null);
+                Debug.Assert(editor is not null);
 
                 editorElement = editor.ResolveEditor(propertyItem);
             }
@@ -369,10 +369,10 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             PropertyDefinition def = null;
 
             var propertyDefs = PropertyContainer.PropertyDefinitions;
-            if (propertyDefs != null)
+            if (propertyDefs is not null)
             {
                 def = propertyDefs[descriptor.Name];
-                if (def == null) def = propertyDefs.GetRecursiveBaseTypes(descriptor.PropertyType);
+                if (def is null) def = propertyDefs.GetRecursiveBaseTypes(descriptor.PropertyType);
             }
 
             return def;
@@ -384,10 +384,10 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             _isPreparingItemFlag = true;
             base.PrepareChildrenPropertyItem(propertyItem, item);
 
-            if (propertyItem.Editor == null)
+            if (propertyItem.Editor is null)
             {
                 var editor = GenerateChildrenEditorElement((PropertyItem) propertyItem);
-                if (editor != null)
+                if (editor is not null)
                 {
                     // Tag the editor as generated to know if we should clear it.
                     SetIsGenerated(editor, true);
@@ -400,7 +400,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 
         public override void ClearChildrenPropertyItem(PropertyItemBase propertyItem, object item)
         {
-            if (propertyItem.Editor != null
+            if (propertyItem.Editor is not null
                 && GetIsGenerated(propertyItem.Editor))
                 propertyItem.Editor = null;
 
@@ -418,7 +418,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         {
             var attributes = TypeDescriptor.GetAttributes(instance);
             var defaultPropertyAttribute = (DefaultPropertyAttribute) attributes[typeof(DefaultPropertyAttribute)];
-            return defaultPropertyAttribute != null ? defaultPropertyAttribute.Name : null;
+            return defaultPropertyAttribute is not null ? defaultPropertyAttribute.Name : null;
         }
 
         private static bool IsItemOrderingProperty(string propertyName)

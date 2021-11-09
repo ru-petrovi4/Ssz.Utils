@@ -102,7 +102,7 @@ namespace Xi.Contracts.Data
 		/// Otherwise, FALSE.</returns>
 		public static bool IsRole(TypeId[] roles, TypeId role)
 		{
-			if (roles != null)
+			if (roles is not null)
 			{
 				foreach (TypeId rl in roles)
 				{

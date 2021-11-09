@@ -27,7 +27,7 @@ namespace Ssz.Utils.Wpf
         [AttachedPropertyBrowsableForType(typeof (Window))]
         public static void SetHideCloseButton(Window obj, bool value)
         {
-            if (obj == null) return;
+            if (obj is null) return;
             obj.SetValue(HideCloseButtonProperty, value);
         }
 
@@ -53,7 +53,7 @@ namespace Ssz.Utils.Wpf
         private static void HideCloseButtonChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var window = d as Window;
-            if (window == null) return;
+            if (window is null) return;
 
             var hideCloseButton = (bool) e.NewValue;
             if (hideCloseButton && !GetIsHiddenCloseButton(window))

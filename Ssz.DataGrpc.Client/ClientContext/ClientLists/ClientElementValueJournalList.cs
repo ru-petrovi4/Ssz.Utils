@@ -95,7 +95,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
             if (elementValueJournalsCollection.Guid != @"" && _incompleteElementValueJournalsCollectionCollection.Count > 0)
             {
                 var beginElementValueJournalsCollection = _incompleteElementValueJournalsCollectionCollection.TryGetValue(elementValueJournalsCollection.Guid);
-                if (beginElementValueJournalsCollection != null)
+                if (beginElementValueJournalsCollection is not null)
                 {
                     _incompleteElementValueJournalsCollectionCollection.Remove(elementValueJournalsCollection.Guid);
                     beginElementValueJournalsCollection.CombineWith(elementValueJournalsCollection);

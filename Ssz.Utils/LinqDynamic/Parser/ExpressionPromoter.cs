@@ -71,7 +71,7 @@ namespace System.Linq.Dynamic.Core.Parser
                                 break;
                         }
 
-                        if (value != null)
+                        if (value is not null)
                         {
                             return Expression.Constant(value, type);
                         }

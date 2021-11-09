@@ -142,7 +142,7 @@ namespace Standard
         [SuppressMessage("Microsoft.Security", "CA2122:DoNotIndirectlyExposeMethodsWithLinkDemands")]
         public static bool AreStreamsEqual(Stream left, Stream right)
         {
-            if (null == left) return right == null;
+            if (null == left) return right is null;
             if (null == right) return false;
 
             if (!left.CanRead || !right.CanRead)
@@ -259,13 +259,13 @@ namespace Standard
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static IntPtr GenerateHICON(ImageSource image, Size dimensions)
         {
-            if (image == null) return IntPtr.Zero;
+            if (image is null) return IntPtr.Zero;
 
             // If we're getting this from a ".ico" resource, then it comes through as a BitmapFrame.
             // We can use leverage this as a shortcut to get the right 16x16 representation
             // because DrawImage doesn't do that for us.
             var bf = image as BitmapFrame;
-            if (bf != null)
+            if (bf is not null)
             {
                 bf = GetBestMatch(bf.Decoder.Frames, (int) dimensions.Width, (int) dimensions.Height);
             }
@@ -637,7 +637,7 @@ namespace Standard
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static string UrlDecode(string url)
         {
-            if (url == null) return null;
+            if (url is null) return null;
 
             var decoder = new _UrlDecoder(url.Length, Encoding.UTF8);
             var length = url.Length;
@@ -709,7 +709,7 @@ namespace Standard
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public static string UrlEncode(string url)
         {
-            if (url == null) return null;
+            if (url is null) return null;
 
             var bytes = Encoding.UTF8.GetBytes(url);
 
@@ -812,7 +812,7 @@ namespace Standard
         public static void AddDependencyPropertyChangeListener(object component, DependencyProperty property,
             EventHandler listener)
         {
-            if (component == null) return;
+            if (component is null) return;
             Assert.IsNotNull(property);
             Assert.IsNotNull(listener);
 
@@ -823,7 +823,7 @@ namespace Standard
         public static void RemoveDependencyPropertyChangeListener(object component, DependencyProperty property,
             EventHandler listener)
         {
-            if (component == null) return;
+            if (component is null) return;
             Assert.IsNotNull(property);
             Assert.IsNotNull(listener);
 

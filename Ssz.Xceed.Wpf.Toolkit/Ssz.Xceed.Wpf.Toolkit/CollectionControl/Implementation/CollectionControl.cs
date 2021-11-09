@@ -50,21 +50,21 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             base.OnApplyTemplate();
 
-            if (_newItemTypesComboBox != null)
+            if (_newItemTypesComboBox is not null)
                 _newItemTypesComboBox.Loaded -= NewItemTypesComboBox_Loaded;
 
             _newItemTypesComboBox = GetTemplateChild(PART_NewItemTypesComboBox) as ComboBox;
 
-            if (_newItemTypesComboBox != null)
+            if (_newItemTypesComboBox is not null)
                 _newItemTypesComboBox.Loaded += NewItemTypesComboBox_Loaded;
 
 
-            if (_objectPropertyGrid != null)
+            if (_objectPropertyGrid is not null)
                 _objectPropertyGrid.PropertyValueChanged -= ObjectPropertyGridOnPropertyValueChanged;
 
             _objectPropertyGrid = GetTemplateChild(PART_PropertyGrid) as PropertyGrid.PropertyGrid;
 
-            if (_objectPropertyGrid != null)
+            if (_objectPropertyGrid is not null)
                 _objectPropertyGrid.PropertyValueChanged += ObjectPropertyGridOnPropertyValueChanged;
         }
 
@@ -73,7 +73,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private void RefreshForPropertyGrid()
         {
             var item = _objectPropertyGrid.SelectedObject as IPropertyGridItem;
-            if (item == null || item.RefreshForPropertyGridIsDisabled) return;
+            if (item is null || item.RefreshForPropertyGridIsDisabled) return;
 
             foreach (var child in TreeHelper.FindChilds<IPropertyGridItem>(_objectPropertyGrid))
                 child.RefreshForPropertyGrid();
@@ -130,7 +130,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var collectionControl = (CollectionControl) d;
-            if (collectionControl != null)
+            if (collectionControl is not null)
                 collectionControl.OnItemSourceChanged((IList) e.OldValue, (IList) e.NewValue);
         }
 
@@ -139,7 +139,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             // VP
             var items = new ReferenceEqualityList<object>();
             // End VP
-            if (newValue != null)
+            if (newValue is not null)
                 foreach (var item in newValue)
                     items.Add(CreateClone(item));
             Items = items;
@@ -184,9 +184,9 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void SelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var objectPropertyGrid = ((CollectionControl) d)._objectPropertyGrid;
-            if (objectPropertyGrid != null)
+            if (objectPropertyGrid is not null)
             {
-                if (objectPropertyGrid.SelectedObject != null)
+                if (objectPropertyGrid.SelectedObject is not null)
                 {
                     var cancelEventArgs = new CancelEventArgs();
 
@@ -302,13 +302,13 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void NewItemTypesComboBox_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_newItemTypesComboBox != null)
+            if (_newItemTypesComboBox is not null)
                 _newItemTypesComboBox.SelectedIndex = 0;
         }
 
         private void ObjectPropertyGridOnPropertyValueChanged(object sender, PropertyValueChangedEventArgs e)
         {
-            if (_objectPropertyGrid != null)
+            if (_objectPropertyGrid is not null)
             {
                 if (_objectPropertyGridUpdating) return;
                 _objectPropertyGridUpdating = true;
@@ -346,7 +346,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private void CanAddNew(object sender, CanExecuteRoutedEventArgs e)
         {
             var t = e.Parameter as Type;
-            if (t != null && t.GetConstructor(Type.EmptyTypes) != null && !IsReadOnly)
+            if (t is not null && t.GetConstructor(Type.EmptyTypes) is not null && !IsReadOnly)
                 e.CanExecute = true;
         }
 
@@ -367,7 +367,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void CanDelete(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = e.Parameter != null && !IsReadOnly;
+            e.CanExecute = e.Parameter is not null && !IsReadOnly;
         }
 
         private void MoveDown(object sender, ExecutedRoutedEventArgs e)
@@ -386,7 +386,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void CanMoveDown(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (e.Parameter != null && Items.IndexOf(e.Parameter) < Items.Count - 1 && !IsReadOnly)
+            if (e.Parameter is not null && Items.IndexOf(e.Parameter) < Items.Count - 1 && !IsReadOnly)
                 e.CanExecute = true;
         }
 
@@ -406,7 +406,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void CanMoveUp(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (e.Parameter != null && Items.IndexOf(e.Parameter) > 0 && !IsReadOnly)
+            if (e.Parameter is not null && Items.IndexOf(e.Parameter) > 0 && !IsReadOnly)
                 e.CanExecute = true;
         }
 
@@ -418,7 +418,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             var currentType = source.GetType();
 
-            while (currentType != null)
+            while (currentType is not null)
             {
                 var myObjectFields =
                     currentType.GetFields(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
@@ -432,7 +432,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             // VP
             var cloneableSource = source as ICloneable;
-            if (cloneableSource != null) return cloneableSource.Clone();
+            if (cloneableSource is not null) return cloneableSource.Clone();
             // End VP
             object clone = null;
 
@@ -447,7 +447,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             IList list = null;
 
-            if (ItemsSourceType != null)
+            if (ItemsSourceType is not null)
             {
                 var constructor = ItemsSourceType.GetConstructor(Type.EmptyTypes);
                 list = (IList) constructor.Invoke(null);
@@ -471,7 +471,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             RefreshForPropertyGrid();
 
             var originalList = ComputeItemsSource();
-            if (originalList == null)
+            if (originalList is null)
                 return false;
 
             if (originalList.OfType<object>().SequenceEqual(Items)) return false;
@@ -490,7 +490,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private IList ComputeItemsSource()
         {
-            if (ItemsSource == null)
+            if (ItemsSource is null)
                 ItemsSource = CreateItemsSource();
 
             return ItemsSource;
@@ -744,11 +744,11 @@ namespace Ssz.Xceed.Wpf.Toolkit
         // 
         public ReferenceEqualityList(IEnumerable<T> collection)
         {
-            if (collection == null)
+            if (collection is null)
                 throw new ArgumentNullException("collection");
 
             var c = collection as ICollection<T>;
-            if (c != null)
+            if (c is not null)
             {
                 var count = c.Count;
                 if (count == 0)
@@ -828,7 +828,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             get
             {
-                if (_syncRoot == null) Interlocked.CompareExchange<object>(ref _syncRoot, new object(), null);
+                if (_syncRoot is null) Interlocked.CompareExchange<object>(ref _syncRoot, new object(), null);
                 return _syncRoot;
             }
         }
@@ -972,10 +972,10 @@ namespace Ssz.Xceed.Wpf.Toolkit
         //
         public bool Contains(T item)
         {
-            if (item == null)
+            if (item is null)
             {
                 for (var i = 0; i < Count; i++)
-                    if (_items[i] == null)
+                    if (_items[i] is null)
                         return true;
                 return false;
             }
@@ -995,7 +995,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         public ReferenceEqualityList<TOutput> ConvertAll<TOutput>(Converter<T, TOutput> converter)
         {
-            if (converter == null) throw new ArgumentNullException("converter");
+            if (converter is null) throw new ArgumentNullException("converter");
             // @
 
 
@@ -1018,7 +1018,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         //
         void ICollection.CopyTo(Array array, int arrayIndex)
         {
-            if (array != null && array.Rank != 1) throw new ArgumentException();
+            if (array is not null && array.Rank != 1) throw new ArgumentException();
 
 
             try
@@ -1063,7 +1063,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         public T Find(Predicate<T> match)
         {
-            if (match == null) throw new ArgumentNullException("match");
+            if (match is null) throw new ArgumentNullException("match");
 
 
             for (var i = 0; i < Count; i++)
@@ -1074,7 +1074,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         public List<T> FindAll(Predicate<T> match)
         {
-            if (match == null) throw new ArgumentNullException("match");
+            if (match is null) throw new ArgumentNullException("match");
 
 
             var list = new List<T>();
@@ -1100,7 +1100,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
             if (count < 0 || startIndex > Count - count) throw new ArgumentOutOfRangeException();
 
-            if (match == null) throw new ArgumentNullException("match");
+            if (match is null) throw new ArgumentNullException("match");
 
             var endIndex = startIndex + count;
             for (var i = startIndex; i < endIndex; i++)
@@ -1111,7 +1111,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         public T FindLast(Predicate<T> match)
         {
-            if (match == null) throw new ArgumentNullException("match");
+            if (match is null) throw new ArgumentNullException("match");
 
 
             for (var i = Count - 1; i >= 0; i--)
@@ -1132,7 +1132,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         public int FindLastIndex(int startIndex, int count, Predicate<T> match)
         {
-            if (match == null) throw new ArgumentNullException("match");
+            if (match is null) throw new ArgumentNullException("match");
 
             if (Count == 0)
             {
@@ -1157,7 +1157,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         public void ForEach(Action<T> action)
         {
-            if (action == null) throw new ArgumentNullException("action");
+            if (action is null) throw new ArgumentNullException("action");
 
 
             var version = _version;
@@ -1292,13 +1292,13 @@ namespace Ssz.Xceed.Wpf.Toolkit
         //
         public void InsertRange(int index, IEnumerable<T> collection)
         {
-            if (collection == null) throw new ArgumentNullException("collection");
+            if (collection is null) throw new ArgumentNullException("collection");
 
             if ((uint) index > (uint) Count) throw new ArgumentOutOfRangeException("index");
 
 
             var c = collection as ICollection<T>;
-            if (c != null)
+            if (c is not null)
             {
                 // if collection is ICollection<T>
                 var count = c.Count;
@@ -1419,7 +1419,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         // The complexity is O(n).   
         public int RemoveAll(Predicate<T> match)
         {
-            if (match == null) throw new ArgumentNullException("match");
+            if (match is null) throw new ArgumentNullException("match");
 
             var freeIndex = 0; // the first free slot in items array
 
@@ -1545,7 +1545,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         /*
         public void Sort(Comparison<T> comparison) {
-            if( comparison == null) {
+            if( comparison is null) {
                 throw new ArgumentNullException("comparison");
             }
             
@@ -1582,7 +1582,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         public bool TrueForAll(Predicate<T> match)
         {
-            if (match == null) throw new ArgumentNullException("match");
+            if (match is null) throw new ArgumentNullException("match");
 
 
             for (var i = 0; i < Count; i++)
@@ -1599,12 +1599,12 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             // Non-null values are fine.  Only accept nulls if T is a class or Nullable<U>.
             // Note that default(T) is not equal to null for value types except when T is Nullable<U>. 
-            return value is T || value == null && default(T) == null;
+            return value is T || value is null && default(T) is null;
         }
 
         private static int IndexOf(T[] array, T value, int startIndex, int count)
         {
-            if (array == null)
+            if (array is null)
                 throw new ArgumentNullException("array");
             var lb = array.GetLowerBound(0);
             if (startIndex < lb || startIndex > array.Length + lb)

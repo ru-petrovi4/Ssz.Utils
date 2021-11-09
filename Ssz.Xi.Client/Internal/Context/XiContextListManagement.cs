@@ -57,7 +57,7 @@ namespace Ssz.Xi.Client.Internal.Context
 
             uint clientListId = _lists.Add(xiList);
             ListAttributes? listAttrs = null;
-            if (_iResourceManagement == null) throw new InvalidOperationException();
+            if (_iResourceManagement is null) throw new InvalidOperationException();
             try
             {
                 listAttrs = _iResourceManagement.DefineList(ContextId, clientListId,
@@ -85,7 +85,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (xiList.ListAttributes != null)
+            if (xiList.ListAttributes is not null)
             {
                 // Only do the delete of this list from the server 
                 // if the context dispose is not running and the
@@ -95,7 +95,7 @@ namespace Ssz.Xi.Client.Internal.Context
                     var listIds = new List<uint>();
                     listIds.Add(xiList.ServerListId);
                     List<AliasResult>? listAliasResult = null;
-                    if (_iResourceManagement == null) throw new InvalidOperationException();
+                    if (_iResourceManagement is null) throw new InvalidOperationException();
                     try
                     {
                         listAliasResult = _iResourceManagement.DeleteLists(ContextId, listIds);
@@ -129,7 +129,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 serverListId
             };
             List<ListAttributes>? listListAttrs = null;
-            if (_iResourceManagement == null) throw new InvalidOperationException();
+            if (_iResourceManagement is null) throw new InvalidOperationException();
             try
             {
                 listListAttrs = _iResourceManagement.GetListAttributes(ContextId, listIds);
@@ -139,7 +139,7 @@ namespace Ssz.Xi.Client.Internal.Context
             {
                 ProcessRemoteMethodCallException(ex);
             }
-            if (listListAttrs == null) throw new InvalidOperationException();
+            if (listListAttrs is null) throw new InvalidOperationException();
             return listListAttrs.First();
         }
 
@@ -163,7 +163,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_iResourceManagement == null) throw new InvalidOperationException();
+            if (_iResourceManagement is null) throw new InvalidOperationException();
             List<AddDataObjectResult>? results = null;
             try
             {
@@ -193,7 +193,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_iResourceManagement == null) throw new InvalidOperationException();
+            if (_iResourceManagement is null) throw new InvalidOperationException();
             List<AliasResult>? results = null;
             try
             {
@@ -237,7 +237,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_iResourceManagement == null) throw new InvalidOperationException();
+            if (_iResourceManagement is null) throw new InvalidOperationException();
             ModifyListAttrsResult? result = null;
             try
             {
@@ -273,7 +273,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_iResourceManagement == null) throw new InvalidOperationException();
+            if (_iResourceManagement is null) throw new InvalidOperationException();
             ListAttributes? listAttrs = null;
             try
             {
@@ -322,7 +322,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_iResourceManagement == null) throw new InvalidOperationException();
+            if (_iResourceManagement is null) throw new InvalidOperationException();
             List<AliasResult>? listAliasResult = null;
             try
             {
@@ -359,7 +359,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_iResourceManagement == null) throw new InvalidOperationException();
+            if (_iResourceManagement is null) throw new InvalidOperationException();
             List<TypeIdResult>? typeIdResults = null;
             try
             {
@@ -396,7 +396,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_iResourceManagement == null) throw new InvalidOperationException();
+            if (_iResourceManagement is null) throw new InvalidOperationException();
             List<AliasResult>? listAliasResult = null;
             try
             {
@@ -428,7 +428,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_iResourceManagement == null) throw new InvalidOperationException();
+            if (_iResourceManagement is null) throw new InvalidOperationException();
             uint uintResult = 0xFFFFFFFFu;
             try
             {
@@ -473,7 +473,7 @@ namespace Ssz.Xi.Client.Internal.Context
             XiListRoot? xiListRoot;
             _lists.TryGetValue(clientListId, out xiListRoot);
             var result = xiListRoot as XiDataJournalList;
-            if (result == null) throw new InvalidOperationException();
+            if (result is null) throw new InvalidOperationException();
             return result;
         }
 
@@ -487,7 +487,7 @@ namespace Ssz.Xi.Client.Internal.Context
             XiListRoot? xiListRoot;
             _lists.TryGetValue(clientListId, out xiListRoot);            
             var result = xiListRoot as XiEventList;
-            if (result == null) throw new InvalidOperationException();
+            if (result is null) throw new InvalidOperationException();
             return result;
         }
 

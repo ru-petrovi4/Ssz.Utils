@@ -15,7 +15,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Utils
 
         private static void OnElementPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d != null)
+            if (d is not null)
             {
                 ((ActualSizePropertyProxy)d).OnElementChanged(e);
             }
@@ -31,12 +31,12 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Utils
 
         public double ActualHeightValue
         {
-            get { return Element == null ? 0 : Element.ActualHeight; }
+            get { return Element is null ? 0 : Element.ActualHeight; }
         }
 
         public double ActualWidthValue
         {
-            get { return Element == null ? 0 : Element.ActualWidth; }
+            get { return Element is null ? 0 : Element.ActualWidth; }
         }
 
         private void OnElementChanged(DependencyPropertyChangedEventArgs e)
@@ -44,12 +44,12 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Utils
             var oldElement = (FrameworkElement)e.OldValue;
             var newElement = (FrameworkElement)e.NewValue;
 
-            if (oldElement != null)
+            if (oldElement is not null)
             {
                 oldElement.SizeChanged -= ElementSizeChanged;
             }
 
-            if (newElement != null)
+            if (newElement is not null)
             {
                 newElement.SizeChanged += ElementSizeChanged;
             }
@@ -64,7 +64,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Utils
 
         private void NotifyPropertyChanged()
         {
-            if (PropertyChanged != null)
+            if (PropertyChanged is not null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(ActualWidthValue)));
                 PropertyChanged(this, new PropertyChangedEventArgs(nameof(ActualHeightValue)));

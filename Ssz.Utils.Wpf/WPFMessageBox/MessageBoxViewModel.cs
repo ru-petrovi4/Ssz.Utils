@@ -277,7 +277,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
         {
             get
             {
-                if (_yesCommand == null)
+                if (_yesCommand is null)
                     _yesCommand = new DelegateCommand(() =>
                     {
                         Result = WpfMessageBoxResult.Yes;
@@ -292,7 +292,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
         {
             get
             {
-                if (_noCommand == null)
+                if (_noCommand is null)
                     _noCommand = new DelegateCommand(() =>
                     {
                         Result = WpfMessageBoxResult.No;
@@ -307,7 +307,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
         {
             get
             {
-                if (_yesForAllCommand == null)
+                if (_yesForAllCommand is null)
                     _yesForAllCommand = new DelegateCommand(() =>
                     {
                         Result = WpfMessageBoxResult.YesForAll;
@@ -322,7 +322,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
         {
             get
             {
-                if (_noForAllCommand == null)
+                if (_noForAllCommand is null)
                     _noForAllCommand = new DelegateCommand(() =>
                     {
                         Result = WpfMessageBoxResult.NoForAll;
@@ -337,7 +337,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
         {
             get
             {
-                if (_cancelCommand == null)
+                if (_cancelCommand is null)
                     _cancelCommand = new DelegateCommand(() =>
                     {
                         Result = WpfMessageBoxResult.Cancel;
@@ -352,7 +352,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
         {
             get
             {
-                if (_okCommand == null)
+                if (_okCommand is null)
                     _okCommand = new DelegateCommand(() =>
                     {
                         Result = WpfMessageBoxResult.OK;
@@ -367,7 +367,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
         {
             get
             {
-                if (_escapeCommand == null)
+                if (_escapeCommand is null)
                     _escapeCommand = new DelegateCommand(() =>
                     {
                         switch (ButtonOption)
@@ -401,7 +401,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
         {
             get
             {
-                if (_closeCommand == null)
+                if (_closeCommand is null)
                     _closeCommand = new DelegateCommand(() =>
                     {
                         if (Result == WpfMessageBoxResult.None)
@@ -467,7 +467,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
 
         private void NotifyPropertyChange(string property)
         {
-            if (PropertyChanged != null)
+            if (PropertyChanged is not null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(property));
             }

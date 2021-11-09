@@ -43,7 +43,7 @@ namespace Ssz.DataGrpc.Client.Managers
                 var kvp in _eventMessagesCallbackEventHandlers)
             {
                 if (ct.IsCancellationRequested) return;
-                if (kvp.Value.P != null) continue;
+                if (kvp.Value.P is not null) continue;
 
                 ClientEventList dataGrpcEventList;
 
@@ -71,7 +71,7 @@ namespace Ssz.DataGrpc.Client.Managers
                             (ClientEventList eventList, ClientEventListItem[] newListItems) =>
                             {
                                 if (ct.IsCancellationRequested) return;
-                                if (сallbackDispatcher != null)
+                                if (сallbackDispatcher is not null)
                                 {
                                     try
                                     {
@@ -115,7 +115,7 @@ namespace Ssz.DataGrpc.Client.Managers
             {
                 ClientEventList? dataGrpcEventList = _eventMessagesCallbackEventHandlers[kvp.Key].P;
 
-                if (dataGrpcEventList == null || dataGrpcEventList.Disposed) continue;
+                if (dataGrpcEventList is null || dataGrpcEventList.Disposed) continue;
                 try
                 {
                     dataGrpcEventList.PollEventsChanges();
@@ -133,7 +133,7 @@ namespace Ssz.DataGrpc.Client.Managers
             {
                 ClientEventList? dataGrpcEventList = _eventMessagesCallbackEventHandlers[kvp.Key].P;
 
-                if (dataGrpcEventList != null)
+                if (dataGrpcEventList is not null)
                     dataGrpcEventList.Dispose();
 
                 _eventMessagesCallbackEventHandlers[kvp.Key].P = null;
@@ -161,7 +161,7 @@ namespace Ssz.DataGrpc.Client.Managers
                 ClientEventListPointer? dataGrpcEventListPointer;
                 if (!_eventMessagesCallbackEventHandlers.TryGetValue(value, out dataGrpcEventListPointer)) return;
                 _eventMessagesCallbackEventHandlers.Remove(value);
-                if (dataGrpcEventListPointer.P != null)
+                if (dataGrpcEventListPointer.P is not null)
                 {
                     try
                     {
@@ -216,7 +216,7 @@ namespace Ssz.DataGrpc.Client.Managers
 //        ClientEventListPointer? dataGrpcEventListPointer;
 //        if (!_longrunningPassthroughCallbackEventHandlers.TryGetValue(value, out dataGrpcEventListPointer)) return;
 //        _longrunningPassthroughCallbackEventHandlers.Remove(value);
-//        if (dataGrpcEventListPointer.P != null)
+//        if (dataGrpcEventListPointer.P is not null)
 //        {
 //            try
 //            {

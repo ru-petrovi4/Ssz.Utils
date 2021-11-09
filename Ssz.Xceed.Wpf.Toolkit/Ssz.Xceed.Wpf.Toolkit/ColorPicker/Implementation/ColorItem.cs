@@ -33,7 +33,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         public override bool Equals(object obj)
         {
             var ci = obj as ColorItem;
-            if (ci == null)
+            if (ci is null)
                 return false;
             return ci.Color.Equals(Color) && ci.Name.Equals(Name);
         }

@@ -79,10 +79,10 @@ namespace TestWpfApp
         private async void XiDataAccessProviderOnEventMessagesCallback(EventMessage[] newEventMessages)
         {
             List<AlarmInfoViewModelBase> newAlarmInfoViewModels = new List<AlarmInfoViewModelBase>();
-            foreach (EventMessage eventMessage in newEventMessages.Where(em => em != null).OrderBy(em => em.OccurrenceTime))
+            foreach (EventMessage eventMessage in newEventMessages.Where(em => em is not null).OrderBy(em => em.OccurrenceTime))
             {
                 var alarmInfoViewModels = await ExperionHelper.ProcessEventMessage(App.EventSourceModel, eventMessage);
-                if (alarmInfoViewModels != null)
+                if (alarmInfoViewModels is not null)
                 {
                     newAlarmInfoViewModels.AddRange(alarmInfoViewModels);
                 }

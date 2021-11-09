@@ -295,11 +295,11 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
 
         public static bool operator ==(Segment s1, Segment s2)
         {
-            if ((object) s1 == null)
-                return (object) s2 == null;
+            if ((object) s1 is null)
+                return (object) s2 is null;
 
-            if ((object) s2 == null)
-                return (object) s1 == null;
+            if ((object) s2 is null)
+                return (object) s1 is null;
 
             return s1.Equals(s2);
         }

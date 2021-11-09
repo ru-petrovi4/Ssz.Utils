@@ -61,7 +61,7 @@ namespace Ssz.Utils.Logging
 
         public SszLoggerOptions Options { get; set; }
 
-        public IDisposable? BeginScope<TState>(TState state) => default;
+        public IDisposable BeginScope<TState>(TState state) => Disposable.Empty;
 
         public bool IsEnabled(LogLevel logLevel)
         {
@@ -73,8 +73,8 @@ namespace Ssz.Utils.Logging
             LogLevel logLevel,
             EventId eventId,
             TState state,
-            Exception exception,
-            Func<TState, Exception, string> formatter)
+            Exception? exception,
+            Func<TState, Exception?, string> formatter)
         {
             if (!IsEnabled(logLevel))
             {
@@ -88,7 +88,7 @@ namespace Ssz.Utils.Logging
 
             string line = $"     {_name} - {formatter(state, exception)}";
             Exception? ex = exception;
-            while (ex != null)
+            while (ex is not null)
             {
                 line += "\n";
                 line += "Exception: ";

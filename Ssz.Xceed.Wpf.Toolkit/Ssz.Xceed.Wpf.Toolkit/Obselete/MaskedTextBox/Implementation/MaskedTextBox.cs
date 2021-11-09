@@ -55,7 +55,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Obselete
         private static void OnIncludePromptPropertyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var maskedTextBox = o as MaskedTextBox;
-            if (maskedTextBox != null)
+            if (maskedTextBox is not null)
                 maskedTextBox.OnIncludePromptChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 
@@ -81,7 +81,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Obselete
         private static void OnIncludeLiteralsPropertyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var maskedTextBox = o as MaskedTextBox;
-            if (maskedTextBox != null)
+            if (maskedTextBox is not null)
                 maskedTextBox.OnIncludeLiteralsChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 
@@ -106,7 +106,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Obselete
         private static void OnMaskPropertyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var maskedTextBox = o as MaskedTextBox;
-            if (maskedTextBox != null)
+            if (maskedTextBox is not null)
                 maskedTextBox.OnMaskChanged((string) e.OldValue, (string) e.NewValue);
         }
 
@@ -132,7 +132,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Obselete
         private static void OnPromptCharChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var maskedTextBox = o as MaskedTextBox;
-            if (maskedTextBox != null)
+            if (maskedTextBox is not null)
                 maskedTextBox.OnPromptCharChanged((char) e.OldValue, (char) e.NewValue);
         }
 
@@ -162,7 +162,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Obselete
         private static void OnTextChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var inputBase = o as MaskedTextBox;
-            if (inputBase != null)
+            if (inputBase is not null)
                 inputBase.OnTextChanged((string) e.OldValue, (string) e.NewValue);
         }
 
@@ -189,7 +189,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Obselete
         private static void OnValueChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var maskedTextBox = o as MaskedTextBox;
-            if (maskedTextBox != null)
+            if (maskedTextBox is not null)
                 maskedTextBox.OnValueChanged(e.OldValue, e.NewValue);
         }
 
@@ -219,7 +219,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Obselete
         private static void OnValueTypeChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var maskedTextBox = o as MaskedTextBox;
-            if (maskedTextBox != null)
+            if (maskedTextBox is not null)
                 maskedTextBox.OnValueTypeChanged((Type) e.OldValue, (Type) e.NewValue);
         }
 
@@ -317,7 +317,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Obselete
         private void UpdateText(int position)
         {
             var provider = MaskProvider;
-            if (provider == null)
+            if (provider is null)
                 throw new InvalidOperationException();
 
             Text = provider.ToDisplayString();
@@ -383,7 +383,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Obselete
 
         private string ConvertValueToText(object value)
         {
-            if (value == null)
+            if (value is null)
                 value = string.Empty;
 
             if (_convertExceptionOccurred)
@@ -393,7 +393,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Obselete
             }
 
             //I have only seen this occur while in Blend, but we need it here so the Blend designer doesn't crash.
-            if (MaskProvider == null)
+            if (MaskProvider is null)
                 return value.ToString();
 
             MaskProvider.Set(value.ToString());
@@ -410,7 +410,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Obselete
 
             //this only occures when the user typed in the value
             if (TextProperty == p)
-                if (newValue != null)
+                if (newValue is not null)
                     SetValue(ValueProperty, ConvertTextToValue(newValue.ToString()));
 
             SetValue(TextProperty, ConvertValueToText(newValue));
@@ -627,7 +627,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Obselete
                 return;
 
             var data = Clipboard.GetData(DataFormats.Text);
-            if (data != null)
+            if (data is not null)
             {
                 var text = data.ToString().Trim();
                 if (text.Length > 0)

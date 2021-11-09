@@ -110,7 +110,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             _gridDockingManagerDropTargets.Visibility = Visibility.Hidden;
             _gridAnchorablePaneDropTargets.Visibility = Visibility.Hidden;
             _gridDocumentPaneDropTargets.Visibility = Visibility.Hidden;
-            if (_gridDocumentPaneFullDropTargets != null)
+            if (_gridDocumentPaneFullDropTargets is not null)
                 _gridDocumentPaneFullDropTargets.Visibility = Visibility.Hidden;
 
             _dockingManagerDropTargetBottom =
@@ -165,11 +165,11 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         internal void UpdateThemeResources(Theme oldTheme = null)
         {
-            if (oldTheme != null)
+            if (oldTheme is not null)
             {
                 if (oldTheme is DictionaryTheme)
                 {
-                    if (currentThemeResourceDictionary != null)
+                    if (currentThemeResourceDictionary is not null)
                     {
                         Resources.MergedDictionaries.Remove(currentThemeResourceDictionary);
                         currentThemeResourceDictionary = null;
@@ -179,13 +179,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                 {
                     var resourceDictionaryToRemove =
                         Resources.MergedDictionaries.FirstOrDefault(r => r.Source == oldTheme.GetResourceUri());
-                    if (resourceDictionaryToRemove != null)
+                    if (resourceDictionaryToRemove is not null)
                         Resources.MergedDictionaries.Remove(
                             resourceDictionaryToRemove);
                 }
             }
 
-            if (_host.Manager.Theme != null)
+            if (_host.Manager.Theme is not null)
             {
                 if (_host.Manager.Theme is DictionaryTheme)
                 {
@@ -202,13 +202,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         internal void EnableDropTargets()
         {
-            if (_mainCanvasPanel != null)
+            if (_mainCanvasPanel is not null)
                 _mainCanvasPanel.Visibility = Visibility.Visible;
         }
 
         internal void HideDropTargets()
         {
-            if (_mainCanvasPanel != null)
+            if (_mainCanvasPanel is not null)
                 _mainCanvasPanel.Visibility = Visibility.Hidden;
         }
 
@@ -234,7 +234,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             else if (positionableElement is LayoutDocumentPane)
                 _documentPaneDropTargetInto.Visibility = Visibility.Visible;
 
-            if (positionableElement == null || _floatingWindow.Model == null ||
+            if (positionableElement is null || _floatingWindow.Model is null ||
                 positionableElement.AllowDuplicateContent) return;
 
             // Find all content layouts in the anchorable pane (object to drop on)
@@ -270,40 +270,40 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             var result = new List<LayoutContent>();
 
             var documentFloatingWindow = source as LayoutDocumentFloatingWindow;
-            if (documentFloatingWindow != null)
+            if (documentFloatingWindow is not null)
                 foreach (var layoutElement in documentFloatingWindow.Children)
                     result.AddRange(GetAllLayoutContents(layoutElement));
 
             var anchorableFloatingWindow = source as LayoutAnchorableFloatingWindow;
-            if (anchorableFloatingWindow != null)
+            if (anchorableFloatingWindow is not null)
                 foreach (var layoutElement in anchorableFloatingWindow.Children)
                     result.AddRange(GetAllLayoutContents(layoutElement));
 
             var documentPaneGroup = source as LayoutDocumentPaneGroup;
-            if (documentPaneGroup != null)
+            if (documentPaneGroup is not null)
                 foreach (var layoutDocumentPane in documentPaneGroup.Children)
                     result.AddRange(GetAllLayoutContents(layoutDocumentPane));
 
             var anchorablePaneGroup = source as LayoutAnchorablePaneGroup;
-            if (anchorablePaneGroup != null)
+            if (anchorablePaneGroup is not null)
                 foreach (var layoutDocumentPane in anchorablePaneGroup.Children)
                     result.AddRange(GetAllLayoutContents(layoutDocumentPane));
 
             var documentPane = source as LayoutDocumentPane;
-            if (documentPane != null)
+            if (documentPane is not null)
                 foreach (var layoutContent in documentPane.Children)
                     result.Add(layoutContent);
 
             var anchorablePane = source as LayoutAnchorablePane;
-            if (anchorablePane != null)
+            if (anchorablePane is not null)
                 foreach (var layoutContent in anchorablePane.Children)
                     result.Add(layoutContent);
 
             var document = source as LayoutDocument;
-            if (document != null) result.Add(document);
+            if (document is not null) result.Add(document);
 
             var anchorable = source as LayoutAnchorable;
-            if (anchorable != null) result.Add(anchorable);
+            if (anchorable is not null) result.Add(anchorable);
 
             return result;
         }
@@ -352,7 +352,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                         {
                             var tabItemModel = dropAreaTabItem.Model as LayoutAnchorable;
                             lastAreaTabItem =
-                                lastAreaTabItem == null || lastAreaTabItem.GetScreenArea().Right <
+                                lastAreaTabItem is null || lastAreaTabItem.GetScreenArea().Right <
                                 dropAreaTabItem.GetScreenArea().Right
                                     ? dropAreaTabItem
                                     : lastAreaTabItem;
@@ -361,7 +361,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                                 dropAreaTabItem.GetScreenArea(), DropTargetType.AnchorablePaneDockInside, tabIndex);
                         }
 
-                        if (lastAreaTabItem != null)
+                        if (lastAreaTabItem is not null)
                         {
                             var lastAreaTabItemScreenArea = lastAreaTabItem.GetScreenArea();
                             var newAreaTabItemScreenArea = new Rect(lastAreaTabItemScreenArea.TopRight,
@@ -376,7 +376,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
                         var dropAreaTitle = dropAreaAnchorablePane.AreaElement.FindVisualChildren<AnchorablePaneTitle>()
                             .FirstOrDefault();
-                        if (dropAreaTitle != null)
+                        if (dropAreaTitle is not null)
                             yield return new AnchorablePaneDropTarget(dropAreaAnchorablePane.AreaElement,
                                 dropAreaTitle.GetScreenArea(), DropTargetType.AnchorablePaneDockInside);
                     }
@@ -384,7 +384,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                     case DropAreaType.DocumentPane:
                     {
                         var isDraggingAnchorables = _floatingWindow.Model is LayoutAnchorableFloatingWindow;
-                        if (isDraggingAnchorables && _gridDocumentPaneFullDropTargets != null)
+                        if (isDraggingAnchorables && _gridDocumentPaneFullDropTargets is not null)
                         {
                             var dropAreaDocumentPane = visibleArea as DropArea<LayoutDocumentPaneControl>;
                             if (_documentPaneFullDropTargetLeft.IsVisible)
@@ -414,7 +414,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                             {
                                 var tabItemModel = dropAreaTabItem.Model;
                                 lastAreaTabItem =
-                                    lastAreaTabItem == null || lastAreaTabItem.GetScreenArea().Right <
+                                    lastAreaTabItem is null || lastAreaTabItem.GetScreenArea().Right <
                                     dropAreaTabItem.GetScreenArea().Right
                                         ? dropAreaTabItem
                                         : lastAreaTabItem;
@@ -423,7 +423,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                                     dropAreaTabItem.GetScreenArea(), DropTargetType.DocumentPaneDockInside, tabIndex);
                             }
 
-                            if (lastAreaTabItem != null)
+                            if (lastAreaTabItem is not null)
                             {
                                 var lastAreaTabItemScreenArea = lastAreaTabItem.GetScreenArea();
                                 var newAreaTabItemScreenArea = new Rect(lastAreaTabItemScreenArea.TopRight,
@@ -480,7 +480,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                             {
                                 var tabItemModel = dropAreaTabItem.Model;
                                 lastAreaTabItem =
-                                    lastAreaTabItem == null || lastAreaTabItem.GetScreenArea().Right <
+                                    lastAreaTabItem is null || lastAreaTabItem.GetScreenArea().Right <
                                     dropAreaTabItem.GetScreenArea().Right
                                         ? dropAreaTabItem
                                         : lastAreaTabItem;
@@ -489,7 +489,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                                     dropAreaTabItem.GetScreenArea(), DropTargetType.DocumentPaneDockInside, tabIndex);
                             }
 
-                            if (lastAreaTabItem != null)
+                            if (lastAreaTabItem is not null)
                             {
                                 var lastAreaTabItemScreenArea = lastAreaTabItem.GetScreenArea();
                                 var newAreaTabItemScreenArea = new Rect(lastAreaTabItemScreenArea.TopRight,
@@ -584,7 +584,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                 default:
                 {
                     var isDraggingAnchorables = _floatingWindow.Model is LayoutAnchorableFloatingWindow;
-                    if (isDraggingAnchorables && _gridDocumentPaneFullDropTargets != null)
+                    if (isDraggingAnchorables && _gridDocumentPaneFullDropTargets is not null)
                     {
                         areaElement = _gridDocumentPaneFullDropTargets;
                         var dropAreaDocumentPaneGroup = area as DropArea<LayoutDocumentPaneControl>;
@@ -598,7 +598,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
                         SetDropTargetIntoVisibility(layoutDocumentPane);
 
-                        if (parentDocumentPaneGroup != null &&
+                        if (parentDocumentPaneGroup is not null &&
                             parentDocumentPaneGroup.Children.Where(c => c.IsVisible).Count() > 1)
                         {
                             var manager = parentDocumentPaneGroup.Root.Manager;
@@ -629,8 +629,8 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                                 _documentPaneFullDropTargetBottom.Visibility = Visibility.Visible;
                             }
                         }
-                        else if (parentDocumentPaneGroup == null &&
-                                 layoutDocumentPane != null &&
+                        else if (parentDocumentPaneGroup is null &&
+                                 layoutDocumentPane is not null &&
                                  layoutDocumentPane.ChildrenCount == 0)
                         {
                             _documentPaneFullDropTargetLeft.Visibility = Visibility.Hidden;
@@ -646,7 +646,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                             _documentPaneFullDropTargetBottom.Visibility = Visibility.Visible;
                         }
 
-                        if (parentDocumentPaneGroup != null &&
+                        if (parentDocumentPaneGroup is not null &&
                             parentDocumentPaneGroup.Children.Where(c => c.IsVisible).Count() > 1)
                         {
                             var indexOfDocumentPane = parentDocumentPaneGroup.Children.Where(ch => ch.IsVisible)
@@ -707,7 +707,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
                         SetDropTargetIntoVisibility(layoutDocumentPane);
 
-                        if (parentDocumentPaneGroup != null &&
+                        if (parentDocumentPaneGroup is not null &&
                             parentDocumentPaneGroup.Children.Where(c => c.IsVisible).Count() > 1)
                         {
                             var manager = parentDocumentPaneGroup.Root.Manager;
@@ -738,8 +738,8 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                                 _documentPaneDropTargetBottom.Visibility = Visibility.Visible;
                             }
                         }
-                        else if (parentDocumentPaneGroup == null &&
-                                 layoutDocumentPane != null &&
+                        else if (parentDocumentPaneGroup is null &&
+                                 layoutDocumentPane is not null &&
                                  layoutDocumentPane.ChildrenCount == 0)
                         {
                             _documentPaneDropTargetLeft.Visibility = Visibility.Hidden;
@@ -786,7 +786,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                 default:
                 {
                     var isDraggingAnchorables = _floatingWindow.Model is LayoutAnchorableFloatingWindow;
-                    if (isDraggingAnchorables && _gridDocumentPaneFullDropTargets != null)
+                    if (isDraggingAnchorables && _gridDocumentPaneFullDropTargets is not null)
                         areaElement = _gridDocumentPaneFullDropTargets;
                     else
                         areaElement = _gridDocumentPaneDropTargets;
@@ -800,7 +800,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         void IOverlayWindow.DragEnter(IDropTarget target)
         {
             var previewBoxPath = target.GetPreviewPath(this, _floatingWindow.Model as LayoutFloatingWindow);
-            if (previewBoxPath != null)
+            if (previewBoxPath is not null)
             {
                 _previewBox.Data = previewBoxPath;
                 _previewBox.Visibility = Visibility.Visible;

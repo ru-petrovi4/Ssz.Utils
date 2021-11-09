@@ -120,7 +120,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             {
                 var listType = ListUtilities.GetListItemType(propertyType);
 
-                if (listType != null)
+                if (listType is not null)
                 {
                     if (!listType.IsPrimitive && !listType.Equals(typeof(string)))
                         editor = new CollectionEditor();
@@ -132,7 +132,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
                     // If the type is not supported, check if there is a converter that supports
                     // string conversion to the object type. Use TextBox in theses cases.
                     // Otherwise, return a TextBlock editor since no valid editor exists.
-                    editor = typeConverter != null && typeConverter.CanConvertFrom(typeof(string))
+                    editor = typeConverter is not null && typeConverter.CanConvertFrom(typeof(string))
                         ? new TextBoxEditor()
                         : (ITypeEditor) new TextBlockEditor();
                 }

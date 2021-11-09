@@ -39,15 +39,15 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             base.OnApplyTemplate();
 
-            if (_popup != null)
+            if (_popup is not null)
                 _popup.Opened -= Popup_Opened;
 
             _popup = GetTemplateChild(PART_Popup) as Popup;
 
-            if (_popup != null)
+            if (_popup is not null)
                 _popup.Opened += Popup_Opened;
 
-            if (_timeListBox != null)
+            if (_timeListBox is not null)
             {
                 _timeListBox.SelectionChanged -= TimeListBox_SelectionChanged;
                 _timeListBox.MouseUp -= TimeListBox_MouseUp;
@@ -55,7 +55,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
             _timeListBox = GetTemplateChild(PART_TimeListItems) as ListBox;
 
-            if (_timeListBox != null)
+            if (_timeListBox is not null)
             {
                 _timeListBox.SelectionChanged += TimeListBox_SelectionChanged;
                 _timeListBox.MouseUp += TimeListBox_MouseUp;
@@ -118,7 +118,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static object OnCoerceEndTime(DependencyObject o, object value)
         {
             var timePicker = o as TimePicker;
-            if (timePicker != null)
+            if (timePicker is not null)
                 return timePicker.OnCoerceEndTime((TimeSpan) value);
             return value;
         }
@@ -126,7 +126,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnEndTimeChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var timePicker = o as TimePicker;
-            if (timePicker != null)
+            if (timePicker is not null)
                 timePicker.OnEndTimeChanged((TimeSpan) e.OldValue, (TimeSpan) e.NewValue);
         }
 
@@ -163,7 +163,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnFormatChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var timePicker = o as TimePicker;
-            if (timePicker != null)
+            if (timePicker is not null)
                 timePicker.OnFormatChanged((TimeFormat) e.OldValue, (TimeFormat) e.NewValue);
         }
 
@@ -194,7 +194,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnFormatStringChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var timePicker = o as TimePicker;
-            if (timePicker != null)
+            if (timePicker is not null)
                 timePicker.OnFormatStringChanged((string) e.OldValue, (string) e.NewValue);
         }
 
@@ -219,7 +219,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnIsOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var timePicker = (TimePicker) d;
-            if (timePicker != null)
+            if (timePicker is not null)
                 timePicker.OnIsOpenChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 
@@ -280,7 +280,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static object OnCoerceStartTime(DependencyObject o, object value)
         {
             var timePicker = o as TimePicker;
-            if (timePicker != null)
+            if (timePicker is not null)
                 return timePicker.OnCoerceStartTime((TimeSpan) value);
             return value;
         }
@@ -288,7 +288,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnStartTimeChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var timePicker = o as TimePicker;
-            if (timePicker != null)
+            if (timePicker is not null)
                 timePicker.OnStartTimeChanged((TimeSpan) e.OldValue, (TimeSpan) e.NewValue);
         }
 
@@ -339,7 +339,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static object OnCoerceTimeInterval(DependencyObject o, object value)
         {
             var timePicker = o as TimePicker;
-            if (timePicker != null)
+            if (timePicker is not null)
                 return timePicker.OnCoerceTimeInterval((TimeSpan) value);
             return value;
         }
@@ -347,7 +347,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnTimeIntervalChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var timePicker = o as TimePicker;
-            if (timePicker != null)
+            if (timePicker is not null)
                 timePicker.OnTimeIntervalChanged((TimeSpan) e.OldValue, (TimeSpan) e.NewValue);
         }
 
@@ -384,7 +384,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnValueChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var timePicker = o as TimePicker;
-            if (timePicker != null)
+            if (timePicker is not null)
                 timePicker.OnValueChanged((DateTime?) e.OldValue, (DateTime?) e.NewValue);
         }
 
@@ -504,15 +504,15 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void Popup_Opened(object sender, EventArgs e)
         {
-            if (_timeListBox != null)
+            if (_timeListBox is not null)
             {
-                var time = Value != null ? Value.Value.TimeOfDay : StartTimeDefaultValue;
+                var time = Value is not null ? Value.Value.TimeOfDay : StartTimeDefaultValue;
                 var nearestItem = GetNearestTimeItem(time);
-                if (nearestItem != null)
+                if (nearestItem is not null)
                 {
                     _timeListBox.ScrollIntoView(nearestItem);
                     var listBoxItem = (ListBoxItem) _timeListBox.ItemContainerGenerator.ContainerFromItem(nearestItem);
-                    if (listBoxItem != null) listBoxItem.Focus();
+                    if (listBoxItem is not null) listBoxItem.Focus();
                 }
             }
         }
@@ -597,10 +597,10 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void UpdateListBoxSelectedItem()
         {
-            if (_timeListBox != null)
+            if (_timeListBox is not null)
             {
                 TimeItem time = null;
-                if (Value != null)
+                if (Value is not null)
                 {
                     time = CreateTimeItem(Value.Value.TimeOfDay);
                     if (!_timeListBox.Items.Contains(time)) time = null;
@@ -612,18 +612,18 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void UpdateListBoxItems()
         {
-            if (_timeListBox != null) _timeListBox.ItemsSource = GenerateTimeListItemsSource();
+            if (_timeListBox is not null) _timeListBox.ItemsSource = GenerateTimeListItemsSource();
         }
 
         private TimeItem GetNearestTimeItem(TimeSpan time)
         {
-            if (_timeListBox != null)
+            if (_timeListBox is not null)
             {
                 var itemCount = _timeListBox.Items.Count;
                 for (var i = 0; i < itemCount; i++)
                 {
                     var timeItem = _timeListBox.Items[i] as TimeItem;
-                    if (timeItem != null)
+                    if (timeItem is not null)
                         if (timeItem.Time >= time)
                             return timeItem;
                 }

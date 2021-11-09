@@ -27,7 +27,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
             var iListOfT = listType.GetInterfaces()
                 .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IList<>));
 
-            return iListOfT != null
+            return iListOfT is not null
                 ? iListOfT.GetGenericArguments()[0]
                 : null;
         }

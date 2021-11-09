@@ -39,7 +39,7 @@ namespace System.Linq.Dynamic.Core.Parser.SupportedMethods
                 }
             }
 
-            if (instance != null)
+            if (instance is not null)
             {
                 // Try to solve with registered extension methods from this type and all base types
                 var methods = new List<MethodInfo>();
@@ -113,7 +113,7 @@ namespace System.Linq.Dynamic.Core.Parser.SupportedMethods
                 if (members.Length != 0)
                 {
                     IEnumerable<MethodBase> methods = members.OfType<PropertyInfo>().
-                        Select(p => (MethodBase?)p.GetGetMethod()).Where(m => m != null).OfType<MethodBase>();
+                        Select(p => (MethodBase?)p.GetGetMethod()).Where(m => m is not null).OfType<MethodBase>();
 
                     int count = FindBestMethodBasedOnArguments(methods, ref args, out method);
                     if (count != 0)
@@ -145,7 +145,7 @@ namespace System.Linq.Dynamic.Core.Parser.SupportedMethods
                 if (isParamArray && i == method.Parameters.Length - 1)
                 {
                     if (method.Parameters.Length == args.Length + 1
-                        || (method.Parameters.Length == args.Length && args[i] is ConstantExpression constantExpression && constantExpression.Value == null))
+                        || (method.Parameters.Length == args.Length && args[i] is ConstantExpression constantExpression && constantExpression.Value is null))
                     {
                         promotedArgs[promotedArgs.Length - 1] = Expression.Constant(null, method.Parameters.Last().ParameterType);
                     }
@@ -163,7 +163,7 @@ namespace System.Linq.Dynamic.Core.Parser.SupportedMethods
                         for (int j = method.Parameters.Length - 1; j < args.Length; j++)
                         {
                             Expression? promoted = _parsingConfig.ExpressionPromoter.Promote(args[j], paramElementType, false, method.MethodBase.DeclaringType != typeof(IEnumerableSignatures));
-                            if (promoted == null)
+                            if (promoted is null)
                             {
                                 return false;
                             }
@@ -185,7 +185,7 @@ namespace System.Linq.Dynamic.Core.Parser.SupportedMethods
                     }
 
                     Expression? promoted = _parsingConfig.ExpressionPromoter.Promote(args[i], pi.ParameterType, false, method.MethodBase.DeclaringType != typeof(IEnumerableSignatures));
-                    if (promoted == null)
+                    if (promoted is null)
                     {
                         return false;
                     }
@@ -287,7 +287,7 @@ namespace System.Linq.Dynamic.Core.Parser.SupportedMethods
 
         IEnumerable<Type> SelfAndBaseClasses(Type? type)
         {
-            while (type != null)
+            while (type is not null)
             {
                 yield return type;
                 type = type.GetTypeInfo()!.BaseType;

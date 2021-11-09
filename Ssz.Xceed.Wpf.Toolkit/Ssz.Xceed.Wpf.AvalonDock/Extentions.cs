@@ -50,7 +50,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock
 
         public static V GetValueOrDefault<V>(this WeakReference wr)
         {
-            if (wr == null || !wr.IsAlive)
+            if (wr is null || !wr.IsAlive)
                 return default;
             return (V) wr.Target;
         }

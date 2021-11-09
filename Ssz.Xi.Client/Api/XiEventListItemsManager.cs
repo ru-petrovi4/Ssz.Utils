@@ -32,7 +32,7 @@ namespace Ssz.Xi.Client.Api
                 var kvp in _eventMessagesCallbackEventHandlers)
             {
                 if (ct.IsCancellationRequested) return;
-                if (kvp.Value.P != null) continue;
+                if (kvp.Value.P is not null) continue;
 
                 var f = new List<ORedFilters>();
                 var filters = new FilterSet
@@ -78,7 +78,7 @@ namespace Ssz.Xi.Client.Api
                             (IXiEventListProxy eventList, IEnumerable<IXiEventListItem> newListItems) =>
                             {
                                 if (ct.IsCancellationRequested) return;
-                                if (сallbackDoer != null)
+                                if (сallbackDoer is not null)
                                 {
                                     try
                                     {
@@ -145,7 +145,7 @@ namespace Ssz.Xi.Client.Api
             {
                 IXiEventListProxy? xiEventList = _eventMessagesCallbackEventHandlers[kvp.Key].P;
 
-                if (xiEventList == null || xiEventList.Disposed) continue;
+                if (xiEventList is null || xiEventList.Disposed) continue;
                 if (xiEventList.Pollable)
                 {
                     try
@@ -170,7 +170,7 @@ namespace Ssz.Xi.Client.Api
             {
                 IXiEventListProxy? xiEventList = _eventMessagesCallbackEventHandlers[kvp.Key].P;
 
-                if (xiEventList == null || xiEventList.Disposed) continue;
+                if (xiEventList is null || xiEventList.Disposed) continue;
                 if (xiEventList.Pollable && !xiEventList.Callbackable)
                 {
                     try
@@ -191,7 +191,7 @@ namespace Ssz.Xi.Client.Api
             {
                 IXiEventListProxy? xiEventList = _eventMessagesCallbackEventHandlers[kvp.Key].P;
 
-                if (xiEventList != null)
+                if (xiEventList is not null)
                     xiEventList.Dispose();
 
                 _eventMessagesCallbackEventHandlers[kvp.Key].P = null;
@@ -219,7 +219,7 @@ namespace Ssz.Xi.Client.Api
                 XiEventListPointer? xiEventListPointer;
                 if (!_eventMessagesCallbackEventHandlers.TryGetValue(value, out xiEventListPointer)) return;
                 _eventMessagesCallbackEventHandlers.Remove(value);
-                if (xiEventListPointer.P != null)
+                if (xiEventListPointer.P is not null)
                 {
                     try
                     {

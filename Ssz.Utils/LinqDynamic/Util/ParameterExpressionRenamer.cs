@@ -57,7 +57,7 @@ namespace System.Linq.Dynamic.Core.Util
         {
             if (string.Equals(_oldName, node.Name, StringComparison.Ordinal))
             {
-                if (_parameterExpression == null)
+                if (_parameterExpression is null)
                 {
                     _parameterExpression = ParameterExpressionHelper.CreateParameterExpression(node.Type, _newName);
                 }

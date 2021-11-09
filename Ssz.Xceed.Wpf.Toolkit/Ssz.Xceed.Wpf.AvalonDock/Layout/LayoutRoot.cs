@@ -85,15 +85,15 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 if (_rootPanel != value)
                 {
                     RaisePropertyChanging("RootPanel");
-                    if (_rootPanel != null &&
+                    if (_rootPanel is not null &&
                         _rootPanel.Parent == this)
                         _rootPanel.Parent = null;
                     _rootPanel = value;
 
-                    if (_rootPanel == null)
+                    if (_rootPanel is null)
                         _rootPanel = new LayoutPanel(new LayoutDocumentPane());
 
-                    if (_rootPanel != null)
+                    if (_rootPanel is not null)
                         _rootPanel.Parent = this;
                     RaisePropertyChanged("RootPanel");
                 }
@@ -115,7 +115,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 {
                     RaisePropertyChanging("TopSide");
                     _topSide = value;
-                    if (_topSide != null)
+                    if (_topSide is not null)
                         _topSide.Parent = this;
                     RaisePropertyChanged("TopSide");
                 }
@@ -137,7 +137,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 {
                     RaisePropertyChanging("RightSide");
                     _rightSide = value;
-                    if (_rightSide != null)
+                    if (_rightSide is not null)
                         _rightSide.Parent = this;
                     RaisePropertyChanged("RightSide");
                 }
@@ -159,7 +159,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 {
                     RaisePropertyChanging("LeftSide");
                     _leftSide = value;
-                    if (_leftSide != null)
+                    if (_leftSide is not null)
                         _leftSide.Parent = this;
                     RaisePropertyChanged("LeftSide");
                 }
@@ -181,7 +181,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 {
                     RaisePropertyChanging("BottomSide");
                     _bottomSide = value;
-                    if (_bottomSide != null)
+                    if (_bottomSide is not null)
                         _bottomSide.Parent = this;
                     RaisePropertyChanged("BottomSide");
                 }
@@ -198,7 +198,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         {
             get
             {
-                if (_floatingWindows == null)
+                if (_floatingWindows is null)
                 {
                     _floatingWindows = new ObservableCollection<LayoutFloatingWindow>();
                     _floatingWindows.CollectionChanged += _floatingWindows_CollectionChanged;
@@ -218,7 +218,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         {
             get
             {
-                if (_hiddenAnchorables == null)
+                if (_hiddenAnchorables is null)
                 {
                     _hiddenAnchorables = new ObservableCollection<LayoutAnchorable>();
                     _hiddenAnchorables.CollectionChanged += _hiddenAnchorables_CollectionChanged;
@@ -236,20 +236,20 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         {
             get
             {
-                if (RootPanel != null)
+                if (RootPanel is not null)
                     yield return RootPanel;
-                if (_floatingWindows != null)
+                if (_floatingWindows is not null)
                     foreach (var floatingWindow in _floatingWindows)
                         yield return floatingWindow;
-                if (TopSide != null)
+                if (TopSide is not null)
                     yield return TopSide;
-                if (RightSide != null)
+                if (RightSide is not null)
                     yield return RightSide;
-                if (BottomSide != null)
+                if (BottomSide is not null)
                     yield return BottomSide;
-                if (LeftSide != null)
+                if (LeftSide is not null)
                     yield return LeftSide;
-                if (_hiddenAnchorables != null)
+                if (_hiddenAnchorables is not null)
                     foreach (var hiddenAnchorable in _hiddenAnchorables)
                         yield return hiddenAnchorable;
             }
@@ -261,8 +261,8 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
         public int ChildrenCount =>
             5 +
-            (_floatingWindows != null ? _floatingWindows.Count : 0) +
-            (_hiddenAnchorables != null ? _hiddenAnchorables.Count : 0);
+            (_floatingWindows is not null ? _floatingWindows.Count : 0) +
+            (_hiddenAnchorables is not null ? _hiddenAnchorables.Count : 0);
 
         #endregion
 
@@ -301,13 +301,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 if (currentValue != value)
                 {
                     RaisePropertyChanging("LastFocusedDocument");
-                    if (currentValue != null)
+                    if (currentValue is not null)
                         currentValue.IsLastFocusedDocument = false;
                     _lastFocusedDocument = new WeakReference(value);
                     currentValue = LastFocusedDocument;
-                    if (currentValue != null)
+                    if (currentValue is not null)
                         currentValue.IsLastFocusedDocument = true;
-                    _lastFocusedDocumentSet = currentValue != null;
+                    _lastFocusedDocumentSet = currentValue is not null;
                     RaisePropertyChanged("LastFocusedDocument");
                 }
             }
@@ -344,9 +344,9 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         {
             if (element == RootPanel)
                 RootPanel = null;
-            else if (_floatingWindows != null && _floatingWindows.Contains(element))
+            else if (_floatingWindows is not null && _floatingWindows.Contains(element))
                 _floatingWindows.Remove(element as LayoutFloatingWindow);
-            else if (_hiddenAnchorables != null && _hiddenAnchorables.Contains(element))
+            else if (_hiddenAnchorables is not null && _hiddenAnchorables.Contains(element))
                 _hiddenAnchorables.Remove(element as LayoutAnchorable);
             else if (element == TopSide)
                 TopSide = null;
@@ -364,13 +364,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
             {
                 RootPanel = (LayoutPanel) newElement;
             }
-            else if (_floatingWindows != null && _floatingWindows.Contains(oldElement))
+            else if (_floatingWindows is not null && _floatingWindows.Contains(oldElement))
             {
                 var index = _floatingWindows.IndexOf(oldElement as LayoutFloatingWindow);
                 _floatingWindows.Remove(oldElement as LayoutFloatingWindow);
                 _floatingWindows.Insert(index, newElement as LayoutFloatingWindow);
             }
-            else if (_hiddenAnchorables != null && _hiddenAnchorables.Contains(oldElement))
+            else if (_hiddenAnchorables is not null && _hiddenAnchorables.Contains(oldElement))
             {
                 var index = _hiddenAnchorables.IndexOf(oldElement as LayoutAnchorable);
                 _hiddenAnchorables.Remove(oldElement as LayoutAnchorable);
@@ -409,8 +409,8 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
                 //for each content that references via PreviousContainer a disconnected Pane set the property to null
                 foreach (var content in this.Descendents().OfType<ILayoutPreviousContainer>().Where(c =>
-                    c.PreviousContainer != null &&
-                    (c.PreviousContainer.Parent == null || c.PreviousContainer.Parent.Root != this)))
+                    c.PreviousContainer is not null &&
+                    (c.PreviousContainer.Parent is null || c.PreviousContainer.Parent.Root != this)))
                     content.PreviousContainer = null;
 
                 //for each pane that is empty
@@ -592,7 +592,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
             Orientation orientation;
             var layoutPanelElements = ReadRootPanel(reader, out orientation);
-            if (layoutPanelElements != null)
+            if (layoutPanelElements is not null)
             {
                 RootPanel = new LayoutPanel {Orientation = orientation};
                 //Add all children to RootPanel
@@ -600,13 +600,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
             }
 
             TopSide = new LayoutAnchorSide();
-            if (ReadElement(reader) != null) FillLayoutAnchorSide(reader, TopSide);
+            if (ReadElement(reader) is not null) FillLayoutAnchorSide(reader, TopSide);
             RightSide = new LayoutAnchorSide();
-            if (ReadElement(reader) != null) FillLayoutAnchorSide(reader, RightSide);
+            if (ReadElement(reader) is not null) FillLayoutAnchorSide(reader, RightSide);
             LeftSide = new LayoutAnchorSide();
-            if (ReadElement(reader) != null) FillLayoutAnchorSide(reader, LeftSide);
+            if (ReadElement(reader) is not null) FillLayoutAnchorSide(reader, LeftSide);
             BottomSide = new LayoutAnchorSide();
-            if (ReadElement(reader) != null) FillLayoutAnchorSide(reader, BottomSide);
+            if (ReadElement(reader) is not null) FillLayoutAnchorSide(reader, BottomSide);
 
             FloatingWindows.Clear();
             var floatingWindows = ReadElementList(reader, true);
@@ -620,23 +620,23 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         public void WriteXml(XmlWriter writer)
         {
             writer.WriteStartElement("RootPanel");
-            if (RootPanel != null) RootPanel.WriteXml(writer);
+            if (RootPanel is not null) RootPanel.WriteXml(writer);
             writer.WriteEndElement();
 
             writer.WriteStartElement("TopSide");
-            if (TopSide != null) TopSide.WriteXml(writer);
+            if (TopSide is not null) TopSide.WriteXml(writer);
             writer.WriteEndElement();
 
             writer.WriteStartElement("RightSide");
-            if (RightSide != null) RightSide.WriteXml(writer);
+            if (RightSide is not null) RightSide.WriteXml(writer);
             writer.WriteEndElement();
 
             writer.WriteStartElement("LeftSide");
-            if (LeftSide != null) LeftSide.WriteXml(writer);
+            if (LeftSide is not null) LeftSide.WriteXml(writer);
             writer.WriteEndElement();
 
             writer.WriteStartElement("BottomSide");
-            if (BottomSide != null) BottomSide.WriteXml(writer);
+            if (BottomSide is not null) BottomSide.WriteXml(writer);
             writer.WriteEndElement();
 
             // Write all floating windows (can be LayoutDocumentFloatingWindow or LayoutAnchorableFloatingWindow).
@@ -677,13 +677,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
         internal void FireLayoutUpdated()
         {
-            if (Updated != null)
+            if (Updated is not null)
                 Updated(this, EventArgs.Empty);
         }
 
         internal void OnLayoutElementAdded(LayoutElement element)
         {
-            if (ElementAdded != null)
+            if (ElementAdded is not null)
                 ElementAdded(this, new LayoutElementEventArgs(element));
         }
 
@@ -693,7 +693,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 LastFocusedDocument = null;
             if (element.Descendents().OfType<LayoutContent>().Any(c => c == ActiveContent))
                 ActiveContent = null;
-            if (ElementRemoved != null)
+            if (ElementRemoved is not null)
                 ElementRemoved(this, new LayoutElementEventArgs(element));
         }
 
@@ -703,13 +703,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
         private void _floatingWindows_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.OldItems != null && (e.Action == NotifyCollectionChangedAction.Remove ||
+            if (e.OldItems is not null && (e.Action == NotifyCollectionChangedAction.Remove ||
                                        e.Action == NotifyCollectionChangedAction.Replace))
                 foreach (LayoutFloatingWindow element in e.OldItems)
                     if (element.Parent == this)
                         element.Parent = null;
 
-            if (e.NewItems != null && (e.Action == NotifyCollectionChangedAction.Add ||
+            if (e.NewItems is not null && (e.Action == NotifyCollectionChangedAction.Add ||
                                        e.Action == NotifyCollectionChangedAction.Replace))
                 foreach (LayoutFloatingWindow element in e.NewItems)
                     element.Parent = this;
@@ -719,18 +719,18 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         {
             if (e.Action == NotifyCollectionChangedAction.Remove ||
                 e.Action == NotifyCollectionChangedAction.Replace)
-                if (e.OldItems != null)
+                if (e.OldItems is not null)
                     foreach (LayoutAnchorable element in e.OldItems)
                         if (element.Parent == this)
                             element.Parent = null;
 
             if (e.Action == NotifyCollectionChangedAction.Add ||
                 e.Action == NotifyCollectionChangedAction.Replace)
-                if (e.NewItems != null)
+                if (e.NewItems is not null)
                     foreach (LayoutAnchorable element in e.NewItems)
                         if (element.Parent != this)
                         {
-                            if (element.Parent != null)
+                            if (element.Parent is not null)
                                 element.Parent.RemoveChild(element);
                             element.Parent = this;
                         }
@@ -739,15 +739,15 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         private void InternalSetActiveContent(LayoutContent currentValue, LayoutContent newActiveContent)
         {
             RaisePropertyChanging("ActiveContent");
-            if (currentValue != null)
+            if (currentValue is not null)
                 currentValue.IsActive = false;
             _activeContent = new WeakReference(newActiveContent);
             currentValue = ActiveContent;
-            if (currentValue != null)
+            if (currentValue is not null)
                 currentValue.IsActive = true;
             RaisePropertyChanged("ActiveContent");
-            _activeContentSet = currentValue != null;
-            if (currentValue != null)
+            _activeContentSet = currentValue is not null;
+            if (currentValue is not null)
             {
                 if (currentValue.Parent is LayoutDocumentPane || currentValue is LayoutDocument)
                     LastFocusedDocument = currentValue;
@@ -761,7 +761,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         private void UpdateActiveContentProperty()
         {
             var activeContent = ActiveContent;
-            if (_activeContentSet && (activeContent == null || activeContent.Root != this))
+            if (_activeContentSet && (activeContent is null || activeContent.Root != this))
             {
                 _activeContentSet = false;
                 InternalSetActiveContent(activeContent, null);
@@ -776,7 +776,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
             {
                 //Read all layoutAnchorSide children
                 var element = ReadElement(reader) as LayoutAnchorGroup;
-                if (element != null)
+                if (element is not null)
                     result.Add(element);
                 else if (reader.NodeType == XmlNodeType.EndElement) break;
             }
@@ -807,7 +807,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 {
                     //Read all RootPanel children
                     var element = ReadElement(reader) as ILayoutPanelElement;
-                    if (element != null)
+                    if (element is not null)
                         result.Add(element);
                     else if (reader.NodeType == XmlNodeType.EndElement) break;
                 }
@@ -840,13 +840,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 if (isFloatingWindow)
                 {
                     var result = ReadElement(reader) as LayoutFloatingWindow;
-                    if (result == null) break;
+                    if (result is null) break;
                     resultList.Add(result);
                 }
                 else
                 {
                     var result = ReadElement(reader) as LayoutAnchorable;
-                    if (result == null) break;
+                    if (result is null) break;
                     resultList.Add(result);
                 }
 
@@ -907,7 +907,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                     return reader.Read();
                 default:
                     var type = FindType(reader.LocalName);
-                    if (type == null)
+                    if (type is null)
                         throw new ArgumentException("AvalonDock.LayoutRoot doesn't know how to deserialize " +
                                                     reader.LocalName);
                     serializer = new XmlSerializer(type);

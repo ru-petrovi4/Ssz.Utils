@@ -86,14 +86,14 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
 
                 var buttonType = child.GetValue(ButtonBase.CommandParameterProperty);
 
-                if (buttonType != null && (Calculator.CalculatorButtonType) buttonType == type)
+                if (buttonType is not null && (Calculator.CalculatorButtonType) buttonType == type)
                 {
                     return child as Button;
                 }
 
                 var result = FindButtonByCalculatorButtonType(child, type);
 
-                if (result != null)
+                if (result is not null)
                     return result;
             }
 

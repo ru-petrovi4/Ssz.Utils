@@ -31,12 +31,12 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
             _currentWindowAreas.ForEach(a => _currentWindow.DragLeave(a));
 
-            if (_currentDropTarget != null)
+            if (_currentDropTarget is not null)
                 _currentWindow.DragLeave(_currentDropTarget);
-            if (_currentWindow != null)
+            if (_currentWindow is not null)
                 _currentWindow.DragLeave(_floatingWindow);
             _currentWindow = null;
-            if (_currentHost != null)
+            if (_currentHost is not null)
                 _currentHost.HideOverlayWindow();
             _currentHost = null;
         }
@@ -83,14 +83,14 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
             var newHost = _overlayWindowHosts.FirstOrDefault(oh => oh.HitTest(dragPosition));
 
-            if (_currentHost != null || _currentHost != newHost)
+            if (_currentHost is not null || _currentHost != newHost)
             {
                 //is mouse still inside current overlay window host?
-                if (_currentHost != null && !_currentHost.HitTest(dragPosition) ||
+                if (_currentHost is not null && !_currentHost.HitTest(dragPosition) ||
                     _currentHost != newHost)
                 {
                     //esit drop target
-                    if (_currentDropTarget != null)
+                    if (_currentDropTarget is not null)
                         _currentWindow.DragLeave(_currentDropTarget);
                     _currentDropTarget = null;
 
@@ -100,9 +100,9 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                     _currentWindowAreas.Clear();
 
                     //hide current overlay window
-                    if (_currentWindow != null)
+                    if (_currentWindow is not null)
                         _currentWindow.DragLeave(_floatingWindow);
-                    if (_currentHost != null)
+                    if (_currentHost is not null)
                         _currentHost.HideOverlayWindow();
                     _currentHost = null;
                 }
@@ -115,10 +115,10 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                 }
             }
 
-            if (_currentHost == null)
+            if (_currentHost is null)
                 return;
 
-            if (_currentDropTarget != null &&
+            if (_currentDropTarget is not null &&
                 !_currentDropTarget.HitTest(dragPosition))
             {
                 _currentWindow.DragLeave(_currentDropTarget);
@@ -149,14 +149,14 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             areasToAdd.ForEach(a =>
                 _currentWindow.DragEnter(a));
 
-            if (_currentDropTarget == null)
+            if (_currentDropTarget is null)
                 _currentWindowAreas.ForEach(wa =>
                 {
-                    if (_currentDropTarget != null)
+                    if (_currentDropTarget is not null)
                         return;
 
                     _currentDropTarget = _currentWindow.GetTargets().FirstOrDefault(dt => dt.HitTest(dragPosition));
-                    if (_currentDropTarget != null) _currentWindow.DragEnter(_currentDropTarget);
+                    if (_currentDropTarget is not null) _currentWindow.DragEnter(_currentDropTarget);
                 });
         }
 
@@ -169,10 +169,10 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             var floatingWindowModel = _floatingWindow.Model as LayoutFloatingWindow;
             var root = floatingWindowModel.Root;
 
-            if (_currentHost != null)
+            if (_currentHost is not null)
                 _currentHost.HideOverlayWindow();
 
-            if (_currentDropTarget != null)
+            if (_currentDropTarget is not null)
             {
                 _currentWindow.DragDrop(_currentDropTarget);
                 root.CollectGarbage();
@@ -182,9 +182,9 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
             _currentWindowAreas.ForEach(a => _currentWindow.DragLeave(a));
 
-            if (_currentDropTarget != null)
+            if (_currentDropTarget is not null)
                 _currentWindow.DragLeave(_currentDropTarget);
-            if (_currentWindow != null)
+            if (_currentWindow is not null)
                 _currentWindow.DragLeave(_floatingWindow);
             _currentWindow = null;
 

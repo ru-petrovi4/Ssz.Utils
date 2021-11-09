@@ -80,7 +80,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         protected override void Close()
         {
-            if (_document.Root != null && _document.Root.Manager != null)
+            if (_document.Root is not null && _document.Root.Manager is not null)
             {
                 var dockingManager = _document.Root.Manager;
                 dockingManager._ExecuteCloseCommand(_document);
@@ -89,7 +89,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         protected override void OnVisibilityChanged()
         {
-            if (_document != null && _document.Root != null)
+            if (_document is not null && _document.Root is not null)
             {
                 _document.IsVisible = Visibility == Visibility.Visible;
 

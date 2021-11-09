@@ -118,7 +118,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private static void OnIconPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            if (e.NewValue != null) ((MenuItemEx) sender).UpdateIcon();
+            if (e.NewValue is not null) ((MenuItemEx) sender).UpdateIcon();
         }
 
         private void UpdateIcon()
@@ -126,13 +126,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             if (_reentrantFlag)
                 return;
             _reentrantFlag = true;
-            if (IconTemplateSelector != null)
+            if (IconTemplateSelector is not null)
             {
                 var dataTemplateToUse = IconTemplateSelector.SelectTemplate(Icon, this);
-                if (dataTemplateToUse != null)
+                if (dataTemplateToUse is not null)
                     Icon = dataTemplateToUse.LoadContent();
             }
-            else if (IconTemplate != null)
+            else if (IconTemplate is not null)
             {
                 Icon = IconTemplate.LoadContent();
             }

@@ -38,7 +38,7 @@ namespace System.Linq.Dynamic.Core.CustomTypeProviders
         {
             if (_useCache)
             {
-                if (_cachedCustomTypes == null)
+                if (_cachedCustomTypes is null)
                 {
                     _cachedCustomTypes = GetCustomTypesInternal();
                 }
@@ -54,7 +54,7 @@ namespace System.Linq.Dynamic.Core.CustomTypeProviders
         {
             if (_useCache)
             {
-                if (_cachedExtensionMethods == null)
+                if (_cachedExtensionMethods is null)
                 {
                     _cachedExtensionMethods = GetExtensionMethodsFromCustomTypesInternal();
                 }

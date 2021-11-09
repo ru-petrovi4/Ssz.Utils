@@ -125,7 +125,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Borders
             _bottomRightContentControl = GetTemplateChild("PART_BottomRightContentControl") as ContentControl;
             _bottomLeftContentControl = GetTemplateChild("PART_BottomLeftContentControl") as ContentControl;
 
-            if (_topLeftContentControl != null)
+            if (_topLeftContentControl is not null)
             {
                 _topLeftContentControl.SizeChanged += ContentControlSizeChanged;
             }
@@ -146,27 +146,27 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Borders
         /// <param name="newCornerRadius">The new corner radius.</param>
         internal void UpdateCornerRadius(CornerRadius newCornerRadius)
         {
-            if (_border != null)
+            if (_border is not null)
             {
                 _border.CornerRadius = newCornerRadius;
             }
 
-            if (_topLeftClip != null)
+            if (_topLeftClip is not null)
             {
                 _topLeftClip.RadiusX = _topLeftClip.RadiusY = newCornerRadius.TopLeft - (Math.Min(BorderThickness.Left, BorderThickness.Top) / 2);
             }
 
-            if (_topRightClip != null)
+            if (_topRightClip is not null)
             {
                 _topRightClip.RadiusX = _topRightClip.RadiusY = newCornerRadius.TopRight - (Math.Min(BorderThickness.Top, BorderThickness.Right) / 2);
             }
 
-            if (_bottomRightClip != null)
+            if (_bottomRightClip is not null)
             {
                 _bottomRightClip.RadiusX = _bottomRightClip.RadiusY = newCornerRadius.BottomRight - (Math.Min(BorderThickness.Right, BorderThickness.Bottom) / 2);
             }
 
-            if (_bottomLeftClip != null)
+            if (_bottomLeftClip is not null)
             {
                 _bottomLeftClip.RadiusX = _bottomLeftClip.RadiusY = newCornerRadius.BottomLeft - (Math.Min(BorderThickness.Bottom, BorderThickness.Left) / 2);
             }
@@ -182,22 +182,22 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Borders
         {
             if (clipContent)
             {
-                if (_topLeftContentControl != null)
+                if (_topLeftContentControl is not null)
                 {
                     _topLeftContentControl.Clip = _topLeftClip;
                 }
 
-                if (_topRightContentControl != null)
+                if (_topRightContentControl is not null)
                 {
                     _topRightContentControl.Clip = _topRightClip;
                 }
 
-                if (_bottomRightContentControl != null)
+                if (_bottomRightContentControl is not null)
                 {
                     _bottomRightContentControl.Clip = _bottomRightClip;
                 }
 
-                if (_bottomLeftContentControl != null)
+                if (_bottomLeftContentControl is not null)
                 {
                     _bottomLeftContentControl.Clip = _bottomLeftClip;
                 }
@@ -206,22 +206,22 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Borders
             }
             else
             {
-                if (_topLeftContentControl != null)
+                if (_topLeftContentControl is not null)
                 {
                     _topLeftContentControl.Clip = null;
                 }
 
-                if (_topRightContentControl != null)
+                if (_topRightContentControl is not null)
                 {
                     _topRightContentControl.Clip = null;
                 }
 
-                if (_bottomRightContentControl != null)
+                if (_bottomRightContentControl is not null)
                 {
                     _bottomRightContentControl.Clip = null;
                 }
 
-                if (_bottomLeftContentControl != null)
+                if (_bottomLeftContentControl is not null)
                 {
                     _bottomLeftContentControl.Clip = null;
                 }
@@ -287,23 +287,23 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Borders
                 double contentWidth = Math.Max(0, size.Width - BorderThickness.Left - BorderThickness.Right);
                 double contentHeight = Math.Max(0, size.Height - BorderThickness.Top - BorderThickness.Bottom);
 
-                if (_topLeftClip != null)
+                if (_topLeftClip is not null)
                 {
                     _topLeftClip.Rect = new Rect(0, 0, contentWidth + (CornerRadius.TopLeft * 2), contentHeight + (CornerRadius.TopLeft * 2));
                 }
 
-                if (_topRightClip != null)
+                if (_topRightClip is not null)
                 {
                     _topRightClip.Rect = new Rect(0 - CornerRadius.TopRight, 0, contentWidth + CornerRadius.TopRight, contentHeight + CornerRadius.TopRight);
                 }
 
-                if (_bottomRightClip != null)
+                if (_bottomRightClip is not null)
                 {
                     _bottomRightClip.Rect = new Rect(0 - CornerRadius.BottomRight, 0 - CornerRadius.BottomRight, contentWidth + CornerRadius.BottomRight,
                                                                 contentHeight + CornerRadius.BottomRight);
                 }
 
-                if (_bottomLeftClip != null)
+                if (_bottomLeftClip is not null)
                 {
                     _bottomLeftClip.Rect = new Rect(0, 0 - CornerRadius.BottomLeft, contentWidth + CornerRadius.BottomLeft, contentHeight + CornerRadius.BottomLeft);
                 }

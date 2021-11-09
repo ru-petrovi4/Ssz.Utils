@@ -489,7 +489,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch
         /// </summary>
         protected virtual void AddEventHandlers()
         {
-            if (SwitchThumb != null)
+            if (SwitchThumb is not null)
             {
                 SwitchThumb.DragStarted += OnDragStarted;
                 SwitchThumb.DragDelta += OnDragDelta;
@@ -503,7 +503,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch
         /// </summary>
         protected virtual void RemoveEventHandlers()
         {
-            if (SwitchThumb != null)
+            if (SwitchThumb is not null)
             {
                 SwitchThumb.DragStarted -= OnDragStarted;
                 SwitchThumb.DragDelta -= OnDragDelta;
@@ -889,13 +889,13 @@ namespace Ssz.Utils.Wpf.ToggleSwitch
             else
             {
                 VisualStateManager.GoToState(this, state, useTransitions);
-                if (SwitchThumb != null)
+                if (SwitchThumb is not null)
                 {
                     VisualStateManager.GoToState(SwitchThumb, state, useTransitions);
                 }
             }
 
-            if (SwitchThumb == null || SwitchTrack == null)
+            if (SwitchThumb is null || SwitchTrack is null)
             {
                 return;
             }

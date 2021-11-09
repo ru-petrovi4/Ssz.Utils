@@ -31,13 +31,13 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 
         public ContainerHelperBase(IPropertyContainer propertyContainer)
         {
-            if (propertyContainer == null)
+            if (propertyContainer is null)
                 throw new ArgumentNullException("propertyContainer");
 
             PropertyContainer = propertyContainer;
 
             var propChange = propertyContainer as INotifyPropertyChanged;
-            if (propChange != null) propChange.PropertyChanged += OnPropertyContainerPropertyChanged;
+            if (propChange is not null) propChange.PropertyChanged += OnPropertyContainerPropertyChanged;
         }
 
         public abstract IList Properties { get; }
@@ -47,7 +47,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         public virtual void ClearHelper()
         {
             var propChange = PropertyContainer as INotifyPropertyChanged;
-            if (propChange != null) propChange.PropertyChanged -= OnPropertyContainerPropertyChanged;
+            if (propChange is not null) propChange.PropertyChanged -= OnPropertyContainerPropertyChanged;
 
             // Calling RemoveAll() will force the ItemsContol displaying the
             // properties to clear all the current container (i.e., ClearContainerForItem).
@@ -55,7 +55,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             // container. Fortunately, the ItemsContainer will not re-prepare the items yet
             // (i.e., probably made on next measure pass), allowing us to set up the new
             // parent helper.
-            if (ChildrenItemsControl != null)
+            if (ChildrenItemsControl is not null)
                 ((IItemContainerGenerator) ChildrenItemsControl.ItemContainerGenerator).RemoveAll();
         }
 
@@ -76,7 +76,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 
         protected FrameworkElement GenerateCustomEditingElement(Type definitionKey, PropertyItemBase propertyItem)
         {
-            return PropertyContainer.EditorDefinitions != null
+            return PropertyContainer.EditorDefinitions is not null
                 ? CreateCustomEditor(PropertyContainer.EditorDefinitions.GetRecursiveBaseTypes(definitionKey),
                     propertyItem)
                 : null;
@@ -84,14 +84,14 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 
         protected FrameworkElement GenerateCustomEditingElement(object definitionKey, PropertyItemBase propertyItem)
         {
-            return PropertyContainer.EditorDefinitions != null
+            return PropertyContainer.EditorDefinitions is not null
                 ? CreateCustomEditor(PropertyContainer.EditorDefinitions[definitionKey], propertyItem)
                 : null;
         }
 
         protected FrameworkElement CreateCustomEditor(EditorDefinitionBase customEditor, PropertyItemBase propertyItem)
         {
-            return customEditor != null
+            return customEditor is not null
                 ? customEditor.GenerateEditingElementInternal(propertyItem)
                 : null;
         }

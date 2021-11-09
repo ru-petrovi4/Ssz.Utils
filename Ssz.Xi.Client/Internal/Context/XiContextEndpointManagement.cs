@@ -38,7 +38,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 _xiServerInfo.GetServiceEndpointsByBinding(contractType,
                     _connectedResourceManagementServiceEndpoint.Binding.
                         GetType()).FirstOrDefault();
-            if (serviceEndpoint == null) throw new InvalidOperationException();
+            if (serviceEndpoint is null) throw new InvalidOperationException();
             OpenEndpoint(serviceEndpoint);
         }
 
@@ -69,7 +69,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_iResourceManagement == null) throw new InvalidOperationException();
+            if (_iResourceManagement is null) throw new InvalidOperationException();
             try
             {
                 _iResourceManagement.CloseEndpoint(ContextId, endpointId);
@@ -96,7 +96,7 @@ namespace Ssz.Xi.Client.Internal.Context
             if (!string.IsNullOrEmpty(endpointId))
             {
                 AliasResult? aliasResult = null;
-                if (_iResourceManagement == null) throw new InvalidOperationException();
+                if (_iResourceManagement is null) throw new InvalidOperationException();
                 try
                 {
                     aliasResult = _iResourceManagement.AddListToEndpoint(ContextId, endpointId, serverListId);
@@ -126,7 +126,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 var listIds = new List<uint>();
                 listIds.Add(serverListId);
                 List<AliasResult>? listAliasResult = null;
-                if (_iResourceManagement == null) throw new InvalidOperationException();
+                if (_iResourceManagement is null) throw new InvalidOperationException();
                 try
                 {
                     listAliasResult = _iResourceManagement.RemoveListsFromEndpoint(ContextId, endpointId, listIds);
@@ -136,7 +136,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 {
                     ProcessRemoteMethodCallException(ex);
                 }
-                return (listAliasResult == null) || (listAliasResult.Count == 0)
+                return (listAliasResult is null) || (listAliasResult.Count == 0)
                     ? XiFaultCodes.S_OK
                     : listAliasResult[0].Result;
             }
@@ -224,9 +224,9 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             EndpointDefinition? epd = null;
 
-            if (serviceEndpoint != null)
+            if (serviceEndpoint is not null)
             {
-                if (_iResourceManagement == null) throw new InvalidOperationException();
+                if (_iResourceManagement is null) throw new InvalidOperationException();
                 try
                 {
                     epd = _iResourceManagement.OpenEndpoint(ContextId, serviceEndpoint.Contract.Name,
@@ -238,7 +238,7 @@ namespace Ssz.Xi.Client.Internal.Context
                     ProcessRemoteMethodCallException(ex);
                 }
 
-                if (epd != null)
+                if (epd is not null)
                 {
                     EndpointConfiguration? epConfig =
                         _xiServerInfo.ServerEntry.EndpointServerSettings?.FirstOrDefault(
@@ -248,19 +248,19 @@ namespace Ssz.Xi.Client.Internal.Context
                     // TODO
                     //&&
                     // (new Uri(epc.EndpointUrl) == serviceEndpoint.ListenUri)
-                    if (epConfig != null)
+                    if (epConfig is not null)
                     {
                         int maxItemsInObjectGraph = epConfig.MaxItemsInObjectGraph;
                         if (serviceEndpoint.Contract.Name == typeof (IRead).Name)
                         {
-                            if (_readEndpoint == null)
+                            if (_readEndpoint is null)
                                 _readEndpoint = new XiReadEndpoint(epd, serviceEndpoint, ReceiveTimeout,
                                     _sendTimeout, maxItemsInObjectGraph);
                         }
 
                         else if (serviceEndpoint.Contract.Name == typeof (IWrite).Name)
                         {
-                            if (_writeEndpoint == null)
+                            if (_writeEndpoint is null)
                             {
                                 _writeEndpoint = new XiWriteEndpoint(epd, serviceEndpoint, ReceiveTimeout,
                                     _sendTimeout, maxItemsInObjectGraph);
@@ -269,14 +269,14 @@ namespace Ssz.Xi.Client.Internal.Context
 
                         else if (serviceEndpoint.Contract.Name == typeof (IPoll).Name)
                         {
-                            if (_pollEndpoint == null)
+                            if (_pollEndpoint is null)
                                 _pollEndpoint = new XiPollEndpoint(epd, serviceEndpoint, ReceiveTimeout,
                                     _sendTimeout, maxItemsInObjectGraph);
                         }
 
                         else if (serviceEndpoint.Contract.Name == typeof (IRegisterForCallback).Name)
                         {
-                            if (_callbackEndpoint == null)
+                            if (_callbackEndpoint is null)
                             {
                                 _callbackEndpoint = new XiCallbackEndpoint(epd, serviceEndpoint, ReceiveTimeout,
                                     _sendTimeout, maxItemsInObjectGraph, _xiCallbackDoer);

@@ -162,7 +162,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             if (_internalSetSelectedDocument)
                 return;
 
-            if (SelectedDocument != null &&
+            if (SelectedDocument is not null &&
                 SelectedDocument.ActivateCommand.CanExecute(null))
             {
                 Hide();
@@ -208,7 +208,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                 return;
 
             var selectedAnchorable = e.NewValue as LayoutAnchorableItem;
-            if (SelectedAnchorable != null &&
+            if (SelectedAnchorable is not null &&
                 SelectedAnchorable.ActivateCommand.CanExecute(null))
             {
                 Close();
@@ -240,7 +240,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                 // Selecting LayoutDocuments
                 if (_isSelectingDocument)
                 {
-                    if (SelectedDocument != null)
+                    if (SelectedDocument is not null)
                     {
                         // Jump to next LayoutDocument
                         var docIndex = Documents.IndexOf(SelectedDocument);
@@ -271,7 +271,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                 // Selecting LayoutAnchorables
                 else
                 {
-                    if (SelectedAnchorable != null)
+                    if (SelectedAnchorable is not null)
                     {
                         // Jump to next LayoutAnchorable
                         var anchorableIndex = Anchorables.ToArray().IndexOf(SelectedAnchorable);
@@ -311,12 +311,12 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             {
                 Close();
 
-                if (SelectedDocument != null &&
+                if (SelectedDocument is not null &&
                     SelectedDocument.ActivateCommand.CanExecute(null))
                     SelectedDocument.ActivateCommand.Execute(null);
 
-                if (SelectedDocument == null &&
-                    SelectedAnchorable != null &&
+                if (SelectedDocument is null &&
+                    SelectedAnchorable is not null &&
                     SelectedAnchorable.ActivateCommand.CanExecute(null))
                     SelectedAnchorable.ActivateCommand.Execute(null);
 
@@ -352,11 +352,11 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         internal void UpdateThemeResources(Theme oldTheme = null)
         {
-            if (oldTheme != null)
+            if (oldTheme is not null)
             {
                 if (oldTheme is DictionaryTheme)
                 {
-                    if (currentThemeResourceDictionary != null)
+                    if (currentThemeResourceDictionary is not null)
                     {
                         Resources.MergedDictionaries.Remove(currentThemeResourceDictionary);
                         currentThemeResourceDictionary = null;
@@ -366,12 +366,12 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                 {
                     var resourceDictionaryToRemove =
                         Resources.MergedDictionaries.FirstOrDefault(r => r.Source == oldTheme.GetResourceUri());
-                    if (resourceDictionaryToRemove != null)
+                    if (resourceDictionaryToRemove is not null)
                         Resources.MergedDictionaries.Remove(resourceDictionaryToRemove);
                 }
             }
 
-            if (_manager.Theme != null)
+            if (_manager.Theme is not null)
             {
                 if (_manager.Theme is DictionaryTheme)
                 {
@@ -387,7 +387,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         internal void SelectNextDocument()
         {
-            if (SelectedDocument != null)
+            if (SelectedDocument is not null)
             {
                 var docIndex = Documents.IndexOf(SelectedDocument);
                 docIndex++;
@@ -398,7 +398,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         internal void SelectNextAnchorable()
         {
-            if (SelectedAnchorable != null)
+            if (SelectedAnchorable is not null)
             {
                 var anchorablesArray = Anchorables.ToArray();
                 var anchorableIndex = anchorablesArray.IndexOf(SelectedAnchorable);
@@ -418,7 +418,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             SelectedAnchorable = anchorableToSelect;
             _internalSetSelectedAnchorable = false;
 
-            if (_anchorableListBox != null) _anchorableListBox.Focus();
+            if (_anchorableListBox is not null) _anchorableListBox.Focus();
         }
 
         private void InternalSetSelectedDocument(LayoutDocumentItem documentToSelect)
@@ -427,16 +427,16 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             SelectedDocument = documentToSelect;
             _internalSetSelectedDocument = false;
 
-            if (_documentListBox != null && documentToSelect != null) _documentListBox.Focus();
+            if (_documentListBox is not null && documentToSelect is not null) _documentListBox.Focus();
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             Loaded -= OnLoaded;
 
-            if (_documentListBox != null && SelectedDocument != null)
+            if (_documentListBox is not null && SelectedDocument is not null)
                 _documentListBox.Focus();
-            else if (_anchorableListBox != null && SelectedAnchorable != null) _anchorableListBox.Focus();
+            else if (_anchorableListBox is not null && SelectedAnchorable is not null) _anchorableListBox.Focus();
 
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
         }

@@ -85,7 +85,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnTextFormatterPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var richTextBox = d as RichTextBox;
-            if (richTextBox != null)
+            if (richTextBox is not null)
                 richTextBox.OnTextFormatterPropertyChanged((ITextFormatter) e.OldValue, (ITextFormatter) e.NewValue);
         }
 

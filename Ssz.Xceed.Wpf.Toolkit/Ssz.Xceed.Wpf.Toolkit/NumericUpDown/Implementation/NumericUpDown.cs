@@ -69,7 +69,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnFormatStringChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var numericUpDown = o as NumericUpDown<T>;
-            if (numericUpDown != null)
+            if (numericUpDown is not null)
                 numericUpDown.OnFormatStringChanged((string) e.OldValue, (string) e.NewValue);
         }
 
@@ -95,7 +95,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnIncrementChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var numericUpDown = o as NumericUpDown<T>;
-            if (numericUpDown != null)
+            if (numericUpDown is not null)
                 numericUpDown.OnIncrementChanged((T) e.OldValue, (T) e.NewValue);
         }
 
@@ -107,7 +107,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static object OnCoerceIncrement(DependencyObject d, object baseValue)
         {
             var numericUpDown = d as NumericUpDown<T>;
-            if (numericUpDown != null)
+            if (numericUpDown is not null)
                 return numericUpDown.OnCoerceIncrement((T) baseValue);
 
             return baseValue;

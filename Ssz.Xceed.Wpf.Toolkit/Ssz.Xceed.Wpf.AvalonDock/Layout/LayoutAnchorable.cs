@@ -188,7 +188,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         /// <summary>
         ///     Get a value indicating if the anchorable is anchored to a border in an autohide status
         /// </summary>
-        public bool IsAutoHidden => Parent != null && Parent is LayoutAnchorGroup;
+        public bool IsAutoHidden => Parent is not null && Parent is LayoutAnchorGroup;
 
         #endregion
 
@@ -203,7 +203,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         [XmlIgnore]
         public bool IsVisible
         {
-            get => Parent != null && !(Parent is LayoutRoot);
+            get => Parent is not null && !(Parent is LayoutRoot);
             set
             {
                 if (value)
@@ -241,32 +241,32 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
             var root = Root as LayoutRoot;
             LayoutAnchorablePane anchorablePane = null;
 
-            if (root.ActiveContent != null &&
+            if (root.ActiveContent is not null &&
                 root.ActiveContent != this)
                 //look for active content parent pane
                 anchorablePane = root.ActiveContent.Parent as LayoutAnchorablePane;
 
-            if (anchorablePane == null)
+            if (anchorablePane is null)
                 //look for a pane on the right side
                 anchorablePane = root.Descendents().OfType<LayoutAnchorablePane>()
                     .Where(pane => !pane.IsHostedInFloatingWindow && pane.GetSide() == AnchorSide.Right)
                     .FirstOrDefault();
 
-            if (anchorablePane == null)
+            if (anchorablePane is null)
                 //look for an available pane
                 anchorablePane = root.Descendents().OfType<LayoutAnchorablePane>().FirstOrDefault();
 
 
             var added = false;
-            if (root.Manager.LayoutUpdateStrategy != null)
+            if (root.Manager.LayoutUpdateStrategy is not null)
                 added = root.Manager.LayoutUpdateStrategy.BeforeInsertAnchorable(root, this, anchorablePane);
 
             if (!added)
             {
-                if (anchorablePane == null)
+                if (anchorablePane is null)
                 {
                     var mainLayoutPanel = new LayoutPanel {Orientation = Orientation.Horizontal};
-                    if (root.RootPanel != null) mainLayoutPanel.Children.Add(root.RootPanel);
+                    if (root.RootPanel is not null) mainLayoutPanel.Children.Add(root.RootPanel);
 
                     root.RootPanel = mainLayoutPanel;
                     anchorablePane = new LayoutAnchorablePane {DockWidth = new GridLength(200.0, GridUnitType.Pixel)};
@@ -277,7 +277,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 added = true;
             }
 
-            if (root.Manager.LayoutUpdateStrategy != null)
+            if (root.Manager.LayoutUpdateStrategy is not null)
                 root.Manager.LayoutUpdateStrategy.AfterInsertAnchorable(root, this);
 
             base.InternalDock();
@@ -396,12 +396,12 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
             var added = false;
             var root = Root;
-            if (root != null && root.Manager != null)
-                if (root.Manager.LayoutUpdateStrategy != null)
+            if (root is not null && root.Manager is not null)
+                if (root.Manager.LayoutUpdateStrategy is not null)
                     added = root.Manager.LayoutUpdateStrategy.BeforeInsertAnchorable(root as LayoutRoot, this,
                         PreviousContainer);
 
-            if (!added && PreviousContainer != null)
+            if (!added && PreviousContainer is not null)
             {
                 var previousContainerAsLayoutGroup = PreviousContainer as ILayoutGroup;
                 if (PreviousContainerIndex < previousContainerAsLayoutGroup.ChildrenCount)
@@ -412,8 +412,8 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 IsActive = true;
             }
 
-            if (root != null && root.Manager != null)
-                if (root.Manager.LayoutUpdateStrategy != null)
+            if (root is not null && root.Manager is not null)
+                if (root.Manager.LayoutUpdateStrategy is not null)
                     root.Manager.LayoutUpdateStrategy.AfterInsertAnchorable(root as LayoutRoot, this);
 
             PreviousContainer = null;
@@ -457,7 +457,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
                 var anchorablePane = manager.Layout.Descendents().OfType<LayoutAnchorablePane>()
                     .FirstOrDefault(p => p.GetSide() == side);
-                if (anchorablePane != null)
+                if (anchorablePane is not null)
                     anchorablePane.Children.Add(this);
                 else
                     most = true;
@@ -466,7 +466,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
             if (most)
             {
-                if (manager.Layout.RootPanel == null)
+                if (manager.Layout.RootPanel is null)
                     manager.Layout.RootPanel = new LayoutPanel
                         {Orientation = left || right ? Orientation.Horizontal : Orientation.Vertical};
 
@@ -510,7 +510,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 var previousContainer =
                     ((ILayoutPreviousContainer) parentGroup).PreviousContainer as LayoutAnchorablePane;
 
-                if (previousContainer == null)
+                if (previousContainer is null)
                 {
                     var side = (parentGroup.Parent as LayoutAnchorSide).Side;
                     switch (side)
@@ -608,7 +608,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 parentSide.Children.Remove(parentGroup);
 
                 var parent = previousContainer.Parent as LayoutGroupBase;
-                while (parent != null)
+                while (parent is not null)
                 {
                     if (parent is LayoutGroup<ILayoutPanelElement>)
                         ((LayoutGroup<ILayoutPanelElement>) parent).ComputeVisibility();
@@ -638,16 +638,16 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 switch (anchorSide)
                 {
                     case AnchorSide.Right:
-                        if (root.RightSide != null) root.RightSide.Children.Add(newAnchorGroup);
+                        if (root.RightSide is not null) root.RightSide.Children.Add(newAnchorGroup);
                         break;
                     case AnchorSide.Left:
-                        if (root.LeftSide != null) root.LeftSide.Children.Add(newAnchorGroup);
+                        if (root.LeftSide is not null) root.LeftSide.Children.Add(newAnchorGroup);
                         break;
                     case AnchorSide.Top:
-                        if (root.TopSide != null) root.TopSide.Children.Add(newAnchorGroup);
+                        if (root.TopSide is not null) root.TopSide.Children.Add(newAnchorGroup);
                         break;
                     case AnchorSide.Bottom:
-                        if (root.BottomSide != null) root.BottomSide.Children.Add(newAnchorGroup);
+                        if (root.BottomSide is not null) root.BottomSide.Children.Add(newAnchorGroup);
                         break;
                 }
             }
@@ -661,7 +661,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
         protected virtual void OnHiding(CancelEventArgs args)
         {
-            if (Hiding != null)
+            if (Hiding is not null)
                 Hiding(this, args);
         }
 
@@ -693,14 +693,14 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
         private void NotifyIsVisibleChanged()
         {
-            if (IsVisibleChanged != null)
+            if (IsVisibleChanged is not null)
                 IsVisibleChanged(this, EventArgs.Empty);
         }
 
         private void UpdateParentVisibility()
         {
             var parentPane = Parent as ILayoutElementWithVisibility;
-            if (parentPane != null)
+            if (parentPane is not null)
                 parentPane.ComputeVisibility();
         }
 

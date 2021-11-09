@@ -53,7 +53,7 @@ namespace Ssz.Utils
         /// <returns></returns>
         public T? TryGetValue(string key)
         {
-            if (key == null) return null;
+            if (key is null) return null;
             T? result;
             TryGetValue(key, out result);
             return result;

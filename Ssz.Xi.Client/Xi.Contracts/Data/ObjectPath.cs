@@ -72,8 +72,8 @@ namespace Xi.Contracts.Data
 		/// </param>
 		public ObjectPath(ObjectPath path)
 		{
-			if (Elements == null) throw new InvalidOperationException();
-			if (path.Elements != null)
+			if (Elements is null) throw new InvalidOperationException();
+			if (path.Elements is not null)
 			{
 				foreach (var str in path.Elements)
 					Elements.Add(str);
@@ -105,7 +105,7 @@ namespace Xi.Contracts.Data
 					{
 						if (pos < 0) // no slash was found
 						{
-							if (Elements == null) throw new InvalidOperationException();
+							if (Elements is null) throw new InvalidOperationException();
 							Elements.Add(workingString);
 							workingString = "";
 						}
@@ -116,7 +116,7 @@ namespace Xi.Contracts.Data
 						}
 						else
 						{
-							if (Elements == null) throw new InvalidOperationException();
+							if (Elements is null) throw new InvalidOperationException();
 							Elements.Add(workingString.Substring(0, pos));
 							workingString = workingString.Substring(pos + 1);
 							pos = workingString.IndexOf('/');
@@ -137,7 +137,7 @@ namespace Xi.Contracts.Data
 		/// </returns>
 		public override string ToString()
 		{
-			if ((Elements == null) || (Elements.Count == 0)) return string.Empty;
+			if ((Elements is null) || (Elements.Count == 0)) return string.Empty;
 
 			StringBuilder stringPath = new StringBuilder(byte.MaxValue);  //255
 			stringPath.Append(Elements[0]);
@@ -176,15 +176,15 @@ namespace Xi.Contracts.Data
 		{
 			int results = -1;
 			// if the first path is the root
-			if (   (firstPath == null) 
-				|| (firstPath.Elements == null) 
+			if (   (firstPath is null) 
+				|| (firstPath.Elements is null) 
 				|| (firstPath.Elements.Count == 0) 
 				|| ( ((firstPath.Elements.Count == 1) && firstPath.Elements[0] == InstanceId.RootId))
 			   )
 			{
 				// ...and the second path is the root
-				if (   (secondPath == null) 
-					|| (secondPath.Elements == null) 
+				if (   (secondPath is null) 
+					|| (secondPath.Elements is null) 
 					|| (secondPath.Elements.Count == 0) 
 					|| ( ((secondPath.Elements.Count == 1) && secondPath.Elements[0] == InstanceId.RootId))
 				   )
@@ -199,8 +199,8 @@ namespace Xi.Contracts.Data
 			else // the first path is not the root 
 			{
 				// if the second path is the implicit root, see if the first path starts with the root
-				if (   (secondPath == null)
-					|| (secondPath.Elements == null)
+				if (   (secondPath is null)
+					|| (secondPath.Elements is null)
 					|| (secondPath.Elements.Count == 0)
 				   )
 				{

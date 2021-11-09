@@ -73,7 +73,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         public static IEnumerable<ILayoutElement> Descendents(this ILayoutElement element)
         {
             var container = element as ILayoutContainer;
-            if (container != null)
+            if (container is not null)
                 foreach (var childElement in container.Children)
                 {
                     yield return childElement;
@@ -85,7 +85,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         public static T FindParent<T>(this ILayoutElement element) //where T : ILayoutContainer
         {
             var parent = element.Parent;
-            while (parent != null &&
+            while (parent is not null &&
                    !(parent is T))
                 parent = parent.Parent;
 
@@ -99,7 +99,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 return element as ILayoutRoot;
 
             var parent = element.Parent;
-            while (parent != null &&
+            while (parent is not null &&
                    !(parent is ILayoutRoot))
                 parent = parent.Parent;
 
@@ -132,12 +132,12 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         public static AnchorSide GetSide(this ILayoutElement element)
         {
             var parentContainer = element.Parent as ILayoutOrientableGroup;
-            if (parentContainer != null)
+            if (parentContainer is not null)
             {
                 var layoutPanel = parentContainer as LayoutPanel;
-                if (layoutPanel == null) layoutPanel = parentContainer.FindParent<LayoutPanel>();
+                if (layoutPanel is null) layoutPanel = parentContainer.FindParent<LayoutPanel>();
 
-                if (layoutPanel != null && layoutPanel.Children.Count > 0)
+                if (layoutPanel is not null && layoutPanel.Children.Count > 0)
                 {
                     if (layoutPanel.Orientation == Orientation.Horizontal)
                         return layoutPanel.Children[0].Equals(element) ||

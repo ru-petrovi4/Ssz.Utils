@@ -28,7 +28,7 @@ namespace Ssz.Xi.Client
                 IXiEventListProxy? eventListProxy =
                     _xiEventListItemsManager.GetRelatedXiEventList(OnEventMessagesCallback);
 
-                if (eventListProxy == null) return;
+                if (eventListProxy is null) return;
 
                 try
                 {

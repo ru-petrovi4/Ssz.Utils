@@ -51,7 +51,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         {
             // If no definition for the current type, fall back on base type editor recursively.
             T ret = null;
-            while (ret == null && type != null)
+            while (ret is null && type is not null)
             {
                 ret = this[type];
                 type = type.BaseType;
@@ -69,7 +69,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 
         protected override void InsertItem(int index, T item)
         {
-            if (item == null)
+            if (item is null)
                 throw new InvalidOperationException(@"Cannot insert null items in the collection.");
 
             item.Lock();
@@ -78,7 +78,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 
         protected override void SetItem(int index, T item)
         {
-            if (item == null)
+            if (item is null)
                 throw new InvalidOperationException(@"Cannot insert null items in the collection.");
 
             item.Lock();

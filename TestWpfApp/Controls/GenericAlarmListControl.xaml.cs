@@ -36,7 +36,7 @@ namespace Ssz.WpfHmi.Common.ControlsCommon
                 if (TreeHelper.IsUserVisible(MainDataGrid.ItemContainerGenerator.ContainerFromIndex(i) as FrameworkElement, MainDataGrid))
                 {
                     var alarm = MainDataGrid.Items[i] as AlarmInfoViewModel;
-                    if (alarm != null && alarm.EventId != null) 
+                    if (alarm is not null && alarm.EventId is not null) 
                         eventIds.Add(alarm.EventId);
                 }
             }

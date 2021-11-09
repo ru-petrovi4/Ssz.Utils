@@ -44,8 +44,8 @@ namespace Ssz.Utils.CommandLine.Infrastructure
 
         public override int GetHashCode()
         {
-            int leftHash = _left == null ? 0 : _left.GetHashCode();
-            int rightHash = _right == null ? 0 : _right.GetHashCode();
+            int leftHash = _left is null ? 0 : _left.GetHashCode();
+            int rightHash = _right is null ? 0 : _right.GetHashCode();
 
             return leftHash ^ rightHash;
         }
@@ -54,7 +54,7 @@ namespace Ssz.Utils.CommandLine.Infrastructure
         {
             var other = obj as Pair<TLeft, TRight>;
 
-            if (other == null)
+            if (other is null)
             {
                 return false;
             }

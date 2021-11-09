@@ -34,7 +34,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
             foreach (UIElement child in children)
             {
-                if (child == null)
+                if (child is null)
                     continue;
 
                 var childSize = new Size(
@@ -52,7 +52,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             foreach (UIElement child in children)
             {
-                if (child == null)
+                if (child is null)
                     continue;
 
                 var childSize = GetActualSize(child);

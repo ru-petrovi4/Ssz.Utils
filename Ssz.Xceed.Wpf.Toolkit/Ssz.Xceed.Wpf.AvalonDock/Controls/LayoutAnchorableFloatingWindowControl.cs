@@ -38,7 +38,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             DependencyPropertyChangedEventArgs e)
         {
             var visibilityBinding = GetBindingExpression(VisibilityProperty);
-            if (IsVisible && visibilityBinding == null)
+            if (IsVisible && visibilityBinding is null)
                 SetBinding(VisibilityProperty,
                     new Binding("IsVisible")
                     {
@@ -150,13 +150,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         protected override void OnClosed(EventArgs e)
         {
             var root = Model.Root;
-            if (root != null)
+            if (root is not null)
             {
                 root.Manager.RemoveFloatingWindow(this);
                 root.CollectGarbage();
             }
 
-            if (_overlayWindow != null)
+            if (_overlayWindow is not null)
             {
                 _overlayWindow.Close();
                 _overlayWindow = null;
@@ -164,7 +164,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
             base.OnClosed(e);
 
-            if (!CloseInitiatedByUser && root != null) root.FloatingWindows.Remove(_model);
+            if (!CloseInitiatedByUser && root is not null) root.FloatingWindows.Remove(_model);
 
             _model.PropertyChanged -= _model_PropertyChanged;
             IsVisibleChanged -= LayoutAnchorableFloatingWindowControl_IsVisibleChanged;
@@ -191,7 +191,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                     if (wParam.ToInt32() == Win32Helper.HT_CAPTION)
                     {
                         _model.Descendents().OfType<LayoutAnchorablePane>()
-                                .First(p => p.ChildrenCount > 0 && p.SelectedContent != null).SelectedContent.IsActive =
+                                .First(p => p.ChildrenCount > 0 && p.SelectedContent is not null).SelectedContent.IsActive =
                             true;
                         handled = true;
                     }
@@ -219,7 +219,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         {
             base.UpdateThemeResources(oldTheme);
 
-            if (_overlayWindow != null) _overlayWindow.UpdateThemeResources(oldTheme);
+            if (_overlayWindow is not null) _overlayWindow.UpdateThemeResources(oldTheme);
         }
 
         #endregion
@@ -229,13 +229,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         private void _model_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "RootPanel" &&
-                _model.RootPanel == null)
+                _model.RootPanel is null)
                 InternalClose();
         }
 
         private void CreateOverlayWindow()
         {
-            if (_overlayWindow == null)
+            if (_overlayWindow is null)
                 _overlayWindow = new OverlayWindow(this);
             var rectWindow = new Rect(this.PointToScreenDPIWithoutFlowDirection(new Point()),
                 this.TransformActualSizeToAncestor());
@@ -248,7 +248,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         private bool OpenContextMenu()
         {
             var ctxMenu = _model.Root.Manager.AnchorableContextMenu;
-            if (ctxMenu != null && SingleContentLayoutItem != null)
+            if (ctxMenu is not null && SingleContentLayoutItem is not null)
             {
                 ctxMenu.PlacementTarget = null;
                 ctxMenu.Placement = PlacementMode.MousePoint;
@@ -263,7 +263,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         private bool IsContextMenuOpen()
         {
             var ctxMenu = _model.Root.Manager.AnchorableContextMenu;
-            if (ctxMenu != null && SingleContentLayoutItem != null) return ctxMenu.IsOpen;
+            if (ctxMenu is not null && SingleContentLayoutItem is not null) return ctxMenu.IsOpen;
 
             return false;
         }
@@ -278,15 +278,15 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private bool CanExecuteHideWindowCommand(object parameter)
         {
-            if (Model == null)
+            if (Model is null)
                 return false;
 
             var root = Model.Root;
-            if (root == null)
+            if (root is null)
                 return false;
 
             var manager = root.Manager;
-            if (manager == null)
+            if (manager is null)
                 return false;
 
             var canExecute = false;
@@ -299,8 +299,8 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                 }
 
                 var anchorableLayoutItem = manager.GetLayoutItemFromModel(anchorable) as LayoutAnchorableItem;
-                if (anchorableLayoutItem == null ||
-                    anchorableLayoutItem.HideCommand == null ||
+                if (anchorableLayoutItem is null ||
+                    anchorableLayoutItem.HideCommand is null ||
                     !anchorableLayoutItem.HideCommand.CanExecute(parameter))
                 {
                     canExecute = false;
@@ -331,15 +331,15 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private bool CanExecuteCloseWindowCommand(object parameter)
         {
-            if (Model == null)
+            if (Model is null)
                 return false;
 
             var root = Model.Root;
-            if (root == null)
+            if (root is null)
                 return false;
 
             var manager = root.Manager;
-            if (manager == null)
+            if (manager is null)
                 return false;
 
             var canExecute = false;
@@ -352,8 +352,8 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                 }
 
                 var anchorableLayoutItem = manager.GetLayoutItemFromModel(anchorable) as LayoutAnchorableItem;
-                if (anchorableLayoutItem == null ||
-                    anchorableLayoutItem.CloseCommand == null ||
+                if (anchorableLayoutItem is null ||
+                    anchorableLayoutItem.CloseCommand is null ||
                     !anchorableLayoutItem.CloseCommand.CanExecute(parameter))
                 {
                     canExecute = false;
@@ -410,7 +410,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         IEnumerable<IDropArea> IOverlayWindowHost.GetDropAreas(LayoutFloatingWindowControl draggingWindow)
         {
-            if (_dropAreas != null)
+            if (_dropAreas is not null)
                 return _dropAreas;
 
             _dropAreas = new List<IDropArea>();

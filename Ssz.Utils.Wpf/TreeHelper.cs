@@ -31,14 +31,15 @@ namespace Ssz.Utils.Wpf
                     var child = VisualTreeHelper.GetChild(that, i);
 
                     var frameworkElement = child as FrameworkElement;
-                    if (frameworkElement != null)
+                    if (frameworkElement is not null)
                     {
                         //Logger.Verbose("FindChild: child element with name {0},  type {1}", frameworkElement.Name ?? "<null>", frameworkElement.GetType().Name);
 
                         if (elementName == frameworkElement.Name)
                             return (T)frameworkElement;
 
-                        if ((frameworkElement = FindChild<T>(frameworkElement, elementName)) != null)
+                        frameworkElement = FindChild<T>(frameworkElement, elementName);
+                        if (frameworkElement is not null)
                             return (T)frameworkElement;
                     }
                 }
@@ -63,7 +64,7 @@ namespace Ssz.Utils.Wpf
         {
             var result = new List<T>();
 
-            if (parent == null) return result;
+            if (parent is null) return result;
 
             int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
 
@@ -71,9 +72,9 @@ namespace Ssz.Utils.Wpf
             {
                 var child = VisualTreeHelper.GetChild(parent, index) as T;
 
-                if (child != null)
+                if (child is not null)
                 {
-                    if (additionalCheck == null)
+                    if (additionalCheck is null)
                     {
                         result.Add(child);
                     }
@@ -105,12 +106,12 @@ namespace Ssz.Utils.Wpf
         {
             var result = new List<T>();
 
-            if (parent == null) return result;
+            if (parent is null) return result;
 
             var typedParent = parent as T;
-            if (typedParent != null)
+            if (typedParent is not null)
             {
-                if (additionalCheck == null)
+                if (additionalCheck is null)
                 {
                     result.Add(typedParent);
                 }
@@ -136,7 +137,7 @@ namespace Ssz.Utils.Wpf
         public static T? FindChild<T>(DependencyObject parent, Func<T, bool>? additionalCheck = null)
             where T : class
         {
-            if (parent == null) return null;
+            if (parent is null) return null;
 
             int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
 
@@ -151,9 +152,9 @@ namespace Ssz.Utils.Wpf
                 {
                 }
 
-                if (child != null)
+                if (child is not null)
                 {
-                    if (additionalCheck == null)
+                    if (additionalCheck is null)
                     {
                         return child;
                     }
@@ -176,7 +177,7 @@ namespace Ssz.Utils.Wpf
                 {
                 }
                 
-                if (child != null) return child;
+                if (child is not null) return child;
             }
 
             return null;
@@ -194,9 +195,9 @@ namespace Ssz.Utils.Wpf
             {
                 T child = VisualTreeHelper.GetChild(parent, index) as T;
 
-                if (child != null)
+                if (child is not null)
                 {
-                    if (additionalCheck == null)
+                    if (additionalCheck is null)
                     {
                         result.Add(child);
                     }
@@ -237,7 +238,7 @@ namespace Ssz.Utils.Wpf
         public static T? FindParent<T>(DependencyObject? obj, Func<T, bool>? additionalCheck = null)
             where T : class
         {
-            if (obj == null) return null;
+            if (obj is null) return null;
 
             for (;;)
             {
@@ -251,13 +252,13 @@ namespace Ssz.Utils.Wpf
                     return null;
                 }
 
-                if (parent == null) return null;
+                if (parent is null) return null;
 
                 var parentT = parent as T;
 
-                if (parentT != null)
+                if (parentT is not null)
                 {
-                    if (additionalCheck == null)
+                    if (additionalCheck is null)
                     {
                         return parentT;
                     }
@@ -276,9 +277,9 @@ namespace Ssz.Utils.Wpf
             where T : class
         {
             var t = obj as T;
-            if (t != null)
+            if (t is not null)
             {
-                if (additionalCheck == null)
+                if (additionalCheck is null)
                 {
                     return t;
                 }
@@ -326,7 +327,7 @@ namespace Ssz.Utils.Wpf
         /// </returns>
         public static bool IsUserVisible(FrameworkElement? element, FrameworkElement container)
         {
-            if (element == null || !element.IsVisible)
+            if (element is null || !element.IsVisible)
                 return false;
 
             Rect bounds = element
@@ -346,11 +347,11 @@ namespace Ssz.Utils.Wpf
         {
             List<DependencyProperty> properties = new List<DependencyProperty>();
             MarkupObject markupObject = MarkupWriter.GetMarkupObjectFor(element);
-            if (markupObject != null)
+            if (markupObject is not null)
             {
                 foreach (MarkupProperty mp in markupObject.Properties)
                 {
-                    if (mp.DependencyProperty != null)
+                    if (mp.DependencyProperty is not null)
                     {
                         properties.Add(mp.DependencyProperty);
                     }

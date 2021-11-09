@@ -76,7 +76,7 @@ namespace System.Linq.Dynamic.Core
             try
             {
                 Type? efType = Type.GetType(typeName);
-                if (efType != null)
+                if (efType is not null)
                 {
                     PredefinedTypes.Add(efType, x);
                 }

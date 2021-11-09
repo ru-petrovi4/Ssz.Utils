@@ -28,7 +28,7 @@ namespace Ssz.Utils
                     cacheObject = ClosedQueue.Dequeue();
                 }
             }
-            if (cacheObject == null) cacheObject = new T();
+            if (cacheObject is null) cacheObject = new T();
             cacheObject.Initialize();
             return cacheObject;
         }

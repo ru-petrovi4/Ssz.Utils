@@ -25,7 +25,7 @@ namespace System.Linq.Dynamic.Core.TypeConverters
             }
 
             var typeToCheck = TypeHelper.IsNullableType(type) ? TypeHelper.GetNonNullableType(type) : type;
-            if (_config.TypeConverters != null && _config.TypeConverters.TryGetValue(typeToCheck, out var typeConverter))
+            if (_config.TypeConverters is not null && _config.TypeConverters.TryGetValue(typeToCheck, out var typeConverter))
             {
                 return typeConverter;
             }

@@ -73,7 +73,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         /// </summary>
         protected virtual void OnModelChanged(DependencyPropertyChangedEventArgs e)
         {
-            if (Model != null)
+            if (Model is not null)
                 SetLayoutItem(Model.Root.Manager.GetLayoutItemFromModel(Model));
             else
                 SetLayoutItem(null);
@@ -128,7 +128,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             if (_isMouseDown && e.LeftButton == MouseButtonState.Pressed)
             {
                 var pane = this.FindVisualAncestor<LayoutAnchorablePaneControl>();
-                if (pane != null)
+                if (pane is not null)
                 {
                     var paneModel = pane.Model as LayoutAnchorablePane;
                     var manager = paneModel.Root.Manager;
@@ -138,13 +138,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                 else
                 {
                     var model = Model;
-                    if (model != null)
+                    if (model is not null)
                     {
                         var root = model.Root;
-                        if (root != null)
+                        if (root is not null)
                         {
                             var manager = root.Manager;
-                            if (manager != null) manager.StartDraggingFloatingWindowForContent(model);
+                            if (manager is not null) manager.StartDraggingFloatingWindowForContent(model);
                         }
                     }
                 }
@@ -161,7 +161,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             {
                 var attachFloatingWindow = false;
                 var parentFloatingWindow = Model.FindParent<LayoutAnchorableFloatingWindow>();
-                if (parentFloatingWindow != null)
+                if (parentFloatingWindow is not null)
                     attachFloatingWindow =
                         parentFloatingWindow.Descendents().OfType<LayoutAnchorablePane>().Count() == 1;
 
@@ -184,7 +184,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             _isMouseDown = false;
             base.OnMouseLeftButtonUp(e);
 
-            if (Model != null)
+            if (Model is not null)
                 Model.IsActive = true; //FocusElementManager.SetFocusOnLastElement(Model);
         }
 

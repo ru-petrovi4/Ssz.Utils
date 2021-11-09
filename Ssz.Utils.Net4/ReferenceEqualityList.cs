@@ -48,7 +48,7 @@ namespace Ssz.Utils
         // 
         public ReferenceEqualityList(IEnumerable<T> collection)
         {
-            if (collection == null)
+            if (collection is null)
                 throw new ArgumentNullException("collection");
 
             var c = collection as ICollection<T>;
@@ -155,7 +155,7 @@ namespace Ssz.Utils
         {
             get
             {
-                if (_syncRoot == null)
+                if (_syncRoot is null)
                 {
                     Interlocked.CompareExchange<Object>(ref _syncRoot, new Object(), null);
                 }
@@ -333,7 +333,7 @@ namespace Ssz.Utils
 
         public ReferenceEqualityList<TOutput> ConvertAll<TOutput>(Converter<T, TOutput> converter)
         {
-            if (converter == null)
+            if (converter is null)
             {
                 throw new ArgumentNullException("converter");
             }
@@ -413,7 +413,7 @@ namespace Ssz.Utils
 
         public T Find(Predicate<T> match)
         {
-            if (match == null)
+            if (match is null)
             {
                 throw new ArgumentNullException("match");
             }
@@ -431,7 +431,7 @@ namespace Ssz.Utils
 
         public List<T> FindAll(Predicate<T> match)
         {
-            if (match == null)
+            if (match is null)
             {
                 throw new ArgumentNullException("match");
             }
@@ -470,7 +470,7 @@ namespace Ssz.Utils
                 throw new ArgumentOutOfRangeException();
             }
 
-            if (match == null)
+            if (match is null)
             {
                 throw new ArgumentNullException("match");
             }
@@ -485,7 +485,7 @@ namespace Ssz.Utils
 
         public T FindLast(Predicate<T> match)
         {
-            if (match == null)
+            if (match is null)
             {
                 throw new ArgumentNullException("match");
             }
@@ -513,7 +513,7 @@ namespace Ssz.Utils
 
         public int FindLastIndex(int startIndex, int count, Predicate<T> match)
         {
-            if (match == null)
+            if (match is null)
             {
                 throw new ArgumentNullException("match");
             }
@@ -554,7 +554,7 @@ namespace Ssz.Utils
 
         public void ForEach(Action<T> action)
         {
-            if (action == null)
+            if (action is null)
             {
                 throw new ArgumentNullException("action");
             }
@@ -713,7 +713,7 @@ namespace Ssz.Utils
         //
         public void InsertRange(int index, IEnumerable<T> collection)
         {
-            if (collection == null)
+            if (collection is null)
             {
                 throw new ArgumentNullException("collection");
             }
@@ -869,7 +869,7 @@ namespace Ssz.Utils
         // The complexity is O(n).   
         public int RemoveAll(Predicate<T> match)
         {
-            if (match == null)
+            if (match is null)
             {
                 throw new ArgumentNullException("match");
             }
@@ -1027,7 +1027,7 @@ namespace Ssz.Utils
 
         /*
         public void Sort(Comparison<T> comparison) {
-            if( comparison == null) {
+            if( comparison is null) {
                 throw new ArgumentNullException("comparison");
             }
             
@@ -1067,7 +1067,7 @@ namespace Ssz.Utils
 
         public bool TrueForAll(Predicate<T> match)
         {
-            if (match == null)
+            if (match is null)
             {
                 throw new ArgumentNullException("match");
             }
@@ -1100,12 +1100,12 @@ namespace Ssz.Utils
         {
             // Non-null values are fine.  Only accept nulls if T is a class or Nullable<U>.
             // Note that default(T) is not equal to null for value types except when T is Nullable<U>. 
-            return ((value is T) || (value == null && default(T) == null));
+            return ((value is T) || (value is null && default(T) == null));
         }
 
         private static int IndexOf(T[] array, T value, int startIndex, int count)
         {
-            if (array == null)
+            if (array is null)
                 throw new ArgumentNullException("array");
             int lb = array.GetLowerBound(0);
             if (startIndex < lb || startIndex > array.Length + lb)

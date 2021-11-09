@@ -43,14 +43,14 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Converters
                 var val = (bool) value;
                 if (val)
                     return Visibility.Visible;
-                if (parameter != null && parameter is Visibility)
+                if (parameter is not null && parameter is Visibility)
                     return parameter;
                 return Visibility.Collapsed;
             }
 
-            if (value == null)
+            if (value is null)
             {
-                if (parameter != null && parameter is Visibility)
+                if (parameter is not null && parameter is Visibility)
                     return parameter;
                 return Visibility.Collapsed;
             }

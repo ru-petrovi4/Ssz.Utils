@@ -105,15 +105,15 @@ namespace Xi.Contracts.Data
 		/// </returns>
 		public bool CompareIdentical(FilterCriterion filterToCompare)
 		{
-			if (filterToCompare == null)
+			if (filterToCompare is null)
 				return false;
-			if ((this.OperandName == null) && (filterToCompare.OperandName != null))
+			if ((this.OperandName is null) && (filterToCompare.OperandName is not null))
 				return false;
-			if ((this.OperandName != null) && (filterToCompare.OperandName == null))
+			if ((this.OperandName is not null) && (filterToCompare.OperandName is null))
 				return false;
-			if ((this.ComparisonValue == null) && (filterToCompare.ComparisonValue != null))
+			if ((this.ComparisonValue is null) && (filterToCompare.ComparisonValue is not null))
 				return false;
-			if ((this.ComparisonValue != null) && (filterToCompare.ComparisonValue == null))
+			if ((this.ComparisonValue is not null) && (filterToCompare.ComparisonValue is null))
 				return false;
 
 			// now check to see if the members are the same. If not, return false.

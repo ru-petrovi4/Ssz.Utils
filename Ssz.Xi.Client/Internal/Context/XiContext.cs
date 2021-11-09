@@ -71,14 +71,14 @@ namespace Ssz.Xi.Client.Internal.Context
                 _serverKeepAliveSkipCount = keepAliveSkipCount;
                 _serverCallbackRate = callbackRate;
 
-                if (applicationName != null) _applicationName = applicationName;
+                if (applicationName is not null) _applicationName = applicationName;
                 else
                 {
                     string appDomainName = AppDomain.CurrentDomain.FriendlyName;
                     _applicationName = appDomainName.Replace(".vshost.", ".");
                 }
 
-                if (workstationName != null) _workstationName = workstationName;
+                if (workstationName is not null) _workstationName = workstationName;
                 else _workstationName = Dns.GetHostName();
 
                 _serverContextTimeoutInMs = ValidateServerContextTimeout(contextTimeout);
@@ -88,7 +88,7 @@ namespace Ssz.Xi.Client.Internal.Context
 
                 _contextOptions = contextOptions;
 
-                if (_xiServerInfo == null) throw new InvalidOperationException();
+                if (_xiServerInfo is null) throw new InvalidOperationException();
 
                 EndpointConfiguration? resourceManagementEndpointConfig =
                     _xiServerInfo.ServerEntry.EndpointServerSettings?.FirstOrDefault(
@@ -101,13 +101,13 @@ namespace Ssz.Xi.Client.Internal.Context
                              //    resourceManagementServiceEndpoint.ListenUri)
                                  );
 
-                if (resourceManagementEndpointConfig == null)
+                if (resourceManagementEndpointConfig is null)
                     throw new Exception("The EndpointConfiguration for the " + resourceManagementServiceEndpoint.Name +
                                         "endpoint was not found");
 
                 if (localeId != 0)
                 {
-                    if (_xiServerInfo.ServerEntry.ServerDescription?.SupportedLocaleIds != null &&
+                    if (_xiServerInfo.ServerEntry.ServerDescription?.SupportedLocaleIds is not null &&
                         _xiServerInfo.ServerEntry.ServerDescription.SupportedLocaleIds.Count > 0)
                     {
                         _localeId = 0;
@@ -167,7 +167,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 }*/
 
                 _iResourceManagement = iResourceManagementChannelFactory.CreateChannel();
-                if (_iResourceManagement == null)
+                if (_iResourceManagement is null)
                     throw new Exception("Failed to create the IResourceManagement WCF Channel");
 
                 try
@@ -183,7 +183,7 @@ namespace Ssz.Xi.Client.Internal.Context
                     throw new ResourceManagementInitiateException(ex);
                 }
 
-                if (_contextId == null) throw new Exception("Server returns null contextId.");
+                if (_contextId is null) throw new Exception("Server returns null contextId.");
 
                 SetResourceManagementLastCallUtc();
 
@@ -239,7 +239,7 @@ namespace Ssz.Xi.Client.Internal.Context
             if (disposing)
             {
                 // close the context with the server if necessary
-                if (_iResourceManagement != null)
+                if (_iResourceManagement is not null)
                 {
                     if (((ICommunicationObject)_iResourceManagement).State == CommunicationState.Opened)
                     {
@@ -272,22 +272,22 @@ namespace Ssz.Xi.Client.Internal.Context
                 }
 
                 // Dispose of the Read, Write, and Subscribe Endpoints
-                if (_readEndpoint != null)
+                if (_readEndpoint is not null)
                 {
                     _readEndpoint.Dispose();
                     _readEndpoint = null;
                 }
-                if (_writeEndpoint != null)
+                if (_writeEndpoint is not null)
                 {
                     _writeEndpoint.Dispose();
                     _writeEndpoint = null;
                 }
-                if (_pollEndpoint != null)
+                if (_pollEndpoint is not null)
                 {
                     _pollEndpoint.Dispose();
                     _pollEndpoint = null;
                 }
-                if (_callbackEndpoint != null)
+                if (_callbackEndpoint is not null)
                 {
                     _callbackEndpoint.Dispose();
                     _callbackEndpoint = null;
@@ -376,7 +376,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_iResourceManagement == null) throw new InvalidOperationException();
+            if (_iResourceManagement is null) throw new InvalidOperationException();
             try
             {
                 _serverDescription = _iResourceManagement.Identify(ContextId);
@@ -398,7 +398,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_iResourceManagement == null) throw new InvalidOperationException();
+            if (_iResourceManagement is null) throw new InvalidOperationException();
             try
             {
                 _serverStatusList = _iResourceManagement.Status(ContextId);
@@ -423,7 +423,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_iResourceManagement == null) throw new InvalidOperationException();
+            if (_iResourceManagement is null) throw new InvalidOperationException();
             List<RequestedString>? requestedStrings = null;
             try
             {
@@ -478,7 +478,7 @@ namespace Ssz.Xi.Client.Internal.Context
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
             List<ObjectAttributes>? objectAttributes = null;
-            if (_iResourceManagement == null) throw new InvalidOperationException();
+            if (_iResourceManagement is null) throw new InvalidOperationException();
             try
             {
                 objectAttributes = _iResourceManagement.FindObjects(ContextId, findCriteria, numberToReturn);
@@ -512,10 +512,10 @@ namespace Ssz.Xi.Client.Internal.Context
 
             bool bKeepAliveIntervalExpired = timeDiffInMs >= KeepAliveIntervalMs;
 
-            bool bCommunicationsFail = ((ResourceManagementChannel != null &&
+            bool bCommunicationsFail = ((ResourceManagementChannel is not null &&
                                          ResourceManagementChannel.State != CommunicationState.Opened) ||
-                                        (_callbackEndpoint != null &&
-                                         _callbackEndpoint.Channel != null &&
+                                        (_callbackEndpoint is not null &&
+                                         _callbackEndpoint.Channel is not null &&
                                          _callbackEndpoint.Channel.State !=
                                          CommunicationState.Opened));
 
@@ -524,7 +524,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 if (!ServerContextIsClosing) KeepEndpointsAlive(nowUtc);
             }
             
-            if (_pendingContextNotificationData != null)
+            if (_pendingContextNotificationData is not null)
             {
                 RaiseContextNotifyEvent(this, _pendingContextNotificationData);
                 _pendingContextNotificationData = null;
@@ -643,7 +643,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             get
             {
-                if (_xiServerInfo == null) throw new InvalidOperationException();
+                if (_xiServerInfo is null) throw new InvalidOperationException();
                 return (null == _xiServerInfo.ServerEntry.ServerDescription)
                     ? null
                     : new Uri(_xiServerInfo.ServerEntry.ServerDescription.ServerDiscoveryUrl ?? "");
@@ -690,7 +690,7 @@ namespace Ssz.Xi.Client.Internal.Context
         /// <returns> The standard MIB is returned. </returns>
         private StandardMib? GetStandardMibInternal()
         {
-            if (_iResourceManagement == null) throw new InvalidOperationException();
+            if (_iResourceManagement is null) throw new InvalidOperationException();
             try
             {
                 _standardMib = _iResourceManagement.GetStandardMib(ContextId);
@@ -749,7 +749,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             try
             {
-                if (_iResourceManagement != null)
+                if (_iResourceManagement is not null)
                 {
                     // close the existing channel
                     ChannelCloser.Close(_iResourceManagement);
@@ -775,7 +775,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 // since the resource management EP failure was detected (if the callback was received after the 
                 // resource management EP failure was detected, then the callback EP should be working
                 // only do this if the context has been re-initiated
-                if (_callbackEndpoint != null)
+                if (_callbackEndpoint is not null)
                 {
                     using (_callbackEndpoint.SyncRoot.Enter())
                     {
@@ -834,7 +834,7 @@ namespace Ssz.Xi.Client.Internal.Context
             if (fe.Detail.ErrorCode == XiFaultCodes.E_SERVER_SHUTDOWN)
             {
                 var serverStatus = new ServerStatus();
-                if (_serverDescription != null)
+                if (_serverDescription is not null)
                 {
                     serverStatus.ServerName = _serverDescription.ServerName;
                     serverStatus.ServerType = _serverDescription.ServerTypes;
@@ -850,7 +850,7 @@ namespace Ssz.Xi.Client.Internal.Context
             if (fe.Detail.ErrorCode == XiFaultCodes.E_NOCONTEXT)
             {
                 var serverStatus = new ServerStatus();
-                if (_serverDescription != null)
+                if (_serverDescription is not null)
                 {
                     serverStatus.ServerName = _serverDescription.ServerName;
                     serverStatus.ServerType = _serverDescription.ServerTypes;
@@ -919,14 +919,14 @@ namespace Ssz.Xi.Client.Internal.Context
         private void KeepEndpointsAlive(DateTime nowUtc)
         {
             // Test the ResourceManagement state individually since its state can change as a result of any of the actions taken
-            if (ResourceManagementChannel != null && ResourceManagementChannel.State == CommunicationState.Opened)
+            if (ResourceManagementChannel is not null && ResourceManagementChannel.State == CommunicationState.Opened)
             {
                 try
                 {
                     if (!ServerContextIsClosing) // reduce the timing window by checking this again here
                     {
                         // set to ResponsePending to prevent multiple calls from queueing up internally in WCF
-                        if (_iResourceManagement == null) throw new InvalidOperationException();
+                        if (_iResourceManagement is null) throw new InvalidOperationException();
                         _iResourceManagement.ClientKeepAlive(ContextId);
                         // set this immediately
                         _resourceManagementLastCallUtc = nowUtc;
@@ -948,7 +948,7 @@ namespace Ssz.Xi.Client.Internal.Context
 
             /*
             // Only check the state of the other endpoints if the ResourceManagement endpoint is open
-            if (ResourceManagementChannel != null && ResourceManagementChannel.State == CommunicationState.Opened && _callbackEndpoint != null)
+            if (ResourceManagementChannel is not null && ResourceManagementChannel.State == CommunicationState.Opened && _callbackEndpoint is not null)
             {
                 using (_callbackEndpoint.SyncRoot.Enter())
                 {
@@ -962,12 +962,12 @@ namespace Ssz.Xi.Client.Internal.Context
             }
 
             // and this should be handled in the same execution of this method
-            if (ResourceManagementChannel == null || ResourceManagementChannel.State != CommunicationState.Opened) ReInitiateContext();
+            if (ResourceManagementChannel is null || ResourceManagementChannel.State != CommunicationState.Opened) ReInitiateContext();
             */
 
             // check to see if a callback hasn't been received during the callback rate interval
             // Do this whether or not the ResourceManagement endpoint is open
-            if (_callbackEndpoint != null)
+            if (_callbackEndpoint is not null)
             {
                 if (!_callbackEndpoint.Disposed && _callbackEndpoint.Channel.State == CommunicationState.Opened)
                 {

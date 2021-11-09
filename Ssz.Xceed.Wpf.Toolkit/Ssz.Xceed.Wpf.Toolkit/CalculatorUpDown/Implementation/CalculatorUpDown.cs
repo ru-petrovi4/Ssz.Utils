@@ -37,7 +37,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
                 IsOpen = false;
             ReleaseMouseCapture();
 
-            if (isFocusOnTextBox && TextBox != null)
+            if (isFocusOnTextBox && TextBox is not null)
                 TextBox.Focus();
         }
 
@@ -94,7 +94,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnIsOpenChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var calculatorUpDown = o as CalculatorUpDown;
-            if (calculatorUpDown != null)
+            if (calculatorUpDown is not null)
                 calculatorUpDown.OnIsOpenChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 
@@ -156,20 +156,20 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             base.OnApplyTemplate();
 
-            if (_calculatorPopup != null)
+            if (_calculatorPopup is not null)
                 _calculatorPopup.Opened -= CalculatorPopup_Opened;
 
             _calculatorPopup = GetTemplateChild(PART_CalculatorPopup) as Popup;
 
-            if (_calculatorPopup != null)
+            if (_calculatorPopup is not null)
                 _calculatorPopup.Opened += CalculatorPopup_Opened;
 
-            if (_calculator != null)
+            if (_calculator is not null)
                 _calculator.ValueChanged -= OnCalculatorValueChanged;
 
             _calculator = GetTemplateChild(PART_Calculator) as Calculator;
 
-            if (_calculator != null)
+            if (_calculator is not null)
                 _calculator.ValueChanged += OnCalculatorValueChanged;
         }
 
@@ -184,7 +184,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void CalculatorPopup_Opened(object sender, EventArgs e)
         {
-            if (_calculator != null)
+            if (_calculator is not null)
             {
                 _calculator.InitializeToValue(Value);
                 _calculator.Focus();

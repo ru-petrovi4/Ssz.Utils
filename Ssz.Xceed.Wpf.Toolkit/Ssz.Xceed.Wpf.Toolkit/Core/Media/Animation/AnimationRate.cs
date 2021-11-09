@@ -124,7 +124,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Media.Animation
 
         public override bool Equals(object value)
         {
-            if (value == null)
+            if (value is null)
                 return false;
 
             if (value is AnimationRate)

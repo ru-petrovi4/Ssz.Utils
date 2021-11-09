@@ -37,10 +37,10 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
 
         private void AddHook(Window window)
         {
-            if (_hwndSource == null)
+            if (_hwndSource is null)
             {
                 _hwndSource = PresentationSource.FromVisual(window) as HwndSource;
-                if (_hwndSource != null)
+                if (_hwndSource is not null)
                 {
                     _hwndSource.AddHook(hwndSourceHook);
                 }

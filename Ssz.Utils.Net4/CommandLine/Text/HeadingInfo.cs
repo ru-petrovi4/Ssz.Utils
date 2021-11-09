@@ -102,11 +102,11 @@ namespace Ssz.Utils.CommandLine.Text
             get
             {
                 var titleAttribute = ReflectionHelper.GetAttribute<AssemblyTitleAttribute>();
-                string title = titleAttribute == null
+                string title = titleAttribute is null
                     ? ReflectionHelper.AssemblyFromWhichToPullInformation.GetName().Name
                     : Path.GetFileNameWithoutExtension(titleAttribute.Title);
                 var versionAttribute = ReflectionHelper.GetAttribute<AssemblyInformationalVersionAttribute>();
-                string version = versionAttribute == null
+                string version = versionAttribute is null
                     ? ReflectionHelper.AssemblyFromWhichToPullInformation.GetName().Version.ToString()
                     : versionAttribute.InformationalVersion;
                 return new HeadingInfo(title, version);

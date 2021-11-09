@@ -135,7 +135,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
             _ignoreSelectedItemsCollectionChanged++;
             SelectedItems.Clear();
-            if (newValue != null) SelectedItems.Add(newValue);
+            if (newValue is not null) SelectedItems.Add(newValue);
             UpdateFromSelectedItems();
             _ignoreSelectedItemsCollectionChanged--;
         }
@@ -149,15 +149,15 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
             get => _selectedItems;
             private set
             {
-                if (value == null)
+                if (value is null)
                     throw new ArgumentNullException("value");
 
                 var oldCollection = _selectedItems as INotifyCollectionChanged;
                 var newCollection = value as INotifyCollectionChanged;
 
-                if (oldCollection != null) CollectionChangedEventManager.RemoveListener(oldCollection, this);
+                if (oldCollection is not null) CollectionChangedEventManager.RemoveListener(oldCollection, this);
 
-                if (newCollection != null) CollectionChangedEventManager.AddListener(newCollection, this);
+                if (newCollection is not null) CollectionChangedEventManager.AddListener(newCollection, this);
 
                 _selectedItems = value;
             }
@@ -189,7 +189,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
             if (!IsInitialized)
                 return;
 
-            SelectedItems = newValue != null ? newValue : new ObservableCollection<object>();
+            SelectedItems = newValue is not null ? newValue : new ObservableCollection<object>();
             UpdateFromSelectedItems();
         }
 
@@ -240,7 +240,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         private static void OnSelectedValueChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var selector = o as Selector;
-            if (selector != null)
+            if (selector is not null)
                 selector.OnSelectedValueChanged((string) e.OldValue, (string) e.NewValue);
         }
 
@@ -321,9 +321,9 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
             var oldCollection = oldValue as INotifyCollectionChanged;
             var newCollection = newValue as INotifyCollectionChanged;
 
-            if (oldCollection != null) CollectionChangedEventManager.RemoveListener(oldCollection, this);
+            if (oldCollection is not null) CollectionChangedEventManager.RemoveListener(oldCollection, this);
 
-            if (newCollection != null) CollectionChangedEventManager.AddListener(newCollection, this);
+            if (newCollection is not null) CollectionChangedEventManager.AddListener(newCollection, this);
 
             if (!IsInitialized)
                 return;
@@ -340,15 +340,15 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         {
             base.EndInit();
 
-            if (SelectedItemsOverride != null)
+            if (SelectedItemsOverride is not null)
                 OnSelectedItemsOverrideChanged(null, SelectedItemsOverride);
-            else if (SelectedMemberPath != null)
+            else if (SelectedMemberPath is not null)
                 OnSelectedMemberPathChanged(null, SelectedMemberPath);
-            else if (SelectedValue != null)
+            else if (SelectedValue is not null)
                 OnSelectedValueChanged(null, SelectedValue);
-            else if (SelectedItem != null) OnSelectedItemChanged(null, SelectedItem);
+            else if (SelectedItem is not null) OnSelectedItemChanged(null, SelectedItem);
 
-            if (ValueMemberPath != null) OnValueMemberPathChanged(null, ValueMemberPath);
+            if (ValueMemberPath is not null) OnValueMemberPathChanged(null, ValueMemberPath);
         }
 
         #endregion //Base Class Overrides
@@ -377,10 +377,10 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
         protected object GetItemValue(object item)
         {
-            if (!string.IsNullOrEmpty(ValueMemberPath) && item != null)
+            if (!string.IsNullOrEmpty(ValueMemberPath) && item is not null)
             {
                 var property = item.GetType().GetProperty(ValueMemberPath);
-                if (property != null)
+                if (property is not null)
                     return property.GetValue(item, null);
             }
 
@@ -393,7 +393,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
                 foreach (var item in ItemsCollection)
                 {
                     var property = item.GetType().GetProperty(ValueMemberPath);
-                    if (property != null)
+                    if (property is not null)
                     {
                         var propertyValue = property.GetValue(item, null);
                         if (value == propertyValue.ToString())
@@ -408,7 +408,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         {
             var prop = GetSelectedMemberPathProperty(item);
 
-            return prop != null
+            return prop is not null
                 ? (bool) prop.GetValue(item, null)
                 : (bool?) null;
         }
@@ -417,16 +417,16 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         {
             var prop = GetSelectedMemberPathProperty(item);
 
-            if (prop != null) prop.SetValue(item, value, null);
+            if (prop is not null) prop.SetValue(item, value, null);
         }
 
         private PropertyInfo GetSelectedMemberPathProperty(object item)
         {
             PropertyInfo propertyInfo = null;
-            if (!string.IsNullOrEmpty(SelectedMemberPath) && item != null)
+            if (!string.IsNullOrEmpty(SelectedMemberPath) && item is not null)
             {
                 var property = item.GetType().GetProperty(SelectedMemberPath);
-                if (property != null && property.PropertyType == typeof(bool)) propertyInfo = property;
+                if (property is not null && property.PropertyType == typeof(bool)) propertyInfo = property;
             }
 
             return propertyInfo;
@@ -523,7 +523,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
             RaiseEvent(args);
 
-            if (Command != null)
+            if (Command is not null)
                 Command.Execute(args.Item);
         }
 
@@ -569,7 +569,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
             foreach (var item in ItemsCollection)
             {
                 var isSelected = GetSelectedMemberPathValue(item);
-                if (isSelected != null)
+                if (isSelected is not null)
                 {
                     if (isSelected.Value)
                     {
@@ -605,7 +605,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
                 _ignoreSelectedMemberPathValuesChanged--;
 
                 var selectorItem = ItemContainerGenerator.ContainerFromItem(o) as SelectorItem;
-                if (selectorItem != null) selectorItem.IsSelected = isSelected;
+                if (selectorItem is not null) selectorItem.IsSelected = isSelected;
             }
 
             UpdateSelectedItem();
@@ -653,7 +653,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
                 {
                     var itemValue = GetItemValue(item);
 
-                    var isSelected = itemValue != null
+                    var isSelected = itemValue is not null
                                      && selectedValues.Contains(itemValue.ToString());
 
                     if (isSelected) SelectedItems.Add(item);

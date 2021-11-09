@@ -63,7 +63,7 @@ namespace Ssz.Utils.CommandLine.Infrastructure
         {
             get
             {
-                if (key == null)
+                if (key is null)
                 {
                     throw new ArgumentNullException("key");
                 }
@@ -73,7 +73,7 @@ namespace Ssz.Utils.CommandLine.Infrastructure
 
             set
             {
-                if (key == null)
+                if (key is null)
                 {
                     throw new ArgumentNullException("key");
                 }

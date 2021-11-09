@@ -24,7 +24,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null)
+            if (value is null)
                 return Binding.DoNothing;
 
             return value;

@@ -6,7 +6,7 @@ namespace System.Linq.Dynamic.Core.Parser
     {
         public static bool IsNull(Expression exp)
         {
-            return exp is ConstantExpression cExp && cExp.Value == null;
+            return exp is ConstantExpression cExp && cExp.Value is null;
         }
     }
 }

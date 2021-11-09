@@ -32,7 +32,7 @@ namespace Ssz.Utils.Logging
             {
                 Process currentProcess = Process.GetCurrentProcess();
                 string? moduleName = currentProcess.MainModule?.ModuleName;
-                if (moduleName == null) throw new InvalidOperationException();
+                if (moduleName is null) throw new InvalidOperationException();
                 var exeFileName = new FileInfo(moduleName).Name;
 
                 LogFileName = Path.Combine(_logsDirectoryFullName, exeFileName + @"." + currentProcess.Id + @".log");
@@ -115,7 +115,7 @@ namespace Ssz.Utils.Logging
                 }
                 finally
                 {
-                    if (sw != null)
+                    if (sw is not null)
                     {
                         sw.Dispose();
                     }

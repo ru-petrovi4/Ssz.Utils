@@ -123,17 +123,17 @@ namespace Ssz.Xi.Client.Internal.ListItems
             set
             {
                 _valueTypeId = value;
-                if (_valueTypeId == null)
+                if (_valueTypeId is null)
                 {
                     ValueTypeCode = TypeCode.Empty;
                     return;
                 }
-                if (_valueTypeId.Namespace != null)
+                if (_valueTypeId.Namespace is not null)
                 {
                     ValueTypeCode = TypeCode.Object;
                     return;
                 }
-                if (_valueTypeId.SchemaType != null)
+                if (_valueTypeId.SchemaType is not null)
                 {
                     ValueTypeCode = TypeCode.Object;
                     return;

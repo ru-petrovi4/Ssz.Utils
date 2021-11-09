@@ -102,7 +102,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             DependencyPropertyChangedEventArgs e)
         {
             var childWindow = d as ChildWindow;
-            if (childWindow != null)
+            if (childWindow is not null)
                 childWindow.OnDesignerWindowStatePropertyChanged((WindowState) e.OldValue, (WindowState) e.NewValue);
         }
 
@@ -141,7 +141,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnIsModalPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var childWindow = d as ChildWindow;
-            if (childWindow != null)
+            if (childWindow is not null)
                 childWindow.OnIsModalChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 
@@ -150,7 +150,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private void OnIsModalChanged(bool oldValue, bool newValue)
         {
             var handler = IsModalChanged;
-            if (handler != null) handler(this, EventArgs.Empty);
+            if (handler is not null) handler(this, EventArgs.Empty);
 
             if (!_hasWindowContainer)
             {
@@ -187,7 +187,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnOverlayBrushChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var childWindow = d as ChildWindow;
-            if (childWindow != null)
+            if (childWindow is not null)
                 childWindow.OnOverlayBrushChanged((Brush) e.OldValue, (Brush) e.NewValue);
         }
 
@@ -218,7 +218,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnOverlayOpacityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var childWindow = d as ChildWindow;
-            if (childWindow != null)
+            if (childWindow is not null)
                 childWindow.OnOverlayOpacityChanged((double) e.OldValue, (double) e.NewValue);
         }
 
@@ -246,7 +246,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnWindowStartupLocationChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var childWindow = o as ChildWindow;
-            if (childWindow != null)
+            if (childWindow is not null)
                 childWindow.OnWindowStartupLocationChanged((WindowStartupLocation) e.OldValue,
                     (WindowStartupLocation) e.NewValue);
         }
@@ -275,7 +275,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnWindowStatePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var childWindow = d as ChildWindow;
-            if (childWindow != null)
+            if (childWindow is not null)
                 childWindow.OnWindowStatePropertyChanged((WindowState) e.OldValue, (WindowState) e.NewValue);
         }
 
@@ -322,7 +322,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             base.OnApplyTemplate();
 
-            if (_windowControl != null)
+            if (_windowControl is not null)
             {
                 _windowControl.HeaderDragDelta -= (o, e) => OnHeaderDragDelta(e);
                 _windowControl.HeaderIconDoubleClicked -= (o, e) => OnHeaderIconDoubleClick(e);
@@ -330,7 +330,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             }
 
             _windowControl = GetTemplateChild(PART_WindowControl) as WindowControl;
-            if (_windowControl != null)
+            if (_windowControl is not null)
             {
                 _windowControl.HeaderDragDelta += (o, e) => OnHeaderDragDelta(e);
                 _windowControl.HeaderIconDoubleClicked += (o, e) => OnHeaderIconDoubleClick(e);
@@ -340,13 +340,13 @@ namespace Ssz.Xceed.Wpf.Toolkit
             UpdateBlockMouseInputsPanel();
 
             _windowRoot = GetTemplateChild(PART_WindowRoot) as Grid;
-            if (_windowRoot != null) _windowRoot.RenderTransform = _moveTransform;
-            _hasWindowContainer = VisualTreeHelper.GetParent(this) as WindowContainer != null;
+            if (_windowRoot is not null) _windowRoot.RenderTransform = _moveTransform;
+            _hasWindowContainer = VisualTreeHelper.GetParent(this) as WindowContainer is not null;
 
             if (!_hasWindowContainer)
             {
                 _parentContainer = VisualTreeHelper.GetParent(this) as FrameworkElement;
-                if (_parentContainer != null)
+                if (_parentContainer is not null)
                 {
                     _parentContainer.LayoutUpdated += ParentContainer_LayoutUpdated;
                     _parentContainer.SizeChanged += ParentContainer_SizeChanged;
@@ -368,15 +368,15 @@ namespace Ssz.Xceed.Wpf.Toolkit
 #if VS2008
       FocusVisualStyle = null;
 #else
-                var focusStyle = _root != null ? _root.Resources["FocusVisualStyle"] as Style : null;
-                if (focusStyle != null)
+                var focusStyle = _root is not null ? _root.Resources["FocusVisualStyle"] as Style : null;
+                if (focusStyle is not null)
                 {
                     var focusStyleDataContext = new Setter(DataContextProperty, this);
                     focusStyle.Setters.Add(focusStyleDataContext);
                     FocusVisualStyle = focusStyle;
                 }
 #endif
-                if (_root != null) _root.Children.Add(_modalLayerPanel);
+                if (_root is not null) _root.Children.Add(_modalLayerPanel);
             }
         }
 
@@ -386,7 +386,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
             Action action = () =>
             {
-                if (FocusedElement != null)
+                if (FocusedElement is not null)
                     FocusedElement.Focus();
             };
 
@@ -426,7 +426,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             base.OnLeftPropertyChanged(oldValue, newValue);
 
-            _hasWindowContainer = VisualTreeHelper.GetParent(this) as WindowContainer != null;
+            _hasWindowContainer = VisualTreeHelper.GetParent(this) as WindowContainer is not null;
             if (!_hasWindowContainer)
             {
                 Left = GetRestrictedLeft();
@@ -438,7 +438,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             base.OnTopPropertyChanged(oldValue, newValue);
 
-            _hasWindowContainer = VisualTreeHelper.GetParent(this) as WindowContainer != null;
+            _hasWindowContainer = VisualTreeHelper.GetParent(this) as WindowContainer is not null;
             if (!_hasWindowContainer)
             {
                 Top = GetRestrictedTop();
@@ -448,7 +448,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         internal override void UpdateBlockMouseInputsPanel()
         {
-            if (_windowControl != null) _windowControl.IsBlockMouseInputsPanelActive = IsBlockMouseInputsPanelActive;
+            if (_windowControl is not null) _windowControl.IsBlockMouseInputsPanelActive = IsBlockMouseInputsPanelActive;
         }
 
         #endregion //Base Class Overrides
@@ -528,7 +528,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         [Obsolete("This method is obsolete and should no longer be used.")]
         private void ChildWindow_Unloaded(object sender, RoutedEventArgs e)
         {
-            if (_parentContainer != null)
+            if (_parentContainer is not null)
             {
                 _parentContainer.LayoutUpdated -= ParentContainer_LayoutUpdated;
                 _parentContainer.SizeChanged -= ParentContainer_SizeChanged;
@@ -565,7 +565,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             if (Left < 0)
                 return 0;
 
-            if (_parentContainer != null && _windowRoot != null)
+            if (_parentContainer is not null && _windowRoot is not null)
                 if (Left + _windowRoot.ActualWidth > _parentContainer.ActualWidth && _parentContainer.ActualWidth != 0)
                 {
                     var left = _parentContainer.ActualWidth - _windowRoot.ActualWidth;
@@ -582,7 +582,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             if (Top < 0)
                 return 0;
 
-            if (_parentContainer != null && _windowRoot != null)
+            if (_parentContainer is not null && _windowRoot is not null)
                 if (Top + _windowRoot.ActualHeight > _parentContainer.ActualHeight &&
                     _parentContainer.ActualHeight != 0)
                 {
@@ -659,7 +659,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             var index = 0;
 
-            if (_parentContainer != null)
+            if (_parentContainer is not null)
                 index = (int) _parentContainer.GetValue(Panel.ZIndexProperty);
 
             SetValue(Panel.ZIndexProperty, ++index);
@@ -671,7 +671,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         [Obsolete("This method is obsolete and should no longer be used. Use WindowContainer.CenterChild() instead.")]
         private void CenterChildWindow()
         {
-            if (_parentContainer != null && _windowRoot != null)
+            if (_parentContainer is not null && _windowRoot is not null)
             {
                 Left = (_parentContainer.ActualWidth - _windowRoot.ActualWidth) / 2.0;
                 Top = (_parentContainer.ActualHeight - _windowRoot.ActualHeight) / 2.0;
@@ -733,7 +733,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         protected virtual void OnClosed(EventArgs e)
         {
-            if (Closed != null)
+            if (Closed is not null)
                 Closed(this, e);
         }
 
@@ -744,7 +744,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         protected virtual void OnClosing(CancelEventArgs e)
         {
-            if (Closing != null)
+            if (Closing is not null)
                 Closing(this, e);
         }
 

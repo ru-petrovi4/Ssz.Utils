@@ -47,7 +47,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         internal void RegisterID(string id, FrameworkElement element)
         {
-            if (element == null)
+            if (element is null)
                 return;
 
             _knownIDs[id] = element;
@@ -76,7 +76,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         protected override Size MeasureOverride(Size constraint)
         {
             // if first pass, resolve SwitchParent
-            if (!_isMeasured && _switchRoot == null)
+            if (!_isMeasured && _switchRoot is null)
             {
                 OnLoaded(this, null);
                 _isMeasured = true;
@@ -132,11 +132,11 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
             // set and apply the new template
             _contentPresenter.ContentTemplate = template;
-            if (template != null) _contentPresenter.ApplyTemplate();
+            if (template is not null) _contentPresenter.ApplyTemplate();
 
             // determine locations of ID'd elements in new template
             // and begin animation to new location
-            if (knownLocations != null && _knownIDs.Count > 0)
+            if (knownLocations is not null && _knownIDs.Count > 0)
             {
                 Dictionary<string, Rect> newLocations = null;
                 RoutedEventHandler onLoaded = null;
@@ -148,12 +148,12 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
                     if (knownLocations.ContainsKey(id))
                     {
                         // ensure that the new locations have been resolved
-                        if (newLocations == null)
+                        if (newLocations is null)
                             newLocations =
                                 SwitchParent.ActiveLayout.GetNewLocationsBasedOnTargetPlacement(this, _switchRoot);
 
                         var parent = VisualTreeHelper.GetParent(element) as UIElement;
-                        if (parent != null)
+                        if (parent is not null)
                         {
                             var previousLocation = knownLocations[id];
                             Point[] points = {previousLocation.TopLeft, previousLocation.BottomRight};
@@ -177,7 +177,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         private void SwitchPresenter_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_switchRoot == null)
+            if (_switchRoot is null)
                 SwitchParent = VisualTreeHelperEx.FindAncestorByType(this, typeof(SwitchPanel), false) as SwitchPanel;
         }
 
@@ -241,14 +241,14 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         protected virtual void OnSwitchParentChanged(DependencyPropertyChangedEventArgs e)
         {
-            if (e.OldValue != null)
+            if (e.OldValue is not null)
             {
                 (e.OldValue as SwitchPanel).UnregisterPresenter(this, _switchRoot);
                 _switchRoot = null;
                 BindingOperations.ClearAllBindings(_contentPresenter);
             }
 
-            if (e.NewValue != null)
+            if (e.NewValue is not null)
             {
                 _contentPresenter.SetBinding(ContentPresenter.ContentProperty, new Binding());
                 _switchRoot = (e.NewValue as SwitchPanel).RegisterPresenter(this);
@@ -258,7 +258,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         private static void OnLoaded(object sender, RoutedEventArgs e)
         {
             var sp = sender as SwitchPresenter;
-            if (sp._switchRoot == null)
+            if (sp._switchRoot is null)
                 sp.SwitchParent = VisualTreeHelperEx.FindAncestorByType(sp, typeof(SwitchPanel), false) as SwitchPanel;
         }
 

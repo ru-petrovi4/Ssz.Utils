@@ -13,7 +13,7 @@ namespace Ssz.Utils
         public static void CurrentDispatcherDoEvents()
         {
             Dispatcher currentDispatcher = Dispatcher.CurrentDispatcher;
-            if (currentDispatcher == null) return;
+            if (currentDispatcher is null) return;
             var frame = new DispatcherFrame();
             currentDispatcher.BeginInvoke(DispatcherPriority.Background,
                 new DispatcherOperationCallback(ExitFrame), frame);

@@ -25,7 +25,7 @@ namespace System.Linq.Dynamic.Core
 
         private static Expression OptimizeExpression(Expression expression)
         {
-            if (ExtensibilityPoint.QueryOptimizer != null)
+            if (ExtensibilityPoint.QueryOptimizer is not null)
             {
                 var optimized = ExtensibilityPoint.QueryOptimizer(expression);
 
@@ -70,11 +70,11 @@ namespace System.Linq.Dynamic.Core
             {
                 ParameterInfo? lastParameter = m.GetParameters().LastOrDefault();
 
-                return lastParameter != null && TypeHelper.GetUnderlyingType(lastParameter.ParameterType) == property.PropertyType;
+                return lastParameter is not null && TypeHelper.GetUnderlyingType(lastParameter.ParameterType) == property.PropertyType;
             });
 
             // Sum, Average
-            if (aggregateMethod != null)
+            if (aggregateMethod is not null)
             {
                 return source.Provider.Execute(
                     Expression.Call(
@@ -648,7 +648,7 @@ namespace System.Linq.Dynamic.Core
             LambdaExpression elementLambda = DynamicExpressionParser.ParseLambda(config, createParameterCtor, source.ElementType, null, resultSelector, args);
 
             Expression? optimized = null;
-            if (equalityComparer == null)
+            if (equalityComparer is null)
             {
                 optimized = OptimizeExpression(Expression.Call(
                     typeof(Queryable), nameof(Queryable.GroupBy),
@@ -782,7 +782,7 @@ namespace System.Linq.Dynamic.Core
 
             Expression? optimized = null;
 
-            if (equalityComparer == null)
+            if (equalityComparer is null)
             {
                 optimized = OptimizeExpression(Expression.Call(
                     typeof(Queryable), nameof(Queryable.GroupBy),
@@ -1509,7 +1509,7 @@ namespace System.Linq.Dynamic.Core
 
             foreach (DynamicOrdering dynamicOrdering in dynamicOrderings)
             {
-                if (comparer == null)
+                if (comparer is null)
                 {
                     queryExpr = Expression.Call(
                         typeof(Queryable), dynamicOrdering.MethodName,
@@ -1592,7 +1592,7 @@ namespace System.Linq.Dynamic.Core
             // Check.NotNull(source, nameof(source));
             Check.Condition(page, p => p > 0, nameof(page));
             Check.Condition(pageSize, ps => ps > 0, nameof(pageSize));
-            Check.Condition(rowCount, rc => rc == null || rc >= 0, nameof(rowCount));
+            Check.Condition(rowCount, rc => rc is null || rc >= 0, nameof(rowCount));
 
             var result = new PagedResult
             {
@@ -1621,7 +1621,7 @@ namespace System.Linq.Dynamic.Core
             // Check.NotNull(source, nameof(source));
             Check.Condition(page, p => p > 0, nameof(page));
             Check.Condition(pageSize, ps => ps > 0, nameof(pageSize));
-            Check.Condition(rowCount, rc => rc == null || rc >= 0, nameof(rowCount));
+            Check.Condition(rowCount, rc => rc is null || rc >= 0, nameof(rowCount));
 
             var result = new PagedResult<TSource>
             {
@@ -1835,7 +1835,7 @@ namespace System.Linq.Dynamic.Core
             //http://stackoverflow.com/a/3001674/2465182
 
             // if resultType is not specified, create one based on the lambda.Body.Type
-            if (resultType == null)
+            if (resultType is null)
             {
                 // SelectMany assumes that lambda.Body.Type is a generic type and throws an exception on
                 // lambda.Body.Type.GetGenericArguments()[0] when used over an array as GetGenericArguments() returns an empty array.
@@ -1982,7 +1982,7 @@ namespace System.Linq.Dynamic.Core
 
             bool createParameterCtor = config.EvaluateGroupByAtDatabase ? true : SupportsLinqToObjects(config, source);
             LambdaExpression sourceSelectLambda =
-                collectionSelectorArgs != null ?
+                collectionSelectorArgs is not null ?
                 DynamicExpressionParser.ParseLambda(config, createParameterCtor, source.ElementType, null, collectionSelector, collectionSelectorArgs) :
                 DynamicExpressionParser.ParseLambda(config, createParameterCtor, source.ElementType, null, collectionSelector);
 
@@ -2433,7 +2433,7 @@ namespace System.Linq.Dynamic.Core
 
             foreach (DynamicOrdering dynamicOrdering in dynamicOrderings)
             {
-                if (comparer == null)
+                if (comparer is null)
                 {
                     queryExpr = Expression.Call(
                         typeof(Queryable), dynamicOrdering.MethodName,

@@ -15,10 +15,10 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Converters
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values != null && values.Length == 4)
+            if (values is not null && values.Length == 4)
             {
                 var list = values[0] as IList;
-                if (list != null) // Is List
+                if (list is not null) // Is List
                 {
                     if (list.Count > 0) return CompoundValueBrush;
                 }

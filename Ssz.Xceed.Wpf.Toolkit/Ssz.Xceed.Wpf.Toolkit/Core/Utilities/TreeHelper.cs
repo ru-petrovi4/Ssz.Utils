@@ -49,33 +49,33 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
                 // Case 126732 : To correctly detect parent of a popup we must do that exception case
                 var popup = element as Popup;
 
-                if (popup != null && popup.PlacementTarget != null)
+                if (popup is not null && popup.PlacementTarget is not null)
                     return popup.PlacementTarget;
             }
 
             var visual = element as Visual;
-            var parent = visual == null ? null : VisualTreeHelper.GetParent(visual);
+            var parent = visual is null ? null : VisualTreeHelper.GetParent(visual);
 
-            if (parent == null)
+            if (parent is null)
             {
                 // No Visual parent. Check in the logical tree.
                 var fe = element as FrameworkElement;
 
-                if (fe != null)
+                if (fe is not null)
                 {
                     parent = fe.Parent;
 
-                    if (parent == null) parent = fe.TemplatedParent;
+                    if (parent is null) parent = fe.TemplatedParent;
                 }
                 else
                 {
                     var fce = element as FrameworkContentElement;
 
-                    if (fce != null)
+                    if (fce is not null)
                     {
                         parent = fce.Parent;
 
-                        if (parent == null) parent = fce.TemplatedParent;
+                        if (parent is null) parent = fce.TemplatedParent;
                     }
                 }
             }
@@ -125,13 +125,13 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
             T foundElement;
             var parent = checkStartingObject ? startingObject : GetParent(startingObject, true);
 
-            while (parent != null)
+            while (parent is not null)
             {
                 foundElement = parent as T;
 
-                if (foundElement != null)
+                if (foundElement is not null)
                 {
-                    if (additionalCheck == null) return foundElement;
+                    if (additionalCheck is null) return foundElement;
 
                     if (additionalCheck(foundElement))
                         return foundElement;
@@ -176,9 +176,9 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
             {
                 child = VisualTreeHelper.GetChild(parent, index) as T;
 
-                if (child != null)
+                if (child is not null)
                 {
-                    if (additionalCheck == null) return child;
+                    if (additionalCheck is null) return child;
 
                     if (additionalCheck(child))
                         return child;
@@ -189,7 +189,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
             {
                 child = FindChild(VisualTreeHelper.GetChild(parent, index), additionalCheck);
 
-                if (child != null)
+                if (child is not null)
                     return child;
             }
 
@@ -216,7 +216,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
         /// <param name="recurseIntoPopup">Indicates if we recurse the search into the popup</param>
         public static bool IsDescendantOf(DependencyObject element, DependencyObject parent, bool recurseIntoPopup)
         {
-            while (element != null)
+            while (element is not null)
             {
                 if (element == parent)
                     return true;

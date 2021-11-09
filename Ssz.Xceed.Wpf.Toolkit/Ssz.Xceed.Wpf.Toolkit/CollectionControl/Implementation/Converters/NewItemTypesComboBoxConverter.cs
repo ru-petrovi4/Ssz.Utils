@@ -37,7 +37,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Converters
             if (values.Length != 2)
                 throw new ArgumentException("The 'values' argument should contain 2 objects.");
 
-            if (values[1] != null)
+            if (values[1] is not null)
             {
                 if (!values[1].GetType().IsGenericType ||
                     !(values[1].GetType().GetGenericArguments().First().GetType() is Type))
@@ -46,14 +46,14 @@ namespace Ssz.Xceed.Wpf.Toolkit.Converters
                 return values[1];
             }
 
-            if (values[0] != null)
+            if (values[0] is not null)
             {
                 if (!(values[0].GetType() is Type))
                     throw new ArgumentException("The 'value' argument is not of the correct type.");
 
                 var types = new List<Type>();
                 var listType = ListUtilities.GetListItemType((Type) values[0]);
-                if (listType != null) types.Add(listType);
+                if (listType is not null) types.Add(listType);
 
                 return types;
             }

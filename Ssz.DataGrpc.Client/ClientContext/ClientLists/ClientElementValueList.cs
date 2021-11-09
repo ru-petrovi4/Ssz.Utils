@@ -81,7 +81,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
                 {
                     foreach (ClientElementValueListItem item in ListItemsManager)
                     {
-                        if (item.PendingWriteValueStatusTimestamp == null) continue;
+                        if (item.PendingWriteValueStatusTimestamp is null) continue;
 
                         uint alias = item.ServerAlias;
                         ValueStatusTimestamp valueStatusTimestamp = item.PendingWriteValueStatusTimestamp.Value;
@@ -154,7 +154,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
             if (elementValuesCollection.Guid != @"" && _incompleteElementValuesCollection.Count > 0)
             {
                 var beginElementValuesCollection = _incompleteElementValuesCollection.TryGetValue(elementValuesCollection.Guid);
-                if (beginElementValuesCollection != null)
+                if (beginElementValuesCollection is not null)
                 {
                     _incompleteElementValuesCollection.Remove(elementValuesCollection.Guid);
                     beginElementValuesCollection.CombineWith(elementValuesCollection);
@@ -176,7 +176,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
                 {
                     ClientElementValueListItem? item;
                     ListItemsManager.TryGetValue(elementValuesCollection.DoubleAliases[index], out item);
-                    if (item != null)
+                    if (item is not null)
                     {
                         item.UpdateValue(elementValuesCollection.DoubleValues[index],
                             elementValuesCollection.DoubleValueStatusCodes[index],
@@ -189,7 +189,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
                 {
                     ClientElementValueListItem? item;
                     ListItemsManager.TryGetValue(elementValuesCollection.UintAliases[index], out item);
-                    if (item != null)
+                    if (item is not null)
                     {
                         item.UpdateValue(elementValuesCollection.UintValues[index],
                             elementValuesCollection.UintValueStatusCodes[index],
@@ -208,7 +208,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
                             object? objectValue = reader.ReadObject();
                             ClientElementValueListItem? item;
                             ListItemsManager.TryGetValue(elementValuesCollection.ObjectAliases[index], out item);
-                            if (item != null)
+                            if (item is not null)
                             {
                                 item.UpdateValue(objectValue,
                                     elementValuesCollection.ObjectValueStatusCodes[index],
@@ -286,7 +286,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
 
 //    ElementValuesCollection? readValueArrays = Context.ReadData(ListServerAlias, serverAliaseses);
 
-//    if (readValueArrays != null)
+//    if (readValueArrays is not null)
 //    {
 //        UpdateData(readValueArrays, false);
 //    }

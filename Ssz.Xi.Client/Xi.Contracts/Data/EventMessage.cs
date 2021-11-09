@@ -135,18 +135,18 @@ namespace Xi.Contracts.Data
 
 		public Ssz.Utils.DataAccess.EventMessage ToEventMessage()
 		{
-			var eventInfo = new Ssz.Utils.DataAccess.EventMessage(EventId != null ? EventId.ToEventId() : new Ssz.Utils.DataAccess.EventId());
+			var eventInfo = new Ssz.Utils.DataAccess.EventMessage(EventId is not null ? EventId.ToEventId() : new Ssz.Utils.DataAccess.EventId());
 			eventInfo.OccurrenceTime = OccurrenceTime;
 			eventInfo.EventType = (Ssz.Utils.DataAccess.EventType)EventType;
 			eventInfo.TextMessage = TextMessage ?? @"";
 			eventInfo.CategoryId = CategoryId;
 			eventInfo.Priority = Priority;
 			eventInfo.OperatorName = OperatorName ?? @"";
-			if (AlarmData != null)
+			if (AlarmData is not null)
 			{
 				eventInfo.AlarmMessageData = AlarmData.ToAlarmMessageData();
 			}
-			if (ClientRequestedFields != null)
+			if (ClientRequestedFields is not null)
 			{
 				eventInfo.ClientRequestedFields = new CaseInsensitiveDictionary<string>();
 				for (int i = 0; i < ClientRequestedFields.Count; i++)

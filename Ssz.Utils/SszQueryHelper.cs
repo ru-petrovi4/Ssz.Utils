@@ -157,7 +157,7 @@ namespace Ssz.Utils
                 return valueOfSszQuery;
             }
 
-            if ((parts.Length == 3 || parts.Length == 4) && csvDb != null)
+            if ((parts.Length == 3 || parts.Length == 4) && csvDb is not null)
             {
                 string fileName = UnescapeForSszQuery(parts[0].Trim());
                 string key = UnescapeForSszQuery(parts[1].Trim());

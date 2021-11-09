@@ -90,7 +90,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             base.OnPreviewMouseRightButtonUp(e);
 
             if (!e.Handled)
-                if (DropDownContextMenu != null)
+                if (DropDownContextMenu is not null)
                 {
                     DropDownContextMenu.PlacementTarget = null;
                     DropDownContextMenu.Placement = PlacementMode.MousePoint;
@@ -103,7 +103,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         //protected override System.Windows.Media.HitTestResult HitTestCore(System.Windows.Media.PointHitTestParameters hitTestParameters)
         //{
         //    var hitResult = base.HitTestCore(hitTestParameters);
-        //    if (hitResult == null)
+        //    if (hitResult is null)
         //        return new PointHitTestResult(this, hitTestParameters.HitPoint);
 
         //    return hitResult;

@@ -42,7 +42,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         internal LayoutAnchorSideControl(LayoutAnchorSide model)
         {
-            if (model == null)
+            if (model is null)
                 throw new ArgumentNullException("model");
 
 
@@ -204,7 +204,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private void OnModelChildrenCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            if (e.OldItems != null &&
+            if (e.OldItems is not null &&
                 (e.Action == NotifyCollectionChangedAction.Remove ||
                  e.Action == NotifyCollectionChangedAction.Replace))
                 foreach (var childModel in e.OldItems)
@@ -213,7 +213,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             if (e.Action == NotifyCollectionChangedAction.Reset)
                 Children.Clear();
 
-            if (e.NewItems != null &&
+            if (e.NewItems is not null &&
                 (e.Action == NotifyCollectionChangedAction.Add ||
                  e.Action == NotifyCollectionChangedAction.Replace))
             {

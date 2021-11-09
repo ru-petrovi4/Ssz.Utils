@@ -313,9 +313,9 @@ namespace Xi.Contracts.Data
 		/// </param>
 		public void SetDouble(int idx, uint statusCode, DateTime timestamp, double value)
 		{
-			if (DoubleStatusCodes == null ||
-				DoubleTimeStamps == null ||
-				DoubleValues == null) throw new InvalidOperationException();
+			if (DoubleStatusCodes is null ||
+				DoubleTimeStamps is null ||
+				DoubleValues is null) throw new InvalidOperationException();
 			DoubleStatusCodes[idx] = statusCode;
 			DoubleTimeStamps[idx] = timestamp;
 			DoubleValues[idx] = value;
@@ -340,9 +340,9 @@ namespace Xi.Contracts.Data
 		/// </param>
 		public void SetUint(int idx, uint statusCode, DateTime timestamp, uint value)
 		{
-			if (UintStatusCodes == null ||
-				UintTimeStamps == null ||
-				UintValues == null) throw new InvalidOperationException();
+			if (UintStatusCodes is null ||
+				UintTimeStamps is null ||
+				UintValues is null) throw new InvalidOperationException();
 			UintStatusCodes[idx] = statusCode;
 			UintTimeStamps[idx] = timestamp;
 			UintValues[idx] = value;
@@ -367,9 +367,9 @@ namespace Xi.Contracts.Data
 		/// </param>
 		public void SetObject(int idx, uint statusCode, DateTime timestamp, object? value)
 		{
-			if (ObjectStatusCodes == null ||
-				ObjectTimeStamps == null ||
-				ObjectValues == null) throw new InvalidOperationException();
+			if (ObjectStatusCodes is null ||
+				ObjectTimeStamps is null ||
+				ObjectValues is null) throw new InvalidOperationException();
 			ObjectStatusCodes[idx] = statusCode;
 			ObjectTimeStamps[idx] = timestamp;
 			ObjectValues[idx] = value;
@@ -393,9 +393,9 @@ namespace Xi.Contracts.Data
 		public bool CreateDoubleArrays(uint[]? statusCodeArray,
 			DateTime[]? timestampArray, double[]? valueArray)
 		{
-			if (   (statusCodeArray == null)
-				&& (timestampArray == null)
-				&& (valueArray == null)
+			if (   (statusCodeArray is null)
+				&& (timestampArray is null)
+				&& (valueArray is null)
 			   )
 			{
 				DoubleStatusCodes = null;
@@ -403,7 +403,7 @@ namespace Xi.Contracts.Data
 				DoubleValues = null;
 				return true;
 			}
-			else if (statusCodeArray == null || timestampArray == null || valueArray == null)
+			else if (statusCodeArray is null || timestampArray is null || valueArray is null)
 			{
 				//EJL - not sure if this is the correct functionality.  Just preserving original coding
 				//while fixing up a klocwork check that found a null pointer use if one of the parameters 
@@ -440,9 +440,9 @@ namespace Xi.Contracts.Data
 		public bool CreateUintArrays(uint[]? statusCodeArray,
 			DateTime[]? timestampArray, uint[]? valueArray)
 		{
-			if (   (statusCodeArray == null)
-				&& (timestampArray == null)
-				&& (valueArray == null)
+			if (   (statusCodeArray is null)
+				&& (timestampArray is null)
+				&& (valueArray is null)
 			   )
 			{
 				UintStatusCodes = null;
@@ -450,7 +450,7 @@ namespace Xi.Contracts.Data
 				UintValues = null;
 				return true;
 			}
-			else if (statusCodeArray == null || timestampArray == null || valueArray == null)
+			else if (statusCodeArray is null || timestampArray is null || valueArray is null)
 			{
 				//EJL - not sure if this is the correct functionality.  Just preserving original coding
 				//while fixing up a klocwork check that found a null pointer use if one of the parameters 
@@ -487,9 +487,9 @@ namespace Xi.Contracts.Data
 		public bool CreateObjectArrays(uint[]? statusCodeArray,
 			DateTime[]? timestampArray, object[]? valueArray)
 		{
-			if (   (statusCodeArray == null)
-				&& (timestampArray == null)
-				&& (valueArray == null)
+			if (   (statusCodeArray is null)
+				&& (timestampArray is null)
+				&& (valueArray is null)
 			   )
 			{
 				ObjectStatusCodes = null;
@@ -497,7 +497,7 @@ namespace Xi.Contracts.Data
 				ObjectValues = null;
 				return true;
 			}
-			else if (statusCodeArray == null || timestampArray == null || valueArray == null)
+			else if (statusCodeArray is null || timestampArray is null || valueArray is null)
 			{
 				//EJL - not sure if this is the correct functionality.  Just preserving original coding
 				//while fixing up a klocwork check that found a null pointer use if one of the parameters 

@@ -39,7 +39,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_readEndpoint == null) throw new Exception("No Read Endpoint");
+            if (_readEndpoint is null) throw new Exception("No Read Endpoint");
 
             if (_readEndpoint.Disposed) return null;
 
@@ -94,7 +94,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_readEndpoint == null) throw new Exception("No Read Endpoint");
+            if (_readEndpoint is null) throw new Exception("No Read Endpoint");
 
             if (_readEndpoint.Disposed) return new JournalDataValues[0];
 
@@ -143,7 +143,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_readEndpoint == null) throw new Exception("No Read Endpoint");
+            if (_readEndpoint is null) throw new Exception("No Read Endpoint");
 
             JournalDataValues[]? listJDRV = null;
             if (XiEndpointRoot.CreateChannelIfNotCreated(_readEndpoint))
@@ -197,7 +197,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_readEndpoint == null) throw new Exception("No Read Endpoint");
+            if (_readEndpoint is null) throw new Exception("No Read Endpoint");
 
             JournalDataChangedValues[]? listJDCV = null;
             if (XiEndpointRoot.CreateChannelIfNotCreated(_readEndpoint))
@@ -261,7 +261,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_readEndpoint == null) throw new Exception("No Read Endpoint");
+            if (_readEndpoint is null) throw new Exception("No Read Endpoint");
 
             JournalDataValues[]? listJDRV = null;
             if (XiEndpointRoot.CreateChannelIfNotCreated(_readEndpoint))
@@ -313,7 +313,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_readEndpoint == null) throw new Exception("No Read Endpoint");
+            if (_readEndpoint is null) throw new Exception("No Read Endpoint");
 
             JournalDataPropertyValue[]? JDPVarray = null;
             if (XiEndpointRoot.CreateChannelIfNotCreated(_readEndpoint))

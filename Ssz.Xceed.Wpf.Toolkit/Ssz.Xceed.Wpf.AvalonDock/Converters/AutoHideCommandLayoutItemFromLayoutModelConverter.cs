@@ -28,15 +28,15 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Converters
         {
             //when this converter is called layout could be constructing so many properties here are potentially not valid
             var layoutModel = value as LayoutContent;
-            if (layoutModel == null)
+            if (layoutModel is null)
                 return null;
-            if (layoutModel.Root == null)
+            if (layoutModel.Root is null)
                 return null;
-            if (layoutModel.Root.Manager == null)
+            if (layoutModel.Root.Manager is null)
                 return null;
 
             var layoutItemModel = layoutModel.Root.Manager.GetLayoutItemFromModel(layoutModel) as LayoutAnchorableItem;
-            if (layoutItemModel == null)
+            if (layoutItemModel is null)
                 return Binding.DoNothing;
 
             return layoutItemModel.AutoHideCommand;

@@ -31,7 +31,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (parameter == null)
+            if (parameter is null)
                 throw new ArgumentNullException("parameter");
 
             if (!(parameter is string))
@@ -53,14 +53,14 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Converters
 
         private object ConvertToType(object value, CultureInfo culture)
         {
-            return value != null
+            return value is not null
                 ? value.GetType()
                 : null;
         }
 
         private object ConvertToTypeName(object value, CultureInfo culture)
         {
-            if (value == null)
+            if (value is null)
                 return string.Empty;
 
             var newType = value.GetType();
@@ -68,14 +68,14 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Converters
             var displayNameAttribute =
                 newType.GetCustomAttributes(false).OfType<DisplayNameAttribute>().FirstOrDefault();
 
-            return displayNameAttribute == null
+            return displayNameAttribute is null
                 ? newType.Name
                 : displayNameAttribute.DisplayName;
         }
 
         private object ConvertToSelectedObjectName(object value, CultureInfo culture)
         {
-            if (value == null)
+            if (value is null)
                 return string.Empty;
 
             var newType = value.GetType();

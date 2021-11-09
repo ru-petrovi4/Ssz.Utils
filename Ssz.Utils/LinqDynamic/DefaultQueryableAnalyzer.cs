@@ -28,10 +28,10 @@ namespace System.Linq.Dynamic.Core
                     try
                     {
                         PropertyInfo? property = providerType.GetProperty("OriginalProvider");
-                        if (property != null)
+                        if (property is not null)
                         { 
                             IQueryProvider? originalProvider = property.GetValue(provider, null) as IQueryProvider;
-                            return originalProvider != null && SupportsLinqToObjects(query, originalProvider);
+                            return originalProvider is not null && SupportsLinqToObjects(query, originalProvider);
                         }
 
                         return SupportsLinqToObjects(query);
@@ -48,10 +48,10 @@ namespace System.Linq.Dynamic.Core
                     try
                     {
                         PropertyInfo? property = query.GetType().GetProperty("InnerQuery", BindingFlags.NonPublic | BindingFlags.Instance);
-                        if (property != null)
+                        if (property is not null)
                         {
                             IQueryable? innerQuery = property.GetValue(query, null) as IQueryable;
-                            return innerQuery != null && SupportsLinqToObjects(innerQuery, provider);
+                            return innerQuery is not null && SupportsLinqToObjects(innerQuery, provider);
                         }
 
                         return SupportsLinqToObjects(query);

@@ -31,19 +31,19 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Converters
 
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (AllowNulls && value == null)
+            if (AllowNulls && value is null)
                 return null;
 
-            var timeSpan = value != null ? (TimeSpan) value : TimeSpan.Zero;
+            var timeSpan = value is not null ? (TimeSpan) value : TimeSpan.Zero;
             return DateTime.Today + timeSpan;
         }
 
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (AllowNulls && value == null)
+            if (AllowNulls && value is null)
                 return null;
 
-            return value != null
+            return value is not null
                 ? ((DateTime) value).TimeOfDay
                 : TimeSpan.Zero;
         }

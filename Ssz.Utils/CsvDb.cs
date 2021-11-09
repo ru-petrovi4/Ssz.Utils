@@ -14,9 +14,9 @@ namespace Ssz.Utils
 
         /// <summary>
         ///     userFriendlyLogger: Messages are localized. Priority is Information, Error, Warning.    
-        ///     If csvDbDirectoryInfo == null, directory is not used.
+        ///     If csvDbDirectoryInfo is null, directory is not used.
         ///     If !csvDbDirectoryInfo.Exists, directory is created.
-        ///     If dispatcher != null monitors csvDbDirectoryInfo
+        ///     If dispatcher is not null monitors csvDbDirectoryInfo
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="userFriendlyLogger"></param>
@@ -29,7 +29,7 @@ namespace Ssz.Utils
             _csvDbDirectoryInfo = csvDbDirectoryInfo;
             _dispatcher = dispatcher;
 
-            if (_csvDbDirectoryInfo != null)
+            if (_csvDbDirectoryInfo is not null)
             {
                 try
                 {
@@ -44,9 +44,9 @@ namespace Ssz.Utils
                 }
             }
 
-            if (_csvDbDirectoryInfo != null)
+            if (_csvDbDirectoryInfo is not null)
             {
-                if (_dispatcher != null)
+                if (_dispatcher is not null)
                     try
                     {
                         _fileSystemWatcher.Created += FileSystemWatcherOnEventAsync;
@@ -60,7 +60,7 @@ namespace Ssz.Utils
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogWarning(ex, "AppSettings FilesStore directory error. Please, specify correct directory and restart service.");
+                        _logger?.LogWarning(ex, "AppSettings FilesStore directory error. Please, specify correct directory and restart service.");
                     }
             }
 
@@ -89,11 +89,11 @@ namespace Ssz.Utils
         /// <summary>
         ///     Loads data from .csv files on disk.        
         ///     Data is loaded in constructor.
-        ///     Data is loaded when directory changes, if dispatcher in consructor != null.
+        ///     Data is loaded when directory changes, if dispatcher in consructor is not null.
         /// </summary>
         public void LoadData()
         {
-            if (_csvDbDirectoryInfo == null) return;
+            if (_csvDbDirectoryInfo is null) return;
 
             var newCsvFilesCollection = new Dictionary<string, CsvFile>();
 
@@ -101,7 +101,7 @@ namespace Ssz.Utils
             {
                 string fileNameUpper = fileInfo.Name.ToUpperInvariant();
                 _csvFilesCollection.TryGetValue(fileNameUpper, out CsvFile? csvFile);
-                if (csvFile == null)
+                if (csvFile is null)
                 {
                     csvFile = new CsvFile { FileFullName = fileInfo.FullName, LastWriteTimeUtc = fileInfo.LastWriteTimeUtc };
                     csvFile.DataIsChangedOnDisk = true;
@@ -158,7 +158,7 @@ namespace Ssz.Utils
                     }
                     catch (Exception ex)
                     {
-                        if (UserFriendlyLogger != null)
+                        if (UserFriendlyLogger is not null)
                             UserFriendlyLogger.LogError(ex, Properties.Resources.CsvDb_CsvFileReadingError + " " + csvFile.FileFullName);
                     }
                     csvFile.DataIsChangedOnDisk = false;
@@ -208,7 +208,7 @@ namespace Ssz.Utils
         }
 
         /// <summary>
-        ///     List.Count >= 1, List[0] != null
+        ///     List.Count >= 1, List[0] is not null
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
@@ -221,7 +221,7 @@ namespace Ssz.Utils
         }
 
         /// <summary>
-        ///     null or List.Count >= 1, List[0] != null
+        ///     null or List.Count >= 1, List[0] is not null
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="key"></param>
@@ -258,7 +258,7 @@ namespace Ssz.Utils
             if (!_csvFilesCollection.TryGetValue(fileNameUpper, out CsvFile? csvFile))
             {
                 csvFile = new CsvFile();                
-                if (_csvDbDirectoryInfo != null)
+                if (_csvDbDirectoryInfo is not null)
                     csvFile.FileFullName = Path.Combine(_csvDbDirectoryInfo.FullName, fileName);
                 csvFile.IncludeFileNamesCollection = new List<string>();
                 csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
@@ -294,7 +294,7 @@ namespace Ssz.Utils
             if (!_csvFilesCollection.TryGetValue(fileNameUpper, out CsvFile? csvFile))
             {
                 csvFile = new CsvFile();
-                if (_csvDbDirectoryInfo != null)
+                if (_csvDbDirectoryInfo is not null)
                     csvFile.FileFullName = Path.Combine(_csvDbDirectoryInfo.FullName, fileName);
                 csvFile.IncludeFileNamesCollection = new List<string>();
                 csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
@@ -330,7 +330,7 @@ namespace Ssz.Utils
         /// </summary>
         public void SaveData()
         {
-            if (_csvDbDirectoryInfo == null) return;
+            if (_csvDbDirectoryInfo is null) return;
 
             _fileSystemWatcher.EnableRaisingEvents = false;
 
@@ -351,8 +351,7 @@ namespace Ssz.Utils
                     }
                     catch (Exception ex)
                     {
-                        if (_logger != null)
-                            _logger.LogError(ex, Properties.Resources.CsvDb_CsvFileWritingError + " " + csvFile.FileFullName);
+                        _logger?.LogError(ex, Properties.Resources.CsvDb_CsvFileWritingError + " " + csvFile.FileFullName);
                     }
 
                     csvFile.DataIsChangedByProgram = false;

@@ -111,7 +111,7 @@ namespace Microsoft.Windows.Shell
         {
             get
             {
-                if (_threadLocalSingleton == null) _threadLocalSingleton = new SystemParameters2();
+                if (_threadLocalSingleton is null) _threadLocalSingleton = new SystemParameters2();
                 return _threadLocalSingleton;
             }
         }
@@ -153,7 +153,7 @@ namespace Microsoft.Windows.Shell
             {
                 Assert.IsNotNull(value);
                 Assert.IsTrue(value.IsFrozen);
-                if (_glassColorBrush == null || value.Color != _glassColorBrush.Color)
+                if (_glassColorBrush is null || value.Color != _glassColorBrush.Color)
                 {
                     _glassColorBrush = value;
                     _NotifyPropertyChanged("WindowGlassBrush");
@@ -285,7 +285,7 @@ namespace Microsoft.Windows.Shell
         private IntPtr _WndProc(IntPtr hwnd, WM msg, IntPtr wParam, IntPtr lParam)
         {
             // Don't do this if called within the SystemParameters2 constructor
-            if (_UpdateTable != null)
+            if (_UpdateTable is not null)
             {
                 List<_SystemMetricUpdate> handlers;
                 if (_UpdateTable.TryGetValue(msg, out handlers))
@@ -556,7 +556,7 @@ namespace Microsoft.Windows.Shell
         {
             Assert.IsNeitherNullNorEmpty(propertyName);
             var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            if (handler is not null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

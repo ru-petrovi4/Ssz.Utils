@@ -77,14 +77,14 @@ namespace Ssz.Xi.Client.Internal.Endpoints
             SetMaxItemsInObjectGraph(ServiceEndpoint.Contract.Operations, MaxItemsInObjectGraph);
 
             /*
-            if (Context.UserInfo != null)
+            if (Context.UserInfo is not null)
                 XiClientCredentials.SetClientCredentials(Context.UserData, ServiceEndpoint, cfIRead.Credentials,             
                                                             Context.UserInfo);
                 */
 
             _iRead = cfIRead.CreateChannel();
 
-            return Channel != null;
+            return Channel is not null;
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Ssz.Xi.Client.Internal.Endpoints
             get 
             {
                 var result = _iRead as ICommunicationObject;
-                if (result == null) throw new InvalidOperationException();
+                if (result is null) throw new InvalidOperationException();
                 return result; 
             }
         }
@@ -107,7 +107,7 @@ namespace Ssz.Xi.Client.Internal.Endpoints
         {
             get 
             {
-                if (_iRead == null) throw new InvalidOperationException();
+                if (_iRead is null) throw new InvalidOperationException();
                 return _iRead; 
             }
         }

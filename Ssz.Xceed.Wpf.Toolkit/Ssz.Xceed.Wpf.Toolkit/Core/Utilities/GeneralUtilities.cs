@@ -61,7 +61,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
 
         internal static bool CanConvertValue(object value, object targetType)
         {
-            return value != null
+            return value is not null
                    && !Equals(value.GetType(), targetType)
                    && !Equals(targetType, typeof(object));
         }

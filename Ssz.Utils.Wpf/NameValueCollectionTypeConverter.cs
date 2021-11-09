@@ -19,7 +19,7 @@ namespace Ssz.Utils.Wpf
         /// </returns>
         /// <param name="context"> The ITypeDescriptorContext for this call. </param>
         /// <param name="sourceType"> The Type being queried for support. </param>
-        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+        public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
         {
             if (sourceType == typeof (string))
             {
@@ -42,16 +42,16 @@ namespace Ssz.Utils.Wpf
         /// <param name="context"> The ITypeDescriptorContext for this call. </param>
         /// <param name="culture"> The requested CultureInfo.  Note that conversion uses "en-US" rather than this parameter. </param>
         /// <param name="value"> The object to convert to an instance of DoubleDataSourceItemInfo. </param>
-        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
         {
-            if (value == null)
+            if (value is null)
             {
                 throw GetConvertFromException(null);
             }
 
             var source = value as string;
 
-            if (source != null)
+            if (source is not null)
             {
                 return NameValueCollectionValueSerializer<T>.Instance.ConvertFromString(source);
             }

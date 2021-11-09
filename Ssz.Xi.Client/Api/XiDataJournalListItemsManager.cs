@@ -23,7 +23,7 @@ namespace Ssz.Xi.Client.Api
             {                
                 if (!XiItemsMustBeAddedOrRemoved) return;
 
-                bool firstTimeDataJournalConnection = (XiList == null);
+                bool firstTimeDataJournalConnection = (XiList is null);
 
                 if (firstTimeDataJournalConnection)
                 {
@@ -37,13 +37,13 @@ namespace Ssz.Xi.Client.Api
                     }
                 }
 
-                if (XiList == null || XiList.Disposed) return;
+                if (XiList is null || XiList.Disposed) return;
 
                 bool connectionError = SubscribeInitial();
 
                 try
                 {                    
-                    if (!connectionError && XiList != null && !XiList.Disposed)
+                    if (!connectionError && XiList is not null && !XiList.Disposed)
                     {
                         if (firstTimeDataJournalConnection)
                         {

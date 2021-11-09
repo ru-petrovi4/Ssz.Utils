@@ -49,9 +49,9 @@ namespace Xi.Contracts.Data
 		public bool CompareIdentical(ORedFilters filtersToCompare)
 		{
 			bool bEqual = false;
-			if ((this.FilterCriteria != null)
-				&& (filtersToCompare != null)
-				&& (filtersToCompare.FilterCriteria != null)
+			if ((this.FilterCriteria is not null)
+				&& (filtersToCompare is not null)
+				&& (filtersToCompare.FilterCriteria is not null)
 			   )
 			{
 				if (this.FilterCriteria.Count == filtersToCompare.FilterCriteria.Count)

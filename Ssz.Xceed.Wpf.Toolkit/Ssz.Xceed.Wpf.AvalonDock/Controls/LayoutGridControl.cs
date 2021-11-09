@@ -72,7 +72,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         internal LayoutGridControl(LayoutPositionableGroup<T> model, Orientation orientation)
         {
-            if (model == null)
+            if (model is null)
                 throw new ArgumentNullException("model");
 
             _model = model;
@@ -89,7 +89,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         public Orientation Orientation => (_model as ILayoutOrientableGroup).Orientation;
 
-        private bool AsyncRefreshCalled => _asyncRefreshCalled != null;
+        private bool AsyncRefreshCalled => _asyncRefreshCalled is not null;
 
         #endregion
 
@@ -133,19 +133,19 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             ColumnDefinitions.Clear();
             RowDefinitions.Clear();
 
-            if (_model == null ||
-                _model.Root == null)
+            if (_model is null ||
+                _model.Root is null)
                 return;
 
             var manager = _model.Root.Manager;
-            if (manager == null)
+            if (manager is null)
                 return;
 
 
             foreach (ILayoutElement child in _model.Children)
             {
                 var foundContainedChild = alreadyContainedChildren.FirstOrDefault(chVM => chVM.Model == child);
-                if (foundContainedChild != null)
+                if (foundContainedChild is not null)
                     Children.Add(foundContainedChild as UIElement);
                 else
                     Children.Add(manager.CreateUIElementForModel(child));
@@ -209,10 +209,10 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         private void UpdateRowColDefinitions()
         {
             var root = _model.Root;
-            if (root == null)
+            if (root is null)
                 return;
             var manager = root.Manager;
-            if (manager == null)
+            if (manager is null)
                 return;
 
             FixChildrenDockLengths();
@@ -571,7 +571,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private void HideResizerOverlayWindow()
         {
-            if (_resizerWindowHost != null)
+            if (_resizerWindowHost is not null)
             {
                 _resizerWindowHost.Close();
                 _resizerWindowHost = null;

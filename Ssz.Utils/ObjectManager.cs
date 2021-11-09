@@ -103,7 +103,7 @@ namespace Ssz.Utils
                 return false;
             }
             value = _items[index].Value;
-            if (value == null) throw new InvalidOperationException();
+            if (value is null) throw new InvalidOperationException();
             return true;
         }
 
@@ -224,7 +224,7 @@ namespace Ssz.Utils
                 else
                 {
                     T? value = _items[index].Value;
-                    if (value == null) throw new ArgumentException();
+                    if (value is null) throw new ArgumentException();
                     return value;
                 }
             }
@@ -292,7 +292,7 @@ namespace Ssz.Utils
             var index = (int)(handle & 0xFFFFFF);
             if (index >= _valueWrapperCount) return 0;
             ValueWrapper item = _items[index];
-            if (item.Value == null) return 0;
+            if (item.Value is null) return 0;
             if (id != item.InstanceId) return 0;
             return index;
         }
@@ -443,7 +443,7 @@ namespace Ssz.Utils
                 {
                     if (_currentIndex == 0) throw new InvalidOperationException();
                     T? value = _objectManager._items[_currentIndex].Value;
-                    if (value == null) throw new InvalidOperationException();
+                    if (value is null) throw new InvalidOperationException();
                     return value;
                 }
             }
@@ -454,7 +454,7 @@ namespace Ssz.Utils
                 {
                     if (_currentIndex == 0) throw new InvalidOperationException();
                     T? value = _objectManager._items[_currentIndex].Value;
-                    if (value == null) throw new InvalidOperationException();
+                    if (value is null) throw new InvalidOperationException();
                     return value;
                 }
             }
@@ -465,7 +465,7 @@ namespace Ssz.Utils
                 {
                     if (_currentIndex == 0) throw new InvalidOperationException();
                     T? value = _objectManager._items[_currentIndex].Value;
-                    if (value == null) throw new InvalidOperationException();                    
+                    if (value is null) throw new InvalidOperationException();                    
                     return new KeyValuePair<UInt32, T>(_objectManager.IndexToHandle(_currentIndex),
                         value);
                 }

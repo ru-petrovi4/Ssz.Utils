@@ -198,7 +198,7 @@ namespace Xi.Contracts.Data
 		{
 			get
 			{
-				if (FullyQualifiedId == null) return null;
+				if (FullyQualifiedId is null) return null;
 				string? system = null;
 				int pos = FullyQualifiedId.IndexOf("/");
 				if (pos >= 1) // if found and not the first character
@@ -232,7 +232,7 @@ namespace Xi.Contracts.Data
 		{
 			get
 			{
-				if (FullyQualifiedId == null) return null;
+				if (FullyQualifiedId is null) return null;
 				string? system = null;
 				int pos = FullyQualifiedId.IndexOf("/");
 				if (pos >= 1) // if found and not the first character
@@ -255,8 +255,8 @@ namespace Xi.Contracts.Data
 		{
 			get
 			{
-				if (FullyQualifiedId == null) return null;
-				if (_localIdCache != null)
+				if (FullyQualifiedId is null) return null;
+				if (_localIdCache is not null)
 			        return _localIdCache;
 
 				int posFirstSlash = FullyQualifiedId.IndexOf("/");
@@ -291,7 +291,7 @@ namespace Xi.Contracts.Data
 		{
 			get
 			{
-				if (FullyQualifiedId == null) return null;
+				if (FullyQualifiedId is null) return null;
 				int pos = FullyQualifiedId.LastIndexOf("/");
 				if (pos < 0)
 					return null;
@@ -314,7 +314,7 @@ namespace Xi.Contracts.Data
 		public static bool IsValid(InstanceId instanceId)
 		{
 			bool valid = false;
-			if ((instanceId != null) && (string.IsNullOrEmpty(instanceId.FullyQualifiedId) == false))
+			if ((instanceId is not null) && (string.IsNullOrEmpty(instanceId.FullyQualifiedId) == false))
 			{
 				int pos = instanceId.FullyQualifiedId.IndexOf("/");
 				if ((pos >= 0) && (pos < instanceId.FullyQualifiedId.Length - 1)) // between the beginning and second to last character inclusive
@@ -340,7 +340,7 @@ namespace Xi.Contracts.Data
 		/// </returns>
 		public bool IsValid()
 		{
-			if (FullyQualifiedId == null) return false;
+			if (FullyQualifiedId is null) return false;
 			bool valid = false;
 			int pos = FullyQualifiedId.IndexOf("/");
 			if ((pos >= 0) && (pos < FullyQualifiedId.Length - 1)) // between the beginning and second to last character inclusive

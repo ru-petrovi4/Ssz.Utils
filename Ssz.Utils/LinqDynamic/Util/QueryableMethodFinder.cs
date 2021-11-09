@@ -11,10 +11,10 @@ namespace System.Linq.Dynamic.Core.Util
         }
 
         public static MethodInfo GetMethod(string name, Type argumentType, Type returnType, int parameterCount = 0, Func<MethodInfo, bool>? predicate = null) =>
-            GetMethod(name, returnType, parameterCount, mi => mi.ToString()!.Contains(argumentType.ToString()) && ((predicate == null) || predicate(mi)));
+            GetMethod(name, returnType, parameterCount, mi => mi.ToString()!.Contains(argumentType.ToString()) && ((predicate is null) || predicate(mi)));
 
         public static MethodInfo GetMethod(string name, Type returnType, int parameterCount = 0, Func<MethodInfo, bool>? predicate = null) =>
-            GetMethod(name, parameterCount, mi => (mi.ReturnType == returnType) && ((predicate == null) || predicate(mi)));
+            GetMethod(name, parameterCount, mi => (mi.ReturnType == returnType) && ((predicate is null) || predicate(mi)));
 
         public static MethodInfo GetMethodWithExpressionParameter(string name) =>
             GetMethod(name, 1, mi =>
@@ -36,7 +36,7 @@ namespace System.Linq.Dynamic.Core.Util
             try
             {
                 return typeof(Queryable).GetTypeInfo().GetDeclaredMethods(name).Single(mi =>
-                    mi.GetParameters().Length == parameterCount + 1 && (predicate == null || predicate(mi)));
+                    mi.GetParameters().Length == parameterCount + 1 && (predicate is null || predicate(mi)));
             }
             catch (Exception ex)
             {

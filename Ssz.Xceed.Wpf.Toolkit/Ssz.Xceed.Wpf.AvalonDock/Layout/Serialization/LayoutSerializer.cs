@@ -25,7 +25,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout.Serialization
 
         public LayoutSerializer(DockingManager manager)
         {
-            if (manager == null)
+            if (manager is null)
                 throw new ArgumentNullException("manager");
 
             Manager = manager;
@@ -60,11 +60,11 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout.Serialization
         {
             //fix container panes
             foreach (var lcToAttach in layout.Descendents().OfType<ILayoutPreviousContainer>()
-                .Where(lc => lc.PreviousContainerId != null))
+                .Where(lc => lc.PreviousContainerId is not null))
             {
                 var paneContainerToAttach = layout.Descendents().OfType<ILayoutPaneSerializable>()
                     .FirstOrDefault(lps => lps.Id == lcToAttach.PreviousContainerId);
-                if (paneContainerToAttach == null)
+                if (paneContainerToAttach is null)
                     throw new ArgumentException(string.Format("Unable to find a pane with id ='{0}'",
                         lcToAttach.PreviousContainerId));
 
@@ -73,27 +73,27 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout.Serialization
 
 
             //now fix the content of the layoutcontents
-            foreach (var lcToFix in layout.Descendents().OfType<LayoutAnchorable>().Where(lc => lc.Content == null)
+            foreach (var lcToFix in layout.Descendents().OfType<LayoutAnchorable>().Where(lc => lc.Content is null)
                 .ToArray())
             {
                 LayoutAnchorable previousAchorable = null;
-                if (lcToFix.ContentId != null)
+                if (lcToFix.ContentId is not null)
                     //try find the content in replaced layout
                     previousAchorable = _previousAnchorables.FirstOrDefault(a => a.ContentId == lcToFix.ContentId);
 
-                if (LayoutSerializationCallback != null)
+                if (LayoutSerializationCallback is not null)
                 {
                     var args = new LayoutSerializationCallbackEventArgs(lcToFix,
-                        previousAchorable != null ? previousAchorable.Content : null);
+                        previousAchorable is not null ? previousAchorable.Content : null);
                     LayoutSerializationCallback(this, args);
                     if (args.Cancel)
                         lcToFix.Close();
-                    else if (args.Content != null)
+                    else if (args.Content is not null)
                         lcToFix.Content = args.Content;
-                    else if (args.Model.Content != null)
+                    else if (args.Model.Content is not null)
                         lcToFix.Hide(false);
                 }
-                else if (previousAchorable == null)
+                else if (previousAchorable is null)
                 {
                     lcToFix.Hide(false);
                 }
@@ -105,28 +105,28 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout.Serialization
             }
 
 
-            foreach (var lcToFix in layout.Descendents().OfType<LayoutDocument>().Where(lc => lc.Content == null)
+            foreach (var lcToFix in layout.Descendents().OfType<LayoutDocument>().Where(lc => lc.Content is null)
                 .ToArray())
             {
                 LayoutDocument previousDocument = null;
-                if (lcToFix.ContentId != null)
+                if (lcToFix.ContentId is not null)
                     //try find the content in replaced layout
                     previousDocument = _previousDocuments.FirstOrDefault(a => a.ContentId == lcToFix.ContentId);
 
-                if (LayoutSerializationCallback != null)
+                if (LayoutSerializationCallback is not null)
                 {
                     var args = new LayoutSerializationCallbackEventArgs(lcToFix,
-                        previousDocument != null ? previousDocument.Content : null);
+                        previousDocument is not null ? previousDocument.Content : null);
                     LayoutSerializationCallback(this, args);
 
                     if (args.Cancel)
                         lcToFix.Close();
-                    else if (args.Content != null)
+                    else if (args.Content is not null)
                         lcToFix.Content = args.Content;
-                    else if (args.Model.Content != null)
+                    else if (args.Model.Content is not null)
                         lcToFix.Close();
                 }
-                else if (previousDocument == null)
+                else if (previousDocument is null)
                 {
                     lcToFix.Close();
                 }

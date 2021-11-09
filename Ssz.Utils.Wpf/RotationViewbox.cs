@@ -69,7 +69,7 @@ namespace Ssz.Utils.Wpf
         {
             get 
             {
-                if (_originalContent == null) throw new InvalidOperationException();
+                if (_originalContent is null) throw new InvalidOperationException();
                 return _originalContent; 
             }
             set
@@ -102,12 +102,12 @@ namespace Ssz.Utils.Wpf
         protected override Size MeasureOverride(Size availableSize)
         {
             Size result;
-            if (_logicalContent != null)
+            if (_logicalContent is not null)
             {
                 // Measure based on the size of the logical child, since we want to align with it.
                 _logicalContent.Measure(availableSize);
                 result = _logicalContent.DesiredSize;
-                if (_visualContent == null) throw new InvalidOperationException();
+                if (_visualContent is null) throw new InvalidOperationException();
                 _visualContent.Measure(result);
             }
             else
@@ -119,10 +119,10 @@ namespace Ssz.Utils.Wpf
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            if (_logicalContent != null)
+            if (_logicalContent is not null)
             {
                 _logicalContent.Arrange(new Rect(finalSize));
-                if (_visualContent == null) throw new InvalidOperationException();
+                if (_visualContent is null) throw new InvalidOperationException();
                 _visualContent.Arrange(new Rect(finalSize));
                 Update3D();
             }
@@ -131,13 +131,13 @@ namespace Ssz.Utils.Wpf
 
         protected override Visual GetVisualChild(int index)
         {
-            if (_visualContent == null) throw new InvalidOperationException();
+            if (_visualContent is null) throw new InvalidOperationException();
             return _visualContent;
         }
 
         protected override int VisualChildrenCount
         {
-            get { return _visualContent == null ? 0 : 1; }
+            get { return _visualContent is null ? 0 : 1; }
         }
 
         #endregion
@@ -232,7 +232,7 @@ namespace Ssz.Utils.Wpf
             // that it's looking at. 
             double fovInRadians = FieldOfView*(Math.PI/180);
             double zValue = w/Math.Tan(fovInRadians/2)/2;
-            if (_viewport3D == null) throw new InvalidOperationException();
+            if (_viewport3D is null) throw new InvalidOperationException();
             _viewport3D.Camera = new PerspectiveCamera(new Point3D(w/2, h/2, zValue),
                 -ZAxis,
                 YAxis,
@@ -289,7 +289,7 @@ namespace Ssz.Utils.Wpf
             protected override Size MeasureOverride(Size constraint)
             {
                 var pl = Parent as RotationViewbox;
-                if (pl != null)
+                if (pl is not null)
                 {
                     pl.InvalidateMeasure();
                 }
@@ -299,7 +299,7 @@ namespace Ssz.Utils.Wpf
             protected override Size ArrangeOverride(Size arrangeSize)
             {
                 var pl = Parent as RotationViewbox;
-                if (pl != null)
+                if (pl is not null)
                 {
                     pl.InvalidateArrange();
                 }

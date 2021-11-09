@@ -47,7 +47,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         {
             base.OnApplyTemplate();
 
-            if (_headerThumb != null)
+            if (_headerThumb is not null)
             {
                 _headerThumb.PreviewMouseLeftButtonDown -= HeaderPreviewMouseLeftButtonDown;
                 _headerThumb.PreviewMouseRightButtonDown -= HeaderPreviewMouseRightButtonDown;
@@ -55,24 +55,24 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
             }
 
             _headerThumb = Template.FindName(PART_HeaderThumb, this) as Thumb;
-            if (_headerThumb != null)
+            if (_headerThumb is not null)
             {
                 _headerThumb.PreviewMouseLeftButtonDown += HeaderPreviewMouseLeftButtonDown;
                 _headerThumb.PreviewMouseRightButtonDown += HeaderPreviewMouseRightButtonDown;
                 _headerThumb.DragDelta += HeaderThumbDragDelta;
             }
 
-            if (_icon != null) _icon.MouseLeftButtonDown -= IconMouseLeftButtonDown;
+            if (_icon is not null) _icon.MouseLeftButtonDown -= IconMouseLeftButtonDown;
             _icon = Template.FindName(PART_Icon, this) as Image;
-            if (_icon != null) _icon.MouseLeftButtonDown += IconMouseLeftButtonDown;
+            if (_icon is not null) _icon.MouseLeftButtonDown += IconMouseLeftButtonDown;
 
-            if (_closeButton != null) _closeButton.Click -= Close;
+            if (_closeButton is not null) _closeButton.Click -= Close;
             _closeButton = Template.FindName(PART_CloseButton, this) as Button;
-            if (_closeButton != null) _closeButton.Click += Close;
+            if (_closeButton is not null) _closeButton.Click += Close;
 
-            if (_windowToolboxCloseButton != null) _windowToolboxCloseButton.Click -= Close;
+            if (_windowToolboxCloseButton is not null) _windowToolboxCloseButton.Click -= Close;
             _windowToolboxCloseButton = Template.FindName(PART_ToolWindowCloseButton, this) as Button;
-            if (_windowToolboxCloseButton != null) _windowToolboxCloseButton.Click += Close;
+            if (_windowToolboxCloseButton is not null) _windowToolboxCloseButton.Click += Close;
 
             _windowBlockMouseInputsPanel = Template.FindName(PART_BlockMouseInputsBorder, this) as Border;
             UpdateBlockMouseInputsPanel();
@@ -191,7 +191,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
                 return basevalue;
 
             var windowControl = d as WindowControl;
-            if (windowControl == null)
+            if (windowControl is null)
                 return basevalue;
             return windowControl.OnCoerceCloseButtonVisibility((Visibility) basevalue);
         }
@@ -217,7 +217,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         private static object OnCoerceIsActive(DependencyObject d, object basevalue)
         {
             var w = d as WindowControl;
-            if (w != null && !w._setIsActiveInternal && !w.AllowPublicIsActiveChange)
+            if (w is not null && !w._setIsActiveInternal && !w.AllowPublicIsActiveChange)
                 throw new InvalidOperationException(
                     "Cannot set IsActive directly. This is handled by the underlying system");
 
@@ -251,7 +251,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
                 return basevalue;
 
             var windowControl = (WindowControl) d;
-            if (windowControl == null)
+            if (windowControl is null)
                 return basevalue;
 
             return windowControl.OnCoerceLeft(basevalue);
@@ -269,7 +269,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         private static void OnLeftPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             var windowControl = obj as WindowControl;
-            if (windowControl != null)
+            if (windowControl is not null)
                 windowControl.OnLeftPropertyChanged((double) e.OldValue, (double) e.NewValue);
         }
 
@@ -278,7 +278,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         protected virtual void OnLeftPropertyChanged(double oldValue, double newValue)
         {
             var handler = LeftChanged;
-            if (handler != null) handler(this, EventArgs.Empty);
+            if (handler is not null) handler(this, EventArgs.Empty);
         }
 
         #endregion //Left
@@ -300,7 +300,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
                 return basevalue;
 
             var windowControl = (WindowControl) d;
-            if (windowControl == null)
+            if (windowControl is null)
                 return basevalue;
 
             return windowControl.OnCoerceTop(basevalue);
@@ -318,7 +318,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         private static void OnTopPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             var windowControl = obj as WindowControl;
-            if (windowControl != null)
+            if (windowControl is not null)
                 windowControl.OnTopPropertyChanged((double) e.OldValue, (double) e.NewValue);
         }
 
@@ -327,7 +327,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         protected virtual void OnTopPropertyChanged(double oldValue, double newValue)
         {
             var handler = TopChanged;
-            if (handler != null) handler(this, EventArgs.Empty);
+            if (handler is not null) handler(this, EventArgs.Empty);
         }
 
         #endregion //TopProperty
@@ -421,7 +421,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
                 return basevalue;
 
             var windowControl = d as WindowControl;
-            if (windowControl == null)
+            if (windowControl is null)
                 return basevalue;
             return windowControl.OnCoerceWindowStyle((WindowStyle) basevalue);
         }
@@ -434,7 +434,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         private static void OnWindowStyleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var window = (WindowControl) d;
-            if (window != null)
+            if (window is not null)
                 window.OnWindowStyleChanged((WindowStyle) e.OldValue, (WindowStyle) e.NewValue);
         }
 
@@ -640,7 +640,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
         internal virtual void UpdateBlockMouseInputsPanel()
         {
-            if (_windowBlockMouseInputsPanel != null)
+            if (_windowBlockMouseInputsPanel is not null)
                 _windowBlockMouseInputsPanel.Visibility =
                     IsBlockMouseInputsPanelActive ? Visibility.Visible : Visibility.Collapsed;
         }
@@ -648,7 +648,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         internal double GetHeaderHeight()
         {
             var headerGrid = Template.FindName(PART_HeaderGrid, this) as Grid;
-            if (headerGrid != null)
+            if (headerGrid is not null)
                 return headerGrid.ActualHeight;
             return 0;
         }

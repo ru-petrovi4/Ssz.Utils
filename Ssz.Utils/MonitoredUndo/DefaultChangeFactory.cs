@@ -70,7 +70,7 @@ namespace Ssz.Utils.MonitoredUndo
             if (undoRoot.IsUndoingOrRedoing) return;
 
             Change? change = GetChange(instance, propertyName, oldValue, newValue);
-            if (change == null) return;
+            if (change is null) return;
             undoRoot.AddChange(change, descriptionOfChange);
         }
 
@@ -100,7 +100,7 @@ namespace Ssz.Utils.MonitoredUndo
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    if (e.NewItems != null)
+                    if (e.NewItems is not null)
                         foreach (object item in e.NewItems)
                         {
                             var change = new CollectionAddChange(instance, propertyName, (IList) collection,
@@ -112,7 +112,7 @@ namespace Ssz.Utils.MonitoredUndo
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
-                    if (e.OldItems != null)
+                    if (e.OldItems is not null)
                         foreach (object item in e.OldItems)
                         {
                             var change = new CollectionRemoveChange(instance, propertyName, (IList) collection,
@@ -133,12 +133,12 @@ namespace Ssz.Utils.MonitoredUndo
 #endif
                 case NotifyCollectionChangedAction.Replace:
                     // FIXME handle multi-item replace event
-                    if (e.OldItems == null || e.OldItems.Count == 0 ||
-                        e.NewItems == null || e.NewItems.Count == 0) throw new InvalidOperationException();
+                    if (e.OldItems is null || e.OldItems.Count == 0 ||
+                        e.NewItems is null || e.NewItems.Count == 0) throw new InvalidOperationException();
                     var n = e.NewItems[0];
                     var o = e.OldItems[0];
-                    if (n == null ||
-                        o == null) throw new InvalidOperationException();
+                    if (n is null ||
+                        o is null) throw new InvalidOperationException();
                     var replaceChange = new CollectionReplaceChange(instance, propertyName, (IList) collection,
                         e.NewStartingIndex, n, o);
                     ret.Add(replaceChange);

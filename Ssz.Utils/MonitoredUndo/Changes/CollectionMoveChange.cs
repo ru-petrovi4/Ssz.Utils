@@ -54,14 +54,14 @@ namespace Ssz.Utils.MonitoredUndo.Changes
         protected override void PerformUndo()
         {
             var m = Collection.GetType().GetMethod("Move");
-            if (m == null) throw new InvalidOperationException();
+            if (m is null) throw new InvalidOperationException();
             m.Invoke(Collection, new object[] {NewIndex, OldIndex});
         }
 
         protected override void PerformRedo()
         {
             var m = Collection.GetType().GetMethod("Move");
-            if (m == null) throw new InvalidOperationException();
+            if (m is null) throw new InvalidOperationException();
             m.Invoke(Collection, new object[] {_redoOldIndex, _redoNewIndex});
         }
 

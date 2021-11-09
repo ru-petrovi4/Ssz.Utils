@@ -82,7 +82,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         /// </summary>
         protected virtual void OnModelChanged(DependencyPropertyChangedEventArgs e)
         {
-            if (Model != null)
+            if (Model is not null)
                 SetLayoutItem(Model.Root.Manager.GetLayoutItemFromModel(Model));
             else
                 SetLayoutItem(null);
@@ -131,7 +131,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             Model.IsActive = true;
 
             var layoutDocument = Model as LayoutDocument;
-            if (layoutDocument != null && !layoutDocument.CanMove)
+            if (layoutDocument is not null && !layoutDocument.CanMove)
                 return;
 
             if (e.ClickCount == 1)
@@ -178,7 +178,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                         if (containerPane is LayoutDocumentPane &&
                             !((LayoutDocumentPane) containerPane).CanRepositionItems)
                             return;
-                        if (containerPane.Parent != null && containerPane.Parent is LayoutDocumentPaneGroup &&
+                        if (containerPane.Parent is not null && containerPane.Parent is LayoutDocumentPaneGroup &&
                             !((LayoutDocumentPaneGroup) containerPane.Parent).CanRepositionItems)
                             return;
 

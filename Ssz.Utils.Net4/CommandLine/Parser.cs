@@ -219,7 +219,7 @@ namespace Ssz.Utils.CommandLine
             {
                 InvokeAutoBuildIfNeeded(options);
 
-                if (onFail == null)
+                if (onFail is null)
                 {
                     Environment.Exit(DefaultExitCodeFail);
                 }
@@ -267,7 +267,7 @@ namespace Ssz.Utils.CommandLine
 
                 InvokeAutoBuildIfNeeded(options);
 
-                if (onFail == null)
+                if (onFail is null)
                 {
                     Environment.Exit(DefaultExitCodeFail);
                 }
@@ -456,7 +456,7 @@ namespace Ssz.Utils.CommandLine
             OptionInfo verbOption = optionMap[args.First()];
 
             // User invoked a bad verb name
-            if (verbOption == null)
+            if (verbOption is null)
             {
                 if (helpInfo != null)
                 {
@@ -467,7 +467,7 @@ namespace Ssz.Utils.CommandLine
             }
 
             verbInstance = verbOption.GetValue(options);
-            if (verbInstance == null)
+            if (verbInstance is null)
             {
                 // Developer has not provided a default value and did not assign an instance
                 verbInstance = verbOption.CreateInstance(options);
@@ -525,7 +525,7 @@ namespace Ssz.Utils.CommandLine
                         OptionInfo verbOption = optionMap[verb];
                         if (verbOption != null)
                         {
-                            if (verbOption.GetValue(options) == null)
+                            if (verbOption.GetValue(options) is null)
                             {
                                 // We need to create an instance also to render help
                                 verbOption.CreateInstance(options);
@@ -544,7 +544,7 @@ namespace Ssz.Utils.CommandLine
         private void DisplayHelpVerbText(object options, Pair<MethodInfo, HelpVerbOptionAttribute> helpInfo, string verb)
         {
             string helpText;
-            if (verb == null)
+            if (verb is null)
             {
                 HelpVerbOptionAttribute.InvokeMethod(options, helpInfo, null, out helpText);
             }
@@ -561,7 +561,7 @@ namespace Ssz.Utils.CommandLine
 
         private void InvokeAutoBuildIfNeeded(object options)
         {
-            if (_settings.HelpWriter == null ||
+            if (_settings.HelpWriter is null ||
                 options.HasHelp() ||
                 options.HasVerbHelp())
             {

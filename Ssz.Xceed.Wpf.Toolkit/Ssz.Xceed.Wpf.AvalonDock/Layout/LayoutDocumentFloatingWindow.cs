@@ -52,11 +52,11 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 {
                     RaisePropertyChanging("RootDocument");
                     _rootDocument = value;
-                    if (_rootDocument != null)
+                    if (_rootDocument is not null)
                         _rootDocument.Parent = this;
                     RaisePropertyChanged("RootDocument");
 
-                    if (RootDocumentChanged != null)
+                    if (RootDocumentChanged is not null)
                         RootDocumentChanged(this, EventArgs.Empty);
                 }
             }
@@ -72,7 +72,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         {
             get
             {
-                if (RootDocument == null)
+                if (RootDocument is null)
                     yield break;
 
                 yield return RootDocument;
@@ -81,19 +81,19 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
         public override void RemoveChild(ILayoutElement element)
         {
-            Debug.Assert(element == RootDocument && element != null);
+            Debug.Assert(element == RootDocument && element is not null);
             RootDocument = null;
         }
 
         public override void ReplaceChild(ILayoutElement oldElement, ILayoutElement newElement)
         {
-            Debug.Assert(oldElement == RootDocument && oldElement != null);
+            Debug.Assert(oldElement == RootDocument && oldElement is not null);
             RootDocument = newElement as LayoutDocument;
         }
 
-        public override int ChildrenCount => RootDocument != null ? 1 : 0;
+        public override int ChildrenCount => RootDocument is not null ? 1 : 0;
 
-        public override bool IsValid => RootDocument != null;
+        public override bool IsValid => RootDocument is not null;
 
         public override void ReadXml(XmlReader reader)
         {
@@ -125,7 +125,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 else
                 {
                     var type = LayoutRoot.FindType(reader.LocalName);
-                    if (type == null)
+                    if (type is null)
                         throw new ArgumentException(
                             "AvalonDock.LayoutDocumentFloatingWindow doesn't know how to deserialize " +
                             reader.LocalName);

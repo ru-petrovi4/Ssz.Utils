@@ -61,7 +61,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         /// </summary>
         public IEnumerable<XiEventMessageFieldValue>? VendorFields
         {
-            get { return _vendorFields != null ? _vendorFields.ToArray() : null; }
+            get { return _vendorFields is not null ? _vendorFields.ToArray() : null; }
         }
 
         #endregion
@@ -81,7 +81,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         /// <returns> The Client Alias generated as the _vendorFields dictionary clientListId for the field. </returns>
         private uint AddEventMessageField(uint categoryId, XiEventMessageFieldValue fieldValue)
         {
-            if (_vendorFields == null) _vendorFields = new ObjectManager<XiEventMessageFieldValue>(10);
+            if (_vendorFields is null) _vendorFields = new ObjectManager<XiEventMessageFieldValue>(10);
             return _vendorFields.Add(fieldValue);
         }
 

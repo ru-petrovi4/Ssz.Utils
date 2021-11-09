@@ -83,7 +83,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         private static void OnModalBackgroundBrushChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var windowContainer = (WindowContainer) d;
-            if (windowContainer != null)
+            if (windowContainer is not null)
                 windowContainer.OnModalBackgroundBrushChanged((Brush) e.OldValue, (Brush) e.NewValue);
         }
 
@@ -126,10 +126,10 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         {
             base.OnVisualChildrenChanged(visualAdded, visualRemoved);
 
-            if (visualAdded != null && !(visualAdded is WindowControl))
+            if (visualAdded is not null && !(visualAdded is WindowControl))
                 throw new InvalidOperationException("WindowContainer can only contain WindowControl types.");
 
-            if (visualRemoved != null)
+            if (visualRemoved is not null)
             {
                 var removedChild = (WindowControl) visualRemoved;
                 removedChild.LeftChanged -= Child_LeftChanged;
@@ -140,7 +140,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
                 if (removedChild is ChildWindow) ((ChildWindow) removedChild).IsModalChanged -= Child_IsModalChanged;
             }
 
-            if (visualAdded != null)
+            if (visualAdded is not null)
             {
                 var addedChild = (WindowControl) visualAdded;
                 addedChild.LeftChanged += Child_LeftChanged;
@@ -159,7 +159,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         private void Child_LeftChanged(object sender, EventArgs e)
         {
             var windowControl = (WindowControl) sender;
-            if (windowControl != null) windowControl.Left = GetRestrictedLeft(windowControl);
+            if (windowControl is not null) windowControl.Left = GetRestrictedLeft(windowControl);
 
             SetLeft(windowControl, windowControl.Left);
         }
@@ -167,7 +167,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         private void Child_TopChanged(object sender, EventArgs e)
         {
             var windowControl = (WindowControl) sender;
-            if (windowControl != null) windowControl.Top = GetRestrictedTop(windowControl);
+            if (windowControl is not null) windowControl.Top = GetRestrictedTop(windowControl);
 
             SetTop(windowControl, windowControl.Top);
         }
@@ -177,7 +177,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
             var windowControl = (WindowControl) sender;
 
             var modalWindow = GetModalWindow();
-            if (modalWindow == null) SetNextActiveWindow(windowControl);
+            if (modalWindow is null) SetNextActiveWindow(windowControl);
         }
 
         private void Child_IsModalChanged(object sender, EventArgs e)
@@ -192,7 +192,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
             //Do not give access to data behind the WindowContainer as long as any child of WindowContainer is visible.
             var firstVisibleChild =
                 Children.OfType<WindowControl>().FirstOrDefault(x => x.Visibility == Visibility.Visible);
-            IsHitTestVisible = firstVisibleChild != null;
+            IsHitTestVisible = firstVisibleChild is not null;
 
             if ((bool) e.NewValue)
             {
@@ -206,7 +206,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
             var modalWindow = GetModalWindow();
             foreach (WindowControl window in Children)
-                window.IsBlockMouseInputsPanelActive = modalWindow != null && !Equals(modalWindow, window);
+                window.IsBlockMouseInputsPanelActive = modalWindow is not null && !Equals(modalWindow, window);
 
             SetModalBackground();
         }
@@ -241,7 +241,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
         private void ExpandWindowControl(WindowControl windowControl)
         {
-            if (windowControl != null)
+            if (windowControl is not null)
             {
                 windowControl.Left = 0;
                 windowControl.Top = 0;
@@ -293,9 +293,9 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
             {
                 var modalWindow = GetModalWindow();
                 // Modal window is always in front
-                if (modalWindow != null)
+                if (modalWindow is not null)
                     BringToFront(modalWindow);
-                else if (windowControl != null)
+                else if (windowControl is not null)
                     BringToFront(windowControl);
                 else
                     BringToFront(Children.OfType<WindowControl>()
@@ -306,7 +306,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
 
         private void BringToFront(WindowControl windowControl)
         {
-            if (windowControl != null)
+            if (windowControl is not null)
             {
                 var maxZIndez = Children.OfType<WindowControl>().Max(x => GetZIndex(x));
                 SetZIndex(windowControl, maxZIndez + 1);
@@ -366,7 +366,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         private void SetModalBackground()
         {
             // We have a modal window and a ModalBackgroundBrush set.
-            if (GetModalWindow() != null && ModalBackgroundBrush != null)
+            if (GetModalWindow() is not null && ModalBackgroundBrush is not null)
             {
                 if (!_isModalBackgroundApplied)
                 {

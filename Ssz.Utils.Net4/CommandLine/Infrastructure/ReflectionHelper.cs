@@ -53,7 +53,7 @@ namespace Ssz.Utils.CommandLine.Infrastructure
         {
             var key = new Pair<Type, object>(typeof (Pair<PropertyInfo, TAttribute>), target);
             object cached = ReflectionCache.Instance[key];
-            if (cached == null)
+            if (cached is null)
             {
                 IList<Pair<PropertyInfo, TAttribute>> list = new List<Pair<PropertyInfo, TAttribute>>();
                 if (target != null)
@@ -62,13 +62,13 @@ namespace Ssz.Utils.CommandLine.Infrastructure
 
                     foreach (PropertyInfo property in propertiesInfo)
                     {
-                        if (property == null || (!property.CanRead || !property.CanWrite))
+                        if (property is null || (!property.CanRead || !property.CanWrite))
                         {
                             continue;
                         }
 
                         MethodInfo setMethod = property.GetSetMethod();
-                        if (setMethod == null || setMethod.IsStatic)
+                        if (setMethod is null || setMethod.IsStatic)
                         {
                             continue;
                         }
@@ -93,7 +93,7 @@ namespace Ssz.Utils.CommandLine.Infrastructure
         {
             var key = new Pair<Type, object>(typeof (Pair<MethodInfo, TAttribute>), target);
             object cached = ReflectionCache.Instance[key];
-            if (cached == null)
+            if (cached is null)
             {
                 MethodInfo[] info = target.GetType().GetMethods();
                 foreach (MethodInfo method in info)
@@ -104,7 +104,7 @@ namespace Ssz.Utils.CommandLine.Infrastructure
                     }
 
                     Attribute attribute = Attribute.GetCustomAttribute(method, typeof (TAttribute), false);
-                    if (attribute == null)
+                    if (attribute is null)
                     {
                         continue;
                     }
@@ -125,7 +125,7 @@ namespace Ssz.Utils.CommandLine.Infrastructure
         {
             var key = new Pair<Type, object>(typeof (TAttribute), target);
             object cached = ReflectionCache.Instance[key];
-            if (cached == null)
+            if (cached is null)
             {
                 MethodInfo[] info = target.GetType().GetMethods();
                 foreach (MethodInfo method in info)
@@ -136,7 +136,7 @@ namespace Ssz.Utils.CommandLine.Infrastructure
                     }
 
                     Attribute attribute = Attribute.GetCustomAttribute(method, typeof (TAttribute), false);
-                    if (attribute == null)
+                    if (attribute is null)
                     {
                         continue;
                     }
@@ -157,20 +157,20 @@ namespace Ssz.Utils.CommandLine.Infrastructure
         {
             var key = new Pair<Type, object>(typeof (IList<TAttribute>), target);
             object cached = ReflectionCache.Instance[key];
-            if (cached == null)
+            if (cached is null)
             {
                 IList<TAttribute> list = new List<TAttribute>();
                 PropertyInfo[] info = target.GetType().GetProperties();
 
                 foreach (PropertyInfo property in info)
                 {
-                    if (property == null || (!property.CanRead || !property.CanWrite))
+                    if (property is null || (!property.CanRead || !property.CanWrite))
                     {
                         continue;
                     }
 
                     MethodInfo setMethod = property.GetSetMethod();
-                    if (setMethod == null || setMethod.IsStatic)
+                    if (setMethod is null || setMethod.IsStatic)
                     {
                         continue;
                     }
@@ -206,9 +206,9 @@ namespace Ssz.Utils.CommandLine.Infrastructure
         {
             var key = new Pair<Type, object>(typeof (Pair<PropertyInfo, BaseOptionAttribute>), target);
             object cached = ReflectionCache.Instance[key];
-            if (cached == null)
+            if (cached is null)
             {
-                if (target == null)
+                if (target is null)
                 {
                     return null;
                 }
@@ -217,20 +217,20 @@ namespace Ssz.Utils.CommandLine.Infrastructure
 
                 foreach (PropertyInfo property in propertiesInfo)
                 {
-                    if (property == null || (!property.CanRead || !property.CanWrite))
+                    if (property is null || (!property.CanRead || !property.CanWrite))
                     {
                         continue;
                     }
 
                     MethodInfo setMethod = property.GetSetMethod();
-                    if (setMethod == null || setMethod.IsStatic)
+                    if (setMethod is null || setMethod.IsStatic)
                     {
                         continue;
                     }
 
                     Attribute attribute = Attribute.GetCustomAttribute(property, typeof (TAttribute), false);
                     var optionAttr = (TAttribute) attribute;
-                    if (optionAttr == null || uniqueName != optionAttr.UniqueName)
+                    if (optionAttr is null || uniqueName != optionAttr.UniqueName)
                     {
                         continue;
                     }

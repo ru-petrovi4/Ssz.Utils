@@ -29,12 +29,12 @@ namespace System.Linq.Dynamic.Core.Parser
             _keywordsHelper.TryGetValue(typeName, out object? type);
 
             Type? result = type as Type;
-            if (result != null)
+            if (result is not null)
             {
                 return result;
             }
 
-            if (expressions != null && TryResolveTypeUsingExpressions(typeName, expressions, out result))
+            if (expressions is not null && TryResolveTypeUsingExpressions(typeName, expressions, out result))
             {
                 return result;
             }
@@ -42,7 +42,7 @@ namespace System.Linq.Dynamic.Core.Parser
             if (allowToUseAnyType)
             {
                 Type? resolvedType = ResolveType(typeName);
-                if (resolvedType != null)
+                if (resolvedType is not null)
                 {
                     return resolvedType;
                 }
@@ -91,7 +91,7 @@ namespace System.Linq.Dynamic.Core.Parser
                 {
                     string possibleFullName = $"{expression.Type.Namespace}.{name}";
                     var resolvedType = ResolveType(possibleFullName);
-                    if (resolvedType != null)
+                    if (resolvedType is not null)
                     {
                         result = resolvedType;
                         return true;

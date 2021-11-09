@@ -121,11 +121,11 @@ namespace Ssz.Xceed.Wpf.Toolkit
             get => _decreaseButton;
             set
             {
-                if (_decreaseButton != null) _decreaseButton.Click -= OnButtonClick;
+                if (_decreaseButton is not null) _decreaseButton.Click -= OnButtonClick;
 
                 _decreaseButton = value;
 
-                if (_decreaseButton != null) _decreaseButton.Click += OnButtonClick;
+                if (_decreaseButton is not null) _decreaseButton.Click += OnButtonClick;
             }
         }
 
@@ -143,11 +143,11 @@ namespace Ssz.Xceed.Wpf.Toolkit
             get => _increaseButton;
             set
             {
-                if (_increaseButton != null) _increaseButton.Click -= OnButtonClick;
+                if (_increaseButton is not null) _increaseButton.Click -= OnButtonClick;
 
                 _increaseButton = value;
 
-                if (_increaseButton != null) _increaseButton.Click += OnButtonClick;
+                if (_increaseButton is not null) _increaseButton.Click += OnButtonClick;
             }
         }
 
@@ -191,7 +191,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             base.OnMouseLeftButtonUp(e);
 
             Point mousePosition;
-            if (IncreaseButton != null && IncreaseButton.IsEnabled == false)
+            if (IncreaseButton is not null && IncreaseButton.IsEnabled == false)
             {
                 mousePosition = e.GetPosition(IncreaseButton);
                 if (mousePosition.X > 0 && mousePosition.X < IncreaseButton.ActualWidth &&
@@ -199,7 +199,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
                     e.Handled = true;
             }
 
-            if (DecreaseButton != null && DecreaseButton.IsEnabled == false)
+            if (DecreaseButton is not null && DecreaseButton.IsEnabled == false)
             {
                 mousePosition = e.GetPosition(DecreaseButton);
                 if (mousePosition.X > 0 && mousePosition.X < DecreaseButton.ActualWidth &&
@@ -283,12 +283,12 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private void SetButtonUsage()
         {
             // buttonspinner adds buttons that spin, so disable accordingly.
-            if (IncreaseButton != null)
+            if (IncreaseButton is not null)
                 IncreaseButton.IsEnabled = AllowSpin &&
                                            (ValidSpinDirection & ValidSpinDirections.Increase) ==
                                            ValidSpinDirections.Increase;
 
-            if (DecreaseButton != null)
+            if (DecreaseButton is not null)
                 DecreaseButton.IsEnabled = AllowSpin &&
                                            (ValidSpinDirection & ValidSpinDirections.Decrease) ==
                                            ValidSpinDirections.Decrease;

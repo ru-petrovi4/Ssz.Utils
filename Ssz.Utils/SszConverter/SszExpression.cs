@@ -54,8 +54,8 @@ namespace Ssz.Utils
 
             if (_expressionType == ExpressinType.Const && _hasLastResult) return _lastResult;
 
-            if (_expressionType == ExpressinType.Function && _hasLastResult && dataSourceValues != null &&
-                _lastDataSourceValues != null &&
+            if (_expressionType == ExpressinType.Function && _hasLastResult && dataSourceValues is not null &&
+                _lastDataSourceValues is not null &&
                 dataSourceValues.SequenceEqual(_lastDataSourceValues) &&
                 Equals(userValue, _lastUserValue))
                 return _lastResult;
@@ -66,10 +66,10 @@ namespace Ssz.Utils
             bool[] bDataSourceValues;
             string[] sDataSourceValues;
 
-            _lastDataSourceValues = dataSourceValues != null ? (object[])dataSourceValues.Clone() : null;
+            _lastDataSourceValues = dataSourceValues is not null ? (object[])dataSourceValues.Clone() : null;
             _lastUserValue = userValue;
 
-            if (dataSourceValues == null || dataSourceValues.Length == 0)
+            if (dataSourceValues is null || dataSourceValues.Length == 0)
             {
                 dDataSourceValues = new double[0];
                 iDataSourceValues = new int[0];
@@ -104,11 +104,11 @@ namespace Ssz.Utils
             var bUserValue = new Any(userValue).ValueAsBoolean(true);
             string sUserValue = new Any(userValue).ValueAsString(false);
 
-            if (_delegate == null)
+            if (_delegate is null)
                 if (!_delegates.TryGetValue(_expressionString, out _delegate))
                 {
                     PrepareLambdaExpression(logger);
-                    if (_lambdaExpression != null)
+                    if (_lambdaExpression is not null)
                         try
                         {
                             _delegate = _lambdaExpression.Compile();
@@ -121,7 +121,7 @@ namespace Ssz.Utils
                     _delegates.Add(_expressionString, _delegate);
                 }
 
-            if (_delegate != null)
+            if (_delegate is not null)
             {
                 try
                 {
@@ -242,11 +242,11 @@ namespace Ssz.Utils
 
         private void PrepareLambdaExpression(ILogger? logger)
         {
-            if (_lambdaExpression != null || !IsValidInternal) return;
+            if (_lambdaExpression is not null || !IsValidInternal) return;
 
             _hasLastResult = false;
             _lambdaExpression = GetLambdaExpression(_expressionString, logger);
-            IsValidInternal = _lambdaExpression != null;
+            IsValidInternal = _lambdaExpression is not null;
         }
 
         #endregion

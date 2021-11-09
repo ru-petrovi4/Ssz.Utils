@@ -26,7 +26,7 @@ namespace Ssz.Utils
             if (String.IsNullOrEmpty(valueString))
                 return defaultValue;
             var result = new Any(valueString).ValueAs<T>(false);
-            if (result == null)
+            if (result is null)
                 return defaultValue;
             return result;
         }

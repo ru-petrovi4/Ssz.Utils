@@ -17,7 +17,7 @@ namespace Ssz.Utils
 
         public object? Convert(object?[]? values, ILogger? logger)
         {
-            if (values == null || values.Length == 0)
+            if (values is null || values.Length == 0)
                 return DoNothing;
 
             if (BackStatements.Count > 0)
@@ -28,7 +28,7 @@ namespace Ssz.Utils
             var firstTrue =
                 Statements.FirstOrDefault(
                     s => new Any(s.Condition.Evaluate(values, null, logger)).ValueAsBoolean(false));
-            if (firstTrue != null)
+            if (firstTrue is not null)
                 resultValue = firstTrue.Value.Evaluate(values, null, logger);
             else
                 resultValue = values[0];
@@ -64,10 +64,10 @@ namespace Ssz.Utils
             for (var paramNum = 0; paramNum < resultCount; paramNum++)
             {
                 var conditionResult = conditionResults[paramNum];
-                if (conditionResult == null)
+                if (conditionResult is null)
                 {
                     resultValues[paramNum] = value;
-                    if (_values != null && paramNum < _values.Length)
+                    if (_values is not null && paramNum < _values.Length)
                         _values[paramNum] = value;
                 }
                 else
@@ -78,7 +78,7 @@ namespace Ssz.Utils
                     }
                     else
                     {
-                        if (_values != null && paramNum < _values.Length)
+                        if (_values is not null && paramNum < _values.Length)
                             _values[paramNum] = resultValues[paramNum];
                     }
                 }                

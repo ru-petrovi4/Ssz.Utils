@@ -79,7 +79,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                     RaisePropertyChanged("Parent");
 
                     var root = Root as LayoutRoot;
-                    if (root != null)
+                    if (root is not null)
                         root.FireLayoutUpdated();
                 }
             }
@@ -95,7 +95,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
             {
                 var parent = Parent;
 
-                while (parent != null && !(parent is ILayoutRoot)) parent = parent.Parent;
+                while (parent is not null && !(parent is ILayoutRoot)) parent = parent.Parent;
 
                 return parent as ILayoutRoot;
             }
@@ -124,21 +124,21 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
         protected virtual void OnRootChanged(ILayoutRoot oldRoot, ILayoutRoot newRoot)
         {
-            if (oldRoot != null)
+            if (oldRoot is not null)
                 ((LayoutRoot) oldRoot).OnLayoutElementRemoved(this);
-            if (newRoot != null)
+            if (newRoot is not null)
                 ((LayoutRoot) newRoot).OnLayoutElementAdded(this);
         }
 
         protected virtual void RaisePropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
+            if (PropertyChanged is not null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
         protected virtual void RaisePropertyChanging(string propertyName)
         {
-            if (PropertyChanging != null)
+            if (PropertyChanging is not null)
                 PropertyChanging(this, new PropertyChangingEventArgs(propertyName));
         }
 

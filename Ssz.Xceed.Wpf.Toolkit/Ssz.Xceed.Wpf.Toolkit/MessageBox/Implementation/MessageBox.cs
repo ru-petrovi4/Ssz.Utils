@@ -321,7 +321,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             base.OnApplyTemplate();
 
-            if (_windowControl != null)
+            if (_windowControl is not null)
             {
                 _windowControl.HeaderDragDelta -= (o, e) => OnHeaderDragDelta(e);
                 _windowControl.HeaderIconDoubleClicked -= (o, e) => OnHeaderIconDoubleClicked(e);
@@ -329,7 +329,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             }
 
             _windowControl = GetTemplateChild(PART_WindowControl) as WindowControl;
-            if (_windowControl != null)
+            if (_windowControl is not null)
             {
                 _windowControl.HeaderDragDelta += (o, e) => OnHeaderDragDelta(e);
                 _windowControl.HeaderIconDoubleClicked += (o, e) => OnHeaderIconDoubleClicked(e);
@@ -341,11 +341,11 @@ namespace Ssz.Xceed.Wpf.Toolkit
             ChangeVisualState(_button.ToString(), true);
 
             var closeButton = GetMessageBoxButton(PART_CloseButton);
-            if (closeButton != null)
+            if (closeButton is not null)
                 closeButton.IsEnabled = !Equals(_button, MessageBoxButton.YesNo);
 
             var okButton = GetMessageBoxButton(PART_OkButton);
-            if (okButton != null)
+            if (okButton is not null)
                 okButton.IsCancel = Equals(_button, MessageBoxButton.OK);
 
             SetDefaultResult();
@@ -367,7 +367,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         internal override void UpdateBlockMouseInputsPanel()
         {
-            if (_windowControl != null) _windowControl.IsBlockMouseInputsPanelActive = IsBlockMouseInputsPanelActive;
+            if (_windowControl is not null) _windowControl.IsBlockMouseInputsPanelActive = IsBlockMouseInputsPanelActive;
         }
 
         #endregion //Base Class Overrides
@@ -535,7 +535,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         /// </summary>
         public void ShowMessageBox()
         {
-            if (Container != null || Parent == null)
+            if (Container is not null || Parent is null)
                 throw new InvalidOperationException(
                     "This method is not intended to be called while displaying a MessageBox outside of a WindowContainer. Use ShowDialog() instead in that case.");
 
@@ -604,7 +604,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         /// </summary>
         public bool? ShowDialog()
         {
-            if (Parent != null)
+            if (Parent is not null)
                 throw new InvalidOperationException(
                     "This method is not intended to be called while displaying a Message Box inside a WindowContainer. Use 'ShowMessageBox()' instead.");
 
@@ -664,7 +664,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         /// </summary>
         private void Close()
         {
-            if (Container != null)
+            if (Container is not null)
                 // The Window.Closed event callback will call "OnClose"
                 Container.Close();
             else
@@ -677,7 +677,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private void SetDefaultResult()
         {
             var defaultButton = GetDefaultButtonFromDefaultResult();
-            if (defaultButton != null)
+            if (defaultButton is not null)
             {
                 defaultButton.IsDefault = true;
                 defaultButton.Focus();
@@ -783,7 +783,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             msgBox.InitializeMessageBox(owner, messageText, caption, button, icon, defaultResult);
 
             // Setting the style to null will inhibit any implicit styles      
-            if (messageBoxStyle != null) msgBox.Style = messageBoxStyle;
+            if (messageBoxStyle is not null) msgBox.Style = messageBoxStyle;
 
             msgBox.ShowDialog();
             return msgBox.MessageBoxResult;
@@ -796,7 +796,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static Window ComputeOwnerWindow()
         {
             Window owner = null;
-            if (Application.Current != null)
+            if (Application.Current is not null)
                 foreach (Window w in Application.Current.Windows)
                     if (w.IsActive)
                     {
@@ -863,7 +863,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             newWindow.Content = this;
             newWindow.Owner = _owner ?? ComputeOwnerWindow();
 
-            if (newWindow.Owner != null)
+            if (newWindow.Owner is not null)
                 newWindow.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
             else
                 newWindow.WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
@@ -903,7 +903,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
             if (!args.Handled)
             {
-                if (Container == null)
+                if (Container is null)
                 {
                     var left = 0.0;
 
@@ -979,7 +979,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             var button = e.OriginalSource as Button;
 
-            if (button == null)
+            if (button is null)
                 return;
 
             switch (button.Name)
@@ -1014,7 +1014,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             Container.Closed -= OnContainerClosed;
             Container.Content = null;
-            Debug.Assert(Container == null);
+            Debug.Assert(Container is null);
             OnClose();
         }
 
@@ -1035,7 +1035,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         protected virtual void OnClosed(EventArgs e)
         {
-            if (Closed != null)
+            if (Closed is not null)
                 Closed(this, e);
         }
 

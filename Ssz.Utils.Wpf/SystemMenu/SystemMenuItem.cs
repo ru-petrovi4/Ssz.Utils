@@ -71,10 +71,10 @@ namespace Ssz.Utils.Wpf.SystemMenu
         {
             var systemMenuItem = d as SystemMenuItem;
 
-            if (systemMenuItem != null)
+            if (systemMenuItem is not null)
             {
                 var command = e.NewValue as ICommand;
-                if (command != null)
+                if (command is not null)
                 {
                     systemMenuItem.Command = command;
                 }

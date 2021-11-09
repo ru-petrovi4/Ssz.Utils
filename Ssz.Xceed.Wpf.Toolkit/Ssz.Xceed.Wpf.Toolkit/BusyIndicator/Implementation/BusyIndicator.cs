@@ -137,7 +137,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
                 _displayAfterTimer.Stop();
                 IsContentVisible = false;
 
-                if (FocusAferBusy != null)
+                if (FocusAferBusy is not null)
                     FocusAferBusy.Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
                         {
                             FocusAferBusy.Focus();

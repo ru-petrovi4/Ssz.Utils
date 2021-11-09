@@ -24,7 +24,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value != null)
+            if (value is not null)
             {
                 var valueString = value.ToString();
                 if (string.IsNullOrEmpty(valueString)

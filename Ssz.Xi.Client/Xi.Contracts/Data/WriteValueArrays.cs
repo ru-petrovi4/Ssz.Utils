@@ -169,7 +169,7 @@ namespace Xi.Contracts.Data
 		/// </param>
 		public void SetDouble(int idx, uint serverAlias, double value)
 		{
-			if (DoubleServerAlias == null || DoubleValues == null) throw new InvalidOperationException();
+			if (DoubleServerAlias is null || DoubleValues is null) throw new InvalidOperationException();
 			DoubleServerAlias[idx] = serverAlias;
 			DoubleValues[idx] = value;
 		}
@@ -189,7 +189,7 @@ namespace Xi.Contracts.Data
 		/// </param>
 		public void SetUint(int idx, uint serverAlias, uint value)
 		{
-			if (UintServerAlias == null || UintValues == null) throw new InvalidOperationException();
+			if (UintServerAlias is null || UintValues is null) throw new InvalidOperationException();
 			UintServerAlias[idx] = serverAlias;
 			UintValues[idx] = value;
 		}
@@ -209,7 +209,7 @@ namespace Xi.Contracts.Data
 		/// </param>
 		public void SetObject(int idx, uint serverAlias, object value)
 		{
-			if (ObjectServerAlias == null || ObjectValues == null) throw new InvalidOperationException();
+			if (ObjectServerAlias is null || ObjectValues is null) throw new InvalidOperationException();
 			ObjectServerAlias[idx] = serverAlias;
 			ObjectValues[idx] = value;
 		}

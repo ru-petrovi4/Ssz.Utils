@@ -107,7 +107,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         private static void OnEditorChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var propertyItem = o as PropertyItem;
-            if (propertyItem != null)
+            if (propertyItem is not null)
                 propertyItem.OnEditorChanged((FrameworkElement) e.OldValue, (FrameworkElement) e.NewValue);
         }
 
@@ -131,7 +131,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         private static void OnIsExpandedChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var propertyItem = o as PropertyItemBase;
-            if (propertyItem != null)
+            if (propertyItem is not null)
                 propertyItem.OnIsExpandedChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 
@@ -169,7 +169,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         private static void OnIsSelectedChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var propertyItem = o as PropertyItemBase;
-            if (propertyItem != null)
+            if (propertyItem is not null)
                 propertyItem.OnIsSelectedChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 
@@ -222,7 +222,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         ///     It return the value defined on PropertyGrid.PropertyContainerStyle.
         /// </summary>
         public Style PropertyContainerStyle =>
-            ParentNode != null
+            ParentNode is not null
                 ? ParentNode.PropertyContainerStyle
                 : null;
 
@@ -235,7 +235,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             get => _containerHelper;
             set
             {
-                if (value == null)
+                if (value is null)
                     throw new ArgumentNullException("value");
 
                 _containerHelper = value;
@@ -355,7 +355,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             base.OnPropertyChanged(e);
 
             var propertyItem = e.OldValue as PropertyItem;
-            if (propertyItem != null) BindingOperations.ClearAllBindings(propertyItem.DescriptorDefinition);
+            if (propertyItem is not null) BindingOperations.ClearAllBindings(propertyItem.DescriptorDefinition);
 
             // First check that the raised property is actually a real CLR property.
             // This could be something else like an Attached DP.

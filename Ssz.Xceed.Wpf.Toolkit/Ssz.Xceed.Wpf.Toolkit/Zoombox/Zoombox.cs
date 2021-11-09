@@ -42,7 +42,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
         {
             get
             {
-                if (_viewStack == null && EffectiveViewStackMode != ZoomboxViewStackMode.Disabled)
+                if (_viewStack is null && EffectiveViewStackMode != ZoomboxViewStackMode.Disabled)
                     _viewStack = new ZoomboxViewStack(this);
                 return _viewStack;
             }
@@ -77,7 +77,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
             get
             {
                 // auto-wrapped content is always left and top aligned
-                if (IsContentWrapped || _content == null || !(_content is FrameworkElement))
+                if (IsContentWrapped || _content is null || !(_content is FrameworkElement))
                     return new Vector(0, 0);
 
                 double x = 0;
@@ -117,7 +117,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
         #region ContentRect Private Property
 
         private Rect ContentRect =>
-            _content == null
+            _content is null
                 ? Rect.Empty
                 : new Rect(new Size(_content.RenderSize.Width / _viewboxFactor,
                     _content.RenderSize.Height / _viewboxFactor));
@@ -203,7 +203,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
         #region ViewFinderDisplayRect Private Property
 
         private Rect ViewFinderDisplayRect =>
-            _viewFinderDisplay == null
+            _viewFinderDisplay is null
                 ? Rect.Empty
                 : new Rect(new Point(0, 0),
                     new Point(_viewFinderDisplay.RenderSize.Width, _viewFinderDisplay.RenderSize.Height));
@@ -212,17 +212,17 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
 
         public void CenterContent()
         {
-            if (_content != null) ZoomTo(ZoomboxView.Center);
+            if (_content is not null) ZoomTo(ZoomboxView.Center);
         }
 
         public void FillToBounds()
         {
-            if (_content != null) ZoomTo(ZoomboxView.Fill);
+            if (_content is not null) ZoomTo(ZoomboxView.Fill);
         }
 
         public void FitToBounds()
         {
-            if (_content != null) ZoomTo(ZoomboxView.Fit);
+            if (_content is not null) ZoomTo(ZoomboxView.Fit);
         }
 
         public void GoBack()
@@ -268,7 +268,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
         public void Zoom(double percentage)
         {
             // if there is nothing to scale, just return
-            if (_content == null)
+            if (_content is null)
                 return;
 
             Zoom(percentage, GetZoomRelativePoint());
@@ -277,7 +277,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
         public void Zoom(double percentage, Point relativeTo)
         {
             // if there is nothing to scale, just return
-            if (_content == null)
+            if (_content is null)
                 return;
 
             // adjust the current scale relative to the given point
@@ -288,7 +288,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
         public void ZoomTo(Point position)
         {
             // if there is nothing to pan, just return
-            if (_content == null)
+            if (_content is null)
                 return;
             if (double.IsNaN(position.X) || double.IsNaN(position.Y)) return;
             // zoom to the new region
@@ -297,7 +297,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
 
         public void ZoomTo(Rect region)
         {
-            if (_content == null)
+            if (_content is null)
                 return;
 
             // adjust the current scale and position
@@ -307,7 +307,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
         public void ZoomTo(double scale)
         {
             // if there is nothing to scale, just return
-            if (_content == null)
+            if (_content is null)
                 return;
 
             // adjust the current scale relative to the center of the content within the control
@@ -333,7 +333,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
 
         protected override Size MeasureOverride(Size constraint)
         {
-            if (_content != null)
+            if (_content is not null)
             {
                 // measure visuals according to supplied constraint
                 base.MeasureOverride(constraint);
@@ -366,7 +366,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
                 AddHandler(SizeChangedEvent, new SizeChangedEventHandler(OnContentSizeChanged), true);
 
             // update the Visual property of the view finder display panel's VisualBrush
-            if (_viewFinderDisplay != null && _viewFinderDisplay.VisualBrush != null)
+            if (_viewFinderDisplay is not null && _viewFinderDisplay.VisualBrush is not null)
                 _viewFinderDisplay.VisualBrush.Visual = _content;
         }
 
@@ -438,19 +438,19 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
             if (Template.Resources.Contains("InputBindings"))
             {
                 var inputBindings = Template.Resources["InputBindings"] as InputBindingCollection;
-                if (inputBindings != null) InputBindings.AddRange(inputBindings);
+                if (inputBindings is not null) InputBindings.AddRange(inputBindings);
             }
 
             // locate the content presenter
             _contentPresenter =
                 VisualTreeHelperEx.FindDescendantByType(this, typeof(ContentPresenter)) as ContentPresenter;
-            if (_contentPresenter == null)
+            if (_contentPresenter is null)
                 throw new InvalidTemplateException(ErrorMessages.GetMessage("ZoomboxTemplateNeedsContent"));
 
             // check the template for an AdornerDecorator
             AdornerLayer al = null;
             var ad = VisualTreeHelperEx.FindDescendantByType(this, typeof(AdornerDecorator)) as AdornerDecorator;
-            if (ad != null)
+            if (ad is not null)
                 al = ad.AdornerLayer;
             else
                 // look for an inherited adorner layer
@@ -463,7 +463,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
                 }
 
             // add the drag adorner to the adorner layer
-            if (al != null) al.Add(_dragAdorner);
+            if (al is not null) al.Add(_dragAdorner);
 
             // TODO: Why is it necessary to walk the visual tree the first time through?
             // If we don't do the following, the content is not laid out correctly (centered) initially.
@@ -476,7 +476,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
 
             RaiseEvent(resolveViewFinderDisplayEventArgs);
 
-            if (resolveViewFinderDisplayEventArgs.ResolvedViewFinderDisplay != null)
+            if (resolveViewFinderDisplayEventArgs.ResolvedViewFinderDisplay is not null)
                 _viewFinderDisplay = resolveViewFinderDisplayEventArgs.ResolvedViewFinderDisplay;
             else
                 // locate the view finder display panel
@@ -485,11 +485,11 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
                         ZoomboxViewFinderDisplay;
 
             // if a ViewFinder was specified but no display panel is present, throw an exception
-            if (ViewFinder != null && _viewFinderDisplay == null)
+            if (ViewFinder is not null && _viewFinderDisplay is null)
                 throw new InvalidTemplateException(ErrorMessages.GetMessage("ZoomboxHasViewFinderButNotDisplay"));
 
             // set up the VisualBrush and adorner for the display panel
-            if (_viewFinderDisplay != null)
+            if (_viewFinderDisplay is not null)
             {
                 // create VisualBrush for the view finder display panel
                 CreateVisualBrushForViewFinder(_content);
@@ -598,14 +598,14 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
         private void DetachFromVisualTree()
         {
             // remove the drag adorner
-            if (_dragAdorner != null)
+            if (_dragAdorner is not null)
                 AdornerLayer.GetAdornerLayer(this).Remove(_dragAdorner);
 
             // remove the layout updated handler, if present
-            if (_contentPresenter != null) _contentPresenter.LayoutUpdated -= ContentPresenterFirstArranged;
+            if (_contentPresenter is not null) _contentPresenter.LayoutUpdated -= ContentPresenterFirstArranged;
 
             // remove the view finder display panel's visual brush and adorner
-            if (_viewFinderDisplay != null) _viewFinderDisplay = null;
+            if (_viewFinderDisplay is not null) _viewFinderDisplay = null;
 
             // set object references to null
             _contentPresenter = null;
@@ -747,7 +747,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
             {
                 _dragAdorner.Rect = Rect.Empty;
 
-                if (_trueContent != null)
+                if (_trueContent is not null)
                 {
                     // get the selected region (in the content's coordinate space) based on the adorner's last position and size
                     var selection =
@@ -905,7 +905,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
 
         private void ProcessMouseWheelZoom(MouseWheelEventArgs e)
         {
-            if (_content == null)
+            if (_content is null)
                 return;
 
             // check modifiers to see if there's work to do
@@ -1006,7 +1006,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
 
         private void UpdateView(ZoomboxView view, bool allowAnimation, bool allowStackAddition, int stackIndex)
         {
-            if (_contentPresenter == null || _content == null || !HasArrangedContentPresenter)
+            if (_contentPresenter is null || _content is null || !HasArrangedContentPresenter)
                 return;
 
             // if an absolute view is being used and only a Scale value has been specified,
@@ -1353,7 +1353,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
 
         private void UpdateViewFinderDisplayContentBounds()
         {
-            if (_content == null || _trueContent == null || _viewFinderDisplay == null)
+            if (_content is null || _trueContent is null || _viewFinderDisplay is null)
                 return;
 
             UpdateViewboxFactor();
@@ -1386,7 +1386,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
 
         private void UpdateViewboxFactor()
         {
-            if (_content == null || _trueContent == null)
+            if (_content is null || _trueContent is null)
                 return;
 
             var contentWidth = _content.RenderSize.Width;
@@ -1402,7 +1402,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
         private void UpdateViewport()
         {
             // if we haven't attached to the visual tree yet or we don't have content, just return
-            if (_contentPresenter == null || _trueContent == null)
+            if (_contentPresenter is null || _trueContent is null)
                 return;
 
             IsUpdatingViewport = true;
@@ -1638,7 +1638,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
         private void ZoomTo(double scale, bool allowStackAddition)
         {
             // if there is nothing to scale, just return
-            if (_content == null)
+            if (_content is null)
                 return;
 
             // adjust the current scale relative to the zoom origin
@@ -1649,7 +1649,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
             bool allowStackAddition)
         {
             // if there is nothing to scale, just return
-            if (_content == null)
+            if (_content is null)
                 return;
 
             // if necessary, verify that the relativeTo point falls within the content
@@ -2083,7 +2083,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
 
         private object CoerceContentValue(object value)
         {
-            if (value != null && !(value is UIElement) && !(bool) GetValue(DesignerProperties.IsInDesignModeProperty))
+            if (value is not null && !(value is UIElement) && !(bool) GetValue(DesignerProperties.IsInDesignModeProperty))
                 throw new InvalidContentException(ErrorMessages.GetMessage("ZoomboxContentMustBeUIElement"));
 
             object oldContent = _content;
@@ -2101,7 +2101,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
                 }
 
                 // make sure the view finder's visual brush is null
-                if (_viewFinderDisplay != null && _viewFinderDisplay.VisualBrush != null)
+                if (_viewFinderDisplay is not null && _viewFinderDisplay.VisualBrush is not null)
                 {
                     _viewFinderDisplay.VisualBrush.Visual = null;
                     _viewFinderDisplay.VisualBrush = null;
@@ -2112,7 +2112,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
                 _trueContent = value as UIElement;
 
                 // if necessary, unparent the existing content
-                if (_contentPresenter != null && _contentPresenter.Content != null) _contentPresenter.Content = null;
+                if (_contentPresenter is not null && _contentPresenter.Content is not null) _contentPresenter.Content = null;
 
                 // if necessary, wrap the content
                 IsContentWrapped = false;
@@ -2130,9 +2130,9 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
                     IsContentWrapped = true;
                 }
 
-                if (_contentPresenter != null) _contentPresenter.Content = _content;
+                if (_contentPresenter is not null) _contentPresenter.Content = _content;
 
-                if (_viewFinderDisplay != null) CreateVisualBrushForViewFinder(_content);
+                if (_viewFinderDisplay is not null) CreateVisualBrushForViewFinder(_content);
                 UpdateViewFinderDisplayContentBounds();
             }
 
@@ -2660,7 +2660,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
 
         private void OnViewStackModeChanged(DependencyPropertyChangedEventArgs e)
         {
-            if ((ZoomboxViewStackMode) e.NewValue == ZoomboxViewStackMode.Disabled && _viewStack != null)
+            if ((ZoomboxViewStackMode) e.NewValue == ZoomboxViewStackMode.Disabled && _viewStack is not null)
             {
                 _viewStack.ClearViewStackSource();
                 _viewStack = null;
@@ -2704,10 +2704,10 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
         [Bindable(true)]
         public IEnumerable ViewStackSource
         {
-            get => _viewStack == null ? null : ViewStack.Source;
+            get => _viewStack is null ? null : ViewStack.Source;
             set
             {
-                if (value == null)
+                if (value is null)
                     ClearValue(ViewStackSourceProperty);
                 else
                     SetValue(ViewStackSourceProperty, value);
@@ -2723,9 +2723,9 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
             // We need to know whether the new value represents an explicit null value 
             // or whether it came from a binding. The latter indicates that we stay in ViewStackSource mode,
             // but with a null collection.
-            if (e.NewValue == null && !BindingOperations.IsDataBound(d, ViewStackSourceProperty))
+            if (e.NewValue is null && !BindingOperations.IsDataBound(d, ViewStackSourceProperty))
             {
-                if (zoombox.ViewStack != null) zoombox.ViewStack.ClearViewStackSource();
+                if (zoombox.ViewStack is not null) zoombox.ViewStack.ClearViewStackSource();
             }
             else
             {
@@ -3154,28 +3154,28 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
 
         protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e)
         {
-            if (DragOnPreview && !e.Handled && _contentPresenter != null) ProcessMouseLeftButtonDown(e);
+            if (DragOnPreview && !e.Handled && _contentPresenter is not null) ProcessMouseLeftButtonDown(e);
 
             base.OnPreviewMouseLeftButtonDown(e);
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
-            if (!DragOnPreview && !e.Handled && _contentPresenter != null) ProcessMouseLeftButtonDown(e);
+            if (!DragOnPreview && !e.Handled && _contentPresenter is not null) ProcessMouseLeftButtonDown(e);
 
             base.OnMouseLeftButtonDown(e);
         }
 
         protected override void OnPreviewMouseLeftButtonUp(MouseButtonEventArgs e)
         {
-            if (DragOnPreview && !e.Handled && _contentPresenter != null) ProcessMouseLeftButtonUp(e);
+            if (DragOnPreview && !e.Handled && _contentPresenter is not null) ProcessMouseLeftButtonUp(e);
 
             base.OnPreviewMouseLeftButtonUp(e);
         }
 
         protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
         {
-            if (!DragOnPreview && !e.Handled && _contentPresenter != null) ProcessMouseLeftButtonUp(e);
+            if (!DragOnPreview && !e.Handled && _contentPresenter is not null) ProcessMouseLeftButtonUp(e);
 
             base.OnMouseLeftButtonUp(e);
         }
@@ -3186,14 +3186,14 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
 
         protected override void OnPreviewMouseMove(MouseEventArgs e)
         {
-            if (DragOnPreview && !e.Handled && _contentPresenter != null) ProcessMouseMove(e);
+            if (DragOnPreview && !e.Handled && _contentPresenter is not null) ProcessMouseMove(e);
 
             base.OnPreviewMouseMove(e);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (!DragOnPreview && !e.Handled && _contentPresenter != null) ProcessMouseMove(e);
+            if (!DragOnPreview && !e.Handled && _contentPresenter is not null) ProcessMouseMove(e);
 
             base.OnMouseMove(e);
         }
@@ -3204,14 +3204,14 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
 
         protected override void OnPreviewMouseWheel(MouseWheelEventArgs e)
         {
-            if (ZoomOnPreview && !e.Handled && _contentPresenter != null) ProcessMouseWheelZoom(e);
+            if (ZoomOnPreview && !e.Handled && _contentPresenter is not null) ProcessMouseWheelZoom(e);
 
             base.OnPreviewMouseWheel(e);
         }
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
-            if (!ZoomOnPreview && !e.Handled && _contentPresenter != null) ProcessMouseWheelZoom(e);
+            if (!ZoomOnPreview && !e.Handled && _contentPresenter is not null) ProcessMouseWheelZoom(e);
 
             base.OnMouseWheel(e);
         }

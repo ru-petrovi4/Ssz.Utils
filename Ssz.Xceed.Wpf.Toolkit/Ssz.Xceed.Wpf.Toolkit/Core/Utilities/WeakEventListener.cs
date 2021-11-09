@@ -25,7 +25,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
 
         public WeakEventListener(Action<object, TArgs> callback)
         {
-            if (callback == null)
+            if (callback is null)
                 throw new ArgumentNullException("callback");
 
             _callback = callback;

@@ -53,42 +53,42 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             base.OnApplyTemplate();
 
-            if (_availableColors != null)
+            if (_availableColors is not null)
                 _availableColors.SelectionChanged -= Color_SelectionChanged;
 
             _availableColors = GetTemplateChild(PART_AvailableColors) as ListBox;
-            if (_availableColors != null)
+            if (_availableColors is not null)
                 _availableColors.SelectionChanged += Color_SelectionChanged;
 
-            if (_standardColors != null)
+            if (_standardColors is not null)
                 _standardColors.SelectionChanged -= Color_SelectionChanged;
 
             _standardColors = GetTemplateChild(PART_StandardColors) as ListBox;
-            if (_standardColors != null)
+            if (_standardColors is not null)
                 _standardColors.SelectionChanged += Color_SelectionChanged;
 
-            if (_recentColors != null)
+            if (_recentColors is not null)
                 _recentColors.SelectionChanged -= Color_SelectionChanged;
 
             _recentColors = GetTemplateChild(PART_RecentColors) as ListBox;
-            if (_recentColors != null)
+            if (_recentColors is not null)
                 _recentColors.SelectionChanged += Color_SelectionChanged;
 
-            if (_popup != null)
+            if (_popup is not null)
                 _popup.Opened -= Popup_Opened;
 
             _popup = GetTemplateChild(PART_ColorPickerPalettePopup) as Popup;
-            if (_popup != null)
+            if (_popup is not null)
                 _popup.Opened += Popup_Opened;
 
             _toggleButton = Template.FindName(PART_ColorPickerToggleButton, this) as ToggleButton;
 
-            if (_colorModeButton != null)
+            if (_colorModeButton is not null)
                 _colorModeButton.Click -= ColorModeButton_Clicked;
 
             _colorModeButton = Template.FindName(PART_ColorModeButton, this) as Button;
 
-            if (_colorModeButton != null)
+            if (_colorModeButton is not null)
                 _colorModeButton.Click += ColorModeButton_Clicked;
         }
 
@@ -231,7 +231,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnSelectedColorPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var colorPicker = (ColorPicker) d;
-            if (colorPicker != null)
+            if (colorPicker is not null)
                 colorPicker.OnSelectedColorChanged((Color) e.OldValue, (Color) e.NewValue);
         }
 
@@ -374,7 +374,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnUsingAlphaChannelPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var colorPicker = (ColorPicker) d;
-            if (colorPicker != null)
+            if (colorPicker is not null)
                 colorPicker.OnUsingAlphaChannelChanged();
         }
 
@@ -453,20 +453,20 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void Popup_Opened(object sender, EventArgs e)
         {
-            if (_availableColors != null && ShowAvailableColors)
+            if (_availableColors is not null && ShowAvailableColors)
                 FocusOnListBoxItem(_availableColors);
-            else if (_standardColors != null && ShowStandardColors)
+            else if (_standardColors is not null && ShowStandardColors)
                 FocusOnListBoxItem(_standardColors);
-            else if (_recentColors != null && ShowRecentColors)
+            else if (_recentColors is not null && ShowRecentColors)
                 FocusOnListBoxItem(_recentColors);
         }
 
         private void FocusOnListBoxItem(ListBox listBox)
         {
             var listBoxItem = (ListBoxItem) listBox.ItemContainerGenerator.ContainerFromItem(listBox.SelectedItem);
-            if (listBoxItem == null && listBox.Items.Count > 0)
+            if (listBoxItem is null && listBox.Items.Count > 0)
                 listBoxItem = (ListBoxItem) listBox.ItemContainerGenerator.ContainerFromItem(listBox.Items[0]);
-            if (listBoxItem != null)
+            if (listBoxItem is not null)
                 listBoxItem.Focus();
         }
 
@@ -499,7 +499,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
                 IsOpen = false;
             ReleaseMouseCapture();
 
-            if (isFocusOnColorPicker && _toggleButton != null)
+            if (isFocusOnColorPicker && _toggleButton is not null)
                 _toggleButton.Focus();
             UpdateRecentColors(new ColorItem(SelectedColor, SelectedColorText));
         }

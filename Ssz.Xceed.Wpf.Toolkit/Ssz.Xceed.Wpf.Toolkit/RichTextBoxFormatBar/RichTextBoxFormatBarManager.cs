@@ -57,7 +57,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnFormatBarPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var rtb = d as System.Windows.Controls.RichTextBox;
-            if (rtb == null)
+            if (rtb is null)
                 throw new Exception("A FormatBar can only be applied to a RichTextBox.");
 
             var manager = new RichTextBoxFormatBarManager();
@@ -99,7 +99,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             var p = e.GetPosition(_adorner);
             var maxDist = 0d;
-            var preventDisplayFadeOut = _adorner.Child != null && _adorner.Child is IRichTextBoxFormatBar
+            var preventDisplayFadeOut = _adorner.Child is not null && _adorner.Child is IRichTextBoxFormatBar
                 ? ((IRichTextBoxFormatBar) _adorner.Child).PreventDisplayFadeOut
                 : false;
 
@@ -176,7 +176,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
             var adorningEditor = _toolbar as Control;
 
-            if (_adorner.Child == null)
+            if (_adorner.Child is null)
                 _adorner.Child = adorningEditor;
 
             adorningEditor.ApplyTemplate();
@@ -187,7 +187,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             PositionFormatBar(adorningEditor);
 
             _parentWindow = TreeHelper.FindParent<Window>(_adorner);
-            if (_parentWindow != null) Mouse.AddMouseMoveHandler(_parentWindow, OnPreviewMouseMoveParentWindow);
+            if (_parentWindow is not null) Mouse.AddMouseMoveHandler(_parentWindow, OnPreviewMouseMoveParentWindow);
         }
 
         /// <summary>
@@ -217,11 +217,11 @@ namespace Ssz.Xceed.Wpf.Toolkit
         /// <returns>True if the IRichTextFormatBar is in the adorner layer, else false.</returns>
         private bool VerifyAdornerLayer()
         {
-            if (_adorner.Parent != null)
+            if (_adorner.Parent is not null)
                 return true;
 
             var layer = AdornerLayer.GetAdornerLayer(_richTextBox);
-            if (layer == null)
+            if (layer is null)
                 return false;
 
             layer.Add(_adorner);
@@ -237,7 +237,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             {
                 _adorner.Visibility = Visibility.Collapsed;
                 //_adorner.Child = null;
-                if (_parentWindow != null) Mouse.RemoveMouseMoveHandler(_parentWindow, OnPreviewMouseMoveParentWindow);
+                if (_parentWindow is not null) Mouse.RemoveMouseMoveHandler(_parentWindow, OnPreviewMouseMoveParentWindow);
             }
         }
 

@@ -42,18 +42,18 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         private static void OnIDChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (e.NewValue == null || !(d is UIElement))
+            if (e.NewValue is null || !(d is UIElement))
                 return;
 
             var parentPresenter = VisualTreeHelperEx.FindAncestorByType<SwitchPresenter>(d);
-            if (parentPresenter != null)
+            if (parentPresenter is not null)
                 parentPresenter.RegisterID(e.NewValue as string, d as FrameworkElement);
             else
                 d.Dispatcher.BeginInvoke(DispatcherPriority.Loaded,
                     (ThreadStart) delegate
                     {
                         parentPresenter = VisualTreeHelperEx.FindAncestorByType<SwitchPresenter>(d);
-                        if (parentPresenter != null)
+                        if (parentPresenter is not null)
                             parentPresenter.RegisterID(e.NewValue as string, d as FrameworkElement);
                     });
         }

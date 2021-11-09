@@ -49,7 +49,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             var target = d as UIElement;
 
-            if (target == null)
+            if (target is null)
                 throw new ArgumentException("Magnifier can only be attached to a UIElement.");
 
             var manager = new MagnifierManager();
@@ -93,11 +93,11 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private bool VerifyAdornerLayer()
         {
-            if (_adorner.Parent != null)
+            if (_adorner.Parent is not null)
                 return true;
 
             var layer = AdornerLayer.GetAdornerLayer(_element);
-            if (layer == null)
+            if (layer is null)
                 return false;
 
             layer.Add(_adorner);

@@ -39,12 +39,12 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             base.OnApplyTemplate();
 
-            if (_resizeThumb != null)
+            if (_resizeThumb is not null)
                 _resizeThumb.DragDelta -= ResizeThumb_DragDelta;
 
             _resizeThumb = GetTemplateChild(PART_ResizeThumb) as Thumb;
 
-            if (_resizeThumb != null)
+            if (_resizeThumb is not null)
                 _resizeThumb.DragDelta += ResizeThumb_DragDelta;
         }
 
@@ -103,7 +103,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnIsOpenChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var multiLineTextEditor = o as MultiLineTextEditor;
-            if (multiLineTextEditor != null)
+            if (multiLineTextEditor is not null)
                 multiLineTextEditor.OnIsOpenChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 
@@ -156,7 +156,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnTextChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var textEditor = o as MultiLineTextEditor;
-            if (textEditor != null)
+            if (textEditor is not null)
                 textEditor.OnTextChanged((string) e.OldValue, (string) e.NewValue);
         }
 

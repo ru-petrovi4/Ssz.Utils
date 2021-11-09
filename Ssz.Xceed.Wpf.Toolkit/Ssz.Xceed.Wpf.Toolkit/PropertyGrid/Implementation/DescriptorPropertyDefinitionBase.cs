@@ -190,7 +190,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 
         internal void RaiseContainerHelperInvalidated()
         {
-            if (ContainerHelperInvalidated != null) ContainerHelperInvalidated(this, EventArgs.Empty);
+            if (ContainerHelperInvalidated is not null) ContainerHelperInvalidated(this, EventArgs.Empty);
         }
 
         internal virtual ITypeEditor CreateDefaultEditor()
@@ -212,10 +212,10 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             var isResource = false;
             var isDynamicResource = false;
 
-            if (markupObject != null)
+            if (markupObject is not null)
             {
                 var markupProperty = markupObject.Properties.Where(p => p.Name == PropertyName).FirstOrDefault();
-                if (markupProperty != null && markupProperty.PropertyType != typeof(object) &&
+                if (markupProperty is not null && markupProperty.PropertyType != typeof(object) &&
                     !markupProperty.PropertyType.IsEnum)
                 {
                     //TODO: need to find a better way to determine if a StaticResource has been applied to any property not just a style
@@ -230,7 +230,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             }
             else
             {
-                if (dependencyObject != null && dpDescriptor != null)
+                if (dependencyObject is not null && dpDescriptor is not null)
                 {
                     if (BindingOperations.GetBindingExpressionBase(dependencyObject, dpDescriptor.DependencyProperty) !=
                         null)
@@ -282,7 +282,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         internal void UpdateValueFromSource()
         {
             var bindingExpressionBase = BindingOperations.GetBindingExpressionBase(this, ValueProperty);
-            if (bindingExpressionBase != null) bindingExpressionBase.UpdateTarget();
+            if (bindingExpressionBase is not null) bindingExpressionBase.UpdateTarget();
         }
 
         internal object ComputeDescriptionForItem(object item)
@@ -293,7 +293,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             //since this value is cached by PropertyDescriptor and the localized version 
             //(e.g., LocalizedDescriptionAttribute) value can dynamicaly change.
             var descriptionAtt = PropertyGridUtilities.GetAttribute<DescriptionAttribute>(pd);
-            return descriptionAtt != null
+            return descriptionAtt is not null
                 ? descriptionAtt.Description
                 : pd.Description;
         }
@@ -303,7 +303,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             var pd = item as PropertyDescriptor;
             var attribute = PropertyGridUtilities.GetAttribute<NewItemTypesAttribute>(pd);
 
-            return attribute != null
+            return attribute is not null
                 ? attribute.Types
                 : null;
         }
@@ -321,14 +321,14 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
                 {
                     var attribute = list.FirstOrDefault(x => x.UsageContext == UsageContextEnum.Categorized
                                                              || x.UsageContext == UsageContextEnum.Both);
-                    if (attribute != null)
+                    if (attribute is not null)
                         return attribute.Order;
                 }
                 else
                 {
                     var attribute = list.FirstOrDefault(x => x.UsageContext == UsageContextEnum.Alphabetical
                                                              || x.UsageContext == UsageContextEnum.Both);
-                    if (attribute != null)
+                    if (attribute is not null)
                         return attribute.Order;
                 }
             }
@@ -341,21 +341,21 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         {
             var pd = (PropertyDescriptor) item;
             var attribute = PropertyGridUtilities.GetAttribute<ExpandableObjectAttribute>(pd);
-            return attribute != null;
+            return attribute is not null;
         }
 
         internal string ComputeValuePropertyPathForItem(object item)
         {
             var pd = (PropertyDescriptor) item;
             var attribute = PropertyGridUtilities.GetAttribute<ValuePropertyPathAttribute>(pd);
-            return attribute != null ? attribute.Path : null;
+            return attribute is not null ? attribute.Path : null;
         }
 
         internal string ComputeIsValueEditorEnabledPropertyPathForItem(object item)
         {
             var pd = (PropertyDescriptor) item;
             var attribute = PropertyGridUtilities.GetAttribute<IsValueEditorEnabledPropertyPathAttribute>(pd);
-            return attribute != null ? attribute.Path : null;
+            return attribute is not null ? attribute.Path : null;
         }
 
         internal int ComputeDisplayOrderInternal(bool isPropertyGridCategorized)
@@ -382,7 +382,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         {
             var displayName = PropertyDescriptor.DisplayName;
             var attribute = PropertyGridUtilities.GetAttribute<ParenthesizePropertyNameAttribute>(PropertyDescriptor);
-            if (attribute != null && attribute.NeedParenthesis) displayName = "(" + displayName + ")";
+            if (attribute is not null && attribute.NeedParenthesis) displayName = "(" + displayName + ")";
 
             return displayName;
         }
@@ -392,7 +392,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             if (list.Count > 0)
             {
                 var both = list.FirstOrDefault(x => x.UsageContext == UsageContextEnum.Both);
-                if (both != null && list.Count > 1)
+                if (both is not null && list.Count > 1)
                     Debug.Assert(false,
                         "A PropertyItem can't have more than 1 PropertyOrderAttribute when it has UsageContext : Both");
             }

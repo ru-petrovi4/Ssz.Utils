@@ -5,542 +5,220 @@
     </assembly>
     <members>
         <member name="T:Ssz.Utils.Any">
-            <summary>
-                If func param stringIsLocalized = false, InvariantCulture is used.
-                If func param stringIsLocalized = true, CultureHelper.SystemCultureInfo is used, which is corresponds operating system culture (see CultureHelper class).
-            </summary>
+            <summary>     ///     If func param stringIsLocalized = false, InvariantCulture is used.     ///     If func param stringIsLocalized = true, CultureHelper.SystemCultureInfo is used, which is corresponds operating system culture (see CultureHelper class).     /// </summary> 
         </member>
         <member name="T:Ssz.Utils.Any.StorageType">
-            <summary>        
-            </summary>
+            <summary>                 /// </summary> 
         </member>
         <member name="F:Ssz.Utils.Any.StorageType.Object">
-            <summary>
-                The data value is / was transported as an object.
-            </summary>
+            <summary>             ///     The data value is / was transported as an object.             /// </summary> 
         </member>
         <member name="F:Ssz.Utils.Any.StorageType.Double">
-            <summary>
-                The data value is / was transported as a double (64 Bits).
-            </summary>
+            <summary>             ///     The data value is / was transported as a double (64 Bits).             /// </summary> 
         </member>
         <member name="F:Ssz.Utils.Any.StorageType.UInt32">
-            <summary>
-                The data value is / was transported as a uint (32 Bits).
-            </summary>
+            <summary>             ///     The data value is / was transported as a uint (32 Bits).             /// </summary> 
         </member>
         <member name="M:Ssz.Utils.Any.#ctor(System.Object)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
+            <summary>         ///          /// </summary>         /// <param name="value"></param> 
         </member>
         <member name="M:Ssz.Utils.Any.#ctor(Ssz.Utils.Any)">
-            <summary>
-            
-            </summary>
-            <param name="that"></param>
+            <summary>         ///          /// </summary>         /// <param name="that"></param> 
         </member>
         <member name="P:Ssz.Utils.Any.StorageUInt32">
-            <summary>
-            
-            </summary>
+            <summary>         ///          /// </summary> 
         </member>
         <member name="P:Ssz.Utils.Any.StorageDouble">
-            <summary>
-            
-            </summary>
+            <summary>         ///          /// </summary> 
         </member>
         <member name="P:Ssz.Utils.Any.StorageObject">
-            <summary>
-            
-            </summary>
+            <summary>         ///          /// </summary> 
         </member>
         <member name="P:Ssz.Utils.Any.ValueTypeCode">
-            <summary>
-            
-            </summary>
+            <summary>         ///          /// </summary> 
         </member>
         <member name="P:Ssz.Utils.Any.ValueType">
-            <summary>        
-            </summary>
+            <summary>                 /// </summary> 
         </member>
         <member name="P:Ssz.Utils.Any.ValueStorageType">
-            <summary>
-            
-            </summary>
+            <summary>         ///          /// </summary> 
         </member>
         <member name="M:Ssz.Utils.Any.ConvertToBestType(System.String,System.Boolean)">
-            <summary>        
-            </summary>
-            <param name="sValue"></param>
-            <param name="stringIsLocalized"></param>
-            <returns></returns>
+            <summary>                 /// </summary>         /// <param name="sValue"></param>         /// <param name="stringIsLocalized"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.op_Equality(Ssz.Utils.Any,Ssz.Utils.Any)">
-            <summary>        
-            </summary>
-            <param name="left"></param>
-            <param name="right"></param>
-            <returns></returns>
+            <summary>                 /// </summary>         /// <param name="left"></param>         /// <param name="right"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.op_Inequality(Ssz.Utils.Any,Ssz.Utils.Any)">
-            <summary>        
-            </summary>
-            <param name="left"></param>
-            <param name="right"></param>
-            <returns></returns>
+            <summary>                 /// </summary>         /// <param name="left"></param>         /// <param name="right"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Compare(Ssz.Utils.Any,System.Double)">
-            <summary>
-                Uses ValueAsDouble(false), ValueAsInt32(false), ValueAsString(false) depending of ValueStorageType.
-                Returns true if diff is less than or equal deadband.
-            </summary>
-            <param name="that"></param>
-            <param name="deadband"></param>
-            <returns></returns>
+            <summary>         ///     Uses ValueAsDouble(false), ValueAsInt32(false), ValueAsString(false) depending of ValueStorageType.         ///     Returns true if diff is less than or equal deadband.         /// </summary>         /// <param name="that"></param>         /// <param name="deadband"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Equals(System.Object)">
-            <summary>
-                Strictly copare, no conversions
-            </summary>
-            <param name="obj"></param>
-            <returns></returns>
+            <summary>         ///     Strictly copare, no conversions         /// </summary>         /// <param name="obj"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Equals(Ssz.Utils.Any)">
-            <summary>
-                Strictly copare, no conversions
-            </summary>
-            <param name="that"></param>
-            <returns></returns>
+            <summary>         ///     Strictly copare, no conversions         /// </summary>         /// <param name="that"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.GetHashCode">
-            <summary>        
-            </summary>
-            <returns></returns>
+            <summary>                 /// </summary>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.ToString">
-            <summary>        
-            </summary>
-            <returns></returns>
+            <summary>                 /// </summary>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Set(System.UInt32,System.TypeCode,System.Boolean)">
-            <summary>
-            
-            </summary>
-            <param name="storageUInt32"></param>
-            <param name="valueTypeCode"></param>
-            <param name="stringIsLocalized"></param>
-            <returns></returns>
+            <summary>         ///          /// </summary>         /// <param name="storageUInt32"></param>         /// <param name="valueTypeCode"></param>         /// <param name="stringIsLocalized"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Set(System.Double,System.TypeCode,System.Boolean)">
-            <summary>
-            
-            </summary>
-            <param name="storageDouble"></param>
-            <param name="valueTypeCode"></param>
-            <param name="stringIsLocalized"></param>
-            <returns></returns>
+            <summary>         ///          /// </summary>         /// <param name="storageDouble"></param>         /// <param name="valueTypeCode"></param>         /// <param name="stringIsLocalized"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Set(Ssz.Utils.Any)">
-            <summary>
-            </summary>
+            <summary>         /// </summary> 
         </member>
         <member name="M:Ssz.Utils.Any.Set(System.Object)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
+            <summary>         ///          /// </summary>         /// <param name="value"></param> 
         </member>
         <member name="M:Ssz.Utils.Any.Set(System.SByte)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
+            <summary>         ///          /// </summary>         /// <param name="value"></param> 
         </member>
         <member name="M:Ssz.Utils.Any.Set(System.Byte)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
+            <summary>         ///          /// </summary>         /// <param name="value"></param> 
         </member>
         <member name="M:Ssz.Utils.Any.Set(System.Int16)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
+            <summary>         ///          /// </summary>         /// <param name="value"></param> 
         </member>
         <member name="M:Ssz.Utils.Any.Set(System.UInt16)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
+            <summary>         ///          /// </summary>         /// <param name="value"></param> 
         </member>
         <member name="M:Ssz.Utils.Any.Set(System.Int32)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
+            <summary>         ///          /// </summary>         /// <param name="value"></param> 
         </member>
         <member name="M:Ssz.Utils.Any.Set(System.UInt32)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
+            <summary>         ///          /// </summary>         /// <param name="value"></param> 
         </member>
         <member name="M:Ssz.Utils.Any.Set(System.Boolean)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
+            <summary>         ///          /// </summary>         /// <param name="value"></param> 
         </member>
         <member name="M:Ssz.Utils.Any.Set(System.Single)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
+            <summary>         ///          /// </summary>         /// <param name="value"></param> 
         </member>
         <member name="M:Ssz.Utils.Any.Set(System.Double)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
+            <summary>         ///          /// </summary>         /// <param name="value"></param> 
         </member>
         <member name="M:Ssz.Utils.Any.Set(System.Decimal)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
+            <summary>         ///          /// </summary>         /// <param name="value"></param> 
         </member>
         <member name="M:Ssz.Utils.Any.Set(System.Int64)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
+            <summary>         ///          /// </summary>         /// <param name="value"></param> 
         </member>
         <member name="M:Ssz.Utils.Any.Set(System.UInt64)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
+            <summary>         ///          /// </summary>         /// <param name="value"></param> 
         </member>
         <member name="M:Ssz.Utils.Any.Set(System.DateTime)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
+            <summary>         ///          /// </summary>         /// <param name="value"></param> 
         </member>
         <member name="M:Ssz.Utils.Any.Set(System.DBNull)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
+            <summary>         ///          /// </summary>         /// <param name="value"></param> 
         </member>
         <member name="M:Ssz.Utils.Any.Set(System.Char)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
+            <summary>         ///          /// </summary>         /// <param name="value"></param> 
         </member>
         <member name="M:Ssz.Utils.Any.Set(System.String)">
-            <summary>
-            
-            </summary>
-            <param name="value"></param>
+            <summary>         ///          /// </summary>         /// <param name="value"></param> 
         </member>
         <member name="M:Ssz.Utils.Any.ValueAsObject">
-            <summary>
-            
-            </summary>
-            <returns></returns>
+            <summary>         ///          /// </summary>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.ValueAsString(System.Boolean,System.String)">
-            <summary>        
-            </summary>
-            <param name="stringIsLocalized"></param>
-            <param name="stringFormat"></param>
-            <returns></returns>
+            <summary>                 /// </summary>         /// <param name="stringIsLocalized"></param>         /// <param name="stringFormat"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.ValueAsInt32(System.Boolean)">
-            <summary>
-            
-            </summary>
-            <param name="stringIsLocalized"></param>
-            <returns></returns>
+            <summary>         ///          /// </summary>         /// <param name="stringIsLocalized"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.ValueAsUInt32(System.Boolean)">
-            <summary>
-            
-            </summary>
-            <param name="stringIsLocalized"></param>
-            <returns></returns>
+            <summary>         ///          /// </summary>         /// <param name="stringIsLocalized"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.ValueAsDouble(System.Boolean)">
-            <summary>
-            
-            </summary>
-            <param name="stringIsLocalized"></param>
-            <returns></returns>
+            <summary>         ///          /// </summary>         /// <param name="stringIsLocalized"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.ValueAsBoolean(System.Boolean)">
-            <summary>
-            
-            </summary>
-            <param name="stringIsLocalized"></param>
-            <returns></returns>
+            <summary>         ///          /// </summary>         /// <param name="stringIsLocalized"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.ValueAs``1(System.Boolean,System.String)">
-            <summary>
-            
-            </summary>
-            <typeparam name="T"></typeparam>
-            <param name="stringIsLocalized"></param>
-            <param name="stringFormat"></param>
-            <returns></returns>
+            <summary>         ///          /// </summary>         /// <typeparam name="T"></typeparam>         /// <param name="stringIsLocalized"></param>         /// <param name="stringFormat"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.ValueAs(System.Type,System.Boolean,System.String)">
-            <summary>
-                Returns requested type or null. 
-            </summary>
-            <param name="asType"></param>
-            <param name="stringIsLocalized"></param>
-            <param name="stringFormat"></param>
-            <returns></returns>
+            <summary>         ///     Returns requested type or null.          /// </summary>         /// <param name="asType"></param>         /// <param name="stringIsLocalized"></param>         /// <param name="stringFormat"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.ObjectValueAs(System.Object,System.Type,System.Boolean)">
-            <summary>
-                storageObject.ValueTypeCode == TypeCode.Object
-            </summary>
-            <param name="storageObject"></param>
-            <param name="asType"></param>
-            <param name="stringIsLocalized"></param>
-            <returns></returns>
+            <summary>         ///     storageObject.ValueTypeCode == TypeCode.Object         /// </summary>         /// <param name="storageObject"></param>         /// <param name="asType"></param>         /// <param name="stringIsLocalized"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.ConvertToString(System.Object,System.Boolean)">
-            <summary>        
-            </summary>
-            <param name="value"></param>
-            <param name="stringIsLocalized"></param>
-            <returns></returns>
+            <summary>                 /// </summary>         /// <param name="value"></param>         /// <param name="stringIsLocalized"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.ConvertToBoolean(System.String,System.Boolean)">
-            <summary>
-                Returns false, if String.IsNullOrWhiteSpace(value) || value.ToUpperInvariant() == "FALSE" || value == "0",
-                otherwise true.
-            </summary>
-            <param name="value"></param>
-            <param name="stringIsLocalized"></param>
-            <returns></returns>
+            <summary>         ///     Returns false, if String.IsNullOrWhiteSpace(value) || value.ToUpperInvariant() == "FALSE" || value == "0",         ///     otherwise true.         /// </summary>         /// <param name="value"></param>         /// <param name="stringIsLocalized"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.ConvertToDouble(System.String,System.Boolean)">
-            <summary>
-                Returns Double 0.0 if String.IsNullOrWhiteSpace(value) or value is not correct number.
-            </summary>
-            <param name="value"></param>
-            <param name="stringIsLocalized"></param>
-            <returns></returns>
+            <summary>         ///     Returns Double 0.0 if String.IsNullOrWhiteSpace(value) or value is not correct number.         /// </summary>         /// <param name="value"></param>         /// <param name="stringIsLocalized"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Convert(Ssz.Utils.Any@,Ssz.Utils.Any,System.TypeCode,System.Boolean,System.String)">
-            <summary>
-                Returns true, if succeeded.
-                if conversion fails, destination doesn't change.
-                toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object, source.ValueTypeCode != TypeCode.Object
-            </summary>
-            <param name="destination"> </param>
-            <param name="source"> </param>
-            <param name="toTypeCode"> </param>
-            <param name="stringIsLocalized"></param>
-            <param name="stringFormat"></param>
-            <returns> true if succeded, false otherwise </returns>
+            <summary>         ///     Returns true, if succeeded.         ///     if conversion fails, destination doesn't change.         ///     toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object, source.ValueTypeCode != TypeCode.Object         /// </summary>         /// <param name="destination"> </param>         /// <param name="source"> </param>         /// <param name="toTypeCode"> </param>         /// <param name="stringIsLocalized"></param>         /// <param name="stringFormat"></param>         /// <returns> true if succeded, false otherwise </returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Convert(Ssz.Utils.Any@,System.SByte,System.TypeCode,System.Boolean,System.String)">
-            <summary>
-                toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object
-            </summary>
-            <param name="destination"></param>
-            <param name="source"></param>
-            <param name="toTypeCode"></param>
-            <param name="stringIsLocalized"></param>
-            <param name="stringFormat"></param>
-            <returns></returns>
+            <summary>         ///     toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object         /// </summary>         /// <param name="destination"></param>         /// <param name="source"></param>         /// <param name="toTypeCode"></param>         /// <param name="stringIsLocalized"></param>         /// <param name="stringFormat"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Convert(Ssz.Utils.Any@,System.Byte,System.TypeCode,System.Boolean,System.String)">
-            <summary>
-                toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object
-            </summary>
-            <param name="destination"></param>
-            <param name="source"></param>
-            <param name="toTypeCode"></param>
-            <param name="stringIsLocalized"></param>
-            <param name="stringFormat"></param>
-            <returns></returns>
+            <summary>         ///     toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object         /// </summary>         /// <param name="destination"></param>         /// <param name="source"></param>         /// <param name="toTypeCode"></param>         /// <param name="stringIsLocalized"></param>         /// <param name="stringFormat"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Convert(Ssz.Utils.Any@,System.Int16,System.TypeCode,System.Boolean,System.String)">
-            <summary>
-                toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object
-            </summary>
-            <param name="destination"></param>
-            <param name="source"></param>
-            <param name="toTypeCode"></param>
-            <param name="stringIsLocalized"></param>
-            <param name="stringFormat"></param>
-            <returns></returns>
+            <summary>         ///     toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object         /// </summary>         /// <param name="destination"></param>         /// <param name="source"></param>         /// <param name="toTypeCode"></param>         /// <param name="stringIsLocalized"></param>         /// <param name="stringFormat"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Convert(Ssz.Utils.Any@,System.UInt16,System.TypeCode,System.Boolean,System.String)">
-            <summary>
-                toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object
-            </summary>
-            <param name="destination"></param>
-            <param name="source"></param>
-            <param name="toTypeCode"></param>
-            <param name="stringIsLocalized"></param>
-            <param name="stringFormat"></param>
-            <returns></returns>
+            <summary>         ///     toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object         /// </summary>         /// <param name="destination"></param>         /// <param name="source"></param>         /// <param name="toTypeCode"></param>         /// <param name="stringIsLocalized"></param>         /// <param name="stringFormat"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Convert(Ssz.Utils.Any@,System.Int32,System.TypeCode,System.Boolean,System.String)">
-            <summary>
-                toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object
-            </summary>
-            <param name="destination"></param>
-            <param name="source"></param>
-            <param name="toTypeCode"></param>
-            <param name="stringIsLocalized"></param>
-            <param name="stringFormat"></param>
-            <returns></returns>
+            <summary>         ///     toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object         /// </summary>         /// <param name="destination"></param>         /// <param name="source"></param>         /// <param name="toTypeCode"></param>         /// <param name="stringIsLocalized"></param>         /// <param name="stringFormat"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Convert(Ssz.Utils.Any@,System.UInt32,System.TypeCode,System.Boolean,System.String)">
-            <summary>
-                toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object
-            </summary>
-            <param name="destination"></param>
-            <param name="source"></param>
-            <param name="toTypeCode"></param>
-            <param name="stringIsLocalized"></param>
-            <param name="stringFormat"></param>
-            <returns></returns>
+            <summary>         ///     toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object         /// </summary>         /// <param name="destination"></param>         /// <param name="source"></param>         /// <param name="toTypeCode"></param>         /// <param name="stringIsLocalized"></param>         /// <param name="stringFormat"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Convert(Ssz.Utils.Any@,System.Char,System.TypeCode,System.Boolean,System.String)">
-            <summary>
-                toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object
-            </summary>
-            <param name="destination"></param>
-            <param name="source"></param>
-            <param name="toTypeCode"></param>
-            <param name="stringIsLocalized"></param>
-            <param name="stringFormat"></param>
-            <returns></returns>
+            <summary>         ///     toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object         /// </summary>         /// <param name="destination"></param>         /// <param name="source"></param>         /// <param name="toTypeCode"></param>         /// <param name="stringIsLocalized"></param>         /// <param name="stringFormat"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Convert(Ssz.Utils.Any@,System.Int64,System.TypeCode,System.Boolean,System.String)">
-            <summary>
-                toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object
-            </summary>
-            <param name="destination"></param>
-            <param name="source"></param>
-            <param name="toTypeCode"></param>
-            <param name="stringIsLocalized"></param>
-            <param name="stringFormat"></param>
-            <returns></returns>
+            <summary>         ///     toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object         /// </summary>         /// <param name="destination"></param>         /// <param name="source"></param>         /// <param name="toTypeCode"></param>         /// <param name="stringIsLocalized"></param>         /// <param name="stringFormat"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Convert(Ssz.Utils.Any@,System.UInt64,System.TypeCode,System.Boolean,System.String)">
-            <summary>
-                toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object
-            </summary>
-            <param name="destination"></param>
-            <param name="source"></param>
-            <param name="toTypeCode"></param>
-            <param name="stringIsLocalized"></param>
-            <param name="stringFormat"></param>
-            <returns></returns>
+            <summary>         ///     toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object         /// </summary>         /// <param name="destination"></param>         /// <param name="source"></param>         /// <param name="toTypeCode"></param>         /// <param name="stringIsLocalized"></param>         /// <param name="stringFormat"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Convert(Ssz.Utils.Any@,System.Boolean,System.TypeCode,System.Boolean,System.String)">
-            <summary>
-                toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object
-            </summary>
-            <param name="destination"></param>
-            <param name="source"></param>
-            <param name="toTypeCode"></param>
-            <param name="stringIsLocalized"></param>
-            <param name="stringFormat"></param>
-            <returns></returns>
+            <summary>         ///     toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object         /// </summary>         /// <param name="destination"></param>         /// <param name="source"></param>         /// <param name="toTypeCode"></param>         /// <param name="stringIsLocalized"></param>         /// <param name="stringFormat"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Convert(Ssz.Utils.Any@,System.DateTime,System.TypeCode,System.Boolean,System.String)">
-            <summary>
-                toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object
-            </summary>
-            <param name="destination"></param>
-            <param name="source"></param>
-            <param name="toTypeCode"></param>
-            <param name="stringIsLocalized"></param>
-            <param name="stringFormat"></param>
-            <returns></returns>
+            <summary>         ///     toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object         /// </summary>         /// <param name="destination"></param>         /// <param name="source"></param>         /// <param name="toTypeCode"></param>         /// <param name="stringIsLocalized"></param>         /// <param name="stringFormat"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Convert(Ssz.Utils.Any@,System.Single,System.TypeCode,System.Boolean,System.String)">
-            <summary>
-                toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object
-            </summary>
-            <param name="destination"></param>
-            <param name="source"></param>
-            <param name="toTypeCode"></param>
-            <param name="stringIsLocalized"></param>
-            <param name="stringFormat"></param>
-            <returns></returns>
+            <summary>         ///     toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object         /// </summary>         /// <param name="destination"></param>         /// <param name="source"></param>         /// <param name="toTypeCode"></param>         /// <param name="stringIsLocalized"></param>         /// <param name="stringFormat"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Convert(Ssz.Utils.Any@,System.Double,System.TypeCode,System.Boolean,System.String)">
-            <summary>
-                toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object
-            </summary>
-            <param name="destination"></param>
-            <param name="source"></param>
-            <param name="toTypeCode"></param>
-            <param name="stringIsLocalized"></param>
-            <param name="stringFormat"></param>
-            <returns></returns>
+            <summary>         ///     toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object         /// </summary>         /// <param name="destination"></param>         /// <param name="source"></param>         /// <param name="toTypeCode"></param>         /// <param name="stringIsLocalized"></param>         /// <param name="stringFormat"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Convert(Ssz.Utils.Any@,System.Decimal,System.TypeCode,System.Boolean,System.String)">
-            <summary>
-                toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object
-            </summary>
-            <param name="destination"></param>
-            <param name="source"></param>
-            <param name="toTypeCode"></param>
-            <param name="stringIsLocalized"></param>
-            <param name="stringFormat"></param>
-            <returns></returns>
+            <summary>         ///     toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object         /// </summary>         /// <param name="destination"></param>         /// <param name="source"></param>         /// <param name="toTypeCode"></param>         /// <param name="stringIsLocalized"></param>         /// <param name="stringFormat"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.ConvertFromNullOrDBNull(Ssz.Utils.Any@,System.TypeCode)">
-            <summary>
-                toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object
-            </summary>
-            <param name="destination"></param>
-            <param name="toTypeCode"></param>
-            <returns></returns>
+            <summary>         ///     toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object         /// </summary>         /// <param name="destination"></param>         /// <param name="toTypeCode"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.Convert(Ssz.Utils.Any@,System.String,System.TypeCode,System.Boolean,System.String)">
-            <summary>
-                toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object
-            </summary>
-            <param name="destination"></param>
-            <param name="source"></param>
-            <param name="toTypeCode"></param>
-            <param name="stringIsLocalized"></param>
-            <param name="stringFormat"></param>
-            <returns></returns>
+            <summary>         ///     toTypeCode != TypeCode.Empty, toTypeCode != TypeCode.DBNull, toTypeCode != TypeCode.Object         /// </summary>         /// <param name="destination"></param>         /// <param name="source"></param>         /// <param name="toTypeCode"></param>         /// <param name="stringIsLocalized"></param>         /// <param name="stringFormat"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.ValueAsIsEnum(System.Type,System.Boolean)">
-            <summary>   
-                asType is Enum
-            </summary>
-            <param name="asType"></param>
-            <param name="stringIsLocalized"></param>
-            <returns></returns>
+            <summary>            ///     asType is Enum         /// </summary>         /// <param name="asType"></param>         /// <param name="stringIsLocalized"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.Any.ValueAsObject(System.Type,System.Boolean)">
-            <summary>
-                asType has TypeCode.Object, _typeCode != TypeCode.Object
-            </summary>
-            <param name="asType"></param>
-            <param name="stringIsLocalized"></param>
-            <returns></returns>
+            <summary>         ///     asType has TypeCode.Object, _typeCode != TypeCode.Object         /// </summary>         /// <param name="asType"></param>         /// <param name="stringIsLocalized"></param>         /// <returns></returns> 
         </member>
         <member name="T:Ssz.Utils.BytesArrayEqualityComparer">
             <summary>
@@ -609,9 +287,9 @@
         <member name="M:Ssz.Utils.CsvDb.#ctor(Microsoft.Extensions.Logging.ILogger{Ssz.Utils.CsvDb},Microsoft.Extensions.Logging.ILogger,System.IO.DirectoryInfo,Ssz.Utils.IDispatcher)">
             <summary>
                 userFriendlyLogger: Messages are localized. Priority is Information, Error, Warning.    
-                If csvDbDirectoryInfo == null, directory is not used.
+                If csvDbDirectoryInfo is null, directory is not used.
                 If !csvDbDirectoryInfo.Exists, directory is created.
-                If dispatcher != null monitors csvDbDirectoryInfo
+                If dispatcher is not null monitors csvDbDirectoryInfo
             </summary>
             <param name="logger"></param>
             <param name="userFriendlyLogger"></param>
@@ -632,7 +310,7 @@
             <summary>
                 Loads data from .csv files on disk.        
                 Data is loaded in constructor.
-                Data is loaded when directory changes, if dispatcher in consructor != null.
+                Data is loaded when directory changes, if dispatcher in consructor is not null.
             </summary>
         </member>
         <member name="M:Ssz.Utils.CsvDb.GetFileNames">
@@ -643,14 +321,14 @@
         </member>
         <member name="M:Ssz.Utils.CsvDb.GetValues(System.String)">
             <summary>
-                List.Count >= 1, List[0] != null
+                List.Count >= 1, List[0] is not null
             </summary>
             <param name="fileName"></param>
             <returns></returns>
         </member>
         <member name="M:Ssz.Utils.CsvDb.GetValues(System.String,System.String)">
             <summary>
-                null or List.Count >= 1, List[0] != null
+                null or List.Count >= 1, List[0] is not null
             </summary>
             <param name="fileName"></param>
             <param name="key"></param>
@@ -658,7 +336,7 @@
         </member>
         <member name="M:Ssz.Utils.CsvDb.SaveData">
             <summary>
-                Saves data to .csv files on disk.
+                Saves changed data to .csv files on disk.
             </summary>
         </member>
         <member name="F:Ssz.Utils.CsvDb._csvFilesCollection">
@@ -719,7 +397,7 @@
                 If file does not exist, returns empty result.
                 userFriendlyLogger: Messages are localized. Priority is Information, Error, Warning.
                 includeFileNames: File names in Upper-Case.
-                Result: List.Count >= 1, List[0] != null
+                Result: List.Count >= 1, List[0] is not null
             </summary>
             <param name="fileFullName"></param>
             <param name="includeFiles"></param>
@@ -744,7 +422,7 @@
         </member>
         <member name="M:Ssz.Utils.CsvHelper.ReplaceDefines(System.String,System.Collections.Generic.Dictionary{System.Text.RegularExpressions.Regex,System.String})">
             <summary>
-                sourceString != null, defines != null, result != null
+                sourceString is not null, defines is not null, result is not null
             </summary>
             <param name="sourceString"></param>
             <param name="defines"></param>
@@ -2297,96 +1975,46 @@
             </summary>
         </member>
         <member name="T:Ssz.Utils.ObjectHelper">
-            <summary>
-            
-            </summary>
+            <summary>     ///      /// </summary> 
         </member>
         <member name="M:Ssz.Utils.ObjectHelper.GetAllFields(System.Object)">
-            <summary>
-                Returns all fields except that with Searchable(false) attribute.        
-            </summary>
-            <param name="obj"></param>
-            <returns></returns>
+            <summary>         ///     Returns all fields except that with Searchable(false) attribute.                 /// </summary>         /// <param name="obj"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.ObjectHelper.GetValue(System.Object,System.String)">
-            <summary>
-                Returns value of 'obj' concatenated with expression.
-                If ivalid expression returns null.
-                expression examples: ".Name", ".SubObjects[0].Name"        
-            </summary>
-            <param name="obj"></param>
-            <param name="expression"></param>
-            <returns></returns>
+            <summary>         ///     Returns value of 'obj' concatenated with expression.         ///     If ivalid expression returns null.         ///     expression examples: ".Name", ".SubObjects[0].Name"                 /// </summary>         /// <param name="obj"></param>         /// <param name="expression"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.ObjectHelper.SetValue(System.Object,System.String,System.Object)">
-            <summary>
-                Sets value of 'obj' concatenated with expression.
-                Returns True if succeeded.
-                expression examples: ".Name", ".SubObjects[0].Name"        
-            </summary>
-            <param name="obj"></param>
-            <param name="expression"></param>
-            <param name="value"></param>
-            <returns></returns>
+            <summary>         ///     Sets value of 'obj' concatenated with expression.         ///     Returns True if succeeded.         ///     expression examples: ".Name", ".SubObjects[0].Name"                 /// </summary>         /// <param name="obj"></param>         /// <param name="expression"></param>         /// <param name="value"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.ObjectHelper.SetPropertyValue(System.Object,System.String,System.Object)">
-            <summary>
-                Returns True if succeeded.
-            </summary>
-            <param name="obj"></param>
-            <param name="propertyName"></param>
-            <param name="value"></param>
-            <returns></returns>
+            <summary>         ///     Returns True if succeeded.         /// </summary>         /// <param name="obj"></param>         /// <param name="propertyName"></param>         /// <param name="value"></param>         /// <returns></returns> 
         </member>
         <member name="M:Ssz.Utils.ObjectHelper.FindInStringBrowsableProperties(System.Object,System.Text.RegularExpressions.Regex)">
-            <summary>
-                Searches in properties with [Searchable(true)] or [Browsable(true)] attributes.
-                [Searchable(true)] attribute has higher priority.
-                If regex == null matches all properties.        
-            </summary>
+            <summary>         ///     Searches in properties with [Searchable(true)] or [Browsable(true)] attributes.         ///     [Searchable(true)] attribute has higher priority.         ///     If regex is null matches all properties.                 /// </summary> 
         </member>
         <member name="M:Ssz.Utils.ObjectHelper.ReplaceInStringBrowsableProperties(System.Object,System.Text.RegularExpressions.Regex,System.String)">
-            <summary>
-                Replaces in properties with [Searchable(true)] or [Browsable(true)] attributes.
-                [Searchable(true)] attribute has higher priority.        
-            </summary>
+            <summary>         ///     Replaces in properties with [Searchable(true)] or [Browsable(true)] attributes.         ///     [Searchable(true)] attribute has higher priority.                 /// </summary> 
         </member>
         <member name="M:Ssz.Utils.ObjectHelper.GetProperties(System.Object)">
-            <summary>
-                Returns all Browsable properties of object.
-                SearchableAttribute can explicitly set whether to return or not the property.        
-            </summary>
+            <summary>         ///     Returns all Browsable properties of object.         ///     SearchableAttribute can explicitly set whether to return or not the property.                 /// </summary> 
         </member>
         <member name="T:Ssz.Utils.StringPropertyInfo">
-            <summary>
-            
-            </summary>
+            <summary>     ///      /// </summary> 
         </member>
         <member name="F:Ssz.Utils.StringPropertyInfo.PropertyPath">
-            <summary>
-                Without '.' at the beginning.
-            </summary>
+            <summary>         ///     Without '.' at the beginning.         /// </summary> 
         </member>
         <member name="F:Ssz.Utils.StringPropertyInfo.PropertyValue">
-            <summary>
-            
-            </summary>
+            <summary>         ///          /// </summary> 
         </member>
         <member name="T:Ssz.Utils.SearchableAttribute">
-            <summary>
-                For find and replace in string properties support.
-            </summary>
+            <summary>     ///     For find and replace in string properties support.     /// </summary> 
         </member>
         <member name="M:Ssz.Utils.SearchableAttribute.#ctor(System.Boolean)">
-            <summary>
-            
-            </summary>
-            <param name="searchable"></param>
+            <summary>         ///          /// </summary>         /// <param name="searchable"></param> 
         </member>
         <member name="P:Ssz.Utils.SearchableAttribute.Searchable">
-            <summary>
-            
-            </summary>
+            <summary>         ///          /// </summary> 
         </member>
         <member name="T:Ssz.Utils.ObjectManager`1">
             <summary>
@@ -2996,7 +2624,7 @@
             <summary>
                 Determine whether the passed-in type code refers to an array type
                 and deserializes the array if it is.
-                elementType != null
+                elementType is not null
                 Returns null if not an array type.
             </summary>
             <param name="typeCode"> The SerializedType to check. </param>
@@ -3488,7 +3116,7 @@
                 Stored Size: 1 byte upwards depending on data content
                 Notes:
                 An empty BitArray takes 1 byte.
-                value != null
+                value is not null
             </summary>
             <param name="value"> The BitArray value to store. Must not be null. </param>
         </member>
@@ -3798,7 +3426,7 @@
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteOptimizedObjectArray(System.Object[])">
             <summary>
-                values != null
+                values is not null
                 Sequences of null values and sequences of DBNull.Values are stored with a flag and optimized count.
                 Other values are stored using WriteObject().
                 This routine is called by the Write(object[]), WriteOptimized(object[]) and Write(object[], object[])) methods.
@@ -3818,7 +3446,7 @@
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteArrayInternal(System.Array,System.Type)">
             <summary>
                 Internal implementation to write a non-null array into the stream.
-                value != null, elementType != null
+                value is not null, elementType is not null
             </summary>
         </member>
         <member name="M:Ssz.Utils.Serialization.SerializationWriter.WriteOptimizeFlags(System.Collections.BitArray)">

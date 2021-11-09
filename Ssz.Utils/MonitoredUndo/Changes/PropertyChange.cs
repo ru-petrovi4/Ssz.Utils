@@ -57,7 +57,7 @@ namespace Ssz.Utils.MonitoredUndo.Changes
             try
             {
                 var p = Target.GetType().GetProperty(PropertyName);
-                if (p == null) throw new InvalidOperationException();
+                if (p is null) throw new InvalidOperationException();
                 p.SetValue(Target, OldValue, null);
             }
             catch
@@ -71,7 +71,7 @@ namespace Ssz.Utils.MonitoredUndo.Changes
             try
             {
                 var p = Target.GetType().GetProperty(PropertyName);
-                if (p == null) throw new InvalidOperationException();
+                if (p is null) throw new InvalidOperationException();
                 p.SetValue(Target, NewValue, null);
             }
             catch

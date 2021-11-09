@@ -108,14 +108,14 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             /// </summary>
             protected virtual void OnContentChanged(UIElement oldValue, UIElement newValue)
             {
-                if (_rootPresenter != null)
+                if (_rootPresenter is not null)
                     _rootPresenter.Child = Content;
 
                 var oldContent = oldValue as FrameworkElement;
-                if (oldContent != null) oldContent.SizeChanged -= Content_SizeChanged;
+                if (oldContent is not null) oldContent.SizeChanged -= Content_SizeChanged;
 
                 var newContent = newValue as FrameworkElement;
-                if (newContent != null) newContent.SizeChanged += Content_SizeChanged;
+                if (newContent is not null) newContent.SizeChanged += Content_SizeChanged;
             }
 
             #endregion
@@ -152,7 +152,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             /// </summary>
             protected virtual void OnSizeToContentChanged(SizeToContent oldValue, SizeToContent newValue)
             {
-                if (_wpfContentHost != null) _wpfContentHost.SizeToContent = newValue;
+                if (_wpfContentHost is not null) _wpfContentHost.SizeToContent = newValue;
             }
 
             #endregion
@@ -185,7 +185,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             protected override void DestroyWindowCore(HandleRef hwnd)
             {
                 _manager.InternalRemoveLogicalChild(_rootPresenter);
-                if (_wpfContentHost != null)
+                if (_wpfContentHost is not null)
                 {
                     _wpfContentHost.Dispose();
                     _wpfContentHost = null;
@@ -194,7 +194,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
             protected override Size MeasureOverride(Size constraint)
             {
-                if (Content == null)
+                if (Content is null)
                     return base.MeasureOverride(constraint);
 
                 Content.Measure(constraint);
@@ -385,12 +385,12 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         protected override void OnClosed(EventArgs e)
         {
-            if (Content != null)
+            if (Content is not null)
             {
                 var host = Content as FloatingWindowContentHost;
                 host.Dispose();
 
-                if (_hwndSrc != null)
+                if (_hwndSrc is not null)
                 {
                     _hwndSrc.RemoveHook(_hwndSrcHook);
                     _hwndSrc.Dispose();
@@ -411,7 +411,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                 (s, args) => SystemCommands.MinimizeWindow((Window) args.Parameter)));
             CommandBindings.Add(new CommandBinding(SystemCommands.RestoreWindowCommand,
                 (s, args) => SystemCommands.RestoreWindow((Window) args.Parameter)));
-            //Debug.Assert(this.Owner != null);
+            //Debug.Assert(this.Owner is not null);
             base.OnInitialized(e);
         }
 
@@ -421,11 +421,11 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         internal virtual void UpdateThemeResources(Theme oldTheme = null)
         {
-            if (oldTheme != null)
+            if (oldTheme is not null)
             {
                 if (oldTheme is DictionaryTheme)
                 {
-                    if (currentThemeResourceDictionary != null)
+                    if (currentThemeResourceDictionary is not null)
                     {
                         Resources.MergedDictionaries.Remove(currentThemeResourceDictionary);
                         currentThemeResourceDictionary = null;
@@ -435,14 +435,14 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                 {
                     var resourceDictionaryToRemove =
                         Resources.MergedDictionaries.FirstOrDefault(r => r.Source == oldTheme.GetResourceUri());
-                    if (resourceDictionaryToRemove != null)
+                    if (resourceDictionaryToRemove is not null)
                         Resources.MergedDictionaries.Remove(
                             resourceDictionaryToRemove);
                 }
             }
 
             var manager = _model.Root.Manager;
-            if (manager.Theme != null)
+            if (manager.Theme is not null)
             {
                 if (manager.Theme is DictionaryTheme)
                 {
@@ -490,7 +490,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                 case Win32Helper.WM_EXITSIZEMOVE:
                     UpdatePositionAndSizeOfPanes();
 
-                    if (_dragService != null)
+                    if (_dragService is not null)
                     {
                         bool dropFlag;
                         var mousePosition = this.TransformToDeviceDPI(Win32Helper.GetMousePosition());
@@ -511,7 +511,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                     break;
                 case Win32Helper.WM_LBUTTONUP
                     : //set as handled right button click on title area (after showing context menu)
-                    if (_dragService != null && Mouse.LeftButton == MouseButtonState.Released)
+                    if (_dragService is not null && Mouse.LeftButton == MouseButtonState.Released)
                     {
                         _dragService.Abort();
                         _dragService = null;
@@ -547,7 +547,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         private static object CoerceContentValue(DependencyObject sender, object content)
         {
             var lfwc = sender as LayoutFloatingWindowControl;
-            if (lfwc != null)
+            if (lfwc is not null)
             {
                 if (lfwc.IsLoaded && lfwc.IsContentImmutable)
                     return lfwc.Content;
@@ -577,7 +577,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         {
             Unloaded -= OnUnloaded;
 
-            if (_hwndSrc != null)
+            if (_hwndSrc is not null)
             {
                 _hwndSrc.RemoveHook(_hwndSrcHook);
                 InternalClose();
@@ -628,7 +628,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private void UpdateDragPosition()
         {
-            if (_dragService == null)
+            if (_dragService is null)
             {
                 _dragService = new DragService(this);
                 SetIsDragging(true);

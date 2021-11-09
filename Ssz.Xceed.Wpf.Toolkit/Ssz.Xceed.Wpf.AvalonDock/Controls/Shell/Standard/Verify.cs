@@ -246,7 +246,7 @@ namespace Standard
             IsNotNull(type, "type");
             IsNotNull(interfaceType, "interfaceType");
 
-            if (type.GetInterface(interfaceType.Name) == null)
+            if (type.GetInterface(interfaceType.Name) is null)
                 throw new ArgumentException("The type of this parameter does not support a required interface",
                     parameterName);
         }

@@ -56,15 +56,15 @@ namespace Ssz.Utils
             TagInfos = tagInfos;
 
             var values = Map.TryGetValue("GenericTag");
-            if (values != null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
+            if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 GenericTag = values[1] ?? @"";
 
             values = Map.TryGetValue("TagTypeSeparator");
-            if (values != null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
+            if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 TagTypeSeparator = values[1] ?? @"";
 
             values = Map.TryGetValue("TagAndPropertySeparator");
-            if (values != null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
+            if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 TagAndPropertySeparator = values[1] ?? @"";
         }
 
@@ -111,7 +111,7 @@ namespace Ssz.Utils
             if (elementId == @"") return new List<string?> { @"", @"" };
 
             var values = Map.TryGetValue(elementId);
-            if (values != null)
+            if (values is not null)
             {
                 if (values.Count == 1) values.Add("");
                 return values;
@@ -126,16 +126,16 @@ namespace Ssz.Utils
                 if (!string.IsNullOrEmpty(tag))
                 {
                     values = Map.TryGetValue(tag);
-                    if (values != null && values.Count > 1 && values[1] != "") newTag = values[1];
+                    if (values is not null && values.Count > 1 && values[1] != "") newTag = values[1];
                 }
 
                 values = null;
                 if (!string.IsNullOrEmpty(tagType))
                     values = Map.TryGetValue(tagType + TagTypeSeparator +
                                                           GenericTag + propertyPath);
-                if (values == null)
+                if (values is null)
                     values = Map.TryGetValue(GenericTag + propertyPath);
-                if (values != null)
+                if (values is not null)
                 {
                     if (values.Count > 1)
                     {
@@ -167,7 +167,7 @@ namespace Ssz.Utils
         {
             if (string.IsNullOrEmpty(tag)) return "";
             var tagInfoValues = TagInfos.TryGetValue(tag);
-            if (tagInfoValues == null) return "";
+            if (tagInfoValues is null) return "";
             if (tagInfoValues.Count < 2) return "";
             return tagInfoValues[1] ?? @"";
         }

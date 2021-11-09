@@ -151,7 +151,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         protected override void DestroyWindowCore(HandleRef hwnd)
         {
-            if (_internalHwndSource != null)
+            if (_internalHwndSource is not null)
             {
                 _internalHwndSource.Dispose();
                 _internalHwndSource = null;
@@ -167,7 +167,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         {
             get
             {
-                if (_internalHostPresenter == null)
+                if (_internalHostPresenter is null)
                     return new UIElement[] { }.GetEnumerator();
                 return new UIElement[] {_internalHostPresenter}.GetEnumerator();
             }
@@ -175,7 +175,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         protected override Size MeasureOverride(Size constraint)
         {
-            if (_internalHostPresenter == null)
+            if (_internalHostPresenter is null)
                 return base.MeasureOverride(constraint);
 
             _internalHostPresenter.Measure(constraint);
@@ -185,7 +185,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            if (_internalHostPresenter == null)
+            if (_internalHostPresenter is null)
                 return base.ArrangeOverride(finalSize);
 
             _internalHostPresenter.Arrange(new Rect(finalSize));
@@ -200,7 +200,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         internal void Show(LayoutAnchorControl anchor)
         {
-            if (_model != null)
+            if (_model is not null)
                 throw new InvalidOperationException();
 
             _anchor = anchor;
@@ -219,7 +219,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         internal void Hide()
         {
-            if (_model == null)
+            if (_model is null)
                 return;
 
             _model.PropertyChanged -= _model_PropertyChanged;
@@ -249,7 +249,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                 var anchor = manager.FindVisualChildren<LayoutAnchorControl>().Where(c => c.Model == Model)
                     .FirstOrDefault();
 
-                if (anchor == null)
+                if (anchor is null)
                     return false;
 
                 location = anchor.PointToScreenDPI(new Point());
@@ -457,7 +457,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private void HideResizerOverlayWindow()
         {
-            if (_resizerWindowHost != null)
+            if (_resizerWindowHost is not null)
             {
                 _resizerWindowHost.Close();
                 _resizerWindowHost = null;

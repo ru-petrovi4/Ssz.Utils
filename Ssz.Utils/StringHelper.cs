@@ -21,7 +21,7 @@ namespace Ssz.Utils
         /// <example>"hel".WithEnding("llo") returns "hello", which is the result of "hel" + "lo".</example>
         public static string WithEnding(this string? str, string ending)
         {
-            if (str == null)
+            if (str is null)
                 return ending;
 
             string result = str;
@@ -61,7 +61,7 @@ namespace Ssz.Utils
         public static bool IsNullOrEmptyString(object? value)
         {
 #pragma warning disable CS0252 // Possible unintended reference comparison; left hand side needs cast
-            return value == null || value == @"";
+            return value is null || value == @"";
 #pragma warning restore CS0252 // Possible unintended reference comparison; left hand side needs cast
         }       
             
@@ -104,7 +104,7 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static bool ContainsIgnoreCase(string? str, string value)
         {
-            if (str == null || value == @"") return false;
+            if (str is null || value == @"") return false;
             return str.IndexOf(value, StringComparison.InvariantCultureIgnoreCase) >= 0;
         }
 
@@ -115,8 +115,8 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static bool CompareIgnoreCase(string? left, string? right)
         {
-            if (left == null && right == null) return true;
-            if (left == null || right == null) return false;
+            if (left is null && right is null) return true;
+            if (left is null || right is null) return false;
             return String.Equals(left, right, StringComparison.InvariantCultureIgnoreCase);
         }
 
@@ -127,7 +127,7 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static bool StartsWithIgnoreCase(string? str, string value)
         {
-            if (str == null) return false;
+            if (str is null) return false;
             return str.StartsWith(value, StringComparison.InvariantCultureIgnoreCase);
         }
 
@@ -138,7 +138,7 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static bool EndsWithIgnoreCase(string? str, string value)
         {
-            if (str == null) return false;
+            if (str is null) return false;
             return str.EndsWith(value, StringComparison.InvariantCultureIgnoreCase);
         }
 

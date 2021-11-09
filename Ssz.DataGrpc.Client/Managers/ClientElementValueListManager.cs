@@ -41,7 +41,7 @@ namespace Ssz.DataGrpc.Client.Managers
                 if (ct.IsCancellationRequested) return;                
                 if (!DataGrpcItemsMustBeAddedOrRemoved) return;               
 
-                bool firstTimeDataConnection = (DataGrpcList == null);
+                bool firstTimeDataConnection = (DataGrpcList is null);
 
                 if (firstTimeDataConnection)
                 {
@@ -61,7 +61,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
                 try
                 {
-                    if (!connectionError && DataGrpcList != null && !DataGrpcList.Disposed)
+                    if (!connectionError && DataGrpcList is not null && !DataGrpcList.Disposed)
                     {
                         if (firstTimeDataConnection)
                         {
@@ -75,11 +75,11 @@ namespace Ssz.DataGrpc.Client.Managers
                                     foreach (ClientElementValueListItem dataGrpcElementValueListItem in items)
                                     {
                                         var o = dataGrpcElementValueListItem.Obj as DataGrpcListItemWrapper;
-                                        if (o == null) throw new InvalidOperationException();
+                                        if (o is null) throw new InvalidOperationException();
                                         foreach (var modelItem in o.ClientObjectInfosCollection)
                                         {
                                             modelItem.ForceNotifyClientObj = false;
-                                            if (modelItem.ClientObj != null)
+                                            if (modelItem.ClientObj is not null)
                                             {
                                                 changedClientObjs.Add(modelItem.ClientObj);
                                                 changedValues.Add(values[i]);
@@ -89,7 +89,7 @@ namespace Ssz.DataGrpc.Client.Managers
                                     }
                                     if (ct.IsCancellationRequested) return;
                                     Logger.LogDebug("DataGrpcList.ElementValuesCallback");
-                                    if (сallbackDispatcher != null)
+                                    if (сallbackDispatcher is not null)
                                     {
                                         try
                                         {
@@ -128,14 +128,14 @@ namespace Ssz.DataGrpc.Client.Managers
                             if (modelItem.ForceNotifyClientObj)
                             {
                                 modelItem.ForceNotifyClientObj = false;
-                                if (modelItem.ClientObj != null)
+                                if (modelItem.ClientObj is not null)
                                 {
                                     if (dataGrpcListItemWrapper.ItemDoesNotExist)
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
                                         changedValues.Add(new ValueStatusTimestamp(new Any(), ValueStatusCode.ItemDoesNotExist, utcNow));
                                     }
-                                    else if (dataGrpcListItemWrapper.DataGrpcListItem != null)
+                                    else if (dataGrpcListItemWrapper.DataGrpcListItem is not null)
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
                                         changedValues.Add(dataGrpcListItemWrapper.DataGrpcListItem.ValueStatusTimestamp);
@@ -152,7 +152,7 @@ namespace Ssz.DataGrpc.Client.Managers
                     if (changedClientObjs.Count > 0)
                     {
                         if (ct.IsCancellationRequested) return;
-                        if (сallbackDispatcher != null)
+                        if (сallbackDispatcher is not null)
                         {
                             try
                             {
@@ -182,7 +182,7 @@ namespace Ssz.DataGrpc.Client.Managers
         /// </summary>
         public object[]? PollChanges()
         {
-            if (DataGrpcList == null || DataGrpcList.Disposed) return null;
+            if (DataGrpcList is null || DataGrpcList.Disposed) return null;
             try
             {
                 var changedClientObjs = new List<object>();
@@ -190,10 +190,10 @@ namespace Ssz.DataGrpc.Client.Managers
                 foreach (ClientElementValueListItem dataGrpcElementValueListItem in changedClientElementValueListItems)
                 {
                     var o = dataGrpcElementValueListItem.Obj as DataGrpcListItemWrapper;
-                    if (o == null) throw new InvalidOperationException();
+                    if (o is null) throw new InvalidOperationException();
                     foreach (var modelItem in o.ClientObjectInfosCollection)
                     {
-                        if (modelItem.ClientObj != null)
+                        if (modelItem.ClientObj is not null)
                         {
                             changedClientObjs.Add(modelItem.ClientObj);
                         }
@@ -216,7 +216,7 @@ namespace Ssz.DataGrpc.Client.Managers
         /// <returns></returns>
         public object[] Write(object[] clientObjs, ValueStatusTimestamp[] valueStatusTimestamps)
         {
-            if (DataGrpcList == null || DataGrpcList.Disposed) return clientObjs;
+            if (DataGrpcList is null || DataGrpcList.Disposed) return clientObjs;
 
             int i = -1;
             var result = new List<object>();
@@ -231,8 +231,8 @@ namespace Ssz.DataGrpc.Client.Managers
                     continue;
                 }                
                 
-                if (modelItem.DataGrpcListItemWrapper == null ||
-                    modelItem.DataGrpcListItemWrapper.DataGrpcListItem == null ||
+                if (modelItem.DataGrpcListItemWrapper is null ||
+                    modelItem.DataGrpcListItemWrapper.DataGrpcListItem is null ||
                     modelItem.DataGrpcListItemWrapper.DataGrpcListItem.StatusCode != StatusCode.OK)
                 {
                     result.Add(clientObj);
@@ -255,10 +255,10 @@ namespace Ssz.DataGrpc.Client.Managers
             foreach (var dataGrpcElementValueListItem in failedItems)
             {
                 var o = dataGrpcElementValueListItem.Obj as DataGrpcListItemWrapper;
-                if (o == null) throw new InvalidOperationException();
+                if (o is null) throw new InvalidOperationException();
                 foreach (var modelItem in o.ClientObjectInfosCollection)
                 {
-                    if (modelItem.ClientObj != null)
+                    if (modelItem.ClientObj is not null)
                     {
                         result.Add(modelItem.ClientObj);
                     }
@@ -275,12 +275,12 @@ namespace Ssz.DataGrpc.Client.Managers
         /// <param name="valueStatusTimestamp"></param>
         public void Write(object clientObj, ValueStatusTimestamp valueStatusTimestamp)
         {
-            if (DataGrpcList == null || DataGrpcList.Disposed) return;
+            if (DataGrpcList is null || DataGrpcList.Disposed) return;
 
             ClientObjectInfo? modelItem;
             if (!ModelItemsDictionary.TryGetValue(clientObj, out modelItem)) return;
             
-            if (modelItem.DataGrpcListItemWrapper == null || modelItem.DataGrpcListItemWrapper.DataGrpcListItem == null || modelItem.DataGrpcListItemWrapper.DataGrpcListItem.StatusCode != StatusCode.OK)
+            if (modelItem.DataGrpcListItemWrapper is null || modelItem.DataGrpcListItemWrapper.DataGrpcListItem is null || modelItem.DataGrpcListItemWrapper.DataGrpcListItem.StatusCode != StatusCode.OK)
             {
                 return;
             }
@@ -312,7 +312,7 @@ namespace Ssz.DataGrpc.Client.Managers
         public Any TryRead(string id)
         {
             var dataGrpcListItem = DataGrpcListItemsDictionary.TryGetValue(id);
-            if (dataGrpcListItem == null) return new Any();
+            if (dataGrpcListItem is null) return new Any();
             
             return dataGrpcListItem.ValueStatusTimestamp.Value;
         }

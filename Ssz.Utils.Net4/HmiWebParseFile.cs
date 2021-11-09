@@ -377,7 +377,7 @@ namespace Ssz.Utils
                     finally
                     {
                         //If there was some problem loading the search file, we'll re-create it.
-                        if (retVal == null)
+                        if (retVal is null)
                         {
                             createFile = true;
                         }

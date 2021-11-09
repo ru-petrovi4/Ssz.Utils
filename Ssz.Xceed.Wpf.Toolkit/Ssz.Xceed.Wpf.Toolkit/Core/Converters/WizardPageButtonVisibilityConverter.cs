@@ -25,14 +25,14 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values == null || values.Length != 2)
+            if (values is null || values.Length != 2)
                 throw new ArgumentException("Wrong number of arguments for WizardPageButtonVisibilityConverter.");
 
-            var wizardVisibility = values[0] == null || values[0] == DependencyProperty.UnsetValue
+            var wizardVisibility = values[0] is null || values[0] == DependencyProperty.UnsetValue
                 ? Visibility.Hidden
                 : (Visibility) values[0];
 
-            var wizardPageVisibility = values[1] == null || values[1] == DependencyProperty.UnsetValue
+            var wizardPageVisibility = values[1] is null || values[1] == DependencyProperty.UnsetValue
                 ? WizardPageButtonVisibility.Hidden
                 : (WizardPageButtonVisibility) values[1];
 

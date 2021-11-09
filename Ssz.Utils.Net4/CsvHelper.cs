@@ -16,7 +16,7 @@ namespace Ssz.Utils
         /// </summary>
         public static string FormatForCsv(string separator, IEnumerable<string> values)
         {
-            if (values == null) throw new ArgumentNullException(@"values");
+            if (values is null) throw new ArgumentNullException(@"values");
 
             string result = @"";
             bool inited = false;
@@ -41,7 +41,7 @@ namespace Ssz.Utils
         /// </summary>
         public static string FormatForCsv(string separator, IEnumerable<object> values)
         {
-            if (values == null) throw new ArgumentNullException(@"values");
+            if (values is null) throw new ArgumentNullException(@"values");
             
             return FormatForCsv(separator, values.Select(obj => Any.ConvertTo<string>(obj, false)));
         }
@@ -54,7 +54,7 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static string FormatValueForCsv(string separator, string sourceString)
         {
-            if (sourceString == null) return @"";
+            if (sourceString is null) return @"";
             if (sourceString == @"") return "\"\"";
 
             sourceString = sourceString
@@ -159,7 +159,7 @@ namespace Ssz.Utils
                 
             if (File.Exists(fileFullName))
             {
-                if (defines == null) defines = new Dictionary<Regex, string>();
+                if (defines is null) defines = new Dictionary<Regex, string>();
                 string filePath = Path.GetDirectoryName(fileFullName);
                 using (var reader = new StreamReader(fileFullName, true))
                 {

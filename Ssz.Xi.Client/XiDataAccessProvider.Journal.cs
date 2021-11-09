@@ -24,7 +24,7 @@ namespace Ssz.Xi.Client
         public void JournalAddItem(string elementId, object valueSubscription)
         {
             _xiDataJournalListItemsManager.AddItem(elementId, valueSubscription);
-            if (_xiServerProxy == null) throw new InvalidOperationException();
+            if (_xiServerProxy is null) throw new InvalidOperationException();
             _xiDataJournalListItemsManager.Subscribe(_xiServerProxy);
         }
 
@@ -50,7 +50,7 @@ namespace Ssz.Xi.Client
             Action<ValueStatusTimestamp[][]?> setResultAction)
         {
             var xiList = _xiDataJournalListItemsManager.XiList;
-            if (xiList == null || xiList.Disposed)
+            if (xiList is null || xiList.Disposed)
             {
                 setResultAction(null);
                 return;
@@ -79,7 +79,7 @@ namespace Ssz.Xi.Client
                 foreach (var valueSubscription in valueSubscriptionsCollection)
                 {
                     var clientObjectInfo = _xiDataJournalListItemsManager.GetClientObjectInfo(valueSubscription);
-                    if (clientObjectInfo != null && clientObjectInfo.XiListItemWrapper != null && clientObjectInfo.XiListItemWrapper.XiListItem != null)
+                    if (clientObjectInfo is not null && clientObjectInfo.XiListItemWrapper is not null && clientObjectInfo.XiListItemWrapper.XiListItem is not null)
                     {
                         ValueStatusTimestamp[] valueStatusTimestampSet =
                             clientObjectInfo.XiListItemWrapper.XiListItem.GetExistingOrNewValueStatusTimestampSet().ToArray();

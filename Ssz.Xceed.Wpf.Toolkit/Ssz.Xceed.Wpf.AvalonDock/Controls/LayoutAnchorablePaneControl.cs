@@ -58,7 +58,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         public LayoutAnchorablePaneControl(LayoutAnchorablePane model)
         {
-            if (model == null)
+            if (model is null)
                 throw new ArgumentNullException("model");
 
             _model = model;
@@ -75,7 +75,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         protected override void OnGotKeyboardFocus(KeyboardFocusChangedEventArgs e)
         {
-            if (_model != null && _model.SelectedContent != null) _model.SelectedContent.IsActive = true;
+            if (_model is not null && _model.SelectedContent is not null) _model.SelectedContent.IsActive = true;
 
             base.OnGotKeyboardFocus(e);
         }
@@ -84,14 +84,14 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         {
             base.OnMouseLeftButtonDown(e);
 
-            if (!e.Handled && _model != null && _model.SelectedContent != null) _model.SelectedContent.IsActive = true;
+            if (!e.Handled && _model is not null && _model.SelectedContent is not null) _model.SelectedContent.IsActive = true;
         }
 
         protected override void OnMouseRightButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseRightButtonDown(e);
 
-            if (!e.Handled && _model != null && _model.SelectedContent != null) _model.SelectedContent.IsActive = true;
+            if (!e.Handled && _model is not null && _model.SelectedContent is not null) _model.SelectedContent.IsActive = true;
         }
 
         #endregion

@@ -75,7 +75,7 @@ namespace Ssz.Utils.Wpf
                 {
                     RegistryKey key = Registry.CurrentUser.CreateSubKey(_registryPath);
 
-                    if (key != null)
+                    if (key is not null)
                     {
                         int n = RecentFilesCollection.Count;
 
@@ -188,7 +188,7 @@ namespace Ssz.Utils.Wpf
             {
                 RegistryKey key = Registry.CurrentUser.CreateSubKey(_registryPath);
 
-                if (key != null)
+                if (key is not null)
                 {
                     int n = RecentFilesCollection.Count;
 
@@ -266,7 +266,7 @@ namespace Ssz.Utils.Wpf
 
                 RegistryKey? key = Registry.CurrentUser.OpenSubKey(_registryPath);
 
-                if (key != null)
+                if (key is not null)
                 {
                     for (int i = 0; i < _maxNumberOfFiles; i++)
                     {
@@ -274,7 +274,7 @@ namespace Ssz.Utils.Wpf
 
                         var s = key.GetValue(sKey, "") as string;
 
-                        if (s == null || s.Length == 0)
+                        if (s is null || s.Length == 0)
                             break;
 
                         RecentFilesCollection.Add(new RecentFile(s, GetDisplayName(s)));

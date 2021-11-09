@@ -76,7 +76,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         /// </summary>
         protected virtual void OnModelChanged(DependencyPropertyChangedEventArgs e)
         {
-            if (Model != null)
+            if (Model is not null)
                 SetLayoutItem(Model.Root.Manager.GetLayoutItemFromModel(Model));
             else
                 SetLayoutItem(null);
@@ -167,7 +167,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         {
             base.OnMouseEnter(e);
 
-            if (_draggingItem != null
+            if (_draggingItem is not null
                 && _draggingItem != this
                 && e.LeftButton == MouseButtonState.Pressed)
             {
@@ -177,7 +177,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
                 if (containerPane is LayoutAnchorablePane && !((LayoutAnchorablePane) containerPane).CanRepositionItems)
                     return;
-                if (containerPane.Parent != null && containerPane.Parent is LayoutAnchorablePaneGroup &&
+                if (containerPane.Parent is not null && containerPane.Parent is LayoutAnchorablePaneGroup &&
                     !((LayoutAnchorablePaneGroup) containerPane.Parent).CanRepositionItems)
                     return;
 
@@ -197,7 +197,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         internal static bool IsDraggingItem()
         {
-            return _draggingItem != null;
+            return _draggingItem is not null;
         }
 
         internal static LayoutAnchorableTabItem GetDraggingItem()

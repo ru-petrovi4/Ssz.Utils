@@ -1428,7 +1428,7 @@ namespace Standard
             }
             finally
             {
-                if (dc != null) dc._created = true;
+                if (dc is not null) dc._created = true;
             }
 
             if (dc.IsInvalid)
@@ -1448,13 +1448,13 @@ namespace Standard
             try
             {
                 var hPtr = IntPtr.Zero;
-                if (hdc != null) hPtr = hdc.handle;
+                if (hdc is not null) hPtr = hdc.handle;
                 dc = NativeMethods.CreateCompatibleDC(hPtr);
-                if (dc == null) HRESULT.ThrowLastError();
+                if (dc is null) HRESULT.ThrowLastError();
             }
             finally
             {
-                if (dc != null) dc._created = true;
+                if (dc is not null) dc._created = true;
             }
 
             if (dc.IsInvalid)
@@ -1475,7 +1475,7 @@ namespace Standard
             }
             finally
             {
-                if (dc != null) dc.Hwnd = hwnd;
+                if (dc is not null) dc.Hwnd = hwnd;
             }
 
             if (dc.IsInvalid)
@@ -2479,7 +2479,7 @@ namespace Standard
         {
             const int DIB_RGB_COLORS = 0;
             SafeHBITMAP hBitmap = null;
-            if (hdc == null)
+            if (hdc is null)
                 hBitmap = _CreateDIBSectionIntPtr(IntPtr.Zero, ref bitmapInfo, DIB_RGB_COLORS, out ppvBits, hSection,
                     dwOffset);
             else

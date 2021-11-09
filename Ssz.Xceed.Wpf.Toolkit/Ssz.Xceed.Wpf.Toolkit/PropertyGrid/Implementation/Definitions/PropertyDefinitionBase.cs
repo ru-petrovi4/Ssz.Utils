@@ -53,13 +53,13 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             // that the list doesn't ever get modified.
 
             var newList = new List<object>();
-            if (_targetProperties != null)
+            if (_targetProperties is not null)
                 foreach (var p in _targetProperties)
                 {
                     var prop = p;
                     // Convert all TargetPropertyType to Types
                     var targetType = prop as TargetPropertyType;
-                    if (targetType != null) prop = targetType.Type;
+                    if (targetType is not null) prop = targetType.Type;
                     newList.Add(prop);
                 }
 

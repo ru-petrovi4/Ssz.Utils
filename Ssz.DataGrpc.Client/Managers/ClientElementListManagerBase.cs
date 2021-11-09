@@ -49,7 +49,7 @@ namespace Ssz.DataGrpc.Client.Managers
         }
 
         /// <summary>
-        ///     valueSubscription != null
+        ///     valueSubscription is not null
         ///     If valueSubscription is not subscribed - does nothing. 
         /// </summary>
         /// <param name="clientObj"></param>
@@ -91,7 +91,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
         public IEnumerable<object> GetAllClientObjs()
         {
-            return ModelItemsDictionary.Values.Select(mi => mi.ClientObj).Where(o => o != null).OfType<object>();
+            return ModelItemsDictionary.Values.Select(mi => mi.ClientObj).Where(o => o is not null).OfType<object>();
         }
 
         #endregion
@@ -121,7 +121,7 @@ namespace Ssz.DataGrpc.Client.Managers
             
             foreach (ClientObjectInfo clientObjectInfo in _clientObjectInfosDictionary.Values)
             {
-                if (clientObjectInfo.DataGrpcListItemWrapper == null)
+                if (clientObjectInfo.DataGrpcListItemWrapper is null)
                 {
                     var elementId = clientObjectInfo.ElementId;
                     DataGrpcListItemWrapper? dataGrpcListItemWrapper;
@@ -140,11 +140,11 @@ namespace Ssz.DataGrpc.Client.Managers
             foreach (var kvp in _dataGrpcListItemWrappersDictionary)
             {
                 DataGrpcListItemWrapper dataGrpcListItemWrapper = kvp.Value;
-                if (dataGrpcListItemWrapper.DataGrpcListItem == null && !dataGrpcListItemWrapper.ItemDoesNotExist)
+                if (dataGrpcListItemWrapper.DataGrpcListItem is null && !dataGrpcListItemWrapper.ItemDoesNotExist)
                 {
                     dataGrpcListItemWrappersToAdd.Add(dataGrpcListItemWrapper);
                     TDataGrpcListItem? dataGrpcListItem = null;
-                    if (DataGrpcList != null && !DataGrpcList.Disposed)
+                    if (DataGrpcList is not null && !DataGrpcList.Disposed)
                     {
                         try
                         {
@@ -156,7 +156,7 @@ namespace Ssz.DataGrpc.Client.Managers
                         }
                     }
                     else connectionError = true;
-                    if (dataGrpcListItem != null)
+                    if (dataGrpcListItem is not null)
                     {
                         dataGrpcListItem.Obj = dataGrpcListItemWrapper;
                         dataGrpcListItemWrapper.DataGrpcListItem = dataGrpcListItem;
@@ -167,7 +167,7 @@ namespace Ssz.DataGrpc.Client.Managers
             if (dataGrpcListItemWrappersToAdd.Count > 0)
             {
                 IEnumerable<TDataGrpcListItem>? notAddedDataGrpcListItems = null;
-                if (!connectionError && DataGrpcList != null && !DataGrpcList.Disposed)
+                if (!connectionError && DataGrpcList is not null && !DataGrpcList.Disposed)
                 {
                     try
                     {
@@ -180,7 +180,7 @@ namespace Ssz.DataGrpc.Client.Managers
                 }
                 else connectionError = true;
 
-                if (notAddedDataGrpcListItems == null) // List doesn't exist or exception when calling to server
+                if (notAddedDataGrpcListItems is null) // List doesn't exist or exception when calling to server
                 {
                     connectionError = true;
 
@@ -203,7 +203,7 @@ namespace Ssz.DataGrpc.Client.Managers
                     foreach (TDataGrpcListItem notAddedDataGrpcListItem in notAddedDataGrpcListItems)
                     {
                         var dataGrpcListItemWrapper = notAddedDataGrpcListItem.Obj as DataGrpcListItemWrapper;
-                        if (dataGrpcListItemWrapper == null) throw new InvalidOperationException();
+                        if (dataGrpcListItemWrapper is null) throw new InvalidOperationException();
                         dataGrpcListItemWrappersToAdd.Remove(dataGrpcListItemWrapper);
                         if (!dataGrpcListItemWrapper.ItemDoesNotExist)
                         {
@@ -218,7 +218,7 @@ namespace Ssz.DataGrpc.Client.Managers
                     }
                     foreach (var dataGrpcListItemWrapper in dataGrpcListItemWrappersToAdd)
                     {
-                        if (dataGrpcListItemWrapper.DataGrpcListItem == null)
+                        if (dataGrpcListItemWrapper.DataGrpcListItem is null)
                         {
                             if (!dataGrpcListItemWrapper.ItemDoesNotExist)
                             {
@@ -248,7 +248,7 @@ namespace Ssz.DataGrpc.Client.Managers
                 foreach (ClientObjectInfo clientObjectInfo in _clientObjectInfosToRemove)
                 {
                     var dataGrpcListItemWrapper = clientObjectInfo.DataGrpcListItemWrapper;
-                    if (dataGrpcListItemWrapper != null)
+                    if (dataGrpcListItemWrapper is not null)
                     {
                         var clientObjectInfos = dataGrpcListItemWrapper.ClientObjectInfosCollection;
                         clientObjectInfos.Remove(clientObjectInfo);
@@ -257,7 +257,7 @@ namespace Ssz.DataGrpc.Client.Managers
                         {
                             // Remove DataGrpc Item
                             var dataGrpcListItem = dataGrpcListItemWrapper.DataGrpcListItem;
-                            if (clientObjectInfos.Count == 0 && dataGrpcListItem != null)
+                            if (clientObjectInfos.Count == 0 && dataGrpcListItem is not null)
                             {
                                 dataGrpcListItem.PrepareForRemove();
                                 dataGrpcListItem.Obj = null;
@@ -269,7 +269,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
                 if (UnsubscribeItemsFromServer)
                 {
-                    if (!connectionError && DataGrpcList != null && !DataGrpcList.Disposed)
+                    if (!connectionError && DataGrpcList is not null && !DataGrpcList.Disposed)
                     {
                         try
                         {

@@ -112,7 +112,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiListRoot.");
             
-            if (ListAttributes == null || ListAttributes.Enabled != enableUpdating)
+            if (ListAttributes is null || ListAttributes.Enabled != enableUpdating)
             {
                 ListAttributes = _context.EnableListUpdating(ServerListId, enableUpdating);
                 GetListAttributes();
@@ -151,7 +151,7 @@ namespace Ssz.Xi.Client.Internal.Lists
                 filterSet);
             if (null != modListAttrs)
             {
-                if (ListAttributes == null) throw new InvalidOperationException();
+                if (ListAttributes is null) throw new InvalidOperationException();
                 if (null != modListAttrs.RevisedUpdateRate)
                     ListAttributes.UpdateRate = modListAttrs.RevisedUpdateRate.Value;
                 if (null != modListAttrs.RevisedFilterSet) ListAttributes.FilterSet = modListAttrs.RevisedFilterSet;
@@ -227,7 +227,7 @@ namespace Ssz.Xi.Client.Internal.Lists
             {
                 if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiListRoot.");
 
-                if (ListAttributes == null) throw new InvalidOperationException();
+                if (ListAttributes is null) throw new InvalidOperationException();
                 if (ListAttributes.ListType < 4096)
                 {
                     var lt = (StandardListType) ListAttributes.ListType;
@@ -292,7 +292,7 @@ namespace Ssz.Xi.Client.Internal.Lists
                 if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiListRoot.");
 
                 XiReadEndpoint? readEndpoint = _context.ReadEndpoint;
-                if (readEndpoint != null)
+                if (readEndpoint is not null)
                 {
                     if (readEndpoint.Disposed) return false;
                     return readEndpoint.HasListAttached(this);
@@ -324,7 +324,7 @@ namespace Ssz.Xi.Client.Internal.Lists
                 if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiListRoot.");
 
                 XiWriteEndpoint? writeEndpoint = _context.WriteEndpoint;
-                if (writeEndpoint != null)
+                if (writeEndpoint is not null)
                 {
                     if (writeEndpoint.Disposed) return false;
                     return writeEndpoint.HasListAttached(this);
@@ -355,16 +355,16 @@ namespace Ssz.Xi.Client.Internal.Lists
         {
             get
             {
-                bool bCallbackEndpoint = (_context.CallbackEndpoint != null);
-                bool bPollEndpoind = (_context.PollEndpoint != null);
+                bool bCallbackEndpoint = (_context.CallbackEndpoint is not null);
+                bool bPollEndpoind = (_context.PollEndpoint is not null);
                 if (bCallbackEndpoint) return _context.CallbackEndpoint.HasListAttached(this);
                 if (bPollEndpoind) return _context.PollEndpoint.HasListAttached(this);
                 return false;
             }
             set
             {
-                bool bCallbackEndpoint = (_context.CallbackEndpoint != null);
-                bool bPollEndpoint = (_context.PollEndpoint != null);
+                bool bCallbackEndpoint = (_context.CallbackEndpoint is not null);
+                bool bPollEndpoint = (_context.PollEndpoint is not null);
                 if (value)
                 {
                     if (!bCallbackEndpoint && !bPollEndpoint)
@@ -378,12 +378,12 @@ namespace Ssz.Xi.Client.Internal.Lists
                                                Scheme, true) == 0)
                         {
                             _context.OpenEndpointForContract(typeof (IPoll).Name);
-                            bPollEndpoint = (_context.PollEndpoint != null);
+                            bPollEndpoint = (_context.PollEndpoint is not null);
                         }
                         else
                         {
                             _context.OpenEndpointForContract(typeof (IRegisterForCallback).Name);
-                            bCallbackEndpoint = (_context.CallbackEndpoint != null);
+                            bCallbackEndpoint = (_context.CallbackEndpoint is not null);
                         }
                     }
                     if (bCallbackEndpoint) AddListToEndpoint(_context.CallbackEndpoint);
@@ -413,7 +413,7 @@ namespace Ssz.Xi.Client.Internal.Lists
                 if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiListRoot.");
 
                 XiCallbackEndpoint? callbackEndpoint = _context.CallbackEndpoint;
-                if (callbackEndpoint != null)
+                if (callbackEndpoint is not null)
                 {
                     if (callbackEndpoint.Disposed) return false;
                     return callbackEndpoint.HasListAttached(this);
@@ -445,7 +445,7 @@ namespace Ssz.Xi.Client.Internal.Lists
                 if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiListRoot.");
 
                 XiPollEndpoint? pollEndpoint = _context.PollEndpoint;
-                if (pollEndpoint != null)
+                if (pollEndpoint is not null)
                 {
                     if (pollEndpoint.Disposed) return false;
                     return pollEndpoint.HasListAttached(this);
@@ -478,7 +478,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         /// <returns> The result code for the operation. See XiFaultCodes class for standardized result codes. </returns>
         protected uint AddListToEndpoint(XiEndpointRoot? endpoint)
         {
-            if (endpoint != null && !string.IsNullOrEmpty(endpoint.EndpointId))
+            if (endpoint is not null && !string.IsNullOrEmpty(endpoint.EndpointId))
             {
                 if (_endpoints.Contains(endpoint)) return XiFaultCodes.S_OK;
 
@@ -500,7 +500,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         /// <returns> The result code. </returns>
         protected uint RemoveListFromEndpoint(XiEndpointRoot? endpoint)
         {
-            if (endpoint == null || !_endpoints.Contains(endpoint)) return XiFaultCodes.S_OK;
+            if (endpoint is null || !_endpoints.Contains(endpoint)) return XiFaultCodes.S_OK;
 
             uint errCode = _context.RemoveListFromEndpoint(ServerListId, endpoint.EndpointId);
             if (errCode == XiFaultCodes.S_OK)

@@ -45,12 +45,12 @@ namespace Ssz.Utils.CommandLine.Parsing
 
         public OptionInfo(BaseOptionAttribute attribute, PropertyInfo property, CultureInfo parsingCulture)
         {
-            if (attribute == null)
+            if (attribute is null)
             {
                 throw new ArgumentNullException("attribute", SR.ArgumentNullException_AttributeCannotBeNull);
             }
 
-            if (property == null)
+            if (property is null)
             {
                 throw new ArgumentNullException("property", SR.ArgumentNullException_PropertyCannotBeNull);
             }

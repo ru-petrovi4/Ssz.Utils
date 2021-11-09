@@ -50,7 +50,7 @@ namespace System.Linq.Dynamic.Core.Validation
                 e = new ArgumentException(CoreStrings.ArgumentIsEmpty(parameterName));
             }
 
-            if (e != null)
+            if (e is not null)
             {
                 NotEmpty(parameterName, nameof(parameterName));
 
@@ -65,7 +65,7 @@ namespace System.Linq.Dynamic.Core.Validation
         {
             NotNull(value, parameterName);
 
-            if (value!.Any(e => e == null))
+            if (value!.Any(e => e is null))
             {
                 NotEmpty(parameterName, nameof(parameterName));
 

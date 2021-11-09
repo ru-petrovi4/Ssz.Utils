@@ -20,17 +20,17 @@ namespace Ssz.Utils.Wpf
                 WindowSlotsDictionary[category] = windowSlots;
             }
 
-            WindowSlot? freeWindowSlot = windowSlots.FirstOrDefault(slot => slot.Window == null);
-            if (freeWindowSlot == null)
+            WindowSlot? freeWindowSlot = windowSlots.FirstOrDefault(slot => slot.Window is null);
+            if (freeWindowSlot is null)
             {
                 var rect = new Rect(Double.NaN, Double.NaN, Double.NaN, Double.NaN);
                 if (category != "")
                 {
                     RegistryKey? registryKey = GetOrCreateSszRegistryKey();
-                    if (registryKey != null)
+                    if (registryKey is not null)
                     {
                         string? rectString = registryKey.GetValue(category) as string;
-                        if (rectString != null)
+                        if (rectString is not null)
                         {
                             var registryRect = (RegistryRect)NameValueCollectionValueSerializer<RegistryRect>.Instance.ConvertFromString(rectString);
                             rect = new Rect(registryRect.X, registryRect.Y, registryRect.Width, registryRect.Height);
@@ -101,8 +101,8 @@ namespace Ssz.Utils.Wpf
                 return null;
             }
 
-            WindowSlot? occupiedWindowSlot = windowSlots.FirstOrDefault(slot => slot.Window != null);
-            if (occupiedWindowSlot == null)
+            WindowSlot? occupiedWindowSlot = windowSlots.FirstOrDefault(slot => slot.Window is not null);
+            if (occupiedWindowSlot is null)
             {
                 return null;
             }
@@ -165,7 +165,7 @@ namespace Ssz.Utils.Wpf
         private static void WindowOnClosed(Window window)
         {
             WindowInfosDictionary.TryGetValue(window, out WindowInfo? windowInfo);
-            if (windowInfo == null) return;
+            if (windowInfo is null) return;
             WindowInfosDictionary.Remove(window);
 
             List<WindowSlot> windowSlots = WindowSlotsDictionary[windowInfo.Category];
@@ -178,7 +178,7 @@ namespace Ssz.Utils.Wpf
             if (windowInfo.Category != "")
             {
                 RegistryKey? registryKey = GetOrCreateSszRegistryKey();
-                if (registryKey != null)
+                if (registryKey is not null)
                 {
                     string rectString = NameValueCollectionValueSerializer<RegistryRect>.Instance.ConvertToString(
                         new RegistryRect { X = rect.X, Y = rect.Y, Width = rect.Width, Height = rect.Height }

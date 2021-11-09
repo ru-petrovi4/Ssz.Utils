@@ -101,7 +101,7 @@ namespace Ssz.DataGrpc.Client.Managers
         {
             get
             {
-                if (_connectionInfo == null) return null;
+                if (_connectionInfo is null) return null;
 
                 return _connectionInfo.GrpcChannel; 
             }
@@ -123,7 +123,7 @@ namespace Ssz.DataGrpc.Client.Managers
         {
             if (_disposed) throw new ObjectDisposedException(@"Cannot access a disposed DataGrpcServerProxy.");
 
-            if (_connectionInfo != null) throw new Exception(@"DataGrpc context already exists.");
+            if (_connectionInfo is not null) throw new Exception(@"DataGrpc context already exists.");
 
 #if DEBUG            
             TimeSpan requestedServerContextTimeoutMs = new TimeSpan(0, 30, 0);
@@ -152,7 +152,7 @@ namespace Ssz.DataGrpc.Client.Managers
             }
             catch
             { 
-                if (grpcChannel != null)
+                if (grpcChannel is not null)
                 {                    
                     grpcChannel.Dispose();
                 }
@@ -183,7 +183,7 @@ namespace Ssz.DataGrpc.Client.Managers
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataGrpcServerProxy.");
 
-            if (_connectionInfo == null) throw new ConnectionDoesNotExistException();
+            if (_connectionInfo is null) throw new ConnectionDoesNotExistException();
 
             return new ClientElementValueList(_connectionInfo.ClientContext, listParams);
         }
@@ -199,7 +199,7 @@ namespace Ssz.DataGrpc.Client.Managers
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataGrpcServerProxy.");
 
-            if (_connectionInfo == null) throw new ConnectionDoesNotExistException();
+            if (_connectionInfo is null) throw new ConnectionDoesNotExistException();
 
             return new ClientEventList(_connectionInfo.ClientContext, listParams);
         }
@@ -215,7 +215,7 @@ namespace Ssz.DataGrpc.Client.Managers
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataGrpcServerProxy.");
 
-            if (_connectionInfo == null) throw new ConnectionDoesNotExistException();
+            if (_connectionInfo is null) throw new ConnectionDoesNotExistException();
 
             return new ClientElementValueJournalList(_connectionInfo.ClientContext, listParams);
         }
@@ -237,7 +237,7 @@ namespace Ssz.DataGrpc.Client.Managers
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataGrpcServerProxy.");
 
-            if (_connectionInfo == null) throw new ConnectionDoesNotExistException();
+            if (_connectionInfo is null) throw new ConnectionDoesNotExistException();
             
             _connectionInfo.ClientContext.Passthrough(recipientId,
                                       passthroughName, dataToSend, out returnData);
@@ -248,7 +248,7 @@ namespace Ssz.DataGrpc.Client.Managers
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataGrpcServerProxy.");
 
-            if (_connectionInfo == null) throw new ConnectionDoesNotExistException();
+            if (_connectionInfo is null) throw new ConnectionDoesNotExistException();
 
             return await _connectionInfo.ClientContext.LongrunningPassthroughAsync(recipientId,
                                       passthroughName, dataToSend, callbackAction);
@@ -264,7 +264,7 @@ namespace Ssz.DataGrpc.Client.Managers
             {
                 if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataGrpcServerProxy.");
 
-                if (_connectionInfo == null) throw new ConnectionDoesNotExistException();
+                if (_connectionInfo is null) throw new ConnectionDoesNotExistException();
 
                 return TimeSpan.FromMilliseconds(_connectionInfo.ClientContext.ServerContextTimeoutMs);
             }
@@ -279,7 +279,7 @@ namespace Ssz.DataGrpc.Client.Managers
             {
                 if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataGrpcServerProxy.");
 
-                if (_connectionInfo == null) throw new ConnectionDoesNotExistException();
+                if (_connectionInfo is null) throw new ConnectionDoesNotExistException();
 
                 return _connectionInfo.ClientContext.ServerCultureName; 
             }            
@@ -291,7 +291,7 @@ namespace Ssz.DataGrpc.Client.Managers
         /// </summary>
         public bool ConnectionExists
         {
-            get { return _connectionInfo != null; }
+            get { return _connectionInfo is not null; }
         }
 
         public string ServerContextId
@@ -300,7 +300,7 @@ namespace Ssz.DataGrpc.Client.Managers
             {
                 if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataGrpcServerProxy.");
 
-                if (_connectionInfo == null) throw new ConnectionDoesNotExistException();
+                if (_connectionInfo is null) throw new ConnectionDoesNotExistException();
 
                 return _connectionInfo.ClientContext.ServerContextId;
             }
@@ -310,7 +310,7 @@ namespace Ssz.DataGrpc.Client.Managers
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataGrpcServerProxy.");
 
-            if (_connectionInfo == null) throw new ConnectionDoesNotExistException();
+            if (_connectionInfo is null) throw new ConnectionDoesNotExistException();
 
             _connectionInfo.ClientContext.KeepContextAliveIfNeeded(ct, nowUtc);
             _connectionInfo.ClientContext.ProcessPendingContextNotificationData();
@@ -325,7 +325,7 @@ namespace Ssz.DataGrpc.Client.Managers
         /// </summary>
         private void CloseConnectionInternal()
         {
-            if (_connectionInfo == null) return;
+            if (_connectionInfo is null) return;
 
             _connectionInfo.ClientContext.ContextNotifyEvent -= ClientContextOnContextNotifyEvent;
             _connectionInfo.ClientContext.Dispose();            

@@ -26,11 +26,11 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
     {
         public static IEnumerable<T> FindVisualChildren<T>(this DependencyObject depObj) where T : DependencyObject
         {
-            if (depObj != null)
+            if (depObj is not null)
                 for (var i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
                 {
                     var child = VisualTreeHelper.GetChild(depObj, i);
-                    if (child != null && child is T) yield return (T) child;
+                    if (child is not null && child is T) yield return (T) child;
 
                     foreach (var childOfChild in FindVisualChildren<T>(child)) yield return childOfChild;
                 }
@@ -38,10 +38,10 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         public static IEnumerable<T> FindLogicalChildren<T>(this DependencyObject depObj) where T : DependencyObject
         {
-            if (depObj != null)
+            if (depObj is not null)
                 foreach (var child in LogicalTreeHelper.GetChildren(depObj).OfType<DependencyObject>())
                 {
-                    if (child != null && child is T) yield return (T) child;
+                    if (child is not null && child is T) yield return (T) child;
 
                     foreach (var childOfChild in FindLogicalChildren<T>(child)) yield return childOfChild;
                 }
@@ -52,7 +52,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             var current = initial;
             var result = initial;
 
-            while (current != null)
+            while (current is not null)
             {
                 result = current;
                 if (current is Visual || current is Visual3D)
@@ -73,7 +73,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             do
             {
                 target = VisualTreeHelper.GetParent(target);
-            } while (target != null && !(target is T));
+            } while (target is not null && !(target is T));
 
             return target as T;
         }
@@ -85,9 +85,9 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             {
                 var current = target;
                 target = LogicalTreeHelper.GetParent(target);
-                if (target == null)
+                if (target is null)
                     target = VisualTreeHelper.GetParent(current);
-            } while (target != null && !(target is T));
+            } while (target is not null && !(target is T));
 
             return target as T;
         }

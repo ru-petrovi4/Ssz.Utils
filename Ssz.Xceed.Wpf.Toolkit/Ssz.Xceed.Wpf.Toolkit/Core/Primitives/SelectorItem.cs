@@ -45,7 +45,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         private static void OnIsSelectedChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var selectorItem = o as SelectorItem;
-            if (selectorItem != null)
+            if (selectorItem is not null)
                 selectorItem.OnIsSelectedChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 

@@ -67,9 +67,9 @@ namespace Xi.Contracts.Data
 		public bool CompareIdentical(FilterSet setToCompare)
 		{
 			bool bEqual = false;
-			if ((this.Filters != null)
-				&& (setToCompare != null)
-				&& (setToCompare.Filters != null)
+			if ((this.Filters is not null)
+				&& (setToCompare is not null)
+				&& (setToCompare.Filters is not null)
 			   )
 			{
 				// see if the number of ORedFilters are the same

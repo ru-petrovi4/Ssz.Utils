@@ -24,7 +24,7 @@ namespace Ssz.Utils
         public static List<string[]> ParseClipboardData()
         {
             IDataObject dataObj = Clipboard.GetDataObject();
-            if (dataObj == null) return new List<string[]>();
+            if (dataObj is null) return new List<string[]>();
 
             object clipboardData = dataObj.GetData(DataFormats.CommaSeparatedValue);
             if (clipboardData != null)
@@ -48,7 +48,7 @@ namespace Ssz.Utils
         /// <param name="data"></param>
         public static void SetClipboardData(List<string[]> data)
         {
-            if (data == null || data.Count == 0) return;
+            if (data is null || data.Count == 0) return;
 
             var sb1 = new StringBuilder();
             var sb2 = new StringBuilder();

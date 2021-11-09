@@ -35,7 +35,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="baseStream"></param>
         public SerializationReader(Stream baseStream)
         {
-            if (baseStream == null) throw new ArgumentNullException(@"baseStream");
+            if (baseStream is null) throw new ArgumentNullException(@"baseStream");
             if (!baseStream.CanSeek) throw new ArgumentException("baseStream must be seekable.");
 
             _baseStream = baseStream;
@@ -482,7 +482,7 @@ namespace Ssz.Utils.Serialization
             if (typeCode == SerializedType.NullType) return null;
 
             var arr = (IEnumerable)ReadArrayInternal(typeCode, typeof(T));
-            if (arr == null) return new List<T>();
+            if (arr is null) return new List<T>();
             else return new List<T>(arr.OfType<T>());
         }
 
@@ -518,7 +518,7 @@ namespace Ssz.Utils.Serialization
         /// <typeparam name="TV"> The value Type. </typeparam>
         public void ReadDictionary<TK, TV>(Dictionary<TK, TV> dictionary)
         {
-            if (dictionary == null) throw new ArgumentNullException(@"dictionary");
+            if (dictionary is null) throw new ArgumentNullException(@"dictionary");
 
             ThrowIfBlockEnding();
 

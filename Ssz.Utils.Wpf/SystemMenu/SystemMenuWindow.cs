@@ -57,10 +57,10 @@ namespace Ssz.Utils.Wpf.SystemMenu
         {
             var obj = d as SystemMenuWindow;
 
-            if (obj != null)
+            if (obj is not null)
             {
                 var v = e.NewValue as FreezableCollection<SystemMenuItem>;
-                if (v != null)
+                if (v is not null)
                 {
                     obj.MenuItems = v;
                 }
@@ -99,7 +99,7 @@ namespace Ssz.Utils.Wpf.SystemMenu
             {
                 case WM_SYSCOMMAND:
                     SystemMenuItem? menuItem = MenuItems.FirstOrDefault(mi => mi.Id == wParam.ToInt32());
-                    if (menuItem != null && menuItem.Command != null)
+                    if (menuItem is not null && menuItem.Command is not null)
                     {
                         menuItem.Command.Execute(menuItem.CommandParameter);
                         handled = true;
@@ -113,7 +113,7 @@ namespace Ssz.Utils.Wpf.SystemMenu
                         foreach (SystemMenuItem item in MenuItems)
                         {
                             EnableMenuItem(systemMenu, (uint) item.Id,
-                                item.Command != null && item.Command.CanExecute(item.CommandParameter) ? MF_ENABLED : MF_DISABLED);
+                                item.Command is not null && item.Command.CanExecute(item.CommandParameter) ? MF_ENABLED : MF_DISABLED);
                         }
                         handled = true;
                     }

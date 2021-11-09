@@ -109,7 +109,7 @@ namespace Ssz.WpfHmi.Common.ControlsRuntime.GenericRuntime
 
         private void RefreshUnackedCategoryId()
         {
-            if (_alarmTypeBrushes == null)
+            if (_alarmTypeBrushes is null)
             {
                 AlarmRectBrush = Brushes.Lime;
                 return;

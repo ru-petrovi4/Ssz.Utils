@@ -96,7 +96,7 @@ namespace Ssz.Utils
     /// <example>
     ///     <code>
     /// public void Foo(string param) {
-    ///   if (param == null)
+    ///   if (param is null)
     ///     throw new ArgumentNullException("par"); // Warning: Cannot resolve symbol
     /// }
     /// </code>
@@ -225,7 +225,7 @@ namespace Ssz.Utils
     ///         </item>
     ///         <item>
     ///             <code>
-    /// // A method that returns null if the parameter is null, and not null if the parameter is not null
+    /// // A method that returns null if the parameter is null, and not null if the parameter != null
     /// [ContractAnnotation("null => null; notnull => notnull")]
     /// public object Transform(object data) 
     /// </code>

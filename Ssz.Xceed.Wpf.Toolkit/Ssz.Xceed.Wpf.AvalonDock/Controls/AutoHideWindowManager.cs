@@ -56,7 +56,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         public void HideAutoWindow(LayoutAnchorControl anchor = null)
         {
-            if (anchor == null ||
+            if (anchor is null ||
                 anchor == _currentAutohiddenAnchor.GetValueOrDefault<LayoutAnchorControl>())
                 StopCloseTimer();
             else

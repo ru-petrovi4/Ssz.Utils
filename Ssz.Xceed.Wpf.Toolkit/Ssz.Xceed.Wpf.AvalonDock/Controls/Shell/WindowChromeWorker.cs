@@ -112,11 +112,11 @@ namespace Microsoft.Windows.Shell
                 // Nothing's changed.
                 return;
 
-            if (_chromeInfo != null)
+            if (_chromeInfo is not null)
                 _chromeInfo.PropertyChangedThatRequiresRepaint -= _OnChromePropertyChangedThatRequiresRepaint;
 
             _chromeInfo = newChrome;
-            if (_chromeInfo != null)
+            if (_chromeInfo is not null)
                 _chromeInfo.PropertyChangedThatRequiresRepaint += _OnChromePropertyChangedThatRequiresRepaint;
 
             _ApplyNewCustomChrome();
@@ -174,7 +174,7 @@ namespace Microsoft.Windows.Shell
                 Assert.IsNotNull(_hwndSource);
                 _window.ApplyTemplate();
 
-                if (_chromeInfo != null) _ApplyNewCustomChrome();
+                if (_chromeInfo is not null) _ApplyNewCustomChrome();
             }
             else
             {
@@ -185,7 +185,7 @@ namespace Microsoft.Windows.Shell
                     _hwndSource = HwndSource.FromHwnd(_hwnd);
                     Assert.IsNotNull(_hwndSource);
 
-                    if (_chromeInfo != null) _ApplyNewCustomChrome();
+                    if (_chromeInfo is not null) _ApplyNewCustomChrome();
                 };
             }
         }
@@ -200,7 +200,7 @@ namespace Microsoft.Windows.Shell
                     _OnWindowPropertyChangedThatRequiresTemplateFixup);
             }
 
-            if (_chromeInfo != null)
+            if (_chromeInfo is not null)
                 _chromeInfo.PropertyChangedThatRequiresRepaint -= _OnChromePropertyChangedThatRequiresRepaint;
 
             _RestoreStandardChromeState(true);
@@ -224,7 +224,7 @@ namespace Microsoft.Windows.Shell
         {
             Assert.IsTrue(Utility.IsPresentationFrameworkVersionLessThan4);
 
-            if (_chromeInfo != null && _hwnd != IntPtr.Zero)
+            if (_chromeInfo is not null && _hwnd != IntPtr.Zero)
                 // Assume that when the template changes it's going to be applied.
                 // We don't have a good way to externally hook into the template
                 // actually being applied, so we asynchronously post the fixup operation
@@ -239,7 +239,7 @@ namespace Microsoft.Windows.Shell
                 // Not yet hooked.
                 return;
 
-            if (_chromeInfo == null)
+            if (_chromeInfo is null)
             {
                 _RestoreStandardChromeState(false);
                 return;
@@ -269,7 +269,7 @@ namespace Microsoft.Windows.Shell
             // This bug was fixed in V4 of the framework.
             if (!Utility.IsPresentationFrameworkVersionLessThan4) return;
 
-            if (_window.Template == null)
+            if (_window.Template is null)
                 // Nothing to fixup yet.  This will get called again when a template does get set.
                 return;
 
@@ -298,7 +298,7 @@ namespace Microsoft.Windows.Shell
                 rcLogicalClient.Right - rcLogicalWindow.Right,
                 rcLogicalClient.Bottom - rcLogicalWindow.Bottom);
 
-            if (rootElement != null)
+            if (rootElement is not null)
                 rootElement.Margin = new Thickness(
                     0,
                     0,
@@ -311,7 +311,7 @@ namespace Microsoft.Windows.Shell
             // This works fine, but if the window is dynamically changing its FlowDirection then this can have really bizarre side effects.
             // This will mostly work if the FlowDirection is dynamically changed, but there aren't many real scenarios that would call for
             // that so I'm not addressing the rest of the quirkiness.
-            if (rootElement != null)
+            if (rootElement is not null)
             {
                 if (_window.FlowDirection == FlowDirection.RightToLeft)
                     rootElement.RenderTransform = new MatrixTransform(1, 0, 0, 1,
@@ -353,7 +353,7 @@ namespace Microsoft.Windows.Shell
                 try
                 {
                     var dti = NativeMethods.DwmGetCompositionTimingInfo(_hwnd);
-                    success = dti != null;
+                    success = dti is not null;
                 }
                 catch (Exception)
                 {
@@ -927,7 +927,7 @@ namespace Microsoft.Windows.Shell
                     mousePosWindow.Offset(-windowPosition.X, -windowPosition.Y);
                     mousePosWindow = DpiHelper.DevicePixelsToLogical(mousePosWindow);
                     var inputElement = _window.InputHitTest(mousePosWindow);
-                    if (inputElement != null && WindowChrome.GetIsHitTestVisibleInChrome(inputElement)) ht = HT.CLIENT;
+                    if (inputElement is not null && WindowChrome.GetIsHitTestVisibleInChrome(inputElement)) ht = HT.CLIENT;
                 }
 
                 handled = true;
@@ -943,7 +943,7 @@ namespace Microsoft.Windows.Shell
             // to bring up the system menu.
             if (HT.CAPTION == (HT) wParam.ToInt32())
             {
-                if (_window.ContextMenu != null)
+                if (_window.ContextMenu is not null)
                 {
                     _window.ContextMenu.Placement = PlacementMode.MousePoint;
                     _window.ContextMenu.IsOpen = true;
@@ -1114,7 +1114,7 @@ namespace Microsoft.Windows.Shell
                 Assert.IsTrue(_isFixedUp);
 
                 var rootElement = (FrameworkElement) VisualTreeHelper.GetChild(_window, 0);
-                if (rootElement != null)
+                if (rootElement is not null)
                     // Undo anything that was done before.
                     rootElement.Margin = new Thickness();
 

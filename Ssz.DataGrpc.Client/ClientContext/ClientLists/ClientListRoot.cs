@@ -184,7 +184,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
 //    {
 //        if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientListRoot.");
 
-//        if (ListAttributes == null) throw new InvalidOperationException();
+//        if (ListAttributes is null) throw new InvalidOperationException();
 //        if (ListAttributes.ListType < 4096)
 //        {
 //            var lt = (StandardListType) ListAttributes.ListType;

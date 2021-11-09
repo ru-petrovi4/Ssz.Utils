@@ -44,7 +44,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             // Just create a brush as placeholder even if there is no such brush.
             // This avoids having to "if" each access to the _visualBrush member.
             // Do not keep the current _visualBrush whatsoever to avoid memory leaks.
-            if (newBrush == null) newBrush = new VisualBrush();
+            if (newBrush is null) newBrush = new VisualBrush();
 
             newBrush.Viewbox = _visualBrush.Viewbox;
             _visualBrush = newBrush;

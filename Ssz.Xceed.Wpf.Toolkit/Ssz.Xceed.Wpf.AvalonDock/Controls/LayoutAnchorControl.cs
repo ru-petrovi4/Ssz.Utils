@@ -132,24 +132,24 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         //    var contentModel = _model;
 
-        //    if (oldParent != null && contentModel != null && contentModel.Content is UIElement)
+        //    if (oldParent is not null && contentModel is not null && contentModel.Content is UIElement)
         //    {
         //        var oldParentPaneControl = oldParent.FindVisualAncestor<LayoutAnchorablePaneControl>();
-        //        if (oldParentPaneControl != null)
+        //        if (oldParentPaneControl is not null)
         //        {
         //            ((ILogicalChildrenContainer)oldParentPaneControl).InternalRemoveLogicalChild(contentModel.Content);
         //        }
         //    }
 
-        //    if (contentModel.Content != null && contentModel.Content is UIElement)
+        //    if (contentModel.Content is not null && contentModel.Content is UIElement)
         //    {
         //        var oldLogicalParentPaneControl = LogicalTreeHelper.GetParent(contentModel.Content as UIElement)
         //            as ILogicalChildrenContainer;
-        //        if (oldLogicalParentPaneControl != null)
+        //        if (oldLogicalParentPaneControl is not null)
         //            oldLogicalParentPaneControl.InternalRemoveLogicalChild(contentModel.Content);
         //    }
 
-        //    if (contentModel != null && contentModel.Content != null && contentModel.Root != null && contentModel.Content is UIElement)
+        //    if (contentModel is not null && contentModel.Content is not null && contentModel.Root is not null && contentModel.Content is UIElement)
         //    {
         //        ((ILogicalChildrenContainer)contentModel.Root.Manager).InternalAddLogicalChild(contentModel.Content);
         //    }
@@ -182,7 +182,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         protected override void OnMouseLeave(MouseEventArgs e)
         {
-            if (_openUpTimer != null)
+            if (_openUpTimer is not null)
             {
                 _openUpTimer.Tick -= _openUpTimer_Tick;
                 _openUpTimer.Stop();

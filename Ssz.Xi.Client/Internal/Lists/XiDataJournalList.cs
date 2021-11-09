@@ -122,7 +122,7 @@ namespace Ssz.Xi.Client.Internal.Lists
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiDataJournalList.");
 
             var serverAliases = new HashSet<uint>();
-            if (xiValueStatusTimestampSetCollection == null)
+            if (xiValueStatusTimestampSetCollection is null)
             {
                 foreach (XiDataJournalListItem item in ListItemsManager)
                 {
@@ -151,7 +151,7 @@ namespace Ssz.Xi.Client.Internal.Lists
                 numValuesPerDataObject,
                 serverAliases.ToList());
 
-            if (journalDataValuesArray != null)
+            if (journalDataValuesArray is not null)
                 foreach (JournalDataValues journalDataValues in journalDataValuesArray)
                 {
                     XiDataJournalListItem? xiDataJournalListItem;
@@ -181,7 +181,7 @@ namespace Ssz.Xi.Client.Internal.Lists
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiDataJournalList.");
 
             var serverAliases = new HashSet<uint>();
-            if (xiValueStatusTimestampSetList == null || xiValueStatusTimestampSetList.Count == 0)
+            if (xiValueStatusTimestampSetList is null || xiValueStatusTimestampSetList.Count == 0)
             {
                 foreach (XiDataJournalListItem item in ListItemsManager)
                 {
@@ -204,7 +204,7 @@ namespace Ssz.Xi.Client.Internal.Lists
 
             JournalDataValues[]? journalDataValuesArray = Context.ReadJournalDataAtSpecificTimes(ServerListId, timestamps,
                 serverAliases.ToList());
-            if (journalDataValuesArray != null)
+            if (journalDataValuesArray is not null)
                 foreach (JournalDataValues journalDataValues in journalDataValuesArray)
                 {
                     XiDataJournalListItem? xiDataJournalListItem;
@@ -244,7 +244,7 @@ namespace Ssz.Xi.Client.Internal.Lists
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiDataJournalList.");
 
             var serverAliasesAndCalculations = new List<AliasAndCalculation>();
-            if (xiValueStatusTimestampSetList == null || xiValueStatusTimestampSetList.Count == 0)
+            if (xiValueStatusTimestampSetList is null || xiValueStatusTimestampSetList.Count == 0)
             {
                 foreach (XiDataJournalListItem item in ListItemsManager)
                 {
@@ -279,7 +279,7 @@ namespace Ssz.Xi.Client.Internal.Lists
                     {
                         var s = xiValueStatusTimestampSet as
                                     XiDataJournalValueStatusTimestampSet;
-                        if (s == null) throw new InvalidOperationException();
+                        if (s is null) throw new InvalidOperationException();
                         var aliasAndCalculation = new AliasAndCalculation
                         { 
                             ServerAlias =
@@ -296,7 +296,7 @@ namespace Ssz.Xi.Client.Internal.Lists
                 secondTimestamp,
                 calculationPeriod,
                 serverAliasesAndCalculations);
-            if (journalDataValuesArray != null)
+            if (journalDataValuesArray is not null)
             foreach (JournalDataValues journalDataValues in journalDataValuesArray)
             {
                 XiDataJournalListItem? xiDataJournalListItem;
@@ -357,7 +357,7 @@ namespace Ssz.Xi.Client.Internal.Lists
                 secondTimestamp,
                 numValuesPerDataObject,
                 serverAliases);
-            if (valuesFromServer != null)
+            if (valuesFromServer is not null)
                 foreach (JournalDataChangedValues changedValues in valuesFromServer)
                 {
                     XiDataJournalListItem dataObjectInDict = dataObjectDict[changedValues.ClientAlias];

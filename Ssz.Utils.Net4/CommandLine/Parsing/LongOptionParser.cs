@@ -46,7 +46,7 @@ namespace Ssz.Utils.CommandLine.Parsing
             string[] parts = argumentEnumerator.Current.Substring(2).Split(new[] {'='}, 2);
             OptionInfo option = map[parts[0]];
 
-            if (option == null)
+            if (option is null)
             {
                 return _ignoreUnkwnownArguments ? PresentParserState.MoveOnNextElement : PresentParserState.Failure;
             }

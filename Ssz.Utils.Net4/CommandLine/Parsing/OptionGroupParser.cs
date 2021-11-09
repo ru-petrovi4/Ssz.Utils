@@ -48,7 +48,7 @@ namespace Ssz.Utils.CommandLine.Parsing
             while (optionGroup.MoveNext())
             {
                 OptionInfo option = map[optionGroup.Current];
-                if (option == null)
+                if (option is null)
                 {
                     return _ignoreUnkwnownArguments ? PresentParserState.MoveOnNextElement : PresentParserState.Failure;
                 }
@@ -121,7 +121,7 @@ namespace Ssz.Utils.CommandLine.Parsing
                     return BooleanToParserState(valueSetting);
                 }
 
-                if (!optionGroup.IsLast && map[optionGroup.Next] == null)
+                if (!optionGroup.IsLast && map[optionGroup.Next] is null)
                 {
                     return PresentParserState.Failure;
                 }

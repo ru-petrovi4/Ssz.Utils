@@ -72,7 +72,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
             if (eventMessagesCollection.Guid != @"" && _incompleteEventMessagesCollectionCollection.Count > 0)
             {
                 var beginEventMessagesCollection = _incompleteEventMessagesCollectionCollection.TryGetValue(eventMessagesCollection.Guid);
-                if (beginEventMessagesCollection != null)
+                if (beginEventMessagesCollection is not null)
                 {
                     _incompleteEventMessagesCollectionCollection.Remove(eventMessagesCollection.Guid);
                     beginEventMessagesCollection.CombineWith(eventMessagesCollection);

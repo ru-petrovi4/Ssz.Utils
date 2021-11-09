@@ -73,7 +73,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core
 
             if (_initializingCount <= 0)
             {
-                if (Source != null)
+                if (Source is not null)
                     throw new InvalidOperationException(
                         "Source property cannot be initialized on the VersionResourceDictionary");
 

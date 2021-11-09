@@ -114,7 +114,7 @@ namespace Ssz.Utils.MonitoredUndo
 
         public void Clear(object? root)
         {
-            if (root != null) _roots.Remove(root);
+            if (root is not null) _roots.Remove(root);
         }
 
         /// <summary>

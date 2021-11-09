@@ -35,7 +35,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         public override bool Equals(object obj)
         {
             var item = obj as TimeItem;
-            if (item != null)
+            if (item is not null)
                 return Time == item.Time;
             return false;
         }

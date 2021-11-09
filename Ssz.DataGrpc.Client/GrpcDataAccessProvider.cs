@@ -193,7 +193,7 @@ namespace Ssz.DataGrpc.Client
         {
             Close();
 
-            Logger.LogDebug("Starting ModelDataProvider. сallbackDispatcher != null " + (callbackDispatcher != null).ToString());
+            Logger.LogDebug("Starting ModelDataProvider. сallbackDispatcher is not null " + (callbackDispatcher is not null).ToString());
 
             CallbackDispatcher = callbackDispatcher;
             ElementIdsMap = elementIdsMap;
@@ -219,7 +219,7 @@ namespace Ssz.DataGrpc.Client
             {
                 ConstItemsDictionary.Clear();
                 BackMapDictionary.Clear();
-                if (ElementIdsMap != null)
+                if (ElementIdsMap is not null)
                 {
                     foreach (var values in ElementIdsMap.Map.Values)
                     {
@@ -259,7 +259,7 @@ namespace Ssz.DataGrpc.Client
             var previousWorkingTask = _workingTask;
             _workingTask = Task.Factory.StartNew(() =>
             {
-                if (previousWorkingTask != null)
+                if (previousWorkingTask is not null)
                     previousWorkingTask.Wait();
                 WorkingTaskMainAsync(_cancellationTokenSource.Token).Wait();
             }, TaskCreationOptions.LongRunning);
@@ -280,7 +280,7 @@ namespace Ssz.DataGrpc.Client
             CallbackDispatcher = null;
             ElementIdsMap = null;
 
-            if (_cancellationTokenSource != null)
+            if (_cancellationTokenSource is not null)
             {
                 _cancellationTokenSource.Cancel();
                 _cancellationTokenSource = null;
@@ -294,7 +294,7 @@ namespace Ssz.DataGrpc.Client
         {
             Close();
 
-            if (_workingTask != null)
+            if (_workingTask is not null)
                 await _workingTask;
         }
 
@@ -326,7 +326,7 @@ namespace Ssz.DataGrpc.Client
             Logger.LogDebug("DataGrpcProvider.AddItem() " + elementId);
 
             var callbackDispatcher = CallbackDispatcher;
-            if (!IsInitialized || callbackDispatcher == null) return elementId;
+            if (!IsInitialized || callbackDispatcher is null) return elementId;
 
             var valueSubscriptionObj = new ValueSubscriptionObj
             {
@@ -335,7 +335,7 @@ namespace Ssz.DataGrpc.Client
             };
             valueSubscription.Obj = valueSubscriptionObj;
 
-            if (ElementIdsMap != null)
+            if (ElementIdsMap is not null)
             {
                 string? tag = null;
                 string? propertyPath = null;
@@ -361,7 +361,7 @@ namespace Ssz.DataGrpc.Client
                     lock (ConstItemsDictionary)
                     {
                         var constItem = ConstItemsDictionaryTryGetValue(tag, propertyPath, tagType);
-                        if (constItem != null)
+                        if (constItem is not null)
                         {
                             constItem.Subscribers.Add(valueSubscription);
                             constAny = constItem.Value;
@@ -439,7 +439,7 @@ namespace Ssz.DataGrpc.Client
                 //    converter.ReplaceConstants(DsSolution.Instance);
                 //}
 
-                if (childValueSubscriptionsList.Count > 1 || converter != null)
+                if (childValueSubscriptionsList.Count > 1 || converter is not null)
                 {
                     valueSubscriptionObj.ChildValueSubscriptionsList = childValueSubscriptionsList;
                     valueSubscriptionObj.Converter = converter;
@@ -454,7 +454,7 @@ namespace Ssz.DataGrpc.Client
 
                 BeginInvoke(ct =>
                 {
-                    if (valueSubscriptionObj.ChildValueSubscriptionsList != null)
+                    if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                     {
                         foreach (var childValueSubscription in valueSubscriptionObj.ChildValueSubscriptionsList)
                             if (!childValueSubscription.IsConst)
@@ -489,7 +489,7 @@ namespace Ssz.DataGrpc.Client
             if (!IsInitialized) return;
 
             var valueSubscriptionObj = valueSubscription.Obj as ValueSubscriptionObj;
-            if (valueSubscriptionObj == null) return;
+            if (valueSubscriptionObj is null) return;
 
             valueSubscriptionObj.ValueSubscription = null;
             valueSubscription.Obj = null;
@@ -498,12 +498,12 @@ namespace Ssz.DataGrpc.Client
             if (constAny.HasValue) return;
 
             var disposable = valueSubscriptionObj.Converter as IDisposable;
-            if (disposable != null) disposable.Dispose();
+            if (disposable is not null) disposable.Dispose();
 
             lock (ConstItemsDictionary)
             {
                 var constItem = ConstItemsDictionary.TryGetValue(valueSubscriptionObj.ElementId);
-                if (constItem != null)
+                if (constItem is not null)
                 {
                     constItem.Subscribers.Remove(valueSubscription);
                     return;
@@ -512,7 +512,7 @@ namespace Ssz.DataGrpc.Client
 
             BeginInvoke(ct =>
             {
-                if (valueSubscriptionObj.ChildValueSubscriptionsList != null)
+                if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                 {
                     foreach (var childValueSubscription in valueSubscriptionObj.ChildValueSubscriptionsList)
                     {
@@ -542,11 +542,11 @@ namespace Ssz.DataGrpc.Client
                     OnElementValuesCallback, true, ct);
                 object[]? changedValueSubscriptions = ClientElementValueListManager.PollChanges();
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
-                if (сallbackDispatcher != null)
+                if (сallbackDispatcher is not null)
                 {
                     try
                     {
-                        сallbackDispatcher.BeginInvoke(ct => setResultAction(changedValueSubscriptions != null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null));
+                        сallbackDispatcher.BeginInvoke(ct => setResultAction(changedValueSubscriptions is not null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null));
                     }
                     catch (Exception)
                     {
@@ -559,7 +559,7 @@ namespace Ssz.DataGrpc.Client
         /// <summary>     
         ///     No values mapping and conversion.
         ///     setResultAction(..) is called using сallbackDispatcher, see Initialize(..).
-        ///     setResultAction(failedValueSubscriptions) is called, failedValueSubscriptions != null.
+        ///     setResultAction(failedValueSubscriptions) is called, failedValueSubscriptions is not null.
         ///     If connection error, failedValueSubscriptions is all clientObjs.        
         /// </summary>
         public virtual void Write(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps, Action<IValueSubscription[]>? setResultAction)
@@ -570,10 +570,10 @@ namespace Ssz.DataGrpc.Client
                     OnElementValuesCallback, true, ct);
                 object[] failedValueSubscriptions = ClientElementValueListManager.Write(valueSubscriptions, valueStatusTimestamps);
 
-                if (setResultAction != null)
+                if (setResultAction is not null)
                 {
                     IDispatcher? сallbackDispatcher = CallbackDispatcher;
-                    if (сallbackDispatcher != null)
+                    if (сallbackDispatcher is not null)
                     {
                         try
                         {
@@ -597,13 +597,13 @@ namespace Ssz.DataGrpc.Client
         public virtual void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? alternativeLogger)
         {
             var callbackDispatcher = CallbackDispatcher;
-            if (!IsInitialized || callbackDispatcher == null) return;
+            if (!IsInitialized || callbackDispatcher is null) return;
 
             if (!ValueStatusCode.IsGood(valueStatusTimestamp.ValueStatusCode)) return;
             var value = valueStatusTimestamp.Value;
 
             var valueSubscriptionObj = valueSubscription.Obj as ValueSubscriptionObj;
-            if (valueSubscriptionObj == null) return;
+            if (valueSubscriptionObj is null) return;
 
             var logger = alternativeLogger ?? Logger;
 
@@ -615,14 +615,14 @@ namespace Ssz.DataGrpc.Client
             lock (ConstItemsDictionary)
             {
                 var constItem = ConstItemsDictionary.TryGetValue(valueSubscriptionObj.ElementId);
-                if (constItem != null && constItem.Value.ValueAsObject() != DBNull.Value)
+                if (constItem is not null && constItem.Value.ValueAsObject() != DBNull.Value)
                 {
                     constItem.Value = value;
                     constItemValueSubscriptionsArray = constItem.Subscribers.ToArray();
                 }
             }
 
-            if (constItemValueSubscriptionsArray != null)
+            if (constItemValueSubscriptionsArray is not null)
             {
                 try
                 {
@@ -640,10 +640,10 @@ namespace Ssz.DataGrpc.Client
             }
 
             object?[]? resultValues = null;
-            if (valueSubscriptionObj.ChildValueSubscriptionsList != null)
+            if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
             {
                 SszConverter converter;
-                if (valueSubscriptionObj.Converter != null)
+                if (valueSubscriptionObj.Converter is not null)
                     converter = valueSubscriptionObj.Converter;
                 else
                     converter = SszConverter.Empty;
@@ -657,9 +657,9 @@ namespace Ssz.DataGrpc.Client
 
             if (logger.IsEnabled(LogLevel.Debug))
             {
-                if (valueSubscriptionObj.ChildValueSubscriptionsList != null)
+                if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                 {
-                    if (resultValues == null) throw new InvalidOperationException();
+                    if (resultValues is null) throw new InvalidOperationException();
                     for (var i = 0; i < resultValues.Length; i++)
                     {
                         var resultValue = resultValues[i];
@@ -683,9 +683,9 @@ namespace Ssz.DataGrpc.Client
                 ClientElementValueListManager.Subscribe(ClientConnectionManager, CallbackDispatcher,
                     OnElementValuesCallback, true, ct);
 
-                if (valueSubscriptionObj.ChildValueSubscriptionsList != null)
+                if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                 {
-                    if (resultValues == null) throw new InvalidOperationException();
+                    if (resultValues is null) throw new InvalidOperationException();
                     for (var i = 0; i < resultValues.Length; i++)
                     {
                         var resultValue = resultValues[i];
@@ -755,7 +755,7 @@ namespace Ssz.DataGrpc.Client
             {
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
                 Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
-                if (callbackAction != null && сallbackDispatcher != null)
+                if (callbackAction is not null && сallbackDispatcher is not null)
                 {
                     callbackActionDispatched = a =>
                     {
@@ -782,7 +782,7 @@ namespace Ssz.DataGrpc.Client
                 catch (RpcException ex)
                 {
                     Logger.LogError(ex, ex.Status.Detail);
-                    if (callbackActionDispatched != null)
+                    if (callbackActionDispatched is not null)
                     {
                         callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
                         {   
@@ -794,7 +794,7 @@ namespace Ssz.DataGrpc.Client
                 catch (Exception ex)
                 {
                     Logger.LogError(ex, "Passthrough exception.");
-                    if (callbackActionDispatched != null)
+                    if (callbackActionDispatched is not null)
                     {
                         callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
                         {
@@ -856,7 +856,7 @@ namespace Ssz.DataGrpc.Client
                         ClientElementValueListManager.GetAllClientObjs().OfType<IValueSubscription>();
 
                     сallbackDispatcher = CallbackDispatcher;
-                    if (сallbackDispatcher != null)
+                    if (сallbackDispatcher is not null)
                     {
                         if (cancellationToken.IsCancellationRequested) return;
                         try
@@ -904,7 +904,7 @@ namespace Ssz.DataGrpc.Client
 
                         IsConnectedEventWaitHandle.Set();                        
                         сallbackDispatcher = CallbackDispatcher;
-                        if (сallbackDispatcher != null)
+                        if (сallbackDispatcher is not null)
                         {
                             if (cancellationToken.IsCancellationRequested) return;
                             try
@@ -963,7 +963,7 @@ namespace Ssz.DataGrpc.Client
             IsConnectedEventWaitHandle.Reset();
 
             var сallbackDispatcher = CallbackDispatcher;
-            if (сallbackDispatcher != null)
+            if (сallbackDispatcher is not null)
             {                
                 try
                 {
@@ -996,7 +996,7 @@ namespace Ssz.DataGrpc.Client
             for (int i = 0; i < changedClientObjs.Length; i++)
             {
                 var changedValueSubscription = (IValueSubscription)changedClientObjs[i];
-                if (changedValueSubscription.Obj == null) continue;
+                if (changedValueSubscription.Obj is null) continue;
                 //var valueSubscriptionObj = (ValueSubscriptionObj)changedValueSubscription.Obj;
 
                 changedValueSubscription.Update(changedValues[i]);
@@ -1016,11 +1016,11 @@ namespace Ssz.DataGrpc.Client
         protected ConstItem? ConstItemsDictionaryTryGetValue(string? tag, string? propertyPath,
             string? tagType)
         {
-            if (ElementIdsMap == null) return null;
+            if (ElementIdsMap is null) return null;
 
             string elementId = tag + propertyPath;
             var constItem = ConstItemsDictionary.TryGetValue(elementId);
-            if (constItem != null) return constItem;
+            if (constItem is not null) return constItem;
 
             if (!string.IsNullOrEmpty(propertyPath))
             {
@@ -1028,10 +1028,10 @@ namespace Ssz.DataGrpc.Client
                 if (!string.IsNullOrEmpty(tagType))
                     templateConstItem = ConstItemsDictionary.TryGetValue(tagType +
                         ElementIdsMap.TagTypeSeparator + ElementIdsMap.GenericTag + propertyPath);
-                if (templateConstItem == null)
+                if (templateConstItem is null)
                     templateConstItem =
                         ConstItemsDictionary.TryGetValue(ElementIdsMap.GenericTag + propertyPath);
-                if (templateConstItem != null)
+                if (templateConstItem is not null)
                 {
                     constItem = new ConstItem { Value = templateConstItem.Value };
                     ConstItemsDictionary[elementId] = constItem;
@@ -1139,13 +1139,13 @@ namespace Ssz.DataGrpc.Client
 
             public void ChildValueSubscriptionUpdated()
             {
-                if (ValueSubscription == null || ChildValueSubscriptionsList == null) return;
+                if (ValueSubscription is null || ChildValueSubscriptionsList is null) return;
 
                 var values = new List<object?>();
                 foreach (var childValueSubscription in ChildValueSubscriptionsList)
                     values.Add(childValueSubscription.Value.ValueAsObject());
                 SszConverter converter;
-                if (Converter != null)
+                if (Converter is not null)
                     converter = Converter;
                 else
                     converter = SszConverter.Empty;
@@ -1194,7 +1194,7 @@ namespace Ssz.DataGrpc.Client
                         break;
                 }
 
-                if (Obj != null) 
+                if (Obj is not null) 
                     ((ValueSubscriptionObj)Obj).ChildValueSubscriptionUpdated();
             }
         }

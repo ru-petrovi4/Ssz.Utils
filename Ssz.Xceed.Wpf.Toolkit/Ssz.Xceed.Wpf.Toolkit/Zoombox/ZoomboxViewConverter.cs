@@ -117,7 +117,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
                     }
             }
 
-            return result == null ? base.ConvertFrom(typeDescriptorContext, cultureInfo, value) : result;
+            return result is null ? base.ConvertFrom(typeDescriptorContext, cultureInfo, value) : result;
         }
 
         public override object ConvertTo(
@@ -129,7 +129,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
             object result = null;
             var view = value as ZoomboxView;
 
-            if (view != null)
+            if (view is not null)
                 if (destinationType == typeof(string))
                 {
                     result = "Empty";
@@ -174,7 +174,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
                     }
                 }
 
-            return result == null ? base.ConvertTo(typeDescriptorContext, cultureInfo, value, destinationType) : result;
+            return result is null ? base.ConvertTo(typeDescriptorContext, cultureInfo, value, destinationType) : result;
         }
 
         #region Converter Static Property
@@ -183,7 +183,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
         {
             get
             {
-                if (_converter == null) _converter = new ZoomboxViewConverter();
+                if (_converter is null) _converter = new ZoomboxViewConverter();
                 return _converter;
             }
         }

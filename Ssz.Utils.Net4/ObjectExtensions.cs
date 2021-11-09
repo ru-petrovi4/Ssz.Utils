@@ -21,7 +21,7 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static IEnumerable<FieldInfo> GetAllFields(this object obj)
         {
-            if (obj == null) throw new ArgumentNullException(@"obj");
+            if (obj is null) throw new ArgumentNullException(@"obj");
 
             Type type = obj.GetType();
             var fields = new List<FieldInfo>();
@@ -56,7 +56,7 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static object GetValue(this object obj, string expression)
         {
-            if (obj == null) throw new ArgumentNullException(@"obj");
+            if (obj is null) throw new ArgumentNullException(@"obj");
 
             if (String.IsNullOrEmpty(expression)) return null;
 
@@ -87,7 +87,7 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static bool SetValue(this object obj, string expression, object value)
         {
-            if (obj == null) throw new ArgumentNullException(@"obj");
+            if (obj is null) throw new ArgumentNullException(@"obj");
 
             if (String.IsNullOrEmpty(expression)) return false;
             
@@ -98,9 +98,9 @@ namespace Ssz.Utils
             {
                 Type t = o.GetType();
                 PropertyInfo pi = t.GetProperty(parts[i]);
-                if (pi == null || !pi.CanRead) return false;
+                if (pi is null || !pi.CanRead) return false;
                 object v = pi.GetValue(o);                
-                if (v == null)
+                if (v is null)
                 {      
                     if (!pi.CanWrite) return false;
                     try
@@ -111,7 +111,7 @@ namespace Ssz.Utils
                     {
                         return false;
                     }
-                    if (v == null) return false;
+                    if (v is null) return false;
                     pi.SetValue(o, v);
                 }
                 o = v;
@@ -130,7 +130,7 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static bool SetPropertyValue(this object obj, string propertyName, object value)
         {
-            if (obj == null) throw new ArgumentNullException(@"obj");
+            if (obj is null) throw new ArgumentNullException(@"obj");
 
             if (String.IsNullOrEmpty(propertyName)) return false;
 
@@ -138,8 +138,8 @@ namespace Ssz.Utils
             {
                 Type t = obj.GetType();
                 PropertyInfo pi = t.GetProperty(propertyName);
-                if (pi == null || !pi.CanWrite) return false;
-                if (value == null)
+                if (pi is null || !pi.CanWrite) return false;
+                if (value is null)
                 {
                     pi.SetValue(obj, null);
                 }
@@ -158,12 +158,12 @@ namespace Ssz.Utils
         /// <summary>
         ///     Searches in properties with [Searchable(true)] or [Browsable(true)] attributes.
         ///     [Searchable(true)] attribute has higher priority.
-        ///     If regex == null matches all properties.
+        ///     If regex is null matches all properties.
         ///     obj != null, result != null
         /// </summary>
         public static List<StringPropertyInfo> FindInStringBrowsableProperties(this object obj, Regex regex)
         {
-            if (obj == null) throw new ArgumentNullException(@"obj");
+            if (obj is null) throw new ArgumentNullException(@"obj");
 
             var result = new List<StringPropertyInfo>();
 
@@ -171,7 +171,7 @@ namespace Ssz.Utils
             {
                 object value = propertyDescriptor.GetValue(obj);
 
-                if (value == null) continue;
+                if (value is null) continue;
 
                 var stringValue = value as string;
                 if (stringValue != null)
@@ -194,7 +194,7 @@ namespace Ssz.Utils
                     for (int i = 0; i < listValue.Count; i++)
                     {
                         object item = listValue[i];
-                        if (item == null) continue;
+                        if (item is null) continue;
                         foreach (
                             StringPropertyInfo subPropertyInfo in
                                 FindInStringBrowsableProperties(item, regex))
@@ -227,10 +227,10 @@ namespace Ssz.Utils
         public static List<StringPropertyInfo> ReplaceInStringBrowsableProperties(this object obj, Regex regex,
             string replacement)
         {
-            if (obj == null) throw new ArgumentNullException(@"obj");
-            if (regex == null) throw new ArgumentNullException(@"regex");
+            if (obj is null) throw new ArgumentNullException(@"obj");
+            if (regex is null) throw new ArgumentNullException(@"regex");
 
-            if (replacement == null) replacement = @"";
+            if (replacement is null) replacement = @"";
 
             var result = new List<StringPropertyInfo>();
 
@@ -238,7 +238,7 @@ namespace Ssz.Utils
             {
                 object value = propertyDescriptor.GetValue(obj);
 
-                if (value == null) continue;
+                if (value is null) continue;
 
                 var stringValue = value as string;
                 if (stringValue != null)

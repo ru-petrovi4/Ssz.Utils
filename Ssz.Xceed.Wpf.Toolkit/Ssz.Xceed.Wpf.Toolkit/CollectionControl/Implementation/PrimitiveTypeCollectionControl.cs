@@ -48,7 +48,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnIsOpenChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var primitiveTypeCollectionControl = o as PrimitiveTypeCollectionControl;
-            if (primitiveTypeCollectionControl != null)
+            if (primitiveTypeCollectionControl is not null)
                 primitiveTypeCollectionControl.OnIsOpenChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 
@@ -72,19 +72,19 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnItemsSourceChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var primitiveTypeCollectionControl = o as PrimitiveTypeCollectionControl;
-            if (primitiveTypeCollectionControl != null)
+            if (primitiveTypeCollectionControl is not null)
                 primitiveTypeCollectionControl.OnItemsSourceChanged((IList) e.OldValue, (IList) e.NewValue);
         }
 
         protected virtual void OnItemsSourceChanged(IList oldValue, IList newValue)
         {
-            if (newValue == null)
+            if (newValue is null)
                 return;
 
-            if (ItemsSourceType == null)
+            if (ItemsSourceType is null)
                 ItemsSourceType = newValue.GetType();
 
-            if (ItemType == null)
+            if (ItemType is null)
                 ItemType = newValue.GetType().GetGenericArguments()[0];
 
             SetText(newValue);
@@ -147,7 +147,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnTextChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var primitiveTypeCollectionControl = o as PrimitiveTypeCollectionControl;
-            if (primitiveTypeCollectionControl != null)
+            if (primitiveTypeCollectionControl is not null)
                 primitiveTypeCollectionControl.OnTextChanged((string) e.OldValue, (string) e.NewValue);
         }
 
@@ -176,7 +176,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private void PersistChanges()
         {
             var list = ComputeItemsSource();
-            if (list == null)
+            if (list is null)
                 return;
 
             //the easiest way to persist changes to the source is to just clear the source list and then add all items to it.
@@ -195,7 +195,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             IList items = new List<object>();
 
-            if (ItemType == null)
+            if (ItemType is null)
                 return items;
 
             var textArray = Text.Split('\n');
@@ -216,7 +216,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
                         _conversionFailed = true;
                     }
 
-                    if (value != null)
+                    if (value is not null)
                         items.Add(value);
                 }
             }
@@ -226,7 +226,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private IList ComputeItemsSource()
         {
-            if (ItemsSource == null)
+            if (ItemsSource is null)
                 ItemsSource = CreateItemsSource();
 
             return ItemsSource;
@@ -236,7 +236,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             IList list = null;
 
-            if (ItemsSourceType != null)
+            if (ItemsSourceType is not null)
             {
                 var constructor = ItemsSourceType.GetConstructor(Type.EmptyTypes);
                 list = (IList) constructor.Invoke(null);

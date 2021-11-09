@@ -141,9 +141,9 @@ namespace Xi.Contracts.Data
 		public void SetDouble(int idx, DateTime modificationTimestamp, ModificationType modificationType, 
 			string operatorName, uint statusCode, DateTime timestamp, double value)
 		{
-			if (DoubleModificationTimestamps == null ||
-				DoubleModificationTypes == null ||
-				DoubleOperatorNames == null) throw new InvalidOperationException();
+			if (DoubleModificationTimestamps is null ||
+				DoubleModificationTypes is null ||
+				DoubleOperatorNames is null) throw new InvalidOperationException();
 			DoubleModificationTimestamps[idx] = modificationTimestamp;
 			DoubleModificationTypes[idx] = modificationType;
 			DoubleOperatorNames[idx] = operatorName;
@@ -165,9 +165,9 @@ namespace Xi.Contracts.Data
 		public void SetUint(int idx, DateTime modificationTimestamp, ModificationType modificationType,
 			string operatorName, uint statusCode, DateTime timestamp, uint value)
 		{
-			if (LongModificationTimestamps == null ||
-				LongModificationTypes == null ||
-				LongOperatorNames == null) throw new InvalidOperationException();
+			if (LongModificationTimestamps is null ||
+				LongModificationTypes is null ||
+				LongOperatorNames is null) throw new InvalidOperationException();
 			LongModificationTimestamps[idx] = modificationTimestamp;
 			LongModificationTypes[idx] = modificationType;
 			LongOperatorNames[idx] = operatorName;
@@ -189,9 +189,9 @@ namespace Xi.Contracts.Data
 		public void SetObject(int idx, DateTime modificationTimestamp, ModificationType modificationType,
 			string operatorName, uint statusCode, DateTime timestamp, object value)
 		{
-			if (ObjectModificationTimestamps == null ||
-				ObjectModificationTypes == null ||
-				ObjectOperatorNames == null) throw new InvalidOperationException();
+			if (ObjectModificationTimestamps is null ||
+				ObjectModificationTypes is null ||
+				ObjectOperatorNames is null) throw new InvalidOperationException();
 			ObjectModificationTimestamps[idx] = modificationTimestamp;
 			ObjectModificationTypes[idx] = modificationType;
 			ObjectOperatorNames[idx] = operatorName;

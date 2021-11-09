@@ -40,14 +40,14 @@ namespace Ssz.Utils.Wpf.ToggleSwitch
 
         protected override void LayoutControls()
         {
-            if (SwitchThumb == null || SwitchRoot == null)
+            if (SwitchThumb is null || SwitchRoot is null)
             {
                 return;
             }
 
             double fullThumbHeight = SwitchThumb.ActualHeight + SwitchThumb.BorderThickness.Top + SwitchThumb.BorderThickness.Bottom;
 
-            if (SwitchChecked != null && SwitchUnchecked != null)
+            if (SwitchChecked is not null && SwitchUnchecked is not null)
             {
                 SwitchChecked.Height = SwitchUnchecked.Height = Math.Max(0, SwitchRoot.ActualHeight - fullThumbHeight / 2);
                 SwitchChecked.Padding = new Thickness(0, 0, 0, (SwitchThumb.ActualHeight + +SwitchThumb.BorderThickness.Bottom) / 2);

@@ -59,7 +59,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
             get
             {
                 var strokeThickness = StrokeThickness;
-                return Stroke == null || DoubleHelper.IsNaN(strokeThickness) ||
+                return Stroke is null || DoubleHelper.IsNaN(strokeThickness) ||
                        DoubleHelper.AreVirtuallyEqual(0, strokeThickness);
             }
         }
@@ -76,7 +76,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         {
             var geometry = DefiningGeometry;
 
-            Debug.Assert(geometry != null);
+            Debug.Assert(geometry is not null);
 
             return geometry.Bounds;
         }
@@ -85,7 +85,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
         {
             var geometry = DefiningGeometry;
 
-            Debug.Assert(geometry != null);
+            Debug.Assert(geometry is not null);
 
             var bounds = geometry.GetRenderBounds(GetPen());
 
@@ -97,7 +97,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
             if (IsPenEmptyOrUndefined)
                 return null;
 
-            if (_pen == null) _pen = MakePen();
+            if (_pen is null) _pen = MakePen();
 
             return _pen;
         }
@@ -125,7 +125,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Primitives
             var pen = new Pen();
             pen.Brush = Stroke;
             pen.DashCap = StrokeDashCap;
-            if (StrokeDashArray != null || StrokeDashOffset != 0.0)
+            if (StrokeDashArray is not null || StrokeDashOffset != 0.0)
                 pen.DashStyle = new DashStyle(StrokeDashArray, StrokeDashOffset);
             pen.EndLineCap = StrokeEndLineCap;
             pen.LineJoin = StrokeLineJoin;

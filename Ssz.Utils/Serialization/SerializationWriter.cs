@@ -71,7 +71,7 @@ namespace Ssz.Utils.Serialization
 
             if (disposing)
             {
-                if (_stringsList != null && _stringsList.Count > 0)
+                if (_stringsList is not null && _stringsList.Count > 0)
                 {
                     long stringsListPosition = _baseStream.Position;
 
@@ -528,7 +528,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="value"> The object to store. </param>
         public void WriteObject(object? value)
         {
-            if (value == null)
+            if (value is null)
             {
                 WriteSerializedType(SerializedType.NullType);
                 return;
@@ -1019,7 +1019,7 @@ namespace Ssz.Utils.Serialization
         public void WriteOwnedDataSerializableAndRecreatable<T>(T? value, object? context)
             where T : class, IOwnedDataSerializable, new()
         {
-            if (value == null)
+            if (value is null)
             {
                 WriteSerializedType(SerializedType.NullType);
                 return;
@@ -1037,7 +1037,7 @@ namespace Ssz.Utils.Serialization
         public void WriteObject<T>(T? value)
             where T : class
         {
-            if (value == null)
+            if (value is null)
             {
                 WriteSerializedType(SerializedType.NullType);
                 return;
@@ -1142,7 +1142,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="values"></param>
         public void WriteNullableArray<T>(T[]? values)
         {
-            if (values == null)
+            if (values is null)
             {
                 WriteSerializedType(SerializedType.NullType);
             }
@@ -1158,7 +1158,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="values"></param>
         public void WriteNullableByteArray(byte[]? values)
         {
-            if (values == null)
+            if (values is null)
             {
                 WriteSerializedType(SerializedType.NullType);
             }
@@ -1182,7 +1182,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="value"> The generic List. </param>
         public void Write<T>(IList<T>? value)
         {
-            if (value == null)
+            if (value is null)
             {
                 WriteSerializedType(SerializedType.NullType);
             }
@@ -1263,7 +1263,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="value"> The BitArray value to store. </param>
         public void Write(BitArray? value)
         {
-            if (value == null)
+            if (value is null)
             {
                 WriteSerializedType(SerializedType.NullType);
             }
@@ -1346,7 +1346,7 @@ namespace Ssz.Utils.Serialization
         {
             if (type.IsValueType) return typeof (IOwnedDataSerializable).IsAssignableFrom(type);
             return typeof (IOwnedDataSerializable).IsAssignableFrom(type) &&
-                   type.GetConstructor(Type.EmptyTypes) != null;
+                   type.GetConstructor(Type.EmptyTypes) is not null;
         }
 
         private void WriteOtherType(object value)
@@ -1363,7 +1363,7 @@ namespace Ssz.Utils.Serialization
         ///     Stored Size: 1 byte upwards depending on data content
         ///     Notes:
         ///     An empty BitArray takes 1 byte.
-        ///     value != null
+        ///     value is not null
         /// </summary>
         /// <param name="value"> The BitArray value to store. Must not be null. </param>
         private void WriteOptimized(BitArray value)
@@ -1649,7 +1649,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="value"> The string to store. </param>
         private void WriteOptimized(string? value)
         {
-            if (value == null)
+            if (value is null)
             {
                 WriteSerializedType(SerializedType.NullType);
                 return;
@@ -1682,7 +1682,7 @@ namespace Ssz.Utils.Serialization
                 }
             }
 
-            if (_stringsDictionary == null)
+            if (_stringsDictionary is null)
             {
                 WriteSerializedType(SerializedType.StringDirect);
                 _binaryWriter.Write(value);
@@ -1692,7 +1692,7 @@ namespace Ssz.Utils.Serialization
                 int index;
                 if (!_stringsDictionary.TryGetValue(value, out index))
                 {
-                    if (_stringsList == null) throw new InvalidOperationException();
+                    if (_stringsList is null) throw new InvalidOperationException();
                     index = _stringsList.Count;
                     _stringsDictionary.Add(value, index);
                     _stringsList.Add(value);
@@ -2474,7 +2474,7 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     values != null
+        ///     values is not null
         ///     Sequences of null values and sequences of DBNull.Values are stored with a flag and optimized count.
         ///     Other values are stored using WriteObject().
         ///     This routine is called by the Write(object[]), WriteOptimized(object[]) and Write(object[], object[])) methods.
@@ -2486,15 +2486,15 @@ namespace Ssz.Utils.Serialization
             for (int i = 0; i < values.Length; i++)
             {
                 object? value = values[i];
-                if (i < lastIndex && (value == null ? values[i + 1] == null : value.Equals(values[i + 1])))
+                if (i < lastIndex && (value is null ? values[i + 1] is null : value.Equals(values[i + 1])))
                 {
                     int duplicates = 1;
 
-                    if (value == null)
+                    if (value is null)
                     {
                         WriteSerializedType(SerializedType.NullSequenceType);
 
-                        for (i++; i < lastIndex && values[i + 1] == null; i++)
+                        for (i++; i < lastIndex && values[i + 1] is null; i++)
                         {
                             duplicates++;
                         }
@@ -2545,7 +2545,7 @@ namespace Ssz.Utils.Serialization
 
         /// <summary>
         ///     Internal implementation to write a non-null array into the stream.
-        ///     value != null, elementType != null
+        ///     value is not null, elementType is not null
         /// </summary>
         private void WriteArrayInternal(Array values, Type elementType)
         {
@@ -2574,7 +2574,7 @@ namespace Ssz.Utils.Serialization
                 bool allObjectsSameType = true;
                 foreach (object? v in values)
                 {
-                    if (v == null || v.GetType() != elementType)
+                    if (v is null || v.GetType() != elementType)
                     {
                         allObjectsSameType = false;
                         break;
@@ -2587,7 +2587,7 @@ namespace Ssz.Utils.Serialization
                     for (int i = 0; i < values.Length; i++)
                     {
                         var ownedDataSerializable = values.GetValue(i) as IOwnedDataSerializable;
-                        if (ownedDataSerializable == null) throw new InvalidOperationException();
+                        if (ownedDataSerializable is null) throw new InvalidOperationException();
                         ownedDataSerializable.SerializeOwnedData(this, null);                        
                     }
                 }
@@ -2832,7 +2832,7 @@ namespace Ssz.Utils.Serialization
 //{
 //    foreach (object value in values)
 //    {
-//        if (value != null && value.GetType() != elementType) return false;
+//        if (value is not null && value.GetType() != elementType) return false;
 //    }
 
 //    return true;

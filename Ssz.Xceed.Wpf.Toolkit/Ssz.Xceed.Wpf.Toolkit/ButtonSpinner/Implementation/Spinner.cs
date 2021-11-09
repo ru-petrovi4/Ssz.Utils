@@ -44,7 +44,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             if ((ValidSpinDirection & valid) == valid)
             {
                 var handler = Spin;
-                if (handler != null) handler(this, e);
+                if (handler is not null) handler(this, e);
             }
         }
 

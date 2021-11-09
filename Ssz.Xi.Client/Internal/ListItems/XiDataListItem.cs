@@ -172,7 +172,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         /// </summary>
         public bool PreparedForWrite
         {
-            get { return _pendingWriteValueStatusTimestamp != null; }
+            get { return _pendingWriteValueStatusTimestamp is not null; }
         }
 
         /// <summary>

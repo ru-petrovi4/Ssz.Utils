@@ -48,10 +48,10 @@ namespace Ssz.Xceed.Wpf.Toolkit
         public override string ToString()
         {
             var fe = Element as FrameworkElement;
-            if (fe == null)
+            if (fe is null)
                 return base.ToString();
 
-            if (fe.Tag != null)
+            if (fe.Tag is not null)
                 return fe.Tag.ToString();
 
             return fe.Name;

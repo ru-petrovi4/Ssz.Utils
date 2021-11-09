@@ -14,7 +14,7 @@ namespace Ssz.Utils.Wpf.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var colors = parameter as Color[];            
-            if (colors != null)
+            if (colors is not null)
             {
                 var intValue = new Any(value).ValueAsInt32(false);                
                 if (intValue >= 0 && intValue < colors.Length)

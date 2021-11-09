@@ -30,7 +30,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core
         {
             _innerList = sourceList;
             var notifyList = _innerList as INotifyCollectionChanged;
-            if (notifyList != null)
+            if (notifyList is not null)
             {
                 _innerListListener = new WeakEventListener<NotifyCollectionChangedEventArgs>(OnInnerCollectionChanged);
                 CollectionChangedEventManager.AddListener(notifyList, _innerListListener);
@@ -50,12 +50,12 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core
 
         private void OnInnerCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
         {
-            if (CollectionChanged != null) CollectionChanged(this, args);
+            if (CollectionChanged is not null) CollectionChanged(this, args);
         }
 
         internal void ReleaseEvents()
         {
-            if (_innerListListener != null)
+            if (_innerListListener is not null)
             {
                 CollectionChangedEventManager.RemoveListener((INotifyCollectionChanged) _innerList, _innerListListener);
                 _innerListListener = null;

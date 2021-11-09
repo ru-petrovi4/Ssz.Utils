@@ -41,7 +41,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
             if ((bool) e.NewValue)
                 control.PreviewMouseLeftButtonDown += (s, args) =>
                 {
-                    if (control.ContextMenu != null)
+                    if (control.ContextMenu is not null)
                     {
                         control.ContextMenu.PlacementTarget = control;
                         control.ContextMenu.IsOpen = true;

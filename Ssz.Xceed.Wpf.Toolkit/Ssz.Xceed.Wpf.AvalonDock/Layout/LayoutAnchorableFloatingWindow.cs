@@ -63,7 +63,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         {
             get
             {
-                return RootPanel != null &&
+                return RootPanel is not null &&
                        RootPanel.Descendents().OfType<ILayoutAnchorablePane>().Where(p => p.IsVisible).Count() == 1;
             }
         }
@@ -83,7 +83,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                     RaisePropertyChanging("IsVisible");
                     _isVisible = value;
                     RaisePropertyChanged("IsVisible");
-                    if (IsVisibleChanged != null)
+                    if (IsVisibleChanged is not null)
                         IsVisibleChanged(this, EventArgs.Empty);
                 }
             }
@@ -102,14 +102,14 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 {
                     RaisePropertyChanging("RootPanel");
 
-                    if (_rootPanel != null)
+                    if (_rootPanel is not null)
                         _rootPanel.ChildrenTreeChanged -= _rootPanel_ChildrenTreeChanged;
 
                     _rootPanel = value;
-                    if (_rootPanel != null)
+                    if (_rootPanel is not null)
                         _rootPanel.Parent = this;
 
-                    if (_rootPanel != null)
+                    if (_rootPanel is not null)
                         _rootPanel.ChildrenTreeChanged += _rootPanel_ChildrenTreeChanged;
 
                     RaisePropertyChanged("RootPanel");
@@ -156,13 +156,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
         public override void RemoveChild(ILayoutElement element)
         {
-            Debug.Assert(element == RootPanel && element != null);
+            Debug.Assert(element == RootPanel && element is not null);
             RootPanel = null;
         }
 
         public override void ReplaceChild(ILayoutElement oldElement, ILayoutElement newElement)
         {
-            Debug.Assert(oldElement == RootPanel && oldElement != null);
+            Debug.Assert(oldElement == RootPanel && oldElement is not null);
             RootPanel = newElement as LayoutAnchorablePaneGroup;
         }
 
@@ -170,13 +170,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         {
             get
             {
-                if (RootPanel == null)
+                if (RootPanel is null)
                     return 0;
                 return 1;
             }
         }
 
-        public override bool IsValid => RootPanel != null;
+        public override bool IsValid => RootPanel is not null;
 
         public override void ReadXml(XmlReader reader)
         {
@@ -209,7 +209,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 else
                 {
                     var type = LayoutRoot.FindType(reader.LocalName);
-                    if (type == null)
+                    if (type is null)
                         throw new ArgumentException(
                             "AvalonDock.LayoutAnchorableFloatingWindow doesn't know how to deserialize " +
                             reader.LocalName);
@@ -244,7 +244,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
         private void ComputeVisibility()
         {
-            if (RootPanel != null)
+            if (RootPanel is not null)
                 IsVisible = RootPanel.IsVisible;
             else
                 IsVisible = false;

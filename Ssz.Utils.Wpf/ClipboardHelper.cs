@@ -22,16 +22,16 @@ namespace Ssz.Utils.Wpf
         public static List<string?[]> ParseClipboardData()
         {
             IDataObject dataObj = Clipboard.GetDataObject();
-            if (dataObj == null) return new List<string?[]>();
+            if (dataObj is null) return new List<string?[]>();
 
             object clipboardData = dataObj.GetData(DataFormats.CommaSeparatedValue);
-            if (clipboardData != null)
+            if (clipboardData is not null)
             {
                 string clipboardDataString = GetClipboardDataString(clipboardData);
                 return CsvHelper.ParseCsv(CultureHelper.SystemCultureInfo.TextInfo.ListSeparator, clipboardDataString);
             }
             clipboardData = dataObj.GetData(DataFormats.Text);
-            if (clipboardData != null)
+            if (clipboardData is not null)
             {
                 string clipboardDataString = GetClipboardDataString(clipboardData);
                 return CsvHelper.ParseCsv("\t", clipboardDataString);
@@ -46,7 +46,7 @@ namespace Ssz.Utils.Wpf
         /// <param name="data"></param>
         public static void SetClipboardData(List<string[]> data)
         {
-            if (data == null || data.Count == 0) return;
+            if (data is null || data.Count == 0) return;
 
             var sb1 = new StringBuilder();
             var sb2 = new StringBuilder();
@@ -72,10 +72,10 @@ namespace Ssz.Utils.Wpf
         private static string GetClipboardDataString(object clipboardData)
         {
             var clipboardDataString = clipboardData as string;
-            if (clipboardDataString != null) return clipboardDataString;
+            if (clipboardDataString is not null) return clipboardDataString;
             // cannot convert to a string so try a MemoryStream
             var clipboardDataMemoryStream = clipboardData as MemoryStream;
-            if (clipboardDataMemoryStream != null)
+            if (clipboardDataMemoryStream is not null)
             {
                 var sr = new StreamReader(clipboardDataMemoryStream);
                 return sr.ReadToEnd();

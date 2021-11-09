@@ -91,7 +91,7 @@ namespace Ssz.Utils
 
             foreach (var kvp in nameValueCollection.OrderBy(i => i.Key))
             {
-                if (kvp.Value == null)
+                if (kvp.Value is null)
                 {
                     items.Add(UrlEncode(kvp.Key));
                 }
@@ -110,7 +110,7 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static bool CanGetNameValueCollection(object? obj)
         {
-            if (obj == null) return true;
+            if (obj is null) return true;
 
             PropertyInfo[] props = obj.GetType().GetProperties();
             foreach (PropertyInfo prop in props)
@@ -120,7 +120,7 @@ namespace Ssz.Utils
                 var designerSerializationVisibilityAttribute =
                     prop.GetCustomAttributes(typeof(DesignerSerializationVisibilityAttribute), true)
                         .OfType<DesignerSerializationVisibilityAttribute>().FirstOrDefault();
-                if (designerSerializationVisibilityAttribute != null &&
+                if (designerSerializationVisibilityAttribute is not null &&
                     designerSerializationVisibilityAttribute.Visibility == DesignerSerializationVisibility.Hidden)
                     continue;
 
@@ -129,20 +129,20 @@ namespace Ssz.Utils
 
                 var defaultValueAttribute = prop.GetCustomAttributes(typeof(DefaultValueAttribute), true)
                     .OfType<DefaultValueAttribute>().FirstOrDefault();
-                if (defaultValueAttribute != null)
+                if (defaultValueAttribute is not null)
                 {
                     if (Equals(defaultValueAttribute.Value, propValue))
                         continue;
                 }
 
-                //if (propValue != null)
+                //if (propValue is not null)
                 //{
                 //    if (propType.IsClass)
                 //    {
                 //        //// TODO:
                 //        ValueSerializer valueSerializer =
                 //            ValueSerializer.GetSerializerFor(propType);
-                //        if (valueSerializer == null) return false;
+                //        if (valueSerializer is null) return false;
                 //        if (!valueSerializer.CanConvertToString(propValue, null)) return false;
                 //        return true;
                 //    }
@@ -160,7 +160,7 @@ namespace Ssz.Utils
         {
             var result = new CaseInsensitiveDictionary<string?>();
 
-            if (obj == null) return result;
+            if (obj is null) return result;
 
             PropertyInfo[] props = obj.GetType().GetProperties();
             foreach (PropertyInfo prop in props)
@@ -170,7 +170,7 @@ namespace Ssz.Utils
                 var designerSerializationVisibilityAttribute =
                     prop.GetCustomAttributes(typeof(DesignerSerializationVisibilityAttribute), true)
                         .OfType<DesignerSerializationVisibilityAttribute>().FirstOrDefault();
-                if (designerSerializationVisibilityAttribute != null &&
+                if (designerSerializationVisibilityAttribute is not null &&
                     designerSerializationVisibilityAttribute.Visibility == DesignerSerializationVisibility.Hidden)
                     continue;
 
@@ -178,13 +178,13 @@ namespace Ssz.Utils
 
                 var defaultValueAttribute = prop.GetCustomAttributes(typeof(DefaultValueAttribute), true)
                     .OfType<DefaultValueAttribute>().FirstOrDefault();
-                if (defaultValueAttribute != null)
+                if (defaultValueAttribute is not null)
                 {
                     if (Equals(defaultValueAttribute.Value, propValue))
                         continue;
                 }
 
-                if (propValue == null)
+                if (propValue is null)
                 {
                     result[prop.Name] = null;
                 }
@@ -203,7 +203,7 @@ namespace Ssz.Utils
         /// <param name="nameValueCollection"></param>
         public static void SetNameValueCollection(ref object obj, CaseInsensitiveDictionary<string?>? nameValueCollection)
         {
-            if (nameValueCollection == null) return;
+            if (nameValueCollection is null) return;
             foreach (var kvp in nameValueCollection)
             {
                 ObjectHelper.SetPropertyValue(obj, kvp.Key, kvp.Value);
@@ -343,7 +343,7 @@ namespace Ssz.Utils
                                 else
                 */
                 {
-                    if (_byteBuffer == null)
+                    if (_byteBuffer is null)
                         _byteBuffer = new byte[_bufferSize];
 
                     _byteBuffer[_numBytes] = b;
@@ -370,7 +370,7 @@ namespace Ssz.Utils
             {
                 if (_numBytes > 0)
                 {
-                    if (_byteBuffer == null) throw new InvalidOperationException();
+                    if (_byteBuffer is null) throw new InvalidOperationException();
                     _numChars += Encoding.UTF8.GetChars(_byteBuffer, 0, _numBytes, _charBuffer, _numChars);
                     _numBytes = 0;
                 }

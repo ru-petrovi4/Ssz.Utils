@@ -38,7 +38,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Converters
             var backgroundColor = (Brush) values[0];
             var opacity = (double) values[1];
 
-            if (backgroundColor != null)
+            if (backgroundColor is not null)
                 // Do not override any possible opacity value specifically set by the user.
                 // Only use WindowOpacity value if the user did not set an opacity first.
                 if (backgroundColor.ReadLocalValue(Brush.OpacityProperty) == DependencyProperty.UnsetValue)

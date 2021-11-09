@@ -36,7 +36,7 @@ namespace Ssz.Xi.Client.Internal
         void ICallback.Abort(string contextId, ServerStatus serverStatus, string reason)
         {
             XiContext? context = XiContext.LookUpContext(contextId);
-            if (context != null)
+            if (context is not null)
             {
                 context.ServerContextIsClosing = true;
                 context.NotifyCallbackRecieved();
@@ -72,7 +72,7 @@ namespace Ssz.Xi.Client.Internal
         void ICallback.InformationReport(string contextId, uint clientListId, DataValueArraysWithAlias updatedValues)
         {
             XiContext? context = XiContext.LookUpContext(contextId);
-            if (context != null)
+            if (context is not null)
             {
                 context.NotifyCallbackRecieved();
                 _xiCallbackDoer.BeginInvoke(ct => context.ElementValuesCallback(clientListId, updatedValues));
@@ -97,7 +97,7 @@ namespace Ssz.Xi.Client.Internal
         void ICallback.EventNotification(string contextId, uint clientListId, EventMessage[] eventsArray)
         {
             XiContext? context = XiContext.LookUpContext(contextId);
-            if (context != null)
+            if (context is not null)
             {
                 context.NotifyCallbackRecieved();
                 _xiCallbackDoer.BeginInvoke(ct => context.EventMessagesCallback(clientListId, eventsArray));
@@ -116,7 +116,7 @@ namespace Ssz.Xi.Client.Internal
         void ICallback.PassthroughCallback(string contextId, int invokeId, PassthroughResult passthroughResult)
         {
             XiContext? context = XiContext.LookUpContext(contextId);
-            if (context != null)
+            if (context is not null)
             {
                 context.NotifyCallbackRecieved();
                 _xiCallbackDoer.BeginInvoke(ct => context.PassthroughCallback(invokeId, passthroughResult));

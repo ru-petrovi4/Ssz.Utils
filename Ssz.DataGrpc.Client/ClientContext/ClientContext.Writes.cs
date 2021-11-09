@@ -116,13 +116,13 @@ namespace Ssz.DataGrpc.Client
                         if (reply.ReturnData.Guid != @"" && _incompletePassthroughRepliesCollection.Count > 0)
                         {
                             var beginPassthroughReply = _incompletePassthroughRepliesCollection.TryGetValue(reply.ReturnData.Guid);
-                            if (beginPassthroughReply != null)
+                            if (beginPassthroughReply is not null)
                             {
                                 _incompletePassthroughRepliesCollection.Remove(reply.ReturnData.Guid);
                                 returnDataTemp = beginPassthroughReply.Concat(reply.ReturnData.Data);
                             }
                         }
-                        if (returnDataTemp == null)
+                        if (returnDataTemp is null)
                         {
                             returnDataTemp = reply.ReturnData.Data;
                         }
@@ -171,7 +171,7 @@ namespace Ssz.DataGrpc.Client
                 }
 
                 var passthroughDataToSendFull = new PassthroughData();
-                if (dataToSend != null)
+                if (dataToSend is not null)
                     passthroughDataToSendFull.Data = ByteString.CopyFrom(dataToSend);                
                 foreach (var passthroughDataToSend in passthroughDataToSendFull.SplitForCorrectGrpcMessageSize())
                 {

@@ -54,7 +54,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                 //_windowHandler.Activate += new EventHandler<WindowActivateEventArgs>(WindowActivating);
                 _windowHandler.Attach();
 
-                if (Application.Current != null)
+                if (Application.Current is not null)
                     Application.Current.Exit += Current_Exit;
             }
 
@@ -70,7 +70,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             if (_managers.Count == 0)
                 //InputManager.Current.EnterMenuMode -= new EventHandler(InputManager_EnterMenuMode);
                 //InputManager.Current.LeaveMenuMode -= new EventHandler(InputManager_LeaveMenuMode);
-                if (_windowHandler != null)
+                if (_windowHandler is not null)
                 {
                     _windowHandler.FocusChanged -= WindowFocusChanging;
                     //_windowHandler.Activate -= new EventHandler<WindowActivateEventArgs>(WindowActivating);
@@ -134,7 +134,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         private static void Current_Exit(object sender, ExitEventArgs e)
         {
             Application.Current.Exit -= Current_Exit;
-            if (_windowHandler != null)
+            if (_windowHandler is not null)
             {
                 _windowHandler.FocusChanged -= WindowFocusChanging;
                 //_windowHandler.Activate -= new EventHandler<WindowActivateEventArgs>(WindowActivating);
@@ -146,19 +146,19 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         private static void manager_PreviewGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             var focusedElement = e.NewFocus as Visual;
-            if (focusedElement != null &&
+            if (focusedElement is not null &&
                 !(focusedElement is LayoutAnchorableTabItem || focusedElement is LayoutDocumentTabItem))
                 //Avoid tracking focus for elements like this
             {
                 var parentAnchorable = focusedElement.FindVisualAncestor<LayoutAnchorableControl>();
-                if (parentAnchorable != null)
+                if (parentAnchorable is not null)
                 {
                     _modelFocusedElement[parentAnchorable.Model] = e.NewFocus;
                 }
                 else
                 {
                     var parentDocument = focusedElement.FindVisualAncestor<LayoutDocumentControl>();
-                    if (parentDocument != null) _modelFocusedElement[parentDocument.Model] = e.NewFocus;
+                    if (parentDocument is not null) _modelFocusedElement[parentDocument.Model] = e.NewFocus;
                 }
             }
         }
@@ -170,22 +170,22 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                 var hostContainingFocusedHandle = manager.FindLogicalChildren<HwndHost>()
                     .FirstOrDefault(hw => Win32Helper.IsChild(hw.Handle, e.GotFocusWinHandle));
 
-                if (hostContainingFocusedHandle != null)
+                if (hostContainingFocusedHandle is not null)
                 {
                     var parentAnchorable = hostContainingFocusedHandle.FindVisualAncestor<LayoutAnchorableControl>();
-                    if (parentAnchorable != null)
+                    if (parentAnchorable is not null)
                     {
                         _modelFocusedWindowHandle[parentAnchorable.Model] = e.GotFocusWinHandle;
-                        if (parentAnchorable.Model != null)
+                        if (parentAnchorable.Model is not null)
                             parentAnchorable.Model.IsActive = true;
                     }
                     else
                     {
                         var parentDocument = hostContainingFocusedHandle.FindVisualAncestor<LayoutDocumentControl>();
-                        if (parentDocument != null)
+                        if (parentDocument is not null)
                         {
                             _modelFocusedWindowHandle[parentDocument.Model] = e.GotFocusWinHandle;
-                            if (parentDocument.Model != null)
+                            if (parentDocument.Model is not null)
                                 parentDocument.Model.IsActive = true;
                         }
                     }
@@ -195,15 +195,15 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private static void WindowActivating(object sender, WindowActivateEventArgs e)
         {
-            if (Keyboard.FocusedElement == null &&
-                _lastFocusedElement != null &&
+            if (Keyboard.FocusedElement is null &&
+                _lastFocusedElement is not null &&
                 _lastFocusedElement.IsAlive)
             {
                 var elementToSetFocus = _lastFocusedElement.Target as ILayoutElement;
-                if (elementToSetFocus != null)
+                if (elementToSetFocus is not null)
                 {
                     var manager = elementToSetFocus.Root.Manager;
-                    if (manager == null)
+                    if (manager is null)
                         return;
 
                     IntPtr parentHwnd;
@@ -230,11 +230,11 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private static void InputManager_EnterMenuMode(object sender, EventArgs e)
         {
-            if (Keyboard.FocusedElement == null)
+            if (Keyboard.FocusedElement is null)
                 return;
 
             var lastfocusDepObj = Keyboard.FocusedElement as DependencyObject;
-            if (lastfocusDepObj.FindLogicalAncestor<DockingManager>() == null)
+            if (lastfocusDepObj.FindLogicalAncestor<DockingManager>() is null)
             {
                 _lastFocusedElementBeforeEnterMenuMode = null;
                 return;
@@ -245,11 +245,11 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private static void InputManager_LeaveMenuMode(object sender, EventArgs e)
         {
-            if (_lastFocusedElementBeforeEnterMenuMode != null &&
+            if (_lastFocusedElementBeforeEnterMenuMode is not null &&
                 _lastFocusedElementBeforeEnterMenuMode.IsAlive)
             {
                 var lastFocusedInputElement = _lastFocusedElementBeforeEnterMenuMode.GetValueOrDefault<UIElement>();
-                if (lastFocusedInputElement != null)
+                if (lastFocusedInputElement is not null)
                     if (lastFocusedInputElement != Keyboard.Focus(lastFocusedInputElement))
                         Debug.WriteLine("Unable to activate the element");
             }

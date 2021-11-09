@@ -219,7 +219,7 @@ namespace Xi.Contracts.Data
         public override string ToString()
         {
             string? typeIdString = null;
-            if (LocalId != null)
+            if (LocalId is not null)
             {
                 if (!String.IsNullOrEmpty(SchemaType))
                     typeIdString = SchemaType + ":";

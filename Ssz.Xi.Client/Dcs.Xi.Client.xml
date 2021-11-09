@@ -469,14 +469,14 @@
         </member>
         <member name="M:Ssz.Xi.Client.Api.XiListItemsManager`2.AddItem(System.String,System.Object)">
             <summary>
-                id != null, valueSubscription != null
+                id is not null, valueSubscription is not null
             </summary>
             <param name="id"></param>
             <param name="clientObj"></param>
         </member>
         <member name="M:Ssz.Xi.Client.Api.XiListItemsManager`2.RemoveItem(System.Object)">
             <summary>
-                valueSubscription != null
+                valueSubscription is not null
                 If valueSubscription is not subscribed - does nothing. 
             </summary>
             <param name="clientObj"></param>
@@ -1807,7 +1807,7 @@
         <member name="M:Ssz.Xi.Client.Internal.Context.XiContext.PollDataChanges(Ssz.Xi.Client.Internal.Lists.XiDataList)">
             <summary>
                 <para> Throws or returns changed IXiDataListItems (not null, but possibly zero-lenghth). </para>
-                <para> dataList != null </para>
+                <para> dataList is not null </para>
                 <para>
                     This method is used to poll the endpoint for changes to a specific data list. It is also used as a
                     keep-alive for the poll endpoint by setting the listId parameter to 0. In this case, null is returned
@@ -1843,7 +1843,7 @@
         <member name="M:Ssz.Xi.Client.Internal.Context.XiContext.PollEventChanges(Ssz.Xi.Client.Internal.Lists.XiEventList,Xi.Contracts.Data.FilterSet)">
             <summary>
                 <para> Throws or returns new IXiEventListItems (not null, but possibly zero-lenghth). </para>
-                <para> eventList != null </para>
+                <para> eventList is not null </para>
                 <para>
                     This method is used to poll the endpoint for changes to a specific event list. Event messages are sent when
                     there has been a change to the specified event list. A new alarm or event that has been added to the list, a
@@ -3180,7 +3180,7 @@
         </member>
         <member name="M:Ssz.Xi.Client.Internal.Lists.XiDataList.OnElementValuesCallback(Xi.Contracts.Data.DataValueArraysWithAlias)">
             <summary>
-                result != null.
+                result is not null.
                 This method is invoked as part of the callback processing.  It then invokes
                 or fires the event to notify the Xi client of data updates.
             </summary>
@@ -3189,7 +3189,7 @@
         <member name="M:Ssz.Xi.Client.Internal.Lists.XiDataList.RaiseElementValuesCallbackEvent(System.Collections.Generic.IEnumerable{Ssz.Xi.Client.Api.ListItems.IXiDataListItem},System.Collections.Generic.IEnumerable{Ssz.Utils.DataAccess.ValueStatusTimestamp})">
             <summary>
                 Throws or invokes ElementValuesCallback event.
-                changedListItems != null, changedValues != null
+                changedListItems is not null, changedValues is not null
             </summary>
             <param name="changedListItems"></param>
             <param name="changedValues"></param>
@@ -3201,7 +3201,7 @@
         </member>
         <member name="M:Ssz.Xi.Client.Internal.Lists.XiDataList.UpdateData(Xi.Contracts.Data.DataValueArraysWithAlias,System.Boolean)">
             <summary>
-                If returnChangedListItems == true, result != null. Otherwise result == null.
+                If returnChangedListItems == true, result is not null. Otherwise result is null.
                 This method processes the data value arrays received from the server by locating the data objects in the
                 data list for which values have been received and updating their values. If the notificationData parameter
                 is present (not null), then this method adds the received values to this notification data.
@@ -3270,7 +3270,7 @@
         </member>
         <member name="M:Ssz.Xi.Client.Internal.Lists.XiEventList.EventMessagesCallback(Xi.Contracts.Data.EventMessage[])">
             <summary>
-                <para> result != null </para>
+                <para> result is not null </para>
                 <para>
                     This callback method receives event messages sent by the server that contain both events and alarms. Servers
                     send event messages when there has been a change to its Event List. A new alarm or event that has been added to
@@ -3943,7 +3943,7 @@
         <member name="M:Ssz.Xi.Client.Internal.XiServerInfo.#ctor(Xi.Contracts.Data.ServerEntry,System.Collections.Generic.List{Xi.Contracts.Data.EndpointConfigurationEx},System.String)">
             <summary>
                 This constructor creates an XiEndpointDiscovery instance from a ServerEntry
-                Preconditions: serverEntry != null.
+                Preconditions: serverEntry is not null.
             </summary>
         </member>
         <member name="M:Ssz.Xi.Client.Internal.XiServerInfo.Dispose">
@@ -4229,7 +4229,7 @@
         <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Write(Ssz.Utils.DataAccess.IValueSubscription[],Ssz.Utils.DataAccess.ValueStatusTimestamp[],System.Action{Ssz.Utils.DataAccess.IValueSubscription[]})">
             <summary>        
                 setResultAction(..) is called using сallbackDoer, see Initialize(..).
-                setResultAction(failedValueSubscriptions) is called, failedValueSubscriptions != null.
+                setResultAction(failedValueSubscriptions) is called, failedValueSubscriptions is not null.
                 If connection error, failedValueSubscriptions is all clientObjs.        
             </summary>
         </member>
@@ -7150,39 +7150,16 @@
             </summary>
         </member>
         <member name="T:Xi.Contracts.Data.AlarmMessageData">
-            <summary>
-            This class defines the alarm data that is transferred in Event 
-            Messages that report an alarm.
-            <para>The concepts for alarms and events accessible through 
-            this interface are defined in EEMUA Publication 191 "Alarm 
-            Systems: A Guide to Design, Management and Procurement".
-            See http://www.eemua.org</para>
-            <para>EEMUA Publication 191 generally defines messages to 
-            report alarms and events as "text information presented to 
-            the operator that describes the alarm condition."</para>  
-            <para>The members of this class represent the individual 
-            pieces of alarm information to be included in the text 
-            information that is presented to the operator for alarms.</para>  
-            </summary>
+            <summary> 	/// This class defines the alarm data that is transferred in Event  	/// Messages that report an alarm. 	/// <para>The concepts for alarms and events accessible through  	/// this interface are defined in EEMUA Publication 191 "Alarm  	/// Systems: A Guide to Design, Management and Procurement". 	/// See http://www.eemua.org</para> 	/// <para>EEMUA Publication 191 generally defines messages to  	/// report alarms and events as "text information presented to  	/// the operator that describes the alarm condition."</para>   	/// <para>The members of this class represent the individual  	/// pieces of alarm information to be included in the text  	/// information that is presented to the operator for alarms.</para>   	/// </summary> 
         </member>
         <member name="F:Xi.Contracts.Data.AlarmMessageData.AlarmState">
-            <summary>
-            The current state of the alarm.
-            </summary>
+            <summary> 		/// The current state of the alarm. 		/// </summary> 
         </member>
         <member name="F:Xi.Contracts.Data.AlarmMessageData.AlarmStateChange">
-            <summary>
-            The state change(s) that caused the alarm message to sent.
-            The Xi.Contract.Constants.AlarmStateChangeCodes class defines 
-            the values for this member.
-            </summary>
+            <summary> 		/// The state change(s) that caused the alarm message to sent. 		/// The Xi.Contract.Constants.AlarmStateChangeCodes class defines  		/// the values for this member. 		/// </summary> 
         </member>
         <member name="F:Xi.Contracts.Data.AlarmMessageData.TimeLastActive">
-            <summary>
-            The time that the alarm last transitioned to the active state.  
-            This time is independent of the current state of the alarm.  
-            Null if the alarm has never been active. 
-            </summary>
+            <summary> 		/// The time that the alarm last transitioned to the active state.   		/// This time is independent of the current state of the alarm.   		/// Null if the alarm has never been active.  		/// </summary> 
         </member>
         <member name="T:Xi.Contracts.Data.AlarmState">
             <summary>

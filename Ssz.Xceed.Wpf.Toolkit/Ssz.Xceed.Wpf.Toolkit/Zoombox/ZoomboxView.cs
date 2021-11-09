@@ -262,11 +262,11 @@ namespace Ssz.Xceed.Wpf.Toolkit.Zoombox
 
         public static bool operator ==(ZoomboxView v1, ZoomboxView v2)
         {
-            if ((object) v1 == null)
-                return (object) v2 == null;
+            if ((object) v1 is null)
+                return (object) v2 is null;
 
-            if ((object) v2 == null)
-                return (object) v1 == null;
+            if ((object) v2 is null)
+                return (object) v1 is null;
 
             return v1.Equals(v2);
         }

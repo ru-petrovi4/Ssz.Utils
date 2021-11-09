@@ -66,7 +66,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         {
             base.OnInitialized(e);
 
-            if (_model.RootDocument == null)
+            if (_model.RootDocument is null)
             {
                 InternalClose();
             }
@@ -86,7 +86,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             {
                 case Win32Helper.WM_NCLBUTTONDOWN: //Left button down on title -> start dragging over docking manager
                     if (wParam.ToInt32() == Win32Helper.HT_CAPTION)
-                        if (_model.RootDocument != null)
+                        if (_model.RootDocument is not null)
                             _model.RootDocument.IsActive = true;
                     break;
                 case Win32Helper.WM_NCRBUTTONUP:
@@ -125,13 +125,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private void _model_RootDocumentChanged(object sender, EventArgs e)
         {
-            if (_model.RootDocument == null) InternalClose();
+            if (_model.RootDocument is null) InternalClose();
         }
 
         private bool OpenContextMenu()
         {
             var ctxMenu = _model.Root.Manager.DocumentContextMenu;
-            if (ctxMenu != null && RootDocumentLayoutItem != null)
+            if (ctxMenu is not null && RootDocumentLayoutItem is not null)
             {
                 ctxMenu.PlacementTarget = null;
                 ctxMenu.Placement = PlacementMode.MousePoint;

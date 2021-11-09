@@ -45,7 +45,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 
         internal void Seal()
         {
-            if (_type == null)
+            if (_type is null)
                 throw new InvalidOperationException(
                     string.Format("{0}.Type property must be initialized", typeof(TargetPropertyType)));
 

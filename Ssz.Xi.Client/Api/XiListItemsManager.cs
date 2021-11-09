@@ -20,13 +20,13 @@ namespace Ssz.Xi.Client.Api
         public ILogger? Logger { get; set; }
 
         /// <summary>
-        ///     id != null, valueSubscription != null
+        ///     id is not null, valueSubscription is not null
         /// </summary>
         /// <param name="id"></param>
         /// <param name="clientObj"></param>
         public void AddItem(string id, object clientObj)
         {
-            if (id == null) throw new ArgumentNullException(@"id");
+            if (id is null) throw new ArgumentNullException(@"id");
 
             Logger?.LogDebug("XiListItemsManager.AddItem() " + id); 
 
@@ -42,7 +42,7 @@ namespace Ssz.Xi.Client.Api
         }
 
         /// <summary>
-        ///     valueSubscription != null
+        ///     valueSubscription is not null
         ///     If valueSubscription is not subscribed - does nothing. 
         /// </summary>
         /// <param name="clientObj"></param>
@@ -89,7 +89,7 @@ namespace Ssz.Xi.Client.Api
 
         public IEnumerable<object> GetAllClientObjs()
         {
-            return ClientObjectInfosDictionary.Values.Select(mi => mi.ClientObj).Where(o => o != null).OfType<object>();
+            return ClientObjectInfosDictionary.Values.Select(mi => mi.ClientObj).Where(o => o is not null).OfType<object>();
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace Ssz.Xi.Client.Api
             
             foreach (ClientObjectInfo modelItem in _clientObjectInfosDictionary.Values)
             {
-                if (modelItem.XiListItemWrapper == null)
+                if (modelItem.XiListItemWrapper is null)
                 {
                     var id = modelItem.ElementId;
                     XiListItemWrapper? xiListItemWrapper;
@@ -132,11 +132,11 @@ namespace Ssz.Xi.Client.Api
             foreach (var kvp in _xiListItemWrappersDictionary)
             {
                 XiListItemWrapper xiListItemWrapper = kvp.Value;
-                if (xiListItemWrapper.XiListItem == null && !xiListItemWrapper.ItemDoesNotExist)
+                if (xiListItemWrapper.XiListItem is null && !xiListItemWrapper.ItemDoesNotExist)
                 {
                     xiListItemWrappersToAdd.Add(xiListItemWrapper);
                     TXiListItem? xiListItem = null;
-                    if (XiList != null && !XiList.Disposed)
+                    if (XiList is not null && !XiList.Disposed)
                     {
                         try
                         {
@@ -148,7 +148,7 @@ namespace Ssz.Xi.Client.Api
                         }
                     }
                     else connectionError = true;
-                    if (xiListItem != null)
+                    if (xiListItem is not null)
                     {
                         xiListItem.Obj = xiListItemWrapper;
                         xiListItemWrapper.XiListItem = xiListItem;
@@ -159,7 +159,7 @@ namespace Ssz.Xi.Client.Api
             if (xiListItemWrappersToAdd.Count > 0)
             {
                 IEnumerable<TXiListItem>? notAddedXiListItems = null;
-                if (!connectionError && XiList != null && !XiList.Disposed)
+                if (!connectionError && XiList is not null && !XiList.Disposed)
                 {
                     try
                     {
@@ -172,7 +172,7 @@ namespace Ssz.Xi.Client.Api
                 }
                 else connectionError = true;
 
-                if (notAddedXiListItems == null) // List doesn't exist or exception when calling to server
+                if (notAddedXiListItems is null) // List doesn't exist or exception when calling to server
                 {
                     connectionError = true;
 
@@ -195,7 +195,7 @@ namespace Ssz.Xi.Client.Api
                     foreach (TXiListItem notAddedXiListItem in notAddedXiListItems)
                     {
                         var xiListItemWrapper = notAddedXiListItem.Obj as XiListItemWrapper;
-                        if (xiListItemWrapper == null) throw new InvalidOperationException();
+                        if (xiListItemWrapper is null) throw new InvalidOperationException();
                         xiListItemWrappersToAdd.Remove(xiListItemWrapper);
                         if (!xiListItemWrapper.ItemDoesNotExist)
                         {
@@ -210,7 +210,7 @@ namespace Ssz.Xi.Client.Api
                     }
                     foreach (var xiListItemWrapper in xiListItemWrappersToAdd)
                     {
-                        if (xiListItemWrapper.XiListItem == null)
+                        if (xiListItemWrapper.XiListItem is null)
                         {
                             if (!xiListItemWrapper.ItemDoesNotExist)
                             {
@@ -240,14 +240,14 @@ namespace Ssz.Xi.Client.Api
                 foreach (ClientObjectInfo clientObjectInfo in _clientObjectInfosToRemove)
                 {
                     var xiListItemWrapper = clientObjectInfo.XiListItemWrapper;
-                    if (xiListItemWrapper != null)
+                    if (xiListItemWrapper is not null)
                     {
                         var modelItems = xiListItemWrapper.ClientObjectInfosCollection;
                         modelItems.Remove(clientObjectInfo);
                         clientObjectInfo.XiListItemWrapper = null;
                         /* // Remove Xi Item
                         var xiListItem = xiListItemWrapper.XiListItem;
-                        if (modelItems.Count == 0 && xiListItem != null)
+                        if (modelItems.Count == 0 && xiListItem is not null)
                         {
                             xiListItem.PrepareForRemove();
                             xiListItem.Obj = null;                            
@@ -256,7 +256,7 @@ namespace Ssz.Xi.Client.Api
                     }
                 }
                 /*
-                if (!connectionError && XiList != null && !XiList.Disposed)
+                if (!connectionError && XiList is not null && !XiList.Disposed)
                 {
                     try
                     {

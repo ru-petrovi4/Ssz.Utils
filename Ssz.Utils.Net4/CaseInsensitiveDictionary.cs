@@ -32,7 +32,7 @@ namespace Ssz.Utils
         /// <returns></returns>
         public T TryGetValue(string key)
         {
-            if (key == null) return default(T);
+            if (key is null) return default(T);
             T result;
             TryGetValue(key, out result);
             return result;

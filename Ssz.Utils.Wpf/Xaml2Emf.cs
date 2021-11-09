@@ -35,13 +35,13 @@ namespace Ssz.Utils.Wpf
 
         public static Drawing? GetDrawingFromObj(object? obj)
         {
-            if (obj == null) return null;
+            if (obj is null) return null;
 
             Drawing? drawing = FindDrawing(obj);
-            if (drawing != null) return drawing;
+            if (drawing is not null) return drawing;
 
             var fe = obj as FrameworkElement;
-            if (fe != null)
+            if (fe is not null)
             {
                 RealizeFrameworkElement(fe);
                 drawing = WalkVisual(fe);
@@ -64,13 +64,13 @@ namespace Ssz.Utils.Wpf
         }
 
         /// <summary>
-        ///     drawing != null
+        ///     drawing is not null
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="drawing"></param>
         public static void CreateEmf(string fileName, Drawing drawing)
         {
-            if (drawing == null) throw new ArgumentNullException(@"drawing");
+            if (drawing is null) throw new ArgumentNullException(@"drawing");
 
             Rect bounds = drawing.Bounds;
             if (bounds.Width == 0 || bounds.Height == 0) bounds = new Rect(0, 0, 1, 1);
@@ -107,16 +107,16 @@ namespace Ssz.Utils.Wpf
         private static void InternalMakeDrawingSerializable(Drawing drawing, GeometryValueSerializer gvs)
         {
             var dg = drawing as DrawingGroup;
-            if (dg != null)
+            if (dg is not null)
                 for (int i = 0; i < dg.Children.Count; ++i)
                     InternalMakeDrawingSerializable(dg.Children[i], gvs);
             else
             {
                 var gd = drawing as GeometryDrawing;
-                if (gd != null)
+                if (gd is not null)
                 {
                     var sg = gd.Geometry as StreamGeometry;
-                    if (sg != null && !gvs.CanConvertToString(sg, null))
+                    if (sg is not null && !gvs.CanConvertToString(sg, null))
                         gd.Geometry = PathGeometry.CreateFromGeometry(sg);
                 }
             }
@@ -125,27 +125,27 @@ namespace Ssz.Utils.Wpf
         private static Drawing? FindDrawing(object obj)
         {
             var drawing = obj as Drawing;
-            if (drawing != null) return drawing;
+            if (drawing is not null) return drawing;
             var db = obj as DrawingBrush;
-            if (db != null) return db.Drawing;
+            if (db is not null) return db.Drawing;
             var di = obj as DrawingImage;
-            if (di != null) return di.Drawing;
+            if (di is not null) return di.Drawing;
             var dv = obj as DrawingVisual;
-            if (dv != null) return dv.Drawing;
+            if (dv is not null) return dv.Drawing;
             var rd = obj as ResourceDictionary;
-            if (rd != null)
+            if (rd is not null)
             {
                 foreach (object v in rd.Values)
                 {
                     Drawing? d = FindDrawing(v);
-                    if (d != null)
-                        if (drawing == null)
+                    if (d is not null)
+                        if (drawing is null)
                             drawing = d;
                         else
                             throw new ArgumentException(
                                 "Multiple Drawings found in ResourceDictionary", "xaml");
                 }
-                if (drawing != null) return drawing;
+                if (drawing is not null) return drawing;
             }
             return null;
         }
@@ -162,21 +162,21 @@ namespace Ssz.Utils.Wpf
             Transform? tx = GetTransform(visual);
 
             DrawingGroup? dg = null;
-            if (be == null && cg == null && om == null && gs == null && tx == null && IsZero(op - 1))
+            if (be is null && cg is null && om is null && gs is null && tx is null && IsZero(op - 1))
             {
                 dg = vd ?? new DrawingGroup();
             }
             else
             {
                 dg = new DrawingGroup();
-                if (be != null) dg.BitmapEffect = be;
-                if (bei != null) dg.BitmapEffectInput = bei;
-                if (cg != null) dg.ClipGeometry = cg;
+                if (be is not null) dg.BitmapEffect = be;
+                if (bei is not null) dg.BitmapEffectInput = bei;
+                if (cg is not null) dg.ClipGeometry = cg;
                 if (!IsZero(op - 1)) dg.Opacity = op;
-                if (om != null) dg.OpacityMask = om;
-                if (gs != null) dg.GuidelineSet = gs;
-                if (tx != null) dg.Transform = tx;
-                if (vd != null) dg.Children.Add(vd);
+                if (om is not null) dg.OpacityMask = om;
+                if (gs is not null) dg.GuidelineSet = gs;
+                if (tx is not null) dg.Transform = tx;
+                if (vd is not null) dg.Children.Add(vd);
             }
 
             int c = VisualTreeHelper.GetChildrenCount(visual);
@@ -188,10 +188,10 @@ namespace Ssz.Utils.Wpf
         {
             DoubleCollection gx = VisualTreeHelper.GetXSnappingGuidelines(visual);
             DoubleCollection gy = VisualTreeHelper.GetYSnappingGuidelines(visual);
-            if (gx == null && gy == null) return null;
+            if (gx is null && gy is null) return null;
             var gs = new GuidelineSet();
-            if (gx != null) gs.GuidelinesX = gx;
-            if (gy != null) gs.GuidelinesY = gy;
+            if (gx is not null) gs.GuidelinesX = gx;
+            if (gy is not null) gs.GuidelinesY = gy;
             return gs;
         }
 
@@ -219,14 +219,14 @@ namespace Ssz.Utils.Wpf
 
         private static bool IsIdentity(Transform t)
         {
-            return t == null || t.Value.IsIdentity;
+            return t is null || t.Value.IsIdentity;
         }
 
         private static Visual GetChild(Visual visual, int index)
         {
             DependencyObject o = VisualTreeHelper.GetChild(visual, index);
             var v = o as Visual;
-            if (v == null) throw new NotImplementedException("Visual3D not implemented");
+            if (v is null) throw new NotImplementedException("Visual3D not implemented");
             return v;
         }
 
@@ -261,9 +261,9 @@ namespace Ssz.Utils.Wpf
         {
             d2.GraphicsContainer gc = graphics.BeginContainer();
             Xaml2Emf.SetGraphicsQuality(graphics);
-            if (drawing.Transform != null && !drawing.Transform.Value.IsIdentity)
+            if (drawing.Transform is not null && !drawing.Transform.Value.IsIdentity)
                 graphics.MultiplyTransform(drawing.Transform.Value.ToGdiPlus(), d2.MatrixOrder.Prepend);
-            if (drawing.ClipGeometry != null)
+            if (drawing.ClipGeometry is not null)
                 graphics.Clip = new d.Region(drawing.ClipGeometry.ToGdiPlus());
             if (!Xaml2Emf.IsZero(drawing.Opacity - 1) && drawing.Children.Count > 1)
             {
@@ -286,17 +286,17 @@ namespace Ssz.Utils.Wpf
             }
             foreach (Drawing d in drawing.Children) d.RenderTo(graphics, opacity*drawing.Opacity);
             graphics.EndContainer(gc);
-            if (drawing.OpacityMask != null) Xaml2Emf.Logger?.LogWarning("DrawingGroup OpacityMask ignored.");
-            if (drawing.BitmapEffect != null) Xaml2Emf.Logger?.LogWarning("DrawingGroup BitmapEffect ignored.");
-            if (drawing.GuidelineSet != null) Xaml2Emf.Logger?.LogWarning("DrawingGroup GuidelineSet ignored.");
+            if (drawing.OpacityMask is not null) Xaml2Emf.Logger?.LogWarning("DrawingGroup OpacityMask ignored.");
+            if (drawing.BitmapEffect is not null) Xaml2Emf.Logger?.LogWarning("DrawingGroup BitmapEffect ignored.");
+            if (drawing.GuidelineSet is not null) Xaml2Emf.Logger?.LogWarning("DrawingGroup GuidelineSet ignored.");
         }
 
         private static void RenderTo(this GeometryDrawing drawing, d.Graphics graphics, double opacity)
         {
-            if (drawing.Geometry == null || drawing.Geometry.IsEmpty()) return;
+            if (drawing.Geometry is null || drawing.Geometry.IsEmpty()) return;
             var path = drawing.Geometry.ToGdiPlus();
             Brush brush = drawing.Brush;
-            if (brush != null)
+            if (brush is not null)
             {
                 if (!Xaml2Emf.IsZero(opacity - 1))
                 {
@@ -306,7 +306,7 @@ namespace Ssz.Utils.Wpf
                 graphics.FillPath(brush.ToGdiPlus(drawing.Geometry.Bounds), path);
             }
             Pen pen = drawing.Pen;
-            if (pen != null)
+            if (pen is not null)
             {
                 if (!Xaml2Emf.IsZero(opacity - 1))
                 {
@@ -321,7 +321,7 @@ namespace Ssz.Utils.Wpf
         {
             Geometry geo = drawing.GlyphRun.BuildGeometry();
             Brush brush = drawing.ForegroundBrush;
-            if (geo != null && brush != null)
+            if (geo is not null && brush is not null)
             {
                 if (!Xaml2Emf.IsZero(opacity - 1))
                 {
@@ -335,7 +335,7 @@ namespace Ssz.Utils.Wpf
         private static void RenderTo(this ImageDrawing drawing, d.Graphics graphics, double opacity)
         {
             d.Image? image = drawing.ImageSource.ToGdiPlus();
-            if (image != null)
+            if (image is not null)
             {
                 var ia = new di.ImageAttributes();
                 ia.SetColorMatrix(new di.ColorMatrix {Matrix33 = (float) opacity});
@@ -364,7 +364,7 @@ namespace Ssz.Utils.Wpf
         {
             var scb = pen.Brush as SolidColorBrush;
             d.Pen p;
-            if (scb != null)
+            if (scb is not null)
                 p = new d.Pen(scb.Color.ToGdiPlus(scb.Opacity), (float) pen.Thickness);
             else
                 p = new d.Pen(pen.Brush.ToGdiPlus(bounds), (float) pen.Thickness);
@@ -567,9 +567,9 @@ namespace Ssz.Utils.Wpf
         public static d.Brush ToGdiPlus(this LinearGradientBrush brush, Rect bounds)
         {
             d.Brush? db = CheckDegenerate(brush);
-            if (db != null) return db;
+            if (db is not null) return db;
             var bt = new BrushTransform(brush, bounds);
-            if (bt.DegenerateBrush != null) return bt.DegenerateBrush;
+            if (bt.DegenerateBrush is not null) return bt.DegenerateBrush;
 
             Point start = brush.StartPoint;
             Point end = brush.EndPoint;
@@ -604,9 +604,9 @@ namespace Ssz.Utils.Wpf
         public static d.Brush ToGdiPlus(this RadialGradientBrush brush, Rect bounds)
         {
             d.Brush? db = CheckDegenerate(brush);
-            if (db != null) return db;
+            if (db is not null) return db;
             var bt = new BrushTransform(brush, bounds);
-            if (bt.DegenerateBrush != null) return bt.DegenerateBrush;
+            if (bt.DegenerateBrush is not null) return bt.DegenerateBrush;
 
             Point center = brush.Center;
             Point focus = brush.GradientOrigin;
@@ -660,7 +660,7 @@ namespace Ssz.Utils.Wpf
         {
             ImageSource img = brush.ImageSource;
             var bt = new BrushTransform(brush, bounds);
-            if (bt.DegenerateBrush != null) return bt.DegenerateBrush;
+            if (bt.DegenerateBrush is not null) return bt.DegenerateBrush;
 
             Rect viewbox = brush.Viewbox;
             if (brush.ViewboxUnits == BrushMappingMode.RelativeToBoundingBox)
@@ -672,7 +672,7 @@ namespace Ssz.Utils.Wpf
             var ia = new di.ImageAttributes();
             ia.SetColorMatrix(new di.ColorMatrix {Matrix33 = (float) brush.Opacity});
             var i = img.ToGdiPlus();
-            if (i == null) throw new InvalidOperationException();
+            if (i is null) throw new InvalidOperationException();
             var b = new d.TextureBrush(i, viewbox.ToGdiPlus(), ia);
             b.WrapMode = brush.TileMode.ToGdiPlus();
 
@@ -784,7 +784,7 @@ namespace Ssz.Utils.Wpf
                     lastPoint = ps.AddToPath(lastPoint, path);
                 if (pf.IsClosed) path.CloseFigure();
             }
-            if (pg.Transform != null && !pg.Transform.Value.IsIdentity)
+            if (pg.Transform is not null && !pg.Transform.Value.IsIdentity)
                 path.Transform(pg.Transform.Value.ToGdiPlus());
             return path;
         }

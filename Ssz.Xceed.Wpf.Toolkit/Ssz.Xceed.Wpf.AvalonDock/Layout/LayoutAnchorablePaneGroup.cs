@@ -33,7 +33,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         private void UpdateParentVisibility()
         {
             var parentPane = Parent as ILayoutElementWithVisibility;
-            if (parentPane != null)
+            if (parentPane is not null)
                 parentPane.ComputeVisibility();
         }
 

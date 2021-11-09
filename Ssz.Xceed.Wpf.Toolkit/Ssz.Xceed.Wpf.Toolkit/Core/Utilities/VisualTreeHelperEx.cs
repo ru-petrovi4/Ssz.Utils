@@ -24,7 +24,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
     {
         public static DependencyObject FindAncestorByType(DependencyObject element, Type type, bool specificTypeOnly)
         {
-            if (element == null)
+            if (element is null)
                 return null;
 
             if (specificTypeOnly
@@ -37,7 +37,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
 
         public static T FindAncestorByType<T>(DependencyObject depObj) where T : DependencyObject
         {
-            if (depObj == null) return default;
+            if (depObj is null) return default;
             if (depObj is T) return (T) depObj;
 
             var parent = default(T);
@@ -49,7 +49,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
 
         public static Visual FindDescendantByName(Visual element, string name)
         {
-            if (element != null && element is FrameworkElement && (element as FrameworkElement).Name == name)
+            if (element is not null && element is FrameworkElement && (element as FrameworkElement).Name == name)
                 return element;
 
             Visual foundElement = null;
@@ -60,7 +60,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
             {
                 var visual = VisualTreeHelper.GetChild(element, i) as Visual;
                 foundElement = FindDescendantByName(visual, name);
-                if (foundElement != null)
+                if (foundElement is not null)
                     break;
             }
 
@@ -74,7 +74,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
 
         public static Visual FindDescendantByType(Visual element, Type type, bool specificTypeOnly)
         {
-            if (element == null)
+            if (element is null)
                 return null;
 
             if (specificTypeOnly
@@ -90,7 +90,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
             {
                 var visual = VisualTreeHelper.GetChild(element, i) as Visual;
                 foundElement = FindDescendantByType(visual, type, specificTypeOnly);
-                if (foundElement != null)
+                if (foundElement is not null)
                     break;
             }
 
@@ -107,7 +107,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
         public static Visual FindDescendantWithPropertyValue(Visual element,
             DependencyProperty dp, object value)
         {
-            if (element == null)
+            if (element is null)
                 return null;
 
             if (element.GetValue(dp).Equals(value))
@@ -121,7 +121,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
             {
                 var visual = VisualTreeHelper.GetChild(element, i) as Visual;
                 foundElement = FindDescendantWithPropertyValue(visual, dp, value);
-                if (foundElement != null)
+                if (foundElement is not null)
                     break;
             }
 

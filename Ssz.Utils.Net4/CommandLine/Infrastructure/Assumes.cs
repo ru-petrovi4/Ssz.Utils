@@ -39,7 +39,7 @@ namespace Ssz.Utils.CommandLine.Infrastructure
         public static void NotNull<T>(T value, string paramName)
             where T : class
         {
-            if (value == null)
+            if (value is null)
             {
                 throw new ArgumentNullException(paramName);
             }
@@ -48,7 +48,7 @@ namespace Ssz.Utils.CommandLine.Infrastructure
         public static void NotNull<T>(T value, string paramName, string message)
             where T : class
         {
-            if (value == null)
+            if (value is null)
             {
                 throw new ArgumentNullException(paramName, message);
             }

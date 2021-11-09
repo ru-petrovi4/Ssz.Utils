@@ -42,12 +42,12 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
             _contentPresenter = GetTemplateChild(PART_ContentPresenter) as ContentPresenter;
 
-            if (_popup != null)
+            if (_popup is not null)
                 _popup.Opened -= Popup_Opened;
 
             _popup = GetTemplateChild(PART_Popup) as Popup;
 
-            if (_popup != null)
+            if (_popup is not null)
                 _popup.Opened += Popup_Opened;
         }
 
@@ -85,12 +85,12 @@ namespace Ssz.Xceed.Wpf.Toolkit
             get => _button;
             set
             {
-                if (_button != null)
+                if (_button is not null)
                     _button.Click -= DropDownButton_Click;
 
                 _button = value;
 
-                if (_button != null)
+                if (_button is not null)
                     _button.Click += DropDownButton_Click;
             }
         }
@@ -110,7 +110,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnDropDownContentChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var dropDownButton = o as DropDownButton;
-            if (dropDownButton != null)
+            if (dropDownButton is not null)
                 dropDownButton.OnDropDownContentChanged(e.OldValue, e.NewValue);
         }
 
@@ -135,7 +135,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnIsOpenChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var dropDownButton = o as DropDownButton;
-            if (dropDownButton != null)
+            if (dropDownButton is not null)
                 dropDownButton.OnIsOpenChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 
@@ -228,7 +228,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private void Popup_Opened(object sender, EventArgs e)
         {
             // Set the focus on the content of the ContentPresenter.
-            if (_contentPresenter != null)
+            if (_contentPresenter is not null)
                 _contentPresenter.MoveFocus(new TraversalRequest(FocusNavigationDirection.First));
         }
 
@@ -238,12 +238,12 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void CanExecuteChanged()
         {
-            if (Command != null)
+            if (Command is not null)
             {
                 var command = Command as RoutedCommand;
 
                 // If a RoutedCommand.
-                if (command != null)
+                if (command is not null)
                     IsEnabled = command.CanExecute(CommandParameter, CommandTarget) ? true : false;
                 // If a not RoutedCommand.
                 else
@@ -284,11 +284,11 @@ namespace Ssz.Xceed.Wpf.Toolkit
         /// </summary>
         private void RaiseCommand()
         {
-            if (Command != null)
+            if (Command is not null)
             {
                 var routedCommand = Command as RoutedCommand;
 
-                if (routedCommand == null)
+                if (routedCommand is null)
                     Command.Execute(CommandParameter);
                 else
                     routedCommand.Execute(CommandParameter, CommandTarget);
@@ -315,7 +315,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             EventHandler handler = CanExecuteChanged;
             canExecuteChangedHandler = handler;
-            if (newCommand != null)
+            if (newCommand is not null)
                 newCommand.CanExecuteChanged += canExecuteChangedHandler;
         }
 
@@ -341,14 +341,14 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var dropDownButton = d as DropDownButton;
-            if (dropDownButton != null)
+            if (dropDownButton is not null)
                 dropDownButton.OnCommandChanged((ICommand) e.OldValue, (ICommand) e.NewValue);
         }
 
         protected virtual void OnCommandChanged(ICommand oldValue, ICommand newValue)
         {
             // If old command is not null, then we need to remove the handlers.
-            if (oldValue != null)
+            if (oldValue is not null)
                 UnhookCommand(oldValue, newValue);
 
             HookUpCommand(oldValue, newValue);

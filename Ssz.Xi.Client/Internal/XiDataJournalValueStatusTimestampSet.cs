@@ -200,16 +200,16 @@ namespace Ssz.Xi.Client.Internal
         /// <param name="journalDataValues"> The new values used to update the value set. </param>
         internal void UpdateValueSet(JournalDataValues journalDataValues)
         {
-            if (journalDataValues.HistoricalValues == null) return;
+            if (journalDataValues.HistoricalValues is null) return;
 
             ResultCode = journalDataValues.ResultCode;
             StartTime = journalDataValues.StartTime;
             EndTime = journalDataValues.EndTime;
             _xiValueStatusTimestampsList.Clear();
 
-            if (journalDataValues.HistoricalValues.DoubleStatusCodes != null &&
-                journalDataValues.HistoricalValues.DoubleValues != null &&
-                journalDataValues.HistoricalValues.DoubleTimeStamps != null)
+            if (journalDataValues.HistoricalValues.DoubleStatusCodes is not null &&
+                journalDataValues.HistoricalValues.DoubleValues is not null &&
+                journalDataValues.HistoricalValues.DoubleTimeStamps is not null)
             {
                 for (int idx = 0; idx < journalDataValues.HistoricalValues.DoubleStatusCodes.Length; idx++)
                 {
@@ -222,9 +222,9 @@ namespace Ssz.Xi.Client.Internal
                     _xiValueStatusTimestampsList.Add(xiValueStatusTimestamp);
                 }
             }
-            if (journalDataValues.HistoricalValues.UintStatusCodes != null &&
-                journalDataValues.HistoricalValues.UintValues != null &&
-                journalDataValues.HistoricalValues.UintTimeStamps != null)
+            if (journalDataValues.HistoricalValues.UintStatusCodes is not null &&
+                journalDataValues.HistoricalValues.UintValues is not null &&
+                journalDataValues.HistoricalValues.UintTimeStamps is not null)
             {
                 for (int idx = 0; idx < journalDataValues.HistoricalValues.UintStatusCodes.Length; idx++)
                 {
@@ -237,9 +237,9 @@ namespace Ssz.Xi.Client.Internal
                     _xiValueStatusTimestampsList.Add(xiValueStatusTimestamp);
                 }
             }
-            if (journalDataValues.HistoricalValues.ObjectStatusCodes != null &&
-                journalDataValues.HistoricalValues.ObjectValues != null &&
-                journalDataValues.HistoricalValues.ObjectTimeStamps != null)
+            if (journalDataValues.HistoricalValues.ObjectStatusCodes is not null &&
+                journalDataValues.HistoricalValues.ObjectValues is not null &&
+                journalDataValues.HistoricalValues.ObjectTimeStamps is not null)
             {
                 for (int idx = 0; idx < journalDataValues.HistoricalValues.ObjectStatusCodes.Length; idx++)
                 {

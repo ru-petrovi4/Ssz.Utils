@@ -165,7 +165,7 @@ namespace Ssz.DataGrpc.Client
             private set
             {
                 _serverContextInfo = value;
-                if (_serverContextInfo != null && _serverContextInfo.State == State.Aborting)
+                if (_serverContextInfo is not null && _serverContextInfo.State == State.Aborting)
                 {
                     _serverContextIsOperational = false;
                     _pendingContextNotificationData = new ClientContextNotificationData(ClientContextNotificationType.Shutdown,
@@ -209,7 +209,7 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         public void ProcessPendingContextNotificationData()
         {
-            if (_pendingContextNotificationData != null)
+            if (_pendingContextNotificationData is not null)
             {
                 ContextNotifyEvent(this, _pendingContextNotificationData);
                 _pendingContextNotificationData = null;

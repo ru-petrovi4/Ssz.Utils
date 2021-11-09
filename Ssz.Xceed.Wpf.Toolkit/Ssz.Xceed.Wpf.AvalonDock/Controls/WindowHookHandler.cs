@@ -81,7 +81,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         {
             if (code == Win32Helper.HCBT_SETFOCUS)
             {
-                if (FocusChanged != null)
+                if (FocusChanged is not null)
                     FocusChanged(this, new FocusChangeEventArgs(wParam, lParam));
             }
             else if (code == Win32Helper.HCBT_ACTIVATE)
@@ -89,7 +89,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                 if (_insideActivateEvent.CanEnter)
                     using (_insideActivateEvent.Enter())
                     {
-                        //if (Activate != null)
+                        //if (Activate is not null)
                         //    Activate(this, new WindowActivateEventArgs(wParam));
                     }
             }

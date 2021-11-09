@@ -32,7 +32,7 @@ namespace System.Linq.Dynamic.Core
 
         public static object? GetDynamicMember(object value, string name, bool ignoreCase)
         {
-            if (value == null)
+            if (value is null)
             {
                 throw new InvalidOperationException();
             }
@@ -55,7 +55,7 @@ namespace System.Linq.Dynamic.Core
 
             var type = value.GetType();
             var property = type.GetProperty(name, flags);
-            if (property == null)
+            if (property is null)
             {
                 throw new InvalidOperationException($"Unable to find property '{name}' on type '{type}'.");
             }

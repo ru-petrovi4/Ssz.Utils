@@ -39,14 +39,14 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
             PropertyChangedEventHandler handler,
             Expression<Func<TMember>> expression)
         {
-            if (sender == null)
+            if (sender is null)
                 throw new ArgumentNullException("sender");
 
-            if (expression == null)
+            if (expression is null)
                 throw new ArgumentNullException("expression");
 
             var body = expression.Body as MemberExpression;
-            if (body == null)
+            if (body is null)
                 throw new ArgumentException("The expression must target a property or field.", "expression");
 
             var propertyName = GetPropertyName(body, sender.GetType());
@@ -57,10 +57,10 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
         public static void Notify(this INotifyPropertyChanged sender, PropertyChangedEventHandler handler,
             string propertyName)
         {
-            if (sender == null)
+            if (sender is null)
                 throw new ArgumentNullException("sender");
 
-            if (propertyName == null)
+            if (propertyName is null)
                 throw new ArgumentNullException("propertyName");
 
             ReflectionHelper.ValidatePropertyName(sender, propertyName);
@@ -71,7 +71,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
         private static void NotifyCore(INotifyPropertyChanged sender, PropertyChangedEventHandler handler,
             string propertyName)
         {
-            if (handler != null) handler(sender, new PropertyChangedEventArgs(propertyName));
+            if (handler is not null) handler(sender, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion
@@ -94,7 +94,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
             bool targetPropertyOnly)
         {
             var body = expression.Body as MemberExpression;
-            if (body == null)
+            if (body is null)
                 throw new ArgumentException("The expression must target a property or field.", "expression");
 
             return PropertyChanged(body, typeof(TOwner), e, targetPropertyOnly);
@@ -106,7 +106,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
             bool targetPropertyOnly)
         {
             var body = expression.Body as MemberExpression;
-            if (body == null)
+            if (body is null)
                 throw new ArgumentException("The expression must target a property or field.", "expression");
 
             return PropertyChanged(body, typeof(TOwner), e, targetPropertyOnly);

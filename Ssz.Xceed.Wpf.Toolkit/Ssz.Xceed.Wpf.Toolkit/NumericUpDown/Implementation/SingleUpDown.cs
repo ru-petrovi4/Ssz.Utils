@@ -91,7 +91,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         protected override void SetValidSpinDirection()
         {
-            if (Value.HasValue && float.IsInfinity(Value.Value) && Spinner != null)
+            if (Value.HasValue && float.IsInfinity(Value.Value) && Spinner is not null)
                 Spinner.ValidSpinDirection = ValidSpinDirections.None;
             else
                 base.SetValidSpinDirection();
@@ -101,7 +101,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             var result = base.ConvertTextToValue(text);
 
-            if (result != null)
+            if (result is not null)
             {
                 if (float.IsNaN(result.Value))
                     TestInputSpecialValue(AllowInputSpecialValues, AllowedSpecialValues.NaN);

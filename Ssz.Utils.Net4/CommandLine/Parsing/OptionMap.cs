@@ -71,7 +71,7 @@ namespace Ssz.Utils.CommandLine.Parsing
         {
             IList<Pair<PropertyInfo, BaseOptionAttribute>> list =
                 ReflectionHelper.RetrievePropertyList<BaseOptionAttribute>(target);
-            if (list == null)
+            if (list is null)
             {
                 return null;
             }
@@ -116,7 +116,7 @@ namespace Ssz.Utils.CommandLine.Parsing
                                          verb.Left.PropertyType.GetConstructor(Type.EmptyTypes) != null
                                  };
 
-                if (!optionInfo.HasParameterLessCtor && verb.Left.GetValue(target, null) == null)
+                if (!optionInfo.HasParameterLessCtor && verb.Left.GetValue(target, null) is null)
                 {
                     throw new ParserException("Type {0} must have a parameterless constructor or" +
                                               " be already initialized to be used as a verb command.".FormatInvariant(
@@ -201,13 +201,13 @@ namespace Ssz.Utils.CommandLine.Parsing
             PropertyInfo property = list[0].Left;
 
             // This method can be called when parser state is still not intialized
-            if (property.GetValue(options, null) == null)
+            if (property.GetValue(options, null) is null)
             {
                 property.SetValue(options, new ParserState(), null);
             }
 
             var parserState = (IParserState) property.GetValue(options, null);
-            if (parserState == null)
+            if (parserState is null)
             {
                 return;
             }

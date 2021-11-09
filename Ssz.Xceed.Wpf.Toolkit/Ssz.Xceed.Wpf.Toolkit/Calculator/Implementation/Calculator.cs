@@ -148,7 +148,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnDisplayTextChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var calculator = o as Calculator;
-            if (calculator != null)
+            if (calculator is not null)
                 calculator.OnDisplayTextChanged((string) e.OldValue, (string) e.NewValue);
         }
 
@@ -201,7 +201,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnValueChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var calculator = o as Calculator;
-            if (calculator != null)
+            if (calculator is not null)
                 calculator.OnValueChanged((decimal?) e.OldValue, (decimal?) e.NewValue);
         }
 
@@ -276,7 +276,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             if (_timers.ContainsValue(timer))
             {
                 var button = _timers.Where(x => x.Value == timer).Select(x => x.Key).FirstOrDefault();
-                if (button != null)
+                if (button is not null)
                 {
                     VisualStateManager.GoToState(button, button.IsMouseOver ? "MouseOver" : "Normal", true);
                     _timers.Remove(button);
@@ -504,7 +504,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private void SimulateCalculatorButtonClick(CalculatorButtonType buttonType)
         {
             var button = CalculatorUtilities.FindButtonByCalculatorButtonType(_buttonPanel, buttonType);
-            if (button != null)
+            if (button is not null)
             {
                 VisualStateManager.GoToState(button, "Pressed", true);
                 DispatcherTimer timer;

@@ -47,7 +47,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core
         private void UpdateLocation()
         {
             var adornerLayer = Parent as AdornerLayer;
-            if (adornerLayer != null)
+            if (adornerLayer is not null)
                 adornerLayer.Update(AdornedElement);
         }
 
@@ -76,7 +76,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core
                 if (value == _child)
                     return;
 
-                if (_child != null)
+                if (_child is not null)
                 {
                     RemoveLogicalChild(_child);
                     RemoveVisualChild(_child);
@@ -84,7 +84,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core
 
                 _child = value;
 
-                if (_child != null)
+                if (_child is not null)
                 {
                     AddLogicalChild(_child);
                     AddVisualChild(_child);
@@ -170,7 +170,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core
         /// <returns></returns>
         protected override Size MeasureOverride(Size constraint)
         {
-            if (_child == null)
+            if (_child is null)
                 return base.MeasureOverride(constraint);
 
             _child.Measure(constraint);
@@ -184,7 +184,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core
         /// <returns></returns>
         protected override Size ArrangeOverride(Size finalSize)
         {
-            if (_child == null)
+            if (_child is null)
                 return base.ArrangeOverride(finalSize);
 
             _child.Arrange(new Rect(finalSize));
@@ -199,7 +199,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core
             get
             {
                 var list = new ArrayList();
-                if (_child != null)
+                if (_child is not null)
                     list.Add(_child);
                 return list.GetEnumerator();
             }
@@ -218,7 +218,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core
         /// <summary>
         ///     Override.
         /// </summary>
-        protected override int VisualChildrenCount => _child == null ? 0 : 1;
+        protected override int VisualChildrenCount => _child is null ? 0 : 1;
 
         #endregion // Protected Overrides
     }

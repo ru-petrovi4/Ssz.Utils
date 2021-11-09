@@ -22,7 +22,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
     {
         protected sealed override FrameworkElement GenerateEditingElement(PropertyItemBase propertyItem)
         {
-            return EditingTemplate != null
+            return EditingTemplate is not null
                 ? EditingTemplate.LoadContent() as FrameworkElement
                 : null;
         }

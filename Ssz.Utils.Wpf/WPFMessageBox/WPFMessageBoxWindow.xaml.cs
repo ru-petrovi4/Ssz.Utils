@@ -72,7 +72,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
             // removes the application icon from the window top left corner
             // this is different than just hiding it
             WindowHelper.RemoveIcon(this);
-            if (_viewModel == null) throw new InvalidOperationException();
+            if (_viewModel is null) throw new InvalidOperationException();
             switch (_viewModel.Options)
             {
                 case MessageBoxOptions.None:
@@ -103,7 +103,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
-            if (_viewModel == null) throw new InvalidOperationException();
+            if (_viewModel is null) throw new InvalidOperationException();
             _viewModel.CloseCommand.Execute(null);
         }
 
@@ -160,7 +160,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
         {
             if (e.Key == Key.Escape)
             {
-                if (_viewModel == null) throw new InvalidOperationException();
+                if (_viewModel is null) throw new InvalidOperationException();
                 _viewModel.EscapeCommand.Execute(null);
             }
         }

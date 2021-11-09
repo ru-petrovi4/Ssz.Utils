@@ -34,7 +34,7 @@ namespace Ssz.Xi.Client.Api
                 if (ct.IsCancellationRequested) return;                
                 if (!XiItemsMustBeAddedOrRemoved) return;               
 
-                bool firstTimeDataConnection = (XiList == null);
+                bool firstTimeDataConnection = (XiList is null);
 
                 if (firstTimeDataConnection)
                 {
@@ -52,7 +52,7 @@ namespace Ssz.Xi.Client.Api
 
                 try
                 {
-                    if (!connectionError && XiList != null && !XiList.Disposed)
+                    if (!connectionError && XiList is not null && !XiList.Disposed)
                     {
                         if (firstTimeDataConnection)
                         {
@@ -66,11 +66,11 @@ namespace Ssz.Xi.Client.Api
                                     foreach (IXiDataListItem xiDataListItem in items)
                                     {
                                         var o = xiDataListItem.Obj as XiListItemWrapper;
-                                        if (o == null) throw new InvalidOperationException();
+                                        if (o is null) throw new InvalidOperationException();
                                         foreach (var modelItem in o.ClientObjectInfosCollection)
                                         {
                                             modelItem.ForceNotifyClientObj = false;
-                                            if (modelItem.ClientObj != null)
+                                            if (modelItem.ClientObj is not null)
                                             {
                                                 changedClientObjs.Add(modelItem.ClientObj);
                                                 changedValues.Add(values[i]);
@@ -80,7 +80,7 @@ namespace Ssz.Xi.Client.Api
                                     }
                                     if (ct.IsCancellationRequested) return;
                                     Logger?.LogDebug("XiList.ElementValuesCallback");
-                                    if (сallbackDoer != null)
+                                    if (сallbackDoer is not null)
                                     {
                                         try
                                         {
@@ -150,14 +150,14 @@ namespace Ssz.Xi.Client.Api
                             if (modelItem.ForceNotifyClientObj)
                             {
                                 modelItem.ForceNotifyClientObj = false;
-                                if (modelItem.ClientObj != null)
+                                if (modelItem.ClientObj is not null)
                                 {
                                     if (xiListItemWrapper.ItemDoesNotExist)
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
                                         changedValues.Add(new ValueStatusTimestamp(new Any(), ValueStatusCode.ItemDoesNotExist, utcNow));
                                     }
-                                    else if (xiListItemWrapper.XiListItem != null)
+                                    else if (xiListItemWrapper.XiListItem is not null)
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
                                         changedValues.Add(xiListItemWrapper.XiListItem.ValueStatusTimestamp);
@@ -174,7 +174,7 @@ namespace Ssz.Xi.Client.Api
                     if (changedClientObjs.Count > 0)
                     {
                         if (ct.IsCancellationRequested) return;
-                        if (сallbackDoer != null)
+                        if (сallbackDoer is not null)
                         {
                             try
                             {
@@ -202,7 +202,7 @@ namespace Ssz.Xi.Client.Api
         /// </summary>
         public object[]? PollChanges()
         {
-            if (XiList == null || XiList.Disposed) return null;
+            if (XiList is null || XiList.Disposed) return null;
             if (XiList.Pollable)
             {
                 try
@@ -212,10 +212,10 @@ namespace Ssz.Xi.Client.Api
                     foreach (IXiDataListItem xiDataListItem in changedXiDataListItems)
                     {
                         var o = xiDataListItem.Obj as XiListItemWrapper;
-                        if (o == null) throw new InvalidOperationException();
+                        if (o is null) throw new InvalidOperationException();
                         foreach (var modelItem in o.ClientObjectInfosCollection)
                         {                            
-                            if (modelItem.ClientObj != null)
+                            if (modelItem.ClientObj is not null)
                             {
                                 changedClientObjs.Add(modelItem.ClientObj);                                
                             }
@@ -236,7 +236,7 @@ namespace Ssz.Xi.Client.Api
         /// </summary>
         public void PollChangesIfNotCallbackable()
         {
-            if (XiList == null || XiList.Disposed) return;
+            if (XiList is null || XiList.Disposed) return;
             if (XiList.Pollable && !XiList.Callbackable)
             {
                 try
@@ -258,7 +258,7 @@ namespace Ssz.Xi.Client.Api
         /// <returns></returns>
         public object[] Write(object[] clientObjs, ValueStatusTimestamp[] valueStatusTimestamps)
         {
-            if (XiList == null || XiList.Disposed) return clientObjs;
+            if (XiList is null || XiList.Disposed) return clientObjs;
 
             int i = -1;
             var result = new List<object>();
@@ -273,8 +273,8 @@ namespace Ssz.Xi.Client.Api
                     continue;
                 }                
                 
-                if (modelItem.XiListItemWrapper == null ||
-                    modelItem.XiListItemWrapper.XiListItem == null ||
+                if (modelItem.XiListItemWrapper is null ||
+                    modelItem.XiListItemWrapper.XiListItem is null ||
                     modelItem.XiListItemWrapper.XiListItem.ResultCode != XiFaultCodes.S_OK)
                 {
                     result.Add(clientObj);
@@ -294,15 +294,15 @@ namespace Ssz.Xi.Client.Api
                 return clientObjs;
             }
 
-            if (failedItems != null)
+            if (failedItems is not null)
             {
                 foreach (var xiDataListItem in failedItems)
                 {
                     var o = xiDataListItem.Obj as XiListItemWrapper;
-                    if (o == null) throw new InvalidOperationException();
+                    if (o is null) throw new InvalidOperationException();
                     foreach (var modelItem in o.ClientObjectInfosCollection)
                     {
-                        if (modelItem.ClientObj != null)
+                        if (modelItem.ClientObj is not null)
                         {
                             result.Add(modelItem.ClientObj);
                         }
@@ -316,12 +316,12 @@ namespace Ssz.Xi.Client.Api
         
         public void Write(object clientObj, ValueStatusTimestamp valueStatusTimestamp)
         {
-            if (XiList == null || XiList.Disposed) return;
+            if (XiList is null || XiList.Disposed) return;
 
             ClientObjectInfo? modelItem;
             if (!ClientObjectInfosDictionary.TryGetValue(clientObj, out modelItem)) return;
             
-            if (modelItem.XiListItemWrapper == null || modelItem.XiListItemWrapper.XiListItem == null || modelItem.XiListItemWrapper.XiListItem.ResultCode != XiFaultCodes.S_OK)
+            if (modelItem.XiListItemWrapper is null || modelItem.XiListItemWrapper.XiListItem is null || modelItem.XiListItemWrapper.XiListItem.ResultCode != XiFaultCodes.S_OK)
             {
                 return;
             }
@@ -358,7 +358,7 @@ namespace Ssz.Xi.Client.Api
         public Any TryRead(string id)
         {
             var xiListItem = XiListItemsDictionary.TryGetValue(id);
-            if (xiListItem == null) return new Any();
+            if (xiListItem is null) return new Any();
             
             return xiListItem.ValueStatusTimestamp.Value;
         }

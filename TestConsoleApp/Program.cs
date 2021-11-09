@@ -338,7 +338,7 @@ namespace TestConsoleApp
 
 //    public override bool Equals(object? obj)
 //    {
-//        if (obj == null) return false;
+//        if (obj is null) return false;
 //        return X == ((Point)obj).X && Y == ((Point)obj).Y;
 //    }
 

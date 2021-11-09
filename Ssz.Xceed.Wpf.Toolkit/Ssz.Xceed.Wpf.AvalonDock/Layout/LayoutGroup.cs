@@ -208,7 +208,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 else
                 {
                     var type = FindType(reader.LocalName);
-                    if (type == null)
+                    if (type is null)
                         throw new ArgumentException("AvalonDock.LayoutGroup doesn't know how to deserialize " +
                                                     reader.LocalName);
                     serializer = new XmlSerializer(type);
@@ -253,18 +253,18 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         {
             if (e.Action == NotifyCollectionChangedAction.Remove ||
                 e.Action == NotifyCollectionChangedAction.Replace)
-                if (e.OldItems != null)
+                if (e.OldItems is not null)
                     foreach (LayoutElement element in e.OldItems)
                         if (element.Parent == this)
                             element.Parent = null;
 
             if (e.Action == NotifyCollectionChangedAction.Add ||
                 e.Action == NotifyCollectionChangedAction.Replace)
-                if (e.NewItems != null)
+                if (e.NewItems is not null)
                     foreach (LayoutElement element in e.NewItems)
                         if (element.Parent != this)
                         {
-                            if (element.Parent != null)
+                            if (element.Parent is not null)
                                 element.Parent.RemoveChild(element);
                             element.Parent = this;
                         }
@@ -278,7 +278,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         private void UpdateParentVisibility()
         {
             var parentPane = Parent as ILayoutElementWithVisibility;
-            if (parentPane != null)
+            if (parentPane is not null)
                 parentPane.ComputeVisibility();
         }
 

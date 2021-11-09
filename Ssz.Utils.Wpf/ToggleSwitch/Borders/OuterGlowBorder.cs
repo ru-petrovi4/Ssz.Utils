@@ -224,7 +224,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Borders
         /// <param name="size">The new size.</param>
         internal void UpdateGlowSize(double size)
         {
-            if (_outerGlowBorder != null)
+            if (_outerGlowBorder is not null)
             {
                 _outerGlowBorder.Margin = new Thickness(-Math.Abs(size));
             }
@@ -236,22 +236,22 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Borders
         /// <param name="color">The new color.</param>
         internal void UpdateGlowColor(Color color)
         {
-            if (_shadowVertical1 != null)
+            if (_shadowVertical1 is not null)
             {
                 _shadowVertical1.Color = color;
             }
 
-            if (_shadowVertical2 != null)
+            if (_shadowVertical2 is not null)
             {
                 _shadowVertical2.Color = color;
             }
 
-            if (_shadowOuterStop1 != null)
+            if (_shadowOuterStop1 is not null)
             {
                 _shadowOuterStop1.Color = Color.FromArgb(0, color.R, color.G, color.B);
             }
 
-            if (_shadowOuterStop2 != null)
+            if (_shadowOuterStop2 is not null)
             {
                 _shadowOuterStop2.Color = Color.FromArgb(0, color.R, color.G, color.B);
             }
@@ -264,7 +264,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Borders
         /// <param name="eventArgs">The new property event args.</param>
         private static void OuterGlowColorChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
         {
-            if (eventArgs.NewValue != null)
+            if (eventArgs.NewValue is not null)
             {
                 var outerGlowBorder = (OuterGlowBorder)dependencyObject;
                 outerGlowBorder.UpdateGlowColor((Color)eventArgs.NewValue);
@@ -289,22 +289,22 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Borders
         {
             if (size.Width > 0 && size.Height > 0)
             {
-                if (_shadowHorizontal1 != null)
+                if (_shadowHorizontal1 is not null)
                 {
                     _shadowHorizontal1.Offset = Math.Abs(OuterGlowSize) / (size.Width + Math.Abs(OuterGlowSize) + Math.Abs(OuterGlowSize));
                 }
 
-                if (_shadowHorizontal2 != null)
+                if (_shadowHorizontal2 is not null)
                 {
                     _shadowHorizontal2.Offset = 1 - (Math.Abs(OuterGlowSize) / (size.Width + Math.Abs(OuterGlowSize) + Math.Abs(OuterGlowSize)));
                 }
 
-                if (_shadowVertical1 != null)
+                if (_shadowVertical1 is not null)
                 {
                     _shadowVertical1.Offset = Math.Abs(OuterGlowSize) / (size.Height + Math.Abs(OuterGlowSize) + Math.Abs(OuterGlowSize));
                 }
 
-                if (_shadowVertical2 != null)
+                if (_shadowVertical2 is not null)
                 {
                     _shadowVertical2.Offset = 1 - (Math.Abs(OuterGlowSize) / (size.Height + Math.Abs(OuterGlowSize) + Math.Abs(OuterGlowSize)));
                 }

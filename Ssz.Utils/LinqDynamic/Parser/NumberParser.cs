@@ -28,7 +28,7 @@ namespace System.Linq.Dynamic.Core.Parser
         public bool TryParseNumber(string text, Type type, out object? result)
         {
             result = ParseNumber(text, type);
-            return result != null;
+            return result is not null;
         }
 
         /// <summary>

@@ -32,7 +32,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
 
         public ValueChangeHelper(Action changeCallback)
         {
-            if (changeCallback == null)
+            if (changeCallback is null)
                 throw new ArgumentNullException("changeCallback");
 
             ValueChanged += (s, args) => changeCallback();
@@ -88,7 +88,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
         public void UpdateValueSource(object sourceItem, string path)
         {
             BindingBase binding = null;
-            if (sourceItem != null && path != null) binding = new Binding(path) {Source = sourceItem};
+            if (sourceItem is not null && path is not null) binding = new Binding(path) {Source = sourceItem};
 
             UpdateBinding(binding);
         }
@@ -96,7 +96,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
         public void UpdateValueSource(IEnumerable sourceItems, string path)
         {
             BindingBase binding = null;
-            if (sourceItems != null && path != null)
+            if (sourceItems is not null && path is not null)
             {
                 var multiBinding = new MultiBinding();
                 multiBinding.Converter = new BlankMultiValueConverter();
@@ -111,7 +111,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
 
         private void UpdateBinding(BindingBase binding)
         {
-            if (binding != null)
+            if (binding is not null)
                 BindingOperations.SetBinding(this, ValueProperty, binding);
             else
                 ClearBinding();
@@ -124,7 +124,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
 
         private void RaiseValueChanged()
         {
-            if (ValueChanged != null) ValueChanged(this, EventArgs.Empty);
+            if (ValueChanged is not null) ValueChanged(this, EventArgs.Empty);
         }
 
         #endregion

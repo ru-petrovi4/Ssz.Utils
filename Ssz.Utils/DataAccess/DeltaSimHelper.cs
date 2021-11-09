@@ -23,7 +23,7 @@ namespace Ssz.Utils.DataAccess
         public static Task<IEnumerable<AlarmInfoViewModelBase>?> ProcessEventMessage(Ssz.Utils.EventSourceModel.EventSourceModel eventSourceModel, 
             EventMessage eventMessage, ILogger? logger = null)
         {
-            if (eventMessage.EventId.Conditions != null &&
+            if (eventMessage.EventId.Conditions is not null &&
                 eventMessage.EventId.Conditions.Any(c => c.LocalId == "BeforeStateLoad"))
             {
                 return Task.FromResult((IEnumerable<AlarmInfoViewModelBase>?)null);
@@ -34,14 +34,14 @@ namespace Ssz.Utils.DataAccess
                 if (eventMessage.EventType != EventType.EclipsedAlarm && eventMessage.EventType != EventType.SimpleAlarm)
                     return Task.FromResult((IEnumerable<AlarmInfoViewModelBase>?)null);
 
-                if (eventMessage.EventId.Conditions == null ||
+                if (eventMessage.EventId.Conditions is null ||
                     eventMessage.EventId.Conditions.Count == 0 ||
                     eventMessage.EventId.SourceElementId == @"" ||
-                    eventMessage.AlarmMessageData == null ||
+                    eventMessage.AlarmMessageData is null ||
                     !eventMessage.AlarmMessageData.TimeLastActive.HasValue ||
                     eventMessage.EventId.SourceElementId == @"")
                 {
-                    if (logger != null && logger.IsEnabled(LogLevel.Debug))
+                    if (logger is not null && logger.IsEnabled(LogLevel.Debug))
                     {
                         logger.LogDebug("Invalid message ignored: VarName=" + eventMessage.EventId.SourceElementId +                                       
                                        ";OccurrenceTime=" + eventMessage.OccurrenceTime +                                       
@@ -51,7 +51,7 @@ namespace Ssz.Utils.DataAccess
                     return Task.FromResult((IEnumerable<AlarmInfoViewModelBase>?)null);
                 }
                 
-                if (logger != null && logger.IsEnabled(LogLevel.Debug))
+                if (logger is not null && logger.IsEnabled(LogLevel.Debug))
                 {
                     logger.LogDebug("Valid message received: VarName=" + eventMessage.EventId.SourceElementId +
                                    ";Condition=" + eventMessage.EventId.Conditions[0].LocalId +
@@ -205,14 +205,14 @@ namespace Ssz.Utils.DataAccess
                     UnackedChanged = unackedChanged
                 };
 
-                if (conditionState != null)
+                if (conditionState is not null)
                     conditionState.LastAlarmInfoViewModel = alarmInfoViewModel;
 
                 return Task.FromResult((IEnumerable<AlarmInfoViewModelBase>?)new[] { alarmInfoViewModel });
             }
             catch (Exception ex)
             {
-                if (logger != null)
+                if (logger is not null)
                     logger.LogError(ex, "DeltaSimHelper::ProcessEventMessage method error.");
             }
 

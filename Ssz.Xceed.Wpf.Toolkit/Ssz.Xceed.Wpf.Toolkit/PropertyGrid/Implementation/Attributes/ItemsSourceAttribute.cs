@@ -23,7 +23,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Attributes
         public ItemsSourceAttribute(Type type, bool isEditable = false)
         {
             var valueSourceInterface = type.GetInterface(typeof(IItemsSource).FullName);
-            if (valueSourceInterface == null)
+            if (valueSourceInterface is null)
                 throw new ArgumentException("Type must implement the IItemsSource interface.", "type");
 
             Type = type;

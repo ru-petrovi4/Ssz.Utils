@@ -13,16 +13,16 @@ namespace Ssz.DataGrpc.Server
         public EventId(Ssz.Utils.DataAccess.EventId eventId)
         {
             SourceElementId = eventId.SourceElementId;
-            if (eventId.MultiplexedAlarmContainer != null)
+            if (eventId.MultiplexedAlarmContainer is not null)
             {
                 MultiplexedAlarmContainer = new TypeId(eventId.MultiplexedAlarmContainer);
             }
-            if (eventId.Conditions != null)
+            if (eventId.Conditions is not null)
             {
                 Conditions.Add(eventId.Conditions.Select(t => new TypeId(t)));
             }            
             OccurrenceId = eventId.OccurrenceId;
-            if (eventId.TimeLastActive != null)
+            if (eventId.TimeLastActive is not null)
             {
                 TimeLastActive = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(eventId.TimeLastActive.Value);
             }

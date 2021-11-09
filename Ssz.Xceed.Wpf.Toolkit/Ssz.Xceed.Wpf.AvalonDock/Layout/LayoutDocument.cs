@@ -117,7 +117,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
         public override void Close()
         {
-            if (Root != null && Root.Manager != null)
+            if (Root is not null && Root.Manager is not null)
             {
                 var dockingManager = Root.Manager;
                 dockingManager._ExecuteCloseCommand(this);
@@ -140,20 +140,20 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         {
             var root = Root as LayoutRoot;
             LayoutDocumentPane documentPane = null;
-            if (root.LastFocusedDocument != null &&
+            if (root.LastFocusedDocument is not null &&
                 root.LastFocusedDocument != this)
                 documentPane = root.LastFocusedDocument.Parent as LayoutDocumentPane;
 
-            if (documentPane == null) documentPane = root.Descendents().OfType<LayoutDocumentPane>().FirstOrDefault();
+            if (documentPane is null) documentPane = root.Descendents().OfType<LayoutDocumentPane>().FirstOrDefault();
 
 
             var added = false;
-            if (root.Manager.LayoutUpdateStrategy != null)
+            if (root.Manager.LayoutUpdateStrategy is not null)
                 added = root.Manager.LayoutUpdateStrategy.BeforeInsertDocument(root, this, documentPane);
 
             if (!added)
             {
-                if (documentPane == null)
+                if (documentPane is null)
                     throw new InvalidOperationException(
                         "Layout must contains at least one LayoutDocumentPane in order to host documents");
 
@@ -161,7 +161,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 added = true;
             }
 
-            if (root.Manager.LayoutUpdateStrategy != null)
+            if (root.Manager.LayoutUpdateStrategy is not null)
                 root.Manager.LayoutUpdateStrategy.AfterInsertDocument(root, this);
 
 

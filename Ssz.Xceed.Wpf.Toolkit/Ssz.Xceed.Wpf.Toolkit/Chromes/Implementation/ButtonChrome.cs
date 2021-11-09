@@ -47,7 +47,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Chromes
         private static void OnCornerRadiusChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var buttonChrome = o as ButtonChrome;
-            if (buttonChrome != null)
+            if (buttonChrome is not null)
                 buttonChrome.OnCornerRadiusChanged((CornerRadius) e.OldValue, (CornerRadius) e.NewValue);
         }
 
@@ -79,7 +79,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Chromes
         private static void OnInnerCornerRadiusChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var buttonChrome = o as ButtonChrome;
-            if (buttonChrome != null)
+            if (buttonChrome is not null)
                 buttonChrome.OnInnerCornerRadiusChanged((CornerRadius) e.OldValue, (CornerRadius) e.NewValue);
         }
 
@@ -104,7 +104,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Chromes
         private static void OnRenderCheckedChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var buttonChrome = o as ButtonChrome;
-            if (buttonChrome != null)
+            if (buttonChrome is not null)
                 buttonChrome.OnRenderCheckedChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 
@@ -129,7 +129,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Chromes
         private static void OnRenderEnabledChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var buttonChrome = o as ButtonChrome;
-            if (buttonChrome != null)
+            if (buttonChrome is not null)
                 buttonChrome.OnRenderEnabledChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 
@@ -154,7 +154,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Chromes
         private static void OnRenderFocusedChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var buttonChrome = o as ButtonChrome;
-            if (buttonChrome != null)
+            if (buttonChrome is not null)
                 buttonChrome.OnRenderFocusedChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 
@@ -180,7 +180,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Chromes
         private static void OnRenderMouseOverChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var buttonChrome = o as ButtonChrome;
-            if (buttonChrome != null)
+            if (buttonChrome is not null)
                 buttonChrome.OnRenderMouseOverChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 
@@ -205,7 +205,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Chromes
         private static void OnRenderNormalChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var buttonChrome = o as ButtonChrome;
-            if (buttonChrome != null)
+            if (buttonChrome is not null)
                 buttonChrome.OnRenderNormalChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 
@@ -230,7 +230,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Chromes
         private static void OnRenderPressedChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var buttonChrome = o as ButtonChrome;
-            if (buttonChrome != null)
+            if (buttonChrome is not null)
                 buttonChrome.OnRenderPressedChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 

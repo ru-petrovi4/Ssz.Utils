@@ -83,18 +83,18 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         {
             get
             {
-                if (_view == null)
+                if (_view is null)
                 {
                     _view = new ContentPresenter();
 
                     _view.SetBinding(ContentPresenter.ContentProperty, new Binding("Content") {Source = LayoutElement});
-                    if (LayoutElement != null && LayoutElement.Root != null)
+                    if (LayoutElement is not null && LayoutElement.Root is not null)
                     {
                         _view.SetBinding(ContentPresenter.ContentTemplateProperty,
                             new Binding("LayoutItemTemplate") {Source = LayoutElement.Root.Manager});
                         _view.SetBinding(ContentPresenter.ContentTemplateSelectorProperty,
                             new Binding("LayoutItemTemplateSelector") {Source = LayoutElement.Root.Manager});
-                        if (LayoutElement.Root.Manager != null)
+                        if (LayoutElement.Root.Manager is not null)
                             LayoutElement.Root.Manager.InternalAddLogicalChild(_view);
                     }
                 }
@@ -137,7 +137,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         /// </summary>
         protected virtual void OnTitleChanged(DependencyPropertyChangedEventArgs e)
         {
-            if (LayoutElement != null)
+            if (LayoutElement is not null)
                 LayoutElement.Title = (string) e.NewValue;
         }
 
@@ -175,7 +175,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         /// </summary>
         protected virtual void OnIconSourceChanged(DependencyPropertyChangedEventArgs e)
         {
-            if (LayoutElement != null)
+            if (LayoutElement is not null)
                 LayoutElement.IconSource = IconSource;
         }
 
@@ -213,7 +213,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         /// </summary>
         protected virtual void OnContentIdChanged(DependencyPropertyChangedEventArgs e)
         {
-            if (LayoutElement != null)
+            if (LayoutElement is not null)
                 LayoutElement.ContentId = (string) e.NewValue;
         }
 
@@ -254,7 +254,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             if (_isSelectedReentrantFlag.CanEnter)
                 using (_isSelectedReentrantFlag.Enter())
                 {
-                    if (LayoutElement != null)
+                    if (LayoutElement is not null)
                         LayoutElement.IsSelected = (bool) e.NewValue;
                 }
         }
@@ -296,7 +296,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             if (_isActiveReentrantFlag.CanEnter)
                 using (_isActiveReentrantFlag.Enter())
                 {
-                    if (LayoutElement != null)
+                    if (LayoutElement is not null)
                         LayoutElement.IsActive = (bool) e.NewValue;
                 }
         }
@@ -335,7 +335,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         /// </summary>
         protected virtual void OnCanCloseChanged(DependencyPropertyChangedEventArgs e)
         {
-            if (LayoutElement != null)
+            if (LayoutElement is not null)
                 LayoutElement.CanClose = (bool) e.NewValue;
         }
 
@@ -373,7 +373,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         /// </summary>
         protected virtual void OnCanFloatChanged(DependencyPropertyChangedEventArgs e)
         {
-            if (LayoutElement != null)
+            if (LayoutElement is not null)
                 LayoutElement.CanFloat = (bool) e.NewValue;
         }
 
@@ -423,7 +423,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private bool CanExecuteCloseCommand(object parameter)
         {
-            return LayoutElement != null && LayoutElement.CanClose;
+            return LayoutElement is not null && LayoutElement.CanClose;
         }
 
         private void ExecuteCloseCommand(object parameter)
@@ -480,8 +480,8 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private bool CanExecuteFloatCommand(object anchorable)
         {
-            return LayoutElement != null && LayoutElement.CanFloat &&
-                   LayoutElement.FindParent<LayoutFloatingWindow>() == null;
+            return LayoutElement is not null && LayoutElement.CanFloat &&
+                   LayoutElement.FindParent<LayoutFloatingWindow>() is null;
         }
 
         private void ExecuteFloatCommand(object parameter)
@@ -541,7 +541,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         protected virtual bool CanExecuteDockAsDocumentCommand()
         {
-            return LayoutElement != null && LayoutElement.FindParent<LayoutDocumentPane>() == null;
+            return LayoutElement is not null && LayoutElement.FindParent<LayoutDocumentPane>() is null;
         }
 
         private bool CanExecuteDockAsDocumentCommand(object parameter)
@@ -600,10 +600,10 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private bool CanExecuteCloseAllButThisCommand(object parameter)
         {
-            if (LayoutElement == null)
+            if (LayoutElement is null)
                 return false;
             var root = LayoutElement.Root;
-            if (root == null)
+            if (root is null)
                 return false;
 
             return LayoutElement.Root.Manager.Layout.Descendents().OfType<LayoutContent>().Where(d =>
@@ -662,10 +662,10 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private bool CanExecuteCloseAllCommand(object parameter)
         {
-            if (LayoutElement == null)
+            if (LayoutElement is null)
                 return false;
             var root = LayoutElement.Root;
-            if (root == null)
+            if (root is null)
                 return false;
 
             return LayoutElement.Root.Manager.Layout.Descendents().OfType<LayoutContent>().Where(d =>
@@ -723,7 +723,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private bool CanExecuteActivateCommand(object parameter)
         {
-            return LayoutElement != null;
+            return LayoutElement is not null;
         }
 
         private void ExecuteActivateCommand(object parameter)
@@ -770,18 +770,18 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private bool CanExecuteNewVerticalTabGroupCommand(object parameter)
         {
-            if (LayoutElement == null)
+            if (LayoutElement is null)
                 return false;
             var layoutDocument = LayoutElement as LayoutDocument;
-            if (layoutDocument != null && !layoutDocument.CanMove)
+            if (layoutDocument is not null && !layoutDocument.CanMove)
                 return false;
             var parentDocumentGroup = LayoutElement.FindParent<LayoutDocumentPaneGroup>();
             var parentDocumentPane = LayoutElement.Parent as LayoutDocumentPane;
-            return (parentDocumentGroup == null ||
+            return (parentDocumentGroup is null ||
                     parentDocumentGroup.ChildrenCount == 1 ||
                     parentDocumentGroup.Root.Manager.AllowMixedOrientation ||
                     parentDocumentGroup.Orientation == Orientation.Horizontal) &&
-                   parentDocumentPane != null &&
+                   parentDocumentPane is not null &&
                    parentDocumentPane.ChildrenCount > 1;
         }
 
@@ -791,7 +791,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             var parentDocumentGroup = layoutElement.FindParent<LayoutDocumentPaneGroup>();
             var parentDocumentPane = layoutElement.Parent as LayoutDocumentPane;
 
-            if (parentDocumentGroup == null)
+            if (parentDocumentGroup is null)
             {
                 var grandParent = parentDocumentPane.Parent;
                 parentDocumentGroup = new LayoutDocumentPaneGroup {Orientation = Orientation.Horizontal};
@@ -846,18 +846,18 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private bool CanExecuteNewHorizontalTabGroupCommand(object parameter)
         {
-            if (LayoutElement == null)
+            if (LayoutElement is null)
                 return false;
             var layoutDocument = LayoutElement as LayoutDocument;
-            if (layoutDocument != null && !layoutDocument.CanMove)
+            if (layoutDocument is not null && !layoutDocument.CanMove)
                 return false;
             var parentDocumentGroup = LayoutElement.FindParent<LayoutDocumentPaneGroup>();
             var parentDocumentPane = LayoutElement.Parent as LayoutDocumentPane;
-            return (parentDocumentGroup == null ||
+            return (parentDocumentGroup is null ||
                     parentDocumentGroup.ChildrenCount == 1 ||
                     parentDocumentGroup.Root.Manager.AllowMixedOrientation ||
                     parentDocumentGroup.Orientation == Orientation.Vertical) &&
-                   parentDocumentPane != null &&
+                   parentDocumentPane is not null &&
                    parentDocumentPane.ChildrenCount > 1;
         }
 
@@ -867,7 +867,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             var parentDocumentGroup = layoutElement.FindParent<LayoutDocumentPaneGroup>();
             var parentDocumentPane = layoutElement.Parent as LayoutDocumentPane;
 
-            if (parentDocumentGroup == null)
+            if (parentDocumentGroup is null)
             {
                 var grandParent = parentDocumentPane.Parent;
                 parentDocumentGroup = new LayoutDocumentPaneGroup {Orientation = Orientation.Vertical};
@@ -920,13 +920,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private bool CanExecuteMoveToNextTabGroupCommand(object parameter)
         {
-            if (LayoutElement == null)
+            if (LayoutElement is null)
                 return false;
 
             var parentDocumentGroup = LayoutElement.FindParent<LayoutDocumentPaneGroup>();
             var parentDocumentPane = LayoutElement.Parent as LayoutDocumentPane;
-            return parentDocumentGroup != null &&
-                   parentDocumentPane != null &&
+            return parentDocumentGroup is not null &&
+                   parentDocumentPane is not null &&
                    parentDocumentGroup.ChildrenCount > 1 &&
                    parentDocumentGroup.IndexOfChild(parentDocumentPane) < parentDocumentGroup.ChildrenCount - 1 &&
                    parentDocumentGroup.Children[parentDocumentGroup.IndexOfChild(parentDocumentPane) + 1] is
@@ -984,12 +984,12 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private bool CanExecuteMoveToPreviousTabGroupCommand(object parameter)
         {
-            if (LayoutElement == null)
+            if (LayoutElement is null)
                 return false;
             var parentDocumentGroup = LayoutElement.FindParent<LayoutDocumentPaneGroup>();
             var parentDocumentPane = LayoutElement.Parent as LayoutDocumentPane;
-            return parentDocumentGroup != null &&
-                   parentDocumentPane != null &&
+            return parentDocumentGroup is not null &&
+                   parentDocumentPane is not null &&
                    parentDocumentGroup.ChildrenCount > 1 &&
                    parentDocumentGroup.IndexOfChild(parentDocumentPane) > 0 &&
                    parentDocumentGroup.Children[parentDocumentGroup.IndexOfChild(parentDocumentPane) - 1] is
@@ -1062,25 +1062,25 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         protected virtual void SetDefaultBindings()
         {
-            if (CloseCommand == null)
+            if (CloseCommand is null)
                 CloseCommand = _defaultCloseCommand;
-            if (FloatCommand == null)
+            if (FloatCommand is null)
                 FloatCommand = _defaultFloatCommand;
-            if (DockAsDocumentCommand == null)
+            if (DockAsDocumentCommand is null)
                 DockAsDocumentCommand = _defaultDockAsDocumentCommand;
-            if (CloseAllButThisCommand == null)
+            if (CloseAllButThisCommand is null)
                 CloseAllButThisCommand = _defaultCloseAllButThisCommand;
-            if (CloseAllCommand == null)
+            if (CloseAllCommand is null)
                 CloseAllCommand = _defaultCloseAllCommand;
-            if (ActivateCommand == null)
+            if (ActivateCommand is null)
                 ActivateCommand = _defaultActivateCommand;
-            if (NewVerticalTabGroupCommand == null)
+            if (NewVerticalTabGroupCommand is null)
                 NewVerticalTabGroupCommand = _defaultNewVerticalTabGroupCommand;
-            if (NewHorizontalTabGroupCommand == null)
+            if (NewHorizontalTabGroupCommand is null)
                 NewHorizontalTabGroupCommand = _defaultNewHorizontalTabGroupCommand;
-            if (MoveToNextTabGroupCommand == null)
+            if (MoveToNextTabGroupCommand is null)
                 MoveToNextTabGroupCommand = _defaultMoveToNextTabGroupCommand;
-            if (MoveToPreviousTabGroupCommand == null)
+            if (MoveToPreviousTabGroupCommand is null)
                 MoveToPreviousTabGroupCommand = _defaultMoveToPreviousTabGroupCommand;
 
 
@@ -1091,7 +1091,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         protected virtual void OnVisibilityChanged()
         {
-            if (LayoutElement != null &&
+            if (LayoutElement is not null &&
                 Visibility == Visibility.Collapsed)
                 LayoutElement.Close();
         }
@@ -1129,7 +1129,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         internal bool IsViewExists()
         {
-            return _view != null;
+            return _view is not null;
         }
 
         #endregion
@@ -1163,7 +1163,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private void OnToolTipChanged()
         {
-            if (LayoutElement != null)
+            if (LayoutElement is not null)
                 LayoutElement.ToolTip = ToolTip;
         }
 

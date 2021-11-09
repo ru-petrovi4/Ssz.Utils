@@ -19,9 +19,9 @@ namespace Ssz.Utils.WinApi
         /// <param name="process"></param>
         public static void CloseAllWindows(Process process)
         {
-            if (process == null || process.Threads.Count == 0) return;
+            if (process is null || process.Threads.Count == 0) return;
             var uiProcessThread = process.Threads[0];
-            if (uiProcessThread == null) return;
+            if (uiProcessThread is null) return;
             User32.EnumThreadWindows(uiProcessThread.Id,
                                          new User32.CallBack(EnumWindowCallBack),
                                          IntPtr.Zero);            

@@ -38,16 +38,16 @@ namespace Xi.Contracts.Data
 		public EventId(Ssz.Utils.DataAccess.EventId eventId)
 		{
 			SourceId = new InstanceId("", "", eventId.SourceElementId);
-			if (eventId.MultiplexedAlarmContainer != null)
+			if (eventId.MultiplexedAlarmContainer is not null)
 			{
 				MultiplexedAlarmContainer = new TypeId(eventId.MultiplexedAlarmContainer);
 			}
-			if (eventId.Conditions != null)
+			if (eventId.Conditions is not null)
 			{
 				Condition = new List<TypeId>(eventId.Conditions.Select(t => new TypeId(t)));				
 			}
 			OccurrenceId = eventId.OccurrenceId;
-			if (eventId.TimeLastActive != null)
+			if (eventId.TimeLastActive is not null)
 			{
 				TimeLastActive = eventId.TimeLastActive.Value;
 			}
@@ -99,17 +99,17 @@ namespace Xi.Contracts.Data
 		public Ssz.Utils.DataAccess.EventId ToEventId()
 		{
 			var eventId = new Ssz.Utils.DataAccess.EventId();
-			eventId.SourceElementId = SourceId != null ? SourceId.LocalId ?? "" : "";
-			if (MultiplexedAlarmContainer != null)
+			eventId.SourceElementId = SourceId is not null ? SourceId.LocalId ?? "" : "";
+			if (MultiplexedAlarmContainer is not null)
 			{
 				eventId.MultiplexedAlarmContainer = MultiplexedAlarmContainer.ToTypeId();
 			}
-			if (Condition != null)
+			if (Condition is not null)
 			{
 				eventId.Conditions = Condition.Select(t => t.ToTypeId()).ToList();
 			}
 			eventId.OccurrenceId = OccurrenceId ?? "";
-			if (TimeLastActive != null)
+			if (TimeLastActive is not null)
 			{
 				eventId.TimeLastActive = TimeLastActive.Value;
 			}

@@ -137,7 +137,7 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         /// </summary>
         public bool PreparedForWrite
         {
-            get { return _pendingWriteValueStatusTimestamp != null; }
+            get { return _pendingWriteValueStatusTimestamp is not null; }
         }
 
         /// <summary>

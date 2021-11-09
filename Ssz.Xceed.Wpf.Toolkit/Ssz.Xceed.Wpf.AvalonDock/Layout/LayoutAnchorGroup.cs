@@ -38,12 +38,12 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
         public override void WriteXml(XmlWriter writer)
         {
-            if (_id != null)
+            if (_id is not null)
                 writer.WriteAttributeString("Id", _id);
-            if (_previousContainer != null)
+            if (_previousContainer is not null)
             {
                 var paneSerializable = _previousContainer as ILayoutPaneSerializable;
-                if (paneSerializable != null) writer.WriteAttributeString("PreviousContainerId", paneSerializable.Id);
+                if (paneSerializable is not null) writer.WriteAttributeString("PreviousContainerId", paneSerializable.Id);
             }
 
             base.WriteXml(writer);
@@ -79,8 +79,8 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                     _previousContainer = value;
                     RaisePropertyChanged("PreviousContainer");
                     var paneSerializable = _previousContainer as ILayoutPaneSerializable;
-                    if (paneSerializable != null &&
-                        paneSerializable.Id == null)
+                    if (paneSerializable is not null &&
+                        paneSerializable.Id is null)
                         paneSerializable.Id = Guid.NewGuid().ToString();
                 }
             }

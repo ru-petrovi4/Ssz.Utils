@@ -142,20 +142,20 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             base.OnApplyTemplate();
 
-            if (_dragWidget != null) _dragWidget.DragDelta -= DragWidget_DragDelta;
+            if (_dragWidget is not null) _dragWidget.DragDelta -= DragWidget_DragDelta;
 
-            if (_cmbFontFamilies != null) _cmbFontFamilies.SelectionChanged -= FontFamily_SelectionChanged;
+            if (_cmbFontFamilies is not null) _cmbFontFamilies.SelectionChanged -= FontFamily_SelectionChanged;
 
-            if (_cmbFontSizes != null) _cmbFontSizes.SelectionChanged -= FontSize_SelectionChanged;
+            if (_cmbFontSizes is not null) _cmbFontSizes.SelectionChanged -= FontSize_SelectionChanged;
 
-            if (_btnBullets != null) _btnBullets.Click -= Bullets_Clicked;
+            if (_btnBullets is not null) _btnBullets.Click -= Bullets_Clicked;
 
-            if (_btnNumbers != null) _btnNumbers.Click -= Numbers_Clicked;
+            if (_btnNumbers is not null) _btnNumbers.Click -= Numbers_Clicked;
 
-            if (_cmbFontBackgroundColor != null)
+            if (_cmbFontBackgroundColor is not null)
                 _cmbFontBackgroundColor.SelectedColorChanged -= FontBackgroundColor_SelectedColorChanged;
 
-            if (_cmbFontColor != null) _cmbFontColor.SelectedColorChanged -= FontColor_SelectedColorChanged;
+            if (_cmbFontColor is not null) _cmbFontColor.SelectedColorChanged -= FontColor_SelectedColorChanged;
 
             GetTemplateComponent(ref _cmbFontFamilies, "_cmbFontFamilies");
             GetTemplateComponent(ref _cmbFontSizes, "_cmbFontSizes");
@@ -171,28 +171,28 @@ namespace Ssz.Xceed.Wpf.Toolkit
             GetTemplateComponent(ref _btnAlignRight, "_btnAlignRight");
             GetTemplateComponent(ref _dragWidget, "_dragWidget");
 
-            if (_dragWidget != null) _dragWidget.DragDelta += DragWidget_DragDelta;
+            if (_dragWidget is not null) _dragWidget.DragDelta += DragWidget_DragDelta;
 
-            if (_cmbFontFamilies != null)
+            if (_cmbFontFamilies is not null)
             {
                 _cmbFontFamilies.ItemsSource = FontUtilities.Families.OrderBy(fontFamily => fontFamily.Source);
                 _cmbFontFamilies.SelectionChanged += FontFamily_SelectionChanged;
             }
 
-            if (_cmbFontSizes != null)
+            if (_cmbFontSizes is not null)
             {
                 _cmbFontSizes.ItemsSource = FontSizes;
                 _cmbFontSizes.SelectionChanged += FontSize_SelectionChanged;
             }
 
-            if (_btnBullets != null) _btnBullets.Click += Bullets_Clicked;
+            if (_btnBullets is not null) _btnBullets.Click += Bullets_Clicked;
 
-            if (_btnNumbers != null) _btnNumbers.Click += Numbers_Clicked;
+            if (_btnNumbers is not null) _btnNumbers.Click += Numbers_Clicked;
 
-            if (_cmbFontBackgroundColor != null)
+            if (_cmbFontBackgroundColor is not null)
                 _cmbFontBackgroundColor.SelectedColorChanged += FontBackgroundColor_SelectedColorChanged;
 
-            if (_cmbFontColor != null) _cmbFontColor.SelectedColorChanged += FontColor_SelectedColorChanged;
+            if (_cmbFontColor is not null) _cmbFontColor.SelectedColorChanged += FontColor_SelectedColorChanged;
 
             // Update the ComboBoxes when changing themes.
             Update();
@@ -200,7 +200,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void GetTemplateComponent<T>(ref T partMember, string partName) where T : class
         {
-            partMember = Template != null
+            partMember = Template is not null
                 ? Template.FindName(partName, this) as T
                 : null;
         }
@@ -220,39 +220,39 @@ namespace Ssz.Xceed.Wpf.Toolkit
             object expectedValue)
         {
             var currentValue = DependencyProperty.UnsetValue;
-            if (Target != null && Target.Selection != null)
+            if (Target is not null && Target.Selection is not null)
                 currentValue = Target.Selection.GetPropertyValue(formattingProperty);
-            button.IsChecked = currentValue == null || currentValue == DependencyProperty.UnsetValue
+            button.IsChecked = currentValue is null || currentValue == DependencyProperty.UnsetValue
                 ? false
-                : currentValue != null && currentValue.Equals(expectedValue);
+                : currentValue is not null && currentValue.Equals(expectedValue);
         }
 
         private void UpdateSelectedFontFamily()
         {
             var value = DependencyProperty.UnsetValue;
-            if (Target != null && Target.Selection != null)
+            if (Target is not null && Target.Selection is not null)
                 value = Target.Selection.GetPropertyValue(TextElement.FontFamilyProperty);
             var currentFontFamily =
-                (FontFamily) (value == null || value == DependencyProperty.UnsetValue ? null : value);
-            if (currentFontFamily != null) _cmbFontFamilies.SelectedItem = currentFontFamily;
+                (FontFamily) (value is null || value == DependencyProperty.UnsetValue ? null : value);
+            if (currentFontFamily is not null) _cmbFontFamilies.SelectedItem = currentFontFamily;
         }
 
         private void UpdateSelectedFontSize()
         {
             var value = DependencyProperty.UnsetValue;
-            if (Target != null && Target.Selection != null)
+            if (Target is not null && Target.Selection is not null)
                 value = Target.Selection.GetPropertyValue(TextElement.FontSizeProperty);
 
-            _cmbFontSizes.SelectedValue = value == null || value == DependencyProperty.UnsetValue ? null : value;
+            _cmbFontSizes.SelectedValue = value is null || value == DependencyProperty.UnsetValue ? null : value;
         }
 
         private void UpdateFontColor()
         {
             var value = DependencyProperty.UnsetValue;
-            if (Target != null && Target.Selection != null)
+            if (Target is not null && Target.Selection is not null)
                 value = Target.Selection.GetPropertyValue(TextElement.ForegroundProperty);
 
-            var currentColor = value == null || value == DependencyProperty.UnsetValue
+            var currentColor = value is null || value == DependencyProperty.UnsetValue
                 ? Colors.Black
                 : ((SolidColorBrush) value).Color;
             _cmbFontColor.SelectedColor = currentColor;
@@ -261,9 +261,9 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private void UpdateFontBackgroundColor()
         {
             var value = DependencyProperty.UnsetValue;
-            if (Target != null && Target.Selection != null)
+            if (Target is not null && Target.Selection is not null)
                 value = Target.Selection.GetPropertyValue(TextElement.BackgroundProperty);
-            var currentColor = value == null || value == DependencyProperty.UnsetValue
+            var currentColor = value is null || value == DependencyProperty.UnsetValue
                 ? Colors.Transparent
                 : ((SolidColorBrush) value).Color;
             _cmbFontBackgroundColor.SelectedColor = currentColor;
@@ -278,13 +278,13 @@ namespace Ssz.Xceed.Wpf.Toolkit
             _btnBullets.IsChecked = false;
             _btnNumbers.IsChecked = false;
 
-            var startParagraph = Target != null && Target.Selection != null
+            var startParagraph = Target is not null && Target.Selection is not null
                 ? Target.Selection.Start.Paragraph
                 : null;
-            var endParagraph = Target != null && Target.Selection != null
+            var endParagraph = Target is not null && Target.Selection is not null
                 ? Target.Selection.End.Paragraph
                 : null;
-            if (startParagraph != null && endParagraph != null && startParagraph.Parent is ListItem &&
+            if (startParagraph is not null && endParagraph is not null && startParagraph.Parent is ListItem &&
                 endParagraph.Parent is ListItem && ReferenceEquals(((ListItem) startParagraph.Parent).List,
                     ((ListItem) endParagraph.Parent).List))
             {
@@ -307,7 +307,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void ApplyPropertyValueToSelectedText(DependencyProperty formattingProperty, object value)
         {
-            if (value == null || Target == null || Target.Selection == null)
+            if (value is null || Target is null || Target.Selection is null)
                 return;
 
             Target.Selection.ApplyPropertyValue(formattingProperty, value);

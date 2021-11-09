@@ -23,7 +23,7 @@ namespace System.Linq.Dynamic.Core
         {
             get
             {
-                if (_propertiesDictionary == null)
+                if (_propertiesDictionary is null)
                 {
                     _propertiesDictionary = new Dictionary<string, object?>();
 

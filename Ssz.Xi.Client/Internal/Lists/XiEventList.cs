@@ -34,16 +34,16 @@ namespace Ssz.Xi.Client.Internal.Lists
             StandardListType = StandardListType.EventList;
             ListAttributes = Context.DefineList(this, updateRate, bufferingRate, filterSet);
 
-            if (Context.StandardMib.EventCategoryConfigurations != null)
+            if (Context.StandardMib.EventCategoryConfigurations is not null)
             {
                 foreach (CategoryConfiguration category in Context.StandardMib.EventCategoryConfigurations)
                 {
-                    if (category.EventMessageFields != null && category.EventMessageFields.Count > 0)
+                    if (category.EventMessageFields is not null && category.EventMessageFields.Count > 0)
                     {
                         var categoryFields = new XiCategorySpecificFields(category.CategoryId);
                         foreach (ParameterDefinition? field in category.EventMessageFields)
                         {
-                            if (field == null) throw new InvalidOperationException();
+                            if (field is null) throw new InvalidOperationException();
                             var optField = new XiEventMsgFieldDesc(field.Name ?? "", field.Description ?? "", field.ObjectTypeId ?? new TypeId(),
                                 field.DataTypeId ?? new TypeId());
                             categoryFields.OptionalEventMsgFields.Add(optField);
@@ -146,7 +146,7 @@ namespace Ssz.Xi.Client.Internal.Lists
             int inactiveAckedCount = 0;
             foreach (EventMessage em in eventMessagesList)
             {
-                if (em.AlarmData != null)
+                if (em.AlarmData is not null)
                 {
                     if (em.AlarmData.AlarmState == AlarmState.Active) activeAckedCount++;
                     else if (em.AlarmData.AlarmState == AlarmState.Initial) inactiveAckedCount++;
@@ -1330,7 +1330,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         }
 
         /// <summary>
-        ///     <para> result != null </para>
+        ///     <para> result is not null </para>
         ///     <para>
         ///         This callback method receives event messages sent by the server that contain both events and alarms. Servers
         ///         send event messages when there has been a change to its Event List. A new alarm or event that has been added to
@@ -1363,7 +1363,7 @@ namespace Ssz.Xi.Client.Internal.Lists
 
             var result = new List<IXiEventListItem>();
 
-            if (eventMessages != null)
+            if (eventMessages is not null)
             {
                 foreach (var eventMessage in eventMessages)
                 {
@@ -1570,7 +1570,7 @@ namespace Ssz.Xi.Client.Internal.Lists
                     (eventMessagesList[eventMessageListIdx].EventType == EventType.GroupedAlarm) ||
                     (eventMessagesList[eventMessageListIdx].EventType == EventType.EclipsedAlarm))
                 {
-                    if (eventMessagesList[eventMessageListIdx].AlarmData != null)
+                    if (eventMessagesList[eventMessageListIdx].AlarmData is not null)
                     {
                         if ((int) eventMessagesList[eventMessageListIdx].AlarmData.AlarmState == alarmState)
                         {
@@ -1751,7 +1751,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         {
             bool removed = false;
             XiEventListItem item2 = _items.SingleOrDefault(it => it.MessageKey == item.MessageKey);
-            if (item2 != null)
+            if (item2 is not null)
             {
                 if ((item2.EventMessage.EventType == EventType.SimpleAlarm) ||
                     (item2.EventMessage.EventType == EventType.GroupedAlarm) ||
@@ -1864,7 +1864,7 @@ namespace Ssz.Xi.Client.Internal.Lists
                 try
                 {
                     XiEventListItem le = elementsToMerge[elementStartIndex];
-                    if ((le.EventMessage.AlarmData != null) &&
+                    if ((le.EventMessage.AlarmData is not null) &&
                         (le.EventMessage.AlarmData.AlarmState == AlarmState.Initial))
                     {
                         // Don't include inactive/acked alarms
@@ -1876,7 +1876,7 @@ namespace Ssz.Xi.Client.Internal.Lists
                         // same alarm. If so, put the latest one in _ListElements
                         XiEventListItem existingItem = _items.SingleOrDefault(it => it.MessageKey == le.MessageKey);
                         
-                        if (existingItem == null)
+                        if (existingItem is null)
                         {
                             _items.Insert(insertIdx++, elementsToMerge[elementStartIndex]);
                             numInBlock++;

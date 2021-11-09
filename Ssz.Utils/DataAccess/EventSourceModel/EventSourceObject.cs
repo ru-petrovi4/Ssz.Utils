@@ -108,7 +108,7 @@ namespace Ssz.Utils.EventSourceModel
         public void NotifyAlarmUnackedSubscribers()
         {
             var alarmUnackedChanged = AlarmUnackedChanged;
-            if (alarmUnackedChanged != null)
+            if (alarmUnackedChanged is not null)
             {
                 if (_dataAccessProvider.IsConnected)
                 {
@@ -138,7 +138,7 @@ namespace Ssz.Utils.EventSourceModel
         public void NotifyAlarmCategorySubscribers()
         {
             var alarmCategoryChanged = AlarmCategoryChanged;
-            if (alarmCategoryChanged != null)
+            if (alarmCategoryChanged is not null)
             {
                 if (_dataAccessProvider.IsConnected)
                 {
@@ -168,7 +168,7 @@ namespace Ssz.Utils.EventSourceModel
         public void NotifyAlarmConditionTypeSubscribers()
         {
             var alarmConditionTypeChanged = AlarmConditionTypeChanged;
-            if (alarmConditionTypeChanged != null)
+            if (alarmConditionTypeChanged is not null)
             {
                 if (_dataAccessProvider.IsConnected)
                 {

@@ -85,7 +85,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnIsDropDownOpenChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var comboBox = o as CheckComboBox;
-            if (comboBox != null)
+            if (comboBox is not null)
                 comboBox.OnIsDropDownOpenChanged((bool) e.OldValue, (bool) e.NewValue);
         }
 
@@ -122,7 +122,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnMaxDropDownHeightChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var comboBox = o as CheckComboBox;
-            if (comboBox != null)
+            if (comboBox is not null)
                 comboBox.OnMaxDropDownHeightChanged((double) e.OldValue, (double) e.NewValue);
         }
 
@@ -159,12 +159,12 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             base.OnApplyTemplate();
 
-            if (_popup != null)
+            if (_popup is not null)
                 _popup.Opened -= Popup_Opened;
 
             _popup = GetTemplateChild(PART_Popup) as Popup;
 
-            if (_popup != null)
+            if (_popup is not null)
                 _popup.Opened += Popup_Opened;
         }
 
@@ -214,9 +214,9 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private void Popup_Opened(object sender, EventArgs e)
         {
             var item = ItemContainerGenerator.ContainerFromItem(SelectedItem) as UIElement;
-            if (item == null && Items.Count > 0)
+            if (item is null && Items.Count > 0)
                 item = ItemContainerGenerator.ContainerFromItem(Items[0]) as UIElement;
-            if (item != null)
+            if (item is not null)
                 item.Focus();
         }
 
@@ -252,7 +252,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             if (!string.IsNullOrEmpty(DisplayMemberPath))
             {
                 var property = item.GetType().GetProperty(DisplayMemberPath);
-                if (property != null)
+                if (property is not null)
                     return property.GetValue(item, null);
             }
 

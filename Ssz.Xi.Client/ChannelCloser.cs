@@ -80,10 +80,10 @@ namespace Ssz.Xi.Client
         /// <param name="obj"></param>
         public static void Close(object obj)
         {
-            if (obj != null)
+            if (obj is not null)
             {
                 var channelObj = obj as ICommunicationObject;
-                if (channelObj == null)
+                if (channelObj is null)
                     throw new ArgumentException("Channel object must implement ICommunicationObject", "obj");
 
                 // if the channel faults you cannot Close/Dispose it - instead you have to Abort it

@@ -59,13 +59,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                         var childContainerModel = _model.Children[i] as ILayoutContainer;
                         var childPositionableModel = _model.Children[i] as ILayoutPositionableElement;
 
-                        if (childContainerModel != null &&
+                        if (childContainerModel is not null &&
                             (childContainerModel.IsOfType<LayoutDocumentPane, LayoutDocumentPaneGroup>() ||
                              childContainerModel.ContainsChildOfType<LayoutDocumentPane, LayoutDocumentPaneGroup>()))
                         {
                             // childPositionableModel.DockWidth = new GridLength( 1.0, GridUnitType.Star );
                         }
-                        else if (childPositionableModel != null && childPositionableModel.DockWidth.IsStar)
+                        else if (childPositionableModel is not null && childPositionableModel.DockWidth.IsStar)
                         {
                             var childPositionableModelWidthActualSize =
                                 childPositionableModel as ILayoutPositionableElementWithActualSize;
@@ -102,13 +102,13 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                         var childContainerModel = _model.Children[i] as ILayoutContainer;
                         var childPositionableModel = _model.Children[i] as ILayoutPositionableElement;
 
-                        if (childContainerModel != null &&
+                        if (childContainerModel is not null &&
                             (childContainerModel.IsOfType<LayoutDocumentPane, LayoutDocumentPaneGroup>() ||
                              childContainerModel.ContainsChildOfType<LayoutDocumentPane, LayoutDocumentPaneGroup>()))
                         {
                             //childPositionableModel.DockHeight = new GridLength( 1.0, GridUnitType.Star );
                         }
-                        else if (childPositionableModel != null && childPositionableModel.DockHeight.IsStar)
+                        else if (childPositionableModel is not null && childPositionableModel.DockHeight.IsStar)
                         {
                             var childPositionableModelWidthActualSize =
                                 childPositionableModel as ILayoutPositionableElementWithActualSize;

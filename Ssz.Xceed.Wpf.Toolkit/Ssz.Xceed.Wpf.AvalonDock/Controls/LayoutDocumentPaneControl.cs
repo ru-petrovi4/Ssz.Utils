@@ -60,7 +60,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         internal LayoutDocumentPaneControl(LayoutDocumentPane model)
         {
-            if (model == null)
+            if (model is null)
                 throw new ArgumentNullException("model");
 
             _model = model;
@@ -80,7 +80,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         {
             base.OnSelectionChanged(e);
 
-            if (_model.SelectedContent != null)
+            if (_model.SelectedContent is not null)
                 _model.SelectedContent.IsActive = true;
         }
 
@@ -88,7 +88,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         {
             base.OnMouseLeftButtonDown(e);
 
-            if (!e.Handled && _model.SelectedContent != null)
+            if (!e.Handled && _model.SelectedContent is not null)
                 _model.SelectedContent.IsActive = true;
         }
 
@@ -96,7 +96,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         {
             base.OnMouseRightButtonDown(e);
 
-            if (!e.Handled && _model.SelectedContent != null)
+            if (!e.Handled && _model.SelectedContent is not null)
                 _model.SelectedContent.IsActive = true;
         }
 

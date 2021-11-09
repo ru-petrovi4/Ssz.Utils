@@ -949,7 +949,7 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static object ConvertTo(object value, Type toType, bool stringIsLocalized, string stringFormat = null)
         {
-            if (toType == null || toType == typeof(object)) return value;
+            if (toType is null || toType == typeof(object)) return value;
 
             var any = new Any(value);
             if (Convert(ref any, any, toType, stringIsLocalized, stringFormat))
@@ -983,7 +983,7 @@ namespace Ssz.Utils
         /// <returns></returns>
         private static string ConvertToString(object value, bool stringIsLocalized)
         {
-            if (value == null) return String.Empty;
+            if (value is null) return String.Empty;
 
             Type type = value.GetType();
             if (type == typeof(object)) return String.Empty;

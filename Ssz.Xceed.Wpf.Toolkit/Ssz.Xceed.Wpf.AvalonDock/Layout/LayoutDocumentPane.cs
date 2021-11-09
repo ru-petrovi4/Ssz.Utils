@@ -57,7 +57,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
         private void UpdateParentVisibility()
         {
             var parentPane = Parent as ILayoutElementWithVisibility;
-            if (parentPane != null)
+            if (parentPane is not null)
                 parentPane.ComputeVisibility();
         }
 
@@ -186,7 +186,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
             {
                 if (ChildrenCount > 0)
                 {
-                    if (Root == null)
+                    if (Root is null)
                     {
                         SetNextSelectedIndex();
                     }
@@ -200,7 +200,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
                 }
                 else
                 {
-                    if (Root != null) Root.ActiveContent = null;
+                    if (Root is not null) Root.ActiveContent = null;
                 }
             }
 
@@ -217,7 +217,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Layout
 
         public override void WriteXml(XmlWriter writer)
         {
-            if (_id != null)
+            if (_id is not null)
                 writer.WriteAttributeString("Id", _id);
             if (!_showHeader)
                 writer.WriteAttributeString("ShowHeader", _showHeader.ToString());

@@ -278,17 +278,17 @@ namespace Ssz.Utils.EventSourceModel
                 foreach (var condition in eventSourceObject.AlarmConditions.Values.OrderByDescending(cs => cs.CategoryId))
                 {
                     if (!condition.Active && condition.Unacked &&
-                        condition.LastAlarmInfoViewModel != null)
+                        condition.LastAlarmInfoViewModel is not null)
                         alarmInfoViewModelsForObject.Add(condition.LastAlarmInfoViewModel);
                 }
                 foreach (var condition in eventSourceObject.AlarmConditions.Values.OrderBy(cs => cs.CategoryId))
                 {
                     if (condition.Active &&
-                        condition.LastAlarmInfoViewModel != null)
+                        condition.LastAlarmInfoViewModel is not null)
                         alarmInfoViewModelsForObject.Add(condition.LastAlarmInfoViewModel);
                 }
                 if (eventSourceObject.NormalCondition.Active && eventSourceObject.NormalCondition.Unacked &&
-                    eventSourceObject.NormalCondition.LastAlarmInfoViewModel != null)
+                    eventSourceObject.NormalCondition.LastAlarmInfoViewModel is not null)
                         alarmInfoViewModelsForObject.Add(eventSourceObject.NormalCondition.LastAlarmInfoViewModel);
                 if (alarmInfoViewModelsForObject.Count > 0)
                     alarmInfoViewModels.AddRange(alarmInfoViewModelsForObject);

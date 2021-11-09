@@ -55,7 +55,7 @@ namespace Ssz.Utils.DataAccess
         {
             var oldValueStatusTimestamp = ValueStatusTimestamp;
             ValueStatusTimestamp = valueStatusTimestamp;            
-            if (_valueUpdated != null) _valueUpdated(oldValueStatusTimestamp, valueStatusTimestamp);
+            if (_valueUpdated is not null) _valueUpdated(oldValueStatusTimestamp, valueStatusTimestamp);
         }
 
         /// <summary>

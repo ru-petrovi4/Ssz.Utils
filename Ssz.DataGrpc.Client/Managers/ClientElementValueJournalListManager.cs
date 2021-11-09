@@ -36,7 +36,7 @@ namespace Ssz.DataGrpc.Client.Managers
             {
                 if (!DataGrpcItemsMustBeAddedOrRemoved) return;
 
-                bool firstTimeDataJournalConnection = (DataGrpcList == null);
+                bool firstTimeDataJournalConnection = (DataGrpcList is null);
 
                 if (firstTimeDataJournalConnection)
                 {
@@ -66,7 +66,7 @@ namespace Ssz.DataGrpc.Client.Managers
         }
 
         /// <summary>        
-        ///   Result.Length == valueSubscriptionsList.Length or Result == Null, if failed.
+        ///   Result.Length == valueSubscriptionsList.Length or Result is null, if failed.
         /// </summary>
         /// <param name="firstTimestamp"></param>
         /// <param name="secondTimestamp"></param>
@@ -82,13 +82,13 @@ namespace Ssz.DataGrpc.Client.Managers
             try
             {
                 var dataGrpcList = DataGrpcList;
-                if (dataGrpcList != null && !dataGrpcList.Disposed)
+                if (dataGrpcList is not null && !dataGrpcList.Disposed)
                 {
                     var serverAliases = new List<uint>();
                     foreach (var valueSubscription in valueSubscriptionsCollection)
                     {
                         var clientObjectInfo = GetClientObjectInfo(valueSubscription);
-                        if (clientObjectInfo != null && clientObjectInfo.DataGrpcListItemWrapper != null && clientObjectInfo.DataGrpcListItemWrapper.DataGrpcListItem != null)
+                        if (clientObjectInfo is not null && clientObjectInfo.DataGrpcListItemWrapper is not null && clientObjectInfo.DataGrpcListItemWrapper.DataGrpcListItem is not null)
                         {
                             serverAliases.Add(clientObjectInfo.DataGrpcListItemWrapper.DataGrpcListItem.ServerAlias);
                         }
@@ -111,7 +111,7 @@ namespace Ssz.DataGrpc.Client.Managers
             }
 
             IDispatcher? callbackDispatcher = _callbackDispatcher;
-            if (callbackDispatcher != null)
+            if (callbackDispatcher is not null)
             {
                 try
                 {

@@ -310,7 +310,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             var finalRect = new Rect();
 
-            if (_visibleElements == null) LayoutItems(InternalChildren, finalSize);
+            if (_visibleElements is null) LayoutItems(InternalChildren, finalSize);
 
             foreach (var child in _visibleElements)
             {
@@ -375,7 +375,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void OnScrollChange()
         {
-            if (ScrollOwner != null) ScrollOwner.InvalidateScrollInfo();
+            if (ScrollOwner is not null) ScrollOwner.InvalidateScrollInfo();
         }
 
         private double CalculateTimelineOffset(DateTime d, double widthFinal)
@@ -418,7 +418,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             var index = 0;
             foreach (UIElement child in children)
             {
-                if (child == null)
+                if (child is null)
                     continue;
 
                 var date = GetDate(child);
@@ -1124,7 +1124,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         public double ViewportWidth => _viewport.Width;
 
-        private bool IsScrolling => _scrollOwner != null;
+        private bool IsScrolling => _scrollOwner is not null;
 
         private readonly Vector _computedOffset = new(0d, 0d);
         private Size _extent = new(0, 0);

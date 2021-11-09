@@ -50,7 +50,7 @@ namespace Ssz.Utils
         {
             if (separator.Length != 1) throw new InvalidOperationException();
 
-            return FormatForCsv(separator, values.Select(obj => obj == null ? null : new Any(obj).ValueAsString(false)));
+            return FormatForCsv(separator, values.Select(obj => obj is null ? null : new Any(obj).ValueAsString(false)));
         }
 
         /// <summary>        
@@ -62,7 +62,7 @@ namespace Ssz.Utils
         {
             if (separator.Length != 1) throw new InvalidOperationException();
 
-            if (sourceString == null) return @"";
+            if (sourceString is null) return @"";
             if (sourceString == @"") return "\"\"";
 
             sourceString = sourceString
@@ -159,7 +159,7 @@ namespace Ssz.Utils
         ///     If file does not exist, returns empty result.
         ///     userFriendlyLogger: Messages are localized. Priority is Information, Error, Warning.
         ///     includeFileNames: File names in Upper-Case.
-        ///     Result: List.Count >= 1, List[0] != null
+        ///     Result: List.Count >= 1, List[0] is not null
         /// </summary>
         /// <param name="fileFullName"></param>
         /// <param name="includeFiles"></param>
@@ -174,18 +174,18 @@ namespace Ssz.Utils
 
             if (!File.Exists(fileFullName))
             {
-                if (userFriendlyLogger != null)
+                if (userFriendlyLogger is not null)
                     userFriendlyLogger.LogError(Properties.Resources.CsvHelper_CsvFileDoesNotExist + " " + fileFullName);
                 return fileData;
             }
             
-            if (defines == null) defines = new Dictionary<Regex, string>();
+            if (defines is null) defines = new Dictionary<Regex, string>();
             string? filePath = Path.GetDirectoryName(fileFullName);
             using (var reader = new StreamReader(fileFullName, true))
             {
                 string line = "";
                 string? l;
-                while ((l = reader.ReadLine()) != null)
+                while ((l = reader.ReadLine()) is not null)
                 {
                     l = l.Trim();                        
                     if (l.Length > 0 && l[l.Length - 1] == '\\')
@@ -207,13 +207,13 @@ namespace Ssz.Utils
                             if (q2 != -1 && q2 > q1 + 1)
                             {
                                 var includeFileName = line.Substring(q1 + 1, q2 - q1 - 1);
-                                if (includeFileNames != null)
+                                if (includeFileNames is not null)
                                     includeFileNames.Add(includeFileName.ToUpperInvariant());
                                 foreach (var kvp in LoadCsvFile(filePath + @"\" + includeFileName, false, defines, userFriendlyLogger))
                                 {
                                     if (fileData.ContainsKey(kvp.Key))
                                     {
-                                        if (userFriendlyLogger != null)
+                                        if (userFriendlyLogger is not null)
                                             userFriendlyLogger.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + " " + fileFullName + " Key='" + kvp.Key + "'");
                                     }
                                     fileData[kvp.Key] = kvp.Value;
@@ -259,7 +259,7 @@ namespace Ssz.Utils
                         if (fields.Count > 0)
                         {
                             string? field0 = fields[0];
-                            if (field0 == null)
+                            if (field0 is null)
                             {
                                 fields[0] = @"";
                                 field0 = @"";
@@ -270,7 +270,7 @@ namespace Ssz.Utils
                                 {
                                     if (fileData.ContainsKey(@""))
                                     {
-                                        if (userFriendlyLogger != null)
+                                        if (userFriendlyLogger is not null)
                                             userFriendlyLogger.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + " " + fileFullName + " Key=''");
                                     }
                                     fileData[@""] = fields;
@@ -280,7 +280,7 @@ namespace Ssz.Utils
                             {
                                 if (fileData.ContainsKey(field0))
                                 {
-                                    if (userFriendlyLogger != null)
+                                    if (userFriendlyLogger is not null)
                                         userFriendlyLogger.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + " " + fileFullName + " Key='" + field0 + "'");
                                 }
                                 fileData[field0] = fields;
@@ -331,7 +331,7 @@ namespace Ssz.Utils
         #region private functions
 
         /// <summary>
-        ///     sourceString != null, defines != null, result != null
+        ///     sourceString is not null, defines is not null, result is not null
         /// </summary>
         /// <param name="sourceString"></param>
         /// <param name="defines"></param>

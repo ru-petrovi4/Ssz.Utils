@@ -49,8 +49,8 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Input
             var stringValue = value as string;
 
             // convert null as None
-            if (value == null
-                || stringValue != null && stringValue.Trim() == string.Empty)
+            if (value is null
+                || stringValue is not null && stringValue.Trim() == string.Empty)
             {
                 result.Add(KeyModifier.None);
             }
@@ -74,7 +74,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Input
             CultureInfo cultureInfo, object value, Type destinationType)
         {
             // special handling for null or an empty collection
-            if (value == null || ((KeyModifierCollection) value).Count == 0)
+            if (value is null || ((KeyModifierCollection) value).Count == 0)
             {
                 if (destinationType == typeof(InstanceDescriptor))
                 {

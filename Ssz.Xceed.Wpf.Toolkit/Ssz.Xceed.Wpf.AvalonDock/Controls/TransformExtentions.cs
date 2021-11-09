@@ -84,12 +84,12 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         public static bool CanTransform(this Visual visual)
         {
-            return PresentationSource.FromVisual(visual) != null;
+            return PresentationSource.FromVisual(visual) is not null;
         }
 
         public static Size TransformActualSizeToAncestor(this FrameworkElement element)
         {
-            if (PresentationSource.FromVisual(element) == null)
+            if (PresentationSource.FromVisual(element) is null)
                 return new Size(element.ActualWidth, element.ActualHeight);
 
             var parentWindow = PresentationSource.FromVisual(element).RootVisual;
@@ -99,7 +99,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         public static Size TransformSizeToAncestor(this FrameworkElement element, Size sizeToTransform)
         {
-            if (PresentationSource.FromVisual(element) == null)
+            if (PresentationSource.FromVisual(element) is null)
                 return sizeToTransform;
 
             var parentWindow = PresentationSource.FromVisual(element).RootVisual;
@@ -110,7 +110,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         public static GeneralTransform TansformToAncestor(this FrameworkElement element)
         {
-            if (PresentationSource.FromVisual(element) == null)
+            if (PresentationSource.FromVisual(element) is null)
                 return new MatrixTransform(Matrix.Identity);
 
             var parentWindow = PresentationSource.FromVisual(element).RootVisual;

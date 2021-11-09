@@ -105,15 +105,15 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 
         internal override void Lock()
         {
-            if (_name != null
-                && TargetProperties != null
+            if (_name is not null
+                && TargetProperties is not null
                 && TargetProperties.Count > 0)
                 throw new InvalidOperationException(
                     string.Format(
                         @"{0}: When using 'TargetProperties' property, do not use 'Name' property.",
                         typeof(PropertyDefinition)));
 
-            if (_name != null) TargetProperties = new List<object> {_name};
+            if (_name is not null) TargetProperties = new List<object> {_name};
             base.Lock();
         }
     }

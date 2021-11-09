@@ -113,14 +113,14 @@ namespace Ssz.Xi.Client.Internal.Lists
             IEnumerable<AliasResult>? listAliasResult = Context.EnableListElementUpdating(ServerListId, enableUpdating,
                 serverAliases);
 
-            if (listAliasResult != null)
+            if (listAliasResult is not null)
                 foreach (AliasResult ar in listAliasResult)
                 {
                     // Each result in the list identifies a Data Object that failed. 
                     // Data objects that succeeded are not in the list
                     XiDataListItem? item;
                     ListItemsManager.TryGetValue(ar.ClientAlias, out item);
-                    if (item != null)
+                    if (item is not null)
                     {
                         item.Enabled = false;
                         item.ResultCode = ar.Result;
@@ -172,14 +172,14 @@ namespace Ssz.Xi.Client.Internal.Lists
 
             IEnumerable<AliasResult>? results = Context.TouchDataObjects(ServerListId, serverAliases);
 
-            if (results != null)
+            if (results is not null)
             {
                 result = new List<IXiDataListItem>();
                 foreach (AliasResult aliasResult in results)
                 {
                     XiDataListItem? item;
                     ListItemsManager.TryGetValue(aliasResult.ClientAlias, out item);
-                    if (item != null) result.Add(item);
+                    if (item is not null) result.Add(item);
                 }
             }
 
@@ -215,7 +215,7 @@ namespace Ssz.Xi.Client.Internal.Lists
 
             foreach (XiDataListItem item in ListItemsManager)
             {
-                if (item.PendingWriteValueStatusTimestamp != null &&
+                if (item.PendingWriteValueStatusTimestamp is not null &&
                     item.PendingWriteValueStatusTimestamp.Value.ValueStatusCode != ValueStatusCode.Unknown)
                 {
                     switch (item.PendingWriteValueStatusTimestamp.Value.Value.ValueStorageType)
@@ -243,7 +243,7 @@ namespace Ssz.Xi.Client.Internal.Lists
                 foreach (var kvp in writeValueDictionary)
                 {
                     XiDataListItem item = kvp.Value;
-                    if (item.PendingWriteValueStatusTimestamp != null &&
+                    if (item.PendingWriteValueStatusTimestamp is not null &&
                         item.PendingWriteValueStatusTimestamp.Value.ValueStatusCode != ValueStatusCode.Unknown)
                     {
                         var statusCode = XiStatusCode.MakeStatusCode(
@@ -278,10 +278,10 @@ namespace Ssz.Xi.Client.Internal.Lists
             }
 
             var listXiValues = new List<XiDataListItem>();
-            if (writeValueArrays != null)
+            if (writeValueArrays is not null)
             {
                 List<AliasResult>? listAliasResult = Context.WriteData(ServerListId, writeValueArrays);
-                if (listAliasResult != null)
+                if (listAliasResult is not null)
                 {
                     foreach (AliasResult aliasResult in listAliasResult)
                     {
@@ -318,7 +318,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         }
 
         /// <summary>
-        ///     result != null.
+        ///     result is not null.
         ///     This method is invoked as part of the callback processing.  It then invokes
         ///     or fires the event to notify the Xi client of data updates.
         /// </summary>
@@ -332,7 +332,7 @@ namespace Ssz.Xi.Client.Internal.Lists
 
         /// <summary>
         ///     Throws or invokes ElementValuesCallback event.
-        ///     changedListItems != null, changedValues != null
+        ///     changedListItems is not null, changedValues is not null
         /// </summary>
         /// <param name="changedListItems"></param>
         /// <param name="changedValues"></param>
@@ -341,13 +341,13 @@ namespace Ssz.Xi.Client.Internal.Lists
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiDataList.");
 
-            if (changedListItems == null) throw new ArgumentNullException(@"changedListItems");
-            if (changedValues == null) throw new ArgumentNullException(@"changedValues");
+            if (changedListItems is null) throw new ArgumentNullException(@"changedListItems");
+            if (changedValues is null) throw new ArgumentNullException(@"changedValues");
 
             try
             {
                 XiElementValuesCallbackEventHandler elementValuesCallback = ElementValuesCallback;
-                if (elementValuesCallback != null)
+                if (elementValuesCallback is not null)
                     elementValuesCallback(this, changedListItems.ToArray(), changedValues.ToArray());
             }
             catch (Exception ex)
@@ -371,7 +371,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         #region private functions
 
         /// <summary>
-        ///     If returnChangedListItems == true, result != null. Otherwise result == null.
+        ///     If returnChangedListItems == true, result is not null. Otherwise result is null.
         ///     This method processes the data value arrays received from the server by locating the data objects in the
         ///     data list for which values have been received and updating their values. If the notificationData parameter
         ///     is present (not null), then this method adds the received values to this notification data.
@@ -390,27 +390,27 @@ namespace Ssz.Xi.Client.Internal.Lists
                 changedListItems = null;
             }
 
-            if (readValueArrays != null)
+            if (readValueArrays is not null)
             {
-                if (readValueArrays.DoubleAlias != null)
+                if (readValueArrays.DoubleAlias is not null)
                 {
                     for (int idx = 0; idx < readValueArrays.DoubleAlias.Length; idx++)
                     {
                         XiDataListItem? item;
                         ListItemsManager.TryGetValue(readValueArrays.DoubleAlias[idx], out item);
-                        if (item != null && readValueArrays.DoubleValues != null &&
-                            readValueArrays.DoubleStatusCodes != null &&
-                            readValueArrays.DoubleTimeStamps != null)
+                        if (item is not null && readValueArrays.DoubleValues is not null &&
+                            readValueArrays.DoubleStatusCodes is not null &&
+                            readValueArrays.DoubleTimeStamps is not null)
                         {
                             item.UpdateValue(readValueArrays.DoubleValues[idx],
                                 readValueArrays.DoubleStatusCodes[idx],
                                 readValueArrays.DoubleTimeStamps[idx]
                                 );
-                            if (changedListItems != null) changedListItems.Add(item);
+                            if (changedListItems is not null) changedListItems.Add(item);
                         }
                     }
                 }
-                if (readValueArrays.UintAlias != null)
+                if (readValueArrays.UintAlias is not null)
                 {
                     // TODO: Verify
                     /*
@@ -426,30 +426,30 @@ namespace Ssz.Xi.Client.Internal.Lists
                     {
                         XiDataListItem? item;
                         ListItemsManager.TryGetValue(readValueArrays.UintAlias[idx], out item);
-                        if (item != null && readValueArrays.UintValues != null &&
-                            readValueArrays.UintStatusCodes != null &&
-                            readValueArrays.UintTimeStamps != null)
+                        if (item is not null && readValueArrays.UintValues is not null &&
+                            readValueArrays.UintStatusCodes is not null &&
+                            readValueArrays.UintTimeStamps is not null)
                         {
                             item.UpdateValue(readValueArrays.UintValues[idx], readValueArrays.UintStatusCodes[idx],
                                 readValueArrays.UintTimeStamps[idx]);
-                            if (changedListItems != null) changedListItems.Add(item);
+                            if (changedListItems is not null) changedListItems.Add(item);
                         }
                     }
                 }
-                if (readValueArrays.ObjectAlias != null)
+                if (readValueArrays.ObjectAlias is not null)
                 {
                     for (int idx = 0; idx < readValueArrays.ObjectAlias.Length; idx++)
                     {
                         XiDataListItem? item;
                         ListItemsManager.TryGetValue(readValueArrays.ObjectAlias[idx], out item);
-                        if (item != null && readValueArrays.ObjectValues != null &&
-                            readValueArrays.ObjectStatusCodes != null &&
-                            readValueArrays.ObjectTimeStamps != null)
+                        if (item is not null && readValueArrays.ObjectValues is not null &&
+                            readValueArrays.ObjectStatusCodes is not null &&
+                            readValueArrays.ObjectTimeStamps is not null)
                         {
                             item.UpdateValue(readValueArrays.ObjectValues[idx], readValueArrays.ObjectStatusCodes[idx],
                                 readValueArrays.ObjectTimeStamps[idx]
                                 );
-                            if (changedListItems != null) changedListItems.Add(item);
+                            if (changedListItems is not null) changedListItems.Add(item);
                         }
                     }
                 }

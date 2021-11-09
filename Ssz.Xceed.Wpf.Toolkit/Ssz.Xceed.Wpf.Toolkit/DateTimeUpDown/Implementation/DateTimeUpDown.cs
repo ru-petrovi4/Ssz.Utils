@@ -54,7 +54,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnFormatChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var dateTimeUpDown = o as DateTimeUpDown;
-            if (dateTimeUpDown != null)
+            if (dateTimeUpDown is not null)
                 dateTimeUpDown.OnFormatChanged((DateTimeFormat) e.OldValue, (DateTimeFormat) e.NewValue);
         }
 
@@ -95,7 +95,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private static void OnFormatStringChanged(DependencyObject o, DependencyPropertyChangedEventArgs e)
         {
             var dateTimeUpDown = o as DateTimeUpDown;
-            if (dateTimeUpDown != null)
+            if (dateTimeUpDown is not null)
                 dateTimeUpDown.OnFormatStringChanged((string) e.OldValue, (string) e.NewValue);
         }
 
@@ -129,7 +129,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         public override void OnApplyTemplate()
         {
-            if (TextBox != null)
+            if (TextBox is not null)
             {
                 TextBox.SelectionChanged -= TextBox_SelectionChanged;
                 TextBox.GotFocus -= TextBox_GotFocus;
@@ -137,7 +137,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
             base.OnApplyTemplate();
 
-            if (TextBox != null)
+            if (TextBox is not null)
             {
                 TextBox.SelectionChanged += TextBox_SelectionChanged;
                 TextBox.GotFocus += TextBox_GotFocus;
@@ -173,8 +173,8 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
-            var selectionStart = _selectedDateTimeInfo != null ? _selectedDateTimeInfo.StartPosition : 0;
-            var selectionLength = _selectedDateTimeInfo != null ? _selectedDateTimeInfo.Length : 0;
+            var selectionStart = _selectedDateTimeInfo is not null ? _selectedDateTimeInfo.StartPosition : 0;
+            var selectionLength = _selectedDateTimeInfo is not null ? _selectedDateTimeInfo.Length : 0;
 
             switch (e.Key)
             {
@@ -276,7 +276,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         protected override string ConvertValueToText()
         {
-            if (Value == null)
+            if (Value is null)
                 return string.Empty;
 
             return Value.Value.ToString(GetFormatString(Format), CultureInfo);
@@ -295,7 +295,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
                     validDirections = validDirections | ValidSpinDirections.Decrease;
             }
 
-            if (Spinner != null)
+            if (Spinner is not null)
                 Spinner.ValidSpinDirection = validDirections;
         }
 
@@ -303,7 +303,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         {
             //whenever the value changes we need to parse out the value into out DateTimeInfo segments so we can keep track of the individual pieces
             //but only if it is not null
-            if (newValue != null)
+            if (newValue is not null)
                 ParseValueIntoDateTimeInfo();
 
             base.OnValueChanged(oldValue, newValue);
@@ -332,7 +332,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (_selectedDateTimeInfo == null) Select(GetDateTimeInfo(0));
+            if (_selectedDateTimeInfo is null) Select(GetDateTimeInfo(0));
         }
 
         #endregion //Event Hanlders
@@ -349,7 +349,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private void FormatUpdated()
         {
             InitializeDateTimeInfoList();
-            if (Value != null)
+            if (Value is not null)
                 ParseValueIntoDateTimeInfo();
 
             // Update the Text representation of the value.
@@ -615,7 +615,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
             _dateTimeInfoList.ForEach(info =>
             {
-                if (info.Format == null)
+                if (info.Format is null)
                 {
                     info.StartPosition = text.Length;
                     info.Length = info.Content.Length;
@@ -643,7 +643,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
             CommitInput();
 
-            var selectedDateStartPosition = _selectedDateTimeInfo != null ? _selectedDateTimeInfo.StartPosition : 0;
+            var selectedDateStartPosition = _selectedDateTimeInfo is not null ? _selectedDateTimeInfo.StartPosition : 0;
             var direction = nextSelectionStart - selectedDateStartPosition;
             if (direction > 0)
                 Select(GetNextDateTimeInfo(nextSelectionStart));
@@ -660,14 +660,14 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private DateTimeInfo GetNextDateTimeInfo(int nextSelectionStart)
         {
             var nextDateTimeInfo = GetDateTimeInfo(nextSelectionStart);
-            if (nextDateTimeInfo == null) nextDateTimeInfo = _dateTimeInfoList.First();
+            if (nextDateTimeInfo is null) nextDateTimeInfo = _dateTimeInfoList.First();
 
             var initialDateTimeInfo = nextDateTimeInfo;
 
             while (nextDateTimeInfo.Type == DateTimePart.Other)
             {
                 nextDateTimeInfo = GetDateTimeInfo(nextDateTimeInfo.StartPosition + nextDateTimeInfo.Length);
-                if (nextDateTimeInfo == null) nextDateTimeInfo = _dateTimeInfoList.First();
+                if (nextDateTimeInfo is null) nextDateTimeInfo = _dateTimeInfoList.First();
                 if (Equals(nextDateTimeInfo, initialDateTimeInfo))
                     throw new InvalidOperationException("Couldn't find a valid DateTimeInfo.");
             }
@@ -678,14 +678,14 @@ namespace Ssz.Xceed.Wpf.Toolkit
         private DateTimeInfo GetPreviousDateTimeInfo(int previousSelectionStart)
         {
             var previousDateTimeInfo = GetDateTimeInfo(previousSelectionStart);
-            if (previousDateTimeInfo == null) previousDateTimeInfo = _dateTimeInfoList.Last();
+            if (previousDateTimeInfo is null) previousDateTimeInfo = _dateTimeInfoList.Last();
 
             var initialDateTimeInfo = previousDateTimeInfo;
 
             while (previousDateTimeInfo.Type == DateTimePart.Other)
             {
                 previousDateTimeInfo = GetDateTimeInfo(previousDateTimeInfo.StartPosition - 1);
-                if (previousDateTimeInfo == null) previousDateTimeInfo = _dateTimeInfoList.Last();
+                if (previousDateTimeInfo is null) previousDateTimeInfo = _dateTimeInfoList.Last();
                 if (Equals(previousDateTimeInfo, initialDateTimeInfo))
                     throw new InvalidOperationException("Couldn't find a valid DateTimeInfo.");
             }
@@ -695,7 +695,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private void Select(DateTimeInfo info)
         {
-            if (info != null)
+            if (info is not null)
             {
                 _fireSelectionChangedEvent = false;
                 TextBox.Select(info.StartPosition, info.Length);
@@ -776,7 +776,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
             var info = _selectedDateTimeInfo;
 
             //this only occurs when the user manually type in a value for the Value Property
-            if (info == null)
+            if (info is null)
                 info = _dateTimeInfoList[0];
 
             DateTime? result = null;
@@ -855,7 +855,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private bool IsLowerThan(DateTime? value1, DateTime? value2)
         {
-            if (value1 == null || value2 == null)
+            if (value1 is null || value2 is null)
                 return false;
 
             return value1.Value < value2.Value;
@@ -863,7 +863,7 @@ namespace Ssz.Xceed.Wpf.Toolkit
 
         private bool IsGreaterThan(DateTime? value1, DateTime? value2)
         {
-            if (value1 == null || value2 == null)
+            if (value1 is null || value2 is null)
                 return false;
 
             return value1.Value > value2.Value;

@@ -39,7 +39,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
         private void SetIsActive()
         {
-            if (Model != null) Model.IsActive = true;
+            if (Model is not null) Model.IsActive = true;
         }
 
         #endregion
@@ -78,9 +78,9 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         /// </summary>
         protected virtual void OnModelChanged(DependencyPropertyChangedEventArgs e)
         {
-            if (e.OldValue != null) ((LayoutContent) e.OldValue).PropertyChanged -= Model_PropertyChanged;
+            if (e.OldValue is not null) ((LayoutContent) e.OldValue).PropertyChanged -= Model_PropertyChanged;
 
-            if (Model != null)
+            if (Model is not null)
             {
                 Model.PropertyChanged += Model_PropertyChanged;
                 SetLayoutItem(Model.Root.Manager.GetLayoutItemFromModel(Model));
@@ -94,11 +94,11 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
         private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "IsEnabled")
-                if (Model != null)
+                if (Model is not null)
                 {
                     IsEnabled = Model.IsEnabled;
                     if (!IsEnabled && Model.IsActive)
-                        if (Model.Parent != null && Model.Parent is LayoutDocumentPane)
+                        if (Model.Parent is not null && Model.Parent is LayoutDocumentPane)
                             ((LayoutDocumentPane) Model.Parent).SetNextSelectedIndex();
                 }
         }

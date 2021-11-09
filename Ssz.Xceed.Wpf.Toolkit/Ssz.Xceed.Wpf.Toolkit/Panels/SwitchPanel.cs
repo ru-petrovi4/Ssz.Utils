@@ -55,7 +55,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
             {
                 var result = 0;
 
-                if (HasLoaded && _currentLayoutPanel != null)
+                if (HasLoaded && _currentLayoutPanel is not null)
                     result = _currentLayoutPanel.VisualChildrenCountInternal;
                 else
                     result = base.VisualChildrenCount;
@@ -90,12 +90,12 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
             {
                 var isScrollingPhys = false;
 
-                if (_scrollOwner != null)
+                if (_scrollOwner is not null)
                 {
                     isScrollingPhys = true;
 
-                    if (ActiveLayout != null && ActiveLayout is IScrollInfo)
-                        isScrollingPhys = ((IScrollInfo) ActiveLayout).ScrollOwner == null;
+                    if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
+                        isScrollingPhys = ((IScrollInfo) ActiveLayout).ScrollOwner is null;
                 }
 
                 return isScrollingPhys;
@@ -142,7 +142,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         protected override Visual GetVisualChild(int index)
         {
-            if (HasLoaded && _currentLayoutPanel != null)
+            if (HasLoaded && _currentLayoutPanel is not null)
                 return _currentLayoutPanel.GetVisualChildInternal(index);
 
             return base.GetVisualChild(index);
@@ -155,7 +155,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
             if (visualAdded is UIElement)
             {
                 // do not issue notification for a child that is exiting
-                if (_currentLayoutPanel == null || !_currentLayoutPanel.IsRemovingInternalChild)
+                if (_currentLayoutPanel is null || !_currentLayoutPanel.IsRemovingInternalChild)
                     foreach (var panel in Layouts)
                         panel.OnNotifyVisualChildAddedInternal(visualAdded as UIElement);
             }
@@ -164,7 +164,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
                 foreach (var panel in Layouts) panel.OnNotifyVisualChildRemovedInternal(visualRemoved as UIElement);
             }
 
-            if (_currentLayoutPanel != null)
+            if (_currentLayoutPanel is not null)
                 _currentLayoutPanel.OnSwitchParentVisualChildrenChanged(visualAdded, visualRemoved);
             else
                 base.OnVisualChildrenChanged(visualAdded, visualRemoved);
@@ -201,7 +201,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
             UIElement result = null;
             AnimationPanel ignore;
             result = AnimationPanel.FindAncestorChildOfAnimationPanel(presenter, out ignore);
-            if (result != null)
+            if (result is not null)
             {
                 _presenters.Add(presenter);
                 presenter.SwapTheTemplate(ActiveSwitchTemplate, false);
@@ -217,7 +217,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         internal void UnregisterPresenter(SwitchPresenter presenter, DependencyObject container)
         {
-            if (container != null)
+            if (container is not null)
             {
                 _presenters.Remove(presenter);
                 presenter.SwapTheTemplate(null, false);
@@ -226,7 +226,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         internal void UpdateSwitchTemplate()
         {
-            SetActiveSwitchTemplate(ActiveLayout == null || ActiveLayout.SwitchTemplate == null
+            SetActiveSwitchTemplate(ActiveLayout is null || ActiveLayout.SwitchTemplate is null
                 ? SwitchTemplate
                 : ActiveLayout.SwitchTemplate);
         }
@@ -243,7 +243,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             if (e.Action != NotifyCollectionChangedAction.Move)
             {
-                if (e.NewItems != null)
+                if (e.NewItems is not null)
                     foreach (AnimationPanel panel in e.NewItems)
                     {
                         AddLogicalChild(panel);
@@ -254,20 +254,20 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
                         if (IsLoaded)
                             foreach (UIElement child in InternalChildren)
                             {
-                                if (child == null)
+                                if (child is null)
                                     continue;
 
                                 panel.OnNotifyVisualChildAddedInternal(child);
                             }
                     }
 
-                if (e.OldItems != null)
+                if (e.OldItems is not null)
                     foreach (AnimationPanel panel in e.OldItems)
                     {
                         if (IsLoaded)
                             foreach (UIElement child in InternalChildren)
                             {
-                                if (child == null)
+                                if (child is null)
                                     continue;
 
                                 panel.OnNotifyVisualChildRemovedInternal(child);
@@ -293,7 +293,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         private void OnScrollChange()
         {
-            if (ScrollOwner != null) ScrollOwner.InvalidateScrollInfo();
+            if (ScrollOwner is not null) ScrollOwner.InvalidateScrollInfo();
         }
 
         private void SetScrollingData(Size viewport, Size extent, Vector offset)
@@ -330,7 +330,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
             {
                 child = parent;
                 parent = VisualTreeHelper.GetParent(child);
-            } while (parent != null && parent != this);
+            } while (parent is not null && parent != this);
 
             if (parent == this) index = Children.IndexOf((UIElement) child);
 
@@ -383,12 +383,12 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         protected virtual void OnActiveLayoutChanged(DependencyPropertyChangedEventArgs e)
         {
-            if (_currentLayoutPanel != null) _currentLayoutPanel.DeactivateLayout();
+            if (_currentLayoutPanel is not null) _currentLayoutPanel.DeactivateLayout();
             _currentLayoutPanel = e.NewValue as AnimationPanel;
-            if (_currentLayoutPanel != null)
+            if (_currentLayoutPanel is not null)
             {
                 var info = _currentLayoutPanel as IScrollInfo;
-                if (info != null && info.ScrollOwner != null) info.ScrollOwner.InvalidateScrollInfo();
+                if (info is not null && info.ScrollOwner is not null) info.ScrollOwner.InvalidateScrollInfo();
 
                 _currentLayoutPanel.ActivateLayout();
             }
@@ -467,14 +467,14 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
                 var currentChildren = new List<UIElement>(InternalChildren.Count);
                 foreach (UIElement child in InternalChildren)
                 {
-                    if (child == null)
+                    if (child is null)
                         continue;
 
                     currentChildren.Add(child);
                 }
 
                 foreach (var presenter in _presenters)
-                    if (presenter._switchRoot != null && currentChildren.Contains(presenter._switchRoot))
+                    if (presenter._switchRoot is not null && currentChildren.Contains(presenter._switchRoot))
                         presenter.SwapTheTemplate(template, AreLayoutSwitchesAnimated);
             }
         }
@@ -616,10 +616,10 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         protected virtual void OnLayoutsChanged(DependencyPropertyChangedEventArgs e)
         {
-            if (e.NewValue != null)
+            if (e.NewValue is not null)
                 (e.NewValue as ObservableCollection<AnimationPanel>).CollectionChanged
                     += LayoutsCollectionChanged;
-            if (e.OldValue != null)
+            if (e.OldValue is not null)
                 (e.OldValue as ObservableCollection<AnimationPanel>).CollectionChanged
                     -= LayoutsCollectionChanged;
         }
@@ -732,7 +732,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         internal static RoutedEventArgs RaiseActiveLayoutChangedEvent(UIElement target)
         {
-            if (target == null)
+            if (target is null)
                 return null;
 
             var args = new RoutedEventArgs();
@@ -762,7 +762,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         private static RoutedEventArgs RaiseSwitchAnimationBegunEvent(UIElement target)
         {
-            if (target == null)
+            if (target is null)
                 return null;
 
             var args = new RoutedEventArgs();
@@ -792,7 +792,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         private static RoutedEventArgs RaiseSwitchAnimationCompletedEvent(UIElement target)
         {
-            if (target == null)
+            if (target is null)
                 return null;
 
             var args = new RoutedEventArgs();
@@ -809,14 +809,14 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+                if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                     return ((IScrollInfo) ActiveLayout).CanHorizontallyScroll;
 
                 return _allowHorizontal;
             }
             set
             {
-                if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+                if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                     ((IScrollInfo) ActiveLayout).CanHorizontallyScroll = value;
                 else
                     _allowHorizontal = value;
@@ -827,14 +827,14 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+                if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                     return ((IScrollInfo) ActiveLayout).CanVerticallyScroll;
 
                 return _allowVertical;
             }
             set
             {
-                if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+                if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                     ((IScrollInfo) ActiveLayout).CanVerticallyScroll = value;
                 else
                     _allowVertical = value;
@@ -845,7 +845,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+                if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                     return ((IScrollInfo) ActiveLayout).ExtentHeight;
 
                 return _extent.Height;
@@ -856,7 +856,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+                if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                     return ((IScrollInfo) ActiveLayout).ExtentWidth;
 
                 return _extent.Width;
@@ -867,7 +867,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+                if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                     return ((IScrollInfo) ActiveLayout).HorizontalOffset;
 
                 return _offset.X;
@@ -876,7 +876,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         public void LineDown()
         {
-            if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+            if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                 ((IScrollInfo) ActiveLayout).LineDown();
             else
                 SetVerticalOffset(VerticalOffset + 1d);
@@ -884,7 +884,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         public void LineLeft()
         {
-            if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+            if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                 ((IScrollInfo) ActiveLayout).LineLeft();
             else
                 SetHorizontalOffset(VerticalOffset - 1d);
@@ -892,7 +892,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         public void LineRight()
         {
-            if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+            if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                 ((IScrollInfo) ActiveLayout).LineRight();
             else
                 SetHorizontalOffset(VerticalOffset + 1d);
@@ -900,7 +900,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         public void LineUp()
         {
-            if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+            if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                 ((IScrollInfo) ActiveLayout).LineUp();
             else
                 SetVerticalOffset(VerticalOffset + 1d);
@@ -908,10 +908,10 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         public Rect MakeVisible(Visual visual, Rect rectangle)
         {
-            if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+            if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                 return ((IScrollInfo) ActiveLayout).MakeVisible(visual, rectangle);
 
-            if (rectangle.IsEmpty || visual == null || visual == this || !IsAncestorOf(visual))
+            if (rectangle.IsEmpty || visual is null || visual == this || !IsAncestorOf(visual))
                 return Rect.Empty;
 
             rectangle = visual.TransformToAncestor(this).TransformBounds(rectangle);
@@ -948,7 +948,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         public void MouseWheelDown()
         {
-            if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+            if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                 ((IScrollInfo) ActiveLayout).MouseWheelDown();
             else
                 SetVerticalOffset(VerticalOffset + SystemParameters.WheelScrollLines);
@@ -956,7 +956,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         public void MouseWheelLeft()
         {
-            if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+            if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                 ((IScrollInfo) ActiveLayout).MouseWheelLeft();
             else
                 SetVerticalOffset(VerticalOffset - 3d);
@@ -964,7 +964,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         public void MouseWheelRight()
         {
-            if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+            if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                 ((IScrollInfo) ActiveLayout).MouseWheelRight();
             else
                 SetVerticalOffset(VerticalOffset + 3d);
@@ -972,7 +972,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         public void MouseWheelUp()
         {
-            if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+            if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                 ((IScrollInfo) ActiveLayout).MouseWheelUp();
             else
                 SetVerticalOffset(VerticalOffset - SystemParameters.WheelScrollLines);
@@ -980,7 +980,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         public void PageDown()
         {
-            if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+            if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                 ((IScrollInfo) ActiveLayout).PageDown();
             else
                 SetVerticalOffset(VerticalOffset + ViewportHeight);
@@ -988,7 +988,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         public void PageLeft()
         {
-            if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+            if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                 ((IScrollInfo) ActiveLayout).PageLeft();
             else
                 SetHorizontalOffset(HorizontalOffset - ViewportWidth);
@@ -996,7 +996,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         public void PageRight()
         {
-            if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+            if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                 ((IScrollInfo) ActiveLayout).PageRight();
             else
                 SetHorizontalOffset(HorizontalOffset + ViewportWidth);
@@ -1004,7 +1004,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
 
         public void PageUp()
         {
-            if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+            if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                 ((IScrollInfo) ActiveLayout).PageUp();
             else
                 SetVerticalOffset(VerticalOffset - ViewportHeight);
@@ -1016,7 +1016,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
             set
             {
                 foreach (var layout in Layouts)
-                    if (layout != null && layout is IScrollInfo)
+                    if (layout is not null && layout is IScrollInfo)
                         ((IScrollInfo) layout).ScrollOwner = value;
 
                 if (_scrollOwner != value)
@@ -1058,7 +1058,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+                if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                     return ((IScrollInfo) ActiveLayout).VerticalOffset;
 
                 return _offset.Y;
@@ -1069,7 +1069,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+                if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                     return ((IScrollInfo) ActiveLayout).ViewportHeight;
 
                 return _viewport.Height;
@@ -1080,7 +1080,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.Panels
         {
             get
             {
-                if (ActiveLayout != null && ActiveLayout is IScrollInfo)
+                if (ActiveLayout is not null && ActiveLayout is IScrollInfo)
                     return ((IScrollInfo) ActiveLayout).ViewportWidth;
 
                 return _viewport.Width;

@@ -21,12 +21,12 @@ namespace Ssz.Utils.MonitoredUndo
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
+            if (obj is null)
             {
                 return false;
             }
             var tuple = obj as ChangeKey<T1, T2>;
-            if (tuple == null)
+            if (tuple is null)
             {
                 return false;
             }

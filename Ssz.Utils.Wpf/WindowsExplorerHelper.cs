@@ -49,7 +49,7 @@ namespace Ssz.Utils.Wpf
         {
             foreach (object obj in comObjs)
             {
-                if (obj != null && Marshal.IsComObject(obj))
+                if (obj is not null && Marshal.IsComObject(obj))
                     Marshal.ReleaseComObject(obj);
             }
         }

@@ -57,16 +57,16 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         {
             const string usageError =
                 @"Use a EditorTemplateDefinition instead of EditorDefinition in order to use the '{0}' property.";
-            if (EditingTemplate != null)
+            if (EditingTemplate is not null)
                 throw new InvalidOperationException(string.Format(usageError, "EditingTemplate"));
 
-            if (TargetProperties != null && TargetProperties.Count > 0)
+            if (TargetProperties is not null && TargetProperties.Count > 0)
                 throw new InvalidOperationException(string.Format(usageError, "TargetProperties"));
 
             var properties = new List<object>();
-            if (PropertiesDefinitions != null)
+            if (PropertiesDefinitions is not null)
                 foreach (var def in PropertiesDefinitions)
-                    if (def.TargetProperties != null)
+                    if (def.TargetProperties is not null)
                         properties.AddRange(def.TargetProperties.Cast<object>());
 
             TargetProperties = properties;

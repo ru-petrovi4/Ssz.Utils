@@ -102,7 +102,7 @@ namespace Ssz.Utils.Serialization
 
             if (disposing)
             {
-                if (_stringsList != null)
+                if (_stringsList is not null)
                 {
                     _baseStream.Seek(_streamEndPosition, SeekOrigin.Begin);
                 }
@@ -406,7 +406,7 @@ namespace Ssz.Utils.Serialization
             if (typeCode == SerializedType.NullType) return null;
 
             var arr = (IEnumerable?)ReadArrayInternal(typeCode, typeof(T));
-            if (arr == null) return new List<T>();
+            if (arr is null) return new List<T>();
             else return new List<T>(arr.OfType<T>());
         }
 
@@ -462,7 +462,7 @@ namespace Ssz.Utils.Serialization
             var keys = (TK[]?)ReadArrayInternal(ReadTypeCode(), typeof(TK));
             var values = (TV[]?)ReadArrayInternal(ReadTypeCode(), typeof(TV));
 
-            if (keys == null || values == null) throw new InvalidOperationException();
+            if (keys is null || values is null) throw new InvalidOperationException();
 
             for (int i = 0; i < keys.Length; i++)
             {
@@ -974,7 +974,7 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.StringDirect:
                     return _binaryReader.ReadString();
                 case SerializedType.OptimizedStringType:                    
-                    if (_stringsList == null) throw new InvalidOperationException();
+                    if (_stringsList is null) throw new InvalidOperationException();
                     int index = ReadOptimizedInt32();
                     return _stringsList[index];
                 default:
@@ -1200,7 +1200,7 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.OtherType:
                 {
                     var type = ReadOptimizedType();
-                    if (type == null) return null;
+                    if (type is null) return null;
                     string s = ReadOptimizedString()!;
                     return JsonSerializer.Deserialize(s, type);
                 }
@@ -1259,16 +1259,16 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.OwnedDataSerializableType:
                 {
                     var type = ReadOptimizedType();
-                    if (type == null) throw new InvalidOperationException();
+                    if (type is null) throw new InvalidOperationException();
                     object? result = Activator.CreateInstance(type);
-                    if (result == null) throw new InvalidOperationException();
+                    if (result is null) throw new InvalidOperationException();
                     ((IOwnedDataSerializable)result).DeserializeOwnedData(this, null);
                     return result;
                 }
                 case SerializedType.OptimizedEnumType:
                 {
                     Type? enumType = ReadOptimizedType();
-                    if (enumType == null) return null;
+                    if (enumType is null) return null;
                     Type underlyingType = Enum.GetUnderlyingType(enumType);
 
                     if ((underlyingType == typeof (int)) || (underlyingType == typeof (uint)) ||
@@ -1283,7 +1283,7 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.EnumType:
                 {
                     Type? enumType = ReadOptimizedType();
-                    if (enumType == null) return null;
+                    if (enumType is null) return null;
                     Type underlyingType = Enum.GetUnderlyingType(enumType);
 
                     if (underlyingType == typeof (Int32)) return Enum.ToObject(enumType, ReadInt32());
@@ -1304,7 +1304,7 @@ namespace Ssz.Utils.Serialization
 
                 case SerializedType.OptimizedStringType:
                 {
-                    if (_stringsList == null) throw new InvalidOperationException();
+                    if (_stringsList is null) throw new InvalidOperationException();
                     int index = ReadOptimizedInt32();
                     return _stringsList[index];
                 }
@@ -1312,7 +1312,7 @@ namespace Ssz.Utils.Serialization
                 default:
                 {
                     object? result = ReadArrayInternal(typeCode, typeof (object));
-                    if (result != null) return result;
+                    if (result is not null) return result;
 
                     throw new InvalidOperationException("Unrecognized TypeCode: " + typeCode);
                 }
@@ -1601,7 +1601,7 @@ namespace Ssz.Utils.Serialization
         /// <summary>
         ///     Determine whether the passed-in type code refers to an array type
         ///     and deserializes the array if it is.
-        ///     elementType != null
+        ///     elementType is not null
         ///     Returns null if not an array type.
         /// </summary>
         /// <param name="typeCode"> The SerializedType to check. </param>
@@ -1625,7 +1625,7 @@ namespace Ssz.Utils.Serialization
                     for (int i = 0; i < length; i++)
                     {
                         IOwnedDataSerializable? value = Activator.CreateInstance(elementType) as IOwnedDataSerializable;
-                        if (value == null) throw new InvalidOperationException();
+                        if (value is null) throw new InvalidOperationException();
                         ReadOwnedData(value, null);
                         result.SetValue(value, i);
                     }

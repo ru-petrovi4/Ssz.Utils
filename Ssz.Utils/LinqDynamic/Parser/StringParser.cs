@@ -12,7 +12,7 @@ namespace System.Linq.Dynamic.Core.Parser
     {
         public static string ParseString(string? s)
         {
-            if (s == null || s.Length < 2)
+            if (s is null || s.Length < 2)
             {
                 throw new ParseException(string.Format(CultureInfo.CurrentCulture, Res.InvalidStringLength, s, 2), 0);
             }

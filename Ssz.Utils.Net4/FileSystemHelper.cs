@@ -22,7 +22,7 @@ namespace Ssz.Utils
         public static IEnumerable<FileInfo> GetFilesByExtensions(this DirectoryInfo dir, SearchOption searchOption,
             params string[] extensions)
         {
-            if (extensions == null)
+            if (extensions is null)
                 throw new ArgumentNullException("extensions");
             IEnumerable<FileInfo> files = dir.EnumerateFiles("*", searchOption);
             return files.Where(f => extensions.Contains(f.Extension, StringComparer.InvariantCultureIgnoreCase));

@@ -249,42 +249,42 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Borders
         /// <param name="color">The new color.</param>
         internal void UpdateGlowColor(Color color)
         {
-            if (_leftGlowStop0 != null)
+            if (_leftGlowStop0 is not null)
             {
                 _leftGlowStop0.Color = color;
             }
 
-            if (_leftGlowStop1 != null)
+            if (_leftGlowStop1 is not null)
             {
                 _leftGlowStop1.Color = Color.FromArgb(0, color.R, color.G, color.B);
             }
 
-            if (_topGlowStop0 != null)
+            if (_topGlowStop0 is not null)
             {
                 _topGlowStop0.Color = color;
             }
 
-            if (_topGlowStop1 != null)
+            if (_topGlowStop1 is not null)
             {
                 _topGlowStop1.Color = Color.FromArgb(0, color.R, color.G, color.B);
             }
 
-            if (_rightGlowStop0 != null)
+            if (_rightGlowStop0 is not null)
             {
                 _rightGlowStop0.Color = color;
             }
 
-            if (_rightGlowStop1 != null)
+            if (_rightGlowStop1 is not null)
             {
                 _rightGlowStop1.Color = Color.FromArgb(0, color.R, color.G, color.B);
             }
 
-            if (_bottomGlowStop0 != null)
+            if (_bottomGlowStop0 is not null)
             {
                 _bottomGlowStop0.Color = color;
             }
 
-            if (_bottomGlowStop1 != null)
+            if (_bottomGlowStop1 is not null)
             {
                 _bottomGlowStop1.Color = Color.FromArgb(0, color.R, color.G, color.B);
             }
@@ -296,22 +296,22 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Borders
         /// <param name="newGlowSize">The new glow size.</param>
         internal void UpdateGlowSize(Thickness newGlowSize)
         {
-            if (_leftGlow != null)
+            if (_leftGlow is not null)
             {
                 _leftGlow.Width = Math.Abs(newGlowSize.Left);
             }
 
-            if (_topGlow != null)
+            if (_topGlow is not null)
             {
                 _topGlow.Height = Math.Abs(newGlowSize.Top);
             }
 
-            if (_rightGlow != null)
+            if (_rightGlow is not null)
             {
                 _rightGlow.Width = Math.Abs(newGlowSize.Right);
             }
 
-            if (_bottomGlow != null)
+            if (_bottomGlow is not null)
             {
                 _bottomGlow.Height = Math.Abs(newGlowSize.Bottom);
             }
@@ -324,7 +324,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Borders
         /// <param name="eventArgs">The new property event args.</param>
         private static void InnerGlowColorChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
         {
-            if (eventArgs.NewValue != null)
+            if (eventArgs.NewValue is not null)
             {
                 var innerGlowBorder = (InnerGlowBorder)dependencyObject;
                 innerGlowBorder.UpdateGlowColor((Color)eventArgs.NewValue);

@@ -26,7 +26,7 @@ namespace Ssz.Utils
                 }
                 memoryStream.Position = 0;
                 T clone;
-                if (func == null)
+                if (func is null)
                 {
                     clone = (T)Activator.CreateInstance(obj.GetType());
                 }

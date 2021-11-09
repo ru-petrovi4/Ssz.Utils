@@ -36,14 +36,14 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
         protected override string GetDefaultPropertyName()
         {
             var selectedObject = SelectedObject;
-            return selectedObject != null ? GetDefaultPropertyName(SelectedObject) : null;
+            return selectedObject is not null ? GetDefaultPropertyName(SelectedObject) : null;
         }
 
         protected override IEnumerable<PropertyItem> GenerateSubPropertiesCore()
         {
             var propertyItems = new List<PropertyItem>();
 
-            if (SelectedObject != null)
+            if (SelectedObject is not null)
                 try
                 {
                     var descriptors = GetPropertyDescriptors(SelectedObject);
@@ -51,7 +51,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
                     {
                         var propertyDef = GetPropertyDefinition(descriptor);
                         var isBrowsable = descriptor.IsBrowsable && PropertyContainer.AutoGenerateProperties;
-                        if (propertyDef != null) isBrowsable = propertyDef.IsBrowsable.GetValueOrDefault(isBrowsable);
+                        if (propertyDef is not null) isBrowsable = propertyDef.IsBrowsable.GetValueOrDefault(isBrowsable);
                         if (isBrowsable) propertyItems.Add(CreatePropertyItem(descriptor, propertyDef));
                     }
                 }
@@ -75,7 +75,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             InitializeDescriptorDefinition(definition, propertyDef);
 
             var propertyItem = new PropertyItem(definition);
-            Debug.Assert(SelectedObject != null);
+            Debug.Assert(SelectedObject is not null);
             propertyItem.Instance = SelectedObject;
             propertyItem.CategoryOrder = GetCategoryOrder(definition.CategoryValue);
 
@@ -84,14 +84,14 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
 
         private int GetCategoryOrder(object categoryValue)
         {
-            Debug.Assert(SelectedObject != null);
+            Debug.Assert(SelectedObject is not null);
 
-            if (categoryValue == null)
+            if (categoryValue is null)
                 return int.MaxValue;
 
             var order = int.MaxValue;
             var selectedObject = SelectedObject;
-            var orderAttributes = selectedObject != null
+            var orderAttributes = selectedObject is not null
                 ? (CategoryOrderAttribute[]) selectedObject.GetType()
                     .GetCustomAttributes(typeof(CategoryOrderAttribute), true)
                 : new CategoryOrderAttribute[0];
@@ -99,7 +99,7 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid
             var orderAttribute = orderAttributes
                 .FirstOrDefault(a => Equals(a.CategoryValue, categoryValue));
 
-            if (orderAttribute != null) order = orderAttribute.Order;
+            if (orderAttribute is not null) order = orderAttribute.Order;
 
             return order;
         }

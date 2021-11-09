@@ -31,28 +31,28 @@ namespace Ssz.Xceed.Wpf.Toolkit.Core.Utilities
         internal static void AddHandler(DependencyObject element, RoutedEvent routedEvent, Delegate handler)
         {
             var uie = element as UIElement;
-            if (uie != null)
+            if (uie is not null)
             {
                 uie.AddHandler(routedEvent, handler);
             }
             else
             {
                 var ce = element as ContentElement;
-                if (ce != null) ce.AddHandler(routedEvent, handler);
+                if (ce is not null) ce.AddHandler(routedEvent, handler);
             }
         }
 
         internal static void RemoveHandler(DependencyObject element, RoutedEvent routedEvent, Delegate handler)
         {
             var uie = element as UIElement;
-            if (uie != null)
+            if (uie is not null)
             {
                 uie.RemoveHandler(routedEvent, handler);
             }
             else
             {
                 var ce = element as ContentElement;
-                if (ce != null) ce.RemoveHandler(routedEvent, handler);
+                if (ce is not null) ce.RemoveHandler(routedEvent, handler);
             }
         }
     }

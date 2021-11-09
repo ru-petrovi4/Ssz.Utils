@@ -26,10 +26,10 @@ namespace System.Linq.Dynamic.Core.Parser
             CultureInfo? culture
             )
         {
-            //if (match == null) throw new ArgumentNullException("match");
+            //if (match is null) throw new ArgumentNullException("match");
             // Get a field for which the value parameter can be converted to the specified field type.
             for (int i = 0; i < match.Length; i++)
-                if (ChangeTypeInternal(value, match[i].FieldType) != null)
+                if (ChangeTypeInternal(value, match[i].FieldType) is not null)
                     return match[i];
             throw new MissingFieldException();
         }
@@ -49,7 +49,7 @@ namespace System.Linq.Dynamic.Core.Parser
             args.CopyTo(arguments, 0);
             myBinderState.args = arguments;
             state = myBinderState;
-            //if (match == null) throw new ArgumentNullException();
+            //if (match is null) throw new ArgumentNullException();
             // Find a method that has the same parameters as those of the args parameter.
             for (int i = 0; i < match.Length; i++)
             {
@@ -63,7 +63,7 @@ namespace System.Linq.Dynamic.Core.Parser
                 for (int j = 0; j < args.Length; j++)
                 {
                     // If the names parameter is not null, then reorder args.
-                    if (names != null)
+                    if (names is not null)
                     {
                         if (names.Length != args.Length)
                             throw new ArgumentException("names and args must have the same number of elements.");
@@ -72,7 +72,7 @@ namespace System.Linq.Dynamic.Core.Parser
                                 args[j] = myBinderState.args[k];
                     }
                     // Determine whether the types specified by the user can be converted to the parameter type.
-                    if (ChangeTypeInternal(args[j], parameters[j].ParameterType) != null)
+                    if (ChangeTypeInternal(args[j], parameters[j].ParameterType) is not null)
                         count += 1;
                     else
                         break;
@@ -112,7 +112,7 @@ namespace System.Linq.Dynamic.Core.Parser
             ParameterModifier[]? modifiers
             )
         {
-            //if (match == null) throw new ArgumentNullException("match");
+            //if (match is null) throw new ArgumentNullException("match");
             for (int i = 0; i < match.Length; i++)
             {
                 // Count the number of parameters that match.
@@ -142,8 +142,8 @@ namespace System.Linq.Dynamic.Core.Parser
             ParameterModifier[]? modifiers
             )
         {
-            //if (match == null) throw new ArgumentNullException("match");
-            int indexesLength = indexes != null ? indexes.Length : 0;
+            //if (match is null) throw new ArgumentNullException("match");
+            int indexesLength = indexes is not null ? indexes.Length : 0;
             for (int i = 0; i < match.Length; i++)
             {
                 // Count the number of indexes that match.
@@ -163,7 +163,7 @@ namespace System.Linq.Dynamic.Core.Parser
                 if (count == indexesLength)
                 {
                     // Determine whether the return type can be converted to the properties type.
-                    if (returnType == null || CanConvertFrom(returnType, match[i].PropertyType))
+                    if (returnType is null || CanConvertFrom(returnType, match[i].PropertyType))
                         return match[i];
                     else
                         continue;
@@ -177,7 +177,7 @@ namespace System.Linq.Dynamic.Core.Parser
             Type myChangeType
             )
         {
-            if (value == null) return null;
+            if (value is null) return null;
             // Determine whether the value parameter can be converted to a value of type myType.
             if (CanConvertFrom(value.GetType(), myChangeType))
                 // Return the converted object.
