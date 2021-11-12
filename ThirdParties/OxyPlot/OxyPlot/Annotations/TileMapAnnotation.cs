@@ -35,7 +35,7 @@ namespace OxyPlot.Annotations
         /// <summary>
         /// The current number of downloads
         /// </summary>
-        private int numberOfDownloads;
+        //private int numberOfDownloads;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TileMapAnnotation" /> class.
@@ -251,46 +251,49 @@ namespace OxyPlot.Annotations
         /// <returns>The image</returns>
         private OxyImage Download(string uri)
         {
-            OxyImage img = null;
-            var mre = new ManualResetEvent(false);
-            var request = (HttpWebRequest)WebRequest.Create(uri);
-            request.Method = "GET";
-            request.BeginGetResponse(
-               r =>
-               {
-                   try
-                   {
-                       if (request.HaveResponse)
-                       {
-                           var response = request.EndGetResponse(r);
-                           var stream = response.GetResponseStream();
+            //OxyImage img = null;
+            //var mre = new ManualResetEvent(false);
+            //var request = (HttpWebRequest)WebRequest.Create(uri);
+            //request.Method = "GET";
+            //request.BeginGetResponse(
+            //   r =>
+            //   {
+            //       try
+            //       {
+            //           if (request.HaveResponse)
+            //           {
+            //               var response = request.EndGetResponse(r);
+            //               var stream = response.GetResponseStream();
 
-                           var ms = new MemoryStream();
-                           stream.CopyTo(ms);
-                           var buffer = ms.ToArray();
+            //               var ms = new MemoryStream();
+            //               stream.CopyTo(ms);
+            //               var buffer = ms.ToArray();
 
-                           img = new OxyImage(buffer);
-                           this.images[uri] = img;
-                       }
-                   }
-                   catch (Exception e)
-                   {
-                       var ie = e;
-                       while (ie != null)
-                       {
-                           System.Diagnostics.Debug.WriteLine(ie.Message);
-                           ie = ie.InnerException;
-                       }
-                   }
-                   finally
-                   {
-                       mre.Set();
-                   }
-               },
-               request);
+            //               img = new OxyImage(buffer);
+            //               this.images[uri] = img;
+            //           }
+            //       }
+            //       catch (Exception e)
+            //       {
+            //           var ie = e;
+            //           while (ie != null)
+            //           {
+            //               System.Diagnostics.Debug.WriteLine(ie.Message);
+            //               ie = ie.InnerException;
+            //           }
+            //       }
+            //       finally
+            //       {
+            //           mre.Set();
+            //       }
+            //   },
+            //   request);
 
-            mre.WaitOne();
-            return img;
+            //mre.WaitOne();
+            //return img;
+
+            // TODO implement using HttpClient
+            return null;
         }
 
         /// <summary>
@@ -298,39 +301,41 @@ namespace OxyPlot.Annotations
         /// </summary>
         private void BeginDownload()
         {
-            if (this.numberOfDownloads >= this.MaxNumberOfDownloads)
-            {
-                return;
-            }
+            //if (this.numberOfDownloads >= this.MaxNumberOfDownloads)
+            //{
+            //    return;
+            //}
 
-            string uri = this.queue.Dequeue();
-            var request = (HttpWebRequest)WebRequest.Create(uri);
-            request.Method = "GET";
-            Interlocked.Increment(ref this.numberOfDownloads);
-            request.BeginGetResponse(
-                r =>
-                {
-                    Interlocked.Decrement(ref this.numberOfDownloads);
-                    try
-                    {
-                        if (request.HaveResponse)
-                        {
-                            var response = request.EndGetResponse(r);
-                            var stream = response.GetResponseStream();
-                            this.DownloadCompleted(uri, stream);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        var ie = e;
-                        while (ie != null)
-                        {
-                            System.Diagnostics.Debug.WriteLine(ie.Message);
-                            ie = ie.InnerException;
-                        }
-                    }
-                },
-                request);
+            //string uri = this.queue.Dequeue();
+            //var request = (HttpWebRequest)WebRequest.Create(uri);
+            //request.Method = "GET";
+            //Interlocked.Increment(ref this.numberOfDownloads);
+            //request.BeginGetResponse(
+            //    r =>
+            //    {
+            //        Interlocked.Decrement(ref this.numberOfDownloads);
+            //        try
+            //        {
+            //            if (request.HaveResponse)
+            //            {
+            //                var response = request.EndGetResponse(r);
+            //                var stream = response.GetResponseStream();
+            //                this.DownloadCompleted(uri, stream);
+            //            }
+            //        }
+            //        catch (Exception e)
+            //        {
+            //            var ie = e;
+            //            while (ie != null)
+            //            {
+            //                System.Diagnostics.Debug.WriteLine(ie.Message);
+            //                ie = ie.InnerException;
+            //            }
+            //        }
+            //    },
+            //    request);
+
+            // TODO implement using HttpClient
         }
 
         /// <summary>

@@ -209,6 +209,12 @@
                 Called from Initialize.
             </summary>
         </member>
+        <member name="M:Ssz.Utils.Wpf.RelayCommand.#ctor(System.Action{System.Object})">
+            <summary>
+                If autoDetectCanExecuteChanged = true, determines automatically when CanExecute changed, using CommandManager.RequerySuggested.         ///     Otherwise we must call NotifyCanExecuteChanged()
+            </summary>
+            <param name="executeMethod"></param> 
+        </member>
         <member name="M:Ssz.Utils.Wpf.RelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object},System.Boolean)">
             <summary>         ///     If autoDetectCanExecuteChanged = true, determines automatically when CanExecute changed, using CommandManager.RequerySuggested.         ///     Otherwise we must call NotifyCanExecuteChanged()         /// </summary>
             <param name="executeMethod"></param>
@@ -1477,7 +1483,7 @@
             <returns>A <see cref="T:System.Windows.Rect" /> that represents the size, in pixels, of the working area of the screen.</returns>
         </member>
         <member name="T:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen">
-            <summary>     /// Represents a display device or multiple display devices on a single system.     /// [assembly:SupportedOSPlatform("windows")]     /// </summary> 
+            <summary>     /// Represents a display device or multiple display devices on a single system.         /// </summary>     
         </member>
         <member name="P:Ssz.Utils.Wpf.WpfScreenHelper.WindowsScreen.AllScreens">
             <summary>         /// Gets an array of all displays on the system.         /// </summary>         /// <returns>An enumerable of type Screen, containing all displays on the system.</returns> 

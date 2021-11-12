@@ -58,7 +58,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
         // Returns:
         //     A System.Windows.WPFMessageBoxResult value that specifies which message box
         //     button is clicked by the user.
-        public static WpfMessageBoxResult Show(Window owner, string messageBoxText)
+        public static WpfMessageBoxResult Show(Window? owner, string messageBoxText)
         {
             return ShowCore(owner, messageBoxText);
         }
@@ -105,7 +105,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
         // Returns:
         //     A System.Windows.WPFMessageBoxResult value that specifies which message box
         //     button is clicked by the user.
-        public static WpfMessageBoxResult Show(Window owner, string messageBoxText, string caption)
+        public static WpfMessageBoxResult Show(Window? owner, string messageBoxText, string caption)
         {
             return ShowCore(owner, messageBoxText, caption);
         }
@@ -161,7 +161,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
         // Returns:
         //     A System.Windows.WPFMessageBoxResult value that specifies which message box
         //     button is clicked by the user.
-        public static WpfMessageBoxResult Show(Window owner, string messageBoxText, string caption,
+        public static WpfMessageBoxResult Show(Window? owner, string messageBoxText, string caption,
             WpfMessageBoxButton button)
         {
             return ShowCore(owner, messageBoxText, caption, button);
@@ -225,7 +225,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
         // Returns:
         //     A System.Windows.WPFMessageBoxResult value that specifies which message box
         //     button is clicked by the user.
-        public static WpfMessageBoxResult Show(Window owner, string messageBoxText, string caption,
+        public static WpfMessageBoxResult Show(Window? owner, string messageBoxText, string caption,
             WpfMessageBoxButton button, MessageBoxImage icon)
         {
             return ShowCore(owner, messageBoxText, caption, button, icon);
@@ -297,7 +297,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
         // Returns:
         //     A System.Windows.WPFMessageBoxResult value that specifies which message box
         //     button is clicked by the user.
-        public static WpfMessageBoxResult Show(Window owner, string messageBoxText, string caption,
+        public static WpfMessageBoxResult Show(Window? owner, string messageBoxText, string caption,
             WpfMessageBoxButton button, MessageBoxImage icon, WpfMessageBoxResult defaultResult)
         {
             return ShowCore(owner, messageBoxText, caption, button, icon, defaultResult);
@@ -336,7 +336,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
         // Returns:
         //     A System.Windows.WPFMessageBoxResult value that specifies which message box
         //     button is clicked by the user.
-        public static WpfMessageBoxResult Show(Window owner, string messageBoxText, string caption,
+        public static WpfMessageBoxResult Show(Window? owner, string messageBoxText, string caption,
             WpfMessageBoxButton button, MessageBoxImage icon, WpfMessageBoxResult defaultResult,
             MessageBoxOptions options)
         {
@@ -360,7 +360,8 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
                 delegate(Window messageBoxWindow) {
                     try
                     {
-                        messageBoxWindow.Owner = owner;
+                        if (owner is not null)
+                            messageBoxWindow.Owner = owner;
                     }
                     catch { }
                 },
