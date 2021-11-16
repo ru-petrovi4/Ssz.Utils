@@ -17,6 +17,7 @@ namespace Ssz.Utils
         ///     If csvDbDirectoryInfo is null, directory is not used.
         ///     If !csvDbDirectoryInfo.Exists, directory is created.
         ///     If dispatcher is not null monitors csvDbDirectoryInfo
+        ///     File names must be valid.
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="userFriendlyLogger"></param>
@@ -167,7 +168,31 @@ namespace Ssz.Utils
             }            
 
             _csvFilesCollection = newCsvFilesCollection;
-        }        
+        }
+
+        /// <summary>
+        ///     Returns true, if created.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public bool CreateFile(string? fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName)) return false;
+
+            string fileNameUpper = fileName.ToUpperInvariant();
+            if (_csvFilesCollection.TryGetValue(fileNameUpper, out CsvFile? csvFile)) 
+                return true;
+
+            csvFile = new CsvFile();
+            if (_csvDbDirectoryInfo is not null)
+                csvFile.FileFullName = Path.Combine(_csvDbDirectoryInfo.FullName, fileName);
+            csvFile.IncludeFileNamesCollection = new List<string>();
+            csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
+            csvFile.DataIsChangedByProgram = true;
+            _csvFilesCollection.Add(fileNameUpper, csvFile);
+
+            return true;
+        }
 
         public bool FileExists(string? fileName)
         {
@@ -218,6 +243,21 @@ namespace Ssz.Utils
             
             if (!_csvFilesCollection.TryGetValue(fileName.ToUpperInvariant(), out CsvFile? csvFile)) return new CaseInsensitiveDictionary<List<string?>>();
             return csvFile.Data;
+        }
+
+        /// <summary>
+        ///     Returns new uint key, starting from 1.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public uint GetNewKey(string? fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName)) return 1;
+
+            if (!_csvFilesCollection.TryGetValue(fileName.ToUpperInvariant(), out CsvFile? csvFile))
+                return 1;
+            if (csvFile.Data.Count == 0) return 1;
+            return csvFile.Data.Keys.Max(k => new Any(k).ValueAsUInt32(false)) + 1;
         }
 
         /// <summary>

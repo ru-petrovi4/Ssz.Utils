@@ -25,35 +25,39 @@ namespace Ssz.Utils
 
         #region public functions
 
+        public const string StandardMapFileName = @"Map.csv";
+
+        public const string StandardTagsFileName = @"Tags.csv";
+
         /// <summary>
-        ///     Can be configured in mapDictionary, 'GenericTag' key
+        ///     Can be configured in map, 'GenericTag' key
         /// </summary>
         public string GenericTag { get; private set; } = @"%(TAG)";
 
         /// <summary>
-        ///     Can be configured in mapDictionary, 'TagTypeSeparator' key
+        ///     Can be configured in map, 'TagTypeSeparator' key
         /// </summary>
         public string TagTypeSeparator { get; private set; } = @":";
 
         /// <summary>
-        ///     Can be configured in mapDictionary, 'TagAndPropertySeparator' key
+        ///     Can be configured in map, 'TagAndPropertySeparator' key
         /// </summary>
         public string TagAndPropertySeparator { get; private set; } = @".";
 
         public CaseInsensitiveDictionary<List<string?>> Map { get; private set; } = null!;
 
-        public CaseInsensitiveDictionary<List<string?>> TagInfos { get; private set; } = null!;
+        public CaseInsensitiveDictionary<List<string?>> Tags { get; private set; } = null!;
 
         /// <summary>
         ///     Can be called multiple times. Other methods calls must be after this itinialization.
         /// </summary>
         /// <param name="map"></param>
-        /// <param name="tagInfos"></param>
+        /// <param name="tags"></param>
         public void Initialize(CaseInsensitiveDictionary<List<string?>> map,
-            CaseInsensitiveDictionary<List<string?>> tagInfos)
+            CaseInsensitiveDictionary<List<string?>> tags)
         {            
             Map = map;
-            TagInfos = tagInfos;
+            Tags = tags;
 
             var values = Map.TryGetValue("GenericTag");
             if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
@@ -166,10 +170,10 @@ namespace Ssz.Utils
         public string GetTagType(string? tag)
         {
             if (string.IsNullOrEmpty(tag)) return "";
-            var tagInfoValues = TagInfos.TryGetValue(tag);
-            if (tagInfoValues is null) return "";
-            if (tagInfoValues.Count < 2) return "";
-            return tagInfoValues[1] ?? @"";
+            var tagValues = Tags.TryGetValue(tag);
+            if (tagValues is null) return "";
+            if (tagValues.Count < 2) return "";
+            return tagValues[1] ?? @"";
         }
 
         public static Any? TryGetConstValue(string? elementIdOrConst)
