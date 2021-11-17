@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils
 {
-    public class Journal
+    public class HistoryValues
     {
         #region construction and destruction
 
@@ -16,7 +16,7 @@ namespace Ssz.Utils
         ///     Must be initialized before first use.
         /// </summary>
         /// <param name="logger"></param>
-        public Journal(ILogger<Journal>? logger = null)
+        public HistoryValues(ILogger<HistoryValues>? logger = null)
         {
             _logger = logger;
         }
@@ -52,7 +52,7 @@ namespace Ssz.Utils
 
         #region private fields
 
-        private ILogger<Journal>? _logger;
+        private ILogger<HistoryValues>? _logger;
 
         #endregion
     }

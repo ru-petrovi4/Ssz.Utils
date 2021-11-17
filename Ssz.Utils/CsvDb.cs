@@ -82,6 +82,25 @@ namespace Ssz.Utils
         /// </summary>
         public event Action<string>? CsvFileChanged;
 
+        public bool EnableRaisingEvents
+        {
+            get
+            {
+                return _fileSystemWatcher.EnableRaisingEvents;
+            }
+            set
+            {
+                if (!value)
+                {
+                    _fileSystemWatcher.EnableRaisingEvents = false;
+                }
+                else
+                {
+                    var t = FileSystemWatcherEnableRaisingEventsAsync();
+                }
+            }
+        }
+
         public void Clear()
         {
             _csvFilesCollection.Clear();            
@@ -112,8 +131,6 @@ namespace Ssz.Utils
                         if (oldCsvFile.IncludeFileNamesCollection.Contains(fileNameUpper))
                             oldCsvFile.DataIsChangedOnDisk = true;
                     }
-
-                    CsvFileChanged?.Invoke(fileNameUpper);
                 }
                 else if (csvFile.LastWriteTimeUtc != fileInfo.LastWriteTimeUtc) // Strict compare, because DateTimes from one source.
                 {
@@ -125,8 +142,6 @@ namespace Ssz.Utils
                         if (oldCsvFile.IncludeFileNamesCollection.Contains(fileNameUpper))
                             oldCsvFile.DataIsChangedOnDisk = true;
                     }
-
-                    CsvFileChanged?.Invoke(fileNameUpper);
                 }
                 newCsvFilesCollection.Add(fileNameUpper, csvFile);
                 csvFile.AddedToNewCollection = true;
@@ -142,28 +157,25 @@ namespace Ssz.Utils
                     }
                     else
                     {
+                        // Notify about deleted files
                         CsvFileChanged?.Invoke(kvp.Key);
                     }                    
                 }
             }
 
-            foreach (CsvFile csvFile in newCsvFilesCollection.Values)
+            foreach (var kvp in newCsvFilesCollection)
             {
+                CsvFile csvFile = kvp.Value;
                 csvFile.AddedToNewCollection = false;
                 if (csvFile.DataIsChangedOnDisk)
                 {
-                    try
-                    {
-                        csvFile.IncludeFileNamesCollection = new List<string>();
-                        csvFile.Data = CsvHelper.LoadCsvFile(csvFile.FileFullName, true, null, UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (UserFriendlyLogger is not null)
-                            UserFriendlyLogger.LogError(ex, Properties.Resources.CsvDb_CsvFileReadingError + " " + csvFile.FileFullName);
-                    }
+                    csvFile.IncludeFileNamesCollection.Clear();
+                    csvFile.Data = null;
                     csvFile.DataIsChangedOnDisk = false;
                     csvFile.DataIsChangedByProgram = false;
+
+                    // Notify about changed files
+                    CsvFileChanged?.Invoke(kvp.Key);
                 }
             }            
 
@@ -171,6 +183,7 @@ namespace Ssz.Utils
         }
 
         /// <summary>
+        ///     Clears existing file, if any.
         ///     Returns true, if created.
         /// </summary>
         /// <param name="fileName"></param>
@@ -180,16 +193,17 @@ namespace Ssz.Utils
             if (string.IsNullOrWhiteSpace(fileName)) return false;
 
             string fileNameUpper = fileName.ToUpperInvariant();
-            if (_csvFilesCollection.TryGetValue(fileNameUpper, out CsvFile? csvFile)) 
-                return true;
+            if (!_csvFilesCollection.TryGetValue(fileNameUpper, out CsvFile? csvFile))
+            {
+                csvFile = new CsvFile();
+                _csvFilesCollection.Add(fileNameUpper, csvFile);
+            }
 
-            csvFile = new CsvFile();
             if (_csvDbDirectoryInfo is not null)
                 csvFile.FileFullName = Path.Combine(_csvDbDirectoryInfo.FullName, fileName);
-            csvFile.IncludeFileNamesCollection = new List<string>();
+            csvFile.IncludeFileNamesCollection.Clear();
             csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
-            csvFile.DataIsChangedByProgram = true;
-            _csvFilesCollection.Add(fileNameUpper, csvFile);
+            csvFile.DataIsChangedByProgram = true;            
 
             return true;
         }
@@ -206,7 +220,8 @@ namespace Ssz.Utils
             if (string.IsNullOrWhiteSpace(fileName)) return false;
             
             if (!_csvFilesCollection.TryGetValue(fileName.ToUpperInvariant(), out CsvFile? csvFile)) return false;
-            csvFile.Data.Clear();
+            csvFile.IncludeFileNamesCollection.Clear();
+            csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
             csvFile.DataIsChangedByProgram = true;
             return true;
         }
@@ -216,7 +231,9 @@ namespace Ssz.Utils
             if (string.IsNullOrWhiteSpace(fileName)) return false;
 
             if (!_csvFilesCollection.TryGetValue(fileName.ToUpperInvariant(), out CsvFile? csvFile)) return false;
-                  
+
+            if (csvFile.Data == null)
+                csvFile.Data = CsvHelper.LoadCsvFile(csvFile.FileFullName, true, null, UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
             bool removed = csvFile.Data.Remove(key);
             if (removed)
                 csvFile.DataIsChangedByProgram = true;
@@ -242,6 +259,8 @@ namespace Ssz.Utils
             if (string.IsNullOrWhiteSpace(fileName)) return new CaseInsensitiveDictionary<List<string?>>();
             
             if (!_csvFilesCollection.TryGetValue(fileName.ToUpperInvariant(), out CsvFile? csvFile)) return new CaseInsensitiveDictionary<List<string?>>();
+            if (csvFile.Data == null)
+                csvFile.Data = CsvHelper.LoadCsvFile(csvFile.FileFullName, true, null, UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
             return csvFile.Data;
         }
 
@@ -256,6 +275,8 @@ namespace Ssz.Utils
 
             if (!_csvFilesCollection.TryGetValue(fileName.ToUpperInvariant(), out CsvFile? csvFile))
                 return 1;
+            if (csvFile.Data == null)
+                csvFile.Data = CsvHelper.LoadCsvFile(csvFile.FileFullName, true, null, UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
             if (csvFile.Data.Count == 0) return 1;
             return csvFile.Data.Keys.Max(k => new Any(k).ValueAsUInt32(false)) + 1;
         }
@@ -271,8 +292,9 @@ namespace Ssz.Utils
             if (string.IsNullOrWhiteSpace(fileName)) return null;
             
             if (!_csvFilesCollection.TryGetValue(fileName.ToUpperInvariant(), out CsvFile? csvFile)) return null;
-            List<string?>? fileLine;
-            if (!csvFile.Data.TryGetValue(key, out fileLine)) return null;
+            if (csvFile.Data == null)
+                csvFile.Data = CsvHelper.LoadCsvFile(csvFile.FileFullName, true, null, UserFriendlyLogger, csvFile.IncludeFileNamesCollection);            
+            if (!csvFile.Data.TryGetValue(key, out List<string?>? fileLine)) return null;
             return fileLine;
         }
 
@@ -280,9 +302,10 @@ namespace Ssz.Utils
         {
             if (string.IsNullOrWhiteSpace(fileName) || column < 0) return null;
             
-            if (!_csvFilesCollection.TryGetValue(fileName.ToUpperInvariant(), out CsvFile? csvFile)) return null;
-            List<string?>? fileLine;
-            if (!csvFile.Data.TryGetValue(key, out fileLine)) return null;
+            if (!_csvFilesCollection.TryGetValue(fileName.ToUpperInvariant(), out CsvFile? csvFile)) return null;            
+            if (csvFile.Data == null)
+                csvFile.Data = CsvHelper.LoadCsvFile(csvFile.FileFullName, true, null, UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
+            if (!csvFile.Data.TryGetValue(key, out List<string?>? fileLine)) return null;
             if (column >= fileLine.Count) return null;
             return fileLine[column];
         }
@@ -299,14 +322,14 @@ namespace Ssz.Utils
             {
                 csvFile = new CsvFile();                
                 if (_csvDbDirectoryInfo is not null)
-                    csvFile.FileFullName = Path.Combine(_csvDbDirectoryInfo.FullName, fileName);
-                csvFile.IncludeFileNamesCollection = new List<string>();
+                    csvFile.FileFullName = Path.Combine(_csvDbDirectoryInfo.FullName, fileName);                
                 csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
                 _csvFilesCollection.Add(fileNameUpper, csvFile);
             }
 
-            List<string?>? fileLine;
-            if (!csvFile.Data.TryGetValue(key, out fileLine))
+            if (csvFile.Data == null)
+                csvFile.Data = CsvHelper.LoadCsvFile(csvFile.FileFullName, true, null, UserFriendlyLogger, csvFile.IncludeFileNamesCollection);            
+            if (!csvFile.Data.TryGetValue(key, out List<string?>? fileLine))
             {
                 fileLine = new List<string?> { key };
                 csvFile.Data.Add(key, fileLine);
@@ -335,8 +358,7 @@ namespace Ssz.Utils
             {
                 csvFile = new CsvFile();
                 if (_csvDbDirectoryInfo is not null)
-                    csvFile.FileFullName = Path.Combine(_csvDbDirectoryInfo.FullName, fileName);
-                csvFile.IncludeFileNamesCollection = new List<string>();
+                    csvFile.FileFullName = Path.Combine(_csvDbDirectoryInfo.FullName, fileName);                
                 csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
                 _csvFilesCollection.Add(fileNameUpper, csvFile);
             }
@@ -345,8 +367,9 @@ namespace Ssz.Utils
             if (!enumerator.MoveNext()) return;
             string key = enumerator.Current ?? @"";
 
-            List<string?>? fileLine;
-            if (!csvFile.Data.TryGetValue(key, out fileLine))
+            if (csvFile.Data == null)
+                csvFile.Data = CsvHelper.LoadCsvFile(csvFile.FileFullName, true, null, UserFriendlyLogger, csvFile.IncludeFileNamesCollection);            
+            if (!csvFile.Data.TryGetValue(key, out List<string?>? fileLine))
             {
                 fileLine = new List<string?> { key };
                 csvFile.Data.Add(key, fileLine);
@@ -381,9 +404,11 @@ namespace Ssz.Utils
                 {
                     try
                     {
+                        // If the file to be deleted does not exist, no exception is thrown.
+                        File.Delete(csvFile.FileFullName); // For 'a' to 'A' changes in files names to work.
                         using (var writer = new StreamWriter(csvFile.FileFullName, false, new UTF8Encoding(true)))
                         {
-                            foreach (var fileLine in csvFile.Data.OrderBy(kvp => kvp.Key))
+                            foreach (var fileLine in csvFile.Data!.OrderBy(kvp => kvp.Key))
                                 writer.WriteLine(CsvHelper.FormatForCsv(",", fileLine.Value.ToArray()));
                         }
                         csvFile.LastWriteTimeUtc = File.GetLastWriteTimeUtc(csvFile.FileFullName);
@@ -398,7 +423,7 @@ namespace Ssz.Utils
                 }                
             }
 
-            _fileSystemWatcher.EnableRaisingEvents = true;
+            var t = FileSystemWatcherEnableRaisingEventsAsync();
         }
 
         #endregion
@@ -416,6 +441,22 @@ namespace Ssz.Utils
             {
                 this.LoadData();
             }));
+        }
+
+        private async Task FileSystemWatcherEnableRaisingEventsAsync()
+        {
+            while (true)
+            {
+                try
+                {
+                    _fileSystemWatcher.EnableRaisingEvents = true;
+                    break;
+                }
+                catch
+                {
+                    await Task.Delay(1000);
+                }
+            }
         }
 
         #endregion
@@ -446,12 +487,12 @@ namespace Ssz.Utils
 
             public DateTime LastWriteTimeUtc;
 
-            public CaseInsensitiveDictionary<List<string?>> Data = null!;
+            public CaseInsensitiveDictionary<List<string?>>? Data;
 
-            /// <summary>
+            /// <summary>            
             ///     File names in Upper-Case
             /// </summary>
-            public List<string> IncludeFileNamesCollection = null!;
+            public List<string> IncludeFileNamesCollection = new();
 
             public bool DataIsChangedByProgram;
 

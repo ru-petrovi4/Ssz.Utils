@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CsvDb_CsvFileReadingError" xml:space="preserve">
-    <value>Ошибка чтения .csv файла.</value>
-  </data>
   <data name="CsvDb_CsvFileWritingError" xml:space="preserve">
     <value>Ошибка записи .csv файла.</value>
   </data>
@@ -128,5 +125,8 @@
   </data>
   <data name="CsvHelper_CsvFileDuplicateKey" xml:space="preserve">
     <value>.csv файл содержит дубликат ключа.</value>
+  </data>
+  <data name="CsvHelper_CsvFileReadingError" xml:space="preserve">
+    <value>Ошибка чтения .csv файла.</value>
   </data>
 </root>

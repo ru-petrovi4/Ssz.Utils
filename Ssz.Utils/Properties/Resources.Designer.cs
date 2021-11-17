@@ -19,7 +19,7 @@ namespace Ssz.Utils.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -61,15 +61,6 @@ namespace Ssz.Utils.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .csv file reading error..
-        /// </summary>
-        internal static string CsvDb_CsvFileReadingError {
-            get {
-                return ResourceManager.GetString("CsvDb_CsvFileReadingError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to .csv file writing error..
         /// </summary>
         internal static string CsvDb_CsvFileWritingError {
@@ -93,6 +84,15 @@ namespace Ssz.Utils.Properties {
         internal static string CsvHelper_CsvFileDuplicateKey {
             get {
                 return ResourceManager.GetString("CsvHelper_CsvFileDuplicateKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .csv file reading error..
+        /// </summary>
+        internal static string CsvHelper_CsvFileReadingError {
+            get {
+                return ResourceManager.GetString("CsvHelper_CsvFileReadingError", resourceCulture);
             }
         }
     }
