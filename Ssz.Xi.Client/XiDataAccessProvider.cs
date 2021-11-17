@@ -184,13 +184,14 @@ namespace Ssz.Xi.Client
             _pollIntervalMs = 1000;
 
             _cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = _cancellationTokenSource.Token;
 
             var previousWorkingTask = _workingTask;
             _workingTask = Task.Factory.StartNew(() =>
             {
                 if (previousWorkingTask is not null)
                     previousWorkingTask.Wait();
-                WorkingTaskMainAsync(_cancellationTokenSource.Token).Wait();
+                WorkingTaskMainAsync(cancellationToken).Wait();
             }, TaskCreationOptions.LongRunning);
 
             IsInitialized = true;
