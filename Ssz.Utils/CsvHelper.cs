@@ -214,8 +214,7 @@ namespace Ssz.Utils
                                     {
                                         if (fileData.ContainsKey(kvp.Key))
                                         {
-                                            if (userFriendlyLogger is not null)
-                                                userFriendlyLogger.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + " " + fileFullName + " Key='" + kvp.Key + "'");
+                                            userFriendlyLogger?.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + " " + fileFullName + " Key='" + kvp.Key + "'");
                                         }
                                         fileData[kvp.Key] = kvp.Value;
                                     }
@@ -267,12 +266,11 @@ namespace Ssz.Utils
                                 }
                                 if (field0 == @"")
                                 {
-                                    if (fields.Count > 1)
+                                    if (!fields.All(f => String.IsNullOrEmpty(f)))
                                     {
                                         if (fileData.ContainsKey(@""))
                                         {
-                                            if (userFriendlyLogger is not null)
-                                                userFriendlyLogger.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + " " + fileFullName + " Key=''");
+                                            userFriendlyLogger?.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + " " + fileFullName + " Key=''");
                                         }
                                         fileData[@""] = fields;
                                     }
