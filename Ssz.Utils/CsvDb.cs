@@ -426,6 +426,46 @@ namespace Ssz.Utils
             var t = FileSystemWatcherEnableRaisingEventsAsync();
         }
 
+        /// <summary>
+        ///     Saves changed data to .csv file on disk.
+        /// </summary>
+        public void SaveData(string? fileName)
+        {
+            if (_csvDbDirectoryInfo is null) return;            
+
+            if (string.IsNullOrWhiteSpace(fileName)) return;
+
+            string fileNameUpper = fileName.ToUpperInvariant();
+
+            if (!_csvFilesCollection.TryGetValue(fileNameUpper, out CsvFile? csvFile)) return;            
+
+            if (csvFile.DataIsChangedByProgram)
+            {
+                _fileSystemWatcher.EnableRaisingEvents = false;
+
+                try
+                {
+                    // If the file to be deleted does not exist, no exception is thrown.
+                    File.Delete(csvFile.FileFullName); // For 'a' to 'A' changes in files names to work.
+                    using (var writer = new StreamWriter(csvFile.FileFullName, false, new UTF8Encoding(true)))
+                    {
+                        foreach (var fileLine in csvFile.Data!.OrderBy(kvp => kvp.Key))
+                            writer.WriteLine(CsvHelper.FormatForCsv(",", fileLine.Value.ToArray()));
+                    }
+                    csvFile.LastWriteTimeUtc = File.GetLastWriteTimeUtc(csvFile.FileFullName);
+                    CsvFileChanged?.Invoke(fileNameUpper);
+                }
+                catch (Exception ex)
+                {
+                    _logger?.LogError(ex, Properties.Resources.CsvDb_CsvFileWritingError + " " + csvFile.FileFullName);
+                }
+
+                csvFile.DataIsChangedByProgram = false;
+
+                var t = FileSystemWatcherEnableRaisingEventsAsync();
+            }
+        }
+
         #endregion
 
         #region private functions
