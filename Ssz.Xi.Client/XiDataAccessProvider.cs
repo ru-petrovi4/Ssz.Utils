@@ -199,6 +199,11 @@ namespace Ssz.Xi.Client
             }, TaskCreationOptions.LongRunning);
 
             IsInitialized = true;
+
+            foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
+            {
+                valueSubscriptionObj.ValueSubscription.MappedElementIdOrConst = AddItem(valueSubscriptionObj);
+            }
         }
 
         /// <summary>
@@ -208,7 +213,7 @@ namespace Ssz.Xi.Client
         {
             if (!IsInitialized) return;
 
-            IsInitialized = false;
+            IsInitialized = false;            
 
             _contextParams = new CaseInsensitiveDictionary<string>();
             _callbackDispatcher = null;
@@ -254,18 +259,17 @@ namespace Ssz.Xi.Client
         /// </summary>
         /// <param name="elementId"></param>
         /// <param name="valueSubscription"></param>
-        public string AddItem(string elementId, IValueSubscription valueSubscription)
+        public void AddItem(string elementId, IValueSubscription valueSubscription)
         {
             //Logger?.LogDebug("XiDataProvider.AddItem() " + elementId);
 
-            valueSubscription.Obj = new ValueSubscriptionObj
+            var valueSubscriptionObj = new ValueSubscriptionObj(elementId, valueSubscription);
+            _valueSubscriptionsCollection.Add(valueSubscription, valueSubscriptionObj);
+
+            if (IsInitialized)
             {
-                Id = elementId
-            };
-
-            BeginInvoke(ct => _xiDataListItemsManager.AddItem(elementId, valueSubscription));
-
-            return elementId;
+                valueSubscription.MappedElementIdOrConst = AddItem(valueSubscriptionObj);
+            }
         }
 
         /// <summary>        
@@ -274,9 +278,13 @@ namespace Ssz.Xi.Client
         /// <param name="valueSubscription"></param>
         public void RemoveItem(IValueSubscription valueSubscription)
         {
-            valueSubscription.Obj = null;
+            if (!_valueSubscriptionsCollection.Remove(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj))
+                return;
 
-            BeginInvoke(ct => _xiDataListItemsManager.RemoveItem(valueSubscription));
+            if (IsInitialized)
+            {
+                RemoveItem(valueSubscriptionObj);
+            }
         }
 
         /// <summary>        
@@ -667,16 +675,40 @@ namespace Ssz.Xi.Client
             {
                 for (int i = 0; i < changedClientObjs.Length; i++)
                 {
-                    var changedValueSubscription = (IValueSubscription) changedClientObjs[i];
-                    if (changedValueSubscription.Obj is null) continue;
-                    //var valueSubscriptionObj = (ValueSubscriptionObj)changedValueSubscription.Obj;
-
+                    var changedValueSubscription = (IValueSubscription) changedClientObjs[i];                    
                     changedValueSubscription.Update(changedValues[i]);                    
                 }
                 DataGuid = Guid.NewGuid();
             }
 
             ValueSubscriptionsUpdated();
+        }
+
+        /// <summary>
+        ///     Preconditions: must be Initialized.
+        ///     Returns MappedElementIdOrConst
+        /// </summary>
+        /// <param name="valueSubscriptionObj"></param>
+        /// <returns></returns>
+        private string AddItem(ValueSubscriptionObj valueSubscriptionObj)
+        {
+            string elementId = valueSubscriptionObj.ElementId;
+            IValueSubscription valueSubscription = valueSubscriptionObj.ValueSubscription;
+
+            BeginInvoke(ct => _xiDataListItemsManager.AddItem(elementId, valueSubscription));
+
+            return elementId;
+        }
+
+        /// <summary>
+        ///     Preconditions: must be Initialized.
+        /// </summary>
+        /// <param name="valueSubscriptionObj"></param>
+        private void RemoveItem(ValueSubscriptionObj valueSubscriptionObj)
+        {
+            var valueSubscription = valueSubscriptionObj.ValueSubscription;
+
+            BeginInvoke(ct => _xiDataListItemsManager.RemoveItem(valueSubscription));
         }
 
         #endregion
@@ -743,11 +775,26 @@ namespace Ssz.Xi.Client
 
         private DateTime _lastSuccessfulConnectionDateTimeUtc = DateTime.MinValue;
 
+        private Dictionary<IValueSubscription, ValueSubscriptionObj> _valueSubscriptionsCollection =
+            new Dictionary<IValueSubscription, ValueSubscriptionObj>(ReferenceEqualityComparer.Instance);
+
         #endregion
 
         private class ValueSubscriptionObj
-        {            
-            public string Id = "";
+        {
+            #region construction and destruction
+
+            public ValueSubscriptionObj(string elementId, IValueSubscription valueSubscription)
+            {
+                ElementId = elementId;
+                ValueSubscription = valueSubscription;
+            }
+
+            #endregion
+
+            public readonly string ElementId;
+
+            public readonly IValueSubscription ValueSubscription;
         }
     }
 }

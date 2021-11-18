@@ -11,10 +11,6 @@ namespace Ssz.Utils.DataAccess
     {
         void Update(ValueStatusTimestamp valueStatusTimestamp);
 
-        /// <summary>
-        ///     Property to use internally in ModelDataProvider. You need to
-        ///     implement this field, but you shouldn't change its value.
-        /// </summary>
-        object? Obj { get; set; }
+        string MappedElementIdOrConst { get; set; }
     }
 }

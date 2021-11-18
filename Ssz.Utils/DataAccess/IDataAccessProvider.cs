@@ -77,7 +77,7 @@ namespace Ssz.Utils.DataAccess
         /// </summary>
         Task CloseAsync();
 
-        string AddItem(string elementId, IValueSubscription valueSubscription);
+        void AddItem(string elementId, IValueSubscription valueSubscription);
         
         void RemoveItem(IValueSubscription valueSubscription);
 

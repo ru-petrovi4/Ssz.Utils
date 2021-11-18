@@ -270,6 +270,11 @@ namespace Ssz.DataGrpc.Client
             }, TaskCreationOptions.LongRunning);
 
             IsInitialized = true;
+
+            foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
+            {
+                valueSubscriptionObj.ValueSubscription.MappedElementIdOrConst = AddItem(valueSubscriptionObj);
+            }
         }
 
         /// <summary>
@@ -281,6 +286,13 @@ namespace Ssz.DataGrpc.Client
 
             IsInitialized = false;
 
+            foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
+            {
+                valueSubscriptionObj.ChildValueSubscriptionsList = null;
+                valueSubscriptionObj.Converter = null;
+                valueSubscriptionObj.MapValues = ValueSubscriptionObj.EmptyMapValues;
+            }
+
             _contextParams = new CaseInsensitiveDictionary<string>();
             CallbackDispatcher = null;
             ElementIdsMap = null;
@@ -289,7 +301,7 @@ namespace Ssz.DataGrpc.Client
             {
                 _cancellationTokenSource.Cancel();
                 _cancellationTokenSource = null;
-            }
+            }            
         }
 
         /// <summary>
@@ -326,162 +338,16 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         /// <param name="elementId"></param>
         /// <param name="valueSubscription"></param>
-        public virtual string AddItem(string elementId, IValueSubscription valueSubscription)
+        public virtual void AddItem(string elementId, IValueSubscription valueSubscription)
         {
             Logger.LogDebug("DataGrpcProvider.AddItem() " + elementId);
 
-            var callbackDispatcher = CallbackDispatcher;
-            if (!IsInitialized || callbackDispatcher is null) return elementId;
+            var valueSubscriptionObj = new ValueSubscriptionObj(elementId, valueSubscription);           
+            _valueSubscriptionsCollection.Add(valueSubscription, valueSubscriptionObj);
 
-            var valueSubscriptionObj = new ValueSubscriptionObj
+            if (IsInitialized)
             {
-                ValueSubscription = valueSubscription,
-                ElementId = elementId
-            };
-            valueSubscription.Obj = valueSubscriptionObj;
-
-            if (ElementIdsMap is not null)
-            {
-                string? tag = null;
-                string? propertyPath = null;
-                string? tagType = null;
-
-                var constAny = ElementIdsMap.TryGetConstValue(elementId);
-                if (!constAny.HasValue)
-                {
-                    var separatorIndex = elementId.LastIndexOf(ElementIdsMap.TagAndPropertySeparator);
-                    if (separatorIndex > 0 && separatorIndex < elementId.Length - 1)
-                    {
-                        tag = elementId.Substring(0, separatorIndex);
-                        propertyPath = elementId.Substring(separatorIndex);
-                        tagType = ElementIdsMap.GetTagType(tag);
-                    }
-                    else
-                    {
-                        tag = elementId;
-                        propertyPath = null;
-                        tagType = null;
-                    }
-
-                    lock (ConstItemsDictionary)
-                    {
-                        var constItem = ConstItemsDictionaryTryGetValue(tag, propertyPath, tagType);
-                        if (constItem is not null)
-                        {
-                            constItem.Subscribers.Add(valueSubscription);
-                            constAny = constItem.Value;
-                        }
-                    }
-                }
-
-                if (constAny.HasValue)
-                {
-                    try
-                    {
-                        callbackDispatcher.BeginInvoke(ct =>
-                            valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, ValueStatusCode.Good,
-                                DateTime.UtcNow)));
-                    }
-                    catch (Exception)
-                    {
-                    }
-
-                    return elementId;
-                }
-
-                valueSubscriptionObj.MapValues = ElementIdsMap.GetFromMap(tag, propertyPath, tagType, null);
-
-                var childValueSubscriptionsList = new List<ChildValueSubscription>();
-                var converter = new SszConverter();
-
-                for (var i = 1; i < valueSubscriptionObj.MapValues.Count; i++)
-                {
-                    string v = valueSubscriptionObj.MapValues[i] ?? "";
-
-                    int index;
-                    if ((StringHelper.StartsWithIgnoreCase(v, @"READCONVERTER") ||
-                         StringHelper.StartsWithIgnoreCase(v, @"WRITECONVERTER"))
-                        && (index = v.IndexOf('=')) > 0)
-                    {
-                        var values = v.Substring(index + 1).Split(new[] { "->" }, StringSplitOptions.None);
-                        switch (v.Substring(0, index).Trim().ToUpperInvariant())
-                        {
-                            case @"READCONVERTER":
-                                if (values.Length == 1)
-                                    converter.Statements.Add(new SszStatement(@"true", values[0].Trim(), 0));
-                                else // values.Length > 1
-                                    converter.Statements.Add(new SszStatement(values[0].Trim(),
-                                        values[1].Trim(), 0));
-                                break;
-                            case @"WRITECONVERTER":
-                                if (values.Length == 1)
-                                    converter.BackStatements.Add(new SszStatement(@"true", values[0].Trim(), 0));
-                                else if (values.Length == 2)
-                                    converter.BackStatements.Add(new SszStatement(values[0].Trim(),
-                                        values[1].Trim(), 0));
-                                else // values.Length > 2
-                                    converter.BackStatements.Add(new SszStatement(
-                                        values[0].Trim(),
-                                        values[1].Trim(),
-                                        new Any(values[2].Trim()).ValueAsInt32(false)));
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        var childValueSubscription = new ChildValueSubscription(valueSubscriptionObj, v);
-                        childValueSubscriptionsList.Add(childValueSubscription);
-                    }
-                }
-
-                if (converter.Statements.Count == 0 && converter.BackStatements.Count == 0)
-                {
-                    converter = null;
-                }
-                //else
-                //{
-                //    converter.ParentItem = DsSolution.Instance;
-                //    converter.ReplaceConstants(DsSolution.Instance);
-                //}
-
-                if (childValueSubscriptionsList.Count > 1 || converter is not null)
-                {
-                    valueSubscriptionObj.ChildValueSubscriptionsList = childValueSubscriptionsList;
-                    valueSubscriptionObj.Converter = converter;
-                    try
-                    {
-                        callbackDispatcher.BeginInvoke(ct => valueSubscriptionObj.ChildValueSubscriptionUpdated());
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }
-
-                BeginInvoke(ct =>
-                {
-                    if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
-                    {
-                        foreach (var childValueSubscription in valueSubscriptionObj.ChildValueSubscriptionsList)
-                            if (!childValueSubscription.IsConst)
-                                ClientElementValueListManager.AddItem(childValueSubscription.MappedElementIdOrConst,
-                                    childValueSubscription);
-                    }
-                    else
-                    {
-                        ClientElementValueListManager.AddItem(valueSubscriptionObj.MapValues[1] ?? "", valueSubscription);
-                    }
-                });
-
-                return valueSubscriptionObj.MapValues[1] ?? "";
-            }
-            else
-            {
-                BeginInvoke(ct =>
-                {
-                    ClientElementValueListManager.AddItem(elementId, valueSubscription);
-                });
-
-                return elementId;
+                valueSubscription.MappedElementIdOrConst = AddItem(valueSubscriptionObj);                
             }
         }
 
@@ -491,48 +357,13 @@ namespace Ssz.DataGrpc.Client
         /// <param name="valueSubscription"></param>
         public virtual void RemoveItem(IValueSubscription valueSubscription)
         {
-            if (!IsInitialized) return;
+            if (!_valueSubscriptionsCollection.Remove(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj))
+                return;
 
-            var valueSubscriptionObj = valueSubscription.Obj as ValueSubscriptionObj;
-            if (valueSubscriptionObj is null) return;
-
-            valueSubscriptionObj.ValueSubscription = null;
-            valueSubscription.Obj = null;
-
-            var constAny = ElementIdsMap.TryGetConstValue(valueSubscriptionObj.ElementId);
-            if (constAny.HasValue) return;
-
-            var disposable = valueSubscriptionObj.Converter as IDisposable;
-            if (disposable is not null) disposable.Dispose();
-
-            lock (ConstItemsDictionary)
+            if (IsInitialized)
             {
-                var constItem = ConstItemsDictionary.TryGetValue(valueSubscriptionObj.ElementId);
-                if (constItem is not null)
-                {
-                    constItem.Subscribers.Remove(valueSubscription);
-                    return;
-                }
+                RemoveItem(valueSubscriptionObj);
             }
-
-            BeginInvoke(ct =>
-            {
-                if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
-                {
-                    foreach (var childValueSubscription in valueSubscriptionObj.ChildValueSubscriptionsList)
-                    {
-                        if (!childValueSubscription.IsConst)
-                            ClientElementValueListManager.RemoveItem(childValueSubscription);
-                        childValueSubscription.Obj = null;
-                    }
-
-                    valueSubscriptionObj.ChildValueSubscriptionsList = null;
-                }
-                else
-                {
-                    ClientElementValueListManager.RemoveItem(valueSubscription);
-                }
-            });
         }
 
         /// <summary>        
@@ -607,8 +438,8 @@ namespace Ssz.DataGrpc.Client
             if (!ValueStatusCode.IsGood(valueStatusTimestamp.ValueStatusCode)) return;
             var value = valueStatusTimestamp.Value;
 
-            var valueSubscriptionObj = valueSubscription.Obj as ValueSubscriptionObj;
-            if (valueSubscriptionObj is null) return;
+            if (!_valueSubscriptionsCollection.TryGetValue(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj))
+                return;            
 
             var logger = alternativeLogger ?? Logger;
 
@@ -1001,9 +832,6 @@ namespace Ssz.DataGrpc.Client
             for (int i = 0; i < changedClientObjs.Length; i++)
             {
                 var changedValueSubscription = (IValueSubscription)changedClientObjs[i];
-                if (changedValueSubscription.Obj is null) continue;
-                //var valueSubscriptionObj = (ValueSubscriptionObj)changedValueSubscription.Obj;
-
                 changedValueSubscription.Update(changedValues[i]);
             }
             DataGuid = Guid.NewGuid();
@@ -1071,6 +899,211 @@ namespace Ssz.DataGrpc.Client
             if (_eventListCallbackIsEnabled) ClientEventListManager.EventMessagesCallback -= OnEventMessagesCallbackInternal;
         }
 
+        /// <summary>
+        ///     Preconditions: must be Initialized.
+        ///     Returns MappedElementIdOrConst
+        /// </summary>
+        /// <param name="valueSubscriptionObj"></param>
+        /// <returns></returns>
+        private string AddItem(ValueSubscriptionObj valueSubscriptionObj)
+        {
+            string elementId = valueSubscriptionObj.ElementId;
+
+            var callbackDispatcher = CallbackDispatcher;
+            if (callbackDispatcher is null)
+                return elementId;
+            
+            IValueSubscription valueSubscription = valueSubscriptionObj.ValueSubscription;
+
+            if (ElementIdsMap is not null)
+            {
+                string? tag = null;
+                string? propertyPath = null;
+                string? tagType = null;
+
+                var constAny = ElementIdsMap.TryGetConstValue(elementId);
+                if (!constAny.HasValue)
+                {
+                    var separatorIndex = elementId.LastIndexOf(ElementIdsMap.TagAndPropertySeparator);
+                    if (separatorIndex > 0 && separatorIndex < elementId.Length - 1)
+                    {
+                        tag = elementId.Substring(0, separatorIndex);
+                        propertyPath = elementId.Substring(separatorIndex);
+                        tagType = ElementIdsMap.GetTagType(tag);
+                    }
+                    else
+                    {
+                        tag = elementId;
+                        propertyPath = null;
+                        tagType = null;
+                    }
+
+                    lock (ConstItemsDictionary)
+                    {
+                        var constItem = ConstItemsDictionaryTryGetValue(tag, propertyPath, tagType);
+                        if (constItem is not null)
+                        {
+                            constItem.Subscribers.Add(valueSubscription);
+                            constAny = constItem.Value;
+                        }
+                    }
+                }
+
+                if (constAny.HasValue)
+                {
+                    try
+                    {
+                        callbackDispatcher.BeginInvoke(ct =>
+                            valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, ValueStatusCode.Good,
+                                DateTime.UtcNow)));
+                    }
+                    catch (Exception)
+                    {
+                    }
+
+                    return elementId;
+                }
+
+                valueSubscriptionObj.MapValues = ElementIdsMap.GetFromMap(tag, propertyPath, tagType, null);
+
+                var childValueSubscriptionsList = new List<ChildValueSubscription>();
+                var converter = new SszConverter();
+
+                for (var i = 1; i < valueSubscriptionObj.MapValues.Count; i++)
+                {
+                    string v = valueSubscriptionObj.MapValues[i] ?? "";
+
+                    int index;
+                    if ((StringHelper.StartsWithIgnoreCase(v, @"READCONVERTER") ||
+                         StringHelper.StartsWithIgnoreCase(v, @"WRITECONVERTER"))
+                        && (index = v.IndexOf('=')) > 0)
+                    {
+                        var values = v.Substring(index + 1).Split(new[] { "->" }, StringSplitOptions.None);
+                        switch (v.Substring(0, index).Trim().ToUpperInvariant())
+                        {
+                            case @"READCONVERTER":
+                                if (values.Length == 1)
+                                    converter.Statements.Add(new SszStatement(@"true", values[0].Trim(), 0));
+                                else // values.Length > 1
+                                    converter.Statements.Add(new SszStatement(values[0].Trim(),
+                                        values[1].Trim(), 0));
+                                break;
+                            case @"WRITECONVERTER":
+                                if (values.Length == 1)
+                                    converter.BackStatements.Add(new SszStatement(@"true", values[0].Trim(), 0));
+                                else if (values.Length == 2)
+                                    converter.BackStatements.Add(new SszStatement(values[0].Trim(),
+                                        values[1].Trim(), 0));
+                                else // values.Length > 2
+                                    converter.BackStatements.Add(new SszStatement(
+                                        values[0].Trim(),
+                                        values[1].Trim(),
+                                        new Any(values[2].Trim()).ValueAsInt32(false)));
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        var childValueSubscription = new ChildValueSubscription(valueSubscriptionObj, v);
+                        childValueSubscriptionsList.Add(childValueSubscription);
+                    }
+                }
+
+                if (converter.Statements.Count == 0 && converter.BackStatements.Count == 0)
+                {
+                    converter = null;
+                }
+                //else
+                //{
+                //    converter.ParentItem = DsSolution.Instance;
+                //    converter.ReplaceConstants(DsSolution.Instance);
+                //}
+
+                if (childValueSubscriptionsList.Count > 1 || converter is not null)
+                {
+                    valueSubscriptionObj.ChildValueSubscriptionsList = childValueSubscriptionsList;
+                    valueSubscriptionObj.Converter = converter;
+                    try
+                    {
+                        callbackDispatcher.BeginInvoke(ct => valueSubscriptionObj.ChildValueSubscriptionUpdated());
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+
+                BeginInvoke(ct =>
+                {
+                    if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
+                    {
+                        foreach (var childValueSubscription in valueSubscriptionObj.ChildValueSubscriptionsList)
+                            if (!childValueSubscription.IsConst)
+                                ClientElementValueListManager.AddItem(childValueSubscription.MappedElementIdOrConst,
+                                    childValueSubscription);
+                    }
+                    else
+                    {
+                        ClientElementValueListManager.AddItem(valueSubscriptionObj.MapValues[1] ?? "", valueSubscription);
+                    }
+                });
+
+                return valueSubscriptionObj.MapValues[1] ?? "";
+            }
+            else
+            {
+                BeginInvoke(ct =>
+                {
+                    ClientElementValueListManager.AddItem(elementId, valueSubscription);
+                });
+
+                return elementId;
+            }
+        }
+
+        /// <summary>
+        ///     Preconditions: must be Initialized.
+        /// </summary>
+        /// <param name="valueSubscriptionObj"></param>
+        private void RemoveItem(ValueSubscriptionObj valueSubscriptionObj)
+        {   
+            var valueSubscription = valueSubscriptionObj.ValueSubscription;
+
+            var constAny = ElementIdsMap.TryGetConstValue(valueSubscriptionObj.ElementId);
+            if (constAny.HasValue) return;
+
+            var disposable = valueSubscriptionObj.Converter as IDisposable;
+            if (disposable is not null) disposable.Dispose();
+
+            lock (ConstItemsDictionary)
+            {
+                var constItem = ConstItemsDictionary.TryGetValue(valueSubscriptionObj.ElementId);
+                if (constItem is not null)
+                {
+                    constItem.Subscribers.Remove(valueSubscription);
+                    return;
+                }
+            }
+
+            BeginInvoke(ct =>
+            {
+                if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
+                {
+                    foreach (var childValueSubscription in valueSubscriptionObj.ChildValueSubscriptionsList)
+                    {
+                        if (!childValueSubscription.IsConst)
+                            ClientElementValueListManager.RemoveItem(childValueSubscription);
+                        childValueSubscription.ValueSubscriptionObj = null;
+                    }
+
+                    valueSubscriptionObj.ChildValueSubscriptionsList = null;
+                }
+                else
+                {
+                    ClientElementValueListManager.RemoveItem(valueSubscription);
+                }
+            });
+        }
+
         #endregion
 
         #region private fields
@@ -1123,6 +1156,9 @@ namespace Ssz.DataGrpc.Client
 
         private DateTime _lastSuccessfulConnectionDateTimeUtc = DateTime.MinValue;
 
+        private Dictionary<IValueSubscription, ValueSubscriptionObj> _valueSubscriptionsCollection =
+            new Dictionary<IValueSubscription, ValueSubscriptionObj>(ReferenceEqualityComparer.Instance);
+
         #endregion
 
         protected class ConstItem
@@ -1134,19 +1170,34 @@ namespace Ssz.DataGrpc.Client
 
         private class ValueSubscriptionObj
         {
+            #region construction and destruction
+
+            public ValueSubscriptionObj(string elementId, IValueSubscription valueSubscription)
+            {
+                ElementId = elementId;
+                ValueSubscription = valueSubscription;
+            }
+
+            #endregion
+
+            public static readonly List<string?> EmptyMapValues = new List<string?>(){ @"", @"" };
+
+            public readonly string ElementId;
+
+            public readonly IValueSubscription ValueSubscription;
+
             public List<ChildValueSubscription>? ChildValueSubscriptionsList;
 
             public SszConverter? Converter;
 
-            public List<string?> MapValues = new();
-
-            public string ElementId = @"";
-
-            public IValueSubscription? ValueSubscription;
+            /// <summary>
+            ///     Count > 1
+            /// </summary>
+            public List<string?> MapValues = EmptyMapValues;
 
             public void ChildValueSubscriptionUpdated()
             {
-                if (ValueSubscription is null || ChildValueSubscriptionsList is null) return;
+                if (ChildValueSubscriptionsList is null) return;
 
                 var values = new List<object?>();
                 foreach (var childValueSubscription in ChildValueSubscriptionsList)
@@ -1165,15 +1216,9 @@ namespace Ssz.DataGrpc.Client
 
         private class ChildValueSubscription : IValueSubscription
         {
-            public readonly bool IsConst;
-
-            public readonly string MappedElementIdOrConst;
-
-            public Any Value;            
-
             public ChildValueSubscription(ValueSubscriptionObj valueSubscriptionObj, string mappedElementIdOrConst)
             {
-                Obj = valueSubscriptionObj;
+                ValueSubscriptionObj = valueSubscriptionObj;
                 MappedElementIdOrConst = mappedElementIdOrConst;
 
                 var constAny = ElementIdsMap.TryGetConstValue(mappedElementIdOrConst);
@@ -1184,7 +1229,13 @@ namespace Ssz.DataGrpc.Client
                 }
             }
 
-            public object? Obj { get; set; }
+            public ValueSubscriptionObj? ValueSubscriptionObj;
+
+            public string MappedElementIdOrConst { get; set; }
+
+            public Any Value;
+
+            public readonly bool IsConst;
 
             public void Update(ValueStatusTimestamp valueStatusTimestamp)
             {
@@ -1201,8 +1252,7 @@ namespace Ssz.DataGrpc.Client
                         break;
                 }
 
-                if (Obj is not null) 
-                    ((ValueSubscriptionObj)Obj).ChildValueSubscriptionUpdated();
+                ValueSubscriptionObj?.ChildValueSubscriptionUpdated();
             }
         }
     }

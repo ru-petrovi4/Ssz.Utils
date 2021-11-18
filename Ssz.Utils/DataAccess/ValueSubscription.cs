@@ -15,13 +15,13 @@ namespace Ssz.Utils.DataAccess
         ///     Is used to subscribe for value updating and to write values.
         ///     valueUpdated(oldValue, newValue) is invoked when Value property Updated. Initial Value property is new ValueStatusTimestamp(), Any(null) and Unknown status.        
         /// </summary>
-        public ValueSubscription(IDataAccessProvider dataAccessProvider, string id, Action<ValueStatusTimestamp, ValueStatusTimestamp>? valueUpdated = null)
+        public ValueSubscription(IDataAccessProvider dataAccessProvider, string elementId, Action<ValueStatusTimestamp, ValueStatusTimestamp>? valueUpdated = null)
         {
             DataAccessProvider = dataAccessProvider;
-            Id = id;
+            ElementId = elementId;
             _valueUpdated = valueUpdated;
 
-            ModelId = DataAccessProvider.AddItem(Id, this);
+            DataAccessProvider.AddItem(ElementId, this);
         }
 
         public void Dispose()
@@ -40,12 +40,7 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         ///     Id actually used for subscription. Initialized after constructor.       
         /// </summary>
-        public string ModelId { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        object? IValueSubscription.Obj { get; set; }
+        public string MappedElementIdOrConst { get; set; } = @"";
 
         /// <summary>
         /// 
@@ -61,7 +56,7 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         /// 
         /// </summary>
-        public string Id { get; }
+        public string ElementId { get; }
 
         /// <summary>
         /// 

@@ -11,12 +11,12 @@ namespace Ssz.Utils.DataAccess
         ///     Is used to one-time read value.
         ///     Callback is invoked when valueStatusTimestamp.ValueStatusCode != StatusCodes.Unknown       
         /// </summary>
-        public ReadOnceValueSubscription(IDataAccessProvider dataProvider, string id, Action<ValueStatusTimestamp>? setValueAction)
+        public ReadOnceValueSubscription(IDataAccessProvider dataProvider, string elementId, Action<ValueStatusTimestamp>? setValueAction)
         {
             _dataProvider = dataProvider;
             _setValueAction = setValueAction;
 
-            ModelId = _dataProvider.AddItem(id ?? @"", this);
+            _dataProvider.AddItem(elementId, this);
         }
 
         #endregion
@@ -24,14 +24,9 @@ namespace Ssz.Utils.DataAccess
         #region public functions
 
         /// <summary>
-        ///     Id actually used for subscription. Initialized after constructor.
+        ///     ElementId actually used for subscription.
         /// </summary>
-        public string ModelId { get; private set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        object? IValueSubscription.Obj { get; set; }
+        public string MappedElementIdOrConst { get; set; } = @"";
 
         /// <summary>
         /// 
