@@ -683,11 +683,11 @@ namespace Ssz.Xi.Client
 
         #region private fields
 
+        private bool _isInitialized;
+
         private bool _isConnected;
 
-        private bool _isDisconnected = true;
-
-        private bool _isInitialized;
+        private bool _isDisconnected = true;        
 
         private readonly ManualResetEvent _isConnectedEventWaitHandle = new ManualResetEvent(false);
 
