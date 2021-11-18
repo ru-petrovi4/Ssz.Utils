@@ -117,7 +117,11 @@ namespace Ssz.Xi.Client
             }
         }
 
-        public bool IsInitialized { get; private set; }
+        public bool IsInitialized
+        {
+            get { return _isInitialized; }
+            private set { SetValue(ref _isInitialized, value); }
+        }
 
         public bool IsConnected
         {
@@ -682,6 +686,8 @@ namespace Ssz.Xi.Client
         private bool _isConnected;
 
         private bool _isDisconnected = true;
+
+        private bool _isInitialized;
 
         private readonly ManualResetEvent _isConnectedEventWaitHandle = new ManualResetEvent(false);
 

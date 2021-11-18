@@ -138,7 +138,11 @@ namespace Ssz.DataGrpc.Client
             get { return ClientConnectionManager.GrpcChannel; }
         }
 
-        public bool IsInitialized { get; private set; }        
+        public bool IsInitialized
+        {
+            get { return _isInitialized; }
+            private set { SetValue(ref _isInitialized, value); }
+        }
 
         public bool IsConnected
         {
@@ -1073,7 +1077,9 @@ namespace Ssz.DataGrpc.Client
 
         private bool _isConnected;
 
-        private bool _isDisconnected = true;        
+        private bool _isDisconnected = true;
+
+        private bool _isInitialized;
 
         /// <summary>
         ///     DataGrpc Server connection string.

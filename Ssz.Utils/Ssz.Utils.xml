@@ -290,6 +290,7 @@
                 If csvDbDirectoryInfo is null, directory is not used.
                 If !csvDbDirectoryInfo.Exists, directory is created.
                 If dispatcher is not null monitors csvDbDirectoryInfo
+                File names must be valid.
             </summary>
             <param name="logger"></param>
             <param name="userFriendlyLogger"></param>
@@ -313,6 +314,14 @@
                 Data is loaded when directory changes, if dispatcher in consructor is not null.
             </summary>
         </member>
+        <member name="M:Ssz.Utils.CsvDb.CreateFile(System.String)">
+            <summary>
+                Clears existing file, if any.
+                Returns true, if created.
+            </summary>
+            <param name="fileName"></param>
+            <returns></returns>
+        </member>
         <member name="M:Ssz.Utils.CsvDb.GetFileNames">
             <summary>
                 Files names in Upper-Case.
@@ -322,6 +331,13 @@
         <member name="M:Ssz.Utils.CsvDb.GetValues(System.String)">
             <summary>
                 List.Count >= 1, List[0] is not null
+            </summary>
+            <param name="fileName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.CsvDb.GetNewKey(System.String)">
+            <summary>
+                Returns new uint key, starting from 1.
             </summary>
             <param name="fileName"></param>
             <returns></returns>
@@ -339,13 +355,18 @@
                 Saves changed data to .csv files on disk.
             </summary>
         </member>
+        <member name="M:Ssz.Utils.CsvDb.SaveData(System.String)">
+            <summary>
+                Saves changed data to .csv file on disk.
+            </summary>
+        </member>
         <member name="F:Ssz.Utils.CsvDb._csvFilesCollection">
             <summary>
                 [File name with .CSV extension in Upper-Case, CsvFile]
             </summary>
         </member>
         <member name="F:Ssz.Utils.CsvDb.CsvFile.IncludeFileNamesCollection">
-            <summary>
+            <summary>            
                 File names in Upper-Case
             </summary>
         </member>
@@ -1133,17 +1154,17 @@
         </member>
         <member name="P:Ssz.Utils.ElementIdsMap.GenericTag">
             <summary>
-                Can be configured in mapDictionary, 'GenericTag' key
+                Can be configured in map, 'GenericTag' key
             </summary>
         </member>
         <member name="P:Ssz.Utils.ElementIdsMap.TagTypeSeparator">
             <summary>
-                Can be configured in mapDictionary, 'TagTypeSeparator' key
+                Can be configured in map, 'TagTypeSeparator' key
             </summary>
         </member>
         <member name="P:Ssz.Utils.ElementIdsMap.TagAndPropertySeparator">
             <summary>
-                Can be configured in mapDictionary, 'TagAndPropertySeparator' key
+                Can be configured in map, 'TagAndPropertySeparator' key
             </summary>
         </member>
         <member name="M:Ssz.Utils.ElementIdsMap.Initialize(Ssz.Utils.CaseInsensitiveDictionary{System.Collections.Generic.List{System.String}},Ssz.Utils.CaseInsensitiveDictionary{System.Collections.Generic.List{System.String}})">
@@ -1151,7 +1172,7 @@
                 Can be called multiple times. Other methods calls must be after this itinialization.
             </summary>
             <param name="map"></param>
-            <param name="tagInfos"></param>
+            <param name="tags"></param>
         </member>
         <member name="M:Ssz.Utils.ElementIdsMap.GetFromMap(System.String,Ssz.Utils.CsvDb)">
             <summary>
@@ -1245,7 +1266,7 @@
             <param name="throwIfFails"></param>
             <returns></returns>
         </member>
-        <member name="M:Ssz.Utils.Journal.#ctor(Microsoft.Extensions.Logging.ILogger{Ssz.Utils.Journal})">
+        <member name="M:Ssz.Utils.HistoryValues.#ctor(Microsoft.Extensions.Logging.ILogger{Ssz.Utils.HistoryValues})">
             <summary>
                 Must be initialized before first use.
             </summary>
@@ -2159,11 +2180,6 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
-        <member name="P:Ssz.Utils.Properties.Resources.CsvDb_CsvFileReadingError">
-            <summary>
-              Looks up a localized string similar to .csv file reading error..
-            </summary>
-        </member>
         <member name="P:Ssz.Utils.Properties.Resources.CsvDb_CsvFileWritingError">
             <summary>
               Looks up a localized string similar to .csv file writing error..
@@ -2177,6 +2193,11 @@
         <member name="P:Ssz.Utils.Properties.Resources.CsvHelper_CsvFileDuplicateKey">
             <summary>
               Looks up a localized string similar to .csv file contains duplicate key..
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Properties.Resources.CsvHelper_CsvFileReadingError">
+            <summary>
+              Looks up a localized string similar to .csv file reading error..
             </summary>
         </member>
         <member name="T:Ssz.Utils.ReferenceEqualityComparer`1">

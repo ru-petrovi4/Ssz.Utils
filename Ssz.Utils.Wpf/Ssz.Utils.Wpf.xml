@@ -211,18 +211,24 @@
         </member>
         <member name="M:Ssz.Utils.Wpf.RelayCommand.#ctor(System.Action{System.Object})">
             <summary>
-                If autoDetectCanExecuteChanged = true, determines automatically when CanExecute changed, using CommandManager.RequerySuggested.         ///     Otherwise we must call NotifyCanExecuteChanged()
+                If autoDetectCanExecuteChanged = true, determines automatically when CanExecute changed, using CommandManager.RequerySuggested.
+                Otherwise we must call NotifyCanExecuteChanged()
             </summary>
-            <param name="executeMethod"></param> 
+            <param name="executeMethod"></param>
         </member>
         <member name="M:Ssz.Utils.Wpf.RelayCommand.#ctor(System.Action{System.Object},System.Predicate{System.Object},System.Boolean)">
-            <summary>         ///     If autoDetectCanExecuteChanged = true, determines automatically when CanExecute changed, using CommandManager.RequerySuggested.         ///     Otherwise we must call NotifyCanExecuteChanged()         /// </summary>
+            <summary>
+                If autoDetectCanExecuteChanged = true, determines automatically when CanExecute changed, using CommandManager.RequerySuggested.
+                Otherwise we must call NotifyCanExecuteChanged()
+            </summary>
             <param name="executeMethod"></param>
             <param name="canExecuteMethod"></param>
-            <param name="autoDetectCanExecuteChanged"></param> 
+            <param name="autoDetectCanExecuteChanged"></param>
         </member>
         <member name="M:Ssz.Utils.Wpf.RelayCommand.NotifyCanExecuteChanged">
-            <summary>         ///     You need to call this method only when autoDetectCanExecuteChanged = false.         /// </summary> 
+            <summary>
+                You need to call this method only when autoDetectCanExecuteChanged = false.
+            </summary>
         </member>
         <member name="T:Ssz.Utils.Wpf.RotationViewbox.LayoutInvalidationCatcher">
             <summary>
@@ -1521,36 +1527,6 @@
             </summary>
             <param name="fileName"></param>
             <param name="drawing"></param>
-        </member>
-        <member name="T:XamlGeneratedNamespace.GeneratedInternalTypeHelper">
-            <summary>
-            GeneratedInternalTypeHelper
-            </summary>
-        </member>
-        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateInstance(System.Type,System.Globalization.CultureInfo)">
-            <summary>
-            CreateInstance
-            </summary>
-        </member>
-        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Globalization.CultureInfo)">
-            <summary>
-            GetPropertyValue
-            </summary>
-        </member>
-        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.SetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Object,System.Globalization.CultureInfo)">
-            <summary>
-            SetPropertyValue
-            </summary>
-        </member>
-        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateDelegate(System.Type,System.Object,System.String)">
-            <summary>
-            CreateDelegate
-            </summary>
-        </member>
-        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.AddEventHandler(System.Reflection.EventInfo,System.Object,System.Delegate)">
-            <summary>
-            AddEventHandler
-            </summary>
         </member>
     </members>
 </doc>

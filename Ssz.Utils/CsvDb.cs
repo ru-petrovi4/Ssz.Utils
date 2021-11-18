@@ -80,7 +80,7 @@ namespace Ssz.Utils
         /// <summary>
         ///     FileName in Upper-Case.
         /// </summary>
-        public event Action<string>? CsvFileChanged;
+        public event Action<CsvFileChangeAction, string>? CsvFileChanged;
 
         public bool EnableRaisingEvents
         {
@@ -123,8 +123,11 @@ namespace Ssz.Utils
                 _csvFilesCollection.TryGetValue(fileNameUpper, out CsvFile? csvFile);
                 if (csvFile is null)
                 {
-                    csvFile = new CsvFile { FileFullName = fileInfo.FullName, LastWriteTimeUtc = fileInfo.LastWriteTimeUtc };
-                    csvFile.DataIsChangedOnDisk = true;
+                    csvFile = new CsvFile { 
+                        FileFullName = fileInfo.FullName, 
+                        LastWriteTimeUtc = fileInfo.LastWriteTimeUtc,
+                        DataIsChangedOnDisk = true
+                    };                    
 
                     foreach (CsvFile oldCsvFile in _csvFilesCollection.Values)
                     {
@@ -132,8 +135,10 @@ namespace Ssz.Utils
                             oldCsvFile.DataIsChangedOnDisk = true;
                     }
                 }
-                else if (csvFile.LastWriteTimeUtc != fileInfo.LastWriteTimeUtc) // Strict compare, because DateTimes from one source.
+                else if (Path.GetFileNameWithoutExtension(csvFile.FileFullName) != Path.GetFileNameWithoutExtension(fileInfo.FullName) || // Strict compare for 'a' to 'A' changes in files names to work.
+                    csvFile.LastWriteTimeUtc != fileInfo.LastWriteTimeUtc) // Strict compare, because DateTimes from one source.
                 {
+                    csvFile.FileFullName = fileInfo.FullName;
                     csvFile.LastWriteTimeUtc = fileInfo.LastWriteTimeUtc;
                     csvFile.DataIsChangedOnDisk = true;
 
@@ -142,14 +147,15 @@ namespace Ssz.Utils
                         if (oldCsvFile.IncludeFileNamesCollection.Contains(fileNameUpper))
                             oldCsvFile.DataIsChangedOnDisk = true;
                     }
+
+                    csvFile.MovedToNewCollection = true;
                 }
-                newCsvFilesCollection.Add(fileNameUpper, csvFile);
-                csvFile.AddedToNewCollection = true;
+                newCsvFilesCollection.Add(fileNameUpper, csvFile);                
             }
 
             foreach (var kvp in _csvFilesCollection)
             {
-                if (!kvp.Value.AddedToNewCollection)
+                if (!kvp.Value.MovedToNewCollection)
                 {
                     if (kvp.Value.DataIsChangedByProgram)
                     {
@@ -158,15 +164,14 @@ namespace Ssz.Utils
                     else
                     {
                         // Notify about deleted files
-                        CsvFileChanged?.Invoke(kvp.Key);
+                        CsvFileChanged?.Invoke(CsvFileChangeAction.Removed, kvp.Key);
                     }                    
                 }
             }
 
             foreach (var kvp in newCsvFilesCollection)
             {
-                CsvFile csvFile = kvp.Value;
-                csvFile.AddedToNewCollection = false;
+                CsvFile csvFile = kvp.Value;                
                 if (csvFile.DataIsChangedOnDisk)
                 {
                     csvFile.IncludeFileNamesCollection.Clear();
@@ -175,8 +180,12 @@ namespace Ssz.Utils
                     csvFile.DataIsChangedByProgram = false;
 
                     // Notify about changed files
-                    CsvFileChanged?.Invoke(kvp.Key);
+                    if (csvFile.MovedToNewCollection)
+                        CsvFileChanged?.Invoke(CsvFileChangeAction.Updated, kvp.Key);
+                    else
+                        CsvFileChanged?.Invoke(CsvFileChangeAction.Added, kvp.Key);
                 }
+                csvFile.MovedToNewCollection = false;
             }            
 
             _csvFilesCollection = newCsvFilesCollection;
@@ -184,11 +193,11 @@ namespace Ssz.Utils
 
         /// <summary>
         ///     Clears existing file, if any.
-        ///     Returns true, if created.
+        ///     Returns true, if succeeded.
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public bool CreateFile(string? fileName)
+        public bool FileCreate(string? fileName)
         {
             if (string.IsNullOrWhiteSpace(fileName)) return false;
 
@@ -215,6 +224,11 @@ namespace Ssz.Utils
             return _csvFilesCollection.ContainsKey(fileName.ToUpperInvariant());
         }
 
+        /// <summary>
+        ///     Returns true, if succeeded.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         public bool FileClear(string? fileName)
         {
             if (string.IsNullOrWhiteSpace(fileName)) return false;
@@ -404,15 +418,21 @@ namespace Ssz.Utils
                 {
                     try
                     {
+                        var isNewCsvFile = csvFile.LastWriteTimeUtc == DateTime.MinValue;
+
                         // If the file to be deleted does not exist, no exception is thrown.
                         File.Delete(csvFile.FileFullName); // For 'a' to 'A' changes in files names to work.
                         using (var writer = new StreamWriter(csvFile.FileFullName, false, new UTF8Encoding(true)))
                         {
                             foreach (var fileLine in csvFile.Data!.OrderBy(kvp => kvp.Key))
                                 writer.WriteLine(CsvHelper.FormatForCsv(",", fileLine.Value.ToArray()));
-                        }
+                        }                                                
                         csvFile.LastWriteTimeUtc = File.GetLastWriteTimeUtc(csvFile.FileFullName);
-                        CsvFileChanged?.Invoke(kvp.Key);
+
+                        if (isNewCsvFile)
+                            CsvFileChanged?.Invoke(CsvFileChangeAction.Added, kvp.Key);
+                        else
+                            CsvFileChanged?.Invoke(CsvFileChangeAction.Updated, kvp.Key);
                     }
                     catch (Exception ex)
                     {
@@ -445,6 +465,8 @@ namespace Ssz.Utils
 
                 try
                 {
+                    var isNewCsvFile = csvFile.LastWriteTimeUtc == DateTime.MinValue;
+
                     // If the file to be deleted does not exist, no exception is thrown.
                     File.Delete(csvFile.FileFullName); // For 'a' to 'A' changes in files names to work.
                     using (var writer = new StreamWriter(csvFile.FileFullName, false, new UTF8Encoding(true)))
@@ -453,7 +475,11 @@ namespace Ssz.Utils
                             writer.WriteLine(CsvHelper.FormatForCsv(",", fileLine.Value.ToArray()));
                     }
                     csvFile.LastWriteTimeUtc = File.GetLastWriteTimeUtc(csvFile.FileFullName);
-                    CsvFileChanged?.Invoke(fileNameUpper);
+                    
+                    if (isNewCsvFile)
+                        CsvFileChanged?.Invoke(CsvFileChangeAction.Added, fileNameUpper);
+                    else
+                        CsvFileChanged?.Invoke(CsvFileChangeAction.Updated, fileNameUpper);
                 }
                 catch (Exception ex)
                 {
@@ -525,7 +551,7 @@ namespace Ssz.Utils
         {
             public string FileFullName = @"";
 
-            public DateTime LastWriteTimeUtc;
+            public DateTime LastWriteTimeUtc = DateTime.MinValue;
 
             public CaseInsensitiveDictionary<List<string?>>? Data;
 
@@ -538,7 +564,14 @@ namespace Ssz.Utils
 
             public bool DataIsChangedOnDisk;
 
-            public bool AddedToNewCollection;
+            public bool MovedToNewCollection;
         }
+    }
+
+    public enum CsvFileChangeAction
+    {        
+        Added,
+        Updated,
+        Removed
     }
 }
