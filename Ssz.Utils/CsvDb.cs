@@ -252,7 +252,7 @@ namespace Ssz.Utils
             if (removed)
                 csvFile.DataIsChangedByProgram = true;
             return removed;
-        }
+        }        
 
         /// <summary>
         ///     Files names in Upper-Case.
@@ -321,6 +321,20 @@ namespace Ssz.Utils
                 csvFile.Data = CsvHelper.LoadCsvFile(csvFile.FileFullName, true, null, UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
             if (!csvFile.Data.TryGetValue(key, out List<string?>? fileLine)) return null;
             if (column >= fileLine.Count) return null;
+            return fileLine[column];
+        }
+
+        public static string? GetValue(CaseInsensitiveDictionary<List<string?>> data, string key, int column)
+        {
+            if (column < 0) return null;
+            if (!data.TryGetValue(key, out List<string?>? fileLine)) return null;
+            if (column >= fileLine.Count) return null;
+            return fileLine[column];
+        }
+
+        public static string? GetValue(List<string?> fileLine, int column)
+        {
+            if (column < 0 || column >= fileLine.Count) return null;
             return fileLine[column];
         }
 
