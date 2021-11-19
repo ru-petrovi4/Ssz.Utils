@@ -40,8 +40,8 @@ namespace Ssz.DataGrpc.Client
                     {
                         ContextId = _serverContextId,
                         ListServerAlias = dataGrpcElementValueJournalList.ListServerAlias,
-                        FirstTimestamp = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(firstTimestampUtc),
-                        SecondTimestamp = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(secondTimestampUtc),
+                        FirstTimestamp = DateTimeHelper.ConvertToTimestamp(firstTimestampUtc),
+                        SecondTimestamp = DateTimeHelper.ConvertToTimestamp(secondTimestampUtc),
                         NumValuesPerAlias = numValuesPerAlias,
                         Calculation = new Server.TypeId(calculation)
                     };

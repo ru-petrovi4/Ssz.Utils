@@ -17,6 +17,20 @@ namespace Ssz.Utils.DataAccess
             TimestampUtc = timestampUtc;
         }
 
+        public ValueStatusTimestamp(Any value, DateTime timestampUtc)
+        {
+            Value = value;
+            ValueStatusCode = DataAccess.ValueStatusCode.Good;
+            TimestampUtc = timestampUtc;
+        }
+
+        public ValueStatusTimestamp(Any value)
+        {
+            Value = value;
+            ValueStatusCode = DataAccess.ValueStatusCode.Good;
+            TimestampUtc = DateTime.UtcNow;
+        }
+
         #endregion
 
         #region public functions

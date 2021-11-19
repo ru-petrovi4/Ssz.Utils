@@ -24,7 +24,7 @@ namespace Ssz.DataGrpc.Server
             OccurrenceId = eventId.OccurrenceId;
             if (eventId.TimeLastActive is not null)
             {
-                TimeLastActive = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(eventId.TimeLastActive.Value);
+                TimeLastActive = Ssz.DataGrpc.Client.DateTimeHelper.ConvertToTimestamp(eventId.TimeLastActive.Value);
             }
         }
 

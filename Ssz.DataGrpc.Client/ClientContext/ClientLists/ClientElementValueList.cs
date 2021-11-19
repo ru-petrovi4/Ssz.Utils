@@ -91,19 +91,19 @@ namespace Ssz.DataGrpc.Client.ClientLists
                             case Ssz.Utils.Any.StorageType.Double:
                                 fullElementValuesCollection.DoubleAliases.Add(alias);
                                 fullElementValuesCollection.DoubleValueStatusCodes.Add(valueStatusTimestamp.ValueStatusCode);
-                                fullElementValuesCollection.DoubleTimestamps.Add(Timestamp.FromDateTime(valueStatusTimestamp.TimestampUtc));
+                                fullElementValuesCollection.DoubleTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));
                                 fullElementValuesCollection.DoubleValues.Add(valueStatusTimestamp.Value.StorageDouble);
                                 break;
                             case Ssz.Utils.Any.StorageType.UInt32:
                                 fullElementValuesCollection.UintAliases.Add(alias);
                                 fullElementValuesCollection.UintValueStatusCodes.Add(valueStatusTimestamp.ValueStatusCode);
-                                fullElementValuesCollection.UintTimestamps.Add(Timestamp.FromDateTime(valueStatusTimestamp.TimestampUtc));
+                                fullElementValuesCollection.UintTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));
                                 fullElementValuesCollection.UintValues.Add(valueStatusTimestamp.Value.StorageUInt32);
                                 break;
                             case Ssz.Utils.Any.StorageType.Object:
                                 fullElementValuesCollection.ObjectAliases.Add(alias);
                                 fullElementValuesCollection.ObjectValueStatusCodes.Add(valueStatusTimestamp.ValueStatusCode);
-                                fullElementValuesCollection.ObjectTimestamps.Add(Timestamp.FromDateTime(valueStatusTimestamp.TimestampUtc));
+                                fullElementValuesCollection.ObjectTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));
                                 writer.WriteObject(valueStatusTimestamp.Value.StorageObject);
                                 break;
                         }
