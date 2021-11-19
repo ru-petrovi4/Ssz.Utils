@@ -17,13 +17,25 @@ namespace Ssz.Utils
         /// <summary>
         ///     Compares with tolerance 2 seconds.
         /// </summary>
-        /// <param name="dateTimeUtc1"></param>
-        /// <param name="dateTimeUtc2"></param>
+        /// <param name="dateTimeUtcLeft"></param>
+        /// <param name="dateTimeRight"></param>
         /// <returns></returns>
-        public static bool FileSystemTimeIsEquals(DateTime dateTimeUtc1, DateTime dateTimeUtc2)
+        public static bool FileSystemTimeIsEquals(DateTime dateTimeUtcLeft, DateTime dateTimeRight)
         {
-            long delta = Math.Abs(dateTimeUtc1.Ticks - dateTimeUtc2.Ticks);            
+            long delta = Math.Abs(dateTimeRight.Ticks - dateTimeUtcLeft.Ticks);            
             return delta < TimeSpan.TicksPerSecond * 2;
+        }
+
+        /// <summary>
+        ///     Compares with tolerance 2 seconds.
+        /// </summary>
+        /// <param name="dateTimeUtcLeft"></param>
+        /// <param name="dateTimeRight"></param>
+        /// <returns></returns>
+        public static bool FileSystemTimeIsLess(DateTime dateTimeUtcLeft, DateTime dateTimeRight)
+        {
+            long delta = dateTimeRight.Ticks - dateTimeUtcLeft.Ticks;
+            return delta > TimeSpan.TicksPerSecond * 2;
         }
 
         /// <summary>

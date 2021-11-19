@@ -136,7 +136,7 @@ namespace Ssz.Utils
                     }
                 }
                 else if (Path.GetFileNameWithoutExtension(csvFile.FileFullName) != Path.GetFileNameWithoutExtension(fileInfo.FullName) || // Strict compare for 'a' to 'A' changes in files names to work.
-                    csvFile.LastWriteTimeUtc != fileInfo.LastWriteTimeUtc) // Strict compare, because DateTimes from one source.
+                    !FileSystemHelper.FileSystemTimeIsEquals(csvFile.LastWriteTimeUtc, fileInfo.LastWriteTimeUtc))
                 {
                     csvFile.FileFullName = fileInfo.FullName;
                     csvFile.LastWriteTimeUtc = fileInfo.LastWriteTimeUtc;
