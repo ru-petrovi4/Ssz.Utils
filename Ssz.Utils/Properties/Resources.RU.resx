@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CalculationLambdaExpressionError" xml:space="preserve">
+    <value>Ошибка при вычислении выражения</value>
+  </data>
   <data name="CsvDb_CsvFileWritingError" xml:space="preserve">
     <value>Ошибка записи .csv файла.</value>
   </data>
@@ -128,5 +131,8 @@
   </data>
   <data name="CsvHelper_CsvFileReadingError" xml:space="preserve">
     <value>Ошибка чтения .csv файла.</value>
+  </data>
+  <data name="PrepareLambdaExpressionError" xml:space="preserve">
+    <value>Ошибка в выражении</value>
   </data>
 </root>

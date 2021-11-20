@@ -61,6 +61,15 @@ namespace Ssz.Utils.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Calculation error.
+        /// </summary>
+        internal static string CalculationLambdaExpressionError {
+            get {
+                return ResourceManager.GetString("CalculationLambdaExpressionError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .csv file writing error..
         /// </summary>
         internal static string CsvDb_CsvFileWritingError {
@@ -93,6 +102,15 @@ namespace Ssz.Utils.Properties {
         internal static string CsvHelper_CsvFileReadingError {
             get {
                 return ResourceManager.GetString("CsvHelper_CsvFileReadingError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expression error.
+        /// </summary>
+        internal static string PrepareLambdaExpressionError {
+            get {
+                return ResourceManager.GetString("PrepareLambdaExpressionError", resourceCulture);
             }
         }
     }

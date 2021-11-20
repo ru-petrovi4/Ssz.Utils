@@ -43,12 +43,14 @@ namespace Ssz.Utils
 
         /// <summary>
         ///     Writes to logger with Debug level.
+        ///     Writes to userFriendlyLogger with Warning and Error priorities.
         /// </summary>
         /// <param name="dataSourceValues"></param>
         /// <param name="userValue"></param>
         /// <param name="logger"></param>
+        /// <param name="userFriendlyLogger"></param>
         /// <returns></returns>
-        public object? Evaluate(object?[]? dataSourceValues, object? userValue, ILogger? logger)
+        public object? Evaluate(object?[]? dataSourceValues, object? userValue, ILogger? logger, ILogger? userFriendlyLogger = null)
         {
             if (!IsValidInternal) return null;
 
@@ -107,7 +109,7 @@ namespace Ssz.Utils
             if (_delegate is null)
                 if (!_delegates.TryGetValue(_expressionString, out _delegate))
                 {
-                    PrepareLambdaExpression(logger);
+                    PrepareLambdaExpression(logger, userFriendlyLogger);
                     if (_lambdaExpression is not null)
                         try
                         {
@@ -115,7 +117,8 @@ namespace Ssz.Utils
                         }
                         catch (Exception ex)
                         {
-                            logger?.LogDebug(ex, @"");
+                            logger?.LogDebug(ex, @"PrepareLambdaExpression error");
+                            userFriendlyLogger?.LogError(Properties.Resources.PrepareLambdaExpressionError + ": " + _expressionString);
                         }
 
                     _delegates.Add(_expressionString, _delegate);
@@ -133,6 +136,7 @@ namespace Ssz.Utils
                 {
                     _lastResult = null;
                     logger?.LogDebug(ex, @"");
+                    userFriendlyLogger?.LogError(Properties.Resources.CalculationLambdaExpressionError + ": " + _expressionString);
                 }
 
                 _hasLastResult = true;
@@ -187,7 +191,7 @@ namespace Ssz.Utils
         {
             get
             {
-                PrepareLambdaExpression(null);
+                PrepareLambdaExpression(null, null);
 
                 return IsValidInternal;
             }            
@@ -214,7 +218,7 @@ namespace Ssz.Utils
 
         #region private functions
 
-        private static LambdaExpression? GetLambdaExpression(string expressionString, ILogger? logger)
+        private static LambdaExpression? GetLambdaExpression(string expressionString, ILogger? logger, ILogger? userFriendlyLogger)
         {
             try
             {
@@ -236,16 +240,17 @@ namespace Ssz.Utils
             catch (Exception ex)
             {
                 logger?.LogDebug(ex, "");
+                userFriendlyLogger?.LogError(Properties.Resources.PrepareLambdaExpressionError + ": " + expressionString);
                 return null;
             }
         }
 
-        private void PrepareLambdaExpression(ILogger? logger)
+        private void PrepareLambdaExpression(ILogger? logger, ILogger? userFriendlyLogger)
         {
             if (_lambdaExpression is not null || !IsValidInternal) return;
 
             _hasLastResult = false;
-            _lambdaExpression = GetLambdaExpression(_expressionString, logger);
+            _lambdaExpression = GetLambdaExpression(_expressionString, logger, userFriendlyLogger);
             IsValidInternal = _lambdaExpression is not null;
         }
 
