@@ -1199,9 +1199,20 @@ namespace Ssz.DataGrpc.Client
             {
                 if (ChildValueSubscriptionsList is null) return;
 
+                if (ChildValueSubscriptionsList.Any(vs => vs.ValueStatusTimestamp.ValueStatusCode == ValueStatusCode.ItemDoesNotExist))
+                {
+                    ValueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCode.ItemDoesNotExist });
+                    return;
+                }
+                if (ChildValueSubscriptionsList.Any(vs => vs.ValueStatusTimestamp.ValueStatusCode == ValueStatusCode.Unknown))
+                {
+                    ValueSubscription.Update(new ValueStatusTimestamp());
+                    return;
+                }
+
                 var values = new List<object?>();
                 foreach (var childValueSubscription in ChildValueSubscriptionsList)
-                    values.Add(childValueSubscription.Value.ValueAsObject());
+                    values.Add(childValueSubscription.ValueStatusTimestamp.Value.ValueAsObject());
                 SszConverter converter;
                 if (Converter is not null)
                     converter = Converter;
@@ -1224,7 +1235,7 @@ namespace Ssz.DataGrpc.Client
                 var constAny = ElementIdsMap.TryGetConstValue(mappedElementIdOrConst);
                 if (constAny.HasValue)
                 {
-                    Value = constAny.Value;
+                    ValueStatusTimestamp = new ValueStatusTimestamp(constAny.Value);
                     IsConst = true;
                 }
             }
@@ -1233,24 +1244,13 @@ namespace Ssz.DataGrpc.Client
 
             public string MappedElementIdOrConst { get; set; }
 
-            public Any Value;
+            public ValueStatusTimestamp ValueStatusTimestamp;
 
             public readonly bool IsConst;
 
             public void Update(ValueStatusTimestamp valueStatusTimestamp)
             {
-                switch (valueStatusTimestamp.ValueStatusCode)
-                {
-                    case ValueStatusCode.Unknown:
-                        Value = new Any();
-                        break;
-                    case ValueStatusCode.ItemDoesNotExist:
-                        Value = new Any(DBNull.Value);
-                        break;
-                    default:
-                        Value = valueStatusTimestamp.Value;
-                        break;
-                }
+                ValueStatusTimestamp = valueStatusTimestamp;
 
                 ValueSubscriptionObj?.ChildValueSubscriptionUpdated();
             }

@@ -4285,6 +4285,20 @@
             <param name="changedClientObjs"></param>
             <param name="changedValues"></param>
         </member>
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.AddItem(Ssz.Xi.Client.XiDataAccessProvider.ValueSubscriptionObj)">
+            <summary>
+                Preconditions: must be Initialized.
+                Returns MappedElementIdOrConst
+            </summary>
+            <param name="valueSubscriptionObj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.RemoveItem(Ssz.Xi.Client.XiDataAccessProvider.ValueSubscriptionObj)">
+            <summary>
+                Preconditions: must be Initialized.
+            </summary>
+            <param name="valueSubscriptionObj"></param>
+        </member>
         <member name="F:Ssz.Xi.Client.XiDataAccessProvider._serverAddress">
             <summary>
                 Xi Server connection string.

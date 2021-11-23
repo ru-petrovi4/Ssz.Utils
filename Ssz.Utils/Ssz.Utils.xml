@@ -314,10 +314,17 @@
                 Data is loaded when directory changes, if dispatcher in consructor is not null.
             </summary>
         </member>
-        <member name="M:Ssz.Utils.CsvDb.CreateFile(System.String)">
+        <member name="M:Ssz.Utils.CsvDb.FileCreate(System.String)">
             <summary>
                 Clears existing file, if any.
-                Returns true, if created.
+                Returns true, if succeeded.
+            </summary>
+            <param name="fileName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.CsvDb.FileClear(System.String)">
+            <summary>
+                Returns true, if succeeded.
             </summary>
             <param name="fileName"></param>
             <returns></returns>
@@ -875,26 +882,15 @@
             <param name="callbackAction"></param>
             <returns></returns>
         </member>
-        <member name="P:Ssz.Utils.DataAccess.IValueSubscription.Obj">
-            <summary>
-                Property to use internally in ModelDataProvider. You need to
-                implement this field, but you shouldn't change its value.
-            </summary>
-        </member>
         <member name="M:Ssz.Utils.DataAccess.ReadOnceValueSubscription.#ctor(Ssz.Utils.DataAccess.IDataAccessProvider,System.String,System.Action{Ssz.Utils.DataAccess.ValueStatusTimestamp})">
             <summary>
                 Is used to one-time read value.
                 Callback is invoked when valueStatusTimestamp.ValueStatusCode != StatusCodes.Unknown       
             </summary>
         </member>
-        <member name="P:Ssz.Utils.DataAccess.ReadOnceValueSubscription.ModelId">
+        <member name="P:Ssz.Utils.DataAccess.ReadOnceValueSubscription.MappedElementIdOrConst">
             <summary>
-                Id actually used for subscription. Initialized after constructor.
-            </summary>
-        </member>
-        <member name="P:Ssz.Utils.DataAccess.ReadOnceValueSubscription.Ssz#Utils#DataAccess#IValueSubscription#Obj">
-            <summary>
-            
+                ElementId actually used for subscription.
             </summary>
         </member>
         <member name="M:Ssz.Utils.DataAccess.ReadOnceValueSubscription.Ssz#Utils#DataAccess#IValueSubscription#Update(Ssz.Utils.DataAccess.ValueStatusTimestamp)">
@@ -980,14 +976,9 @@
                 valueUpdated(oldValue, newValue) is invoked when Value property Updated. Initial Value property is new ValueStatusTimestamp(), Any(null) and Unknown status.        
             </summary>
         </member>
-        <member name="P:Ssz.Utils.DataAccess.ValueSubscription.ModelId">
+        <member name="P:Ssz.Utils.DataAccess.ValueSubscription.MappedElementIdOrConst">
             <summary>
                 Id actually used for subscription. Initialized after constructor.       
-            </summary>
-        </member>
-        <member name="P:Ssz.Utils.DataAccess.ValueSubscription.Ssz#Utils#DataAccess#IValueSubscription#Obj">
-            <summary>
-            
             </summary>
         </member>
         <member name="M:Ssz.Utils.DataAccess.ValueSubscription.Ssz#Utils#DataAccess#IValueSubscription#Update(Ssz.Utils.DataAccess.ValueStatusTimestamp)">
@@ -996,7 +987,7 @@
             </summary>
             <param name="valueStatusTimestamp"></param>
         </member>
-        <member name="P:Ssz.Utils.DataAccess.ValueSubscription.Id">
+        <member name="P:Ssz.Utils.DataAccess.ValueSubscription.ElementId">
             <summary>
             
             </summary>
@@ -1201,8 +1192,16 @@
             <summary>
                 Compares with tolerance 2 seconds.
             </summary>
-            <param name="dateTimeUtc1"></param>
-            <param name="dateTimeUtc2"></param>
+            <param name="dateTimeUtcLeft"></param>
+            <param name="dateTimeRight"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.FileSystemHelper.FileSystemTimeIsLess(System.DateTime,System.DateTime)">
+            <summary>
+                Compares with tolerance 2 seconds.
+            </summary>
+            <param name="dateTimeUtcLeft"></param>
+            <param name="dateTimeRight"></param>
             <returns></returns>
         </member>
         <member name="M:Ssz.Utils.FileSystemHelper.IsDirectoryEmpty(System.String)">
@@ -2180,6 +2179,11 @@
               resource lookups using this strongly typed resource class.
             </summary>
         </member>
+        <member name="P:Ssz.Utils.Properties.Resources.CalculationLambdaExpressionError">
+            <summary>
+              Looks up a localized string similar to Calculation error.
+            </summary>
+        </member>
         <member name="P:Ssz.Utils.Properties.Resources.CsvDb_CsvFileWritingError">
             <summary>
               Looks up a localized string similar to .csv file writing error..
@@ -2198,6 +2202,11 @@
         <member name="P:Ssz.Utils.Properties.Resources.CsvHelper_CsvFileReadingError">
             <summary>
               Looks up a localized string similar to .csv file reading error..
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Properties.Resources.PrepareLambdaExpressionError">
+            <summary>
+              Looks up a localized string similar to Expression error.
             </summary>
         </member>
         <member name="T:Ssz.Utils.ReferenceEqualityComparer`1">
@@ -3480,13 +3489,15 @@
                 Enum which is used for fast serialization. It stores information about a type or type/value.
             </summary>
         </member>
-        <member name="M:Ssz.Utils.SszExpression.Evaluate(System.Object[],System.Object,Microsoft.Extensions.Logging.ILogger)">
+        <member name="M:Ssz.Utils.SszExpression.Evaluate(System.Object[],System.Object,Microsoft.Extensions.Logging.ILogger,Microsoft.Extensions.Logging.ILogger)">
             <summary>
                 Writes to logger with Debug level.
+                Writes to userFriendlyLogger with Warning and Error priorities.
             </summary>
             <param name="dataSourceValues"></param>
             <param name="userValue"></param>
             <param name="logger"></param>
+            <param name="userFriendlyLogger"></param>
             <returns></returns>
         </member>
         <member name="M:Ssz.Utils.SszQueryHelper.FindFirstLevelSpecialText(System.String,System.Char,System.Boolean)">
