@@ -574,15 +574,6 @@
             A quick reference to determine if the value is a digital value.
             </summary>
         </member>
-        <member name="M:Ssz.Utils.DataAccess.DeltaSimHelper.ProcessEventMessage(Ssz.Utils.EventSourceModel.EventSourceModel,Ssz.Utils.DataAccess.EventMessage,Microsoft.Extensions.Logging.ILogger)">
-            <summary>
-                Returns new AlarmInfoViewModels or null.
-            </summary>
-            <param name="eventSourceModel"></param>
-            <param name="eventMessage"></param>
-            <param name="logger"></param>
-            <returns></returns>
-        </member>
         <member name="F:Ssz.Utils.DataAccess.EventId.MultiplexedAlarmContainer">
             <summary>
             The TypeId of the container for alarms with multiple conditions, 
@@ -880,6 +871,15 @@
             <param name="passthroughName"></param>
             <param name="dataToSend"></param>
             <param name="callbackAction"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.DataAccess.PlatInstructorHelper.ProcessEventMessage(Ssz.Utils.EventSourceModel.EventSourceModel,Ssz.Utils.DataAccess.EventMessage,Microsoft.Extensions.Logging.ILogger)">
+            <summary>
+                Returns new AlarmInfoViewModels or null.
+            </summary>
+            <param name="eventSourceModel"></param>
+            <param name="eventMessage"></param>
+            <param name="logger"></param>
             <returns></returns>
         </member>
         <member name="M:Ssz.Utils.DataAccess.ReadOnceValueSubscription.#ctor(Ssz.Utils.DataAccess.IDataAccessProvider,System.String,System.Action{Ssz.Utils.DataAccess.ValueStatusTimestamp})">

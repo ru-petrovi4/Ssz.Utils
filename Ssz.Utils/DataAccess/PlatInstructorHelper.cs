@@ -9,7 +9,7 @@ using System.Xml;
 
 namespace Ssz.Utils.DataAccess
 {
-    public static class DeltaSimHelper
+    public static class PlatInstructorHelper
     {
         #region public functions
 
