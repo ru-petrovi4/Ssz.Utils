@@ -81,17 +81,22 @@ namespace Ssz.Utils.DataAccess
         
         void RemoveItem(IValueSubscription valueSubscription);
 
-        void PollElementValuesChanges(Action<IValueSubscription[]?> setResultAction);
+        /// <summary>                
+        ///     If call to server failed returns null, otherwise returns changed ValueSubscriptions.        
+        /// </summary>
+        Task<IValueSubscription[]?> PollElementValuesChangesAsync();
 
-        /// <summary>
-        ///     No values mapping and conversion.
+        /// <summary>     
+        ///     No values mapping and conversion.       
+        ///     returns failed ValueSubscriptions.
+        ///     If connection error, failed ValueSubscriptions is all clientObjs.        
         /// </summary>
         /// <param name="valueSubscriptions"></param>
         /// <param name="valueStatusTimestamps"></param>
-        /// <param name="setResultAction"></param>
-        void Write(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps, Action<IValueSubscription[]>? setResultAction);
+        /// <returns></returns>
+        Task<IValueSubscription[]> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps);
         
-        void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? alternativeLogger);
+        void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger);
 
         /// <summary>
         ///     Returns null if any errors.
@@ -108,16 +113,15 @@ namespace Ssz.Utils.DataAccess
         /// <param name="recipientId"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
-        /// <param name="callbackAction"></param>
+        /// <param name="progressCallbackAction"></param>
         /// <returns></returns>
-        Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend, Action<LongrunningPassthroughCallback>? callbackAction);
+        Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend, Action<LongrunningPassthroughCallback>? progressCallbackAction);
 
         void JournalAddItem(string elementId, object valueJournalSubscription);
 
         void JournalRemoveItem(object valueJournalSubscription);
 
-        void ReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerDataObject, TypeId calculation, object[] valueJournalSubscriptions,
-            Action<ValueStatusTimestamp[][]?> setResultAction);
+        Task<ValueStatusTimestamp[][]?> ReadElementValueJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, TypeId calculation, CaseInsensitiveDictionary<string> _params, object[] valueJournalSubscriptions);
 
         event Action<EventMessage[]> EventMessagesCallback;
 

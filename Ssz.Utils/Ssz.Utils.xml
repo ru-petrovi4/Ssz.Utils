@@ -846,13 +846,20 @@
                 Closes WITH waiting working thread exit.
             </summary>
         </member>
-        <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.Write(Ssz.Utils.DataAccess.IValueSubscription[],Ssz.Utils.DataAccess.ValueStatusTimestamp[],System.Action{Ssz.Utils.DataAccess.IValueSubscription[]})">
-            <summary>
-                No values mapping and conversion.
+        <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.PollElementValuesChangesAsync">
+            <summary>                
+                If call to server failed returns null, otherwise returns changed ValueSubscriptions.        
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.WriteAsync(Ssz.Utils.DataAccess.IValueSubscription[],Ssz.Utils.DataAccess.ValueStatusTimestamp[])">
+            <summary>     
+                No values mapping and conversion.       
+                returns failed ValueSubscriptions.
+                If connection error, failed ValueSubscriptions is all clientObjs.        
             </summary>
             <param name="valueSubscriptions"></param>
             <param name="valueStatusTimestamps"></param>
-            <param name="setResultAction"></param>
+            <returns></returns>
         </member>
         <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.PassthroughAsync(System.String,System.String,System.Byte[])">
             <summary>
@@ -870,7 +877,7 @@
             <param name="recipientId"></param>
             <param name="passthroughName"></param>
             <param name="dataToSend"></param>
-            <param name="callbackAction"></param>
+            <param name="progressCallbackAction"></param>
             <returns></returns>
         </member>
         <member name="M:Ssz.Utils.DataAccess.PlatInstructorHelper.ProcessEventMessage(Ssz.Utils.EventSourceModel.EventSourceModel,Ssz.Utils.DataAccess.EventMessage,Microsoft.Extensions.Logging.ILogger)">

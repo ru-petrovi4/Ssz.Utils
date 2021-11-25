@@ -366,62 +366,44 @@ namespace Ssz.DataGrpc.Client
             }
         }
 
-        /// <summary>        
-        ///     setResultAction(..) is called using сallbackDispatcher, see Initialize(..).
-        ///     If call to server failed setResultAction(null) is called, otherwise setResultAction(changedValueSubscriptions) is called.        
+        /// <summary>                
+        ///     If call to server failed returns null, otherwise returns changed ValueSubscriptions.        
         /// </summary>
-        public void PollElementValuesChanges(Action<IValueSubscription[]?> setResultAction)
+        public async Task<IValueSubscription[]?> PollElementValuesChangesAsync()
         {
+            var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]?>();
             BeginInvoke(ct =>
             {
                 ClientElementValueListManager.Subscribe(ClientConnectionManager, CallbackDispatcher,
                     OnElementValuesCallback, true, ct);
                 object[]? changedValueSubscriptions = ClientElementValueListManager.PollChanges();
-                IDispatcher? сallbackDispatcher = CallbackDispatcher;
-                if (сallbackDispatcher is not null)
-                {
-                    try
-                    {
-                        сallbackDispatcher.BeginInvoke(ct => setResultAction(changedValueSubscriptions is not null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null));
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }
+                taskCompletionSource.SetResult(changedValueSubscriptions is not null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null);                
             }
             );
+            return await taskCompletionSource.Task;
         }
 
         /// <summary>     
-        ///     No values mapping and conversion.
-        ///     setResultAction(..) is called using сallbackDispatcher, see Initialize(..).
-        ///     setResultAction(failedValueSubscriptions) is called, failedValueSubscriptions is not null.
-        ///     If connection error, failedValueSubscriptions is all clientObjs.        
+        ///     No values mapping and conversion.       
+        ///     returns failed ValueSubscriptions.
+        ///     If connection error, failed ValueSubscriptions is all clientObjs.        
         /// </summary>
-        public virtual void Write(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps, Action<IValueSubscription[]>? setResultAction)
+        /// <param name="valueSubscriptions"></param>
+        /// <param name="valueStatusTimestamps"></param>
+        /// <returns></returns>
+        public virtual async Task<IValueSubscription[]> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
         {
+            var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]>();
             BeginInvoke(ct =>
             {
                 ClientElementValueListManager.Subscribe(ClientConnectionManager, CallbackDispatcher,
                     OnElementValuesCallback, true, ct);
                 object[] failedValueSubscriptions = ClientElementValueListManager.Write(valueSubscriptions, valueStatusTimestamps);
 
-                if (setResultAction is not null)
-                {
-                    IDispatcher? сallbackDispatcher = CallbackDispatcher;
-                    if (сallbackDispatcher is not null)
-                    {
-                        try
-                        {
-                            сallbackDispatcher.BeginInvoke(ct => setResultAction(failedValueSubscriptions.OfType<IValueSubscription>().ToArray()));
-                        }
-                        catch (Exception)
-                        {
-                        }
-                    }
-                }
+                taskCompletionSource.SetResult(failedValueSubscriptions.OfType<IValueSubscription>().ToArray());
             }
             );
+            return await taskCompletionSource.Task;
         }
 
         /// <summary>
@@ -430,7 +412,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="valueSubscription"></param>
         /// <param name="valueStatusTimestamp"></param>
         /// <param name="alternativeLogger"></param>
-        public virtual void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? alternativeLogger)
+        public virtual void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
         {
             var callbackDispatcher = CallbackDispatcher;
             if (!IsInitialized || callbackDispatcher is null) return;
@@ -439,12 +421,10 @@ namespace Ssz.DataGrpc.Client
             var value = valueStatusTimestamp.Value;
 
             if (!_valueSubscriptionsCollection.TryGetValue(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj))
-                return;            
+                return;
 
-            var logger = alternativeLogger ?? Logger;
-
-            if (logger.IsEnabled(LogLevel.Debug))
-                logger.LogDebug("UI TAG: \"" + valueSubscriptionObj.ElementId + "\"; Value from UI: \"" +
+            if (userFriendlyLogger is not null && userFriendlyLogger.IsEnabled(LogLevel.Debug))
+                userFriendlyLogger.LogDebug("UI TAG: \"" + valueSubscriptionObj.ElementId + "\"; Value from UI: \"" +
                                              value + "\"");
 
             IValueSubscription[]? constItemValueSubscriptionsArray = null;
@@ -485,13 +465,13 @@ namespace Ssz.DataGrpc.Client
                     converter = SszConverter.Empty;
                 resultValues =
                     converter.ConvertBack(value.ValueAsObject(),
-                        valueSubscriptionObj.ChildValueSubscriptionsList.Count, logger);
+                        valueSubscriptionObj.ChildValueSubscriptionsList.Count, userFriendlyLogger);
                 if (resultValues.Length == 0) return;
             }
 
             var utcNow = DateTime.UtcNow;
 
-            if (logger.IsEnabled(LogLevel.Debug))
+            if (userFriendlyLogger is not null && userFriendlyLogger.IsEnabled(LogLevel.Debug))
             {
                 if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                 {
@@ -500,7 +480,7 @@ namespace Ssz.DataGrpc.Client
                     {
                         var resultValue = resultValues[i];
                         if (resultValue != SszConverter.DoNothing)
-                            logger.LogDebug("Model TAG: \"" +
+                            userFriendlyLogger.LogDebug("Model TAG: \"" +
                                                          valueSubscriptionObj.ChildValueSubscriptionsList[i]
                                                              .MappedElementIdOrConst + "\"; Write Value to Model: \"" +
                                                          new Any(resultValue) + "\"");
@@ -509,7 +489,7 @@ namespace Ssz.DataGrpc.Client
                 else
                 {
                     if (value.ValueAsObject() != SszConverter.DoNothing)
-                        logger.LogDebug("Model TAG: \"" + valueSubscriptionObj.MapValues[1] +
+                        userFriendlyLogger.LogDebug("Model TAG: \"" + valueSubscriptionObj.MapValues[1] +
                                                      "\"; Write Value to Model: \"" + value + "\"");
                 }
             }
@@ -581,23 +561,23 @@ namespace Ssz.DataGrpc.Client
         /// <param name="recipientId"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
-        /// <param name="callbackAction"></param>
+        /// <param name="progressCallbackAction"></param>
         /// <returns></returns>
         public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend,
-            Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackAction)
+            Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? progressCallbackAction)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
             BeginInvoke(async ct =>
             {
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
                 Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
-                if (callbackAction is not null && сallbackDispatcher is not null)
+                if (progressCallbackAction is not null && сallbackDispatcher is not null)
                 {
                     callbackActionDispatched = a =>
                     {
                         try
                         {
-                            сallbackDispatcher.BeginInvoke(ct => callbackAction(a));
+                            сallbackDispatcher.BeginInvoke(ct => progressCallbackAction(a));
                         }
                         catch (Exception)
                         {

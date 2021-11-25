@@ -22,6 +22,9 @@ namespace Ssz.Utils
         public static T GetValue<T>(IConfiguration configuration, string key, T defaultValue)
             where T : notnull
         {
+            // null if no key in startup args string
+            // null if --Rewiew or -r
+            // "" if --Rewiew=
             var valueString = configuration[key];
             if (String.IsNullOrEmpty(valueString))
                 return defaultValue;

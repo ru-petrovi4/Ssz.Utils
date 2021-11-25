@@ -4,6 +4,7 @@ using System.Linq;
 using Ssz.DataGrpc.Client.ClientLists;
 using Ssz.Utils.DataAccess;
 using Ssz.DataGrpc.Server;
+using Ssz.Utils;
 
 namespace Ssz.DataGrpc.Client
 {
@@ -22,11 +23,14 @@ namespace Ssz.DataGrpc.Client
         /// <param name="secondTimestampUtc"></param>
         /// <param name="numValuesPerAlias"></param>
         /// <param name="calculation"></param>
+        /// <param name="_params"></param>
         /// <param name="serverAliases"></param>
         /// <returns></returns>
+        /// <exception cref="ObjectDisposedException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
         public ValueStatusTimestamp[][] ReadElementValueJournals(ClientElementValueJournalList dataGrpcElementValueJournalList, DateTime firstTimestampUtc,
             DateTime secondTimestampUtc,
-            uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId calculation, uint[] serverAliases)
+            uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId calculation, CaseInsensitiveDictionary<string> _params, uint[] serverAliases)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -43,8 +47,9 @@ namespace Ssz.DataGrpc.Client
                         FirstTimestamp = DateTimeHelper.ConvertToTimestamp(firstTimestampUtc),
                         SecondTimestamp = DateTimeHelper.ConvertToTimestamp(secondTimestampUtc),
                         NumValuesPerAlias = numValuesPerAlias,
-                        Calculation = new Server.TypeId(calculation)
+                        Calculation = new Server.TypeId(calculation),                        
                     };
+                    request.Params.Add(_params);
                     request.ServerAliases.Add(serverAliases);
                     ReadElementValueJournalsReply reply = _resourceManagementClient.ReadElementValueJournals(request);
                     SetResourceManagementLastCallUtc();

@@ -25,7 +25,8 @@ namespace Ssz.DataGrpc.Client.Managers
 
         #region public functions
 
-        /// <summary>        
+        /// <summary>
+        ///     Can be added several times with same elementId
         /// </summary>
         /// <param name="elementId"></param>
         /// <param name="clientObj"></param>
@@ -44,7 +45,8 @@ namespace Ssz.DataGrpc.Client.Managers
             }
             else
             {
-                Logger.LogError("DataGrpcListItemsManager.AddItem() error, duplicate clientObj " + elementId);
+                if (clientObjectInfo.ElementId != elementId)
+                    Logger.LogError("DataGrpcListItemsManager.AddItem() error, duplicate clientObj " + elementId);
             }
         }
 
@@ -66,7 +68,7 @@ namespace Ssz.DataGrpc.Client.Managers
             }
             else
             {
-                Logger.LogError("DataGrpcListItemsManager.RemoveItem() error, clientObj did not add earlier");
+                Logger.LogError("DataGrpcListItemsManager.RemoveItem() error, clientObj was not added earlier");
             }
         }
 

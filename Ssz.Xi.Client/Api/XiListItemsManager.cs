@@ -26,8 +26,6 @@ namespace Ssz.Xi.Client.Api
         /// <param name="clientObj"></param>
         public void AddItem(string id, object clientObj)
         {
-            if (id is null) throw new ArgumentNullException(@"id");
-
             Logger?.LogDebug("XiListItemsManager.AddItem() " + id); 
 
             ClientObjectInfo? modelItem;

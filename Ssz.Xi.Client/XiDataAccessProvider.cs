@@ -287,39 +287,34 @@ namespace Ssz.Xi.Client
             }
         }
 
-        /// <summary>        
-        ///     setResultAction(..) is called using сallbackDoer, see Initialize(..).
-        ///     If call to server failed setResultAction(null) is called, otherwise setResultAction(changedValueSubscriptions) is called.        
+        /// <summary>                
+        ///     If call to server failed returns null, otherwise returns changed ValueSubscriptions.        
         /// </summary>
-        public void PollElementValuesChanges(Action<IValueSubscription[]?> setResultAction)
+        public async Task<IValueSubscription[]?> PollElementValuesChangesAsync()
         {
+            var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]?>();
             BeginInvoke(ct =>
             {
                 if (_xiServerProxy is null) throw new InvalidOperationException();
                 _xiDataListItemsManager.Subscribe(_xiServerProxy, _callbackDispatcher,
                     XiDataListItemsManagerOnElementValuesCallback, true, ct);
                 object[]? changedValueSubscriptions = _xiDataListItemsManager.PollChanges();
-                IDispatcher? сallbackDoer = _callbackDispatcher;
-                if (сallbackDoer is not null)
-                {
-                    try
-                    {
-                        сallbackDoer.BeginInvoke(ct => setResultAction(changedValueSubscriptions is not null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null));
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }                
+                taskCompletionSource.SetResult(changedValueSubscriptions is not null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null);
             });
+            return await taskCompletionSource.Task;
         }
 
-        /// <summary>        
-        ///     setResultAction(..) is called using сallbackDoer, see Initialize(..).
-        ///     setResultAction(failedValueSubscriptions) is called, failedValueSubscriptions is not null.
-        ///     If connection error, failedValueSubscriptions is all clientObjs.        
+        /// <summary>     
+        ///     No values mapping and conversion.       
+        ///     returns failed ValueSubscriptions.
+        ///     If connection error, failed ValueSubscriptions is all clientObjs.        
         /// </summary>
-        public void Write(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps, Action<IValueSubscription[]>? setResultAction)
+        /// <param name="valueSubscriptions"></param>
+        /// <param name="valueStatusTimestamps"></param>
+        /// <returns></returns>
+        public virtual async Task<IValueSubscription[]> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
         {
+            var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]>();
             BeginInvoke(ct =>
             {
                 if (_xiServerProxy is null) throw new InvalidOperationException();
@@ -327,21 +322,9 @@ namespace Ssz.Xi.Client
                     XiDataListItemsManagerOnElementValuesCallback, true, ct);                
                 object[] failedValueSubscriptions = _xiDataListItemsManager.Write(valueSubscriptions, valueStatusTimestamps);
 
-                if (setResultAction is not null)
-                {
-                    IDispatcher? сallbackDoer = _callbackDispatcher;
-                    if (сallbackDoer is not null)
-                    {
-                        try
-                        {
-                            сallbackDoer.BeginInvoke(ct => setResultAction(failedValueSubscriptions.OfType<IValueSubscription>().ToArray()));
-                        }
-                        catch (Exception)
-                        {
-                        }
-                    }
-                }
+                taskCompletionSource.SetResult(failedValueSubscriptions.OfType<IValueSubscription>().ToArray());
             });
+            return await taskCompletionSource.Task;
         }
 
         /// <summary>
@@ -404,10 +387,10 @@ namespace Ssz.Xi.Client
         /// <param name="recipientId"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
-        /// <param name="callbackAction"></param>
+        /// <param name="progressCallbackAction"></param>
         /// <returns></returns>
         public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend, 
-            Action<LongrunningPassthroughCallback>? callbackAction)
+            Action<LongrunningPassthroughCallback>? progressCallbackAction)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
             BeginInvoke(async ct =>
@@ -415,13 +398,13 @@ namespace Ssz.Xi.Client
                 bool succeeded;
                 IDispatcher? сallbackDispatcher = _callbackDispatcher;
                 Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
-                if (callbackAction is not null && сallbackDispatcher is not null)
+                if (progressCallbackAction is not null && сallbackDispatcher is not null)
                 {
                     callbackActionDispatched = a =>
                     {
                         try
                         {
-                            сallbackDispatcher.BeginInvoke(ct => callbackAction(a));
+                            сallbackDispatcher.BeginInvoke(ct => progressCallbackAction(a));
                         }
                         catch (Exception)
                         {

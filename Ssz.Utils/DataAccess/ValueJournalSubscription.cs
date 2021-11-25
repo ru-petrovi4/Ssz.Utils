@@ -10,17 +10,17 @@ namespace Ssz.Utils.DataAccess
     {
         #region construction and destruction
         
-        public ValueJournalSubscription(IDataAccessProvider dataProvider, string id)
+        public ValueJournalSubscription(IDataAccessProvider dataAccessProvider, string id)
         {
-            _dataProvider = dataProvider;
+            DataAccessProvider = dataAccessProvider;
             Id = id;            
 
-            _dataProvider.JournalAddItem(Id, this);
+            DataAccessProvider.JournalAddItem(Id, this);
         }
 
         public void Dispose()
         {
-            _dataProvider.JournalRemoveItem(this);
+            DataAccessProvider.JournalRemoveItem(this);
         }
 
         #endregion
@@ -32,11 +32,7 @@ namespace Ssz.Utils.DataAccess
         /// </summary>
         public string Id { get; private set; }
 
-        #endregion
-
-        #region private fields
-
-        private readonly IDataAccessProvider _dataProvider;        
+        public IDataAccessProvider DataAccessProvider { get; private set; }
 
         #endregion
     }

@@ -65,17 +65,18 @@ namespace Ssz.DataGrpc.Client.Managers
             }
         }
 
-        /// <summary>        
-        ///   Result.Length == valueSubscriptionsList.Length or Result is null, if failed.
+        /// <summary>
+        ///     Result.Length == valueSubscriptionsList.Length or Result is null, if failed.
         /// </summary>
-        /// <param name="firstTimestamp"></param>
-        /// <param name="secondTimestamp"></param>
-        /// <param name="numValuesPerDataObject"></param>
+        /// <param name="firstTimestampUtc"></param>
+        /// <param name="secondTimestampUtc"></param>
+        /// <param name="numValuesPerSubscription"></param>
+        /// <param name="calculation"></param>
         /// <param name="valueSubscriptionsCollection"></param>
         /// <returns></returns>
-        public void HdaReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerDataObject, Ssz.Utils.DataAccess.TypeId calculation,
-            object[] valueSubscriptionsCollection,
-            Action<ValueStatusTimestamp[][]?> setResultAction)
+        public ValueStatusTimestamp[][]? HdaReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId calculation,
+            CaseInsensitiveDictionary<string> _params,
+            object[] valueSubscriptionsCollection)
         {
             ValueStatusTimestamp[][]? result;
 
@@ -98,7 +99,7 @@ namespace Ssz.DataGrpc.Client.Managers
                         }
                     }
 
-                    result = dataGrpcList.ReadElementValueJournals(firstTimestampUtc, secondTimestampUtc, numValuesPerDataObject, calculation, serverAliases.ToArray());
+                    result = dataGrpcList.ReadElementValueJournals(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, _params, serverAliases.ToArray());
                 }
                 else
                 {
@@ -110,17 +111,7 @@ namespace Ssz.DataGrpc.Client.Managers
                 result = null;
             }
 
-            IDispatcher? callbackDispatcher = _callbackDispatcher;
-            if (callbackDispatcher is not null)
-            {
-                try
-                {
-                    callbackDispatcher.BeginInvoke(ct => setResultAction(result));
-                }
-                catch (Exception)
-                {
-                }
-            }
+            return result;
         }
 
         # endregion

@@ -36,7 +36,7 @@ namespace Ssz.Utils
             return resultValue;
         }
 
-        public object?[] ConvertBack(object? value, int resultCount, ILogger? logger)
+        public object?[] ConvertBack(object? value, int resultCount, ILogger? userFriendlyLogger)
         {
             if (resultCount <= 0 || resultCount > 0xFFFF) return new object[0];
 
@@ -49,9 +49,9 @@ namespace Ssz.Utils
                 if (paramNum >= 0 && paramNum < resultCount)
                     if (conditionResults[paramNum] != true)
                     {
-                        if (new Any(statement.Condition.Evaluate(_values, value, logger)).ValueAsBoolean(false))
+                        if (new Any(statement.Condition.Evaluate(_values, value, userFriendlyLogger)).ValueAsBoolean(false))
                         {
-                            resultValues[paramNum] = statement.Value.Evaluate(_values, value, logger);
+                            resultValues[paramNum] = statement.Value.Evaluate(_values, value, userFriendlyLogger);
                             conditionResults[paramNum] = true;
                         }
                         else

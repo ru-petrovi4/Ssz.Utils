@@ -4220,18 +4220,20 @@
             </summary>
             <param name="valueSubscription"></param>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.PollElementValuesChanges(System.Action{Ssz.Utils.DataAccess.IValueSubscription[]})">
-            <summary>        
-                setResultAction(..) is called using сallbackDoer, see Initialize(..).
-                If call to server failed setResultAction(null) is called, otherwise setResultAction(changedValueSubscriptions) is called.        
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.PollElementValuesChangesAsync">
+            <summary>                
+                If call to server failed returns null, otherwise returns changed ValueSubscriptions.        
             </summary>
         </member>
-        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Write(Ssz.Utils.DataAccess.IValueSubscription[],Ssz.Utils.DataAccess.ValueStatusTimestamp[],System.Action{Ssz.Utils.DataAccess.IValueSubscription[]})">
-            <summary>        
-                setResultAction(..) is called using сallbackDoer, see Initialize(..).
-                setResultAction(failedValueSubscriptions) is called, failedValueSubscriptions is not null.
-                If connection error, failedValueSubscriptions is all clientObjs.        
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.WriteAsync(Ssz.Utils.DataAccess.IValueSubscription[],Ssz.Utils.DataAccess.ValueStatusTimestamp[])">
+            <summary>     
+                No values mapping and conversion.       
+                returns failed ValueSubscriptions.
+                If connection error, failed ValueSubscriptions is all clientObjs.        
             </summary>
+            <param name="valueSubscriptions"></param>
+            <param name="valueStatusTimestamps"></param>
+            <returns></returns>
         </member>
         <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Write(Ssz.Utils.DataAccess.IValueSubscription,Ssz.Utils.DataAccess.ValueStatusTimestamp,Microsoft.Extensions.Logging.ILogger)">
             <summary>
@@ -4257,7 +4259,7 @@
             <param name="recipientId"></param>
             <param name="passthroughName"></param>
             <param name="dataToSend"></param>
-            <param name="callbackAction"></param>
+            <param name="progressCallbackAction"></param>
             <returns></returns>
         </member>
         <member name="M:Ssz.Xi.Client.XiDataAccessProvider.BeginInvoke(System.Action{System.Threading.CancellationToken})">
@@ -4346,17 +4348,6 @@
                 If valueSubscription is not subscribed - does nothing.
             </summary>
             <param name="valueSubscription"></param>
-        </member>
-        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.ReadElementValueJournals(System.DateTime,System.DateTime,System.UInt32,Ssz.Utils.DataAccess.TypeId,System.Object[],System.Action{Ssz.Utils.DataAccess.ValueStatusTimestamp[][]})">
-            <summary>
-            
-            </summary>
-            <param name="firstTimestampUtc"></param>
-            <param name="secondTimestampUtc"></param>
-            <param name="numValuesPerDataObject"></param>
-            <param name="calculation"></param>
-            <param name="valueSubscriptionsCollection"></param>
-            <param name="setResultAction"></param>
         </member>
         <member name="T:Xi.Contracts.Constants.AlarmStateChangeCodes">
             <summary>

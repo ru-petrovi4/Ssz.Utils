@@ -5,6 +5,7 @@ using Ssz.Utils;
 using Ssz.DataGrpc.Client.Managers;
 using Ssz.DataGrpc.Server;
 using Ssz.Utils.DataAccess;
+using System.Threading.Tasks;
 
 namespace Ssz.DataGrpc.Client
 {
@@ -45,19 +46,22 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         /// <param name="firstTimestampUtc"></param>
         /// <param name="secondTimestampUtc"></param>
-        /// <param name="numValuesPerDataObject"></param>
+        /// <param name="numValuesPerSubscription"></param>
         /// <param name="calculation"></param>
+        /// <param name="_params"></param>
         /// <param name="valueSubscriptionsCollection"></param>
-        /// <param name="setResultAction"></param>
-        public virtual void ReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerDataObject, Ssz.Utils.DataAccess.TypeId calculation, object[] valueSubscriptionsCollection,
-            Action<ValueStatusTimestamp[][]?> setResultAction)
+        /// <returns></returns>
+        public virtual async Task<ValueStatusTimestamp[][]?> ReadElementValueJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId calculation, CaseInsensitiveDictionary<string> _params, object[] valueSubscriptionsCollection)
         {
+            var taskCompletionSource = new TaskCompletionSource<ValueStatusTimestamp[][]?>();
             BeginInvoke(ct =>
             {
-                ClientElementValueJournalListManager.HdaReadElementValueJournals(firstTimestampUtc, secondTimestampUtc, numValuesPerDataObject, calculation, valueSubscriptionsCollection,
-                    setResultAction);
+                var result = ClientElementValueJournalListManager.HdaReadElementValueJournals(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, _params, valueSubscriptionsCollection);
+
+                taskCompletionSource.SetResult(result);
             }
-            );            
+            );
+            return await taskCompletionSource.Task;
         }
 
         #endregion
