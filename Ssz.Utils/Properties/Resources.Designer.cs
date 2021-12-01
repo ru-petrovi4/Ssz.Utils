@@ -70,7 +70,7 @@ namespace Ssz.Utils.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .csv file writing error..
+        ///   Looks up a localized string similar to File writing error.
         /// </summary>
         internal static string CsvDb_CsvFileWritingError {
             get {
@@ -79,7 +79,7 @@ namespace Ssz.Utils.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .csv file does not exist..
+        ///   Looks up a localized string similar to File does not exist.
         /// </summary>
         internal static string CsvHelper_CsvFileDoesNotExist {
             get {
@@ -88,7 +88,7 @@ namespace Ssz.Utils.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .csv file contains duplicate key..
+        ///   Looks up a localized string similar to File contains duplicate key.
         /// </summary>
         internal static string CsvHelper_CsvFileDuplicateKey {
             get {
@@ -97,7 +97,7 @@ namespace Ssz.Utils.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .csv file reading error..
+        ///   Looks up a localized string similar to File reading error.
         /// </summary>
         internal static string CsvHelper_CsvFileReadingError {
             get {

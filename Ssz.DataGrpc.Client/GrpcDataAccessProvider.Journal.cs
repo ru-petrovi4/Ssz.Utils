@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.DataGrpc.Client
 {
-    public partial class GrpcDataAccessProvider
+    public partial class GrpcDataAccessProvider : DisposableViewModelBase, IDataAccessProvider, IDispatcher
     {
         #region public functions
 
@@ -23,7 +23,7 @@ namespace Ssz.DataGrpc.Client
             BeginInvoke(ct =>
             {
                 ClientElementValueJournalListManager.AddItem(elementId, valueSubscription);
-                ClientElementValueJournalListManager.Subscribe(ClientConnectionManager, CallbackDispatcher);
+                ClientElementValueJournalListManager.Subscribe(ClientConnectionManager);
             }
             );
         }
@@ -51,7 +51,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="_params"></param>
         /// <param name="valueSubscriptionsCollection"></param>
         /// <returns></returns>
-        public virtual async Task<ValueStatusTimestamp[][]?> ReadElementValueJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId calculation, CaseInsensitiveDictionary<string> _params, object[] valueSubscriptionsCollection)
+        public virtual async Task<ValueStatusTimestamp[][]?> ReadElementValueJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId calculation, CaseInsensitiveDictionary<string>? _params, object[] valueSubscriptionsCollection)
         {
             var taskCompletionSource = new TaskCompletionSource<ValueStatusTimestamp[][]?>();
             BeginInvoke(ct =>

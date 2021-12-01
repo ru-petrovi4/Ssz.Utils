@@ -25,7 +25,7 @@ namespace Ssz.DataGrpc.Client
         ///     The list server aliases and result codes for the data objects whose write failed. Returns empty if all writes
         ///     succeeded.
         /// </returns>
-        public AliasResult[] WriteData(uint listServerAlias, ElementValuesCollection elementValuesCollection)
+        public AliasResult[] WriteElementValues(uint listServerAlias, ElementValuesCollection elementValuesCollection)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -113,7 +113,7 @@ namespace Ssz.DataGrpc.Client
                         request.DataToSend = new PassthroughData();
                         SetResourceManagementLastCallUtc();
                         IEnumerable<byte>? returnDataTemp = null;
-                        if (reply.ReturnData.Guid != @"" && _incompletePassthroughRepliesCollection.Count > 0)
+                        if (!String.IsNullOrEmpty(reply.ReturnData.Guid) && _incompletePassthroughRepliesCollection.Count > 0)
                         {
                             var beginPassthroughReply = _incompletePassthroughRepliesCollection.TryGetValue(reply.ReturnData.Guid);
                             if (beginPassthroughReply is not null)
@@ -127,7 +127,7 @@ namespace Ssz.DataGrpc.Client
                             returnDataTemp = reply.ReturnData.Data;
                         }
 
-                        if (reply.ReturnData.NextGuid != @"")
+                        if (!String.IsNullOrEmpty(reply.ReturnData.NextGuid))
                         {
                             _incompletePassthroughRepliesCollection[reply.ReturnData.NextGuid] = returnDataTemp;
 

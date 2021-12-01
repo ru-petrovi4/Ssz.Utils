@@ -10,23 +10,29 @@ namespace Ssz.Utils.Logging
     public class SszLoggerOptions
     {
         #region public functions
-
-        public int EventId { get; set; } = 0;
-
+        
         public LogLevel LogLevel { get; set; } = LogLevel.Trace;
 
-        public string LogsDirectory { get; set; } = @"%ProgramData%\Ssz\Logs";
+        /// <summary>
+        ///     If empty (default) logs to current directory.
+        /// </summary>
+        public string LogDirectory { get; set; } = @"";
 
         /// <summary>
-        ///     If empty, .exe and process Id is used.
+        ///     If empty (default) .exe and process Id is used.
         /// </summary>
-        public string LogsFileName { get; set; } = @"";
+        public string LogFileName { get; set; } = @"";
 
         public bool DuplicateInConsole { get; set; } = false;
 
         public uint DaysCountToStoreFiles { get; set; } = 3;
 
-        public uint LogFileMaxSizeInBytes { get; internal set; } = 50 * 1024 * 1024;
+        /// <summary>
+        ///     Log lines are appended to file. If size exeeds this limit, file is deleted.
+        ///     If 0, file is always recreated for new logger instance.
+        ///     Default is 50 MB.
+        /// </summary>
+        public uint LogFileMaxSizeInBytes { get; set; } = 50 * 1024 * 1024;
 
         #endregion        
     }

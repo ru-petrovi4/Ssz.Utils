@@ -117,7 +117,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
             var result = new List<ClientElementValueListItem>();
             foreach (ElementValuesCollection elementValuesCollection in fullElementValuesCollection.SplitForCorrectGrpcMessageSize())
             {
-                AliasResult[] listAliasesResult = Context.WriteData(ListServerAlias, elementValuesCollection);
+                AliasResult[] listAliasesResult = Context.WriteElementValues(ListServerAlias, elementValuesCollection);
                 foreach (AliasResult aliasResult in listAliasesResult)
                 {
                     ClientElementValueListItem? item = null;

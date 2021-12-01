@@ -15,7 +15,7 @@ namespace Ssz.Utils
 
         public static object DoNothing { get; } = new();
 
-        public object? Convert(object?[]? values, ILogger? logger)
+        public object? Convert(object?[]? values, ILogger? logger, ILogger? userFriendlyLogger)
         {
             if (values is null || values.Length == 0)
                 return DoNothing;
@@ -27,16 +27,24 @@ namespace Ssz.Utils
 
             var firstTrue =
                 Statements.FirstOrDefault(
-                    s => new Any(s.Condition.Evaluate(values, null, logger)).ValueAsBoolean(false));
+                    s => new Any(s.Condition.Evaluate(values, null, logger, userFriendlyLogger)).ValueAsBoolean(false));
             if (firstTrue is not null)
-                resultValue = firstTrue.Value.Evaluate(values, null, logger);
+                resultValue = firstTrue.Value.Evaluate(values, null, logger, userFriendlyLogger);
             else
                 resultValue = values[0];
             
             return resultValue;
         }
 
-        public object?[] ConvertBack(object? value, int resultCount, ILogger? userFriendlyLogger)
+        /// <summary>
+        ///     Writes to userFriendlyLogger with Information level.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="resultCount"></param>
+        /// <param name="logger"></param>
+        /// <param name="userFriendlyLogger"></param>
+        /// <returns></returns>
+        public object?[] ConvertBack(object? value, int resultCount, ILogger? logger, ILogger? userFriendlyLogger)
         {
             if (resultCount <= 0 || resultCount > 0xFFFF) return new object[0];
 
@@ -49,9 +57,9 @@ namespace Ssz.Utils
                 if (paramNum >= 0 && paramNum < resultCount)
                     if (conditionResults[paramNum] != true)
                     {
-                        if (new Any(statement.Condition.Evaluate(_values, value, userFriendlyLogger)).ValueAsBoolean(false))
+                        if (new Any(statement.Condition.Evaluate(_values, value, logger, userFriendlyLogger)).ValueAsBoolean(false))
                         {
-                            resultValues[paramNum] = statement.Value.Evaluate(_values, value, userFriendlyLogger);
+                            resultValues[paramNum] = statement.Value.Evaluate(_values, value, logger, userFriendlyLogger);
                             conditionResults[paramNum] = true;
                         }
                         else

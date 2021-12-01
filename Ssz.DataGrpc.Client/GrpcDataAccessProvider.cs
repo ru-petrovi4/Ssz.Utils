@@ -383,35 +383,13 @@ namespace Ssz.DataGrpc.Client
             return await taskCompletionSource.Task;
         }
 
-        /// <summary>     
-        ///     No values mapping and conversion.       
-        ///     returns failed ValueSubscriptions.
-        ///     If connection error, failed ValueSubscriptions is all clientObjs.        
-        /// </summary>
-        /// <param name="valueSubscriptions"></param>
-        /// <param name="valueStatusTimestamps"></param>
-        /// <returns></returns>
-        public virtual async Task<IValueSubscription[]> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
-        {
-            var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]>();
-            BeginInvoke(ct =>
-            {
-                ClientElementValueListManager.Subscribe(ClientConnectionManager, CallbackDispatcher,
-                    OnElementValuesCallback, true, ct);
-                object[] failedValueSubscriptions = ClientElementValueListManager.Write(valueSubscriptions, valueStatusTimestamps);
-
-                taskCompletionSource.SetResult(failedValueSubscriptions.OfType<IValueSubscription>().ToArray());
-            }
-            );
-            return await taskCompletionSource.Task;
-        }
-
         /// <summary>
-        ///     Writes to logger with Debug level.
+        ///     Writes to userFriendlyLogger with Information level.
         /// </summary>
         /// <param name="valueSubscription"></param>
         /// <param name="valueStatusTimestamp"></param>
-        /// <param name="alternativeLogger"></param>
+        /// <param name="userFriendlyLogger"></param>
+        /// <exception cref="InvalidOperationException"></exception>
         public virtual void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
         {
             var callbackDispatcher = CallbackDispatcher;
@@ -423,8 +401,8 @@ namespace Ssz.DataGrpc.Client
             if (!_valueSubscriptionsCollection.TryGetValue(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj))
                 return;
 
-            if (userFriendlyLogger is not null && userFriendlyLogger.IsEnabled(LogLevel.Debug))
-                userFriendlyLogger.LogDebug("UI TAG: \"" + valueSubscriptionObj.ElementId + "\"; Value from UI: \"" +
+            if (userFriendlyLogger is not null && userFriendlyLogger.IsEnabled(LogLevel.Information))
+                userFriendlyLogger.LogInformation("UI TAG: \"" + valueSubscriptionObj.ElementId + "\"; Value from UI: \"" +
                                              value + "\"");
 
             IValueSubscription[]? constItemValueSubscriptionsArray = null;
@@ -465,13 +443,13 @@ namespace Ssz.DataGrpc.Client
                     converter = SszConverter.Empty;
                 resultValues =
                     converter.ConvertBack(value.ValueAsObject(),
-                        valueSubscriptionObj.ChildValueSubscriptionsList.Count, userFriendlyLogger);
+                        valueSubscriptionObj.ChildValueSubscriptionsList.Count, null, userFriendlyLogger);
                 if (resultValues.Length == 0) return;
             }
 
             var utcNow = DateTime.UtcNow;
 
-            if (userFriendlyLogger is not null && userFriendlyLogger.IsEnabled(LogLevel.Debug))
+            if (userFriendlyLogger is not null && userFriendlyLogger.IsEnabled(LogLevel.Information))
             {
                 if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                 {
@@ -480,7 +458,7 @@ namespace Ssz.DataGrpc.Client
                     {
                         var resultValue = resultValues[i];
                         if (resultValue != SszConverter.DoNothing)
-                            userFriendlyLogger.LogDebug("Model TAG: \"" +
+                            userFriendlyLogger.LogInformation("Model TAG: \"" +
                                                          valueSubscriptionObj.ChildValueSubscriptionsList[i]
                                                              .MappedElementIdOrConst + "\"; Write Value to Model: \"" +
                                                          new Any(resultValue) + "\"");
@@ -489,7 +467,7 @@ namespace Ssz.DataGrpc.Client
                 else
                 {
                     if (value.ValueAsObject() != SszConverter.DoNothing)
-                        userFriendlyLogger.LogDebug("Model TAG: \"" + valueSubscriptionObj.MapValues[1] +
+                        userFriendlyLogger.LogInformation("Model TAG: \"" + valueSubscriptionObj.MapValues[1] +
                                                      "\"; Write Value to Model: \"" + value + "\"");
                 }
             }
@@ -518,6 +496,29 @@ namespace Ssz.DataGrpc.Client
                 }
             });
         }
+
+        /// <summary>     
+        ///     No values mapping and conversion.       
+        ///     returns failed ValueSubscriptions.
+        ///     If connection error, failed ValueSubscriptions is all clientObjs.        
+        /// </summary>
+        /// <param name="valueSubscriptions"></param>
+        /// <param name="valueStatusTimestamps"></param>
+        /// <returns></returns>
+        public virtual async Task<IValueSubscription[]> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
+        {
+            var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]>();
+            BeginInvoke(ct =>
+            {
+                ClientElementValueListManager.Subscribe(ClientConnectionManager, CallbackDispatcher,
+                    OnElementValuesCallback, true, ct);
+                object[] failedValueSubscriptions = ClientElementValueListManager.Write(valueSubscriptions, valueStatusTimestamps);
+
+                taskCompletionSource.SetResult(failedValueSubscriptions.OfType<IValueSubscription>().ToArray());
+            }
+            );
+            return await taskCompletionSource.Task;
+        }        
 
         /// <summary>
         ///     Returns null if any errors.
@@ -1198,7 +1199,7 @@ namespace Ssz.DataGrpc.Client
                     converter = Converter;
                 else
                     converter = SszConverter.Empty;
-                var convertedValue = converter.Convert(values.ToArray(), null);
+                var convertedValue = converter.Convert(values.ToArray(), null, null);
                 if (convertedValue == SszConverter.DoNothing) return;
                 ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), ValueStatusCode.Good,
                     DateTime.UtcNow));

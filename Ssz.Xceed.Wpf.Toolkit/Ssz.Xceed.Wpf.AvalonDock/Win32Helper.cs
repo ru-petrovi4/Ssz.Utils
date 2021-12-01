@@ -118,17 +118,17 @@ namespace Ssz.Xceed.Wpf.AvalonDock
         internal static readonly IntPtr HWND_TOP = new(0);
         internal static readonly IntPtr HWND_BOTTOM = new(1);
 
-        [DllImport("user32.dll", EntryPoint = "CreateWindowEx", CharSet = CharSet.Unicode)]
-        internal static extern IntPtr CreateWindowEx(int dwExStyle,
-            string lpszClassName,
-            string lpszWindowName,
-            int style,
-            int x, int y,
-            int width, int height,
-            IntPtr hwndParent,
-            IntPtr hMenu,
-            IntPtr hInst,
-            [MarshalAs(UnmanagedType.AsAny)] object pvParam);
+        //[DllImport("user32.dll", EntryPoint = "CreateWindowEx", CharSet = CharSet.Unicode)]
+        //internal static extern IntPtr CreateWindowEx(int dwExStyle,
+        //    string lpszClassName,
+        //    string lpszWindowName,
+        //    int style,
+        //    int x, int y,
+        //    int width, int height,
+        //    IntPtr hwndParent,
+        //    IntPtr hMenu,
+        //    IntPtr hInst,
+        //    [MarshalAs(UnmanagedType.AsAny)] object pvParam);
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]

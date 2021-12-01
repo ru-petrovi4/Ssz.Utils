@@ -30,7 +30,7 @@ namespace Ssz.DataGrpc.Client
         /// <exception cref="InvalidOperationException"></exception>
         public ValueStatusTimestamp[][] ReadElementValueJournals(ClientElementValueJournalList dataGrpcElementValueJournalList, DateTime firstTimestampUtc,
             DateTime secondTimestampUtc,
-            uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId calculation, CaseInsensitiveDictionary<string> _params, uint[] serverAliases)
+            uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId calculation, CaseInsensitiveDictionary<string>? _params, uint[] serverAliases)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -49,7 +49,8 @@ namespace Ssz.DataGrpc.Client
                         NumValuesPerAlias = numValuesPerAlias,
                         Calculation = new Server.TypeId(calculation),                        
                     };
-                    request.Params.Add(_params);
+                    if (_params is not null)
+                        request.Params.Add(_params);
                     request.ServerAliases.Add(serverAliases);
                     ReadElementValueJournalsReply reply = _resourceManagementClient.ReadElementValueJournals(request);
                     SetResourceManagementLastCallUtc();
@@ -68,71 +69,3 @@ namespace Ssz.DataGrpc.Client
         #endregion
     }    
 }
-
-///// <summary>
-/////     <para>
-/////         This method is used to read the values of one or more data objects in a list. It is also used as a
-/////         keep-alive for the read endpoint by setting the listId parameter to 0. In this case, null is returned
-/////         immediately.
-/////     </para>
-///// </summary>
-///// <param name="listServerAlias">
-/////     The server identifier of the list that contains data objects to be read. Null if this is a
-/////     keep-alive.
-///// </param>
-///// <param name="serverAliases"> The server aliases of the data objects to read. </param>
-///// <returns>
-/////     <para>
-/////         The list of requested values. Each value in this list is identified by its client alias. If the server alias
-/////         for a data object to read was not found, an ErrorInfo object will be returned that contains the server alias
-/////         instead of a value, status, and timestamp.
-/////     </para>
-/////     <para> Returns null if this is a keep-alive. </para>
-///// </returns>
-//public ElementValuesCollection? ReadData(uint listServerAlias, List<uint> serverAliases)
-//{
-//    if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
-
-//    if (!ServerContextIsOperational) throw new InvalidOperationException();
-
-//    try
-//    {
-//        var request = new PassthroughRequest
-//        {
-//            ContextId = _serverContextId,
-//            RecipientId = recipientId,
-//            PassthroughName = passthroughName,
-//            DataToSend = ByteString.CopyFrom(dataToSend)
-//        };
-//        PassthroughReply reply = _resourceManagementClient.Read;
-//        SetResourceManagementLastCallUtc();
-//        return new PassthroughResult
-//        {
-//            ResultCode = reply.ResultCode,
-//            ReturnData = reply.ReturnData.ToByteArray()
-//        };
-//    }
-//    catch (Exception ex)
-//    {
-//        ProcessRemoteMethodCallException(ex);
-//        throw;
-//    }
-
-//    ElementValuesCollection? readValueList = null;
-//    if (DataGrpcEndpointRoot.CreateChannelIfNotCreated(_readEndpoint))
-//    {
-//        try
-//        {
-//            readValueList = _readEndpoint.Proxy.ReadData(ContextId, listServerAlias,
-//                serverAliases);
-
-
-//            _readEndpoint.LastCallUtc = DateTime.UtcNow;
-//        }
-//        catch (Exception ex)
-//        {
-//            ProcessRemoteMethodCallException(ex);
-//        }
-//    }
-//    return readValueList;
-//}

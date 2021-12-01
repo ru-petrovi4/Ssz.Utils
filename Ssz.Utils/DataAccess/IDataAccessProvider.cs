@@ -86,6 +86,8 @@ namespace Ssz.Utils.DataAccess
         /// </summary>
         Task<IValueSubscription[]?> PollElementValuesChangesAsync();
 
+        void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger);
+
         /// <summary>     
         ///     No values mapping and conversion.       
         ///     returns failed ValueSubscriptions.
@@ -95,8 +97,6 @@ namespace Ssz.Utils.DataAccess
         /// <param name="valueStatusTimestamps"></param>
         /// <returns></returns>
         Task<IValueSubscription[]> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps);
-        
-        void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger);
 
         /// <summary>
         ///     Returns null if any errors.
@@ -121,7 +121,7 @@ namespace Ssz.Utils.DataAccess
 
         void JournalRemoveItem(object valueJournalSubscription);
 
-        Task<ValueStatusTimestamp[][]?> ReadElementValueJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, TypeId calculation, CaseInsensitiveDictionary<string> _params, object[] valueJournalSubscriptions);
+        Task<ValueStatusTimestamp[][]?> ReadElementValueJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, TypeId calculation, CaseInsensitiveDictionary<string>? _params, object[] valueJournalSubscriptions);
 
         event Action<EventMessage[]> EventMessagesCallback;
 

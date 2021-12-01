@@ -121,16 +121,16 @@
     <value>Ошибка при вычислении выражения</value>
   </data>
   <data name="CsvDb_CsvFileWritingError" xml:space="preserve">
-    <value>Ошибка записи .csv файла.</value>
+    <value>Ошибка записи файла</value>
   </data>
   <data name="CsvHelper_CsvFileDoesNotExist" xml:space="preserve">
-    <value>.csv файл не существует.</value>
+    <value>Файл не существует</value>
   </data>
   <data name="CsvHelper_CsvFileDuplicateKey" xml:space="preserve">
-    <value>.csv файл содержит дубликат ключа.</value>
+    <value>Файл содержит дубликат ключа (нулевой колонки)</value>
   </data>
   <data name="CsvHelper_CsvFileReadingError" xml:space="preserve">
-    <value>Ошибка чтения .csv файла.</value>
+    <value>Ошибка чтения файла</value>
   </data>
   <data name="PrepareLambdaExpressionError" xml:space="preserve">
     <value>Ошибка в выражении</value>

@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Ssz.DataGrpc.Client
 {
-    public partial class GrpcDataAccessProvider
+    public partial class GrpcDataAccessProvider : DisposableViewModelBase, IDataAccessProvider, IDispatcher
     {
         #region public functions
 

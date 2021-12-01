@@ -27,11 +27,8 @@ namespace Ssz.DataGrpc.Client.Managers
         ///     No throw.
         /// </summary>
         /// <param name="clientConnectionManager"></param>
-        /// <param name="callbackDispatcher"></param>
-        public void Subscribe(ClientConnectionManager clientConnectionManager, IDispatcher? callbackDispatcher)
+        public void Subscribe(ClientConnectionManager clientConnectionManager)
         {
-            _callbackDispatcher = callbackDispatcher;
-
             try
             {
                 if (!DataGrpcItemsMustBeAddedOrRemoved) return;
@@ -72,10 +69,11 @@ namespace Ssz.DataGrpc.Client.Managers
         /// <param name="secondTimestampUtc"></param>
         /// <param name="numValuesPerSubscription"></param>
         /// <param name="calculation"></param>
+        /// <param name="_params"></param>
         /// <param name="valueSubscriptionsCollection"></param>
         /// <returns></returns>
         public ValueStatusTimestamp[][]? HdaReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId calculation,
-            CaseInsensitiveDictionary<string> _params,
+            CaseInsensitiveDictionary<string>? _params,
             object[] valueSubscriptionsCollection)
         {
             ValueStatusTimestamp[][]? result;
@@ -113,12 +111,6 @@ namespace Ssz.DataGrpc.Client.Managers
 
             return result;
         }
-
-        # endregion
-
-        #region private fields
-
-        private IDispatcher? _callbackDispatcher;
 
         #endregion
     }

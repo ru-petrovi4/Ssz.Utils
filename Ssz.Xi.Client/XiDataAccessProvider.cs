@@ -302,6 +302,23 @@ namespace Ssz.Xi.Client
                 taskCompletionSource.SetResult(changedValueSubscriptions is not null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null);
             });
             return await taskCompletionSource.Task;
+        }        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="valueSubscription"></param>
+        /// <param name="valueStatusTimestamp"></param>
+        /// <param name="userFriendlyLogger"></param>
+        public void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
+        {
+            BeginInvoke(ct =>
+            {
+                if (_xiServerProxy is null) throw new InvalidOperationException();
+                _xiDataListItemsManager.Subscribe(_xiServerProxy, _callbackDispatcher,
+                    XiDataListItemsManagerOnElementValuesCallback, true, ct);
+                _xiDataListItemsManager.Write(valueSubscription, valueStatusTimestamp);
+            });
         }
 
         /// <summary>     
@@ -319,29 +336,12 @@ namespace Ssz.Xi.Client
             {
                 if (_xiServerProxy is null) throw new InvalidOperationException();
                 _xiDataListItemsManager.Subscribe(_xiServerProxy, _callbackDispatcher,
-                    XiDataListItemsManagerOnElementValuesCallback, true, ct);                
+                    XiDataListItemsManagerOnElementValuesCallback, true, ct);
                 object[] failedValueSubscriptions = _xiDataListItemsManager.Write(valueSubscriptions, valueStatusTimestamps);
 
                 taskCompletionSource.SetResult(failedValueSubscriptions.OfType<IValueSubscription>().ToArray());
             });
             return await taskCompletionSource.Task;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="valueSubscription"></param>
-        /// <param name="valueStatusTimestamp"></param>
-        /// <param name="alternativeLogger"></param>
-        public void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? alternativeLogger)
-        {
-            BeginInvoke(ct =>
-            {
-                if (_xiServerProxy is null) throw new InvalidOperationException();
-                _xiDataListItemsManager.Subscribe(_xiServerProxy, _callbackDispatcher,
-                    XiDataListItemsManagerOnElementValuesCallback, true, ct);
-                _xiDataListItemsManager.Write(valueSubscription, valueStatusTimestamp);
-            });
         }
 
         /// <summary>

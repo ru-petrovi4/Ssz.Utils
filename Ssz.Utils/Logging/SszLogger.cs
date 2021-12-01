@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils.Logging
 {    
-    public class SszLogger : ILogger, IDisposable
+    public class SszLogger : SszLoggerBase
     {
         #region construction and destruction
 
@@ -23,17 +23,11 @@ namespace Ssz.Utils.Logging
             _logFileTextWriter = new LogFileTextWriter(options);
 
             _timer = new Timer(OnTimerCallback, null, 1000, 1000);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+        }        
         
-        private void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
-            if (_disposed) return;
+            if (Disposed) return;
 
             if (disposing)
             {
@@ -43,16 +37,8 @@ namespace Ssz.Utils.Logging
                     _logFileTextWriter.Dispose();
                 }
             }
-            
-            _disposed = true;
-        }
 
-        /// <summary>
-        ///     The standard destructor invoked by the .NET garbage collector during Finalize.
-        /// </summary>
-        ~SszLogger()
-        {
-            Dispose(false);
+            base.Dispose(disposing);
         }
 
         #endregion
@@ -61,15 +47,13 @@ namespace Ssz.Utils.Logging
 
         public SszLoggerOptions Options { get; set; }
 
-        public IDisposable BeginScope<TState>(TState state) => Disposable.Empty;
-
-        public bool IsEnabled(LogLevel logLevel)
+        public override bool IsEnabled(LogLevel logLevel)
         {
             if (Options.LogLevel == LogLevel.None) return false;
             return logLevel >= Options.LogLevel;
         }
 
-        public void Log<TState>(
+        public override void Log<TState>(
             LogLevel logLevel,
             EventId eventId,
             TState state,
@@ -81,22 +65,28 @@ namespace Ssz.Utils.Logging
                 return;
             }
 
-            if (Options.EventId != 0 && Options.EventId != eventId.Id)
-            {
-                return;
-            }
+            string line1;
+            if (eventId.Id != 0)
+                line1 = $"[ {eventId.Id}: {logLevel,-11} ]";
+            else
+                line1 = $"[ {logLevel,-11} ]";
 
-            string line = $"     {_name} - {formatter(state, exception)}";
+            string line2 = "\t";
+            foreach (var scopeString in ScopeStringsCollection)
+            {
+                line2 += scopeString + @" -> ";
+            }
+            line2 += formatter(state, exception);
             Exception? ex = exception;
             while (ex is not null)
             {
-                line += "\n";
-                line += "Exception: ";
-                line += ex.Message;
+                line2 += "\n";
+                line2 += "\tException: ";
+                line2 += ex.Message;
 
-                line += "\n";
-                line += "StackTrace: ";
-                line += ex.StackTrace;
+                line2 += "\n";
+                line2 += "\tStackTrace: ";
+                line2 += ex.StackTrace;
 
                 ex = ex.InnerException;
             }
@@ -106,16 +96,16 @@ namespace Ssz.Utils.Logging
                 ConsoleColor originalColor = Console.ForegroundColor;
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"[{eventId.Id,2}: {logLevel,-12}]");
+                Console.WriteLine(line1);
 
                 Console.ForegroundColor = originalColor;
-                Console.WriteLine(line);
+                Console.WriteLine(line2);
             }
             lock (_logFileTextWriter)
             {
-                _logFileTextWriter.WriteLine($"[{eventId.Id,2}: {logLevel,-12}]");
+                _logFileTextWriter.WriteLine(line1);
 
-                _logFileTextWriter.WriteLine(line);
+                _logFileTextWriter.WriteLine(line2);
             }
         }
 
@@ -125,7 +115,7 @@ namespace Ssz.Utils.Logging
 
         private void OnTimerCallback(object? state)
         {
-            if (_disposed) return;
+            if (Disposed) return;
 
             lock (_logFileTextWriter)
             {
@@ -136,8 +126,6 @@ namespace Ssz.Utils.Logging
         #endregion
 
         #region private fields
-
-        private volatile bool _disposed;
 
         private Timer _timer;
 

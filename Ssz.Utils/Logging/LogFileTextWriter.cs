@@ -21,12 +21,22 @@ namespace Ssz.Utils.Logging
         {
             _options = options;
 
-            _logsDirectoryFullName = Environment.ExpandEnvironmentVariables(_options.LogsDirectory);
-            if (!Directory.Exists(_logsDirectoryFullName)) Directory.CreateDirectory(_logsDirectoryFullName);
+            _logsDirectoryFullName = Environment.ExpandEnvironmentVariables(_options.LogDirectory);
 
-            if (_options.LogsFileName != @"")
+            //     Creates all directories and subdirectories in the specified path unless they
+            //     already exist.
+            if (String.IsNullOrEmpty(_logsDirectoryFullName))
             {
-                LogFileName = Path.Combine(_logsDirectoryFullName, _options.LogsFileName);                
+                _logsDirectoryFullName = Directory.GetCurrentDirectory();
+            }
+            else
+            {
+                Directory.CreateDirectory(_logsDirectoryFullName);
+            }
+
+            if (!String.IsNullOrEmpty(_options.LogFileName))
+            {
+                LogFileFullName = Path.Combine(_logsDirectoryFullName, _options.LogFileName);                
             }
             else
             {
@@ -35,7 +45,7 @@ namespace Ssz.Utils.Logging
                 if (moduleName is null) throw new InvalidOperationException();
                 var exeFileName = new FileInfo(moduleName).Name;
 
-                LogFileName = Path.Combine(_logsDirectoryFullName, exeFileName + @"." + currentProcess.Id + @".log");
+                LogFileFullName = Path.Combine(_logsDirectoryFullName, exeFileName + @"." + currentProcess.Id + @".log");
 
                 #region DeleteOldFiles
 
@@ -55,6 +65,21 @@ namespace Ssz.Utils.Logging
                 }
 
                 #endregion
+            }
+
+            if (_options.LogFileMaxSizeInBytes == 0)
+            {
+                var fi = new FileInfo(LogFileFullName);
+                if (fi.Exists)
+                {
+                    try
+                    {
+                        fi.Delete();
+                    }
+                    catch
+                    {
+                    }
+                }
             }
         }
 
@@ -78,7 +103,7 @@ namespace Ssz.Utils.Logging
         /// <summary>
         /// 
         /// </summary>
-        public string LogFileName { get; }
+        public string LogFileFullName { get; }
 
         /// <summary>
         /// 
@@ -89,24 +114,22 @@ namespace Ssz.Utils.Logging
             {
                 StreamWriter? sw = null;
                 try
-                {                    
-                    var fi = new FileInfo(LogFileName);
-                    if (!fi.Exists)
+                {   
+                    if (_options.LogFileMaxSizeInBytes > 0)
                     {
-                        sw = new StreamWriter(LogFileName, false, new UTF8Encoding(true));
-                    }
-                    else
-                    {
-                        if (fi.Length > _options.LogFileMaxSizeInBytes)
+                        var fi = new FileInfo(LogFileFullName);
+                        if (fi.Exists && fi.Length > _options.LogFileMaxSizeInBytes)
                         {
-                            fi.Delete();
-                            sw = new StreamWriter(LogFileName, false, new UTF8Encoding(true));
-                        }
-                        else
-                        {
-                            sw = new StreamWriter(LogFileName, true, new UTF8Encoding(true));
+                            try
+                            {
+                                fi.Delete();
+                            }
+                            catch
+                            {
+                            }                            
                         }
                     }
+                    sw = new StreamWriter(LogFileFullName, true, new UTF8Encoding(true));
                     sw.Write(_buffer.ToString());
                     _buffer.Clear();                    
                 }

@@ -1295,7 +1295,7 @@
             </summary>
             <param name="disposing"></param>
         </member>
-        <member name="P:Ssz.Utils.Logging.LogFileTextWriter.LogFileName">
+        <member name="P:Ssz.Utils.Logging.LogFileTextWriter.LogFileFullName">
             <summary>
             
             </summary>
@@ -1513,14 +1513,26 @@
             
             </summary>
         </member>
-        <member name="M:Ssz.Utils.Logging.SszLogger.Finalize">
+        <member name="M:Ssz.Utils.Logging.SszLoggerBase.Finalize">
             <summary>
                 The standard destructor invoked by the .NET garbage collector during Finalize.
             </summary>
         </member>
-        <member name="P:Ssz.Utils.Logging.SszLoggerOptions.LogsFileName">
+        <member name="P:Ssz.Utils.Logging.SszLoggerOptions.LogDirectory">
             <summary>
-                If empty, .exe and process Id is used.
+                If empty (default) logs to current directory.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Logging.SszLoggerOptions.LogFileName">
+            <summary>
+                If empty (default) .exe and process Id is used.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Logging.SszLoggerOptions.LogFileMaxSizeInBytes">
+            <summary>
+                Log lines are appended to file. If size exeeds this limit, file is deleted.
+                If 0, file is always recreated for new logger instance.
+                Default is 50 MB.
             </summary>
         </member>
         <member name="T:Ssz.Utils.MonitoredUndo.ChangeKey`2">
@@ -2193,22 +2205,22 @@
         </member>
         <member name="P:Ssz.Utils.Properties.Resources.CsvDb_CsvFileWritingError">
             <summary>
-              Looks up a localized string similar to .csv file writing error..
+              Looks up a localized string similar to File writing error.
             </summary>
         </member>
         <member name="P:Ssz.Utils.Properties.Resources.CsvHelper_CsvFileDoesNotExist">
             <summary>
-              Looks up a localized string similar to .csv file does not exist..
+              Looks up a localized string similar to File does not exist.
             </summary>
         </member>
         <member name="P:Ssz.Utils.Properties.Resources.CsvHelper_CsvFileDuplicateKey">
             <summary>
-              Looks up a localized string similar to .csv file contains duplicate key..
+              Looks up a localized string similar to File contains duplicate key.
             </summary>
         </member>
         <member name="P:Ssz.Utils.Properties.Resources.CsvHelper_CsvFileReadingError">
             <summary>
-              Looks up a localized string similar to .csv file reading error..
+              Looks up a localized string similar to File reading error.
             </summary>
         </member>
         <member name="P:Ssz.Utils.Properties.Resources.PrepareLambdaExpressionError">
@@ -3496,10 +3508,20 @@
                 Enum which is used for fast serialization. It stores information about a type or type/value.
             </summary>
         </member>
-        <member name="M:Ssz.Utils.SszExpression.Evaluate(System.Object[],System.Object,Microsoft.Extensions.Logging.ILogger,Microsoft.Extensions.Logging.ILogger)">
+        <member name="M:Ssz.Utils.SszConverter.ConvertBack(System.Object,System.Int32,Microsoft.Extensions.Logging.ILogger,Microsoft.Extensions.Logging.ILogger)">
             <summary>
+                Writes to userFriendlyLogger with Information level.
+            </summary>
+            <param name="value"></param>
+            <param name="resultCount"></param>
+            <param name="logger"></param>
+            <param name="userFriendlyLogger"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.SszExpression.Evaluate(System.Object[],System.Object,Microsoft.Extensions.Logging.ILogger,Microsoft.Extensions.Logging.ILogger)">
+            <summary>        
                 Writes to logger with Debug level.
-                Writes to userFriendlyLogger with Warning and Error priorities.
+                Writes to userFriendlyLogger with Warning and Error levels.
             </summary>
             <param name="dataSourceValues"></param>
             <param name="userValue"></param>

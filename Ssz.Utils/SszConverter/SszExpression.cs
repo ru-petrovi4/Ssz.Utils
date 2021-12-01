@@ -41,16 +41,16 @@ namespace Ssz.Utils
 
         #region public functions
 
-        /// <summary>
+        /// <summary>        
         ///     Writes to logger with Debug level.
-        ///     Writes to userFriendlyLogger with Warning and Error priorities.
+        ///     Writes to userFriendlyLogger with Warning and Error levels.
         /// </summary>
         /// <param name="dataSourceValues"></param>
         /// <param name="userValue"></param>
         /// <param name="logger"></param>
         /// <param name="userFriendlyLogger"></param>
         /// <returns></returns>
-        public object? Evaluate(object?[]? dataSourceValues, object? userValue, ILogger? logger, ILogger? userFriendlyLogger = null)
+        public object? Evaluate(object?[]? dataSourceValues, object? userValue, ILogger? logger, ILogger? userFriendlyLogger)
         {
             if (!IsValidInternal) return null;
 

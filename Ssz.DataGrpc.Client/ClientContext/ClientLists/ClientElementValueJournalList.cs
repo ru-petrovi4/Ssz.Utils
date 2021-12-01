@@ -69,9 +69,13 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// <param name="firstTimestamp"></param>
         /// <param name="secondTimestamp"></param>
         /// <param name="numValuesPerAlias"></param>
-        /// <param name="valueStatusTimestampSetCollection"></param>
+        /// <param name="calculation"></param>
+        /// <param name="_params"></param>
+        /// <param name="serverAliases"></param>
+        /// <returns></returns>
+        /// <exception cref="ObjectDisposedException"></exception>
         public ValueStatusTimestamp[][] ReadElementValueJournals(DateTime firstTimestamp, DateTime secondTimestamp,
-            uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId calculation, CaseInsensitiveDictionary<string> _params, uint[] serverAliases)
+            uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId calculation, CaseInsensitiveDictionary<string>? _params, uint[] serverAliases)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueJournalList.");
 
@@ -93,7 +97,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueJournalList.");
 
-            if (elementValueJournalsCollection.Guid != @"" && _incompleteElementValueJournalsCollectionCollection.Count > 0)
+            if (!String.IsNullOrEmpty(elementValueJournalsCollection.Guid) && _incompleteElementValueJournalsCollectionCollection.Count > 0)
             {
                 var beginElementValueJournalsCollection = _incompleteElementValueJournalsCollectionCollection.TryGetValue(elementValueJournalsCollection.Guid);
                 if (beginElementValueJournalsCollection is not null)
@@ -104,7 +108,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
                 }
             }
 
-            if (elementValueJournalsCollection.NextCollectionGuid != @"")
+            if (!String.IsNullOrEmpty(elementValueJournalsCollection.NextCollectionGuid))
             {
                 _incompleteElementValueJournalsCollectionCollection[elementValueJournalsCollection.NextCollectionGuid] = elementValueJournalsCollection;
 

@@ -141,7 +141,7 @@ namespace Ssz.Utils
                     dataSourceValues.Add(valueOfQuery);
                 }
 
-                var evaluated = new SszExpression(lambda).Evaluate(dataSourceValues.ToArray(), null, null);
+                var evaluated = new SszExpression(lambda).Evaluate(dataSourceValues.ToArray(), null, null, null);
                 return new Any(evaluated).ValueAsString(false);
             }
 

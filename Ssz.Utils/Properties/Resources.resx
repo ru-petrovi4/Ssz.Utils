@@ -121,16 +121,16 @@
     <value>Calculation error</value>
   </data>
   <data name="CsvDb_CsvFileWritingError" xml:space="preserve">
-    <value>.csv file writing error.</value>
+    <value>File writing error</value>
   </data>
   <data name="CsvHelper_CsvFileDoesNotExist" xml:space="preserve">
-    <value>.csv file does not exist.</value>
+    <value>File does not exist</value>
   </data>
   <data name="CsvHelper_CsvFileDuplicateKey" xml:space="preserve">
-    <value>.csv file contains duplicate key.</value>
+    <value>File contains duplicate key</value>
   </data>
   <data name="CsvHelper_CsvFileReadingError" xml:space="preserve">
-    <value>.csv file reading error.</value>
+    <value>File reading error</value>
   </data>
   <data name="PrepareLambdaExpressionError" xml:space="preserve">
     <value>Expression error</value>
