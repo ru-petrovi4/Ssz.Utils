@@ -67,7 +67,7 @@ namespace Ssz.Utils.Wpf.SystemMenu
             }
         }
 
-        private void SystemMenuWindow_Loaded(object sender, RoutedEventArgs e)
+        private void SystemMenuWindow_Loaded(object? sender, RoutedEventArgs e)
         {
             var interopHelper = new WindowInteropHelper(this);
             systemMenu = GetSystemMenu(interopHelper.Handle, false);

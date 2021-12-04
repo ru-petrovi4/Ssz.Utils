@@ -1374,6 +1374,221 @@
             <param name="folder"></param>
             <param name="filesToSelect"></param>
         </member>
+        <member name="T:Ssz.Utils.Wpf.WpfAnimatedGif.ImageAnimationController">
+            <summary>
+                Provides a way to pause, resume or seek a GIF animation.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageAnimationController.Dispose">
+            <summary>
+                Disposes the current object.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageAnimationController.Dispose(System.Boolean)">
+            <summary>
+                Disposes the current object
+            </summary>
+            <param name="disposing">true to dispose both managed an unmanaged resources, false to dispose only managed resources</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageAnimationController.Finalize">
+            <summary>
+                Finalizes the current object.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageAnimationController.GotoFrame(System.Int32)">
+            <summary>
+                Seeks the animation to the specified frame index.
+            </summary>
+            <param name="index">The index of the frame to seek to</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageAnimationController.Pause">
+            <summary>
+                Pauses the animation.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageAnimationController.Play">
+            <summary>
+                Starts or resumes the animation. If the animation is complete, it restarts from the beginning.
+            </summary>
+        </member>
+        <member name="E:Ssz.Utils.Wpf.WpfAnimatedGif.ImageAnimationController.CurrentFrameChanged">
+            <summary>
+                Raised when the current frame changes.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.WpfAnimatedGif.ImageAnimationController.FrameCount">
+            <summary>
+                Returns the number of frames in the image.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.WpfAnimatedGif.ImageAnimationController.IsPaused">
+            <summary>
+                Returns a value that indicates whether the animation is paused.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.WpfAnimatedGif.ImageAnimationController.IsComplete">
+            <summary>
+                Returns a value that indicates whether the animation is complete.
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.Wpf.WpfAnimatedGif.ImageAnimationController.CurrentFrame">
+            <summary>
+                Returns the current frame index.
+            </summary>
+        </member>
+        <member name="T:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior">
+            <summary>
+                Provides attached properties that display animated GIFs in a standard Image control.
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.GetAnimatedSource(System.Windows.Controls.Image)">
+            <summary>
+                Gets the value of the <c>AnimatedSource</c> attached property for the specified object.
+            </summary>
+            <param name="image">The element from which to read the property value.</param>
+            <returns>The currently displayed animated image.</returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.SetAnimatedSource(System.Windows.Controls.Image,System.Windows.Media.ImageSource)">
+            <summary>
+                Sets the value of the <c>AnimatedSource</c> attached property for the specified object.
+            </summary>
+            <param name="image">The element on which to set the property value.</param>
+            <param name="value">The animated image to display.</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.GetRepeatBehavior(System.Windows.Controls.Image)">
+            <summary>
+                Gets the value of the <c>RepeatBehavior</c> attached property for the specified object.
+            </summary>
+            <param name="image">The element from which to read the property value.</param>
+            <returns>The repeat behavior of the animated image.</returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.SetRepeatBehavior(System.Windows.Controls.Image,System.Windows.Media.Animation.RepeatBehavior)">
+            <summary>
+                Sets the value of the <c>RepeatBehavior</c> attached property for the specified object.
+            </summary>
+            <param name="image">The element on which to set the property value.</param>
+            <param name="value">The repeat behavior of the animated image.</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.GetAnimateInDesignMode(System.Windows.DependencyObject)">
+            <summary>
+                Gets the value of the <c>AnimateInDesignMode</c> attached property for the specified object.
+            </summary>
+            <param name="obj">The element from which to read the property value.</param>
+            <returns>true if GIF animations are shown in design mode; false otherwise.</returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.SetAnimateInDesignMode(System.Windows.DependencyObject,System.Boolean)">
+            <summary>
+                Sets the value of the <c>AnimateInDesignMode</c> attached property for the specified object.
+            </summary>
+            <param name="obj">The element on which to set the property value.</param>
+            <param name="value">true to show GIF animations in design mode; false otherwise.</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.GetAutoStart(System.Windows.Controls.Image)">
+            <summary>
+                Gets the value of the <c>AutoStart</c> attached property for the specified object.
+            </summary>
+            <param name="image">The element from which to read the property value.</param>
+            <returns>true if the animation should start immediately when loaded. Otherwise, false.</returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.SetAutoStart(System.Windows.Controls.Image,System.Boolean)">
+            <summary>
+                Sets the value of the <c>AutoStart</c> attached property for the specified object.
+            </summary>
+            <param name="image">The element on which to set the property value.</param>
+            <param name="value">true if the animation should start immediately when loaded. Otherwise, false.</param>
+            <remarks>The default value is true.</remarks>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.GetAnimationController(System.Windows.Controls.Image)">
+            <summary>
+                Gets the animation controller for the specified <c>Image</c> control.
+            </summary>
+            <param name="imageControl"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.GetSynchronizedBySource(System.Windows.Controls.Image)">
+            <summary>
+                Gets the value of the <c>SynchronizedBySource</c> attached property for the specified object.
+            </summary>
+            <param name="image">The element from which to read the property value.</param>
+            <returns>
+                true if the animation should be synchronized across all images that have the
+                same <c>AnimatedSource</c> and <c>RepeatBehavior</c>. Otherwise, false.
+            </returns>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.SetSynchronizedBySource(System.Windows.Controls.Image,System.Boolean)">
+            <summary>
+                Sets the value of the <c>SynchronizedBySource</c> attached property for the specified object.
+            </summary>
+            <param name="image">The element on which to set the property value.</param>
+            <param name="value">
+                true if the animation should be synchronized across all images that have the
+                same <c>AnimatedSource</c> and <c>RepeatBehavior</c>. Otherwise, false.
+            </param>
+            <remarks>The default value is true.</remarks>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.AddAnimationCompletedHandler(System.Windows.Controls.Image,System.Windows.RoutedEventHandler)">
+            <summary>
+                Adds a handler for the AnimationCompleted attached event.
+            </summary>
+            <param name="image">The UIElement that listens to this event.</param>
+            <param name="handler">The event handler to be added.</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.RemoveAnimationCompletedHandler(System.Windows.Controls.Image,System.Windows.RoutedEventHandler)">
+            <summary>
+                Removes a handler for the AnimationCompleted attached event.
+            </summary>
+            <param name="image">The UIElement that listens to this event.</param>
+            <param name="handler">The event handler to be removed.</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.AddAnimationLoadedHandler(System.Windows.Controls.Image,System.Windows.RoutedEventHandler)">
+            <summary>
+                Adds a handler for the AnimationLoaded attached event.
+            </summary>
+            <param name="image">The UIElement that listens to this event.</param>
+            <param name="handler">The event handler to be added.</param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.RemoveAnimationLoadedHandler(System.Windows.Controls.Image,System.Windows.RoutedEventHandler)">
+            <summary>
+                Removes a handler for the AnimationLoaded attached event.
+            </summary>
+            <param name="image">The UIElement that listens to this event.</param>
+            <param name="handler">The event handler to be removed.</param>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.AnimatedSourceProperty">
+            <summary>
+                Identifies the <c>AnimatedSource</c> attached property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.RepeatBehaviorProperty">
+            <summary>
+                Identifies the <c>RepeatBehavior</c> attached property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.AnimateInDesignModeProperty">
+            <summary>
+                Identifies the <c>AnimateInDesignMode</c> attached property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.AutoStartProperty">
+            <summary>
+                Identifies the <c>AutoStart</c> attached property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.SynchronizedBySourceProperty">
+            <summary>
+                Identifies the <c>SynchronizedBySource</c> attached property.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.AnimationCompletedEvent">
+            <summary>
+                Identifies the <c>AnimationCompleted</c> attached event.
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.Wpf.WpfAnimatedGif.ImageBehavior.AnimationLoadedEvent">
+            <summary>
+                Identifies the <c>AnimationLoaded</c> attached event.
+            </summary>
+        </member>
         <member name="T:Ssz.Utils.Wpf.WpfMessageBox.DelegateCommand">
             <summary>
                 This class allows delegating the commanding logic to methods passed as parameters,
@@ -1527,6 +1742,36 @@
             </summary>
             <param name="fileName"></param>
             <param name="drawing"></param>
+        </member>
+        <member name="T:XamlGeneratedNamespace.GeneratedInternalTypeHelper">
+            <summary>
+            GeneratedInternalTypeHelper
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateInstance(System.Type,System.Globalization.CultureInfo)">
+            <summary>
+            CreateInstance
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            GetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.SetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            SetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateDelegate(System.Type,System.Object,System.String)">
+            <summary>
+            CreateDelegate
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.AddEventHandler(System.Reflection.EventInfo,System.Object,System.Delegate)">
+            <summary>
+            AddEventHandler
+            </summary>
         </member>
     </members>
 </doc>

@@ -57,7 +57,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Utils
             NotifyPropertyChanged();
         }
 
-        private void ElementSizeChanged(object sender, SizeChangedEventArgs e)
+        private void ElementSizeChanged(object? sender, SizeChangedEventArgs e)
         {
             NotifyPropertyChanged();
         }

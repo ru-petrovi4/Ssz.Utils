@@ -255,7 +255,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Borders
         /// </summary>
         /// <param name="sender">The clipping border</param>
         /// <param name="e">Size Changed Event Args.</param>
-        private void ClippingBorderSizeChanged(object sender, SizeChangedEventArgs e)
+        private void ClippingBorderSizeChanged(object? sender, SizeChangedEventArgs e)
         {
             if (ClipContent)
             {
@@ -268,7 +268,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Borders
         /// </summary>
         /// <param name="sender">A content control.</param>
         /// <param name="e">Size Changed Event Args</param>
-        private void ContentControlSizeChanged(object sender, SizeChangedEventArgs e)
+        private void ContentControlSizeChanged(object? sender, SizeChangedEventArgs e)
         {
             if (ClipContent)
             {

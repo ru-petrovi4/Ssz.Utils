@@ -276,7 +276,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch.Borders
         /// </summary>
         /// <param name="sender">The outer glow border.</param>
         /// <param name="e">Size changed event args.</param>
-        private void OuterGlowContentControlSizeChanged(object sender, SizeChangedEventArgs e)
+        private void OuterGlowContentControlSizeChanged(object? sender, SizeChangedEventArgs e)
         {
             UpdateStops(e.NewSize);
         }

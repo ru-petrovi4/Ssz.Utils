@@ -32,7 +32,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch
             get { return new PropertyPath("(Canvas.Top)"); }
         }
 
-        protected override void OnDragDelta(object sender, DragDeltaEventArgs e)
+        protected override void OnDragDelta(object? sender, DragDeltaEventArgs e)
         {
             DragOffset += e.VerticalChange;
             Offset = Math.Min(UncheckedOffset, Math.Max(CheckedOffset, DragOffset));
@@ -64,7 +64,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch
             }
         }
 
-        protected override void OnDragCompleted(object sender, DragCompletedEventArgs e)
+        protected override void OnDragCompleted(object? sender, DragCompletedEventArgs e)
         {
             IsDragging = false;
             bool click = false;

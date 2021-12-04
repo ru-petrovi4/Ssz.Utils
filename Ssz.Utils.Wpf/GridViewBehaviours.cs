@@ -33,7 +33,7 @@ namespace Ssz.Utils.Wpf
             header.IsVisibleChanged += AdjustWidth;
         }
 
-        private static void AdjustWidth(object sender, DependencyPropertyChangedEventArgs e)
+        private static void AdjustWidth(object? sender, DependencyPropertyChangedEventArgs e)
         {
             var header = sender as GridViewColumnHeader;
             if (header == null)

@@ -156,7 +156,7 @@ namespace Ssz.Utils.Wpf.WpfMessageBox
             }
         }
 
-        private void Window_KeyDown(object sender, KeyEventArgs e)
+        private void Window_KeyDown(object? sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
             {

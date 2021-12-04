@@ -444,14 +444,14 @@ namespace Ssz.Utils.Wpf.ToggleSwitch
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected abstract void OnDragDelta(object sender, DragDeltaEventArgs e);
+        protected abstract void OnDragDelta(object? sender, DragDeltaEventArgs e);
 
         /// <summary>
         /// Raised when the dragging of the <see cref="Thumb">Thumb</see> has completed.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected abstract void OnDragCompleted(object sender, DragCompletedEventArgs e);
+        protected abstract void OnDragCompleted(object? sender, DragCompletedEventArgs e);
 
         /// <summary>
         /// Recalculated the layout of the control.
@@ -517,7 +517,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected virtual void OnDragStarted(object sender, DragStartedEventArgs e)
+        protected virtual void OnDragStarted(object? sender, DragStartedEventArgs e)
         {
             IsDragging = true;
             DragOffset = Offset;
@@ -537,7 +537,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected virtual void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        protected virtual void OnSizeChanged(object? sender, SizeChangedEventArgs e)
         {
             LayoutControls();
         }
@@ -580,7 +580,7 @@ namespace Ssz.Utils.Wpf.ToggleSwitch
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void OnIsEnabledChanged(object? sender, DependencyPropertyChangedEventArgs e)
         {
             _suspendStateChanges = true;
             if (!IsEnabled)

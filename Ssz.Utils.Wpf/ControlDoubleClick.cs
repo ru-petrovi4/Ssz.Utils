@@ -30,9 +30,9 @@ namespace Ssz.Utils.Wpf
             control.PreviewMouseDoubleClick += new MouseButtonEventHandler(ElementOnPreviewMouseDoubleClick);
         }
 
-        private static void ElementOnPreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private static void ElementOnPreviewMouseDoubleClick(object? sender, MouseButtonEventArgs e)
         {
-            Control control = (Control)sender;
+            Control control = (Control)sender!;
             ICommand command = GetCommand(control);
 
             if (command.CanExecute(null))
