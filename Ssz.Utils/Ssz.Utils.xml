@@ -407,16 +407,8 @@
                 If empty field, value in array is null.
                 # parsed as ordinary symbol. All field values are trimmed.
                 Only first char is used as separator in separator param.
-                Result array length not 0
+                result.Length > 0
             </summary>
-        </member>
-        <member name="M:Ssz.Utils.CsvHelper.ParseCsv(System.String,System.String)">
-            <summary>   
-                Result arrays lengths not 0
-            </summary>
-            <param name="separator"></param>
-            <param name="sourceString"></param>
-            <returns></returns>
         </member>
         <member name="M:Ssz.Utils.CsvHelper.LoadCsvFile(System.String,System.Boolean,System.Collections.Generic.Dictionary{System.Text.RegularExpressions.Regex,System.String},Microsoft.Extensions.Logging.ILogger,System.Collections.Generic.List{System.String})">
             <summary>
@@ -455,6 +447,18 @@
             <param name="sourceString"></param>
             <param name="defines"></param>
             <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.CsvHelper.ParseCsvLineInternal(System.String,System.String,System.Boolean@)">
+            <summary>
+                Preconditions: separator.Length == 1, sourceString != String.Empty
+                Returns whether last quote is not closed, so new line must be appended to this.
+                result.Length > 0
+            </summary>
+            <param name="separator"></param>
+            <param name="sourceString"></param>
+            <param name="openEnded"></param>
+            <returns></returns>
+            <exception cref="T:System.InvalidOperationException"></exception>
         </member>
         <member name="T:Ssz.Utils.CultureHelper">
             <summary>

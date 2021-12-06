@@ -69,6 +69,7 @@ namespace Ssz.Utils
                 .Replace("\"", "\"\"");
 
             return sourceString.Contains(separator) || sourceString.Contains('\"') ||
+                sourceString.Contains('\n') ||
                 sourceString.StartsWith(" ") || sourceString.EndsWith(" ")
                 ? "\"" + sourceString + "\""
                 : sourceString;
@@ -78,76 +79,76 @@ namespace Ssz.Utils
         ///     If empty field, value in array is null.
         ///     # parsed as ordinary symbol. All field values are trimmed.
         ///     Only first char is used as separator in separator param.
-        ///     Result array length not 0
+        ///     result.Length > 0
         /// </summary>
         public static string?[] ParseCsvLine(string separator, string? sourceString)
         {
             if (separator.Length != 1) throw new InvalidOperationException();
 
-            if (String.IsNullOrEmpty(sourceString)) return new string?[] { null };            
+            if (String.IsNullOrEmpty(sourceString)) return new string?[] { null };
 
-            var result = new List<string?>();
-            bool inQuotes = false;
-            bool fieldHasQuotes = false;
-            int fieldBeginIndex = 0;
-            for (int i = 0; i <= sourceString.Length; i++)
-            {
-                char ch;
-                if (i < sourceString.Length) ch = sourceString[i];
-                else ch = default (char);
-                if (ch == '\"')
-                {
-                    fieldHasQuotes = true;
-                    inQuotes = !inQuotes;
-                    continue;
-                }
-                if (!inQuotes && (ch == separator[0] || ch == default(char)))
-                {
-                    if (fieldBeginIndex == i)
-                    {
-                        result.Add(null);
-                    }
-                    else
-                    {
-                        string value = sourceString.Substring(fieldBeginIndex, i - fieldBeginIndex).Trim();
-                        if (value == @"")
-                        {
-                            result.Add(null);
-                        }
-                        else
-                        {
-                            if (fieldHasQuotes)
-                            {
-                                if (value.StartsWith("\"")) value = value.Substring(1);
-                                if (value.EndsWith("\"")) value = value.Substring(0, value.Length - 1);
-                                value = value.Replace("\"\"", "\"");
-                            }
-                            result.Add(value);
-                        }                        
-                    }
-                    fieldHasQuotes = false;
-                    fieldBeginIndex = i + separator.Length;                    
-                }
-            }            
-            return result.ToArray();
+            return ParseCsvLineInternal(separator, sourceString, out bool openEnded).ToArray();            
         }
 
         /// <summary>   
-        ///     Result arrays lengths not 0
+        ///     Child list.Count > 0
+        ///     No #include, #define, comments.
         /// </summary>
         /// <param name="separator"></param>
         /// <param name="sourceString"></param>
         /// <returns></returns>
-        public static List<string?[]> ParseCsv(string separator, string? sourceString)
+        public static List<List<string?>> ParseCsv(string separator, string? sourceString)
         {
-            if (separator.Length != 1) throw new InvalidOperationException();
+            if (separator.Length != 1) throw new InvalidOperationException();            
 
-            var result = new List<string?[]>();
-            if (String.IsNullOrEmpty(sourceString)) return result;            
+            var result = new List<List<string?>>();
 
-            foreach (string line in sourceString.Split(new string[] { Environment.NewLine }, StringSplitOptions.None))
-            {                
-                result.Add(ParseCsvLine(separator, line));                
+            if (String.IsNullOrEmpty(sourceString))
+                return result;
+
+            using (var reader = new StringReader(sourceString))
+            {
+                string line = "";
+                string? l;
+                List<string?>? beginFields = null;
+                while ((l = reader.ReadLine()) is not null)
+                {
+                    l = l.Trim();
+
+                    line += l;
+
+                    if (line == "") continue;
+
+                    List<string?> fields;
+
+                    if (beginFields is null)
+                    {
+                        fields = ParseCsvLineInternal(@",", line, out bool openEnded);
+                        if (openEnded)
+                        {
+                            beginFields = fields;
+                            line = "";
+                            continue;
+                        }                        
+                    }
+                    else
+                    {
+                        fields = ParseCsvLineInternal(@",", line, out bool openEnded);
+                        beginFields[beginFields.Count - 1] = beginFields[beginFields.Count - 1] + fields[0];
+                        beginFields.AddRange(fields.Skip(1));
+                        if (openEnded)
+                        {
+                            line = "";
+                            continue;
+                        }
+
+                        fields = beginFields;
+                        beginFields = null;
+                    }
+
+                    result.Add(fields);
+                    line = "";
+                }
             }
 
             return result;
@@ -188,105 +189,151 @@ namespace Ssz.Utils
                     {
                         string line = "";
                         string? l;
+                        List<string?>? beginFields = null;                        
                         while ((l = reader.ReadLine()) is not null)
-                        {
+                        {                            
                             l = l.Trim();
+
                             if (l.Length > 0 && l[l.Length - 1] == '\\')
                             {
-                                line += l.Substring(0, l.Length - 1);
-                                continue;
+                                if (line != @"")
+                                {
+                                    if (StringHelper.StartsWithIgnoreCase(line, @"#define"))
+                                    {
+                                        line += l.Substring(0, l.Length - 1);
+                                        continue;
+                                    }                                    
+                                }
+                                else
+                                {
+                                    if (StringHelper.StartsWithIgnoreCase(l, @"#define"))
+                                    {
+                                        line = l.Substring(0, l.Length - 1);
+                                        continue;
+                                    }                                    
+                                }                                
                             }
-                            else
-                            {
-                                line += l;
-                            }
+
+                            line += l;
+
                             if (line == "") continue;
-                            if (includeFiles && StringHelper.StartsWithIgnoreCase(line, @"#include") && line.Length > 8)
+
+                            List<string?> fields;
+
+                            if (beginFields is null)
                             {
-                                var q1 = line.IndexOf('"', 8);
-                                if (q1 != -1 && q1 + 1 < line.Length)
+                                if (includeFiles && StringHelper.StartsWithIgnoreCase(line, @"#include") && line.Length > 8)
                                 {
-                                    var q2 = line.IndexOf('"', q1 + 1);
-                                    if (q2 != -1 && q2 > q1 + 1)
+                                    var q1 = line.IndexOf('"', 8);
+                                    if (q1 != -1 && q1 + 1 < line.Length)
                                     {
-                                        var includeFileName = line.Substring(q1 + 1, q2 - q1 - 1);
-                                        if (includeFileNames is not null)
-                                            includeFileNames.Add(includeFileName.ToUpperInvariant());
-                                        foreach (var kvp in LoadCsvFile(filePath + @"\" + includeFileName, false, defines, userFriendlyLogger))
+                                        var q2 = line.IndexOf('"', q1 + 1);
+                                        if (q2 != -1 && q2 > q1 + 1)
                                         {
-                                            if (fileData.ContainsKey(kvp.Key))
+                                            var includeFileName = line.Substring(q1 + 1, q2 - q1 - 1);
+                                            if (includeFileNames is not null)
+                                                includeFileNames.Add(includeFileName.ToUpperInvariant());
+                                            foreach (var kvp in LoadCsvFile(filePath + @"\" + includeFileName, false, defines, userFriendlyLogger))
                                             {
-                                                userFriendlyLogger?.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key='" + kvp.Key + "'");
+                                                if (fileData.ContainsKey(kvp.Key))
+                                                {
+                                                    userFriendlyLogger?.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key='" + kvp.Key + "'");
+                                                }
+                                                fileData[kvp.Key] = kvp.Value;
                                             }
-                                            fileData[kvp.Key] = kvp.Value;
                                         }
                                     }
+
+                                    line = "";
+                                    continue;
                                 }
-                            }
-                            else if (StringHelper.StartsWithIgnoreCase(line, @"#define") && line.Length > 7)
-                            {
-                                int q1 = 7;
-                                for (; q1 < line.Length; q1++)
+                                if (StringHelper.StartsWithIgnoreCase(line, @"#define") && line.Length > 7)
                                 {
-                                    char ch = line[q1];
-                                    if (Char.IsWhiteSpace(ch)) continue;
-                                    else break;
+                                    int q1 = 7;
+                                    for (; q1 < line.Length; q1++)
+                                    {
+                                        char ch = line[q1];
+                                        if (Char.IsWhiteSpace(ch)) continue;
+                                        else break;
+                                    }
+                                    if (q1 < line.Length)
+                                    {
+                                        int q2 = q1 + 1;
+                                        for (; q2 < line.Length; q2++)
+                                        {
+                                            char ch = line[q2];
+                                            if (Char.IsWhiteSpace(ch)) break;
+                                            else continue;
+                                        }
+                                        string define = line.Substring(q1, q2 - q1);
+                                        string subst = @"";
+                                        if (q2 < line.Length - 1)
+                                        {
+                                            subst = ReplaceDefines(line.Substring(q2 + 1).Trim(), defines);
+                                        }
+                                        defines[new Regex(@"\b" + define + @"\b", RegexOptions.IgnoreCase)] = subst;
+                                    }
+
+                                    line = "";
+                                    continue;
                                 }
-                                if (q1 < line.Length)
+                                if (line[0] == '#')
                                 {
-                                    int q2 = q1 + 1;
-                                    for (; q2 < line.Length; q2++)
-                                    {
-                                        char ch = line[q2];
-                                        if (Char.IsWhiteSpace(ch)) break;
-                                        else continue;
-                                    }
-                                    string define = line.Substring(q1, q2 - q1);
-                                    string subst = @"";
-                                    if (q2 < line.Length - 1)
-                                    {
-                                        subst = ReplaceDefines(line.Substring(q2 + 1).Trim(), defines);
-                                    }
-                                    defines[new Regex(@"\b" + define + @"\b", RegexOptions.IgnoreCase)] = subst;
+                                    // Comment, skip
+
+                                    line = "";
+                                    continue;
                                 }
-                            }
-                            else if (line[0] == '#')
-                            {
-                                // Comment, skip                            
+
+                                fields = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), out bool openEnded);
+                                if (openEnded)
+                                {
+                                    beginFields = fields;
+                                    line = "";
+                                    continue;
+                                }
                             }
                             else
                             {
-                                List<string?> fields =
-                                    ParseCsvLine(@",", ReplaceDefines(line, defines)).ToList();
-                                if (fields.Count > 0)
+                                fields = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), out bool openEnded);
+                                beginFields[beginFields.Count - 1] = beginFields[beginFields.Count - 1] + fields[0];
+                                beginFields.AddRange(fields.Skip(1));
+                                if (openEnded)
                                 {
-                                    string? field0 = fields[0];
-                                    if (field0 is null)
+                                    line = "";
+                                    continue;
+                                }
+                                
+                                fields = beginFields;
+                                beginFields = null;                                
+                            }
+
+                            string? field0 = fields[0];
+                            if (field0 is null)
+                            {
+                                fields[0] = @"";
+                                field0 = @"";
+                            }
+                            if (field0 == @"")
+                            {
+                                if (!fields.All(f => String.IsNullOrEmpty(f)))
+                                {
+                                    if (fileData.ContainsKey(@""))
                                     {
-                                        fields[0] = @"";
-                                        field0 = @"";
+                                        userFriendlyLogger?.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key=''");
                                     }
-                                    if (field0 == @"")
-                                    {
-                                        if (!fields.All(f => String.IsNullOrEmpty(f)))
-                                        {
-                                            if (fileData.ContainsKey(@""))
-                                            {
-                                                userFriendlyLogger?.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key=''");
-                                            }
-                                            fileData[@""] = fields;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (fileData.ContainsKey(field0))
-                                        {
-                                            userFriendlyLogger?.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key='" + field0 + "'");
-                                        }
-                                        fileData[field0] = fields;
-                                    }
+                                    fileData[@""] = fields;
                                 }
                             }
+                            else
+                            {
+                                if (fileData.ContainsKey(field0))
+                                {
+                                    userFriendlyLogger?.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key='" + field0 + "'");
+                                }
+                                fileData[field0] = fields;
+                            }
+
                             line = "";
                         }
                     }
@@ -298,7 +345,7 @@ namespace Ssz.Utils
             }           
 
             return fileData;
-        }
+        }        
 
         /// <summary>
         ///     Saves data to file.
@@ -350,6 +397,66 @@ namespace Ssz.Utils
             }
             return sourceString;
         }
+
+        /// <summary>
+        ///     Preconditions: separator.Length == 1, sourceString != String.Empty
+        ///     Returns whether last quote is not closed, so new line must be appended to this.
+        ///     result.Length > 0
+        /// </summary>
+        /// <param name="separator"></param>
+        /// <param name="sourceString"></param>
+        /// <param name="openEnded"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        private static List<string?> ParseCsvLineInternal(string separator, string sourceString, out bool openEnded)
+        {            
+            var separatorChar = separator[0];
+            var result = new List<string?>();
+            bool inQuotes = false;
+            bool fieldHasQuotes = false;
+            int fieldBeginIndex = 0;
+            for (int i = 0; i <= sourceString.Length; i++)
+            {
+                char ch;
+                if (i < sourceString.Length) ch = sourceString[i];
+                else ch = separatorChar;
+                if (ch == '\"')
+                {
+                    fieldHasQuotes = true;
+                    inQuotes = !inQuotes;
+                    continue;
+                }
+                if (!inQuotes && ch == separatorChar)
+                {
+                    if (fieldBeginIndex == i)
+                    {
+                        result.Add(null);
+                    }
+                    else
+                    {
+                        string value = sourceString.Substring(fieldBeginIndex, i - fieldBeginIndex).Trim();
+                        if (value == @"")
+                        {
+                            result.Add(null);
+                        }
+                        else
+                        {
+                            if (fieldHasQuotes)
+                            {
+                                if (value.StartsWith("\"")) value = value.Substring(1);
+                                if (value.EndsWith("\"")) value = value.Substring(0, value.Length - 1);
+                                value = value.Replace("\"\"", "\"");
+                            }
+                            result.Add(value);
+                        }
+                    }
+                    fieldHasQuotes = false;
+                    fieldBeginIndex = i + 1;
+                }
+            }
+            openEnded = inQuotes;
+            return result;
+        }        
 
         #endregion
     }

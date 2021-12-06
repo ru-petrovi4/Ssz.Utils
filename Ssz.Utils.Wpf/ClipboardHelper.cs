@@ -19,10 +19,10 @@ namespace Ssz.Utils.Wpf
         ///     Uses CultureHelper.SystemCultureInfo.
         /// </summary>
         /// <returns></returns>
-        public static List<string?[]> ParseClipboardData()
+        public static List<List<string?>> ParseClipboardData()
         {
             IDataObject dataObj = Clipboard.GetDataObject();
-            if (dataObj is null) return new List<string?[]>();
+            if (dataObj is null) return new List<List<string?>>();
 
             object clipboardData = dataObj.GetData(DataFormats.CommaSeparatedValue);
             if (clipboardData is not null)
@@ -37,7 +37,7 @@ namespace Ssz.Utils.Wpf
                 return CsvHelper.ParseCsv("\t", clipboardDataString);
             }
 
-            return new List<string?[]>();
+            return new List<List<string?>>();
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace Ssz.Utils.Wpf
                 return sr.ReadToEnd();
             }
             return @"";
-        }
+        }        
 
         #endregion
     }

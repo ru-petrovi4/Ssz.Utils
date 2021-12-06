@@ -16,6 +16,14 @@
             </summary>
             <param name="data"></param>
         </member>
+        <member name="M:Ssz.Utils.Wpf.ClipboardHelper.ParseCsv(System.String,System.String)">
+            <summary>   
+                Result array.Length > 0
+            </summary>
+            <param name="separator"></param>
+            <param name="sourceString"></param>
+            <returns></returns>
+        </member>
         <member name="M:Ssz.Utils.Wpf.DispatcherWrapper.Dispose">
             <summary>
                 This is the implementation of the IDisposable.Dispose method.  The client
@@ -1742,36 +1750,6 @@
             </summary>
             <param name="fileName"></param>
             <param name="drawing"></param>
-        </member>
-        <member name="T:XamlGeneratedNamespace.GeneratedInternalTypeHelper">
-            <summary>
-            GeneratedInternalTypeHelper
-            </summary>
-        </member>
-        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateInstance(System.Type,System.Globalization.CultureInfo)">
-            <summary>
-            CreateInstance
-            </summary>
-        </member>
-        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Globalization.CultureInfo)">
-            <summary>
-            GetPropertyValue
-            </summary>
-        </member>
-        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.SetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Object,System.Globalization.CultureInfo)">
-            <summary>
-            SetPropertyValue
-            </summary>
-        </member>
-        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateDelegate(System.Type,System.Object,System.String)">
-            <summary>
-            CreateDelegate
-            </summary>
-        </member>
-        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.AddEventHandler(System.Reflection.EventInfo,System.Object,System.Delegate)">
-            <summary>
-            AddEventHandler
-            </summary>
         </member>
     </members>
 </doc>
