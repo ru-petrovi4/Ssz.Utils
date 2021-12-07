@@ -87,7 +87,8 @@ namespace Ssz.Utils
 
             if (String.IsNullOrEmpty(sourceString)) return new string?[] { null };
 
-            return ParseCsvLineInternal(separator, sourceString, out bool openEnded).ToArray();            
+            bool inQuotes = false;
+            return ParseCsvLineInternal(separator, sourceString, ref inQuotes).ToArray();            
         }
 
         /// <summary>   
@@ -111,6 +112,7 @@ namespace Ssz.Utils
                 string line = "";
                 string? l;
                 List<string?>? beginFields = null;
+                bool inQuotes = false;
                 while ((l = reader.ReadLine()) is not null)
                 {
                     l = l.Trim();
@@ -123,8 +125,8 @@ namespace Ssz.Utils
 
                     if (beginFields is null)
                     {
-                        fields = ParseCsvLineInternal(@",", line, out bool openEnded);
-                        if (openEnded)
+                        fields = ParseCsvLineInternal(@",", line, ref inQuotes);
+                        if (inQuotes)
                         {
                             beginFields = fields;
                             line = "";
@@ -133,10 +135,10 @@ namespace Ssz.Utils
                     }
                     else
                     {
-                        fields = ParseCsvLineInternal(@",", line, out bool openEnded);
+                        fields = ParseCsvLineInternal(@",", line, ref inQuotes);
                         beginFields[beginFields.Count - 1] = beginFields[beginFields.Count - 1] + fields[0];
                         beginFields.AddRange(fields.Skip(1));
-                        if (openEnded)
+                        if (inQuotes)
                         {
                             line = "";
                             continue;
@@ -189,7 +191,8 @@ namespace Ssz.Utils
                     {
                         string line = "";
                         string? l;
-                        List<string?>? beginFields = null;                        
+                        List<string?>? beginFields = null;
+                        bool inQuotes = false;
                         while ((l = reader.ReadLine()) is not null)
                         {                            
                             l = l.Trim();
@@ -285,8 +288,8 @@ namespace Ssz.Utils
                                     continue;
                                 }
 
-                                fields = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), out bool openEnded);
-                                if (openEnded)
+                                fields = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), ref inQuotes);
+                                if (inQuotes)
                                 {
                                     beginFields = fields;
                                     line = "";
@@ -295,10 +298,10 @@ namespace Ssz.Utils
                             }
                             else
                             {
-                                fields = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), out bool openEnded);
-                                beginFields[beginFields.Count - 1] = beginFields[beginFields.Count - 1] + fields[0];
+                                fields = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), ref inQuotes);
+                                beginFields[beginFields.Count - 1] = beginFields[beginFields.Count - 1] + '\n' + fields[0];
                                 beginFields.AddRange(fields.Skip(1));
-                                if (openEnded)
+                                if (inQuotes)
                                 {
                                     line = "";
                                     continue;
@@ -408,25 +411,24 @@ namespace Ssz.Utils
         /// <param name="openEnded"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        private static List<string?> ParseCsvLineInternal(string separator, string sourceString, out bool openEnded)
+        private static List<string?> ParseCsvLineInternal(string separator, string sourceString, ref bool inQuotes)
         {            
             var separatorChar = separator[0];
-            var result = new List<string?>();
-            bool inQuotes = false;
+            var result = new List<string?>();            
             bool fieldHasQuotes = false;
             int fieldBeginIndex = 0;
             for (int i = 0; i <= sourceString.Length; i++)
             {
                 char ch;
                 if (i < sourceString.Length) ch = sourceString[i];
-                else ch = separatorChar;
+                else ch = default;
                 if (ch == '\"')
                 {
                     fieldHasQuotes = true;
                     inQuotes = !inQuotes;
                     continue;
                 }
-                if (!inQuotes && ch == separatorChar)
+                if ((!inQuotes && ch == separatorChar) || ch == default)
                 {
                     if (fieldBeginIndex == i)
                     {
@@ -453,8 +455,7 @@ namespace Ssz.Utils
                     fieldHasQuotes = false;
                     fieldBeginIndex = i + 1;
                 }
-            }
-            openEnded = inQuotes;
+            }            
             return result;
         }        
 

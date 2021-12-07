@@ -410,6 +410,15 @@
                 result.Length > 0
             </summary>
         </member>
+        <member name="M:Ssz.Utils.CsvHelper.ParseCsv(System.String,System.String)">
+            <summary>   
+                Child list.Count > 0
+                No #include, #define, comments.
+            </summary>
+            <param name="separator"></param>
+            <param name="sourceString"></param>
+            <returns></returns>
+        </member>
         <member name="M:Ssz.Utils.CsvHelper.LoadCsvFile(System.String,System.Boolean,System.Collections.Generic.Dictionary{System.Text.RegularExpressions.Regex,System.String},Microsoft.Extensions.Logging.ILogger,System.Collections.Generic.List{System.String})">
             <summary>
                 First column in file is Key and must be unique.

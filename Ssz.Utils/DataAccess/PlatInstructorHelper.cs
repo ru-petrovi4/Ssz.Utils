@@ -23,7 +23,8 @@ namespace Ssz.Utils.DataAccess
         public static Task<IEnumerable<AlarmInfoViewModelBase>?> ProcessEventMessage(Ssz.Utils.EventSourceModel.EventSourceModel eventSourceModel, 
             EventMessage eventMessage, ILogger? logger = null)
         {
-            if (eventMessage.EventId.Conditions is not null &&
+            if (eventMessage.EventId is not null &&
+                eventMessage.EventId.Conditions is not null &&
                 eventMessage.EventId.Conditions.Any(c => c.LocalId == "BeforeStateLoad"))
             {
                 return Task.FromResult((IEnumerable<AlarmInfoViewModelBase>?)null);
@@ -34,7 +35,8 @@ namespace Ssz.Utils.DataAccess
                 if (eventMessage.EventType != EventType.EclipsedAlarm && eventMessage.EventType != EventType.SimpleAlarm)
                     return Task.FromResult((IEnumerable<AlarmInfoViewModelBase>?)null);
 
-                if (eventMessage.EventId.Conditions is null ||
+                if (eventMessage.EventId is null ||
+                    eventMessage.EventId.Conditions is null ||
                     eventMessage.EventId.Conditions.Count == 0 ||
                     eventMessage.EventId.SourceElementId == @"" ||
                     eventMessage.AlarmMessageData is null ||
@@ -43,10 +45,10 @@ namespace Ssz.Utils.DataAccess
                 {
                     if (logger is not null && logger.IsEnabled(LogLevel.Debug))
                     {
-                        logger.LogDebug("Invalid message ignored: VarName=" + eventMessage.EventId.SourceElementId +                                       
+                        logger.LogDebug("Invalid message ignored: VarName=" + eventMessage.EventId?.SourceElementId +                                       
                                        ";OccurrenceTime=" + eventMessage.OccurrenceTime +                                       
                                        ";TextMessage=" + eventMessage.TextMessage +
-                                       ";OccurrenceId=" + eventMessage.EventId.OccurrenceId);
+                                       ";OccurrenceId=" + eventMessage.EventId?.OccurrenceId);
                     }
                     return Task.FromResult((IEnumerable<AlarmInfoViewModelBase>?)null);
                 }

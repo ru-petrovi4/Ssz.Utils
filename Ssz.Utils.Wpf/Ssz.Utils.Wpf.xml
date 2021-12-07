@@ -16,14 +16,6 @@
             </summary>
             <param name="data"></param>
         </member>
-        <member name="M:Ssz.Utils.Wpf.ClipboardHelper.ParseCsv(System.String,System.String)">
-            <summary>   
-                Result array.Length > 0
-            </summary>
-            <param name="separator"></param>
-            <param name="sourceString"></param>
-            <returns></returns>
-        </member>
         <member name="M:Ssz.Utils.Wpf.DispatcherWrapper.Dispose">
             <summary>
                 This is the implementation of the IDisposable.Dispose method.  The client

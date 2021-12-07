@@ -10,7 +10,7 @@ namespace Ssz.Utils.DataAccess
     {
 		#region construction and destruction
 
-		public EventMessage(EventId eventId)
+		public EventMessage(EventId? eventId)
         {
 			EventId = eventId;
 		}
@@ -31,9 +31,10 @@ namespace Ssz.Utils.DataAccess
 		public EventType EventType;
 
 		/// <summary>
-		/// The identifier for the event/alarm occurrence.  
+		/// The identifier for the event/alarm occurrence.
+		/// null for journal event
 		/// </summary>
-		public EventId EventId;
+		public EventId? EventId;
 
 		/// <summary>
 		/// Text that describes the event occurrence.
