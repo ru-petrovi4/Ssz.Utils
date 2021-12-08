@@ -465,7 +465,7 @@
             </summary>
             <param name="separator"></param>
             <param name="sourceString"></param>
-            <param name="openEnded"></param>
+            <param name="inQuotes"></param>
             <returns></returns>
             <exception cref="T:System.InvalidOperationException"></exception>
         </member>
@@ -634,7 +634,8 @@
         </member>
         <member name="F:Ssz.Utils.DataAccess.EventMessage.EventId">
             <summary>
-            The identifier for the event/alarm occurrence.  
+            The identifier for the event/alarm occurrence.
+            null for journal event
             </summary>
         </member>
         <member name="F:Ssz.Utils.DataAccess.EventMessage.TextMessage">
@@ -893,6 +894,27 @@
             <param name="progressCallbackAction"></param>
             <returns></returns>
         </member>
+        <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.ReadElementValuesJournalsAsync(System.DateTime,System.DateTime,System.UInt32,Ssz.Utils.DataAccess.TypeId,Ssz.Utils.CaseInsensitiveDictionary{System.String},System.Object[])">
+            <summary>
+                Returns null if error.
+            </summary>
+            <param name="firstTimestampUtc"></param>
+            <param name="secondTimestampUtc"></param>
+            <param name="numValuesPerSubscription"></param>
+            <param name="calculation"></param>
+            <param name="params_"></param>
+            <param name="valueJournalSubscriptions"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Ssz.Utils.DataAccess.IDataAccessProvider.ReadEventMessagesJournalAsync(System.DateTime,System.DateTime,Ssz.Utils.CaseInsensitiveDictionary{System.String})">
+            <summary>
+                Returns null if error.
+            </summary>
+            <param name="firstTimestampUtc"></param>
+            <param name="secondTimestampUtc"></param>
+            <param name="params_"></param>
+            <returns></returns>
+        </member>
         <member name="M:Ssz.Utils.DataAccess.PlatInstructorHelper.ProcessEventMessage(Ssz.Utils.EventSourceModel.EventSourceModel,Ssz.Utils.DataAccess.EventMessage,Microsoft.Extensions.Logging.ILogger)">
             <summary>
                 Returns new AlarmInfoViewModels or null.
@@ -939,11 +961,6 @@
         <member name="F:Ssz.Utils.DataAccess.StandardListType.EventList">
             <summary>
                 The type of list that contains alarms and events.
-            </summary>
-        </member>
-        <member name="F:Ssz.Utils.DataAccess.StandardListType.EventJournalList">
-            <summary>
-                The type of list that contains historical alarms and events.
             </summary>
         </member>
         <member name="M:Ssz.Utils.DataAccess.TypeId.#ctor(System.Type)">

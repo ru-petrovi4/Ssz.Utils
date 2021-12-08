@@ -408,7 +408,7 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="separator"></param>
         /// <param name="sourceString"></param>
-        /// <param name="openEnded"></param>
+        /// <param name="inQuotes"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         private static List<string?> ParseCsvLineInternal(string separator, string sourceString, ref bool inQuotes)
