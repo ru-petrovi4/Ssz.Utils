@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils.DataAccess
 {
-    public class ValueJournalSubscription : IDisposable
+    public class ValuesJournalSubscription : IDisposable
     {
         #region construction and destruction
         
-        public ValueJournalSubscription(IDataAccessProvider dataAccessProvider, string id)
+        public ValuesJournalSubscription(IDataAccessProvider dataAccessProvider, string id)
         {
             DataAccessProvider = dataAccessProvider;
             Id = id;            

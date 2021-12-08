@@ -159,6 +159,11 @@ namespace Ssz.Xi.Client.Api
             }            
         }
 
+        public Utils.DataAccess.EventMessage[]? ReadEventMessagesJournal(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_)
+        {
+            return null;
+        }
+
         /// <summary>
         ///     Invokes EventList.PollEventChanges(null) if EventList Pollable and not Callbackable.
         ///     No throw.

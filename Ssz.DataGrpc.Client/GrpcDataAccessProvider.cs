@@ -28,7 +28,7 @@ namespace Ssz.DataGrpc.Client
             ClientConnectionManager = new ClientConnectionManager(logger, this);
 
             ClientElementValueListManager = new ClientElementValueListManager(logger);
-            ClientElementValueJournalListManager = new ClientElementValueJournalListManager(logger);
+            ClientElementValuesJournalListManager = new ClientElementValuesJournalListManager(logger);
             ClientEventListManager = new ClientEventListManager(logger);
         }
 
@@ -799,7 +799,7 @@ namespace Ssz.DataGrpc.Client
 
             ClientElementValueListManager.Unsubscribe(clearClientSubscriptions);
             ClientEventListManager.Unsubscribe();
-            ClientElementValueJournalListManager.Unsubscribe(clearClientSubscriptions);            
+            ClientElementValuesJournalListManager.Unsubscribe(clearClientSubscriptions);            
         }
 
         /// <summary>

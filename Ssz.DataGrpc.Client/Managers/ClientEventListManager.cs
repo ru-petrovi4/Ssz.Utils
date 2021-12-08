@@ -68,7 +68,7 @@ namespace Ssz.DataGrpc.Client.Managers
                         Action<Utils.DataAccess.EventMessage[]> eventMessagesCallbackEventHandler = kvp.Key;
 
                         dataGrpcEventList.EventMessagesCallbackEvent +=
-                            (ClientEventList eventList, ClientEventListItem[] newListItems) =>
+                            (ClientEventList eventList, Server.EventMessage[] newEventMessages) =>
                             {
                                 if (ct.IsCancellationRequested) return;
                                 if (сallbackDispatcher is not null)
@@ -76,7 +76,7 @@ namespace Ssz.DataGrpc.Client.Managers
                                     try
                                     {
                                         сallbackDispatcher.BeginInvoke(ct => eventMessagesCallbackEventHandler(
-                                            newListItems.Select(li => li.EventMessage.ToEventMessage()).ToArray()));
+                                            newEventMessages.Select(em => em.ToEventMessage()).ToArray()));
                                     }
                                     catch (Exception)
                                     {
@@ -96,14 +96,14 @@ namespace Ssz.DataGrpc.Client.Managers
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogWarning(ex, "ClientEventListItemsManager.Subscribe exception.");
+                    Logger.LogWarning(ex, "EventMessagesManager.Subscribe exception.");
                 }
 
                 kvp.Value.P = dataGrpcEventList;
 
                 if (allOk) _dataGrpcEventItemsMustBeAdded = false;
             }
-        }
+        }        
 
         /// <summary>
         ///     If not Pollable, does nothing.

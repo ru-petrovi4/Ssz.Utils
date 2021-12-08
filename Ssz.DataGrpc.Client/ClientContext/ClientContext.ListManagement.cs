@@ -24,7 +24,7 @@ namespace Ssz.DataGrpc.Client
         ///     This method is used to create a DataGrpc List of one of the four supported list types.
         ///     Which are:
         ///     1) ElementValueList - used to maintain a list of active process values.
-        ///     2) ElementValueJournalList - used to obtain a historical list of process values.
+        ///     2) ElementValuesJournalList - used to obtain a historical list of process values.
         ///     3) EventList - used to obtain process events as they occur.
         ///     4) EventJournalList - used to obtain a historical list of process events.
         /// </summary>
@@ -285,11 +285,11 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         /// <param name="clientListId"> The client list id </param>
         /// <returns> The specified list </returns>
-        private ClientElementValueJournalList GetElementValueJournalList(uint clientListId)
+        private ClientElementValuesJournalList GetElementValuesJournalList(uint clientListId)
         {
             ClientListRoot? dataGrpcListRoot;
             _lists.TryGetValue(clientListId, out dataGrpcListRoot);
-            var result = dataGrpcListRoot as ClientElementValueJournalList;
+            var result = dataGrpcListRoot as ClientElementValuesJournalList;
             if (result is null) throw new InvalidOperationException();
             return result;
         }

@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 
 namespace Ssz.DataGrpc.Server
 {
-    public sealed partial class ElementValueJournal
+    public sealed partial class ElementValuesJournal
     {
         #region public functions
 
-        public void CombineWith(ElementValueJournal nextElementValueJournal)
+        public void CombineWith(ElementValuesJournal nextElementValuesJournal)
         {
-            DoubleValueStatusCodes.Add(nextElementValueJournal.DoubleValueStatusCodes);
-            DoubleTimestamps.Add(nextElementValueJournal.DoubleTimestamps);
-            DoubleValues.Add(nextElementValueJournal.DoubleValues);
+            DoubleValueStatusCodes.Add(nextElementValuesJournal.DoubleValueStatusCodes);
+            DoubleTimestamps.Add(nextElementValuesJournal.DoubleTimestamps);
+            DoubleValues.Add(nextElementValuesJournal.DoubleValues);
 
-            UintValueStatusCodes.Add(nextElementValueJournal.UintValueStatusCodes);
-            UintTimestamps.Add(nextElementValueJournal.UintTimestamps);
-            UintValues.Add(nextElementValueJournal.UintValues);
+            UintValueStatusCodes.Add(nextElementValuesJournal.UintValueStatusCodes);
+            UintTimestamps.Add(nextElementValuesJournal.UintTimestamps);
+            UintValues.Add(nextElementValuesJournal.UintValues);
         }
 
         #endregion

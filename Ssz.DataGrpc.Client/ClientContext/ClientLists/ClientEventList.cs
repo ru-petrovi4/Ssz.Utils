@@ -53,19 +53,26 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// 
         /// </summary>
         /// <returns></returns>
-        public ClientEventListItem[] PollEventsChanges()
+        public Server.EventMessage[] PollEventsChanges()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
             return Context.PollEventsChanges(this);
         }
 
+        public Server.EventMessage[] ReadEventMessagesJournal(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_)
+        {
+            if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
+
+            return Context.ReadEventMessagesJournal(this, firstTimestampUtc, secondTimestampUtc, params_);
+        }
+
         /// <summary>
-        ///     Returns new ClientEventListItems or null, if waiting next message.
+        ///     Returns new EventMessages or null, if waiting next message.
         /// </summary>
         /// <param name="eventMessagesCollection"></param>
         /// <returns></returns>
-        public ClientEventListItem[]? EventMessagesCallback(EventMessagesCollection eventMessagesCollection)
+        public Server.EventMessage[]? EventMessagesCallback(EventMessagesCollection eventMessagesCollection)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
@@ -88,11 +95,11 @@ namespace Ssz.DataGrpc.Client.ClientLists
             }
             else
             {
-                var result = new List<ClientEventListItem>();
+                var result = new List<Server.EventMessage>();
 
                 foreach (var eventMessage in eventMessagesCollection.EventMessages)
                 {
-                    result.Add(new ClientEventListItem(eventMessage));
+                    result.Add(eventMessage);
                 }
 
                 return result.ToArray();
@@ -102,20 +109,20 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// <summary>
         ///     Throws or invokes EventMessagesCallbackEvent.        
         /// </summary>
-        /// <param name="newEventListItems"></param>
-        public void RaiseEventMessagesCallbackEvent(ClientEventListItem[] newEventListItems)
+        /// <param name="newEventMessages"></param>
+        public void RaiseEventMessagesCallbackEvent(Server.EventMessage[] newEventMessages)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
             try
             {
-                EventMessagesCallbackEvent(this, newEventListItems);
+                EventMessagesCallbackEvent(this, newEventMessages);
             }
             catch
             {
                 //Logger.LogWarning(ex, "");
             }
-        }
+        }        
 
         /// <summary>
         ///     This event is used to notify the client application when new events are received.

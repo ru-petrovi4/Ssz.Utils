@@ -18,19 +18,19 @@ namespace Ssz.DataGrpc.Client
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="dataGrpcElementValueJournalList"></param>
+        /// <param name="clientElementValuesJournalList"></param>
         /// <param name="firstTimestampUtc"></param>
         /// <param name="secondTimestampUtc"></param>
         /// <param name="numValuesPerAlias"></param>
         /// <param name="calculation"></param>
-        /// <param name="_params"></param>
+        /// <param name="params_"></param>
         /// <param name="serverAliases"></param>
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public ValueStatusTimestamp[][] ReadElementValueJournals(ClientElementValueJournalList dataGrpcElementValueJournalList, DateTime firstTimestampUtc,
+        public ValueStatusTimestamp[][] ReadElementValuesJournals(ClientElementValuesJournalList clientElementValuesJournalList, DateTime firstTimestampUtc,
             DateTime secondTimestampUtc,
-            uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId calculation, CaseInsensitiveDictionary<string>? _params, uint[] serverAliases)
+            uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId calculation, CaseInsensitiveDictionary<string>? params_, uint[] serverAliases)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -40,22 +40,55 @@ namespace Ssz.DataGrpc.Client
             {
                 while (true)
                 {
-                    var request = new ReadElementValueJournalsRequest
+                    var request = new ReadElementValuesJournalsRequest
                     {
                         ContextId = _serverContextId,
-                        ListServerAlias = dataGrpcElementValueJournalList.ListServerAlias,
+                        ListServerAlias = clientElementValuesJournalList.ListServerAlias,
                         FirstTimestamp = DateTimeHelper.ConvertToTimestamp(firstTimestampUtc),
                         SecondTimestamp = DateTimeHelper.ConvertToTimestamp(secondTimestampUtc),
                         NumValuesPerAlias = numValuesPerAlias,
                         Calculation = new Server.TypeId(calculation),                        
                     };
-                    if (_params is not null)
-                        request.Params.Add(_params);
+                    if (params_ is not null)
+                        request.Params.Add(params_);
                     request.ServerAliases.Add(serverAliases);
-                    ReadElementValueJournalsReply reply = _resourceManagementClient.ReadElementValueJournals(request);
+                    ReadElementValuesJournalsReply reply = _resourceManagementClient.ReadElementValuesJournals(request);
                     SetResourceManagementLastCallUtc();
 
-                    var result = dataGrpcElementValueJournalList.OnReadElementValueJournal(reply.ElementValueJournalsCollection);
+                    var result = clientElementValuesJournalList.OnReadElementValuesJournals(reply.ElementValuesJournalsCollection);
+                    if (result is not null) return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                ProcessRemoteMethodCallException(ex);
+                throw;
+            }
+        }
+
+        public Server.EventMessage[] ReadEventMessagesJournal(ClientEventList clientEventList, DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_)
+        {
+            if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
+
+            if (!ServerContextIsOperational) throw new InvalidOperationException();
+
+            try
+            {
+                while (true)
+                {
+                    var request = new ReadEventMessagesJournalRequest
+                    {
+                        ContextId = _serverContextId,
+                        ListServerAlias = clientEventList.ListServerAlias,
+                        FirstTimestamp = DateTimeHelper.ConvertToTimestamp(firstTimestampUtc),
+                        SecondTimestamp = DateTimeHelper.ConvertToTimestamp(secondTimestampUtc),                        
+                    };
+                    if (params_ is not null)
+                        request.Params.Add(params_);                    
+                    ReadEventMessagesJournalReply reply = _resourceManagementClient.ReadEventMessagesJournal(request);
+                    SetResourceManagementLastCallUtc();
+
+                    var result = clientEventList.EventMessagesCallback(reply.EventMessagesCollection);
                     if (result is not null) return result;
                 }
             }

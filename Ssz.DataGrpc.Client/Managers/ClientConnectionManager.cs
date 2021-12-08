@@ -211,26 +211,14 @@ namespace Ssz.DataGrpc.Client.Managers
         /// <param name="bufferingRate"> The buffering rate for the list. 0 if not used. </param>
         /// <param name="filterSet"> The filter set for the list. Null if not used. </param>
         /// <returns> Returns the new data list. </returns>
-        public ClientElementValueJournalList NewElementValueJournalList(CaseInsensitiveDictionary<string>? listParams)
+        public ClientElementValuesJournalList NewElementValuesJournalList(CaseInsensitiveDictionary<string>? listParams)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataGrpcServerProxy.");
 
             if (_connectionInfo is null) throw new ConnectionDoesNotExistException();
 
-            return new ClientElementValueJournalList(_connectionInfo.ClientContext, listParams);
+            return new ClientElementValuesJournalList(_connectionInfo.ClientContext, listParams);
         }
-
-        /*
-        /// <summary>
-        ///   This method creates a new event journal (historical events) list for the context.
-        /// </summary>
-        /// <param name = "updateRate">The update rate for the list.</param>
-        /// <param name = "bufferingRate">The buffering rate for the list. 0 if not used.</param>
-        /// <param name = "filterSet">The filter set for the list. Null if not used.</param>
-        /// <returns>Returns the new data list.</returns>
-        public IDataGrpcEventJournalList NewEventJournalList(CaseInsensitiveDictionary<string>? listParams)
-        {
-        }*/
 
         public void Passthrough(string recipientId,
                                       string passthroughName, byte[] dataToSend, out IEnumerable<byte> returnData)

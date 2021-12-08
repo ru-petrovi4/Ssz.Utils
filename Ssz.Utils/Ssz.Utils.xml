@@ -931,7 +931,7 @@
                 The type of list that contains data objects.
             </summary>
         </member>
-        <member name="F:Ssz.Utils.DataAccess.StandardListType.ElementValueJournalList">
+        <member name="F:Ssz.Utils.DataAccess.StandardListType.ElementValuesJournalList">
             <summary>
                 The type of list that contains historical data objects.
             </summary>
@@ -954,7 +954,7 @@
                 The .NET / CLI Type for which the TypeId is being constructed.
             </param>
         </member>
-        <member name="P:Ssz.Utils.DataAccess.ValueJournalSubscription.Id">
+        <member name="P:Ssz.Utils.DataAccess.ValuesJournalSubscription.Id">
             <summary>
             
             </summary>

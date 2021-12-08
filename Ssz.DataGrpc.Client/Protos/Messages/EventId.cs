@@ -36,7 +36,7 @@ namespace Ssz.DataGrpc.Server
         {
             var eventId = new Ssz.Utils.DataAccess.EventId();
             eventId.SourceElementId = SourceElementId;
-            if (OptionalMultiplexedAlarmContainerCase == OptionalMultiplexedAlarmContainerOneofCase.MultiplexedAlarmContainer)
+            if (MultiplexedAlarmContainer is not null)
             {
                 eventId.MultiplexedAlarmContainer = MultiplexedAlarmContainer.ToTypeId();
             }

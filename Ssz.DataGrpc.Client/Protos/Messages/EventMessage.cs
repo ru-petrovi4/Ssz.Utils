@@ -13,22 +13,22 @@ namespace Ssz.DataGrpc.Server
 
         public Utils.DataAccess.EventMessage ToEventMessage()
         {
-            var eventInfo = new Utils.DataAccess.EventMessage(EventId.ToEventId());
-            eventInfo.OccurrenceTime = OccurrenceTime.ToDateTime();
-            eventInfo.EventType = (EventType)EventType;
-            eventInfo.TextMessage = TextMessage;
-            eventInfo.CategoryId = CategoryId;
-            eventInfo.Priority = Priority;
-            eventInfo.OperatorName = OperatorName;
-            if (OptionalAlarmDataCase == OptionalAlarmDataOneofCase.AlarmMessageData)
+            var eventMessage = new Utils.DataAccess.EventMessage(EventId?.ToEventId());
+            eventMessage.OccurrenceTime = OccurrenceTime.ToDateTime();
+            eventMessage.EventType = (EventType)EventType;
+            eventMessage.TextMessage = TextMessage;
+            eventMessage.CategoryId = CategoryId;
+            eventMessage.Priority = Priority;
+            eventMessage.OperatorName = OperatorName;
+            if (AlarmMessageData is not null)
             {
-                eventInfo.AlarmMessageData = AlarmMessageData.ToAlarmMessageData();
+                eventMessage.AlarmMessageData = AlarmMessageData.ToAlarmMessageData();
             }
             if (ClientRequestedFields.Count > 0)
             {
-                eventInfo.ClientRequestedFields = new Utils.CaseInsensitiveDictionary<string>(ClientRequestedFields);
+                eventMessage.ClientRequestedFields = new Utils.CaseInsensitiveDictionary<string>(ClientRequestedFields);
             }
-            return eventInfo;
+            return eventMessage;
         }
 
         #endregion

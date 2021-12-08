@@ -6,6 +6,8 @@ using Ssz.DataGrpc.Client.Managers;
 using Ssz.DataGrpc.Server;
 using Ssz.Utils.DataAccess;
 using System.Threading.Tasks;
+using Ssz.DataGrpc.Client.ClientLists;
+using Microsoft.Extensions.Logging;
 
 namespace Ssz.DataGrpc.Client
 {
@@ -22,8 +24,8 @@ namespace Ssz.DataGrpc.Client
         {
             BeginInvoke(ct =>
             {
-                ClientElementValueJournalListManager.AddItem(elementId, valueSubscription);
-                ClientElementValueJournalListManager.Subscribe(ClientConnectionManager);
+                ClientElementValuesJournalListManager.AddItem(elementId, valueSubscription);
+                ClientElementValuesJournalListManager.Subscribe(ClientConnectionManager);
             }
             );
         }
@@ -36,7 +38,7 @@ namespace Ssz.DataGrpc.Client
         {
             BeginInvoke(ct =>
             {
-                ClientElementValueJournalListManager.RemoveItem(valueSubscription);
+                ClientElementValuesJournalListManager.RemoveItem(valueSubscription);
             }
             );            
         }
@@ -48,17 +50,44 @@ namespace Ssz.DataGrpc.Client
         /// <param name="secondTimestampUtc"></param>
         /// <param name="numValuesPerSubscription"></param>
         /// <param name="calculation"></param>
-        /// <param name="_params"></param>
+        /// <param name="params_"></param>
         /// <param name="valueSubscriptionsCollection"></param>
         /// <returns></returns>
-        public virtual async Task<ValueStatusTimestamp[][]?> ReadElementValueJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId calculation, CaseInsensitiveDictionary<string>? _params, object[] valueSubscriptionsCollection)
+        public virtual async Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId calculation, CaseInsensitiveDictionary<string>? params_, object[] valueSubscriptionsCollection)
         {
             var taskCompletionSource = new TaskCompletionSource<ValueStatusTimestamp[][]?>();
             BeginInvoke(ct =>
             {
-                var result = ClientElementValueJournalListManager.HdaReadElementValueJournals(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, _params, valueSubscriptionsCollection);
+                var result = ClientElementValuesJournalListManager.ReadElementValuesJournals(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, params_, valueSubscriptionsCollection);
 
                 taskCompletionSource.SetResult(result);
+            }
+            );
+            return await taskCompletionSource.Task;
+        }
+
+        public virtual async Task<Utils.DataAccess.EventMessage[]?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_)
+        {
+            var taskCompletionSource = new TaskCompletionSource<Utils.DataAccess.EventMessage[]?>();
+            BeginInvoke(ct =>
+            {
+                ClientEventList? clientEventList =
+                    ClientEventListManager.GetRelatedClientEventList(OnEventMessagesCallbackInternal);
+
+                if (clientEventList is null) return;
+
+                try
+                {
+                    if (clientEventList.Disposed) return;
+
+                    var result = clientEventList.ReadEventMessagesJournal(firstTimestampUtc, secondTimestampUtc, params_).Select(em => em.ToEventMessage()).ToArray();
+                    taskCompletionSource.SetResult(result);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "Exception");
+                    taskCompletionSource.SetResult(null);
+                }                                
             }
             );
             return await taskCompletionSource.Task;
@@ -68,7 +97,7 @@ namespace Ssz.DataGrpc.Client
 
         #region protected functions
 
-        protected ClientElementValueJournalListManager ClientElementValueJournalListManager { get; }
+        protected ClientElementValuesJournalListManager ClientElementValuesJournalListManager { get; }
 
         #endregion
     }

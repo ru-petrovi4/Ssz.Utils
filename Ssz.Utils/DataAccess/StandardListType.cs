@@ -15,16 +15,11 @@
         /// <summary>
         ///     The type of list that contains historical data objects.
         /// </summary>
-        ElementValueJournalList = 2,
+        ElementValuesJournalList = 2,
 
         /// <summary>
         ///     The type of list that contains alarms and events.
         /// </summary>
-        EventList = 3,
-
-        /// <summary>
-        ///     The type of list that contains historical alarms and events.
-        /// </summary>
-        EventJournalList = 4,
+        EventList = 3
     }
 }

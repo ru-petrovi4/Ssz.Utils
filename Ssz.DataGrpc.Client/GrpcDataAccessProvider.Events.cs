@@ -27,16 +27,16 @@ namespace Ssz.DataGrpc.Client
         {
             BeginInvoke(ct =>
             {
-                ClientEventList? dataGrpcEventList =
+                ClientEventList? clientEventList =
                     ClientEventListManager.GetRelatedClientEventList(OnEventMessagesCallbackInternal);
 
-                if (dataGrpcEventList is null) return;
+                if (clientEventList is null) return;
 
                 try
                 {
-                    if (dataGrpcEventList.Disposed) return;
+                    if (clientEventList.Disposed) return;
 
-                    dataGrpcEventList.AckAlarms(operatorName, comment, eventIdsToAck);
+                    clientEventList.AckAlarms(operatorName, comment, eventIdsToAck);
                 }
                 catch (Exception ex)
                 {

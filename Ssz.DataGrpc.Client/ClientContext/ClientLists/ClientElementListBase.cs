@@ -67,7 +67,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// <returns> Returns data objects selected by the match predicate. </returns>
         public TClientElementListItemBase? Find(Predicate<TClientElementListItemBase> match)
         {
-            if (Disposed) throw new ObjectDisposedException("Cannot access a disposed DataGrpcAndElementValueJournalListBase.");
+            if (Disposed) throw new ObjectDisposedException("Cannot access a disposed DataGrpcAndElementValuesJournalListBase.");
 
             foreach (TClientElementListItemBase listItem in ListItemsManager)
             {
@@ -167,7 +167,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// <returns> The list of elements that could not be removed from the server list or null is call to server failed.</returns>
         protected IEnumerable<TClientElementListItemBase>? CommitRemoveItemsInternal()
         {
-            if (Disposed) throw new ObjectDisposedException("Cannot access a disposed DataGrpcAndElementValueJournalListBase.");
+            if (Disposed) throw new ObjectDisposedException("Cannot access a disposed DataGrpcAndElementValuesJournalListBase.");
 
             // find all values in the client's list that have been prep'd for removal
             // and add them to the serverAliasesToRemove list and to the 

@@ -7,6 +7,7 @@ using Ssz.Utils.DataAccess;
 using System.Linq;
 using System.Threading.Tasks;
 using Grpc.Core;
+using Ssz.Utils;
 
 namespace Ssz.DataGrpc.Client
 {
@@ -55,7 +56,7 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         /// <param name="eventList"></param>
         /// <returns></returns>
-        public ClientEventListItem[] PollEventsChanges(ClientEventList eventList)
+        public Server.EventMessage[] PollEventsChanges(ClientEventList eventList)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -73,8 +74,8 @@ namespace Ssz.DataGrpc.Client
                     PollEventsChangesReply reply = _resourceManagementClient.PollEventsChanges(request);
                     SetResourceManagementLastCallUtc();
 
-                    var newItems = EventMessagesCallback(eventList, reply.EventMessagesCollection);
-                    if (newItems is not null) return newItems;
+                    var newEventMessages = EventMessagesCallback(eventList, reply.EventMessagesCollection);
+                    if (newEventMessages is not null) return newEventMessages;
                 }
             }
             catch (Exception ex)
@@ -82,7 +83,7 @@ namespace Ssz.DataGrpc.Client
                 ProcessRemoteMethodCallException(ex);
                 throw;
             }
-        }
+        }        
 
         #endregion
 
@@ -115,14 +116,14 @@ namespace Ssz.DataGrpc.Client
         /// <param name="eventList"></param>
         /// <param name="eventMessages"></param>
         /// <returns></returns>
-        private ClientEventListItem[]? EventMessagesCallback(ClientEventList eventList, EventMessagesCollection eventMessagesCollection)
+        private Server.EventMessage[]? EventMessagesCallback(ClientEventList eventList, EventMessagesCollection eventMessagesCollection)
         {
-            ClientEventListItem[]? newEventListItems = eventList.EventMessagesCallback(eventMessagesCollection);
-            if (newEventListItems is not null && newEventListItems.Length > 0)
+            Server.EventMessage[]? newEventMessages = eventList.EventMessagesCallback(eventMessagesCollection);
+            if (newEventMessages is not null && newEventMessages.Length > 0)
             {
-                eventList.RaiseEventMessagesCallbackEvent(newEventListItems);
+                eventList.RaiseEventMessagesCallbackEvent(newEventMessages);
             }
-            return newEventListItems;
+            return newEventMessages;
         }
 
         private void LongrunningPassthroughCallback(Server.LongrunningPassthroughCallback longrunningPassthroughCallback)

@@ -9,11 +9,11 @@ using Ssz.DataGrpc.Server;
 
 namespace Ssz.DataGrpc.Client.Managers
 {
-    public class ClientElementValueJournalListManager : ClientElementListManagerBase<ClientElementValueJournalListItem, ClientElementValueJournalList>
+    public class ClientElementValuesJournalListManager : ClientElementListManagerBase<ClientElementValuesJournalListItem, ClientElementValuesJournalList>
     {
         #region construction and destruction
 
-        public ClientElementValueJournalListManager(ILogger<GrpcDataAccessProvider> logger) :
+        public ClientElementValuesJournalListManager(ILogger<GrpcDataAccessProvider> logger) :
             base(logger, true)
         {
         }
@@ -41,7 +41,7 @@ namespace Ssz.DataGrpc.Client.Managers
                     {
                         if (clientConnectionManager.ConnectionExists)
                         {
-                            DataGrpcList = clientConnectionManager.NewElementValueJournalList(null);
+                            DataGrpcList = clientConnectionManager.NewElementValuesJournalList(null);
                         }                            
                     }
                     catch (Exception)
@@ -69,11 +69,11 @@ namespace Ssz.DataGrpc.Client.Managers
         /// <param name="secondTimestampUtc"></param>
         /// <param name="numValuesPerSubscription"></param>
         /// <param name="calculation"></param>
-        /// <param name="_params"></param>
+        /// <param name="params_"></param>
         /// <param name="valueSubscriptionsCollection"></param>
         /// <returns></returns>
-        public ValueStatusTimestamp[][]? HdaReadElementValueJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId calculation,
-            CaseInsensitiveDictionary<string>? _params,
+        public ValueStatusTimestamp[][]? ReadElementValuesJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId calculation,
+            CaseInsensitiveDictionary<string>? params_,
             object[] valueSubscriptionsCollection)
         {
             ValueStatusTimestamp[][]? result;
@@ -97,7 +97,7 @@ namespace Ssz.DataGrpc.Client.Managers
                         }
                     }
 
-                    result = dataGrpcList.ReadElementValueJournals(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, _params, serverAliases.ToArray());
+                    result = dataGrpcList.ReadElementValuesJournals(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, params_, serverAliases.ToArray());
                 }
                 else
                 {
