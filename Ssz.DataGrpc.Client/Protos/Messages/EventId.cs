@@ -22,9 +22,9 @@ namespace Ssz.DataGrpc.Server
                 Conditions.Add(eventId.Conditions.Select(t => new TypeId(t)));
             }            
             OccurrenceId = eventId.OccurrenceId;
-            if (eventId.TimeLastActive is not null)
+            if (eventId.TimeLastActiveUtc is not null)
             {
-                TimeLastActive = Ssz.DataGrpc.Client.DateTimeHelper.ConvertToTimestamp(eventId.TimeLastActive.Value);
+                TimeLastActive = Ssz.DataGrpc.Client.DateTimeHelper.ConvertToTimestamp(eventId.TimeLastActiveUtc.Value);
             }
         }
 
@@ -47,7 +47,7 @@ namespace Ssz.DataGrpc.Server
             eventId.OccurrenceId = OccurrenceId;
             if (OptionalTimeLastActiveCase == OptionalTimeLastActiveOneofCase.TimeLastActive)
             {
-                eventId.TimeLastActive = TimeLastActive.ToDateTime();
+                eventId.TimeLastActiveUtc = TimeLastActive.ToDateTime();
             }
             return eventId;
         }

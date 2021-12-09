@@ -614,14 +614,14 @@
             method.
             </summary>
         </member>
-        <member name="F:Ssz.Utils.DataAccess.EventId.TimeLastActive">
+        <member name="F:Ssz.Utils.DataAccess.EventId.TimeLastActiveUtc">
             <summary>
             This element is mandatory when acknowledging an alarm using the AcknowledgeAlarms() method. 
             It is set to null in all other uses.  Its value is copied from the AlarmMessageData object 
             contained in the EventMessage used to report the alarm being acknowledged.
             </summary>
         </member>
-        <member name="F:Ssz.Utils.DataAccess.EventMessage.OccurrenceTime">
+        <member name="F:Ssz.Utils.DataAccess.EventMessage.OccurrenceTimeUtc">
             <summary>
             The time of the event/alarm occurrence.  
             </summary>
@@ -915,7 +915,7 @@
             <param name="params_"></param>
             <returns></returns>
         </member>
-        <member name="M:Ssz.Utils.DataAccess.PlatInstructorHelper.ProcessEventMessage(Ssz.Utils.EventSourceModel.EventSourceModel,Ssz.Utils.DataAccess.EventMessage,Microsoft.Extensions.Logging.ILogger)">
+        <member name="M:Ssz.Utils.DataAccess.PlatInstructorHelper.ProcessAlarmEventMessage(Ssz.Utils.EventSourceModel.EventSourceModel,Ssz.Utils.DataAccess.EventMessage,Microsoft.Extensions.Logging.ILogger)">
             <summary>
                 Returns new AlarmInfoViewModels or null.
             </summary>
@@ -1197,27 +1197,25 @@
         </member>
         <member name="M:Ssz.Utils.ElementIdsMap.Initialize(Ssz.Utils.CaseInsensitiveDictionary{System.Collections.Generic.List{System.String}},Ssz.Utils.CaseInsensitiveDictionary{System.Collections.Generic.List{System.String}})">
             <summary>
-                Can be called multiple times. Other methods calls must be after this itinialization.
+                Can be called multiple times. Other methods calls must be after this initialization.
             </summary>
             <param name="map"></param>
             <param name="tags"></param>
         </member>
-        <member name="M:Ssz.Utils.ElementIdsMap.GetFromMap(System.String,Ssz.Utils.CsvDb)">
+        <member name="M:Ssz.Utils.ElementIdsMap.GetFromMap(System.String)">
             <summary>
-                result.Count > 1
+                Returns null if not found in map file or result.Count > 1
             </summary>
             <param name="elementId"></param>
-            <param name="csvDb"></param>
             <returns></returns>
         </member>
-        <member name="M:Ssz.Utils.ElementIdsMap.GetFromMap(System.String,System.String,System.String,Ssz.Utils.CsvDb)">
+        <member name="M:Ssz.Utils.ElementIdsMap.GetFromMap(System.String,System.String,System.String)">
             <summary>
-                result.Count > 1
+                Returns null if not found in map file or result.Count > 1
             </summary>
             <param name="tag"></param>
             <param name="propertyPath"></param>
             <param name="tagType"></param>
-            <param name="csvDb"></param>
             <returns></returns>
         </member>
         <member name="T:Ssz.Utils.FileSystemHelper">

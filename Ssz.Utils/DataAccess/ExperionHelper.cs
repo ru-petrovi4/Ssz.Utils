@@ -39,7 +39,7 @@ namespace Ssz.Utils.DataAccess
                     if (logger is not null && logger.IsEnabled(LogLevel.Debug))
                     {
                         logger.LogDebug("Invalid message ignored: VarName=" + eventMessage.EventId?.SourceElementId +                                       
-                                       ";OccurrenceTime=" + eventMessage.OccurrenceTime +                                       
+                                       ";OccurrenceTime=" + eventMessage.OccurrenceTimeUtc +                                       
                                        ";TextMessage=" + eventMessage.TextMessage +
                                        ";OccurrenceId=" + eventMessage.EventId?.OccurrenceId);
                     }
@@ -52,7 +52,7 @@ namespace Ssz.Utils.DataAccess
                                    ";Condition=" + eventMessage.EventId.Conditions[0].LocalId +
                                    ";Active=" + eventMessage.AlarmMessageData.AlarmState.HasFlag(AlarmState.Active) +
                                    ";Unacked=" + eventMessage.AlarmMessageData.AlarmState.HasFlag(AlarmState.Unacked) +
-                                   ";OccurrenceTime=" + eventMessage.OccurrenceTime +
+                                   ";OccurrenceTime=" + eventMessage.OccurrenceTimeUtc +
                                    ";TimeLastActive=" + eventMessage.AlarmMessageData.TimeLastActive.Value +
                                    ";TextMessage=" + eventMessage.TextMessage +
                                    ";OccurrenceId=" + eventMessage.EventId.OccurrenceId);
@@ -153,7 +153,7 @@ namespace Ssz.Utils.DataAccess
                 if (condition != AlarmCondition.None)
                 {
                     bool changed = eventSourceModel.ProcessEventSourceObject(eventSourceObject, condition, categoryId,
-                            active, unacked, eventMessage.OccurrenceTime, out alarmConditionChanged, out unackedChanged);
+                            active, unacked, eventMessage.OccurrenceTimeUtc, out alarmConditionChanged, out unackedChanged);
                     if (!changed) return Task.FromResult((IEnumerable<AlarmInfoViewModelBase>?)null);
                 }
                 else
@@ -178,7 +178,7 @@ namespace Ssz.Utils.DataAccess
                 {
                     AlarmIsActive = active,
                     AlarmIsUnacked = unacked,
-                    OccurrenceTime = eventMessage.OccurrenceTime,
+                    OccurrenceTime = eventMessage.OccurrenceTimeUtc,
                     TimeLastActive = eventMessage.AlarmMessageData.TimeLastActive.Value,
                     Tag = tag,
                     Desc = desc,

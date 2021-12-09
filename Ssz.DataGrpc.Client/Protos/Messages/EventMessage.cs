@@ -14,7 +14,7 @@ namespace Ssz.DataGrpc.Server
         public Utils.DataAccess.EventMessage ToEventMessage()
         {
             var eventMessage = new Utils.DataAccess.EventMessage(EventId?.ToEventId());
-            eventMessage.OccurrenceTime = OccurrenceTime.ToDateTime();
+            eventMessage.OccurrenceTimeUtc = OccurrenceTime.ToDateTime();
             eventMessage.EventType = (EventType)EventType;
             eventMessage.TextMessage = TextMessage;
             eventMessage.CategoryId = CategoryId;

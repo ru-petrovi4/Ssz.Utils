@@ -44,7 +44,7 @@ namespace Ssz.Utils.DataAccess
 		/// It is set to null in all other uses.  Its value is copied from the AlarmMessageData object 
 		/// contained in the EventMessage used to report the alarm being acknowledged.
 		/// </summary>
-		public DateTime? TimeLastActive;
+		public DateTime? TimeLastActiveUtc;
 
 		#endregion
 	}

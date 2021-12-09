@@ -945,7 +945,7 @@ namespace Ssz.DataGrpc.Client
                     return elementId;
                 }
 
-                valueSubscriptionObj.MapValues = ElementIdsMap.GetFromMap(tag, propertyPath, tagType, null);
+                valueSubscriptionObj.MapValues = ElementIdsMap.GetFromMap(tag, propertyPath, tagType) ?? new List<string?> { elementId, elementId };
 
                 var childValueSubscriptionsList = new List<ChildValueSubscription>();
                 var converter = new SszConverter();

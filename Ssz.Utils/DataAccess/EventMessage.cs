@@ -22,7 +22,7 @@ namespace Ssz.Utils.DataAccess
 		/// <summary>
 		/// The time of the event/alarm occurrence.  
 		/// </summary>
-		public DateTime OccurrenceTime;
+		public DateTime OccurrenceTimeUtc;
 
 		/// <summary>
 		/// The type of the event/alarm that is being reported by this 

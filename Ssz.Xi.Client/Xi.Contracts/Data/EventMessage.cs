@@ -136,7 +136,7 @@ namespace Xi.Contracts.Data
 		public Ssz.Utils.DataAccess.EventMessage ToEventMessage()
 		{
 			var eventInfo = new Ssz.Utils.DataAccess.EventMessage(EventId is not null ? EventId.ToEventId() : new Ssz.Utils.DataAccess.EventId());
-			eventInfo.OccurrenceTime = OccurrenceTime;
+			eventInfo.OccurrenceTimeUtc = OccurrenceTime;
 			eventInfo.EventType = (Ssz.Utils.DataAccess.EventType)EventType;
 			eventInfo.TextMessage = TextMessage ?? @"";
 			eventInfo.CategoryId = CategoryId;

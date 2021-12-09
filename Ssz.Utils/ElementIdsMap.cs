@@ -53,7 +53,7 @@ namespace Ssz.Utils
         public CaseInsensitiveDictionary<List<string?>> Tags { get; private set; } = null!;
 
         /// <summary>
-        ///     Can be called multiple times. Other methods calls must be after this itinialization.
+        ///     Can be called multiple times. Other methods calls must be after this initialization.
         /// </summary>
         /// <param name="map"></param>
         /// <param name="tags"></param>
@@ -77,12 +77,11 @@ namespace Ssz.Utils
         }
 
         /// <summary>
-        ///     result.Count > 1
+        ///     Returns null if not found in map file or result.Count > 1
         /// </summary>
         /// <param name="elementId"></param>
-        /// <param name="csvDb"></param>
         /// <returns></returns>
-        public List<string?> GetFromMap(string elementId, CsvDb? csvDb = null)
+        public List<string?>? GetFromMap(string elementId)
         {
             string? tag;
             string? propertyPath;
@@ -102,21 +101,20 @@ namespace Ssz.Utils
                 tagType = null;
             }
 
-            return GetFromMap(tag, propertyPath, tagType, csvDb);
+            return GetFromMap(tag, propertyPath, tagType);
         }
 
         /// <summary>
-        ///     result.Count > 1
+        ///     Returns null if not found in map file or result.Count > 1
         /// </summary>
         /// <param name="tag"></param>
         /// <param name="propertyPath"></param>
         /// <param name="tagType"></param>
-        /// <param name="csvDb"></param>
         /// <returns></returns>
-        public List<string?> GetFromMap(string? tag, string? propertyPath, string? tagType, CsvDb? csvDb = null)
-        {
+        public List<string?>? GetFromMap(string? tag, string? propertyPath, string? tagType)
+        {            
             string elementId = tag + propertyPath;
-            if (elementId == @"") return new List<string?> { @"", @"" };
+            if (elementId == @"") return null;
 
             var values = Map.TryGetValue(elementId);
             if (values is not null)
@@ -127,46 +125,44 @@ namespace Ssz.Utils
 
             var result = new List<string?> { elementId };
 
-            if (!string.IsNullOrEmpty(propertyPath))
+            if (String.IsNullOrEmpty(propertyPath))
+                return null;
+            
+            string? newTag = null;
+
+            if (!string.IsNullOrEmpty(tag))
             {
-                string? newTag = null;
+                values = Map.TryGetValue(tag);
+                if (values is not null && values.Count > 1 && values[1] != "") newTag = values[1];
+            }
 
-                if (!string.IsNullOrEmpty(tag))
+            values = null;
+            if (!string.IsNullOrEmpty(tagType))
+                values = Map.TryGetValue(tagType + TagTypeSeparator +
+                                                        GenericTag + propertyPath);
+            if (values is null)
+                values = Map.TryGetValue(GenericTag + propertyPath);
+            if (values is not null)
+            {
+                if (values.Count > 1)
                 {
-                    values = Map.TryGetValue(tag);
-                    if (values is not null && values.Count > 1 && values[1] != "") newTag = values[1];
-                }
-
-                values = null;
-                if (!string.IsNullOrEmpty(tagType))
-                    values = Map.TryGetValue(tagType + TagTypeSeparator +
-                                                          GenericTag + propertyPath);
-                if (values is null)
-                    values = Map.TryGetValue(GenericTag + propertyPath);
-                if (values is not null)
-                {
-                    if (values.Count > 1)
+                    for (var i = 1; i < values.Count; i++)
                     {
-                        for (var i = 1; i < values.Count; i++)
-                        {
-                            string? v = SszQueryHelper.ComputeValueOfSszQueries(values[i], constant => (newTag ?? tag) ?? "", csvDb);                            
-                            result.Add(v ?? @"");
-                        }
-                    }
-                    else
-                    {
-                        result.Add("");
+                        string? v = SszQueryHelper.ComputeValueOfSszQueries(values[i], constant => (newTag ?? tag) ?? "", null);                            
+                        result.Add(v ?? @"");
                     }
                 }
                 else
                 {
-                    result.Add((newTag ?? tag) + propertyPath);
+                    result.Add("");
                 }
             }
             else
             {
-                result.Add(elementId);
-            }
+                if (newTag is null)
+                    return null;
+                result.Add(newTag + propertyPath);
+            }            
 
             return result;
         }        

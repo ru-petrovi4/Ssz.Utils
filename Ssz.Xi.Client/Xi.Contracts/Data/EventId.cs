@@ -47,9 +47,9 @@ namespace Xi.Contracts.Data
 				Condition = new List<TypeId>(eventId.Conditions.Select(t => new TypeId(t)));				
 			}
 			OccurrenceId = eventId.OccurrenceId;
-			if (eventId.TimeLastActive is not null)
+			if (eventId.TimeLastActiveUtc is not null)
 			{
-				TimeLastActive = eventId.TimeLastActive.Value;
+				TimeLastActive = eventId.TimeLastActiveUtc.Value;
 			}
 		}
 
@@ -111,7 +111,7 @@ namespace Xi.Contracts.Data
 			eventId.OccurrenceId = OccurrenceId ?? "";
 			if (TimeLastActive is not null)
 			{
-				eventId.TimeLastActive = TimeLastActive.Value;
+				eventId.TimeLastActiveUtc = TimeLastActive.Value;
 			}
 			return eventId;
 		}
