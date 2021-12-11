@@ -21,7 +21,7 @@ namespace Ssz.Utils.Logging
         {
             _options = options;
 
-            _logsDirectoryFullName = Environment.ExpandEnvironmentVariables(_options.LogDirectory);
+            _logsDirectoryFullName = Environment.ExpandEnvironmentVariables(_options.LogsDirectory);
 
             //     Creates all directories and subdirectories in the specified path unless they
             //     already exist.

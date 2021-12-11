@@ -16,7 +16,7 @@ namespace Ssz.Utils.Logging
         /// <summary>
         ///     If empty (default) logs to current directory.
         /// </summary>
-        public string LogDirectory { get; set; } = @"";
+        public string LogsDirectory { get; set; } = @"";
 
         /// <summary>
         ///     If empty (default) .exe and process Id is used.

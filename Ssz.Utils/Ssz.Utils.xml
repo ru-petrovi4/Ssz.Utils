@@ -1546,7 +1546,7 @@
                 The standard destructor invoked by the .NET garbage collector during Finalize.
             </summary>
         </member>
-        <member name="P:Ssz.Utils.Logging.SszLoggerOptions.LogDirectory">
+        <member name="P:Ssz.Utils.Logging.SszLoggerOptions.LogsDirectory">
             <summary>
                 If empty (default) logs to current directory.
             </summary>
