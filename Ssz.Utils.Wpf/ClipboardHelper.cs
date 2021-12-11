@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -28,7 +29,7 @@ namespace Ssz.Utils.Wpf
             if (clipboardData is not null)
             {
                 string clipboardDataString = GetClipboardDataString(clipboardData);
-                return CsvHelper.ParseCsv(CultureHelper.SystemCultureInfo.TextInfo.ListSeparator, clipboardDataString);
+                return CsvHelper.ParseCsv(CultureInfo.CurrentCulture.TextInfo.ListSeparator, clipboardDataString);
             }
             clipboardData = dataObj.GetData(DataFormats.Text);
             if (clipboardData is not null)
@@ -52,7 +53,7 @@ namespace Ssz.Utils.Wpf
             var sb2 = new StringBuilder();
             foreach (var row in data)
             {
-                sb1.Append(CsvHelper.FormatForCsv(CultureHelper.SystemCultureInfo.TextInfo.ListSeparator, row));
+                sb1.Append(CsvHelper.FormatForCsv(CultureInfo.CurrentCulture.TextInfo.ListSeparator, row));
                 sb1.Append(Environment.NewLine);
 
                 sb2.Append(CsvHelper.FormatForCsv("\t", row));

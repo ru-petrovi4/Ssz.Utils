@@ -474,17 +474,9 @@
             
             </summary>
         </member>
-        <member name="P:Ssz.Utils.CultureHelper.SystemCultureInfo">
+        <member name="M:Ssz.Utils.CultureHelper.InitializeUICulture(Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
-                By default contains CultureInfo.InvariantCulture.
-                If CultureHelper.InitializeCulture() is called, contains CultureInfo that corresponds operating system culture.
-                SystemCultureInfo field is used in Utils.Any class when func param stringIsLocalized = True.
-            </summary>
-        </member>
-        <member name="M:Ssz.Utils.CultureHelper.Initialize(Microsoft.Extensions.Configuration.IConfiguration)">
-            <summary>
-                If configuration is unknown, use new ConfigurationBuilder().AddJsonFile(@"appSettings.json", optional: true, reloadOnChange: true).Build() 
-                Initializes SystemCultureInfo field to operating system culture.        
+                If configuration is unknown, use new ConfigurationBuilder().AddJsonFile(@"appSettings.json", optional: true, reloadOnChange: true).Build()         
                 Sets CurrentUICulture from configuration -> UICulture for all threads, if setting exists.
                 Otherwise, CurrentUICulture remains unchanged.
             </summary>
