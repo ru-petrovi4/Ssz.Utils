@@ -67,9 +67,9 @@ namespace Ssz.Utils.DataAccess
 
                 string textMessage = eventMessage.TextMessage;
 
-                string tag = "";
+                string tag = "";                
                 string desc = "";
-                string areas = "";
+                string area = "";
                 string level = "";
                 string eu = "";
                 AlarmCondition condition;
@@ -149,7 +149,7 @@ namespace Ssz.Utils.DataAccess
                         xmlReader.MoveToContent();
                         tag = xmlReader.GetAttribute("Tag") ?? "";
                         desc = xmlReader.GetAttribute("Desc") ?? "";
-                        areas = xmlReader.GetAttribute("Area") ?? "";
+                        area = xmlReader.GetAttribute("Area") ?? "";
                         level = xmlReader.GetAttribute("Level") ?? "";
                         eu = xmlReader.GetAttribute("EU") ?? "";
                     }
@@ -159,12 +159,19 @@ namespace Ssz.Utils.DataAccess
                     tag = sourceElementId;
                 }
 
-                EventSourceObject eventSourceObject = eventSourceModel.GetOrCreateEventSourceObject(tag, areas);
+                EventSourceObject eventSourceObject = eventSourceModel.GetOrCreateEventSourceObject(tag, area);
+                EventSourceObject? eventSourceObjectVarName = null;
+                if (!StringHelper.CompareIgnoreCase(sourceElementId, tag))
+                    eventSourceObjectVarName = eventSourceModel.GetOrCreateEventSourceObject(sourceElementId, area);
 
                 if (condition != AlarmCondition.None)
                 {
                     bool changed = eventSourceModel.ProcessEventSourceObject(eventSourceObject, condition, categoryId,
                             active, unacked, eventMessage.OccurrenceTimeUtc, out alarmConditionChanged, out unackedChanged);
+                    if (eventSourceObjectVarName != null)
+                        eventSourceModel.ProcessEventSourceObject(eventSourceObjectVarName, condition, categoryId,
+                            active, unacked, eventMessage.OccurrenceTimeUtc, out bool alarmConditionChangedVarName, out bool unackedChangedVarName);
+
                     if (!changed) return Task.FromResult((IEnumerable<AlarmInfoViewModelBase>?)null);
                 }
                 else
@@ -176,7 +183,7 @@ namespace Ssz.Utils.DataAccess
                 ConditionState? conditionState;
                 if (condition != AlarmCondition.None)
                 {
-                    eventSourceObject.AlarmConditions.TryGetValue(condition, out conditionState);
+                    eventSourceObject.AlarmConditions.TryGetValue(condition, out conditionState);                    
                 }
                 else
                 {
@@ -195,7 +202,7 @@ namespace Ssz.Utils.DataAccess
                     Desc = desc,
                     TripValue = tripValue,
                     TripValueText = tripValueText,
-                    Area = areas,
+                    Area = area,
                     CurrentAlarmCondition = condition,
                     IsDigital = isDigital,
                     CategoryId = categoryId,

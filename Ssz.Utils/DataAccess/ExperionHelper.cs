@@ -60,14 +60,13 @@ namespace Ssz.Utils.DataAccess
 
                 string textMessage = eventMessage.TextMessage;
 
-                string tag = "";
+                string tag = eventMessage.EventId?.SourceElementId ?? "";
                 string desc = "";
-                string areas = "";
+                string area = "";
                 string level = "";
                 string eu = "";
                 AlarmCondition condition;
-                bool isDigital = false;
-                string sourceElementId = eventMessage.EventId?.SourceElementId ?? "";
+                bool isDigital = false;                
                 bool active = eventMessage.AlarmMessageData.AlarmState.HasFlag(AlarmState.Active);
                 bool unacked = eventMessage.AlarmMessageData.AlarmState.HasFlag(AlarmState.Unacked);
                 uint categoryId = eventMessage.CategoryId;
@@ -146,9 +145,7 @@ namespace Ssz.Utils.DataAccess
                         break;
                 }
 
-                tag = sourceElementId;
-
-                EventSourceObject eventSourceObject = eventSourceModel.GetOrCreateEventSourceObject(tag, areas);
+                EventSourceObject eventSourceObject = eventSourceModel.GetOrCreateEventSourceObject(tag, area);
 
                 if (condition != AlarmCondition.None)
                 {
@@ -184,7 +181,7 @@ namespace Ssz.Utils.DataAccess
                     Desc = desc,
                     TripValue = tripValue,
                     TripValueText = tripValueText,
-                    Area = areas,
+                    Area = area,
                     CurrentAlarmCondition = condition,
                     IsDigital = isDigital,
                     CategoryId = categoryId,

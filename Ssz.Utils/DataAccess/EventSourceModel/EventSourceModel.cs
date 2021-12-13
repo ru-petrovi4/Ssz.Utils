@@ -256,12 +256,12 @@ namespace Ssz.Utils.EventSourceModel
             newEventSourceObject.EventSourceAreas[@""] = overviewEventSourceArea;
             if (area != @"")
             {
-                string parentArea = @"";
+                string currentArea = @"";
                 foreach (string areaPart in area.Split('\\', '/'))
                 {
-                    if (parentArea == @"") parentArea = areaPart;
-                    else parentArea += "/" + areaPart;
-                    newEventSourceObject.EventSourceAreas[parentArea] = GetOrCreateEventSourceArea(parentArea);
+                    if (currentArea == @"") currentArea = areaPart;
+                    else currentArea += "/" + areaPart;
+                    newEventSourceObject.EventSourceAreas[currentArea] = GetOrCreateEventSourceArea(currentArea);
                 }
             }
 
