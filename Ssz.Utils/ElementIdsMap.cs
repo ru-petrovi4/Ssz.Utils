@@ -63,15 +63,15 @@ namespace Ssz.Utils
             Map = map;
             Tags = tags;
 
-            var values = Map.TryGetValue("GenericTag");
+            var values = Map.TryGetValue("%(GenericTag)");
             if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 GenericTag = values[1] ?? @"";
 
-            values = Map.TryGetValue("TagTypeSeparator");
+            values = Map.TryGetValue("%(TagTypeSeparator)");
             if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 TagTypeSeparator = values[1] ?? @"";
 
-            values = Map.TryGetValue("TagAndPropertySeparator");
+            values = Map.TryGetValue("%(TagAndPropertySeparator)");
             if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 TagAndPropertySeparator = values[1] ?? @"";
         }
