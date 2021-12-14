@@ -17,6 +17,11 @@ namespace Ssz.Utils.DataAccess
             TimestampUtc = timestampUtc;
         }
 
+        /// <summary>
+        ///     ValueStatusCode.Good
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="timestampUtc"></param>
         public ValueStatusTimestamp(Any value, DateTime timestampUtc)
         {
             Value = value;
@@ -24,6 +29,10 @@ namespace Ssz.Utils.DataAccess
             TimestampUtc = timestampUtc;
         }
 
+        /// <summary>
+        ///     ValueStatusCode.Good, DateTime.UtcNow
+        /// </summary>
+        /// <param name="value"></param>
         public ValueStatusTimestamp(Any value)
         {
             Value = value;

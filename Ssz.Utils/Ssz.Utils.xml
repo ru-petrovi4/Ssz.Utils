@@ -981,6 +981,19 @@
             
             </summary>
         </member>
+        <member name="M:Ssz.Utils.DataAccess.ValueStatusTimestamp.#ctor(Ssz.Utils.Any,System.DateTime)">
+            <summary>
+                ValueStatusCode.Good
+            </summary>
+            <param name="value"></param>
+            <param name="timestampUtc"></param>
+        </member>
+        <member name="M:Ssz.Utils.DataAccess.ValueStatusTimestamp.#ctor(Ssz.Utils.Any)">
+            <summary>
+                ValueStatusCode.Good, DateTime.UtcNow
+            </summary>
+            <param name="value"></param>
+        </member>
         <member name="M:Ssz.Utils.DataAccess.ValueStatusTimestamp.ToString">
             <summary>
                 Provides an simple overload for the ToString() method that combines the
