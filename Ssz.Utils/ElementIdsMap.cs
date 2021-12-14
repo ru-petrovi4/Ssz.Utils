@@ -178,7 +178,7 @@ namespace Ssz.Utils
 
         public static Any? TryGetConstValue(string? elementIdOrConst)
         {
-            if (string.IsNullOrEmpty(elementIdOrConst)) return new Any(DBNull.Value);
+            if (string.IsNullOrEmpty(elementIdOrConst)) return null;
 
             if (elementIdOrConst.StartsWith("\"") && elementIdOrConst.EndsWith("\""))
             {

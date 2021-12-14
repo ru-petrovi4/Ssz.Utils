@@ -51,8 +51,18 @@ namespace Ssz.Utils.DataAccess
 
         event Action ValueSubscriptionsUpdated;
 
-        void Initialize(IDispatcher? сallbackDispatcher,
-            ElementIdsMap? elementIdsMap,
+        /// <summary>
+        ///     You can set updateValueItems = false and invoke PollElementValuesChangesAsync(...) manually.
+        /// </summary>
+        /// <param name="elementIdsMap"></param>
+        /// <param name="elementValueListCallbackIsEnabled"></param>
+        /// <param name="eventListCallbackIsEnabled"></param>
+        /// <param name="serverAddress"></param>
+        /// <param name="clientApplicationName"></param>
+        /// <param name="clientWorkstationName"></param>
+        /// <param name="systemNameToConnect"></param>
+        /// <param name="contextParams"></param>
+        void Initialize(ElementIdsMap? elementIdsMap,
             bool elementValueListCallbackIsEnabled,
             bool eventListCallbackIsEnabled,
             string serverAddress,
@@ -77,7 +87,7 @@ namespace Ssz.Utils.DataAccess
         /// </summary>
         Task CloseAsync();
 
-        void AddItem(string elementId, IValueSubscription valueSubscription);
+        void AddItem(string? elementId, IValueSubscription valueSubscription);
         
         void RemoveItem(IValueSubscription valueSubscription);
 

@@ -50,6 +50,7 @@ namespace Ssz.Utils.DataAccess
         #region private fields
 
         private IDataAccessProvider _dataProvider;
+
         private Action<ValueStatusTimestamp>? _setValueAction;
 
         #endregion

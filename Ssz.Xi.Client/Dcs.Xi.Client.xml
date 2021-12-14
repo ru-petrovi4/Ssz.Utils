@@ -4189,6 +4189,19 @@
                 Is called using сallbackDoer, see Initialize(..).
             </summary>
         </member>
+        <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Initialize(Ssz.Utils.ElementIdsMap,System.Boolean,System.Boolean,System.String,System.String,System.String,System.String,Ssz.Utils.CaseInsensitiveDictionary{System.String})">
+            <summary>
+                You can set updateValueItems = false and invoke PollElementValuesChangesAsync(...) manually.
+            </summary>
+            <param name="elementIdsMap"></param>
+            <param name="elementValueListCallbackIsEnabled"></param>
+            <param name="eventListCallbackIsEnabled"></param>
+            <param name="serverAddress"></param>
+            <param name="clientApplicationName"></param>
+            <param name="clientWorkstationName"></param>
+            <param name="systemNameToConnect"></param>
+            <param name="contextParams"></param>
+        </member>
         <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Close">
             <summary>
                 Tou can call Dispose() instead of this method.

@@ -21,9 +21,10 @@ namespace Ssz.DataGrpc.Client
     {
         #region construction and destruction
 
-        public GrpcDataAccessProvider(ILogger<GrpcDataAccessProvider> logger)
+        public GrpcDataAccessProvider(ILogger<GrpcDataAccessProvider> logger, IDispatcher? callbackDispatcher)
         {
             Logger = logger;
+            CallbackDispatcher = callbackDispatcher;
 
             ClientConnectionManager = new ClientConnectionManager(logger, this);
 
@@ -169,7 +170,7 @@ namespace Ssz.DataGrpc.Client
 
         public ElementIdsMap? ElementIdsMap { get; private set; }
 
-        public CaseInsensitiveDictionary<string> BackMapDictionary { get; } = new();
+        public CaseInsensitiveDictionary<string> ReverseMapDictionary { get; } = new();
 
         public object? Obj { get; set; }
 
@@ -179,17 +180,17 @@ namespace Ssz.DataGrpc.Client
         public event Action ValueSubscriptionsUpdated = delegate { };
 
         /// <summary>
-        ///     You can set updateValueItems = false and invoke PollElementValuesChanges(...) manually.
+        ///     You can set updateValueItems = false and invoke PollElementValuesChangesAsync(...) manually.
         /// </summary>
-        /// <param name="callbackDispatcher"></param>
+        /// <param name="elementIdsMap"></param>
         /// <param name="elementValueListCallbackIsEnabled"></param>
+        /// <param name="eventListCallbackIsEnabled"></param>
         /// <param name="serverAddress"></param>
         /// <param name="clientApplicationName"></param>
         /// <param name="clientWorkstationName"></param>
-        /// <param name="systemNames"></param>
+        /// <param name="systemNameToConnect"></param>
         /// <param name="contextParams"></param>
-        public virtual void Initialize(IDispatcher? callbackDispatcher,
-            ElementIdsMap? elementIdsMap,
+        public virtual void Initialize(ElementIdsMap? elementIdsMap,
             bool elementValueListCallbackIsEnabled,
             bool eventListCallbackIsEnabled,
             string serverAddress,
@@ -197,9 +198,8 @@ namespace Ssz.DataGrpc.Client
         {
             Close();
 
-            Logger.LogDebug("Starting ModelDataProvider. сallbackDispatcher is not null " + (callbackDispatcher is not null).ToString());
-
-            CallbackDispatcher = callbackDispatcher;
+            Logger.LogDebug("Starting ModelDataProvider. сallbackDispatcher is not null " + (CallbackDispatcher is not null).ToString());
+            
             ElementIdsMap = elementIdsMap;
             _elementValueListCallbackIsEnabled = elementValueListCallbackIsEnabled;
             _eventListCallbackIsEnabled = eventListCallbackIsEnabled;
@@ -222,7 +222,7 @@ namespace Ssz.DataGrpc.Client
             lock (ConstItemsDictionary)
             {
                 ConstItemsDictionary.Clear();
-                BackMapDictionary.Clear();
+                ReverseMapDictionary.Clear();
                 if (ElementIdsMap is not null)
                 {
                     foreach (var values in ElementIdsMap.Map.Values)
@@ -236,7 +236,7 @@ namespace Ssz.DataGrpc.Client
                             }
                             else
                             {
-                                BackMapDictionary[values[1] ?? ""] = values[0] ?? "";
+                                ReverseMapDictionary[values[1] ?? ""] = values[0] ?? "";
                             }
                             continue;
                         }
@@ -251,7 +251,7 @@ namespace Ssz.DataGrpc.Client
                             var constAny = ElementIdsMap.TryGetConstValue(v);
                             if (!constAny.HasValue)
                             {
-                                BackMapDictionary[v] = values[0] ?? "";
+                                ReverseMapDictionary[v] = values[0] ?? "";
                             }
                         }
                     }
@@ -293,8 +293,7 @@ namespace Ssz.DataGrpc.Client
                 valueSubscriptionObj.MapValues = ValueSubscriptionObj.EmptyMapValues;
             }
 
-            _contextParams = new CaseInsensitiveDictionary<string>();
-            CallbackDispatcher = null;
+            _contextParams = new CaseInsensitiveDictionary<string>();            
             ElementIdsMap = null;
 
             if (_cancellationTokenSource is not null)
@@ -324,8 +323,7 @@ namespace Ssz.DataGrpc.Client
         {
             if (!IsInitialized) return;
 
-            Initialize(CallbackDispatcher,
-                ElementIdsMap,
+            Initialize(ElementIdsMap,
                 _elementValueListCallbackIsEnabled,
                 _eventListCallbackIsEnabled,
                 _serverAddress,
@@ -338,9 +336,25 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         /// <param name="elementId"></param>
         /// <param name="valueSubscription"></param>
-        public virtual void AddItem(string elementId, IValueSubscription valueSubscription)
+        public virtual void AddItem(string? elementId, IValueSubscription valueSubscription)
         {
             Logger.LogDebug("DataGrpcProvider.AddItem() " + elementId);
+
+            if (String.IsNullOrEmpty(elementId))
+            {
+                var callbackDispatcher = CallbackDispatcher;
+                if (callbackDispatcher is not null)
+                    try
+                    {
+                        callbackDispatcher.BeginInvoke(ct =>
+                            valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCode.ItemDoesNotExist }));
+                    }
+                    catch (Exception)
+                    {
+                    }
+
+                return;
+            }
 
             var valueSubscriptionObj = new ValueSubscriptionObj(elementId, valueSubscription);           
             _valueSubscriptionsCollection.Add(valueSubscription, valueSubscriptionObj);
@@ -639,7 +653,7 @@ namespace Ssz.DataGrpc.Client
 
         #region protected functions
 
-        protected IDispatcher? CallbackDispatcher { get; private set; }
+        protected IDispatcher? CallbackDispatcher { get; }
 
         protected CaseInsensitiveDictionary<ConstItem> ConstItemsDictionary { get; } = new();
 

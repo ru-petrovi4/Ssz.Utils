@@ -133,7 +133,7 @@ namespace Ssz.DataGrpc.Client.Managers
                                     if (dataGrpcListItemWrapper.ItemDoesNotExist)
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(new ValueStatusTimestamp(new Any(), ValueStatusCode.ItemDoesNotExist, utcNow));
+                                        changedValues.Add(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCode.ItemDoesNotExist });
                                     }
                                     else if (dataGrpcListItemWrapper.DataGrpcListItem is not null)
                                     {
