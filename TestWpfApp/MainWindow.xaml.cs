@@ -40,7 +40,7 @@ namespace TestWpfApp
             //contextParams.Add("UserName", "valpo");
             //contextParams.Add("UserRole", "TRAINEE");
             //contextParams.Add("WindowsUserName", "valpo");            
-            App.DataAccessProvider.Initialize(this, null, true, true, @"http://SRVEPKS01B:60080/SimcodeOpcNetServer/ServerDiscovery", "TestWpfApp", Environment.MachineName, "", contextParams);
+            App.DataAccessProvider.Initialize(null, true, true, @"http://SRVEPKS01B:60080/SimcodeOpcNetServer/ServerDiscovery", "TestWpfApp", Environment.MachineName, "", contextParams);
             App.DataAccessProvider.EventMessagesCallback += XiDataAccessProviderOnEventMessagesCallback;
             App.DataAccessProvider.PropertyChanged += DataAccessProviderOnPropertyChanged;
             XiDataAccessProviderOnConnectedOrDisconnected();
@@ -79,7 +79,7 @@ namespace TestWpfApp
         private async void XiDataAccessProviderOnEventMessagesCallback(EventMessage[] newEventMessages)
         {
             List<AlarmInfoViewModelBase> newAlarmInfoViewModels = new List<AlarmInfoViewModelBase>();
-            foreach (EventMessage eventMessage in newEventMessages.Where(em => em is not null).OrderBy(em => em.OccurrenceTime))
+            foreach (EventMessage eventMessage in newEventMessages.Where(em => em is not null).OrderBy(em => em.OccurrenceTimeUtc))
             {
                 var alarmInfoViewModels = await ExperionHelper.ProcessEventMessage(App.EventSourceModel, eventMessage);
                 if (alarmInfoViewModels is not null)

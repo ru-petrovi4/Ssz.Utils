@@ -1,4 +1,5 @@
-﻿using Ssz.Utils.DataAccess;
+﻿using Microsoft.Extensions.Logging.Abstractions;
+using Ssz.Utils.DataAccess;
 using Ssz.Utils.EventSourceModel;
 using Ssz.Xi.Client;
 using System;
@@ -16,7 +17,7 @@ namespace TestWpfApp
     /// </summary>
     public partial class App : Application
     {
-        public static readonly IDataAccessProvider DataAccessProvider = new XiDataAccessProvider();
+        public static readonly IDataAccessProvider DataAccessProvider = new XiDataAccessProvider(new NullLogger<XiDataAccessProvider>(), null);
 
         public static readonly EventSourceModel EventSourceModel = new EventSourceModel(DataAccessProvider);
     }
