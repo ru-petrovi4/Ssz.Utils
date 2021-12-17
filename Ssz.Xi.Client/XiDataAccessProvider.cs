@@ -376,18 +376,17 @@ namespace Ssz.Xi.Client
         }
 
         /// <summary>
-        ///     Returns null if any errors.
+        ///     Throws if any errors.
         /// </summary>
         /// <param name="recipientId"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<byte>?> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
+        public async Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
         {
-            var taskCompletionSource = new TaskCompletionSource<IEnumerable<byte>?>();
+            var taskCompletionSource = new TaskCompletionSource<IEnumerable<byte>>();
             BeginInvoke(ct =>
-            {
-                byte[]? result;
+            {                
                 try
                 {
                     if (_xiServerProxy is null) throw new InvalidOperationException();
@@ -395,19 +394,17 @@ namespace Ssz.Xi.Client
                         dataToSend);
                     if (passthroughResult is not null && passthroughResult.ResultCode == 0) // SUCCESS
                     {
-                        result = passthroughResult.ReturnData;
+                        taskCompletionSource.SetResult(passthroughResult.ReturnData ?? new byte[0]);
                     }
                     else
                     {
-                        result = null;
+                        throw new Exception(@"ResultCode = " + passthroughResult?.ResultCode);
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    result = null;
+                    taskCompletionSource.TrySetException(ex);
                 }
-
-                taskCompletionSource.SetResult(result);
             });
             return await taskCompletionSource.Task;
         }

@@ -109,13 +109,13 @@ namespace Ssz.Utils.DataAccess
         Task<IValueSubscription[]> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps);
 
         /// <summary>
-        ///     Returns null if any errors.
+        ///     Throws if any errors.
         /// </summary>
         /// <param name="recipientId"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <returns></returns>
-        Task<IEnumerable<byte>?> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend);
+        Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend);
 
         /// <summary>
         ///     Returns true if succeeded.

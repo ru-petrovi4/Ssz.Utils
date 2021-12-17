@@ -142,6 +142,7 @@ namespace Ssz.DataGrpc.Client
                             InvokeId = invokeId,
                             ProgressPercent = longrunningPassthroughCallback.ProgressPercent,
                             ProgressLabel = longrunningPassthroughCallback.ProgressLabel ?? @"",
+                            ProgressDetail = longrunningPassthroughCallback.ProgressDetail ?? @"",
                             Succeeded = statusCode == StatusCode.OK
                         });
                     }

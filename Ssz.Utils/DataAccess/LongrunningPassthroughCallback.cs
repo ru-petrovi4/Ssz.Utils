@@ -16,6 +16,8 @@ namespace Ssz.Utils.DataAccess
 
 		public string ProgressLabel = @"";
 
+		public string ProgressDetail = @"";
+
 		public bool Succeeded;
 
 		#endregion

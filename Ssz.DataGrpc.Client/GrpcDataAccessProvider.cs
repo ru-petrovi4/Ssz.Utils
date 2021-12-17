@@ -541,31 +541,28 @@ namespace Ssz.DataGrpc.Client
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<byte>?> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
+        public async Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
         {
-            var taskCompletionSource = new TaskCompletionSource<IEnumerable<byte>?>();
+            var taskCompletionSource = new TaskCompletionSource<IEnumerable<byte>>();
             BeginInvoke(ct =>
-            {
-                IEnumerable<byte>? result;
+            {                
                 try
                 {
                     IEnumerable<byte> returnData;
                     ClientConnectionManager.Passthrough(recipientId, passthroughName,
                         dataToSend, out returnData);
-                    result = returnData;
+                    taskCompletionSource.SetResult(returnData);                    
                 }
                 catch (RpcException ex)
                 {
                     Logger.LogError(ex, ex.Status.Detail);
-                    result = null;
+                    taskCompletionSource.TrySetException(ex);
                 }
                 catch (Exception ex)
                 {
                     Logger.LogError(ex, "Passthrough exception.");
-                    result = null;
-                }
-
-                taskCompletionSource.SetResult(result);
+                    taskCompletionSource.TrySetException(ex);
+                }                
             });
             return await taskCompletionSource.Task;
         }

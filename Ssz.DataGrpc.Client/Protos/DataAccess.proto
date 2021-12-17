@@ -79,7 +79,8 @@ message LongrunningPassthroughCallback {
   string invoke_id = 1;
   double progress_percent = 2;
   string progress_label = 3;
-  uint32 status_code = 4;
+  string progress_detail = 4;
+  uint32 status_code = 5;
 }
 
 message CallbackMessage {
