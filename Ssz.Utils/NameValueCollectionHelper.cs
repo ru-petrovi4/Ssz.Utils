@@ -294,6 +294,11 @@ namespace Ssz.Utils
             return urlDecoder.GetString();
         }
 
+        /// <summary>
+        ///     Returns -1 if error
+        /// </summary>
+        /// <param name="h"></param>
+        /// <returns></returns>
         private static int HexToInt(char h)
         {
             return (h >= '0' && h <= '9')

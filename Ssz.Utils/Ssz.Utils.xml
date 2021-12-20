@@ -2059,6 +2059,13 @@
             <summary>        
             </summary>
         </member>
+        <member name="M:Ssz.Utils.NameValueCollectionHelper.HexToInt(System.Char)">
+            <summary>
+                Returns -1 if error
+            </summary>
+            <param name="h"></param>
+            <returns></returns>
+        </member>
         <member name="T:Ssz.Utils.ObjectHelper">
             <summary>     ///      /// </summary> 
         </member>
