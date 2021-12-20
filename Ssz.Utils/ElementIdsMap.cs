@@ -54,14 +54,17 @@ namespace Ssz.Utils
 
         /// <summary>
         ///     Can be called multiple times. Other methods calls must be after this initialization.
+        ///     csvDb is used for queries resolving.
         /// </summary>
         /// <param name="map"></param>
         /// <param name="tags"></param>
+        /// <param name="csvDb"></param>
         public void Initialize(CaseInsensitiveDictionary<List<string?>> map,
-            CaseInsensitiveDictionary<List<string?>> tags)
+            CaseInsensitiveDictionary<List<string?>> tags, CsvDb? csvDb = null)
         {            
             Map = map;
             Tags = tags;
+            _csvDb = csvDb;
 
             var values = Map.TryGetValue("%(GenericTag)");
             if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
@@ -148,7 +151,7 @@ namespace Ssz.Utils
                 {
                     for (var i = 1; i < values.Count; i++)
                     {
-                        string? v = SszQueryHelper.ComputeValueOfSszQueries(values[i], constant => (newTag ?? tag) ?? "", null);                            
+                        string? v = SszQueryHelper.ComputeValueOfSszQueries(values[i], constant => (newTag ?? tag) ?? "", _csvDb);                            
                         result.Add(v ?? @"");
                     }
                 }
@@ -196,7 +199,9 @@ namespace Ssz.Utils
 
         #region private fields
 
-        private ILogger<ElementIdsMap>? _logger;       
+        private ILogger<ElementIdsMap>? _logger;
+
+        private CsvDb? _csvDb;
 
         #endregion
     }
