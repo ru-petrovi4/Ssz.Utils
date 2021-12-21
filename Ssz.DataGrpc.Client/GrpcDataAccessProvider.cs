@@ -170,8 +170,6 @@ namespace Ssz.DataGrpc.Client
 
         public ElementIdsMap? ElementIdsMap { get; private set; }
 
-        public CaseInsensitiveDictionary<string> ReverseMapDictionary { get; } = new();
-
         public object? Obj { get; set; }
 
         /// <summary>
@@ -221,38 +219,19 @@ namespace Ssz.DataGrpc.Client
 
             lock (ConstItemsDictionary)
             {
-                ConstItemsDictionary.Clear();
-                ReverseMapDictionary.Clear();
+                ConstItemsDictionary.Clear();                
                 if (ElementIdsMap is not null)
                 {
                     foreach (var values in ElementIdsMap.Map.Values)
                     {
-                        if (values.Count >= 2)
+                        if (values.Count >= 2 && !values[0]!.Contains(ElementIdsMap.GenericTag)
+                            && values.Skip(2).All(v => String.IsNullOrEmpty(v)))
                         {
                             var constAny = ElementIdsMap.TryGetConstValue(values[1]);
                             if (constAny.HasValue)
                             {
-                                ConstItemsDictionary[values[0] ?? ""] = new ConstItem { Value = constAny.Value };
-                            }
-                            else
-                            {
-                                ReverseMapDictionary[values[1] ?? ""] = values[0] ?? "";
-                            }
-                            continue;
-                        }
-
-                        for (int i = 2; i < values.Count; i++)
-                        {
-                            string v = values[i] ?? "";
-                            if ((StringHelper.StartsWithIgnoreCase(v, @"READCONVERTER") ||
-                                    StringHelper.StartsWithIgnoreCase(v, @"WRITECONVERTER"))
-                                && v.IndexOf('=') > 0) continue;
-
-                            var constAny = ElementIdsMap.TryGetConstValue(v);
-                            if (!constAny.HasValue)
-                            {
-                                ReverseMapDictionary[v] = values[0] ?? "";
-                            }
+                                ConstItemsDictionary[values[0]!] = new ConstItem { Value = constAny.Value };
+                            }                            
                         }
                     }
                 }
@@ -290,7 +269,7 @@ namespace Ssz.DataGrpc.Client
             {
                 valueSubscriptionObj.ChildValueSubscriptionsList = null;
                 valueSubscriptionObj.Converter = null;
-                valueSubscriptionObj.MapValues = ValueSubscriptionObj.EmptyMapValues;
+                valueSubscriptionObj.MapValues = null;
             }
 
             _contextParams = new CaseInsensitiveDictionary<string>();            
@@ -423,7 +402,7 @@ namespace Ssz.DataGrpc.Client
             lock (ConstItemsDictionary)
             {
                 var constItem = ConstItemsDictionary.TryGetValue(valueSubscriptionObj.ElementId);
-                if (constItem is not null && constItem.Value.ValueAsObject() != DBNull.Value)
+                if (constItem is not null)
                 {
                     constItem.Value = value;
                     constItemValueSubscriptionsArray = constItem.Subscribers.ToArray();
@@ -450,11 +429,7 @@ namespace Ssz.DataGrpc.Client
             object?[]? resultValues = null;
             if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
             {
-                SszConverter converter;
-                if (valueSubscriptionObj.Converter is not null)
-                    converter = valueSubscriptionObj.Converter;
-                else
-                    converter = SszConverter.Empty;
+                SszConverter converter = valueSubscriptionObj.Converter ?? SszConverter.Empty;                
                 resultValues =
                     converter.ConvertBack(value.ValueAsObject(),
                         valueSubscriptionObj.ChildValueSubscriptionsList.Count, null, userFriendlyLogger);
@@ -481,7 +456,8 @@ namespace Ssz.DataGrpc.Client
                 else
                 {
                     if (value.ValueAsObject() != SszConverter.DoNothing)
-                        userFriendlyLogger.LogInformation("Model TAG: \"" + valueSubscriptionObj.MapValues[1] +
+                        userFriendlyLogger.LogInformation("Model TAG: \"" + 
+                            (valueSubscriptionObj.MapValues is not null ? valueSubscriptionObj.MapValues[1] : valueSubscriptionObj.ElementId) +
                                                      "\"; Write Value to Model: \"" + value + "\"");
                 }
             }
@@ -652,6 +628,9 @@ namespace Ssz.DataGrpc.Client
 
         protected IDispatcher? CallbackDispatcher { get; }
 
+        /// <summary>
+        ///     This dictionary is created, because we can write to const values.
+        /// </summary>
         protected CaseInsensitiveDictionary<ConstItem> ConstItemsDictionary { get; } = new();
 
         protected ClientConnectionManager ClientConnectionManager { get; }
@@ -838,35 +817,6 @@ namespace Ssz.DataGrpc.Client
             ValueSubscriptionsUpdated();
         }
 
-        protected ConstItem? ConstItemsDictionaryTryGetValue(string? tag, string? propertyPath,
-            string? tagType)
-        {
-            if (ElementIdsMap is null) return null;
-
-            string elementId = tag + propertyPath;
-            var constItem = ConstItemsDictionary.TryGetValue(elementId);
-            if (constItem is not null) return constItem;
-
-            if (!string.IsNullOrEmpty(propertyPath))
-            {
-                ConstItem? templateConstItem = null;
-                if (!string.IsNullOrEmpty(tagType))
-                    templateConstItem = ConstItemsDictionary.TryGetValue(tagType +
-                        ElementIdsMap.TagTypeSeparator + ElementIdsMap.GenericTag + propertyPath);
-                if (templateConstItem is null)
-                    templateConstItem =
-                        ConstItemsDictionary.TryGetValue(ElementIdsMap.GenericTag + propertyPath);
-                if (templateConstItem is not null)
-                {
-                    constItem = new ConstItem { Value = templateConstItem.Value };
-                    ConstItemsDictionary[elementId] = constItem;
-                    return constItem;
-                }
-            }
-
-            return null;
-        }
-
         #endregion        
 
         #region private functions
@@ -908,37 +858,99 @@ namespace Ssz.DataGrpc.Client
             IValueSubscription valueSubscription = valueSubscriptionObj.ValueSubscription;
 
             if (ElementIdsMap is not null)
-            {
-                string? tag = null;
-                string? propertyPath = null;
-                string? tagType = null;
-
+            {   
                 var constAny = ElementIdsMap.TryGetConstValue(elementId);
                 if (!constAny.HasValue)
                 {
-                    var separatorIndex = elementId.LastIndexOf(ElementIdsMap.TagAndPropertySeparator);
-                    if (separatorIndex > 0 && separatorIndex < elementId.Length - 1)
-                    {
-                        tag = elementId.Substring(0, separatorIndex);
-                        propertyPath = elementId.Substring(separatorIndex);
-                        tagType = ElementIdsMap.GetTagType(tag);
-                    }
-                    else
-                    {
-                        tag = elementId;
-                        propertyPath = null;
-                        tagType = null;
-                    }
-
                     lock (ConstItemsDictionary)
                     {
-                        var constItem = ConstItemsDictionaryTryGetValue(tag, propertyPath, tagType);
+                        var constItem = ConstItemsDictionary.TryGetValue(elementId);                        
                         if (constItem is not null)
                         {
                             constItem.Subscribers.Add(valueSubscription);
                             constAny = constItem.Value;
                         }
                     }
+                }
+                if (!constAny.HasValue)
+                {
+                    valueSubscriptionObj.MapValues = ElementIdsMap.GetFromMap(elementId);
+
+                    if (valueSubscriptionObj.MapValues is not null)
+                    {
+                        if (valueSubscriptionObj.MapValues.Skip(2).All(v => String.IsNullOrEmpty(v)))
+                        {
+                            constAny = ElementIdsMap.TryGetConstValue(valueSubscriptionObj.MapValues[1]);
+                        }
+                        else
+                        {
+                            var childValueSubscriptionsList = new List<ChildValueSubscription>();
+                            var converter = new SszConverter();
+
+                            for (var i = 1; i < valueSubscriptionObj.MapValues.Count; i++)
+                            {
+                                string v = valueSubscriptionObj.MapValues[i] ?? "";
+
+                                int index;
+                                if ((StringHelper.StartsWithIgnoreCase(v, @"READCONVERTER") ||
+                                     StringHelper.StartsWithIgnoreCase(v, @"WRITECONVERTER"))
+                                    && (index = v.IndexOf('=')) > 0)
+                                {
+                                    var values = v.Substring(index + 1).Split(new[] { "->" }, StringSplitOptions.None);
+                                    switch (v.Substring(0, index).Trim().ToUpperInvariant())
+                                    {
+                                        case @"READCONVERTER":
+                                            if (values.Length == 1)
+                                                converter.Statements.Add(new SszStatement(@"true", values[0].Trim(), 0));
+                                            else // values.Length > 1
+                                                converter.Statements.Add(new SszStatement(values[0].Trim(),
+                                                    values[1].Trim(), 0));
+                                            break;
+                                        case @"WRITECONVERTER":
+                                            if (values.Length == 1)
+                                                converter.BackStatements.Add(new SszStatement(@"true", values[0].Trim(), 0));
+                                            else if (values.Length == 2)
+                                                converter.BackStatements.Add(new SszStatement(values[0].Trim(),
+                                                    values[1].Trim(), 0));
+                                            else // values.Length > 2
+                                                converter.BackStatements.Add(new SszStatement(
+                                                    values[0].Trim(),
+                                                    values[1].Trim(),
+                                                    new Any(values[2].Trim()).ValueAsInt32(false)));
+                                            break;
+                                    }
+                                }
+                                else
+                                {
+                                    var childValueSubscription = new ChildValueSubscription(valueSubscriptionObj, v);
+                                    childValueSubscriptionsList.Add(childValueSubscription);
+                                }
+                            }
+
+                            if (converter.Statements.Count == 0 && converter.BackStatements.Count == 0)
+                            {
+                                converter = null;
+                            }
+                            //else
+                            //{
+                            //    converter.ParentItem = DsSolution.Instance;
+                            //    converter.ReplaceConstants(DsSolution.Instance);
+                            //}
+
+                            if (childValueSubscriptionsList.Count > 1 || converter is not null)
+                            {
+                                valueSubscriptionObj.ChildValueSubscriptionsList = childValueSubscriptionsList;
+                                valueSubscriptionObj.Converter = converter;
+                                try
+                                {
+                                    callbackDispatcher.BeginInvoke(ct => valueSubscriptionObj.ChildValueSubscriptionUpdated());
+                                }
+                                catch (Exception)
+                                {
+                                }
+                            }
+                        }
+                    }                    
                 }
 
                 if (constAny.HasValue)
@@ -953,77 +965,12 @@ namespace Ssz.DataGrpc.Client
                     {
                     }
 
-                    return elementId;
-                }
+                    return constAny.Value.ValueAsString(false);
+                }                
+            }
 
-                valueSubscriptionObj.MapValues = ElementIdsMap.GetFromMap(tag, propertyPath, tagType) ?? new List<string?> { elementId, elementId };
-
-                var childValueSubscriptionsList = new List<ChildValueSubscription>();
-                var converter = new SszConverter();
-
-                for (var i = 1; i < valueSubscriptionObj.MapValues.Count; i++)
-                {
-                    string v = valueSubscriptionObj.MapValues[i] ?? "";
-
-                    int index;
-                    if ((StringHelper.StartsWithIgnoreCase(v, @"READCONVERTER") ||
-                         StringHelper.StartsWithIgnoreCase(v, @"WRITECONVERTER"))
-                        && (index = v.IndexOf('=')) > 0)
-                    {
-                        var values = v.Substring(index + 1).Split(new[] { "->" }, StringSplitOptions.None);
-                        switch (v.Substring(0, index).Trim().ToUpperInvariant())
-                        {
-                            case @"READCONVERTER":
-                                if (values.Length == 1)
-                                    converter.Statements.Add(new SszStatement(@"true", values[0].Trim(), 0));
-                                else // values.Length > 1
-                                    converter.Statements.Add(new SszStatement(values[0].Trim(),
-                                        values[1].Trim(), 0));
-                                break;
-                            case @"WRITECONVERTER":
-                                if (values.Length == 1)
-                                    converter.BackStatements.Add(new SszStatement(@"true", values[0].Trim(), 0));
-                                else if (values.Length == 2)
-                                    converter.BackStatements.Add(new SszStatement(values[0].Trim(),
-                                        values[1].Trim(), 0));
-                                else // values.Length > 2
-                                    converter.BackStatements.Add(new SszStatement(
-                                        values[0].Trim(),
-                                        values[1].Trim(),
-                                        new Any(values[2].Trim()).ValueAsInt32(false)));
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        var childValueSubscription = new ChildValueSubscription(valueSubscriptionObj, v);
-                        childValueSubscriptionsList.Add(childValueSubscription);
-                    }
-                }
-
-                if (converter.Statements.Count == 0 && converter.BackStatements.Count == 0)
-                {
-                    converter = null;
-                }
-                //else
-                //{
-                //    converter.ParentItem = DsSolution.Instance;
-                //    converter.ReplaceConstants(DsSolution.Instance);
-                //}
-
-                if (childValueSubscriptionsList.Count > 1 || converter is not null)
-                {
-                    valueSubscriptionObj.ChildValueSubscriptionsList = childValueSubscriptionsList;
-                    valueSubscriptionObj.Converter = converter;
-                    try
-                    {
-                        callbackDispatcher.BeginInvoke(ct => valueSubscriptionObj.ChildValueSubscriptionUpdated());
-                    }
-                    catch (Exception)
-                    {
-                    }
-                }
-
+            if (valueSubscriptionObj.MapValues is not null)
+            {
                 BeginInvoke(ct =>
                 {
                     if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
@@ -1172,8 +1119,6 @@ namespace Ssz.DataGrpc.Client
 
             #endregion
 
-            public static readonly List<string?> EmptyMapValues = new List<string?>(){ @"", @"" };
-
             public readonly string ElementId;
 
             public readonly IValueSubscription ValueSubscription;
@@ -1183,9 +1128,9 @@ namespace Ssz.DataGrpc.Client
             public SszConverter? Converter;
 
             /// <summary>
-            ///     Count > 1
+            ///     null or Count > 1
             /// </summary>
-            public List<string?> MapValues = EmptyMapValues;
+            public List<string?>? MapValues;
 
             public void ChildValueSubscriptionUpdated()
             {
@@ -1205,11 +1150,7 @@ namespace Ssz.DataGrpc.Client
                 var values = new List<object?>();
                 foreach (var childValueSubscription in ChildValueSubscriptionsList)
                     values.Add(childValueSubscription.ValueStatusTimestamp.Value.ValueAsObject());
-                SszConverter converter;
-                if (Converter is not null)
-                    converter = Converter;
-                else
-                    converter = SszConverter.Empty;
+                SszConverter converter = Converter ?? SszConverter.Empty;                
                 var convertedValue = converter.Convert(values.ToArray(), null, null);
                 if (convertedValue == SszConverter.DoNothing) return;
                 ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), ValueStatusCode.Good,

@@ -1213,12 +1213,14 @@
                 Can be configured in map, 'TagAndPropertySeparator' key
             </summary>
         </member>
-        <member name="M:Ssz.Utils.ElementIdsMap.Initialize(Ssz.Utils.CaseInsensitiveDictionary{System.Collections.Generic.List{System.String}},Ssz.Utils.CaseInsensitiveDictionary{System.Collections.Generic.List{System.String}})">
+        <member name="M:Ssz.Utils.ElementIdsMap.Initialize(Ssz.Utils.CaseInsensitiveDictionary{System.Collections.Generic.List{System.String}},Ssz.Utils.CaseInsensitiveDictionary{System.Collections.Generic.List{System.String}},Ssz.Utils.CsvDb)">
             <summary>
                 Can be called multiple times. Other methods calls must be after this initialization.
+                csvDb is used for queries resolving.
             </summary>
             <param name="map"></param>
             <param name="tags"></param>
+            <param name="csvDb"></param>
         </member>
         <member name="M:Ssz.Utils.ElementIdsMap.GetFromMap(System.String)">
             <summary>

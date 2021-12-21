@@ -86,6 +86,15 @@ namespace Ssz.Utils
         /// <returns></returns>
         public List<string?>? GetFromMap(string elementId)
         {
+            if (elementId == @"") return null;
+
+            var values = Map.TryGetValue(elementId);
+            if (values is not null)
+            {
+                if (values.Count == 1) values.Add("");
+                return values;
+            }
+
             string? tag;
             string? propertyPath;
             string? tagType;
@@ -104,7 +113,34 @@ namespace Ssz.Utils
                 tagType = null;
             }
 
-            return GetFromMap(tag, propertyPath, tagType);
+            if (String.IsNullOrEmpty(propertyPath))
+                return null;
+
+            var result = new List<string?> { elementId };
+
+            values = null;
+            if (!string.IsNullOrEmpty(tagType))
+                values = Map.TryGetValue(tagType + TagTypeSeparator +
+                                                        GenericTag + propertyPath);
+            if (values is null)
+                values = Map.TryGetValue(GenericTag + propertyPath);
+            if (values is null)
+                return null;
+
+            if (values.Count > 1)
+            {
+                for (var i = 1; i < values.Count; i++)
+                {
+                    string? v = SszQueryHelper.ComputeValueOfSszQueries(values[i], constant => tag ?? "", _csvDb);
+                    result.Add(v ?? @"");
+                }
+            }
+            else
+            {
+                result.Add("");
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -115,7 +151,7 @@ namespace Ssz.Utils
         /// <param name="tagType"></param>
         /// <returns></returns>
         public List<string?>? GetFromMap(string? tag, string? propertyPath, string? tagType)
-        {            
+        {
             string elementId = tag + propertyPath;
             if (elementId == @"") return null;
 
@@ -130,14 +166,6 @@ namespace Ssz.Utils
 
             if (String.IsNullOrEmpty(propertyPath))
                 return null;
-            
-            string? newTag = null;
-
-            if (!string.IsNullOrEmpty(tag))
-            {
-                values = Map.TryGetValue(tag);
-                if (values is not null && values.Count > 1 && values[1] != "") newTag = values[1];
-            }
 
             values = null;
             if (!string.IsNullOrEmpty(tagType))
@@ -145,30 +173,24 @@ namespace Ssz.Utils
                                                         GenericTag + propertyPath);
             if (values is null)
                 values = Map.TryGetValue(GenericTag + propertyPath);
-            if (values is not null)
+            if (values is null)
+                return null;
+
+            if (values.Count > 1)
             {
-                if (values.Count > 1)
+                for (var i = 1; i < values.Count; i++)
                 {
-                    for (var i = 1; i < values.Count; i++)
-                    {
-                        string? v = SszQueryHelper.ComputeValueOfSszQueries(values[i], constant => (newTag ?? tag) ?? "", _csvDb);                            
-                        result.Add(v ?? @"");
-                    }
-                }
-                else
-                {
-                    result.Add("");
+                    string? v = SszQueryHelper.ComputeValueOfSszQueries(values[i], constant => tag ?? "", _csvDb);
+                    result.Add(v ?? @"");
                 }
             }
             else
             {
-                if (newTag is null)
-                    return null;
-                result.Add(newTag + propertyPath);
-            }            
+                result.Add("");
+            }
 
             return result;
-        }        
+        }
 
         public string GetTagType(string? tag)
         {
@@ -206,3 +228,60 @@ namespace Ssz.Utils
         #endregion
     }
 }
+
+
+//public List<string?>? GetFromMap(string? tag, string? propertyPath, string? tagType)
+//{
+//    string elementId = tag + propertyPath;
+//    if (elementId == @"") return null;
+
+//    var values = Map.TryGetValue(elementId);
+//    if (values is not null)
+//    {
+//        if (values.Count == 1) values.Add("");
+//        return values;
+//    }
+
+//    var result = new List<string?> { elementId };
+
+//    if (String.IsNullOrEmpty(propertyPath))
+//        return null;
+
+//    string? newTag = null;
+
+//    if (!string.IsNullOrEmpty(tag))
+//    {
+//        values = Map.TryGetValue(tag);
+//        if (values is not null && values.Count > 1 && values[1] != "") newTag = values[1];
+//    }
+
+//    values = null;
+//    if (!string.IsNullOrEmpty(tagType))
+//        values = Map.TryGetValue(tagType + TagTypeSeparator +
+//                                                GenericTag + propertyPath);
+//    if (values is null)
+//        values = Map.TryGetValue(GenericTag + propertyPath);
+//    if (values is not null)
+//    {
+//        if (values.Count > 1)
+//        {
+//            for (var i = 1; i < values.Count; i++)
+//            {
+//                string? v = SszQueryHelper.ComputeValueOfSszQueries(values[i], constant => (newTag ?? tag) ?? "", _csvDb);
+//                result.Add(v ?? @"");
+//            }
+//        }
+//        else
+//        {
+//            result.Add("");
+//        }
+//    }
+//    else
+//    {
+//        if (newTag is null)
+//            return null;
+//        result.Add(newTag + propertyPath);
+//    }
+
+//    return result;
+//}
