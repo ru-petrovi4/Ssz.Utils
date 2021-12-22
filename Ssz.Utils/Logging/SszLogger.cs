@@ -72,10 +72,13 @@ namespace Ssz.Utils.Logging
                 line1 = $"[ {logLevel,-11} ]";
 
             string line2 = "\t";
-            foreach (var scopeString in ScopeStringsCollection)
+            lock (ScopeStringsStack)
             {
-                line2 += scopeString + @" -> ";
-            }
+                foreach (var scopeString in ScopeStringsStack.Reverse())
+                {
+                    line2 += scopeString + @" -> ";
+                }
+            }                
             line2 += formatter(state, exception);
             Exception? ex = exception;
             while (ex is not null)

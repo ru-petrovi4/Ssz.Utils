@@ -32,11 +32,14 @@ namespace Ssz.Utils.Logging
             Exception? exception,
             Func<TState, Exception?, string> formatter)
         {            
-            string line = $"{logLevel,-12}";            
-            foreach (var scopeString in ScopeStringsCollection)
+            string line = $"{logLevel,-12}";
+            lock (ScopeStringsStack)
             {
-                line += scopeString + @" -> ";
-            }
+                foreach (var scopeString in ScopeStringsStack.Reverse())
+                {
+                    line += scopeString + @" -> ";
+                }
+            }                
             line += formatter(state, exception);
             Exception? ex = exception;
             if (ex is not null)

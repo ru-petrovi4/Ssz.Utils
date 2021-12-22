@@ -54,7 +54,7 @@ namespace Ssz.Utils.Logging
 
         protected bool Disposed => _disposed;
 
-        protected List<string> ScopeStringsCollection { get; } = new();
+        protected Stack<string> ScopeStringsStack { get; } = new();
 
         #endregion        
 
@@ -62,12 +62,18 @@ namespace Ssz.Utils.Logging
 
         private void PushScope(string scopeString)
         {
-            ScopeStringsCollection.Add(scopeString);
+            lock (ScopeStringsStack)
+            {
+                ScopeStringsStack.Push(scopeString);
+            }                
         }
 
         private void PopScope()
         {
-            ScopeStringsCollection.RemoveAt(ScopeStringsCollection.Count - 1);
+            lock (ScopeStringsStack)
+            {
+                ScopeStringsStack.Pop();
+            }
         }
 
         #endregion
@@ -90,14 +96,18 @@ namespace Ssz.Utils.Logging
 
             public void Dispose()
             {
-                _sszLogger.PopScope();
+                var sszLogger = Interlocked.Exchange(ref _sszLogger, null);
+                if (sszLogger != null)
+                {
+                    sszLogger.PopScope();                    
+                }
             }
 
             #endregion
 
             #region private fields
 
-            private readonly SszLoggerBase _sszLogger;
+            private SszLoggerBase? _sszLogger;
 
             #endregion
         }        
