@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <!-- Project properties -->
+    <PropertyGroup>
+        <TargetFramework>net6.0-windows</TargetFramework>
+		    <UseWPF>true</UseWPF>
+		    <UseWindowsForms>true</UseWindowsForms>
+		    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		    <Company>SSZ</Company>
+		    <Version>1.0.69</Version>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+    <ItemGroup>
+      <None Remove="Icons\EffectCopy.png" />
+      <None Remove="Icons\EffectLink.png" />
+      <None Remove="Icons\EffectMove.png" />
+      <None Remove="Icons\EffectNone.png" />
+    </ItemGroup>
+    <ItemGroup>
+      <Resource Include="Icons\EffectCopy.png" />
+      <Resource Include="Icons\EffectLink.png" />
+      <Resource Include="Icons\EffectMove.png" />
+      <Resource Include="Icons\EffectNone.png" />
+    </ItemGroup>      
+    
+</Project>

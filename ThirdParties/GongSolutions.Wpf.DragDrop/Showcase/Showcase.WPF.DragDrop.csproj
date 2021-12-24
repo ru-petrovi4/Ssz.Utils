@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <!-- Project properties -->
+    <PropertyGroup>
+      <TargetFramework>net6.0-windows</TargetFramework>
+		  <UseWPF>true</UseWPF>
+		  <UseWindowsForms>true</UseWindowsForms>		
+		  <Company>SSZ</Company>
+		  <Version>1.0.69</Version>
+		  <OutputType>WinExe</OutputType>
+      <Nullable>disable</Nullable>
+    </PropertyGroup>
+
+    <PropertyGroup>        
+        <NoWarn>SA1652;WPF0041</NoWarn>        
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\GongSolutions.WPF.DragDrop\GongSolutions.WPF.DragDrop.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MahApps.Metro.IconPacks.FeatherIcons" Version="4.*" />
+        <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.*" />
+        <PackageReference Include="MahApps.Metro.IconPacks.Octicons" Version="4.*" />
+        <PackageReference Include="Faker.Net" Version="1.*" />
+    </ItemGroup>
+      
+</Project>
