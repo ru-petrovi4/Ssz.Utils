@@ -130,35 +130,39 @@ namespace Ssz.Utils.Wpf
 
         private static void WindowOnLoaded(Window window)
         {
-            Rect screen = ScreenHelper.GetNearestSystemScreen(new Point(window.Left + window.Width / 2, window.Top + window.Height / 2));
+            Point pointInPixels = window.PointToScreen(new Point(window.Left + window.ActualWidth / 2, window.Top + window.ActualHeight / 2));
+            Rect screenInPixels = ScreenHelper.GetNearestSystemScreenWorkingAreaInPixels(pointInPixels);
+            if (screenInPixels == Rect.Empty)
+                return;
+            var t = PresentationSource.FromVisual(window).CompositionTarget.TransformFromDevice;
+            var p1 = t.Transform(screenInPixels.TopLeft);            
+            var p2 = t.Transform(screenInPixels.BottomRight);            
+            var screen = new Rect(p1, p2);
 
-            if (screen != Rect.Empty)
+            if (window.Width > screen.Width)
             {
-                if (window.Width > screen.Width)
-                {
-                    window.Width = screen.Width;
-                }
-                if (window.Height > screen.Height)
-                {
-                    window.Height = screen.Height;
-                }
+                window.Width = screen.Width;
+            }
+            if (window.Height > screen.Height)
+            {
+                window.Height = screen.Height;
+            }
 
-                if ((int)window.Left < (int)screen.X)
-                {
-                    window.Left = screen.X;
-                }
-                if ((int)window.Top < (int)screen.Y)
-                {
-                    window.Top = screen.Y;
-                }
-                if ((int)(window.Left + window.Width) > (int)(screen.X + screen.Width))
-                {
-                    window.Left = screen.X + screen.Width - window.Width;
-                }
-                if ((int)(window.Top + window.Height) > (int)(screen.Y + screen.Height))
-                {
-                    window.Top = screen.Y + screen.Height - window.Height;
-                }
+            if ((int)window.Left < (int)screen.X)
+            {
+                window.Left = screen.X;
+            }
+            if ((int)window.Top < (int)screen.Y)
+            {
+                window.Top = screen.Y;
+            }
+            if ((int)(window.Left + window.Width) > (int)(screen.X + screen.Width))
+            {
+                window.Left = screen.X + screen.Width - window.Width;
+            }
+            if ((int)(window.Top + window.Height) > (int)(screen.Y + screen.Height))
+            {
+                window.Top = screen.Y + screen.Height - window.Height;
             }
         }
 
