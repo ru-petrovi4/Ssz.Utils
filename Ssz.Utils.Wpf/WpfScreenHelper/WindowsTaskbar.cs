@@ -56,8 +56,7 @@ namespace Ssz.Utils.Wpf.WpfScreenHelper
 
         private const string ClassName = "Shell_TrayWnd";
         private static APPBARDATA _appBarData;
-
-        /// <summary>Static initializer of the <see cref="Taskbar" /> class.</summary>
+        
         static WindowsTaskbar()
         {
             _appBarData = new APPBARDATA
