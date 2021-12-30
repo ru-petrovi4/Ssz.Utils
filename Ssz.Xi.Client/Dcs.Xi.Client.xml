@@ -4205,11 +4205,13 @@
         <member name="M:Ssz.Xi.Client.XiDataAccessProvider.Close">
             <summary>
                 Tou can call Dispose() instead of this method.
+                Closes without waiting working thread exit.
             </summary>
         </member>
         <member name="M:Ssz.Xi.Client.XiDataAccessProvider.CloseAsync">
             <summary>
                 Tou can call DisposeAsync() instead of this method.
+                Closes WITH waiting working thread exit.
             </summary>
         </member>
         <member name="M:Ssz.Xi.Client.XiDataAccessProvider.ReInitialize">

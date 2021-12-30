@@ -225,6 +225,7 @@ namespace Ssz.Xi.Client
 
         /// <summary>
         ///     Tou can call Dispose() instead of this method.
+        ///     Closes without waiting working thread exit.
         /// </summary>
         public void Close()
         {
@@ -243,6 +244,7 @@ namespace Ssz.Xi.Client
 
         /// <summary>
         ///     Tou can call DisposeAsync() instead of this method.
+        ///     Closes WITH waiting working thread exit.
         /// </summary>
         public async Task CloseAsync()
         {
