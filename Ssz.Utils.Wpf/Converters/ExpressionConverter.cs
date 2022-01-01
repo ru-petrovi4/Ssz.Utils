@@ -23,7 +23,7 @@ namespace Ssz.Utils.Wpf.Converters
             set { SetValue(ExpressionProperty, value); }
         }
 
-        public object? Convert(object[] values, Type targetType, object? parameter, CultureInfo culture)
+        public object? Convert(object[] values, Type? targetType, object? parameter, CultureInfo culture)
         {            
             return new SszExpression(Expression).Evaluate(values, null, null, null);
         }

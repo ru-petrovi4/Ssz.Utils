@@ -39,7 +39,7 @@ namespace Ssz.Utils.Wpf.Converters
             set { SetValue(OnNullProperty, value); }
         }
 
-        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        public object? Convert(object? value, Type? targetType, object? parameter, CultureInfo culture)
         {
             if (value is null) return OnNull;            
             var boolValue = new Any(value).ValueAsBoolean(false);
@@ -49,7 +49,7 @@ namespace Ssz.Utils.Wpf.Converters
                 return OnFalse;
         }
 
-        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        public object? ConvertBack(object? value, Type? targetType, object? parameter, CultureInfo culture)
         {
             if (value == OnNull) return Default(targetType);            
             if (value == OnFalse) return false;
@@ -75,8 +75,9 @@ namespace Ssz.Utils.Wpf.Converters
 
         #region private functions
 
-        private static object? Default(Type type)
+        private static object? Default(Type? type)
         {
+            if (type is null) return null;
             return type.IsByRef ? null : Activator.CreateInstance(type);
         }
 
