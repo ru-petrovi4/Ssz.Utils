@@ -3812,6 +3812,14 @@
             </remarks>
             <param name="propertyName">The name of the property to validate</param>
         </member>
+        <member name="M:System.Linq.Dynamic.Core.AssemblyBuilderFactory.DefineDynamicAssembly(System.Reflection.AssemblyName,System.Reflection.Emit.AssemblyBuilderAccess)">
+            <summary>
+            Defines a dynamic assembly that has the specified name and access rights.
+            </summary>
+            <param name="name">The name of the assembly.</param>
+            <param name="access">The access rights of the assembly.</param>
+            <returns>An object that represents the new assembly.</returns>
+        </member>
         <member name="T:System.Linq.Dynamic.Core.DynamicLinqTypeAttribute">
             <summary>
             Indicates to Dynamic Linq to consider the Type as a valid dynamic linq type.
@@ -4083,6 +4091,48 @@
             <returns>
             true if the operation is successful; otherwise, false. If this method returns false, the run-time binder of the language determines the behavior. (In most cases, a language-specific run-time exception is thrown.)
             </returns>
+        </member>
+        <member name="T:System.Linq.Dynamic.Core.DynamicClassFactory">
+            <summary>
+            A factory to create dynamic classes, based on <see href="http://stackoverflow.com/questions/29413942/c-sharp-anonymous-object-with-properties-from-dictionary" />.
+            </summary>
+        </member>
+        <member name="M:System.Linq.Dynamic.Core.DynamicClassFactory.#cctor">
+            <summary>
+            Initializes the <see cref="T:System.Linq.Dynamic.Core.DynamicClassFactory"/> class.
+            </summary>
+        </member>
+        <member name="M:System.Linq.Dynamic.Core.DynamicClassFactory.CreateType(System.Collections.Generic.IList{System.Linq.Dynamic.Core.DynamicProperty},System.Boolean)">
+            <summary>
+            The CreateType method creates a new data class with a given set of public properties and returns the System.Type object for the newly created class. If a data class with an identical sequence of properties has already been created, the System.Type object for this class is returned.        
+            Data classes implement private instance variables and read/write property accessors for the specified properties.Data classes also override the Equals and GetHashCode members to implement by-value equality.
+            Data classes are created in an in-memory assembly in the current application domain. All data classes inherit from <see cref="T:System.Linq.Dynamic.Core.DynamicClass"/> and are given automatically generated names that should be considered private (the names will be unique within the application domain but not across multiple invocations of the application). Note that once created, a data class stays in memory for the lifetime of the current application domain. There is currently no way to unload a dynamically created data class.
+            The dynamic expression parser uses the CreateClass methods to generate classes from data object initializers. This feature in turn is often used with the dynamic Select method to create projections.
+            </summary>
+            <param name="properties">The DynamicProperties</param>
+            <param name="createParameterCtor">Create a constructor with parameters. Default set to true. Note that for Linq-to-Database objects, this needs to be set to false.</param>
+            <returns>Type</returns>
+            <example>
+            <code>
+            <![CDATA[
+            DynamicProperty[] props = new DynamicProperty[] { new DynamicProperty("Name", typeof(string)), new DynamicProperty("Birthday", typeof(DateTime)) };
+            Type type = DynamicClassFactory.CreateType(props);
+            DynamicClass dynamicClass = Activator.CreateInstance(type) as DynamicClass;
+            dynamicClass.SetDynamicProperty("Name", "Albert");
+            dynamicClass.SetDynamicProperty("Birthday", new DateTime(1879, 3, 14));
+            Console.WriteLine(dynamicClass);
+            ]]>
+            </code>
+            </example>
+        </member>
+        <member name="M:System.Linq.Dynamic.Core.DynamicClassFactory.GenerateKey(System.Collections.Generic.IEnumerable{System.Linq.Dynamic.Core.DynamicProperty},System.Boolean)">
+            <summary>
+            Generates the key.
+            Anonymous classes are generics based. The generic classes are distinguished by number of parameters and name of parameters. The specific types of the parameters are the generic arguments.
+            </summary>
+            <param name="dynamicProperties">The dynamic propertys.</param>
+            <param name="createParameterCtor">if set to <c>true</c> [create parameter ctor].</param>
+            <returns></returns>
         </member>
         <member name="T:System.Linq.Dynamic.Core.DynamicEnumerableAsyncExtensions">
             <summary>
@@ -6189,115 +6239,6 @@
             <summary>
             The collection argument '{argumentName}' must contain at least one element.
             </summary>
-        </member>
-        <member name="T:System.Diagnostics.CodeAnalysis.AllowNullAttribute">
-            <summary>Specifies that null is allowed as an input even if the corresponding type disallows it.</summary>
-        </member>
-        <member name="T:System.Diagnostics.CodeAnalysis.DisallowNullAttribute">
-            <summary>Specifies that null is disallowed as an input even if the corresponding type allows it.</summary>
-        </member>
-        <member name="T:System.Diagnostics.CodeAnalysis.MaybeNullAttribute">
-            <summary>Specifies that an output may be null even if the corresponding type disallows it.</summary>
-        </member>
-        <member name="T:System.Diagnostics.CodeAnalysis.NotNullAttribute">
-            <summary>Specifies that an output will not be null even if the corresponding type allows it. Specifies that an input argument was not null when the call returns.</summary>
-        </member>
-        <member name="T:System.Diagnostics.CodeAnalysis.MaybeNullWhenAttribute">
-            <summary>Specifies that when a method returns <see cref="P:System.Diagnostics.CodeAnalysis.MaybeNullWhenAttribute.ReturnValue"/>, the parameter may be null even if the corresponding type disallows it.</summary>
-        </member>
-        <member name="M:System.Diagnostics.CodeAnalysis.MaybeNullWhenAttribute.#ctor(System.Boolean)">
-            <summary>Initializes the attribute with the specified return value condition.</summary>
-            <param name="returnValue">
-            The return value condition. If the method returns this value, the associated parameter may be null.
-            </param>
-        </member>
-        <member name="P:System.Diagnostics.CodeAnalysis.MaybeNullWhenAttribute.ReturnValue">
-            <summary>Gets the return value condition.</summary>
-        </member>
-        <member name="T:System.Diagnostics.CodeAnalysis.NotNullWhenAttribute">
-            <summary>Specifies that when a method returns <see cref="P:System.Diagnostics.CodeAnalysis.NotNullWhenAttribute.ReturnValue"/>, the parameter will not be null even if the corresponding type allows it.</summary>
-        </member>
-        <member name="M:System.Diagnostics.CodeAnalysis.NotNullWhenAttribute.#ctor(System.Boolean)">
-            <summary>Initializes the attribute with the specified return value condition.</summary>
-            <param name="returnValue">
-            The return value condition. If the method returns this value, the associated parameter will not be null.
-            </param>
-        </member>
-        <member name="P:System.Diagnostics.CodeAnalysis.NotNullWhenAttribute.ReturnValue">
-            <summary>Gets the return value condition.</summary>
-        </member>
-        <member name="T:System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute">
-            <summary>Specifies that the output will be non-null if the named parameter is non-null.</summary>
-        </member>
-        <member name="M:System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute.#ctor(System.String)">
-            <summary>Initializes the attribute with the associated parameter name.</summary>
-            <param name="parameterName">
-            The associated parameter name.  The output will be non-null if the argument to the parameter specified is non-null.
-            </param>
-        </member>
-        <member name="P:System.Diagnostics.CodeAnalysis.NotNullIfNotNullAttribute.ParameterName">
-            <summary>Gets the associated parameter name.</summary>
-        </member>
-        <member name="T:System.Diagnostics.CodeAnalysis.DoesNotReturnAttribute">
-            <summary>Applied to a method that will never return under any circumstance.</summary>
-        </member>
-        <member name="T:System.Diagnostics.CodeAnalysis.DoesNotReturnIfAttribute">
-            <summary>Specifies that the method will not return if the associated Boolean parameter is passed the specified value.</summary>
-        </member>
-        <member name="M:System.Diagnostics.CodeAnalysis.DoesNotReturnIfAttribute.#ctor(System.Boolean)">
-            <summary>Initializes the attribute with the specified parameter value.</summary>
-            <param name="parameterValue">
-            The condition parameter value. Code after the method will be considered unreachable by diagnostics if the argument to
-            the associated parameter matches this value.
-            </param>
-        </member>
-        <member name="P:System.Diagnostics.CodeAnalysis.DoesNotReturnIfAttribute.ParameterValue">
-            <summary>Gets the condition parameter value.</summary>
-        </member>
-        <member name="T:System.Diagnostics.CodeAnalysis.MemberNotNullAttribute">
-            <summary>Specifies that the method or property will ensure that the listed field and property members have not-null values.</summary>
-        </member>
-        <member name="M:System.Diagnostics.CodeAnalysis.MemberNotNullAttribute.#ctor(System.String)">
-            <summary>Initializes the attribute with a field or property member.</summary>
-            <param name="member">
-            The field or property member that is promised to be not-null.
-            </param>
-        </member>
-        <member name="M:System.Diagnostics.CodeAnalysis.MemberNotNullAttribute.#ctor(System.String[])">
-            <summary>Initializes the attribute with the list of field and property members.</summary>
-            <param name="members">
-            The list of field and property members that are promised to be not-null.
-            </param>
-        </member>
-        <member name="P:System.Diagnostics.CodeAnalysis.MemberNotNullAttribute.Members">
-            <summary>Gets field or property member names.</summary>
-        </member>
-        <member name="T:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute">
-            <summary>Specifies that the method or property will ensure that the listed field and property members have not-null values when returning with the specified return value condition.</summary>
-        </member>
-        <member name="M:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute.#ctor(System.Boolean,System.String)">
-            <summary>Initializes the attribute with the specified return value condition and a field or property member.</summary>
-            <param name="returnValue">
-            The return value condition. If the method returns this value, the associated parameter will not be null.
-            </param>
-            <param name="member">
-            The field or property member that is promised to be not-null.
-            </param>
-        </member>
-        <member name="M:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute.#ctor(System.Boolean,System.String[])">
-            <summary>Initializes the attribute with the specified return value condition and list of field and property members.</summary>
-            <param name="returnValue">
-            The return value condition. If the method returns this value, the associated parameter will not be null.
-            </param>
-            <param name="members">
-            The list of field and property members that are promised to be not-null.
-            </param>
-        </member>
-        <member name="P:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute.ReturnValue">
-            <summary>Gets the return value condition.</summary>
-        </member>
-        <member name="P:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute.Members">
-            <summary>Gets field or property member names.</summary>
         </member>
     </members>
 </doc>
