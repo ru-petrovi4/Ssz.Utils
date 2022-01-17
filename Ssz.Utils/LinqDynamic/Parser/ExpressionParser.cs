@@ -1432,7 +1432,11 @@ namespace System.Linq.Dynamic.Core.Parser
 
             if (type is null)
             {
+#if !NETSTANDARD2_0
                 type = DynamicClassFactory.CreateType(properties, _createParameterCtor);
+#else
+                throw new InvalidOperationException();
+#endif
             }
 
             ConstructorInfo? ctor;

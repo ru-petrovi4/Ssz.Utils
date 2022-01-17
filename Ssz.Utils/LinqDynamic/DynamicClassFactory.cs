@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿#if !NETSTANDARD2_0
+
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Dynamic.Core.Util;
@@ -382,3 +384,4 @@ namespace System.Linq.Dynamic.Core
     }
 }
 
+#endif

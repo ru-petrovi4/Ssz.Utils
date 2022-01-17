@@ -6,8 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Web;
-using System.Windows;
-using System.Windows.Markup;
 
 namespace Ssz.Utils
 {
@@ -27,7 +25,7 @@ namespace Ssz.Utils
         {
             var result = new CaseInsensitiveDictionary<string?>();
 
-            if (String.IsNullOrEmpty(nameValueCollectionString)) return result;
+            if (nameValueCollectionString is null || nameValueCollectionString == @"") return result;
 
             int length = nameValueCollectionString.Length;
             int i = 0;

@@ -201,7 +201,7 @@ namespace Ssz.Utils
         {
             if (string.IsNullOrWhiteSpace(fileName)) return false;
 
-            string fileNameUpper = fileName.ToUpperInvariant();
+            string fileNameUpper = fileName!.ToUpperInvariant();
             if (!_csvFilesCollection.TryGetValue(fileNameUpper, out CsvFile? csvFile))
             {
                 csvFile = new CsvFile();
@@ -221,7 +221,7 @@ namespace Ssz.Utils
         {
             if (string.IsNullOrWhiteSpace(fileName)) return false;
 
-            return _csvFilesCollection.ContainsKey(fileName.ToUpperInvariant());
+            return _csvFilesCollection.ContainsKey(fileName!.ToUpperInvariant());
         }
 
         /// <summary>
@@ -233,7 +233,7 @@ namespace Ssz.Utils
         {
             if (string.IsNullOrWhiteSpace(fileName)) return false;
             
-            if (!_csvFilesCollection.TryGetValue(fileName.ToUpperInvariant(), out CsvFile? csvFile)) return false;
+            if (!_csvFilesCollection.TryGetValue(fileName!.ToUpperInvariant(), out CsvFile? csvFile)) return false;
             csvFile.IncludeFileNamesCollection.Clear();
             csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
             csvFile.DataIsChangedByProgram = true;
@@ -244,7 +244,7 @@ namespace Ssz.Utils
         {
             if (string.IsNullOrWhiteSpace(fileName)) return false;
 
-            if (!_csvFilesCollection.TryGetValue(fileName.ToUpperInvariant(), out CsvFile? csvFile)) return false;
+            if (!_csvFilesCollection.TryGetValue(fileName!.ToUpperInvariant(), out CsvFile? csvFile)) return false;
 
             if (csvFile.Data == null)
                 csvFile.Data = CsvHelper.LoadCsvFile(csvFile.FileFullName, true, null, UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
@@ -272,7 +272,7 @@ namespace Ssz.Utils
         {
             if (string.IsNullOrWhiteSpace(fileName)) return new CaseInsensitiveDictionary<List<string?>>();
             
-            if (!_csvFilesCollection.TryGetValue(fileName.ToUpperInvariant(), out CsvFile? csvFile)) return new CaseInsensitiveDictionary<List<string?>>();
+            if (!_csvFilesCollection.TryGetValue(fileName!.ToUpperInvariant(), out CsvFile? csvFile)) return new CaseInsensitiveDictionary<List<string?>>();
             if (csvFile.Data == null)
                 csvFile.Data = CsvHelper.LoadCsvFile(csvFile.FileFullName, true, null, UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
             return csvFile.Data;
@@ -287,7 +287,7 @@ namespace Ssz.Utils
         {
             if (string.IsNullOrWhiteSpace(fileName)) return 1;
 
-            if (!_csvFilesCollection.TryGetValue(fileName.ToUpperInvariant(), out CsvFile? csvFile))
+            if (!_csvFilesCollection.TryGetValue(fileName!.ToUpperInvariant(), out CsvFile? csvFile))
                 return 1;
             if (csvFile.Data == null)
                 csvFile.Data = CsvHelper.LoadCsvFile(csvFile.FileFullName, true, null, UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
@@ -305,7 +305,7 @@ namespace Ssz.Utils
         {
             if (string.IsNullOrWhiteSpace(fileName)) return null;
             
-            if (!_csvFilesCollection.TryGetValue(fileName.ToUpperInvariant(), out CsvFile? csvFile)) return null;
+            if (!_csvFilesCollection.TryGetValue(fileName!.ToUpperInvariant(), out CsvFile? csvFile)) return null;
             if (csvFile.Data == null)
                 csvFile.Data = CsvHelper.LoadCsvFile(csvFile.FileFullName, true, null, UserFriendlyLogger, csvFile.IncludeFileNamesCollection);            
             if (!csvFile.Data.TryGetValue(key, out List<string?>? fileLine)) return null;
@@ -316,7 +316,7 @@ namespace Ssz.Utils
         {
             if (string.IsNullOrWhiteSpace(fileName) || column < 0) return null;
             
-            if (!_csvFilesCollection.TryGetValue(fileName.ToUpperInvariant(), out CsvFile? csvFile)) return null;            
+            if (!_csvFilesCollection.TryGetValue(fileName!.ToUpperInvariant(), out CsvFile? csvFile)) return null;            
             if (csvFile.Data == null)
                 csvFile.Data = CsvHelper.LoadCsvFile(csvFile.FileFullName, true, null, UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
             if (!csvFile.Data.TryGetValue(key, out List<string?>? fileLine)) return null;
@@ -342,7 +342,7 @@ namespace Ssz.Utils
         {
             if (string.IsNullOrWhiteSpace(fileName) || column < 0) return;
 
-            string fileNameUpper = fileName.ToUpperInvariant();
+            string fileNameUpper = fileName!.ToUpperInvariant();
 
             if (!fileNameUpper.EndsWith(@".CSV")) return;
             
@@ -378,7 +378,7 @@ namespace Ssz.Utils
         {
             if (string.IsNullOrWhiteSpace(fileName)) return;
 
-            string fileNameUpper = fileName.ToUpperInvariant();
+            string fileNameUpper = fileName!.ToUpperInvariant();
 
             if (!fileNameUpper.EndsWith(@".CSV")) return;
 
@@ -469,7 +469,7 @@ namespace Ssz.Utils
 
             if (string.IsNullOrWhiteSpace(fileName)) return;
 
-            string fileNameUpper = fileName.ToUpperInvariant();
+            string fileNameUpper = fileName!.ToUpperInvariant();
 
             if (!_csvFilesCollection.TryGetValue(fileNameUpper, out CsvFile? csvFile)) return;            
 

@@ -61,6 +61,7 @@ namespace Ssz.Utils
                                  .GroupBy(s => Path.GetDirectoryName(s) ?? @"");
             foreach (var folder in files)
             {
+#if !NETSTANDARD2_0
                 var targetFolder = folder.Key.Replace(sourcePath, targetPath, StringComparison.InvariantCultureIgnoreCase);
                 //     Creates all directories and subdirectories in the specified path unless they
                 //     already exist.
@@ -70,6 +71,19 @@ namespace Ssz.Utils
                     var targetFile = Path.Combine(targetFolder, Path.GetFileName(file));                   
                     File.Move(file, targetFile, true);
                 }
+#else
+                var targetFolder = folder.Key;
+                StringHelper.ReplaceIgnoreCase(ref targetFolder, sourcePath, targetPath);
+                //     Creates all directories and subdirectories in the specified path unless they
+                //     already exist.
+                Directory.CreateDirectory(targetFolder);
+                foreach (var file in folder)
+                {
+                    var targetFile = Path.Combine(targetFolder, Path.GetFileName(file));
+                    File.Delete(targetFile);
+                    File.Move(file, targetFile);
+                }
+#endif
             }
             Directory.Delete(sourcePath, true);
         }
@@ -141,10 +155,10 @@ namespace Ssz.Utils
             if (String.IsNullOrEmpty(pathLeft) && String.IsNullOrEmpty(pathRight)) return true;
             if (String.IsNullOrEmpty(pathLeft) || String.IsNullOrEmpty(pathRight)) return false;
 
-            string normalizedPathLeft = Path.GetFullPath(pathLeft.Replace('/', '\\')
+            string normalizedPathLeft = Path.GetFullPath(pathLeft!.Replace('/', '\\')
                 .WithEnding("\\"));
 
-            string normalizedPathRight = Path.GetFullPath(pathRight.Replace('/', '\\')
+            string normalizedPathRight = Path.GetFullPath(pathRight!.Replace('/', '\\')
                 .WithEnding("\\"));
 
             return String.Equals(normalizedPathLeft, normalizedPathRight, StringComparison.InvariantCultureIgnoreCase);
@@ -195,6 +209,6 @@ namespace Ssz.Utils
             }
         }
 
-        #endregion
+#endregion
     }
 }

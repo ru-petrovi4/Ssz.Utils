@@ -53,7 +53,12 @@ namespace Ssz.Utils
         {
             ClearPropertyChangedEvent();
 
+#if !NETSTANDARD2_0
             return ValueTask.CompletedTask;
+#else
+            return new ValueTask();
+#endif            
+
         }
 
         /// <summary>
@@ -70,6 +75,6 @@ namespace Ssz.Utils
         [Browsable(false)]
         public bool Disposed { get; private set; }
 
-        #endregion
+#endregion
     }
 }

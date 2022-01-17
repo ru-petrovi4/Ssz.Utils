@@ -23,7 +23,7 @@ namespace Ssz.Utils
         {
             var result = new List<string>();
 
-            if (string.IsNullOrWhiteSpace(value) || value.Length < 4) return result;
+            if (string.IsNullOrWhiteSpace(value) || value!.Length < 4) return result;
 
             var firstOpenIndex = -1;
             var openCount = 0;
@@ -77,7 +77,7 @@ namespace Ssz.Utils
             if (string.IsNullOrWhiteSpace(originalString)) return originalString;
 
             var iterationN = 0;
-            originalString = ComputeValueOfSszQueries(originalString, getConstantValue, csvDb, ref iterationN);
+            originalString = ComputeValueOfSszQueries(originalString!, getConstantValue, csvDb, ref iterationN);
 
             return originalString;
         }

@@ -195,7 +195,7 @@ namespace Ssz.Utils
         public string GetTagType(string? tag)
         {
             if (string.IsNullOrEmpty(tag)) return "";
-            var tagValues = Tags.TryGetValue(tag);
+            var tagValues = Tags.TryGetValue(tag!);
             if (tagValues is null) return "";
             if (tagValues.Count < 2) return "";
             return tagValues[1] ?? @"";
@@ -205,7 +205,7 @@ namespace Ssz.Utils
         {
             if (string.IsNullOrEmpty(elementIdOrConst)) return null;
 
-            if (elementIdOrConst.StartsWith("\"") && elementIdOrConst.EndsWith("\""))
+            if (elementIdOrConst!.StartsWith("\"") && elementIdOrConst.EndsWith("\""))
             {
                 elementIdOrConst = elementIdOrConst.Substring(1, elementIdOrConst.Length - 2);
                 return new Any(elementIdOrConst);

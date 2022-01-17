@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic.FileIO;
 
 namespace Ssz.Utils
 {
@@ -85,7 +84,7 @@ namespace Ssz.Utils
         {
             if (separator.Length != 1) throw new InvalidOperationException();
 
-            if (String.IsNullOrEmpty(sourceString)) return new string?[] { null };
+            if (sourceString is null || sourceString == @"") return new string?[] { null };
 
             bool inQuotes = false;
             return ParseCsvLineInternal(separator, sourceString, ref inQuotes).ToArray();            

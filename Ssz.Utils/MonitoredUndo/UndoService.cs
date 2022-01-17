@@ -151,7 +151,7 @@ namespace Ssz.Utils.MonitoredUndo
         private static UndoService? _current;
         private static IDictionary<Type, WeakReference>? _currentRootInstances;
         private static readonly UndoRoot DummyUndoRoot = new UndoRoot(null);
-        private readonly IDictionary<object, UndoRoot> _roots = new Dictionary<object, UndoRoot>(ReferenceEqualityComparer.Instance);
+        private readonly IDictionary<object, UndoRoot> _roots = new Dictionary<object, UndoRoot>(ReferenceEqualityComparer<object>.Default);
 
         #endregion
     }

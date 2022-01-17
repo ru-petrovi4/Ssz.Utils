@@ -31,7 +31,11 @@ namespace Ssz.Utils.Serialization
 
             _baseStream = baseStream;
             _optimizeSize = optimizeSize;
+#if !NETSTANDARD2_0
             _binaryWriter = new BinaryWriter(_baseStream);            
+#else
+            _binaryWriter = new BinaryWriterEx(_baseStream);
+#endif
 
             if (!_optimizeSize)
             {
@@ -100,9 +104,9 @@ namespace Ssz.Utils.Serialization
             Dispose(false);
         }
 
-        #endregion
+#endregion
 
-        #region public functions
+#region public functions
 
         /// <summary>
         ///     Holds the highest Int16 that can be optimized into less than the normal 2 bytes
@@ -1274,9 +1278,9 @@ namespace Ssz.Utils.Serialization
             }
         }
 
-        #endregion
+#endregion
 
-        #region internal functions
+#region internal functions
 
         internal const short OptimizationFailure16BitValue = 16384;
 
@@ -1329,9 +1333,9 @@ namespace Ssz.Utils.Serialization
         internal static readonly BitVector32.Section MillisecondsSection = BitVector32.CreateSection(1024,
             SecondsSection); // 10 bits - total 31 bits = 4 bytes
 
-        #endregion
+#endregion
 
-        #region private functions
+#region private functions
 
         /// <summary>
         ///     Checks whether instances of a Type can be created.
@@ -2742,9 +2746,9 @@ namespace Ssz.Utils.Serialization
             }
         }
 
-        #endregion
+#endregion
 
-        #region private fields
+#region private fields
         
         private static readonly BitArray AllFalseBitArray = new BitArray(0);
                 
@@ -2753,20 +2757,44 @@ namespace Ssz.Utils.Serialization
         private readonly Stream _baseStream;
 
         private readonly bool _optimizeSize;
-        
+
+#if !NETSTANDARD2_0
         private readonly BinaryWriter _binaryWriter;
-        
+#else
+        private class BinaryWriterEx : BinaryWriter
+        {
+            public BinaryWriterEx(Stream output) : base(output)
+            {
+            }
+
+            public BinaryWriterEx(Stream output, Encoding encoding) : base(output, encoding)
+            {
+            }
+
+            public BinaryWriterEx(Stream output, Encoding encoding, bool leaveOpen) : base(output, encoding, leaveOpen)
+            {
+            }
+
+            public new void Write7BitEncodedInt(int value)
+            {
+                base.Write7BitEncodedInt(value);
+            }
+        }
+
+        private readonly BinaryWriterEx _binaryWriter;
+#endif
+
         private readonly Stack<long> _blockBeginPositionsStack = new Stack<long>();
 
         private readonly long _stringsListInfoPosition;
         private Dictionary<string, int>? _stringsDictionary;
         private List<string>? _stringsList;
 
-        #endregion        
+#endregion
 
         private class Block : IDisposable
         {
-            #region construction and destruction
+#region construction and destruction
 
             public Block(SerializationWriter serializationWriter, int version)
             {
@@ -2779,13 +2807,13 @@ namespace Ssz.Utils.Serialization
                 _serializationWriter.EndBlock();
             }
 
-            #endregion
+#endregion
 
-            #region private fields
+#region private fields
 
             private readonly SerializationWriter _serializationWriter;
 
-            #endregion
+#endregion
         }
     }
 }
