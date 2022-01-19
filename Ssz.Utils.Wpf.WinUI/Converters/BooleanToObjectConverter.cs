@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows;
-using System.Windows.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
 
 namespace Ssz.Utils.Wpf.Converters
 {
     public class BooleanToObjectConverter : DependencyObject, IValueConverter
     {
         #region public functions
-
+        
         public static readonly DependencyProperty OnTrueProperty =
             DependencyProperty.Register("OnTrue", typeof (object), typeof (BooleanToObjectConverter),
                 new PropertyMetadata(default(object)));
@@ -39,7 +39,7 @@ namespace Ssz.Utils.Wpf.Converters
             set { SetValue(OnNullProperty, value); }
         }
 
-        public object? Convert(object? value, Type? targetType, object? parameter, CultureInfo culture)
+        public object? Convert(object? value, Type? targetType, object? parameter, string language)
         {
             if (value is null) return OnNull;            
             var boolValue = new Any(value).ValueAsBoolean(false);
@@ -49,7 +49,7 @@ namespace Ssz.Utils.Wpf.Converters
                 return OnFalse;
         }
 
-        public object? ConvertBack(object? value, Type? targetType, object? parameter, CultureInfo culture)
+        public object? ConvertBack(object? value, Type? targetType, object? parameter, string language)
         {
             if (value == OnNull) return Default(targetType);            
             if (value == OnFalse) return false;
