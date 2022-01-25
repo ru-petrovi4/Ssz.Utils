@@ -3610,14 +3610,14 @@
         </member>
         <member name="M:Ssz.Utils.StringHelper.WithEnding(System.String,System.String)">
             <summary>
-            Returns <paramref name="str"/> with the minimal concatenation of <paramref name="ending"/> (starting from end) that
+            Returns <paramref name="thisString"/> with the minimal concatenation of <paramref name="ending"/> (starting from end) that
             results in satisfying .EndsWith(ending).
             </summary>
             <example>"hel".WithEnding("llo") returns "hello", which is the result of "hel" + "lo".</example>
         </member>
         <member name="M:Ssz.Utils.StringHelper.Right(System.String,System.Int32)">
             <summary>Gets the rightmost <paramref name="length" /> characters from a string.</summary>
-            <param name="value">The string to retrieve the substring from.</param>
+            <param name="str">The string to retrieve the substring from.</param>
             <param name="length">The number of characters to retrieve.</param>
             <returns>The substring.</returns>
         </member>
@@ -3625,7 +3625,7 @@
             <summary>
                 Object is null or String.Empty
             </summary>
-            <param name="value"></param>
+            <param name="obj"></param>
             <returns></returns>
         </member>
         <member name="M:Ssz.Utils.StringHelper.ReplaceIgnoreCase(System.String@,System.String,System.String)">

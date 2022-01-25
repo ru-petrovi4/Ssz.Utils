@@ -15,53 +15,54 @@ namespace Ssz.Utils
         #region public functions
 
         /// <summary>
-        /// Returns <paramref name="str"/> with the minimal concatenation of <paramref name="ending"/> (starting from end) that
+        /// Returns <paramref name="thisString"/> with the minimal concatenation of <paramref name="ending"/> (starting from end) that
         /// results in satisfying .EndsWith(ending).
         /// </summary>
         /// <example>"hel".WithEnding("llo") returns "hello", which is the result of "hel" + "lo".</example>
-        public static string WithEnding(this string? str, string ending)
+        public static string WithEnding(this string? thisString, string ending)
         {
-            if (str is null)
+            if (thisString is null)
                 return ending;
 
-            string result = str;
-
+            if (thisString.EndsWith(ending))
+                return thisString;
+            
             // Right() is 1-indexed, so include these cases
             // * Append no characters
             // * Append up to N characters, where N is ending length
-            for (int i = 0; i <= ending.Length; i++)
+            for (int length = 1; length <= ending.Length; length++)
             {
-                string tmp = result + ending.Right(i);
+                string tmp = thisString + ending.Right(length);
                 if (tmp.EndsWith(ending))
                     return tmp;
             }
 
-            return result;
+            return thisString;
         }
 
         /// <summary>Gets the rightmost <paramref name="length" /> characters from a string.</summary>
-        /// <param name="value">The string to retrieve the substring from.</param>
+        /// <param name="str">The string to retrieve the substring from.</param>
         /// <param name="length">The number of characters to retrieve.</param>
         /// <returns>The substring.</returns>
-        public static string Right(this string value, int length)
+        public static string Right(this string str, int length)
         {            
             if (length < 0)
             {
                 throw new ArgumentOutOfRangeException("length", length, "Length is less than zero");
             }
 
-            return (length < value.Length) ? value.Substring(value.Length - length) : value;
+            return (length < str.Length) ? str.Substring(str.Length - length) : str;
         }
 
         /// <summary>
         ///     Object is null or String.Empty
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="obj"></param>
         /// <returns></returns>
-        public static bool IsNullOrEmptyString(object? value)
+        public static bool IsNullOrEmptyString(object? obj)
         {
 #pragma warning disable CS0252 // Possible unintended reference comparison; left hand side needs cast
-            return value is null || value == @"";
+            return obj is null || obj == @"";
 #pragma warning restore CS0252 // Possible unintended reference comparison; left hand side needs cast
         }       
             
