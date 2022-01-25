@@ -233,7 +233,7 @@ namespace Fluent
         public bool IsWindowSteeringHelperEnabled
         {
             get { return (bool)this.GetValue(IsWindowSteeringHelperEnabledProperty); }
-            set { this.SetValue(IsWindowSteeringHelperEnabledProperty, value); }
+            set { this.SetValue(IsWindowSteeringHelperEnabledProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="IsWindowSteeringHelperEnabled"/> dependency property.</summary>
@@ -246,7 +246,7 @@ namespace Fluent
         public bool IsBackButtonVisible
         {
             get { return (bool)this.GetValue(IsBackButtonVisibleProperty); }
-            set { this.SetValue(IsBackButtonVisibleProperty, value); }
+            set { this.SetValue(IsBackButtonVisibleProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="IsBackButtonVisible"/> dependency property.</summary>
@@ -328,9 +328,9 @@ namespace Fluent
         protected override bool IsItemItsOwnContainerOverride(object item)
         {
             return item is BackstageTabItem
-                || item is Button
-                || item is SeparatorTabItem
-                || item is Separator;
+                or Button
+                or SeparatorTabItem
+                or Separator;
         }
 
         /// <inheritdoc />

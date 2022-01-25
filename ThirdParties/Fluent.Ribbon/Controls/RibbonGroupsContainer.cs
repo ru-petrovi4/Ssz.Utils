@@ -214,9 +214,14 @@ namespace Fluent
             }
             else
             {
-                groupBox.StateIntermediate = groupBox.StateIntermediate != RibbonGroupBoxState.Large
-                    ? groupBox.StateIntermediate - 1
-                    : RibbonGroupBoxState.Large;
+                if (groupBox.IsSimplified)
+                {
+                    groupBox.StateIntermediate = groupBox.SimplifiedStateDefinition.EnlargeState(groupBox.StateIntermediate);
+                }
+                else
+                {
+                    groupBox.StateIntermediate = groupBox.StateDefinition.EnlargeState(groupBox.StateIntermediate);
+                }
             }
         }
 
@@ -237,9 +242,14 @@ namespace Fluent
             }
             else
             {
-                groupBox.StateIntermediate = groupBox.StateIntermediate != RibbonGroupBoxState.Collapsed
-                    ? groupBox.StateIntermediate + 1
-                    : groupBox.StateIntermediate;
+                if (groupBox.IsSimplified)
+                {
+                    groupBox.StateIntermediate = groupBox.SimplifiedStateDefinition.ReduceState(groupBox.StateIntermediate);
+                }
+                else
+                {
+                    groupBox.StateIntermediate = groupBox.StateDefinition.ReduceState(groupBox.StateIntermediate);
+                }
             }
         }
 
@@ -423,18 +433,16 @@ namespace Fluent
         {
         }
 
-        /// <summary>
-        /// Not implemented
-        /// </summary>
+        /// <inheritdoc />
         public void MouseWheelLeft()
         {
+            this.SetHorizontalOffset(this.HorizontalOffset - 16);
         }
 
-        /// <summary>
-        /// Not implemented
-        /// </summary>
+        /// <inheritdoc />
         public void MouseWheelRight()
         {
+            this.SetHorizontalOffset(this.HorizontalOffset + 16);
         }
 
         /// <summary>

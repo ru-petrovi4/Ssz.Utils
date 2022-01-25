@@ -2,7 +2,6 @@
 {
     using System.Windows;
     using System.Windows.Automation.Peers;
-    
 
     /// <summary>
     /// Base automation peer for <see cref="IHeaderedControl"/>.

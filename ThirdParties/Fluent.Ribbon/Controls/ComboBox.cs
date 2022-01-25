@@ -3,6 +3,7 @@ namespace Fluent
 {
     using System;
     using System.Collections;
+    using System.Diagnostics;
     using System.Windows;
     using System.Windows.Automation.Peers;
     using System.Windows.Controls;
@@ -19,6 +20,7 @@ namespace Fluent
     /// <summary>
     ///     Represents custom Fluent UI ComboBox
     /// </summary>
+    [TemplatePart(Name = "PART_ToggleButton", Type = typeof(ToggleButton))]
     [TemplatePart(Name = "PART_ResizeBothThumb", Type = typeof(Thumb))]
     [TemplatePart(Name = "PART_ResizeVerticalThumb", Type = typeof(Thumb))]
     [TemplatePart(Name = "PART_MenuPanel", Type = typeof(Panel))]
@@ -27,9 +29,11 @@ namespace Fluent
     [TemplatePart(Name = "PART_ContentBorder", Type = typeof(Border))]
     [TemplatePart(Name = "PART_ScrollViewer", Type = typeof(ScrollViewer))]
     [TemplatePart(Name = "PART_DropDownBorder", Type = typeof(Border))]
-    public class ComboBox : System.Windows.Controls.ComboBox, IQuickAccessItemProvider, IRibbonControl, IDropDownControl
+    [DebuggerDisplay("class{GetType().FullName}: Header = {Header}, Items.Count = {Items.Count}, Size = {Size}, IsSimplified = {IsSimplified}")]
+    public class ComboBox : System.Windows.Controls.ComboBox, IQuickAccessItemProvider, IRibbonControl, IDropDownControl, IMediumIconProvider, ISimplifiedRibbonControl
     {
         #region Fields
+        private ToggleButton? dropDownButton;
 
         // Thumb to resize in both directions
         private Thumb? resizeBothThumb;
@@ -87,6 +91,20 @@ namespace Fluent
 
         #endregion
 
+        #region SimplifiedSizeDefinition
+
+        /// <inheritdoc />
+        public RibbonControlSizeDefinition SimplifiedSizeDefinition
+        {
+            get { return (RibbonControlSizeDefinition)this.GetValue(SimplifiedSizeDefinitionProperty); }
+            set { this.SetValue(SimplifiedSizeDefinitionProperty, value); }
+        }
+
+        /// <summary>Identifies the <see cref="SimplifiedSizeDefinition"/> dependency property.</summary>
+        public static readonly DependencyProperty SimplifiedSizeDefinitionProperty = RibbonProperties.SimplifiedSizeDefinitionProperty.AddOwner(typeof(ComboBox));
+
+        #endregion
+
         #region KeyTip
 
         /// <inheritdoc />
@@ -132,6 +150,76 @@ namespace Fluent
 
         /// <summary>Identifies the <see cref="Icon"/> dependency property.</summary>
         public static readonly DependencyProperty IconProperty = RibbonControl.IconProperty.AddOwner(typeof(ComboBox), new PropertyMetadata(LogicalChildSupportHelper.OnLogicalChildPropertyChanged));
+
+        #endregion
+
+        #region MediumIcon
+
+        /// <inheritdoc />
+        public object? MediumIcon
+        {
+            get { return this.GetValue(MediumIconProperty); }
+            set { this.SetValue(MediumIconProperty, value); }
+        }
+
+        /// <summary>Identifies the <see cref="MediumIcon"/> dependency property.</summary>
+        public static readonly DependencyProperty MediumIconProperty = MediumIconProviderProperties.MediumIconProperty.AddOwner(typeof(ComboBox), new PropertyMetadata(LogicalChildSupportHelper.OnLogicalChildPropertyChanged));
+
+        #endregion
+
+        #region TopPopupContent
+
+        /// <summary>
+        /// Gets or sets content to show on the top side of the Popup.
+        /// </summary>
+        public object? TopPopupContent
+        {
+            get { return (object?)this.GetValue(TopPopupContentProperty); }
+            set { this.SetValue(TopPopupContentProperty, value); }
+        }
+
+        /// <summary>Identifies the <see cref="TopPopupContent"/> dependency property.</summary>
+        public static readonly DependencyProperty TopPopupContentProperty =
+            DependencyProperty.Register(nameof(TopPopupContent), typeof(object), typeof(ComboBox), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure, LogicalChildSupportHelper.OnLogicalChildPropertyChanged));
+
+        /// <summary>
+        /// Gets or sets top content template.
+        /// </summary>
+        public DataTemplate? TopPopupContentTemplate
+        {
+            get { return (DataTemplate?)this.GetValue(TopPopupContentTemplateProperty); }
+            set { this.SetValue(TopPopupContentTemplateProperty, value); }
+        }
+
+        /// <summary>Identifies the <see cref="TopPopupContentTemplate"/> dependency property.</summary>
+        public static readonly DependencyProperty TopPopupContentTemplateProperty =
+            DependencyProperty.Register(nameof(TopPopupContentTemplate), typeof(DataTemplate), typeof(ComboBox), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        /// <summary>
+        /// Gets or sets top content template selector.
+        /// </summary>
+        public DataTemplateSelector? TopPopupContentTemplateSelector
+        {
+            get { return (DataTemplateSelector?)this.GetValue(TopPopupContentTemplateSelectorProperty); }
+            set { this.SetValue(TopPopupContentTemplateSelectorProperty, value); }
+        }
+
+        /// <summary>Identifies the <see cref="TopPopupContentTemplateSelector"/> dependency property.</summary>
+        public static readonly DependencyProperty TopPopupContentTemplateSelectorProperty =
+            DependencyProperty.Register(nameof(TopPopupContentTemplateSelector), typeof(DataTemplateSelector), typeof(ComboBox), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        /// <summary>
+        /// Gets or sets top content template string format.
+        /// </summary>
+        public string? TopPopupContentStringFormat
+        {
+            get { return (string?)this.GetValue(TopPopupContentStringFormatProperty); }
+            set { this.SetValue(TopPopupContentStringFormatProperty, value); }
+        }
+
+        /// <summary>Identifies the <see cref="TopPopupContentStringFormat"/> dependency property.</summary>
+        public static readonly DependencyProperty TopPopupContentStringFormatProperty =
+            DependencyProperty.Register(nameof(TopPopupContentStringFormat), typeof(string), typeof(ComboBox), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         #endregion
 
@@ -255,7 +343,26 @@ namespace Fluent
 
         #endregion
 
+        #region IsSimplified
+
+        /// <summary>
+        /// Gets or sets whether or not the ribbon is in Simplified mode
+        /// </summary>
+        public bool IsSimplified
+        {
+            get { return (bool)this.GetValue(IsSimplifiedProperty); }
+            private set { this.SetValue(IsSimplifiedPropertyKey, BooleanBoxes.Box(value)); }
+        }
+
+        private static readonly DependencyPropertyKey IsSimplifiedPropertyKey =
+            DependencyProperty.RegisterReadOnly(nameof(IsSimplified), typeof(bool), typeof(ComboBox), new PropertyMetadata(BooleanBoxes.FalseBox));
+
+        /// <summary>Identifies the <see cref="IsSimplified"/> dependency property.</summary>
+        public static readonly DependencyProperty IsSimplifiedProperty = IsSimplifiedPropertyKey.DependencyProperty;
+
         #endregion
+
+        #endregion Properties
 
         #region Constructors
 
@@ -511,7 +618,7 @@ namespace Fluent
         public bool CanAddToQuickAccessToolBar
         {
             get { return (bool)this.GetValue(CanAddToQuickAccessToolBarProperty); }
-            set { this.SetValue(CanAddToQuickAccessToolBarProperty, value); }
+            set { this.SetValue(CanAddToQuickAccessToolBarProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="CanAddToQuickAccessToolBar"/> dependency property.</summary>
@@ -524,6 +631,12 @@ namespace Fluent
         /// <inheritdoc />
         public override void OnApplyTemplate()
         {
+            this.dropDownButton = this.GetTemplateChild("PART_ToggleButton") as ToggleButton;
+            if (this.dropDownButton is ISimplifiedStateControl control)
+            {
+                control.UpdateSimplifiedState(this.IsSimplified);
+            }
+
             this.DropDownPopup = this.GetTemplateChild("PART_Popup") as Popup;
 
             if (this.resizeVerticalThumb is not null)
@@ -801,9 +914,7 @@ namespace Fluent
         // Handles resize both drag
         private void OnResizeBothDelta(object? sender, DragDeltaEventArgs e)
         {
-            if (this.menuPanel is null
-                || this.scrollViewer is null
-                || this.dropDownBorder is null)
+            if (this.dropDownBorder is null)
             {
                 return;
             }
@@ -812,32 +923,12 @@ namespace Fluent
             this.SetDragHeight(e);
 
             // Set width
-            this.menuPanel.Width = double.NaN;
-            if (double.IsNaN(this.scrollViewer.Width))
+            if (double.IsNaN(this.dropDownBorder.Width))
             {
-                this.scrollViewer.Width = this.scrollViewer.ActualWidth;
+                this.dropDownBorder.Width = this.dropDownBorder.ActualWidth;
             }
 
-            var monitorRight = RibbonControl.GetControlMonitor(this).Right;
-            var popupChild = this.DropDownPopup?.Child as FrameworkElement;
-
-            if (popupChild is null)
-            {
-                return;
-            }
-
-            var delta = monitorRight - this.PointToScreen(default).X - popupChild.ActualWidth - e.HorizontalChange;
-            var deltaX = popupChild.ActualWidth - this.scrollViewer.ActualWidth;
-            var deltaBorders = this.dropDownBorder.ActualWidth - this.scrollViewer.ActualWidth;
-
-            if (delta > 0)
-            {
-                this.scrollViewer.Width = Math.Max(0, Math.Max(this.scrollViewer.Width + e.HorizontalChange, this.ActualWidth - deltaBorders));
-            }
-            else
-            {
-                this.scrollViewer.Width = Math.Max(0, Math.Max(monitorRight - this.PointToScreen(default).X - deltaX, this.ActualWidth - deltaBorders));
-            }
+            this.dropDownBorder.Width = Math.Max(this.ActualWidth, this.dropDownBorder.Width + e.HorizontalChange);
         }
 
         // Handles resize vertical drag
@@ -849,20 +940,43 @@ namespace Fluent
         private void SetDragHeight(DragDeltaEventArgs e)
         {
             if (this.canSizeY == false
-                || this.scrollViewer is null)
+                || this.dropDownBorder is null)
             {
                 return;
             }
 
-            if (double.IsNaN(this.scrollViewer.Height))
+            if (double.IsNaN(this.dropDownBorder.Height))
             {
-                this.scrollViewer.Height = this.scrollViewer.ActualHeight;
+                this.dropDownBorder.Height = this.dropDownBorder.ActualHeight;
             }
 
-            this.scrollViewer.Height = Math.Max(0, this.scrollViewer.Height + e.VerticalChange);
+            this.dropDownBorder.Height = Math.Min(Math.Max(this.ActualHeight + this.GetResizeThumbHeight(), this.dropDownBorder.Height + e.VerticalChange), this.MaxDropDownHeight);
+        }
+
+        private double GetResizeThumbHeight()
+        {
+            var height = this.ResizeMode switch
+            {
+                ContextMenuResizeMode.None => 0,
+                ContextMenuResizeMode.Vertical => this.resizeVerticalThumb?.ActualHeight,
+                ContextMenuResizeMode.Both => this.resizeBothThumb?.ActualHeight,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+            return height ?? 0;
         }
 
         #endregion
+
+        /// <inheritdoc />
+        void ISimplifiedStateControl.UpdateSimplifiedState(bool isSimplified)
+        {
+            this.IsSimplified = isSimplified;
+            if (this.dropDownButton is ISimplifiedStateControl control)
+            {
+                control.UpdateSimplifiedState(isSimplified);
+            }
+        }
 
         /// <inheritdoc />
         void ILogicalChildSupport.AddLogicalChild(object child)
@@ -892,9 +1006,19 @@ namespace Fluent
                     yield return this.Icon;
                 }
 
+                if (this.MediumIcon is not null)
+                {
+                    yield return this.MediumIcon;
+                }
+
                 if (this.Header is not null)
                 {
                     yield return this.Header;
+                }
+
+                if (this.TopPopupContent is not null)
+                {
+                    yield return this.TopPopupContent;
                 }
             }
         }

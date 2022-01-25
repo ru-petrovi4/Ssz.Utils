@@ -1,7 +1,5 @@
 ﻿namespace Fluent.Automation.Peers
 {
-    
-
     /// <inheritdoc />
     public class RibbonTextBoxAutomationPeer : System.Windows.Automation.Peers.TextBoxAutomationPeer
     {

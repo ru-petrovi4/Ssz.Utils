@@ -1,4 +1,5 @@
-﻿namespace Fluent.Localization
+﻿#pragma warning disable 8618
+namespace Fluent.Localization
 {
     using System;
     using System.ComponentModel;
@@ -64,26 +65,6 @@
         public abstract string CustomizeStatusBar { get; }
 
         /// <summary>
-        /// Expand Button ScreenTip Text
-        /// </summary>
-        public abstract string ExpandButtonScreenTipText { get; }
-
-        /// <summary>
-        /// Expand Button ScreenTip Title
-        /// </summary>
-        public abstract string ExpandButtonScreenTipTitle { get; }
-
-        /// <summary>
-        /// Minimize Button ScreenTip Text
-        /// </summary>
-        public abstract string MinimizeButtonScreenTipText { get; }
-
-        /// <summary>
-        /// Minimize Button ScreenTip Title
-        /// </summary>
-        public abstract string MinimizeButtonScreenTipTitle { get; }
-
-        /// <summary>
         /// Gets text for representing "More colors..."
         /// </summary>
         public abstract string MoreColors { get; }
@@ -144,12 +125,12 @@
         public abstract string RibbonContextMenuCustomizeQuickAccessToolBar { get; }
 
         /// <summary>
-        /// Ribbon Context Menu Customize Quick Access Toolbar
+        /// Ribbon Context Menu Customize the ribbon
         /// </summary>
         public abstract string RibbonContextMenuCustomizeRibbon { get; }
 
         /// <summary>
-        /// Ribbon Context Menu Minimize Quick Access Toolbar
+        /// Ribbon Context Menu Minimize the ribbon
         /// </summary>
         public abstract string RibbonContextMenuMinimizeRibbon { get; }
 
@@ -167,6 +148,46 @@
         /// Ribbon Context Menu Minimize Quick Access Toolbar
         /// </summary>
         public abstract string RibbonContextMenuShowBelow { get; }
+
+        /// <summary>
+        /// Show Ribbon
+        /// </summary>
+        public virtual string ShowRibbon { get; }
+
+        /// <summary>
+        /// Expand Ribbon
+        /// </summary>
+        public virtual string ExpandRibbon { get; }
+
+        /// <summary>
+        /// Minimize Ribbon
+        /// </summary>
+        public virtual string MinimizeRibbon { get; }
+
+        /// <summary>
+        /// Ribbon Layout
+        /// </summary>
+        public virtual string RibbonLayout { get; }
+
+        /// <summary>
+        /// Use classic Ribbon
+        /// </summary>
+        public abstract string UseClassicRibbon { get; }
+
+        /// <summary>
+        /// Use simplified Ribbon
+        /// </summary>
+        public abstract string UseSimplifiedRibbon { get; }
+
+        /// <summary>
+        /// DisplayOptions Button ScreenTip Title
+        /// </summary>
+        public virtual string DisplayOptionsButtonScreenTipTitle { get; }
+
+        /// <summary>
+        /// DisplayOptions Button ScreenTip Text
+        /// </summary>
+        public virtual string DisplayOptionsButtonScreenTipText { get; }
 
         /// <summary>
         /// Gets ScreenTip's disable reason header

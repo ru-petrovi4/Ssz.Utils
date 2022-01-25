@@ -27,7 +27,7 @@ namespace Fluent
     [StyleTypedProperty(Property = nameof(ItemContainerStyle), StyleTargetType = typeof(RibbonTabItem))]
     [TemplatePart(Name = "PART_Popup", Type = typeof(Popup))]
     [TemplatePart(Name = "PART_TabsContainer", Type = typeof(Panel))]
-    [TemplatePart(Name = "PART_MinimizeButton", Type = typeof(ButtonBase))]
+    [TemplatePart(Name = "PART_DisplayOptionsButton", Type = typeof(Control))]
     [TemplatePart(Name = "PART_ToolbarPanel", Type = typeof(Panel))]
     [TemplatePart(Name = "PART_SelectedContentPresenter", Type = typeof(ContentPresenter))]
     public class RibbonTabControl : Selector, IDropDownControl, ILogicalChildSupport
@@ -104,7 +104,7 @@ namespace Fluent
         /// </summary>
         public Panel? TabsContainer { get; private set; }
 
-        internal ButtonBase? MinimizeButton { get; private set; }
+        internal Control? DisplayOptionsControl { get; private set; }
 
         /// <summary>
         /// Gets the <see cref="ContentPresenter"/> responsible for displaying the selected tabs content.
@@ -143,7 +143,7 @@ namespace Fluent
         public bool IsMinimized
         {
             get { return (bool)this.GetValue(IsMinimizedProperty); }
-            set { this.SetValue(IsMinimizedProperty, value); }
+            set { this.SetValue(IsMinimizedProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="IsMinimized"/> dependency property.</summary>
@@ -155,17 +155,41 @@ namespace Fluent
         public bool CanMinimize
         {
             get { return (bool)this.GetValue(CanMinimizeProperty); }
-            set { this.SetValue(CanMinimizeProperty, value); }
+            set { this.SetValue(CanMinimizeProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="CanMinimize"/> dependency property.</summary>
         public static readonly DependencyProperty CanMinimizeProperty = DependencyProperty.Register(nameof(CanMinimize), typeof(bool), typeof(RibbonTabControl), new PropertyMetadata(BooleanBoxes.TrueBox));
 
+        /// <summary>
+        /// Gets or sets whether ribbon is simplified
+        /// </summary>
+        public bool IsSimplified
+        {
+            get { return (bool)this.GetValue(IsSimplifiedProperty); }
+            set { this.SetValue(IsSimplifiedProperty, BooleanBoxes.Box(value)); }
+        }
+
+        /// <summary>Identifies the <see cref="IsSimplified"/> dependency property.</summary>
+        public static readonly DependencyProperty IsSimplifiedProperty = DependencyProperty.Register(nameof(IsSimplified), typeof(bool), typeof(RibbonTabControl), new PropertyMetadata(BooleanBoxes.FalseBox));
+
+        /// <summary>
+        /// Gets or sets whether ribbon can be switched simplified
+        /// </summary>
+        public bool CanUseSimplified
+        {
+            get { return (bool)this.GetValue(CanUseSimplifiedProperty); }
+            set { this.SetValue(CanUseSimplifiedProperty, BooleanBoxes.Box(value)); }
+        }
+
+        /// <summary>Identifies the <see cref="CanUseSimplified"/> dependency property.</summary>
+        public static readonly DependencyProperty CanUseSimplifiedProperty = DependencyProperty.Register(nameof(CanUseSimplified), typeof(bool), typeof(RibbonTabControl), new PropertyMetadata(BooleanBoxes.FalseBox));
+
         /// <inheritdoc />
         public bool IsDropDownOpen
         {
             get { return (bool)this.GetValue(IsDropDownOpenProperty); }
-            set { this.SetValue(IsDropDownOpenProperty, value); }
+            set { this.SetValue(IsDropDownOpenProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="IsDropDownOpen"/> dependency property.</summary>
@@ -182,7 +206,7 @@ namespace Fluent
 
             if (!tabControl.IsMinimized)
             {
-                return false;
+                return BooleanBoxes.Box(false);
             }
 
             return basevalue;
@@ -194,7 +218,7 @@ namespace Fluent
         public bool HighlightSelectedItem
         {
             get { return (bool)this.GetValue(HighlightSelectedItemProperty); }
-            set { this.SetValue(HighlightSelectedItemProperty, value); }
+            set { this.SetValue(HighlightSelectedItemProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="HighlightSelectedItem"/> dependency property.</summary>
@@ -340,7 +364,7 @@ namespace Fluent
         public bool AreTabHeadersVisible
         {
             get { return (bool)this.GetValue(AreTabHeadersVisibleProperty); }
-            set { this.SetValue(AreTabHeadersVisibleProperty, value); }
+            set { this.SetValue(AreTabHeadersVisibleProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="IsToolBarVisible"/> dependency property.</summary>
@@ -352,7 +376,7 @@ namespace Fluent
         public bool IsToolBarVisible
         {
             get { return (bool)this.GetValue(IsToolBarVisibleProperty); }
-            set { this.SetValue(IsToolBarVisibleProperty, value); }
+            set { this.SetValue(IsToolBarVisibleProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="IsMouseWheelScrollingEnabled"/> dependency property.</summary>
@@ -364,7 +388,7 @@ namespace Fluent
         public bool IsMouseWheelScrollingEnabled
         {
             get { return (bool)this.GetValue(IsMouseWheelScrollingEnabledProperty); }
-            set { this.SetValue(IsMouseWheelScrollingEnabledProperty, value); }
+            set { this.SetValue(IsMouseWheelScrollingEnabledProperty, BooleanBoxes.Box(value)); }
         }
 
         #endregion
@@ -426,7 +450,7 @@ namespace Fluent
         {
             this.TabsContainer = this.GetTemplateChild("PART_TabsContainer") as Panel;
 
-            this.MinimizeButton = this.GetTemplateChild("PART_MinimizeButton") as ButtonBase;
+            this.DisplayOptionsControl = this.GetTemplateChild("PART_DisplayOptionsButton") as Control;
 
             this.SelectedContentPresenter = this.Template.FindName("PART_SelectedContentPresenter", this) as ContentPresenter;
 
@@ -770,6 +794,7 @@ namespace Fluent
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
+            this.SetCurrentValue(IsDropDownOpenProperty, false);
         }
 
         // Handles GeneratorStatus changed

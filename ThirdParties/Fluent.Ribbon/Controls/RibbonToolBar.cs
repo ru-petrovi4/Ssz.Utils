@@ -21,7 +21,7 @@ namespace Fluent
     /// </summary>
     [ContentProperty(nameof(Children))]
     [StyleTypedProperty(Property = nameof(SeparatorStyle), StyleTargetType = typeof(Separator))]
-    public class RibbonToolBar : RibbonControl, IRibbonSizeChangedSink
+    public class RibbonToolBar : RibbonControl, IRibbonSizeChangedSink, ISimplifiedStateControl
     {
         #region Fields
 
@@ -60,6 +60,75 @@ namespace Fluent
             toolBar.InvalidateMeasure();
         }
 
+        #endregion
+
+        #region IsSimplified
+
+        /// <summary>
+        /// Gets or sets whether or not the ribbon is in Simplified mode
+        /// </summary>
+        public bool IsSimplified
+        {
+            get { return (bool)this.GetValue(IsSimplifiedProperty); }
+            private set { this.SetValue(IsSimplifiedPropertyKey, BooleanBoxes.Box(value)); }
+        }
+
+        private static readonly DependencyPropertyKey IsSimplifiedPropertyKey =
+            DependencyProperty.RegisterReadOnly(nameof(IsSimplified), typeof(bool), typeof(RibbonToolBar), new PropertyMetadata(BooleanBoxes.FalseBox, OnIsSimplifiedChanged));
+
+        /// <summary>Identifies the <see cref="IsSimplified"/> dependency property.</summary>
+        public static readonly DependencyProperty IsSimplifiedProperty = IsSimplifiedPropertyKey.DependencyProperty;
+
+        /// <summary>
+        /// Called when <see cref="IsSimplified"/> changes.
+        /// </summary>
+        private static void OnIsSimplifiedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is RibbonToolBar ribbonToolBar)
+            {
+                ribbonToolBar.rebuildVisualAndLogicalChildren = true;
+
+                var isSimplified = (bool)e.NewValue;
+                ribbonToolBar.UpdateChildIsSimplified(isSimplified);
+            }
+        }
+
+        private void UpdateChildIsSimplified(bool isSimplified)
+        {
+            foreach (var element in this.Children)
+            {
+                this.UpdateIsSimplifiedOfUIElement(element, isSimplified);
+            }
+
+            // Use SizeDefinition or SimplifiedSizeDefinition depending on IsSimplified property to determine the child size.
+            this.InvalidateMeasure();
+        }
+
+        private void UpdateIsSimplifiedOfUIElement(DependencyObject? element, bool isSimplified)
+        {
+            if (element is null)
+            {
+                return;
+            }
+
+            if (element is Panel panel)
+            {
+                for (var i = 0; i < panel.Children.Count; i++)
+                {
+                    this.UpdateIsSimplifiedOfUIElement(panel.Children[i], isSimplified);
+                }
+            }
+
+            if (element is ContentPresenter)
+            {
+                element = UIHelper.GetFirstVisualChild(element) ?? element;
+            }
+
+            if (element is ISimplifiedStateControl simplifiedStateControl)
+            {
+                simplifiedStateControl.UpdateSimplifiedState(isSimplified);
+            }
+        }
         #endregion
 
         /// <summary>
@@ -196,16 +265,52 @@ namespace Fluent
                 return this.LayoutDefinitions[0];
             }
 
+            var size = this.Size;
+            var map = new Dictionary<RibbonControlSize, RibbonToolBarLayoutDefinition>();
             foreach (var definition in this.LayoutDefinitions)
             {
-                if (RibbonProperties.GetSize(definition) == RibbonProperties.GetSize(this))
+                if (definition.ForSimplified != this.IsSimplified)
+                {
+                    continue;
+                }
+
+                var definitionSize = definition.Size;
+                if (definitionSize == size)
                 {
                     return definition;
                 }
+
+                map[definitionSize] = definition;
             }
 
-            // TODO: try to find a better definition
-            return this.LayoutDefinitions[0];
+            if (map.Count == 0)
+            {
+                return null;
+            }
+
+            // find the closest definition if no matching definition exists
+            return size switch
+            {
+                RibbonControlSize.Large => map.ContainsKey(RibbonControlSize.Middle)
+                    ? map[RibbonControlSize.Middle]
+                    : (map.ContainsKey(RibbonControlSize.Small)
+                        ? map[RibbonControlSize.Small]
+                        : this.LayoutDefinitions[0]),
+
+                RibbonControlSize.Middle => map.ContainsKey(RibbonControlSize.Small)
+                    ? map[RibbonControlSize.Small]
+                    : (map.ContainsKey(RibbonControlSize.Large)
+                        ? map[RibbonControlSize.Large]
+                        : this.LayoutDefinitions[0]),
+
+                RibbonControlSize.Small => map.ContainsKey(RibbonControlSize.Middle)
+                    ? map[RibbonControlSize.Middle]
+                    : (map.ContainsKey(RibbonControlSize.Large)
+                        ? map[RibbonControlSize.Large]
+                        : this.LayoutDefinitions[0]),
+
+                _ => this.LayoutDefinitions[0]
+            };
         }
 
         #endregion
@@ -215,13 +320,18 @@ namespace Fluent
         /// <inheritdoc />
         public void OnSizePropertyChanged(RibbonControlSize previous, RibbonControlSize current)
         {
-            foreach (var frameworkElement in this.actualChildren)
-            {
-                RibbonProperties.SetSize(frameworkElement, current);
-            }
-
             this.rebuildVisualAndLogicalChildren = true;
             this.InvalidateMeasure();
+        }
+
+        #endregion
+
+        #region Implementation of ISimplifiedStateControl
+
+        /// <inheritdoc />
+        void ISimplifiedStateControl.UpdateSimplifiedState(bool isSimplified)
+        {
+            this.IsSimplified = isSimplified;
         }
 
         #endregion
@@ -309,11 +419,14 @@ namespace Fluent
             double resultWidth = 0;
             double resultHeight = 0;
 
+            var ribbonToolBarSize = RibbonProperties.GetSize(this);
             foreach (var child in this.Children)
             {
                 // Measuring
                 if (measure)
                 {
+                    // Apply Control Definition Properties
+                    RibbonProperties.SetAppropriateSize(child, ribbonToolBarSize);
                     child.Measure(SizeConstants.Infinite);
                 }
 
@@ -334,6 +447,7 @@ namespace Fluent
 
                 columnWidth = Math.Max(columnWidth, child.DesiredSize.Width);
                 currentheight += child.DesiredSize.Height;
+                resultHeight = Math.Max(resultHeight, currentheight);
             }
 
             return new Size(resultWidth + columnWidth, resultHeight);
@@ -486,7 +600,7 @@ namespace Fluent
                         if (measure)
                         {
                             // Apply Control Definition Properties
-                            RibbonProperties.SetSize(control, RibbonProperties.GetSize(ribbonToolBarControlDefinition));
+                            RibbonProperties.SetAppropriateSize(control, RibbonProperties.GetSize(ribbonToolBarControlDefinition));
                             control.Width = ribbonToolBarControlDefinition.Width;
                             control.Measure(availableSize);
                         }

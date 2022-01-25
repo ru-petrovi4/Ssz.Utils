@@ -1,4 +1,4 @@
-﻿// ReSharper disable once CheckNamespace
+// ReSharper disable once CheckNamespace
 namespace Fluent
 {
     using System;
@@ -16,12 +16,12 @@ namespace Fluent
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using System.Windows.Threading;
+    using Fluent.Automation.Peers;
     using Fluent.Extensibility;
     using Fluent.Extensions;
     using Fluent.Helpers;
     using Fluent.Internal;
     using Fluent.Internal.KnownBoxes;
-    
 
     /// <summary>
     /// Represents the In-Ribbon Gallery, a gallery-based control that exposes
@@ -45,7 +45,8 @@ namespace Fluent
 
     [TemplatePart(Name = "PART_PopupMenuPresenter", Type = typeof(FrameworkElement))]
     [TemplatePart(Name = "PART_PopupResizeBorder", Type = typeof(FrameworkElement))]
-    public class InRibbonGallery : Selector, IScalableRibbonControl, IDropDownControl, IRibbonControl, IQuickAccessItemProvider, IRibbonSizeChangedSink, ILargeIconProvider
+    [TemplatePart(Name = "PART_DropDownBorder", Type = typeof(Border))]
+    public class InRibbonGallery : Selector, IScalableRibbonControl, IDropDownControl, IRibbonControl, IQuickAccessItemProvider, IRibbonSizeChangedSink, ILargeIconProvider, IMediumIconProvider, ISimplifiedRibbonControl
     {
         #region Fields
 
@@ -76,8 +77,7 @@ namespace Fluent
         private ContentControl? popupControlPresenter;
 
         private ScrollViewer? scrollViewer;
-
-        private IInputElement? focusedElement;
+        private Border? dropDownBorder;
 
         private bool isButtonClicked;
 
@@ -119,6 +119,20 @@ namespace Fluent
 
         /// <summary>Identifies the <see cref="SizeDefinition"/> dependency property.</summary>
         public static readonly DependencyProperty SizeDefinitionProperty = RibbonProperties.SizeDefinitionProperty.AddOwner(typeof(InRibbonGallery));
+
+        #endregion
+
+        #region SimplifiedSizeDefinition
+
+        /// <inheritdoc />
+        public RibbonControlSizeDefinition SimplifiedSizeDefinition
+        {
+            get { return (RibbonControlSizeDefinition)this.GetValue(SimplifiedSizeDefinitionProperty); }
+            set { this.SetValue(SimplifiedSizeDefinitionProperty, value); }
+        }
+
+        /// <summary>Identifies the <see cref="SimplifiedSizeDefinition"/> dependency property.</summary>
+        public static readonly DependencyProperty SimplifiedSizeDefinitionProperty = RibbonProperties.SimplifiedSizeDefinitionProperty.AddOwner(typeof(InRibbonGallery));
 
         #endregion
 
@@ -473,7 +487,7 @@ namespace Fluent
         public bool HasFilter
         {
             get { return (bool)this.GetValue(HasFilterProperty); }
-            private set { this.SetValue(HasFilterPropertyKey, value); }
+            private set { this.SetValue(HasFilterPropertyKey, BooleanBoxes.Box(value)); }
         }
 
         private static readonly DependencyPropertyKey HasFilterPropertyKey = DependencyProperty.RegisterReadOnly(nameof(HasFilter), typeof(bool), typeof(InRibbonGallery), new PropertyMetadata(BooleanBoxes.FalseBox));
@@ -522,7 +536,7 @@ namespace Fluent
         public bool Selectable
         {
             get { return (bool)this.GetValue(SelectableProperty); }
-            set { this.SetValue(SelectableProperty, value); }
+            set { this.SetValue(SelectableProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="Selectable"/> dependency property.</summary>
@@ -549,12 +563,181 @@ namespace Fluent
         public bool IsDropDownOpen
         {
             get { return (bool)this.GetValue(IsDropDownOpenProperty); }
-            set { this.SetValue(IsDropDownOpenProperty, value); }
+            set { this.SetValue(IsDropDownOpenProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="IsDropDownOpen"/> dependency property.</summary>
         public static readonly DependencyProperty IsDropDownOpenProperty =
-            DependencyProperty.Register(nameof(IsDropDownOpen), typeof(bool), typeof(InRibbonGallery), new PropertyMetadata(BooleanBoxes.FalseBox));
+            DependencyProperty.Register(nameof(IsDropDownOpen), typeof(bool), typeof(InRibbonGallery), new PropertyMetadata(BooleanBoxes.FalseBox, OnIsDropDownOpenChanged));
+
+        private static void OnIsDropDownOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var inRibbonGallery = (InRibbonGallery)d;
+
+            var newValue = (bool)e.NewValue;
+            var oldValue = !newValue;
+
+            // Fire accessibility event
+            if (UIElementAutomationPeer.FromElement(inRibbonGallery) is RibbonInRibbonGalleryAutomationPeer peer)
+            {
+                peer.RaiseExpandCollapseAutomationEvent(oldValue, newValue);
+            }
+
+            if (newValue)
+            {
+                inRibbonGallery.IsSnapped = true;
+
+                if (inRibbonGallery.controlPresenter is not null)
+                {
+                    inRibbonGallery.controlPresenter.Content = inRibbonGallery.snappedImage;
+                }
+
+                if (inRibbonGallery.galleryPanel is not null)
+                {
+                    using (new ScopeGuard(inRibbonGallery.galleryPanel.SuspendUpdates, inRibbonGallery.galleryPanel.ResumeUpdatesRefresh).Start())
+                    {
+                        inRibbonGallery.CurrentGalleryPanelState?.Save();
+
+                        inRibbonGallery.galleryPanel.MinItemsInRow = inRibbonGallery.MinItemsInDropDownRow;
+                        inRibbonGallery.galleryPanel.MaxItemsInRow = inRibbonGallery.MaxItemsInDropDownRow;
+                        inRibbonGallery.galleryPanel.IsGrouped = true;
+
+                        if (inRibbonGallery.menuPanel is not null)
+                        {
+                            inRibbonGallery.CurrentPopupState.Restore(inRibbonGallery.galleryPanel, inRibbonGallery.menuPanel);
+                        }
+                    }
+                }
+
+                if (inRibbonGallery.popupControlPresenter is not null)
+                {
+                    inRibbonGallery.popupControlPresenter.Content = inRibbonGallery.galleryPanel;
+                }
+
+                inRibbonGallery.DropDownOpened?.Invoke(inRibbonGallery, EventArgs.Empty);
+
+                //if (ResizeMode != ContextMenuResizeMode.None)
+                {
+                    inRibbonGallery.scrollViewer?.Measure(SizeConstants.Infinite);
+
+                    var initialHeight = Math.Min(RibbonControl.GetControlWorkArea(inRibbonGallery).Height, inRibbonGallery.MaxDropDownHeight);
+
+                    if (double.IsNaN(inRibbonGallery.DropDownHeight) == false)
+                    {
+                        initialHeight = Math.Min(inRibbonGallery.DropDownHeight, inRibbonGallery.MaxDropDownHeight);
+                    }
+
+                    var initialWidth = Math.Min(RibbonControl.GetControlWorkArea(inRibbonGallery).Height, inRibbonGallery.MaxDropDownWidth);
+
+                    if (double.IsNaN(inRibbonGallery.DropDownWidth) == false)
+                    {
+                        initialWidth = Math.Min(inRibbonGallery.DropDownWidth, inRibbonGallery.MaxDropDownWidth);
+                    }
+
+                    double menuHeight = 0;
+                    double menuWidth = 0;
+
+                    if (inRibbonGallery.Menu is not null)
+                    {
+                        inRibbonGallery.Menu.Measure(SizeConstants.Infinite);
+                        menuHeight = inRibbonGallery.Menu.DesiredSize.Height;
+                        menuWidth = inRibbonGallery.Menu.DesiredSize.Width;
+                    }
+
+                    if (inRibbonGallery.scrollViewer is not null)
+                    {
+                        if (inRibbonGallery.scrollViewer.DesiredSize.Height > initialHeight)
+                        {
+                            inRibbonGallery.scrollViewer.Height = initialHeight - menuHeight;
+                        }
+
+                        if (inRibbonGallery.scrollViewer.DesiredSize.Width > initialWidth)
+                        {
+                            inRibbonGallery.scrollViewer.Width = initialWidth - menuWidth;
+                        }
+                    }
+                }
+
+                Mouse.Capture(inRibbonGallery, CaptureMode.SubTree);
+
+                if (inRibbonGallery.DropDownPopup?.Child is not null)
+                {
+                    inRibbonGallery.RunInDispatcherAsync(() =>
+                    {
+                        Keyboard.Focus(inRibbonGallery.DropDownPopup.Child);
+                        inRibbonGallery.DropDownPopup.Child.MoveFocus(new TraversalRequest(FocusNavigationDirection.First));
+                    });
+                }
+            }
+            else
+            {
+                if (inRibbonGallery.popupControlPresenter is not null)
+                {
+                    inRibbonGallery.popupControlPresenter.Content = null;
+                }
+
+                if (inRibbonGallery.menuPanel is not null)
+                {
+                    inRibbonGallery.menuPanel.ClearValue(HeightProperty);
+                }
+
+                if (inRibbonGallery.galleryPanel is not null)
+                {
+                    using (new ScopeGuard(inRibbonGallery.galleryPanel.SuspendUpdates, inRibbonGallery.galleryPanel.ResumeUpdatesRefresh).Start())
+                    {
+                        inRibbonGallery.CurrentGalleryPanelState?.Restore();
+
+                        inRibbonGallery.galleryPanel.IsGrouped = false;
+
+                        inRibbonGallery.galleryPanel.ClearValue(WidthProperty);
+                    }
+                }
+
+                if (inRibbonGallery.IsSnapped
+                    && inRibbonGallery.IsFrozen == false)
+                {
+                    inRibbonGallery.IsSnapped = false;
+                }
+
+                if (inRibbonGallery.controlPresenter is not null)
+                {
+                    inRibbonGallery.controlPresenter.Content = inRibbonGallery.galleryPanel;
+                }
+
+                inRibbonGallery.DropDownClosed?.Invoke(inRibbonGallery, EventArgs.Empty);
+
+                inRibbonGallery.RunInDispatcherAsync(() =>
+                {
+                    var selectedContainer = inRibbonGallery.ItemContainerGenerator.ContainerOrContainerContentFromItem<GalleryItem>(inRibbonGallery.SelectedItem);
+                    selectedContainer?.BringIntoView();
+                }, DispatcherPriority.SystemIdle);
+
+                // If focus is within the subtree, make sure we have the focus so that focus isn't in the disposed hwnd
+                if (inRibbonGallery.IsKeyboardFocusWithin)
+                {
+                    // make sure the inRibbonGallery has focus
+                    inRibbonGallery.Focus();
+
+                    inRibbonGallery.RunInDispatcherAsync(() =>
+                    {
+                        var selectedContainer = inRibbonGallery.ItemContainerGenerator.ContainerOrContainerContentFromItem<GalleryItem>(inRibbonGallery.SelectedItem);
+                        if (selectedContainer is not null)
+                        {
+                            selectedContainer.Focus();
+                        }
+                        else
+                        {
+                            inRibbonGallery.MoveFocus(new TraversalRequest(FocusNavigationDirection.First));
+                        }
+                    }, DispatcherPriority.SystemIdle);
+                }
+
+                if (Mouse.Captured == inRibbonGallery)
+                {
+                    Mouse.Capture(null);
+                }
+            }
+        }
 
         #endregion
 
@@ -583,7 +766,7 @@ namespace Fluent
         public bool CanCollapseToButton
         {
             get { return (bool)this.GetValue(CanCollapseToButtonProperty); }
-            set { this.SetValue(CanCollapseToButtonProperty, value); }
+            set { this.SetValue(CanCollapseToButtonProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="CanCollapseToButton"/> dependency property.</summary>
@@ -600,7 +783,7 @@ namespace Fluent
         public bool IsCollapsed
         {
             get { return (bool)this.GetValue(IsCollapsedProperty); }
-            set { this.SetValue(IsCollapsedProperty, value); }
+            set { this.SetValue(IsCollapsedProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="IsCollapsed"/> dependency property.</summary>
@@ -620,6 +803,20 @@ namespace Fluent
 
         /// <summary>Identifies the <see cref="LargeIcon"/> dependency property.</summary>
         public static readonly DependencyProperty LargeIconProperty = LargeIconProviderProperties.LargeIconProperty.AddOwner(typeof(InRibbonGallery), new PropertyMetadata(LogicalChildSupportHelper.OnLogicalChildPropertyChanged));
+
+        #endregion
+
+        #region MediumIcon
+
+        /// <inheritdoc />
+        public object? MediumIcon
+        {
+            get { return this.GetValue(MediumIconProperty); }
+            set { this.SetValue(MediumIconProperty, value); }
+        }
+
+        /// <summary>Identifies the <see cref="MediumIcon"/> dependency property.</summary>
+        public static readonly DependencyProperty MediumIconProperty = MediumIconProviderProperties.MediumIconProperty.AddOwner(typeof(InRibbonGallery), new PropertyMetadata(LogicalChildSupportHelper.OnLogicalChildPropertyChanged));
 
         #endregion
 
@@ -847,7 +1044,26 @@ namespace Fluent
 
         #endregion
 
+        #region IsSimplified
+
+        /// <summary>
+        /// Gets or sets whether or not the ribbon is in Simplified mode
+        /// </summary>
+        public bool IsSimplified
+        {
+            get { return (bool)this.GetValue(IsSimplifiedProperty); }
+            private set { this.SetValue(IsSimplifiedPropertyKey, BooleanBoxes.Box(value)); }
+        }
+
+        private static readonly DependencyPropertyKey IsSimplifiedPropertyKey =
+            DependencyProperty.RegisterReadOnly(nameof(IsSimplified), typeof(bool), typeof(InRibbonGallery), new PropertyMetadata(BooleanBoxes.FalseBox));
+
+        /// <summary>Identifies the <see cref="IsSimplified"/> dependency property.</summary>
+        public static readonly DependencyProperty IsSimplifiedProperty = IsSimplifiedPropertyKey.DependencyProperty;
+
         #endregion
+
+        #endregion Properties
 
         #region Events
 
@@ -907,6 +1123,12 @@ namespace Fluent
             ContextMenuService.Coerce(this);
 
             this.IsVisibleChanged += this.OnIsVisibleChanged;
+            this.Unloaded += this.OnUnloaded;
+        }
+
+        private void OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            this.SetCurrentValue(IsDropDownOpenProperty, false);
         }
 
         #endregion
@@ -914,17 +1136,33 @@ namespace Fluent
         #region Overrides
 
         /// <inheritdoc />
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            base.OnKeyUp(e);
+
+            if (e.Handled)
+            {
+                return;
+            }
+
+            if (e.Key == Key.F4
+                && (e.KeyboardDevice.Modifiers & ModifierKeys.Alt) == 0)
+            {
+                this.IsDropDownOpen = !this.IsDropDownOpen;
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Escape
+                    && this.IsDropDownOpen)
+            {
+                this.IsDropDownOpen = false;
+                e.Handled = true;
+            }
+        }
+
+        /// <inheritdoc />
         public KeyTipPressedResult OnKeyTipPressed()
         {
             this.IsDropDownOpen = true;
-
-            if (this.DropDownPopup?.Child is not null)
-            {
-                Keyboard.Focus(this.DropDownPopup.Child);
-                this.DropDownPopup.Child.MoveFocus(new TraversalRequest(FocusNavigationDirection.First));
-
-                return new KeyTipPressedResult(false, true);
-            }
 
             return new KeyTipPressedResult(false, true);
         }
@@ -955,6 +1193,17 @@ namespace Fluent
             }
 
             base.OnSelectionChanged(e);
+
+            if ((!AutomationPeer.ListenerExists(AutomationEvents.SelectionPatternOnInvalidated)
+                && !AutomationPeer.ListenerExists(AutomationEvents.SelectionItemPatternOnElementSelected)
+                && (!AutomationPeer.ListenerExists(AutomationEvents.SelectionItemPatternOnElementAddedToSelection)
+                    && !AutomationPeer.ListenerExists(AutomationEvents.SelectionItemPatternOnElementRemovedFromSelection)))
+                || UIElementAutomationPeer.CreatePeerForElement(this) is not RibbonInRibbonGalleryAutomationPeer peerForElement)
+            {
+                return;
+            }
+
+            peerForElement.RaiseSelectionEvents(e);
         }
 
         /// <inheritdoc />
@@ -975,12 +1224,13 @@ namespace Fluent
             }
 
             this.dropDownButton = this.GetTemplateChild("PART_DropDownButton") as ToggleButton;
+            if (this.dropDownButton is ISimplifiedStateControl control)
+            {
+                control.UpdateSimplifiedState(this.IsSimplified);
+            }
 
             if (this.DropDownPopup is not null)
             {
-                this.DropDownPopup.Opened -= this.OnDropDownOpened;
-                this.DropDownPopup.Closed -= this.OnDropDownClosed;
-
                 this.DropDownPopup.PreviewMouseLeftButtonUp -= this.OnPopupPreviewMouseUp;
                 this.DropDownPopup.PreviewMouseLeftButtonDown -= this.OnPopupPreviewMouseDown;
             }
@@ -989,9 +1239,6 @@ namespace Fluent
 
             if (this.DropDownPopup is not null)
             {
-                this.DropDownPopup.Opened += this.OnDropDownOpened;
-                this.DropDownPopup.Closed += this.OnDropDownClosed;
-
                 this.DropDownPopup.PreviewMouseLeftButtonUp += this.OnPopupPreviewMouseUp;
                 this.DropDownPopup.PreviewMouseLeftButtonDown += this.OnPopupPreviewMouseDown;
 
@@ -1074,6 +1321,8 @@ namespace Fluent
 
             this.scrollViewer = this.GetTemplateChild("PART_ScrollViewer") as ScrollViewer;
 
+            this.dropDownBorder = this.GetTemplateChild("PART_DropDownBorder") as Border;
+
             this.popupMenuPresenter = this.GetTemplateChild("PART_PopupMenuPresenter") as FrameworkElement;
             this.popupResizeBorder = this.GetTemplateChild("PART_PopupResizeBorder") as FrameworkElement;
         }
@@ -1111,161 +1360,29 @@ namespace Fluent
             this.isButtonClicked = true;
         }
 
-        // Handles drop down closed
-        private void OnDropDownClosed(object? sender, EventArgs e)
-        {
-            if (this.popupControlPresenter is not null)
-            {
-                this.popupControlPresenter.Content = null;
-            }
-
-            if (this.menuPanel is not null)
-            {
-                this.menuPanel.ClearValue(HeightProperty);
-            }
-
-            if (this.galleryPanel is not null)
-            {
-                using (new ScopeGuard(this.galleryPanel.SuspendUpdates, this.galleryPanel.ResumeUpdatesRefresh).Start())
-                {
-                    this.CurrentGalleryPanelState?.Restore();
-
-                    this.galleryPanel.IsGrouped = false;
-
-                    this.galleryPanel.ClearValue(WidthProperty);
-                }
-            }
-
-            if (this.IsSnapped
-                && this.IsFrozen == false)
-            {
-                this.IsSnapped = false;
-            }
-
-            if (this.controlPresenter is not null)
-            {
-                this.controlPresenter.Content = this.galleryPanel;
-            }
-
-            this.DropDownClosed?.Invoke(this, e);
-
-            if (ReferenceEquals(Mouse.Captured, this))
-            {
-                Mouse.Capture(null);
-            }
-
-            this.RunInDispatcherAsync(() =>
-                                      {
-                                          var selectedContainer = this.ItemContainerGenerator.ContainerOrContainerContentFromItem<GalleryItem>(this.SelectedItem);
-                                          selectedContainer?.BringIntoView();
-                                      }, DispatcherPriority.SystemIdle);
-        }
-
-        // Handles drop down opened
-        private void OnDropDownOpened(object? sender, EventArgs e)
-        {
-            this.IsSnapped = true;
-
-            if (this.controlPresenter is not null)
-            {
-                this.controlPresenter.Content = this.snappedImage;
-            }
-
-            if (this.galleryPanel is not null)
-            {
-                using (new ScopeGuard(this.galleryPanel.SuspendUpdates, this.galleryPanel.ResumeUpdatesRefresh).Start())
-                {
-                    this.CurrentGalleryPanelState?.Save();
-
-                    this.galleryPanel.MinItemsInRow = this.MinItemsInDropDownRow;
-                    this.galleryPanel.MaxItemsInRow = this.MaxItemsInDropDownRow;
-                    this.galleryPanel.IsGrouped = true;
-
-                    if (this.menuPanel is not null)
-                    {
-                        this.CurrentPopupState.Restore(this.galleryPanel, this.menuPanel);
-                    }
-                }
-            }
-
-            if (this.popupControlPresenter is not null)
-            {
-                this.popupControlPresenter.Content = this.galleryPanel;
-            }
-
-            this.DropDownOpened?.Invoke(this, e);
-
-            Mouse.Capture(this, CaptureMode.SubTree);
-
-            this.focusedElement = Keyboard.FocusedElement;
-
-            if (this.focusedElement is not null)
-            {
-                this.focusedElement.LostKeyboardFocus += this.OnFocusedElementLostKeyboardFocus;
-                this.focusedElement.PreviewKeyDown += this.OnFocusedElementPreviewKeyDown;
-            }
-
-            //if (ResizeMode != ContextMenuResizeMode.None)
-            {
-                this.scrollViewer?.Measure(SizeConstants.Infinite);
-
-                var initialHeight = Math.Min(RibbonControl.GetControlWorkArea(this).Height, this.MaxDropDownHeight);
-
-                if (double.IsNaN(this.DropDownHeight) == false)
-                {
-                    initialHeight = Math.Min(this.DropDownHeight, this.MaxDropDownHeight);
-                }
-
-                var initialWidth = Math.Min(RibbonControl.GetControlWorkArea(this).Height, this.MaxDropDownWidth);
-
-                if (double.IsNaN(this.DropDownWidth) == false)
-                {
-                    initialWidth = Math.Min(this.DropDownWidth, this.MaxDropDownWidth);
-                }
-
-                double menuHeight = 0;
-                double menuWidth = 0;
-
-                if (this.Menu is not null)
-                {
-                    this.Menu.Measure(SizeConstants.Infinite);
-                    menuHeight = this.Menu.DesiredSize.Height;
-                    menuWidth = this.Menu.DesiredSize.Width;
-                }
-
-                if (this.scrollViewer is not null)
-                {
-                    if (this.scrollViewer.DesiredSize.Height > initialHeight)
-                    {
-                        this.scrollViewer.Height = initialHeight - menuHeight;
-                    }
-
-                    if (this.scrollViewer.DesiredSize.Width > initialWidth)
-                    {
-                        this.scrollViewer.Width = initialWidth - menuWidth;
-                    }
-                }
-            }
-        }
-
         /// <inheritdoc />
         public void OnSizePropertyChanged(RibbonControlSize previous, RibbonControlSize current)
         {
+            if (this.ReadLocalValue(IsCollapsedProperty) != DependencyProperty.UnsetValue)
+            {
+                return;
+            }
+
             if (this.CanCollapseToButton)
             {
                 if (current == RibbonControlSize.Large
                     && this.galleryPanel?.MinItemsInRow > this.MinItemsInRow)
                 {
-                    this.IsCollapsed = false;
+                    this.SetCurrentValue(IsCollapsedProperty, BooleanBoxes.FalseBox);
                 }
                 else
                 {
-                    this.IsCollapsed = true;
+                    this.SetCurrentValue(IsCollapsedProperty, BooleanBoxes.TrueBox);
                 }
             }
             else
             {
-                this.IsCollapsed = false;
+                this.SetCurrentValue(IsCollapsedProperty, BooleanBoxes.FalseBox);
             }
         }
 
@@ -1303,25 +1420,6 @@ namespace Fluent
             }
 
             base.OnKeyDown(e);
-        }
-
-        private void OnFocusedElementPreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-            {
-                this.IsDropDownOpen = false;
-            }
-        }
-
-        private void OnFocusedElementLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            if (this.focusedElement is null)
-            {
-                return;
-            }
-
-            this.focusedElement.LostKeyboardFocus -= this.OnFocusedElementLostKeyboardFocus;
-            this.focusedElement.PreviewKeyDown -= this.OnFocusedElementPreviewKeyDown;
         }
 
         #endregion
@@ -1544,7 +1642,7 @@ namespace Fluent
         public bool CanAddToQuickAccessToolBar
         {
             get { return (bool)this.GetValue(CanAddToQuickAccessToolBarProperty); }
-            set { this.SetValue(CanAddToQuickAccessToolBarProperty, value); }
+            set { this.SetValue(CanAddToQuickAccessToolBarProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="CanAddToQuickAccessToolBar"/> dependency property.</summary>
@@ -1558,9 +1656,10 @@ namespace Fluent
         public void ResetScale()
         {
             if (this.IsCollapsed
+                && this.ReadLocalValue(IsCollapsedProperty) == DependencyProperty.UnsetValue
                 && RibbonProperties.GetSize(this) == RibbonControlSize.Large)
             {
-                this.IsCollapsed = false;
+                this.SetCurrentValue(IsCollapsedProperty, BooleanBoxes.FalseBox);
             }
 
             if (this.galleryPanel is not null
@@ -1576,9 +1675,10 @@ namespace Fluent
         public void Enlarge()
         {
             if (this.IsCollapsed
+                && this.ReadLocalValue(IsCollapsedProperty) == DependencyProperty.UnsetValue
                 && RibbonProperties.GetSize(this) == RibbonControlSize.Large)
             {
-                this.IsCollapsed = false;
+                this.SetCurrentValue(IsCollapsedProperty, BooleanBoxes.FalseBox);
             }
             else if (this.galleryPanel is not null
                      && this.galleryPanel.MaxItemsInRow < this.MaxItemsInRow)
@@ -1604,9 +1704,10 @@ namespace Fluent
                 this.galleryPanel.MaxItemsInRow = Math.Max(this.galleryPanel.MaxItemsInRow - 1, 0);
             }
             else if (this.CanCollapseToButton
+                     && this.ReadLocalValue(IsCollapsedProperty) == DependencyProperty.UnsetValue
                      && this.IsCollapsed == false)
             {
-                this.IsCollapsed = true;
+                this.SetCurrentValue(IsCollapsedProperty, BooleanBoxes.TrueBox);
             }
             else
             {
@@ -1619,6 +1720,16 @@ namespace Fluent
         }
 
         #endregion
+
+        /// <inheritdoc />
+        void ISimplifiedStateControl.UpdateSimplifiedState(bool isSimplified)
+        {
+            this.IsSimplified = isSimplified;
+            if (this.dropDownButton is ISimplifiedStateControl control)
+            {
+                control.UpdateSimplifiedState(isSimplified);
+            }
+        }
 
         /// <inheritdoc />
         void ILogicalChildSupport.AddLogicalChild(object child)
@@ -1648,6 +1759,11 @@ namespace Fluent
                     yield return this.Icon;
                 }
 
+                if (this.MediumIcon is not null)
+                {
+                    yield return this.MediumIcon;
+                }
+
                 if (this.LargeIcon is not null)
                 {
                     yield return this.LargeIcon;
@@ -1661,7 +1777,7 @@ namespace Fluent
         }
 
         /// <inheritdoc />
-        protected override AutomationPeer OnCreateAutomationPeer() => new Fluent.Automation.Peers.RibbonInRibbonGalleryAutomationPeer(this);
+        protected override AutomationPeer OnCreateAutomationPeer() => new RibbonInRibbonGalleryAutomationPeer(this);
 
         internal class GalleryPanelState
         {
@@ -1714,6 +1830,29 @@ namespace Fluent
                     heightControl.SetCurrentValue(HeightProperty, this.Height);
                 }
             }
+        }
+
+        /// <summary>
+        /// Causes the object to scroll into view.  If it is not visible, it is aligned either at the top or bottom of the viewport.
+        /// </summary>
+        public void ScrollIntoView(object item)
+        {
+            if (this.ItemContainerGenerator.Status == GeneratorStatus.ContainersGenerated)
+            {
+                this.OnBringItemIntoView(item);
+            }
+            else
+            {
+                // The items aren't generated, try at a later time
+                this.Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new DispatcherOperationCallback(this.OnBringItemIntoView), item);
+            }
+        }
+
+        private object? OnBringItemIntoView(object item)
+        {
+            var selectedContainer = this.ItemContainerGenerator.ContainerOrContainerContentFromItem<GalleryItem>(item);
+            selectedContainer?.BringIntoView();
+            return null;
         }
     }
 }

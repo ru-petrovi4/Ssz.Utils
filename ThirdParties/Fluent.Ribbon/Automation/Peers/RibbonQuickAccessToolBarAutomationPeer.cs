@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using System.Windows.Automation.Peers;
-    
 
     /// <summary>
     /// Automation peer for <see cref="QuickAccessToolBar"/>.

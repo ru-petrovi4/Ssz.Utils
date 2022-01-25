@@ -4,7 +4,7 @@
 //    using System.Windows.Automation.Peers;
 //    using System.Windows.Automation.Provider;
 //    using Fluent.Extensions;
-//    
+//    using JetBrains.Annotations;
 
 //    /// <summary>
 //    ///     Automation peer wrapper for <see cref="RibbonGroupBox" />.
@@ -14,7 +14,7 @@
 //        /// <summary>
 //        ///     Creates a new instance.
 //        /// </summary>
-//        public RibbonGroupBoxDataAutomationPeer(object item, RibbonTabItemAutomationPeer itemsControlPeer)
+//        public RibbonGroupBoxDataAutomationPeer(object item, [NotNull] RibbonTabItemAutomationPeer itemsControlPeer)
 //            : base(item, itemsControlPeer)
 //        {
 //        }

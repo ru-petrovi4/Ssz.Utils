@@ -2,7 +2,6 @@
 {
     using System.Windows;
     using System.Windows.Automation.Peers;
-    
 
     /// <summary>
     /// Automation peer for the header of <see cref="RibbonGroupBox"/>.

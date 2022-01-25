@@ -5,6 +5,7 @@ namespace Fluent
     using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Windows;
     using System.Windows.Automation.Peers;
     using System.Windows.Controls.Primitives;
@@ -18,6 +19,7 @@ namespace Fluent
     /// you to add menu and handle clicks
     /// </summary>
     [TemplatePart(Name = "PART_Button", Type = typeof(ButtonBase))]
+    [DebuggerDisplay("class{GetType().FullName}: Header = {Header}, Items.Count = {Items.Count}, Size = {Size}, IsSimplified = {IsSimplified}")]
     public class SplitButton : DropDownButton, IToggleButton, ICommandSource, IKeyTipInformationProvider
     {
         #region Fields
@@ -119,7 +121,7 @@ namespace Fluent
         public bool? IsChecked
         {
             get { return (bool?)this.GetValue(IsCheckedProperty); }
-            set { this.SetValue(IsCheckedProperty, value); }
+            set { this.SetValue(IsCheckedProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="IsChecked"/> dependency property.</summary>
@@ -168,7 +170,7 @@ namespace Fluent
         public bool IsCheckable
         {
             get { return (bool)this.GetValue(IsCheckableProperty); }
-            set { this.SetValue(IsCheckableProperty, value); }
+            set { this.SetValue(IsCheckableProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="IsCheckable"/> dependency property.</summary>
@@ -203,7 +205,7 @@ namespace Fluent
         public bool IsButtonEnabled
         {
             get { return (bool)this.GetValue(IsButtonEnabledProperty); }
-            set { this.SetValue(IsButtonEnabledProperty, value); }
+            set { this.SetValue(IsButtonEnabledProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="IsButtonEnabled"/> dependency property.</summary>
@@ -220,7 +222,7 @@ namespace Fluent
         public bool IsDefinitive
         {
             get { return (bool)this.GetValue(IsDefinitiveProperty); }
-            set { this.SetValue(IsDefinitiveProperty, value); }
+            set { this.SetValue(IsDefinitiveProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="IsDefinitive"/> dependency property.</summary>
@@ -426,6 +428,10 @@ namespace Fluent
             this.UnSubscribeEvents();
 
             this.button = this.GetTemplateChild("PART_Button") as ToggleButton;
+            if (this.button is ISimplifiedStateControl control)
+            {
+                control.UpdateSimplifiedState(this.IsSimplified);
+            }
 
             base.OnApplyTemplate();
 
@@ -525,7 +531,7 @@ namespace Fluent
         public bool CanAddButtonToQuickAccessToolBar
         {
             get { return (bool)this.GetValue(CanAddButtonToQuickAccessToolBarProperty); }
-            set { this.SetValue(CanAddButtonToQuickAccessToolBarProperty, value); }
+            set { this.SetValue(CanAddButtonToQuickAccessToolBarProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="CanAddButtonToQuickAccessToolBar"/> dependency property.</summary>
@@ -568,6 +574,16 @@ namespace Fluent
         #endregion
 
         #endregion
+
+        /// <inheritdoc />
+        protected override void OnIsSimplifiedChanged(bool oldValue, bool newValue)
+        {
+            base.OnIsSimplifiedChanged(oldValue, newValue);
+            if (this.button is ISimplifiedStateControl control)
+            {
+                control.UpdateSimplifiedState(newValue);
+            }
+        }
 
         /// <inheritdoc />
         protected override IEnumerator LogicalChildren

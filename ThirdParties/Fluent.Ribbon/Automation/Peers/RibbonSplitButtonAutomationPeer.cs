@@ -7,7 +7,6 @@
     using System.Windows.Threading;
     using Fluent.Extensions;
     using Fluent.Internal;
-    
 
     /// <summary>
     /// Automation peer for <see cref="SplitButton"/>.

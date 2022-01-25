@@ -1,7 +1,5 @@
 ﻿namespace Fluent.Automation.Peers
 {
-    
-
     /// <inheritdoc />
     public class RibbonCheckBoxAutomationPeer : System.Windows.Automation.Peers.ToggleButtonAutomationPeer
     {

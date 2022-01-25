@@ -1,7 +1,6 @@
 ﻿namespace Fluent.Automation.Peers
 {
     using System.Windows.Automation.Peers;
-    
 
     /// <inheritdoc />
     public class RibbonButtonAutomationPeer : ButtonAutomationPeer

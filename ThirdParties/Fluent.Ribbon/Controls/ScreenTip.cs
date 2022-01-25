@@ -108,30 +108,37 @@ namespace Fluent
 
         private static bool IsContextMenuChild(UIElement element)
         {
+            var currentElement = element;
             do
             {
-                var parent = VisualTreeHelper.GetParent(element) as UIElement;
-                //if (parent is ContextMenuBar) return true;
-                element = parent!;
+                var parent = VisualTreeHelper.GetParent(currentElement) as UIElement;
+
+                if (parent is System.Windows.Controls.ContextMenu)
+                {
+                    return true;
+                }
+
+                currentElement = parent;
             }
-            while (element is not null);
+            while (currentElement is not null);
 
             return false;
         }
 
         private static bool IsQuickAccessItem(UIElement element)
         {
+            var currentElement = element;
             do
             {
-                var parent = VisualTreeHelper.GetParent(element) as UIElement;
+                var parent = VisualTreeHelper.GetParent(currentElement) as UIElement;
                 if (parent is QuickAccessToolBar)
                 {
                     return true;
                 }
 
-                element = parent!;
+                currentElement = parent;
             }
-            while (element is not null);
+            while (currentElement is not null);
 
             return false;
         }
@@ -159,17 +166,14 @@ namespace Fluent
             return null;
         }
 
-        private static void FindControls(UIElement obj, ref Ribbon? ribbon, ref UIElement? topLevelElement)
+        private static void FindControls(UIElement? obj, ref Ribbon? ribbon, ref UIElement? topLevelElement)
         {
-            switch (obj)
+            if (obj is null)
             {
-                case null:
-                    return;
-
-                case Ribbon objRibbon:
-                    ribbon = objRibbon;
-                    break;
+                return;
             }
+
+            ribbon ??= obj as Ribbon;
 
             var parentVisual = VisualTreeHelper.GetParent(obj) as UIElement;
             if (parentVisual is null)
@@ -301,7 +305,7 @@ namespace Fluent
         public Visibility HelpLabelVisibility
         {
             get { return (Visibility)this.GetValue(HelpLabelVisibilityProperty); }
-            set { this.SetValue(HelpLabelVisibilityProperty, value); }
+            set { this.SetValue(HelpLabelVisibilityProperty, VisibilityBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="HelpLabelVisibility"/> dependency property.</summary>
@@ -326,7 +330,7 @@ namespace Fluent
         public bool IsRibbonAligned
         {
             get { return (bool)this.GetValue(IsRibbonAlignedProperty); }
-            set { this.SetValue(IsRibbonAlignedProperty, value); }
+            set { this.SetValue(IsRibbonAlignedProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="IsRibbonAligned"/> dependency property.</summary>

@@ -7,7 +7,6 @@
     using System.Windows.Automation.Provider;
     using System.Windows.Controls;
     using Fluent.Internal;
-    
 
     /// <summary>
     /// Automation peer for <see cref="Ribbon"/>.

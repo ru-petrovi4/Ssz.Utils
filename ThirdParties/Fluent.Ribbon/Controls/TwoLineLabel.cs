@@ -37,7 +37,7 @@ namespace Fluent
         public bool HasTwoLines
         {
             get { return (bool)this.GetValue(HasTwoLinesProperty); }
-            set { this.SetValue(HasTwoLinesProperty, value); }
+            set { this.SetValue(HasTwoLinesProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="HasTwoLines"/> dependency property.</summary>
@@ -60,7 +60,7 @@ namespace Fluent
         public bool HasGlyph
         {
             get { return (bool)this.GetValue(HasGlyphProperty); }
-            set { this.SetValue(HasGlyphProperty, value); }
+            set { this.SetValue(HasGlyphProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="HasGlyph"/> dependency property.</summary>
@@ -80,9 +80,11 @@ namespace Fluent
         /// <summary>
         /// Gets or sets the text
         /// </summary>
-        public string Text
+#pragma warning disable WPF0012
+        public string? Text
+#pragma warning restore WPF0012
         {
-            get { return (string)this.GetValue(TextProperty); }
+            get { return (string?)this.GetValue(TextProperty); }
             set { this.SetValue(TextProperty, value); }
         }
 

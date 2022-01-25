@@ -1,7 +1,6 @@
 ﻿namespace Fluent.Automation.Peers
 {
     using System.Windows.Automation.Peers;
-    
 
     /// <summary>
     /// Automation peer for <see cref="RibbonControl" />.

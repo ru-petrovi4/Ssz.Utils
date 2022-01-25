@@ -27,7 +27,9 @@ namespace Fluent
     [TemplatePart(Name = "PART_ScrollViewer", Type = typeof(ScrollViewer))]
     [TemplatePart(Name = "PART_Popup", Type = typeof(Popup))]
     [TemplatePart(Name = "PART_ButtonBorder", Type = typeof(UIElement))]
-    public class DropDownButton : ItemsControl, IQuickAccessItemProvider, IRibbonControl, IDropDownControl, ILargeIconProvider
+    [TemplatePart(Name = "PART_DropDownBorder", Type = typeof(Border))]
+    [DebuggerDisplay("class{GetType().FullName}: Header = {Header}, Items.Count = {Items.Count}, Size = {Size}, IsSimplified = {IsSimplified}")]
+    public class DropDownButton : ItemsControl, IQuickAccessItemProvider, IRibbonControl, IDropDownControl, ILargeIconProvider, IMediumIconProvider, ISimplifiedRibbonControl
     {
         #region Fields
 
@@ -40,6 +42,8 @@ namespace Fluent
         private ScrollViewer? scrollViewer;
 
         private UIElement? buttonBorder;
+
+        private Border? dropDownBorder;
 
         private readonly Stack<WeakReference> openMenuItems = new Stack<WeakReference>();
 
@@ -74,6 +78,20 @@ namespace Fluent
 
         /// <summary>Identifies the <see cref="SizeDefinition"/> dependency property.</summary>
         public static readonly DependencyProperty SizeDefinitionProperty = RibbonProperties.SizeDefinitionProperty.AddOwner(typeof(DropDownButton));
+
+        #endregion
+
+        #region SimplifiedSizeDefinition
+
+        /// <inheritdoc />
+        public RibbonControlSizeDefinition SimplifiedSizeDefinition
+        {
+            get { return (RibbonControlSizeDefinition)this.GetValue(SimplifiedSizeDefinitionProperty); }
+            set { this.SetValue(SimplifiedSizeDefinitionProperty, value); }
+        }
+
+        /// <summary>Identifies the <see cref="SimplifiedSizeDefinition"/> dependency property.</summary>
+        public static readonly DependencyProperty SimplifiedSizeDefinitionProperty = RibbonProperties.SimplifiedSizeDefinitionProperty.AddOwner(typeof(DropDownButton));
 
         #endregion
 
@@ -142,6 +160,20 @@ namespace Fluent
 
         #endregion
 
+        #region MediumIcon
+
+        /// <inheritdoc />
+        public object? MediumIcon
+        {
+            get { return this.GetValue(MediumIconProperty); }
+            set { this.SetValue(MediumIconProperty, value); }
+        }
+
+        /// <summary>Identifies the <see cref="MediumIcon"/> dependency property.</summary>
+        public static readonly DependencyProperty MediumIconProperty = MediumIconProviderProperties.MediumIconProperty.AddOwner(typeof(DropDownButton), new PropertyMetadata(LogicalChildSupportHelper.OnLogicalChildPropertyChanged));
+
+        #endregion
+
         #region HasTriangle
 
         /// <summary>
@@ -150,7 +182,7 @@ namespace Fluent
         public bool HasTriangle
         {
             get { return (bool)this.GetValue(HasTriangleProperty); }
-            set { this.SetValue(HasTriangleProperty, value); }
+            set { this.SetValue(HasTriangleProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="HasTriangle"/> dependency property.</summary>
@@ -165,7 +197,7 @@ namespace Fluent
         public bool IsDropDownOpen
         {
             get { return (bool)this.GetValue(IsDropDownOpenProperty); }
-            set { this.SetValue(IsDropDownOpenProperty, value); }
+            set { this.SetValue(IsDropDownOpenProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="IsDropDownOpen"/> dependency property.</summary>
@@ -235,7 +267,7 @@ namespace Fluent
         public bool ClosePopupOnMouseDown
         {
             get { return (bool)this.GetValue(ClosePopupOnMouseDownProperty); }
-            set { this.SetValue(ClosePopupOnMouseDownProperty, value); }
+            set { this.SetValue(ClosePopupOnMouseDownProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="ClosePopupOnMouseDown"/> dependency property.</summary>
@@ -261,7 +293,43 @@ namespace Fluent
 
         #endregion
 
+        #region IsSimplified
+
+        /// <summary>
+        /// Gets or sets whether or not the ribbon is in Simplified mode
+        /// </summary>
+        public bool IsSimplified
+        {
+            get { return (bool)this.GetValue(IsSimplifiedProperty); }
+            private set { this.SetValue(IsSimplifiedPropertyKey, BooleanBoxes.Box(value)); }
+        }
+
+        private static readonly DependencyPropertyKey IsSimplifiedPropertyKey =
+            DependencyProperty.RegisterReadOnly(nameof(IsSimplified), typeof(bool), typeof(DropDownButton), new PropertyMetadata(BooleanBoxes.FalseBox, OnIsSimplifiedChanged));
+
+        /// <summary>Identifies the <see cref="IsSimplified"/> dependency property.</summary>
+        public static readonly DependencyProperty IsSimplifiedProperty = IsSimplifiedPropertyKey.DependencyProperty;
+
+        private static void OnIsSimplifiedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is DropDownButton dropDownButton)
+            {
+                dropDownButton.OnIsSimplifiedChanged((bool)e.OldValue, (bool)e.NewValue);
+            }
+        }
+
+        /// <summary>
+        /// Handles IsSimplified changed event for overide
+        /// </summary>
+        /// <param name="oldValue">old value</param>
+        /// <param name="newValue">new value</param>
+        protected virtual void OnIsSimplifiedChanged(bool oldValue, bool newValue)
+        {
+        }
+
         #endregion
+
+        #endregion Properties
 
         #region Events
 
@@ -302,9 +370,19 @@ namespace Fluent
 
             this.Loaded += this.OnLoaded;
             this.Unloaded += this.OnUnloaded;
+            this.IsVisibleChanged += this.OnIsVisibleChanged;
 
             this.AddHandler(System.Windows.Controls.MenuItem.SubmenuOpenedEvent, new RoutedEventHandler(this.OnSubmenuOpened));
             this.AddHandler(System.Windows.Controls.MenuItem.SubmenuClosedEvent, new RoutedEventHandler(this.OnSubmenuClosed));
+        }
+
+        private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            // We should better use code similar to ComboBox.OnLostMouseCapture, but most of the methods called there are internal to WPF...
+            if ((bool)e.NewValue == false)
+            {
+                this.SetCurrentValue(IsDropDownOpenProperty, BooleanBoxes.FalseBox);
+            }
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -314,6 +392,8 @@ namespace Fluent
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
+            this.SetCurrentValue(IsDropDownOpenProperty, false);
+
             this.UnSubscribeEvents();
         }
 
@@ -373,7 +453,7 @@ namespace Fluent
         {
             this.UnSubscribeEvents();
 
-            this.DropDownPopup = this.Template.FindName("PART_Popup", this) as Popup;
+            this.DropDownPopup = this.GetTemplateChild("PART_Popup") as Popup;
 
             if (this.DropDownPopup is not null)
             {
@@ -381,13 +461,15 @@ namespace Fluent
                 KeyboardNavigation.SetTabNavigation(this.DropDownPopup, KeyboardNavigationMode.Continue);
             }
 
-            this.resizeVerticalThumb = this.Template.FindName("PART_ResizeVerticalThumb", this) as Thumb;
+            this.resizeVerticalThumb = this.GetTemplateChild("PART_ResizeVerticalThumb") as Thumb;
 
-            this.resizeBothThumb = this.Template.FindName("PART_ResizeBothThumb", this) as Thumb;
+            this.resizeBothThumb = this.GetTemplateChild("PART_ResizeBothThumb") as Thumb;
 
-            this.scrollViewer = this.Template.FindName("PART_ScrollViewer", this) as ScrollViewer;
+            this.scrollViewer = this.GetTemplateChild("PART_ScrollViewer") as ScrollViewer;
 
-            this.buttonBorder = this.Template.FindName("PART_ButtonBorder", this) as UIElement;
+            this.buttonBorder = this.GetTemplateChild("PART_ButtonBorder") as UIElement;
+
+            this.dropDownBorder = this.GetTemplateChild("PART_DropDownBorder") as Border;
 
             base.OnApplyTemplate();
 
@@ -549,7 +631,7 @@ namespace Fluent
         {
             var control = (DropDownButton)d;
 
-            return !control.IsDropDownOpen;
+            return BooleanBoxes.Box(!control.IsDropDownOpen);
         }
 
         #endregion
@@ -577,39 +659,52 @@ namespace Fluent
         // Handles resize both drag
         private void OnResizeBothDelta(object sender, DragDeltaEventArgs e)
         {
-            if (this.scrollViewer is null)
+            if (this.dropDownBorder is null)
             {
                 return;
             }
 
-            if (double.IsNaN(this.scrollViewer.Width))
+            if (double.IsNaN(this.dropDownBorder.Width))
             {
-                this.scrollViewer.Width = this.scrollViewer.ActualWidth;
+                this.dropDownBorder.Width = this.dropDownBorder.ActualWidth;
             }
 
-            if (double.IsNaN(this.scrollViewer.Height))
+            if (double.IsNaN(this.dropDownBorder.Height))
             {
-                this.scrollViewer.Height = this.scrollViewer.ActualHeight;
+                this.dropDownBorder.Height = this.dropDownBorder.ActualHeight;
             }
 
-            this.scrollViewer.Width = Math.Max(this.ActualWidth, this.scrollViewer.Width + e.HorizontalChange);
-            this.scrollViewer.Height = Math.Min(Math.Max(this.ActualHeight, this.scrollViewer.Height + e.VerticalChange), this.MaxDropDownHeight);
+            this.dropDownBorder.Width = Math.Max(this.ActualWidth, this.dropDownBorder.Width + e.HorizontalChange);
+            this.dropDownBorder.Height = Math.Min(Math.Max(this.ActualHeight + this.GetResizeThumbHeight(), this.dropDownBorder.Height + e.VerticalChange), this.MaxDropDownHeight);
         }
 
         // Handles resize vertical drag
         private void OnResizeVerticalDelta(object sender, DragDeltaEventArgs e)
         {
-            if (this.scrollViewer is null)
+            if (this.dropDownBorder is null)
             {
                 return;
             }
 
-            if (double.IsNaN(this.scrollViewer.Height))
+            if (double.IsNaN(this.dropDownBorder.Height))
             {
-                this.scrollViewer.Height = this.scrollViewer.ActualHeight;
+                this.dropDownBorder.Height = this.dropDownBorder.ActualHeight;
             }
 
-            this.scrollViewer.Height = Math.Min(Math.Max(this.ActualHeight, this.scrollViewer.Height + e.VerticalChange), this.MaxDropDownHeight);
+            this.dropDownBorder.Height = Math.Min(Math.Max(this.ActualHeight + this.GetResizeThumbHeight(), this.dropDownBorder.Height + e.VerticalChange), this.MaxDropDownHeight);
+        }
+
+        private double GetResizeThumbHeight()
+        {
+            var height = this.ResizeMode switch
+            {
+                ContextMenuResizeMode.None => 0,
+                ContextMenuResizeMode.Vertical => this.resizeVerticalThumb?.ActualHeight,
+                ContextMenuResizeMode.Both => this.resizeBothThumb?.ActualHeight,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+            return height ?? 0;
         }
 
         private static void OnIsDropDownOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -626,9 +721,9 @@ namespace Fluent
 
         private void OnIsDropDownOpenChanged(bool newValue)
         {
-            this.SetValue(System.Windows.Controls.ToolTipService.IsEnabledProperty, !newValue);
+            this.SetValue(System.Windows.Controls.ToolTipService.IsEnabledProperty, BooleanBoxes.Box(!newValue));
 
-            Debug.WriteLine($"{this.Header} IsDropDownOpen: {newValue}");
+            Debug.WriteLine($"{this.Header} IsDropDownOpen: {newValue.ToString()}");
 
             if (newValue)
             {
@@ -798,7 +893,7 @@ namespace Fluent
         public bool CanAddToQuickAccessToolBar
         {
             get { return (bool)this.GetValue(CanAddToQuickAccessToolBarProperty); }
-            set { this.SetValue(CanAddToQuickAccessToolBarProperty, value); }
+            set { this.SetValue(CanAddToQuickAccessToolBarProperty, BooleanBoxes.Box(value)); }
         }
 
         /// <summary>Identifies the <see cref="CanAddToQuickAccessToolBar"/> dependency property.</summary>
@@ -831,6 +926,12 @@ namespace Fluent
         #endregion MenuItem workarounds
 
         /// <inheritdoc />
+        void ISimplifiedStateControl.UpdateSimplifiedState(bool isSimplified)
+        {
+            this.IsSimplified = isSimplified;
+        }
+
+        /// <inheritdoc />
         void ILogicalChildSupport.AddLogicalChild(object child)
         {
             this.AddLogicalChild(child);
@@ -856,6 +957,11 @@ namespace Fluent
                 if (this.Icon is not null)
                 {
                     yield return this.Icon;
+                }
+
+                if (this.MediumIcon is not null)
+                {
+                    yield return this.MediumIcon;
                 }
 
                 if (this.LargeIcon is not null)

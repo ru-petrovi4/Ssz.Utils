@@ -1,7 +1,5 @@
 ﻿namespace Fluent.Automation.Peers
 {
-    
-
     /// <inheritdoc />
     public class RibbonRadioButtonAutomationPeer : System.Windows.Automation.Peers.RadioButtonAutomationPeer
     {

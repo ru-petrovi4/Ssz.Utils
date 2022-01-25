@@ -4,7 +4,6 @@
     using System.Runtime.CompilerServices;
     using System.Windows.Automation;
     using System.Windows.Automation.Peers;
-    
 
     /// <summary>
     /// Automation peer wrapper for <see cref="RibbonTabItem"/>.
