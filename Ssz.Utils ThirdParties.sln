@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30523.141
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F1B8712C-6D2A-48C3-94DB-DA52207A4DDC}"
 	ProjectSection(SolutionItems) = preProject
@@ -33,6 +33,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickGraph", "ThirdParties\QuickGraph\QuickGraph.csproj", "{E6E35456-07FB-48A3-8C46-81A18B65BBAF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPPlus", "ThirdParties\EPPlus\EPPlus.csproj", "{87EE1C57-7577-4ED2-834C-1FA0C30D9DB8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fluent.Ribbon.Showcase", "ThirdParties\Fluent.Ribbon.Showcase\Fluent.Ribbon.Showcase.csproj", "{73DF5D05-84B1-4302-940C-E90719C6543B}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -94,6 +96,12 @@ Global
 		{87EE1C57-7577-4ED2-834C-1FA0C30D9DB8}.Release_Multiplatform|Any CPU.Build.0 = Release|Any CPU
 		{87EE1C57-7577-4ED2-834C-1FA0C30D9DB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87EE1C57-7577-4ED2-834C-1FA0C30D9DB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73DF5D05-84B1-4302-940C-E90719C6543B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73DF5D05-84B1-4302-940C-E90719C6543B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73DF5D05-84B1-4302-940C-E90719C6543B}.Release_Multiplatform|Any CPU.ActiveCfg = Release|Any CPU
+		{73DF5D05-84B1-4302-940C-E90719C6543B}.Release_Multiplatform|Any CPU.Build.0 = Release|Any CPU
+		{73DF5D05-84B1-4302-940C-E90719C6543B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73DF5D05-84B1-4302-940C-E90719C6543B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -29,9 +29,13 @@
     <EmbeddedResource Include="**/*.Template.xaml" />
     <EmbeddedResource Include="**/GeneratorParameters.json" />
     <UpToDateCheckInput Include="**/*.xaml" />
-  </ItemGroup>
+  </ItemGroup>  
   <ItemGroup>
     <ProjectReference Include="..\ControlzEx\ControlzEx.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Effects\Grayscale.fx" />
+    <Resource Include="Themes\Effects\Grayscale.ps" />
   </ItemGroup>   
   
   <!-- NuGet
@@ -65,10 +69,10 @@
   <!-- Delete generated XAML files when user explicitly executes Clean build. -->
   <Target Name="CleanGenerateXamlFiles" AfterTargets="Clean">
     <ItemGroup>
-      <ThemeFiles Include="$(MSBuildProjectDirectory)/Themes/Themes/Dark.*.xaml" />
-      <ThemeFiles Include="$(MSBuildProjectDirectory)/Themes/Themes/Light.*.xaml" />
-      <ThemeFiles Include="$(MSBuildProjectDirectory)/Themes/Themes/Colorful.*.xaml" />
-      <ThemeFiles Include="$(MSBuildProjectDirectory)/Themes/Styles.xaml" />
+      <ThemeFiles Include="Themes/Themes/Dark.*.xaml" />
+      <ThemeFiles Include="Themes/Themes/Light.*.xaml" />
+      <ThemeFiles Include="Themes/Themes/Colorful.*.xaml" />
+      <ThemeFiles Include="Themes/Styles.xaml" />
     </ItemGroup>
     <Message Text="Deleting XAML Color Scheme files..." Importance="high" />
     <Delete Files="@(ThemeFiles)" ContinueOnError="true" />
