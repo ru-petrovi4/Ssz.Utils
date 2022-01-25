@@ -4,7 +4,7 @@
     <TargetFramework>net6.0-windows</TargetFramework>
 	<OutputType>WinExe</OutputType>
     <StartupObject>FluentTest.Program</StartupObject>
-    <ApplicationIcon>Icons\App.ico</ApplicationIcon>
+    <ApplicationIcon>App.ico</ApplicationIcon>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <RootNamespace>FluentTest</RootNamespace>
@@ -20,7 +20,7 @@
     <Page Remove="MahMetro*" />
     <Compile Remove="MahMetro*" />
     <None Include="MahMetro*" />
-  </ItemGroup>     
+  </ItemGroup> 
 
   <ItemGroup>
     <ProjectReference Include="..\Fluent.Ribbon\Fluent.Ribbon.csproj" />
@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Icons\App.ico" />
     <Resource Include="Images\banner.png" />
     <Resource Include="Images\Blue.png" />
     <Resource Include="Images\BlueLarge.png" />

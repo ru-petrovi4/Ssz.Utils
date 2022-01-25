@@ -143,9 +143,9 @@
             </Setter.Value>
         </Setter>
         <Setter Property="Height" Value="Auto" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="HorizontalAlignment" Value="Left" />        
         <Setter Property="IsMinimized" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:RibbonTabControl}}, Path=IsMinimized, Mode=OneWay, FallbackValue=False}" />
-        <Setter Property="IsOpen" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:RibbonTabControl}}, Path=IsDropDownOpen, Mode=OneWay, FallbackValue=True}" />
+        <Setter Property="IsOpen" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Fluent:RibbonTabControl}}, Path=IsDropDownOpen, Mode=OneWay, FallbackValue=True}" />        
         <Setter Property="Margin" Value="0" />
         <Setter Property="Template" Value="{DynamicResource RibbonTabItemControlTemplate}" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
