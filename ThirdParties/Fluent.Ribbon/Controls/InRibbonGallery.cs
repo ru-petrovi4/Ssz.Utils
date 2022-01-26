@@ -1090,7 +1090,7 @@ namespace Fluent
             DefaultStyleKeyProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(type));
             SelectedItemProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(null, CoerceSelectedItem));
 
-            ToolTipService.Attach(type);
+            ToolTipServiceEx.Attach(type);
             PopupService.Attach(type);
             ContextMenuService.Attach(type);
         }

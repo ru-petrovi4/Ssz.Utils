@@ -163,7 +163,7 @@ namespace Fluent
             var type = typeof(CheckBox);
             DefaultStyleKeyProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(type));
             ContextMenuService.Attach(type);
-            ToolTipService.Attach(type);
+            ToolTipServiceEx.Attach(type);
         }
 
         /// <summary>

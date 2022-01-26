@@ -232,7 +232,7 @@ namespace Fluent
         static MenuItem()
         {
             var type = typeof(MenuItem);
-            ToolTipService.Attach(type);
+            ToolTipServiceEx.Attach(type);
             //PopupService.Attach(type);
             ContextMenuService.Attach(type);
             DefaultStyleKeyProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(type));

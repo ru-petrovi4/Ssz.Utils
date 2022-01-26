@@ -36,6 +36,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPPlus", "ThirdParties\EPPl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fluent.Ribbon.Showcase", "ThirdParties\Fluent.Ribbon.Showcase\Fluent.Ribbon.Showcase.csproj", "{73DF5D05-84B1-4302-940C-E90719C6543B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlAgilityPack", "ThirdParties\HtmlAgilityPack\HtmlAgilityPack.csproj", "{E979A97A-C292-48C4-A389-4A7035A6415C}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		ThirdParties\HelixToolkit\HelixToolkit.Shared\HelixToolkit.Shared.projitems*{167a7c1b-3aee-47d1-bf53-34d48ca97138}*SharedItemsImports = 5
@@ -102,6 +104,12 @@ Global
 		{73DF5D05-84B1-4302-940C-E90719C6543B}.Release_Multiplatform|Any CPU.Build.0 = Release|Any CPU
 		{73DF5D05-84B1-4302-940C-E90719C6543B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73DF5D05-84B1-4302-940C-E90719C6543B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E979A97A-C292-48C4-A389-4A7035A6415C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E979A97A-C292-48C4-A389-4A7035A6415C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E979A97A-C292-48C4-A389-4A7035A6415C}.Release_Multiplatform|Any CPU.ActiveCfg = Release|Any CPU
+		{E979A97A-C292-48C4-A389-4A7035A6415C}.Release_Multiplatform|Any CPU.Build.0 = Release|Any CPU
+		{E979A97A-C292-48C4-A389-4A7035A6415C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E979A97A-C292-48C4-A389-4A7035A6415C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

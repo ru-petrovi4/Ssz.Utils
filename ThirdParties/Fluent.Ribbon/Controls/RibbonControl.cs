@@ -229,7 +229,7 @@ namespace Fluent
         {
             var type = typeof(RibbonControl);
             ContextMenuService.Attach(type);
-            ToolTipService.Attach(type);
+            ToolTipServiceEx.Attach(type);
         }
 
         /// <summary>

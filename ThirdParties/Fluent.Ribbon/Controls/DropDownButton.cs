@@ -356,7 +356,7 @@ namespace Fluent
             KeyboardNavigation.ControlTabNavigationProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(KeyboardNavigationMode.Once));
             KeyboardNavigation.DirectionalNavigationProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(KeyboardNavigationMode.Cycle));
 
-            ToolTipService.Attach(type);
+            ToolTipServiceEx.Attach(type);
             PopupService.Attach(type);
             ContextMenuService.Attach(type);
         }

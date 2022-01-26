@@ -180,7 +180,7 @@ namespace Fluent
             var type = typeof(Button);
             DefaultStyleKeyProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(type));
             ContextMenuService.Attach(type);
-            ToolTipService.Attach(type);
+            ToolTipServiceEx.Attach(type);
         }
 
         /// <summary>

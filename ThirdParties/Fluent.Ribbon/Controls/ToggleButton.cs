@@ -194,7 +194,7 @@ namespace Fluent
             var type = typeof(ToggleButton);
             DefaultStyleKeyProperty.OverrideMetadata(type, new FrameworkPropertyMetadata(type));
             ContextMenuService.Attach(type);
-            ToolTipService.Attach(type);
+            ToolTipServiceEx.Attach(type);
         }
 
         /// <summary>

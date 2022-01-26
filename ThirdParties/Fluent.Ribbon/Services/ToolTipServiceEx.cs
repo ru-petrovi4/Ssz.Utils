@@ -8,7 +8,7 @@ namespace Fluent
     /// <summary>
     /// Provides additional tooltip functionality.
     /// </summary>
-    public static class ToolTipService
+    public static class ToolTipServiceEx
     {
         /// <summary>
         /// Attach ooltip properties to control.
