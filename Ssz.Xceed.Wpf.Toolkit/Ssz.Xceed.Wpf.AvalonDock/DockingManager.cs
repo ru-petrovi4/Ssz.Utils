@@ -84,7 +84,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock
  new LayoutPanel(new LayoutDocumentPaneGroup(new LayoutDocumentPane())) } );
 #endif
             Loaded += DockingManager_Loaded;
-            Unloaded += DockingManager_Unloaded;
+            Unloaded += DockingManager_Unloaded;            
         }
 
         #endregion

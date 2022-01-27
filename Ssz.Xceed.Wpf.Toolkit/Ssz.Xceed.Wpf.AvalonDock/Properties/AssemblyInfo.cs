@@ -36,7 +36,7 @@ using System.Windows.Markup;
     // app, or any theme specific resource dictionaries)
 )]
 
-[assembly: XmlnsPrefix("http://schemas.xceed.com/wpf/xaml/avalondock", "xcad")]
+[assembly: XmlnsPrefix("http://schemas.xceed.com/wpf/xaml/avalondock", "avalondock")]
 [assembly: XmlnsDefinition("http://schemas.xceed.com/wpf/xaml/avalondock", "Ssz.Xceed.Wpf.AvalonDock")]
 [assembly: XmlnsDefinition("http://schemas.xceed.com/wpf/xaml/avalondock", "Ssz.Xceed.Wpf.AvalonDock.Controls")]
 [assembly: XmlnsDefinition("http://schemas.xceed.com/wpf/xaml/avalondock", "Ssz.Xceed.Wpf.AvalonDock.Converters")]

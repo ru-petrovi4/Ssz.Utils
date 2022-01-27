@@ -21,11 +21,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using Ssz.Utils.Wpf;
 using Ssz.Xceed.Wpf.AvalonDock.Layout;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 {
-    public class LayoutDocumentPaneControl : TabControl, ILayoutControl //, ILogicalChildrenContainer
+    public class LayoutDocumentPaneControl : TabControlWithViewCache, ILayoutControl //, ILogicalChildrenContainer
     {
         #region Properties
 
@@ -67,7 +68,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
             SetBinding(ItemsSourceProperty, new Binding("Model.Children") {Source = this});
             SetBinding(FlowDirectionProperty, new Binding("Model.Root.Manager.FlowDirection") {Source = this});
 
-            LayoutUpdated += OnLayoutUpdated;
+            LayoutUpdated += OnLayoutUpdated;            
         }
 
         #endregion

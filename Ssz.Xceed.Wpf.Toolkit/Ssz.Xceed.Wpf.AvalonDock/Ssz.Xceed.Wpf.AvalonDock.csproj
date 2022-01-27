@@ -41,6 +41,7 @@
     <Resource Include="Themes\Generic\Images\PinRestore.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Ssz.Utils.Wpf\Ssz.Utils.Wpf.csproj" />
     <ProjectReference Include="..\Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.Toolkit.csproj" />
   </ItemGroup>
   <ItemGroup>

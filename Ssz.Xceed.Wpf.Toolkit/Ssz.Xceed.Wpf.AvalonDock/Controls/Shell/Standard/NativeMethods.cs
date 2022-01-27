@@ -2114,10 +2114,10 @@ namespace Standard
         public int Bottom { get; set; }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public int Width => Right - Left;
+        public int Width => Math.Abs(Right - Left);
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public int Height => Bottom - Top;
+        public int Height => Math.Abs(Bottom - Top);
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public POINT Position => new() {x = Left, y = Top};

@@ -19,11 +19,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using Ssz.Utils.Wpf;
 using Ssz.Xceed.Wpf.AvalonDock.Layout;
 
 namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 {
-    public class LayoutAnchorablePaneControl : TabControl, ILayoutControl //, ILogicalChildrenContainer
+    public class LayoutAnchorablePaneControl : TabControlWithViewCache, ILayoutControl //, ILogicalChildrenContainer
     {
         #region Members
 
