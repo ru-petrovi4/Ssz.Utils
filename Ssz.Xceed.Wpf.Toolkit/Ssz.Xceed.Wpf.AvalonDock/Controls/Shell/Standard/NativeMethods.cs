@@ -2105,19 +2105,19 @@ namespace Standard
         public int Left { get; set; }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public int Right { get; set; }
+        public int Top { get; set; }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public int Top { get; set; }
+        public int Right { get; set; }        
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public int Bottom { get; set; }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public int Width => Math.Abs(Right - Left);
+        public int Width => Right - Left;
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public int Height => Math.Abs(Bottom - Top);
+        public int Height => Bottom - Top;
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public POINT Position => new() {x = Left, y = Top};
@@ -2181,10 +2181,10 @@ namespace Standard
         public int Left { get; set; }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public int Right { get; set; }
+        public int Top { get; set; }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public int Top { get; set; }
+        public int Right { get; set; }        
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public int Bottom { get; set; }
