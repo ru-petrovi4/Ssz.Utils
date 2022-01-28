@@ -243,6 +243,24 @@
                 Initializes a new instance of the SystemMenuWindow class.
             </summary>
         </member>
+        <member name="M:Ssz.Utils.Wpf.TabControlWithViewCache.OnApplyTemplate">
+            <summary>
+                Get the ItemsHolder and generate any children
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.TabControlWithViewCache.OnItemsChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
+            <summary>
+                When the items change we remove any generated panel children and add any new ones as necessary
+            </summary>
+            <param name="e"></param>
+        </member>
+        <member name="M:Ssz.Utils.Wpf.TabControlWithViewCache.ItemContainerGenerator_StatusChanged(System.Object,System.EventArgs)">
+            <summary>
+                If containers are done, generate the selected item
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
         <member name="T:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder">
             <summary>
             A border that clips its contents.
