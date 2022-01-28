@@ -1086,7 +1086,7 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
 
             IsSelected = LayoutElement.IsSelected;
             IsActive = LayoutElement.IsActive;
-            CanClose = LayoutElement.CanClose;
+            //CanClose = LayoutElement.CanClose;
         }
 
         protected virtual void OnVisibilityChanged()
@@ -1096,10 +1096,10 @@ namespace Ssz.Xceed.Wpf.AvalonDock.Controls
                 LayoutElement.Close();
         }
 
-        internal virtual void Attach(LayoutContent model)
+        internal virtual void Attach(LayoutContent layoutContent)
         {
-            LayoutElement = model;
-            Model = model.Content;
+            LayoutElement = layoutContent;
+            Model = layoutContent.Content;
 
             InitDefaultCommands();
 

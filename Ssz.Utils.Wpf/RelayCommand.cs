@@ -36,7 +36,7 @@ namespace Ssz.Utils.Wpf
 
         #region public functions
         
-        [DebuggerStepThrough]
+        //[DebuggerStepThrough]
         public bool CanExecute(object? parameter)
         {
             if (_canExecuteMethod is null)

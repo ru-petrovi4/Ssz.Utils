@@ -2670,12 +2670,12 @@ namespace Ssz.Xceed.Wpf.AvalonDock
                 _collectLayoutItemsOperations = null;
                 foreach (var itemToRemove in _layoutItems.Where(item => item.LayoutElement.Root != Layout).ToArray())
                 {
-                    if (itemToRemove is not null &&
-                        itemToRemove.Model is not null &&
-                        itemToRemove.Model is UIElement)
-                    {
-                        //((ILogicalChildrenContainer)this).InternalRemoveLogicalChild(itemToRemove.Model as UIElement);
-                    }
+                    //if (itemToRemove is not null &&
+                    //    itemToRemove.Model is not null &&
+                    //    itemToRemove.Model is UIElement)
+                    //{
+                    //    //((ILogicalChildrenContainer)this).InternalRemoveLogicalChild(itemToRemove.Model as UIElement);
+                    //}
 
                     itemToRemove.Detach();
                     _layoutItems.Remove(itemToRemove);
