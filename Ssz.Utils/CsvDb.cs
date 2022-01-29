@@ -109,7 +109,7 @@ namespace Ssz.Utils
         /// <summary>
         ///     Loads data from .csv files on disk.        
         ///     Data is loaded in constructor.
-        ///     Data is loaded when directory changes, if dispatcher in consructor is not null.
+        ///     Data is loaded when directory content changes, if dispatcher in consructor is not null.
         /// </summary>
         public void LoadData()
         {
