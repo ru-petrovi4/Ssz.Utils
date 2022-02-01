@@ -52,6 +52,8 @@ namespace Ssz.Utils
 
         public CaseInsensitiveDictionary<List<string?>> Tags { get; private set; } = null!;
 
+        public bool IsEmpty => Map.Count == 0;
+
         /// <summary>
         ///     Can be called multiple times. Other methods calls must be after this initialization.
         ///     csvDb is used for queries resolving.
@@ -80,13 +82,13 @@ namespace Ssz.Utils
         }
 
         /// <summary>
-        ///     Returns null if not found in map file or result.Count > 1
+        ///     Returns null if not found in map file, otherwise result.Count > 1
         /// </summary>
         /// <param name="elementId"></param>
         /// <returns></returns>
         public List<string?>? GetFromMap(string elementId)
         {
-            if (elementId == @"") return null;
+            if (elementId == @"" || Map.Count == 0) return null;
 
             var values = Map.TryGetValue(elementId);
             if (values is not null)
@@ -144,7 +146,7 @@ namespace Ssz.Utils
         }
 
         /// <summary>
-        ///     Returns null if not found in map file or result.Count > 1
+        ///     Returns null if not found in map file, otherwise result.Count > 1
         /// </summary>
         /// <param name="tag"></param>
         /// <param name="propertyPath"></param>
@@ -153,7 +155,7 @@ namespace Ssz.Utils
         public List<string?>? GetFromMap(string? tag, string? propertyPath, string? tagType)
         {
             string elementId = tag + propertyPath;
-            if (elementId == @"") return null;
+            if (elementId == @"" || Map.Count == 0) return null;
 
             var values = Map.TryGetValue(elementId);
             if (values is not null)

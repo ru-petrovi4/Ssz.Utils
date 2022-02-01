@@ -174,7 +174,19 @@ namespace Ssz.Utils
             return true;
         }
 
-        #endregion
+		protected virtual bool SetValueReferenceCompare<T>(ref T backingField, T value, [CallerMemberName] string propertyName = "")
+		{
+			if (ReferenceEquals(backingField, value))
+			{
+				return false;
+			}
+
+			backingField = value;
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			return true;
+		}
+
+		#endregion
 
 		#region private functions
 
