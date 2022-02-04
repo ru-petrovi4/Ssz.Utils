@@ -184,8 +184,13 @@ namespace Ssz.Utils
         /// <param name="directoryPath"></param>
         /// <param name="throwIfFails"></param>
         /// <returns></returns>
-        public static bool IsDirectoryWritable(string directoryPath, bool throwIfFails = false)
+        public static bool IsDirectoryWritable(string? directoryPath, bool throwIfFails = false)
         {
+            if (String.IsNullOrWhiteSpace(directoryPath))
+                if (throwIfFails)
+                    throw new InvalidOperationException();
+                else
+                    return false;
             try
             {
                 using (FileStream fs = File.Create(
