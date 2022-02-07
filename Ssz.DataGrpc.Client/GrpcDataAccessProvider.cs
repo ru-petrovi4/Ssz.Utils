@@ -935,8 +935,8 @@ namespace Ssz.DataGrpc.Client
                             }
                             //else
                             //{
-                            //    converter.ParentItem = DsSolution.Instance;
-                            //    converter.ReplaceConstants(DsSolution.Instance);
+                            //    converter.ParentItem = DsProject.Instance;
+                            //    converter.ReplaceConstants(DsProject.Instance);
                             //}
 
                             if (childValueSubscriptionsList.Count > 1 || converter is not null)
