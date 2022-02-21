@@ -1222,20 +1222,22 @@
             <param name="tags"></param>
             <param name="csvDb"></param>
         </member>
-        <member name="M:Ssz.Utils.ElementIdsMap.GetFromMap(System.String)">
+        <member name="M:Ssz.Utils.ElementIdsMap.GetFromMap(System.String,System.Func{System.String,System.String})">
             <summary>
                 Returns null if not found in map file, otherwise result.Count > 1
             </summary>
             <param name="elementId"></param>
+            <param name="getConstantValue"></param>
             <returns></returns>
         </member>
-        <member name="M:Ssz.Utils.ElementIdsMap.GetFromMap(System.String,System.String,System.String)">
+        <member name="M:Ssz.Utils.ElementIdsMap.GetFromMap(System.String,System.String,System.String,System.Func{System.String,System.String})">
             <summary>
                 Returns null if not found in map file, otherwise result.Count > 1
             </summary>
             <param name="tag"></param>
             <param name="propertyPath"></param>
             <param name="tagType"></param>
+            <param name="getConstantValue"></param>
             <returns></returns>
         </member>
         <member name="T:Ssz.Utils.FileSystemHelper">

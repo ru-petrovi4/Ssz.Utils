@@ -153,7 +153,9 @@ namespace Ssz.WindowsAPICodePack.Dialogs
             // The string we pass to PSGetPropertyDescriptionListFromString must
             // start with "prop:", followed a list of canonical names for each 
             // property that is to collected.
+#pragma warning disable CS8073 // The result of the expression is always 'true' since a value of type 'PropertyKey' is never equal to 'null' of type 'PropertyKey?'
             if (propertyList != null && propertyList.Length > 0 && propertyList[0] != null)
+#pragma warning restore CS8073 // The result of the expression is always 'true' since a value of type 'PropertyKey' is never equal to 'null' of type 'PropertyKey?'
             {
                 StringBuilder sb = new StringBuilder("prop:");
                 foreach (PropertyKey key in propertyList)

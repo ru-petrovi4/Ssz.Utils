@@ -122,7 +122,9 @@
             this.AssociatedObject.Deactivated -= this.AssociatedObjectActivatedOrDeactivated;
             this.AssociatedObject.StateChanged -= this.AssociatedObjectStateChanged;
             this.AssociatedObject.IsVisibleChanged -= this.AssociatedObjectIsVisibleChanged;
+#pragma warning disable CS8622 // Nullability of reference types in type of parameter 'o' of 'void GlowWindowBehavior.AssociatedObjectOnClosing(object o, CancelEventArgs args)' doesn't match the target delegate 'CancelEventHandler' (possibly because of nullability attributes).
             this.AssociatedObject.Closing -= this.AssociatedObjectOnClosing;
+#pragma warning restore CS8622 // Nullability of reference types in type of parameter 'o' of 'void GlowWindowBehavior.AssociatedObjectOnClosing(object o, CancelEventArgs args)' doesn't match the target delegate 'CancelEventHandler' (possibly because of nullability attributes).
 
             this.DestroyGlowVisibleTimer();
 
@@ -285,7 +287,9 @@
                 // hide the glows if window get invisible state
                 this.AssociatedObject.IsVisibleChanged += this.AssociatedObjectIsVisibleChanged;
                 // closing always handled
+#pragma warning disable CS8622 // Nullability of reference types in type of parameter 'o' of 'void GlowWindowBehavior.AssociatedObjectOnClosing(object o, CancelEventArgs args)' doesn't match the target delegate 'CancelEventHandler' (possibly because of nullability attributes).
                 this.AssociatedObject.Closing += this.AssociatedObjectOnClosing;
+#pragma warning restore CS8622 // Nullability of reference types in type of parameter 'o' of 'void GlowWindowBehavior.AssociatedObjectOnClosing(object o, CancelEventArgs args)' doesn't match the target delegate 'CancelEventHandler' (possibly because of nullability attributes).
             }
         }
 

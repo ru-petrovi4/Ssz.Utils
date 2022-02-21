@@ -202,7 +202,9 @@ namespace Ssz.WindowsAPICodePack.Shell.PropertySystem
                         LocalizedMessages.ShellPropertyWrongType, ValueType.Name));
                 }
 
+#pragma warning disable CS7023 // The second operand of an 'is' or 'as' operator may not be static type 'Nullable'
                 if (value is Nullable)
+#pragma warning restore CS7023 // The second operand of an 'is' or 'as' operator may not be static type 'Nullable'
                 {
                     Type t = typeof(T);
                     PropertyInfo pi = t.GetProperty("HasValue");

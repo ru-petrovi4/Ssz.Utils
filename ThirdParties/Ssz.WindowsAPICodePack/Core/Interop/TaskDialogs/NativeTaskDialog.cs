@@ -456,7 +456,9 @@ namespace Ssz.WindowsAPICodePack.Dialogs
         {
             // Be sure to at least assert here - 
             // messages to invalid handles often just disappear silently
+#pragma warning disable CS8073 // The result of the expression is always 'true' since a value of type 'IntPtr' is never equal to 'null' of type 'IntPtr?'
             Debug.Assert(hWndDialog != null, "HWND for dialog is null during SendMessage");
+#pragma warning restore CS8073 // The result of the expression is always 'true' since a value of type 'IntPtr' is never equal to 'null' of type 'IntPtr?'
 
             return (int)CoreNativeMethods.SendMessage(
                 hWndDialog,

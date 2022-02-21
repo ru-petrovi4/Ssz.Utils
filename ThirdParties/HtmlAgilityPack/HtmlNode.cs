@@ -2452,10 +2452,15 @@ namespace HtmlAgilityPack
 			}
 		}
 
-		/// <summary>Check if the node class has the parameter class.</summary>
+		
+#pragma warning disable CS1572 // XML comment has a param tag for 'class', but there is no parameter by that name
+/// <summary>Check if the node class has the parameter class.</summary>
 		/// <param name="class">The class.</param>
 		/// <returns>True if node class has the parameter class, false if not.</returns>
+#pragma warning disable CS1573 // Parameter 'className' has no matching param tag in the XML comment for 'HtmlNode.HasClass(string)' (but other parameters do)
 		public bool HasClass(string className)
+#pragma warning restore CS1573 // Parameter 'className' has no matching param tag in the XML comment for 'HtmlNode.HasClass(string)' (but other parameters do)
+#pragma warning restore CS1572 // XML comment has a param tag for 'class', but there is no parameter by that name
 		{
 			var classes = GetClasses();
 

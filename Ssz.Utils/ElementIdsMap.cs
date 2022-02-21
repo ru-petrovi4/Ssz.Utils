@@ -85,8 +85,9 @@ namespace Ssz.Utils
         ///     Returns null if not found in map file, otherwise result.Count > 1
         /// </summary>
         /// <param name="elementId"></param>
+        /// <param name="getConstantValue"></param>
         /// <returns></returns>
-        public List<string?>? GetFromMap(string elementId)
+        public List<string?>? GetFromMap(string elementId, Func<string, string>? getConstantValue = null)
         {
             if (elementId == @"" || Map.Count == 0) return null;
 
@@ -133,7 +134,16 @@ namespace Ssz.Utils
             {
                 for (var i = 1; i < values.Count; i++)
                 {
-                    string? v = SszQueryHelper.ComputeValueOfSszQueries(values[i], constant => tag ?? "", _csvDb);
+                    string? v = SszQueryHelper.ComputeValueOfSszQueries(values[i],
+                        constant =>
+                        {
+                            if (String.Equals(constant, GenericTag, StringComparison.InvariantCultureIgnoreCase))
+                                return tag ?? @"";
+                            if (getConstantValue != null)
+                                return getConstantValue(constant);
+                            return @"";
+                        }
+                        , _csvDb);
                     result.Add(v ?? @"");
                 }
             }
@@ -151,8 +161,9 @@ namespace Ssz.Utils
         /// <param name="tag"></param>
         /// <param name="propertyPath"></param>
         /// <param name="tagType"></param>
+        /// <param name="getConstantValue"></param>
         /// <returns></returns>
-        public List<string?>? GetFromMap(string? tag, string? propertyPath, string? tagType)
+        public List<string?>? GetFromMap(string? tag, string? propertyPath, string? tagType, Func<string, string>? getConstantValue = null)
         {
             string elementId = tag + propertyPath;
             if (elementId == @"" || Map.Count == 0) return null;
@@ -182,7 +193,14 @@ namespace Ssz.Utils
             {
                 for (var i = 1; i < values.Count; i++)
                 {
-                    string? v = SszQueryHelper.ComputeValueOfSszQueries(values[i], constant => tag ?? "", _csvDb);
+                    string? v = SszQueryHelper.ComputeValueOfSszQueries(values[i], constant =>
+                    {
+                        if (String.Equals(constant, GenericTag, StringComparison.InvariantCultureIgnoreCase))
+                            return tag ?? @"";
+                        if (getConstantValue != null)
+                            return getConstantValue(constant);
+                        return @"";
+                    }, _csvDb);
                     result.Add(v ?? @"");
                 }
             }
