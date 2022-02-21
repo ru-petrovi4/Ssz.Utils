@@ -228,7 +228,8 @@ namespace Ssz.Xi.Client.Internal.Context
 
             if (_callbackEndpoint is not null) _callbackEndpoint.LastCallUtc = DateTime.UtcNow;
 
-            XiEventList eventList = GetEventList(clientListId);
+            XiEventList? eventList = GetEventList(clientListId);
+            if (eventList is null) return;
 
             EventMessagesCallbackInternal(eventList, eventMessages);
         }

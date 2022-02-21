@@ -468,13 +468,11 @@ namespace Ssz.Xi.Client.Internal.Context
         /// </summary>
         /// <param name="clientListId"> The client list id </param>
         /// <returns> The specified list </returns>
-        private XiDataJournalList GetDataListJournal(uint clientListId)
+        private XiDataJournalList? GetDataListJournal(uint clientListId)
         {
             XiListRoot? xiListRoot;
-            _lists.TryGetValue(clientListId, out xiListRoot);
-            var result = xiListRoot as XiDataJournalList;
-            if (result is null) throw new InvalidOperationException();
-            return result;
+            _lists.TryGetValue(clientListId, out xiListRoot);            
+            return xiListRoot as XiDataJournalList;
         }
 
         /// <summary>
@@ -482,13 +480,11 @@ namespace Ssz.Xi.Client.Internal.Context
         /// </summary>
         /// <param name="clientListId"> The client list id </param>
         /// <returns> The specified list </returns>
-        private XiEventList GetEventList(uint clientListId)
+        private XiEventList? GetEventList(uint clientListId)
         {
             XiListRoot? xiListRoot;
-            _lists.TryGetValue(clientListId, out xiListRoot);            
-            var result = xiListRoot as XiEventList;
-            if (result is null) throw new InvalidOperationException();
-            return result;
+            _lists.TryGetValue(clientListId, out xiListRoot);                        
+            return xiListRoot as XiEventList;
         }
 
         #endregion
