@@ -23,7 +23,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
     using System.Collections;
     using System.Reflection;
 #if FEATURE_REMOTING    
-    using System.Runtime.Remoting.Messaging;
+    // using System.Runtime.Remoting.Messaging;
 #endif
     using System.Diagnostics;
     using System.Globalization;
@@ -86,7 +86,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
                             Contract.Assert(objectInfo!=null, "[BinaryConverter.GetBinaryTypeInfo]objectInfo null for user object");
                             assemId = (int)objectInfo.assemId;
                             if (assemId == 0)
-                                throw new SerializationException(Environment.GetResourceString("Serialization_AssemblyId",typeInformation));
+                                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_AssemblyId",typeInformation));
                         }
                         break;
                     default:
@@ -169,7 +169,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
                     sout.WriteInt32(assemId);
                     break;                    
                 default:
-                    throw new SerializationException(Environment.GetResourceString("Serialization_TypeWrite",((Enum)binaryTypeEnum).ToString()));
+                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TypeWrite",((Enum)binaryTypeEnum).ToString()));
             }
             SerTrace.Log( "BinaryConverter", "WriteTypeInfo Exit");
         }
@@ -200,7 +200,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
                     readAssemId = input.ReadInt32();
                     break;                    
                 default:
-                    throw new SerializationException(Environment.GetResourceString("Serialization_TypeRead",((Enum)binaryTypeEnum).ToString()));                 
+                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TypeRead",((Enum)binaryTypeEnum).ToString()));                 
             }
             SerTrace.Log( "BinaryConverter", "ReadTypeInfo Exit  ",var," assemId ",readAssemId);
             assemId = readAssemId;
@@ -265,7 +265,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
                     }
                     break;
                 default:
-                    throw new SerializationException(Environment.GetResourceString("Serialization_TypeRead",((Enum)binaryTypeEnum).ToString()));                                     
+                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TypeRead",((Enum)binaryTypeEnum).ToString()));                                     
             }
 
 #if _DEBUG
@@ -356,16 +356,16 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         [Conditional("_LOGGING")]                               
         public static void NVTraceI(String name, String value)
         {
-            if (BCLDebug.CheckEnabled("BINARY"))
-                BCLDebug.Trace("BINARY", "  ",name, " = ", value);
+            if (Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("BINARY"))
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", "  ",name, " = ", value);
         }
 
         // Traces an name value pair
         [Conditional("_LOGGING")]                                       
         public static void NVTraceI(String name, Object value)
         {
-            if (BCLDebug.CheckEnabled("BINARY"))
-                BCLDebug.Trace("BINARY", "  ",name, " = ", value);
+            if (Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("BINARY"))
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", "  ",name, " = ", value);
         }
 
     }
@@ -405,7 +405,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
             {
                 assembly = FormatterServices.LoadAssemblyFromStringNoThrow(assemblyString);
                 if (assembly == null)
-                    throw new SerializationException(Environment.GetResourceString("Serialization_AssemblyNotFound",assemblyString));
+                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_AssemblyNotFound",assemblyString));
             }
             return assembly;
         }
@@ -461,7 +461,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
             
             majorVersion = GetInt32(headerBytes, 9);
             if (majorVersion > binaryFormatterMajorVersion)
-                throw new SerializationException(Environment.GetResourceString("Serialization_InvalidFormat", BitConverter.ToString(headerBytes)));
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_InvalidFormat", BitConverter.ToString(headerBytes)));
             
             // binaryHeaderEnum has already been read
             binaryHeaderEnum = (BinaryHeaderEnum)headerBytes[0];
@@ -479,15 +479,15 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         [Conditional("_LOGGING")]
         private void DumpInternal()
         {
-            if (BCLDebug.CheckEnabled("BINARY"))
+            if (Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("BINARY"))
             {
-                BCLDebug.Trace("BINARY", "*****SerializationHeaderRecord*****");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", "*****SerializationHeaderRecord*****");
                 BinaryUtil.NVTraceI("binaryHeaderEnum (Byte)", ((Enum)binaryHeaderEnum).ToString());
                 BinaryUtil.NVTraceI("topId (Int32)", topId);
                 BinaryUtil.NVTraceI("headerId (Int32)", headerId);
                 BinaryUtil.NVTraceI("majorVersion (Int32)", majorVersion);
                 BinaryUtil.NVTraceI("minorVersion (Int32)", minorVersion);
-                BCLDebug.Trace("BINARY","***********************************");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","***********************************");
             }
         }
     }
@@ -533,13 +533,13 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         [Conditional("_LOGGING")]
         private void DumpInternal()
         {
-            if (BCLDebug.CheckEnabled("BINARY"))
+            if (Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("BINARY"))
             {
-                BCLDebug.Trace("BINARY","*****BinaryAssembly*****");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","*****BinaryAssembly*****");
                 BinaryUtil.NVTraceI("binaryHeaderEnum (Byte)", "Assembly");
                 BinaryUtil.NVTraceI("assemId (Int32)", assemId);        
                 BinaryUtil.NVTraceI("Assembly (UTF)", assemblyString);
-                BCLDebug.Trace("BINARY","****************************");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","****************************");
             }
         }
     }
@@ -575,13 +575,13 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         [Conditional("_LOGGING")]
         private void DumpInternal()
         {
-            if (BCLDebug.CheckEnabled("BINARY"))
+            if (Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("BINARY"))
             {
-                BCLDebug.Trace("BINARY","*****BinaryCrossAppDomainAssembly*****");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","*****BinaryCrossAppDomainAssembly*****");
                 BinaryUtil.NVTraceI("binaryHeaderEnum (Byte)", "CrossAppDomainAssembly");
                 BinaryUtil.NVTraceI("assemId (Int32)", assemId);        
                 BinaryUtil.NVTraceI("assemblyIndex (Int32)", assemblyIndex);
-                BCLDebug.Trace("BINARY","****************************");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","****************************");
             }
         }
     }
@@ -626,13 +626,13 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         [Conditional("_LOGGING")]
         private void DumpInternal()
         {
-            if (BCLDebug.CheckEnabled("BINARY"))
+            if (Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("BINARY"))
             {
-                BCLDebug.Trace("BINARY","*****BinaryObject*****");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","*****BinaryObject*****");
                 BinaryUtil.NVTraceI("binaryHeaderEnum (Byte)", "Object");
                 BinaryUtil.NVTraceI("objectId (Int32)", objectId);      
                 BinaryUtil.NVTraceI("mapId (Int32)", mapId);
-                BCLDebug.Trace("BINARY","****************************");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","****************************");
             }
         }
     }
@@ -808,7 +808,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         {
             /*
             if (callA.Length != 7)
-                throw new SerializationException(String.Format(Environment.GetResourceString("Serialization_Method")));
+                throw new SerializationException(String.Format(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_Method")));
                 */
 
             if (IOUtil.FlagTest(messageEnum, MessageEnum.ArgsIsArray))
@@ -822,35 +822,35 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
                 if (IOUtil.FlagTest(messageEnum, MessageEnum.ArgsInArray))
                 {
                     if (callA.Length < arrayPosition)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_Method"));
+                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_Method"));
                     args = (Object[])callA[arrayPosition++];
                 }
 
                 if (IOUtil.FlagTest(messageEnum, MessageEnum.GenericMethod))
                 {
                     if (callA.Length < arrayPosition)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_Method"));
+                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_Method"));
                     instArgs = (Type[])callA[arrayPosition++];
                 }
 
                 if (IOUtil.FlagTest(messageEnum, MessageEnum.MethodSignatureInArray))
                 {
                     if (callA.Length < arrayPosition)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_Method"));
+                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_Method"));
                     methodSignature = callA[arrayPosition++];
                 }
 
                 if (IOUtil.FlagTest(messageEnum, MessageEnum.ContextInArray))
                 {
                     if (callA.Length < arrayPosition)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_Method"));
+                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_Method"));
                     callContext = callA[arrayPosition++];
                 }
 
                 if (IOUtil.FlagTest(messageEnum, MessageEnum.PropertyInArray))
                 {
                     if (callA.Length < arrayPosition)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_Method"));
+                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_Method"));
                     properties = callA[arrayPosition++];
                 }
             }
@@ -866,9 +866,9 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         [Conditional("_LOGGING")]
         private void DumpInternal()
         {
-            if (BCLDebug.CheckEnabled("BINARY"))
+            if (Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("BINARY"))
             {
-                BCLDebug.Trace("BINARY","*****BinaryMethodCall*****");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","*****BinaryMethodCall*****");
                 BinaryUtil.NVTraceI("binaryHeaderEnum (Byte)", "MethodCall");
                 BinaryUtil.NVTraceI("messageEnum (Int32)", ((Enum)messageEnum).ToString());
                 //BinaryUtil.NVTraceI("uri",uri);
@@ -891,7 +891,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
                     }
                 }
 
-                BCLDebug.Trace("BINARY","****************************");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","****************************");
             }
         }
     }
@@ -1103,35 +1103,35 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
                 if (IOUtil.FlagTest(messageEnum, MessageEnum.ArgsInArray))
                 {
                     if (returnA.Length < arrayPosition)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_Method"));
+                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_Method"));
                     args = (Object[])returnA[arrayPosition++];
                 }
 
                 if (IOUtil.FlagTest(messageEnum, MessageEnum.ReturnValueInArray))
                 {
                     if (returnA.Length < arrayPosition)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_Method"));
+                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_Method"));
                     returnValue = returnA[arrayPosition++];
                 }
 
                 if (IOUtil.FlagTest(messageEnum, MessageEnum.ExceptionInArray))
                 {
                     if (returnA.Length < arrayPosition)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_Method"));
+                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_Method"));
                     exception = (Exception)returnA[arrayPosition++];
                 }
 
                 if (IOUtil.FlagTest(messageEnum, MessageEnum.ContextInArray))
                 {
                    if (returnA.Length < arrayPosition)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_Method"));
+                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_Method"));
                     callContext = returnA[arrayPosition++];
                 }
 
                 if (IOUtil.FlagTest(messageEnum, MessageEnum.PropertyInArray))
                 {
                     if (returnA.Length < arrayPosition)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_Method"));
+                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_Method"));
                     properties = returnA[arrayPosition++];
                 }
             }
@@ -1146,9 +1146,9 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         [Conditional("_LOGGING")]
         private void DumpInternal()
         {
-            if (BCLDebug.CheckEnabled("BINARY"))
+            if (Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("BINARY"))
             {
-                BCLDebug.Trace("BINARY","*****BinaryMethodReturn*****");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","*****BinaryMethodReturn*****");
                 BinaryUtil.NVTraceI("binaryHeaderEnum (Byte)", "MethodReturn");
                 BinaryUtil.NVTraceI("messageEnum (Int32)", ((Enum)messageEnum).ToString());
 
@@ -1172,7 +1172,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
                     }
                 }
 
-                BCLDebug.Trace("BINARY","****************************");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","****************************");
             }
         }
     }
@@ -1218,13 +1218,13 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         [Conditional("_LOGGING")]
         private void DumpInternal()
         {
-            if (BCLDebug.CheckEnabled("BINARY"))
+            if (Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("BINARY"))
             {
-                BCLDebug.Trace("BINARY","*****BinaryObjectString*****");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","*****BinaryObjectString*****");
                 BinaryUtil.NVTraceI("binaryHeaderEnum (Byte)", "ObjectString");
                 BinaryUtil.NVTraceI("objectId (Int32)", objectId);              
                 BinaryUtil.NVTraceI("value (UTF)", value);
-                BCLDebug.Trace("BINARY","****************************");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","****************************");
             }
         }
     }
@@ -1260,13 +1260,13 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         [Conditional("_LOGGING")]
         private void DumpInternal()
         {
-            if (BCLDebug.CheckEnabled("BINARY"))
+            if (Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("BINARY"))
             {
-                BCLDebug.Trace("BINARY","*****BinaryCrossAppDomainString*****");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","*****BinaryCrossAppDomainString*****");
                 BinaryUtil.NVTraceI("binaryHeaderEnum (Byte)", "CrossAppDomainString");
                 BinaryUtil.NVTraceI("objectId (Int32)", objectId);              
                 BinaryUtil.NVTraceI("value (Int32)", value);
-                BCLDebug.Trace("BINARY","****************************");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","****************************");
             }
         }
     }
@@ -1299,12 +1299,12 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         [Conditional("_LOGGING")]
         private void DumpInternal()
         {
-            if (BCLDebug.CheckEnabled("BINARY"))
+            if (Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("BINARY"))
             {
-                BCLDebug.Trace("BINARY","*****BinaryCrossAppDomainMap*****");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","*****BinaryCrossAppDomainMap*****");
                 BinaryUtil.NVTraceI("binaryHeaderEnum (Byte)", "CrossAppDomainMap");
                 BinaryUtil.NVTraceI("crossAppDomainArrayIndex (Int32)", crossAppDomainArrayIndex);              
-                BCLDebug.Trace("BINARY","****************************");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","****************************");
             }
         }
     }
@@ -1349,13 +1349,13 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         [Conditional("_LOGGING")]
         private void DumpInternal()
         {
-            if (BCLDebug.CheckEnabled("BINARY"))
+            if (Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("BINARY"))
             {
-                BCLDebug.Trace("BINARY","*****MemberPrimitiveTyped*****");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","*****MemberPrimitiveTyped*****");
                 BinaryUtil.NVTraceI("binaryHeaderEnum (Byte)", "MemberPrimitiveTyped");
                 BinaryUtil.NVTraceI("primitiveTypeEnum (Byte)", ((Enum)primitiveTypeEnum).ToString());
                 BinaryUtil.NVTraceI("value ("+ Converter.ToComType(primitiveTypeEnum)+")", value);
-                BCLDebug.Trace("BINARY","****************************");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","****************************");
             }
         }
     }
@@ -1438,9 +1438,9 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         [Conditional("_LOGGING")]
         private void DumpInternal()
         {
-            if (BCLDebug.CheckEnabled("BINARY"))
+            if (Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("BINARY"))
             {
-                BCLDebug.Trace("BINARY","*****BinaryObjectWithMap*****");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","*****BinaryObjectWithMap*****");
                 BinaryUtil.NVTraceI("binaryHeaderEnum (Byte)", ((Enum)binaryHeaderEnum).ToString());
                 BinaryUtil.NVTraceI("objectId (Int32)", objectId);
                 BinaryUtil.NVTraceI("name (UTF)", name);
@@ -1449,7 +1449,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
                     BinaryUtil.NVTraceI("memberNames (UTF)", memberNames[i]);
                 if (binaryHeaderEnum == BinaryHeaderEnum.ObjectWithMapAssemId)
                 BinaryUtil.NVTraceI("assemId (Int32)", assemId);
-                BCLDebug.Trace("BINARY","****************************");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","****************************");
             }
         }
     }
@@ -1571,9 +1571,9 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         [Conditional("_LOGGING")]
         private void DumpInternal()
         {
-            if (BCLDebug.CheckEnabled("BINARY"))
+            if (Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("BINARY"))
             {
-                BCLDebug.Trace("BINARY","*****BinaryObjectWithMapTyped*****");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","*****BinaryObjectWithMapTyped*****");
                 BinaryUtil.NVTraceI("binaryHeaderEnum (Byte)", ((Enum)binaryHeaderEnum).ToString());
                 BinaryUtil.NVTraceI("objectId (Int32)", objectId);          
                 BinaryUtil.NVTraceI("name (UTF)", name);
@@ -1602,7 +1602,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
             */
                 if (binaryHeaderEnum == BinaryHeaderEnum.ObjectWithMapTypedAssemId)
                     BinaryUtil.NVTraceI("assemId (Int32)", assemId);
-                BCLDebug.Trace("BINARY","****************************");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","****************************");
             }
         }
 #endif
@@ -1768,34 +1768,34 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         [Conditional("_LOGGING")]
         private void DumpInternal()
         {
-            if (BCLDebug.CheckEnabled("BINARY"))
+            if (Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("BINARY"))
             {
                 switch (binaryHeaderEnum)
                 {
                     case BinaryHeaderEnum.ArraySinglePrimitive:
-                        BCLDebug.Trace("BINARY","*****ArraySinglePrimitive*****");
+                        Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","*****ArraySinglePrimitive*****");
                         BinaryUtil.NVTraceI("binaryHeaderEnum (Byte)", ((Enum)binaryHeaderEnum).ToString());
                         BinaryUtil.NVTraceI("objectId (Int32)", objectId);                              
                         BinaryUtil.NVTraceI("length (Int32)", lengthA[0]);
                         BinaryUtil.NVTraceI("InternalPrimitiveTypeE (Byte)", ((Enum)typeInformation).ToString());
-                        BCLDebug.Trace("BINARY","****************************");
+                        Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","****************************");
                         break;
                     case BinaryHeaderEnum.ArraySingleString:
-                        BCLDebug.Trace("BINARY","*****ArraySingleString*****");
+                        Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","*****ArraySingleString*****");
                         BinaryUtil.NVTraceI("binaryHeaderEnum (Byte)", ((Enum)binaryHeaderEnum).ToString());
                         BinaryUtil.NVTraceI("objectId (Int32)", objectId);
                         BinaryUtil.NVTraceI("length (Int32)", lengthA[0]);
-                        BCLDebug.Trace("BINARY","****************************");
+                        Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","****************************");
                         break;
                     case BinaryHeaderEnum.ArraySingleObject:
-                        BCLDebug.Trace("BINARY","*****ArraySingleObject*****");
+                        Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","*****ArraySingleObject*****");
                         BinaryUtil.NVTraceI("binaryHeaderEnum (Byte)", ((Enum)binaryHeaderEnum).ToString());
                         BinaryUtil.NVTraceI("objectId (Int32)", objectId);
                         BinaryUtil.NVTraceI("length (Int32)", lengthA[0]);
-                        BCLDebug.Trace("BINARY","****************************");
+                        Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","****************************");
                         break;
                     default:
-                        BCLDebug.Trace("BINARY","*****BinaryArray*****");
+                        Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","*****BinaryArray*****");
                         BinaryUtil.NVTraceI("binaryHeaderEnum (Byte)", ((Enum)binaryHeaderEnum).ToString());
                         BinaryUtil.NVTraceI("objectId (Int32)", objectId);                              
                         BinaryUtil.NVTraceI("binaryArrayTypeEnum (Byte)", ((Enum)binaryArrayTypeEnum).ToString());              
@@ -1817,7 +1817,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
                             BinaryUtil.NVTraceI("typeInformation "+BinaryConverter.TypeInfoTraceString(typeInformation), typeInformation);
                         if (binaryTypeEnum == BinaryTypeEnum.ObjectUser)
                             BinaryUtil.NVTraceI("assemId (Int32)", assemId);
-                        BCLDebug.Trace("BINARY","****************************");
+                        Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","****************************");
                         break;
                 }
             }
@@ -1871,12 +1871,12 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         [Conditional("_LOGGING")]
         private void DumpInternal()
         {
-            if (BCLDebug.CheckEnabled("BINARY"))
+            if (Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("BINARY"))
             {
                 String typeString = Converter.ToComType(typeInformation);
-                BCLDebug.Trace("BINARY","*****MemberPrimitiveUnTyped*****");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","*****MemberPrimitiveUnTyped*****");
                 BinaryUtil.NVTraceI("value ("+typeString+")", value);
-                BCLDebug.Trace("BINARY","****************************");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","****************************");
             }
         }
     }
@@ -1917,12 +1917,12 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         [Conditional("_LOGGING")]
         private void DumpInternal()
         {
-            if (BCLDebug.CheckEnabled("BINARY"))
+            if (Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("BINARY"))
             {
-                BCLDebug.Trace("BINARY","*****MemberReference*****");       
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","*****MemberReference*****");       
                 BinaryUtil.NVTraceI("binaryHeaderEnum (Byte)", ((Enum)BinaryHeaderEnum.MemberReference).ToString());        
                 BinaryUtil.NVTraceI("idRef (Int32)", idRef);
-                BCLDebug.Trace("BINARY","****************************");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","****************************");
             }
         }
     }
@@ -1994,9 +1994,9 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         [Conditional("_LOGGING")]
         private void DumpInternal()
         {
-            if (BCLDebug.CheckEnabled("BINARY"))
+            if (Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("BINARY"))
             {
-                BCLDebug.Trace("BINARY","*****ObjectNull*****");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","*****ObjectNull*****");
                 if (nullCount == 1)
                 {
                     BinaryUtil.NVTraceI("binaryHeaderEnum (Byte)", "ObjectNull");
@@ -2012,7 +2012,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
                     BinaryUtil.NVTraceI("nullCount (Int32)", nullCount);
                 }
 
-                BCLDebug.Trace("BINARY","********************");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","********************");
             }
         }
     }
@@ -2048,9 +2048,9 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         [Conditional("_LOGGING")]
         private void DumpInternal(Stream sout)
         {
-            if (BCLDebug.CheckEnabled("BINARY"))
+            if (Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("BINARY"))
             {
-                BCLDebug.Trace("BINARY","*****MessageEnd*****");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","*****MessageEnd*****");
                 BinaryUtil.NVTraceI("binaryHeaderEnum (Byte)", "MessageEnd");
                 long length = -1;
                 if (sout != null && sout.CanSeek)
@@ -2058,7 +2058,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
                     length = sout.Length;
                     BinaryUtil.NVTraceI("Total Message Length in Bytes ", length);
                 }
-                BCLDebug.Trace("BINARY","********************");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","********************");
             }
         }
     }
@@ -2120,7 +2120,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
             this.assemblyInfo = assemblyInfo;
 
             if (assemblyInfo == null)
-                throw new SerializationException(Environment.GetResourceString("Serialization_Assembly",objectName));
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_Assembly",objectName));
 
             objectType = objectReader.GetType(assemblyInfo, objectName);
 
@@ -2136,7 +2136,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
                 BinaryConverter.TypeFromInfo(binaryTypeEnumA[i], typeInformationA[i], objectReader, (BinaryAssemblyInfo)assemIdToAssemblyTable[memberAssemIds[i]],
                                              out primitiveTypeEnum, out typeString, out type, out isVariant);
                 //if ((object)type == null)
-                //    throw new SerializationException(String.Format(Environment.GetResourceString("Serialization_TypeResolved"),objectName+" "+memberNames[i]+" "+typeInformationA[i]));
+                //    throw new SerializationException(String.Format(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TypeResolved"),objectName+" "+memberNames[i]+" "+typeInformationA[i]));
                 memberTypes[i] = type;
             }
 
@@ -2381,8 +2381,8 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
             }
             catch (Exception e)
             {
-                BCLDebug.Log("[ObjectProgress.Dump]Unable to Dump Object Progress.");
-                BCLDebug.Log("[ObjectProgress.Dump]Error: "+e);
+                Ssz.Runtime.Serialization.BCLDebug.Log("[ObjectProgress.Dump]Unable to Dump Object Progress.");
+                Ssz.Runtime.Serialization.BCLDebug.Log("[ObjectProgress.Dump]Error: "+e);
             }
         }
 #endif 

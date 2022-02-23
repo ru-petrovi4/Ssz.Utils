@@ -8,7 +8,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 {
     using System;
     using System.Collections;
-    using System.Runtime.Remoting.Messaging;
+    // using System.Runtime.Remoting.Messaging;
     using System.Reflection;
 
 

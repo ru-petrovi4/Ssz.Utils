@@ -227,7 +227,7 @@ namespace Ssz.Runtime.Serialization
             if (serializedState == null)
                 throw new ArgumentNullException("serializedState");
             if (!serializedState.GetType().IsSerializable)
-                throw new ArgumentException(Environment.GetResourceString("Serialization_NonSerType", serializedState.GetType(), serializedState.GetType().Assembly.FullName));
+                throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_NonSerType", serializedState.GetType(), serializedState.GetType().Assembly.FullName));
 
             m_serializedStates.Add(serializedState);
         }
@@ -419,7 +419,7 @@ namespace Ssz.Runtime.Serialization
             
             // previousType is the last type that did implement the deserialization .ctor before the first
             // type that did not, so we'll grab it's .ctor to use for deserialization.
-            BCLDebug.Assert(previousType != null, "We should have at least one inheritance from the base type");
+            Ssz.Runtime.Serialization.BCLDebug.Assert(previousType != null, "We should have at least one inheritance from the base type");
             serializationCtor = ObjectManager.GetConstructor(previousType);
 
             // Allocate an instance of the final type and run the selected .ctor on that instance to get the

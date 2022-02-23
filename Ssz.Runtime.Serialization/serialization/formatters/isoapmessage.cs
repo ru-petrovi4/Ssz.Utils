@@ -17,7 +17,7 @@ namespace Ssz.Runtime.Serialization.Formatters {
 
     using System.Runtime.Remoting;
     using Ssz.Runtime.Serialization;
-    using System.Runtime.Remoting.Messaging;    
+    // using System.Runtime.Remoting.Messaging;    
     using System;
     // Used to specify a call record to either the binary or xml serializer
     // The call record can be transmitted as the SOAP Top record which contains

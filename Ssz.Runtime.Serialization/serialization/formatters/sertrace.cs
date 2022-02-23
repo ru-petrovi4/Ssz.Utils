@@ -48,14 +48,14 @@ namespace Ssz.Runtime.Serialization.Formatters {
         [System.Diagnostics.Conditional("_LOGGING")]
         public static void InfoSoap(params Object[]messages)
         {
-            BCLDebug.Trace("SOAP", messages);
+            Ssz.Runtime.Serialization.BCLDebug.Trace("SOAP", messages);
         }
 
         //[System.Diagnostics.Conditional("_LOGGING")]        
         /// <internalonly/>
         public static bool SoapCheckEnabled()
         {
-            return BCLDebug.CheckEnabled("SOAP");
+            return Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("SOAP");
         }
     }
 
@@ -72,14 +72,14 @@ namespace Ssz.Runtime.Serialization.Formatters {
         [System.Diagnostics.Conditional("_LOGGING")]
         public static void InfoSoap(params Object[]messages)
         {
-            BCLDebug.Trace("SOAP", messages);
+            Ssz.Runtime.Serialization.BCLDebug.Trace("SOAP", messages);
         }
 
         //[System.Diagnostics.Conditional("_LOGGING")]        
         /// <internalonly/>
         public static bool SoapCheckEnabled()
         {
-            return BCLDebug.CheckEnabled("Soap");
+            return Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("Soap");
         }
 
         /// <internalonly/>
@@ -91,7 +91,7 @@ namespace Ssz.Runtime.Serialization.Formatters {
             else
                 messages[0] = messages[0]+" ";                
 
-            BCLDebug.Trace("SOAP",messages);                                
+            Ssz.Runtime.Serialization.BCLDebug.Trace("SOAP",messages);                                
         }
 
         /// <internalonly/>
@@ -129,7 +129,7 @@ namespace Ssz.Runtime.Serialization.Formatters {
         [Conditional("_LOGGING")]
         internal static void InfoLog(params Object[]messages)
         {
-            BCLDebug.Trace("BINARY", messages);
+            Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", messages);
         }
 
         [Conditional("SER_LOGGING")]            
@@ -139,7 +139,7 @@ namespace Ssz.Runtime.Serialization.Formatters {
                 messages[0] = (messages[0].GetType()).Name+" ";
             else
                 messages[0] = messages[0]+" ";                                
-            BCLDebug.Trace("BINARY",messages);
+            Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY",messages);
         }
     }
 }

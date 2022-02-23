@@ -92,7 +92,7 @@ namespace Ssz.Runtime.Serialization {
             long foundID;
             
             if (obj==null) {
-                throw new ArgumentNullException("obj", Environment.GetResourceString("ArgumentNull_Obj"));
+                throw new ArgumentNullException("obj", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentNull_Obj"));
             }
             Contract.EndContractBlock();
 
@@ -101,7 +101,7 @@ namespace Ssz.Runtime.Serialization {
             //We pull out foundID so that rehashing doesn't cause us to lose track of the id that we just found.
             if (!found) {
 #if FEATURE_REMOTING                
-                BCLDebug.Trace("SER", "[ObjectIDGenerator.GetID] Adding objectid: ", (m_currentCount), " and hash code: ", 
+                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectIDGenerator.GetID] Adding objectid: ", (m_currentCount), " and hash code: ", 
                                RuntimeHelpers.GetHashCode(obj), " at pos: ", pos, " Type: ", obj, "IsTransparentProxy: ",
                                System.Runtime.Remoting.RemotingServices.IsTransparentProxy(obj));
 #endif    
@@ -114,7 +114,7 @@ namespace Ssz.Runtime.Serialization {
                     Rehash();
                 }
             } else {
-                BCLDebug.Trace("SER", "[ObjectIDGenerator.GetID] Found objectid: ", (m_ids[pos]), " with hashcode: ", RuntimeHelpers.GetHashCode(obj), " Type: ", obj);
+                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectIDGenerator.GetID] Found objectid: ", (m_ids[pos]), " with hashcode: ", RuntimeHelpers.GetHashCode(obj), " Type: ", obj);
                 foundID = m_ids[pos];
             }
             firstTime = !found;
@@ -129,7 +129,7 @@ namespace Ssz.Runtime.Serialization {
             bool found;
     
             if (obj==null) {
-                throw new ArgumentNullException("obj", Environment.GetResourceString("ArgumentNull_Obj"));
+                throw new ArgumentNullException("obj", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentNull_Obj"));
             }
             Contract.EndContractBlock();
     
@@ -162,7 +162,7 @@ namespace Ssz.Runtime.Serialization {
             if (i==arr.Length) {
                 //We just walked off the end of the array, what would you like to do now?
                 //We're pretty much hosed at this point, so just keep going.
-                throw new SerializationException(Environment.GetResourceString("Serialization_TooManyElements"));
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TooManyElements"));
             }
             m_currentSize = arr[i];
     

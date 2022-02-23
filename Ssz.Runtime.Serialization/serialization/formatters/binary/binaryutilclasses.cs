@@ -27,7 +27,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
     using System.Globalization;
     using Ssz.Runtime.Serialization.Formatters;
     using System.Runtime.Remoting;
-    using System.Runtime.Remoting.Messaging;
+    // using System.Runtime.Remoting.Messaging;
     using System.Runtime.InteropServices;
     using Ssz.Runtime.Serialization;
     using System.Diagnostics;
@@ -460,7 +460,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             }
             catch (Exception)
             {
-                throw new SerializationException(Environment.GetResourceString("Serialization_CorruptedStream"));
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_CorruptedStream"));
             }
         }
 
@@ -550,7 +550,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             }
             catch (Exception)
             {
-                throw new SerializationException(Environment.GetResourceString("Serialization_CorruptedStream"));
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_CorruptedStream"));
             }
         }
     }
@@ -637,14 +637,14 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         [Conditional("_LOGGING")]
         internal static void NVTraceI(String name, String value)
         {
-            BCLDebug.Trace("Binary", "  "+name+((value == null)?" = null":" = "+value));
+            Ssz.Runtime.Serialization.BCLDebug.Trace("Binary", "  "+name+((value == null)?" = null":" = "+value));
         }
 
         // Traces an name value pair
         [Conditional("_LOGGING")]
         internal static void NVTraceI(String name, Object value)
         {
-            BCLDebug.Trace("Binary", "  "+name+((value == null)?" = null":" = "+value.ToString()));
+            Ssz.Runtime.Serialization.BCLDebug.Trace("Binary", "  "+name+((value == null)?" = null":" = "+value.ToString()));
         }
     }
 #endif
@@ -700,7 +700,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                 {
                     MemberInfo[] valueInfos = type.GetMember("Value");
                     if (valueInfos.Length != 1)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_HeaderReflection",valueInfos.Length));
+                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_HeaderReflection",valueInfos.Length));
                     valueInfo = valueInfos[0];
                 }
                 FormatterServices.SerializationSetValue(valueInfo, header, obj);

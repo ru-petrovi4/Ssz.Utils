@@ -15,7 +15,7 @@
 #if FEATURE_REMOTING
 namespace Ssz.Runtime.Serialization.Formatters {
     using System.Runtime.Remoting;
-    using System.Runtime.Remoting.Messaging;
+    // using System.Runtime.Remoting.Messaging;
     using Ssz.Runtime.Serialization;
     using System;
     // Class is used to return the call object for a SOAP call.

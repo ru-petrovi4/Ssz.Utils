@@ -22,7 +22,7 @@ namespace Ssz.Runtime.Serialization {
 [System.Runtime.InteropServices.ComVisible(true)]
     [Serializable] public class SerializationException : SystemException {
         
-        private static String _nullMessage = Environment.GetResourceString("Arg_SerializationException");
+        private static String _nullMessage = Ssz.Runtime.Serialization.Environment.GetResourceString("Arg_SerializationException");
         
         // Creates a new SerializationException with its message 
         // string set to a default message.

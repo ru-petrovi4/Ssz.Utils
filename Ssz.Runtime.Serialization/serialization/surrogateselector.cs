@@ -93,14 +93,14 @@ namespace Ssz.Runtime.Serialization {
             // Verify that we don't try and add ourself twice.
             //
             if (selector==this) {
-                throw new SerializationException(Environment.GetResourceString("Serialization_DuplicateSelector"));
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_DuplicateSelector"));
             }
             
             //
             // Verify that the argument doesn't contain a cycle.
             //
             if (!HasCycle(selector)) {
-                throw new ArgumentException(Environment.GetResourceString("Serialization_SurrogateCycleInArgument"), "selector");
+                throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_SurrogateCycleInArgument"), "selector");
             }
 
             //
@@ -114,7 +114,7 @@ namespace Ssz.Runtime.Serialization {
                 tempCurr = tempCurr.GetNextSelector();
             }
             if (tempCurr==this) {
-                throw new ArgumentException(Environment.GetResourceString("Serialization_SurrogateCycle"), "selector");
+                throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_SurrogateCycle"), "selector");
             }
 
             //
@@ -132,7 +132,7 @@ namespace Ssz.Runtime.Serialization {
                     break;
                 }
                 if (tempCurr==tempPrev) {
-                    throw new ArgumentException(Environment.GetResourceString("Serialization_SurrogateCycle"), "selector");
+                    throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_SurrogateCycle"), "selector");
                 }
 
                 if (tempCurr==tempEnd) {
@@ -148,7 +148,7 @@ namespace Ssz.Runtime.Serialization {
                     tempPrev = tempPrev.GetNextSelector();
                 }
                 if (tempCurr==tempPrev) {
-                    throw new ArgumentException(Environment.GetResourceString("Serialization_SurrogateCycle"), "selector");
+                    throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_SurrogateCycle"), "selector");
                 }
             }
 

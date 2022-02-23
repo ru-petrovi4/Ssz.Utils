@@ -100,7 +100,7 @@ namespace Ssz.Runtime.Serialization {
         Object IEnumerator.Current { //Actually returns a SerializationEntry
             get {
                 if (m_current==false) {
-                    throw new InvalidOperationException(Environment.GetResourceString("InvalidOperation_EnumOpCantHappen"));
+                    throw new InvalidOperationException(Ssz.Runtime.Serialization.Environment.GetResourceString("InvalidOperation_EnumOpCantHappen"));
                 }
                 return (Object)(new SerializationEntry(m_members[m_currItem], m_data[m_currItem], m_types[m_currItem]));
             }
@@ -109,7 +109,7 @@ namespace Ssz.Runtime.Serialization {
         public SerializationEntry Current { //Actually returns a SerializationEntry
             get {
                 if (m_current==false) {
-                    throw new InvalidOperationException(Environment.GetResourceString("InvalidOperation_EnumOpCantHappen"));
+                    throw new InvalidOperationException(Ssz.Runtime.Serialization.Environment.GetResourceString("InvalidOperation_EnumOpCantHappen"));
                 }
                 return (new SerializationEntry(m_members[m_currItem], m_data[m_currItem], m_types[m_currItem]));
             }
@@ -123,7 +123,7 @@ namespace Ssz.Runtime.Serialization {
         public String Name {
             get {
                 if (m_current==false) {
-                    throw new InvalidOperationException(Environment.GetResourceString("InvalidOperation_EnumOpCantHappen"));
+                    throw new InvalidOperationException(Ssz.Runtime.Serialization.Environment.GetResourceString("InvalidOperation_EnumOpCantHappen"));
                 }
                 return m_members[m_currItem];
             }
@@ -131,7 +131,7 @@ namespace Ssz.Runtime.Serialization {
         public Object Value {
             get {
                 if (m_current==false) {
-                    throw new InvalidOperationException(Environment.GetResourceString("InvalidOperation_EnumOpCantHappen"));
+                    throw new InvalidOperationException(Ssz.Runtime.Serialization.Environment.GetResourceString("InvalidOperation_EnumOpCantHappen"));
                 }
                 return m_data[m_currItem];
             }
@@ -139,7 +139,7 @@ namespace Ssz.Runtime.Serialization {
         public Type ObjectType {
             get {
                 if (m_current==false) {
-                    throw new InvalidOperationException(Environment.GetResourceString("InvalidOperation_EnumOpCantHappen"));
+                    throw new InvalidOperationException(Ssz.Runtime.Serialization.Environment.GetResourceString("InvalidOperation_EnumOpCantHappen"));
                 }
                 return m_types[m_currItem];
             }

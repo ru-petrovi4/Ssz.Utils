@@ -151,7 +151,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             else if (obj is ISerializable)
             {
                 if (!objectType.IsSerializable) {
-                    throw new SerializationException(Environment.GetResourceString("Serialization_NonSerType",
+                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_NonSerType",
                                                                    objectType.FullName, objectType.Assembly.FullName));
                 }
                 si = new SerializationInfo(objectType, converter, !FormatterServices.UnsafeTypeForwardersIsEnabled());
@@ -314,7 +314,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                         && !objectAssembly.IsFullyTrusted)
                     {
                         // if the object assembly is partially trusted, we will block the TypeForwardedFrom case
-                        throw new SecurityException(Environment.GetResourceString("Serialization_RequireFullTrust", objectType));
+                        throw new SecurityException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_RequireFullTrust", objectType));
                     }
                 }
             }
@@ -412,7 +412,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             }
             else
             {
-                throw new SerializationException(Environment.GetResourceString("Serialization_SerMemberInfo",objMember.GetType()));
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_SerMemberInfo",objMember.GetType()));
             }
 
             return objectType;
@@ -427,7 +427,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             if (isSi)
             {
                 if (!isNamed)
-                    throw new SerializationException(Environment.GetResourceString("Serialization_ISerializableMemberInfo"));
+                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ISerializableMemberInfo"));
             }
         }
 
@@ -653,9 +653,9 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             if (cache == null)
                 return null;
             if (isSi)
-                throw new SerializationException(Environment.GetResourceString("Serialization_MemberInfo",objectType+" "+name));
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_MemberInfo",objectType+" "+name));
             if (cache.memberInfos == null)
-                throw new SerializationException(Environment.GetResourceString("Serialization_NoMemberInfo",objectType+" "+name));
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_NoMemberInfo",objectType+" "+name));
             int position = Position(name);
             if (position != -1)
                 return cache.memberInfos[Position(name)];
@@ -678,7 +678,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                 type = (Type)memberTypesList[position];
 
             if ((object)type == null)
-                throw new SerializationException(Environment.GetResourceString("Serialization_ISerializableTypes",objectType+" "+name));
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ISerializableTypes",objectType+" "+name));
 
             SerTrace.Log( this,objectInfoId," ", objectType," GetType Exit ",type);
             return type;
@@ -800,7 +800,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                     }
                 }
 
-                //throw new SerializationException(String.Format(Environment.GetResourceString("Serialization_MissingMember"),name,objectType));
+                //throw new SerializationException(String.Format(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_MissingMember"),name,objectType));
                 lastPosition = 0;
                 return -1;
             }
@@ -810,7 +810,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         internal  Type[] GetMemberTypes(String[] inMemberNames, Type objectType)
         {
             if (isSi)
-                throw new SerializationException(Environment.GetResourceString("Serialization_ISerializableTypes",objectType));
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ISerializableTypes",objectType));
 
             //Contract.Assert(cache!=null, "[ReadObjectInfo::GetMemberTypes] cache!=null");
             if (cache == null)
@@ -856,7 +856,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                         Object [] attrs = cache.memberInfos[i].GetCustomAttributes(typeof(OptionalFieldAttribute), false);
                         if ((attrs == null || attrs.Length == 0) && !bSimpleAssembly){
                             // the member isnt optionally serializable
-                            throw new SerializationException(Environment.GetResourceString("Serialization_MissingMember", cache.memberNames[i], objectType, typeof(OptionalFieldAttribute).FullName));
+                            throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_MissingMember", cache.memberNames[i], objectType, typeof(OptionalFieldAttribute).FullName));
                         }
                     }
                 }
@@ -884,7 +884,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             }
             else
             {
-                throw new SerializationException(Environment.GetResourceString("Serialization_SerMemberInfo",objMember.GetType()));
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_SerMemberInfo",objMember.GetType()));
             }
 
             return objectType;

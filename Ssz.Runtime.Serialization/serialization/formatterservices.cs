@@ -95,7 +95,7 @@ namespace Ssz.Runtime.Serialization {
             }
 
             if (!(CheckSerializable(type))) {
-                    throw new SerializationException(Environment.GetResourceString("Serialization_NonSerType", type.FullName, type.Module.Assembly.FullName));
+                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_NonSerType", type.FullName, type.Module.Assembly.FullName));
             }
           
             //Get all of the serializable members in the class to be serialized.
@@ -114,7 +114,7 @@ namespace Ssz.Runtime.Serialization {
                     for (int i = 0; i < parentTypeCount;i++){
                         parentType = parentTypes[i];
                         if (!CheckSerializable(parentType)) {
-                                throw new SerializationException(Environment.GetResourceString("Serialization_NonSerType", parentType.FullName, parentType.Module.Assembly.FullName));
+                                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_NonSerType", parentType.FullName, parentType.Module.Assembly.FullName));
                         }
 
                         typeFields = parentType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
@@ -190,7 +190,7 @@ namespace Ssz.Runtime.Serialization {
             Contract.EndContractBlock();
 
             if (!(type is RuntimeType)) {
-                throw new SerializationException(Environment.GetResourceString("Serialization_InvalidType", type.ToString()));
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_InvalidType", type.ToString()));
             }
     
             MemberHolder mh = new MemberHolder(type, context);
@@ -215,7 +215,7 @@ namespace Ssz.Runtime.Serialization {
             if (securityLevel == TypeFilterLevel.Low){
                 for(int i=0;i<advancedTypes.Length;i++){
                     if (advancedTypes[i].IsAssignableFrom(t))
-                        throw new SecurityException(Environment.GetResourceString("Serialization_TypeSecurity", advancedTypes[i].FullName, t.FullName));
+                        throw new SecurityException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TypeSecurity", advancedTypes[i].FullName, t.FullName));
                 }                  
             }
         }    
@@ -236,7 +236,7 @@ namespace Ssz.Runtime.Serialization {
             Contract.EndContractBlock();
     
             if (!(type is RuntimeType)) {
-                throw new SerializationException(Environment.GetResourceString("Serialization_InvalidType", type.ToString()));
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_InvalidType", type.ToString()));
             }
 
             return nativeGetUninitializedObject((RuntimeType)type);
@@ -250,7 +250,7 @@ namespace Ssz.Runtime.Serialization {
              Contract.EndContractBlock();
     
             if (!(type is RuntimeType)) {
-                throw new SerializationException(Environment.GetResourceString("Serialization_InvalidType", type.ToString()));
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_InvalidType", type.ToString()));
             }
 #if FEATURE_REMOTING            
             if (Object.ReferenceEquals(type, typeof(System.Runtime.Remoting.Messaging.ConstructionCall)) || 
@@ -263,7 +263,7 @@ namespace Ssz.Runtime.Serialization {
                 return nativeGetSafeUninitializedObject((RuntimeType)type);                    
             }
             catch(SecurityException e) {                
-                throw new SerializationException(Environment.GetResourceString("Serialization_Security",  type.FullName), e);
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_Security",  type.FullName), e);
             }                                        
         }
 
@@ -316,7 +316,7 @@ namespace Ssz.Runtime.Serialization {
                 return;
             }
 
-            throw new ArgumentException(Environment.GetResourceString("Argument_InvalidFieldInfo"));
+            throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Argument_InvalidFieldInfo"));
         }
 
         // Fill in the members of obj with the data contained in data.
@@ -337,19 +337,19 @@ namespace Ssz.Runtime.Serialization {
             }
 
             if (members.Length!=data.Length) {
-                throw new ArgumentException(Environment.GetResourceString("Argument_DataLengthDifferent"));
+                throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Argument_DataLengthDifferent"));
             }
             Contract.EndContractBlock();
 
             MemberInfo mi;
 
-            BCLDebug.Trace("SER", "[PopulateObjectMembers]Enter.");
+            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[PopulateObjectMembers]Enter.");
 
             for (int i=0; i<members.Length; i++) {
                 mi = members[i];
     
                 if (mi==null) {
-                    throw new ArgumentNullException("members", Environment.GetResourceString("ArgumentNull_NullMember", i));
+                    throw new ArgumentNullException("members", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentNull_NullMember", i));
                 }
         
                 //If we find an empty, it means that the value was never set during deserialization.
@@ -359,16 +359,16 @@ namespace Ssz.Runtime.Serialization {
                     if (mi.MemberType==MemberTypes.Field) {
                         SerializationSetValue(mi, obj, data[i]);
                     } else {
-                        throw new SerializationException(Environment.GetResourceString("Serialization_UnknownMemberInfo"));
+                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_UnknownMemberInfo"));
                     }
 
-                    BCLDebug.Trace("SER", "[PopulateObjectMembers]\tType:", obj.GetType(), "\tMember:", 
+                    Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[PopulateObjectMembers]\tType:", obj.GetType(), "\tMember:", 
                                    members[i].Name, " with member type: ", ((FieldInfo)members[i]).FieldType);
                 }
                 //Console.WriteLine("X");
             }
             
-            BCLDebug.Trace("SER", "[PopulateObjectMembers]Leave.");
+            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[PopulateObjectMembers]Leave.");
 
             return obj;
         }
@@ -398,7 +398,7 @@ namespace Ssz.Runtime.Serialization {
                 mi=members[i];
     
                 if (mi==null) {
-                    throw new ArgumentNullException("members", Environment.GetResourceString("ArgumentNull_NullMember", i));
+                    throw new ArgumentNullException("members", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentNull_NullMember", i));
                 }
     
                 if (mi.MemberType==MemberTypes.Field) {
@@ -413,7 +413,7 @@ namespace Ssz.Runtime.Serialization {
                         data[i] = ((SerializationFieldInfo)mi).InternalGetValue(obj);
                     }
                 } else {
-                    throw new SerializationException(Environment.GetResourceString("Serialization_UnknownMemberInfo"));
+                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_UnknownMemberInfo"));
                 }
             }
     
@@ -459,7 +459,7 @@ namespace Ssz.Runtime.Serialization {
             //
             // Try using the stringized assembly name to load from the fusion cache.
             //
-            BCLDebug.Trace("SER", "[LoadAssemblyFromString]Looking for assembly: ", assemblyName);
+            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[LoadAssemblyFromString]Looking for assembly: ", assemblyName);
             Assembly found = Assembly.Load(assemblyName);
             return found;
         }
@@ -469,7 +469,7 @@ namespace Ssz.Runtime.Serialization {
                 return LoadAssemblyFromString(assemblyName);
             }
             catch (Exception e){
-                BCLDebug.Trace("SER", "[LoadAssemblyFromString]", e.ToString());
+                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[LoadAssemblyFromString]", e.ToString());
             }
             return null;
         }

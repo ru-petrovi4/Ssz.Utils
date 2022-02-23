@@ -22,7 +22,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
     using System.Collections;
     using System.Text;
     using System.Runtime.Remoting;
-    using System.Runtime.Remoting.Messaging;
+    // using System.Runtime.Remoting.Messaging;
     using Ssz.Runtime.Serialization;
     using System.Security.Permissions;
     using System.Security;
@@ -30,7 +30,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
     using System.Resources;
     using System.Runtime.CompilerServices;
     using System.Diagnostics.Contracts;
-    using StackCrawlMark = System.Threading.StackCrawlMark;
+    //using StackCrawlMark = System.Threading.StackCrawlMark;
 
     internal sealed class ObjectReader
     {
@@ -111,7 +111,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         {
             if (stream == null)
             {
-                throw new ArgumentNullException("stream", Environment.GetResourceString("ArgumentNull_Stream"));
+                throw new ArgumentNullException("stream", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentNull_Stream"));
             }
             Contract.EndContractBlock();
 
@@ -126,11 +126,12 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             // This is a hack to allow us to write a type-limiting deserializer
             // when we know exactly what type to expect at the head of the 
             // object graph.
-            if (m_binder != null) {
-                ResourceReader.TypeLimitingDeserializationBinder tldBinder = m_binder as ResourceReader.TypeLimitingDeserializationBinder;
-                if (tldBinder != null)
-                    tldBinder.ObjectReader = this;
-            }
+            // VALFIX
+            //if (m_binder != null) {
+            //    ResourceReader.TypeLimitingDeserializationBinder tldBinder = m_binder as ResourceReader.TypeLimitingDeserializationBinder;
+            //    if (tldBinder != null)
+            //        tldBinder.ObjectReader = this;
+            //}
 #endif // !FEATURE_PAL && FEATURE_SERIALIZATION
 
             this.formatterEnums = formatterEnums;
@@ -143,7 +144,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         [System.Security.SecurityCritical]  // auto-generated
         internal Object Deserialize(HeaderHandler handler, __BinaryParser serParser, bool fCheck, bool isCrossAppDomain, IMethodCallMessage methodCallMessage) {
             if (serParser == null)
-                throw new ArgumentNullException("serParser", Environment.GetResourceString("ArgumentNull_WithParamName", serParser));
+                throw new ArgumentNullException("serParser", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentNull_WithParamName", serParser));
             Contract.EndContractBlock();
 
 #if _DEBUG
@@ -161,7 +162,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
             if (fCheck)
             {
-                CodeAccessPermission.Demand(PermissionType.SecuritySerialization);
+                // CodeAccessPermission.Demand(PermissionType.SecuritySerialization);
             }
 
             this.handler = handler;
@@ -184,7 +185,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 #endif                
             {
                 if (TopObject == null)
-                    throw new SerializationException(Environment.GetResourceString("Serialization_TopObject"));
+                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TopObject"));
 
                 //if TopObject has a surrogate then the actual object may be changed during special fixup
                 //So refresh it using topID.
@@ -229,7 +230,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         internal Object Deserialize(HeaderHandler handler, __BinaryParser serParser, bool fCheck)
         {
             if (serParser == null)
-                throw new ArgumentNullException("serParser", Environment.GetResourceString("ArgumentNull_WithParamName", serParser));
+                throw new ArgumentNullException("serParser", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentNull_WithParamName", serParser));
             Contract.EndContractBlock();
 
 #if _DEBUG
@@ -247,7 +248,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
             if (fCheck)
             {
-                CodeAccessPermission.Demand(PermissionType.SecuritySerialization);
+                // CodeAccessPermission.Demand(PermissionType.SecuritySerialization);
             }
 
             this.handler = handler;
@@ -280,7 +281,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 #endif                
             {
                 if (TopObject == null)
-                    throw new SerializationException(Environment.GetResourceString("Serialization_TopObject"));
+                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TopObject"));
 
                 //if TopObject has a surrogate then the actual object may be changed during special fixup
                 //So refresh it using topID.
@@ -333,7 +334,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         private void CheckSerializable(Type t)
         {
             if (!t.IsSerializable && !HasSurrogate(t))
-                throw new SerializationException(String.Format(CultureInfo.InvariantCulture, Environment.GetResourceString("Serialization_NonSerType"), 
+                throw new SerializationException(String.Format(CultureInfo.InvariantCulture, Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_NonSerType"), 
                                                                      t.FullName, t.Assembly.FullName));
         }
 
@@ -409,7 +410,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                     break;
                 case InternalParseTypeE.Empty:
                 default:
-                    throw new SerializationException(Environment.GetResourceString("Serialization_XMLElement", pr.PRname));                  
+                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_XMLElement", pr.PRname));                  
 
             }
         }
@@ -421,7 +422,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 #if _DEBUG
             SerTrace.Log( this, " ParseError ",processing," ",onStack);
 #endif
-            throw new SerializationException(Environment.GetResourceString("Serialization_ParseError",onStack.PRname+" "+((Enum)onStack.PRparseTypeEnum) + " "+processing.PRname+" "+((Enum)processing.PRparseTypeEnum)));                               
+            throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ParseError",onStack.PRname+" "+((Enum)onStack.PRparseTypeEnum) + " "+processing.PRname+" "+((Enum)processing.PRparseTypeEnum)));                               
         }
 
         // Parse the SerializedStreamHeader element. This is the first element in the stream if present
@@ -458,7 +459,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             if ((object)t != null){
                 if( IsRemoting){
                     if (typeof(MarshalByRefObject).IsAssignableFrom(t))
-                        throw new ArgumentException(Environment.GetResourceString("Serialization_MBRAsMBV", t.FullName));
+                        throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_MBRAsMBV", t.FullName));
                     FormatterServices.CheckTypeSecurity(t, formatterEnums.FEsecurityLevel);
                 }
             }
@@ -546,7 +547,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             }
 
             if (pr.PRnewObj == null)
-                throw new SerializationException(Environment.GetResourceString("Serialization_TopObjectInstantiate",pr.PRdtType));
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TopObjectInstantiate",pr.PRdtType));
 
             if (pr.PRobjectPositionEnum == InternalObjectPositionE.Top)
             {
@@ -731,14 +732,14 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                         bCouldBeValueType = false;
                     }
                     else if ((object)pr.PRarrayElementType != null) {
-                        pr.PRnewObj = Array.UnsafeCreateInstance(pr.PRarrayElementType, pr.PRlengthA[0]);
+                        pr.PRnewObj = Ssz.Runtime.Serialization.SszArray.UnsafeCreateInstance(pr.PRarrayElementType, pr.PRlengthA[0]);
                     }
                     pr.PRisLowerBound = false;
                 }
                 else
                 {
                     if ((object)pr.PRarrayElementType != null) {
-                        pr.PRnewObj = Array.UnsafeCreateInstance(pr.PRarrayElementType, pr.PRlengthA, pr.PRlowerBoundA);
+                        pr.PRnewObj = Ssz.Runtime.Serialization.SszArray.UnsafeCreateInstance(pr.PRarrayElementType, pr.PRlengthA, pr.PRlowerBoundA);
                     }
                     pr.PRisLowerBound = true;
                 }
@@ -784,9 +785,9 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
                 if ((object)pr.PRarrayElementType != null){
                     if (!pr.PRisLowerBound)
-                        pr.PRnewObj = Array.UnsafeCreateInstance(pr.PRarrayElementType, pr.PRlengthA);
+                        pr.PRnewObj = Ssz.Runtime.Serialization.SszArray.UnsafeCreateInstance(pr.PRarrayElementType, pr.PRlengthA);
                     else
-                        pr.PRnewObj = Array.UnsafeCreateInstance(pr.PRarrayElementType, pr.PRlengthA, pr.PRlowerBoundA);
+                        pr.PRnewObj = Ssz.Runtime.Serialization.SszArray.UnsafeCreateInstance(pr.PRarrayElementType, pr.PRlengthA, pr.PRlowerBoundA);
                 }
 
                 SerTrace.Log( this, "ParseArray Rectangle Array ",pr.PRnewObj.GetType()," lower Bound ",pr.PRisLowerBound);
@@ -802,7 +803,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 pr.PRlinearlength = sum;
             }
             else
-                throw new SerializationException(Environment.GetResourceString("Serialization_ArrayType",((Enum)pr.PRarrayTypeEnum)));                               
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ArrayType",((Enum)pr.PRarrayTypeEnum)));                               
 
 #if FEATURE_REMOTING
             CheckSecurity(pr);
@@ -958,7 +959,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 {
                     // Array of type object
                     if (pr.PRkeyDt == null)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_ArrayTypeObject"));
+                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ArrayTypeObject"));
 
                     Object var = null;
 
@@ -1150,7 +1151,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                         objectPr.PRobjectInfo.AddValue(pr.PRname, Convert.FromBase64String(pr.PRvalue), ref objectPr.PRsi, ref objectPr.PRmemberData);                                    
                     }
                     else if (Object.ReferenceEquals(pr.PRdtType, Converter.typeofObject))
-                        throw new SerializationException(Environment.GetResourceString("Serialization_TypeMissing", pr.PRname));
+                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TypeMissing", pr.PRname));
                     else
                     {
                         SerTrace.Log( this, "Object Class with no memberInfo data  Member "+pr.PRname+" type "+pr.PRdtType);
@@ -1423,10 +1424,15 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         [MethodImplAttribute(MethodImplOptions.NoInlining)] // Methods containing StackCrawlMark local var has to be marked non-inlineable
         private static Assembly ResolveSimpleAssemblyName(AssemblyName assemblyName)
         {
-            StackCrawlMark stackMark = StackCrawlMark.LookForMe;
-            Assembly assm = RuntimeAssembly.LoadWithPartialNameInternal(assemblyName, null, ref stackMark);
+            // VALFIX
+            //StackCrawlMark stackMark = StackCrawlMark.LookForMe;
+            //Assembly assm = RuntimeAssembly.LoadWithPartialNameInternal(assemblyName, null, ref stackMark);
+            //if (assm == null && assemblyName != null)
+            //    assm = RuntimeAssembly.LoadWithPartialNameInternal(assemblyName.Name, null, ref stackMark);
+            //return assm;
+            Assembly assm = RuntimeAssembly.LoadWithPartialNameInternal(assemblyName.Name, null);
             if (assm == null && assemblyName != null)
-                assm = RuntimeAssembly.LoadWithPartialNameInternal(assemblyName.Name, null, ref stackMark);
+                assm = RuntimeAssembly.LoadWithPartialNameInternal(assemblyName.Name, null);
             return assm;
         }
 
@@ -1506,34 +1512,34 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 // we have a type forward to attribute !
 
                 // we can try to see if the dest assembly has less permissionSet
-                if (!destAssembly.PermissionSet.IsSubsetOf(sourceAssembly.PermissionSet))
-                {
-                    // let us try to see if typeforwardedfrom is there
+                //if (!destAssembly.PermissionSet.IsSubsetOf(sourceAssembly.PermissionSet))
+                //{
+                //    // let us try to see if typeforwardedfrom is there
 
-                    // let us hit the cache first
-                    TypeInformation typeInfo = BinaryFormatter.GetTypeInformation(resolvedType);
-                    if (typeInfo.HasTypeForwardedFrom)
-                    {
-                        Assembly typeFowardedFromAssembly = null;
-                        try
-                        {
-                            // if this Assembly.Load failed, we still want to throw security exception
-                            typeFowardedFromAssembly = Assembly.Load(typeInfo.AssemblyString);
-                        }
-                        catch { }
+                //    // let us hit the cache first
+                //    TypeInformation typeInfo = BinaryFormatter.GetTypeInformation(resolvedType);
+                //    if (typeInfo.HasTypeForwardedFrom)
+                //    {
+                //        Assembly typeFowardedFromAssembly = null;
+                //        try
+                //        {
+                //            // if this Assembly.Load failed, we still want to throw security exception
+                //            typeFowardedFromAssembly = Assembly.Load(typeInfo.AssemblyString);
+                //        }
+                //        catch { }
 
-                        if (typeFowardedFromAssembly != sourceAssembly)
-                        {
-                            // throw security exception
-                            throw new SecurityException() { Demanded = sourceAssembly.PermissionSet };
-                        }
-                    }
-                    else
-                    {
-                        // throw security exception
-                        throw new SecurityException() { Demanded = sourceAssembly.PermissionSet };
-                    }
-                }
+                //        if (typeFowardedFromAssembly != sourceAssembly)
+                //        {
+                //            // throw security exception
+                //            throw new SecurityException() { Demanded = sourceAssembly.PermissionSet };
+                //        }
+                //    }
+                //    else
+                //    {
+                //        // throw security exception
+                //        throw new SecurityException() { Demanded = sourceAssembly.PermissionSet };
+                //    }
+                //}
             }         
         }
 

@@ -54,12 +54,12 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         internal void WriteBegin()
         {
-            BCLDebug.Trace("BINARY", "\n%%%%%BinaryWriterBegin%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
+            Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", "\n%%%%%BinaryWriterBegin%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
         }
 
         internal void WriteEnd()
         {
-            BCLDebug.Trace("BINARY", "\n%%%%%BinaryWriterEnd%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
+            Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", "\n%%%%%BinaryWriterEnd%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
             dataWriter.Flush();
         }
 
@@ -235,7 +235,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
             if (objectId > 0)
             {
-                BCLDebug.Trace("BINARY", "-----Top Level Object-----");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", "-----Top Level Object-----");
             }
 
             String objectName = null;
@@ -371,7 +371,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
             if (arrayNameInfo.NIobjectId >0)
             {
-                BCLDebug.Trace("BINARY", "-----Top Level Object-----");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", "-----Top Level Object-----");
             }
 #if _DEBUG                        
             binaryArray.Dump();
@@ -406,7 +406,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             {
                 int numArrayItems = Math.Min(chunkSize/typeLength, array.Length-arrayOffset);
                 int bufferUsed = numArrayItems*typeLength;
-                Buffer.InternalBlockCopy(array, arrayOffset*typeLength, byteBuffer, 0, bufferUsed);
+                Ssz.Runtime.Serialization.SszBuffer.InternalBlockCopy(array, arrayOffset*typeLength, byteBuffer, 0, bufferUsed);
 #if BIGENDIAN
                 // we know that we are writing a primitive type, so just do a simple swap
                 for (int i = 0; i < bufferUsed; i += typeLength) 
@@ -458,7 +458,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
             if (arrayNameInfo.NIobjectId >0)
             {
-                BCLDebug.Trace("BINARY", "-----Top Level Object-----");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", "-----Top Level Object-----");
             }
 #if _DEBUG                        
             binaryArray.Dump();
@@ -496,7 +496,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
             if (arrayNameInfo.NIobjectId >0)
             {
-                BCLDebug.Trace("BINARY", "-----Top Level Object-----");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", "-----Top Level Object-----");
             }
 #if _DEBUG                        
             binaryArray.Dump();
@@ -539,11 +539,11 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
                 if (memberNameInfo.NIisArrayItem)
                 {
-                    BCLDebug.Trace("BINARY",  "-----item-----");
+                    Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY",  "-----item-----");
                 }
                 else
                 {
-                    BCLDebug.Trace("BINARY","-----",memberNameInfo.NIname,"-----");
+                    Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","-----",memberNameInfo.NIname,"-----");
                 }
                 memberPrimitiveTyped.Dump();
 
@@ -557,11 +557,11 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
                 if (memberNameInfo.NIisArrayItem)
                 {
-                    BCLDebug.Trace("BINARY", "-----item-----");
+                    Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", "-----item-----");
                 }
                 else
                 {
-                    BCLDebug.Trace("BINARY", "-----",memberNameInfo.NIname,"-----");
+                    Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", "-----",memberNameInfo.NIname,"-----");
                 }
                 memberPrimitiveUnTyped.Dump();
 
@@ -584,12 +584,12 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
             if (memberNameInfo.NIisArrayItem)
             {
-                BCLDebug.Trace("BINARY",  "-----item-----");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY",  "-----item-----");
             }
             else
             {
                 objectNull.SetNullCount(1);
-                BCLDebug.Trace("BINARY", "-----",memberNameInfo.NIname,"-----");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", "-----",memberNameInfo.NIname,"-----");
                 objectNull.Dump();
                 objectNull.Write(this);
                 nullCount = 0;
@@ -607,11 +607,11 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
             if (memberNameInfo.NIisArrayItem)
             {
-                BCLDebug.Trace("BINARY", "-----item-----");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", "-----item-----");
             }
             else
             {
-                BCLDebug.Trace("BINARY", "-----",memberNameInfo.NIname,"-----");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", "-----",memberNameInfo.NIname,"-----");
             }
             memberReference.Dump();
 
@@ -623,11 +623,11 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             InternalWriteItemNull();
             if (memberNameInfo.NIisArrayItem)
             {
-                BCLDebug.Trace("BINARY", "-----item-----");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", "-----item-----");
             }
             else
             {
-                BCLDebug.Trace("BINARY", "-----",memberNameInfo.NIname,"-----");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", "-----",memberNameInfo.NIname,"-----");
             }
         }
 
@@ -636,11 +636,11 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             InternalWriteItemNull();
             if (memberNameInfo.NIisArrayItem)
             {
-                BCLDebug.Trace("BINARY", "-----item-----");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", "-----item-----");
             }
             else
             {
-                BCLDebug.Trace("BINARY", "-----",memberNameInfo.NIname,"-----");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", "-----",memberNameInfo.NIname,"-----");
             }
             WriteObjectString((int)typeNameInfo.NIobjectId, value);
         }
@@ -674,7 +674,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 if (objectNull == null)
                     objectNull = new ObjectNull();
                 objectNull.SetNullCount(nullCount);
-                BCLDebug.Trace("BINARY",  "-----item-----");
+                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY",  "-----item-----");
                 objectNull.Dump();
                 objectNull.Write(this);
                 nullCount = 0;
@@ -765,7 +765,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 WriteDateTime((DateTime)value);
                 break;
             default:
-                throw new SerializationException(Environment.GetResourceString("Serialization_TypeCode",((Enum)code).ToString()));
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TypeCode",((Enum)code).ToString()));
             }
             SerTrace.Log( this, "Write Exit ");
         }

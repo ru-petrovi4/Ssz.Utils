@@ -32,7 +32,7 @@ namespace Ssz.Runtime.Serialization
             }
             set {
                 if (value < 1)
-                    throw new ArgumentException(Environment.GetResourceString("Serialization_OptionalFieldVersionValue"));
+                    throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_OptionalFieldVersionValue"));
                 Contract.EndContractBlock();
                 this.versionAdded = value;
             }

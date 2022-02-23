@@ -18,7 +18,7 @@ namespace Ssz.Runtime.Serialization
 {
     using System.Runtime.Remoting;
     using System.Runtime.Remoting.Proxies;
-    using System.Runtime.Remoting.Messaging;
+    // using System.Runtime.Remoting.Messaging;
     using Ssz.Runtime.Serialization;
     using System;
     using System.Collections;
@@ -93,7 +93,7 @@ namespace Ssz.Runtime.Serialization
             else
             {
                 // Getting here means a bug in cloner
-                throw new ArgumentException(Environment.GetResourceString("Arg_SerializationException"));
+                throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Arg_SerializationException"));
             }
 
             if (retObj == null)
@@ -157,7 +157,7 @@ namespace Ssz.Runtime.Serialization
                         // [OptionalField].
                         Object [] attrs = mi[index].GetCustomAttributes(typeof(OptionalFieldAttribute), false);
                         if (attrs == null || attrs.Length == 0)
-                            throw new SerializationException(Environment.GetResourceString("Serialization_MissingMember",
+                            throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_MissingMember",
                                                                            mi[index],
                                                                            serObj.GetType(),
                                                                            typeof(OptionalFieldAttribute).FullName));

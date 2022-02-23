@@ -187,7 +187,7 @@ namespace Ssz.Runtime.Serialization
         {
             if (!IsAssemblyNameAssignmentSafe(originalAssemblyName, newAssemblyName))
             {
-                CodeAccessPermission.Demand(PermissionType.SecuritySerialization);
+                // CodeAccessPermission.Demand(PermissionType.SecuritySerialization);
             }
         }
 
@@ -393,8 +393,8 @@ namespace Ssz.Runtime.Serialization
         {
             if (m_nameToIndex.ContainsKey(name))
             {
-                BCLDebug.Trace("SER", "[SerializationInfo.AddValue]Tried to add ", name, " twice to the SI.");
-                throw new SerializationException(Environment.GetResourceString("Serialization_SameNameTwice"));
+                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[SerializationInfo.AddValue]Tried to add ", name, " twice to the SI.");
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_SameNameTwice"));
             }
             m_nameToIndex.Add(name, m_currMember);
 
@@ -453,7 +453,7 @@ namespace Ssz.Runtime.Serialization
                 throw new ArgumentNullException("name");
             }
             Contract.EndContractBlock();
-            BCLDebug.Trace("SER", "[SerializationInfo.FindElement]Looking for ", name, " CurrMember is: ", m_currMember);
+            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[SerializationInfo.FindElement]Looking for ", name, " CurrMember is: ", m_currMember);
             int index;
             if (m_nameToIndex.TryGetValue(name, out index))
             {
@@ -477,7 +477,7 @@ namespace Ssz.Runtime.Serialization
             int index = FindElement(name);
             if (index == -1)
             {
-                throw new SerializationException(Environment.GetResourceString("Serialization_NotFound", name));
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_NotFound", name));
             }
 
             Contract.Assert(index < m_data.Length, "[SerializationInfo.GetElement]index<m_data.Length");
@@ -524,7 +524,7 @@ namespace Ssz.Runtime.Serialization
 
             RuntimeType rt = type as RuntimeType;
             if (rt == null)
-                throw new ArgumentException(Environment.GetResourceString("Argument_MustBeRuntimeType"));
+                throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Argument_MustBeRuntimeType"));
 
             Type foundType;
             Object value;
