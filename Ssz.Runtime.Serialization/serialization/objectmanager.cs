@@ -414,7 +414,7 @@ namespace Ssz.Runtime.Serialization {
             //If the outermost container isn't an array, we need to grab it.  Otherwise, we just need to hang onto
             //the boxed object that we already grabbed.  We'll assign the boxed object back into the array as the
             //last step.
-            if (!(holder.ObjectValue is SszArray) && holder.ObjectValue!=null) {
+            if (!(holder.ObjectValue is Array) && holder.ObjectValue!=null) {
                 fixupObj = holder.ObjectValue;
                 Contract.Assert(fixupObj!=null, "[ObjectManager.DoValueTypeFixup]FixupObj!=null");
             }
@@ -447,8 +447,8 @@ namespace Ssz.Runtime.Serialization {
                 //Make the TypedReference and use it to set the value.
                 typedRef = TypedReference.MakeTypedReference(fixupObj, fields);
                 if (memberToFix != null)
-                    //((RuntimeFieldInfo)memberToFix).SetValueDirectImpl(value, false, typedRef);
-                    ((RuntimeFieldInfo)memberToFix).SetValueDirect(typedRef, value);
+                    //((FieldInfo)memberToFix).SetValueDirectImpl(value, false, typedRef);
+                    ((FieldInfo)memberToFix).SetValueDirect(typedRef, value);
                 else
                     TypedReference.SetTypedReference(typedRef, value);
             } else if (memberToFix != null){
@@ -575,7 +575,7 @@ namespace Ssz.Runtime.Serialization {
                         //Delayed Fixups should be handled by the above branch.
                         switch(currentFixup.m_fixupType) {
                         case FixupHolder.ArrayFixup:
-                            Contract.Assert(holder.ObjectValue is SszArray,"holder.ObjectValue is Array");
+                            Contract.Assert(holder.ObjectValue is Array,"holder.ObjectValue is Array");
                             if (holder.RequiresValueTypeFixup) {
                                 throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ValueTypeFixup"));
                             } else {
@@ -746,7 +746,7 @@ namespace Ssz.Runtime.Serialization {
             }
             Contract.EndContractBlock();
 
-            if (member!=null && !(member is RuntimeFieldInfo) && !(member is SerializationFieldInfo)) {
+            if (member!=null && !(member is FieldInfo) && !(member is SerializationFieldInfo)) {
                 throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_UnknownMemberInfo"));
             }
 
@@ -1021,7 +1021,7 @@ namespace Ssz.Runtime.Serialization {
             //}
             //Contract.EndContractBlock();
 
-            //if (!(member is RuntimeFieldInfo) && !(member is SerializationFieldInfo)) {
+            //if (!(member is FieldInfo) && !(member is SerializationFieldInfo)) {
             //    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_InvalidType", member.GetType().ToString()));
             //}
 

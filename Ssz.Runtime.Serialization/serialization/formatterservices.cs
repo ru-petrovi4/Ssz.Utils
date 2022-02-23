@@ -124,7 +124,7 @@ namespace Ssz.Runtime.Serialization {
                         foreach (FieldInfo field in typeFields) {
                             // Family and Assembly fields will be gathered by the type itself.
                             if (!field.IsNotSerialized) {
-                                allMembers.Add(new SerializationFieldInfo((RuntimeFieldInfo)field, typeName));
+                                allMembers.Add(new SerializationFieldInfo((FieldInfo)field, typeName));
                             }
                         }
                     }
@@ -238,13 +238,14 @@ namespace Ssz.Runtime.Serialization {
             //    throw new ArgumentNullException("type");
             //}
             //Contract.EndContractBlock();
-    
+
             //if (!(type is Type)) {
             //    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_InvalidType", type.ToString()));
             //}
 
             //return nativeGetUninitializedObject((Type)type);
-            return Activator.CreateInstance(type);
+
+            return System.Runtime.Serialization.FormatterServices.GetUninitializedObject(type);
         }
     
         // [System.Security.SecurityCritical]  // auto-generated_required
@@ -407,10 +408,9 @@ namespace Ssz.Runtime.Serialization {
                     throw new ArgumentNullException("members", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentNull_NullMember", i));
                 }
     
-                if (mi.MemberType==MemberTypes.Field) {
-                    // VALFIX
-                    //Contract.Assert(mi is RuntimeFieldInfo || mi is SerializationFieldInfo,
-                    //                "[FormatterServices.GetObjectData]mi is RuntimeFieldInfo || mi is SerializationFieldInfo.");
+                if (mi.MemberType==MemberTypes.Field) {                    
+                    Contract.Assert(mi is FieldInfo || mi is SerializationFieldInfo,
+                                    "[FormatterServices.GetObjectData]mi is FieldInfo || mi is SerializationFieldInfo.");
 
                     FieldInfo rfi = mi as FieldInfo;
                     if (rfi != null) {
