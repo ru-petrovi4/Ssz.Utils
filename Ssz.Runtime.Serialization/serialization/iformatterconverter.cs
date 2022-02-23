@@ -19,7 +19,7 @@ namespace Ssz.Runtime.Serialization {
     using System;
 
     [CLSCompliant(false)]
-[System.Runtime.InteropServices.ComVisible(true)]
+// [System.Runtime.InteropServices.ComVisible(true)]
     public interface IFormatterConverter {
         Object Convert(Object value, Type type);
         Object Convert(Object value, TypeCode typeCode);

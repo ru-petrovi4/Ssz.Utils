@@ -20,7 +20,7 @@ namespace Ssz.Runtime.Serialization.Formatters {
     using System.Security.Permissions;
     using System;
 
-[System.Runtime.InteropServices.ComVisible(true)]
+// [System.Runtime.InteropServices.ComVisible(true)]
     public interface IFieldInfo
     {
         // Name of parameters, if null the default param names will be used

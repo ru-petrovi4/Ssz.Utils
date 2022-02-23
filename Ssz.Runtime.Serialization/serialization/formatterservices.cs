@@ -32,7 +32,7 @@ namespace Ssz.Runtime.Serialization {
     using System.Globalization;
     using System.Diagnostics.Contracts;
 
-    [System.Runtime.InteropServices.ComVisible(true)]
+    // [System.Runtime.InteropServices.ComVisible(true)]
     public static class FormatterServices {
 #if FEATURE_SERIALIZATION        
         internal static ConcurrentDictionary<MemberHolder, MemberInfo[]> m_MemberInfoTable = new ConcurrentDictionary<MemberHolder, MemberInfo[]>();

@@ -18,7 +18,7 @@ namespace Ssz.Runtime.Serialization {
     using System.Runtime.Remoting;
     using System.Security.Permissions;
     using System;
-[System.Runtime.InteropServices.ComVisible(true)]
+// [System.Runtime.InteropServices.ComVisible(true)]
     public interface ISurrogateSelector {
         // Interface does not need to be marked with the serializable attribute
         // Specifies the next ISurrogateSelector to be examined for surrogates if the current

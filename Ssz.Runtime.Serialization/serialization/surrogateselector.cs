@@ -20,7 +20,7 @@ namespace Ssz.Runtime.Serialization {
     using System;
     using System.Collections;
     using System.Security.Permissions;       
-[System.Runtime.InteropServices.ComVisible(true)]
+// [System.Runtime.InteropServices.ComVisible(true)]
     public class SurrogateSelector : ISurrogateSelector {
        
         internal SurrogateHashtable m_surrogates;

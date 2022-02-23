@@ -22,7 +22,7 @@ namespace Ssz.Runtime.Serialization {
     //
     // The tuple returned by SerializationInfoEnumerator.Current.
     //
-[System.Runtime.InteropServices.ComVisible(true)]
+// [System.Runtime.InteropServices.ComVisible(true)]
     public struct SerializationEntry {
         private Type   m_type;
         private Object m_value;
@@ -58,7 +58,7 @@ namespace Ssz.Runtime.Serialization {
     // This does not snapshot the values, it just keeps pointers to the 
     // member variables of the SerializationInfo that created it.
     //
-[System.Runtime.InteropServices.ComVisible(true)]
+// [System.Runtime.InteropServices.ComVisible(true)]
     public sealed class SerializationInfoEnumerator : IEnumerator {
         String[] m_members;
         Object[] m_data;

@@ -17,7 +17,7 @@ namespace Ssz.Runtime.Serialization {
     using System;
     using System.IO;
 
-[System.Runtime.InteropServices.ComVisible(true)]
+// [System.Runtime.InteropServices.ComVisible(true)]
     public interface IFormatter {
         Object Deserialize(Stream serializationStream);
 

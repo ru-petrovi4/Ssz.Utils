@@ -20,7 +20,7 @@ namespace Ssz.Runtime.Serialization {
     using System.Diagnostics.Contracts;
 
     [Serializable]
-[System.Runtime.InteropServices.ComVisible(true)]
+// [System.Runtime.InteropServices.ComVisible(true)]
     public class ObjectIDGenerator {
     
         private const int numbins = 4;

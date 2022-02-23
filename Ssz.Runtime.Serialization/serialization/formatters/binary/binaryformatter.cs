@@ -32,7 +32,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
     using System.Security.Permissions;
     using System.Diagnostics.Contracts;
     
-    [System.Runtime.InteropServices.ComVisible(true)]
+    // [System.Runtime.InteropServices.ComVisible(true)]
     sealed public class BinaryFormatter :
 #if !FEATURE_REMOTING
         IFormatter

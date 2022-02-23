@@ -19,7 +19,7 @@ namespace Ssz.Runtime.Serialization {
     using System.Security.Permissions;
     using System;
     using System.Reflection;
-[System.Runtime.InteropServices.ComVisible(true)]
+// [System.Runtime.InteropServices.ComVisible(true)]
     public interface ISerializationSurrogate {
     // Interface does not need to be marked with the serializable attribute
         // Returns a SerializationInfo completely populated with all of the data needed to reinstantiate the

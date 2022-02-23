@@ -19,7 +19,7 @@ namespace Ssz.Runtime.Serialization {
     using System;
     using Ssz.Runtime.Serialization;
 
-[System.Runtime.InteropServices.ComVisible(true)]
+// [System.Runtime.InteropServices.ComVisible(true)]
     [Serializable] public class SerializationException : SystemException {
         
         private static String _nullMessage = Ssz.Runtime.Serialization.Environment.GetResourceString("Arg_SerializationException");

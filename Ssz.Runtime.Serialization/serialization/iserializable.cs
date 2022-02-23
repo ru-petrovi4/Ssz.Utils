@@ -21,7 +21,7 @@ namespace Ssz.Runtime.Serialization {
     using System;
     using System.Reflection;
 
-    [System.Runtime.InteropServices.ComVisible(true)]
+    // [System.Runtime.InteropServices.ComVisible(true)]
     public interface ISerializable {
 #if FEATURE_SERIALIZATION
         // [System.Security.SecurityCritical]  // auto-generated_required

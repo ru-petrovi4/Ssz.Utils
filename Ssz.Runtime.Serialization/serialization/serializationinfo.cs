@@ -30,7 +30,7 @@ namespace Ssz.Runtime.Serialization
     using System.Runtime.CompilerServices;
 #endif 
 
-    [System.Runtime.InteropServices.ComVisible(true)]
+    // [System.Runtime.InteropServices.ComVisible(true)]
     public sealed class SerializationInfo
     {
         private const int defaultSize = 4;
@@ -488,7 +488,7 @@ namespace Ssz.Runtime.Serialization
             return m_data[index];
         }
 
-        [System.Runtime.InteropServices.ComVisible(true)]
+        // [System.Runtime.InteropServices.ComVisible(true)]
         // 
         private Object GetElementNoThrow(String name, out Type foundType)
         {
@@ -550,7 +550,7 @@ namespace Ssz.Runtime.Serialization
         }
 
         [System.Security.SecuritySafeCritical]  // auto-generated
-        [System.Runtime.InteropServices.ComVisible(true)]
+        // [System.Runtime.InteropServices.ComVisible(true)]
         // 
         internal Object GetValueNoThrow(String name, Type type)
         {

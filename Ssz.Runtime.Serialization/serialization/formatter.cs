@@ -29,7 +29,7 @@ namespace Ssz.Runtime.Serialization {
     // and generating ids on a per-object basis.
 [Serializable]
 [CLSCompliant(false)]
-[System.Runtime.InteropServices.ComVisible(true)]
+// [System.Runtime.InteropServices.ComVisible(true)]
     public abstract class Formatter : IFormatter {
     
         protected ObjectIDGenerator m_idGenerator;

@@ -25,7 +25,7 @@ namespace Ssz.Runtime.Serialization {
     using System.Diagnostics.Contracts;
     using System.Security.Principal;
 
-    [System.Runtime.InteropServices.ComVisible(true)]
+    // [System.Runtime.InteropServices.ComVisible(true)]
     public class ObjectManager {
         private const int DefaultInitialSize=16;
         private const int DefaultMaxArraySize=0x1000; //MUST BE A POWER OF 2!

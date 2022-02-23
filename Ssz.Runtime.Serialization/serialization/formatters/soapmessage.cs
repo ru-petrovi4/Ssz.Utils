@@ -22,7 +22,7 @@ namespace Ssz.Runtime.Serialization.Formatters {
     // This is used when the top SOAP object is a fake object, it contains
     // a method name as the element name instead of the object name.
    [Serializable]
-[System.Runtime.InteropServices.ComVisible(true)]
+// [System.Runtime.InteropServices.ComVisible(true)]
     public class SoapMessage : ISoapMessage
     {
         internal String[] paramNames;
