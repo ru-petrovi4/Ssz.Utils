@@ -141,7 +141,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 
 #if FEATURE_REMOTING
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal Object Deserialize(HeaderHandler handler, __BinaryParser serParser, bool fCheck, bool isCrossAppDomain, IMethodCallMessage methodCallMessage) {
             if (serParser == null)
                 throw new ArgumentNullException("serParser", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentNull_WithParamName", serParser));
@@ -322,7 +322,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 #endif
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         private bool HasSurrogate(Type t){
             if (m_surrogates == null)
                 return false;
@@ -330,7 +330,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             return m_surrogates.GetSurrogate(t, m_context, out notUsed) != null;
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         private void CheckSerializable(Type t)
         {
             if (!t.IsSerializable && !HasSurrogate(t))
@@ -338,7 +338,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                                                                      t.FullName, t.Assembly.FullName));
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         private void InitFullDeserialization()
         {
             bFullDeserialization = true;
@@ -360,13 +360,13 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             return crossAppDomainArray[index];
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal ReadObjectInfo CreateReadObjectInfo(Type objectType)
         {
             return ReadObjectInfo.Create(objectType, m_surrogates, m_context, m_objectManager, serObjectInfoInit, m_formatterConverter, bSimpleAssembly);
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal ReadObjectInfo CreateReadObjectInfo(Type objectType, String[] memberNames, Type[] memberTypes)
         {
             return ReadObjectInfo.Create(objectType, memberNames, memberTypes, m_surrogates, m_context, m_objectManager, serObjectInfoInit, m_formatterConverter, bSimpleAssembly);
@@ -374,7 +374,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
 
         // Main Parse routine, called by the XML Parse Handlers in XMLParser and also called internally to
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal void Parse(ParseRecord pr)
         {
 #if _DEBUG
@@ -451,7 +451,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             }
         }
 
-         [System.Security.SecurityCritical]  // auto-generated
+         // [System.Security.SecurityCritical]  // auto-generated
          internal void CheckSecurity(ParseRecord pr)
          {
             InternalST.SoapAssert(pr!=null, "[BinaryObjectReader.CheckSecurity]pr!=null");
@@ -467,7 +467,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 #endif
 
         // New object encountered in stream
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         private void ParseObject(ParseRecord pr)
         {
 #if _DEBUG
@@ -570,7 +570,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 
         // End of object encountered in stream
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         private void ParseObjectEnd(ParseRecord pr)
         {
 #if _DEBUG
@@ -665,7 +665,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
 
         // Array object encountered in stream
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         private void ParseArray(ParseRecord pr)
         {
             SerTrace.Log( this, "ParseArray Entry");
@@ -845,7 +845,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
 
         // Array object item encountered in stream
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         private void ParseArrayMember(ParseRecord pr)
         {
             SerTrace.Log( this, "ParseArrayMember Entry");
@@ -1036,7 +1036,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             SerTrace.Log( "ParseArrayMember Exit");     
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         private void ParseArrayMemberEnd(ParseRecord pr)
         {
             SerTrace.Log( this, "ParseArrayMemberEnd");
@@ -1049,7 +1049,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
 
         // Object member encountered in stream
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         private void ParseMember(ParseRecord pr)
         {
             SerTrace.Log( this, "ParseMember Entry ");
@@ -1197,7 +1197,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 
         // Object member end encountered in stream
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         private void ParseMemberEnd(ParseRecord pr)
         {
             SerTrace.Log( this, "ParseMemberEnd");
@@ -1217,7 +1217,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 
         // Processes a string object by getting an internal ID for it and registering it with the objectManager
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         private void ParseString(ParseRecord pr, ParseRecord parentPr)
         {
             SerTrace.Log( this, "ParseString Entry ",pr.PRobjectId," ",pr.PRvalue," ",pr.PRisRegistered);
@@ -1232,13 +1232,13 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         private void RegisterObject(Object obj, ParseRecord pr, ParseRecord objectPr)
         {
             RegisterObject(obj, pr, objectPr, false);
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         private void RegisterObject(Object obj, ParseRecord pr, ParseRecord objectPr, bool bIsString)
         {
             if (!pr.PRisRegistered)
@@ -1285,7 +1285,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         private bool bOldFormatDetected = false;
         private IntSizedArray   valTypeObjectIdTable;
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal long GetId(long objectId)
         {
 
@@ -1331,7 +1331,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             SerTrace.Log( this, message," ", StringBuilderCache.GetStringAndRelease(sb));
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal Type Bind(String assemblyString, String typeString)
         {
             Type type = null;
@@ -1350,7 +1350,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 
         NameCache typeCache = new NameCache();
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal Type FastBindToType(String assemblyName, String typeName)
         {
             Type type = null;
@@ -1420,7 +1420,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
            return entry.type;
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         [MethodImplAttribute(MethodImplOptions.NoInlining)] // Methods containing StackCrawlMark local var has to be marked non-inlineable
         private static Assembly ResolveSimpleAssemblyName(AssemblyName assemblyName)
         {
@@ -1436,7 +1436,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             return assm;
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         private static void GetSimplyNamedTypeFromAssembly(Assembly assm, string typeName, ref Type type)
         {
             // Catching any exceptions that could be thrown from a failure on assembly load
@@ -1462,7 +1462,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         private Type previousType;
         //private int hit;
         
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal Type GetType(BinaryAssemblyInfo assemblyInfo, String name)
         {
             Type objectType = null;
@@ -1504,7 +1504,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             return objectType;
         }
 
-        [SecuritySafeCritical]
+        // [SecuritySafeCritical]
         private static void CheckTypeForwardedTo(Assembly sourceAssembly, Assembly destAssembly, Type resolvedType)
         {
             if ( !FormatterServices.UnsafeTypeForwardersIsEnabled() && sourceAssembly != destAssembly )

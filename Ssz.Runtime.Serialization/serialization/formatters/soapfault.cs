@@ -74,7 +74,7 @@ namespace Ssz.Runtime.Serialization.Formatters
             }
         }
 
-        [System.Security.SecurityCritical]  // auto-generated_required
+        // [System.Security.SecurityCritical]  // auto-generated_required
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("faultcode", "SOAP-ENV:"+faultCode);

@@ -208,7 +208,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         }
 
         // Given the wire type information, returns the actual type and additional information
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal static void TypeFromInfo(BinaryTypeEnum binaryTypeEnum,
                                           Object typeInformation,
                                           ObjectReader objectReader,
@@ -374,7 +374,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
     // Interface for Binary Records.
     internal interface IStreamable
     {
-        [System.Security.SecurityCritical]
+        // [System.Security.SecurityCritical]
         void Read(__BinaryParser input);
         void Write(__BinaryWriter sout);
 #if _DEBUG        
@@ -451,7 +451,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
             return (int)(buffer[index] | buffer[index+1] << 8 | buffer[index+2] << 16 | buffer[index+3] << 24);
         }
 
-        [System.Security.SecurityCritical] // implements Critical method
+        // [System.Security.SecurityCritical] // implements Critical method
         public  void Read(__BinaryParser input)
         {
             byte [] headerBytes = input.ReadBytes(17);
@@ -518,7 +518,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
             sout.WriteString(assemblyString);
         }
 
-        [System.Security.SecurityCritical] // implements Critical method
+        // [System.Security.SecurityCritical] // implements Critical method
         public void Read(__BinaryParser input)
         {
             assemId = input.ReadInt32();
@@ -560,7 +560,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
             sout.WriteInt32(assemblyIndex);
         }
 
-        [System.Security.SecurityCritical] // implements Critical method
+        // [System.Security.SecurityCritical] // implements Critical method
         public void Read(__BinaryParser input)
         {
             assemId = input.ReadInt32();
@@ -611,7 +611,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
             sout.WriteInt32(mapId);
         }
 
-        [System.Security.SecurityCritical] // implements Critical method
+        // [System.Security.SecurityCritical] // implements Critical method
         public void Read(__BinaryParser input)
         {
             objectId = input.ReadInt32();
@@ -781,7 +781,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
             }
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal void Read(__BinaryParser input)
         {
              messageEnum = (MessageEnum)input.ReadInt32();
@@ -803,7 +803,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
                  args = IOUtil.ReadArgs(input);
         }
 #if FEATURE_REMOTING
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal IMethodCallMessage ReadArray(Object[] callA, Object handlerObject)
         {
             /*
@@ -1061,7 +1061,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
             }
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         public void Read(__BinaryParser input)
         {
              messageEnum = (MessageEnum)input.ReadInt32();
@@ -1089,7 +1089,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         }
 
 #if FEATURE_REMOTING
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal IMethodReturnMessage ReadArray(Object[] returnA, IMethodCallMessage methodCallMessage, Object handlerObject)
         {
             if (IOUtil.FlagTest(messageEnum, MessageEnum.ArgsIsArray))
@@ -1203,7 +1203,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
             sout.WriteString(value);
         }
 
-        [System.Security.SecurityCritical] // implements Critical method
+        // [System.Security.SecurityCritical] // implements Critical method
         public void Read(__BinaryParser input)
         {
             objectId = input.ReadInt32();
@@ -1245,7 +1245,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
             sout.WriteInt32(value);
         }
 
-        [System.Security.SecurityCritical] // implements Critical method
+        // [System.Security.SecurityCritical] // implements Critical method
         public void Read(__BinaryParser input)
         {
             objectId = input.ReadInt32();
@@ -1285,7 +1285,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
             sout.WriteInt32(crossAppDomainArrayIndex);
         }
 
-        [System.Security.SecurityCritical] // implements Critical method
+        // [System.Security.SecurityCritical] // implements Critical method
         public void Read(__BinaryParser input)
         {
             crossAppDomainArrayIndex = input.ReadInt32();
@@ -1334,7 +1334,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
             sout.WriteValue(primitiveTypeEnum, value);
         }
 
-        [System.Security.SecurityCritical] // implements Critical method
+        // [System.Security.SecurityCritical] // implements Critical method
         public void Read(__BinaryParser input)
         {
             primitiveTypeEnum = (InternalPrimitiveTypeE)input.ReadByte(); //PDJ
@@ -1410,7 +1410,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
                 sout.WriteInt32(assemId);
         }
 
-        [System.Security.SecurityCritical] // implements Critical method
+        // [System.Security.SecurityCritical] // implements Critical method
         public void Read(__BinaryParser input)
         {
             objectId = input.ReadInt32();
@@ -1535,7 +1535,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
 
         }
 
-        [System.Security.SecurityCritical] // implements Critical method
+        // [System.Security.SecurityCritical] // implements Critical method
         public void Read(__BinaryParser input)
         {
             // binaryHeaderEnum has already been read
@@ -1703,7 +1703,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
 
         }
 
-        [System.Security.SecurityCritical] // implements Critical method
+        // [System.Security.SecurityCritical] // implements Critical method
         public void Read(__BinaryParser input)
         {
             switch (binaryHeaderEnum)
@@ -1856,7 +1856,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
             sout.WriteValue(typeInformation, value);
         }
 
-        [System.Security.SecurityCritical] // implements Critical method
+        // [System.Security.SecurityCritical] // implements Critical method
         public void Read(__BinaryParser input)
         {
             //binaryHeaderEnum = input.ReadByte(); already read
@@ -1902,7 +1902,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
             sout.WriteInt32(idRef);
         }
 
-        [System.Security.SecurityCritical] // implements Critical method
+        // [System.Security.SecurityCritical] // implements Critical method
         public void Read(__BinaryParser input)
         {
             //binaryHeaderEnum = input.ReadByte(); already read
@@ -1961,7 +1961,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         }
 
 
-        [System.Security.SecurityCritical] // implements Critical method
+        // [System.Security.SecurityCritical] // implements Critical method
         public  void Read(__BinaryParser input)
         {
             Read(input, BinaryHeaderEnum.ObjectNull);
@@ -2029,7 +2029,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
             sout.WriteByte((Byte)BinaryHeaderEnum.MessageEnd);
         }
 
-        [System.Security.SecurityCritical] // implements Critical method
+        // [System.Security.SecurityCritical] // implements Critical method
         public void Read(__BinaryParser input)
         {
             //binaryHeaderEnum = input.ReadByte(); already read
@@ -2081,7 +2081,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         internal Int32 objectId;
         internal BinaryAssemblyInfo assemblyInfo;
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal ObjectMap(String objectName, Type objectType, String[] memberNames, ObjectReader objectReader, Int32 objectId, BinaryAssemblyInfo assemblyInfo)
         {
             SerTrace.Log( this, "Constructor 1 objectName ",objectName, ", objectType ",objectType);                            
@@ -2107,7 +2107,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
             }
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal ObjectMap(String objectName, String[] memberNames, BinaryTypeEnum[] binaryTypeEnumA, Object[] typeInformationA, int[] memberAssemIds, ObjectReader objectReader, Int32 objectId, BinaryAssemblyInfo assemblyInfo, SizedArray assemIdToAssemblyTable)
         {
             SerTrace.Log( this, "Constructor 2 objectName ",objectName);
@@ -2163,14 +2163,14 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
 
 
         // No member type information
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal static ObjectMap Create(String name, Type objectType, String[] memberNames, ObjectReader objectReader, Int32 objectId, BinaryAssemblyInfo assemblyInfo)
         {
             return new ObjectMap(name, objectType, memberNames, objectReader, objectId, assemblyInfo);
         }
 
         // Member type information 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal static ObjectMap Create(String name, String[] memberNames, BinaryTypeEnum[] binaryTypeEnumA, Object[] typeInformationA, int[] memberAssemIds, ObjectReader objectReader, Int32 objectId, BinaryAssemblyInfo assemblyInfo, SizedArray assemIdToAssemblyTable)
         {
             return new ObjectMap(name, memberNames, binaryTypeEnumA, typeInformationA, memberAssemIds, objectReader, objectId, assemblyInfo, assemIdToAssemblyTable);           

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Ssz.Runtime.Serialization
-{
-    // TODO
+{    
     internal static class FieldInfoExtensions
     {
         internal static void CheckConsistency(this FieldInfo fieldInfo, object target)
@@ -15,14 +15,14 @@ namespace Ssz.Runtime.Serialization
             
         }
 
-        internal static void UnsafeSetValue(this FieldInfo fieldInfo, object target, object value, BindingFlags @default, Binder s_binder, object p)
+        internal static void UnsafeSetValue(this FieldInfo fieldInfo, object target, object value, BindingFlags invokeAttr, Binder binder, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            fieldInfo.SetValue(target, value, invokeAttr, binder, culture);
         }
 
         internal static object UnsafeGetValue(this FieldInfo fieldInfo, object target)
         {
-            throw new NotImplementedException();
+            return fieldInfo.GetValue(target);
         }
     }
 }

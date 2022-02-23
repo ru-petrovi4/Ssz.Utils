@@ -111,7 +111,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             return Deserialize(serializationStream, null);
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal Object Deserialize(Stream serializationStream, HeaderHandler handler, bool fCheck)
         {
 #if FEATURE_REMOTING        
@@ -155,26 +155,26 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             return Deserialize(serializationStream, handler, true, methodCallMessage);
         }
 #endif
-        [System.Security.SecurityCritical]  // auto-generated_required
+        // [System.Security.SecurityCritical]  // auto-generated_required
         [System.Runtime.InteropServices.ComVisible(false)]
         public Object UnsafeDeserialize(Stream serializationStream, HeaderHandler handler) {
             return Deserialize(serializationStream, handler, false);
         }
 
 #if FEATURE_REMOTING        
-        [System.Security.SecurityCritical]  // auto-generated_required
+        // [System.Security.SecurityCritical]  // auto-generated_required
         [System.Runtime.InteropServices.ComVisible(false)]
         public Object UnsafeDeserializeMethodResponse(Stream serializationStream, HeaderHandler handler, IMethodCallMessage methodCallMessage) {
             return Deserialize(serializationStream, handler, false, methodCallMessage);
         }         
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal Object Deserialize(Stream serializationStream, HeaderHandler handler, bool fCheck, IMethodCallMessage methodCallMessage) {
             return Deserialize(serializationStream, handler, fCheck, false/*isCrossAppDomain*/, methodCallMessage);
         }
 
         // Deserialize the stream into an object graph.
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal Object Deserialize(Stream serializationStream, HeaderHandler handler, bool fCheck, bool isCrossAppDomain, IMethodCallMessage methodCallMessage) {
             if (serializationStream==null)
             {
@@ -213,7 +213,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         // Commences the process of serializing the entire graph.  All of the data (in the appropriate format
         // is emitted onto the stream).
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal void Serialize(Stream serializationStream, Object graph, Header[] headers, bool fCheck)
         {
             if (serializationStream == null)

@@ -119,7 +119,7 @@ namespace Ssz.Runtime.Serialization
                 return m_assemName;
             }
 #if FEATURE_SERIALIZATION
-            [SecuritySafeCritical]
+            // [SecuritySafeCritical]
 #endif
             set
             {
@@ -139,7 +139,7 @@ namespace Ssz.Runtime.Serialization
             }
         }
 #if FEATURE_SERIALIZATION
-        [SecuritySafeCritical]
+        // [SecuritySafeCritical]
 #endif
         public void SetType(Type type)
         {
@@ -182,7 +182,7 @@ namespace Ssz.Runtime.Serialization
             }
         }
 
-        [SecuritySafeCritical]
+        // [SecuritySafeCritical]
         internal static void DemandForUnsafeAssemblyNameAssignments(string originalAssemblyName, string newAssemblyName)
         {
             if (!IsAssemblyNameAssignmentSafe(originalAssemblyName, newAssemblyName))

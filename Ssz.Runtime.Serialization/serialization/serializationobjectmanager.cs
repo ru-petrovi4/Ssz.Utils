@@ -30,7 +30,7 @@ using System.Security.Permissions;
             m_objectSeenTable = new Hashtable();
         }
         
-        [System.Security.SecurityCritical]  // auto-generated_required
+        // [System.Security.SecurityCritical]  // auto-generated_required
         public void RegisterObject(Object obj)
         {
             // Invoke OnSerializing for this object

@@ -24,7 +24,7 @@ namespace Ssz.Runtime.Serialization {
     [System.Runtime.InteropServices.ComVisible(true)]
     public interface ISerializable {
 #if FEATURE_SERIALIZATION
-        [System.Security.SecurityCritical]  // auto-generated_required
+        // [System.Security.SecurityCritical]  // auto-generated_required
         void GetObjectData(SerializationInfo info, StreamingContext context);
 #endif
     }

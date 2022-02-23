@@ -40,7 +40,7 @@ namespace Ssz.Runtime.Serialization.Formatters {
 
     // remoting Wsdl logging
     /// <internalonly/>
-    [System.Security.SecurityCritical]  // auto-generated_required
+    // [System.Security.SecurityCritical]  // auto-generated_required
     [System.Runtime.InteropServices.ComVisible(true)]
     public sealed class InternalRM
     {
@@ -60,7 +60,7 @@ namespace Ssz.Runtime.Serialization.Formatters {
     }
 
     /// <internalonly/>
-    [System.Security.SecurityCritical]  // auto-generated_required
+    // [System.Security.SecurityCritical]  // auto-generated_required
     [System.Runtime.InteropServices.ComVisible(true)]
     public sealed class InternalST
     {

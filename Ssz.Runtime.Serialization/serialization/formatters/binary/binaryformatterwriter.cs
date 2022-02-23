@@ -336,7 +336,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         internal BinaryArray binaryArray;
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal void WriteSingleArray(NameInfo memberNameInfo, NameInfo arrayNameInfo, WriteObjectInfo objectInfo, NameInfo arrayElemTypeNameInfo, int length, int lowerBound, Array array)
         {
             InternalWriteItemNull();            
@@ -393,7 +393,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         byte[] byteBuffer = null;
         int chunkSize = 4096;
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         private void WriteArrayAsBytes(Array array, int typeLength)
         {
             InternalWriteItemNull();
@@ -505,7 +505,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal void WriteObjectByteArray(NameInfo memberNameInfo, NameInfo arrayNameInfo, WriteObjectInfo objectInfo, NameInfo arrayElemTypeNameInfo, int length, int lowerBound, Byte[] byteA)
         {
 #if _DEBUG                        

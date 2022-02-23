@@ -147,7 +147,7 @@ using System.Diagnostics.Contracts;
             }
         }
 
-        [System.Security.SecurityCritical]
+        // [System.Security.SecurityCritical]
         internal SerializationEventHandler AddOnSerialized(Object obj, SerializationEventHandler handler)
         {
             // Add all OnSerialized methods to a delegate
@@ -163,7 +163,7 @@ using System.Diagnostics.Contracts;
             return handler;
         }
 
-        [System.Security.SecurityCritical]
+        // [System.Security.SecurityCritical]
         internal SerializationEventHandler AddOnDeserialized(Object obj, SerializationEventHandler handler)
         {
             // Add all OnDeserialized methods to a delegate

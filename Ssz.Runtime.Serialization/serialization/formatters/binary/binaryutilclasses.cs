@@ -683,7 +683,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             this.objectInfo = objectInfo;
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal void Fixup(ParseRecord record, ParseRecord parent) {
             Object obj = record.PRnewObj;
 #if _DEBUG

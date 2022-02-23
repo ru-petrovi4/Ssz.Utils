@@ -35,7 +35,7 @@ namespace Ssz.Runtime.Serialization
         static readonly ISerializationSurrogate  s_RemotingSurrogate = new RemotingSurrogate();
         static readonly ISerializationSurrogate  s_ObjRefRemotingSurrogate = new ObjRefSurrogate();
         
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal static object GetObjectData(object serObj, out string typeName, out string assemName, out string[] fieldNames, out object[] fieldValues)
         {
             Type objectType = null;
@@ -114,7 +114,7 @@ namespace Ssz.Runtime.Serialization
             return retObj;
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+        // [System.Security.SecurityCritical]  // auto-generated
         internal static SerializationInfo PrepareConstructorArgs(object serObj, string[] fieldNames, object[] fieldValues, out StreamingContext context)
         {
             SerializationInfo si = null;
