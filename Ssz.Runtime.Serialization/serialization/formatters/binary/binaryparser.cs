@@ -359,7 +359,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         internal DateTime ReadDateTime()
         {
-            return DateTime.FromBinaryRaw(ReadInt64());
+            return SszDateTime.FromBinaryRaw(ReadInt64());
         }
 
         internal UInt16 ReadUInt16()

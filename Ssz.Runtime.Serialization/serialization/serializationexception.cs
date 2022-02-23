@@ -40,7 +40,7 @@ namespace Ssz.Runtime.Serialization {
             //SetErrorCode(__HResults.COR_E_SERIALIZATION);
         }
 
-        protected SerializationException(SerializationInfo info, StreamingContext context) : base (info, context) {
-        }
+        //protected SerializationException(SerializationInfo info, StreamingContext context) : base (info, context) {
+        //}
     }
 }

@@ -871,7 +871,7 @@ namespace Ssz.Runtime.Serialization {
             try {
 #if !FEATURE_PAL
                 if (t == TypeOfWindowsIdentity && m_isCrossAppDomain)
-                    constInfo = WindowsIdentity.GetSpecialSerializationCtor();
+                    constInfo = SszWindowsIdentity.GetSpecialSerializationCtor();
                 else
 #endif                    
                     constInfo = GetConstructor(t);
