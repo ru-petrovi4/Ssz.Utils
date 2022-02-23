@@ -7,14 +7,9 @@ using System.Threading.Tasks;
 
 namespace Ssz.Runtime.Serialization
 {
-    internal abstract class RtFieldInfo : FieldInfo
+    internal class SszDelegate
     {
-        internal void CheckConsistency(object target)
-        {
-            
-        }
-
-        internal void UnsafeSetValue(object target, object value, BindingFlags @default, Binder s_binder, object p)
+        internal static SerializationEventHandler CreateDelegateNoSecurityCheck(Type type, object obj, MethodInfo m)
         {
             throw new NotImplementedException();
         }

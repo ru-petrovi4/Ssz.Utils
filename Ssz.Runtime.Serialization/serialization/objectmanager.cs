@@ -36,7 +36,7 @@ namespace Ssz.Runtime.Serialization {
         private SerializationEventHandler m_onDeserializedHandler;
 
 #if !FEATURE_PAL
-        private static RuntimeType TypeOfWindowsIdentity;
+        private static Type TypeOfWindowsIdentity;
 #endif
 
         internal ObjectHolder []    m_objects;
@@ -110,7 +110,7 @@ namespace Ssz.Runtime.Serialization {
     
         static ObjectManager() {
 #if !FEATURE_PAL && FEATURE_IMPERSONATION
-            TypeOfWindowsIdentity = (RuntimeType)typeof(WindowsIdentity);
+            TypeOfWindowsIdentity = (Type)typeof(WindowsIdentity);
 #endif
         }
 
@@ -864,9 +864,9 @@ namespace Ssz.Runtime.Serialization {
             }
             Contract.EndContractBlock();
 
-            RuntimeConstructorInfo constInfo = null;
+            ConstructorInfo constInfo = null;
 
-            RuntimeType t = (RuntimeType)obj.GetType();
+            Type t = (Type)obj.GetType();
 
             try {
 #if !FEATURE_PAL
@@ -891,9 +891,9 @@ namespace Ssz.Runtime.Serialization {
         **Arguments:
         **Exceptions:
         ==============================================================================*/
-        internal static RuntimeConstructorInfo GetConstructor(RuntimeType t)
+        internal static ConstructorInfo GetConstructor(Type t)
         {
-            RuntimeConstructorInfo ci = t.GetSerializationCtor();
+            ConstructorInfo ci = t.GetSerializationCtor();
 
             if (ci == null)
                 throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ConstructorNotFound", t.FullName));

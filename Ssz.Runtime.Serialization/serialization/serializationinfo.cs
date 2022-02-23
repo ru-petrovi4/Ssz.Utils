@@ -522,9 +522,9 @@ namespace Ssz.Runtime.Serialization
             }
             Contract.EndContractBlock();
 
-            RuntimeType rt = type as RuntimeType;
+            Type rt = type as Type;
             if (rt == null)
-                throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Argument_MustBeRuntimeType"));
+                throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Argument_MustBeType"));
 
             Type foundType;
             Object value;
@@ -558,7 +558,7 @@ namespace Ssz.Runtime.Serialization
             Object value;
 
             Contract.Assert((object)type != null, "[SerializationInfo.GetValue]type ==null");
-            Contract.Assert(type is RuntimeType, "[SerializationInfo.GetValue]type is not a runtime type");
+            Contract.Assert(type is Type, "[SerializationInfo.GetValue]type is not a runtime type");
 
             value = GetElementNoThrow(name, out foundType);
             if (value == null)
@@ -567,7 +567,7 @@ namespace Ssz.Runtime.Serialization
             if (RemotingServices.IsTransparentProxy(value))
             {
                 RealProxy proxy = RemotingServices.GetRealProxy(value);
-                if (RemotingServices.ProxyCheckCast(proxy, (RuntimeType)type))
+                if (RemotingServices.ProxyCheckCast(proxy, (Type)type))
                     return value;
             }
             else

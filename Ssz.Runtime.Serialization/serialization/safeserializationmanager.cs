@@ -273,7 +273,7 @@ namespace Ssz.Runtime.Serialization
         private object m_realObject;
 
         // Real type that should be deserialized
-        private RuntimeType m_realType;
+        private Type m_realType;
         
         // Event fired when we need to collect state to serialize into the parent object
         internal event EventHandler<SafeSerializationEventArgs> SerializeObjectState;
@@ -294,7 +294,7 @@ namespace Ssz.Runtime.Serialization
             // serialization info to indicate that this is the interception callback and we just need to
             // safe the info.  If that field is not present, then we should be in a real deserialization
             // construction.
-            RuntimeType realType = info.GetValueNoThrow(RealTypeSerializationName, typeof(RuntimeType)) as RuntimeType;
+            Type realType = info.GetValueNoThrow(RealTypeSerializationName, typeof(Type)) as Type;
 
             if (realType == null)
             {
@@ -343,7 +343,7 @@ namespace Ssz.Runtime.Serialization
 
                 // Replace the type to be deserialized by the standard serialization code paths with
                 // ourselves, which allows us to control the deserialization process.
-                info.AddValue(RealTypeSerializationName, serializedObject.GetType(), typeof(RuntimeType));
+                info.AddValue(RealTypeSerializationName, serializedObject.GetType(), typeof(Type));
                 info.SetType(typeof(SafeSerializationManager));
             } 
         }
@@ -396,23 +396,23 @@ namespace Ssz.Runtime.Serialization
             // First build up the chain starting at the type below Object and working to the real type we
             // serialized.
             Stack inheritanceChain = new Stack();
-            RuntimeType currentType = m_realType;
+            Type currentType = m_realType;
             do
             {
                 inheritanceChain.Push(currentType);
-                currentType = currentType.BaseType as RuntimeType;
+                currentType = currentType.BaseType as Type;
             }
             while (currentType != typeof(object));
 
             // Now look for the first type that does not implement the ISerializable .ctor.  When we find
             // that, previousType will point at the last type that did implement the .ctor.  We require that
             // the .ctor we invoke also be non-transparent
-            RuntimeConstructorInfo serializationCtor = null;
-            RuntimeType previousType = null;
+            ConstructorInfo serializationCtor = null;
+            Type previousType = null;
             do
             {
                 previousType = currentType;
-                currentType = inheritanceChain.Pop() as RuntimeType;
+                currentType = inheritanceChain.Pop() as Type;
                 serializationCtor = currentType.GetSerializationCtor();
             }
             while (serializationCtor != null && serializationCtor.IsSecurityCritical);

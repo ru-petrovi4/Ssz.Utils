@@ -5,8 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>    
     <UseWindowsForms>true</UseWindowsForms>
-  </PropertyGroup>
-
+  </PropertyGroup>  
+  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>FEATURE_SERIALIZATION</DefineConstants>
   </PropertyGroup>

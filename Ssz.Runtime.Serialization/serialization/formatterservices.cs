@@ -49,7 +49,7 @@ namespace Ssz.Runtime.Serialization {
             // explicit static constructor to allow us to mark it safe critical.
         }
 
-        private static MemberInfo[] GetSerializableMembers(RuntimeType type) {
+        private static MemberInfo[] GetSerializableMembers2(Type type) {
             // get the list of all fields
             FieldInfo[] fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
             int countProper = 0;
@@ -73,18 +73,18 @@ namespace Ssz.Runtime.Serialization {
                 return fields;
         }
 
-        private static bool CheckSerializable(RuntimeType type) {
+        private static bool CheckSerializable(Type type) {
             if (type.IsSerializable) {
                 return true;
             }
             return false;
         }
 
-        private static MemberInfo[] InternalGetSerializableMembers(RuntimeType type) {
+        private static MemberInfo[] InternalGetSerializableMembers(Type type) {
             List<SerializationFieldInfo> allMembers = null;
             MemberInfo[] typeMembers;
             FieldInfo [] typeFields;
-            RuntimeType parentType;
+            Type parentType;
 
             Contract.Assert((object)type != null, "[GetAllSerializableMembers]type!=null");
             
@@ -99,14 +99,14 @@ namespace Ssz.Runtime.Serialization {
             }
           
             //Get all of the serializable members in the class to be serialized.
-            typeMembers = GetSerializableMembers(type);
+            typeMembers = GetSerializableMembers2(type);
 
             //If this class doesn't extend directly from object, walk its hierarchy and 
             //get all of the private and assembly-access fields (e.g. all fields that aren't
             //virtual) and include them in the list of things to be serialized.  
-            parentType = (RuntimeType)(type.BaseType);
-            if (parentType != null && parentType != (RuntimeType)typeof(Object)) {
-                RuntimeType[] parentTypes = null;
+            parentType = (Type)(type.BaseType);
+            if (parentType != null && parentType != (Type)typeof(Object)) {
+                Type[] parentTypes = null;
                 int parentTypeCount = 0;
                 bool classNamesUnique = GetParentTypes(parentType, out parentTypes, out parentTypeCount);
                 if (parentTypeCount > 0){
@@ -139,14 +139,14 @@ namespace Ssz.Runtime.Serialization {
             return typeMembers;
         }
 
-        private static bool GetParentTypes(RuntimeType parentType, out RuntimeType[] parentTypes, out int parentTypeCount){
+        private static bool GetParentTypes(Type parentType, out Type[] parentTypes, out int parentTypeCount){
             //Check if there are any dup class names. Then we need to include as part of
             //typeName to prefix the Field names in SerializationFieldInfo
             /*out*/ parentTypes = null;
             /*out*/ parentTypeCount = 0;
             bool unique = true;
-            RuntimeType objectType = (RuntimeType)typeof(object);
-            for (RuntimeType t1 = parentType; t1 != objectType; t1 = (RuntimeType)t1.BaseType)
+            Type objectType = (Type)typeof(object);
+            for (Type t1 = parentType; t1 != objectType; t1 = (Type)t1.BaseType)
             {
                 if (t1.IsInterface) continue;
                 string t1Name = t1.Name;
@@ -159,7 +159,7 @@ namespace Ssz.Runtime.Serialization {
                 }
                 //expand array if needed
                 if (parentTypes == null || parentTypeCount == parentTypes.Length){
-                    RuntimeType[] tempParentTypes = new RuntimeType[Math.Max(parentTypeCount*2, 12)];
+                    Type[] tempParentTypes = new Type[Math.Max(parentTypeCount*2, 12)];
                     if (parentTypes != null)
                         Array.Copy(parentTypes, 0, tempParentTypes, 0, parentTypeCount);
                     parentTypes = tempParentTypes;
@@ -189,7 +189,7 @@ namespace Ssz.Runtime.Serialization {
             }
             Contract.EndContractBlock();
 
-            if (!(type is RuntimeType)) {
+            if (!(type is Type)) {
                 throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_InvalidType", type.ToString()));
             }
     
@@ -197,13 +197,14 @@ namespace Ssz.Runtime.Serialization {
             
             //If we've already gathered the members for this type, just return them.
             MemberInfo[] members = m_MemberInfoTable.GetOrAdd(mh, 
-                _ => InternalGetSerializableMembers((RuntimeType)type));
+                _ => InternalGetSerializableMembers((Type)type));
                 
             return members;
         }      
       
         static readonly Type[] advancedTypes = new Type[]{
-            typeof(System.DelegateSerializationHolder),
+            // FALFIX
+            //typeof(System.DelegateSerializationHolder),
 #if FEATURE_REMOTING                        
             typeof(System.Runtime.Remoting.ObjRef),
             typeof(System.Runtime.Remoting.IEnvoyInfo),
@@ -235,11 +236,11 @@ namespace Ssz.Runtime.Serialization {
             }
             Contract.EndContractBlock();
     
-            if (!(type is RuntimeType)) {
+            if (!(type is Type)) {
                 throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_InvalidType", type.ToString()));
             }
 
-            return nativeGetUninitializedObject((RuntimeType)type);
+            return nativeGetUninitializedObject((Type)type);
         }
     
         [System.Security.SecurityCritical]  // auto-generated_required
@@ -249,18 +250,18 @@ namespace Ssz.Runtime.Serialization {
             }
              Contract.EndContractBlock();
     
-            if (!(type is RuntimeType)) {
+            if (!(type is Type)) {
                 throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_InvalidType", type.ToString()));
             }
 #if FEATURE_REMOTING            
             if (Object.ReferenceEquals(type, typeof(System.Runtime.Remoting.Messaging.ConstructionCall)) || 
                 Object.ReferenceEquals(type, typeof(System.Runtime.Remoting.Messaging.LogicalCallContext)) ||
                 Object.ReferenceEquals(type, typeof(System.Runtime.Remoting.Contexts.SynchronizationAttribute)))
-                 return nativeGetUninitializedObject((RuntimeType)type);                                    
+                 return nativeGetUninitializedObject((Type)type);                                    
 #endif
 
             try {                            
-                return nativeGetSafeUninitializedObject((RuntimeType)type);                    
+                return nativeGetSafeUninitializedObject((Type)type);                    
             }
             catch(SecurityException e) {                
                 throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_Security",  type.FullName), e);
@@ -270,12 +271,12 @@ namespace Ssz.Runtime.Serialization {
         [System.Security.SecurityCritical]  // auto-generated
         [ResourceExposure(ResourceScope.None)]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        private static extern Object nativeGetSafeUninitializedObject(RuntimeType type);
+        private static extern Object nativeGetSafeUninitializedObject(Type type);
     
         [System.Security.SecurityCritical]  // auto-generated
         [ResourceExposure(ResourceScope.None)]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        private static extern Object nativeGetUninitializedObject(RuntimeType type);
+        private static extern Object nativeGetUninitializedObject(Type type);
 #if FEATURE_SERIALIZATION
         [System.Security.SecurityCritical]
         [ResourceExposure(ResourceScope.None)]
@@ -300,7 +301,7 @@ namespace Ssz.Runtime.Serialization {
         {
             Contract.Requires(fi != null);
 
-            RtFieldInfo rtField = fi as RtFieldInfo;
+            FieldInfo rtField = fi as FieldInfo;
 
             if (rtField != null)
             {
@@ -405,7 +406,7 @@ namespace Ssz.Runtime.Serialization {
                     Contract.Assert(mi is RuntimeFieldInfo || mi is SerializationFieldInfo,
                                     "[FormatterServices.GetObjectData]mi is RuntimeFieldInfo || mi is SerializationFieldInfo.");
 
-                    RtFieldInfo rfi = mi as RtFieldInfo;
+                    FieldInfo rfi = mi as FieldInfo;
                     if (rfi != null) {
                         rfi.CheckConsistency(obj);
                         data[i] = rfi.UnsafeGetValue(obj);

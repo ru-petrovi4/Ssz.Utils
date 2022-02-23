@@ -95,7 +95,7 @@ namespace Ssz.Runtime.Serialization {
 
         [System.Security.SecurityCritical]
         internal Object InternalGetValue(Object obj) {
-            RtFieldInfo field = m_field as RtFieldInfo;
+            FieldInfo field = m_field as FieldInfo;
             if (field != null)
             {
                 field.CheckConsistency(obj);
@@ -111,7 +111,7 @@ namespace Ssz.Runtime.Serialization {
 
         [System.Security.SecurityCritical]
         internal void InternalSetValue(Object obj, Object value, BindingFlags invokeAttr, Binder binder, CultureInfo culture) {
-            RtFieldInfo field = m_field as RtFieldInfo;
+            FieldInfo field = m_field as FieldInfo;
             if (field != null)
             {
                 field.CheckConsistency(obj);

@@ -7,7 +7,12 @@ using System.Threading.Tasks;
 
 namespace Ssz.Runtime.Serialization
 {
-    internal abstract class RuntimeConstructorInfo : ConstructorInfo
+    // TODO
+    internal static class TypeExtensions
     {
+        public static ConstructorInfo GetSerializationCtor(this Type type)
+        {
+            return type.GetConstructor(new Type[0]);
+        }
     }
 }
