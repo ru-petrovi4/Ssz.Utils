@@ -204,9 +204,8 @@ namespace Ssz.Runtime.Serialization {
             return members;
         }      
       
-        static readonly Type[] advancedTypes = new Type[]{
-            // FALFIX
-            //typeof(System.DelegateSerializationHolder),
+        static readonly Type[] advancedTypes = new Type[]{            
+            typeof(System.DelegateSerializationHolder),
 #if FEATURE_REMOTING                        
             typeof(System.Runtime.Remoting.ObjRef),
             typeof(System.Runtime.Remoting.IEnvoyInfo),
