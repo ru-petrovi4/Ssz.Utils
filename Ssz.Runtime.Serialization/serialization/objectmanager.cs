@@ -553,10 +553,11 @@ namespace Ssz.Runtime.Serialization {
                     Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.CompleteObject]Getting fixup info for object: ", currentFixup.m_id);
                     if (GetCompletionInfo(currentFixup, out tempObjectHolder, out fixupInfo, bObjectFullyComplete)) {
                         Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.CompleteObject]Fixing up: ", currentFixup.m_id);
-                        
+
                         // Check to make sure we are not both reachable from the topObject
                         // and there was a typeloadexception
-                        if (tempObjectHolder.TypeLoadExceptionReachable){
+                        if (tempObjectHolder.TypeLoadExceptionReachable)
+                        {
                             holder.TypeLoadException = tempObjectHolder.TypeLoadException;
                             // If the holder is both reachable and typeloadexceptionreachable
                             // throw an exception with the type name
@@ -1008,30 +1009,32 @@ namespace Ssz.Runtime.Serialization {
         }
     
         public virtual void RecordFixup(long objectToBeFixed, MemberInfo member, long objectRequired) {
-    
-            // VALFIX
-            ////Verify our arguments
-            //if (objectToBeFixed<=0 || objectRequired<=0) {
-            //    throw new ArgumentOutOfRangeException(((objectToBeFixed<=0)?"objectToBeFixed":"objectRequired"),
-            //                                          Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_IdTooSmall"));
-            //}
+            
+            //Verify our arguments
+            if (objectToBeFixed <= 0 || objectRequired <= 0)
+            {
+                throw new ArgumentOutOfRangeException(((objectToBeFixed <= 0) ? "objectToBeFixed" : "objectRequired"),
+                                                      Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_IdTooSmall"));
+            }
 
-            //if (member==null) {
-            //    throw new ArgumentNullException("member");
-            //}
-            //Contract.EndContractBlock();
+            if (member == null)
+            {
+                throw new ArgumentNullException("member");
+            }
+            Contract.EndContractBlock();
 
-            //if (!(member is FieldInfo) && !(member is SerializationFieldInfo)) {
-            //    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_InvalidType", member.GetType().ToString()));
-            //}
+            if (!(member is FieldInfo) && !(member is SerializationFieldInfo))
+            {
+                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_InvalidType", member.GetType().ToString()));
+            }
 
-    
-            //Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "RecordFixup.  ObjectToBeFixed: ", objectToBeFixed, "\tMember: ", member.Name, "\tRequiredObject: ", objectRequired);
-    
-            ////Create a new fixup holder
-            //FixupHolder fixup = new FixupHolder(objectRequired, member, FixupHolder.MemberFixup);
-    
-            //RegisterFixup(fixup, objectToBeFixed, objectRequired);
+
+            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "RecordFixup.  ObjectToBeFixed: ", objectToBeFixed, "\tMember: ", member.Name, "\tRequiredObject: ", objectRequired);
+
+            //Create a new fixup holder
+            FixupHolder fixup = new FixupHolder(objectRequired, member, FixupHolder.MemberFixup);
+
+            RegisterFixup(fixup, objectToBeFixed, objectRequired);
         }
     
     

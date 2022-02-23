@@ -232,8 +232,7 @@ namespace Ssz.Runtime.Serialization {
         // instance of an immutable type.
         //
         // [System.Security.SecurityCritical]  // auto-generated_required
-        public static Object GetUninitializedObject(Type type) {
-            // VALFIX
+        public static Object GetUninitializedObject(Type type) {            
             //if (type == null) {
             //    throw new ArgumentNullException("type");
             //}
