@@ -28,7 +28,7 @@ namespace Ssz.Runtime.Serialization {
     // (the functionality formerly provided by the IGraphWalker interface)
     // and generating ids on a per-object basis.
 [Serializable]
-[CLSCompliant(false)]
+// [CLSCompliant(false)]
 // [System.Runtime.InteropServices.ComVisible(true)]
     public abstract class Formatter : IFormatter {
     
@@ -178,7 +178,7 @@ namespace Ssz.Runtime.Serialization {
         }
             
         // Writes an instance of SByte to the stream.
-        [CLSCompliant(false)]
+        // [CLSCompliant(false)]
         protected abstract void WriteSByte(sbyte val, String name);
     
         // Writes an instance of Single to the stream.
@@ -189,15 +189,15 @@ namespace Ssz.Runtime.Serialization {
     
     
         // Writes an instance of an ushort to the stream.
-        [CLSCompliant(false)]
+        // [CLSCompliant(false)]
         protected abstract void WriteUInt16(ushort val, String name);
     
         // Writes an instance of an uint to the stream.
-        [CLSCompliant(false)]
+        // [CLSCompliant(false)]
         protected abstract void WriteUInt32(uint val, String name);
     
         // Writes an instance of a ulong to the stream.
-        [CLSCompliant(false)]
+        // [CLSCompliant(false)]
         protected abstract void WriteUInt64(ulong val, String name);
     
     

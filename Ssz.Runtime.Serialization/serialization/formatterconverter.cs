@@ -57,7 +57,7 @@ namespace Ssz.Runtime.Serialization {
             return System.Convert.ToChar(value, CultureInfo.InvariantCulture);
         }
 
-        [CLSCompliant(false)]
+        // [CLSCompliant(false)]
         public sbyte  ToSByte(Object value) {
             if (value==null) {
                 throw new ArgumentNullException("value");
@@ -82,7 +82,7 @@ namespace Ssz.Runtime.Serialization {
             return System.Convert.ToInt16(value, CultureInfo.InvariantCulture);
         }
 
-        [CLSCompliant(false)]
+        // [CLSCompliant(false)]
         public ushort ToUInt16(Object value) {
             if (value==null) {
                 throw new ArgumentNullException("value");
@@ -99,7 +99,7 @@ namespace Ssz.Runtime.Serialization {
             return System.Convert.ToInt32(value, CultureInfo.InvariantCulture);
         }
 
-        [CLSCompliant(false)]
+        // [CLSCompliant(false)]
         public uint   ToUInt32(Object value) {
             if (value==null) {
                 throw new ArgumentNullException("value");
@@ -116,7 +116,7 @@ namespace Ssz.Runtime.Serialization {
             return System.Convert.ToInt64(value, CultureInfo.InvariantCulture);
         }
 
-        [CLSCompliant(false)]
+        // [CLSCompliant(false)]
         public ulong  ToUInt64(Object value) {
             if (value==null) {
                 throw new ArgumentNullException("value");

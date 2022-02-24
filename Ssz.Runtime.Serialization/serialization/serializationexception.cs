@@ -39,8 +39,10 @@ namespace Ssz.Runtime.Serialization {
         public SerializationException(String message, Exception innerException) : base (message, innerException) {
             //SetErrorCode(__HResults.COR_E_SERIALIZATION);
         }
-
-        //protected SerializationException(SerializationInfo info, StreamingContext context) : base (info, context) {
-        //}
+        
+        // VALFIX
+        /*
+        protected SerializationException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) : base (info, context) {
+        }*/
     }
 }

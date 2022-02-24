@@ -793,7 +793,22 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                 SerTrace.Log( this, objectInfoId," Position miss search for name "+name);
                 for (int i=0; i<cache.memberNames.Length; i++)
                 {
-                    if (cache.memberNames[i].Equals(name))
+                    // VALFIX
+                    var member = cache.memberNames[i];
+                    member = member.Replace("+_list", "+list");
+                    if (member.Equals(name))
+                    {
+                        lastPosition = i;
+                        return lastPosition;
+                    }
+                }
+
+                var arr = cache.memberNames.OrderBy(n => n.Length).ToArray();
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    // VALFIX
+                    var member = arr[i];                    
+                    if (member.Contains(name, StringComparison.InvariantCultureIgnoreCase))
                     {
                         lastPosition = i;
                         return lastPosition;

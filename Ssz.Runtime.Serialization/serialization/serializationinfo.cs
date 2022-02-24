@@ -53,14 +53,14 @@ namespace Ssz.Runtime.Serialization
 #if FEATURE_SERIALIZATION
         private bool requireSameTokenInPartialTrust;
 #endif
-        [CLSCompliant(false)]
+        // [CLSCompliant(false)]
         public SerializationInfo(Type type, IFormatterConverter converter)
 #if FEATURE_SERIALIZATION
             : this(type, converter, false)
         {
         }
 
-        [CLSCompliant(false)]
+        // [CLSCompliant(false)]
         public SerializationInfo(Type type, IFormatterConverter converter, bool requireSameTokenInPartialTrust)
 #endif
         {
@@ -325,7 +325,7 @@ namespace Ssz.Runtime.Serialization
         }
 
 
-        [CLSCompliant(false)]
+        // [CLSCompliant(false)]
         public void AddValue(String name, sbyte value)
         {
             AddValue(name, (Object)value, typeof(sbyte));
@@ -341,7 +341,7 @@ namespace Ssz.Runtime.Serialization
             AddValue(name, (Object)value, typeof(short));
         }
 
-        [CLSCompliant(false)]
+        // [CLSCompliant(false)]
         public void AddValue(String name, ushort value)
         {
             AddValue(name, (Object)value, typeof(ushort));
@@ -352,7 +352,7 @@ namespace Ssz.Runtime.Serialization
             AddValue(name, (Object)value, typeof(int));
         }
 
-        [CLSCompliant(false)]
+        // [CLSCompliant(false)]
         public void AddValue(String name, uint value)
         {
             AddValue(name, (Object)value, typeof(uint));
@@ -363,7 +363,7 @@ namespace Ssz.Runtime.Serialization
             AddValue(name, (Object)value, typeof(long));
         }
 
-        [CLSCompliant(false)]
+        // [CLSCompliant(false)]
         public void AddValue(String name, ulong value)
         {
             AddValue(name, (Object)value, typeof(ulong));
@@ -608,7 +608,7 @@ namespace Ssz.Runtime.Serialization
             return m_converter.ToChar(value);
         }
 
-        [CLSCompliant(false)]
+        // [CLSCompliant(false)]
         public sbyte GetSByte(String name)
         {
             Type foundType;
@@ -648,7 +648,7 @@ namespace Ssz.Runtime.Serialization
             return m_converter.ToInt16(value);
         }
 
-        [CLSCompliant(false)]
+        // [CLSCompliant(false)]
         public ushort GetUInt16(String name)
         {
             Type foundType;
@@ -675,7 +675,7 @@ namespace Ssz.Runtime.Serialization
             return m_converter.ToInt32(value);
         }
 
-        [CLSCompliant(false)]
+        // [CLSCompliant(false)]
         public uint GetUInt32(String name)
         {
             Type foundType;
@@ -702,7 +702,7 @@ namespace Ssz.Runtime.Serialization
             return m_converter.ToInt64(value);
         }
 
-        [CLSCompliant(false)]
+        // [CLSCompliant(false)]
         public ulong GetUInt64(String name)
         {
             Type foundType;

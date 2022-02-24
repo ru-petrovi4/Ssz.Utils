@@ -242,11 +242,7 @@ namespace Ssz.Runtime.Serialization {
             //    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_InvalidType", type.ToString()));
             //}
 
-            //return nativeGetUninitializedObject((Type)type);
-            // TEMPCODE
-            if (type.Name == @"ShapeCollection")
-            {
-            }
+            //return nativeGetUninitializedObject((Type)type);            
 
             return System.Runtime.Serialization.FormatterServices.GetUninitializedObject(type);
         }
