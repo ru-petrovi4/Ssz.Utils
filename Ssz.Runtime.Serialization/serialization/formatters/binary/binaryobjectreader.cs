@@ -497,7 +497,18 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             // If the Type is null, this means we have a typeload issue
             // mark the object with TypeLoadExceptionHolder
             if ((object)pr.PRdtType == null)
-            {
+            {    
+                // VALFIX
+                //if (pr.PRkeyDt == @"System.DelegateSerializationHolder")
+                //{
+                //    pr.PRdtType = typeof(System.DelegateSerializationHolder);
+                //    pr.PRnewObj = System.Runtime.Serialization.FormatterServices.GetUninitializedObject(pr.PRdtType);                    
+                //}
+                //else
+                //{
+                //    pr.PRnewObj = new TypeLoadExceptionHolder(pr.PRkeyDt);
+                //    return;
+                //}
                 pr.PRnewObj = new TypeLoadExceptionHolder(pr.PRkeyDt);
                 return;
             }
@@ -1465,6 +1476,20 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         // [System.Security.SecurityCritical]  // auto-generated
         internal Type GetType(BinaryAssemblyInfo assemblyInfo, String name)
         {
+            // VALFIX
+            if (name == "System.DelegateSerializationHolder")
+            {
+                return typeof(DelegateSerializationHolder);
+            }
+            else if (name == "System.DelegateSerializationHolder+DelegateEntry")
+            {
+                return typeof(DelegateSerializationHolder.DelegateEntry);
+            }
+            else if (name == "System.Reflection.MemberInfoSerializationHolder")
+            {
+                return typeof(MemberInfoSerializationHolder);
+            }
+
             Type objectType = null;
 
             if (((previousName != null) && (previousName.Length == name.Length) && (previousName.Equals(name))) &&
@@ -1500,7 +1525,10 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 previousName = name;
                 previousType = objectType;
             }
-            //Console.WriteLine("name "+name+" assembly "+assemblyInfo.assemblyString+" objectType "+objectType);
+            //Console.WriteLine("name "+name+" assembly "+assemblyInfo.assemblyString+" objectType "+objectType);            
+            //if (objectType == null)
+            //{                
+            //}
             return objectType;
         }
 

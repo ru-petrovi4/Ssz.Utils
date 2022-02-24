@@ -293,7 +293,7 @@ namespace Ssz.Runtime.Serialization {
             if (!unsafeTypeForwardersIsEnabledInitialized)
             {
                 // VALFIX
-                unsafeTypeForwardersIsEnabled = true; // GetEnableUnsafeTypeForwarders();
+                unsafeTypeForwardersIsEnabled = false; // GetEnableUnsafeTypeForwarders();
                 unsafeTypeForwardersIsEnabledInitialized = true;
             }
 

@@ -680,7 +680,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             if ((object)type == null)
                 throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ISerializableTypes",objectType+" "+name));
 
-            SerTrace.Log( this,objectInfoId," ", objectType," GetType Exit ",type);
+            SerTrace.Log( this,objectInfoId," ", objectType," GetType Exit ",type);            
             return type;
         }
 

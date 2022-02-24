@@ -512,7 +512,7 @@ namespace Ssz.Runtime.Serialization
         // form requested.  
         //
 
-        [System.Security.SecuritySafeCritical]  // auto-generated
+        // [System.Security.SecuritySafeCritical]  // auto-generated
         public Object GetValue(String name, Type type)
         {
 
@@ -549,7 +549,7 @@ namespace Ssz.Runtime.Serialization
             return m_converter.Convert(value, type);
         }
 
-        [System.Security.SecuritySafeCritical]  // auto-generated
+        // [System.Security.SecuritySafeCritical]  // auto-generated
         // [System.Runtime.InteropServices.ComVisible(true)]
         // 
         internal Object GetValueNoThrow(String name, Type type)

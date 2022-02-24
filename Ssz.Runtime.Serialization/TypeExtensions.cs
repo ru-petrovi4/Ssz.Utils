@@ -6,13 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Ssz.Runtime.Serialization
-{
-    // TODO
+{    
     internal static class TypeExtensions
     {
         public static ConstructorInfo GetSerializationCtor(this Type type)
         {
-            return type.GetConstructor(new Type[0]);
+            return type.GetConstructor(new Type[] { typeof (SerializationInfo), typeof(StreamingContext) });
         }
     }
 }

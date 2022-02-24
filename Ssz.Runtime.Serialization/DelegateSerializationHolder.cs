@@ -119,7 +119,7 @@ namespace System
 
         #region Constructor
         // [System.Security.SecurityCritical]  // auto-generated
-        private DelegateSerializationHolder(SerializationInfo info, StreamingContext context)
+        public DelegateSerializationHolder(SerializationInfo info, StreamingContext context)
         {
             if (info == null)
                 throw new ArgumentNullException("info");
@@ -134,7 +134,7 @@ namespace System
             catch
             {
                 // Old wire format
-                m_delegateEntry = OldDelegateWireFormat(info, context);
+                m_delegateEntry = OldDelegateWireFormat(info);
                 bNewWire = false;
             }
 
@@ -181,7 +181,7 @@ namespace System
                 Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_InsufficientDeserializationState", field));
         }
 
-        private DelegateEntry OldDelegateWireFormat(SerializationInfo info, StreamingContext context)
+        private DelegateEntry OldDelegateWireFormat(SerializationInfo info)
         {
             if (info == null)
                 throw new ArgumentNullException("info");
@@ -279,18 +279,17 @@ namespace System
             }
             else
             {
-                object[] invocationList = new object[count];
-
+                // VALFIX                
+                var invocationList = new Delegate[count];
                 for (DelegateEntry de = m_delegateEntry; de != null; de = de.Entry)
                 {
                     // Be careful to match the index we pass to GetDelegate (used to look up extra information for each delegate) to
                     // the order we process the entries: we're actually looking at them in reverse order.
                     --count;
-                    invocationList[count] = GetDelegate(de, maxindex - count);
-                }
-                // VALFIX
+                    invocationList[count] = GetDelegate(de, maxindex - count);                    
+                }                
+                return Delegate.Combine(invocationList);
                 //return ((MulticastDelegate)invocationList[0]).NewMulticastDelegate(invocationList, invocationList.Length);
-                return null;
             }
         }
         #endregion
