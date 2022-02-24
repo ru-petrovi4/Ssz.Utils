@@ -13,8 +13,9 @@ namespace Ssz.Runtime.Serialization
             return false;
         }
 
-        internal static void Trace(string v1, params object[] par)
-        {            
+        internal static void Trace(string value, params object[] arg)
+        {
+            System.Diagnostics.Trace.WriteLine(String.Format(value, arg));
         }
 
         internal static void Assert(bool v1, string v2)

@@ -231,7 +231,8 @@ namespace Ssz.Runtime.Serialization {
         // instance of an immutable type.
         //
         // [System.Security.SecurityCritical]  // auto-generated_required
-        public static Object GetUninitializedObject(Type type) {            
+        public static Object GetUninitializedObject(Type type) {   
+            // VALFIX
             //if (type == null) {
             //    throw new ArgumentNullException("type");
             //}
@@ -242,6 +243,10 @@ namespace Ssz.Runtime.Serialization {
             //}
 
             //return nativeGetUninitializedObject((Type)type);
+            // TEMPCODE
+            if (type.Name == @"ShapeCollection")
+            {
+            }
 
             return System.Runtime.Serialization.FormatterServices.GetUninitializedObject(type);
         }
