@@ -10,8 +10,10 @@ namespace Ssz.DataGrpc.Server
     {
         #region construction and destruction        
 
-        public TypeId(Utils.DataAccess.TypeId typeId)
+        public TypeId(Utils.DataAccess.TypeId? typeId)
         {
+            if (typeId is null)
+                return;
             SchemaType = typeId.SchemaType;
             Namespace = typeId.Namespace;
             LocalId = typeId.LocalId;

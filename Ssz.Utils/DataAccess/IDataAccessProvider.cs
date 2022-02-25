@@ -141,7 +141,7 @@ namespace Ssz.Utils.DataAccess
         /// <param name="params_"></param>
         /// <param name="valueJournalSubscriptions"></param>
         /// <returns></returns>
-        Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, TypeId calculation, CaseInsensitiveDictionary<string>? params_, object[] valueJournalSubscriptions);
+        Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, TypeId? calculation, CaseInsensitiveDictionary<string>? params_, object[] valueJournalSubscriptions);
 
         /// <summary>
         ///     Returns null if error.
