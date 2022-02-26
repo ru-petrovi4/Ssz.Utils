@@ -333,9 +333,10 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         // [System.Security.SecurityCritical]  // auto-generated
         private void CheckSerializable(Type t)
         {
-            if (!t.IsSerializable && !HasSurrogate(t))
-                throw new SerializationException(String.Format(CultureInfo.InvariantCulture, Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_NonSerType"), 
-                                                                     t.FullName, t.Assembly.FullName));
+            // VALFIX
+            //if (!t.IsSerializable && !HasSurrogate(t))            
+            //    throw new SerializationException(String.Format(CultureInfo.InvariantCulture, Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_NonSerType"), 
+            //                                                         t.FullName, t.Assembly.FullName));
         }
 
         // [System.Security.SecurityCritical]  // auto-generated
@@ -497,18 +498,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             // If the Type is null, this means we have a typeload issue
             // mark the object with TypeLoadExceptionHolder
             if ((object)pr.PRdtType == null)
-            {    
-                // VALFIX
-                //if (pr.PRkeyDt == @"System.DelegateSerializationHolder")
-                //{
-                //    pr.PRdtType = typeof(System.DelegateSerializationHolder);
-                //    pr.PRnewObj = System.Runtime.Serialization.FormatterServices.GetUninitializedObject(pr.PRdtType);                    
-                //}
-                //else
-                //{
-                //    pr.PRnewObj = new TypeLoadExceptionHolder(pr.PRkeyDt);
-                //    return;
-                //}
+            {   
                 pr.PRnewObj = new TypeLoadExceptionHolder(pr.PRkeyDt);
                 return;
             }
@@ -1489,6 +1479,10 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             {
                 return typeof(MemberInfoSerializationHolder);
             }
+            else if (name == "System.Collections.Hashtable")
+            {
+                return typeof(Ssz.Collections.Hashtable);
+            }
 
             Type objectType = null;
 
@@ -1525,10 +1519,11 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 previousName = name;
                 previousType = objectType;
             }
-            //Console.WriteLine("name "+name+" assembly "+assemblyInfo.assemblyString+" objectType "+objectType);            
-            //if (objectType == null)
-            //{                
-            //}
+            //Console.WriteLine("name "+name+" assembly "+assemblyInfo.assemblyString+" objectType "+objectType);
+            // TEMPCODE
+            if (objectType == null)
+            {
+            }
             return objectType;
         }
 

@@ -815,6 +815,29 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                     }
                 }
 
+                // TEMPCODE 
+                if (name == "HashSize")
+                {
+                }
+                else if (name == "DataTable.RemotingVersion")
+                {
+                }
+                else if (name == "XmlSchema")
+                {
+                }
+                else if (name == "XmlDiffGram")
+                {
+                }
+                else if (name == "_ignoreCase")
+                {
+                }
+                else if (name == "win32LCID")
+                {
+                }
+                else
+                {
+                }
+
                 //throw new SerializationException(String.Format(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_MissingMember"),name,objectType));
                 lastPosition = 0;
                 return -1;

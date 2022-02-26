@@ -19,7 +19,10 @@ namespace Ssz.Runtime.Serialization
         {
             if (value != null && !fieldInfo.FieldType.IsAssignableFrom(value.GetType()))
             {
-                return;
+                if (fieldInfo.DeclaringType.Name == @"Font")
+                {
+                    return;
+                }
             }
             try 
             {                

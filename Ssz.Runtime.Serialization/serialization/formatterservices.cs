@@ -293,7 +293,7 @@ namespace Ssz.Runtime.Serialization {
             if (!unsafeTypeForwardersIsEnabledInitialized)
             {
                 // VALFIX
-                unsafeTypeForwardersIsEnabled = false; // GetEnableUnsafeTypeForwarders();
+                unsafeTypeForwardersIsEnabled = true; // GetEnableUnsafeTypeForwarders();
                 unsafeTypeForwardersIsEnabledInitialized = true;
             }
 
@@ -345,7 +345,7 @@ namespace Ssz.Runtime.Serialization {
             if (members.Length!=data.Length) {
                 throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Argument_DataLengthDifferent"));
             }
-            Contract.EndContractBlock();
+            Contract.EndContractBlock();            
 
             MemberInfo mi;
 
