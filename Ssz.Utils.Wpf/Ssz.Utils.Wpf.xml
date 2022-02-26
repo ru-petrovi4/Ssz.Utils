@@ -261,23 +261,6 @@
             <param name="sender"></param>
             <param name="e"></param>
         </member>
-        <member name="M:Ssz.Utils.Wpf.ThreadDispatcher.Dispose">
-            <summary>
-                This is the implementation of the IDisposable.Dispose method.  The client
-                application should invoke this method when this instance is no longer needed.
-            </summary>
-        </member>
-        <member name="M:Ssz.Utils.Wpf.ThreadDispatcher.Dispose(System.Boolean)">
-            <summary>
-                This method is invoked when the IDisposable.Dispose or Finalize actions are
-                requested.
-            </summary>
-        </member>
-        <member name="M:Ssz.Utils.Wpf.ThreadDispatcher.Finalize">
-            <summary>
-                Invoked by the .NET Framework while doing heap managment (Finalize).
-            </summary>
-        </member>
         <member name="T:Ssz.Utils.Wpf.ToggleSwitch.Borders.ClippingBorder">
             <summary>
             A border that clips its contents.

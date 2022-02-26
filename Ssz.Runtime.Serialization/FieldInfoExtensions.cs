@@ -23,6 +23,11 @@ namespace Ssz.Runtime.Serialization
                 if (fieldInfo.DeclaringType.Name == @"Font")
                 {
                     return;
+                    //if (value is int intValue)
+                    //{
+                    //    ((Font)target).Size = intValue;
+                    //    return;
+                    //}
                 }
                 //if (fieldInfo.FieldType == typeof(System.Collections.Hashtable))
                 //{
@@ -30,12 +35,13 @@ namespace Ssz.Runtime.Serialization
                 //    foreach (DictionaryEntry kv in ((Ssz.Collections.Hashtable)value))
                 //        newValue.Add(kv.Key, kv.Value);
                 //    value = newValue;
-                //}
-                //if (fieldInfo.FieldType == typeof(Font))
-                //{
-                //    var oldValue = (Font)value;                    
-                //    value = new Font(oldValue.FontFamily, oldValue.Size, oldValue.Style);
-                //}
+                //}               
+            }            
+            if (fieldInfo.FieldType == typeof(Font))
+            {
+                value = new Font("Arial", 12);
+                //var oldValue = (Font)value;
+                //value = new Font(oldValue.FontFamily, oldValue.Size, oldValue.Style);
             }
             try 
             {                
