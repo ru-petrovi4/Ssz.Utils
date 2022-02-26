@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -23,6 +24,18 @@ namespace Ssz.Runtime.Serialization
                 {
                     return;
                 }
+                //if (fieldInfo.FieldType == typeof(System.Collections.Hashtable))
+                //{
+                //    var newValue = new System.Collections.Hashtable();
+                //    foreach (DictionaryEntry kv in ((Ssz.Collections.Hashtable)value))
+                //        newValue.Add(kv.Key, kv.Value);
+                //    value = newValue;
+                //}
+                //if (fieldInfo.FieldType == typeof(Font))
+                //{
+                //    var oldValue = (Font)value;                    
+                //    value = new Font(oldValue.FontFamily, oldValue.Size, oldValue.Style);
+                //}
             }
             try 
             {                

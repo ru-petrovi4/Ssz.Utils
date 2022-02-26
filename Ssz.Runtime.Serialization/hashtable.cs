@@ -69,7 +69,7 @@ namespace Ssz.Collections {
     //    such as an ordinal string equality check.
     // 
     // [DebuggerTypeProxy(typeof(System.Collections.Hashtable.HashtableDebugView))]
-    [DebuggerDisplay("Count = {Count}")]
+    [DebuggerDisplay("Ssz Hashtable, Count = {Count}")]
     // [System.Runtime.InteropServices.ComVisible(true)]
     // [Serializable]
     public class Hashtable : IDictionary, ISerializable, IDeserializationCallback, ICloneable {
@@ -443,7 +443,7 @@ namespace Ssz.Collections {
         }
 
         // Removes all entries from this hashtable.
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+        // [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
         public virtual void Clear() {
             Contract.Assert(!isWriterInProgress, "Race condition detected in usages of Hashtable - multiple threads appear to be writing to a Hashtable instance simultaneously!  Don't do that - use Hashtable.Synchronized.");
 
@@ -605,21 +605,23 @@ namespace Ssz.Collections {
         // Copies the values in this Hashtable to an KeyValuePairs array.
         // KeyValuePairs is different from Dictionary Entry in that it has special
         // debugger attributes on its fields.
-        
-        //internal virtual KeyValuePairs[] ToKeyValuePairsArray() {
 
-        //    KeyValuePairs[] array = new KeyValuePairs[count];           
-        //    int index = 0;            
-        //    bucket[] lbuckets = buckets;
-        //    for (int i = lbuckets.Length; --i >= 0;) {
-        //        Object keyv = lbuckets[i].key;
-        //        if ((keyv != null) && (keyv != buckets)){
-        //            array[index++] = new KeyValuePairs(keyv,lbuckets[i].val);
-        //        }
-        //    }
-            
-        //    return array;
-        //}
+        public KeyValuePair<object, object>[] ToKeyValuePairsArray()
+        {
+            var array = new KeyValuePair<object, object>[count];
+            int index = 0;
+            bucket[] lbuckets = buckets;
+            for (int i = lbuckets.Length; --i >= 0;)
+            {
+                Object keyv = lbuckets[i].key;
+                if ((keyv != null) && (keyv != buckets))
+                {
+                    array[index++] = KeyValuePair.Create(keyv, lbuckets[i].val);
+                }
+            }
+
+            return array;
+        }
 
 
         // Copies the values of this hashtable to a given array starting at a given
@@ -732,7 +734,7 @@ namespace Ssz.Collections {
             version++;
         }
 
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+        //// [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         private void rehash( int newsize, bool forceNewHashCode ) {
 
             // reset occupancy
@@ -870,7 +872,7 @@ namespace Ssz.Collections {
         // Inserts an entry into this hashtable. This method is called from the Set
         // and Add methods. If the add parameter is true and the given key already
         // exists in the hashtable, an exception is thrown.
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+        // [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         private void Insert (Object key, Object nvalue, bool add) {
             // @
 
@@ -1071,7 +1073,7 @@ namespace Ssz.Collections {
         // key exists in the hashtable, it is removed. An ArgumentException is
         // thrown if the key is null.
         // 
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+        // [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         public virtual void Remove(Object key) {
             if (key == null) {
                 throw new ArgumentNullException("key", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentNull_Key"));
@@ -1244,7 +1246,8 @@ namespace Ssz.Collections {
                         hashsize = siInfo.GetInt32(HashSizeName);
                         break;
                     case KeyComparerName: 
-                        _keycomparer = (IEqualityComparer)siInfo.GetValue(KeyComparerName, typeof(IEqualityComparer));
+                        // VALFIX
+                        //_keycomparer = (IEqualityComparer)siInfo.GetValue(KeyComparerName, typeof(IEqualityComparer));
                         break;
                     case ComparerName:
                         c = (IComparer)siInfo.GetValue(ComparerName, typeof(IComparer));
@@ -1698,7 +1701,7 @@ namespace Ssz.Collections {
 
         }
 
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+        // [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
         public static bool IsPrime(int candidate) 
         {
             if ((candidate & 1) != 0) 
@@ -1714,7 +1717,7 @@ namespace Ssz.Collections {
             return (candidate == 2);
         }
 
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+        // [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
         public static int GetPrime(int min) 
         {
             if (min < 0)

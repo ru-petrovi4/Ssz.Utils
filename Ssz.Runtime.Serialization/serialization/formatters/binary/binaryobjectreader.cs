@@ -1519,11 +1519,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 previousName = name;
                 previousType = objectType;
             }
-            //Console.WriteLine("name "+name+" assembly "+assemblyInfo.assemblyString+" objectType "+objectType);
-            // TEMPCODE
-            if (objectType == null)
-            {
-            }
+            //Console.WriteLine("name "+name+" assembly "+assemblyInfo.assemblyString+" objectType "+objectType);            
             return objectType;
         }
 
