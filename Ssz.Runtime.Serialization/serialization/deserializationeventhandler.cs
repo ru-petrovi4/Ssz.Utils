@@ -12,6 +12,8 @@
 **
 **
 ===========================================================*/
+using System.Runtime.Serialization;
+
 namespace Ssz.Runtime.Serialization {
 
     [Serializable]

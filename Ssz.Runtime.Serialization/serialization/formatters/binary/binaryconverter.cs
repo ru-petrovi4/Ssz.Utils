@@ -486,7 +486,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             return var;
         }
 
-        internal static Type typeofISerializable = typeof(ISerializable);
+        internal static Type typeofISerializable = typeof(System.Runtime.Serialization.ISerializable);
         internal static Type typeofString = typeof(String);
         internal static Type typeofConverter = typeof(Converter);
         internal static Type typeofBoolean = typeof(Boolean);

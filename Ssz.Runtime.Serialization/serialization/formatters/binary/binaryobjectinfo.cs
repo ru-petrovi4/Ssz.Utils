@@ -28,6 +28,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
     using System.Diagnostics.Contracts;
     using System.Security;
     using System.Security.Permissions;
+    using System.Runtime.Serialization;
 
     // This class contains information about an object. It is used so that
     // the rest of the Formatter routines can use a common interface for
@@ -154,7 +155,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                     throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_NonSerType",
                                                                    objectType.FullName, objectType.Assembly.FullName));
                 }
-                si = new SerializationInfo(objectType, converter, !FormatterServices.UnsafeTypeForwardersIsEnabled());
+                si = new SerializationInfo(objectType, converter, !Ssz.Runtime.Serialization.FormatterServices.UnsafeTypeForwardersIsEnabled());
 #if FEATURE_SERIALIZATION
                 ((ISerializable)obj).GetObjectData(si, context);
 #endif
@@ -225,7 +226,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             }
             else if (Converter.typeofISerializable.IsAssignableFrom(objectType))
             {
-                si = new SerializationInfo(objectType, converter, !FormatterServices.UnsafeTypeForwardersIsEnabled());
+                si = new SerializationInfo(objectType, converter, !Ssz.Runtime.Serialization.FormatterServices.UnsafeTypeForwardersIsEnabled());
                 cache = new SerObjectInfoCache(objectType);
                 CheckTypeForwardedFrom(cache, objectType, binderAssemblyString);
 
@@ -305,17 +306,18 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             // If we're about to use the [TypeForwardedFrom] attribute for the assembly name
             if (cache.hasTypeForwardedFrom && binderAssemblyString == null)
             {
-                if (!FormatterServices.UnsafeTypeForwardersIsEnabled())
+                if (!Ssz.Runtime.Serialization.FormatterServices.UnsafeTypeForwardersIsEnabled())
                 {
                     Assembly objectAssembly = objectType.Assembly;
 
+                    // VALFIX
                     // cache.assemblyString will be set to the value of the AssemblyFullName set on the TypeForwardedFrom attribute
-                    if (!SerializationInfo.IsAssemblyNameAssignmentSafe(objectAssembly.FullName, cache.assemblyString)
-                        && !objectAssembly.IsFullyTrusted)
-                    {
-                        // if the object assembly is partially trusted, we will block the TypeForwardedFrom case
-                        throw new SecurityException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_RequireFullTrust", objectType));
-                    }
+                    //if (!SerializationInfo.IsAssemblyNameAssignmentSafe(objectAssembly.FullName, cache.assemblyString)
+                    //    && !objectAssembly.IsFullyTrusted)
+                    //{
+                    //    // if the object assembly is partially trusted, we will block the TypeForwardedFrom case
+                    //    throw new SecurityException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_RequireFullTrust", objectType));
+                    //}
                 }
             }
         }
@@ -343,7 +345,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                 SerTrace.Log( this,objectInfoId," ", objectType," InitMemberInfo new cache");
                 cache = new SerObjectInfoCache(objectType);
 
-                cache.memberInfos = FormatterServices.GetSerializableMembers(objectType, context);
+                cache.memberInfos = Ssz.Runtime.Serialization.FormatterServices.GetSerializableMembers(objectType, context);
                 int count = cache.memberInfos.Length;
                 cache.memberNames = new String[count];
                 cache.memberTypes = new Type[count];
@@ -360,7 +362,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 
             if (obj != null)
             {
-                memberData = FormatterServices.GetObjectData(obj, cache.memberInfos);
+                memberData = Ssz.Runtime.Serialization.FormatterServices.GetObjectData(obj, cache.memberInfos);
                 DumpMemberInfo();
             }
 
@@ -465,7 +467,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 
         internal Type objectType;
 
-        internal ObjectManager objectManager;
+        internal Ssz.Runtime.Serialization.ObjectManager objectManager;
 
         internal int count;
 
@@ -515,7 +517,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
         // [System.Security.SecurityCritical]  // auto-generated
-        internal static ReadObjectInfo Create(Type objectType, ISurrogateSelector surrogateSelector, StreamingContext context, ObjectManager objectManager, SerObjectInfoInit serObjectInfoInit, IFormatterConverter converter, bool bSimpleAssembly)
+        internal static ReadObjectInfo Create(Type objectType, ISurrogateSelector surrogateSelector, StreamingContext context, Ssz.Runtime.Serialization.ObjectManager objectManager, SerObjectInfoInit serObjectInfoInit, IFormatterConverter converter, bool bSimpleAssembly)
         {
             ReadObjectInfo soi = GetObjectInfo(serObjectInfoInit);
             soi.Init(objectType, surrogateSelector, context, objectManager, serObjectInfoInit, converter, bSimpleAssembly);
@@ -525,7 +527,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 
         // Read Constructor
         // [System.Security.SecurityCritical]  // auto-generated
-        internal void Init(Type objectType, ISurrogateSelector surrogateSelector, StreamingContext context, ObjectManager objectManager, SerObjectInfoInit serObjectInfoInit, IFormatterConverter converter, bool bSimpleAssembly)
+        internal void Init(Type objectType, ISurrogateSelector surrogateSelector, StreamingContext context, Ssz.Runtime.Serialization.ObjectManager objectManager, SerObjectInfoInit serObjectInfoInit, IFormatterConverter converter, bool bSimpleAssembly)
         {
 
             SerTrace.Log( this, objectInfoId," Constructor 3 ",objectType);
@@ -541,7 +543,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
         // [System.Security.SecurityCritical]  // auto-generated
-        internal static ReadObjectInfo Create(Type objectType, String[] memberNames, Type[] memberTypes, ISurrogateSelector surrogateSelector, StreamingContext context, ObjectManager objectManager, SerObjectInfoInit serObjectInfoInit, IFormatterConverter converter, bool bSimpleAssembly)
+        internal static ReadObjectInfo Create(Type objectType, String[] memberNames, Type[] memberTypes, ISurrogateSelector surrogateSelector, StreamingContext context, Ssz.Runtime.Serialization.ObjectManager objectManager, SerObjectInfoInit serObjectInfoInit, IFormatterConverter converter, bool bSimpleAssembly)
         {
             ReadObjectInfo soi = GetObjectInfo(serObjectInfoInit);
             soi.Init(objectType, memberNames,memberTypes, surrogateSelector, context, objectManager, serObjectInfoInit, converter, bSimpleAssembly);
@@ -550,7 +552,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 
         // Read Constructor
         // [System.Security.SecurityCritical]  // auto-generated
-        internal void Init(Type objectType, String[] memberNames, Type[] memberTypes, ISurrogateSelector surrogateSelector, StreamingContext context, ObjectManager objectManager, SerObjectInfoInit serObjectInfoInit, IFormatterConverter converter, bool bSimpleAssembly)
+        internal void Init(Type objectType, String[] memberNames, Type[] memberTypes, ISurrogateSelector surrogateSelector, StreamingContext context, Ssz.Runtime.Serialization.ObjectManager objectManager, SerObjectInfoInit serObjectInfoInit, IFormatterConverter converter, bool bSimpleAssembly)
         {
             SerTrace.Log( this,objectInfoId, " Constructor 5 ",objectType);
             this.objectType = objectType;
@@ -628,7 +630,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 
             SerTrace.Log( this,objectInfoId," ", objectType," InitMemberInfo new cache");
             cache = new SerObjectInfoCache(objectType);
-            cache.memberInfos = FormatterServices.GetSerializableMembers(objectType, context);
+            cache.memberInfos = Ssz.Runtime.Serialization.FormatterServices.GetSerializableMembers(objectType, context);
             count = cache.memberInfos.Length;
             cache.memberNames = new String[count];
             cache.memberTypes = new Type[count];
@@ -746,7 +748,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             {
                 DumpPopulate(cache.memberInfos, memberData);
 
-                FormatterServices.PopulateObjectMembers(obj, cache.memberInfos, memberData);
+                Ssz.Runtime.Serialization.FormatterServices.PopulateObjectMembers(obj, cache.memberInfos, memberData);
             }
         }
 

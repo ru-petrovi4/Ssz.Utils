@@ -27,6 +27,7 @@ namespace Ssz.Collections {
     using System.Diagnostics.Contracts;
     using System.Security.Cryptography;
     using System.Collections;
+    using System.Runtime.Serialization;
 
     // The Hashtable class represents a dictionary of associated keys and values
     // with constant lookup time.
@@ -393,7 +394,7 @@ namespace Ssz.Collections {
             while (e.MoveNext()) Add(e.Key, e.Value);
         }        
         
-        public Hashtable(SerializationInfo info, StreamingContext context) {
+        private Hashtable(SerializationInfo info, StreamingContext context) {
             //We can't do anything with the keys and values until the entire graph has been deserialized
             //and we have a reasonable estimate that GetHashCode is not going to fail.  For the time being,
             //we'll just cache this.  The graph is not valid until OnDeserialization has been called.

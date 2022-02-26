@@ -29,6 +29,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
     using System.Diagnostics;
     using System.Globalization;
     using System.Diagnostics.Contracts;
+    using System.Runtime.Serialization;
 
     internal sealed  class ObjectWriter
     {
@@ -1097,7 +1098,8 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                 isNew = false;
                 return previousId;
             }
-            m_idGenerator.m_currentCount = m_currentId;
+            // VALFIX
+            //m_idGenerator.m_currentCount = m_currentId;
             if ((object)type != null && type.IsValueType)
             {
                 if (!assignUniqueIdToValueType)

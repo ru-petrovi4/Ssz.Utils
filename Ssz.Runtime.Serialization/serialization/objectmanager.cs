@@ -24,6 +24,7 @@ namespace Ssz.Runtime.Serialization {
     using System.Globalization;
     using System.Diagnostics.Contracts;
     using System.Security.Principal;
+    using System.Runtime.Serialization;
 
     // [System.Runtime.InteropServices.ComVisible(true)]
     public class ObjectManager {
@@ -527,10 +528,15 @@ namespace Ssz.Runtime.Serialization {
                             //at this point is set the member into the Object
                             Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.CompleteObject]Updating object ", holder.m_id, " with object ", tempObjectHolder.m_id);
                             Object holderValue = tempObjectHolder.ObjectValue;
-                            if (CanCallGetType(holderValue)) {
-                                si.UpdateValue((String)fixupInfo, holderValue, holderValue.GetType());
-                            } else {
-                                si.UpdateValue((String)fixupInfo, holderValue, typeof(MarshalByRefObject));
+                            // VALFIX
+                            if (CanCallGetType(holderValue))
+                            {
+                                typeof(SerializationInfo).GetMethod("UpdateValue").Invoke(si, new[] { (String)fixupInfo, holderValue, holderValue.GetType() });
+                            }
+                            else
+                            {
+                                typeof(SerializationInfo).GetMethod("UpdateValue").Invoke(si, new[] { (String)fixupInfo, holderValue, typeof(MarshalByRefObject) });
+                                //si.AddValue((String)fixupInfo, holderValue, typeof(MarshalByRefObject));
                             }
                             //Decrement our total number of fixups left to do.
                             fixupsPerformed++;

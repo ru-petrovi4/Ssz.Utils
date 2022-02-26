@@ -26,6 +26,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
     using System.Threading;
     using System.Runtime.Remoting;
     using Ssz.Runtime.Serialization;
+    using System.Runtime.Serialization;
 
     internal sealed class __BinaryWriter
     {

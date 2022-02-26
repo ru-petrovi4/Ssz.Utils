@@ -31,7 +31,8 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
     using Ssz.Runtime.Serialization;
     using System.Security.Permissions;
     using System.Diagnostics.Contracts;
-    
+    using System.Runtime.Serialization;
+
     // [System.Runtime.InteropServices.ComVisible(true)]
     sealed public class BinaryFormatter :
 #if !FEATURE_REMOTING
@@ -242,8 +243,8 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 if (!typeNameCache.TryGetValue(type, out typeInformation))
                 {
                     bool hasTypeForwardedFrom;
-                    string assemblyName = FormatterServices.GetClrAssemblyName(type, out hasTypeForwardedFrom);
-                    typeInformation = new TypeInformation(FormatterServices.GetClrTypeFullName(type), assemblyName, hasTypeForwardedFrom);
+                    string assemblyName = Ssz.Runtime.Serialization.FormatterServices.GetClrAssemblyName(type, out hasTypeForwardedFrom);
+                    typeInformation = new TypeInformation(Ssz.Runtime.Serialization.FormatterServices.GetClrTypeFullName(type), assemblyName, hasTypeForwardedFrom);
                     typeNameCache.Add(type, typeInformation);
                 }
                 return typeInformation;

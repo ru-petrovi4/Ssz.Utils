@@ -31,6 +31,7 @@ namespace Ssz.Runtime.Serialization {
     using System.Text;
     using System.Globalization;
     using System.Diagnostics.Contracts;
+    using System.Runtime.Serialization;
 
     // [System.Runtime.InteropServices.ComVisible(true)]
     public static class FormatterServices {

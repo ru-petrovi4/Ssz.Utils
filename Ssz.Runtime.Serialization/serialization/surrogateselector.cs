@@ -19,8 +19,10 @@ namespace Ssz.Runtime.Serialization {
     using System.Runtime.Remoting;
     using System;
     using System.Collections;
-    using System.Security.Permissions;       
-// [System.Runtime.InteropServices.ComVisible(true)]
+    using System.Security.Permissions;
+    using System.Runtime.Serialization;
+
+    // [System.Runtime.InteropServices.ComVisible(true)]
     public class SurrogateSelector : ISurrogateSelector {
        
         internal SurrogateHashtable m_surrogates;
@@ -235,7 +237,7 @@ namespace Ssz.Runtime.Serialization {
             SurrogateKey givenValue = (SurrogateKey)item;
             SurrogateKey presentValue = (SurrogateKey)key;
             return presentValue.m_type == givenValue.m_type &&
-                   (presentValue.m_context.m_state & givenValue.m_context.m_state) == givenValue.m_context.m_state &&
+                   (presentValue.m_context.State & givenValue.m_context.State) == givenValue.m_context.State &&
                    presentValue.m_context.Context == givenValue.m_context.Context;
         }
     }

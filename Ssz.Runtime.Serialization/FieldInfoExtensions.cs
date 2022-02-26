@@ -22,26 +22,12 @@ namespace Ssz.Runtime.Serialization
             {
                 if (fieldInfo.DeclaringType.Name == @"Font")
                 {
-                    return;
-                    //if (value is int intValue)
-                    //{
-                    //    ((Font)target).Size = intValue;
-                    //    return;
-                    //}
-                }
-                //if (fieldInfo.FieldType == typeof(System.Collections.Hashtable))
-                //{
-                //    var newValue = new System.Collections.Hashtable();
-                //    foreach (DictionaryEntry kv in ((Ssz.Collections.Hashtable)value))
-                //        newValue.Add(kv.Key, kv.Value);
-                //    value = newValue;
-                //}               
+                    return;                    
+                }                
             }            
             if (fieldInfo.FieldType == typeof(Font))
             {
-                value = new Font("Arial", 12);
-                //var oldValue = (Font)value;
-                //value = new Font(oldValue.FontFamily, oldValue.Size, oldValue.Style);
+                value = new Font("Arial", 12);                
             }
             try 
             {                

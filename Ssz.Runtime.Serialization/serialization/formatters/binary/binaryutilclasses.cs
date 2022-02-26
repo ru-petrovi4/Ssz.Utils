@@ -31,6 +31,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
     using System.Runtime.InteropServices;
     using Ssz.Runtime.Serialization;
     using System.Diagnostics;
+    using System.Runtime.Serialization;
 
     // The ParseRecord class holds the parsed XML information. There is a
     // ParsedRecord for each XML Element
@@ -703,7 +704,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                         throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_HeaderReflection",valueInfos.Length));
                     valueInfo = valueInfos[0];
                 }
-                FormatterServices.SerializationSetValue(valueInfo, header, obj);
+                    Ssz.Runtime.Serialization.FormatterServices.SerializationSetValue(valueInfo, header, obj);
                 break;
             case ValueFixupEnum.Member:
                 SerTrace.Log(this, "Fixup Member new object value ",obj," memberObject ",memberObject);

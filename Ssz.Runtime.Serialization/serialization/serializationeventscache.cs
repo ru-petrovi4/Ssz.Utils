@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Globalization;
 using System.Diagnostics.Contracts;
+    using System.Runtime.Serialization;
 
     internal class SerializationEvents
     {

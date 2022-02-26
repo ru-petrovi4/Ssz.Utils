@@ -11,6 +11,7 @@ using System.Runtime.Remoting;
 using Ssz.Runtime.Serialization;
 using System.Globalization;
 using System.Diagnostics.Contracts;
+using System.Runtime.Serialization;
 
 namespace System.Reflection 
 {   
@@ -64,7 +65,7 @@ namespace System.Reflection
         #endregion
     
         #region Constructor
-        public MemberInfoSerializationHolder(SerializationInfo info, StreamingContext context) 
+        protected MemberInfoSerializationHolder(SerializationInfo info, StreamingContext context) 
         {
             if (info == null)
                 throw new ArgumentNullException("info");
@@ -81,7 +82,7 @@ namespace System.Reflection
             m_memberName = info.GetString("Name");
             m_signature = info.GetString("Signature");
             // Only v4.0 and later generates and consumes Signature2
-            m_signature2 = (string)info.GetValueNoThrow("Signature2", typeof(string));
+            m_signature2 = (string)info.GetValue("Signature2", typeof(string));
             m_memberType = (MemberTypes)info.GetInt32("MemberType");
             m_info = info;
         }
@@ -204,7 +205,7 @@ namespace System.Reflection
                     if (m_signature == null)
                         throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("ResId.Serialization_NullSignature"));
 
-                    Type[] genericArguments = m_info.GetValueNoThrow("GenericArguments", typeof(Type[])) as Type[]; 
+                    Type[] genericArguments = m_info.GetValue("GenericArguments", typeof(Type[])) as Type[]; 
 
                     MethodInfo[] methods = m_reflectedType.GetMember(m_memberName, MemberTypes.Method, bindingFlags) as MethodInfo[];
 

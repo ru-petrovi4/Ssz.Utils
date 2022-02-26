@@ -30,6 +30,8 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
     using System.Resources;
     using System.Runtime.CompilerServices;
     using System.Diagnostics.Contracts;
+    using System.Runtime.Serialization;
+
     //using StackCrawlMark = System.Threading.StackCrawlMark;
 
     internal sealed class ObjectReader
@@ -39,7 +41,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         internal Stream m_stream;
         internal ISurrogateSelector m_surrogates;
         internal StreamingContext m_context;
-        internal ObjectManager m_objectManager;
+        internal Ssz.Runtime.Serialization.ObjectManager m_objectManager;
         internal InternalFE formatterEnums;
         internal SerializationBinder m_binder;
 
@@ -260,7 +262,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 #if FEATURE_REMOTING
                 m_objectManager = new ObjectManager(m_surrogates, m_context, false, bIsCrossAppDomain);
 #else
-                m_objectManager = new ObjectManager(m_surrogates, m_context, false, false);
+                m_objectManager = new Ssz.Runtime.Serialization.ObjectManager(m_surrogates, m_context, false, false);
 #endif
                 serObjectInfoInit = new SerObjectInfoInit();
             }
@@ -347,7 +349,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 #if FEATURE_REMOTING
             m_objectManager = new ObjectManager(m_surrogates, m_context, false, bIsCrossAppDomain);
 #else
-            m_objectManager = new ObjectManager(m_surrogates, m_context, false, false);
+            m_objectManager = new Ssz.Runtime.Serialization.ObjectManager(m_surrogates, m_context, false, false);
 #endif
             if (m_formatterConverter == null)
                 m_formatterConverter = new FormatterConverter();
@@ -541,7 +543,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                         pr.PRnewObj = FormatterServices.GetSafeUninitializedObject(pr.PRdtType);                                 
                     else
 #endif                        
-                        pr.PRnewObj = FormatterServices.GetUninitializedObject(pr.PRdtType);            
+                        pr.PRnewObj = Ssz.Runtime.Serialization.FormatterServices.GetUninitializedObject(pr.PRdtType);            
 
                     // Run the OnDeserializing methods
                     m_objectManager.RaiseOnDeserializingEvent(pr.PRnewObj);
@@ -978,7 +980,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                             var = FormatterServices.GetSafeUninitializedObject(pr.PRdtType);                                 
                         else
 #endif                            
-                            var = FormatterServices.GetUninitializedObject(pr.PRdtType);
+                            var = Ssz.Runtime.Serialization.FormatterServices.GetUninitializedObject(pr.PRdtType);
                     }
                     else
                     {
@@ -1404,7 +1406,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                     if (assm == null)
                         return null;
 
-                    type = FormatterServices.GetTypeFromAssembly(assm, typeName);
+                    type = Ssz.Runtime.Serialization.FormatterServices.GetTypeFromAssembly(assm, typeName);
                 }
 
                 if ((object)type == null)
@@ -1444,7 +1446,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             // This is necessary, for example, if there are generic parameters that are qualified with a version of the assembly that predates the one available
             try
             {
-                type = FormatterServices.GetTypeFromAssembly(assm, typeName);
+                type = Ssz.Runtime.Serialization.FormatterServices.GetTypeFromAssembly(assm, typeName);
             }
             catch (TypeLoadException) { }
             catch (FileNotFoundException) { }
@@ -1505,7 +1507,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                     }
                     else
                     {
-                        objectType = FormatterServices.GetTypeFromAssembly(sourceAssembly, name);
+                        objectType = Ssz.Runtime.Serialization.FormatterServices.GetTypeFromAssembly(sourceAssembly, name);
                     }
 
                     // here let us do the security check 
@@ -1526,7 +1528,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         // [SecuritySafeCritical]
         private static void CheckTypeForwardedTo(Assembly sourceAssembly, Assembly destAssembly, Type resolvedType)
         {
-            if ( !FormatterServices.UnsafeTypeForwardersIsEnabled() && sourceAssembly != destAssembly )
+            if ( !Ssz.Runtime.Serialization.FormatterServices.UnsafeTypeForwardersIsEnabled() && sourceAssembly != destAssembly )
             {
                 // we have a type forward to attribute !
 

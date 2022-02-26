@@ -23,11 +23,13 @@ namespace Ssz.Runtime.Serialization {
     using System.Reflection;
     using System.IO;
     using System.Globalization;
+    using System.Runtime.Serialization;
+
     // This abstract class provides some helper methods for implementing
     // IFormatter.  It will manage queueing objects for serialization
     // (the functionality formerly provided by the IGraphWalker interface)
     // and generating ids on a per-object basis.
-[Serializable]
+    [Serializable]
 // [CLSCompliant(false)]
 // [System.Runtime.InteropServices.ComVisible(true)]
     public abstract class Formatter : IFormatter {

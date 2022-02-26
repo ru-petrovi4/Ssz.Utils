@@ -9,9 +9,9 @@ namespace Ssz.Runtime.Serialization
 {
     internal class SszDelegate
     {
-        internal static SerializationEventHandler CreateDelegateNoSecurityCheck(Type type, object obj, MethodInfo m)
+        internal static Delegate CreateDelegateNoSecurityCheck(Type type, object obj, MethodInfo m)
         {
-            throw new NotImplementedException();
+            return Delegate.CreateDelegate(type, obj, m);
         }
     }
 }

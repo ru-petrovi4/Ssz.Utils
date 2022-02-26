@@ -11,6 +11,7 @@ using Ssz.Runtime.Serialization;
 using System.Security.Permissions;
 using System.Globalization;
 using System.Diagnostics.Contracts;
+using System.Runtime.Serialization;
 
 namespace System
 {
@@ -119,7 +120,7 @@ namespace System
 
         #region Constructor
         // [System.Security.SecurityCritical]  // auto-generated
-        public DelegateSerializationHolder(SerializationInfo info, StreamingContext context)
+        private DelegateSerializationHolder(SerializationInfo info, StreamingContext context)
         {
             if (info == null)
                 throw new ArgumentNullException("info");
@@ -162,7 +163,7 @@ namespace System
                 for (i = 0; i < count; i++)
                 {
                     String methodInfoName = "method" + i;
-                    methods[i] = (MethodInfo)info.GetValueNoThrow(methodInfoName, typeof(MethodInfo));
+                    methods[i] = (MethodInfo)info.GetValue(methodInfoName, typeof(MethodInfo));
                     if (methods[i] == null)
                         break;
                 }
