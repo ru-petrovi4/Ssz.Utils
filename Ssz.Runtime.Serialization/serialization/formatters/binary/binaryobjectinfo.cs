@@ -157,7 +157,8 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                 }
                 si = new SerializationInfo(objectType, converter, !Ssz.Runtime.Serialization.FormatterServices.UnsafeTypeForwardersIsEnabled());
 #if FEATURE_SERIALIZATION
-                ((ISerializable)obj).GetObjectData(si, context);
+                // VALFIX
+                //((ISerializable)obj).GetObjectData(si, context);
 #endif
                 SerTrace.Log( this, objectInfoId," Constructor 1 trace 4 ISerializable "+objectType);
                 InitSiWrite();
@@ -701,8 +702,14 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                 int position = Position(name);
 
                 // If a member in the stream is not found, ignore it
+                // TEMPCODE
                 if (position != -1)
+                {
                     memberData[position] = value;
+                }
+                else
+                {
+                }
             }
         }
 
@@ -797,7 +804,10 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                 {
                     // VALFIX
                     var member = cache.memberNames[i];
-                    member = member.Replace("+_list", "+list");
+                    if (Ssz.Runtime.Serialization.Settings.IsDeserializingFromNet4)
+                    {
+                        member = member.Replace("+_list", "+list");
+                    }
                     if (member.Equals(name))
                     {
                         lastPosition = i;
@@ -805,39 +815,42 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                     }
                 }
 
-                var arr = cache.memberNames.OrderBy(n => n.Length).ToArray();
-                for (int i = 0; i < arr.Length; i++)
+                if (Ssz.Runtime.Serialization.Settings.IsDeserializingFromNet4)
                 {
-                    // VALFIX
-                    var member = arr[i];                    
-                    if (member.Contains(name, StringComparison.InvariantCultureIgnoreCase))
+                    var arr = cache.memberNames.OrderBy(n => n.Length).ToArray();
+                    for (int i = 0; i < arr.Length; i++)
                     {
-                        lastPosition = i;
-                        return lastPosition;
+                        // VALFIX
+                        var member = arr[i];
+                        if (member.Contains(name, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            lastPosition = i;
+                            return lastPosition;
+                        }
                     }
-                }
 
-                // TEMPCODE 
-                if (name == "HashSize")
-                {
-                }
-                else if (name == "DataTable.RemotingVersion")
-                {
-                }
-                else if (name == "XmlSchema")
-                {
-                }
-                else if (name == "XmlDiffGram")
-                {
-                }
-                else if (name == "_ignoreCase")
-                {
-                }
-                else if (name == "win32LCID")
-                {
-                }
-                else
-                {
+                    // TEMPCODE 
+                    if (name == "HashSize")
+                    {
+                    }
+                    else if (name == "DataTable.RemotingVersion")
+                    {
+                    }
+                    else if (name == "XmlSchema")
+                    {
+                    }
+                    else if (name == "XmlDiffGram")
+                    {
+                    }
+                    else if (name == "_ignoreCase")
+                    {
+                    }
+                    else if (name == "win32LCID")
+                    {
+                    }
+                    else
+                    {
+                    }
                 }
 
                 //throw new SerializationException(String.Format(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_MissingMember"),name,objectType));

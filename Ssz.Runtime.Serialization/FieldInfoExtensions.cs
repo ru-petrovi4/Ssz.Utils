@@ -18,17 +18,20 @@ namespace Ssz.Runtime.Serialization
 
         internal static void UnsafeSetValue(this FieldInfo fieldInfo, object target, object value, BindingFlags invokeAttr, Binder binder, CultureInfo culture)
         {
-            if (value != null && !fieldInfo.FieldType.IsAssignableFrom(value.GetType()))
+            if (Ssz.Runtime.Serialization.Settings.IsDeserializingFromNet4)
             {
-                if (fieldInfo.DeclaringType.Name == @"Font")
+                if (value != null && !fieldInfo.FieldType.IsAssignableFrom(value.GetType()))
                 {
-                    return;                    
-                }                
+                    if (fieldInfo.DeclaringType.Name == @"Font")
+                    {
+                        return;
+                    }
+                }
+                if (fieldInfo.FieldType == typeof(Font))
+                {
+                    value = new Font("Arial", 12);
+                }
             }            
-            if (fieldInfo.FieldType == typeof(Font))
-            {
-                value = new Font("Arial", 12);                
-            }
             try 
             {                
                 fieldInfo.SetValue(target, value, invokeAttr, binder, culture);

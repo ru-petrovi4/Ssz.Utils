@@ -1480,11 +1480,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             else if (name == "System.Reflection.MemberInfoSerializationHolder")
             {
                 return typeof(MemberInfoSerializationHolder);
-            }
-            else if (name == "System.Collections.Hashtable")
-            {
-                return typeof(Ssz.Collections.Hashtable);
-            }
+            }            
 
             Type objectType = null;
 
