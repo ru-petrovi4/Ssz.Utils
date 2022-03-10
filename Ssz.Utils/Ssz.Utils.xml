@@ -968,6 +968,44 @@
                 The type of list that contains alarms and events.
             </summary>
         </member>
+        <member name="M:Ssz.Utils.DataAccess.ThreadSafeValueSubscription.#ctor(Ssz.Utils.DataAccess.IDataAccessProvider,System.String,System.Action{Ssz.Utils.DataAccess.ValueStatusTimestamp,Ssz.Utils.DataAccess.ValueStatusTimestamp})">
+            <summary>
+                Is used to subscribe for value updating and to write values.
+                valueUpdated(oldValue, newValue) is invoked when Value property Updated. Initial Value property is new ValueStatusTimestamp(), Any(null) and Unknown status.        
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.DataAccess.ThreadSafeValueSubscription.MappedElementIdOrConst">
+            <summary>
+                Id actually used for subscription. Initialized after constructor.       
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.DataAccess.ThreadSafeValueSubscription.Ssz#Utils#DataAccess#IValueSubscription#Update(Ssz.Utils.DataAccess.ValueStatusTimestamp)">
+            <summary>
+                Can be called from any thread.
+            </summary>
+            <param name="valueStatusTimestamp"></param>
+        </member>
+        <member name="P:Ssz.Utils.DataAccess.ThreadSafeValueSubscription.ElementId">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Ssz.Utils.DataAccess.ThreadSafeValueSubscription.ValueStatusTimestampUpdated">
+            <summary>
+                Is set when ValueStatusTimestamp.ValueStatusCode != ValueStatusCode.Unknown
+            </summary>
+        </member>
+        <member name="P:Ssz.Utils.DataAccess.ThreadSafeValueSubscription.ValueStatusTimestamp">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Ssz.Utils.DataAccess.ThreadSafeValueSubscription.Write(Ssz.Utils.DataAccess.ValueStatusTimestamp)">
+            <summary>
+            
+            </summary>
+            <param name="valueStatusTimestamp"></param>
+        </member>
         <member name="M:Ssz.Utils.DataAccess.TypeId.#ctor(System.Type)">
             <summary>
                 Construct a Type LocalId given a .NET / CLI Type.
