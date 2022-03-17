@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+
+    <PackageId>IdentityServer4.Storage</PackageId>
+    <Description>Storage interfaces and models for IdentityServer4</Description>
+    <Authors>Brock Allen;Dominick Baier</Authors>    
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ContinuousIntegrationBuild Condition="'$(TF_BUILD)' == 'true'">True</ContinuousIntegrationBuild>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">True</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Newtonsoft.Json\Newtonsoft.Json.csproj" />
+    <ProjectReference Include="..\IdentityModel\IdentityModel.csproj" />
+  </ItemGroup>
+
+</Project>

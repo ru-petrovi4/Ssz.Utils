@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using IdentityServer4.Infrastructure;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
