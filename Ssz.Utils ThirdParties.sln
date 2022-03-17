@@ -38,6 +38,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fluent.Ribbon.Showcase", "T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlAgilityPack", "ThirdParties\HtmlAgilityPack\HtmlAgilityPack.csproj", "{E979A97A-C292-48C4-A389-4A7035A6415C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Newtonsoft.Json", "ThirdParties\Newtonsoft.Json\Newtonsoft.Json.csproj", "{34051A8D-E55B-415A-985D-B9DBA6339BBB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IdentityServer4", "IdentityServer4", "{70743830-C461-488C-94A8-AFE13F30D010}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		ThirdParties\HelixToolkit\HelixToolkit.Shared\HelixToolkit.Shared.projitems*{167a7c1b-3aee-47d1-bf53-34d48ca97138}*SharedItemsImports = 5
@@ -110,6 +114,12 @@ Global
 		{E979A97A-C292-48C4-A389-4A7035A6415C}.Release_Multiplatform|Any CPU.Build.0 = Release|Any CPU
 		{E979A97A-C292-48C4-A389-4A7035A6415C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E979A97A-C292-48C4-A389-4A7035A6415C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34051A8D-E55B-415A-985D-B9DBA6339BBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34051A8D-E55B-415A-985D-B9DBA6339BBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34051A8D-E55B-415A-985D-B9DBA6339BBB}.Release_Multiplatform|Any CPU.ActiveCfg = Release|Any CPU
+		{34051A8D-E55B-415A-985D-B9DBA6339BBB}.Release_Multiplatform|Any CPU.Build.0 = Release|Any CPU
+		{34051A8D-E55B-415A-985D-B9DBA6339BBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34051A8D-E55B-415A-985D-B9DBA6339BBB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
