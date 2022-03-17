@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using IdentityServer4.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using IdentityServer4.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityServer4
 {

@@ -101,7 +101,7 @@ namespace IdentityServer4.Configuration
             return crv switch
             {
                 JsonWebKeyECTypes.P256 => ECCurve.NamedCurves.nistP256,
-                JsonWebKeyECTypes.P384 => ECCurve.NamedCurves.nistP384,
+                JsonWebKeyECTypes.P384 => ECCurve.NamedCurves.nistP384,                
                 JsonWebKeyECTypes.P521 => ECCurve.NamedCurves.nistP521,
                 _ => throw new InvalidOperationException($"Unsupported curve type of {crv}"),
             };
@@ -115,7 +115,7 @@ namespace IdentityServer4.Configuration
             return curve.Oid.Value switch
             {
                 Constants.CurveOids.P256 => JsonWebKeyECTypes.P256,
-                Constants.CurveOids.P384 => JsonWebKeyECTypes.P384,
+                Constants.CurveOids.P384 => JsonWebKeyECTypes.P384,                
                 Constants.CurveOids.P521 => JsonWebKeyECTypes.P521,
                 _ => throw new InvalidOperationException($"Unsupported curve type of {curve.Oid.Value} - {curve.Oid.FriendlyName}"),
             };
@@ -137,7 +137,7 @@ namespace IdentityServer4.Configuration
         internal static bool IsValidCrvValueForAlgorithm(string crv)
         {
             return crv == JsonWebKeyECTypes.P256 ||
-                   crv == JsonWebKeyECTypes.P384 ||
+                   crv == JsonWebKeyECTypes.P384 ||                   
                    crv == JsonWebKeyECTypes.P521;
         }
 

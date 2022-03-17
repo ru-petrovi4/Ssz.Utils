@@ -13,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using IdentityServer4.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityServer4.Extensions
 {

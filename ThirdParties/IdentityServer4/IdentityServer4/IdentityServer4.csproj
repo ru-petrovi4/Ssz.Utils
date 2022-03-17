@@ -1,7 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   
-  <PropertyGroup>
-    <PackageId>IdentityServer4</PackageId>
+  <PropertyGroup>    
     <TargetFramework>net6.0</TargetFramework>
     <Description>OpenID Connect and OAuth 2.0 Framework for ASP.NET Core</Description>
     <Authors>Brock Allen;Dominick Baier</Authors>
@@ -9,18 +8,15 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <ContinuousIntegrationBuild Condition="'$(TF_BUILD)' == 'true'">True</ContinuousIntegrationBuild>
-    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">True</ContinuousIntegrationBuild>
-  </PropertyGroup>
+  </PropertyGroup>  
 
   <ItemGroup>
     
-    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" />
+    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="6.16.0" />
 
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.3" />
+
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.16.0" />
   </ItemGroup>
 
   <ItemGroup>

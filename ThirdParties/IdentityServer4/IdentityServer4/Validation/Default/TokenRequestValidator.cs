@@ -18,6 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IdentityServer4.Logging.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityServer4.Validation
 {
