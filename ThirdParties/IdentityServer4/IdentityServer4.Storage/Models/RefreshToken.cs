@@ -90,13 +90,13 @@ namespace IdentityServer4.Models
         /// The subject identifier.
         /// </value>
         public string SubjectId => AccessToken.SubjectId;
-        
-        ///// <summary>
-        ///// Gets the session identifier.
-        ///// </summary>
-        ///// <value>
-        ///// The session identifier.
-        ///// </value>
+
+        /// <summary>
+        /// Gets the session identifier.
+        /// </summary>
+        /// <value>
+        /// The session identifier.
+        /// </value>
         public string SessionId => AccessToken.SessionId;
 
         /// <summary>

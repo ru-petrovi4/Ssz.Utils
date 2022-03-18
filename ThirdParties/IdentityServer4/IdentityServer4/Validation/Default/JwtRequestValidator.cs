@@ -31,7 +31,7 @@ namespace IdentityServer4.Validation
         /// JWT handler
         /// </summary>
         protected JwtSecurityTokenHandler Handler = new JwtSecurityTokenHandler
-        {            
+        {
             MapInboundClaims = false
         };
 
