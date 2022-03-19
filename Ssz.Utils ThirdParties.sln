@@ -34,8 +34,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuickGraph", "ThirdParties\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EPPlus", "ThirdParties\EPPlus\EPPlus.csproj", "{87EE1C57-7577-4ED2-834C-1FA0C30D9DB8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fluent.Ribbon.Showcase", "ThirdParties\Fluent.Ribbon.Showcase\Fluent.Ribbon.Showcase.csproj", "{73DF5D05-84B1-4302-940C-E90719C6543B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HtmlAgilityPack", "ThirdParties\HtmlAgilityPack\HtmlAgilityPack.csproj", "{E979A97A-C292-48C4-A389-4A7035A6415C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Newtonsoft.Json", "ThirdParties\Newtonsoft.Json\Newtonsoft.Json.csproj", "{34051A8D-E55B-415A-985D-B9DBA6339BBB}"
@@ -108,12 +106,6 @@ Global
 		{87EE1C57-7577-4ED2-834C-1FA0C30D9DB8}.Release_Multiplatform|Any CPU.Build.0 = Release|Any CPU
 		{87EE1C57-7577-4ED2-834C-1FA0C30D9DB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87EE1C57-7577-4ED2-834C-1FA0C30D9DB8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{73DF5D05-84B1-4302-940C-E90719C6543B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{73DF5D05-84B1-4302-940C-E90719C6543B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{73DF5D05-84B1-4302-940C-E90719C6543B}.Release_Multiplatform|Any CPU.ActiveCfg = Release|Any CPU
-		{73DF5D05-84B1-4302-940C-E90719C6543B}.Release_Multiplatform|Any CPU.Build.0 = Release|Any CPU
-		{73DF5D05-84B1-4302-940C-E90719C6543B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{73DF5D05-84B1-4302-940C-E90719C6543B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E979A97A-C292-48C4-A389-4A7035A6415C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E979A97A-C292-48C4-A389-4A7035A6415C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E979A97A-C292-48C4-A389-4A7035A6415C}.Release_Multiplatform|Any CPU.ActiveCfg = Release|Any CPU
