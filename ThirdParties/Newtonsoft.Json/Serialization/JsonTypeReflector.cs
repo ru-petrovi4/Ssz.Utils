@@ -462,11 +462,14 @@ namespace Newtonsoft.Json.Serialization
 #if HAVE_CAS
                     try
                     {
+                        // VALFIX
+#if !NET_CORE
                         new ReflectionPermission(ReflectionPermissionFlag.MemberAccess).Demand();
                         new ReflectionPermission(ReflectionPermissionFlag.RestrictedMemberAccess).Demand();
                         new SecurityPermission(SecurityPermissionFlag.SkipVerification).Demand();
                         new SecurityPermission(SecurityPermissionFlag.UnmanagedCode).Demand();
                         new SecurityPermission(PermissionState.Unrestricted).Demand();
+#endif
                         _dynamicCodeGeneration = true;
                     }
                     catch (Exception)
@@ -474,7 +477,7 @@ namespace Newtonsoft.Json.Serialization
                         _dynamicCodeGeneration = false;
                     }
 #else
-                    _dynamicCodeGeneration = false;
+                        _dynamicCodeGeneration = false;
 #endif
                 }
 

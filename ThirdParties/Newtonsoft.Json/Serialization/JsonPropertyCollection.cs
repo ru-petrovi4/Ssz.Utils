@@ -140,7 +140,11 @@ namespace Newtonsoft.Json.Serialization
             return property;
         }
 
+#if NET_CORE
+        private new bool TryGetValue(string key, out JsonProperty item)
+#else
         private bool TryGetValue(string key, out JsonProperty item)
+#endif
         {
             if (Dictionary == null)
             {

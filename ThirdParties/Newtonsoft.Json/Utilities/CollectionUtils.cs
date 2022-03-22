@@ -378,12 +378,18 @@ namespace Newtonsoft.Json.Utilities
 #endif
         public static T[] ArrayEmpty<T>()
         {
+            // VALFIX
+#if HAVE_ARRAY_EMPTY
+            return Array.Empty<T>();
+#else
             T[] array = Enumerable.Empty<T>() as T[];
             Debug.Assert(array != null);
             // Defensively guard against a version of Linq where Enumerable.Empty<T> doesn't
             // return an array, but throw in debug versions so a better strategy can be
             // used if that ever happens.
             return array ?? new T[0];
+#endif
+            
         }
     }
 }

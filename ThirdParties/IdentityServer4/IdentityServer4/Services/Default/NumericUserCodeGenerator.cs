@@ -48,8 +48,8 @@ namespace IdentityServer4.Services
 
             var uint32Buffer = new byte[8];
 
-            using (var rng = new RNGCryptoServiceProvider())
-            {
+            using (var rng = RandomNumberGenerator.Create())
+            {                
                 while (true)
                 {
                     rng.GetBytes(uint32Buffer);
