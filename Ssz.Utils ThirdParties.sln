@@ -46,6 +46,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer4", "ThirdPar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityModel", "ThirdParties\IdentityServer4\IdentityModel\IdentityModel.csproj", "{422DC2B7-DFC7-4504-8439-AC090A456F37}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novell.Directory.Ldap", "ThirdParties\Novell.Directory.Ldap\Novell.Directory.Ldap.csproj", "{48D1940E-9BB8-408D-8679-4E7D5FC2BBC0}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		ThirdParties\HelixToolkit\HelixToolkit.Shared\HelixToolkit.Shared.projitems*{167a7c1b-3aee-47d1-bf53-34d48ca97138}*SharedItemsImports = 5
@@ -136,6 +138,12 @@ Global
 		{422DC2B7-DFC7-4504-8439-AC090A456F37}.Release_Multiplatform|Any CPU.Build.0 = Release|Any CPU
 		{422DC2B7-DFC7-4504-8439-AC090A456F37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{422DC2B7-DFC7-4504-8439-AC090A456F37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48D1940E-9BB8-408D-8679-4E7D5FC2BBC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48D1940E-9BB8-408D-8679-4E7D5FC2BBC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48D1940E-9BB8-408D-8679-4E7D5FC2BBC0}.Release_Multiplatform|Any CPU.ActiveCfg = Release|Any CPU
+		{48D1940E-9BB8-408D-8679-4E7D5FC2BBC0}.Release_Multiplatform|Any CPU.Build.0 = Release|Any CPU
+		{48D1940E-9BB8-408D-8679-4E7D5FC2BBC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48D1940E-9BB8-408D-8679-4E7D5FC2BBC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

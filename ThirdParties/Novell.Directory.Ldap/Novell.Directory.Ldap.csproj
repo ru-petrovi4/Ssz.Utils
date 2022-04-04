@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>
+    LDAP client library - .NET6. Works with any LDAP server (including Microsoft Active Directory - AD)
+    </Description>
+    <Summary>LDAP client library</Summary>
+    <VersionPrefix>4.0.0-beta4</VersionPrefix>
+    <Authors>Novell;dsbenghe</Authors>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>    
+    <PackageId>Novell.Directory.Ldap.NETStandard</PackageId>
+    <PackageTags>LDAP;Microsoft Active Directory;AD;.NET Standard;.NET Core;C#</PackageTags>
+    <PackageProjectUrl>https://github.com/dsbenghe/Novell.Directory.Ldap.NETStandard</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>    
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- CS1570 XML comment has badly formed XML -->
+    <!-- CS1572 XML comment has a param tag for 'xxx', but there is no parameter by that name -->
+    <!-- CS1573: Parameter 'xxx' has no matching param tag in the XML comment for 'yyy' (but other parameters do) -->
+    <!-- CS1591: Missing XML comment for publicly visible type or member 'xxx' -->
+    <!-- CS0419: Ambiguous reference in cref attribute -->
+    <!-- CS0675: Bitwise-or operator used on a sign-extended operand; consider casting to a smaller unsigned type first -->
+    <NoWarn>CS1570;CS1572;CS1573;CS1591;CS0419;CS0675</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>    
+  </PropertyGroup> 
+
+</Project>
