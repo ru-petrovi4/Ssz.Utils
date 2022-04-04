@@ -63,8 +63,9 @@ public class DiscoveryPolicy
     /// </summary>
     public ICollection<string> AdditionalEndpointBaseAddresses { get; set; } = new HashSet<string>();
 
+    // VALFIX true -> false
     /// <summary>
     /// Specifies if a key set is required. Defaults to true.
     /// </summary>
-    public bool RequireKeySet { get; set; } = true;
+    public bool RequireKeySet { get; set; } = false;
 }
