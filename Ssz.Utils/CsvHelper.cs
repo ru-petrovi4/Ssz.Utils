@@ -92,7 +92,7 @@ namespace Ssz.Utils
 
         /// <summary>   
         ///     Child list.Count > 0
-        ///     No #include, #define, comments.
+        ///     No procerssing #include, #define, comments.
         /// </summary>
         /// <param name="separator"></param>
         /// <param name="sourceString"></param>
@@ -157,7 +157,7 @@ namespace Ssz.Utils
 
         /// <summary>
         ///     First column in file is Key and must be unique.
-        ///     Can contain include directives, defines and comments.
+        ///     With procerssing #include, #define, comments.
         ///     If file does not exist, returns empty result.
         ///     userFriendlyLogger: Messages are localized. Priority is Information, Error, Warning.
         ///     includeFileNames: File names in Upper-Case.
@@ -202,7 +202,7 @@ namespace Ssz.Utils
                                 {
                                     if (StringHelper.StartsWithIgnoreCase(line, @"#define"))
                                     {
-                                        line += l.Substring(0, l.Length - 1);
+                                        line += @" " + l.Substring(0, l.Length - 1);
                                         continue;
                                     }                                    
                                 }
