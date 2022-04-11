@@ -3,7 +3,7 @@ using Ssz.Utils.Serialization;
 
 namespace Ssz.Utils
 {
-    public class GuidAndName : IOwnedDataSerializable
+    public class GuidAndName : OwnedDataSerializable
     {
         #region public functions
 
@@ -11,18 +11,17 @@ namespace Ssz.Utils
 
         public string Name { get; set; } = @"";
 
-        public void SerializeOwnedData(SerializationWriter writer, object? context)
+        public override void SerializeOwnedData(SerializationWriter writer, object? context)
         {
             writer.Write(Guid);
             writer.Write(Name);
         }
 
-        public void DeserializeOwnedData(SerializationReader reader, object? context)
+        public override void DeserializeOwnedData(SerializationReader reader, object? context)
         {
             Guid = reader.ReadGuid();
             Name = reader.ReadString();
         }
-
 
         public override bool Equals(object? obj)
         {
