@@ -7,8 +7,7 @@ namespace Ssz.Utils
     ///     Case Insensitive Dictionary
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class CaseInsensitiveDictionary<T> : Dictionary<string, T>
-        where T : class?      
+    public class CaseInsensitiveDictionary<T> : Dictionary<string, T>        
     {
         #region construction and destruction
 
@@ -53,9 +52,9 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public T? TryGetValue(string key)
+        public T? TryGetValue(string? key)
         {
-            if (key is null) return null;
+            if (key is null) return default;
             T? result;
             TryGetValue(key, out result);
             return result;
