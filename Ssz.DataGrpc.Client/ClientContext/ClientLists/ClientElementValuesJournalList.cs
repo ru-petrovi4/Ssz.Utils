@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using Ssz.DataGrpc.Client.Managers;
 using Ssz.DataGrpc.Client.ClientListItems;
-using Ssz.DataGrpc.Server;
+using Ssz.DataGrpc.ServerBase;
 using Ssz.Utils.DataAccess;
 using Ssz.Utils;
 

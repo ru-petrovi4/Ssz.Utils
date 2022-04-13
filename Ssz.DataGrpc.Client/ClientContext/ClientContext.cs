@@ -5,7 +5,7 @@ using System.Net;
 using System.Threading;
 using Ssz.Utils;
 using Ssz.DataGrpc.Client.Managers;
-using Ssz.DataGrpc.Server;
+using Ssz.DataGrpc.ServerBase;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using Ssz.DataGrpc.Client.Data;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,7 +24,7 @@ namespace Ssz.DataGrpc.ServerBase
             OccurrenceId = eventId.OccurrenceId;
             if (eventId.TimeLastActiveUtc is not null)
             {
-                TimeLastActive = Ssz.DataGrpc.Client.DateTimeHelper.ConvertToTimestamp(eventId.TimeLastActiveUtc.Value);
+                TimeLastActive = DateTimeHelper.ConvertToTimestamp(eventId.TimeLastActiveUtc.Value);
             }
         }
 

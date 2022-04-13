@@ -4,7 +4,7 @@ using System.Linq;
 using System.ServiceModel;
 using Ssz.Utils;
 using Ssz.DataGrpc.Client.ClientLists;
-using Ssz.DataGrpc.Server;
+using Ssz.DataGrpc.ServerBase;
 using Ssz.Utils.DataAccess;
 using Grpc.Core;
 

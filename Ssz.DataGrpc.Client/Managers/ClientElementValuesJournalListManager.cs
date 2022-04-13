@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using Ssz.DataGrpc.Client.ClientLists;
 using Ssz.Utils.DataAccess;
 using System.Collections.Generic;
-using Ssz.DataGrpc.Server;
+using Ssz.DataGrpc.ServerBase;
 
 namespace Ssz.DataGrpc.Client.Managers
 {

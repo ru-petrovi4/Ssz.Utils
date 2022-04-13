@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Ssz.Utils;
 using Ssz.DataGrpc.Client.ClientListItems;
-using Ssz.DataGrpc.Server;
+using Ssz.DataGrpc.ServerBase;
 using Ssz.Utils.DataAccess;
 using Grpc.Core;
 

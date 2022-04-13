@@ -1,7 +1,7 @@
 using System;
 using Ssz.DataGrpc.Client.Data;
 using Ssz.Utils.DataAccess;
-using Ssz.DataGrpc.Server;
+using Ssz.DataGrpc.ServerBase;
 using Grpc.Core;
 
 namespace Ssz.DataGrpc.Client.ClientListItems

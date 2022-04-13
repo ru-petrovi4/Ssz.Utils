@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\DataAccess.proto" GrpcServices="Client" />
+    <Protobuf Include="..\Ssz.DataGrpc.ServerBase\Protos\DataAccess.proto" GrpcServices="Client" />
   </ItemGroup>
 
 </Project>

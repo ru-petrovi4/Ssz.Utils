@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Ssz.Utils;
 using Ssz.DataGrpc.Client.Managers;
-using Ssz.DataGrpc.Server;
+using Ssz.DataGrpc.ServerBase;
 using Ssz.DataGrpc.Client.ClientLists;
 using Ssz.Utils.DataAccess;
 using Microsoft.Extensions.Logging;

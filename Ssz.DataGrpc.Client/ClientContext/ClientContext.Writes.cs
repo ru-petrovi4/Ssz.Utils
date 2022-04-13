@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Google.Protobuf;
 using Grpc.Core;
 using Ssz.DataGrpc.Client.Data;
-using Ssz.DataGrpc.Server;
+using Ssz.DataGrpc.ServerBase;
 using Ssz.Utils;
 
 namespace Ssz.DataGrpc.Client

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ssz.DataGrpc.Server
+namespace Ssz.DataGrpc.ServerBase
 {
     public sealed partial class EventMessage
     {

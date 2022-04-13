@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Ssz.DataGrpc.Client.ClientLists;
-using Ssz.DataGrpc.Server;
+using Ssz.DataGrpc.ServerBase;
 using Ssz.DataGrpc.Client.ClientListItems;
 using Ssz.Utils.DataAccess;
 using System.Linq;
