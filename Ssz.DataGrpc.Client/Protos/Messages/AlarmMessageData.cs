@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.DataGrpc.ServerBase
 {
-    public sealed partial class AlarmMessageData
+    internal sealed partial class AlarmMessageData
     {
         #region public functions
 

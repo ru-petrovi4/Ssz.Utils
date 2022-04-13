@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.DataGrpc.ServerBase
 {
-    public sealed partial class PassthroughData
+    internal sealed partial class PassthroughData
     {
         #region public functions        
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.DataGrpc.ServerBase
 {
-    public sealed partial class ElementValuesCollection
+    internal sealed partial class ElementValuesCollection
     {
         #region public functions
 

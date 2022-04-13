@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.DataGrpc.ServerBase
 {
-    public sealed partial class EventId
+    internal sealed partial class EventId
     {
         #region construction and destruction
 

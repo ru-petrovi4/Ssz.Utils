@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.DataGrpc.ServerBase
 {
-    public sealed partial class EventMessage
+    internal sealed partial class EventMessage
     {
         #region public functions
 

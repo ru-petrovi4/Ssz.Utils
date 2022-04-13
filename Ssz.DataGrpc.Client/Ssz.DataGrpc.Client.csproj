@@ -33,7 +33,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="..\Ssz.DataGrpc.ServerBase\Protos\DataAccess.proto" GrpcServices="Client" />
+    <Protobuf Include="..\Ssz.DataGrpc.ServerBase\Protos\DataAccess.proto" GrpcServices="Client" Access="Internal">
+      <Link>Protos\DataAccess.proto</Link>
+    </Protobuf>
   </ItemGroup>
 
 </Project>

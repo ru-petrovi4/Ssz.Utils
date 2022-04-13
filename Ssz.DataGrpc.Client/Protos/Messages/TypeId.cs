@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.DataGrpc.ServerBase
 {
-    public sealed partial class TypeId
+    internal sealed partial class TypeId
     {
         #region construction and destruction        
 
