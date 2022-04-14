@@ -11,7 +11,7 @@ using Ssz.Utils.DataAccess;
 
 namespace Ssz.DataGrpc.Client.Managers
 {
-    public class ClientEventListManager
+    internal class ClientEventListManager
     {
         #region construction and destruction
 
@@ -68,7 +68,7 @@ namespace Ssz.DataGrpc.Client.Managers
                         Action<Utils.DataAccess.EventMessage[]> eventMessagesCallbackEventHandler = kvp.Key;
 
                         dataGrpcEventList.EventMessagesCallbackEvent +=
-                            (ClientEventList eventList, Server.EventMessage[] newEventMessages) =>
+                            (ClientEventList eventList, ServerBase.EventMessage[] newEventMessages) =>
                             {
                                 if (ct.IsCancellationRequested) return;
                                 if (сallbackDispatcher is not null)

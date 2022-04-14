@@ -15,7 +15,7 @@ using System.Globalization;
 
 namespace Ssz.DataGrpc.Client.Managers
 {
-    public class ConnectionDoesNotExistException : Exception
+    internal class ConnectionDoesNotExistException : Exception
     {
         #region construction and destruction
 
@@ -32,7 +32,7 @@ namespace Ssz.DataGrpc.Client.Managers
     ///     Each DataGrpcServer in the list represents an DataGrpc server for which the client application
     ///     can create an DataGrpcSubscription.
     /// </summary>
-    public class ClientConnectionManager : IDisposable
+    internal class ClientConnectionManager : IDisposable
     {
         #region construction and destruction
 

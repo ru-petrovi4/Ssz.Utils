@@ -11,7 +11,7 @@ using Grpc.Core;
 
 namespace Ssz.DataGrpc.Client.Managers
 {
-    public class ClientElementValueListManager : ClientElementListManagerBase<ClientElementValueListItem, ClientElementValueList>
+    internal class ClientElementValueListManager : ClientElementListManagerBase<ClientElementValueListItem, ClientElementValueList>
     {
         #region construction and destruction
 
@@ -307,7 +307,7 @@ namespace Ssz.DataGrpc.Client.Managers
 
         /*
         /// <summary>
-        ///     Reads current value from cache, not remote server.
+        ///     Reads current value from cache, not remote ServerBase.
         /// </summary>
         public Any TryRead(string id)
         {

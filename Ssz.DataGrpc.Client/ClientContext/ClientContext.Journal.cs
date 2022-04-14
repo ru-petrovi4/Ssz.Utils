@@ -11,7 +11,7 @@ namespace Ssz.DataGrpc.Client
     /// <summary>
     ///     This partial class defines the IRead related aspects of the ClientContext class.
     /// </summary>
-    public partial class ClientContext
+    internal partial class ClientContext
     {
         #region public functions
 
@@ -47,7 +47,7 @@ namespace Ssz.DataGrpc.Client
                         FirstTimestamp = DateTimeHelper.ConvertToTimestamp(firstTimestampUtc),
                         SecondTimestamp = DateTimeHelper.ConvertToTimestamp(secondTimestampUtc),
                         NumValuesPerAlias = numValuesPerAlias,
-                        Calculation = new Server.TypeId(calculation),                        
+                        Calculation = new ServerBase.TypeId(calculation),                        
                     };
                     if (params_ is not null)
                         request.Params.Add(params_);
@@ -66,7 +66,7 @@ namespace Ssz.DataGrpc.Client
             }
         }
 
-        public Server.EventMessage[] ReadEventMessagesJournal(ClientEventList clientEventList, DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_)
+        public ServerBase.EventMessage[] ReadEventMessagesJournal(ClientEventList clientEventList, DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 

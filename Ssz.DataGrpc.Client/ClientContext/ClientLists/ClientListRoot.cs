@@ -9,7 +9,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
     ///     of this type would be used is when the data type can also be processed
     ///     as being of type DataGrpc Value Base.
     /// </summary>
-    public abstract class ClientListRoot : IDisposable
+    internal abstract class ClientListRoot : IDisposable
     {
         #region construction and destruction
 

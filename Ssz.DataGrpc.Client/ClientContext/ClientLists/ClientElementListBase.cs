@@ -16,7 +16,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
     ///     as being of type DataGrpc Value Base.
     /// </summary>
     /// <typeparam name="TClientElementListItemBase"> The DataGrpc Value type for this DataGrpc List. </typeparam>
-    public abstract class ClientElementListBase<TClientElementListItemBase> : ClientListRoot
+    internal abstract class ClientElementListBase<TClientElementListItemBase> : ClientListRoot
         where TClientElementListItemBase : ClientElementListItemBase
     {
         #region construction and destruction

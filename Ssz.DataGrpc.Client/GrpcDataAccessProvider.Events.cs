@@ -19,8 +19,8 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         public event Action<Utils.DataAccess.EventMessage[]> EventMessagesCallback
         {
-            add { BeginInvoke(ct => ClientEventListManager.EventMessagesCallback += value); }
-            remove { BeginInvoke(ct => ClientEventListManager.EventMessagesCallback -= value); }
+            add { BeginInvoke(ct => _clientEventListManager.EventMessagesCallback += value); }
+            remove { BeginInvoke(ct => _clientEventListManager.EventMessagesCallback -= value); }
         }        
         
         public void AckAlarms(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
@@ -28,7 +28,7 @@ namespace Ssz.DataGrpc.Client
             BeginInvoke(ct =>
             {
                 ClientEventList? clientEventList =
-                    ClientEventListManager.GetRelatedClientEventList(OnEventMessagesCallbackInternal);
+                    _clientEventListManager.GetRelatedClientEventList(OnEventMessagesCallbackInternal);
 
                 if (clientEventList is null) return;
 
@@ -50,8 +50,6 @@ namespace Ssz.DataGrpc.Client
 
         #region protected functions
 
-        protected ClientEventListManager ClientEventListManager { get; }
-
         protected virtual void OnEventMessagesCallback(Utils.DataAccess.EventMessage[] newEventMessages)
         {
         }
@@ -64,6 +62,12 @@ namespace Ssz.DataGrpc.Client
         {
             OnEventMessagesCallback(newEventMessages);
         }
+
+        #endregion
+
+        #region private fields
+
+        private ClientEventListManager _clientEventListManager { get; }
 
         #endregion
     }

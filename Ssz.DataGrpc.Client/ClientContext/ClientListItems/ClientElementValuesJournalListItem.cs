@@ -9,7 +9,7 @@ namespace Ssz.DataGrpc.Client.ClientListItems
     /// <summary>
     /// 
     /// </summary>
-    public class ClientElementValuesJournalListItem : ClientElementListItemBase
+    internal class ClientElementValuesJournalListItem : ClientElementListItemBase
     {
         #region construction and destruction
 

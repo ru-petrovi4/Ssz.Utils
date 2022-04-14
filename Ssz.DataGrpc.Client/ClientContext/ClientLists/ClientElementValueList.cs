@@ -16,7 +16,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
     /// <summary>
     /// 
     /// </summary>
-    public class ClientElementValueList : ClientElementListBase<ClientElementValueListItem>
+    internal class ClientElementValueList : ClientElementListBase<ClientElementValueListItem>
     {
         #region construction and destruction
 

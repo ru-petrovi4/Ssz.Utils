@@ -36,7 +36,7 @@ namespace Ssz.Runtime.Serialization
             {                
                 fieldInfo.SetValue(target, value, invokeAttr, binder, culture);
             }
-            catch (Exception ex)
+            catch //(Exception ex)
             {
             }            
         }

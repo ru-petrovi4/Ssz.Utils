@@ -10,6 +10,6 @@ namespace Ssz.DataGrpc.Client.Data
     /// <param name="dataList"> The DataGrpcSubscription that is sending the alarms and events to the client application. </param>
     /// <param name="changedListItems"> The list of data updates being reported. </param>
     /// <param name="changedValues">The time when the values were last changed.</param>
-    public delegate void ElementValuesCallbackEventHandler(
+    internal delegate void ElementValuesCallbackEventHandler(
         ClientElementValueList dataList, ClientElementValueListItem[] changedListItems, ValueStatusTimestamp[] changedValues);
 }

@@ -14,7 +14,7 @@ namespace Ssz.DataGrpc.Client
     /// <summary>
     ///     This partial class defines the Callback and Polling related aspects of the ClientContext class.
     /// </summary>
-    public partial class ClientContext
+    internal partial class ClientContext
     {
         #region public functions
 
@@ -56,7 +56,7 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         /// <param name="eventList"></param>
         /// <returns></returns>
-        public Server.EventMessage[] PollEventsChanges(ClientEventList eventList)
+        public ServerBase.EventMessage[] PollEventsChanges(ClientEventList eventList)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -116,9 +116,9 @@ namespace Ssz.DataGrpc.Client
         /// <param name="eventList"></param>
         /// <param name="eventMessages"></param>
         /// <returns></returns>
-        private Server.EventMessage[]? EventMessagesCallback(ClientEventList eventList, EventMessagesCollection eventMessagesCollection)
+        private ServerBase.EventMessage[]? EventMessagesCallback(ClientEventList eventList, EventMessagesCollection eventMessagesCollection)
         {
-            Server.EventMessage[]? newEventMessages = eventList.EventMessagesCallback(eventMessagesCollection);
+            ServerBase.EventMessage[]? newEventMessages = eventList.EventMessagesCallback(eventMessagesCollection);
             if (newEventMessages is not null && newEventMessages.Length > 0)
             {
                 eventList.RaiseEventMessagesCallbackEvent(newEventMessages);
@@ -126,7 +126,7 @@ namespace Ssz.DataGrpc.Client
             return newEventMessages;
         }
 
-        private void LongrunningPassthroughCallback(Server.LongrunningPassthroughCallback longrunningPassthroughCallback)
+        private void LongrunningPassthroughCallback(ServerBase.LongrunningPassthroughCallback longrunningPassthroughCallback)
         {
             lock (_incompleteLongrunningPassthroughRequestsCollection)
             {

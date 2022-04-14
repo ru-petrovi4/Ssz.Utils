@@ -74,7 +74,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         private bool bIsCrossAppDomain;
 #endif        
 
-        private static FileIOPermission sfileIOPermission = new FileIOPermission(PermissionState.Unrestricted);
+        //private static FileIOPermission sfileIOPermission = new FileIOPermission(PermissionState.Unrestricted);
         
         private SerStack ValueFixupStack
         {
@@ -971,7 +971,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                         ParseString(pr, objectPr);
                         var = pr.PRvalue;
                     }
-                    else if (Object.ReferenceEquals(pr.PRdtTypeCode, InternalPrimitiveTypeE.Invalid))
+                    else if (pr.PRdtTypeCode == InternalPrimitiveTypeE.Invalid)
                     {
                         CheckSerializable(pr.PRdtType);
                         // Not nested and invalid, so it is an empty object
@@ -1366,7 +1366,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 if (bSimpleAssembly)
                 {
                     try {
-                          sfileIOPermission.Assert();
+                          //sfileIOPermission.Assert();
                           try {
 #if FEATURE_FUSION
                               assm = ObjectReader.ResolveSimpleAssemblyName(new AssemblyName(assemblyName));
@@ -1375,7 +1375,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 #endif // FEATURE_FUSION
                           }
                           finally {
-                              CodeAccessPermission.RevertAssert();
+                              // CodeAccessPermission.RevertAssert();
                           }
                     }
                     catch(Exception e){
@@ -1390,12 +1390,12 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 else {
                     try
                     {
-                          sfileIOPermission.Assert();
+                          //sfileIOPermission.Assert();
                           try {
                               assm = Assembly.Load(assemblyName);
                           }
                           finally {
-                              CodeAccessPermission.RevertAssert();
+                              // CodeAccessPermission.RevertAssert();
                           }
                     }
                     catch (Exception e)

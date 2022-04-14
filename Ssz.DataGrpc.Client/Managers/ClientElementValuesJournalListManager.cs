@@ -9,7 +9,7 @@ using Ssz.DataGrpc.ServerBase;
 
 namespace Ssz.DataGrpc.Client.Managers
 {
-    public class ClientElementValuesJournalListManager : ClientElementListManagerBase<ClientElementValuesJournalListItem, ClientElementValuesJournalList>
+    internal class ClientElementValuesJournalListManager : ClientElementListManagerBase<ClientElementValuesJournalListItem, ClientElementValuesJournalList>
     {
         #region construction and destruction
 

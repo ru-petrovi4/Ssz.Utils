@@ -5,5 +5,5 @@ namespace Ssz.DataGrpc.Client.Data
     /// </summary>
     /// <param name="sender"> The calling object. </param>
     /// <param name="notificationData"> The data contained in the notification. </param>
-    public delegate void ClientContextNotification(object sender, ClientContextNotificationData notificationData);
+    internal delegate void ClientContextNotification(object sender, ClientContextNotificationData notificationData);
 }

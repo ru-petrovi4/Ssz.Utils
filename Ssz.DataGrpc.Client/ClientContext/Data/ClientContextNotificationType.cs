@@ -3,7 +3,7 @@ namespace Ssz.DataGrpc.Client.Data
     /// <summary>
     ///     This enumeration indicates why the notification is being sent.
     /// </summary>
-    public enum ClientContextNotificationType
+    internal enum ClientContextNotificationType
     {
         /// <summary>
         ///     The server shutting down.

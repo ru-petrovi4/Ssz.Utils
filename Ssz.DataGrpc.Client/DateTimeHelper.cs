@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.DataGrpc.Client
 {
-    public static class DateTimeHelper
+    internal static class DateTimeHelper
     {
         public static Timestamp ConvertToTimestamp(DateTime dateTimeUtc)
         {

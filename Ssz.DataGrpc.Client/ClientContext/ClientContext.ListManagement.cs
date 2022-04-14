@@ -16,7 +16,7 @@ namespace Ssz.DataGrpc.Client
     /// <summary>
     ///     This partial class defines the List Management aspects of the ClientContext
     /// </summary>
-    public partial class ClientContext
+    internal partial class ClientContext
     {
         #region public functions
 
@@ -65,7 +65,7 @@ namespace Ssz.DataGrpc.Client
         }
 
         /// <summary>
-        ///     This method deletes a list from the DataGrpc Server.
+        ///     This method deletes a list from the DataGrpc ServerBase.
         /// </summary>
         /// <param name="dataGrpcList"> The list to deleted </param>
         /// <returns> The results of the deletion. </returns>
@@ -146,7 +146,7 @@ namespace Ssz.DataGrpc.Client
         /// <summary>
         ///     <para>
         ///         This method is used to remove members from a list. It does not, however, delete the corresponding data
-        ///         object from the server.
+        ///         object from the ServerBase.
         ///     </para>
         /// </summary>
         /// <param name="listServerAlias"> The server identifier for the list from which data objects are to be removed. </param>

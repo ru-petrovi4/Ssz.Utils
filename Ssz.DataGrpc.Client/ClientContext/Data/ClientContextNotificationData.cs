@@ -6,7 +6,7 @@ namespace Ssz.DataGrpc.Client.Data
     ///     The data contained in a context notification.  The ReasonForNotification property specifies
     ///     why the notification is being sent.
     /// </summary>
-    public class ClientContextNotificationData : EventArgs
+    internal class ClientContextNotificationData : EventArgs
     {
         #region construction and destruction
 

@@ -24,8 +24,8 @@ namespace Ssz.DataGrpc.Client
         {
             BeginInvoke(ct =>
             {
-                ClientElementValuesJournalListManager.AddItem(elementId, valueSubscription);
-                ClientElementValuesJournalListManager.Subscribe(ClientConnectionManager);
+                _clientElementValuesJournalListManager.AddItem(elementId, valueSubscription);
+                _clientElementValuesJournalListManager.Subscribe(_clientConnectionManager);
             }
             );
         }
@@ -38,7 +38,7 @@ namespace Ssz.DataGrpc.Client
         {
             BeginInvoke(ct =>
             {
-                ClientElementValuesJournalListManager.RemoveItem(valueSubscription);
+                _clientElementValuesJournalListManager.RemoveItem(valueSubscription);
             }
             );            
         }
@@ -58,7 +58,7 @@ namespace Ssz.DataGrpc.Client
             var taskCompletionSource = new TaskCompletionSource<ValueStatusTimestamp[][]?>();
             BeginInvoke(ct =>
             {
-                var result = ClientElementValuesJournalListManager.ReadElementValuesJournals(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, params_, valueSubscriptionsCollection);
+                var result = _clientElementValuesJournalListManager.ReadElementValuesJournals(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, params_, valueSubscriptionsCollection);
 
                 taskCompletionSource.SetResult(result);
             }
@@ -72,7 +72,7 @@ namespace Ssz.DataGrpc.Client
             BeginInvoke(ct =>
             {
                 ClientEventList? clientEventList =
-                    ClientEventListManager.GetRelatedClientEventList(OnEventMessagesCallbackInternal);
+                    _clientEventListManager.GetRelatedClientEventList(OnEventMessagesCallbackInternal);
 
                 if (clientEventList is null) return;
 
@@ -97,7 +97,29 @@ namespace Ssz.DataGrpc.Client
 
         #region protected functions
 
-        protected ClientElementValuesJournalListManager ClientElementValuesJournalListManager { get; }
+        protected IEnumerable<ValueStatusTimestamp> ReadElementValuesJournalInternal(string elementId, DateTime firstTimestampUtc,
+            DateTime secondTimestampUtc)
+        {
+            object clientObj = elementId;
+            _clientElementValuesJournalListManager.AddItem(elementId, clientObj);
+            _clientElementValuesJournalListManager.Subscribe(_clientConnectionManager);
+
+            var data = _clientElementValuesJournalListManager.ReadElementValuesJournals(firstTimestampUtc, secondTimestampUtc, uint.MaxValue, new Ssz.Utils.DataAccess.TypeId(), null, new[] { clientObj });
+            if (data is not null)
+                return data[0];
+
+            // No remove, for optimization
+            //ClientElementValuesJournalListManager.RemoveItem(clientObj);
+            //ClientElementValuesJournalListManager.Subscribe(ClientConnectionManager, CallbackDispatcher);
+
+            return new ValueStatusTimestamp[0];
+        }
+
+        #endregion
+
+        #region private fields
+
+        private ClientElementValuesJournalListManager _clientElementValuesJournalListManager { get; }
 
         #endregion
     }

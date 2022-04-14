@@ -14,7 +14,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
     /// <summary>
     /// 
     /// </summary>
-    public class ClientEventList : ClientListRoot        
+    internal class ClientEventList : ClientListRoot        
     {
         #region construction and destruction
 
@@ -53,14 +53,14 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// 
         /// </summary>
         /// <returns></returns>
-        public Server.EventMessage[] PollEventsChanges()
+        public ServerBase.EventMessage[] PollEventsChanges()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
             return Context.PollEventsChanges(this);
         }
 
-        public Server.EventMessage[] ReadEventMessagesJournal(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_)
+        public ServerBase.EventMessage[] ReadEventMessagesJournal(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
@@ -72,7 +72,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
         /// </summary>
         /// <param name="eventMessagesCollection"></param>
         /// <returns></returns>
-        public Server.EventMessage[]? EventMessagesCallback(EventMessagesCollection eventMessagesCollection)
+        public ServerBase.EventMessage[]? EventMessagesCallback(EventMessagesCollection eventMessagesCollection)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
@@ -95,7 +95,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
             }
             else
             {
-                var result = new List<Server.EventMessage>();
+                var result = new List<ServerBase.EventMessage>();
 
                 foreach (var eventMessage in eventMessagesCollection.EventMessages)
                 {
@@ -110,7 +110,7 @@ namespace Ssz.DataGrpc.Client.ClientLists
         ///     Throws or invokes EventMessagesCallbackEvent.        
         /// </summary>
         /// <param name="newEventMessages"></param>
-        public void RaiseEventMessagesCallbackEvent(Server.EventMessage[] newEventMessages)
+        public void RaiseEventMessagesCallbackEvent(ServerBase.EventMessage[] newEventMessages)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 

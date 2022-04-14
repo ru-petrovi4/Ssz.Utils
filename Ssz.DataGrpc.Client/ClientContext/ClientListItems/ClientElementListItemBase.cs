@@ -10,7 +10,7 @@ namespace Ssz.DataGrpc.Client.ClientListItems
     ///     This is the base class for elements of all DataGrpcLists (e.g. ElementValueList, EventList).
     ///     DataGrpcLists maintain their elements in a Keyed Collection.
     /// </summary>
-    public abstract class ClientElementListItemBase
+    internal abstract class ClientElementListItemBase
     {
         #region construction and destruction
 
@@ -36,7 +36,7 @@ namespace Ssz.DataGrpc.Client.ClientListItems
 
         /// <summary>
         ///     This method is used to set the state of the data object to allow it to be
-        ///     removed from the server. If the data object has not yet been added to the
+        ///     removed from the ServerBase. If the data object has not yet been added to the
         ///     server, This method is used to set the state of the data object to disposable.
         /// </summary>
         /// <returns> Returns true if the state of data object was successfully set to RemoveableFromServer or Disposable. </returns>
@@ -67,7 +67,7 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         ///     This property provides the DataGrpc TypeId for the value contained
         ///     in this list element.
         /// </summary>
-        public Ssz.DataGrpc.Server.TypeId? ValueTypeId
+        public Ssz.DataGrpc.ServerBase.TypeId? ValueTypeId
         {
             get { return _valueTypeId; }
             set
@@ -177,7 +177,7 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         public bool IsReadable { get; set; }
 
         /// <summary>
-        ///     The Status Code provides the latest status as provided by the DataGrpc Server.
+        ///     The Status Code provides the latest status as provided by the DataGrpc ServerBase.
         ///     It is initially set to a failed state to indicated that the current value
         ///     is not valid.
         /// </summary>
@@ -231,7 +231,7 @@ namespace Ssz.DataGrpc.Client.ClientListItems
         ///     This property provides the DataGrpc TypeId for the value contained
         ///     in this list element.
         /// </summary>
-        private Ssz.DataGrpc.Server.TypeId? _valueTypeId;
+        private Ssz.DataGrpc.ServerBase.TypeId? _valueTypeId;
 
         #endregion
     }

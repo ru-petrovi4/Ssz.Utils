@@ -10,12 +10,12 @@ using Ssz.Utils;
 
 namespace Ssz.DataGrpc.Client
 {
-    public partial class ClientContext
+    internal partial class ClientContext
     {
         #region public functions
 
         /// <summary>
-        ///     This method is used to write data of the specified list to the server.  It is called
+        ///     This method is used to write data of the specified list to the ServerBase.  It is called
         ///     by the ClientBase after the client application has prepared and committed the data
         ///     values.
         /// </summary>

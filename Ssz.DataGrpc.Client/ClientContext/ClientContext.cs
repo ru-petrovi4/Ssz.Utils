@@ -22,7 +22,7 @@ namespace Ssz.DataGrpc.Client
     ///     one that in which the calling client application supplies the user credentials, and one in which
     ///     the ClientBase calls into the DataGrpc Client Credentials Project.Current for the user credentials when necessary.
     /// </summary>
-    public partial class ClientContext
+    internal partial class ClientContext
     {
         #region construction and destruction
 
@@ -99,7 +99,7 @@ namespace Ssz.DataGrpc.Client
         ///     This method disposes of the object.  It is invoked by the parameterless Dispose()
         ///     method of this object.  It is expected that the DataGrpc client application
         ///     will perform a Dispose() on each active context to close the connection with the
-        ///     DataGrpc Server.  Failure to perform the close will result in the DataGrpc Context remaining
+        ///     DataGrpc ServerBase.  Failure to perform the close will result in the DataGrpc Context remaining
         ///     active until the application edataGrpcts.
         /// </summary>
         /// <summary>
@@ -404,7 +404,7 @@ namespace Ssz.DataGrpc.Client
 
         /// <summary>
         ///     The time interval that controls when ClientKeepAlive messages are
-        ///     sent to the server.  If no IResourceManagement messages are sent to
+        ///     sent to the ServerBase.  If no IResourceManagement messages are sent to
         ///     the server for this period of time, a ClientKeepAlive message is
         ///     sent.  The value is expressed in milliseconds.  This value is the
         ///     same for all contexts.

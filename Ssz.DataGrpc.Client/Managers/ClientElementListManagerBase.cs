@@ -9,7 +9,7 @@ using Ssz.Utils.DataAccess;
 
 namespace Ssz.DataGrpc.Client.Managers
 {
-    public abstract class ClientElementListManagerBase<TDataGrpcListItem, TDataGrpcList>
+    internal abstract class ClientElementListManagerBase<TDataGrpcListItem, TDataGrpcList>
         where TDataGrpcListItem : ClientElementListItemBase
         where TDataGrpcList : ClientElementListBase<TDataGrpcListItem>
     {

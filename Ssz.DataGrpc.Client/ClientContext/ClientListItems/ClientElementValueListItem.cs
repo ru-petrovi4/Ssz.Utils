@@ -10,7 +10,7 @@ namespace Ssz.DataGrpc.Client.ClientListItems
     ///     to represent a single process data value along with its
     ///     status / quality and time stamp.
     /// </summary>
-    public class ClientElementValueListItem : ClientElementListItemBase
+    internal class ClientElementValueListItem : ClientElementListItemBase
     {
         #region construction and destruction
         
@@ -29,7 +29,7 @@ namespace Ssz.DataGrpc.Client.ClientListItems
 
         /// <summary>
         ///     This method is called by the ClientBase when a new value has been received for
-        ///     the data object from the server. It, in turn, calls the Update() method on the
+        ///     the data object from the ServerBase. It, in turn, calls the Update() method on the
         ///     DataValue property to complete the update, and then increments the update count
         ///     for the data object.
         /// </summary>
@@ -46,7 +46,7 @@ namespace Ssz.DataGrpc.Client.ClientListItems
 
         /// <summary>
         ///     This method is called by the ClientBase when a new value has been received for
-        ///     the data object from the server. It, in turn, calls the Update() method on the
+        ///     the data object from the ServerBase. It, in turn, calls the Update() method on the
         ///     DataValue property to complete the update, and then increments the update count
         ///     for the data object.
         /// </summary>
@@ -63,7 +63,7 @@ namespace Ssz.DataGrpc.Client.ClientListItems
 
         /// <summary>
         ///     This method is called by the ClientBase when a new value has been received for
-        ///     the data object from the server. It, in turn, calls the Update() method on the
+        ///     the data object from the ServerBase. It, in turn, calls the Update() method on the
         ///     DataValue property to complete the update, and then increments the update count
         ///     for the data object.
         /// </summary>
