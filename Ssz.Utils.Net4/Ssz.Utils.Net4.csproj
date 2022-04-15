@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F91A6025-E125-402B-95A6-FA483786C4B4}</ProjectGuid>
+    <ProjectGuid>{35FBD383-F754-4E4E-9A1F-F6EAB6A6EB09}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Ssz.Utils.Net4</RootNamespace>
