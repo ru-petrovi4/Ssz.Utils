@@ -317,7 +317,7 @@ namespace Ssz.DataGrpc.Client.Managers
         #region private fields
 
         private readonly Dictionary<object, ClientObjectInfo> _clientObjectInfosDictionary =
-            new Dictionary<object, ClientObjectInfo>(256, ReferenceEqualityComparer.Instance);
+            new Dictionary<object, ClientObjectInfo>(256, ReferenceEqualityComparer<object>.Default);
 
         private readonly CaseInsensitiveDictionary<DataGrpcListItemWrapper> _dataGrpcListItemWrappersDictionary =
             new CaseInsensitiveDictionary<DataGrpcListItemWrapper>(256);

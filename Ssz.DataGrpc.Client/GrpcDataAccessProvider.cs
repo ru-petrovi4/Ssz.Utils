@@ -321,7 +321,7 @@ namespace Ssz.DataGrpc.Client
         {
             Logger.LogDebug("DataGrpcProvider.AddItem() " + elementId);
 
-            if (String.IsNullOrEmpty(elementId))
+            if (elementId == null || elementId == @"")
             {
                 var callbackDispatcher = CallbackDispatcher;
                 if (callbackDispatcher is not null)
@@ -352,8 +352,15 @@ namespace Ssz.DataGrpc.Client
         /// <param name="valueSubscription"></param>
         public virtual void RemoveItem(IValueSubscription valueSubscription)
         {
+#if NETSTANDARD2_0
+            _valueSubscriptionsCollection.TryGetValue(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj);
+            if (valueSubscriptionObj is null)
+                return;
+            _valueSubscriptionsCollection.Remove(valueSubscription);
+#else
             if (!_valueSubscriptionsCollection.Remove(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj))
                 return;
+#endif            
 
             if (IsInitialized)
             {
@@ -624,9 +631,9 @@ namespace Ssz.DataGrpc.Client
             _threadSafeDispatcher.BeginInvoke(action);
         }
 
-        #endregion
+#endregion
 
-        #region protected functions
+#region protected functions
 
         protected IDispatcher? CallbackDispatcher { get; }
 
@@ -653,7 +660,7 @@ namespace Ssz.DataGrpc.Client
                 {
                     Unsubscribe(false);
 
-                    #region notify subscribers disconnected
+#region notify subscribers disconnected
 
                     Logger.LogInformation("DataGrpcProvider diconnected");                    
 
@@ -682,7 +689,7 @@ namespace Ssz.DataGrpc.Client
                         }
                     }
 
-                    #endregion                    
+#endregion
                 }
 
                 if (!String.IsNullOrWhiteSpace(_serverAddress) &&
@@ -815,9 +822,9 @@ namespace Ssz.DataGrpc.Client
             ValueSubscriptionsUpdated();
         }
 
-        #endregion        
+#endregion
 
-        #region private functions
+#region private functions
 
         private async Task WorkingTaskMainAsync(CancellationToken ct)
         {
@@ -1041,9 +1048,9 @@ namespace Ssz.DataGrpc.Client
             });
         }
 
-        #endregion
+#endregion
 
-        #region private fields
+#region private fields
 
         private bool _isInitialized;
 
@@ -1094,13 +1101,13 @@ namespace Ssz.DataGrpc.Client
         private DateTime _lastSuccessfulConnectionDateTimeUtc = DateTime.MinValue;
 
         private Dictionary<IValueSubscription, ValueSubscriptionObj> _valueSubscriptionsCollection =
-            new Dictionary<IValueSubscription, ValueSubscriptionObj>(ReferenceEqualityComparer.Instance);
+            new Dictionary<IValueSubscription, ValueSubscriptionObj>(ReferenceEqualityComparer<IValueSubscription>.Default);
 
         private ClientConnectionManager _clientConnectionManager { get; }
 
         private ClientElementValueListManager _clientElementValueListManager { get; }
 
-        #endregion
+#endregion
 
         protected class ConstItem
         {
@@ -1111,7 +1118,7 @@ namespace Ssz.DataGrpc.Client
 
         private class ValueSubscriptionObj
         {
-            #region construction and destruction
+#region construction and destruction
 
             public ValueSubscriptionObj(string elementId, IValueSubscription valueSubscription)
             {
@@ -1119,7 +1126,7 @@ namespace Ssz.DataGrpc.Client
                 ValueSubscription = valueSubscription;
             }
 
-            #endregion
+#endregion
 
             public readonly string ElementId;
 
