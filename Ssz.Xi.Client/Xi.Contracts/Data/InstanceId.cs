@@ -314,7 +314,7 @@ namespace Xi.Contracts.Data
 		public static bool IsValid(InstanceId instanceId)
 		{
 			bool valid = false;
-			if ((instanceId is not null) && (string.IsNullOrEmpty(instanceId.FullyQualifiedId) == false))
+			if (instanceId is not null && instanceId.FullyQualifiedId is not null && instanceId.FullyQualifiedId != @"")
 			{
 				int pos = instanceId.FullyQualifiedId.IndexOf("/");
 				if ((pos >= 0) && (pos < instanceId.FullyQualifiedId.Length - 1)) // between the beginning and second to last character inclusive

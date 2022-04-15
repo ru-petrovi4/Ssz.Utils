@@ -40,10 +40,10 @@ namespace Ssz.Utils
         public CaseInsensitiveDictionary(IEnumerable<KeyValuePair<string, T>> collection)
             : base(collection, StringComparer.InvariantCultureIgnoreCase)
         {
-        }
+        }        
 #endif
 
-#endregion
+        #endregion
 
         #region public functions
 

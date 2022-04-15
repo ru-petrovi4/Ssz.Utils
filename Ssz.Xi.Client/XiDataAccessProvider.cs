@@ -280,7 +280,7 @@ namespace Ssz.Xi.Client
         {
             //Logger?.LogDebug("XiDataProvider.AddItem() " + elementId);
 
-            if (String.IsNullOrEmpty(elementId))
+            if (elementId is null || elementId == @"")
             {
                 var callbackDispatcher = CallbackDispatcher;
                 if (callbackDispatcher is not null)
@@ -311,8 +311,15 @@ namespace Ssz.Xi.Client
         /// <param name="valueSubscription"></param>
         public void RemoveItem(IValueSubscription valueSubscription)
         {
+#if NETSTANDARD2_0
+            _valueSubscriptionsCollection.TryGetValue(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj);
+            if (valueSubscriptionObj is null)
+                return;
+            _valueSubscriptionsCollection.Remove(valueSubscription);
+#else
             if (!_valueSubscriptionsCollection.Remove(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj))
                 return;
+#endif
 
             if (IsInitialized)
             {
@@ -570,8 +577,17 @@ namespace Ssz.Xi.Client
                     try
                     {
                         string workstationName = _clientWorkstationName;
+#if NETSTANDARD2_0
+                        var dictionary = new CaseInsensitiveDictionary<string?>(_contextParams.Count);
+                        foreach (var kvp in _contextParams)
+                            dictionary.Add(kvp.Key, kvp.Value);                        
+                        string xiContextParamsString =
+                            NameValueCollectionHelper.GetNameValueCollectionString(dictionary);
+#else
                         string xiContextParamsString =
                             NameValueCollectionHelper.GetNameValueCollectionString(new CaseInsensitiveDictionary<string?>(_contextParams.Select(kvp => new KeyValuePair<string, string?>(kvp.Key, kvp.Value))));
+#endif
+
                         if (!String.IsNullOrEmpty(xiContextParamsString))
                         {
                             workstationName += @"?" + xiContextParamsString;
@@ -793,7 +809,7 @@ namespace Ssz.Xi.Client
         private DateTime _lastSuccessfulConnectionDateTimeUtc = DateTime.MinValue;
 
         private Dictionary<IValueSubscription, ValueSubscriptionObj> _valueSubscriptionsCollection =
-            new Dictionary<IValueSubscription, ValueSubscriptionObj>(ReferenceEqualityComparer.Instance);
+            new Dictionary<IValueSubscription, ValueSubscriptionObj>(ReferenceEqualityComparer<object>.Default);
 
         #endregion
 

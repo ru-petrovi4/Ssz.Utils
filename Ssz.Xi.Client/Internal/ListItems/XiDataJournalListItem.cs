@@ -80,7 +80,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         public IXiDataJournalValueStatusTimestampSet GetExistingOrNewValueStatusTimestampSet(
             string? calculationLocalId = null)
         {
-            if (String.IsNullOrEmpty(calculationLocalId))
+            if (calculationLocalId == null || calculationLocalId == @"")
                 calculationLocalId = JournalDataSampleTypes.RawDataSamples.ToString(CultureInfo.InvariantCulture);
 
             XiDataJournalValueStatusTimestampSet? existingValueStatusTimestampSet;
