@@ -1048,9 +1048,9 @@ namespace Ssz.DataGrpc.Client
             });
         }
 
-#endregion
+        #endregion
 
-#region private fields
+        #region private fields
 
         private bool _isInitialized;
 
@@ -1107,7 +1107,7 @@ namespace Ssz.DataGrpc.Client
 
         private ClientElementValueListManager _clientElementValueListManager { get; }
 
-#endregion
+        #endregion
 
         protected class ConstItem
         {
@@ -1118,7 +1118,7 @@ namespace Ssz.DataGrpc.Client
 
         private class ValueSubscriptionObj
         {
-#region construction and destruction
+            #region construction and destruction
 
             public ValueSubscriptionObj(string elementId, IValueSubscription valueSubscription)
             {
@@ -1126,7 +1126,7 @@ namespace Ssz.DataGrpc.Client
                 ValueSubscription = valueSubscription;
             }
 
-#endregion
+            #endregion
 
             public readonly string ElementId;
 
