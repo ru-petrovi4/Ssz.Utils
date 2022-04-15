@@ -28,12 +28,12 @@
 
 using System;
 using System.Text;
-using Ssz.Utils.CommandLine.Infrastructure;
-using Ssz.Utils.CommandLine.Text;
+using Ssz.Utils.Net4.CommandLine.Infrastructure;
+using Ssz.Utils.Net4.CommandLine.Text;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Attributes
+namespace Ssz.Utils.Net4.CommandLine.Attributes
 {
     /// <summary>
     ///     Provides base properties for creating an attribute, used to define multiple lines of text.

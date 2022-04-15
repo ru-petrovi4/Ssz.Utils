@@ -31,13 +31,13 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Text;
-using Ssz.Utils.CommandLine.Attributes;
-using Ssz.Utils.CommandLine.Extensions;
-using Ssz.Utils.CommandLine.Infrastructure;
+using Ssz.Utils.Net4.CommandLine.Attributes;
+using Ssz.Utils.Net4.CommandLine.Extensions;
+using Ssz.Utils.Net4.CommandLine.Infrastructure;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Text
+namespace Ssz.Utils.Net4.CommandLine.Text
 {
     /// <summary>
     ///     Provides means to format an help screen.

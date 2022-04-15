@@ -29,7 +29,7 @@
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Text
+namespace Ssz.Utils.Net4.CommandLine.Text
 {
     /// <summary>
     ///     Handle parsing errors delegate.

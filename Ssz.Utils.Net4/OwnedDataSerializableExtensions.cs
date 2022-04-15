@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using Ssz.Utils.Serialization;
+using Ssz.Utils.Net4.Serialization;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Net4
 {
     public static class OwnedDataSerializableExtensions
     {

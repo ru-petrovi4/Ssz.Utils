@@ -31,7 +31,7 @@ using System.Runtime.InteropServices;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Attributes
+namespace Ssz.Utils.Net4.CommandLine.Attributes
 {
     /// <summary>
     ///     Models a multiline assembly license text.

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Ssz.Utils.MonitoredUndo.Changes;
+using Ssz.Utils.Net4.MonitoredUndo.Changes;
 
-namespace Ssz.Utils.MonitoredUndo
+namespace Ssz.Utils.Net4.MonitoredUndo
 {
     /// <summary>
     ///     Tracks the ChangeSets and behavior for a single root object (or document).

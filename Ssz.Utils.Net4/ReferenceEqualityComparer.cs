@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Net4
 {
     /// <summary>
     ///     A generic object comparerer that would only use object's reference,

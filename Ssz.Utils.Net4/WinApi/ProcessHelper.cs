@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Ssz.Utils.WinApi
+namespace Ssz.Utils.Net4.WinApi
 {
     public static class ProcessHelper
     {

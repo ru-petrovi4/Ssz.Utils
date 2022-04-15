@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Ssz.Utils.MonitoredUndo.Changes;
+using Ssz.Utils.Net4.MonitoredUndo.Changes;
 
-namespace Ssz.Utils.MonitoredUndo
+namespace Ssz.Utils.Net4.MonitoredUndo
 {
     /// <summary>
     ///     A set of changes that represent a single "unit of change".

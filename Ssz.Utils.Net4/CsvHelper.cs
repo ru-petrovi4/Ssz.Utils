@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.VisualBasic.FileIO;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Net4
 {
     public static class CsvHelper
     {

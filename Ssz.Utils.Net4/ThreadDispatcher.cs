@@ -3,7 +3,7 @@ using System.Security.Permissions;
 using System.Threading;
 using System.Windows.Threading;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Net4
 {
     public static class DispatcherHelper
     {

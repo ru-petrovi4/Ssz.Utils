@@ -30,11 +30,11 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Threading;
-using Ssz.Utils.CommandLine.Infrastructure;
+using Ssz.Utils.Net4.CommandLine.Infrastructure;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine
+namespace Ssz.Utils.Net4.CommandLine
 {
     /// <summary>
     ///     Provides settings for <see cref="CommandLine.Parser" />. Once consumed cannot be reused.

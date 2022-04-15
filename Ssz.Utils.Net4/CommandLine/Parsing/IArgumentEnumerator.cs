@@ -24,7 +24,7 @@
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Parsing
+namespace Ssz.Utils.Net4.CommandLine.Parsing
 {
     internal interface IArgumentEnumerator
     {

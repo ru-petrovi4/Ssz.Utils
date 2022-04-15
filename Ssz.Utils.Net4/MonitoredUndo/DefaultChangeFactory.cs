@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using Ssz.Utils.MonitoredUndo.Changes;
+using Ssz.Utils.Net4.MonitoredUndo.Changes;
 
-namespace Ssz.Utils.MonitoredUndo
+namespace Ssz.Utils.Net4.MonitoredUndo
 {
     public class DefaultChangeFactory
     {

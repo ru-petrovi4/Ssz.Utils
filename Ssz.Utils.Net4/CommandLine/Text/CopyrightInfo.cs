@@ -30,11 +30,11 @@ using System;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
-using Ssz.Utils.CommandLine.Infrastructure;
+using Ssz.Utils.Net4.CommandLine.Infrastructure;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Text
+namespace Ssz.Utils.Net4.CommandLine.Text
 {
     /// <summary>
     ///     Models the copyright part of an help text.

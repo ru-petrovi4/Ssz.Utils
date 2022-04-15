@@ -1,9 +1,9 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using Ssz.Utils;
+using Ssz.Utils.Net4;
 
-namespace Ssz.Utils.WinApi
+namespace Ssz.Utils.Net4.WinApi
 {
     /// <summary>
     ///     A hook is a point in the system message-handling mechanism where an application

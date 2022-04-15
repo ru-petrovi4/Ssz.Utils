@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Security.Cryptography;
-using Ssz.Utils.Serialization;
+using Ssz.Utils.Net4.Serialization;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Net4
 {
     public static class CacheService
     {

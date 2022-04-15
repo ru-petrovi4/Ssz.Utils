@@ -24,7 +24,7 @@
 
 #endregion
 
-namespace Ssz.Utils.CommandLine
+namespace Ssz.Utils.Net4.CommandLine
 {
     /// <summary>
     ///     Models a parsing error.

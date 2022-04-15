@@ -24,7 +24,7 @@
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Extensions
+namespace Ssz.Utils.Net4.CommandLine.Extensions
 {
     /// <summary>
     ///     Utility extension methods for System.Char.

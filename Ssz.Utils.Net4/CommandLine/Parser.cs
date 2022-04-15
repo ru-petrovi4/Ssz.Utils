@@ -33,14 +33,14 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Ssz.Utils.CommandLine.Attributes;
-using Ssz.Utils.CommandLine.Infrastructure;
-using Ssz.Utils.CommandLine.Parsing;
-using Ssz.Utils.CommandLine.Text;
+using Ssz.Utils.Net4.CommandLine.Attributes;
+using Ssz.Utils.Net4.CommandLine.Infrastructure;
+using Ssz.Utils.Net4.CommandLine.Parsing;
+using Ssz.Utils.Net4.CommandLine.Text;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine
+namespace Ssz.Utils.Net4.CommandLine
 {
     /// <summary>
     ///     Provides methods to parse command line arguments.

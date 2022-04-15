@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Ssz.Utils.MonitoredUndo.Changes
+namespace Ssz.Utils.Net4.MonitoredUndo.Changes
 {
     /// <summary>
     ///     Represents an individual change, with the commands to undo / redo the change as needed.

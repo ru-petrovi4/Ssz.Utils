@@ -1,4 +1,4 @@
-namespace Ssz.Utils.WinApi
+namespace Ssz.Utils.Net4.WinApi
 {
     /// <summary>
     ///     Represents a method that handles an intercepted low-level message.

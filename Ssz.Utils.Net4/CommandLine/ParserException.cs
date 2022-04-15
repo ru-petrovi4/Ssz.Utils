@@ -31,7 +31,7 @@ using System.Runtime.Serialization;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine
+namespace Ssz.Utils.Net4.CommandLine
 {
     /// <summary>
     ///     This exception is thrown when a generic parsing error occurs.

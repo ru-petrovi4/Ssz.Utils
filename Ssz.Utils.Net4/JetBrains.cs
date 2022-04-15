@@ -9,7 +9,7 @@
 // ReSharper disable MemberCanBeProtected.Global
 // ReSharper disable InconsistentNaming
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Net4
 {
     /// <summary>
     ///     Indicates that the value of the marked element could be <c>null</c> sometimes,

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Net4
 {
     public interface ICacheObject
     {

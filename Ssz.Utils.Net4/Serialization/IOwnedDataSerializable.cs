@@ -1,4 +1,4 @@
-﻿namespace Ssz.Utils.Serialization
+﻿namespace Ssz.Utils.Net4.Serialization
 {
     /// <summary>
     ///     Interface which allows a class to save/retrieve their internal data to/from an existing

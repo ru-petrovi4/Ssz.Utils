@@ -30,12 +30,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using Ssz.Utils.CommandLine.Attributes;
-using Ssz.Utils.CommandLine.Infrastructure;
+using Ssz.Utils.Net4.CommandLine.Attributes;
+using Ssz.Utils.Net4.CommandLine.Infrastructure;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Parsing
+namespace Ssz.Utils.Net4.CommandLine.Parsing
 {
     /// <summary>
     ///     Maps unnamed options to property using <see cref="ValueOptionAttribute" /> and <see cref="ValueListAttribute" />.

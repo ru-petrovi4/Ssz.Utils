@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Ssz.Utils.MonitoredUndo
+namespace Ssz.Utils.Net4.MonitoredUndo
 {
     /// <summary>
     ///     Provides a simplified way to start and end a batch via a "using" block.

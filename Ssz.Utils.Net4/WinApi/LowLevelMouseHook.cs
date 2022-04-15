@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Ssz.Utils.WinApi
+namespace Ssz.Utils.Net4.WinApi
 {
     /// <summary>
     ///     A hook that intercepts mouse events

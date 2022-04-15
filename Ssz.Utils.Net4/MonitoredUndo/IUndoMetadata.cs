@@ -1,6 +1,6 @@
 ﻿using System.Collections.Specialized;
 
-namespace Ssz.Utils.MonitoredUndo
+namespace Ssz.Utils.Net4.MonitoredUndo
 {
     /// <summary>
     ///     Can be used by undo services to determine whether the specified field or

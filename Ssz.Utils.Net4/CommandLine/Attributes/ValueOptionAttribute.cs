@@ -30,7 +30,7 @@ using System;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Attributes
+namespace Ssz.Utils.Net4.CommandLine.Attributes
 {
     /// <summary>
     ///     Maps a single unnamed option to the target property. Values will be mapped in order of Index.

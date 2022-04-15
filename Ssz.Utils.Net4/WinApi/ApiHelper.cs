@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 
-namespace Ssz.Utils.WinApi
+namespace Ssz.Utils.Net4.WinApi
 {
     /// <summary>
     ///     Helper class that contains static methods useful for API programming. This

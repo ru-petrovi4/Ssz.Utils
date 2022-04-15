@@ -1,4 +1,4 @@
-﻿namespace Ssz.Utils.Serialization
+﻿namespace Ssz.Utils.Net4.Serialization
 {
     /// <summary>
     ///     Enum which is used for fast serialization. It stores information about a type or type/value.

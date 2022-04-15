@@ -28,11 +28,11 @@
 
 using System;
 using System.Collections.Generic;
-using Ssz.Utils.CommandLine.Extensions;
+using Ssz.Utils.Net4.CommandLine.Extensions;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Parsing
+namespace Ssz.Utils.Net4.CommandLine.Parsing
 {
     internal abstract class ArgumentParser
     {

@@ -8,7 +8,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Windows;
 
-namespace Ssz.Utils.Serialization
+namespace Ssz.Utils.Net4.Serialization
 {
     /// <summary>
     ///     A SerializationReader instance is used to read stored values and objects from a byte array.

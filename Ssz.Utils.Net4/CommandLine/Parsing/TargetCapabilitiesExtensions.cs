@@ -26,12 +26,12 @@
 
 #region Using Directives
 
-using Ssz.Utils.CommandLine.Attributes;
-using Ssz.Utils.CommandLine.Infrastructure;
+using Ssz.Utils.Net4.CommandLine.Attributes;
+using Ssz.Utils.Net4.CommandLine.Infrastructure;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Parsing
+namespace Ssz.Utils.Net4.CommandLine.Parsing
 {
     /// <summary>
     ///     Utility extension methods for query target capabilities.

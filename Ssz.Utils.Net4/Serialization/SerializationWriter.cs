@@ -9,7 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Windows;
 
-namespace Ssz.Utils.Serialization
+namespace Ssz.Utils.Net4.Serialization
 {
     /// <summary>
     ///     Class which defines the writer for serialized data using the fast serialization optimization.

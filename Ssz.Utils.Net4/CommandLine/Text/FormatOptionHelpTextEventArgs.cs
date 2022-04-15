@@ -27,11 +27,11 @@
 #region Using Directives
 
 using System;
-using Ssz.Utils.CommandLine.Attributes;
+using Ssz.Utils.Net4.CommandLine.Attributes;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Text
+namespace Ssz.Utils.Net4.CommandLine.Text
 {
     /// <summary>
     ///     Provides data for the FormatOptionHelpText event.

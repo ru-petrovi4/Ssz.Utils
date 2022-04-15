@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Markup;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Net4
 {
     public class NameValueCollectionValueSerializer<T> : ValueSerializer
     {

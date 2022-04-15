@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Ssz.Utils.MonitoredUndo.Changes
+namespace Ssz.Utils.Net4.MonitoredUndo.Changes
 {
     public abstract class CollectionAddRemoveChangeBase : CollectionChange
     {

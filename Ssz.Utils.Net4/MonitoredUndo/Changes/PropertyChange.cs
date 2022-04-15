@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Ssz.Utils.MonitoredUndo.Changes
+namespace Ssz.Utils.Net4.MonitoredUndo.Changes
 {
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public class PropertyChange : Change

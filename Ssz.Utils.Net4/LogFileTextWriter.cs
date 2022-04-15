@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Net4
 {
     public class LogFileTextWriter : TextWriter, IDisposable
     {

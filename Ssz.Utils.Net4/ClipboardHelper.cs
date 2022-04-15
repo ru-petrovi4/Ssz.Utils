@@ -10,7 +10,7 @@ using Clipboard = System.Windows.Clipboard;
 using DataFormats = System.Windows.DataFormats;
 using IDataObject = System.Windows.IDataObject;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Net4
 {
     public static class ClipboardHelper
     {

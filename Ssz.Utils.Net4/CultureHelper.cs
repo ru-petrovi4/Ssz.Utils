@@ -3,7 +3,7 @@ using System.Configuration;
 using System.Globalization;
 using System.Threading;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Net4
 {
     public static class CultureHelper
     {

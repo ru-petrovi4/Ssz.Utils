@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Net4
 {
     public class BytesArrayEqualityComparer : IEqualityComparer<byte[]>
     {

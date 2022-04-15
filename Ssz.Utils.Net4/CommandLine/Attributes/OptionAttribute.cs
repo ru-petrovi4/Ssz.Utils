@@ -27,11 +27,11 @@
 #region Using Directives
 
 using System;
-using Ssz.Utils.CommandLine.Parsing;
+using Ssz.Utils.Net4.CommandLine.Parsing;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Attributes
+namespace Ssz.Utils.Net4.CommandLine.Attributes
 {
     /// <summary>
     ///     Models an option specification.

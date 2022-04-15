@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Ssz.Utils.Serialization;
+using Ssz.Utils.Net4.Serialization;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Net4
 {
     /// <summary>
     ///     Abstract base class allows to save/retrieve their internal data to/from an existing

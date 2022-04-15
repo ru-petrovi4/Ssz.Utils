@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Markup;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Net4
 {
     /// <summary>
     ///     If func param stringIsLocalized = False, InvariantCulture is used.

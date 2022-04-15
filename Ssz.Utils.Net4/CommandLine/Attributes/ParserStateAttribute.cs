@@ -30,7 +30,7 @@ using System;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Attributes
+namespace Ssz.Utils.Net4.CommandLine.Attributes
 {
     /// <summary>
     ///     Indicates that the property can receive an instance of type <see cref="CommandLine.IParserState" />.

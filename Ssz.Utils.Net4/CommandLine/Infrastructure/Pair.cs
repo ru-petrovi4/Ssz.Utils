@@ -24,7 +24,7 @@
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Infrastructure
+namespace Ssz.Utils.Net4.CommandLine.Infrastructure
 {
     internal sealed class Pair<TLeft, TRight>
         where TLeft : class

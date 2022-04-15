@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Security;
 
-namespace Ssz.Utils.WinApi
+namespace Ssz.Utils.Net4.WinApi
 {
     /// <summary>
     ///     As long as this object exists all mouse events created from a touch event for legacy support will be disabled.

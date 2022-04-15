@@ -9,7 +9,7 @@ using System.Web;
 using System.Windows;
 using System.Windows.Markup;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Net4
 {
     public static class NameValueCollectionHelper
     {

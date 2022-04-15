@@ -1,4 +1,4 @@
-﻿namespace Ssz.Utils.MonitoredUndo
+﻿namespace Ssz.Utils.Net4.MonitoredUndo
 {
     /// <summary>
     ///     Implement on objects that support undo.

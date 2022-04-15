@@ -32,7 +32,7 @@ using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Infrastructure
+namespace Ssz.Utils.Net4.CommandLine.Infrastructure
 {
     internal sealed class ReflectionCache
     {

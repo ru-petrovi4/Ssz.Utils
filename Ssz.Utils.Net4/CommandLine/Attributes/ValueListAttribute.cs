@@ -29,11 +29,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Ssz.Utils.CommandLine.Infrastructure;
+using Ssz.Utils.Net4.CommandLine.Infrastructure;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Attributes
+namespace Ssz.Utils.Net4.CommandLine.Attributes
 {
     /// <summary>
     ///     Models a list of command line arguments that are not options.

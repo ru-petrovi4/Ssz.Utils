@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace Ssz.Utils.MonitoredUndo
+namespace Ssz.Utils.Net4.MonitoredUndo
 {
     /// <summary>
     ///     Used to uniquely identify a change that has a 2-part "key".

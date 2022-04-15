@@ -23,7 +23,7 @@ using System.Xml;
 using System.Windows.Forms;
 #endregion
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Net4
 {
     /// <summary>
     /// The HmiWebParseFile is used as a quick lookup of the important parts contained in an HMIWeb graphics file.

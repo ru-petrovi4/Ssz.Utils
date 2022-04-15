@@ -1,6 +1,6 @@
 using System;
 
-namespace Ssz.Utils.WinApi
+namespace Ssz.Utils.Net4.WinApi
 {
     /// <summary>
     ///     A message that has been intercepted by a low-level hook

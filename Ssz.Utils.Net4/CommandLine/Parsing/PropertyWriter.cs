@@ -34,7 +34,7 @@ using System.Reflection;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Parsing
+namespace Ssz.Utils.Net4.CommandLine.Parsing
 {
     /// <summary>
     ///     Encapsulates property writing primitives.

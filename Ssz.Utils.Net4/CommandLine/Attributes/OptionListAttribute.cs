@@ -31,7 +31,7 @@ using System.Diagnostics.CodeAnalysis;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Attributes
+namespace Ssz.Utils.Net4.CommandLine.Attributes
 {
     /// <summary>
     ///     Models an option that can accept multiple values.

@@ -28,11 +28,11 @@
 
 using System;
 using System.Reflection;
-using Ssz.Utils.CommandLine.Infrastructure;
+using Ssz.Utils.Net4.CommandLine.Infrastructure;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Attributes
+namespace Ssz.Utils.Net4.CommandLine.Attributes
 {
     /// <summary>
     ///     Indicates the instance method that must be invoked when it becomes necessary show your help screen.

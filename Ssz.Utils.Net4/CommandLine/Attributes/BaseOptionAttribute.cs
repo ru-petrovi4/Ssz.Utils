@@ -27,12 +27,12 @@
 #region Using Directives
 
 using System;
-using Ssz.Utils.CommandLine.Extensions;
-using Ssz.Utils.CommandLine.Infrastructure;
+using Ssz.Utils.Net4.CommandLine.Extensions;
+using Ssz.Utils.Net4.CommandLine.Infrastructure;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Attributes
+namespace Ssz.Utils.Net4.CommandLine.Attributes
 {
     /// <summary>
     ///     Provides base properties for creating an attribute, used to define rules for command line parsing.

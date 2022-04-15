@@ -29,11 +29,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Ssz.Utils.CommandLine.Attributes;
+using Ssz.Utils.Net4.CommandLine.Attributes;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Infrastructure
+namespace Ssz.Utils.Net4.CommandLine.Infrastructure
 {
     internal static class ReflectionHelper
     {

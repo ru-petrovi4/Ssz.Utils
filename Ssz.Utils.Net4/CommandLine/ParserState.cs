@@ -30,7 +30,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine
+namespace Ssz.Utils.Net4.CommandLine
 {
     /// <summary>
     ///     Models a type that records the parser state after parsing.

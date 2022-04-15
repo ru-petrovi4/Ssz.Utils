@@ -1,6 +1,6 @@
-﻿using Ssz.Utils.MonitoredUndo.Changes;
+﻿using Ssz.Utils.Net4.MonitoredUndo.Changes;
 
-namespace Ssz.Utils.MonitoredUndo
+namespace Ssz.Utils.Net4.MonitoredUndo
 {
     /// <summary>
     ///     Implement on objects that want to be notified when something is undone or redone.

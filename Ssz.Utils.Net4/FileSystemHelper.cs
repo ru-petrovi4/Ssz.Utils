@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Net4
 {
     public static class FileSystemHelper
     {

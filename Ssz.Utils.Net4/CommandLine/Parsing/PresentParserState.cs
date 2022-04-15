@@ -30,7 +30,7 @@ using System;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Parsing
+namespace Ssz.Utils.Net4.CommandLine.Parsing
 {
     [Flags]
     internal enum PresentParserState : ushort

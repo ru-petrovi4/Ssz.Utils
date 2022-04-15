@@ -27,11 +27,11 @@
 #region Using Directives
 
 using System;
-using Ssz.Utils.CommandLine.Infrastructure;
+using Ssz.Utils.Net4.CommandLine.Infrastructure;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Parsing
+namespace Ssz.Utils.Net4.CommandLine.Parsing
 {
     internal sealed class OneCharStringEnumerator : IArgumentEnumerator
     {

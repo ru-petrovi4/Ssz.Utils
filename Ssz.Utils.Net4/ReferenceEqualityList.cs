@@ -7,7 +7,7 @@ using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Net4
 {
     /// <summary>
     ///     A generic List that would only use object's reference,

@@ -24,7 +24,7 @@
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Text
+namespace Ssz.Utils.Net4.CommandLine.Text
 {
     /// <summary>
     ///     Models an abstract sentence builder.

@@ -1,4 +1,4 @@
-namespace Ssz.Utils.WinApi
+namespace Ssz.Utils.Net4.WinApi
 {
     /// <summary>
     ///     Hook Types. See the documentation of SetWindowsHookEx for reference.

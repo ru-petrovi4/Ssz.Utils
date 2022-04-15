@@ -30,7 +30,7 @@ using System;
 
 #endregion
 
-namespace Ssz.Utils.CommandLine.Infrastructure
+namespace Ssz.Utils.Net4.CommandLine.Infrastructure
 {
     internal static class Assumes
     {

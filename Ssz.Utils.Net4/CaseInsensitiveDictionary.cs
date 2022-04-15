@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Net4
 {
     public class CaseInsensitiveDictionary<T> : Dictionary<string, T>
     {

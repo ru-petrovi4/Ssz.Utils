@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Globalization;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Net4
 {
     public class NameValueCollectionTypeConverter<T> : TypeConverter
     {
