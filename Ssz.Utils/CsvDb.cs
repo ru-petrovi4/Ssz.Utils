@@ -521,8 +521,7 @@ namespace Ssz.Utils
             {
                 _dispatcher.BeginInvoke(ct =>
                 {
-                    this.LoadData();
-                    return Task.CompletedTask;
+                    this.LoadData();                    
                 });
             }            
         }

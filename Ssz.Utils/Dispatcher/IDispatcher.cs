@@ -15,6 +15,12 @@ namespace Ssz.Utils
         /// 
         /// </summary>
         /// <param name="action"></param>
+        void BeginInvoke(Action<CancellationToken> action);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="action"></param>
         void BeginInvoke(Func<CancellationToken, Task> action);
     }
 }

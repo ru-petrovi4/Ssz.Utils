@@ -9,19 +9,32 @@ namespace Ssz.Utils
 {
     public class ThreadSafeDispatcher : IDispatcher
     {
-        #region public functions        
+        #region public functions       
 
-        public void BeginInvoke(Func<CancellationToken, Task> action)
+        public void BeginInvoke(Action<CancellationToken> action)
         {
-            Func<CancellationToken, Task>? actions2;
-            Func<CancellationToken, Task>? actions = _actions;
+            Action<CancellationToken>? actions2;
+            Action<CancellationToken>? actions = _actions;
             do
             {
                 actions2 = actions;
-                Func<CancellationToken, Task>? actions3 = (Func<CancellationToken, Task>?)Delegate.Combine(actions2, action);
+                Action<CancellationToken>? actions3 = (Action<CancellationToken>?)Delegate.Combine(actions2, action);
                 actions = Interlocked.CompareExchange(ref _actions, actions3, actions2);
             }
             while (actions != actions2);
+        }
+
+        public void BeginInvoke(Func<CancellationToken, Task> asyncAction)
+        {
+            Func<CancellationToken, Task>? asyncActions2;
+            Func<CancellationToken, Task>? asyncActions = _asyncActions;
+            do
+            {
+                asyncActions2 = asyncActions;
+                Func<CancellationToken, Task>? asyncActions3 = (Func<CancellationToken, Task>?)Delegate.Combine(asyncActions2, asyncAction);
+                asyncActions = Interlocked.CompareExchange(ref _asyncActions, asyncActions3, asyncActions2);
+            }
+            while (asyncActions != asyncActions2);
         }
 
         /// <summary>
@@ -31,22 +44,37 @@ namespace Ssz.Utils
         /// <returns></returns>
         public async Task<int> InvokeActionsInQueue(CancellationToken cancellationToken)
         {
+            int result = 0;
             var actions = Interlocked.Exchange(ref _actions, null);
-            if (actions is null)
-                return 0;
-            var actionsInvocationList = actions.GetInvocationList();            
-            foreach (Func<CancellationToken, Task> action in actionsInvocationList)
-            {                
-                await action.Invoke(cancellationToken);
-            }            
-            return actionsInvocationList.Length;
+            if (actions is not null)
+            {
+                var actionsInvocationList = actions.GetInvocationList();
+                foreach (Action<CancellationToken> action in actionsInvocationList)
+                {
+                    action.Invoke(cancellationToken);
+                }
+                result += actionsInvocationList.Length;
+            }
+            var asyncActions = Interlocked.Exchange(ref _asyncActions, null);
+            if (asyncActions is not null)
+            {
+                var asyncActionsInvocationList = asyncActions.GetInvocationList();
+                foreach (Func<CancellationToken, Task> asyncAction in asyncActionsInvocationList)
+                {
+                    await asyncAction.Invoke(cancellationToken);
+                }
+                result += asyncActionsInvocationList.Length;
+            }                    
+            return result;
         }
 
         #endregion
 
         #region private fields
 
-        private Func<CancellationToken, Task>? _actions;
+        private Action<CancellationToken>? _actions;
+
+        private Func<CancellationToken, Task>? _asyncActions;
 
         #endregion
     }
