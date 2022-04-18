@@ -9,16 +9,16 @@ namespace Ssz.Utils
 {
     public class ThreadSafeDispatcher : IDispatcher
     {
-        #region public functions
+        #region public functions        
 
-        public void BeginInvoke(Action<CancellationToken> action)
+        public void BeginInvoke(Func<CancellationToken, Task> action)
         {
-            Action<CancellationToken> actions2;
-            Action<CancellationToken> actions = _actions;
+            Func<CancellationToken, Task>? actions2;
+            Func<CancellationToken, Task>? actions = _actions;
             do
             {
                 actions2 = actions;
-                Action<CancellationToken> actions3 = (Action<CancellationToken>)Delegate.Combine(actions2, action);
+                Func<CancellationToken, Task>? actions3 = (Func<CancellationToken, Task>?)Delegate.Combine(actions2, action);
                 actions = Interlocked.CompareExchange(ref _actions, actions3, actions2);
             }
             while (actions != actions2);
@@ -29,18 +29,24 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public int InvokeActionsInQueue(CancellationToken cancellationToken)
+        public async Task<int> InvokeActionsInQueue(CancellationToken cancellationToken)
         {
-            var actions = Interlocked.Exchange(ref _actions, delegate { });
-            actions.Invoke(cancellationToken);
-            return actions.GetInvocationList().Length;
+            var actions = Interlocked.Exchange(ref _actions, null);
+            if (actions is null)
+                return 0;
+            var actionsInvocationList = actions.GetInvocationList();            
+            foreach (Func<CancellationToken, Task> action in actionsInvocationList)
+            {                
+                await action.Invoke(cancellationToken);
+            }            
+            return actionsInvocationList.Length;
         }
 
         #endregion
 
         #region private fields
 
-        private Action<CancellationToken> _actions = delegate { };
+        private Func<CancellationToken, Task>? _actions;
 
         #endregion
     }

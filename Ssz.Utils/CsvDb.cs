@@ -517,10 +517,14 @@ namespace Ssz.Utils
             await Task.Delay(1000);
             _fileSystemWatcherOnEventIsProcessing = false;
 
-            _dispatcher!.BeginInvoke((Action<System.Threading.CancellationToken>)(ct =>
+            if (_dispatcher is not null)
             {
-                this.LoadData();
-            }));
+                _dispatcher.BeginInvoke(ct =>
+                {
+                    this.LoadData();
+                    return Task.CompletedTask;
+                });
+            }            
         }
 
         private async Task FileSystemWatcherEnableRaisingEventsAsync()
