@@ -51,9 +51,10 @@ namespace Ssz.Utils
                 var actionsInvocationList = actions.GetInvocationList();
                 foreach (Action<CancellationToken> action in actionsInvocationList)
                 {
+                    if (cancellationToken.IsCancellationRequested) return result;
                     action.Invoke(cancellationToken);
-                }
-                result += actionsInvocationList.Length;
+                    result += 1;
+                }                
             }
             var asyncActions = Interlocked.Exchange(ref _asyncActions, null);
             if (asyncActions is not null)
@@ -61,9 +62,10 @@ namespace Ssz.Utils
                 var asyncActionsInvocationList = asyncActions.GetInvocationList();
                 foreach (Func<CancellationToken, Task> asyncAction in asyncActionsInvocationList)
                 {
+                    if (cancellationToken.IsCancellationRequested) return result;
                     await asyncAction.Invoke(cancellationToken);
-                }
-                result += asyncActionsInvocationList.Length;
+                    result += 1;
+                }                
             }                    
             return result;
         }

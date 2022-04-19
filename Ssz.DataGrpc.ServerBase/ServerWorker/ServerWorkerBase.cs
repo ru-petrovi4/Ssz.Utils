@@ -52,7 +52,7 @@ namespace Ssz.DataGrpc.ServerBase
         {
             if (cancellationToken.IsCancellationRequested) return;
 
-            var t = ThreadSafeDispatcher.InvokeActionsInQueue(cancellationToken);
+            await ThreadSafeDispatcher.InvokeActionsInQueue(cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) return;
             
