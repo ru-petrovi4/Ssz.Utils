@@ -24,7 +24,7 @@ namespace Ssz.Utils
             while (actions != actions2);
         }
 
-        public void BeginInvoke(Func<CancellationToken, Task> asyncAction)
+        public void BeginAsyncInvoke(Func<CancellationToken, Task> asyncAction)
         {
             Func<CancellationToken, Task>? asyncActions2;
             Func<CancellationToken, Task>? asyncActions = _asyncActions;

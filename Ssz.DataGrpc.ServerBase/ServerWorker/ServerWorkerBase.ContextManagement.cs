@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.DataGrpc.ServerBase
 {
-    public abstract partial class ServerWorkerBase : IDispatcher
+    public abstract partial class ServerWorkerBase
     {
         #region public functions
 

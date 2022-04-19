@@ -14,7 +14,7 @@ using Xi.Contracts.Data;
 
 namespace Ssz.Xi.Client
 {
-    public partial class XiDataAccessProvider : DisposableViewModelBase, IDataAccessProvider, IDispatcher
+    public partial class XiDataAccessProvider : DisposableViewModelBase, IDataAccessProvider
     {
         #region construction and destruction
 
@@ -357,7 +357,7 @@ namespace Ssz.Xi.Client
         public async Task<IValueSubscription[]?> PollElementValuesChangesAsync()
         {
             var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]?>();
-            BeginInvoke(ct =>
+            ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 if (_xiServerProxy is null) throw new InvalidOperationException();
                 _xiDataListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher,
@@ -461,7 +461,7 @@ namespace Ssz.Xi.Client
                 }
             }
 
-            BeginInvoke(ct =>
+            ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 _xiDataListItemsManager.Subscribe(_xiServerProxy!, CallbackDispatcher,
                     XiDataListItemsManagerOnElementValuesCallback, true, ct);
@@ -497,7 +497,7 @@ namespace Ssz.Xi.Client
         public virtual async Task<IValueSubscription[]> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
         {
             var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]>();
-            BeginInvoke(ct =>
+            ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 if (_xiServerProxy is null) throw new InvalidOperationException();
                 _xiDataListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher,
@@ -519,7 +519,7 @@ namespace Ssz.Xi.Client
         public async Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
         {
             var taskCompletionSource = new TaskCompletionSource<IEnumerable<byte>>();
-            BeginInvoke(ct =>
+            ThreadSafeDispatcher.BeginInvoke(ct =>
             {                
                 try
                 {
@@ -555,7 +555,7 @@ namespace Ssz.Xi.Client
             Action<LongrunningPassthroughCallback>? progressCallbackAction)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
-            BeginInvoke(async ct =>
+            ThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
             {
                 bool succeeded;
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
@@ -602,20 +602,19 @@ namespace Ssz.Xi.Client
             return await taskCompletionSource.Task;
         }
 
-        /// <summary>
-        ///     Invokes Action in working thread with cancellation support.
-        /// </summary>
-        /// <param name="action"></param>
-        public void BeginInvoke(Action<CancellationToken> action)
-        {
-            _threadSafeDispatcher.BeginInvoke(action);
-        }
-
         #endregion
 
         #region protected functions
 
+        /// <summary>
+        ///     Dispatcher for callbacks to client.
+        /// </summary>
         protected IDispatcher? CallbackDispatcher { get; }
+
+        /// <summary>
+        ///     Dispacther for working thread.
+        /// </summary>
+        protected ThreadSafeDispatcher ThreadSafeDispatcher { get; } = new();
 
         protected CaseInsensitiveDictionary<ConstItem> ConstItemsDictionary { get; } = new();
 
@@ -654,7 +653,7 @@ namespace Ssz.Xi.Client
         /// <param name="cancellationToken"></param>
         private void DoWork(DateTime nowUtc, CancellationToken cancellationToken)
         {
-            _threadSafeDispatcher.InvokeActionsInQueue(cancellationToken);
+            var t = ThreadSafeDispatcher.InvokeActionsInQueue(cancellationToken);
 
             if (_xiServerProxy is null) throw new InvalidOperationException();
 
@@ -726,7 +725,7 @@ namespace Ssz.Xi.Client
                          //   workstationName);
 
                         _xiServerProxy.InitiateXiContext(_serverAddress, _clientApplicationName,
-                            workstationName, this);
+                            workstationName, ThreadSafeDispatcher);
 
                         //Logger?.LogDebug("End Connecting");
 
@@ -983,7 +982,7 @@ namespace Ssz.Xi.Client
 
             if (valueSubscriptionObj.MapValues is not null)
             {
-                BeginInvoke(ct =>
+                ThreadSafeDispatcher.BeginInvoke(ct =>
                 {
                     if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                     {
@@ -1002,7 +1001,7 @@ namespace Ssz.Xi.Client
             }
             else
             {
-                BeginInvoke(ct =>
+                ThreadSafeDispatcher.BeginInvoke(ct =>
                 {
                     _xiDataListItemsManager.AddItem(elementId, valueSubscription);
                 });
@@ -1039,7 +1038,7 @@ namespace Ssz.Xi.Client
                 }
             }
 
-            BeginInvoke(ct =>
+            ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                 {
@@ -1109,9 +1108,7 @@ namespace Ssz.Xi.Client
 
         private XiServerProxy? _xiServerProxy;
 
-        private readonly XiDataListItemsManager _xiDataListItemsManager = new XiDataListItemsManager();        
-
-        private ThreadSafeDispatcher _threadSafeDispatcher = new();
+        private readonly XiDataListItemsManager _xiDataListItemsManager = new XiDataListItemsManager();                
 
         private DateTime _pollLastCallUtc = DateTime.MinValue;
 

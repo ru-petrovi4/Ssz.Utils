@@ -24,7 +24,7 @@ namespace Ssz.Xi.Client
         /// <param name="valueSubscription"></param>
         public void JournalAddItem(string elementId, object valueSubscription)
         {
-            BeginInvoke(ct =>
+            ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 _xiDataJournalListItemsManager.AddItem(elementId, valueSubscription);
                 if (_xiServerProxy is null) throw new InvalidOperationException();
@@ -38,7 +38,7 @@ namespace Ssz.Xi.Client
         /// <param name="valueSubscription"></param>
         public void JournalRemoveItem(object valueSubscription)
         {
-            BeginInvoke(ct =>
+            ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 _xiDataJournalListItemsManager.RemoveItem(valueSubscription);
             });
@@ -47,7 +47,7 @@ namespace Ssz.Xi.Client
         public virtual async Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string>? _params, object[] valueSubscriptionsCollection)
         {
             var taskCompletionSource = new TaskCompletionSource<ValueStatusTimestamp[][]?>();
-            BeginInvoke(ct =>
+            ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 var xiList = _xiDataJournalListItemsManager.XiList;
                 if (xiList is null || xiList.Disposed)
@@ -103,7 +103,7 @@ namespace Ssz.Xi.Client
         public virtual async Task<Utils.DataAccess.EventMessage[]?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_)
         {
             var taskCompletionSource = new TaskCompletionSource<Utils.DataAccess.EventMessage[]?>();
-            BeginInvoke(ct =>
+            ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 var result = _xiEventListItemsManager.ReadEventMessagesJournal(firstTimestampUtc, secondTimestampUtc, params_);
 

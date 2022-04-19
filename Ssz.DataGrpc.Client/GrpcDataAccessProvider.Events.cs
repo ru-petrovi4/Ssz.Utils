@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Ssz.DataGrpc.Client
 {
-    public partial class GrpcDataAccessProvider : DisposableViewModelBase, IDataAccessProvider, IDispatcher
+    public partial class GrpcDataAccessProvider
     {
         #region public functions
 
@@ -19,13 +19,13 @@ namespace Ssz.DataGrpc.Client
         /// </summary>
         public event Action<Utils.DataAccess.EventMessage[]> EventMessagesCallback
         {
-            add { BeginInvoke(ct => _clientEventListManager.EventMessagesCallback += value); }
-            remove { BeginInvoke(ct => _clientEventListManager.EventMessagesCallback -= value); }
+            add { ThreadSafeDispatcher.BeginInvoke(ct => _clientEventListManager.EventMessagesCallback += value); }
+            remove { ThreadSafeDispatcher.BeginInvoke(ct => _clientEventListManager.EventMessagesCallback -= value); }
         }        
         
         public void AckAlarms(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
         {
-            BeginInvoke(ct =>
+            ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 ClientEventList? clientEventList =
                     _clientEventListManager.GetRelatedClientEventList(OnEventMessagesCallbackInternal);

@@ -60,7 +60,14 @@ namespace Ssz.Utils.Wpf
             if (Disposed) return;
 
             _dispatcher.BeginInvoke(action, _cancellationTokenSource.Token);
-        }        
+        }
+
+        public void BeginAsyncInvoke(Func<CancellationToken, Task> action)
+        {
+            if (Disposed) return;
+
+            _dispatcher.BeginInvoke(action, _cancellationTokenSource.Token);
+        }
 
         #endregion
 

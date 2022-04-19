@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Ssz.DataGrpc.Client
 {
-    public partial class GrpcDataAccessProvider : DisposableViewModelBase, IDataAccessProvider, IDispatcher
+    public partial class GrpcDataAccessProvider
     {
         #region public functions
 
@@ -22,7 +22,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="valueSubscription"></param>
         public virtual void JournalAddItem(string elementId, object valueSubscription)
         {
-            BeginInvoke(ct =>
+            ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 _clientElementValuesJournalListManager.AddItem(elementId, valueSubscription);
                 _clientElementValuesJournalListManager.Subscribe(_clientConnectionManager);
@@ -36,7 +36,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="valueSubscription"></param>
         public virtual void JournalRemoveItem(object valueSubscription)
         {
-            BeginInvoke(ct =>
+            ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 _clientElementValuesJournalListManager.RemoveItem(valueSubscription);
             }
@@ -56,7 +56,7 @@ namespace Ssz.DataGrpc.Client
         public virtual async Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string>? params_, object[] valueSubscriptionsCollection)
         {
             var taskCompletionSource = new TaskCompletionSource<ValueStatusTimestamp[][]?>();
-            BeginInvoke(ct =>
+            ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 var result = _clientElementValuesJournalListManager.ReadElementValuesJournals(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, params_, valueSubscriptionsCollection);
 
@@ -69,7 +69,7 @@ namespace Ssz.DataGrpc.Client
         public virtual async Task<Utils.DataAccess.EventMessage[]?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_)
         {
             var taskCompletionSource = new TaskCompletionSource<Utils.DataAccess.EventMessage[]?>();
-            BeginInvoke(ct =>
+            ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 ClientEventList? clientEventList =
                     _clientEventListManager.GetRelatedClientEventList(OnEventMessagesCallbackInternal);

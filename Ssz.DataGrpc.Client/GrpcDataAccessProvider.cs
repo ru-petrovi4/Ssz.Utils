@@ -17,7 +17,7 @@ using Grpc.Core;
 
 namespace Ssz.DataGrpc.Client
 {
-    public partial class GrpcDataAccessProvider : DisposableViewModelBase, IDataAccessProvider, IDispatcher
+    public partial class GrpcDataAccessProvider : DisposableViewModelBase, IDataAccessProvider
     {
         #region construction and destruction
 
@@ -26,7 +26,7 @@ namespace Ssz.DataGrpc.Client
             Logger = logger;
             CallbackDispatcher = callbackDispatcher;
 
-            _clientConnectionManager = new ClientConnectionManager(logger, this);
+            _clientConnectionManager = new ClientConnectionManager(logger, ThreadSafeDispatcher);
 
             _clientElementValueListManager = new ClientElementValueListManager(logger);
             _clientElementValuesJournalListManager = new ClientElementValuesJournalListManager(logger);
@@ -374,7 +374,7 @@ namespace Ssz.DataGrpc.Client
         public async Task<IValueSubscription[]?> PollElementValuesChangesAsync()
         {
             var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]?>();
-            BeginInvoke(ct =>
+            ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 _clientElementValueListManager.Subscribe(_clientConnectionManager, CallbackDispatcher,
                     OnElementValuesCallback, true, ct);
@@ -471,7 +471,7 @@ namespace Ssz.DataGrpc.Client
                 }
             }
 
-            BeginInvoke(ct =>
+            ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 _clientElementValueListManager.Subscribe(_clientConnectionManager, CallbackDispatcher,
                     OnElementValuesCallback, true, ct);
@@ -507,7 +507,7 @@ namespace Ssz.DataGrpc.Client
         public virtual async Task<IValueSubscription[]> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
         {
             var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]>();
-            BeginInvoke(ct =>
+            ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 _clientElementValueListManager.Subscribe(_clientConnectionManager, CallbackDispatcher,
                     OnElementValuesCallback, true, ct);
@@ -529,7 +529,7 @@ namespace Ssz.DataGrpc.Client
         public async Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
         {
             var taskCompletionSource = new TaskCompletionSource<IEnumerable<byte>>();
-            BeginInvoke(ct =>
+            ThreadSafeDispatcher.BeginInvoke(ct =>
             {                
                 try
                 {
@@ -564,7 +564,7 @@ namespace Ssz.DataGrpc.Client
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? progressCallbackAction)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
-            BeginInvoke(async ct =>
+            ThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
             {
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
                 Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
@@ -622,20 +622,19 @@ namespace Ssz.DataGrpc.Client
             return await taskCompletionSource.Task;
         }
 
-        /// <summary>
-        ///     Invokes Action in working thread with cancellation support.
-        /// </summary>
-        /// <param name="action"></param>
-        public void BeginInvoke(Action<CancellationToken> action)
-        {
-            _threadSafeDispatcher.BeginInvoke(action);
-        }
-
 #endregion
 
 #region protected functions
 
+        /// <summary>
+        ///     Dispatcher for callbacks to client.
+        /// </summary>
         protected IDispatcher? CallbackDispatcher { get; }
+
+        /// <summary>
+        ///     Dispacther for working thread.
+        /// </summary>
+        protected ThreadSafeDispatcher ThreadSafeDispatcher { get; } = new();
 
         /// <summary>
         ///     This dictionary is created, because we can write to const values.
@@ -650,7 +649,7 @@ namespace Ssz.DataGrpc.Client
         /// <param name="cancellationToken"></param>
         protected virtual void DoWork(DateTime nowUtc, CancellationToken cancellationToken)
         {
-            _threadSafeDispatcher.InvokeActionsInQueue(cancellationToken);
+            var t = ThreadSafeDispatcher.InvokeActionsInQueue(cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) return;
             if (!_clientConnectionManager.ConnectionExists)
@@ -976,7 +975,7 @@ namespace Ssz.DataGrpc.Client
 
             if (valueSubscriptionObj.MapValues is not null)
             {
-                BeginInvoke(ct =>
+                ThreadSafeDispatcher.BeginInvoke(ct =>
                 {
                     if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                     {
@@ -995,7 +994,7 @@ namespace Ssz.DataGrpc.Client
             }
             else
             {
-                BeginInvoke(ct =>
+                ThreadSafeDispatcher.BeginInvoke(ct =>
                 {
                     _clientElementValueListManager.AddItem(elementId, valueSubscription);
                 });
@@ -1028,7 +1027,7 @@ namespace Ssz.DataGrpc.Client
                 }
             }
 
-            BeginInvoke(ct =>
+            ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                 {
@@ -1092,9 +1091,7 @@ namespace Ssz.DataGrpc.Client
 
         private Task? _workingTask;
 
-        private CancellationTokenSource? _cancellationTokenSource;
-
-        private ThreadSafeDispatcher _threadSafeDispatcher = new();
+        private CancellationTokenSource? _cancellationTokenSource;        
 
         private DateTime _lastFailedConnectionDateTimeUtc = DateTime.MinValue;
 

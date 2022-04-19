@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.DataGrpc.ServerBase
 {
-    public abstract partial class ServerWorkerBase : IDispatcher
+    public abstract partial class ServerWorkerBase
     {
         #region construction and destruction
 
@@ -21,6 +21,8 @@ namespace Ssz.DataGrpc.ServerBase
         #endregion
 
         #region public functions
+
+        public ThreadSafeDispatcher ThreadSafeDispatcher { get; } = new();
 
         /// <summary>
         ///     true - added, false - removed
@@ -50,7 +52,7 @@ namespace Ssz.DataGrpc.ServerBase
         {
             if (cancellationToken.IsCancellationRequested) return;
 
-            ThreadSafeDispatcher.InvokeActionsInQueue(cancellationToken);
+            var t = ThreadSafeDispatcher.InvokeActionsInQueue(cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) return;
             
@@ -82,9 +84,7 @@ namespace Ssz.DataGrpc.ServerBase
 
         #region protected functions
 
-        protected ILogger Logger { get; }
-
-        protected ThreadSafeDispatcher ThreadSafeDispatcher = new();
+        protected ILogger Logger { get; }        
 
         /// <summary>
         ///     Raises ShutdownRequested event.

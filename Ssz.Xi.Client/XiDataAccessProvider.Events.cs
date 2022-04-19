@@ -17,13 +17,13 @@ namespace Ssz.Xi.Client
         /// </summary>
         public event Action<Ssz.Utils.DataAccess.EventMessage[]> EventMessagesCallback
         {
-            add { BeginInvoke(ct => _xiEventListItemsManager.EventMessagesCallback += value); }
-            remove { BeginInvoke(ct => _xiEventListItemsManager.EventMessagesCallback -= value); }
+            add { ThreadSafeDispatcher.BeginInvoke(ct => _xiEventListItemsManager.EventMessagesCallback += value); }
+            remove { ThreadSafeDispatcher.BeginInvoke(ct => _xiEventListItemsManager.EventMessagesCallback -= value); }
         }
         
         public void AckAlarms(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
         {
-            BeginInvoke(ct =>
+            ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 IXiEventListProxy? eventListProxy =
                     _xiEventListItemsManager.GetRelatedXiEventList(OnEventMessagesCallback);
