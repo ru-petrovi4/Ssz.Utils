@@ -205,7 +205,7 @@ namespace Ssz.DataGrpc.ServerBase
 
         public override async Task<ReadElementValuesJournalsReply> ReadElementValuesJournals(ReadElementValuesJournalsRequest request, ServerCallContext context)
         {            
-            return await GetReplyAsyncAsync(async () =>
+            return await GetAsyncReplyAsync(async () =>
             {
                 ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                 serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
@@ -225,7 +225,7 @@ namespace Ssz.DataGrpc.ServerBase
 
         public override async Task<ReadEventMessagesJournalReply> ReadEventMessagesJournal(ReadEventMessagesJournalRequest request, ServerCallContext context)
         {
-            return await GetReplyAsyncAsync(async () =>
+            return await GetAsyncReplyAsync(async () =>
             {
                 ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                 serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
@@ -323,7 +323,7 @@ namespace Ssz.DataGrpc.ServerBase
 
             var taskCompletionSource = new TaskCompletionSource<TReply>();            
             context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
-            _serverWorker.BeginInvoke(ct =>
+            _serverWorker.ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 _logger.LogTrace("Processing client call in worker thread: " + parentMethodName);
                 try
@@ -365,7 +365,7 @@ namespace Ssz.DataGrpc.ServerBase
             }            
         }
 
-        private async Task<TReply> GetReplyAsyncAsync<TReply>(Func<Task<TReply>> func, ServerCallContext context)
+        private async Task<TReply> GetAsyncReplyAsync<TReply>(Func<Task<TReply>> func, ServerCallContext context)
         {
             string parentMethodName = "";
             if (_logger.IsEnabled(LogLevel.Trace))
@@ -384,7 +384,7 @@ namespace Ssz.DataGrpc.ServerBase
 
             var taskCompletionSource = new TaskCompletionSource<TReply>();
             context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
-            _serverWorker.BeginInvoke(async ct =>
+            _serverWorker.ThreadSafeDispatcher.BeginInvoke(async ct =>
             {
                 _logger.LogTrace("Processing client call in worker thread: " + parentMethodName);
                 try

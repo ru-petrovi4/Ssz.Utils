@@ -564,7 +564,7 @@ namespace Ssz.DataGrpc.Client
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? progressCallbackAction)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
-            ThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
+            ThreadSafeDispatcher.BeginInvoke(async ct =>
             {
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
                 Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;

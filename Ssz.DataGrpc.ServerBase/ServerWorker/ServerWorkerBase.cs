@@ -29,16 +29,7 @@ namespace Ssz.DataGrpc.ServerBase
         /// </summary>
         public event Action<ServerContext, bool> ServerContextAddedOrRemoved = delegate { };
 
-        public event Action ShutdownRequested = delegate { };
-
-        /// <summary>
-        ///     Invokes Action in working thread with cancellation support.
-        /// </summary>
-        /// <param name="action"></param>
-        public void BeginInvoke(Action<CancellationToken> action)
-        {
-            ThreadSafeDispatcher.BeginInvoke(action);
-        }
+        public event Action ShutdownRequested = delegate { };        
 
         public abstract ServerListRoot NewServerList(ServerContext serverContext, uint listClientAlias, uint listType, CaseInsensitiveDictionary<string> listParams);
 

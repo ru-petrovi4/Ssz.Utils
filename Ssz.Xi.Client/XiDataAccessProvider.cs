@@ -555,7 +555,7 @@ namespace Ssz.Xi.Client
             Action<LongrunningPassthroughCallback>? progressCallbackAction)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
-            ThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
+            ThreadSafeDispatcher.BeginInvoke(async ct =>
             {
                 bool succeeded;
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
