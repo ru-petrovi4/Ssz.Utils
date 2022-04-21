@@ -11,9 +11,9 @@ namespace Ssz.Utils.EventSourceModel
 
         public EventSourceModel(IDataAccessProvider dataAccessProvider)
         {
-            _dataAccessProvider = dataAccessProvider;
+            DataAccessProvider = dataAccessProvider;
 
-            _dataAccessProvider.PropertyChanged += DataAccessProviderOnPropertyChanged;
+            DataAccessProvider.PropertyChanged += DataAccessProviderOnPropertyChanged;
         }        
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Ssz.Utils.EventSourceModel
 
             if (disposing)
             {
-                _dataAccessProvider.PropertyChanged -= DataAccessProviderOnPropertyChanged;
+                DataAccessProvider.PropertyChanged -= DataAccessProviderOnPropertyChanged;
             }
 
             Disposed = true;
@@ -55,6 +55,8 @@ namespace Ssz.Utils.EventSourceModel
         #region public functions
 
         public bool Disposed { get; private set; }
+
+        public IDataAccessProvider DataAccessProvider { get; }
 
         public CaseInsensitiveDictionary<EventSourceObject> EventSourceObjects { get; } =
             new();
@@ -223,7 +225,7 @@ namespace Ssz.Utils.EventSourceModel
             EventSourceArea? eventSourceArea;
             if (!EventSourceAreas.TryGetValue(area, out eventSourceArea))
             {
-                eventSourceArea = new EventSourceArea(area, _dataAccessProvider);
+                eventSourceArea = new EventSourceArea(area, DataAccessProvider);
                 EventSourceAreas[area] = eventSourceArea;
             }
             return eventSourceArea;
@@ -249,7 +251,7 @@ namespace Ssz.Utils.EventSourceModel
             }
 
             //The tag doesn't already exist.  Create a new EventSourceObject and add it to our dictionary
-            var newEventSourceObject = new EventSourceObject(tag, _dataAccessProvider);
+            var newEventSourceObject = new EventSourceObject(tag, DataAccessProvider);
             EventSourceObjects[tag] = newEventSourceObject;
 
             EventSourceArea overviewEventSourceArea = GetOrCreateEventSourceArea(@"");
@@ -310,12 +312,6 @@ namespace Ssz.Utils.EventSourceModel
                     break;
             }            
         }
-
-        #endregion        
-
-        #region private fields
-
-        private readonly IDataAccessProvider _dataAccessProvider;        
 
         #endregion
     }
