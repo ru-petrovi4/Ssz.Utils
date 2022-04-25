@@ -622,7 +622,7 @@ namespace Ssz.Xi.Client
 
         #region private functions
 
-        private async Task WorkingTaskMainAsync(CancellationToken ct)
+        private async Task WorkingTaskMainAsync(CancellationToken cancellationToken)
         {
             _xiServerProxy = new XiServerProxy();
 
@@ -630,13 +630,13 @@ namespace Ssz.Xi.Client
 
             while (true)
             {
-                if (ct.IsCancellationRequested) break;
+                if (cancellationToken.IsCancellationRequested) break;
                 await Task.Delay(10);
-                if (ct.IsCancellationRequested) break;
+                if (cancellationToken.IsCancellationRequested) break;                                
 
                 var nowUtc = DateTime.UtcNow;
 
-                DoWork(nowUtc, ct);
+                await DoWorkAsync(nowUtc, cancellationToken);
             }            
 
             Unsubscribe(true);
@@ -651,13 +651,14 @@ namespace Ssz.Xi.Client
         /// </summary>
         /// <param name="nowUtc"></param>
         /// <param name="cancellationToken"></param>
-        private void DoWork(DateTime nowUtc, CancellationToken cancellationToken)
+        private async Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
         {
-            var t = ThreadSafeDispatcher.InvokeActionsInQueue(cancellationToken);
+            if (_xiServerProxy is null) throw new InvalidOperationException();            
 
-            if (_xiServerProxy is null) throw new InvalidOperationException();
+            await ThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) return;
+
             if (!_xiServerProxy.ContextExists)
             {
                 IDispatcher? сallbackDispatcher;

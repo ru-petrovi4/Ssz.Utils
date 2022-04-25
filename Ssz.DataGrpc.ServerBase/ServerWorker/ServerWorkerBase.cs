@@ -43,7 +43,7 @@ namespace Ssz.DataGrpc.ServerBase
         {
             if (cancellationToken.IsCancellationRequested) return;
 
-            await ThreadSafeDispatcher.InvokeActionsInQueue(cancellationToken);
+            await ThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) return;
             

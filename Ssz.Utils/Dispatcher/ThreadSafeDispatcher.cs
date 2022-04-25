@@ -42,7 +42,7 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<int> InvokeActionsInQueue(CancellationToken cancellationToken)
+        public async Task<int> InvokeActionsInQueueAsync(CancellationToken cancellationToken)
         {
             int result = 0;
             var actions = Interlocked.Exchange(ref _actions, null);

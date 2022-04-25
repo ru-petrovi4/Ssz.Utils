@@ -647,11 +647,12 @@ namespace Ssz.DataGrpc.Client
         ///     On loop in working thread.
         /// </summary>
         /// <param name="cancellationToken"></param>
-        protected virtual void DoWork(DateTime nowUtc, CancellationToken cancellationToken)
+        protected virtual async Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
         {
-            var t = ThreadSafeDispatcher.InvokeActionsInQueue(cancellationToken);
+            await ThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) return;
+
             if (!_clientConnectionManager.ConnectionExists)
             {
                 IDispatcher? сallbackDispatcher;
@@ -825,19 +826,19 @@ namespace Ssz.DataGrpc.Client
 
 #region private functions
 
-        private async Task WorkingTaskMainAsync(CancellationToken ct)
+        private async Task WorkingTaskMainAsync(CancellationToken cancellationToken)
         {
             if (_eventListCallbackIsEnabled) _clientEventListManager.EventMessagesCallback += OnEventMessagesCallbackInternal;
 
             while (true)
             {
-                if (ct.IsCancellationRequested) break;
+                if (cancellationToken.IsCancellationRequested) break;
                 await Task.Delay(10);
-                if (ct.IsCancellationRequested) break;
+                if (cancellationToken.IsCancellationRequested) break;                
 
-                var nowUtc = DateTime.UtcNow;
+                var nowUtc = DateTime.UtcNow;                
 
-                DoWork(nowUtc, ct);
+                await DoWorkAsync(nowUtc, cancellationToken);
             }
 
             Unsubscribe(true);
