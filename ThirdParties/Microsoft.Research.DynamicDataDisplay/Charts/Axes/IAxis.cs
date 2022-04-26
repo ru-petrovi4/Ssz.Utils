@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel;
+using System.Windows;
 
 namespace Microsoft.Research.DynamicDataDisplay.Charts
 {
@@ -16,6 +17,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 		/// </summary>
 		/// <value>The placement.</value>
 		AxisPlacement Placement { get; set; }
+
 		/// <summary>
 		/// Occurs when ticks are changed.
 		/// Used by AxisGrid.
@@ -30,6 +32,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 		/// <value>The screen ticks.</value>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		double[] ScreenTicks { get; }
+
 		/// <summary>
 		/// Gets the screen coordinates of minor ticks.
 		/// used by AxisGrid.
@@ -37,5 +40,7 @@ namespace Microsoft.Research.DynamicDataDisplay.Charts
 		/// <value>The minor screen ticks.</value>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		MinorTickInfo<double>[] MinorScreenTicks { get; }
+
+		Visibility Visibility { get; set; }
 	}
 }

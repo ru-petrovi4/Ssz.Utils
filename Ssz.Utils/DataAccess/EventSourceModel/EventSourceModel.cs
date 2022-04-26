@@ -241,7 +241,7 @@ namespace Ssz.Utils.EventSourceModel
         /// <param name="tag"></param>
         /// <param name="area"></param>
         /// <returns></returns>
-        public EventSourceObject GetOrCreateEventSourceObject(string tag, string area)
+        public EventSourceObject GetOrCreateEventSourceObject(string tag, string? area = null)
         {
             EventSourceObject? existingEventSourceObject;
             if (EventSourceObjects.TryGetValue(tag, out existingEventSourceObject))
@@ -256,10 +256,11 @@ namespace Ssz.Utils.EventSourceModel
 
             EventSourceArea overviewEventSourceArea = GetOrCreateEventSourceArea(@"");
             newEventSourceObject.EventSourceAreas[@""] = overviewEventSourceArea;
-            if (area != @"")
+
+            if (area != null && area != @"")
             {
                 string currentArea = @"";
-                foreach (string areaPart in area.Split('\\', '/'))
+                foreach (string areaPart in area.Split('/'))
                 {
                     if (currentArea == @"") currentArea = areaPart;
                     else currentArea += "/" + areaPart;
