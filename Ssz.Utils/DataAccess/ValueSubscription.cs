@@ -46,7 +46,7 @@ namespace Ssz.Utils.DataAccess
         /// 
         /// </summary>
         /// <param name="valueStatusTimestamp"></param>
-        void IValueSubscription.Update(ValueStatusTimestamp valueStatusTimestamp)
+        public void Update(ValueStatusTimestamp valueStatusTimestamp)
         {
             var oldValueStatusTimestamp = ValueStatusTimestamp;
             ValueStatusTimestamp = valueStatusTimestamp;            
