@@ -14,7 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.Utils.Wpf", "Ssz.Utils.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.Xi.Client", "Ssz.Xi.Client\Ssz.Xi.Client.csproj", "{7E62E059-B934-47AE-831D-D4A6D540E0E7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.DataGrpc.Client", "Ssz.DataGrpc.Client\Ssz.DataGrpc.Client.csproj", "{D2EE9282-9023-47A7-95AC-742C0A967879}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.DataAccessGrpc.Client", "Ssz.DataAccessGrpc.Client\Ssz.DataAccessGrpc.Client.csproj", "{D2EE9282-9023-47A7-95AC-742C0A967879}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ssz.Xceed.Wpf.Toolkit", "Ssz.Xceed.Wpf.Toolkit", "{55FAE16F-C97A-4F28-B3CB-EAD6DC3E6D8F}"
 EndProject
@@ -34,7 +34,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.Utils.Wpf.WinUI", "Ssz.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.Runtime.Serialization", "Ssz.Runtime.Serialization\Ssz.Runtime.Serialization.csproj", "{995C717D-6D69-4A59-A014-F72C37B45405}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.DataGrpc.ServerBase", "Ssz.DataGrpc.ServerBase\Ssz.DataGrpc.ServerBase.csproj", "{DD224120-3C77-4C2D-A6A8-705D2FAD8936}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ssz.DataAccessGrpc.ServerBase", "Ssz.DataAccessGrpc.ServerBase\Ssz.DataAccessGrpc.ServerBase.csproj", "{DD224120-3C77-4C2D-A6A8-705D2FAD8936}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ssz.Utils.Net4", "Ssz.Utils.Net4\Ssz.Utils.Net4.csproj", "{35FBD383-F754-4E4E-9A1F-F6EAB6A6EB09}"
 EndProject
