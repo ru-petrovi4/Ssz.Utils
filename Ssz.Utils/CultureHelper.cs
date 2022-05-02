@@ -14,10 +14,9 @@ namespace Ssz.Utils
     {
         #region public functions
 
-        /// <summary>
-        ///     If configuration is unknown, use new ConfigurationBuilder().AddJsonFile(@"appSettings.json", optional: true, reloadOnChange: true).Build()         
-        ///     Sets CurrentUICulture from configuration -> UICulture for all threads, if setting exists.
-        ///     Otherwise, CurrentUICulture remains unchanged.
+        /// <summary>             
+        ///     Sets CurrentUICulture from configuration["UICulture"] for all threads, if setting exists.
+        ///     Otherwise, CurrentUICulture remains unchanged.        
         /// </summary>
         /// <param name="configuration"></param>
         public static void InitializeUICulture(IConfiguration configuration)
@@ -64,7 +63,8 @@ namespace Ssz.Utils
 }
 
 
- //= new ConfigurationBuilder()
- //           .AddJsonFile(@"appSettings.json", optional: true, reloadOnChange: true)
- //           .Build()
- //           .GetSection(@"AppSettings");
+//     If configuration is unknown, use new ConfigurationBuilder().AddJsonFile(@"appSettings.json", optional: true, reloadOnChange: true).Build()    
+//= new ConfigurationBuilder()
+//           .AddJsonFile(@"appSettings.json", optional: true, reloadOnChange: true)
+//           .Build()
+//           .GetSection(@"AppSettings");
