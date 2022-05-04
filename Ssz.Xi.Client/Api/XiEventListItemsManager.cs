@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Ssz.Utils;
+using Ssz.Utils.DataAccess;
 using Ssz.Xi.Client.Api.ListItems;
 using Ssz.Xi.Client.Api.Lists;
 using Xi.Contracts.Data;
@@ -11,6 +12,15 @@ namespace Ssz.Xi.Client.Api
 {
     public class XiEventListItemsManager
     {
+        #region construction and destruction
+
+        public XiEventListItemsManager(IDataAccessProvider dataAccessProvider)
+        {
+            _dataAccessProvider = dataAccessProvider;
+        }
+
+        #endregion
+
         #region public functions
 
         /// <summary>
@@ -72,7 +82,7 @@ namespace Ssz.Xi.Client.Api
 
                     try
                     {
-                        Action<Ssz.Utils.DataAccess.EventMessage[]> eventMessagesCallbackEventHandler = kvp.Key;
+                        Action<IDataAccessProvider, Ssz.Utils.DataAccess.EventMessage[]> eventMessagesCallbackEventHandler = kvp.Key;
 
                         xiEventList.EventMessagesCallbackEvent +=
                             (IXiEventListProxy eventList, IEnumerable<IXiEventListItem> newListItems) =>
@@ -82,7 +92,7 @@ namespace Ssz.Xi.Client.Api
                                 {
                                     try
                                     {
-                                        сallbackDoer.BeginInvoke(ct => eventMessagesCallbackEventHandler(
+                                        сallbackDoer.BeginInvoke(ct => eventMessagesCallbackEventHandler(_dataAccessProvider, 
                                             newListItems.Select(li => li.EventMessage).ToArray()));
                                     }
                                     catch (Exception)
@@ -205,14 +215,14 @@ namespace Ssz.Xi.Client.Api
             _xiEventItemsMustBeAdded = true;
         }
 
-        public IXiEventListProxy? GetRelatedXiEventList(Action<Ssz.Utils.DataAccess.EventMessage[]> eventHandler)
+        public IXiEventListProxy? GetRelatedXiEventList(Action<IDataAccessProvider, Ssz.Utils.DataAccess.EventMessage[]> eventHandler)
         {
             XiEventListPointer? xiEventListPointer;
             if (!_eventMessagesCallbackEventHandlers.TryGetValue(eventHandler, out xiEventListPointer)) return null;
             return xiEventListPointer.P;
         }
 
-        public event Action<Ssz.Utils.DataAccess.EventMessage[]> EventMessagesCallback
+        public event Action<IDataAccessProvider, Ssz.Utils.DataAccess.EventMessage[]> EventMessagesCallback
         {
             add
             {
@@ -253,10 +263,11 @@ namespace Ssz.Xi.Client.Api
         
         private volatile bool _xiEventItemsMustBeAdded;
 
-        private readonly Dictionary<Action<Ssz.Utils.DataAccess.EventMessage[]>, XiEventListPointer> _eventMessagesCallbackEventHandlers =
+        private readonly Dictionary<Action<IDataAccessProvider, Ssz.Utils.DataAccess.EventMessage[]>, XiEventListPointer> _eventMessagesCallbackEventHandlers =
             new();
 
         private string _xiSystem = "";
+        private IDataAccessProvider _dataAccessProvider;        
 
         #endregion
 

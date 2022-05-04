@@ -30,7 +30,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             _clientElementValueListManager = new ClientElementValueListManager(logger);
             _clientElementValuesJournalListManager = new ClientElementValuesJournalListManager(logger);
-            _clientEventListManager = new ClientEventListManager(logger);
+            _clientEventListManager = new ClientEventListManager(logger, this);
         }
 
         /// <summary>
@@ -175,7 +175,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <summary>
         ///     Is called using сallbackDispatcher, see Initialize(..).
         /// </summary>
-        public event Action ValueSubscriptionsUpdated = delegate { };
+        public event Action<IDataAccessProvider> ValueSubscriptionsUpdated = delegate { };
 
         /// <summary>
         ///     You can set updateValueItems = false and invoke PollElementValuesChangesAsync(...) manually.
@@ -819,7 +819,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             LastValueSubscriptionsUpdatedDateTimeUtc = DateTime.UtcNow;
 
-            ValueSubscriptionsUpdated();
+            ValueSubscriptionsUpdated(this);
         }
 
 #endregion

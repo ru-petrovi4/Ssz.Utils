@@ -49,7 +49,7 @@ namespace Ssz.Utils.DataAccess
         /// </summary>
         object? Obj { get; set; }
 
-        event Action ValueSubscriptionsUpdated;
+        event Action<IDataAccessProvider> ValueSubscriptionsUpdated;
 
         /// <summary>
         ///     You can set updateValueItems = false and invoke PollElementValuesChangesAsync(...) manually.
@@ -152,7 +152,7 @@ namespace Ssz.Utils.DataAccess
         /// <returns></returns>
         Task<EventMessage[]?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_);
 
-        event Action<EventMessage[]> EventMessagesCallback;
+        event Action<IDataAccessProvider, EventMessage[]> EventMessagesCallback;
 
         void AckAlarms(string operatorName, string comment, EventId[] eventIdsToAck);        
     }

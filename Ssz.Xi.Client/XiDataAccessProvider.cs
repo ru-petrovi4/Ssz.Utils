@@ -22,6 +22,8 @@ namespace Ssz.Xi.Client
         {
             Logger = logger;
             CallbackDispatcher = callbackDispatcher;
+
+            _xiEventListItemsManager = new XiEventListItemsManager(this);
         }
 
         /// <summary>
@@ -161,7 +163,7 @@ namespace Ssz.Xi.Client
         /// <summary>
         ///     Is called using сallbackDoer, see Initialize(..).
         /// </summary>
-        public event Action ValueSubscriptionsUpdated = delegate { };
+        public event Action<IDataAccessProvider> ValueSubscriptionsUpdated = delegate { };
 
         /// <summary>
         ///     You can set updateValueItems = false and invoke PollElementValuesChangesAsync(...) manually.
@@ -687,7 +689,7 @@ namespace Ssz.Xi.Client
                                 }
                                 DataGuid = Guid.NewGuid();
 
-                                ValueSubscriptionsUpdated();
+                                ValueSubscriptionsUpdated(this);
                             });
                         }
                         catch (Exception)
@@ -843,7 +845,7 @@ namespace Ssz.Xi.Client
                 DataGuid = Guid.NewGuid();
             }
 
-            ValueSubscriptionsUpdated();
+            ValueSubscriptionsUpdated(this);
         }
 
         /// <summary>

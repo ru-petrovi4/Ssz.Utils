@@ -17,7 +17,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <summary>
         ///     Is called using сallbackDispatcher, see Initialize(..).        
         /// </summary>
-        public event Action<Utils.DataAccess.EventMessage[]> EventMessagesCallback
+        public event Action<IDataAccessProvider, Utils.DataAccess.EventMessage[]> EventMessagesCallback
         {
             add { ThreadSafeDispatcher.BeginInvoke(ct => _clientEventListManager.EventMessagesCallback += value); }
             remove { ThreadSafeDispatcher.BeginInvoke(ct => _clientEventListManager.EventMessagesCallback -= value); }
@@ -58,7 +58,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         #region private functions
 
-        private void OnEventMessagesCallbackInternal(Utils.DataAccess.EventMessage[] newEventMessages)
+        private void OnEventMessagesCallbackInternal(IDataAccessProvider dataAccessProvider, Utils.DataAccess.EventMessage[] newEventMessages)
         {
             OnEventMessagesCallback(newEventMessages);
         }

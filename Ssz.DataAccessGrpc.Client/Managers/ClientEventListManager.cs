@@ -15,9 +15,10 @@ namespace Ssz.DataAccessGrpc.Client.Managers
     {
         #region construction and destruction
 
-        public ClientEventListManager(ILogger<GrpcDataAccessProvider> logger)
+        public ClientEventListManager(ILogger<GrpcDataAccessProvider> logger, IDataAccessProvider dataAccessProvider)
         {
             Logger = logger;
+            DataAccessProvider = dataAccessProvider;
         }
 
         #endregion
@@ -65,7 +66,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
                     try
                     {
-                        Action<Utils.DataAccess.EventMessage[]> eventMessagesCallbackEventHandler = kvp.Key;
+                        Action<IDataAccessProvider, Utils.DataAccess.EventMessage[]> eventMessagesCallbackEventHandler = kvp.Key;
 
                         dataGrpcEventList.EventMessagesCallbackEvent +=
                             (ClientEventList eventList, ServerBase.EventMessage[] newEventMessages) =>
@@ -76,6 +77,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                                     try
                                     {
                                         сallbackDispatcher.BeginInvoke(ct => eventMessagesCallbackEventHandler(
+                                            DataAccessProvider,
                                             newEventMessages.Select(em => em.ToEventMessage()).ToArray()));
                                     }
                                     catch (Exception)
@@ -142,14 +144,14 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             _dataGrpcEventItemsMustBeAdded = true;
         }
 
-        public ClientEventList? GetRelatedClientEventList(Action<Utils.DataAccess.EventMessage[]> eventHandler)
+        public ClientEventList? GetRelatedClientEventList(Action<IDataAccessProvider, Utils.DataAccess.EventMessage[]> eventHandler)
         {
             ClientEventListPointer? dataGrpcEventListPointer;
             if (!_eventMessagesCallbackEventHandlers.TryGetValue(eventHandler, out dataGrpcEventListPointer)) return null;
             return dataGrpcEventListPointer.P;
         }
 
-        public event Action<Utils.DataAccess.EventMessage[]> EventMessagesCallback
+        public event Action<IDataAccessProvider, Utils.DataAccess.EventMessage[]> EventMessagesCallback
         {
             add
             {
@@ -181,13 +183,15 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
         protected ILogger<GrpcDataAccessProvider> Logger { get; }
 
+        protected IDataAccessProvider DataAccessProvider { get; }
+
         #endregion
 
         #region private fields
 
         private volatile bool _dataGrpcEventItemsMustBeAdded;
 
-        private readonly Dictionary<Action<Utils.DataAccess.EventMessage[]>, ClientEventListPointer> _eventMessagesCallbackEventHandlers =
+        private readonly Dictionary<Action<IDataAccessProvider, Utils.DataAccess.EventMessage[]>, ClientEventListPointer> _eventMessagesCallbackEventHandlers =
             new ();
 
         #endregion
