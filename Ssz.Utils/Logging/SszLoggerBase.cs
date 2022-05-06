@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils.Logging
 {    
-    public abstract class SszLoggerBase : ILogger, IDisposable
+    public abstract class SszLoggerBase : ILogger, IUserFriendlyLogger, IDisposable
     {
         #region construction and destruction
 

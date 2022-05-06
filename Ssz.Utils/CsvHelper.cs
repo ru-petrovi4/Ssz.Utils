@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
+using Ssz.Utils.Logging;
 
 namespace Ssz.Utils
 {
@@ -170,7 +171,7 @@ namespace Ssz.Utils
         /// <param name="includeFileNames"></param>
         /// <returns></returns>
         public static CaseInsensitiveDictionary<List<string?>> LoadCsvFile(string fileFullName, bool includeFiles, Dictionary<Regex, string>? defines = null,
-            ILogger? userFriendlyLogger = null, List<string>? includeFileNames = null)
+            IUserFriendlyLogger? userFriendlyLogger = null, List<string>? includeFileNames = null)
         {
             var fileData = new CaseInsensitiveDictionary<List<string?>>();
 

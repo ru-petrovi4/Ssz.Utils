@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Ssz.Utils.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +14,7 @@ namespace Ssz.Utils
         #region construction and destruction
 
         /// <summary>
-        ///     userFriendlyLogger: Messages are localized. Priority is Information, Error, Warning.    
+        ///     userFriendlyLogger: Messages are localized. Priority is Information, Error, Warning.
         ///     If csvDbDirectoryInfo is null, directory is not used.
         ///     If !csvDbDirectoryInfo.Exists, directory is created.
         ///     If dispatcher is not null monitors csvDbDirectoryInfo
@@ -23,7 +24,7 @@ namespace Ssz.Utils
         /// <param name="userFriendlyLogger"></param>
         /// <param name="csvDbDirectoryInfo"></param>
         /// <param name="dispatcher"></param>
-        public CsvDb(ILogger<CsvDb>? logger = null, ILogger? userFriendlyLogger = null, DirectoryInfo? csvDbDirectoryInfo = null, IDispatcher? dispatcher = null)
+        public CsvDb(ILogger<CsvDb> logger, IUserFriendlyLogger? userFriendlyLogger = null, DirectoryInfo? csvDbDirectoryInfo = null, IDispatcher? dispatcher = null)
         {
             _logger = logger;
             UserFriendlyLogger = userFriendlyLogger;
@@ -61,7 +62,7 @@ namespace Ssz.Utils
                     }
                     catch (Exception ex)
                     {
-                        _logger?.LogWarning(ex, "AppSettings FilesStore directory error. Please, specify correct directory and restart service.");
+                        _logger.LogWarning(ex, "AppSettings FilesStore directory error. Please, specify correct directory and restart service.");
                     }
             }
 
@@ -75,7 +76,7 @@ namespace Ssz.Utils
         /// <summary>
         ///     Messages are localized. Priority is Information, Error, Warning.
         /// </summary>
-        public ILogger? UserFriendlyLogger { get; set; }
+        public IUserFriendlyLogger? UserFriendlyLogger { get; set; }
 
         /// <summary>
         ///     FileName in Upper-Case.
@@ -450,7 +451,7 @@ namespace Ssz.Utils
                     }
                     catch (Exception ex)
                     {
-                        _logger?.LogError(ex, Properties.Resources.CsvDb_CsvFileWritingError + " " + csvFile.FileFullName);
+                        _logger.LogError(ex, Properties.Resources.CsvDb_CsvFileWritingError + " " + csvFile.FileFullName);
                     }
 
                     csvFile.DataIsChangedByProgram = false;
@@ -497,7 +498,7 @@ namespace Ssz.Utils
                 }
                 catch (Exception ex)
                 {
-                    _logger?.LogError(ex, Properties.Resources.CsvDb_CsvFileWritingError + " " + csvFile.FileFullName);
+                    _logger.LogError(ex, Properties.Resources.CsvDb_CsvFileWritingError + " " + csvFile.FileFullName);
                 }
 
                 csvFile.DataIsChangedByProgram = false;
@@ -546,7 +547,7 @@ namespace Ssz.Utils
 
         #region private fields        
 
-        private ILogger<CsvDb>? _logger;        
+        private ILogger _logger;        
 
         private DirectoryInfo? _csvDbDirectoryInfo;
 
