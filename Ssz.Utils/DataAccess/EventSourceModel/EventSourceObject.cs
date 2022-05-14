@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Ssz.Utils.DataAccess;
 
-namespace Ssz.Utils.EventSourceModel
+namespace Ssz.Utils.DataAccess
 {
-    /// <summary>
-    /// A class to handle Alarm and Event notifications
-    /// </summary>
     public class EventSourceObject
     {
         #region construction and destruction
@@ -15,13 +11,13 @@ namespace Ssz.Utils.EventSourceModel
         public EventSourceObject(string tag, IDataAccessProvider dataAccessProvider)
         {
             Tag = tag;
-            _dataAccessProvider = dataAccessProvider;            
+            DataAccessProvider = dataAccessProvider;
         }
 
         #endregion
 
-        #region public functions       
-        
+        #region public functions        
+
         public string Tag { get; }
 
         /// <summary>
@@ -29,177 +25,114 @@ namespace Ssz.Utils.EventSourceModel
         /// </summary>
         public object? Obj { get; set; }
 
-        public event Action<ValueStatusTimestamp>? AlarmUnackedChanged;
-        public event Action<ValueStatusTimestamp>? AlarmCategoryChanged;        
-        public event Action<ValueStatusTimestamp>? AlarmConditionTypeChanged;
+        public Dictionary<IValueSubscription, AlarmConditionSubscriptionInfo> Subscriptions { get; } = new(ReferenceEqualityComparer<IValueSubscription>.Default);
 
-        public Dictionary<AlarmCondition, ConditionState> AlarmConditions { get; } = new();
+        /// <summary>
+        ///     Not includes normal AlarmConditionState.
+        /// </summary>
+        public Dictionary<AlarmConditionType, AlarmConditionState> AlarmConditions { get; } = new();
 
-        public ConditionState NormalCondition { get; } = new ConditionState();
+        public AlarmConditionState NormalConditionState { get; } = new AlarmConditionState(AlarmConditionType.None);
 
         public CaseInsensitiveDictionary<EventSourceArea> EventSourceAreas { get; } = new();
-        
-        /// <summary>
-        /// Indicates if any alarms on this EventSource are unacknowledged.
-        /// </summary>
-        /// <returns>
-        /// true if any alarms are in the Unack state
-        /// false if all the alarms have been acknowledged
-        /// </returns>
-        public bool AnyUnacked()
-        {
-            foreach (var kvp in AlarmConditions)
-            {
-                if (kvp.Value.Unacked)
-                {
-                    //We found one guy who is unacknowledged, so we can return true;
-                    return true;
-                }
-            }
-            return false;
-        }
-        /// <summary>
-        /// Indicates if any alarms on this EventSource are active.
-        /// </summary>
-        /// <returns>
-        /// true if any alarms are in the Active state
-        /// false if all the alarms are not in the Active state
-        /// </returns>
-        public bool AnyActive()
-        {
-            foreach (var kvp in AlarmConditions)
-            {
-                if (kvp.Value.Active)
-                {
-                    //We found at least one guy who is active, so we can return true;
-                    return true;
-                }
-            }
-            return false;
-        }
 
-        public uint GetActiveAlarmsMaxCategory()
+        public bool GetAlarmAny(AlarmConditionSubscriptionScope subscriptionScope, uint? alarmCategoryIdFilter)
         {
-            uint maxCategory = 0;
-            foreach (var kvp in AlarmConditions)
+            if (alarmCategoryIdFilter is null)
             {
-                if (kvp.Value.Active && kvp.Value.CategoryId > maxCategory)
+                var predicate = EventSourceModelHelper.GetPredicate(subscriptionScope);
+                foreach (var kvp in AlarmConditions)
                 {
-                    maxCategory = kvp.Value.CategoryId;
+                    if (predicate(kvp.Value))
+                        return true;
                 }
-            }
-            return maxCategory;
-        }
-
-        public AlarmCondition GetAlarmConditionType()
-        {
-            var activeConditions = AlarmConditions.Where(kvp => kvp.Value.Active).ToArray();
-            if (activeConditions.Length > 0)
-            {
-                var kvp = activeConditions.OrderByDescending(i => i.Value.CategoryId).ThenByDescending(i => i.Value.ActiveOccurrenceTime).First();
-                return kvp.Key;
+                return false;
             }
             else
             {
-                return AlarmCondition.None;
+                var predicate = EventSourceModelHelper.GetPredicate(subscriptionScope);
+                foreach (var kvp in AlarmConditions)
+                {
+                    if (kvp.Value.CategoryId == alarmCategoryIdFilter.Value && predicate(kvp.Value))
+                        return true;
+                }
+                return false;
             }            
         }
 
-        public void NotifyAlarmUnackedSubscribers()
+        public uint GetAlarmMaxCategoryId(AlarmConditionSubscriptionScope subscriptionScope)
         {
-            var alarmUnackedChanged = AlarmUnackedChanged;
-            if (alarmUnackedChanged is not null)
-            {
-                if (_dataAccessProvider.IsConnected)
-                {
-                    bool anyUnacked = AnyUnacked();
-                    alarmUnackedChanged(new ValueStatusTimestamp(new Any(anyUnacked), ValueStatusCode.Good, DateTime.UtcNow));
-                }
-                else
-                {
-                    alarmUnackedChanged(new ValueStatusTimestamp());
-                }
-            }
+            var predicate = EventSourceModelHelper.GetPredicate(subscriptionScope);
+            uint maxCategoryId = 0;
+            foreach (var kvp in AlarmConditions)
+                if (predicate(kvp.Value) && kvp.Value.CategoryId > maxCategoryId)
+                    maxCategoryId = kvp.Value.CategoryId;
+            return maxCategoryId;
         }
 
-        public void NotifyAlarmUnackedSubscriber(IValueSubscription subscriber)
+        public AlarmConditionType GetAlarmConditionType(AlarmConditionSubscriptionScope subscriptionScope)
         {
-            if (_dataAccessProvider.IsConnected)
+            var predicate = EventSourceModelHelper.GetPredicate(subscriptionScope);
+            var conditions = AlarmConditions.Values.Where(predicate).ToArray();
+            if (conditions.Length > 0)
             {
-                bool anyUnacked = AnyUnacked();
-                subscriber.Update(new ValueStatusTimestamp(new Any(anyUnacked), ValueStatusCode.Good, DateTime.UtcNow));
+                AlarmConditionState alarmConditionState = conditions.OrderByDescending(ac => ac.CategoryId).ThenByDescending(ac => ac.ActiveOccurrenceTimeUtc).First();
+                return alarmConditionState.AlarmCondition;
             }
             else
             {
-                subscriber.Update(new ValueStatusTimestamp());
+                return AlarmConditionType.None;
             }
         }
 
-        public void NotifyAlarmCategorySubscribers()
+        public uint GetAlarmsCount(AlarmConditionSubscriptionScope alarmConditionSubscriptionScope, uint? alarmCategoryIdFilter)
         {
-            var alarmCategoryChanged = AlarmCategoryChanged;
-            if (alarmCategoryChanged is not null)
-            {
-                if (_dataAccessProvider.IsConnected)
-                {
-                    uint maxCategory = GetActiveAlarmsMaxCategory();
-                    alarmCategoryChanged(new ValueStatusTimestamp(new Any(maxCategory), ValueStatusCode.Good, DateTime.UtcNow));
-                }
-                else
-                {
-                    alarmCategoryChanged(new ValueStatusTimestamp());
-                }
-            }
+            // TODO
+            return 0;
         }
 
-        public void NotifyAlarmCategorySubscriber(IValueSubscription subscriber)
+        public void NotifySubscriptions()
         {
-            if (_dataAccessProvider.IsConnected)
+            foreach (var kvp in Subscriptions)
             {
-                uint maxCategory = GetActiveAlarmsMaxCategory();
-                subscriber.Update(new ValueStatusTimestamp(new Any(maxCategory), ValueStatusCode.Good, DateTime.UtcNow));
-            }
-            else
-            {
-                subscriber.Update(new ValueStatusTimestamp());
+                NotifySubscription(kvp.Key, kvp.Value);
             }
         }
 
-        public void NotifyAlarmConditionTypeSubscribers()
+        public virtual void NotifySubscription(IValueSubscription subscription, AlarmConditionSubscriptionInfo alarmConditionSubscriptionInfo)
         {
-            var alarmConditionTypeChanged = AlarmConditionTypeChanged;
-            if (alarmConditionTypeChanged is not null)
-            {
-                if (_dataAccessProvider.IsConnected)
-                {
-                    AlarmCondition alarmConditionType = GetAlarmConditionType();
-                    alarmConditionTypeChanged(new ValueStatusTimestamp(new Any(alarmConditionType), ValueStatusCode.Good, DateTime.UtcNow));
-                }
-                else
-                {
-                    alarmConditionTypeChanged(new ValueStatusTimestamp());
-                }
-            }
-        }
+            if (!DataAccessProvider.IsConnected)
+            {                
+                subscription.Update(new ValueStatusTimestamp());
+                return;
+            }            
 
-        public void NotifyAlarmConditionTypeSubscriber(IValueSubscription subscriber)
-        {
-            if (_dataAccessProvider.IsConnected)
+            switch (alarmConditionSubscriptionInfo.AlarmConditionSubscriptionType)
             {
-                AlarmCondition alarmConditionType = GetAlarmConditionType();
-                subscriber.Update(new ValueStatusTimestamp(new Any(alarmConditionType), ValueStatusCode.Good, DateTime.UtcNow));
+                case EventSourceModel.AlarmAny_SubscriptionType:
+                    bool alarmAny = GetAlarmAny(alarmConditionSubscriptionInfo.AlarmConditionSubscriptionScope, alarmConditionSubscriptionInfo.AlarmCategoryIdFilter);
+                    subscription.Update(new ValueStatusTimestamp(new Any(alarmAny)));
+                    break;
+                case EventSourceModel.AlarmMaxCategoryId_SubscriptionType:
+                    uint alarmMaxCategoryId = GetAlarmMaxCategoryId(alarmConditionSubscriptionInfo.AlarmConditionSubscriptionScope);
+                    subscription.Update(new ValueStatusTimestamp(new Any(alarmMaxCategoryId)));
+                    break;
+                case EventSourceModel.AlarmConditionType_SubscriptionType:
+                    AlarmConditionType alarmConditionType = GetAlarmConditionType(alarmConditionSubscriptionInfo.AlarmConditionSubscriptionScope);
+                    subscription.Update(new ValueStatusTimestamp(new Any(alarmConditionType)));
+                    break;
+                case EventSourceModel.AlarmsCount_SubscriptionType:
+                    uint count = GetAlarmsCount(alarmConditionSubscriptionInfo.AlarmConditionSubscriptionScope, alarmConditionSubscriptionInfo.AlarmCategoryIdFilter);
+                    subscription.Update(new ValueStatusTimestamp(new Any(count)));
+                    break;
             }
-            else
-            {
-                subscriber.Update(new ValueStatusTimestamp());
-            }
-        }
+        }        
 
-        #endregion        
+        #endregion
 
-        #region private fields        
-        
-        public readonly IDataAccessProvider _dataAccessProvider;        
+        #region protected functions
+
+        protected IDataAccessProvider DataAccessProvider { get; }
 
         #endregion
     }

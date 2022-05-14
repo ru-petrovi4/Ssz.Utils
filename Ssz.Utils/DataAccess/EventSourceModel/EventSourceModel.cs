@@ -1,62 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Ssz.Utils.DataAccess;
 
-namespace Ssz.Utils.EventSourceModel
-{    
-    public class EventSourceModel : IDisposable
+namespace Ssz.Utils.DataAccess
+{
+    public enum AlarmConditionSubscriptionScope
     {
-        #region construction and destruction
+        Active,
+        Unacked,
+        ActiveOrUnacked,
+        ActiveAndUnacked,
+    }
 
-        public EventSourceModel(IDataAccessProvider dataAccessProvider)
+    public class AlarmConditionSubscriptionInfo
+    {
+        public AlarmConditionSubscriptionInfo(int alarmConditionSubscriptionType, AlarmConditionSubscriptionScope alarmConditionSubscriptionScope, uint? alarmCategoryIdFilter = null)
         {
-            DataAccessProvider = dataAccessProvider;
-
-            DataAccessProvider.PropertyChanged += DataAccessProviderOnPropertyChanged;
-        }        
-
-        /// <summary>
-        ///     This is the implementation of the IDisposable.Dispose method.  The client
-        ///     application should invoke this method when this instance is no longer needed.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            AlarmConditionSubscriptionType = alarmConditionSubscriptionType;
+            AlarmConditionSubscriptionScope = alarmConditionSubscriptionScope;
+            AlarmCategoryIdFilter = alarmCategoryIdFilter;
         }
 
-        /// <summary>
-        ///     This method is invoked when the IDisposable.Dispose or Finalize actions are
-        ///     requested.
-        /// </summary>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (Disposed) return;
+        public readonly int AlarmConditionSubscriptionType;        
 
-            if (disposing)
-            {
-                DataAccessProvider.PropertyChanged -= DataAccessProviderOnPropertyChanged;
-            }
+        public readonly AlarmConditionSubscriptionScope AlarmConditionSubscriptionScope;
+        
+        public readonly uint? AlarmCategoryIdFilter;
 
-            Disposed = true;
-        }
+        //public override int GetHashCode()
+        //{
+        //    return ((int)AlarmCategoryIdFilter << 24) + ((int)AlarmConditionSubscriptionScope << 16) + AlarmConditionSubscriptionType;
+        //}
 
-        /// <summary>
-        ///     Invoked by the .NET Framework while doing heap managment (Finalize).
-        /// </summary>
-        ~EventSourceModel()
-        {
-            Dispose(false);
-        }
+        //public override bool Equals(object obj)
+        //{
+        //    if (obj is AlarmConditionSubscriptionInfo that)
+        //        return that.GetHashCode() == GetHashCode();
+        //    else
+        //        return false;
+        //}
+    }
 
-        #endregion
+    public class EventSourceModel : IEventSourceModel
+    {
+        #region public functions        
 
-        #region public functions
-
-        public bool Disposed { get; private set; }
-
-        public IDataAccessProvider DataAccessProvider { get; }
+        public const int AlarmAny_SubscriptionType = 0x1;
+        public const int AlarmMaxCategoryId_SubscriptionType = 0x2;
+        public const int AlarmConditionType_SubscriptionType = 0x3;
+        public const int AlarmsCount_SubscriptionType = 0x4;
 
         public CaseInsensitiveDictionary<EventSourceObject> EventSourceObjects { get; } =
             new();
@@ -64,154 +56,189 @@ namespace Ssz.Utils.EventSourceModel
         public CaseInsensitiveDictionary<EventSourceArea> EventSourceAreas { get; } =
             new();
 
-        public void Clear()
+        /// <summary>
+        ///     Must be called after Close() or after creation.
+        /// </summary>
+        /// <param name="dataAccessProvider"></param>
+        public virtual void Initialize(IDataAccessProvider dataAccessProvider)
+        {
+            DataAccessProvider = dataAccessProvider;
+
+            DataAccessProvider.PropertyChanged += DataAccessProviderOnPropertyChanged;
+        }
+        
+        /// <summary>
+        ///     Must be called after Initialize(...)
+        /// </summary>
+        public virtual void Close()
+        {
+            DataAccessProvider.PropertyChanged -= DataAccessProviderOnPropertyChanged;
+        }
+
+        public virtual void Clear()
         {
             foreach (EventSourceObject eventSourceObject in EventSourceObjects.Values)
             {
                 eventSourceObject.AlarmConditions.Clear();
-                eventSourceObject.NotifyAlarmUnackedSubscribers();
-                eventSourceObject.NotifyAlarmCategorySubscribers();                
-                eventSourceObject.NotifyAlarmConditionTypeSubscribers();
+                eventSourceObject.NotifySubscriptions();
             }
             foreach (EventSourceArea eventSourceArea in EventSourceAreas.Values)
             {
-                eventSourceArea.UnackedAlarmsCount = 0;
-                eventSourceArea.ActiveAlarmsCategories.Clear();
-                eventSourceArea.NotifyAlarmUnackedSubscribers();
-                eventSourceArea.NotifyAlarmCategorySubscribers();                
+                eventSourceArea.AlarmCategoryInfos.Clear();
+                eventSourceArea.NotifySubscriptions();                           
             }
         }
 
         /// <summary>
-        ///     condition != Normal
+        ///     alarmCondition != Normal
         ///     Returns true if active or unacked state of any condition changed.
-        /// </summary>
+        /// </summary>        
+        /// <param name="eventSourceObject"></param>
+        /// <param name="alarmConditionType"></param>
+        /// <param name="categoryId"></param>
+        /// <param name="active"></param>
+        /// <param name="unacked"></param>
+        /// <param name="occurrenceTimeUtc"></param>
+        /// <param name="alarmConditionTypeChanged"></param>
+        /// <param name="unackedChanged"></param>
         /// <returns>
         ///     true if active or unacked state of any condition changed
         ///     false if the alarm state remains the same
         /// </returns>
-        public bool ProcessEventSourceObject(EventSourceObject eventSourceObject, AlarmCondition alarmCondition,
-            uint categoryId, bool active, bool unacked, DateTime occurrenceTime, 
-            out bool alarmConditionChanged,
+        public virtual bool ProcessEventSourceObject(EventSourceObject eventSourceObject, AlarmConditionType alarmConditionType,
+            uint categoryId, bool active, bool unacked, DateTime occurrenceTimeUtc, out bool alarmConditionTypeChanged,
             out bool unackedChanged)
         {
-            alarmConditionChanged = false;
+            alarmConditionTypeChanged = false;
             unackedChanged = false;
 
-            Dictionary<AlarmCondition, ConditionState> alarmConditions = eventSourceObject.AlarmConditions;
+            Dictionary<AlarmConditionType, AlarmConditionState> alarmConditions = eventSourceObject.AlarmConditions;
             
-            ConditionState? conditionState;
-            if (alarmConditions.TryGetValue(alarmCondition, out conditionState))
+            AlarmConditionState? alarmConditionState;
+            if (alarmConditions.TryGetValue(alarmConditionType, out alarmConditionState))
             {
-                if (conditionState.Active == active && conditionState.Unacked == unacked)
-                {
-                    //We found the existing condition, but have determined that nothing has changed
-                    //in the condition.
+                if (alarmConditionState.Active == active && alarmConditionState.Unacked == unacked)
                     return false;
-                }
-
-                //Something has changed in the condition.  Update the condition with the new alarm state
-                if (conditionState.Active != active)
+                
+                if (alarmConditionState.Active != active)
                 {
-                    conditionState.Active = active;
-                    alarmConditionChanged = true;
+                    alarmConditionState.Active = active;
+                    alarmConditionTypeChanged = true;
                 }
                 
-                if (conditionState.Unacked != unacked)
+                if (alarmConditionState.Unacked != unacked)
                 {
-                    conditionState.Unacked = unacked;
+                    alarmConditionState.Unacked = unacked;
                     unackedChanged = true;
                 }
                 
-                if (active) conditionState.ActiveOccurrenceTime = occurrenceTime;
+                if (active) 
+                    alarmConditionState.ActiveOccurrenceTimeUtc = occurrenceTimeUtc;
 
-                if (!active && !unacked) //Moved into the Inactive-Acknowledged state
-                {
-                    //Remove this condition from the list since our alarm is no longer an alarm
-                    alarmConditions.Remove(alarmCondition);
-                }
+                if (!active && !unacked) // Moved into the Inactive-Acknowledged state
+                    alarmConditions.Remove(alarmConditionType);
             }
             else
             {
                 if (!active) 
-                {
-                    //A new alarm that is already inactive - weird?
-                    return false;    //An odd state - we didn't find anything so return false.
-                }
+                    return false;                
 
-                alarmConditionChanged = true;
+                alarmConditionTypeChanged = true;
                 if (unacked)
                     unackedChanged = true;
-
-                //This condition doesn't already exist.  This means we are a new alarm
-                //Normally this will be a newly active alarm.  Occasionally it will be an
-                //inactive but unacknowledged alarm.  This second situation is a bit odd but
-                //can occur if we have newly connected to an AE server that has 
-                //unacknowledged-inactive alarms.  In both cases it is a valid alarm that we 
-                //want to continue to track.  Add it to our list.
-                var newConditionState = new ConditionState { Active = active, Unacked = unacked, CategoryId = categoryId };
-                if (active) newConditionState.ActiveOccurrenceTime = occurrenceTime;
-                alarmConditions.Add(alarmCondition, newConditionState);
+                
+                var newConditionState = new AlarmConditionState(alarmConditionType) { Active = active, Unacked = unacked, CategoryId = categoryId };
+                if (active)
+                    newConditionState.ActiveOccurrenceTimeUtc = occurrenceTimeUtc;
+                alarmConditions.Add(alarmConditionType, newConditionState);
             }
 
             if (!active)
-            {
-                eventSourceObject.NormalCondition.Active = !alarmConditions.Any(c => c.Value.Active);
-            }
+                eventSourceObject.NormalConditionState.Active = !alarmConditions.Any(c => c.Value.Active);
             else
-            {
-                eventSourceObject.NormalCondition.Active = false;
-            }
+                eventSourceObject.NormalConditionState.Active = false;
 
-            eventSourceObject.NormalCondition.Unacked = unacked;
+            eventSourceObject.NormalConditionState.Unacked = unacked;
 
-            eventSourceObject.NotifyAlarmUnackedSubscribers();
-            eventSourceObject.NotifyAlarmCategorySubscribers();           
-            eventSourceObject.NotifyAlarmConditionTypeSubscribers();
-
+            eventSourceObject.NotifySubscriptions();            
             return true;
         }
         
-        public void OnAlarmsListChanged()
+        public virtual void OnAlarmsListChanged()
         {
             foreach (EventSourceArea eventSourceArea in EventSourceAreas.Values)
             {
-                eventSourceArea.UnackedAlarmsCount = 0;
-                eventSourceArea.ActiveAlarmsCategories.Clear();
+                foreach (var alarmCategoryInfo in eventSourceArea.AlarmCategoryInfos.Values)
+                {
+                    alarmCategoryInfo.ActiveCount = 0;
+                    alarmCategoryInfo.UnackedCount = 0;                    
+                    alarmCategoryInfo.ActiveOrUnackedCount = 0;
+                    alarmCategoryInfo.ActiveAndUnackedCount = 0;
+                }
             }
 
             foreach (EventSourceObject eventSourceObject in EventSourceObjects.Values)
             {
-                if (eventSourceObject.AnyUnacked())
-                {
+                var maxCategoryId = eventSourceObject.GetAlarmMaxCategoryId(AlarmConditionSubscriptionScope.Active);
+                if (maxCategoryId > 0)
                     foreach (EventSourceArea eventSourceArea in eventSourceObject.EventSourceAreas.Values)
                     {
-                        eventSourceArea.UnackedAlarmsCount += 1;
+                        AlarmCategoryInfo? alarmCategoryInfo;
+                        eventSourceArea.AlarmCategoryInfos.TryGetValue(maxCategoryId, out alarmCategoryInfo);
+                        if (alarmCategoryInfo is null)
+                        {
+                            alarmCategoryInfo = new AlarmCategoryInfo();
+                            eventSourceArea.AlarmCategoryInfos.Add(maxCategoryId, alarmCategoryInfo);
+                        }
+                        alarmCategoryInfo.ActiveCount += 1;
                     }
-                }
 
-                uint maxCategory = eventSourceObject.GetActiveAlarmsMaxCategory();
-                if (maxCategory > 0)
-                {
+                maxCategoryId = eventSourceObject.GetAlarmMaxCategoryId(AlarmConditionSubscriptionScope.Unacked);
+                if (maxCategoryId > 0)
                     foreach (EventSourceArea eventSourceArea in eventSourceObject.EventSourceAreas.Values)
                     {
-                        int activeAlarmsCount;
-                        if (!eventSourceArea.ActiveAlarmsCategories.TryGetValue(maxCategory, out activeAlarmsCount))
+                        AlarmCategoryInfo? alarmCategoryInfo;
+                        eventSourceArea.AlarmCategoryInfos.TryGetValue(maxCategoryId, out alarmCategoryInfo);
+                        if (alarmCategoryInfo is null)
                         {
-                            eventSourceArea.ActiveAlarmsCategories[maxCategory] = 1;
+                            alarmCategoryInfo = new AlarmCategoryInfo();
+                            eventSourceArea.AlarmCategoryInfos.Add(maxCategoryId, alarmCategoryInfo);
                         }
-                        else
-                        {
-                            eventSourceArea.ActiveAlarmsCategories[maxCategory] = activeAlarmsCount + 1;
-                        }
+                        alarmCategoryInfo.UnackedCount += 1;
                     }
-                }
-            }
+
+                maxCategoryId = eventSourceObject.GetAlarmMaxCategoryId(AlarmConditionSubscriptionScope.ActiveOrUnacked);
+                if (maxCategoryId > 0)
+                    foreach (EventSourceArea eventSourceArea in eventSourceObject.EventSourceAreas.Values)
+                    {
+                        AlarmCategoryInfo? alarmCategoryInfo;
+                        eventSourceArea.AlarmCategoryInfos.TryGetValue(maxCategoryId, out alarmCategoryInfo);
+                        if (alarmCategoryInfo is null)
+                        {
+                            alarmCategoryInfo = new AlarmCategoryInfo();
+                            eventSourceArea.AlarmCategoryInfos.Add(maxCategoryId, alarmCategoryInfo);
+                        }
+                        alarmCategoryInfo.ActiveOrUnackedCount += 1;
+                    }
+
+                maxCategoryId = eventSourceObject.GetAlarmMaxCategoryId(AlarmConditionSubscriptionScope.ActiveAndUnacked);
+                if (maxCategoryId > 0)
+                    foreach (EventSourceArea eventSourceArea in eventSourceObject.EventSourceAreas.Values)
+                    {
+                        AlarmCategoryInfo? alarmCategoryInfo;
+                        eventSourceArea.AlarmCategoryInfos.TryGetValue(maxCategoryId, out alarmCategoryInfo);
+                        if (alarmCategoryInfo is null)
+                        {
+                            alarmCategoryInfo = new AlarmCategoryInfo();
+                            eventSourceArea.AlarmCategoryInfos.Add(maxCategoryId, alarmCategoryInfo);
+                        }
+                        alarmCategoryInfo.ActiveAndUnackedCount += 1;
+                    }
+            }            
 
             foreach (EventSourceArea eventSourceArea in EventSourceAreas.Values)
             {
-                eventSourceArea.NotifyAlarmUnackedSubscribers();
-                eventSourceArea.NotifyAlarmCategorySubscribers();
+                eventSourceArea.NotifySubscriptions();                
             }
         }
 
@@ -220,7 +247,7 @@ namespace Ssz.Utils.EventSourceModel
         /// </summary>
         /// <param name="area"></param>
         /// <returns></returns>        
-        public EventSourceArea GetOrCreateEventSourceArea(string area)
+        public virtual EventSourceArea GetOrCreateEventSourceArea(string area)
         {
             EventSourceArea? eventSourceArea;
             if (!EventSourceAreas.TryGetValue(area, out eventSourceArea))
@@ -241,14 +268,11 @@ namespace Ssz.Utils.EventSourceModel
         /// <param name="tag"></param>
         /// <param name="area"></param>
         /// <returns></returns>
-        public EventSourceObject GetOrCreateEventSourceObject(string tag, string? area = null)
+        public virtual EventSourceObject GetOrCreateEventSourceObject(string tag, string? area = null)
         {
             EventSourceObject? existingEventSourceObject;
             if (EventSourceObjects.TryGetValue(tag, out existingEventSourceObject))
-            {
-                //We already have this tag in our list.  Just return the existing object.
                 return existingEventSourceObject;
-            }
 
             //The tag doesn't already exist.  Create a new EventSourceObject and add it to our dictionary
             var newEventSourceObject = new EventSourceObject(tag, DataAccessProvider);
@@ -262,7 +286,8 @@ namespace Ssz.Utils.EventSourceModel
                 string currentArea = @"";
                 foreach (string areaPart in area.Split('/'))
                 {
-                    if (currentArea == @"") currentArea = areaPart;
+                    if (currentArea == @"") 
+                        currentArea = areaPart;
                     else currentArea += "/" + areaPart;
                     newEventSourceObject.EventSourceAreas[currentArea] = GetOrCreateEventSourceArea(currentArea);
                 }
@@ -271,9 +296,10 @@ namespace Ssz.Utils.EventSourceModel
             return newEventSourceObject;
         }
 
-        public void GetExistingAlarmInfoViewModels(Action<IEnumerable<AlarmInfoViewModelBase>> alarmNotification)
+        public virtual IEnumerable<AlarmInfoViewModelBase> GetExistingAlarmInfoViewModels()
         {
             var alarmInfoViewModels = new List<AlarmInfoViewModelBase>();
+
             foreach (var kvp in EventSourceObjects)
             {
                 EventSourceObject eventSourceObject = kvp.Value;
@@ -290,28 +316,32 @@ namespace Ssz.Utils.EventSourceModel
                         condition.LastAlarmInfoViewModel is not null)
                         alarmInfoViewModelsForObject.Add(condition.LastAlarmInfoViewModel);
                 }
-                if (eventSourceObject.NormalCondition.Active && eventSourceObject.NormalCondition.Unacked &&
-                    eventSourceObject.NormalCondition.LastAlarmInfoViewModel is not null)
-                        alarmInfoViewModelsForObject.Add(eventSourceObject.NormalCondition.LastAlarmInfoViewModel);
-                if (alarmInfoViewModelsForObject.Count > 0)
-                    alarmInfoViewModels.AddRange(alarmInfoViewModelsForObject);
+                if (eventSourceObject.NormalConditionState.Active && eventSourceObject.NormalConditionState.Unacked &&
+                    eventSourceObject.NormalConditionState.LastAlarmInfoViewModel is not null)
+                        alarmInfoViewModelsForObject.Add(eventSourceObject.NormalConditionState.LastAlarmInfoViewModel);
+                alarmInfoViewModels.AddRange(alarmInfoViewModelsForObject);
             }
 
-            if (alarmInfoViewModels.Count > 0) alarmNotification(alarmInfoViewModels);
+            return alarmInfoViewModels;
         }
 
         #endregion
 
-        #region private fields
+        #region protected functions
 
-        private void DataAccessProviderOnPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs args)
+        /// <summary>
+        ///     Can be used after Initialize(...)
+        /// </summary>
+        protected IDataAccessProvider DataAccessProvider { get; private set; } = null!;
+
+        protected virtual void DataAccessProviderOnPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs args)
         {
             switch (args.PropertyName)
             {
-                case @"IsConnected":
+                case nameof(IDataAccessProvider.IsConnected):
                     Clear();
                     break;
-            }            
+            }
         }
 
         #endregion

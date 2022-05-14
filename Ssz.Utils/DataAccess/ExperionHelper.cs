@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Ssz.Utils.EventSourceModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +19,7 @@ namespace Ssz.Utils.DataAccess
         /// <param name="eventMessage"></param>
         /// <param name="logger"></param>
         /// <returns></returns>
-        public static Task<IEnumerable<AlarmInfoViewModelBase>?> ProcessEventMessage(Ssz.Utils.EventSourceModel.EventSourceModel eventSourceModel, 
+        public static Task<IEnumerable<AlarmInfoViewModelBase>?> ProcessEventMessage(IEventSourceModel eventSourceModel, 
             EventMessage eventMessage, ILogger? logger = null)
         {
             try
@@ -65,7 +64,7 @@ namespace Ssz.Utils.DataAccess
                 string area = "";
                 string level = "";
                 string eu = "";
-                AlarmCondition condition;
+                AlarmConditionType condition;
                 bool isDigital = false;                
                 bool active = eventMessage.AlarmMessageData.AlarmState.HasFlag(AlarmState.Active);
                 bool unacked = eventMessage.AlarmMessageData.AlarmState.HasFlag(AlarmState.Unacked);
@@ -78,76 +77,76 @@ namespace Ssz.Utils.DataAccess
                 {
                     case "PVLL":
                     case "LL":                    
-                        condition = AlarmCondition.LowLow;
+                        condition = AlarmConditionType.LowLow;
                         categoryId = 2;
                         break;
                     case "PVLO":
                     case "LO":
                     case "L":
-                        condition = AlarmCondition.Low;
+                        condition = AlarmConditionType.Low;
                         categoryId = 1;
                         break;
                     case "None":
-                        condition = AlarmCondition.None;
+                        condition = AlarmConditionType.None;
                         break;
                     case "PVHI":
                     case "HI":
                     case "H":
-                        condition = AlarmCondition.High;
+                        condition = AlarmConditionType.High;
                         categoryId = 1;
                         break;
                     case "HH":
                     case "PVHH":
-                        condition = AlarmCondition.HighHigh;
+                        condition = AlarmConditionType.HighHigh;
                         categoryId = 2;
                         break;
                     case "PositiveRate":
-                        condition = AlarmCondition.PositiveRate;
+                        condition = AlarmConditionType.PositiveRate;
                         break;
                     case "NegativeRate":
-                        condition = AlarmCondition.NegativeRate;
+                        condition = AlarmConditionType.NegativeRate;
                         break;
                     case "AlarmByChngPosLo":
-                        condition = AlarmCondition.ChangeOfState;
+                        condition = AlarmConditionType.ChangeOfState;
                         isDigital = true;
                         break;
                     case "AlarmByChngPosLoLo":
-                        condition = AlarmCondition.ChangeOfState;
+                        condition = AlarmConditionType.ChangeOfState;
                         isDigital = true;
                         break;
                     case "AlarmByChngPosHi":
-                        condition = AlarmCondition.ChangeOfState;
+                        condition = AlarmConditionType.ChangeOfState;
                         isDigital = true;
                         break;
                     case "AlarmByChngPosHiHi":
-                        condition = AlarmCondition.ChangeOfState;
+                        condition = AlarmConditionType.ChangeOfState;
                         isDigital = true;
                         break;
                     case "AlarmByPos_LoLo":
-                        condition = AlarmCondition.OffNormal;
+                        condition = AlarmConditionType.OffNormal;
                         isDigital = true;
                         break;
                     case "AlarmByPos_Low":
-                        condition = AlarmCondition.OffNormal;
+                        condition = AlarmConditionType.OffNormal;
                         isDigital = true;
                         break;
                     case "AlarmByPos_High":
-                        condition = AlarmCondition.OffNormal;
+                        condition = AlarmConditionType.OffNormal;
                         isDigital = true;
                         break;
                     case "AlarmByPos_HiHi":
-                        condition = AlarmCondition.OffNormal;
+                        condition = AlarmConditionType.OffNormal;
                         isDigital = true;
                         break;
                     default:
-                        condition = AlarmCondition.Other;
+                        condition = AlarmConditionType.Other;
                         categoryId = 1;
                         break;
                 }
 
                 EventSourceObject eventSourceObject = eventSourceModel.GetOrCreateEventSourceObject(tag, area);
 
-                if (condition != AlarmCondition.None)
+                if (condition != AlarmConditionType.None)
                 {
                     bool changed = eventSourceModel.ProcessEventSourceObject(eventSourceObject, condition, categoryId,
                             active, unacked, eventMessage.OccurrenceTimeUtc, out alarmConditionChanged, out unackedChanged);
@@ -159,14 +158,14 @@ namespace Ssz.Utils.DataAccess
                     unackedChanged = (eventMessage.AlarmMessageData.AlarmStateChange & AlarmStateChangeCodes.Acknowledge) != 0;
                 }
 
-                ConditionState? conditionState;
-                if (condition != AlarmCondition.None)
+                AlarmConditionState? conditionState;
+                if (condition != AlarmConditionType.None)
                 {
                     eventSourceObject.AlarmConditions.TryGetValue(condition, out conditionState);
                 }
                 else
                 {
-                    conditionState = eventSourceObject.NormalCondition;
+                    conditionState = eventSourceObject.NormalConditionState;
                 }
 
                 double tripValue = new Any(level).ValueAsDouble(false);
@@ -182,7 +181,7 @@ namespace Ssz.Utils.DataAccess
                     TripValue = tripValue,
                     TripValueText = tripValueText,
                     Area = area,
-                    CurrentAlarmCondition = condition,
+                    CurrentAlarmConditionType = condition,
                     IsDigital = isDigital,
                     CategoryId = categoryId,
                     Priority = priority,

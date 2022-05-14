@@ -225,7 +225,7 @@ namespace Ssz.Utils.DataAccess
 		public const uint RequestedField = 0x80;
 	}
 
-	public enum AlarmCondition
+	public enum AlarmConditionType
 	{
 		None,
 		Low,

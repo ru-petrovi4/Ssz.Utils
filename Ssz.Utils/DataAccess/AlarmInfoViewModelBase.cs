@@ -26,9 +26,9 @@ namespace Ssz.Utils.DataAccess
             _propertyPath = that._propertyPath;
             _desc = that._desc;
             _area = that._area;
-            _originalAlarmCondition = that._originalAlarmCondition;
-            _currentAlarmCondition = that._currentAlarmCondition;
-            _alarmConditionType = that._alarmConditionType;
+            _originalAlarmConditionType = that._originalAlarmConditionType;
+            _currentAlarmConditionType = that._currentAlarmConditionType;
+            _currentAlarmConditionFamily = that._currentAlarmConditionFamily;
             _categoryId = that._categoryId;
             _priority = that._priority;
             _textMessage = that._textMessage;
@@ -146,25 +146,25 @@ namespace Ssz.Utils.DataAccess
             set { SetValue(ref _area, value); }
         }
         
-        public virtual AlarmCondition OriginalAlarmCondition
+        public virtual AlarmConditionType OriginalAlarmConditionType
         {
-            get { return _originalAlarmCondition; }
-            set { SetValue(ref _originalAlarmCondition, value); }
+            get { return _originalAlarmConditionType; }
+            set { SetValue(ref _originalAlarmConditionType, value); }
         }
         
-        public virtual AlarmCondition CurrentAlarmCondition
+        public virtual AlarmConditionType CurrentAlarmConditionType
         {
-            get { return _currentAlarmCondition; }
-            set { SetValue(ref _currentAlarmCondition, value); }
+            get { return _currentAlarmConditionType; }
+            set { SetValue(ref _currentAlarmConditionType, value); }
         }
 
         /// <summary>
-        /// The alarm type (i.e. Level, Deviation, RateOfChange etc)
+        /// The alarm condition family (i.e. Level, Deviation, RateOfChange etc)
         /// </summary>
-        public virtual string AlarmConditionType
+        public virtual string CurrentAlarmConditionTypeFamily
         {
-            get { return _alarmConditionType; }
-            set { SetValue(ref _alarmConditionType, value); }
+            get { return _currentAlarmConditionFamily; }
+            set { SetValue(ref _currentAlarmConditionFamily, value); }
         }
 
         /// <summary>
@@ -294,9 +294,9 @@ namespace Ssz.Utils.DataAccess
         private uint _priority;
         private string _textMessage = @"";
 
-        protected string _alarmConditionType = @"";
-        protected AlarmCondition _currentAlarmCondition;
-        protected AlarmCondition _originalAlarmCondition;
+        protected string _currentAlarmConditionFamily = @"";
+        protected AlarmConditionType _currentAlarmConditionType;
+        protected AlarmConditionType _originalAlarmConditionType;
         protected double _currentValue;
         protected string _currentValueText = @"";
         protected double _tripValue;
