@@ -45,10 +45,12 @@ namespace Ssz.Utils.DataAccess
     {
         #region public functions        
 
-        public const int AlarmAny_SubscriptionType = 0x1;
-        public const int AlarmMaxCategoryId_SubscriptionType = 0x2;
-        public const int AlarmConditionType_SubscriptionType = 0x3;
-        public const int AlarmsCount_SubscriptionType = 0x4;
+        public const int AlarmsCount_SubscriptionType = 0x1;
+        public const int AlarmsAny_SubscriptionType = 0x2;
+        public const int AlarmMaxCategoryId_SubscriptionType = 0x3;
+        public const int AlarmConditionType_SubscriptionType = 0x4;        
+
+        public bool IsInitialized { get; private set; }
 
         public CaseInsensitiveDictionary<EventSourceObject> EventSourceObjects { get; } =
             new();
@@ -65,6 +67,8 @@ namespace Ssz.Utils.DataAccess
             DataAccessProvider = dataAccessProvider;
 
             DataAccessProvider.PropertyChanged += DataAccessProviderOnPropertyChanged;
+
+            IsInitialized = true;
         }
         
         /// <summary>
@@ -73,6 +77,8 @@ namespace Ssz.Utils.DataAccess
         public virtual void Close()
         {
             DataAccessProvider.PropertyChanged -= DataAccessProviderOnPropertyChanged;
+
+            IsInitialized = false;
         }
 
         public virtual void Clear()

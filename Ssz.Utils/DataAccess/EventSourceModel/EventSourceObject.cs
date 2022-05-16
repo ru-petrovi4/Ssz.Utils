@@ -36,30 +36,6 @@ namespace Ssz.Utils.DataAccess
 
         public CaseInsensitiveDictionary<EventSourceArea> EventSourceAreas { get; } = new();
 
-        public bool GetAlarmAny(AlarmConditionSubscriptionScope subscriptionScope, uint? alarmCategoryIdFilter)
-        {
-            if (alarmCategoryIdFilter is null)
-            {
-                var predicate = EventSourceModelHelper.GetPredicate(subscriptionScope);
-                foreach (var kvp in AlarmConditions)
-                {
-                    if (predicate(kvp.Value))
-                        return true;
-                }
-                return false;
-            }
-            else
-            {
-                var predicate = EventSourceModelHelper.GetPredicate(subscriptionScope);
-                foreach (var kvp in AlarmConditions)
-                {
-                    if (kvp.Value.CategoryId == alarmCategoryIdFilter.Value && predicate(kvp.Value))
-                        return true;
-                }
-                return false;
-            }            
-        }
-
         public uint GetAlarmMaxCategoryId(AlarmConditionSubscriptionScope subscriptionScope)
         {
             var predicate = EventSourceModelHelper.GetPredicate(subscriptionScope);
@@ -85,10 +61,28 @@ namespace Ssz.Utils.DataAccess
             }
         }
 
-        public uint GetAlarmsCount(AlarmConditionSubscriptionScope alarmConditionSubscriptionScope, uint? alarmCategoryIdFilter)
-        {
-            // TODO
-            return 0;
+        public uint GetAlarmsCount(AlarmConditionSubscriptionScope subscriptionScope, uint? alarmCategoryIdFilter)
+        {            
+            if (alarmCategoryIdFilter is null)
+            {
+                var predicate = EventSourceModelHelper.GetPredicate(subscriptionScope);
+                foreach (var kvp in AlarmConditions)
+                {
+                    if (predicate(kvp.Value))
+                        return 1;
+                }
+                return 0;
+            }
+            else
+            {
+                var predicate = EventSourceModelHelper.GetPredicate(subscriptionScope);
+                foreach (var kvp in AlarmConditions)
+                {
+                    if (kvp.Value.CategoryId == alarmCategoryIdFilter.Value && predicate(kvp.Value))
+                        return 1;
+                }
+                return 0;
+            }            
         }
 
         public void NotifySubscriptions()
@@ -109,8 +103,12 @@ namespace Ssz.Utils.DataAccess
 
             switch (alarmConditionSubscriptionInfo.AlarmConditionSubscriptionType)
             {
-                case EventSourceModel.AlarmAny_SubscriptionType:
-                    bool alarmAny = GetAlarmAny(alarmConditionSubscriptionInfo.AlarmConditionSubscriptionScope, alarmConditionSubscriptionInfo.AlarmCategoryIdFilter);
+                case EventSourceModel.AlarmsCount_SubscriptionType:
+                    uint count = GetAlarmsCount(alarmConditionSubscriptionInfo.AlarmConditionSubscriptionScope, alarmConditionSubscriptionInfo.AlarmCategoryIdFilter);
+                    subscription.Update(new ValueStatusTimestamp(new Any(count)));
+                    break;
+                case EventSourceModel.AlarmsAny_SubscriptionType:
+                    bool alarmAny = GetAlarmsCount(alarmConditionSubscriptionInfo.AlarmConditionSubscriptionScope, alarmConditionSubscriptionInfo.AlarmCategoryIdFilter) > 0;
                     subscription.Update(new ValueStatusTimestamp(new Any(alarmAny)));
                     break;
                 case EventSourceModel.AlarmMaxCategoryId_SubscriptionType:
@@ -120,11 +118,7 @@ namespace Ssz.Utils.DataAccess
                 case EventSourceModel.AlarmConditionType_SubscriptionType:
                     AlarmConditionType alarmConditionType = GetAlarmConditionType(alarmConditionSubscriptionInfo.AlarmConditionSubscriptionScope);
                     subscription.Update(new ValueStatusTimestamp(new Any(alarmConditionType)));
-                    break;
-                case EventSourceModel.AlarmsCount_SubscriptionType:
-                    uint count = GetAlarmsCount(alarmConditionSubscriptionInfo.AlarmConditionSubscriptionScope, alarmConditionSubscriptionInfo.AlarmCategoryIdFilter);
-                    subscription.Update(new ValueStatusTimestamp(new Any(count)));
-                    break;
+                    break;                
             }
         }        
 
