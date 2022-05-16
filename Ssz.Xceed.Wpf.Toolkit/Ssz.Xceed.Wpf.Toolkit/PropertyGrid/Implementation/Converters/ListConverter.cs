@@ -82,7 +82,12 @@ namespace Ssz.Xceed.Wpf.Toolkit.PropertyGrid.Converters
                 if (s is null)
                     throw new InvalidOperationException("Does not support serialization of non-string property names.");
 
+#if NET5_0_OR_GREATER
                 if (s.Contains(','))
+#else
+                if (s.Contains(","))
+#endif
+
                     throw new InvalidOperationException("Property names cannot contain commas.");
 
                 if (s.Trim().Length != s.Length)

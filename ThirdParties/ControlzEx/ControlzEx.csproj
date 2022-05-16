@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-    <!-- Project properties -->
+	
     <PropertyGroup>
-        <TargetFramework>net6.0-windows</TargetFramework>        
-        <UseWPF>true</UseWPF>
+	    <TargetFrameworks>net462;net6.0-windows</TargetFrameworks>
+	    <LangVersion>Latest</LangVersion>
+	    <UseWPF>true</UseWPF>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <Description>ControlzEx is a library with some shared Controls for WPF.</Description>        
     </PropertyGroup>

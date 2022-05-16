@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <Nullable>disable</Nullable>
+	<TargetFrameworks>net462;net6.0-windows</TargetFrameworks>
+	<LangVersion>Latest</LangVersion>
+	<Nullable>disable</Nullable>
     <UseWPF>true</UseWPF>    
   </PropertyGroup>
   <ItemGroup>
