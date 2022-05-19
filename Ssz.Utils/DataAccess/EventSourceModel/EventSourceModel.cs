@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Ssz.Utils.DataAccess
 {
-    public enum AlarmConditionSubscriptionScope
+    public enum EventSourceModelSubscriptionScope
     {
         Active,
         Unacked,
@@ -12,29 +12,29 @@ namespace Ssz.Utils.DataAccess
         ActiveAndUnacked,
     }
 
-    public class AlarmConditionSubscriptionInfo
+    public class EventSourceModelSubscriptionInfo
     {
-        public AlarmConditionSubscriptionInfo(int alarmConditionSubscriptionType, AlarmConditionSubscriptionScope alarmConditionSubscriptionScope, uint? alarmCategoryIdFilter = null)
+        public EventSourceModelSubscriptionInfo(int subscriptionType, EventSourceModelSubscriptionScope subscriptionScope, uint? alarmCategoryIdFilter = null)
         {
-            AlarmConditionSubscriptionType = alarmConditionSubscriptionType;
-            AlarmConditionSubscriptionScope = alarmConditionSubscriptionScope;
+            EventSourceModelSubscriptionType = subscriptionType;
+            EventSourceModelSubscriptionScope = subscriptionScope;
             AlarmCategoryIdFilter = alarmCategoryIdFilter;
         }
 
-        public readonly int AlarmConditionSubscriptionType;        
+        public readonly int EventSourceModelSubscriptionType;        
 
-        public readonly AlarmConditionSubscriptionScope AlarmConditionSubscriptionScope;
+        public readonly EventSourceModelSubscriptionScope EventSourceModelSubscriptionScope;
         
         public readonly uint? AlarmCategoryIdFilter;
 
         //public override int GetHashCode()
         //{
-        //    return ((int)AlarmCategoryIdFilter << 24) + ((int)AlarmConditionSubscriptionScope << 16) + AlarmConditionSubscriptionType;
+        //    return ((int)AlarmCategoryIdFilter << 24) + ((int)eventSourceModelSubscriptionScope << 16) + EventSourceModelSubscriptionType;
         //}
 
         //public override bool Equals(object obj)
         //{
-        //    if (obj is AlarmConditionSubscriptionInfo that)
+        //    if (obj is EventSourceModelSubscriptionInfo that)
         //        return that.GetHashCode() == GetHashCode();
         //    else
         //        return false;
@@ -57,6 +57,11 @@ namespace Ssz.Utils.DataAccess
 
         public CaseInsensitiveDictionary<EventSourceArea> EventSourceAreas { get; } =
             new();
+
+        /// <summary>
+        ///     Can be used after Initialize(...)
+        /// </summary>
+        public IDataAccessProvider DataAccessProvider { get; private set; } = null!;
 
         /// <summary>
         ///     Must be called after Close() or after creation.
@@ -185,7 +190,7 @@ namespace Ssz.Utils.DataAccess
 
             foreach (EventSourceObject eventSourceObject in EventSourceObjects.Values)
             {
-                var maxCategoryId = eventSourceObject.GetAlarmMaxCategoryId(AlarmConditionSubscriptionScope.Active);
+                var maxCategoryId = eventSourceObject.GetAlarmMaxCategoryId(EventSourceModelSubscriptionScope.Active);
                 if (maxCategoryId > 0)
                     foreach (EventSourceArea eventSourceArea in eventSourceObject.EventSourceAreas.Values)
                     {
@@ -199,7 +204,7 @@ namespace Ssz.Utils.DataAccess
                         alarmCategoryInfo.ActiveCount += 1;
                     }
 
-                maxCategoryId = eventSourceObject.GetAlarmMaxCategoryId(AlarmConditionSubscriptionScope.Unacked);
+                maxCategoryId = eventSourceObject.GetAlarmMaxCategoryId(EventSourceModelSubscriptionScope.Unacked);
                 if (maxCategoryId > 0)
                     foreach (EventSourceArea eventSourceArea in eventSourceObject.EventSourceAreas.Values)
                     {
@@ -213,7 +218,7 @@ namespace Ssz.Utils.DataAccess
                         alarmCategoryInfo.UnackedCount += 1;
                     }
 
-                maxCategoryId = eventSourceObject.GetAlarmMaxCategoryId(AlarmConditionSubscriptionScope.ActiveOrUnacked);
+                maxCategoryId = eventSourceObject.GetAlarmMaxCategoryId(EventSourceModelSubscriptionScope.ActiveOrUnacked);
                 if (maxCategoryId > 0)
                     foreach (EventSourceArea eventSourceArea in eventSourceObject.EventSourceAreas.Values)
                     {
@@ -227,7 +232,7 @@ namespace Ssz.Utils.DataAccess
                         alarmCategoryInfo.ActiveOrUnackedCount += 1;
                     }
 
-                maxCategoryId = eventSourceObject.GetAlarmMaxCategoryId(AlarmConditionSubscriptionScope.ActiveAndUnacked);
+                maxCategoryId = eventSourceObject.GetAlarmMaxCategoryId(EventSourceModelSubscriptionScope.ActiveAndUnacked);
                 if (maxCategoryId > 0)
                     foreach (EventSourceArea eventSourceArea in eventSourceObject.EventSourceAreas.Values)
                     {
@@ -333,12 +338,7 @@ namespace Ssz.Utils.DataAccess
 
         #endregion
 
-        #region protected functions
-
-        /// <summary>
-        ///     Can be used after Initialize(...)
-        /// </summary>
-        protected IDataAccessProvider DataAccessProvider { get; private set; } = null!;
+        #region protected functions        
 
         protected virtual void DataAccessProviderOnPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs args)
         {

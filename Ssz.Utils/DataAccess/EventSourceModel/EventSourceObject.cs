@@ -25,7 +25,7 @@ namespace Ssz.Utils.DataAccess
         /// </summary>
         public object? Obj { get; set; }
 
-        public Dictionary<IValueSubscription, AlarmConditionSubscriptionInfo> Subscriptions { get; } = new(ReferenceEqualityComparer<IValueSubscription>.Default);
+        public Dictionary<IValueSubscription, EventSourceModelSubscriptionInfo> Subscriptions { get; } = new(ReferenceEqualityComparer<IValueSubscription>.Default);
 
         /// <summary>
         ///     Not includes normal AlarmConditionState.
@@ -36,7 +36,7 @@ namespace Ssz.Utils.DataAccess
 
         public CaseInsensitiveDictionary<EventSourceArea> EventSourceAreas { get; } = new();
 
-        public uint GetAlarmMaxCategoryId(AlarmConditionSubscriptionScope subscriptionScope)
+        public uint GetAlarmMaxCategoryId(EventSourceModelSubscriptionScope subscriptionScope)
         {
             var predicate = EventSourceModelHelper.GetPredicate(subscriptionScope);
             uint maxCategoryId = 0;
@@ -46,7 +46,7 @@ namespace Ssz.Utils.DataAccess
             return maxCategoryId;
         }
 
-        public AlarmConditionType GetAlarmConditionType(AlarmConditionSubscriptionScope subscriptionScope)
+        public AlarmConditionType GetAlarmConditionType(EventSourceModelSubscriptionScope subscriptionScope)
         {
             var predicate = EventSourceModelHelper.GetPredicate(subscriptionScope);
             var conditions = AlarmConditions.Values.Where(predicate).ToArray();
@@ -61,7 +61,7 @@ namespace Ssz.Utils.DataAccess
             }
         }
 
-        public uint GetAlarmsCount(AlarmConditionSubscriptionScope subscriptionScope, uint? alarmCategoryIdFilter)
+        public uint GetAlarmsCount(EventSourceModelSubscriptionScope subscriptionScope, uint? alarmCategoryIdFilter)
         {            
             if (alarmCategoryIdFilter is null)
             {
@@ -93,7 +93,7 @@ namespace Ssz.Utils.DataAccess
             }
         }
 
-        public virtual void NotifySubscription(IValueSubscription subscription, AlarmConditionSubscriptionInfo alarmConditionSubscriptionInfo)
+        public virtual void NotifySubscription(IValueSubscription subscription, EventSourceModelSubscriptionInfo eventSourceModelSubscriptionInfo)
         {
             if (!DataAccessProvider.IsConnected)
             {                
@@ -101,22 +101,22 @@ namespace Ssz.Utils.DataAccess
                 return;
             }            
 
-            switch (alarmConditionSubscriptionInfo.AlarmConditionSubscriptionType)
+            switch (eventSourceModelSubscriptionInfo.EventSourceModelSubscriptionType)
             {
                 case EventSourceModel.AlarmsCount_SubscriptionType:
-                    uint count = GetAlarmsCount(alarmConditionSubscriptionInfo.AlarmConditionSubscriptionScope, alarmConditionSubscriptionInfo.AlarmCategoryIdFilter);
+                    uint count = GetAlarmsCount(eventSourceModelSubscriptionInfo.EventSourceModelSubscriptionScope, eventSourceModelSubscriptionInfo.AlarmCategoryIdFilter);
                     subscription.Update(new ValueStatusTimestamp(new Any(count)));
                     break;
                 case EventSourceModel.AlarmsAny_SubscriptionType:
-                    bool alarmAny = GetAlarmsCount(alarmConditionSubscriptionInfo.AlarmConditionSubscriptionScope, alarmConditionSubscriptionInfo.AlarmCategoryIdFilter) > 0;
+                    bool alarmAny = GetAlarmsCount(eventSourceModelSubscriptionInfo.EventSourceModelSubscriptionScope, eventSourceModelSubscriptionInfo.AlarmCategoryIdFilter) > 0;
                     subscription.Update(new ValueStatusTimestamp(new Any(alarmAny)));
                     break;
                 case EventSourceModel.AlarmMaxCategoryId_SubscriptionType:
-                    uint alarmMaxCategoryId = GetAlarmMaxCategoryId(alarmConditionSubscriptionInfo.AlarmConditionSubscriptionScope);
+                    uint alarmMaxCategoryId = GetAlarmMaxCategoryId(eventSourceModelSubscriptionInfo.EventSourceModelSubscriptionScope);
                     subscription.Update(new ValueStatusTimestamp(new Any(alarmMaxCategoryId)));
                     break;
                 case EventSourceModel.AlarmConditionType_SubscriptionType:
-                    AlarmConditionType alarmConditionType = GetAlarmConditionType(alarmConditionSubscriptionInfo.AlarmConditionSubscriptionScope);
+                    AlarmConditionType alarmConditionType = GetAlarmConditionType(eventSourceModelSubscriptionInfo.EventSourceModelSubscriptionScope);
                     subscription.Update(new ValueStatusTimestamp(new Any(alarmConditionType)));
                     break;                
             }

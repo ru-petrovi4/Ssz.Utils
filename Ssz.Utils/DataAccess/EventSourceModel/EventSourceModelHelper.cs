@@ -8,17 +8,17 @@ namespace Ssz.Utils.DataAccess
     {
         #region protected functions        
 
-        public static Func<AlarmConditionState, bool> GetPredicate(AlarmConditionSubscriptionScope subscriptionScope)
+        public static Func<AlarmConditionState, bool> GetPredicate(EventSourceModelSubscriptionScope subscriptionScope)
         {
             switch (subscriptionScope)
             {
-                case AlarmConditionSubscriptionScope.Active:
+                case EventSourceModelSubscriptionScope.Active:
                     return Active;
-                case AlarmConditionSubscriptionScope.Unacked:
+                case EventSourceModelSubscriptionScope.Unacked:
                     return Unacked;
-                case AlarmConditionSubscriptionScope.ActiveOrUnacked:
+                case EventSourceModelSubscriptionScope.ActiveOrUnacked:
                     return ActiveOrUnacked;
-                case AlarmConditionSubscriptionScope.ActiveAndUnacked:
+                case EventSourceModelSubscriptionScope.ActiveAndUnacked:
                     return ActiveAndUnacked;
                 default:
                     throw new ArgumentException(nameof(subscriptionScope));
