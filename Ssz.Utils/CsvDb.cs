@@ -165,7 +165,7 @@ namespace Ssz.Utils
                     else
                     {
                         // Notify about deleted files
-                        CsvFileChanged?.Invoke(CsvFileChangeAction.Removed, kvp.Key);
+                        CsvFileChanged?.Invoke(CsvFileChangeAction.Removed, Path.GetFileName(kvp.Value.FileFullName));
                     }                    
                 }
             }
@@ -182,9 +182,9 @@ namespace Ssz.Utils
 
                     // Notify about changed files
                     if (csvFile.MovedToNewCollection)
-                        CsvFileChanged?.Invoke(CsvFileChangeAction.Updated, kvp.Key);
+                        CsvFileChanged?.Invoke(CsvFileChangeAction.Updated, Path.GetFileName(kvp.Value.FileFullName));
                     else
-                        CsvFileChanged?.Invoke(CsvFileChangeAction.Added, kvp.Key);
+                        CsvFileChanged?.Invoke(CsvFileChangeAction.Added, Path.GetFileName(kvp.Value.FileFullName));
                 }
                 csvFile.MovedToNewCollection = false;
             }            
@@ -261,7 +261,7 @@ namespace Ssz.Utils
         /// <returns></returns>
         public IEnumerable<string> GetFileNames()
         {
-            return _csvFilesCollection.Keys;
+            return _csvFilesCollection.Values.Select(cf => Path.GetFileName(cf.FileFullName));
         }
 
         /// <summary>
@@ -445,9 +445,9 @@ namespace Ssz.Utils
                         csvFile.LastWriteTimeUtc = File.GetLastWriteTimeUtc(csvFile.FileFullName);
 
                         if (isNewCsvFile)
-                            CsvFileChanged?.Invoke(CsvFileChangeAction.Added, kvp.Key);
+                            CsvFileChanged?.Invoke(CsvFileChangeAction.Added, Path.GetFileName(kvp.Value.FileFullName));
                         else
-                            CsvFileChanged?.Invoke(CsvFileChangeAction.Updated, kvp.Key);
+                            CsvFileChanged?.Invoke(CsvFileChangeAction.Updated, Path.GetFileName(kvp.Value.FileFullName));
                     }
                     catch (Exception ex)
                     {
