@@ -2,11 +2,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	
     <PropertyGroup>
-	    <TargetFrameworks>net462;net6.0-windows</TargetFrameworks>
-	    <LangVersion>Latest</LangVersion>
-	    <UseWPF>true</UseWPF>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <Description>ControlzEx is a library with some shared Controls for WPF.</Description>        
+	  <TargetFrameworks>net462;net6.0-windows</TargetFrameworks>
+	  <LangVersion>Latest</LangVersion>
+	  <UseWPF>true</UseWPF>
+      <GenerateDocumentationFile>true</GenerateDocumentationFile>
+      <Description>ControlzEx is a library with some shared Controls for WPF.</Description>        
     </PropertyGroup>
     <ItemGroup>
       <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
