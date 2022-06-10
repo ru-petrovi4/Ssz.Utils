@@ -48,6 +48,7 @@ namespace Ssz.Utils
 
             if (_csvDbDirectoryInfo is not null)
             {
+                _logger.LogInformation("CsvDb Created for: " + _csvDbDirectoryInfo.FullName);
                 if (_dispatcher is not null)
                     try
                     {
@@ -118,7 +119,8 @@ namespace Ssz.Utils
 
             var newCsvFilesCollection = new Dictionary<string, CsvFile>();
 
-            foreach (FileInfo fileInfo in _csvDbDirectoryInfo.GetFiles(@"*.csv", SearchOption.TopDirectoryOnly))
+            foreach (FileInfo fileInfo in _csvDbDirectoryInfo.GetFiles(@"*", SearchOption.TopDirectoryOnly).Where(f => f.Name.EndsWith(@".csv",
+                StringComparison.InvariantCultureIgnoreCase)))
             {
                 string fileNameUpper = fileInfo.Name.ToUpperInvariant();
                 _csvFilesCollection.TryGetValue(fileNameUpper, out CsvFile? csvFile);
@@ -136,7 +138,7 @@ namespace Ssz.Utils
                             oldCsvFile.DataIsChangedOnDisk = true;
                     }
                 }
-                else if (Path.GetFileNameWithoutExtension(csvFile.FileFullName) != Path.GetFileNameWithoutExtension(fileInfo.FullName) || // Strict compare for 'a' to 'A' changes in files names to work.
+                else if (Path.GetFileNameWithoutExtension(csvFile.FileFullName) != Path.GetFileNameWithoutExtension(fileInfo.FullName) || // Strict compare
                     !FileSystemHelper.FileSystemTimeIsEquals(csvFile.LastWriteTimeUtc, fileInfo.LastWriteTimeUtc))
                 {
                     csvFile.FileFullName = fileInfo.FullName;
