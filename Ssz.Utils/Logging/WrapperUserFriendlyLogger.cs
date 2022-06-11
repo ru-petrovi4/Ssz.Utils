@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Ssz.Utils.Logging
@@ -9,32 +10,47 @@ namespace Ssz.Utils.Logging
     {
         #region construction and destruction
 
-        public WrapperUserFriendlyLogger(ILogger? logger)
+        public WrapperUserFriendlyLogger(params ILogger[] loggers)
         {
-            Logger = logger;
+            Loggers = loggers;
         }
 
         #endregion
 
         #region public functions
 
-        public ILogger? Logger { get; }
+        public ILogger[] Loggers { get; }
 
         public IDisposable BeginScope<TState>(TState state)
-        {
-            return Logger?.BeginScope(state) ?? Disposable.Empty;
+        {            
+            return new WrapperDisposable(Loggers.Select(l => l.BeginScope(state)).ToArray());
         }
 
         public bool IsEnabled(LogLevel logLevel)
         {
-            return Logger?.IsEnabled(logLevel) ?? false;
+            return Loggers.Any(l => IsEnabled(logLevel));
         }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
-            Logger?.Log(logLevel, eventId, state, exception, formatter);
+            Array.ForEach(Loggers, l => l.Log(logLevel, eventId, state, exception, formatter));
         }
 
-        #endregion        
+        #endregion
+
+        private class WrapperDisposable : IDisposable
+        {
+            public WrapperDisposable(IDisposable[] disposables)
+            {
+                _disposables = disposables;
+            }
+
+            public void Dispose()
+            {
+                Array.ForEach(_disposables, d => d.Dispose());
+            }
+
+            private IDisposable[] _disposables;
+        }
     }
 }
