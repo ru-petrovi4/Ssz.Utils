@@ -23,7 +23,7 @@ namespace Ssz.Utils.Logging
 
         public IDisposable BeginScope<TState>(TState state)
         {            
-            return new WrapperDisposable(Loggers.Select(l => l.BeginScope(state)).ToArray());
+            return new ComplexScope(Loggers.Select(l => l.BeginScope(state)).ToArray());
         }
 
         public bool IsEnabled(LogLevel logLevel)
@@ -38,9 +38,9 @@ namespace Ssz.Utils.Logging
 
         #endregion
 
-        private class WrapperDisposable : IDisposable
+        private class ComplexScope : IDisposable
         {
-            public WrapperDisposable(IDisposable[] disposables)
+            public ComplexScope(IDisposable[] disposables)
             {
                 _disposables = disposables;
             }
