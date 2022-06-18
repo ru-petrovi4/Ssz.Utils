@@ -167,7 +167,7 @@ namespace Ssz.Utils
                     else
                     {
                         // Notify about deleted files
-                        CsvFileChanged?.Invoke(CsvFileChangeAction.Removed, Path.GetFileName(kvp.Value.FileFullName));
+                        CsvFileChanged?.Invoke(CsvFileChangeAction.Removed, kvp.Key);
                     }                    
                 }
             }
@@ -184,9 +184,9 @@ namespace Ssz.Utils
 
                     // Notify about changed files
                     if (csvFile.MovedToNewCollection)
-                        CsvFileChanged?.Invoke(CsvFileChangeAction.Updated, Path.GetFileName(kvp.Value.FileFullName));
+                        CsvFileChanged?.Invoke(CsvFileChangeAction.Updated, kvp.Key);
                     else
-                        CsvFileChanged?.Invoke(CsvFileChangeAction.Added, Path.GetFileName(kvp.Value.FileFullName));
+                        CsvFileChanged?.Invoke(CsvFileChangeAction.Added, kvp.Key);
                 }
                 csvFile.MovedToNewCollection = false;
             }            
@@ -447,9 +447,9 @@ namespace Ssz.Utils
                         csvFile.LastWriteTimeUtc = File.GetLastWriteTimeUtc(csvFile.FileFullName);
 
                         if (isNewCsvFile)
-                            CsvFileChanged?.Invoke(CsvFileChangeAction.Added, Path.GetFileName(kvp.Value.FileFullName));
+                            CsvFileChanged?.Invoke(CsvFileChangeAction.Added, kvp.Key);
                         else
-                            CsvFileChanged?.Invoke(CsvFileChangeAction.Updated, Path.GetFileName(kvp.Value.FileFullName));
+                            CsvFileChanged?.Invoke(CsvFileChangeAction.Updated, kvp.Key);
                     }
                     catch (Exception ex)
                     {
