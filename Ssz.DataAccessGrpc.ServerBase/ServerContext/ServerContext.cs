@@ -38,7 +38,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             uint requestedServerContextTimeoutMs, 
             string requestedServerCultureName, 
             string systemNameToConnect, 
-            CaseInsensitiveDictionary<string> contextParams)
+            CaseInsensitiveDictionary<string?> contextParams)
         {
             Logger = logger;
             ServerWorker = serverWorker;
@@ -187,7 +187,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public string SystemNameToConnect { get; }
 
-        public CaseInsensitiveDictionary<string> ContextParams { get; }
+        public CaseInsensitiveDictionary<string?> ContextParams { get; }
 
         /// <summary>
         ///    Context identifier != ""

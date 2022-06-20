@@ -109,7 +109,7 @@ namespace Ssz.Xi.Client
         ///     Used in Xi Context initialization.
         ///     Can be null
         /// </summary>
-        public CaseInsensitiveDictionary<string> ContextParams
+        public CaseInsensitiveDictionary<string?> ContextParams
         {
             get
             {
@@ -180,7 +180,7 @@ namespace Ssz.Xi.Client
             bool elementValueListCallbackIsEnabled,
             bool eventListCallbackIsEnabled,
             string serverAddress,
-            string clientApplicationName, string clientWorkstationName, string systemNameToConnect, CaseInsensitiveDictionary<string> contextParams)
+            string clientApplicationName, string clientWorkstationName, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams)
         {
             Close();
 
@@ -258,7 +258,7 @@ namespace Ssz.Xi.Client
 
             IsInitialized = false;            
 
-            _contextParams = new CaseInsensitiveDictionary<string>();
+            _contextParams = new CaseInsensitiveDictionary<string?>();
             ElementIdsMap = null;
 
             if (_cancellationTokenSource is not null)
@@ -714,7 +714,7 @@ namespace Ssz.Xi.Client
                             NameValueCollectionHelper.GetNameValueCollectionString(dictionary);
 #else
                         string xiContextParamsString =
-                            NameValueCollectionHelper.GetNameValueCollectionString(new CaseInsensitiveDictionary<string?>(_contextParams.Select(kvp => new KeyValuePair<string, string?>(kvp.Key, kvp.Value))));
+                            NameValueCollectionHelper.GetNameValueCollectionString(_contextParams);
 #endif
 
                         if (!String.IsNullOrEmpty(xiContextParamsString))
@@ -1103,7 +1103,7 @@ namespace Ssz.Xi.Client
         /// <summary>
         ///     Used in Xi Context initialization.
         /// </summary>
-        private CaseInsensitiveDictionary<string> _contextParams = new CaseInsensitiveDictionary<string>();        
+        private CaseInsensitiveDictionary<string?> _contextParams = new();        
 
         private Task? _workingTask;
 

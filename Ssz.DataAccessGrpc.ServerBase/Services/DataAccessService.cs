@@ -36,7 +36,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         request.RequestedServerContextTimeoutMs,
                         request.RequestedServerCultureName ?? @"",
                         request.SystemNameToConnect ?? @"",
-                        new CaseInsensitiveDictionary<string>(request.ContextParams)
+                        new CaseInsensitiveDictionary<string?>(request.ContextParams
+                            .Select(cp => KeyValuePair.Create(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)))
                         );
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
                     _serverWorker.AddServerContext(serverContext);                    

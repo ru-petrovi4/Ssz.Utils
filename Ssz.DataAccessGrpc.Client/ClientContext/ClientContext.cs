@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Ssz.DataAccessGrpc.Client.Data;
 using System.Threading.Tasks;
 using Ssz.DataAccessGrpc.Client.ClientLists;
+using Google.Protobuf.WellKnownTypes;
 
 namespace Ssz.DataAccessGrpc.Client
 {
@@ -45,7 +46,7 @@ namespace Ssz.DataAccessGrpc.Client
             uint requestedServerContextTimeoutMs,
             string requestedServerCultureName,
             string systemNameToConnect,
-            CaseInsensitiveDictionary<string> contextParams)
+            CaseInsensitiveDictionary<string?> contextParams)
         {
             _logger = logger;
             _callbackDispatcher = callbackDispatcher;
@@ -61,7 +62,9 @@ namespace Ssz.DataAccessGrpc.Client
                 RequestedServerCultureName = requestedServerCultureName,
             };
             initiateRequest.SystemNameToConnect = systemNameToConnect;
-            initiateRequest.ContextParams.Add(contextParams);
+            foreach (var kvp in contextParams)
+                initiateRequest.ContextParams.Add(kvp.Key, 
+                    kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
 
             InitiateReply initiateReply = _resourceManagementClient.Initiate(initiateRequest);
             _serverContextId = initiateReply.ContextId;

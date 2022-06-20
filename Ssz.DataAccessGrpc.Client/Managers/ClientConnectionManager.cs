@@ -119,7 +119,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             string clientApplicationName,
             string clientWorkstationName,
             string systemNameToConnect,
-            CaseInsensitiveDictionary<string> contextParams)
+            CaseInsensitiveDictionary<string?> contextParams)
         {
             if (_disposed) throw new ObjectDisposedException(@"Cannot access a disposed DataAccessGrpcServerProxy.");
 

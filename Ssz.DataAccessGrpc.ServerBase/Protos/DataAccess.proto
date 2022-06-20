@@ -3,6 +3,7 @@ syntax = "proto3";
 option csharp_namespace = "Ssz.DataAccessGrpc.ServerBase";
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
 
 service DataAccess {
   rpc Initiate (InitiateRequest) returns (InitiateReply);
@@ -42,6 +43,13 @@ service DataAccess {
   rpc LongrunningPassthrough (LongrunningPassthroughRequest) returns (LongrunningPassthroughReply);
 
   rpc LongrunningPassthroughCancel (LongrunningPassthroughCancelRequest) returns (LongrunningPassthroughCancelReply);
+}
+
+message NullableString {
+  oneof kind {
+    google.protobuf.NullValue null = 1;
+    string data = 2;
+  }
 }
 
 enum State
@@ -98,7 +106,7 @@ message InitiateRequest {
   uint32 requested_server_context_timeout_ms = 3;
   string requested_server_culture_name = 4;
   string system_name_to_connect = 5; 
-  map<string, string> context_params = 6;
+  map<string, NullableString> context_params = 6;
 }
 
 message InitiateReply {

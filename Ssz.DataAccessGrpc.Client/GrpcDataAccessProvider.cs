@@ -116,7 +116,7 @@ namespace Ssz.DataAccessGrpc.Client
         ///     Used in DataAccessGrpc Context initialization.
         ///     Can be null
         /// </summary>
-        public CaseInsensitiveDictionary<string> ContextParams
+        public CaseInsensitiveDictionary<string?> ContextParams
         {
             get
             {
@@ -192,7 +192,7 @@ namespace Ssz.DataAccessGrpc.Client
             bool elementValueListCallbackIsEnabled,
             bool eventListCallbackIsEnabled,
             string serverAddress,
-            string clientApplicationName, string clientWorkstationName, string systemNameToConnect, CaseInsensitiveDictionary<string> contextParams)
+            string clientApplicationName, string clientWorkstationName, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams)
         {
             Close();
 
@@ -273,7 +273,7 @@ namespace Ssz.DataAccessGrpc.Client
                 valueSubscriptionObj.MapValues = null;
             }
 
-            _contextParams = new CaseInsensitiveDictionary<string>();            
+            _contextParams = new CaseInsensitiveDictionary<string?>();            
             ElementIdsMap = null;
 
             if (_cancellationTokenSource is not null)
@@ -1088,7 +1088,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <summary>
         ///     Used in DataAccessGrpc Context initialization.
         /// </summary>
-        private CaseInsensitiveDictionary<string> _contextParams = new();        
+        private CaseInsensitiveDictionary<string?> _contextParams = new();        
 
         private Task? _workingTask;
 
