@@ -13,6 +13,7 @@ namespace Ssz.Utils
 
         /// <summary>
         ///     Preconditions: oldCollection and newCollection are ordered by Id.
+        ///     Preconditions: newCollection is Uninitialized.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="oldCollection"></param>
@@ -43,7 +44,11 @@ namespace Ssz.Utils
             for (int oldCollectionIndex = oldCollection.Count - 1; oldCollectionIndex >= 0; oldCollectionIndex -= 1)
             {
                 if (oldCollection[oldCollectionIndex].IsDeleted)
+                {
+                    var o = oldCollection[oldCollectionIndex];
                     oldCollection.RemoveAt(oldCollectionIndex);
+                    o.Close();
+                }
             }
 
             for (int newCollectionIndex = 0; newCollectionIndex < newCollection.Length; newCollectionIndex++)
@@ -58,10 +63,22 @@ namespace Ssz.Utils
                             break;
                         oldCollectionIndex -= 1;
                     }
-                    oldCollectionIndex += 1;                    
+                    oldCollectionIndex += 1;
+                    n.Initialize();
                     oldCollection.Insert(oldCollectionIndex, n);                    
                 }
                     
+            }
+        }
+
+        public static void SafeClear<T>(this ObservableCollection<T> collection)
+            where T : IObservableCollectionItem
+        {
+            for (int collectionIndex = collection.Count - 1; collectionIndex >= 0; collectionIndex -= 1)
+            {
+                var o = collection[collectionIndex];
+                collection.RemoveAt(collectionIndex);
+                o.Close();
             }
         }
 
@@ -85,10 +102,14 @@ namespace Ssz.Utils
         /// </summary>
         bool IsAdded { get; set; }
 
+        void Initialize();
+
         /// <summary>
         ///     Need implementation for updating.
         /// </summary>
         /// <param name="item"></param>
         void Update(IObservableCollectionItem item);
+
+        void Close();
     }
 }
