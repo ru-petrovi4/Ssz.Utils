@@ -76,7 +76,7 @@ namespace Ssz.Utils.DataAccess
         public void ReInitialize();
 
         /// <summary>
-        ///     Tou can call Dispose() instead of this method.
+        ///     You can call Dispose() instead of this method.
         ///     Closes without waiting working thread exit.
         /// </summary>
         void Close();

@@ -12,45 +12,56 @@ namespace Ssz.Utils
         #region public functions
 
         /// <summary>
-        ///     Preconditions: source and destination are ordered by Id.
+        ///     Preconditions: oldCollection and newCollection are ordered by Id.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="source"></param>
-        /// <param name="destination"></param>
-        public static void Update<T>(this ObservableCollection<T> source, T[] destination)
+        /// <param name="oldCollection"></param>
+        /// <param name="newCollection"></param>
+        public static void Update<T>(this ObservableCollection<T> oldCollection, T[] newCollection)
             where T : IObservableCollectionItem
         {
-            foreach (T s in source)
+            foreach (T o in oldCollection)
             {
-                s.IsDeleted = true;
+                o.IsDeleted = true;
             }
 
-            foreach (T d in destination)
+            foreach (T n in newCollection)
             {
-                var s = source.FirstOrDefault(i => String.Equals(i.Id, d.Id, StringComparison.InvariantCultureIgnoreCase));
-                if (s is null)
+                var o = oldCollection.FirstOrDefault(i => String.Equals(i.Id, n.Id, StringComparison.InvariantCultureIgnoreCase));
+                if (o is null)
                 {
-                    d.IsAdded = true;
+                    n.IsAdded = true;
                 }
                 else
                 {
-                    d.IsAdded = false;
-                    s.IsDeleted = false;
-                    s.Update(d);
+                    n.IsAdded = false;
+                    o.IsDeleted = false;
+                    o.Update(n);
                 }
             }
             
-            for (int index = source.Count - 1; index >= 0; index--)
+            for (int oldCollectionIndex = oldCollection.Count - 1; oldCollectionIndex >= 0; oldCollectionIndex -= 1)
             {
-                if (source[index].IsDeleted)
-                    source.RemoveAt(index);
+                if (oldCollection[oldCollectionIndex].IsDeleted)
+                    oldCollection.RemoveAt(oldCollectionIndex);
             }
 
-            for (int index = 0; index < destination.Length; index++)
+            for (int newCollectionIndex = 0; newCollectionIndex < newCollection.Length; newCollectionIndex++)
             {
-                var d = destination[index];
-                if (d.IsAdded)
-                    source.Insert(index, d);
+                var n = newCollection[newCollectionIndex];
+                if (n.IsAdded)
+                {
+                    int oldCollectionIndex = oldCollection.Count - 1;
+                    while (oldCollectionIndex >= 0)
+                    {
+                        if (String.Compare(oldCollection[oldCollectionIndex].Id, n.Id) < 0)
+                            break;
+                        oldCollectionIndex -= 1;
+                    }
+                    oldCollectionIndex += 1;                    
+                    oldCollection.Insert(oldCollectionIndex, n);                    
+                }
+                    
             }
         }
 
@@ -59,12 +70,25 @@ namespace Ssz.Utils
 
     public interface IObservableCollectionItem
     {
+        /// <summary>
+        ///     Need implementation for comparison.
+        /// </summary>
         string Id { get; }
 
+        /// <summary>
+        ///     Used by the framework.
+        /// </summary>
         bool IsDeleted { get; set; }
 
+        /// <summary>
+        ///     Used by the framework.
+        /// </summary>
         bool IsAdded { get; set; }
 
+        /// <summary>
+        ///     Need implementation for updating.
+        /// </summary>
+        /// <param name="item"></param>
         void Update(IObservableCollectionItem item);
     }
 }
