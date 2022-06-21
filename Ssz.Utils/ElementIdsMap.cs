@@ -27,11 +27,7 @@ namespace Ssz.Utils
 
         public const string StandardMapFileName = @"Map.csv";
 
-        public const string StandardMapFileNameUpper = @"MAP.CSV";
-
         public const string StandardTagsFileName = @"Tags.csv";
-
-        public const string StandardTagsFileNameUpper = @"TAGS.CSV";
 
         /// <summary>
         ///     Can be configured in map, 'GenericTag' key
