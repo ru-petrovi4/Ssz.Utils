@@ -80,7 +80,7 @@ namespace Ssz.Utils
         public IUserFriendlyLogger? UserFriendlyLogger { get; set; }
 
         /// <summary>
-        ///     FileName in Upper-Case, File name as on disk.
+        /// 
         /// </summary>
         public event Action<CsvFileChangeAction, string>? CsvFileChanged;
 
