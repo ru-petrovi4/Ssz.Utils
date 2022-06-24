@@ -26,44 +26,44 @@ namespace Ssz.Utils
         /// <param name="dispatcher"></param>
         public CsvDb(ILogger<CsvDb> logger, IUserFriendlyLogger? userFriendlyLogger = null, DirectoryInfo? csvDbDirectoryInfo = null, IDispatcher? dispatcher = null)
         {
-            _logger = logger;
+            Logger = logger;
             UserFriendlyLogger = userFriendlyLogger;
-            _csvDbDirectoryInfo = csvDbDirectoryInfo;
-            _dispatcher = dispatcher;
+            CsvDbDirectoryInfo = csvDbDirectoryInfo;
+            Dispatcher = dispatcher;
 
-            if (_csvDbDirectoryInfo is not null)
+            if (CsvDbDirectoryInfo is not null)
             {
                 try
                 {
                     // Creates all directories and subdirectories in the specified path unless they already exist.
-                    Directory.CreateDirectory(_csvDbDirectoryInfo.FullName);
-                    if (!_csvDbDirectoryInfo.Exists)
-                        _csvDbDirectoryInfo = null;
+                    Directory.CreateDirectory(CsvDbDirectoryInfo.FullName);
+                    if (!CsvDbDirectoryInfo.Exists)
+                        CsvDbDirectoryInfo = null;
                 }
                 catch
                 {
-                    _csvDbDirectoryInfo = null;
+                    CsvDbDirectoryInfo = null;
                 }
             }
 
-            if (_csvDbDirectoryInfo is not null)
+            if (CsvDbDirectoryInfo is not null)
             {
-                _logger.LogInformation("CsvDb Created for: " + _csvDbDirectoryInfo.FullName);
-                if (_dispatcher is not null)
+                Logger.LogInformation("CsvDb Created for: " + CsvDbDirectoryInfo.FullName);
+                if (Dispatcher is not null)
                     try
                     {
                         _fileSystemWatcher.Created += FileSystemWatcherOnEventAsync;
                         _fileSystemWatcher.Changed += FileSystemWatcherOnEventAsync;
                         _fileSystemWatcher.Deleted += FileSystemWatcherOnEventAsync;
                         _fileSystemWatcher.Renamed += FileSystemWatcherOnEventAsync;
-                        _fileSystemWatcher.Path = _csvDbDirectoryInfo.FullName;
+                        _fileSystemWatcher.Path = CsvDbDirectoryInfo.FullName;
                         _fileSystemWatcher.Filter = @"*.csv";
                         _fileSystemWatcher.IncludeSubdirectories = false;
                         _fileSystemWatcher.EnableRaisingEvents = true;
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogWarning(ex, "AppSettings FilesStore directory error. Please, specify correct directory and restart service.");
+                        Logger.LogWarning(ex, "AppSettings FilesStore directory error. Please, specify correct directory and restart service.");
                     }
             }
 
@@ -74,10 +74,20 @@ namespace Ssz.Utils
 
         #region public functions
 
+        public ILogger Logger { get; }
+
         /// <summary>
         ///     Messages are localized. Priority is Information, Error, Warning.
+        ///     Can be changed at any time.
         /// </summary>
         public IUserFriendlyLogger? UserFriendlyLogger { get; set; }
+
+        /// <summary>
+        ///     Existing directory info or null.
+        /// </summary>
+        public DirectoryInfo? CsvDbDirectoryInfo { get; }
+
+        public IDispatcher? Dispatcher { get; }        
 
         /// <summary>
         /// 
@@ -115,11 +125,11 @@ namespace Ssz.Utils
         /// </summary>
         public void LoadData()
         {
-            if (_csvDbDirectoryInfo is null) return;
+            if (CsvDbDirectoryInfo is null) return;
 
             var newCsvFilesCollection = new Dictionary<string, CsvFile>();
 
-            foreach (FileInfo fileInfo in _csvDbDirectoryInfo.GetFiles(@"*", SearchOption.TopDirectoryOnly).Where(f => f.Name.EndsWith(@".csv",
+            foreach (FileInfo fileInfo in CsvDbDirectoryInfo.GetFiles(@"*", SearchOption.TopDirectoryOnly).Where(f => f.Name.EndsWith(@".csv",
                 StringComparison.InvariantCultureIgnoreCase)))
             {
                 string fileNameUpper = fileInfo.Name.ToUpperInvariant();
@@ -211,7 +221,7 @@ namespace Ssz.Utils
                 _csvFilesCollection.Add(fileNameUpper, csvFile);
             }
 
-            if (_csvDbDirectoryInfo is not null)
+            if (CsvDbDirectoryInfo is not null)
                 csvFile.FileName = fileName;
             csvFile.IncludeFileNamesCollection.Clear();
             csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
@@ -264,6 +274,20 @@ namespace Ssz.Utils
         public IEnumerable<string> GetFileNames()
         {
             return _csvFilesCollection.Values.Select(cf => cf.FileName);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public CaseInsensitiveDictionary<string?> GetFileNameAndLastWriteTimeUtcDictionary()
+        {
+            var result = new CaseInsensitiveDictionary<string?>();
+            foreach (var csvFile in _csvFilesCollection.Values)
+            {
+                result.Add(csvFile.FileName, new Any(csvFile.LastWriteTimeUtc).ValueAsString(false));
+            }
+            return result;
         }
 
         /// <summary>
@@ -380,7 +404,7 @@ namespace Ssz.Utils
             csvFile.DataIsChangedByProgram = true;
         }
 
-        public void SetValues(string? fileName, IEnumerable<string?> values)
+        public void SetValues(string? fileName, IEnumerable<string?> valuesLine)
         {
             if (string.IsNullOrWhiteSpace(fileName)) return;
 
@@ -396,7 +420,7 @@ namespace Ssz.Utils
                 _csvFilesCollection.Add(fileNameUpper, csvFile);
             }
 
-            var enumerator = values.GetEnumerator();
+            var enumerator = valuesLine.GetEnumerator();
             if (!enumerator.MoveNext()) return;
             string key = enumerator.Current ?? @"";
 
@@ -421,12 +445,56 @@ namespace Ssz.Utils
             csvFile.DataIsChangedByProgram = true;
         }
 
+        public void SetValues(string? fileName, IEnumerable<IEnumerable<string?>> values)
+        {
+            if (string.IsNullOrWhiteSpace(fileName)) return;
+
+            string fileNameUpper = fileName!.ToUpperInvariant();
+
+            if (!fileNameUpper.EndsWith(@".CSV")) return;
+
+            if (!_csvFilesCollection.TryGetValue(fileNameUpper, out CsvFile? csvFile))
+            {
+                csvFile = new CsvFile();
+                csvFile.FileName = fileName;
+                csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
+                _csvFilesCollection.Add(fileNameUpper, csvFile);
+            }
+
+            foreach (var valuesLine in values)
+            {
+                var enumerator = valuesLine.GetEnumerator();
+                if (!enumerator.MoveNext()) return;
+                string key = enumerator.Current ?? @"";
+
+                EnsureDataIsLoaded(csvFile);
+
+                if (!csvFile.Data!.TryGetValue(key, out List<string?>? fileLine))
+                {
+                    fileLine = new List<string?> { key };
+                    csvFile.Data.Add(key, fileLine);
+                }
+                else
+                {
+                    fileLine.Clear();
+                    fileLine.Add(key);
+                }
+
+                while (enumerator.MoveNext())
+                {
+                    fileLine.Add(enumerator.Current);
+                }
+            }            
+
+            csvFile.DataIsChangedByProgram = true;
+        }
+
         /// <summary>
         ///     Saves changed data to .csv files on disk.
         /// </summary>
         public void SaveData()
         {
-            if (_csvDbDirectoryInfo is null) return;
+            if (CsvDbDirectoryInfo is null) return;
 
             _fileSystemWatcher.EnableRaisingEvents = false;
 
@@ -435,7 +503,7 @@ namespace Ssz.Utils
                 CsvFile csvFile = kvp.Value;
                 if (csvFile.DataIsChangedByProgram)
                 {
-                    string fileFullName = Path.Combine(_csvDbDirectoryInfo.FullName, csvFile.FileName);
+                    string fileFullName = Path.Combine(CsvDbDirectoryInfo.FullName, csvFile.FileName);
                     try
                     {
                         var isNewCsvFile = csvFile.LastWriteTimeUtc == DateTime.MinValue;
@@ -456,7 +524,7 @@ namespace Ssz.Utils
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError(ex, Properties.Resources.CsvDb_CsvFileWritingError + " " + fileFullName);
+                        Logger.LogError(ex, Properties.Resources.CsvDb_CsvFileWritingError + " " + fileFullName);
                     }
 
                     csvFile.DataIsChangedByProgram = false;
@@ -471,7 +539,7 @@ namespace Ssz.Utils
         /// </summary>
         public void SaveData(string? fileName)
         {
-            if (_csvDbDirectoryInfo is null) return;            
+            if (CsvDbDirectoryInfo is null) return;            
 
             if (string.IsNullOrWhiteSpace(fileName)) return;
 
@@ -483,7 +551,7 @@ namespace Ssz.Utils
             {
                 _fileSystemWatcher.EnableRaisingEvents = false;
 
-                string fileFullName = Path.Combine(_csvDbDirectoryInfo.FullName, csvFile.FileName);
+                string fileFullName = Path.Combine(CsvDbDirectoryInfo.FullName, csvFile.FileName);
                 try
                 {
                     var isNewCsvFile = csvFile.LastWriteTimeUtc == DateTime.MinValue;
@@ -504,7 +572,7 @@ namespace Ssz.Utils
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, Properties.Resources.CsvDb_CsvFileWritingError + " " + fileFullName);
+                    Logger.LogError(ex, Properties.Resources.CsvDb_CsvFileWritingError + " " + fileFullName);
                 }
 
                 csvFile.DataIsChangedByProgram = false;
@@ -521,8 +589,8 @@ namespace Ssz.Utils
         {
             if (csvFile.Data is null)
             {
-                if (_csvDbDirectoryInfo is not null)
-                    csvFile.Data = CsvHelper.LoadCsvFile(Path.Combine(_csvDbDirectoryInfo.FullName, csvFile.FileName), true, null, UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
+                if (CsvDbDirectoryInfo is not null)
+                    csvFile.Data = CsvHelper.LoadCsvFile(Path.Combine(CsvDbDirectoryInfo.FullName, csvFile.FileName), true, null, UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
                 else
                     csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
             }
@@ -535,9 +603,9 @@ namespace Ssz.Utils
             await Task.Delay(1000);
             _fileSystemWatcherOnEventIsProcessing = false;
 
-            if (_dispatcher is not null)
+            if (Dispatcher is not null)
             {
-                _dispatcher.BeginInvoke(ct =>
+                Dispatcher.BeginInvoke(ct =>
                 {
                     this.LoadData();                    
                 });
@@ -562,13 +630,7 @@ namespace Ssz.Utils
 
         #endregion
 
-        #region private fields        
-
-        private ILogger _logger;        
-
-        private DirectoryInfo? _csvDbDirectoryInfo;
-
-        private IDispatcher? _dispatcher;
+        #region private fields
 
         /// <summary>
         ///     [File name with .CSV extension in Upper-Case, CsvFile]

@@ -10,9 +10,9 @@ namespace Ssz.Utils.Logging
     {
         #region construction and destruction
 
-        public WrapperUserFriendlyLogger(params ILogger[] loggers)
+        public WrapperUserFriendlyLogger(params ILogger?[] loggers)
         {
-            Loggers = loggers;
+            Loggers = loggers.Where(l => l is not null).OfType<ILogger>().ToArray();
         }
 
         #endregion

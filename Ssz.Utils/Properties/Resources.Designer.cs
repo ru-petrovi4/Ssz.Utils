@@ -61,6 +61,15 @@ namespace Ssz.Utils.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot find or create addon config directory: {0}.
+        /// </summary>
+        internal static string AddonConfigDirectoryError {
+            get {
+                return ResourceManager.GetString("AddonConfigDirectoryError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Calculation error.
         /// </summary>
         internal static string CalculationLambdaExpressionError {
@@ -102,6 +111,24 @@ namespace Ssz.Utils.Properties {
         internal static string CsvHelper_CsvFileReadingError {
             get {
                 return ResourceManager.GetString("CsvHelper_CsvFileReadingError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Desired addon {0} failed..
+        /// </summary>
+        internal static string DesiredAddonFailed {
+            get {
+                return ResourceManager.GetString("DesiredAddonFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Desired addon {0} is not found..
+        /// </summary>
+        internal static string DesiredAddonIsNotFound {
+            get {
+                return ResourceManager.GetString("DesiredAddonIsNotFound", resourceCulture);
             }
         }
         

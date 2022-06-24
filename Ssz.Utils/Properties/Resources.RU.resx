@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddonConfigDirectoryError" xml:space="preserve">
+    <value>Не удается найти или создать директорию конфигурации плагина: {0}</value>
+  </data>
   <data name="CalculationLambdaExpressionError" xml:space="preserve">
     <value>Ошибка при вычислении выражения</value>
   </data>
@@ -131,6 +134,12 @@
   </data>
   <data name="CsvHelper_CsvFileReadingError" xml:space="preserve">
     <value>Ошибка чтения файла</value>
+  </data>
+  <data name="DesiredAddonFailed" xml:space="preserve">
+    <value>Ошибка при получении желаемого плагина {0}.</value>
+  </data>
+  <data name="DesiredAddonIsNotFound" xml:space="preserve">
+    <value>Желаемый плагин {0} не найден.</value>
   </data>
   <data name="PrepareLambdaExpressionError" xml:space="preserve">
     <value>Ошибка в выражении</value>
