@@ -12,7 +12,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Addons
 {
     /// <summary>
     ///     Only GetExportedValues<T>() is thread-safe.

@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ssz.Utils
+namespace Ssz.Utils.Addons
 {
     public abstract class AddonBase : IObservableCollectionItem
     {
