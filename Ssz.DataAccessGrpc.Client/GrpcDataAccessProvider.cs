@@ -35,15 +35,6 @@ namespace Ssz.DataAccessGrpc.Client
 
         #region public functions
 
-        public override string ContextId
-        {
-            get
-            {
-                if (!IsInitialized) throw new Exception("Not Initialized");
-                return _clientConnectionManager.ServerContextId;
-            }
-        }
-
         public GrpcChannel? GrpcChannel
         {
             get { return _clientConnectionManager.GrpcChannel; }
@@ -364,10 +355,10 @@ namespace Ssz.DataAccessGrpc.Client
             }
             );
             return await taskCompletionSource.Task;
-        }        
+        }
 
         /// <summary>
-        ///     Returns null if any errors.
+        ///     Throws if any errors.
         /// </summary>
         /// <param name="recipientId"></param>
         /// <param name="passthroughName"></param>
@@ -924,7 +915,7 @@ namespace Ssz.DataAccessGrpc.Client
         private CancellationTokenSource? _cancellationTokenSource;        
 
         private Dictionary<IValueSubscription, ValueSubscriptionObj> _valueSubscriptionsCollection =
-            new Dictionary<IValueSubscription, ValueSubscriptionObj>(ReferenceEqualityComparer<IValueSubscription>.Default);
+            new(ReferenceEqualityComparer<IValueSubscription>.Default);
 
         private ClientConnectionManager _clientConnectionManager { get; }
 

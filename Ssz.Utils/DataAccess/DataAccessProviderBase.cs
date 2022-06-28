@@ -141,8 +141,6 @@ namespace Ssz.Utils.DataAccess
             }
         }
 
-        public virtual string ContextId => "1";
-
         public bool IsInitialized
         {
             get { return _isInitialized; }
@@ -248,6 +246,13 @@ namespace Ssz.Utils.DataAccess
             return Task.FromResult(true);
         }
 
+        /// <summary>
+        ///     Throws if any errors.
+        /// </summary>
+        /// <param name="recipientId"></param>
+        /// <param name="passthroughName"></param>
+        /// <param name="dataToSend"></param>
+        /// <returns></returns>
         public virtual Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
         {
             return Task.FromResult<IEnumerable<byte>>(new byte[0]);

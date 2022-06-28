@@ -28,16 +28,7 @@ namespace Ssz.Xi.Client
 
         #endregion
 
-        #region public functions        
-
-        public override string ContextId
-        {
-            get
-            {
-                if (!IsInitialized) throw new Exception("Not Initialized");
-                return _xiServerProxy!.ContextId;
-            }
-        }        
+        #region public functions
 
         /// <summary>
         ///     Is called using сallbackDoer, see Initialize(..).
