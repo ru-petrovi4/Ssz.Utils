@@ -15,6 +15,15 @@ namespace Ssz.Utils.DataAccess
     /// </summary>
     public interface IDataAccessProvider: INotifyPropertyChanged, IDisposable, IAsyncDisposable
     {
+        ElementIdsMap? ElementIdsMap { get; }
+
+        /// <summary>
+        ///     Used in DataAccessGrpc ElementValueList initialization.
+        /// </summary>
+        bool ElementValueListCallbackIsEnabled { get; }
+
+        bool EventListCallbackIsEnabled { get; }        
+
         string ServerAddress { get; }
 
         string SystemNameToConnect { get; }
@@ -34,6 +43,8 @@ namespace Ssz.Utils.DataAccess
         bool IsDisconnected { get; }        
 
         EventWaitHandle IsConnectedEventWaitHandle { get; }
+
+        DateTime InitializedDateTimeUtc { get; }
 
         DateTime LastFailedConnectionDateTimeUtc { get; }
 

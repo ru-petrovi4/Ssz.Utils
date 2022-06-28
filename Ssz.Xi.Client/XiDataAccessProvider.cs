@@ -14,156 +14,35 @@ using Xi.Contracts.Data;
 
 namespace Ssz.Xi.Client
 {
-    public partial class XiDataAccessProvider : DisposableViewModelBase, IDataAccessProvider
+    public partial class XiDataAccessProvider : DataAccessProviderBase, IDataAccessProvider
     {
         #region construction and destruction
 
-        public XiDataAccessProvider(ILogger<XiDataAccessProvider> logger, IDispatcher? callbackDispatcher)
+        public XiDataAccessProvider(ILogger<XiDataAccessProvider> logger, IDispatcher? callbackDispatcher) :
+            base(logger, callbackDispatcher)
         {
-            Logger = logger;
-            CallbackDispatcher = callbackDispatcher;
-
+            _xiDataListItemsManager = new XiDataListItemsManager();
+            _xiDataJournalListItemsManager = new XiDataJournalListItemsManager();
             _xiEventListItemsManager = new XiEventListItemsManager(this);
-        }
-
-        /// <summary>
-        ///     This method is invoked when the IDisposable.Dispose or Finalize actions are
-        ///     requested.
-        /// </summary>
-        protected override void Dispose(bool disposing)
-        {
-            if (Disposed) return;
-
-            if (disposing)
-            {
-                Close();
-            }
-
-            base.Dispose(disposing);
-        }
-
-        protected override async ValueTask DisposeAsyncCore()
-        {
-            if (Disposed) return;
-
-            await CloseAsync();
-
-            await base.DisposeAsyncCore();
         }
 
         #endregion
 
-        #region public functions
+        #region public functions        
 
-        public ILogger<XiDataAccessProvider> Logger { get; }
-
-        /// <summary>
-        ///     Xi Server connection string.
-        /// </summary>
-        public string ServerAddress
-        {
-            get
-            {
-                if (!IsInitialized) throw new Exception("Not Initialized");
-                return _serverAddress;
-            }
-        }
-
-        /// <summary>
-        ///     Xi System Name.
-        /// </summary>
-        public string SystemNameToConnect
-        {
-            get
-            {
-                if (!IsInitialized) throw new Exception("Not Initialized");
-                return _systemNameToConnect;
-            }
-        }
-
-        /// <summary>
-        ///     Used in Xi Context initialization.
-        /// </summary>
-        public string ClientApplicationName
-        {
-            get
-            {
-                if (!IsInitialized) throw new Exception("Not Initialized");
-                return _clientApplicationName;
-            }
-        }
-
-        /// <summary>
-        ///     Used in Xi Context initialization.
-        /// </summary>
-        public string ClientWorkstationName
-        {
-            get
-            {
-                if (!IsInitialized) throw new Exception("Not Initialized");
-                return _clientWorkstationName;
-            }
-        }
-
-        /// <summary>
-        ///     Used in Xi Context initialization.
-        ///     Can be null
-        /// </summary>
-        public CaseInsensitiveDictionary<string?> ContextParams
-        {
-            get
-            {
-                if (!IsInitialized) throw new Exception("Not Initialized");
-                return _contextParams;
-            }
-        }
-
-        public string ContextId
+        public override string ContextId
         {
             get
             {
                 if (!IsInitialized) throw new Exception("Not Initialized");
                 return _xiServerProxy!.ContextId;
             }
-        }
-
-        public bool IsInitialized
-        {
-            get { return _isInitialized; }
-            private set { SetValue(ref _isInitialized, value); }
-        }
-
-        public bool IsConnected
-        {
-            get { return _isConnected; }
-            private set { SetValue(ref _isConnected, value); }
-        }
-
-        public bool IsDisconnected
-        {
-            get { return _isDisconnected; }
-            private set { SetValue(ref _isDisconnected, value); }
-        }
-
-        public EventWaitHandle IsConnectedEventWaitHandle => _isConnectedEventWaitHandle;
-
-        public DateTime LastFailedConnectionDateTimeUtc => _lastFailedConnectionDateTimeUtc;
-
-        public DateTime LastSuccessfulConnectionDateTimeUtc => _lastSuccessfulConnectionDateTimeUtc;
-
-        /// <summary>
-        ///     If guid the same, the data is guaranteed not to have changed.
-        /// </summary>
-        public Guid DataGuid { get; private set; }
-
-        public ElementIdsMap? ElementIdsMap { get; private set; }
-
-        public object? Obj { get; set; }
+        }        
 
         /// <summary>
         ///     Is called using сallbackDoer, see Initialize(..).
         /// </summary>
-        public event Action<IDataAccessProvider> ValueSubscriptionsUpdated = delegate { };
+        public override event Action<IDataAccessProvider> ValueSubscriptionsUpdated = delegate { };
 
         /// <summary>
         ///     You can set updateValueItems = false and invoke PollElementValuesChangesAsync(...) manually.
@@ -176,29 +55,17 @@ namespace Ssz.Xi.Client
         /// <param name="clientWorkstationName"></param>
         /// <param name="systemNameToConnect"></param>
         /// <param name="contextParams"></param>
-        public void Initialize(ElementIdsMap? elementIdsMap,
+        public override void Initialize(ElementIdsMap? elementIdsMap,
             bool elementValueListCallbackIsEnabled,
             bool eventListCallbackIsEnabled,
             string serverAddress,
             string clientApplicationName, string clientWorkstationName, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams)
         {
-            Close();
-
-            //Logger?.LogDebug("Starting ModelDataProvider. сallbackDoer is not null " + (сallbackDispatcher is not null).ToString());
-
-            ElementIdsMap = elementIdsMap;
-            _elementValueListCallbackIsEnabled = elementValueListCallbackIsEnabled;
-            _eventListCallbackIsEnabled = eventListCallbackIsEnabled;
-            _serverAddress = serverAddress;
-            _systemNameToConnect = systemNameToConnect;
-            _xiDataListItemsManager.XiSystem = _systemNameToConnect;
-            _xiEventListItemsManager.XiSystem = _systemNameToConnect;
-            _xiDataJournalListItemsManager.XiSystem = _systemNameToConnect;
-            _clientApplicationName = clientApplicationName;            
-            _clientWorkstationName = clientWorkstationName;            
-            _contextParams = contextParams;
-
-            _lastSuccessfulConnectionDateTimeUtc = DateTime.UtcNow;
+            base.Initialize(elementIdsMap,
+                elementValueListCallbackIsEnabled,
+                eventListCallbackIsEnabled,
+                serverAddress,
+                 clientApplicationName, clientWorkstationName, systemNameToConnect, contextParams);
 
             //string pollIntervalMsString =
             //    ConfigurationManager.AppSettings["PollIntervalMs"];
@@ -238,9 +105,7 @@ namespace Ssz.Xi.Client
                 if (previousWorkingTask is not null)
                     previousWorkingTask.Wait();
                 WorkingTaskMainAsync(cancellationToken).Wait();
-            }, TaskCreationOptions.LongRunning);
-
-            IsInitialized = true;
+            }, TaskCreationOptions.LongRunning);            
 
             foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
             {
@@ -252,14 +117,18 @@ namespace Ssz.Xi.Client
         ///     Tou can call Dispose() instead of this method.
         ///     Closes without waiting working thread exit.
         /// </summary>
-        public void Close()
+        public override void Close()
         {
             if (!IsInitialized) return;
 
-            IsInitialized = false;            
+            base.Close();
 
-            _contextParams = new CaseInsensitiveDictionary<string?>();
-            ElementIdsMap = null;
+            foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
+            {
+                valueSubscriptionObj.ChildValueSubscriptionsList = null;
+                valueSubscriptionObj.Converter = null;
+                valueSubscriptionObj.MapValues = null;
+            }
 
             if (_cancellationTokenSource is not null)
             {
@@ -272,29 +141,13 @@ namespace Ssz.Xi.Client
         ///     Tou can call DisposeAsync() instead of this method.
         ///     Closes WITH waiting working thread exit.
         /// </summary>
-        public async Task CloseAsync()
+        public override async Task CloseAsync()
         {
             Close();
 
             if (_workingTask is not null)
                 await _workingTask;
-        }
-
-        /// <summary>
-        ///     Re-initializes this object with same settings.
-        ///     Items must be added again.
-        ///     If not initialized then does nothing.
-        /// </summary>
-        public void ReInitialize()
-        {
-            if (!IsInitialized) return;
-
-            Initialize(ElementIdsMap,
-                _elementValueListCallbackIsEnabled,
-                _eventListCallbackIsEnabled,
-                _serverAddress,
-                _clientApplicationName, _clientWorkstationName, _systemNameToConnect, _contextParams);
-        }
+        }        
 
         /// <summary>        
         ///     Returns id actully used for OPC subscription, always as original id.
@@ -302,7 +155,7 @@ namespace Ssz.Xi.Client
         /// </summary>
         /// <param name="elementId"></param>
         /// <param name="valueSubscription"></param>
-        public void AddItem(string? elementId, IValueSubscription valueSubscription)
+        public override void AddItem(string? elementId, IValueSubscription valueSubscription)
         {
             //Logger?.LogDebug("XiDataProvider.AddItem() " + elementId);
 
@@ -335,7 +188,7 @@ namespace Ssz.Xi.Client
         ///     If valueSubscription is not subscribed - does nothing.
         /// </summary>
         /// <param name="valueSubscription"></param>
-        public void RemoveItem(IValueSubscription valueSubscription)
+        public override void RemoveItem(IValueSubscription valueSubscription)
         {
 #if NETSTANDARD2_0
             _valueSubscriptionsCollection.TryGetValue(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj);
@@ -356,7 +209,7 @@ namespace Ssz.Xi.Client
         /// <summary>                
         ///     If call to server failed returns null, otherwise returns changed ValueSubscriptions.        
         /// </summary>
-        public async Task<IValueSubscription[]?> PollElementValuesChangesAsync()
+        public override async Task<IValueSubscription[]?> PollElementValuesChangesAsync()
         {
             var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]?>();
             ThreadSafeDispatcher.BeginInvoke(ct =>
@@ -376,7 +229,7 @@ namespace Ssz.Xi.Client
         /// <param name="valueSubscription"></param>
         /// <param name="valueStatusTimestamp"></param>
         /// <param name="userFriendlyLogger"></param>
-        public void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
+        public override void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
         {
             //BeginInvoke(ct =>
             //{
@@ -496,7 +349,7 @@ namespace Ssz.Xi.Client
         /// <param name="valueSubscriptions"></param>
         /// <param name="valueStatusTimestamps"></param>
         /// <returns></returns>
-        public virtual async Task<IValueSubscription[]> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
+        public override async Task<IValueSubscription[]> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
         {
             var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]>();
             ThreadSafeDispatcher.BeginInvoke(ct =>
@@ -518,7 +371,7 @@ namespace Ssz.Xi.Client
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
+        public override async Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
         {
             var taskCompletionSource = new TaskCompletionSource<IEnumerable<byte>>();
             ThreadSafeDispatcher.BeginInvoke(ct =>
@@ -553,7 +406,7 @@ namespace Ssz.Xi.Client
         /// <param name="dataToSend"></param>
         /// <param name="progressCallbackAction"></param>
         /// <returns></returns>
-        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend, 
+        public override async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend, 
             Action<LongrunningPassthroughCallback>? progressCallbackAction)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
@@ -609,11 +462,6 @@ namespace Ssz.Xi.Client
         #region protected functions
 
         /// <summary>
-        ///     Dispatcher for callbacks to client.
-        /// </summary>
-        protected IDispatcher? CallbackDispatcher { get; }
-
-        /// <summary>
         ///     Dispacther for working thread.
         /// </summary>
         protected ThreadSafeDispatcher ThreadSafeDispatcher { get; } = new();
@@ -628,7 +476,20 @@ namespace Ssz.Xi.Client
         {
             _xiServerProxy = new XiServerProxy();
 
-            if (_eventListCallbackIsEnabled) _xiEventListItemsManager.EventMessagesCallback += OnEventMessagesCallback;
+            bool elementValueListCallbackIsEnabled;
+            bool eventListCallbackIsEnabled;
+            try
+            {
+                elementValueListCallbackIsEnabled = ElementValueListCallbackIsEnabled;
+                eventListCallbackIsEnabled = EventListCallbackIsEnabled;
+            }
+            catch
+            {
+                return;
+            }
+
+            if (eventListCallbackIsEnabled)
+                _xiEventListItemsManager.EventMessagesCallback += OnEventMessagesCallback;
 
             while (true)
             {
@@ -645,7 +506,8 @@ namespace Ssz.Xi.Client
 
             _xiServerProxy.Dispose();
             _xiServerProxy = null;
-            if (_eventListCallbackIsEnabled) _xiEventListItemsManager.EventMessagesCallback -= OnEventMessagesCallback;
+            if (eventListCallbackIsEnabled)
+                _xiEventListItemsManager.EventMessagesCallback -= OnEventMessagesCallback;
         }
 
         /// <summary>
@@ -664,7 +526,7 @@ namespace Ssz.Xi.Client
             if (!_xiServerProxy.ContextExists)
             {
                 IDispatcher? сallbackDispatcher;
-                if (_isConnectedEventWaitHandle.WaitOne(0))
+                if (IsConnectedEventWaitHandle.WaitOne(0))
                 {
                     Unsubscribe(false);
 
@@ -700,21 +562,21 @@ namespace Ssz.Xi.Client
                     #endregion                    
                 }                
 
-                if (!String.IsNullOrWhiteSpace(_serverAddress) &&
-                    nowUtc > _lastFailedConnectionDateTimeUtc + TimeSpan.FromSeconds(5))
+                if (!String.IsNullOrWhiteSpace(ServerAddress) &&
+                    nowUtc > LastFailedConnectionDateTimeUtc + TimeSpan.FromSeconds(5))
                 {
                     try
                     {
-                        string workstationName = _clientWorkstationName;
+                        string workstationName = ClientWorkstationName;
 #if NETSTANDARD2_0
-                        var dictionary = new CaseInsensitiveDictionary<string?>(_contextParams.Count);
-                        foreach (var kvp in _contextParams)
+                        var dictionary = new CaseInsensitiveDictionary<string?>(ContextParams.Count);
+                        foreach (var kvp in ContextParams)
                             dictionary.Add(kvp.Key, kvp.Value);                        
                         string xiContextParamsString =
                             NameValueCollectionHelper.GetNameValueCollectionString(dictionary);
 #else
                         string xiContextParamsString =
-                            NameValueCollectionHelper.GetNameValueCollectionString(_contextParams);
+                            NameValueCollectionHelper.GetNameValueCollectionString(ContextParams);
 #endif
 
                         if (!String.IsNullOrEmpty(xiContextParamsString))
@@ -727,14 +589,14 @@ namespace Ssz.Xi.Client
                         //    _applicationName,
                          //   workstationName);
 
-                        _xiServerProxy.InitiateXiContext(_serverAddress, _clientApplicationName,
+                        _xiServerProxy.InitiateXiContext(ServerAddress, ClientApplicationName,
                             workstationName, ThreadSafeDispatcher);
 
                         //Logger?.LogDebug("End Connecting");
 
                         //Logger.Info("XiDataProvider connected to " + _serverAddress);
 
-                        _isConnectedEventWaitHandle.Set();
+                        IsConnectedEventWaitHandle.Set();
                         сallbackDispatcher = CallbackDispatcher;
                         if (сallbackDispatcher is not null)
                         {
@@ -743,8 +605,7 @@ namespace Ssz.Xi.Client
                             {
                                 сallbackDispatcher.BeginInvoke(ct =>
                                 {
-                                    IsConnected = true;
-                                    IsDisconnected = false;
+                                    IsConnected = true;                                    
                                 });
                             }
                             catch (Exception)
@@ -756,20 +617,31 @@ namespace Ssz.Xi.Client
                     {
                         //Logger?.LogDebug(ex);
 
-                        _lastFailedConnectionDateTimeUtc = nowUtc;
+                        LastFailedConnectionDateTimeUtc = nowUtc;
                     }
                 }
             }
 
             if (cancellationToken.IsCancellationRequested) return;
+            bool elementValueListCallbackIsEnabled;
+            bool eventListCallbackIsEnabled;
+            try
+            {
+                elementValueListCallbackIsEnabled = ElementValueListCallbackIsEnabled;
+                eventListCallbackIsEnabled = EventListCallbackIsEnabled;
+            }
+            catch
+            {
+                return;
+            }
             _xiDataListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher,
-                XiDataListItemsManagerOnElementValuesCallback, _elementValueListCallbackIsEnabled, cancellationToken);
+                XiDataListItemsManagerOnElementValuesCallback, elementValueListCallbackIsEnabled, cancellationToken);
             _xiEventListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher, true, cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) return;
             if (_xiServerProxy.ContextExists)
             {
-                _lastSuccessfulConnectionDateTimeUtc = nowUtc;
+                LastSuccessfulConnectionDateTimeUtc = nowUtc;
                 try
                 {
                     if (cancellationToken.IsCancellationRequested) return;
@@ -782,7 +654,7 @@ namespace Ssz.Xi.Client
                     {
                         if (cancellationToken.IsCancellationRequested) return;
 
-                        if (_elementValueListCallbackIsEnabled)
+                        if (elementValueListCallbackIsEnabled)
                             _xiDataListItemsManager.PollChangesIfNotCallbackable();
 
                         _xiEventListItemsManager.PollChangesIfNotCallbackable();
@@ -801,7 +673,7 @@ namespace Ssz.Xi.Client
         /// </summary>
         private void Unsubscribe(bool clearClientSubscriptions)
         {
-            _isConnectedEventWaitHandle.Reset();
+            IsConnectedEventWaitHandle.Reset();
 
             var сallbackDispatcher = CallbackDispatcher;
             if (сallbackDispatcher is not null)
@@ -810,8 +682,7 @@ namespace Ssz.Xi.Client
                 {
                     сallbackDispatcher.BeginInvoke(ct =>
                     {
-                        IsConnected = false;
-                        IsDisconnected = true;
+                        IsConnected = false;                        
                     });
                 }
                 catch (Exception)
@@ -1065,64 +936,20 @@ namespace Ssz.Xi.Client
 
         #region private fields
 
-        private bool _isInitialized;
-
-        private bool _isConnected;
-
-        private bool _isDisconnected = true;        
-
-        private readonly ManualResetEvent _isConnectedEventWaitHandle = new ManualResetEvent(false);
-
-        /// <summary>
-        ///     Xi Server connection string.
-        /// </summary>
-        private string _serverAddress = "";
-
-        /// <summary>
-        ///     Xi System Name.
-        /// </summary>
-        private string _systemNameToConnect = @"";
-
-        /// <summary>
-        ///     Used in Xi Context initialization.
-        /// </summary>
-        private string _clientApplicationName = "";
-
-        /// <summary>
-        ///     Used in Xi DataList initialization.
-        /// </summary>
-        private bool _elementValueListCallbackIsEnabled;
-
-        private bool _eventListCallbackIsEnabled;
-
-        /// <summary>
-        ///     Used in Xi Context initialization.
-        /// </summary>
-        private string _clientWorkstationName = "";
-
-        /// <summary>
-        ///     Used in Xi Context initialization.
-        /// </summary>
-        private CaseInsensitiveDictionary<string?> _contextParams = new();        
-
         private Task? _workingTask;
 
         private CancellationTokenSource? _cancellationTokenSource;
 
         private XiServerProxy? _xiServerProxy;
 
-        private readonly XiDataListItemsManager _xiDataListItemsManager = new XiDataListItemsManager();                
+        private readonly XiDataListItemsManager _xiDataListItemsManager;                
 
         private DateTime _pollLastCallUtc = DateTime.MinValue;
 
         private int _pollIntervalMs = 1000; 
-
-        private DateTime _lastFailedConnectionDateTimeUtc = DateTime.MinValue;
-
-        private DateTime _lastSuccessfulConnectionDateTimeUtc = DateTime.MinValue;
-
+        
         private Dictionary<IValueSubscription, ValueSubscriptionObj> _valueSubscriptionsCollection =
-            new Dictionary<IValueSubscription, ValueSubscriptionObj>(ReferenceEqualityComparer<object>.Default);
+            new(ReferenceEqualityComparer<object>.Default);
 
         #endregion
 

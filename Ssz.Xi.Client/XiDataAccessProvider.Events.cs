@@ -16,13 +16,13 @@ namespace Ssz.Xi.Client
         /// <summary>
         ///     Is called using сallbackDoer, see Initialize(..).        
         /// </summary>
-        public event Action<IDataAccessProvider, Ssz.Utils.DataAccess.EventMessage[]> EventMessagesCallback
+        public override event Action<IDataAccessProvider, Ssz.Utils.DataAccess.EventMessage[]> EventMessagesCallback
         {
             add { ThreadSafeDispatcher.BeginInvoke(ct => _xiEventListItemsManager.EventMessagesCallback += value); }
             remove { ThreadSafeDispatcher.BeginInvoke(ct => _xiEventListItemsManager.EventMessagesCallback -= value); }
         }
         
-        public void AckAlarms(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
+        public override void AckAlarms(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
         {
             ThreadSafeDispatcher.BeginInvoke(ct =>
             {

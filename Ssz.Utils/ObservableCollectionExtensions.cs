@@ -66,8 +66,7 @@ namespace Ssz.Utils
                     oldCollectionIndex += 1;
                     n.Initialize();
                     oldCollection.Insert(oldCollectionIndex, n);                    
-                }
-                    
+                }                    
             }
         }
 

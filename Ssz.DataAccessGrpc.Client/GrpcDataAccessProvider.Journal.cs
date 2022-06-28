@@ -20,7 +20,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// </summary>
         /// <param name="elementId"></param>
         /// <param name="valueSubscription"></param>
-        public virtual void JournalAddItem(string elementId, object valueSubscription)
+        public override void JournalAddItem(string elementId, object valueSubscription)
         {
             ThreadSafeDispatcher.BeginInvoke(ct =>
             {
@@ -34,7 +34,7 @@ namespace Ssz.DataAccessGrpc.Client
         ///     If valueSubscription is not subscribed - does nothing.
         /// </summary>
         /// <param name="valueSubscription"></param>
-        public virtual void JournalRemoveItem(object valueSubscription)
+        public override void JournalRemoveItem(object valueSubscription)
         {
             ThreadSafeDispatcher.BeginInvoke(ct =>
             {
@@ -53,7 +53,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="params_"></param>
         /// <param name="valueSubscriptionsCollection"></param>
         /// <returns></returns>
-        public virtual async Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string>? params_, object[] valueSubscriptionsCollection)
+        public override async Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string>? params_, object[] valueSubscriptionsCollection)
         {
             var taskCompletionSource = new TaskCompletionSource<ValueStatusTimestamp[][]?>();
             ThreadSafeDispatcher.BeginInvoke(ct =>
@@ -66,7 +66,7 @@ namespace Ssz.DataAccessGrpc.Client
             return await taskCompletionSource.Task;
         }
 
-        public virtual async Task<Utils.DataAccess.EventMessage[]?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_)
+        public override async Task<Utils.DataAccess.EventMessage[]?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_)
         {
             var taskCompletionSource = new TaskCompletionSource<Utils.DataAccess.EventMessage[]?>();
             ThreadSafeDispatcher.BeginInvoke(ct =>

@@ -22,7 +22,7 @@ namespace Ssz.Xi.Client
         /// </summary>
         /// <param name="elementId"></param>
         /// <param name="valueSubscription"></param>
-        public void JournalAddItem(string elementId, object valueSubscription)
+        public override void JournalAddItem(string elementId, object valueSubscription)
         {
             ThreadSafeDispatcher.BeginInvoke(ct =>
             {
@@ -36,7 +36,7 @@ namespace Ssz.Xi.Client
         ///     If valueSubscription is not subscribed - does nothing.
         /// </summary>
         /// <param name="valueSubscription"></param>
-        public void JournalRemoveItem(object valueSubscription)
+        public override void JournalRemoveItem(object valueSubscription)
         {
             ThreadSafeDispatcher.BeginInvoke(ct =>
             {
@@ -44,7 +44,7 @@ namespace Ssz.Xi.Client
             });
         }
 
-        public virtual async Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string>? _params, object[] valueSubscriptionsCollection)
+        public override async Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string>? _params, object[] valueSubscriptionsCollection)
         {
             var taskCompletionSource = new TaskCompletionSource<ValueStatusTimestamp[][]?>();
             ThreadSafeDispatcher.BeginInvoke(ct =>
@@ -100,7 +100,7 @@ namespace Ssz.Xi.Client
             return await taskCompletionSource.Task;
         }
 
-        public virtual async Task<Utils.DataAccess.EventMessage[]?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_)
+        public override async Task<Utils.DataAccess.EventMessage[]?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_)
         {
             var taskCompletionSource = new TaskCompletionSource<Utils.DataAccess.EventMessage[]?>();
             ThreadSafeDispatcher.BeginInvoke(ct =>
@@ -117,8 +117,7 @@ namespace Ssz.Xi.Client
 
         #region private fields
 
-        private readonly XiDataJournalListItemsManager _xiDataJournalListItemsManager =
-            new XiDataJournalListItemsManager();
+        private readonly XiDataJournalListItemsManager _xiDataJournalListItemsManager;
 
         #endregion
     }

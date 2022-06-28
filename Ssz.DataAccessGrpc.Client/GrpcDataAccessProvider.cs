@@ -17,115 +17,25 @@ using Grpc.Core;
 
 namespace Ssz.DataAccessGrpc.Client
 {
-    public partial class GrpcDataAccessProvider : DisposableViewModelBase, IDataAccessProvider
+    public partial class GrpcDataAccessProvider : DataAccessProviderBase, IDataAccessProvider
     {
         #region construction and destruction
 
-        public GrpcDataAccessProvider(ILogger<GrpcDataAccessProvider> logger, IDispatcher? callbackDispatcher)
+        public GrpcDataAccessProvider(ILogger<GrpcDataAccessProvider> logger, IDispatcher? callbackDispatcher) :
+            base(logger, callbackDispatcher)
         {
-            Logger = logger;
-            CallbackDispatcher = callbackDispatcher;
-
             _clientConnectionManager = new ClientConnectionManager(logger, ThreadSafeDispatcher);
 
             _clientElementValueListManager = new ClientElementValueListManager(logger);
             _clientElementValuesJournalListManager = new ClientElementValuesJournalListManager(logger);
             _clientEventListManager = new ClientEventListManager(logger, this);
-        }
-
-        /// <summary>
-        ///     This method is invoked when the IDisposable.Dispose or Finalize actions are
-        ///     requested.
-        /// </summary>
-        protected override void Dispose(bool disposing)
-        {
-            if (Disposed) return;
-
-            if (disposing)
-            {
-                Close();
-            }
-
-            base.Dispose(disposing);
-        }
-
-        protected override async ValueTask DisposeAsyncCore()
-        {
-            if (Disposed) return;
-
-            await CloseAsync();
-
-            await base.DisposeAsyncCore();
-        }
+        }        
 
         #endregion
 
         #region public functions
 
-        public ILogger<GrpcDataAccessProvider> Logger { get; }
-
-        /// <summary>
-        ///     DataAccessGrpc Server connection string.
-        /// </summary>
-        public string ServerAddress
-        {
-            get
-            {
-                if (!IsInitialized) throw new Exception("Not Initialized");
-                return _serverAddress;
-            }
-        }
-
-        /// <summary>
-        ///     DataAccessGrpc Systems Names.
-        /// </summary>
-        public string SystemNameToConnect
-        {
-            get
-            {
-                if (!IsInitialized) throw new Exception("Not Initialized");
-                return _systemNameToConnect;
-            }
-        }
-
-        /// <summary>
-        ///     Used in DataAccessGrpc Context initialization.
-        /// </summary>
-        public string ClientApplicationName
-        {
-            get
-            {
-                if (!IsInitialized) throw new Exception("Not Initialized");
-                return _clientApplicationName;
-            }
-        }
-
-        /// <summary>
-        ///     Used in DataAccessGrpc Context initialization.
-        /// </summary>
-        public string ClientWorkstationName
-        {
-            get
-            {
-                if (!IsInitialized) throw new Exception("Not Initialized");
-                return _clientWorkstationName;
-            }
-        }
-
-        /// <summary>
-        ///     Used in DataAccessGrpc Context initialization.
-        ///     Can be null
-        /// </summary>
-        public CaseInsensitiveDictionary<string?> ContextParams
-        {
-            get
-            {
-                if (!IsInitialized) throw new Exception("Not Initialized");
-                return _contextParams;
-            }
-        }
-
-        public string ContextId
+        public override string ContextId
         {
             get
             {
@@ -139,43 +49,10 @@ namespace Ssz.DataAccessGrpc.Client
             get { return _clientConnectionManager.GrpcChannel; }
         }
 
-        public bool IsInitialized
-        {
-            get { return _isInitialized; }
-            private set { SetValue(ref _isInitialized, value); }
-        }
-
-        public bool IsConnected
-        {
-            get { return _isConnected; }
-            private set { SetValue(ref _isConnected, value); }
-        }
-
-        public bool IsDisconnected
-        {
-            get { return _isDisconnected; }
-            private set { SetValue(ref _isDisconnected, value); }
-        }
-
-        public EventWaitHandle IsConnectedEventWaitHandle { get; } = new ManualResetEvent(false);
-
-        public DateTime LastFailedConnectionDateTimeUtc => _lastFailedConnectionDateTimeUtc;
-
-        public DateTime LastSuccessfulConnectionDateTimeUtc => _lastSuccessfulConnectionDateTimeUtc;
-
         /// <summary>
-        ///     If guid the same, the data is guaranteed not to have changed.
+        ///     Is called using сallbackDispatcher, see Initialize(..).        
         /// </summary>
-        public Guid DataGuid { get; private set; }
-
-        public ElementIdsMap? ElementIdsMap { get; private set; }
-
-        public object? Obj { get; set; }
-
-        /// <summary>
-        ///     Is called using сallbackDispatcher, see Initialize(..).
-        /// </summary>
-        public event Action<IDataAccessProvider> ValueSubscriptionsUpdated = delegate { };
+        public override event Action<IDataAccessProvider> ValueSubscriptionsUpdated = delegate { };
 
         /// <summary>
         ///     You can set updateValueItems = false and invoke PollElementValuesChangesAsync(...) manually.
@@ -188,26 +65,17 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="clientWorkstationName"></param>
         /// <param name="systemNameToConnect"></param>
         /// <param name="contextParams"></param>
-        public virtual void Initialize(ElementIdsMap? elementIdsMap,
+        public override void Initialize(ElementIdsMap? elementIdsMap,
             bool elementValueListCallbackIsEnabled,
             bool eventListCallbackIsEnabled,
             string serverAddress,
             string clientApplicationName, string clientWorkstationName, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams)
         {
-            Close();
-
-            Logger.LogDebug("Starting ModelDataProvider. сallbackDispatcher is not null " + (CallbackDispatcher is not null).ToString());
-            
-            ElementIdsMap = elementIdsMap;
-            _elementValueListCallbackIsEnabled = elementValueListCallbackIsEnabled;
-            _eventListCallbackIsEnabled = eventListCallbackIsEnabled;
-            _serverAddress = serverAddress;
-            _clientApplicationName = clientApplicationName;
-            _clientWorkstationName = clientWorkstationName;
-            _systemNameToConnect = systemNameToConnect;
-            _contextParams = contextParams;
-
-            _lastSuccessfulConnectionDateTimeUtc = DateTime.UtcNow;
+            base.Initialize(elementIdsMap,
+                elementValueListCallbackIsEnabled,
+                eventListCallbackIsEnabled,
+                serverAddress,
+                 clientApplicationName, clientWorkstationName, systemNameToConnect, contextParams);
 
             //string pollIntervalMsString =
             //    ConfigurationManager.AppSettings["PollIntervalMs"];
@@ -248,8 +116,6 @@ namespace Ssz.DataAccessGrpc.Client
                 WorkingTaskMainAsync(cancellationToken).Wait();
             }, TaskCreationOptions.LongRunning);
 
-            IsInitialized = true;
-
             foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
             {
                 valueSubscriptionObj.ValueSubscription.MappedElementIdOrConst = AddItem(valueSubscriptionObj);
@@ -260,11 +126,11 @@ namespace Ssz.DataAccessGrpc.Client
         ///     Tou can call Dispose() instead of this method.
         ///     Closes without waiting working thread exit.
         /// </summary>
-        public virtual void Close()
+        public override void Close()
         {
             if (!IsInitialized) return;
 
-            IsInitialized = false;
+            base.Close();
 
             foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
             {
@@ -272,9 +138,6 @@ namespace Ssz.DataAccessGrpc.Client
                 valueSubscriptionObj.Converter = null;
                 valueSubscriptionObj.MapValues = null;
             }
-
-            _contextParams = new CaseInsensitiveDictionary<string?>();            
-            ElementIdsMap = null;
 
             if (_cancellationTokenSource is not null)
             {
@@ -287,28 +150,12 @@ namespace Ssz.DataAccessGrpc.Client
         ///     Tou can call DisposeAsync() instead of this method.
         ///     Closes WITH waiting working thread exit.
         /// </summary>
-        public async Task CloseAsync()
+        public override async Task CloseAsync()
         {
             Close();
 
             if (_workingTask is not null)
                 await _workingTask;
-        }
-
-        /// <summary>
-        ///     Re-initializes this object with same settings.
-        ///     Items must be added again.
-        ///     If not initialized then does nothing.
-        /// </summary>
-        public void ReInitialize()
-        {
-            if (!IsInitialized) return;
-
-            Initialize(ElementIdsMap,
-                _elementValueListCallbackIsEnabled,
-                _eventListCallbackIsEnabled,
-                _serverAddress,
-                _clientApplicationName, _clientWorkstationName, _systemNameToConnect, _contextParams);
         }
 
         /// <summary>        
@@ -317,7 +164,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// </summary>
         /// <param name="elementId"></param>
         /// <param name="valueSubscription"></param>
-        public virtual void AddItem(string? elementId, IValueSubscription valueSubscription)
+        public override void AddItem(string? elementId, IValueSubscription valueSubscription)
         {
             Logger.LogDebug("DataAccessGrpcProvider.AddItem() " + elementId);
 
@@ -350,7 +197,7 @@ namespace Ssz.DataAccessGrpc.Client
         ///     If valueSubscription is not subscribed - does nothing.
         /// </summary>
         /// <param name="valueSubscription"></param>
-        public virtual void RemoveItem(IValueSubscription valueSubscription)
+        public override void RemoveItem(IValueSubscription valueSubscription)
         {
 #if NETSTANDARD2_0
             _valueSubscriptionsCollection.TryGetValue(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj);
@@ -371,7 +218,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <summary>                
         ///     If call to server failed returns null, otherwise returns changed ValueSubscriptions.        
         /// </summary>
-        public async Task<IValueSubscription[]?> PollElementValuesChangesAsync()
+        public override async Task<IValueSubscription[]?> PollElementValuesChangesAsync()
         {
             var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]?>();
             ThreadSafeDispatcher.BeginInvoke(ct =>
@@ -392,7 +239,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="valueStatusTimestamp"></param>
         /// <param name="userFriendlyLogger"></param>
         /// <exception cref="InvalidOperationException"></exception>
-        public virtual void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
+        public override void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
         {
             var callbackDispatcher = CallbackDispatcher;
             if (!IsInitialized || callbackDispatcher is null) return;
@@ -504,7 +351,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="valueSubscriptions"></param>
         /// <param name="valueStatusTimestamps"></param>
         /// <returns></returns>
-        public virtual async Task<IValueSubscription[]> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
+        public override async Task<IValueSubscription[]> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
         {
             var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]>();
             ThreadSafeDispatcher.BeginInvoke(ct =>
@@ -526,7 +373,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <returns></returns>
-        public async Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
+        public override async Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
         {
             var taskCompletionSource = new TaskCompletionSource<IEnumerable<byte>>();
             ThreadSafeDispatcher.BeginInvoke(ct =>
@@ -560,7 +407,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="dataToSend"></param>
         /// <param name="progressCallbackAction"></param>
         /// <returns></returns>
-        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend,
+        public override async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend,
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? progressCallbackAction)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
@@ -622,15 +469,10 @@ namespace Ssz.DataAccessGrpc.Client
             return await taskCompletionSource.Task;
         }
 
-#endregion
+        #endregion
 
-#region protected functions
-
-        /// <summary>
-        ///     Dispatcher for callbacks to client.
-        /// </summary>
-        protected IDispatcher? CallbackDispatcher { get; }
-
+        #region protected functions
+        
         /// <summary>
         ///     Dispacther for working thread.
         /// </summary>
@@ -692,8 +534,8 @@ namespace Ssz.DataAccessGrpc.Client
 #endregion
                 }
 
-                if (!String.IsNullOrWhiteSpace(_serverAddress) &&
-                    nowUtc > _lastFailedConnectionDateTimeUtc + TimeSpan.FromSeconds(5))
+                if (!String.IsNullOrWhiteSpace(ServerAddress) &&
+                    nowUtc > LastFailedConnectionDateTimeUtc + TimeSpan.FromSeconds(5))
                 {
                     try
                     {
@@ -707,12 +549,12 @@ namespace Ssz.DataAccessGrpc.Client
                         //}
 
 
-                        _clientConnectionManager.InitiateConnection(_serverAddress, _clientApplicationName,
-                            _clientWorkstationName, _systemNameToConnect, _contextParams);
+                        _clientConnectionManager.InitiateConnection(ServerAddress, ClientApplicationName,
+                            ClientWorkstationName, SystemNameToConnect, ContextParams);
 
                         Logger.LogDebug("End Connecting");
 
-                        Logger.LogInformation("DataAccessGrpcProvider connected to " + _serverAddress);
+                        Logger.LogInformation("DataAccessGrpcProvider connected to " + ServerAddress);
 
                         IsConnectedEventWaitHandle.Set();                        
                         сallbackDispatcher = CallbackDispatcher;
@@ -723,8 +565,7 @@ namespace Ssz.DataAccessGrpc.Client
                             {
                                 сallbackDispatcher.BeginInvoke(ct =>
                                 {
-                                    IsConnected = true;
-                                    IsDisconnected = false;
+                                    IsConnected = true;                                    
                                 });
                             }
                             catch (Exception)
@@ -736,22 +577,35 @@ namespace Ssz.DataAccessGrpc.Client
                     {
                         Logger.LogDebug(ex, "");
 
-                        _lastFailedConnectionDateTimeUtc = nowUtc;
+                        LastFailedConnectionDateTimeUtc = nowUtc;
 
                         OnInitiateConnectionException(ex);
                     }
                 }
             }
 
-            if (cancellationToken.IsCancellationRequested) return;
+            if (cancellationToken.IsCancellationRequested) 
+                return;
+            bool elementValueListCallbackIsEnabled;
+            bool eventListCallbackIsEnabled;
+            try
+            {
+                elementValueListCallbackIsEnabled = ElementValueListCallbackIsEnabled;
+                eventListCallbackIsEnabled = EventListCallbackIsEnabled;
+            }
+            catch
+            {
+                return;
+            }
+
             _clientElementValueListManager.Subscribe(_clientConnectionManager, CallbackDispatcher,
-                OnElementValuesCallback, _elementValueListCallbackIsEnabled, cancellationToken);
-            _clientEventListManager.Subscribe(_clientConnectionManager, CallbackDispatcher, _eventListCallbackIsEnabled, cancellationToken);
+                OnElementValuesCallback, elementValueListCallbackIsEnabled, cancellationToken);
+            _clientEventListManager.Subscribe(_clientConnectionManager, CallbackDispatcher, eventListCallbackIsEnabled, cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) return;
             if (_clientConnectionManager.ConnectionExists)
             {
-                _lastSuccessfulConnectionDateTimeUtc = nowUtc;
+                LastSuccessfulConnectionDateTimeUtc = nowUtc;
                 try
                 {
                     if (cancellationToken.IsCancellationRequested) return;
@@ -781,8 +635,7 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                     сallbackDispatcher.BeginInvoke(ct =>
                     {
-                        IsConnected = false;
-                        IsDisconnected = true;
+                        IsConnected = false;                        
                     });
                 }
                 catch (Exception)
@@ -828,7 +681,20 @@ namespace Ssz.DataAccessGrpc.Client
 
         private async Task WorkingTaskMainAsync(CancellationToken cancellationToken)
         {
-            if (_eventListCallbackIsEnabled) _clientEventListManager.EventMessagesCallback += OnEventMessagesCallbackInternal;
+            bool elementValueListCallbackIsEnabled;
+            bool eventListCallbackIsEnabled;
+            try
+            {
+                elementValueListCallbackIsEnabled = ElementValueListCallbackIsEnabled;
+                eventListCallbackIsEnabled = EventListCallbackIsEnabled;
+            }
+            catch
+            {
+                return;
+            }
+
+            if (eventListCallbackIsEnabled) 
+                _clientEventListManager.EventMessagesCallback += OnEventMessagesCallbackInternal;
 
             while (true)
             {
@@ -843,7 +709,8 @@ namespace Ssz.DataAccessGrpc.Client
 
             Unsubscribe(true);
 
-            if (_eventListCallbackIsEnabled) _clientEventListManager.EventMessagesCallback -= OnEventMessagesCallbackInternal;
+            if (eventListCallbackIsEnabled)
+                _clientEventListManager.EventMessagesCallback -= OnEventMessagesCallbackInternal;
         }
 
         /// <summary>
@@ -1050,53 +917,11 @@ namespace Ssz.DataAccessGrpc.Client
 
         #endregion
 
-        #region private fields
-
-        private bool _isInitialized;
-
-        private bool _isConnected;
-
-        private bool _isDisconnected = true;        
-
-        /// <summary>
-        ///     DataAccessGrpc Server connection string.
-        /// </summary>
-        private string _serverAddress = "";
-
-        /// <summary>
-        ///     DataAccessGrpc Systems Names.
-        /// </summary>
-        private string _systemNameToConnect = @"";
-
-        /// <summary>
-        ///     Used in DataAccessGrpc Context initialization.
-        /// </summary>
-        private string _clientApplicationName = "";
-
-        /// <summary>
-        ///     Used in DataAccessGrpc Context initialization.
-        /// </summary>
-        private string _clientWorkstationName = "";        
-
-        /// <summary>
-        ///     Used in DataAccessGrpc ElementValueList initialization.
-        /// </summary>
-        private bool _elementValueListCallbackIsEnabled;
-
-        private bool _eventListCallbackIsEnabled;        
-
-        /// <summary>
-        ///     Used in DataAccessGrpc Context initialization.
-        /// </summary>
-        private CaseInsensitiveDictionary<string?> _contextParams = new();        
+        #region private fields        
 
         private Task? _workingTask;
 
         private CancellationTokenSource? _cancellationTokenSource;        
-
-        private DateTime _lastFailedConnectionDateTimeUtc = DateTime.MinValue;
-
-        private DateTime _lastSuccessfulConnectionDateTimeUtc = DateTime.MinValue;
 
         private Dictionary<IValueSubscription, ValueSubscriptionObj> _valueSubscriptionsCollection =
             new Dictionary<IValueSubscription, ValueSubscriptionObj>(ReferenceEqualityComparer<IValueSubscription>.Default);
