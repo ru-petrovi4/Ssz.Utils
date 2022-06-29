@@ -28,7 +28,7 @@ namespace Ssz.Utils.Logging
 
         public bool IsEnabled(LogLevel logLevel)
         {
-            return Loggers.Any(l => IsEnabled(logLevel));
+            return Loggers.Any(l => l.IsEnabled(logLevel));
         }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
