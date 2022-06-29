@@ -102,6 +102,25 @@ namespace Ssz.Utils
             return String.Join("&", items);
         }
 
+        public static string GetNameValueCollectionString(IEnumerable<(string, string?)> nameValueCollection)
+        {
+            var items = new List<string>();
+
+            foreach (var kvp in nameValueCollection)
+            {
+                if (kvp.Item2 is null)
+                {
+                    items.Add(UrlEncode(kvp.Item1));
+                }
+                else
+                {
+                    items.Add(UrlEncode(kvp.Item1) + @"=" + UrlEncode(kvp.Item2));
+                }
+            }
+
+            return String.Join("&", items);
+        }
+
         /// <summary>        
         /// </summary>
         /// <param name="obj"></param>

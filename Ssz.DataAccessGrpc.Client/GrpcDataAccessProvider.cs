@@ -14,6 +14,7 @@ using Grpc.Net.Client;
 using System.Globalization;
 using System.Threading.Tasks;
 using Grpc.Core;
+using Ssz.Utils.Logging;
 
 namespace Ssz.DataAccessGrpc.Client
 {
@@ -21,8 +22,8 @@ namespace Ssz.DataAccessGrpc.Client
     {
         #region construction and destruction
 
-        public GrpcDataAccessProvider(ILogger<GrpcDataAccessProvider> logger, IDispatcher? callbackDispatcher) :
-            base(logger, callbackDispatcher)
+        public GrpcDataAccessProvider(ILogger<GrpcDataAccessProvider> logger, IUserFriendlyLogger? userFriendlyLogger = null, IDispatcher? callbackDispatcher = null) :
+            base(logger, userFriendlyLogger, callbackDispatcher)
         {
             _clientConnectionManager = new ClientConnectionManager(logger, ThreadSafeDispatcher);
 

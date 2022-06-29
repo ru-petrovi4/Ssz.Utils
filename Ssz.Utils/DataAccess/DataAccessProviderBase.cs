@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
+using Ssz.Utils.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,9 +16,11 @@ namespace Ssz.Utils.DataAccess
     {
         #region construction and destruction
 
-        public DataAccessProviderBase(ILogger logger, IDispatcher? callbackDispatcher)
+        public DataAccessProviderBase(ILogger logger, IUserFriendlyLogger? userFriendlyLogger = null, IDispatcher? callbackDispatcher = null)
         {
             Logger = logger;
+            UserFriendlyLogger = userFriendlyLogger;
+            WrapperUserFriendlyLogger = new WrapperUserFriendlyLogger(Logger, UserFriendlyLogger);
             CallbackDispatcher = callbackDispatcher;
         }
 
@@ -302,6 +305,10 @@ namespace Ssz.Utils.DataAccess
         #region protected functions
 
         protected ILogger Logger { get; }
+
+        protected IUserFriendlyLogger? UserFriendlyLogger { get; }
+
+        protected WrapperUserFriendlyLogger WrapperUserFriendlyLogger { get; }
 
         /// <summary>
         ///     Dispatcher for callbacks to client.

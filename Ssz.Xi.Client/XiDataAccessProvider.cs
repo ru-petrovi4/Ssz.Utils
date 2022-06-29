@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
+using Ssz.Utils.Logging;
 using Ssz.Xi.Client.Api;
 using Xi.Contracts.Constants;
 using Xi.Contracts.Data;
@@ -18,8 +19,8 @@ namespace Ssz.Xi.Client
     {
         #region construction and destruction
 
-        public XiDataAccessProvider(ILogger<XiDataAccessProvider> logger, IDispatcher? callbackDispatcher) :
-            base(logger, callbackDispatcher)
+        public XiDataAccessProvider(ILogger<XiDataAccessProvider> logger, IUserFriendlyLogger? userFriendlyLogger = null, IDispatcher? callbackDispatcher = null) :
+            base(logger, userFriendlyLogger, callbackDispatcher)
         {
             _xiDataListItemsManager = new XiDataListItemsManager();
             _xiDataJournalListItemsManager = new XiDataJournalListItemsManager();
