@@ -6,6 +6,7 @@ using Ssz.DataAccessGrpc.Client.ClientLists;
 using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.Utils.DataAccess;
 using Grpc.Core;
+using Google.Protobuf.WellKnownTypes;
 
 namespace Ssz.DataAccessGrpc.Client
 {
@@ -45,7 +46,10 @@ namespace Ssz.DataAccessGrpc.Client
                     ListClientAlias = listClientAlias,
                     ListType = dataGrpcList.ListType
                 };
-                if (listParams is not null) request.ListParams.Add(listParams);
+                if (listParams is not null)
+                    foreach (var kvp in listParams)
+                        request.ListParams.Add(kvp.Key,
+                            kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });                
                 var reply = _resourceManagementClient.DefineList(request);
                 SetResourceManagementLastCallUtc();
                 if ((StatusCode)reply.Result.StatusCode == StatusCode.OK)

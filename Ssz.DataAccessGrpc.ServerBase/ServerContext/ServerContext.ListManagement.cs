@@ -20,7 +20,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="listType"></param>
         /// <param name="listParams"></param>
         /// <returns></returns>
-        internal AliasResult DefineList(uint listClientAlias, uint listType, CaseInsensitiveDictionary<string> listParams)
+        internal AliasResult DefineList(uint listClientAlias, uint listType, CaseInsensitiveDictionary<string?> listParams)
         {
             ServerListRoot serverList = ServerWorker.NewServerList(this, listClientAlias, listType, listParams);
             

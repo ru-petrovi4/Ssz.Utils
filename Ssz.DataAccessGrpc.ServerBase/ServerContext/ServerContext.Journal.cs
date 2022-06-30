@@ -29,7 +29,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             DateTime secondTimeStampUtc,
             uint numValuesPerAlias,
             TypeId calculation,
-            CaseInsensitiveDictionary<string> params_,
+            CaseInsensitiveDictionary<string?> params_,
             List<uint> serverAliases)
         {
             ServerListRoot? serverList;
@@ -67,7 +67,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             uint listServerAlias,
             DateTime firstTimeStampUtc,
             DateTime secondTimeStampUtc,            
-            CaseInsensitiveDictionary<string> params_)
+            CaseInsensitiveDictionary<string?> params_)
         {
             ServerListRoot? serverList;
 

@@ -105,7 +105,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;                    
                     var reply = new DefineListReply();
-                    reply.Result = serverContext.DefineList(request.ListClientAlias, request.ListType, new CaseInsensitiveDictionary<string>(request.ListParams));
+                    reply.Result = serverContext.DefineList(request.ListClientAlias, request.ListType,
+                        new Utils.CaseInsensitiveDictionary<string?>(request.ListParams
+                            .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null))));
                     return reply;
                 },
                 context);
@@ -217,7 +219,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         request.SecondTimestamp.ToDateTime(),
                         request.NumValuesPerAlias,
                         request.Calculation,
-                        new CaseInsensitiveDictionary<string>(request.Params),
+                        new CaseInsensitiveDictionary<string?>(request.Params
+                            .Select(cp => KeyValuePair.Create(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null))),                        
                         request.ServerAliases.ToList()
                     );
                 return reply;
@@ -234,8 +237,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 reply.EventMessagesCollection = await serverContext.ReadEventMessagesJournalAsync(
                         request.ListServerAlias,
                         request.FirstTimestamp.ToDateTime(),
-                        request.SecondTimestamp.ToDateTime(),                        
-                        new CaseInsensitiveDictionary<string>(request.Params)
+                        request.SecondTimestamp.ToDateTime(),
+                        new Utils.CaseInsensitiveDictionary<string?>(request.Params
+                            .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)))
                     );
                 return reply;
             }, context);

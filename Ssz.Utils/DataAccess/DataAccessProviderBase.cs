@@ -53,6 +53,11 @@ namespace Ssz.Utils.DataAccess
 
         #region public functions    
 
+        /// <summary>
+        ///     Can be configured in map, 'TagAndPropertySeparator' key
+        /// </summary>
+        public string TagAndPropertySeparator { get; private set; } = @".";
+
         public ElementIdsMap? ElementIdsMap
         {
             get
@@ -266,12 +271,12 @@ namespace Ssz.Utils.DataAccess
             return Task.FromResult<IValueSubscription[]?>(null);
         }
 
-        public virtual Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, TypeId? calculation, CaseInsensitiveDictionary<string>? params_, object[] valueJournalSubscriptions)
+        public virtual Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, object[] valueJournalSubscriptions)
         {
             return Task.FromResult<ValueStatusTimestamp[][]?>(null);
         }
 
-        public virtual Task<EventMessage[]?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_)
+        public virtual Task<EventMessage[]?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
             return Task.FromResult<EventMessage[]?>(null);
         }

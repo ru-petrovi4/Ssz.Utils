@@ -93,7 +93,13 @@ namespace Ssz.Xi.Client.Api
                                     try
                                     {
                                         сallbackDoer.BeginInvoke(ct => eventMessagesCallbackEventHandler(_dataAccessProvider, 
-                                            newListItems.Select(li => li.EventMessage).ToArray()));
+                                            newListItems.Select(li =>                                            
+                                            {
+                                                var eventMessage = li.EventMessage.ToEventMessage();
+                                                if (_dataAccessProvider.ElementIdsMap is not null)
+                                                    _dataAccessProvider.ElementIdsMap.AddFieldsToEventMessage(eventMessage);
+                                                return eventMessage;
+                                            }).ToArray()));
                                     }
                                     catch (Exception)
                                     {
@@ -169,7 +175,7 @@ namespace Ssz.Xi.Client.Api
             }            
         }
 
-        public Utils.DataAccess.EventMessage[]? ReadEventMessagesJournal(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_)
+        public Utils.DataAccess.EventMessage[]? ReadEventMessagesJournal(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
             return null;
         }

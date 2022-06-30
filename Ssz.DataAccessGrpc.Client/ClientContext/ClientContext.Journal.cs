@@ -5,6 +5,7 @@ using Ssz.DataAccessGrpc.Client.ClientLists;
 using Ssz.Utils.DataAccess;
 using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.Utils;
+using Google.Protobuf.WellKnownTypes;
 
 namespace Ssz.DataAccessGrpc.Client
 {
@@ -30,7 +31,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <exception cref="InvalidOperationException"></exception>
         public ValueStatusTimestamp[][] ReadElementValuesJournals(ClientElementValuesJournalList clientElementValuesJournalList, DateTime firstTimestampUtc,
             DateTime secondTimestampUtc,
-            uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string>? params_, uint[] serverAliases)
+            uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, uint[] serverAliases)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -50,7 +51,9 @@ namespace Ssz.DataAccessGrpc.Client
                         Calculation = new ServerBase.TypeId(calculation),                        
                     };
                     if (params_ is not null)
-                        request.Params.Add(params_);
+                        foreach (var kvp in params_)
+                            request.Params.Add(kvp.Key,
+                                kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
                     request.ServerAliases.Add(serverAliases);
                     ReadElementValuesJournalsReply reply = _resourceManagementClient.ReadElementValuesJournals(request);
                     SetResourceManagementLastCallUtc();
@@ -66,7 +69,7 @@ namespace Ssz.DataAccessGrpc.Client
             }
         }
 
-        public ServerBase.EventMessage[] ReadEventMessagesJournal(ClientEventList clientEventList, DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_)
+        public ServerBase.EventMessage[] ReadEventMessagesJournal(ClientEventList clientEventList, DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -84,7 +87,9 @@ namespace Ssz.DataAccessGrpc.Client
                         SecondTimestamp = DateTimeHelper.ConvertToTimestamp(secondTimestampUtc),                        
                     };
                     if (params_ is not null)
-                        request.Params.Add(params_);                    
+                        foreach (var kvp in params_)
+                            request.Params.Add(kvp.Key,
+                                kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
                     ReadEventMessagesJournalReply reply = _resourceManagementClient.ReadEventMessagesJournal(request);
                     SetResourceManagementLastCallUtc();
 

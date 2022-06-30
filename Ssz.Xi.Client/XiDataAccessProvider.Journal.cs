@@ -44,7 +44,7 @@ namespace Ssz.Xi.Client
             });
         }
 
-        public override async Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string>? _params, object[] valueSubscriptionsCollection)
+        public override async Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, object[] valueSubscriptionsCollection)
         {
             var taskCompletionSource = new TaskCompletionSource<ValueStatusTimestamp[][]?>();
             ThreadSafeDispatcher.BeginInvoke(ct =>
@@ -100,7 +100,7 @@ namespace Ssz.Xi.Client
             return await taskCompletionSource.Task;
         }
 
-        public override async Task<Utils.DataAccess.EventMessage[]?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_)
+        public override async Task<Utils.DataAccess.EventMessage[]?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
             var taskCompletionSource = new TaskCompletionSource<Utils.DataAccess.EventMessage[]?>();
             ThreadSafeDispatcher.BeginInvoke(ct =>

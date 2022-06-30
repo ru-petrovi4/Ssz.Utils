@@ -26,11 +26,13 @@ namespace Ssz.DataAccessGrpc.ServerBase
             }
             if (ClientRequestedFields.Count > 0)
             {
-                eventMessage.ClientRequestedFields = new Utils.CaseInsensitiveDictionary<string>(ClientRequestedFields);
+                eventMessage.ClientRequestedFields = new Utils.CaseInsensitiveDictionary<string?>(ClientRequestedFields
+                            .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));
+
             }
             return eventMessage;
         }
 
-        #endregion
+#endregion
     }
 }

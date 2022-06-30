@@ -73,7 +73,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <param name="valueSubscriptionsCollection"></param>
         /// <returns></returns>
         public ValueStatusTimestamp[][]? ReadElementValuesJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation,
-            CaseInsensitiveDictionary<string>? params_,
+            CaseInsensitiveDictionary<string?>? params_,
             object[] valueSubscriptionsCollection)
         {
             ValueStatusTimestamp[][]? result;

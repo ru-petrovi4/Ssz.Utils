@@ -150,7 +150,7 @@ namespace Ssz.Utils.DataAccess
         /// <param name="params_"></param>
         /// <param name="valueJournalSubscriptions"></param>
         /// <returns></returns>
-        Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, TypeId? calculation, CaseInsensitiveDictionary<string>? params_, object[] valueJournalSubscriptions);
+        Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, object[] valueJournalSubscriptions);
 
         /// <summary>
         ///     Returns null if error.
@@ -159,7 +159,7 @@ namespace Ssz.Utils.DataAccess
         /// <param name="secondTimestampUtc"></param>
         /// <param name="params_"></param>
         /// <returns></returns>
-        Task<EventMessage[]?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_);
+        Task<EventMessage[]?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_);
 
         event Action<IDataAccessProvider, EventMessage[]> EventMessagesCallback;
 

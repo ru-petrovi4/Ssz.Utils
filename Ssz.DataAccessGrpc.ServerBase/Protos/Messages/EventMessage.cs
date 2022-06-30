@@ -28,7 +28,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
             }
             if (eventMessage.ClientRequestedFields is not null)
             {
-                ClientRequestedFields.Add(eventMessage.ClientRequestedFields);
+                foreach (var kvp in eventMessage.ClientRequestedFields)
+                    ClientRequestedFields.Add(kvp.Key,
+                        kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
             }
         }
 

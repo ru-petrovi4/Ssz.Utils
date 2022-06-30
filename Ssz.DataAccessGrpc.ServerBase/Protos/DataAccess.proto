@@ -139,7 +139,7 @@ message DefineListRequest {
   string context_id = 1;
   uint32 list_client_alias = 2; 
   uint32 list_type = 3; 
-  map<string, string> list_params = 4;
+  map<string, NullableString> list_params = 4;
 }
 
 message DefineListReply {  
@@ -241,7 +241,7 @@ message EventMessage {
   uint32 priority = 6;
   string operator_name = 7;
   AlarmMessageData alarm_message_data = 8; 
-  map<string, string> client_requested_fields = 9;
+  map<string, NullableString> client_requested_fields = 9;
 }
 
 message EventId {  
@@ -293,7 +293,7 @@ message ReadElementValuesJournalsRequest {
   google.protobuf.Timestamp second_timestamp = 4;  
   uint32 num_values_per_alias = 5;
   TypeId calculation = 6;
-  map<string, string> params = 7;
+  map<string, NullableString> params = 7;
   repeated uint32 server_aliases = 8; 
 }
 
@@ -327,7 +327,7 @@ message ReadEventMessagesJournalRequest {
   uint32 list_server_alias = 2; 
   google.protobuf.Timestamp first_timestamp = 3;
   google.protobuf.Timestamp second_timestamp = 4;    
-  map<string, string> params = 5;  
+  map<string, NullableString> params = 5;  
 }
 
 message ReadEventMessagesJournalReply {  

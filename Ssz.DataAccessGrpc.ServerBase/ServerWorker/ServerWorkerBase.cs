@@ -31,7 +31,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public event Action ShutdownRequested = delegate { };        
 
-        public abstract ServerListRoot NewServerList(ServerContext serverContext, uint listClientAlias, uint listType, CaseInsensitiveDictionary<string> listParams);
+        public abstract ServerListRoot NewServerList(ServerContext serverContext, uint listClientAlias, uint listType, CaseInsensitiveDictionary<string?> listParams);
 
         public abstract void Passthrough(ServerContext serverContext, string recipientId, string passthroughName, byte[] dataToSend, out byte[] returnData);
 

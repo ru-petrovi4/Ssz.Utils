@@ -78,7 +78,13 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                                     {
                                         сallbackDispatcher.BeginInvoke(ct => eventMessagesCallbackEventHandler(
                                             DataAccessProvider,
-                                            newEventMessages.Select(em => em.ToEventMessage()).ToArray()));
+                                            newEventMessages.Select(em =>
+                                            {
+                                                var eventMessage = em.ToEventMessage();
+                                                if (DataAccessProvider.ElementIdsMap is not null)
+                                                    DataAccessProvider.ElementIdsMap.AddFieldsToEventMessage(eventMessage);
+                                                return eventMessage;
+                                            }).ToArray()));
                                     }
                                     catch (Exception)
                                     {

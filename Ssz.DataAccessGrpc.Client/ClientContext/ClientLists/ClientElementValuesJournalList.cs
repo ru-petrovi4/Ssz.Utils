@@ -75,7 +75,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
         public ValueStatusTimestamp[][] ReadElementValuesJournals(DateTime firstTimestamp, DateTime secondTimestamp,
-            uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string>? params_, uint[] serverAliases)
+            uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, uint[] serverAliases)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValuesJournalList.");
 

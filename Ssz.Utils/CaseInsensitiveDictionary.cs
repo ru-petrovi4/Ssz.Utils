@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Ssz.Utils
 {
@@ -36,11 +37,16 @@ namespace Ssz.Utils
         {
         }
 
-#if !NETSTANDARD2_0
+#if NET5_0_OR_GREATER
         public CaseInsensitiveDictionary(IEnumerable<KeyValuePair<string, T>> collection)
             : base(collection, StringComparer.InvariantCultureIgnoreCase)
         {
-        }        
+        }   
+#else
+        public CaseInsensitiveDictionary(IEnumerable<KeyValuePair<string, T>> collection)
+            : base(collection.ToDictionary(i => i.Key, i => i.Value, StringComparer.InvariantCultureIgnoreCase), StringComparer.InvariantCultureIgnoreCase)
+        {
+        }
 #endif
 
         #endregion

@@ -60,7 +60,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
             return Context.PollEventsChanges(this);
         }
 
-        public ServerBase.EventMessage[] ReadEventMessagesJournal(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string>? params_)
+        public ServerBase.EventMessage[] ReadEventMessagesJournal(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
+using Ssz.Utils.DataAccess;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -30,23 +32,34 @@ namespace Ssz.Utils
         public const string StandardTagsFileName = @"Tags.csv";
 
         /// <summary>
-        ///     Can be configured in map, 'GenericTag' key
+        ///     Can be configured in map, '%(GenericTag)' key
         /// </summary>
         public string GenericTag { get; private set; } = @"%(TAG)";
 
         /// <summary>
-        ///     Can be configured in map, 'TagTypeSeparator' key
+        ///     Can be configured in map, '%(TagTypeSeparator)' key
         /// </summary>
         public string TagTypeSeparator { get; private set; } = @":";
 
         /// <summary>
-        ///     Can be configured in map, 'TagAndPropertySeparator' key
+        ///     Can be configured in map, '%(TagAndPropertySeparator)' key
         /// </summary>
         public string TagAndPropertySeparator { get; private set; } = @".";
 
+        /// <summary>
+        ///     Not null after Initialize(...)
+        /// </summary>
         public CaseInsensitiveDictionary<List<string?>> Map { get; private set; } = null!;
 
+        /// <summary>
+        ///     Not null after Initialize(...)
+        /// </summary>
         public CaseInsensitiveDictionary<List<string?>> Tags { get; private set; } = null!;
+
+        /// <summary>
+        ///     Can be configured in map, '%(EventMessageFieldsToAdd)' key
+        /// </summary>
+        public CaseInsensitiveDictionary<string?> EventMessageFieldsToAdd { get; private set; } = new();
 
         public bool IsEmpty => Map.Count == 0;
 
@@ -75,6 +88,10 @@ namespace Ssz.Utils
             values = Map.TryGetValue("%(TagAndPropertySeparator)");
             if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 TagAndPropertySeparator = values[1] ?? @"";
+
+            values = Map.TryGetValue("%(EventMessageFieldsToAdd)");
+            if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
+                EventMessageFieldsToAdd = NameValueCollectionHelper.Parse(values[1]);
         }
 
         /// <summary>
@@ -231,6 +248,27 @@ namespace Ssz.Utils
             if (any.ValueTypeCode != TypeCode.String) return any;
 
             return null;
+        }
+
+        /// <summary>
+        ///     Returns same EventMessage, if any.
+        /// </summary>
+        /// <param name="eventMessage"></param>
+        /// <returns></returns>
+        [return: NotNullIfNotNull("eventMessage")]
+        public EventMessage? AddFieldsToEventMessage(EventMessage? eventMessage)
+        {
+            if (eventMessage is null)
+                return null;
+
+            foreach (var kvp in EventMessageFieldsToAdd)
+            {
+                if (eventMessage.ClientRequestedFields is null)
+                    eventMessage.ClientRequestedFields = new CaseInsensitiveDictionary<string?>();
+                eventMessage.ClientRequestedFields[kvp.Key] = kvp.Value;
+            }
+
+            return eventMessage;
         }
 
         #endregion
