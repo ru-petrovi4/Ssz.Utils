@@ -89,7 +89,9 @@ namespace Newtonsoft.Json.Schema
 
         private string UnescapeReference(string reference)
         {
+#pragma warning disable CA1307 // Specify StringComparison for clarity
             return Uri.UnescapeDataString(reference).Replace("~1", "/").Replace("~0", "~");
+#pragma warning restore CA1307 // Specify StringComparison for clarity
         }
 
         private JsonSchema ResolveReferences(JsonSchema schema)
@@ -220,7 +222,11 @@ namespace Newtonsoft.Json.Schema
                 return deferredSchema;
             }
 
-            string location = token.Path.Replace(".", "/").Replace("[", "/").Replace("]", string.Empty);
+#pragma warning disable CA1307 // Specify StringComparison for clarity
+            string location = token.Path.Replace(".", "/")
+                .Replace("[", "/")
+                .Replace("]", string.Empty);
+#pragma warning restore CA1307 // Specify StringComparison for clarity
             if (!StringUtils.IsNullOrEmpty(location))
             {
                 location = "/" + location;

@@ -1,5 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	
   <PropertyGroup>
+	<TargetFrameworks>net6.0</TargetFrameworks>
     <Authors>Dominick Baier;Brock Allen</Authors>
     <Description>OpenID Connect &amp; OAuth 2.0 client library</Description>    
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

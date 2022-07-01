@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+	<TargetFrameworks>net6.0</TargetFrameworks>
 
-    <LangVersion>latest</LangVersion>
+	<LangVersion>latest</LangVersion>
     <Nullable>disable</Nullable>
 
     <PackageId>IdentityServer4.Storage</PackageId>

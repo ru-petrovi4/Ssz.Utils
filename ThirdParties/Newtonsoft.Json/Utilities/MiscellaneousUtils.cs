@@ -131,7 +131,9 @@ namespace Newtonsoft.Json.Utilities
 
         public static void GetQualifiedNameParts(string qualifiedName, out string? prefix, out string localName)
         {
+#pragma warning disable CA1307 // Specify StringComparison for clarity
             int colonPosition = qualifiedName.IndexOf(':');
+#pragma warning restore CA1307 // Specify StringComparison for clarity
 
             if ((colonPosition == -1 || colonPosition == 0) || (qualifiedName.Length - 1) == colonPosition)
             {

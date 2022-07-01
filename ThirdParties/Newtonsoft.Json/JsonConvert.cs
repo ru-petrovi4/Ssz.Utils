@@ -302,20 +302,24 @@ namespace Newtonsoft.Json
 
         private static string EnsureDecimalPlace(double value, string text)
         {
+#pragma warning disable CA1307 // Specify StringComparison for clarity
             if (double.IsNaN(value) || double.IsInfinity(value) || text.IndexOf('.') != -1 || text.IndexOf('E') != -1 || text.IndexOf('e') != -1)
             {
                 return text;
             }
+#pragma warning restore CA1307 // Specify StringComparison for clarity
 
             return text + ".0";
         }
 
         private static string EnsureDecimalPlace(string text)
         {
+#pragma warning disable CA1307 // Specify StringComparison for clarity
             if (text.IndexOf('.') != -1)
             {
                 return text;
             }
+#pragma warning restore CA1307 // Specify StringComparison for clarity
 
             return text + ".0";
         }

@@ -353,7 +353,9 @@ namespace Newtonsoft.Json.Linq
 
         internal override int GetDeepHashCode()
         {
+#pragma warning disable CA1307 // Specify StringComparison for clarity
             return _name.GetHashCode() ^ (Value?.GetDeepHashCode() ?? 0);
+#pragma warning restore CA1307 // Specify StringComparison for clarity
         }
 
         /// <summary>

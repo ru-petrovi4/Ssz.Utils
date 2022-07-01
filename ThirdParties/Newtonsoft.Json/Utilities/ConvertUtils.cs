@@ -249,7 +249,7 @@ namespace Newtonsoft.Json.Utilities
 
         public static TimeSpan ParseTimeSpan(string input)
         {
-#if HAVE_TIME_SPAN_PARSE_WITH_CULTURE
+#if HAVE_TIME_SPAN_PARSE_WITH_CULTURE || NET5_0_OR_GREATER
             return TimeSpan.Parse(input, CultureInfo.InvariantCulture);
 #else
             return TimeSpan.Parse(input);

@@ -101,6 +101,7 @@ namespace Newtonsoft.Json.Serialization
                 {
                     // if generic type, try manually parsing the type arguments for the case of dynamically loaded assemblies
                     // example generic typeName format: System.Collections.Generic.Dictionary`2[[System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.String, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]
+#pragma warning disable CA1307 // Specify StringComparison for clarity
                     if (typeName.IndexOf('`') >= 0)
                     {
                         try
@@ -112,6 +113,7 @@ namespace Newtonsoft.Json.Serialization
                             throw new JsonSerializationException("Could not find type '{0}' in assembly '{1}'.".FormatWith(CultureInfo.InvariantCulture, typeName, assembly.FullName), ex);
                         }
                     }
+#pragma warning restore CA1307 // Specify StringComparison for clarity
 
                     if (type == null)
                     {
@@ -130,7 +132,9 @@ namespace Newtonsoft.Json.Serialization
         private Type? GetGenericTypeFromTypeName(string typeName, Assembly assembly)
         {
             Type? type = null;
+#pragma warning disable CA1307 // Specify StringComparison for clarity
             int openBracketIndex = typeName.IndexOf('[');
+#pragma warning restore CA1307 // Specify StringComparison for clarity
             if (openBracketIndex >= 0)
             {
                 string genericTypeDefName = typeName.Substring(0, openBracketIndex);
