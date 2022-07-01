@@ -103,13 +103,13 @@ namespace Ssz.Utils.DataAccess
             switch (subscriptionScope)
             {
                 case EventSourceModelSubscriptionScope.Active:
-                    return AlarmCategoryInfos.Where(kvp => kvp.Value.ActiveCount > 0).Max(kvp => kvp.Key);
+                    return AlarmCategoryInfos.Where(kvp => kvp.Value.ActiveCount > 0).DefaultIfEmpty().Max(kvp => kvp.Key);
                 case EventSourceModelSubscriptionScope.Unacked:
-                    return AlarmCategoryInfos.Where(kvp => kvp.Value.UnackedCount > 0).Max(kvp => kvp.Key);
+                    return AlarmCategoryInfos.Where(kvp => kvp.Value.UnackedCount > 0).DefaultIfEmpty().Max(kvp => kvp.Key);
                 case EventSourceModelSubscriptionScope.ActiveOrUnacked:
-                    return AlarmCategoryInfos.Where(kvp => kvp.Value.ActiveOrUnackedCount > 0).Max(kvp => kvp.Key);
+                    return AlarmCategoryInfos.Where(kvp => kvp.Value.ActiveOrUnackedCount > 0).DefaultIfEmpty().Max(kvp => kvp.Key);
                 case EventSourceModelSubscriptionScope.ActiveAndUnacked:
-                    return AlarmCategoryInfos.Where(kvp => kvp.Value.ActiveAndUnackedCount > 0).Max(kvp => kvp.Key);
+                    return AlarmCategoryInfos.Where(kvp => kvp.Value.ActiveAndUnackedCount > 0).DefaultIfEmpty().Max(kvp => kvp.Key);
                 default:
                     throw new ArgumentException(nameof(subscriptionScope));
             }            
