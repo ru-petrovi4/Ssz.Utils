@@ -84,8 +84,7 @@ namespace Ssz.DataAccessGrpc.Client
                         em =>
                         {
                             var eventMessage = em.ToEventMessage();
-                            if (ElementIdsMap is not null)
-                                ElementIdsMap.AddFieldsToEventMessage(eventMessage);
+                            ElementIdsMap?.AddFieldsToEventMessage(eventMessage);
                             return eventMessage;
                         }
                         ).ToArray();

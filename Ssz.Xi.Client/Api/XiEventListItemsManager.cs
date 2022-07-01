@@ -96,8 +96,7 @@ namespace Ssz.Xi.Client.Api
                                             newListItems.Select(li =>                                            
                                             {
                                                 var eventMessage = li.EventMessage.ToEventMessage();
-                                                if (_dataAccessProvider.ElementIdsMap is not null)
-                                                    _dataAccessProvider.ElementIdsMap.AddFieldsToEventMessage(eventMessage);
+                                                _dataAccessProvider.ElementIdsMap?.AddFieldsToEventMessage(eventMessage);
                                                 return eventMessage;
                                             }).ToArray()));
                                     }
