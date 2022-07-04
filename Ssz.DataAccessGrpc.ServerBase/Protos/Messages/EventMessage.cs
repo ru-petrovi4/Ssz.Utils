@@ -26,10 +26,10 @@ namespace Ssz.DataAccessGrpc.ServerBase
             {
                 AlarmMessageData = new AlarmMessageData(eventMessage.AlarmMessageData);
             }
-            if (eventMessage.ClientRequestedFields is not null)
+            if (eventMessage.Fields is not null)
             {
-                foreach (var kvp in eventMessage.ClientRequestedFields)
-                    ClientRequestedFields.Add(kvp.Key,
+                foreach (var kvp in eventMessage.Fields)
+                    Fields.Add(kvp.Key,
                         kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
             }
         }

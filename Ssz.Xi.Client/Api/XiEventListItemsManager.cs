@@ -82,7 +82,7 @@ namespace Ssz.Xi.Client.Api
 
                     try
                     {
-                        Action<IDataAccessProvider, Ssz.Utils.DataAccess.EventMessage[]> eventMessagesCallbackEventHandler = kvp.Key;
+                        Action<IDataAccessProvider, Ssz.Utils.DataAccess.EventMessagesCollection> eventMessagesCallbackEventHandler = kvp.Key;
 
                         xiEventList.EventMessagesCallbackEvent +=
                             (IXiEventListProxy eventList, IEnumerable<IXiEventListItem> newListItems) =>
@@ -92,13 +92,12 @@ namespace Ssz.Xi.Client.Api
                                 {
                                     try
                                     {
-                                        сallbackDoer.BeginInvoke(ct => eventMessagesCallbackEventHandler(_dataAccessProvider, 
-                                            newListItems.Select(li =>                                            
-                                            {
-                                                var eventMessage = li.EventMessage.ToEventMessage();
-                                                _dataAccessProvider.ElementIdsMap?.AddFieldsToEventMessage(eventMessage);
-                                                return eventMessage;
-                                            }).ToArray()));
+                                        сallbackDoer.BeginInvoke(ct =>
+                                        {
+                                            EventMessagesCollection eventMessagesCollection = new();
+                                            eventMessagesCollection.EventMessages = newListItems.Select(li => li.EventMessage.ToEventMessage()).ToList();
+                                            eventMessagesCallbackEventHandler(_dataAccessProvider, eventMessagesCollection);
+                                        });
                                     }
                                     catch (Exception)
                                     {
@@ -174,7 +173,7 @@ namespace Ssz.Xi.Client.Api
             }            
         }
 
-        public Utils.DataAccess.EventMessage[]? ReadEventMessagesJournal(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
+        public Utils.DataAccess.EventMessagesCollection? ReadEventMessagesJournal(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
             return null;
         }
@@ -220,14 +219,14 @@ namespace Ssz.Xi.Client.Api
             _xiEventItemsMustBeAdded = true;
         }
 
-        public IXiEventListProxy? GetRelatedXiEventList(Action<IDataAccessProvider, Ssz.Utils.DataAccess.EventMessage[]> eventHandler)
+        public IXiEventListProxy? GetRelatedXiEventList(Action<IDataAccessProvider, EventMessagesCollection> eventHandler)
         {
             XiEventListPointer? xiEventListPointer;
             if (!_eventMessagesCallbackEventHandlers.TryGetValue(eventHandler, out xiEventListPointer)) return null;
             return xiEventListPointer.P;
         }
 
-        public event Action<IDataAccessProvider, Ssz.Utils.DataAccess.EventMessage[]> EventMessagesCallback
+        public event Action<IDataAccessProvider, EventMessagesCollection> EventMessagesCallback
         {
             add
             {
@@ -268,7 +267,7 @@ namespace Ssz.Xi.Client.Api
         
         private volatile bool _xiEventItemsMustBeAdded;
 
-        private readonly Dictionary<Action<IDataAccessProvider, Ssz.Utils.DataAccess.EventMessage[]>, XiEventListPointer> _eventMessagesCallbackEventHandlers =
+        private readonly Dictionary<Action<IDataAccessProvider, EventMessagesCollection>, XiEventListPointer> _eventMessagesCallbackEventHandlers =
             new();
 
         private string _xiSystem = "";

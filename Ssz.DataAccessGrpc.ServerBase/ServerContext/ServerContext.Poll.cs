@@ -49,11 +49,17 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
             if (_pollEventMessagesCallbacksQueue.Count == 0)
             {
-                ServerContext.EventMessagesCallbackMessage? eventMessagesCallbackMessage = serverList.GetEventMessagesCallbackMessage();
-
-                if (eventMessagesCallbackMessage is not null)
+                while (true)
                 {
-                    _pollEventMessagesCallbacksQueue = eventMessagesCallbackMessage.SplitForCorrectGrpcMessageSize();
+                    ServerContext.EventMessagesCallbackMessage? eventMessagesCallbackMessage = serverList.GetNextEventMessagesCallbackMessage();
+                    if (eventMessagesCallbackMessage is null)
+                        break;
+
+                    if (_pollEventMessagesCallbacksQueue.Count == 0)
+                        _pollEventMessagesCallbacksQueue = eventMessagesCallbackMessage.SplitForCorrectGrpcMessageSize();                    
+                    else
+                        foreach (var emc in eventMessagesCallbackMessage.SplitForCorrectGrpcMessageSize())
+                            _pollEventMessagesCallbacksQueue.Enqueue(emc);                    
                 }
             }
 

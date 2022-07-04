@@ -66,24 +66,21 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
                     try
                     {
-                        Action<IDataAccessProvider, Utils.DataAccess.EventMessage[]> eventMessagesCallbackEventHandler = kvp.Key;
+                        Action<IDataAccessProvider, Utils.DataAccess.EventMessagesCollection> eventMessagesCallbackEventHandler = kvp.Key;
 
                         dataGrpcEventList.EventMessagesCallbackEvent +=
-                            (ClientEventList eventList, ServerBase.EventMessage[] newEventMessages) =>
+                            (ClientEventList eventList, Utils.DataAccess.EventMessagesCollection newEventMessagesCollection) =>
                             {
                                 if (ct.IsCancellationRequested) return;
                                 if (сallbackDispatcher is not null)
                                 {
                                     try
                                     {
-                                        сallbackDispatcher.BeginInvoke(ct => eventMessagesCallbackEventHandler(
-                                            DataAccessProvider,
-                                            newEventMessages.Select(em =>
-                                            {
-                                                var eventMessage = em.ToEventMessage();
-                                                DataAccessProvider.ElementIdsMap?.AddFieldsToEventMessage(eventMessage);
-                                                return eventMessage;
-                                            }).ToArray()));
+                                        сallbackDispatcher.BeginInvoke(ct =>
+                                        {
+                                            DataAccessProvider.ElementIdsMap?.AddCommonFieldsToEventMessagesCollection(newEventMessagesCollection);
+                                            eventMessagesCallbackEventHandler(DataAccessProvider, newEventMessagesCollection);                                            
+                                        });
                                     }
                                     catch (Exception)
                                     {
@@ -149,14 +146,14 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             _dataGrpcEventItemsMustBeAdded = true;
         }
 
-        public ClientEventList? GetRelatedClientEventList(Action<IDataAccessProvider, Utils.DataAccess.EventMessage[]> eventHandler)
+        public ClientEventList? GetRelatedClientEventList(Action<IDataAccessProvider, Utils.DataAccess.EventMessagesCollection> eventHandler)
         {
             ClientEventListPointer? dataGrpcEventListPointer;
             if (!_eventMessagesCallbackEventHandlers.TryGetValue(eventHandler, out dataGrpcEventListPointer)) return null;
             return dataGrpcEventListPointer.P;
         }
 
-        public event Action<IDataAccessProvider, Utils.DataAccess.EventMessage[]> EventMessagesCallback
+        public event Action<IDataAccessProvider, Utils.DataAccess.EventMessagesCollection> EventMessagesCallback
         {
             add
             {
@@ -196,7 +193,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
         private volatile bool _dataGrpcEventItemsMustBeAdded;
 
-        private readonly Dictionary<Action<IDataAccessProvider, Utils.DataAccess.EventMessage[]>, ClientEventListPointer> _eventMessagesCallbackEventHandlers =
+        private readonly Dictionary<Action<IDataAccessProvider, Utils.DataAccess.EventMessagesCollection>, ClientEventListPointer> _eventMessagesCallbackEventHandlers =
             new ();
 
         #endregion

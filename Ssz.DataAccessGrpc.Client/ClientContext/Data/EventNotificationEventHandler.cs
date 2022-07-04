@@ -10,5 +10,5 @@ namespace Ssz.DataAccessGrpc.Client.Data
     /// <param name="eventList"> The IClientEventList that is sending the alarms and events to the client application. </param>
     /// <param name="newListItems"> The alarms and events that are being sent to the client application. </param>
     internal delegate void EventMessagesCallbackEventHandler(
-        ClientEventList eventList, ServerBase.EventMessage[] newListItems);
+        ClientEventList eventList, Utils.DataAccess.EventMessagesCollection newEventMessagesCollection);
 }

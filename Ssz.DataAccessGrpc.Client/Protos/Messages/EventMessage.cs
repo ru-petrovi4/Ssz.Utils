@@ -24,9 +24,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
             {
                 eventMessage.AlarmMessageData = AlarmMessageData.ToAlarmMessageData();
             }
-            if (ClientRequestedFields.Count > 0)
+            if (Fields.Count > 0)
             {
-                eventMessage.ClientRequestedFields = new Utils.CaseInsensitiveDictionary<string?>(ClientRequestedFields
+                eventMessage.Fields = new Utils.CaseInsensitiveDictionary<string?>(Fields
                             .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));
 
             }

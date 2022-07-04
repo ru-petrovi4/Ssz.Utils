@@ -100,13 +100,13 @@ namespace Ssz.Xi.Client
             return await taskCompletionSource.Task;
         }
 
-        public override async Task<Utils.DataAccess.EventMessage[]?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
+        public override async Task<Utils.DataAccess.EventMessagesCollection?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
-            var taskCompletionSource = new TaskCompletionSource<Utils.DataAccess.EventMessage[]?>();
+            var taskCompletionSource = new TaskCompletionSource<Utils.DataAccess.EventMessagesCollection?>();
             ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 var result = _xiEventListItemsManager.ReadEventMessagesJournal(firstTimestampUtc, secondTimestampUtc, params_);
-
+                ElementIdsMap?.AddCommonFieldsToEventMessagesCollection(result);
                 taskCompletionSource.SetResult(result);
             }
             );

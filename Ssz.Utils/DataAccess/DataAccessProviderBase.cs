@@ -184,7 +184,7 @@ namespace Ssz.Utils.DataAccess
 
         public virtual event Action<IDataAccessProvider> ValueSubscriptionsUpdated = delegate { };
 
-        public virtual event Action<IDataAccessProvider, EventMessage[]> EventMessagesCallback = delegate { };
+        public virtual event Action<IDataAccessProvider, EventMessagesCollection> EventMessagesCallback = delegate { };
 
         public virtual void AckAlarms(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
         {
@@ -276,9 +276,9 @@ namespace Ssz.Utils.DataAccess
             return Task.FromResult<ValueStatusTimestamp[][]?>(null);
         }
 
-        public virtual Task<EventMessage[]?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
+        public virtual Task<EventMessagesCollection?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
-            return Task.FromResult<EventMessage[]?>(null);
+            return Task.FromResult<EventMessagesCollection?>(null);
         }
 
         public virtual void ReInitialize()

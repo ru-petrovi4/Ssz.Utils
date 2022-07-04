@@ -32,6 +32,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 }
 
                 eventMessagesCollection.EventMessages.AddRange(EventMessages.Skip(index).Take(MaxEventMessagesCount));
+                eventMessagesCollection.CommonFields.Add(CommonFields);
 
                 result.Add(eventMessagesCollection);
                 index += MaxEventMessagesCount;

@@ -57,9 +57,9 @@ namespace Ssz.Utils
         public CaseInsensitiveDictionary<List<string?>> Tags { get; private set; } = null!;
 
         /// <summary>
-        ///     Can be configured in map, '%(EventMessageFieldsToAdd)' key
+        ///     Can be configured in map, '%(CommonEventMessageFieldsToAdd)' key
         /// </summary>
-        public CaseInsensitiveDictionary<string?> EventMessageFieldsToAdd { get; private set; } = new();
+        public CaseInsensitiveDictionary<string?> CommonEventMessageFieldsToAdd { get; private set; } = new();
 
         public bool IsEmpty => Map.Count == 0;
 
@@ -89,9 +89,9 @@ namespace Ssz.Utils
             if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 TagAndPropertySeparator = values[1] ?? @"";
 
-            values = Map.TryGetValue("%(EventMessageFieldsToAdd)");
+            values = Map.TryGetValue("%(CommonEventMessageFieldsToAdd)");
             if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
-                EventMessageFieldsToAdd = NameValueCollectionHelper.Parse(values[1]);
+                CommonEventMessageFieldsToAdd = NameValueCollectionHelper.Parse(values[1]);
         }
 
         /// <summary>
@@ -251,24 +251,30 @@ namespace Ssz.Utils
         }
 
         /// <summary>
-        ///     Returns same EventMessage, if any.
+        ///     Returns same EventMessagesCollectione, if any.
         /// </summary>
         /// <param name="eventMessage"></param>
         /// <returns></returns>
-        [return: NotNullIfNotNull("eventMessage")]
-        public EventMessage? AddFieldsToEventMessage(EventMessage? eventMessage)
+        [return: NotNullIfNotNull("eventMessagesCollection")]
+        public EventMessagesCollection? AddCommonFieldsToEventMessagesCollection(EventMessagesCollection? eventMessagesCollection)
         {
-            if (eventMessage is null)
+            if (eventMessagesCollection is null)
                 return null;
 
-            foreach (var kvp in EventMessageFieldsToAdd)
+            if (eventMessagesCollection.CommonFields is null)
             {
-                if (eventMessage.ClientRequestedFields is null)
-                    eventMessage.ClientRequestedFields = new CaseInsensitiveDictionary<string?>();
-                eventMessage.ClientRequestedFields[kvp.Key] = kvp.Value;
+                if (CommonEventMessageFieldsToAdd.Count > 0)
+                    eventMessagesCollection.CommonFields = new CaseInsensitiveDictionary<string?>(CommonEventMessageFieldsToAdd);
             }
+            else
+            {
+                foreach (var kvp in CommonEventMessageFieldsToAdd)
+                {
+                    eventMessagesCollection.CommonFields[kvp.Key] = kvp.Value;
+                }
+            }            
 
-            return eventMessage;
+            return eventMessagesCollection;
         }
 
         #endregion

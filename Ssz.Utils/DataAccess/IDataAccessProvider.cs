@@ -159,9 +159,9 @@ namespace Ssz.Utils.DataAccess
         /// <param name="secondTimestampUtc"></param>
         /// <param name="params_"></param>
         /// <returns></returns>
-        Task<EventMessage[]?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_);
+        Task<EventMessagesCollection?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_);
 
-        event Action<IDataAccessProvider, EventMessage[]> EventMessagesCallback;
+        event Action<IDataAccessProvider, EventMessagesCollection> EventMessagesCallback;
 
         void AckAlarms(string operatorName, string comment, EventId[] eventIdsToAck);        
     }

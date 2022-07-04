@@ -148,10 +148,10 @@ namespace Xi.Contracts.Data
 			}
 			if (ClientRequestedFields is not null)
 			{
-				eventInfo.ClientRequestedFields = new CaseInsensitiveDictionary<string?>();
+				eventInfo.Fields = new CaseInsensitiveDictionary<string?>();
 				for (int i = 0; i < ClientRequestedFields.Count; i++)
                 {					
-					eventInfo.ClientRequestedFields.Add(new Any(i).ValueAsString(false), new Any(ClientRequestedFields[i]).ValueAsString(false));
+					eventInfo.Fields.Add(new Any(i).ValueAsString(false), new Any(ClientRequestedFields[i]).ValueAsString(false));
 				}
 				// TODO
 				//

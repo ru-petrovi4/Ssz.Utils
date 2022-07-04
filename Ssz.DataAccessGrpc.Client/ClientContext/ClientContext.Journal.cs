@@ -69,7 +69,7 @@ namespace Ssz.DataAccessGrpc.Client
             }
         }
 
-        public ServerBase.EventMessage[] ReadEventMessagesJournal(ClientEventList clientEventList, DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
+        public Utils.DataAccess.EventMessagesCollection ReadEventMessagesJournal(ClientEventList clientEventList, DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -94,7 +94,8 @@ namespace Ssz.DataAccessGrpc.Client
                     SetResourceManagementLastCallUtc();
 
                     var result = clientEventList.EventMessagesCallback(reply.EventMessagesCollection);
-                    if (result is not null) return result;
+                    if (result is not null) 
+                        return result;
                 }
             }
             catch (Exception ex)

@@ -102,7 +102,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid List Type for this Request."));
         }
 
-        public virtual ServerContext.EventMessagesCallbackMessage? GetEventMessagesCallbackMessage()
+        public virtual ServerContext.EventMessagesCallbackMessage? GetNextEventMessagesCallbackMessage()
         {
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid List Type for this Request."));
         }

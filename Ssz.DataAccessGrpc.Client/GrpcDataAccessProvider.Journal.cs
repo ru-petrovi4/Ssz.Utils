@@ -66,9 +66,9 @@ namespace Ssz.DataAccessGrpc.Client
             return await taskCompletionSource.Task;
         }
 
-        public override async Task<Utils.DataAccess.EventMessage[]?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
+        public override async Task<Utils.DataAccess.EventMessagesCollection?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
-            var taskCompletionSource = new TaskCompletionSource<Utils.DataAccess.EventMessage[]?>();
+            var taskCompletionSource = new TaskCompletionSource<Utils.DataAccess.EventMessagesCollection?>();
             ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 ClientEventList? clientEventList =
@@ -80,14 +80,8 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                     if (clientEventList.Disposed) return;
 
-                    var result = clientEventList.ReadEventMessagesJournal(firstTimestampUtc, secondTimestampUtc, params_).Select(                        
-                        em =>
-                        {
-                            var eventMessage = em.ToEventMessage();
-                            ElementIdsMap?.AddFieldsToEventMessage(eventMessage);
-                            return eventMessage;
-                        }
-                        ).ToArray();
+                    var result = clientEventList.ReadEventMessagesJournal(firstTimestampUtc, secondTimestampUtc, params_);
+                    ElementIdsMap?.AddCommonFieldsToEventMessagesCollection(result);
                     taskCompletionSource.SetResult(result);
                 }
                 catch (Exception ex)

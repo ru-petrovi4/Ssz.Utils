@@ -53,14 +53,14 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// 
         /// </summary>
         /// <returns></returns>
-        public ServerBase.EventMessage[] PollEventsChanges()
+        public Utils.DataAccess.EventMessagesCollection PollEventsChanges()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
             return Context.PollEventsChanges(this);
         }
 
-        public ServerBase.EventMessage[] ReadEventMessagesJournal(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
+        public Utils.DataAccess.EventMessagesCollection ReadEventMessagesJournal(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
@@ -68,11 +68,11 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         }
 
         /// <summary>
-        ///     Returns new EventMessages or null, if waiting next message.
+        ///     Returns new EventMessagesCollection or null, if waiting next message.
         /// </summary>
         /// <param name="eventMessagesCollection"></param>
         /// <returns></returns>
-        public ServerBase.EventMessage[]? EventMessagesCallback(EventMessagesCollection eventMessagesCollection)
+        public Utils.DataAccess.EventMessagesCollection? EventMessagesCallback(ServerBase.EventMessagesCollection eventMessagesCollection)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
@@ -95,14 +95,21 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
             }
             else
             {
-                var result = new List<ServerBase.EventMessage>();
+                Utils.DataAccess.EventMessagesCollection result = new();
 
                 foreach (var eventMessage in eventMessagesCollection.EventMessages)
                 {
-                    result.Add(eventMessage);
+                    result.EventMessages.Add(eventMessage.ToEventMessage());
                 }
 
-                return result.ToArray();
+                if (eventMessagesCollection.CommonFields.Count > 0)
+                {
+                    result.CommonFields = new CaseInsensitiveDictionary<string?>(eventMessagesCollection.CommonFields
+                                .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));
+
+                }
+
+                return result;
             }
         }
 
@@ -110,13 +117,13 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         ///     Throws or invokes EventMessagesCallbackEvent.        
         /// </summary>
         /// <param name="newEventMessages"></param>
-        public void RaiseEventMessagesCallbackEvent(ServerBase.EventMessage[] newEventMessages)
+        public void RaiseEventMessagesCallbackEvent(Utils.DataAccess.EventMessagesCollection newEventMessagesCollection)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
             try
             {
-                EventMessagesCallbackEvent(this, newEventMessages);
+                EventMessagesCallbackEvent(this, newEventMessagesCollection);
             }
             catch
             {
@@ -137,7 +144,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         ///     This data member holds the last exception message encountered by the
         ///     ElementValuesCallback callback when calling valuesUpdateEvent().
         /// </summary>
-        private CaseInsensitiveDictionary<EventMessagesCollection> _incompleteEventMessagesCollectionCollection = new CaseInsensitiveDictionary<EventMessagesCollection>();
+        private CaseInsensitiveDictionary<ServerBase.EventMessagesCollection> _incompleteEventMessagesCollectionCollection = new();
 
         #endregion
     }

@@ -8,6 +8,7 @@ using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
+using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using Ssz.Utils.Serialization;
 
@@ -363,24 +364,44 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
             public uint ListClientAlias;
 
-            public List<EventMessage> EventMessages = new List<EventMessage>();
+            public List<EventMessage> EventMessages = new();
+
+            public CaseInsensitiveDictionary<string?>? CommonFields;
 
             public void CombineWith(EventMessagesCallbackMessage nextEventMessagesCallbackMessage)
             {
                 EventMessages.AddRange(nextEventMessagesCallbackMessage.EventMessages);
+                if (nextEventMessagesCallbackMessage.CommonFields is not null)
+                {
+                    if (CommonFields is null)
+                    {
+                        CommonFields = new CaseInsensitiveDictionary<string?>(nextEventMessagesCallbackMessage.CommonFields);
+                    }
+                    else
+                    {
+                        foreach (var kvp in nextEventMessagesCallbackMessage.CommonFields)
+                            CommonFields[kvp.Key] = kvp.Value;
+                    }                    
+                }
             }
 
             public Queue<EventMessagesCallback> SplitForCorrectGrpcMessageSize()
             {
-                var fullElementValuesCollection = new EventMessagesCollection();
-                fullElementValuesCollection.EventMessages.AddRange(EventMessages);
+                var fullEventMessagesCollection = new EventMessagesCollection();
+                fullEventMessagesCollection.EventMessages.AddRange(EventMessages);
+                if (CommonFields is not null)
+                {
+                    foreach (var kvp in CommonFields)
+                        fullEventMessagesCollection.CommonFields.Add(kvp.Key,
+                            kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
+                }
 
                 var queue = new Queue<EventMessagesCallback>();
-                foreach (EventMessagesCollection eventMessagesCollection in fullElementValuesCollection.SplitForCorrectGrpcMessageSize())
+                foreach (EventMessagesCollection eventMessagesCollection in fullEventMessagesCollection.SplitForCorrectGrpcMessageSize())
                 {
                     var eventMessagesCallback = new EventMessagesCallback();
                     eventMessagesCallback.ListClientAlias = ListClientAlias;
-                    eventMessagesCallback.EventMessagesCollection = eventMessagesCollection;
+                    eventMessagesCallback.EventMessagesCollection = eventMessagesCollection;                                       
                     queue.Enqueue(eventMessagesCallback);
                 }
                 return queue;
@@ -403,31 +424,3 @@ namespace Ssz.DataAccessGrpc.ServerBase
         }
     }
 }
-
-
-//var queue = new Queue<EventMessagesCallback>();
-
-//int size = 0;
-//EventMessagesCallback? eventMessagesCallback = null;
-//foreach (EventMessage eventMessage in EventMessagesCollection)
-//{
-//    if (eventMessagesCallback is null || size > MaxSize)
-//    {
-//        var eventMessagesCollection = new EventMessagesCollection();
-//        if (eventMessagesCallback is not null)
-//        {
-//            eventMessagesCollection.Guid = Guid.NewGuid().ToString();
-//            eventMessagesCallback.EventMessagesCollection.NextCollectionGuid = eventMessagesCollection.Guid;
-//        }
-//        eventMessagesCallback = new EventMessagesCallback();
-//        eventMessagesCallback.ListClientAlias = ListClientAlias;
-//        eventMessagesCallback.EventMessagesCollection = eventMessagesCollection;
-//        queue.Enqueue(eventMessagesCallback);
-//        size = 0;
-//    }
-
-//    eventMessagesCallback.EventMessagesCollection.EventMessages.Add(eventMessage);
-//    size += 1024;
-//}
-
-//return queue;
