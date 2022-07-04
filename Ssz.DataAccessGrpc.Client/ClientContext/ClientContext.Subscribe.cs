@@ -76,9 +76,9 @@ namespace Ssz.DataAccessGrpc.Client
                     PollEventsChangesReply reply = _resourceManagementClient.PollEventsChanges(request);
                     SetResourceManagementLastCallUtc();
 
-                    var newEventMessagesCollection = EventMessagesCallback(eventList, reply.EventMessagesCollection);
-                    if (newEventMessagesCollection is not null)
-                        return newEventMessagesCollection;
+                    var eventMessagesCollection = EventMessagesCallback(eventList, reply.EventMessagesCollection);
+                    if (eventMessagesCollection is not null)
+                        return eventMessagesCollection;
                 }
             }
             catch (Exception ex)
@@ -121,12 +121,12 @@ namespace Ssz.DataAccessGrpc.Client
         /// <returns></returns>
         private Utils.DataAccess.EventMessagesCollection? EventMessagesCallback(ClientEventList eventList, EventMessagesCollection eventMessagesCollection)
         {
-            Utils.DataAccess.EventMessagesCollection? newEventMessagesCollection = eventList.EventMessagesCallback(eventMessagesCollection);
-            if (newEventMessagesCollection is not null && newEventMessagesCollection.EventMessages.Count > 0)
+            Utils.DataAccess.EventMessagesCollection? eventMessagesCollection2 = eventList.EventMessagesCallback(eventMessagesCollection);
+            if (eventMessagesCollection2 is not null && eventMessagesCollection2.EventMessages.Count > 0)
             {
-                eventList.RaiseEventMessagesCallbackEvent(newEventMessagesCollection);
+                eventList.RaiseEventMessagesCallbackEvent(eventMessagesCollection2);
             }
-            return newEventMessagesCollection;
+            return eventMessagesCollection2;
         }
 
         private void LongrunningPassthroughCallback(ServerBase.LongrunningPassthroughCallback longrunningPassthroughCallback)

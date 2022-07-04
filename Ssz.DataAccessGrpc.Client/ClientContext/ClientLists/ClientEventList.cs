@@ -116,14 +116,14 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// <summary>
         ///     Throws or invokes EventMessagesCallbackEvent.        
         /// </summary>
-        /// <param name="newEventMessages"></param>
-        public void RaiseEventMessagesCallbackEvent(Utils.DataAccess.EventMessagesCollection newEventMessagesCollection)
+        /// <param name="eventMessagesCollection"></param>
+        public void RaiseEventMessagesCallbackEvent(Utils.DataAccess.EventMessagesCollection eventMessagesCollection)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
             try
             {
-                EventMessagesCallbackEvent(this, newEventMessagesCollection);
+                EventMessagesCallbackEvent(this, eventMessagesCollection);
             }
             catch
             {

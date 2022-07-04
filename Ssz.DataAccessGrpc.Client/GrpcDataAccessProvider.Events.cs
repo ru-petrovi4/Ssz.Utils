@@ -50,7 +50,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         #region protected functions
 
-        protected virtual void OnEventMessagesCallback(Utils.DataAccess.EventMessagesCollection newEventMessagesCollection)
+        protected virtual void OnEventMessagesCallback(Utils.DataAccess.EventMessagesCollection eventMessagesCollection)
         {
         }
 
@@ -58,9 +58,9 @@ namespace Ssz.DataAccessGrpc.Client
 
         #region private functions
 
-        private void OnEventMessagesCallbackInternal(IDataAccessProvider dataAccessProvider, Utils.DataAccess.EventMessagesCollection newEventMessagesCollection)
+        private void OnEventMessagesCallbackInternal(IDataAccessProvider dataAccessProvider, Utils.DataAccess.EventMessagesCollection eventMessagesCollection)
         {
-            OnEventMessagesCallback(newEventMessagesCollection);
+            OnEventMessagesCallback(eventMessagesCollection);
         }
 
         #endregion

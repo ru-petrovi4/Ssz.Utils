@@ -96,6 +96,7 @@ namespace Ssz.Xi.Client.Api
                                         {
                                             EventMessagesCollection eventMessagesCollection = new();
                                             eventMessagesCollection.EventMessages = newListItems.Select(li => li.EventMessage.ToEventMessage()).ToList();
+                                            _dataAccessProvider.ElementIdsMap?.AddCommonFieldsToEventMessagesCollection(eventMessagesCollection);
                                             eventMessagesCallbackEventHandler(_dataAccessProvider, eventMessagesCollection);
                                         });
                                     }

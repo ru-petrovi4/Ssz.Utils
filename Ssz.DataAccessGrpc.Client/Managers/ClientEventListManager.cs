@@ -69,7 +69,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                         Action<IDataAccessProvider, Utils.DataAccess.EventMessagesCollection> eventMessagesCallbackEventHandler = kvp.Key;
 
                         dataGrpcEventList.EventMessagesCallbackEvent +=
-                            (ClientEventList eventList, Utils.DataAccess.EventMessagesCollection newEventMessagesCollection) =>
+                            (ClientEventList eventList, Utils.DataAccess.EventMessagesCollection eventMessagesCollection) =>
                             {
                                 if (ct.IsCancellationRequested) return;
                                 if (сallbackDispatcher is not null)
@@ -78,8 +78,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                                     {
                                         сallbackDispatcher.BeginInvoke(ct =>
                                         {
-                                            DataAccessProvider.ElementIdsMap?.AddCommonFieldsToEventMessagesCollection(newEventMessagesCollection);
-                                            eventMessagesCallbackEventHandler(DataAccessProvider, newEventMessagesCollection);                                            
+                                            DataAccessProvider.ElementIdsMap?.AddCommonFieldsToEventMessagesCollection(eventMessagesCollection);
+                                            eventMessagesCallbackEventHandler(DataAccessProvider, eventMessagesCollection);                                            
                                         });
                                     }
                                     catch (Exception)
