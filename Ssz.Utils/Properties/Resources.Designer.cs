@@ -70,6 +70,15 @@ namespace Ssz.Utils.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Addon ConfigDirectory Error: Cannot contain subdirectory(-es): {0}.
+        /// </summary>
+        internal static string AddonConfigDirectoryError_CannotContainPath {
+            get {
+                return ResourceManager.GetString("AddonConfigDirectoryError_CannotContainPath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Calculation error.
         /// </summary>
         internal static string CalculationLambdaExpressionError {

@@ -120,6 +120,9 @@
   <data name="AddonConfigDirectoryError" xml:space="preserve">
     <value>Не удается найти или создать директорию конфигурации плагина: {0}</value>
   </data>
+  <data name="AddonConfigDirectoryError_CannotContainPath" xml:space="preserve">
+    <value>Директория конфигурации плагина не может содержать поддиректории: {0}</value>
+  </data>
   <data name="CalculationLambdaExpressionError" xml:space="preserve">
     <value>Ошибка при вычислении выражения</value>
   </data>

@@ -87,6 +87,11 @@ namespace Ssz.Utils.Addons
                     DirectoryInfo? addonConfigDirectoryInfo = null;
                     if (!String.IsNullOrEmpty(addonConfigDirectoryRelativePath))
                     {
+                        if (addonConfigDirectoryRelativePath.Contains(Path.PathSeparator))
+                        {
+                            WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonConfigDirectoryError_CannotContainPath, addonConfigDirectoryRelativePath);
+                            return null;
+                        }
                         addonConfigDirectoryInfo = new DirectoryInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, addonConfigDirectoryRelativePath));
                         try
                         {
@@ -111,7 +116,7 @@ namespace Ssz.Utils.Addons
                     desiredAndAvailableAddon.CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, parameters.ToArray());
                     var idNameValueCollection = desiredAndAvailableAddon.CsvDb.GetFileNameAndLastWriteTimeUtcDictionary();
                     idNameValueCollection.Add(@"addonName", addonName);
-                    idNameValueCollection.Add(@"addonConfigDirectoryFullName", addonConfigDirectoryInfo?.FullName);
+                    idNameValueCollection.Add(@"addonConfigDirectoryRelativePath", addonConfigDirectoryRelativePath);
                     desiredAndAvailableAddon.Id = NameValueCollectionHelper.GetNameValueCollectionString(idNameValueCollection);
                     desiredAndAvailableAddon.Logger = Logger;
                     desiredAndAvailableAddon.UserFriendlyLogger = UserFriendlyLogger;
