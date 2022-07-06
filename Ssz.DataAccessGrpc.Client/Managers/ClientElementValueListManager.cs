@@ -224,21 +224,21 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             {
                 i++;
 
-                ClientObjectInfo? modelItem;
-                if (!ModelItemsDictionary.TryGetValue(clientObj, out modelItem))
+                ClientObjectInfo? clientObjectInfo;
+                if (!ClientObjectInfosDictionary.TryGetValue(clientObj, out clientObjectInfo))
                 {
                     result.Add(clientObj);
                     continue;
                 }                
                 
-                if (modelItem.DataAccessGrpcListItemWrapper is null ||
-                    modelItem.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem is null ||
-                    modelItem.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.StatusCode != StatusCode.OK)
+                if (clientObjectInfo.DataAccessGrpcListItemWrapper is null ||
+                    clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem is null ||
+                    clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.StatusCode != StatusCode.OK)
                 {
                     result.Add(clientObj);
                     continue;
                 }
-                ClientElementValueListItem dataGrpcElementValueListItem = modelItem.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem;
+                ClientElementValueListItem dataGrpcElementValueListItem = clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem;
                 dataGrpcElementValueListItem.PrepareForWrite(valueStatusTimestamps[i]);
             }
 
@@ -277,15 +277,15 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         {
             if (DataAccessGrpcList is null || DataAccessGrpcList.Disposed) return;
 
-            ClientObjectInfo? modelItem;
-            if (!ModelItemsDictionary.TryGetValue(clientObj, out modelItem)) return;
+            ClientObjectInfo? clientObjectInfo;
+            if (!ClientObjectInfosDictionary.TryGetValue(clientObj, out clientObjectInfo)) return;
             
-            if (modelItem.DataAccessGrpcListItemWrapper is null || modelItem.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem is null || modelItem.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.StatusCode != StatusCode.OK)
+            if (clientObjectInfo.DataAccessGrpcListItemWrapper is null || clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem is null || clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.StatusCode != StatusCode.OK)
             {
                 return;
             }
 
-            ClientElementValueListItem dataGrpcElementValueListItem = modelItem.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem;
+            ClientElementValueListItem dataGrpcElementValueListItem = clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem;
 
             try
             {                

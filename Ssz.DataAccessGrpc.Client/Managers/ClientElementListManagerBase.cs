@@ -57,6 +57,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <param name="clientObj"></param>
         public void RemoveItem(object clientObj)
         {
+            if (_clientObjectInfosDictionary.Count == 0)
+                return;
+#if NETSTANDARD2_0
             ClientObjectInfo? clientObjectInfo;
             if (_clientObjectInfosDictionary.TryGetValue(clientObj, out clientObjectInfo))
             {
@@ -70,6 +73,21 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             {
                 Logger.LogError("DataAccessGrpcListItemsManager.RemoveItem() error, clientObj was not added earlier");
             }
+#else
+            ClientObjectInfo? clientObjectInfo;
+            if (_clientObjectInfosDictionary.Remove(clientObj, out clientObjectInfo))
+            {
+                _clientObjectInfosToRemove.Add(clientObjectInfo);                
+                clientObjectInfo.ClientObj = null;
+
+                _dataGrpcItemsMustBeAddedOrRemoved = true;
+            }
+            else
+            {
+                Logger.LogError("DataAccessGrpcListItemsManager.RemoveItem() error, clientObj was not added earlier");
+            }
+#endif
+
         }
 
         public void Unsubscribe(bool clearClientSubscriptions)
@@ -82,7 +100,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 if (clearClientSubscriptions) dataGrpcListItemWrapper.ClientObjectInfosCollection.Clear();
             }
 
-            if (clearClientSubscriptions) _clientObjectInfosDictionary.Clear();
+            if (clearClientSubscriptions) 
+                _clientObjectInfosDictionary.Clear();
 
             DataAccessGrpcList = null;
 
@@ -93,7 +112,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
         public IEnumerable<object> GetAllClientObjs()
         {
-            return ModelItemsDictionary.Values.Select(mi => mi.ClientObj).Where(o => o is not null).OfType<object>();
+            return _clientObjectInfosDictionary.Values.Select(mi => mi.ClientObj).Where(o => o is not null).OfType<object>();
         }
 
         #endregion
@@ -300,7 +319,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             set { _dataGrpcItemsMustBeAddedOrRemoved = value; }
         }
 
-        protected Dictionary<object, ClientObjectInfo> ModelItemsDictionary
+        protected Dictionary<object, ClientObjectInfo> ClientObjectInfosDictionary
         {
             get { return _clientObjectInfosDictionary; }
         }
