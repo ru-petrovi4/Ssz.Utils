@@ -554,7 +554,7 @@ namespace Ssz.Xi.Client
                     #endregion                    
                 }                
 
-                if (!String.IsNullOrWhiteSpace(ServerAddress) &&
+                if (IsInitialized && !String.IsNullOrWhiteSpace(ServerAddress) &&
                     nowUtc > LastFailedConnectionDateTimeUtc + TimeSpan.FromSeconds(5))
                 {
                     try

@@ -132,8 +132,15 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 #endif
             GrpcChannel? grpcChannel = null;            
             try
-            {
+            {                
+#if NET5_0_OR_GREATER
                 grpcChannel = GrpcChannel.ForAddress(serverAddress);
+#else
+                grpcChannel = GrpcChannel.ForAddress(serverAddress, new GrpcChannelOptions
+                {
+                    HttpHandler = new Grpc.Net.Client.Web.GrpcWebHandler(new System.Net.Http.HttpClientHandler())
+                });
+#endif
 
                 var resourceManagementClient = new DataAccess.DataAccessClient(grpcChannel);                               
 
@@ -304,9 +311,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             _connectionInfo.ClientContext.ProcessPendingContextNotificationData();
         }
 
-        #endregion
+#endregion
 
-        #region private functions
+#region private functions
 
         /// <summary>
         ///     This method is used to close a context with the server and disconnect the WCF connection.
@@ -339,9 +346,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             }
         }
 
-        #endregion
+#endregion
 
-        #region private fields
+#region private fields
 
         private bool _disposed;
 
@@ -351,7 +358,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
         private ConnectionInfo? _connectionInfo;
 
-        #endregion
+#endregion
 
         private class ConnectionInfo
         {
