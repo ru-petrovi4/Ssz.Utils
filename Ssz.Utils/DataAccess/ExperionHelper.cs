@@ -176,7 +176,7 @@ namespace Ssz.Utils.DataAccess
                     AlarmIsUnacked = unacked,
                     OccurrenceTime = eventMessage.OccurrenceTimeUtc,
                     TimeLastActive = eventMessage.AlarmMessageData.TimeLastActive.Value,
-                    Tag = tag,
+                    TagName = tag,
                     Desc = desc,
                     TripValue = tripValue,
                     TripValueText = tripValueText,

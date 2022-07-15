@@ -22,7 +22,7 @@ namespace Ssz.Utils.DataAccess
             _alarmIsUnacked = that._alarmIsUnacked;
             _occurrenceTime = that._occurrenceTime;
             _timeLastActive = that._timeLastActive;
-            _tag = that._tag;
+            _tagName = that._tagName;
             _propertyPath = that._propertyPath;
             _desc = that._desc;
             _area = that._area;
@@ -85,24 +85,24 @@ namespace Ssz.Utils.DataAccess
         /// </summary>
         public virtual string ElementId
         {
-            get { return Tag + PropertyPath; }
+            get { return TagName + PropertyPath; }
             set
             {
                 if (value == @"")
                 {
-                    Tag = @"";
+                    TagName = @"";
                     PropertyPath = @"";
                     return;
                 }
                 int i = value.IndexOf('.');
                 if (i > 0)
                 {
-                    Tag = value.Substring(0, i);
+                    TagName = value.Substring(0, i);
                     PropertyPath = value.Substring(i);
                 }                
                 else
                 {
-                    Tag = value;
+                    TagName = value;
                     PropertyPath = @"";
                 }                
             }
@@ -111,12 +111,12 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         ///     The tag part of the ElementId. E.g. 'FIC3310' 
         /// </summary>
-        public virtual string Tag
+        public virtual string TagName
         {
-            get { return _tag; }
+            get { return _tagName; }
             set
             {
-                SetValue(ref _tag, value);
+                SetValue(ref _tagName, value);
                 OnPropertyChanged(() => ElementId);
             }
         }
@@ -283,7 +283,7 @@ namespace Ssz.Utils.DataAccess
         private DateTime _occurrenceTime;
         private DateTime _timeLastActive;
         
-        private string _tag = @"";        
+        private string _tagName = @"";        
         private string _propertyPath = @"";
 
         private string _desc = @"";

@@ -276,18 +276,18 @@ namespace Ssz.Utils.DataAccess
         ///     all parent areas,
         ///     leaf area.        
         /// </summary>
-        /// <param name="tag"></param>
+        /// <param name="tagName"></param>
         /// <param name="area"></param>
         /// <returns></returns>
-        public virtual EventSourceObject GetOrCreateEventSourceObject(string tag, string? area = null)
+        public virtual EventSourceObject GetOrCreateEventSourceObject(string tagName, string? area = null)
         {
             EventSourceObject? existingEventSourceObject;
-            if (EventSourceObjects.TryGetValue(tag, out existingEventSourceObject))
+            if (EventSourceObjects.TryGetValue(tagName, out existingEventSourceObject))
                 return existingEventSourceObject;
 
             //The tag doesn't already exist.  Create a new EventSourceObject and add it to our dictionary
-            var newEventSourceObject = new EventSourceObject(tag, DataAccessProvider);
-            EventSourceObjects[tag] = newEventSourceObject;
+            var newEventSourceObject = new EventSourceObject(tagName, DataAccessProvider);
+            EventSourceObjects[tagName] = newEventSourceObject;
 
             EventSourceArea overviewEventSourceArea = GetOrCreateEventSourceArea(@"");
             newEventSourceObject.EventSourceAreas[@""] = overviewEventSourceArea;

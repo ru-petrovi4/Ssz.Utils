@@ -111,20 +111,20 @@ namespace Ssz.Utils
                 return values;
             }
 
-            string? tag;
+            string? tagName;
             string? propertyPath;
             string? tagType;
 
             var separatorIndex = elementId.LastIndexOf(TagAndPropertySeparator);
             if (separatorIndex > 0 && separatorIndex < elementId.Length - 1)
             {
-                tag = elementId.Substring(0, separatorIndex);
+                tagName = elementId.Substring(0, separatorIndex);
                 propertyPath = elementId.Substring(separatorIndex);
-                tagType = GetTagType(tag);
+                tagType = GetTagType(tagName);
             }
             else
             {
-                tag = elementId;
+                tagName = elementId;
                 propertyPath = null;
                 tagType = null;
             }
@@ -151,7 +151,7 @@ namespace Ssz.Utils
                         constant =>
                         {
                             if (String.Equals(constant, GenericTag, StringComparison.InvariantCultureIgnoreCase))
-                                return tag ?? @"";
+                                return tagName ?? @"";
                             if (getConstantValue != null)
                                 return getConstantValue(constant);
                             return @"";
@@ -171,14 +171,14 @@ namespace Ssz.Utils
         /// <summary>
         ///     Returns null if not found in map file, otherwise result.Count > 1
         /// </summary>
-        /// <param name="tag"></param>
+        /// <param name="tagName"></param>
         /// <param name="propertyPath"></param>
         /// <param name="tagType"></param>
         /// <param name="getConstantValue"></param>
         /// <returns></returns>
-        public List<string?>? GetFromMap(string? tag, string? propertyPath, string? tagType, Func<string, string>? getConstantValue = null)
+        public List<string?>? GetFromMap(string? tagName, string? propertyPath, string? tagType, Func<string, string>? getConstantValue = null)
         {
-            string elementId = tag + propertyPath;
+            string elementId = tagName + propertyPath;
             if (elementId == @"" || Map.Count == 0) return null;
 
             var values = Map.TryGetValue(elementId);
@@ -209,7 +209,7 @@ namespace Ssz.Utils
                     string? v = SszQueryHelper.ComputeValueOfSszQueries(values[i], constant =>
                     {
                         if (String.Equals(constant, GenericTag, StringComparison.InvariantCultureIgnoreCase))
-                            return tag ?? @"";
+                            return tagName ?? @"";
                         if (getConstantValue != null)
                             return getConstantValue(constant);
                         return @"";
@@ -225,10 +225,10 @@ namespace Ssz.Utils
             return result;
         }
 
-        public string GetTagType(string? tag)
+        public string GetTagType(string? tagName)
         {
-            if (string.IsNullOrEmpty(tag)) return "";
-            var tagValues = Tags.TryGetValue(tag!);
+            if (string.IsNullOrEmpty(tagName)) return "";
+            var tagValues = Tags.TryGetValue(tagName!);
             if (tagValues is null) return "";
             if (tagValues.Count < 2) return "";
             return tagValues[1] ?? @"";
@@ -290,7 +290,7 @@ namespace Ssz.Utils
 }
 
 
-//public List<string?>? GetFromMap(string? tag, string? propertyPath, string? tagType)
+//public List<string?>? GetFromMap(string? tagName, string? propertyPath, string? tagType)
 //{
 //    string elementId = tag + propertyPath;
 //    if (elementId == @"") return null;

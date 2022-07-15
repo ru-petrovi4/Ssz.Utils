@@ -7,10 +7,10 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         ///     
         /// </summary>
-        /// <param name="tag"></param>
+        /// <param name="tagName"></param>
         /// <param name="area">Can be compound area in format 'ROOT_AREA/CHILD_AREA'</param>
         /// <returns></returns>
-        EventSourceObject GetOrCreateEventSourceObject(string tag, string? area = null);
+        EventSourceObject GetOrCreateEventSourceObject(string tagName, string? area = null);
 
         /// <summary>
         /// 

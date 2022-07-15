@@ -8,9 +8,9 @@ namespace Ssz.Utils.DataAccess
     {
         #region construction and destruction
 
-        public EventSourceObject(string tag, IDataAccessProvider dataAccessProvider)
+        public EventSourceObject(string tagName, IDataAccessProvider dataAccessProvider)
         {
-            Tag = tag;
+            TagName = tagName;
             DataAccessProvider = dataAccessProvider;
         }
 
@@ -18,7 +18,7 @@ namespace Ssz.Utils.DataAccess
 
         #region public functions        
 
-        public string Tag { get; }
+        public string TagName { get; }
 
         /// <summary>
         ///     You can use this property as temp storage.
