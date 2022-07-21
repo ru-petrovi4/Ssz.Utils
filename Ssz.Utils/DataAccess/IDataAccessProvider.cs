@@ -71,11 +71,16 @@ namespace Ssz.Utils.DataAccess
         /// <param name="clientWorkstationName"></param>
         /// <param name="systemNameToConnect"></param>
         /// <param name="contextParams"></param>
+        /// <param name="callbackDispatcher"></param>
         void Initialize(ElementIdsMap? elementIdsMap,
             bool elementValueListCallbackIsEnabled,
             bool eventListCallbackIsEnabled,
             string serverAddress,
-            string clientApplicationName, string clientWorkstationName, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams);
+            string clientApplicationName,
+            string clientWorkstationName,
+            string systemNameToConnect,
+            CaseInsensitiveDictionary<string?> contextParams,
+            IDispatcher? callbackDispatcher);
 
         /// <summary>
         ///     Re-initializes this object with same settings.

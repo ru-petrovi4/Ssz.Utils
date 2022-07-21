@@ -16,12 +16,11 @@ namespace Ssz.Utils.DataAccess
     {
         #region construction and destruction
 
-        public DataAccessProviderBase(ILogger logger, IUserFriendlyLogger? userFriendlyLogger = null, IDispatcher? callbackDispatcher = null)
+        public DataAccessProviderBase(ILogger logger, IUserFriendlyLogger? userFriendlyLogger = null)
         {
             Logger = logger;
             UserFriendlyLogger = userFriendlyLogger;
-            WrapperUserFriendlyLogger = new WrapperUserFriendlyLogger(Logger, UserFriendlyLogger);
-            CallbackDispatcher = callbackDispatcher;
+            WrapperUserFriendlyLogger = new WrapperUserFriendlyLogger(Logger, UserFriendlyLogger);            
         }
 
         /// <summary>
@@ -186,6 +185,81 @@ namespace Ssz.Utils.DataAccess
 
         public virtual event Action<IDataAccessProvider, EventMessagesCollection> EventMessagesCallback = delegate { };
 
+        /// <summary>
+        ///     You can set updateValueItems = false and invoke PollElementValuesChangesAsync(...) manually.
+        /// </summary>
+        /// <param name="elementIdsMap"></param>
+        /// <param name="elementValueListCallbackIsEnabled"></param>
+        /// <param name="eventListCallbackIsEnabled"></param>
+        /// <param name="serverAddress"></param>
+        /// <param name="clientApplicationName"></param>
+        /// <param name="clientWorkstationName"></param>
+        /// <param name="systemNameToConnect"></param>
+        /// <param name="contextParams"></param>
+        /// <param name="callbackDispatcher"></param>
+        public virtual void Initialize(
+            ElementIdsMap? elementIdsMap,
+            bool elementValueListCallbackIsEnabled,
+            bool eventListCallbackIsEnabled,
+            string serverAddress,
+            string clientApplicationName,
+            string clientWorkstationName,
+            string systemNameToConnect,
+            CaseInsensitiveDictionary<string?> contextParams,
+            IDispatcher? callbackDispatcher)
+        {
+            Close();
+
+            Logger.LogDebug("Starting ModelDataProvider. сallbackDispatcher != null: " + (callbackDispatcher is not null).ToString());
+
+            _elementIdsMap = elementIdsMap;
+            _elementValueListCallbackIsEnabled = elementValueListCallbackIsEnabled;
+            _eventListCallbackIsEnabled = eventListCallbackIsEnabled;
+            _serverAddress = serverAddress;
+            _clientApplicationName = clientApplicationName;
+            _clientWorkstationName = clientWorkstationName;
+            _systemNameToConnect = systemNameToConnect;
+            _contextParams = contextParams;
+            CallbackDispatcher = callbackDispatcher;
+
+            InitializedDateTimeUtc = DateTime.UtcNow;
+
+            IsInitialized = true;
+        }
+
+        public virtual void ReInitialize()
+        {
+            if (!IsInitialized) return;
+
+            Initialize(_elementIdsMap,
+                _elementValueListCallbackIsEnabled,
+                _eventListCallbackIsEnabled,
+                _serverAddress,
+                _clientApplicationName,
+                _clientWorkstationName,
+                _systemNameToConnect,
+                _contextParams,
+                CallbackDispatcher);
+        }
+
+        public virtual void Close()
+        {
+            if (!IsInitialized) return;
+
+            IsInitialized = false;
+
+            _elementIdsMap = null;
+            _contextParams = new CaseInsensitiveDictionary<string?>();
+            CallbackDispatcher = null;
+        }
+
+        public virtual Task CloseAsync()
+        {
+            Close();
+
+            return Task.CompletedTask;
+        }
+
         public virtual void AckAlarms(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
         {
         }
@@ -202,43 +276,6 @@ namespace Ssz.Utils.DataAccess
                 catch (Exception)
                 {
                 }
-        }
-
-        public virtual void Close()
-        {
-            if (!IsInitialized) return;
-
-            IsInitialized = false;
-
-            _elementIdsMap = null;
-            _contextParams = new CaseInsensitiveDictionary<string?>();            
-        }
-
-        public virtual Task CloseAsync()
-        {
-            Close();
-
-            return Task.CompletedTask;
-        }
-
-        public virtual void Initialize(ElementIdsMap? elementIdsMap, bool elementValueListCallbackIsEnabled, bool eventListCallbackIsEnabled, string serverAddress, string clientApplicationName, string clientWorkstationName, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams)
-        {
-            Close();
-
-            Logger.LogDebug("Starting ModelDataProvider. сallbackDispatcher != null: " + (CallbackDispatcher is not null).ToString());
-
-            _elementIdsMap = elementIdsMap;
-            _elementValueListCallbackIsEnabled = elementValueListCallbackIsEnabled;
-            _eventListCallbackIsEnabled = eventListCallbackIsEnabled;
-            _serverAddress = serverAddress;
-            _clientApplicationName = clientApplicationName;
-            _clientWorkstationName = clientWorkstationName;
-            _systemNameToConnect = systemNameToConnect;
-            _contextParams = contextParams;
-
-            InitializedDateTimeUtc = DateTime.UtcNow;
-
-            IsInitialized = true;
         }
 
         public virtual void JournalAddItem(string elementId, object valueJournalSubscription)
@@ -279,18 +316,7 @@ namespace Ssz.Utils.DataAccess
         public virtual Task<EventMessagesCollection?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
             return Task.FromResult<EventMessagesCollection?>(null);
-        }
-
-        public virtual void ReInitialize()
-        {
-            if (!IsInitialized) return;
-
-            Initialize(_elementIdsMap,
-                _elementValueListCallbackIsEnabled,
-                _eventListCallbackIsEnabled,
-                _serverAddress,
-                _clientApplicationName, _clientWorkstationName, _systemNameToConnect, _contextParams);
-        }
+        }        
 
         public virtual void RemoveItem(IValueSubscription valueSubscription)
         {            
@@ -318,7 +344,7 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         ///     Dispatcher for callbacks to client.
         /// </summary>
-        protected IDispatcher? CallbackDispatcher { get; }
+        protected IDispatcher? CallbackDispatcher { get; private set; }
 
         #endregion
 

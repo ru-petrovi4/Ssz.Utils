@@ -22,8 +22,8 @@ namespace Ssz.DataAccessGrpc.Client
     {
         #region construction and destruction
 
-        public GrpcDataAccessProvider(ILogger<GrpcDataAccessProvider> logger, IUserFriendlyLogger? userFriendlyLogger = null, IDispatcher? callbackDispatcher = null) :
-            base(logger, userFriendlyLogger, callbackDispatcher)
+        public GrpcDataAccessProvider(ILogger<GrpcDataAccessProvider> logger, IUserFriendlyLogger? userFriendlyLogger = null) :
+            base(logger, userFriendlyLogger)
         {
             _clientConnectionManager = new ClientConnectionManager(logger, ThreadSafeDispatcher);
 
@@ -57,17 +57,26 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="clientWorkstationName"></param>
         /// <param name="systemNameToConnect"></param>
         /// <param name="contextParams"></param>
+        /// <param name="callbackDispatcher"></param>
         public override void Initialize(ElementIdsMap? elementIdsMap,
             bool elementValueListCallbackIsEnabled,
             bool eventListCallbackIsEnabled,
             string serverAddress,
-            string clientApplicationName, string clientWorkstationName, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams)
+            string clientApplicationName,
+            string clientWorkstationName,
+            string systemNameToConnect,
+            CaseInsensitiveDictionary<string?> contextParams,
+            IDispatcher? callbackDispatcher)
         {
             base.Initialize(elementIdsMap,
                 elementValueListCallbackIsEnabled,
                 eventListCallbackIsEnabled,
                 serverAddress,
-                 clientApplicationName, clientWorkstationName, systemNameToConnect, contextParams);
+                 clientApplicationName,
+                 clientWorkstationName,
+                 systemNameToConnect, 
+                contextParams,
+                callbackDispatcher);
 
             //string pollIntervalMsString =
             //    ConfigurationManager.AppSettings["PollIntervalMs"];
