@@ -81,7 +81,7 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="nameValueCollection"></param>
         /// <returns></returns>
-        public static string GetNameValueCollectionString(CaseInsensitiveDictionary<string?> nameValueCollection)
+        public static string GetNameValueCollectionString(Dictionary<string, string?> nameValueCollection)
         {
             if (nameValueCollection.Count == 0) return "";
 
@@ -173,7 +173,7 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static CaseInsensitiveDictionary<string?> GetNameValueCollection(object? obj)
+        public static CaseInsensitiveDictionary<string?> GetNameValueCollectionFromObject(object? obj)
         {
             var result = new CaseInsensitiveDictionary<string?>();
 
