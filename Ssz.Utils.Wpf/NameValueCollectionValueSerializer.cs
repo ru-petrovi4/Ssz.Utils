@@ -71,7 +71,7 @@ namespace Ssz.Utils.Wpf
         {
             return
                 NameValueCollectionHelper.GetNameValueCollectionString(
-                    NameValueCollectionHelper.GetNameValueCollection(value));
+                    NameValueCollectionHelper.GetNameValueCollectionFromObject(value));
         }
 
         #endregion
