@@ -119,37 +119,42 @@ namespace Ssz.Utils
 
                     line += l;
 
-                    if (line == "") continue;
-
-                    List<string?> fields;
-
-                    if (beginFields is null)
+                    if (line == @"")
                     {
-                        fields = ParseCsvLineInternal(@",", line, ref inQuotes);
-                        if (inQuotes)
-                        {
-                            beginFields = fields;
-                            line = "";
-                            continue;
-                        }                        
+                        result.Add(new List<string?> { @"" });
                     }
                     else
                     {
-                        fields = ParseCsvLineInternal(@",", line, ref inQuotes);
-                        beginFields[beginFields.Count - 1] = beginFields[beginFields.Count - 1] + fields[0];
-                        beginFields.AddRange(fields.Skip(1));
-                        if (inQuotes)
+                        List<string?> fields;
+
+                        if (beginFields is null)
                         {
-                            line = "";
-                            continue;
+                            fields = ParseCsvLineInternal(@",", line, ref inQuotes);
+                            if (inQuotes)
+                            {
+                                beginFields = fields;
+                                line = "";
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            fields = ParseCsvLineInternal(@",", line, ref inQuotes);
+                            beginFields[beginFields.Count - 1] = beginFields[beginFields.Count - 1] + fields[0];
+                            beginFields.AddRange(fields.Skip(1));
+                            if (inQuotes)
+                            {
+                                line = "";
+                                continue;
+                            }
+
+                            fields = beginFields;
+                            beginFields = null;
                         }
 
-                        fields = beginFields;
-                        beginFields = null;
-                    }
-
-                    result.Add(fields);
-                    line = "";
+                        result.Add(fields);
+                        line = "";
+                    }                    
                 }
             }
 
