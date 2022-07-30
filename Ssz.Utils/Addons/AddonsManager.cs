@@ -70,72 +70,80 @@ namespace Ssz.Utils.Addons
             }
         }
 
-        public AddonBase? GetAvailableAddon(string addonName, string? addonConfigDirectoryRelativePath)
+        public AddonBase? CreateAvailableAddon(string addonName, string? addonInstanceId)
         {
+            if (String.IsNullOrEmpty(addonName))
+            {
+                WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonNameIsEmpty);
+                return null;
+            }            
+
             AddonBase[] availableAddons = GetAvailableAddonsCache();
 
-            var desiredAndAvailableAddon = availableAddons.FirstOrDefault(
+            var availableAddon = availableAddons.FirstOrDefault(
                 p => String.Equals(p.Name, addonName, StringComparison.InvariantCultureIgnoreCase));
-            if (desiredAndAvailableAddon is not null)
+            if (availableAddon is null)
             {
-                try
-                {
-                    var desiredAndAvailableAddonClone = (AddonBase)Activator.CreateInstance(desiredAndAvailableAddon.GetType())!;
-                    desiredAndAvailableAddonClone.DllFileFullName = desiredAndAvailableAddon.DllFileFullName;
-                    desiredAndAvailableAddon = desiredAndAvailableAddonClone;
+                WrapperUserFriendlyLogger.LogError(Properties.Resources.AvailableAddonIsNotFound, addonName);
+                return null;
+            }
 
-                    DirectoryInfo? addonConfigDirectoryInfo = null;
-                    if (!String.IsNullOrEmpty(addonConfigDirectoryRelativePath))
+            try
+            {
+                var availableAddonClone = (AddonBase)Activator.CreateInstance(availableAddon.GetType())!;
+                availableAddonClone.DllFileFullName = availableAddon.DllFileFullName;
+                availableAddon = availableAddonClone;
+
+                DirectoryInfo? addonConfigDirectoryInfo = null;                
+                if (!String.IsNullOrEmpty(addonInstanceId))
+                {
+                    if (addonInstanceId.Contains(Path.PathSeparator))
                     {
-                        if (addonConfigDirectoryRelativePath.Contains(Path.PathSeparator))
-                        {
-                            WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonConfigDirectoryError_CannotContainPath, addonConfigDirectoryRelativePath);
-                            return null;
-                        }
-                        addonConfigDirectoryInfo = new DirectoryInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, addonConfigDirectoryRelativePath));
-                        try
-                        {
-                            // Creates all directories and subdirectories in the specified path unless they already exist.
-                            Directory.CreateDirectory(addonConfigDirectoryInfo.FullName);
-                            if (!addonConfigDirectoryInfo.Exists)
-                                addonConfigDirectoryInfo = null;
-                        }
-                        catch
-                        {
-                            addonConfigDirectoryInfo = null;
-                        }
-                        if (addonConfigDirectoryInfo is null)
-                            WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonConfigDirectoryError, addonConfigDirectoryRelativePath);
+                        WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonConfigDirectoryError_CannotContainPath, addonInstanceId);
+                        return null;
                     }
 
-                    var parameters = new List<object>();
-                    if (UserFriendlyLogger is not null)
-                        parameters.Add(UserFriendlyLogger);
-                    if (addonConfigDirectoryInfo is not null)
-                        parameters.Add(addonConfigDirectoryInfo);
-                    desiredAndAvailableAddon.CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, parameters.ToArray());
-                    var idNameValueCollection = desiredAndAvailableAddon.CsvDb.GetFileNameAndLastWriteTimeUtcDictionary();
-                    idNameValueCollection.Add(@"addonName", addonName);
-                    idNameValueCollection.Add(@"addonConfigDirectoryRelativePath", addonConfigDirectoryRelativePath);
-                    desiredAndAvailableAddon.Id = NameValueCollectionHelper.GetNameValueCollectionString(idNameValueCollection);
-                    desiredAndAvailableAddon.Logger = Logger;
-                    desiredAndAvailableAddon.UserFriendlyLogger = UserFriendlyLogger;
-                    desiredAndAvailableAddon.WrapperUserFriendlyLogger = WrapperUserFriendlyLogger;
-                    desiredAndAvailableAddon.Configuration = Configuration;
-                    desiredAndAvailableAddon.ServiceProvider = ServiceProvider;
+                    addonConfigDirectoryInfo = new DirectoryInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, addonInstanceId));
+                    try
+                    {
+                        // Creates all directories and subdirectories in the specified path unless they already exist.
+                        Directory.CreateDirectory(addonConfigDirectoryInfo.FullName);
+                        if (!addonConfigDirectoryInfo.Exists)
+                            addonConfigDirectoryInfo = null;
+                    }
+                    catch
+                    {
+                        addonConfigDirectoryInfo = null;
+                    }
+                    if (addonConfigDirectoryInfo is null)
+                        WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonConfigDirectoryError, addonInstanceId);
                 }
-                catch (Exception ex)
-                {
-                    WrapperUserFriendlyLogger.LogError(ex, Properties.Resources.DesiredAddonFailed, addonName);
-                    desiredAndAvailableAddon = null;
-                }
-            }
-            else
-            {
-                WrapperUserFriendlyLogger.LogError(Properties.Resources.DesiredAddonIsNotFound, addonName);
-            }
 
-            return desiredAndAvailableAddon;
+                var parameters = new List<object>();
+                if (UserFriendlyLogger is not null)
+                    parameters.Add(UserFriendlyLogger);
+                if (addonConfigDirectoryInfo is not null)
+                    parameters.Add(addonConfigDirectoryInfo);
+                availableAddon.CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, parameters.ToArray());
+                var idNameValueCollection = availableAddon.CsvDb.GetFileNameAndLastWriteTimeUtcDictionary();
+                idNameValueCollection.Add(@"addonName", addonName);
+                if (!String.IsNullOrEmpty(addonInstanceId))
+                    idNameValueCollection.Add(@"addonInstanceId", addonInstanceId);
+                availableAddon.Id = NameValueCollectionHelper.GetNameValueCollectionString(idNameValueCollection);
+                availableAddon.InstanceId = addonInstanceId ?? @"";
+                availableAddon.Logger = Logger;
+                availableAddon.UserFriendlyLogger = UserFriendlyLogger;
+                availableAddon.WrapperUserFriendlyLogger = WrapperUserFriendlyLogger;
+                availableAddon.Configuration = Configuration;
+                availableAddon.ServiceProvider = ServiceProvider;
+            }
+            catch (Exception ex)
+            {
+                WrapperUserFriendlyLogger.LogError(ex, Properties.Resources.DesiredAddonFailed, addonName);
+                availableAddon = null;
+            }            
+
+            return availableAddon;
         }
 
         /// <summary>
@@ -217,9 +225,9 @@ namespace Ssz.Utils.Addons
                     continue;
 
                 string addonName = line[1]!;
-                string? addonConfigDirectoryRelativePath = line.Count > 2 ? line[2] : null;
+                string addonInstanceId = line[0]!;
 
-                var desiredAndAvailableAddon = GetAvailableAddon(addonName, addonConfigDirectoryRelativePath);                    
+                var desiredAndAvailableAddon = CreateAvailableAddon(addonName, addonInstanceId);                    
                 if (desiredAndAvailableAddon is not null)
                 {
                     newAddons.Add(desiredAndAvailableAddon);

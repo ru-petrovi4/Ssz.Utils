@@ -276,7 +276,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             serverList.TouchList();
         }
 
-        internal PassthroughReply Passthrough(string recipientId, string passthroughName, PassthroughData dataToSend)
+        internal async Task<PassthroughReply> PassthroughAsync(string recipientId, string passthroughName, PassthroughData dataToSend)
         {
             var reply = new PassthroughReply();
             var returnData = new PassthroughData();
@@ -322,8 +322,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 return reply;
             }
 
-            byte[] returnDataArray;
-            ServerWorker.Passthrough(this, recipientId, passthroughName, dataToSendTemp.ToArray(), out returnDataArray);            
+            byte[] returnDataArray = await ServerWorker.PassthroughAsync(this, recipientId, passthroughName, dataToSendTemp.ToArray());            
             if (returnDataArray.Length > MaxLength)
             {
                 _pendingPassthroughReplyData = returnDataArray;

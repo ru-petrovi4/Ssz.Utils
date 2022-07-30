@@ -123,6 +123,12 @@
   <data name="AddonConfigDirectoryError_CannotContainPath" xml:space="preserve">
     <value>Директория конфигурации плагина не может содержать поддиректории: {0}</value>
   </data>
+  <data name="AddonNameIsEmpty" xml:space="preserve">
+    <value>AddonNameIsEmpty</value>
+  </data>
+  <data name="AvailableAddonIsNotFound" xml:space="preserve">
+    <value>Желаемый плагин {0} не найден.</value>
+  </data>
   <data name="CalculationLambdaExpressionError" xml:space="preserve">
     <value>Ошибка при вычислении выражения</value>
   </data>
@@ -140,9 +146,6 @@
   </data>
   <data name="DesiredAddonFailed" xml:space="preserve">
     <value>Ошибка при получении желаемого плагина {0}.</value>
-  </data>
-  <data name="DesiredAddonIsNotFound" xml:space="preserve">
-    <value>Желаемый плагин {0} не найден.</value>
   </data>
   <data name="PrepareLambdaExpressionError" xml:space="preserve">
     <value>Ошибка в выражении</value>

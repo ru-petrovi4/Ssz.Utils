@@ -123,6 +123,12 @@
   <data name="AddonConfigDirectoryError_CannotContainPath" xml:space="preserve">
     <value>Addon ConfigDirectory Error: Cannot contain subdirectory(-es): {0}</value>
   </data>
+  <data name="AddonNameIsEmpty" xml:space="preserve">
+    <value>AddonNameIsEmpty</value>
+  </data>
+  <data name="AvailableAddonIsNotFound" xml:space="preserve">
+    <value>Available Addon is not found: {0}</value>
+  </data>
   <data name="CalculationLambdaExpressionError" xml:space="preserve">
     <value>Calculation error</value>
   </data>
@@ -140,9 +146,6 @@
   </data>
   <data name="DesiredAddonFailed" xml:space="preserve">
     <value>Desired addon {0} failed.</value>
-  </data>
-  <data name="DesiredAddonIsNotFound" xml:space="preserve">
-    <value>Desired addon {0} is not found.</value>
   </data>
   <data name="PrepareLambdaExpressionError" xml:space="preserve">
     <value>Expression error</value>

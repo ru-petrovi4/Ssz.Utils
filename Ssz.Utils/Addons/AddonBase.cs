@@ -44,10 +44,15 @@ namespace Ssz.Utils.Addons
         public CsvDb CsvDb { get; internal set; } = null!;        
 
         /// <summary>
-        ///     Unique Id for addon type and config.
+        ///     Unique ID for addon type and config.
         /// </summary>
         public string Id { get; internal set; } = null!;
-        
+
+        /// <summary>
+        ///     Addon instance ID
+        /// </summary>
+        public string InstanceId { get; internal set; } = null!;
+
         public ILogger Logger { get; internal set; } = null!;
         
         public IUserFriendlyLogger? UserFriendlyLogger { get; internal set; }

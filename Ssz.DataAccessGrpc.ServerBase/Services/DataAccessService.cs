@@ -274,11 +274,11 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override async Task<PassthroughReply> Passthrough(PassthroughRequest request, ServerCallContext context)
         {
-            return await GetReplyAsync(() =>
+            return await GetAsyncReplyAsync(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;                    
-                    return serverContext.Passthrough(request.RecipientId ?? @"", request.PassthroughName ?? @"", request.DataToSend);
+                    return await serverContext.PassthroughAsync(request.RecipientId ?? @"", request.PassthroughName ?? @"", request.DataToSend);
                 },
                 context);
         }

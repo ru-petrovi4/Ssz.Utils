@@ -79,6 +79,24 @@ namespace Ssz.Utils.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AddonNameIsEmpty.
+        /// </summary>
+        internal static string AddonNameIsEmpty {
+            get {
+                return ResourceManager.GetString("AddonNameIsEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Available Addon is not found: {0}.
+        /// </summary>
+        internal static string AvailableAddonIsNotFound {
+            get {
+                return ResourceManager.GetString("AvailableAddonIsNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Calculation error.
         /// </summary>
         internal static string CalculationLambdaExpressionError {
@@ -129,15 +147,6 @@ namespace Ssz.Utils.Properties {
         internal static string DesiredAddonFailed {
             get {
                 return ResourceManager.GetString("DesiredAddonFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Desired addon {0} is not found..
-        /// </summary>
-        internal static string DesiredAddonIsNotFound {
-            get {
-                return ResourceManager.GetString("DesiredAddonIsNotFound", resourceCulture);
             }
         }
         

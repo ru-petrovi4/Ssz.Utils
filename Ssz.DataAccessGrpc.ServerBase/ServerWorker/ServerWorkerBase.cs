@@ -33,7 +33,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public abstract ServerListRoot NewServerList(ServerContext serverContext, uint listClientAlias, uint listType, CaseInsensitiveDictionary<string?> listParams);
 
-        public abstract void Passthrough(ServerContext serverContext, string recipientId, string passthroughName, byte[] dataToSend, out byte[] returnData);
+        public abstract Task<byte[]> PassthroughAsync(ServerContext serverContext, string recipientId, string passthroughName, byte[] dataToSend);
 
         public abstract void LongrunningPassthrough(ServerContext serverContext, string invokeId, string recipientId, string passthroughName, byte[] dataToSend);
 
