@@ -21,6 +21,8 @@ namespace Ssz.Utils.Logging
 
         public ILogger[] Loggers { get; }
 
+        public CaseInsensitiveDictionary<string?> Fields { get; set; } = new();
+
         public IDisposable BeginScope<TState>(TState state)
         {            
             return new ComplexScope(Loggers.Select(l => l.BeginScope(state)).ToArray());
@@ -33,7 +35,12 @@ namespace Ssz.Utils.Logging
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
-            Array.ForEach(Loggers, l => l.Log(logLevel, eventId, state, exception, formatter));
+            foreach (var logger in Loggers)
+            {
+                if (logger is IUserFriendlyLogger userFriendlyLogger)
+                    userFriendlyLogger.Fields = Fields;
+                logger.Log(logLevel, eventId, state, exception, formatter);
+            }
         }
 
         #endregion

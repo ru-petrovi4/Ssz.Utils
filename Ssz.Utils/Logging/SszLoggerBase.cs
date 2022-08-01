@@ -31,11 +31,13 @@ namespace Ssz.Utils.Logging
         ~SszLoggerBase()
         {
             Dispose(false);
-        }        
+        }
 
         #endregion
 
         #region public functions
+
+        public CaseInsensitiveDictionary<string?> Fields { get; set; } = new();
 
         public IDisposable BeginScope<TState>(TState state) => new Scope(this, new Any(state).ValueAsString(true));
 
