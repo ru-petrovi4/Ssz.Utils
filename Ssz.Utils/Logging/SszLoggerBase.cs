@@ -37,9 +37,13 @@ namespace Ssz.Utils.Logging
 
         #region public functions
 
-        public CaseInsensitiveDictionary<string?> Fields { get; set; } = new();
-
-        public IDisposable BeginScope<TState>(TState state) => new Scope(this, new Any(state).ValueAsString(true));
+        public IDisposable BeginScope<TState>(TState state)
+        {        
+            if (state is ValueTuple<string, string> valueTuple)
+                return new FieldScope(this, valueTuple.Item1, valueTuple.Item2);
+            else
+                return new StringScope(this, new Any(state).ValueAsString(true));
+        }
 
         public abstract bool IsEnabled(LogLevel logLevel);
 
@@ -56,25 +60,45 @@ namespace Ssz.Utils.Logging
 
         protected bool Disposed => _disposed;
 
+        protected object SyncRoot { get; } = new();
+
         protected Stack<string> ScopeStringsStack { get; } = new();
+
+        protected CaseInsensitiveDictionary<string?> Fields { get; } = new();
 
         #endregion        
 
         #region private functions
 
-        private void PushScope(string scopeString)
+        private void PushScopeString(string scopeString)
         {
-            lock (ScopeStringsStack)
+            lock (SyncRoot)
             {
                 ScopeStringsStack.Push(scopeString);
             }                
         }
 
-        private void PopScope()
+        private void PopScopeString()
         {
-            lock (ScopeStringsStack)
+            lock (SyncRoot)
             {
                 ScopeStringsStack.Pop();
+            }
+        }
+
+        private void AddField(string fieldName, string? fieldValue)
+        {
+            lock (SyncRoot)
+            {
+                Fields[fieldName] = fieldValue;
+            }
+        }
+
+        private void RemoveField(string fieldName)
+        {
+            lock (SyncRoot)
+            {
+                Fields.Remove(fieldName);
             }
         }
 
@@ -86,22 +110,22 @@ namespace Ssz.Utils.Logging
 
         #endregion
 
-        private class Scope : IDisposable
+        private class StringScope : IDisposable
         {
             #region construction and destruction
 
-            public Scope(SszLoggerBase sszLogger, string scopeString)
+            public StringScope(SszLoggerBase sszLogger, string scopeString)
             {
-                _sszLogger  = sszLogger;
-                _sszLogger.PushScope(scopeString);
+                _sszLogger  = sszLogger;                
+                _sszLogger.PushScopeString(scopeString);
             }
 
             public void Dispose()
             {
                 var sszLogger = Interlocked.Exchange(ref _sszLogger, null);
-                if (sszLogger != null)
+                if (sszLogger is not null)
                 {
-                    sszLogger.PopScope();                    
+                    sszLogger.PopScopeString();                    
                 }
             }
 
@@ -112,6 +136,37 @@ namespace Ssz.Utils.Logging
             private SszLoggerBase? _sszLogger;
 
             #endregion
-        }        
+        }
+
+        private class FieldScope : IDisposable
+        {
+            #region construction and destruction
+
+            public FieldScope(SszLoggerBase sszLogger, string fieldName, string fieldValue)
+            {
+                _sszLogger = sszLogger;
+                _fieldName = fieldName;
+                _sszLogger.AddField(fieldName, fieldValue);
+            }
+
+            public void Dispose()
+            {
+                var sszLogger = Interlocked.Exchange(ref _sszLogger, null);
+                if (sszLogger is not null)
+                {
+                    sszLogger.RemoveField(_fieldName);
+                }
+            }
+
+            #endregion
+
+            #region private fields
+
+            private SszLoggerBase? _sszLogger;
+
+            private readonly string _fieldName;
+
+            #endregion
+        }
     }
 }
