@@ -221,10 +221,10 @@ namespace Ssz.Utils.Addons
             var catalog = new AggregateCatalog();
             foreach (var line in CsvDb.GetValues(AddonBase.AddonsCsvFileName).Values)
             {
-                if (line.Count < 2 || String.IsNullOrEmpty(line[0]) || String.IsNullOrEmpty(line[1]))
+                if (line.Count < 2 || String.IsNullOrEmpty(line[0]) || line[0]!.StartsWith("!"))
                     continue;
 
-                string addonName = line[1]!;
+                string addonName = line[1] ?? @"";
                 string addonInstanceId = line[0]!;
 
                 var desiredAndAvailableAddon = CreateAvailableAddon(addonName, addonInstanceId);                    
