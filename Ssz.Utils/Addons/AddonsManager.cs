@@ -32,10 +32,18 @@ namespace Ssz.Utils.Addons
 
         #region public functions
 
+        /// <summary>
+        ///     Lock this in every call
+        /// </summary>
+        public object SyncRoot { get; } = new();
+
+        /// <summary>
+        ///     Switchd ON addons.
+        /// </summary>
         public ObservableCollection<AddonBase> Addons { get; } = new();
 
         /// <summary>
-        /// 
+        ///     
         /// </summary>
         /// <param name="userFriendlyLogger"></param>
         /// <param name="addonsSearchPattern"></param>
@@ -54,22 +62,111 @@ namespace Ssz.Utils.Addons
             }
 
             CsvDb.CsvFileChanged += OnCsvDb_CsvFileChanged;
-            OnCsvDb_CsvFileChanged(CsvFileChangeAction.Added, null);                        
-        }        
 
+            RefreshAddons();
+        }
+
+        /// <summary>
+        ///     
+        /// </summary>
         public void Close()
         {
+            Addons.SafeClear();
+
             if (CsvDb.CsvDbDirectoryInfo is not null)
             {
                 CsvDb.CsvFileChanged -= OnCsvDb_CsvFileChanged;
             }
 
-            lock (ContainerSyncRoot)
+            _container = null;
+        }
+
+        public List<AddonCsvFile> ReadConfiguration()
+        {
+            List<AddonCsvFile> result = new();
+
+            return result;
+        }
+
+        public void WriteConfiguration(AddonCsvFile[] addonCsvFiles)
+        {
+        }
+
+        /// <summary>
+        ///     Returns new instances of switched ON addons.
+        ///     Not need to lock SyncRoot        
+        /// </summary>
+        /// <returns></returns>
+        public TAddon[] CreateAddonsThreadSafe<TAddon>()
+            where TAddon : AddonBase
+        {
+            lock (SyncRoot)
             {
-                _container = null;
+                List<TAddon> result = new();
+                foreach (var addon in Addons.OfType<TAddon>().OrderBy(a => a.IsDummy).ToArray())
+                {
+                    TAddon? newAddon = CreateAvailableAddon(addon, addon.InstanceId) as TAddon;
+                    if (newAddon is not null)
+                        result.Add(newAddon);
+                };
+                return result.ToArray();
             }
         }
 
+        /// <summary>
+        ///     Returns new instance of switched ON addon.
+        ///     Not need to lock SyncRoot
+        /// </summary>
+        /// <typeparam name="TAddon"></typeparam>
+        /// <returns></returns>
+        public TAddon? CreateAddonThreadSafe<TAddon>()
+            where TAddon : AddonBase
+
+        {
+            lock (SyncRoot)
+            {
+                TAddon? addon = Addons.OfType<TAddon>().OrderBy(a => a.IsDummy).FirstOrDefault();
+                if (addon is null)
+                    return null;
+
+                TAddon? newAddon = CreateAvailableAddon(addon, addon.InstanceId) as TAddon;
+                if (newAddon is null)
+                    return null;
+                
+                return newAddon;
+            }
+        }
+
+        /// <summary>
+        ///     Returns new instance of switched ON addon.
+        ///     Not need to lock SyncRoot
+        /// </summary>
+        /// <typeparam name="TAddon"></typeparam>
+        /// <returns></returns>
+        public TAddon? CreateAddonThreadSafe<TAddon>(string addonName)
+            where TAddon : AddonBase
+        {
+            lock (SyncRoot)
+            {
+                TAddon? addon = Addons.OfType<TAddon>().OrderBy(a => a.IsDummy)
+                    .FirstOrDefault(a => String.Equals(a.Name, addonName, StringComparison.InvariantCultureIgnoreCase));
+                if (addon is null)
+                    return null;
+
+                TAddon? newAddon = CreateAvailableAddon(addon, addon.InstanceId) as TAddon;
+                if (newAddon is null)
+                    return null;
+
+                return newAddon;
+            }
+        }
+
+        /// <summary>
+        ///     Create available but not necesary switched ON adddon. 
+        /// </summary>
+        /// <param name="addonName"></param>
+        /// <param name="addonInstanceId"></param>
+        /// <returns></returns>
         public AddonBase? CreateAvailableAddon(string addonName, string? addonInstanceId)
         {
             if (String.IsNullOrEmpty(addonName))
@@ -86,86 +183,28 @@ namespace Ssz.Utils.Addons
             {
                 WrapperUserFriendlyLogger.LogError(Properties.Resources.AvailableAddonIsNotFound, addonName);
                 return null;
-            }
+            }                     
 
-            try
-            {
-                var availableAddonClone = (AddonBase)Activator.CreateInstance(availableAddon.GetType())!;
-                availableAddonClone.DllFileFullName = availableAddon.DllFileFullName;
-                availableAddon = availableAddonClone;
-
-                DirectoryInfo? addonConfigDirectoryInfo = null;                
-                if (!String.IsNullOrEmpty(addonInstanceId))
-                {
-                    if (addonInstanceId.Contains(Path.PathSeparator))
-                    {
-                        WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonConfigDirectoryError_CannotContainPath, addonInstanceId);
-                        return null;
-                    }
-
-                    addonConfigDirectoryInfo = new DirectoryInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, addonInstanceId));
-                    try
-                    {
-                        // Creates all directories and subdirectories in the specified path unless they already exist.
-                        Directory.CreateDirectory(addonConfigDirectoryInfo.FullName);
-                        if (!addonConfigDirectoryInfo.Exists)
-                            addonConfigDirectoryInfo = null;
-                    }
-                    catch
-                    {
-                        addonConfigDirectoryInfo = null;
-                    }
-                    if (addonConfigDirectoryInfo is null)
-                        WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonConfigDirectoryError, addonInstanceId);
-                }
-
-                var parameters = new List<object>();
-                if (UserFriendlyLogger is not null)
-                    parameters.Add(UserFriendlyLogger);
-                if (addonConfigDirectoryInfo is not null)
-                    parameters.Add(addonConfigDirectoryInfo);
-                availableAddon.CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, parameters.ToArray());
-                var idNameValueCollection = availableAddon.CsvDb.GetFileNameAndLastWriteTimeUtcDictionary();
-                idNameValueCollection.Add(@"addonName", addonName);
-                if (!String.IsNullOrEmpty(addonInstanceId))
-                    idNameValueCollection.Add(@"addonInstanceId", addonInstanceId);
-                availableAddon.Id = NameValueCollectionHelper.GetNameValueCollectionString(idNameValueCollection);
-                availableAddon.InstanceId = addonInstanceId ?? @"";
-                availableAddon.Logger = Logger;
-                availableAddon.UserFriendlyLogger = UserFriendlyLogger;
-                availableAddon.WrapperUserFriendlyLogger = WrapperUserFriendlyLogger;
-                availableAddon.Configuration = Configuration;
-                availableAddon.ServiceProvider = ServiceProvider;
-            }
-            catch (Exception ex)
-            {
-                WrapperUserFriendlyLogger.LogError(ex, Properties.Resources.DesiredAddonFailed, addonName);
-                availableAddon = null;
-            }            
-
-            return availableAddon;
+            return CreateAvailableAddon(availableAddon, addonInstanceId);
         }
 
         /// <summary>
-        ///     Thread-safe
+        ///     
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public IEnumerable<T> GetExportedValues<T>()
         {
             var result = new List<T>();
-            lock (ContainerSyncRoot)
-            {
-                if (_container is not null)
-                    try
-                    {
-                        result.AddRange(_container.GetExportedValues<T>());
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogError(ex, @"_container.GetExportedValues<T> Error.");
-                    }
-            }
+            if (_container is not null)
+                try
+                {
+                    result.AddRange(_container.GetExportedValues<T>());
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, @"_container.GetExportedValues<T> Error.");
+                }
             return result;
         }        
 
@@ -209,7 +248,10 @@ namespace Ssz.Utils.Addons
             if (csvFileName == null ||
                 String.Equals(csvFileName, AddonBase.AddonsCsvFileName))
             {
-                RefreshAddons();
+                lock (SyncRoot)
+                {
+                    RefreshAddons();
+                }                
             }
         }
 
@@ -238,16 +280,74 @@ namespace Ssz.Utils.Addons
                 }                
             }
 
-            lock (ContainerSyncRoot)
-            {
-                _container = new CompositionContainer(catalog);
-            }
+            _container = new CompositionContainer(catalog);
+
             Addons.Update(newAddons.OrderBy(a => a.Id).ToArray());
         }        
 
         private void ResetAvailableAddonsCache()
         {
             _availableAddons = null;
+        }
+
+        private AddonBase? CreateAvailableAddon(AddonBase availableAddon, string? addonInstanceId)
+        {
+            try
+            {
+                var availableAddonClone = (AddonBase)Activator.CreateInstance(availableAddon.GetType())!;
+                availableAddonClone.DllFileFullName = availableAddon.DllFileFullName;
+                availableAddon = availableAddonClone;
+
+                DirectoryInfo? addonConfigDirectoryInfo = null;
+                if (!String.IsNullOrEmpty(addonInstanceId))
+                {
+                    if (addonInstanceId.Contains(Path.PathSeparator))
+                    {
+                        WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonConfigDirectoryError_CannotContainPath, addonInstanceId);
+                        return null;
+                    }
+
+                    addonConfigDirectoryInfo = new DirectoryInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, addonInstanceId));
+                    try
+                    {
+                        // Creates all directories and subdirectories in the specified path unless they already exist.
+                        Directory.CreateDirectory(addonConfigDirectoryInfo.FullName);
+                        if (!addonConfigDirectoryInfo.Exists)
+                            addonConfigDirectoryInfo = null;
+                    }
+                    catch
+                    {
+                        addonConfigDirectoryInfo = null;
+                    }
+                    if (addonConfigDirectoryInfo is null)
+                        WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonConfigDirectoryError, addonInstanceId);
+                }
+
+                var parameters = new List<object>();
+                if (UserFriendlyLogger is not null)
+                    parameters.Add(UserFriendlyLogger);
+                if (addonConfigDirectoryInfo is not null)
+                    parameters.Add(addonConfigDirectoryInfo);
+                availableAddon.CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, parameters.ToArray());
+                var idNameValueCollection = availableAddon.CsvDb.GetFileNameAndLastWriteTimeUtcDictionary();
+                idNameValueCollection.Add(@"addonName", availableAddon.Name);
+                if (!String.IsNullOrEmpty(addonInstanceId))
+                    idNameValueCollection.Add(@"addonInstanceId", addonInstanceId);
+                availableAddon.Id = NameValueCollectionHelper.GetNameValueCollectionString(idNameValueCollection);
+                availableAddon.InstanceId = addonInstanceId ?? @"";
+                availableAddon.Logger = Logger;
+                availableAddon.UserFriendlyLogger = UserFriendlyLogger;
+                availableAddon.WrapperUserFriendlyLogger = WrapperUserFriendlyLogger;
+                availableAddon.Configuration = Configuration;
+                availableAddon.ServiceProvider = ServiceProvider;
+            }
+            catch (Exception ex)
+            {
+                WrapperUserFriendlyLogger.LogError(ex, Properties.Resources.DesiredAddonFailed, availableAddon.Name);
+                return null;
+            }
+
+            return availableAddon;
         }
 
         /// <summary>
@@ -392,9 +492,7 @@ namespace Ssz.Utils.Addons
 
         #endregion
 
-        #region private fields        
-
-        private readonly object ContainerSyncRoot = new();
+        #region private fields 
 
         private CompositionContainer? _container;
 

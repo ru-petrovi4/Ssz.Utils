@@ -56,7 +56,7 @@ namespace Ssz.Utils.Logging
                     try
                     {
                         var f = new FileInfo(file);
-                        if (f.LastAccessTime < DateTime.Now.AddDays(-_options.DaysCountToStoreFiles))
+                        if (f.LastWriteTime < DateTime.Now.AddDays(-_options.DaysCountToStoreFiles))
                             f.Delete();
                     }
                     catch
