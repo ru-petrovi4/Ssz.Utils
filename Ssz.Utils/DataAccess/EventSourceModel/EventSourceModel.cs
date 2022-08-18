@@ -86,6 +86,9 @@ namespace Ssz.Utils.DataAccess
             IsInitialized = false;
         }
 
+        /// <summary>
+        ///    Does not clear lists of EventSourceObjects and EventSourceAreas
+        /// </summary>
         public virtual void Clear()
         {
             foreach (EventSourceObject eventSourceObject in EventSourceObjects.Values)
