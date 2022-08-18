@@ -10,6 +10,7 @@ using System.ComponentModel.Composition.Hosting;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 
 namespace Ssz.Utils.Addons
@@ -54,10 +55,10 @@ namespace Ssz.Utils.Addons
             WrapperUserFriendlyLogger = new WrapperUserFriendlyLogger(Logger, UserFriendlyLogger);
             AddonsSearchPattern = addonsSearchPattern;
             CsvDb = csvDb;
-            
+
             if (CsvDb.CsvDbDirectoryInfo is null)
             {
-                WrapperUserFriendlyLogger.LogInformation(@"Addons Configuration Directory does not specified.");                
+                WrapperUserFriendlyLogger.LogInformation(@"Addons Configuration Directory does not specified.");
                 return;
             }
 
@@ -81,15 +82,87 @@ namespace Ssz.Utils.Addons
             _container = null;
         }
 
+        /// <summary>
+        ///     SourceId property is empty in result.
+        /// </summary>
+        /// <returns></returns>
         public List<AddonCsvFile> ReadConfiguration()
         {
             List<AddonCsvFile> result = new();
 
+            if (CsvDb.CsvDbDirectoryInfo is null)
+                return result;
+
+            List<string?[]> addonsAvailableFileData = new();
+
+            ResetAvailableAddonsCache();
+
+            int lineId = 0;
+            foreach (AddonBase availableAddon in GetAvailableAddonsCache())
+            {
+                addonsAvailableFileData.Add(new[] { lineId.ToString(), "Addon", availableAddon.Name, availableAddon.Desc, availableAddon.Version });
+                lineId += 1;
+
+                foreach (var optionsInfo in availableAddon.OptionsInfo)
+                {
+                    addonsAvailableFileData.Add(new[] { lineId.ToString(), "AddonOption", optionsInfo.Item1, optionsInfo.Item2 });
+                    lineId += 1;
+                }
+            }
+
+            CsvDb.SetValues(AddonBase.AddonsAvailableCsvFileName, addonsAvailableFileData);
+            CsvDb.SaveData(AddonBase.AddonsAvailableCsvFileName);
+
+            foreach (FileInfo csvFileInfo in CsvDb.GetFileInfos())
+            {
+                result.Add(AddonCsvFile.CreateFromFileInfo(@"", csvFileInfo));
+            }
+
+            foreach (DirectoryInfo subDirectoryInfo in CsvDb.CsvDbDirectoryInfo.GetDirectories())
+            {
+                var subCsvDb = new CsvDb(CsvDb.Logger, CsvDb.UserFriendlyLogger, subDirectoryInfo);
+                foreach (FileInfo csvFileInfo in subCsvDb.GetFileInfos())
+                {
+                    result.Add(AddonCsvFile.CreateFromFileInfo(subDirectoryInfo.Name, csvFileInfo));
+                }
+            }
+
             return result;
         }
 
+        /// <summary>
+        ///     Throws AddonCsvFileChangedOnDiskException, if any file changed on disk and no data writtten.
+        /// </summary>
+        /// <param name="addonCsvFiles"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public void WriteConfiguration(AddonCsvFile[] addonCsvFiles)
         {
+            if (CsvDb.CsvDbDirectoryInfo is null)
+                return;
+
+            foreach (AddonCsvFile addonCsvFile in addonCsvFiles)
+            {
+                if (!addonCsvFile.PathRelativeToRootDirectory.EndsWith(".csv", StringComparison.InvariantCultureIgnoreCase))
+                    throw new Exception("addonCsvFile.Name must have .csv extension");
+
+                if (addonCsvFile.PathRelativeToRootDirectory.Count(f => f == Path.DirectorySeparatorChar) > 1)
+                    throw new Exception("addonCsvFile.PathRelativeToRootDirectory must have no more that 1 Path.DirectorySeparatorChar");
+
+                var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo.FullName, addonCsvFile.PathRelativeToRootDirectory));
+                if (fileInfo.Exists && !FileSystemHelper.FileSystemTimeIsEquals(fileInfo.LastWriteTimeUtc, addonCsvFile.LastWriteTimeUtc))
+                    throw new AddonCsvFileChangedOnDiskException { FilePathRelativeToRootDirectory = addonCsvFile.PathRelativeToRootDirectory };
+            }
+
+            foreach (AddonCsvFile addonCsvFile in addonCsvFiles)
+            {
+                var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo.FullName, addonCsvFile.PathRelativeToRootDirectory));
+                fileInfo.Directory!.Create();                
+                using (var writer = new StreamWriter(fileInfo.FullName, false, new UTF8Encoding(true)))
+                {
+                    writer.Write(addonCsvFile.FileData);
+                }
+            }
         }
 
         /// <summary>
@@ -132,7 +205,7 @@ namespace Ssz.Utils.Addons
                 TAddon? newAddon = CreateAvailableAddon(addon, addon.InstanceId) as TAddon;
                 if (newAddon is null)
                     return null;
-                
+
                 return newAddon;
             }
         }
@@ -173,7 +246,7 @@ namespace Ssz.Utils.Addons
             {
                 WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonNameIsEmpty);
                 return null;
-            }            
+            }
 
             AddonBase[] availableAddons = GetAvailableAddonsCache();
 
@@ -183,7 +256,7 @@ namespace Ssz.Utils.Addons
             {
                 WrapperUserFriendlyLogger.LogError(Properties.Resources.AvailableAddonIsNotFound, addonName);
                 return null;
-            }                     
+            }
 
             return CreateAvailableAddon(availableAddon, addonInstanceId);
         }
@@ -206,7 +279,7 @@ namespace Ssz.Utils.Addons
                     Logger.LogError(ex, @"_container.GetExportedValues<T> Error.");
                 }
             return result;
-        }        
+        }
 
         #endregion
 
@@ -251,7 +324,7 @@ namespace Ssz.Utils.Addons
                 lock (SyncRoot)
                 {
                     RefreshAddons();
-                }                
+                }
             }
         }
 
@@ -269,7 +342,7 @@ namespace Ssz.Utils.Addons
                 string addonName = line[1] ?? @"";
                 string addonInstanceId = line[0]!;
 
-                var desiredAndAvailableAddon = CreateAvailableAddon(addonName, addonInstanceId);                    
+                var desiredAndAvailableAddon = CreateAvailableAddon(addonName, addonInstanceId);
                 if (desiredAndAvailableAddon is not null)
                 {
                     newAddons.Add(desiredAndAvailableAddon);
@@ -277,13 +350,13 @@ namespace Ssz.Utils.Addons
                     catalog.Catalogs.Add(new DirectoryCatalog(
                             Path.GetDirectoryName(desiredAndAvailableAddon.DllFileFullName)!,
                             Path.GetFileName(desiredAndAvailableAddon.DllFileFullName)));
-                }                
+                }
             }
 
             _container = new CompositionContainer(catalog);
 
             Addons.Update(newAddons.OrderBy(a => a.Id).ToArray());
-        }        
+        }
 
         private void ResetAvailableAddonsCache()
         {
@@ -301,7 +374,7 @@ namespace Ssz.Utils.Addons
                 DirectoryInfo? addonConfigDirectoryInfo = null;
                 if (!String.IsNullOrEmpty(addonInstanceId))
                 {
-                    if (addonInstanceId.Contains(Path.PathSeparator))
+                    if (addonInstanceId.Contains(Path.DirectorySeparatorChar))
                     {
                         WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonConfigDirectoryError_CannotContainPath, addonInstanceId);
                         return null;
@@ -329,7 +402,7 @@ namespace Ssz.Utils.Addons
                 if (addonConfigDirectoryInfo is not null)
                     parameters.Add(addonConfigDirectoryInfo);
                 availableAddon.CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, parameters.ToArray());
-                var idNameValueCollection = availableAddon.CsvDb.GetFileNameAndLastWriteTimeUtcDictionary();
+                var idNameValueCollection = availableAddon.CsvDb.GetFileInfos().ToDictionary(fi => fi.Name, fi => (string?)new Any(fi.LastWriteTimeUtc).ValueAsString(false));
                 idNameValueCollection.Add(@"addonName", availableAddon.Name);
                 if (!String.IsNullOrEmpty(addonInstanceId))
                     idNameValueCollection.Add(@"addonInstanceId", addonInstanceId);
@@ -372,7 +445,7 @@ namespace Ssz.Utils.Addons
             if (exeDirectory is null) return new AddonBase[0];
 
             var addonsFileInfos = new List<FileInfo>();
-            
+
             addonsFileInfos.AddRange(
                 Directory.GetFiles(exeDirectory, AddonsSearchPattern, SearchOption.TopDirectoryOnly)
                     .Select(fn => new FileInfo(fn)));
@@ -502,5 +575,10 @@ namespace Ssz.Utils.Addons
         private AddonBase[]? _availableAddons;
 
         #endregion
+
+        public class AddonCsvFileChangedOnDiskException : Exception
+        {
+            public string FilePathRelativeToRootDirectory { get; set; } = @"";
+        }
     }
 }

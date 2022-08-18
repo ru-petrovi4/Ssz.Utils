@@ -27,6 +27,11 @@ namespace Ssz.Utils.Addons
         /// </summary>
         public const string AddonsCsvFileName = @"Addons.csv";
 
+        /// <summary>
+        ///     Available addons info .csv file name.
+        /// </summary>
+        public const string AddonsAvailableCsvFileName = @"AddonsAvailable.csv";
+
         public abstract Guid Guid { get; }
 
         public abstract string Name { get; }

@@ -167,7 +167,7 @@ namespace Ssz.Xi.Client
                     try
                     {
                         callbackDispatcher.BeginInvoke(ct =>
-                            valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCode.ItemDoesNotExist }));
+                            valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist }));
                     }
                     catch (Exception)
                     {
@@ -243,7 +243,7 @@ namespace Ssz.Xi.Client
             var callbackDispatcher = CallbackDispatcher;
             if (!IsInitialized || callbackDispatcher is null) return;
 
-            if (!ValueStatusCode.IsGood(valueStatusTimestamp.ValueStatusCode)) return;
+            if (!ValueStatusCodes.IsGood(valueStatusTimestamp.ValueStatusCode)) return;
             var value = valueStatusTimestamp.Value;
 
             if (!_valueSubscriptionsCollection.TryGetValue(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj))
@@ -330,14 +330,14 @@ namespace Ssz.Xi.Client
                         var resultValue = resultValues[i];
                         if (resultValue != SszConverter.DoNothing)
                             _xiDataListItemsManager.Write(valueSubscriptionObj.ChildValueSubscriptionsList[i],
-                                new ValueStatusTimestamp(new Any(resultValue), ValueStatusCode.Good, DateTime.UtcNow));
+                                new ValueStatusTimestamp(new Any(resultValue), ValueStatusCodes.Good, DateTime.UtcNow));
                     }
                 }
                 else
                 {
                     if (value.ValueAsObject() != SszConverter.DoNothing)
                         _xiDataListItemsManager.Write(valueSubscription,
-                            new ValueStatusTimestamp(value, ValueStatusCode.Good, DateTime.UtcNow));
+                            new ValueStatusTimestamp(value, ValueStatusCodes.Good, DateTime.UtcNow));
                 }
             });
         }
@@ -447,7 +447,7 @@ namespace Ssz.Xi.Client
                     {
                         callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
                         {
-                            Succeeded = false
+                            JobStatusCode = JobStatusCodes.UnknownError
                         });
                     }
                     succeeded = false;
@@ -844,7 +844,7 @@ namespace Ssz.Xi.Client
                     try
                     {
                         callbackDispatcher.BeginInvoke(ct =>
-                            valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, ValueStatusCode.Good,
+                            valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, ValueStatusCodes.Good,
                                 DateTime.UtcNow)));
                     }
                     catch (Exception)
@@ -990,12 +990,12 @@ namespace Ssz.Xi.Client
             {
                 if (ChildValueSubscriptionsList is null) return;
 
-                if (ChildValueSubscriptionsList.Any(vs => vs.ValueStatusTimestamp.ValueStatusCode == ValueStatusCode.ItemDoesNotExist))
+                if (ChildValueSubscriptionsList.Any(vs => vs.ValueStatusTimestamp.ValueStatusCode == ValueStatusCodes.ItemDoesNotExist))
                 {
-                    ValueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCode.ItemDoesNotExist });
+                    ValueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist });
                     return;
                 }
-                if (ChildValueSubscriptionsList.Any(vs => vs.ValueStatusTimestamp.ValueStatusCode == ValueStatusCode.Unknown))
+                if (ChildValueSubscriptionsList.Any(vs => vs.ValueStatusTimestamp.ValueStatusCode == ValueStatusCodes.Unknown))
                 {
                     ValueSubscription.Update(new ValueStatusTimestamp());
                     return;
@@ -1007,7 +1007,7 @@ namespace Ssz.Xi.Client
                 SszConverter converter = Converter ?? SszConverter.Empty;
                 var convertedValue = converter.Convert(values.ToArray(), null, null);
                 if (convertedValue == SszConverter.DoNothing) return;
-                ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), ValueStatusCode.Good,
+                ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), ValueStatusCodes.Good,
                     DateTime.UtcNow));
             }
         }

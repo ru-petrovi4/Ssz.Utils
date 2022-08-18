@@ -84,11 +84,11 @@ message SubscribeForCallbackRequest {
 }
 
 message LongrunningPassthroughCallback {  
-  string invoke_id = 1;
+  string job_id = 1;
   double progress_percent = 2;
   string progress_label = 3;
   string progress_detail = 4;
-  uint32 status_code = 5;
+  uint32 job_status_code = 5;
 }
 
 message CallbackMessage {
@@ -381,19 +381,19 @@ message PassthroughReply {
 }
 
 message LongrunningPassthroughRequest {  
-  string context_id = 1;
-  string invoke_id = 2;
-  string recipient_id = 3;
-  string passthrough_name = 4;
-  PassthroughData data_to_send = 5;
+  string context_id = 1;  
+  string recipient_id = 2;
+  string passthrough_name = 3;
+  PassthroughData data_to_send = 4;
 }
 
 message LongrunningPassthroughReply {    
+  string job_id = 1;
 }
 
 message LongrunningPassthroughCancelRequest {
   string context_id = 1;
-  string invoke_id = 2;  
+  string job_id = 2;  
 }
 
 message LongrunningPassthroughCancelReply {    

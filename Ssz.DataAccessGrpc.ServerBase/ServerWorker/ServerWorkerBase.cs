@@ -35,9 +35,17 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public abstract Task<byte[]> PassthroughAsync(ServerContext serverContext, string recipientId, string passthroughName, byte[] dataToSend);
 
-        public abstract void LongrunningPassthrough(ServerContext serverContext, string invokeId, string recipientId, string passthroughName, byte[] dataToSend);
+        /// <summary>
+        ///     Returns JobId
+        /// </summary>
+        /// <param name="serverContext"></param>
+        /// <param name="recipientId"></param>
+        /// <param name="passthroughName"></param>
+        /// <param name="dataToSend"></param>
+        /// <returns></returns>
+        public abstract string LongrunningPassthrough(ServerContext serverContext, string recipientId, string passthroughName, byte[] dataToSend);
 
-        public abstract void LongrunningPassthroughCancel(ServerContext serverContext, string invokeId);
+        public abstract void LongrunningPassthroughCancel(ServerContext serverContext, string jobId);
 
         public virtual async Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
         {

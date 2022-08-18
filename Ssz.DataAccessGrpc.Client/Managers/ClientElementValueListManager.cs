@@ -133,7 +133,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                                     if (dataGrpcListItemWrapper.ItemDoesNotExist)
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCode.ItemDoesNotExist });
+                                        changedValues.Add(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist });
                                     }
                                     else if (dataGrpcListItemWrapper.DataAccessGrpcListItem is not null)
                                     {
@@ -143,7 +143,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                                     else
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(new ValueStatusTimestamp(new Any(), ValueStatusCode.Unknown, utcNow));
+                                        changedValues.Add(new ValueStatusTimestamp(new Any(), ValueStatusCodes.Unknown, utcNow));
                                     }                                                                                                  
                                 }                                
                             }

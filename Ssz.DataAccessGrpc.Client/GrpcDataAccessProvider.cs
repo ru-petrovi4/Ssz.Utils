@@ -176,7 +176,7 @@ namespace Ssz.DataAccessGrpc.Client
                     try
                     {
                         callbackDispatcher.BeginInvoke(ct =>
-                            valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCode.ItemDoesNotExist }));
+                            valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist }));
                     }
                     catch (Exception)
                     {
@@ -245,7 +245,7 @@ namespace Ssz.DataAccessGrpc.Client
             var callbackDispatcher = CallbackDispatcher;
             if (!IsInitialized || callbackDispatcher is null) return;
 
-            if (!ValueStatusCode.IsGood(valueStatusTimestamp.ValueStatusCode)) return;
+            if (!ValueStatusCodes.IsGood(valueStatusTimestamp.ValueStatusCode)) return;
             var value = valueStatusTimestamp.Value;
 
             if (!_valueSubscriptionsCollection.TryGetValue(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj))
@@ -332,14 +332,14 @@ namespace Ssz.DataAccessGrpc.Client
                         var resultValue = resultValues[i];
                         if (resultValue != SszConverter.DoNothing)
                             _clientElementValueListManager.Write(valueSubscriptionObj.ChildValueSubscriptionsList[i],
-                                new ValueStatusTimestamp(new Any(resultValue), ValueStatusCode.Good, DateTime.UtcNow));
+                                new ValueStatusTimestamp(new Any(resultValue), ValueStatusCodes.Good, DateTime.UtcNow));
                     }
                 }
                 else
                 {
                     if (value.ValueAsObject() != SszConverter.DoNothing)
                         _clientElementValueListManager.Write(valueSubscription,
-                            new ValueStatusTimestamp(value, ValueStatusCode.Good, DateTime.UtcNow));
+                            new ValueStatusTimestamp(value, ValueStatusCodes.Good, DateTime.UtcNow));
                 }
             });
         }
@@ -436,9 +436,9 @@ namespace Ssz.DataAccessGrpc.Client
                 bool succeeded;
                 try
                 {
-                    StatusCode statusCode = await _clientConnectionManager.LongrunningPassthroughAsync(recipientId, passthroughName,
+                    uint jobStatusCode = await _clientConnectionManager.LongrunningPassthroughAsync(recipientId, passthroughName,
                         dataToSend, callbackActionDispatched);
-                    succeeded = statusCode == StatusCode.OK;
+                    succeeded = jobStatusCode == JobStatusCodes.OK;
                 }
                 catch (RpcException ex)
                 {
@@ -447,7 +447,7 @@ namespace Ssz.DataAccessGrpc.Client
                     {
                         callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
                         {   
-                            Succeeded = false
+                            JobStatusCode = JobStatusCodes.UnknownError
                         });
                     }
                     succeeded = false;
@@ -459,7 +459,7 @@ namespace Ssz.DataAccessGrpc.Client
                     {
                         callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
                         {
-                            Succeeded = false
+                            JobStatusCode = JobStatusCodes.UnknownError
                         });
                     }
                     succeeded = false;
@@ -831,7 +831,7 @@ namespace Ssz.DataAccessGrpc.Client
                     try
                     {
                         callbackDispatcher.BeginInvoke(ct =>
-                            valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, ValueStatusCode.Good,
+                            valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, ValueStatusCodes.Good,
                                 DateTime.UtcNow)));
                     }
                     catch (Exception)
@@ -969,12 +969,12 @@ namespace Ssz.DataAccessGrpc.Client
             {
                 if (ChildValueSubscriptionsList is null) return;
 
-                if (ChildValueSubscriptionsList.Any(vs => vs.ValueStatusTimestamp.ValueStatusCode == ValueStatusCode.ItemDoesNotExist))
+                if (ChildValueSubscriptionsList.Any(vs => vs.ValueStatusTimestamp.ValueStatusCode == ValueStatusCodes.ItemDoesNotExist))
                 {
-                    ValueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCode.ItemDoesNotExist });
+                    ValueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist });
                     return;
                 }
-                if (ChildValueSubscriptionsList.Any(vs => vs.ValueStatusTimestamp.ValueStatusCode == ValueStatusCode.Unknown))
+                if (ChildValueSubscriptionsList.Any(vs => vs.ValueStatusTimestamp.ValueStatusCode == ValueStatusCodes.Unknown))
                 {
                     ValueSubscription.Update(new ValueStatusTimestamp());
                     return;
@@ -986,7 +986,7 @@ namespace Ssz.DataAccessGrpc.Client
                 SszConverter converter = Converter ?? SszConverter.Empty;                
                 var convertedValue = converter.Convert(values.ToArray(), null, null);
                 if (convertedValue == SszConverter.DoNothing) return;
-                ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), ValueStatusCode.Good,
+                ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), ValueStatusCodes.Good,
                     DateTime.UtcNow));
             }
         }

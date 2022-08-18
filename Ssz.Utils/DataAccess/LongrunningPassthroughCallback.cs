@@ -10,15 +10,19 @@ namespace Ssz.Utils.DataAccess
     {
 		#region public functions		
 		
-		public string InvokeId = @"";
+		public string JobId = @"";
 
 		public double ProgressPercent;
 
-		public string ProgressLabel = @"";
+		public string? ProgressLabel;
 
-		public string ProgressDetail = @"";
+		public string? ProgressDetail;
 
-		public bool Succeeded;
+        /// <summary>
+        ///     OK = 0, Cancelled = 1, UnknownError = 2, Error >= 2.
+		///     See consts in JobStatusCodes
+        /// </summary>
+        public uint JobStatusCode;
 
 		#endregion
 	}

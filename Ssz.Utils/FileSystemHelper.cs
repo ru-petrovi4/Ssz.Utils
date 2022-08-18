@@ -15,27 +15,27 @@ namespace Ssz.Utils
         #region public functions    
 
         /// <summary>
-        ///     Compares with tolerance 2 seconds.
+        ///     Compares with tolerance 0.5 seconds.
         /// </summary>
-        /// <param name="dateTimeUtcLeft"></param>
-        /// <param name="dateTimeRight"></param>
+        /// <param name="leftDateTimeUtc"></param>
+        /// <param name="rightDateTimeUtc"></param>
         /// <returns></returns>
-        public static bool FileSystemTimeIsEquals(DateTime dateTimeUtcLeft, DateTime dateTimeRight)
+        public static bool FileSystemTimeIsEquals(DateTime leftDateTimeUtc, DateTime rightDateTimeUtc)
         {
-            long delta = Math.Abs(dateTimeRight.Ticks - dateTimeUtcLeft.Ticks);            
-            return delta < TimeSpan.TicksPerSecond * 2;
+            long delta = Math.Abs(rightDateTimeUtc.Ticks - leftDateTimeUtc.Ticks);            
+            return delta < TimeSpan.TicksPerSecond * 0.5;
         }
 
         /// <summary>
-        ///     Compares with tolerance 2 seconds.
+        ///     Compares with tolerance 0.5 seconds.
         /// </summary>
-        /// <param name="dateTimeUtcLeft"></param>
-        /// <param name="dateTimeRight"></param>
+        /// <param name="leftDateTimeUtc"></param>
+        /// <param name="rightDateTimeUtc"></param>
         /// <returns></returns>
-        public static bool FileSystemTimeIsLess(DateTime dateTimeUtcLeft, DateTime dateTimeRight)
+        public static bool FileSystemTimeIsLess(DateTime leftDateTimeUtc, DateTime rightDateTimeUtc)
         {
-            long delta = dateTimeRight.Ticks - dateTimeUtcLeft.Ticks;
-            return delta > TimeSpan.TicksPerSecond * 2;
+            long delta = rightDateTimeUtc.Ticks - leftDateTimeUtc.Ticks;
+            return delta > TimeSpan.TicksPerSecond * 0.5;
         }
 
         /// <summary>

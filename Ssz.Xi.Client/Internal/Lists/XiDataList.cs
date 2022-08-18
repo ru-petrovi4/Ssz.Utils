@@ -216,7 +216,7 @@ namespace Ssz.Xi.Client.Internal.Lists
             foreach (XiDataListItem item in ListItemsManager)
             {
                 if (item.PendingWriteValueStatusTimestamp is not null &&
-                    item.PendingWriteValueStatusTimestamp.Value.ValueStatusCode != ValueStatusCode.Unknown)
+                    item.PendingWriteValueStatusTimestamp.Value.ValueStatusCode != ValueStatusCodes.Unknown)
                 {
                     switch (item.PendingWriteValueStatusTimestamp.Value.Value.ValueStorageType)
                     {
@@ -244,7 +244,7 @@ namespace Ssz.Xi.Client.Internal.Lists
                 {
                     XiDataListItem item = kvp.Value;
                     if (item.PendingWriteValueStatusTimestamp is not null &&
-                        item.PendingWriteValueStatusTimestamp.Value.ValueStatusCode != ValueStatusCode.Unknown)
+                        item.PendingWriteValueStatusTimestamp.Value.ValueStatusCode != ValueStatusCodes.Unknown)
                     {
                         var statusCode = XiStatusCode.MakeStatusCode(
                             XiStatusCode.MakeStatusByte((byte)XiStatusCodeStatusBits.GoodNonSpecific, 0),

@@ -250,11 +250,11 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     {
                         LongrunningPassthroughCallback = new LongrunningPassthroughCallback
                         {
-                            InvokeId = longrunningPassthroughCallbackMessage.InvokeId,
+                            JobId = longrunningPassthroughCallbackMessage.JobId,
                             ProgressPercent = longrunningPassthroughCallbackMessage.ProgressPercent,
                             ProgressLabel = longrunningPassthroughCallbackMessage.ProgressLabel ?? @"",
                             ProgressDetail = longrunningPassthroughCallbackMessage.ProgressDetail ?? @"",
-                            StatusCode = (uint)longrunningPassthroughCallbackMessage.StatusCode,
+                            JobStatusCode = longrunningPassthroughCallbackMessage.JobStatusCode,
                         }
                     };
                     await _responseStream.WriteAsync(callbackMessage);
@@ -410,17 +410,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
             #endregion
         }
 
-        public class LongrunningPassthroughCallbackMessage
-        {
-            public string InvokeId = @"";
-            
-            public double ProgressPercent;
-
-            public string? ProgressLabel;
-
-            public string? ProgressDetail;
-
-            public StatusCode StatusCode;
+        public class LongrunningPassthroughCallbackMessage : Ssz.Utils.DataAccess.LongrunningPassthroughCallback
+        {            
         }
     }
 }

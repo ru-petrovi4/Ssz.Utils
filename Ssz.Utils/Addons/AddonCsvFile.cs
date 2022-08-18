@@ -12,15 +12,44 @@ namespace Ssz.Utils.Addons
     {
         #region public functions
 
+        /// <summary>
+        ///     pathRelativeToRootDirectory - no path separator at the begin and end.
+        /// </summary>
+        /// <param name="pathRelativeToRootDirectory"></param>
+        /// <param name="csvFileInfo"></param>
+        /// <returns></returns>
+        public static AddonCsvFile CreateFromFileInfo(string pathRelativeToRootDirectory, FileInfo csvFileInfo)
+        {
+            var addonCsvFile = new AddonCsvFile
+            {
+                PathRelativeToRootDirectory = pathRelativeToRootDirectory != @"" ? 
+                    pathRelativeToRootDirectory + Path.DirectorySeparatorChar + csvFileInfo.Name :
+                    csvFileInfo.Name,
+                LastWriteTimeUtc = csvFileInfo.LastWriteTimeUtc,
+            };
+
+            using (var reader = new StreamReader(csvFileInfo.FullName, true))
+            {
+                addonCsvFile.FileData = reader.ReadToEnd();
+            }
+
+            return addonCsvFile;
+        }
+
         /// <summary>        
         /// </summary>
-        public string Name => PathRelativeToRootDirectory.Substring(PathRelativeToRootDirectory.LastIndexOf(Path.PathSeparator) + 1);
+        public string Name => PathRelativeToRootDirectory.Substring(PathRelativeToRootDirectory.LastIndexOf(Path.DirectorySeparatorChar) + 1);
 
         /// <summary>        
         ///     Path relative to the root of the Files Store.
         ///     No '\' at the begin, no '\' at the end.        
         /// </summary>
         public string PathRelativeToRootDirectory { get; set; } = @"";
+
+        /// <summary>        
+        ///     You can store here data about source.
+        /// </summary>
+        public string SourceId { get; set; } = @"";
 
         /// <summary>
         ///     FileInfo.LastWriteTimeUtc
@@ -40,6 +69,7 @@ namespace Ssz.Utils.Addons
         public void SerializeOwnedData(SerializationWriter writer, object? context)
         {
             writer.Write(PathRelativeToRootDirectory);
+            writer.Write(SourceId);
             writer.Write(LastWriteTimeUtc);
             writer.Write(FileData);
         }
@@ -52,6 +82,7 @@ namespace Ssz.Utils.Addons
         public void DeserializeOwnedData(SerializationReader reader, object? context)
         {
             PathRelativeToRootDirectory = reader.ReadString();
+            SourceId = reader.ReadString();
             LastWriteTimeUtc = reader.ReadDateTime();
             FileData = reader.ReadString();
         }

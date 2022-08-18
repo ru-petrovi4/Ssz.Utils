@@ -1940,9 +1940,9 @@
             <summary>
                 This method returns the results of invoking an asynchronous passthrough.
             </summary>
-            <param name="invokeId"> The identifier for this invocation of the passthrough defined by the client in the request. </param>
+            <param name="jobId"> The identifier for this invocation of the passthrough defined by the client in the request. </param>
             <param name="passthroughResult">
-                The result of executing the passthrough, consisting of the result code, the invokeId
+                The result of executing the passthrough, consisting of the result code, the jobId
                 supplied in the request, and a byte array. It is up to the client application to interpret this byte array.
             </param>
         </member>
@@ -3663,9 +3663,9 @@
                 This method returns the results of invoking an asynchronous passthrough.
             </summary>
             <param name="contextId"> The context identifier. </param>
-            <param name="invokeId"> The identifier for this invocation of the passthrough defined by the client in the request. </param>
+            <param name="jobId"> The identifier for this invocation of the passthrough defined by the client in the request. </param>
             <param name="passthroughResult">
-                The result of executing the passthrough, consisting of the result code, the invokeId
+                The result of executing the passthrough, consisting of the result code, the jobId
                 supplied in the request, and a byte array. It is up to the client application to interpret this byte array.
             </param>
         </member>
@@ -9683,9 +9683,9 @@
             The Result Code returned by the passthrough mechanism.
             </summary>
         </member>
-        <member name="P:Xi.Contracts.Data.PassthroughResult.InvokeId">
+        <member name="P:Xi.Contracts.Data.PassthroughResult.JobId">
             <summary>
-            The InvokeId passed in the Passthrough() request.
+            The JobId passed in the Passthrough() request.
             </summary>
         </member>
         <member name="P:Xi.Contracts.Data.PassthroughResult.ReturnData">
@@ -11219,12 +11219,12 @@
             <param name="contextId">
             The context identifier.
             </param>
-            <param name="invokeId">
+            <param name="jobId">
             The identifier for this invocation of the passthrough defined by the client 
             in the request.  
             </param>
             <param name="passthroughResult">
-            The result of executing the passthrough, consisting of the result code, the invokeId 
+            The result of executing the passthrough, consisting of the result code, the jobId 
             supplied in the request, and a byte array.  It is up to the client application to 
             interpret this byte array.  
             </param>
@@ -11379,7 +11379,7 @@
             </param>
             <returns>
             The results of executing the passthroughs. Each result in the list consists of the 
-            result code, the invokeId supplied in the request, and a byte array.  It is up to the 
+            result code, the jobId supplied in the request, and a byte array.  It is up to the 
             client application to interpret this byte array.  
             </returns>
         </member>
@@ -12758,9 +12758,9 @@
             The recipient identifier. The list of recipients is contained in 
             the RecipientPassthroughs MIB element.   
             </param>
-            <param name="invokeId">
+            <param name="jobId">
             A client-defined integer identifier for this invocation of the passthrough.  When
-            used with asynchronous passthroughs, the server returns the invokeId with the response.  
+            used with asynchronous passthroughs, the server returns the jobId with the response.  
             </param>
             <param name="passthroughName">
             The name of the passthrough message. The list of passthroughs for a recipient 

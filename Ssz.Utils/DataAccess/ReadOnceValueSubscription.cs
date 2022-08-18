@@ -34,7 +34,7 @@ namespace Ssz.Utils.DataAccess
         /// <param name="valueStatusTimestamp"></param>
         void IValueSubscription.Update(ValueStatusTimestamp valueStatusTimestamp)
         {
-            if (valueStatusTimestamp.ValueStatusCode == ValueStatusCode.Unknown) return;
+            if (valueStatusTimestamp.ValueStatusCode == ValueStatusCodes.Unknown) return;
 
             _dataProvider.RemoveItem(this);            
 

@@ -340,7 +340,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             return reply;
         }
 
-        internal LongrunningPassthroughReply LongrunningPassthrough(string invokeId, string recipientId, string passthroughName, PassthroughData dataToSend)
+        internal LongrunningPassthroughReply LongrunningPassthrough(string recipientId, string passthroughName, PassthroughData dataToSend)
         {
             var reply = new LongrunningPassthroughReply();
 
@@ -363,18 +363,18 @@ namespace Ssz.DataAccessGrpc.ServerBase
             {
                 _incompletePassthroughRequestsCollection[dataToSend.NextGuid] = dataToSendTemp;
                 return reply;
-            }
+            }            
             
-            ServerWorker.LongrunningPassthrough(this, invokeId, recipientId, passthroughName, dataToSendTemp.ToArray());            
+            reply.JobId = ServerWorker.LongrunningPassthrough(this, recipientId, passthroughName, dataToSendTemp.ToArray());            
 
             return reply;
         }
 
-        internal LongrunningPassthroughCancelReply LongrunningPassthroughCancel(string invokeId)
+        internal LongrunningPassthroughCancelReply LongrunningPassthroughCancel(string jobId)
         {
             var reply = new LongrunningPassthroughCancelReply();
 
-            ServerWorker.LongrunningPassthroughCancel(this, invokeId);
+            ServerWorker.LongrunningPassthroughCancel(this, jobId);
 
             return reply;
         }

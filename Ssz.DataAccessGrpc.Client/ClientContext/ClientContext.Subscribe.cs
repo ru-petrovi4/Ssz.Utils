@@ -131,37 +131,40 @@ namespace Ssz.DataAccessGrpc.Client
 
         private void LongrunningPassthroughCallback(ServerBase.LongrunningPassthroughCallback longrunningPassthroughCallback)
         {
-            lock (_incompleteLongrunningPassthroughRequestsCollection)
+            lock (_longrunningPassthroughRequestsCollection)
             {
-                var invokeId = longrunningPassthroughCallback.InvokeId ?? @"";
-                if (_incompleteLongrunningPassthroughRequestsCollection.TryGetValue(invokeId, out IncompleteLongrunningPassthroughRequest? incompleteLongrunningPassthroughRequest))
-                {                    
-                    var statusCode = (StatusCode)longrunningPassthroughCallback.StatusCode;
-                    var callbackAction = incompleteLongrunningPassthroughRequest.CallbackAction;
-                    if (callbackAction is not null)
-                    {
-                        callbackAction(new Utils.DataAccess.LongrunningPassthroughCallback
+                var jobId = longrunningPassthroughCallback.JobId ?? @"";                
+                if (_longrunningPassthroughRequestsCollection.TryGetValue(jobId, out List<LongrunningPassthroughRequest>? longrunningPassthroughRequestsList))
+                {
+                    var jobStatusCode = longrunningPassthroughCallback.JobStatusCode;
+
+                    foreach (LongrunningPassthroughRequest longrunningPassthroughRequest in longrunningPassthroughRequestsList)
+                    {                        
+                        var callbackAction = longrunningPassthroughRequest.CallbackAction;
+                        if (callbackAction is not null)
                         {
-                            InvokeId = invokeId,
-                            ProgressPercent = longrunningPassthroughCallback.ProgressPercent,
-                            ProgressLabel = longrunningPassthroughCallback.ProgressLabel ?? @"",
-                            ProgressDetail = longrunningPassthroughCallback.ProgressDetail ?? @"",
-                            Succeeded = statusCode == StatusCode.OK
-                        });
-                    }
-                    if (statusCode != StatusCode.OK)
-                    {
-                        incompleteLongrunningPassthroughRequest.TaskCompletionSource.SetResult(statusCode);
-                        _incompleteLongrunningPassthroughRequestsCollection.Remove(invokeId);
-                    }
-                    else // statusCode == StatusCode.OK
-                    {
-                        if (longrunningPassthroughCallback.ProgressPercent > 99.9)
-                        {
-                            incompleteLongrunningPassthroughRequest.TaskCompletionSource.SetResult(StatusCode.OK);
-                            _incompleteLongrunningPassthroughRequestsCollection.Remove(invokeId);
+                            callbackAction(new Utils.DataAccess.LongrunningPassthroughCallback
+                            {
+                                JobId = jobId,
+                                ProgressPercent = longrunningPassthroughCallback.ProgressPercent,
+                                ProgressLabel = longrunningPassthroughCallback.ProgressLabel ?? @"",
+                                ProgressDetail = longrunningPassthroughCallback.ProgressDetail ?? @"",
+                                JobStatusCode = jobStatusCode
+                            });
                         }
-                    }                    
+
+                        if (jobStatusCode != JobStatusCodes.OK ||
+                            longrunningPassthroughCallback.ProgressPercent > 99.9)
+                        {
+                            longrunningPassthroughRequest.TaskCompletionSource.SetResult(jobStatusCode);                            
+                        }                        
+                    }
+
+                    if (jobStatusCode != JobStatusCodes.OK ||
+                            longrunningPassthroughCallback.ProgressPercent > 99.9)
+                    {
+                        _longrunningPassthroughRequestsCollection.Remove(jobId);
+                    }
                 }
             }
         }

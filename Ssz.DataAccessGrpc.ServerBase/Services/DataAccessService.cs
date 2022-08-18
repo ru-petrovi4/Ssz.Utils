@@ -289,7 +289,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
-                    return serverContext.LongrunningPassthrough(request.InvokeId ?? @"", request.RecipientId ?? @"", request.PassthroughName ?? @"", request.DataToSend);
+                    return serverContext.LongrunningPassthrough(request.RecipientId ?? @"", request.PassthroughName ?? @"", request.DataToSend);
                 },
                 context);
         }
@@ -300,7 +300,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             {
                 ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                 serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
-                return serverContext.LongrunningPassthroughCancel(request.InvokeId ?? @"");
+                return serverContext.LongrunningPassthroughCancel(request.JobId ?? @"");
             },
                 context);
         }

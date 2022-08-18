@@ -149,15 +149,15 @@ namespace Ssz.Xi.Client.Internal.Context
 
             _writeEndpoint.LastCallUtc = DateTime.UtcNow;
 
-            int invokeId;
+            int jobId;
             var taskCompletionSource = new TaskCompletionSource<bool>();
             lock (_incompleteCommandCallsCollection)
             {
-                invokeId = (int)_incompleteCommandCallsCollection.Add(taskCompletionSource);
+                jobId = (int)_incompleteCommandCallsCollection.Add(taskCompletionSource);
             }
             try
             {
-                PassthroughResult? passthroughResult = _writeEndpoint.Proxy.Passthrough(contextId, recipientId, invokeId,
+                PassthroughResult? passthroughResult = _writeEndpoint.Proxy.Passthrough(contextId, recipientId, jobId,
                                       passthroughName, dataToSend ?? new byte[0]);
                 return await taskCompletionSource.Task;
             }
@@ -165,7 +165,7 @@ namespace Ssz.Xi.Client.Internal.Context
             {
                 lock (_incompleteCommandCallsCollection)
                 {
-                    _incompleteCommandCallsCollection.Remove((uint)invokeId);
+                    _incompleteCommandCallsCollection.Remove((uint)jobId);
                 }
                 ProcessRemoteMethodCallException(ex);
                 throw;

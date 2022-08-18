@@ -55,7 +55,7 @@ namespace Ssz.Utils.DataAccess
                 oldValueStatusTimestamp = _valueStatusTimestamp;
                 _valueStatusTimestamp = valueStatusTimestamp;
             }
-            if (valueStatusTimestamp.ValueStatusCode != ValueStatusCode.Unknown)
+            if (valueStatusTimestamp.ValueStatusCode != ValueStatusCodes.Unknown)
                 ValueStatusTimestampUpdated.Set();
             if (_valueUpdated is not null) _valueUpdated(oldValueStatusTimestamp, valueStatusTimestamp);
         }

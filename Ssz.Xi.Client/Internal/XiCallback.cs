@@ -108,18 +108,18 @@ namespace Ssz.Xi.Client.Internal
         ///     This method returns the results of invoking an asynchronous passthrough.
         /// </summary>
         /// <param name="contextId"> The context identifier. </param>
-        /// <param name="invokeId"> The identifier for this invocation of the passthrough defined by the client in the request. </param>
+        /// <param name="jobId"> The identifier for this invocation of the passthrough defined by the client in the request. </param>
         /// <param name="passthroughResult">
-        ///     The result of executing the passthrough, consisting of the result code, the invokeId
+        ///     The result of executing the passthrough, consisting of the result code, the jobId
         ///     supplied in the request, and a byte array. It is up to the client application to interpret this byte array.
         /// </param>
-        void ICallback.PassthroughCallback(string contextId, int invokeId, PassthroughResult passthroughResult)
+        void ICallback.PassthroughCallback(string contextId, int jobId, PassthroughResult passthroughResult)
         {
             XiContext? context = XiContext.LookUpContext(contextId);
             if (context is not null)
             {
                 context.NotifyCallbackRecieved();
-                _xiCallbackDoer.BeginInvoke(ct => context.PassthroughCallback(invokeId, passthroughResult));
+                _xiCallbackDoer.BeginInvoke(ct => context.PassthroughCallback(jobId, passthroughResult));
             }
         }
 

@@ -25,7 +25,7 @@ namespace Ssz.Utils.DataAccess
         public ValueStatusTimestamp(Any value, DateTime timestampUtc)
         {
             Value = value;
-            ValueStatusCode = DataAccess.ValueStatusCode.Good;
+            ValueStatusCode = DataAccess.ValueStatusCodes.Good;
             TimestampUtc = timestampUtc;
         }
 
@@ -36,7 +36,7 @@ namespace Ssz.Utils.DataAccess
         public ValueStatusTimestamp(Any value)
         {
             Value = value;
-            ValueStatusCode = DataAccess.ValueStatusCode.Good;
+            ValueStatusCode = DataAccess.ValueStatusCodes.Good;
             TimestampUtc = DateTime.UtcNow;
         }
 
@@ -119,7 +119,7 @@ namespace Ssz.Utils.DataAccess
         #endregion
     }
 
-    public static class ValueStatusCode
+    public static class ValueStatusCodes
     {
         public const uint Unknown = 0;
 
@@ -128,6 +128,5 @@ namespace Ssz.Utils.DataAccess
         public const uint Good = 2;
 
         public static bool IsGood(uint valueStatusCode) => valueStatusCode >= Good;
-
     }
 }
