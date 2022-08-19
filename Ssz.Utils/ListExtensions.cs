@@ -21,23 +21,30 @@ namespace Ssz.Utils
         /// <param name="baseIntersectionCollection"></param>
         /// <param name="otherUniqueCollection"></param>
         /// <param name="equalityComparer"></param>
-        public static void Intersect<T>(this List<T> baseCollection, IEnumerable<T> otherCollection, 
+        public static void Intersect<T>(this List<T> baseCollection, List<T> otherCollection, 
             out List<T> baseUniqueCollection, out List<T> baseIntersectionCollection, out List<T> otherUniqueCollection,
-            IEqualityComparer<T> equalityComparer)            
+            IEqualityComparer<T> equalityComparer)
         {
             baseUniqueCollection = new List<T>(baseCollection.Count);
             baseIntersectionCollection = new List<T>(baseCollection.Count);
+            otherUniqueCollection = new List<T>(otherCollection.Count);
+            otherUniqueCollection.AddRange(otherCollection);
 
-            var otherHashSet = new HashSet<T>(otherCollection, equalityComparer);
+            //var otherParallelQuery = otherUniqueCollection.AsParallel();            
             foreach (T baseElement in baseCollection)
             {
-                if (otherHashSet.Remove(baseElement))
+                //T? existingOtherElement = ParallelEnumerable.FirstOrDefault(otherParallelQuery, i => equalityComparer.Equals(i, baseElement));
+                int index = otherUniqueCollection.FindIndex(i => equalityComparer.Equals(i, baseElement));
+                if (index != -1)
+                {
+                    otherUniqueCollection.RemoveAt(index);                    
                     baseIntersectionCollection.Add(baseElement);
+                }                    
                 else
+                {
                     baseUniqueCollection.Add(baseElement);
+                }                    
             }
-
-            otherUniqueCollection = otherHashSet.ToList();
         }
 
         #endregion
