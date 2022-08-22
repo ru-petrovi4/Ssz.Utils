@@ -399,6 +399,11 @@ namespace Ssz.Utils
             csvFile.DataIsChangedByProgram = true;
         }
 
+        /// <summary>
+        ///     Appends valuesLine to existing data.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="valuesLine"></param>
         public void SetValues(string? fileName, IEnumerable<string?> valuesLine)
         {
             if (string.IsNullOrWhiteSpace(fileName)) return;
@@ -440,6 +445,11 @@ namespace Ssz.Utils
             csvFile.DataIsChangedByProgram = true;
         }
 
+        /// <summary>
+        ///     Appends values to existing data.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="values"></param>
         public void SetValues(string? fileName, IEnumerable<IEnumerable<string?>> values)
         {
             if (string.IsNullOrWhiteSpace(fileName)) return;

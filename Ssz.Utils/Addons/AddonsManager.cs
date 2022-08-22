@@ -96,20 +96,18 @@ namespace Ssz.Utils.Addons
             List<string?[]> addonsAvailableFileData = new();
 
             ResetAvailableAddonsCache();
-
-            int lineId = 0;
+            
             foreach (AddonBase availableAddon in GetAvailableAddonsCache())
             {
-                addonsAvailableFileData.Add(new[] { lineId.ToString(), "Addon", availableAddon.Name, availableAddon.Desc, availableAddon.Version });
-                lineId += 1;
+                addonsAvailableFileData.Add(new[] { availableAddon.Name, availableAddon.Desc });                
 
                 foreach (var optionsInfo in availableAddon.OptionsInfo)
                 {
-                    addonsAvailableFileData.Add(new[] { lineId.ToString(), "AddonOption", optionsInfo.Item1, optionsInfo.Item2 });
-                    lineId += 1;
+                    addonsAvailableFileData.Add(new[] { availableAddon.Name + "." + optionsInfo.Item1, optionsInfo.Item2 });                    
                 }
             }
 
+            CsvDb.FileClear(AddonBase.AddonsAvailableCsvFileName);
             CsvDb.SetValues(AddonBase.AddonsAvailableCsvFileName, addonsAvailableFileData);
             CsvDb.SaveData(AddonBase.AddonsAvailableCsvFileName);
 
