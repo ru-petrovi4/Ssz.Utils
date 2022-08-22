@@ -86,9 +86,9 @@ namespace Ssz.Utils.Addons
         ///     SourceId property is empty in result.
         /// </summary>
         /// <returns></returns>
-        public List<AddonCsvFile> ReadConfiguration()
+        public ConfigurationCsvFiles ReadConfiguration()
         {
-            List<AddonCsvFile> result = new();
+            ConfigurationCsvFiles result = new();
 
             if (CsvDb.CsvDbDirectoryInfo is null)
                 return result;
@@ -115,7 +115,7 @@ namespace Ssz.Utils.Addons
 
             foreach (FileInfo csvFileInfo in CsvDb.GetFileInfos())
             {
-                result.Add(AddonCsvFile.CreateFromFileInfo(@"", csvFileInfo));
+                result.ConfigurationCsvFilesCollection.Add(ConfigurationCsvFile.CreateFromFileInfo(@"", csvFileInfo));
             }
 
             foreach (DirectoryInfo subDirectoryInfo in CsvDb.CsvDbDirectoryInfo.GetDirectories())
@@ -123,7 +123,7 @@ namespace Ssz.Utils.Addons
                 var subCsvDb = new CsvDb(CsvDb.Logger, CsvDb.UserFriendlyLogger, subDirectoryInfo);
                 foreach (FileInfo csvFileInfo in subCsvDb.GetFileInfos())
                 {
-                    result.Add(AddonCsvFile.CreateFromFileInfo(subDirectoryInfo.Name, csvFileInfo));
+                    result.ConfigurationCsvFilesCollection.Add(ConfigurationCsvFile.CreateFromFileInfo(subDirectoryInfo.Name, csvFileInfo));
                 }
             }
 
@@ -133,34 +133,34 @@ namespace Ssz.Utils.Addons
         /// <summary>
         ///     Throws AddonCsvFileChangedOnDiskException, if any file changed on disk and no data writtten.
         /// </summary>
-        /// <param name="addonCsvFiles"></param>
+        /// <param name="configurationCsvFiles"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public void WriteConfiguration(AddonCsvFile[] addonCsvFiles)
+        public void WriteConfiguration(ConfigurationCsvFiles configurationCsvFiles)
         {
             if (CsvDb.CsvDbDirectoryInfo is null)
                 return;
 
-            foreach (AddonCsvFile addonCsvFile in addonCsvFiles)
+            foreach (ConfigurationCsvFile configurationCsvFile in configurationCsvFiles.ConfigurationCsvFilesCollection)
             {
-                if (!addonCsvFile.PathRelativeToRootDirectory.EndsWith(".csv", StringComparison.InvariantCultureIgnoreCase))
+                if (!configurationCsvFile.PathRelativeToRootDirectory.EndsWith(".csv", StringComparison.InvariantCultureIgnoreCase))
                     throw new Exception("addonCsvFile.Name must have .csv extension");
 
-                if (addonCsvFile.PathRelativeToRootDirectory.Count(f => f == Path.DirectorySeparatorChar) > 1)
+                if (configurationCsvFile.PathRelativeToRootDirectory.Count(f => f == Path.DirectorySeparatorChar) > 1)
                     throw new Exception("addonCsvFile.PathRelativeToRootDirectory must have no more that 1 Path.DirectorySeparatorChar");
 
-                var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo.FullName, addonCsvFile.PathRelativeToRootDirectory));
-                if (fileInfo.Exists && !FileSystemHelper.FileSystemTimeIsEquals(fileInfo.LastWriteTimeUtc, addonCsvFile.LastWriteTimeUtc))
-                    throw new AddonCsvFileChangedOnDiskException { FilePathRelativeToRootDirectory = addonCsvFile.PathRelativeToRootDirectory };
+                var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo.FullName, configurationCsvFile.PathRelativeToRootDirectory));
+                if (fileInfo.Exists && !FileSystemHelper.FileSystemTimeIsEquals(fileInfo.LastWriteTimeUtc, configurationCsvFile.LastWriteTimeUtc))
+                    throw new AddonCsvFileChangedOnDiskException { FilePathRelativeToRootDirectory = configurationCsvFile.PathRelativeToRootDirectory };
             }
 
-            foreach (AddonCsvFile addonCsvFile in addonCsvFiles)
+            foreach (ConfigurationCsvFile configurationCsvFile in configurationCsvFiles.ConfigurationCsvFilesCollection)
             {
-                var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo.FullName, addonCsvFile.PathRelativeToRootDirectory));
+                var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo.FullName, configurationCsvFile.PathRelativeToRootDirectory));
                 fileInfo.Directory!.Create();                
                 using (var writer = new StreamWriter(fileInfo.FullName, false, new UTF8Encoding(true)))
                 {
-                    writer.Write(addonCsvFile.FileData);
+                    writer.Write(configurationCsvFile.FileData);
                 }
             }
         }
@@ -178,7 +178,7 @@ namespace Ssz.Utils.Addons
                 List<TAddon> result = new();
                 foreach (var addon in Addons.OfType<TAddon>().OrderBy(a => a.IsDummy).ToArray())
                 {
-                    TAddon? newAddon = CreateAvailableAddon(addon, addon.InstanceId) as TAddon;
+                    TAddon? newAddon = CreateAvailableAddon(addon, addon.InstanceId, addon.InstanceIdToDisplay) as TAddon;
                     if (newAddon is not null)
                         result.Add(newAddon);
                 };
@@ -202,7 +202,7 @@ namespace Ssz.Utils.Addons
                 if (addon is null)
                     return null;
 
-                TAddon? newAddon = CreateAvailableAddon(addon, addon.InstanceId) as TAddon;
+                TAddon? newAddon = CreateAvailableAddon(addon, addon.InstanceId, addon.InstanceIdToDisplay) as TAddon;
                 if (newAddon is null)
                     return null;
 
@@ -226,7 +226,7 @@ namespace Ssz.Utils.Addons
                 if (addon is null)
                     return null;
 
-                TAddon? newAddon = CreateAvailableAddon(addon, addon.InstanceId) as TAddon;
+                TAddon? newAddon = CreateAvailableAddon(addon, addon.InstanceId, addon.InstanceIdToDisplay) as TAddon;
                 if (newAddon is null)
                     return null;
 
@@ -240,7 +240,7 @@ namespace Ssz.Utils.Addons
         /// <param name="addonName"></param>
         /// <param name="addonInstanceId"></param>
         /// <returns></returns>
-        public AddonBase? CreateAvailableAddon(string addonName, string? addonInstanceId)
+        public AddonBase? CreateAvailableAddon(string addonName, string? addonInstanceId, string? addonInstanceIdToDisplay)
         {
             if (String.IsNullOrEmpty(addonName))
             {
@@ -258,7 +258,7 @@ namespace Ssz.Utils.Addons
                 return null;
             }
 
-            return CreateAvailableAddon(availableAddon, addonInstanceId);
+            return CreateAvailableAddon(availableAddon, addonInstanceId, addonInstanceIdToDisplay);
         }
 
         /// <summary>
@@ -341,8 +341,9 @@ namespace Ssz.Utils.Addons
 
                 string addonName = line[1] ?? @"";
                 string addonInstanceId = line[0]!;
+                string? addonInstanceIdToDisplay = line.Count > 2 ? line[2] : null;
 
-                var desiredAndAvailableAddon = CreateAvailableAddon(addonName, addonInstanceId);
+                var desiredAndAvailableAddon = CreateAvailableAddon(addonName, addonInstanceId, addonInstanceIdToDisplay);
                 if (desiredAndAvailableAddon is not null)
                 {
                     newAddons.Add(desiredAndAvailableAddon);
@@ -363,7 +364,7 @@ namespace Ssz.Utils.Addons
             _availableAddons = null;
         }
 
-        private AddonBase? CreateAvailableAddon(AddonBase availableAddon, string? addonInstanceId)
+        private AddonBase? CreateAvailableAddon(AddonBase availableAddon, string? addonInstanceId, string? addonInstanceIdToDisplay)
         {
             try
             {
@@ -406,8 +407,11 @@ namespace Ssz.Utils.Addons
                 idNameValueCollection.Add(@"addonName", availableAddon.Name);
                 if (!String.IsNullOrEmpty(addonInstanceId))
                     idNameValueCollection.Add(@"addonInstanceId", addonInstanceId);
+                if (!String.IsNullOrEmpty(addonInstanceIdToDisplay))
+                    idNameValueCollection.Add(@"addonInstanceIdToDisplay", addonInstanceIdToDisplay);
                 availableAddon.Id = NameValueCollectionHelper.GetNameValueCollectionString(idNameValueCollection);
                 availableAddon.InstanceId = addonInstanceId ?? @"";
+                availableAddon.InstanceIdToDisplay = addonInstanceIdToDisplay ?? @"";
                 availableAddon.Logger = Logger;
                 availableAddon.UserFriendlyLogger = UserFriendlyLogger;
                 availableAddon.WrapperUserFriendlyLogger = WrapperUserFriendlyLogger;

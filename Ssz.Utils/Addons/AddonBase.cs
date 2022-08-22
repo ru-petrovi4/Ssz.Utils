@@ -59,6 +59,11 @@ namespace Ssz.Utils.Addons
         public string InstanceId { get; internal set; } = null!;
 
         /// <summary>
+        ///     Addon instance ID for user
+        /// </summary>
+        public string InstanceIdToDisplay { get; internal set; } = null!;
+
+        /// <summary>
         ///     AddonsManager Logger
         /// </summary>
         public ILogger Logger { get; internal set; } = null!;

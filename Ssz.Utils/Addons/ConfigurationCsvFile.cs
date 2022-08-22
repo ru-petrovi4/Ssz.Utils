@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils.Addons
 {
-    public class AddonCsvFile : IOwnedDataSerializable
+    public class ConfigurationCsvFile : IOwnedDataSerializable
     {
         #region public functions
 
@@ -18,9 +18,9 @@ namespace Ssz.Utils.Addons
         /// <param name="pathRelativeToRootDirectory"></param>
         /// <param name="csvFileInfo"></param>
         /// <returns></returns>
-        public static AddonCsvFile CreateFromFileInfo(string pathRelativeToRootDirectory, FileInfo csvFileInfo)
+        public static ConfigurationCsvFile CreateFromFileInfo(string pathRelativeToRootDirectory, FileInfo csvFileInfo)
         {
-            var addonCsvFile = new AddonCsvFile
+            var addonCsvFile = new ConfigurationCsvFile
             {
                 PathRelativeToRootDirectory = pathRelativeToRootDirectory != @"" ? 
                     pathRelativeToRootDirectory + Path.DirectorySeparatorChar + csvFileInfo.Name :
@@ -47,9 +47,14 @@ namespace Ssz.Utils.Addons
         public string PathRelativeToRootDirectory { get; set; } = @"";
 
         /// <summary>        
-        ///     You can store here data about source.
+        ///     
         /// </summary>
         public string SourceId { get; set; } = @"";
+
+        /// <summary>        
+        ///     
+        /// </summary>
+        public string SourceIdToDisplay { get; set; } = @"";
 
         /// <summary>
         ///     FileInfo.LastWriteTimeUtc
@@ -70,6 +75,7 @@ namespace Ssz.Utils.Addons
         {
             writer.Write(PathRelativeToRootDirectory);
             writer.Write(SourceId);
+            writer.Write(SourceIdToDisplay);
             writer.Write(LastWriteTimeUtc);
             writer.Write(FileData);
         }
@@ -83,6 +89,7 @@ namespace Ssz.Utils.Addons
         {
             PathRelativeToRootDirectory = reader.ReadString();
             SourceId = reader.ReadString();
+            SourceIdToDisplay = reader.ReadString();
             LastWriteTimeUtc = reader.ReadDateTime();
             FileData = reader.ReadString();
         }
