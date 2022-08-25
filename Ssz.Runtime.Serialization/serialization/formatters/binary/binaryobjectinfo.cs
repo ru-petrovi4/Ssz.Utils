@@ -928,12 +928,13 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                     if (!isFound)
                     {                        
                         // A field on the type isnt found. See if the field has OptionallySerializable and the type has the deserialization constructor
-                        Object[] attrs = cache.memberInfos[i].GetCustomAttributes(typeof(OptionalFieldAttribute), false);
-                        if ((attrs == null || attrs.Length == 0) && !bSimpleAssembly)
-                        {
-                            // the member isnt optionally serializable
-                            throw new SerializationException(SszEnvironment.GetResourceString("Serialization_MissingMember", cache.memberNames[i], objectType, typeof(OptionalFieldAttribute).FullName));
-                        }
+                        //VALFIX
+                        //Object[] attrs = cache.memberInfos[i].GetCustomAttributes(typeof(OptionalFieldAttribute), false);
+                        //if ((attrs == null || attrs.Length == 0) && !bSimpleAssembly)
+                        //{
+                        //    // the member isnt optionally serializable
+                        //    throw new SerializationException(SszEnvironment.GetResourceString("Serialization_MissingMember", cache.memberNames[i], objectType, typeof(OptionalFieldAttribute).FullName));
+                        //}
                     }
                 }
             }
