@@ -11,12 +11,12 @@ namespace Ssz.Runtime.Serialization
 {    
     internal static class FieldInfoExtensions
     {
-        internal static void CheckConsistency(this FieldInfo fieldInfo, object target)
+        internal static void CheckConsistency(this System.Reflection.FieldInfo fieldInfo, object target)
         {
             
         }
 
-        internal static void UnsafeSetValue(this FieldInfo fieldInfo, object target, object value, BindingFlags invokeAttr, Binder binder, CultureInfo culture)
+        internal static void UnsafeSetValue(this System.Reflection.FieldInfo fieldInfo, object target, object value, BindingFlags invokeAttr, Binder binder, CultureInfo culture)
         {
             if (Ssz.Runtime.Serialization.Settings.IsDeserializingFromNet4)
             {
@@ -41,7 +41,7 @@ namespace Ssz.Runtime.Serialization
             }            
         }
 
-        internal static object UnsafeGetValue(this FieldInfo fieldInfo, object target)
+        internal static object UnsafeGetValue(this System.Reflection.FieldInfo fieldInfo, object target)
         {
             return fieldInfo.GetValue(target);
         }

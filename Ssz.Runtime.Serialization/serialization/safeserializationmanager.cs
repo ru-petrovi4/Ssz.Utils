@@ -427,7 +427,7 @@ namespace Ssz.Runtime.Serialization
 
             // Allocate an instance of the final type and run the selected .ctor on that instance to get the
             // standard ISerializable initialization done.
-            object deserialized = FormatterServices.GetUninitializedObject(m_realType);
+            object deserialized = SszFormatterServices.GetUninitializedObject(m_realType);
             serializationCtor.SerializationInvoke(deserialized, m_savedSerializationInfo, context);
             m_savedSerializationInfo = null;
             m_realType = null;

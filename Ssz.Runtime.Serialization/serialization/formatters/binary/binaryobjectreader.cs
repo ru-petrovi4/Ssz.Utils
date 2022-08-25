@@ -464,7 +464,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 if( IsRemoting){
                     if (typeof(MarshalByRefObject).IsAssignableFrom(t))
                         throw new ArgumentException(SszEnvironment.GetResourceString("Serialization_MBRAsMBV", t.FullName));
-                    FormatterServices.CheckTypeSecurity(t, formatterEnums.FEsecurityLevel);
+                    SszFormatterServices.CheckTypeSecurity(t, formatterEnums.FEsecurityLevel);
                 }
             }
         }
@@ -541,10 +541,10 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                     CheckSerializable(pr.PRdtType);
 #if FEATURE_REMOTING
                     if (IsRemoting && formatterEnums.FEsecurityLevel != TypeFilterLevel.Full)
-                        pr.PRnewObj = FormatterServices.GetSafeUninitializedObject(pr.PRdtType);                                 
+                        pr.PRnewObj = SszFormatterServices.GetSafeUninitializedObject(pr.PRdtType);                                 
                     else
 #endif
-                        pr.PRnewObj = FormatterServices.GetUninitializedObject(pr.PRdtType);            
+                        pr.PRnewObj = SszFormatterServices.GetUninitializedObject(pr.PRdtType);            
 
                     // Run the OnDeserializing methods
                     m_objectManager.RaiseOnDeserializingEvent(pr.PRnewObj);
@@ -978,10 +978,10 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                         // Not nested and invalid, so it is an empty object
 #if FEATURE_REMOTING
                         if (IsRemoting && formatterEnums.FEsecurityLevel != TypeFilterLevel.Full)
-                            var = FormatterServices.GetSafeUninitializedObject(pr.PRdtType);                                 
+                            var = SszFormatterServices.GetSafeUninitializedObject(pr.PRdtType);                                 
                         else
 #endif
-                            var = FormatterServices.GetUninitializedObject(pr.PRdtType);
+                            var = SszFormatterServices.GetUninitializedObject(pr.PRdtType);
                     }
                     else
                     {
@@ -1407,7 +1407,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                     if (assm == null)
                         return null;
 
-                    type = FormatterServices.GetTypeFromAssembly(assm, typeName);
+                    type = SszFormatterServices.GetTypeFromAssembly(assm, typeName);
                 }
 
                 if ((object)type == null)
@@ -1447,7 +1447,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             // This is necessary, for example, if there are generic parameters that are qualified with a version of the assembly that predates the one available
             try
             {
-                type = FormatterServices.GetTypeFromAssembly(assm, typeName);
+                type = SszFormatterServices.GetTypeFromAssembly(assm, typeName);
             }
             catch (TypeLoadException) { }
             catch (FileNotFoundException) { }
@@ -1490,7 +1490,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                     }
                     else
                     {
-                        objectType = FormatterServices.GetTypeFromAssembly(sourceAssembly, name);
+                        objectType = SszFormatterServices.GetTypeFromAssembly(sourceAssembly, name);
                     }
 
                     // here let us do the security check 
@@ -1512,7 +1512,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         private static void CheckTypeForwardedTo(Assembly sourceAssembly, Assembly destAssembly, Type resolvedType)
         {
             // VALFIX
-            //if ( !FormatterServices.UnsafeTypeForwardersIsEnabled() && sourceAssembly != destAssembly )
+            //if ( !SszFormatterServices.UnsafeTypeForwardersIsEnabled() && sourceAssembly != destAssembly )
             //{
             //    // we have a type forward to attribute !
 

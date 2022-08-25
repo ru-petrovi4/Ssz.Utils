@@ -25,26 +25,36 @@ namespace Ssz.Runtime.Serialization {
     using System.Globalization;
     using System.Diagnostics.Contracts;
     using System.Threading;
+    using System.Diagnostics.Metrics;
 #if FEATURE_REMOTING
     using System.Runtime.Remoting.Metadata;
 #endif //FEATURE_REMOTING
 
-    internal sealed class SerializationFieldInfo : FieldInfo {
+    internal sealed class SerializationFieldInfo : System.Reflection.FieldInfo {
 
         internal const String FakeNameSeparatorString = "+";
 
-        private FieldInfo m_field;
+        private System.Reflection.FieldInfo m_field;
         private String           m_serializationName;
 
         public override Module Module { get { return m_field.Module; } }
         public override int MetadataToken { get { return m_field.MetadataToken; } } 
 
-        internal SerializationFieldInfo(FieldInfo field, String namePrefix) {
+        internal SerializationFieldInfo(System.Reflection.FieldInfo field, String namePrefix) {
             Contract.Assert(field!=null,      "[SerializationFieldInfo.ctor]field!=null");
             Contract.Assert(namePrefix!=null, "[SerializationFieldInfo.ctor]namePrefix!=null");
             
             m_field = field;
-            m_serializationName = String.Concat(namePrefix, FakeNameSeparatorString, m_field.Name);
+
+            //VALFIX
+            var name = m_field.Name;
+            if (Ssz.Runtime.Serialization.Settings.IsDeserializingFromNet4)
+            {
+                if (name == "_list")
+                    name = "list";                
+            }
+
+            m_serializationName = String.Concat(namePrefix, FakeNameSeparatorString, name);
         }
 
         //
@@ -95,7 +105,7 @@ namespace Ssz.Runtime.Serialization {
 
         [System.Security.SecurityCritical]
         internal Object InternalGetValue(Object obj) {
-            RtFieldInfo field = m_field as RtFieldInfo;
+            FieldInfo field = m_field as FieldInfo;
             if (field != null)
             {
                 field.CheckConsistency(obj);
@@ -111,7 +121,7 @@ namespace Ssz.Runtime.Serialization {
 
         [System.Security.SecurityCritical]
         internal void InternalSetValue(Object obj, Object value, BindingFlags invokeAttr, Binder binder, CultureInfo culture) {
-            RtFieldInfo field = m_field as RtFieldInfo;
+            FieldInfo field = m_field as FieldInfo;
             if (field != null)
             {
                 field.CheckConsistency(obj);
@@ -121,7 +131,7 @@ namespace Ssz.Runtime.Serialization {
                 m_field.SetValue(obj, value, invokeAttr, binder, culture);
         }
 
-        internal FieldInfo FieldInfo {
+        internal System.Reflection.FieldInfo FieldInfo {
             get {
                 return m_field;
             }

@@ -910,7 +910,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         MessageEnum messageEnum;
         Object[] callA;
         Type returnType;
-        static Object instanceOfVoid = FormatterServices.GetUninitializedObject(Converter.typeofSystemVoid);
+        static Object instanceOfVoid = SszFormatterServices.GetUninitializedObject(Converter.typeofSystemVoid);
 
         [System.Security.SecuritySafeCritical] // static constructors should be safe to call
         static BinaryMethodReturn()

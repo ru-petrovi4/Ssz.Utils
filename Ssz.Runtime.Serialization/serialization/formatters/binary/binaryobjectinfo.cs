@@ -361,7 +361,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 
             if (obj != null)
             {
-                memberData = FormatterServices.GetObjectData(obj, cache.memberInfos);
+                memberData = SszFormatterServices.GetObjectData(obj, cache.memberInfos);
                 DumpMemberInfo();
             }
 
@@ -747,7 +747,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             {
                 DumpPopulate(cache.memberInfos, memberData);
 
-                FormatterServices.PopulateObjectMembers(obj, cache.memberInfos, memberData);
+                SszFormatterServices.PopulateObjectMembers(obj, cache.memberInfos, memberData);
             }
         }
 
@@ -776,11 +776,11 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 
         private int Position(String name)
         {
-            SerTrace.Log( this, objectInfoId," Position ",lastPosition," ",name);
+            SerTrace.Log(this, objectInfoId, " Position ", lastPosition, " ", name);
             if (cache == null)
                 return -1;
-            
-            if (cache.memberNames.Length >0 && cache.memberNames[lastPosition].Equals(name))
+
+            if (cache.memberNames.Length > 0 && cache.memberNames[lastPosition].Equals(name))
             {
                 return lastPosition;
             }
@@ -791,8 +791,8 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             else
             {
                 // Search for name
-                SerTrace.Log( this, objectInfoId," Position miss search for name "+name);
-                for (int i=0; i<cache.memberNames.Length; i++)
+                SerTrace.Log(this, objectInfoId, " Position miss search for name " + name);
+                for (int i = 0; i < cache.memberNames.Length; i++)
                 {
                     if (cache.memberNames[i].Equals(name))
                     {
@@ -805,6 +805,80 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                 lastPosition = 0;
                 return -1;
             }
+
+            //SerTrace.Log(this, objectInfoId, " Position ", lastPosition, " ", name);
+            //if (cache == null)
+            //    return -1;
+
+            //if (cache.memberNames.Length > 0 && cache.memberNames[lastPosition].Equals(name))
+            //{
+            //    return lastPosition;
+            //}
+            //else if ((++lastPosition < cache.memberNames.Length) && (cache.memberNames[lastPosition].Equals(name)))
+            //{
+            //    return lastPosition;
+            //}
+            //else
+            //{
+            //    // Search for name
+            //    SerTrace.Log(this, objectInfoId, " Position miss search for name " + name);
+            //    for (int i = 0; i < cache.memberNames.Length; i++)
+            //    {
+            //        // VALFIX
+            //        var member = cache.memberNames[i];
+            //        if (Ssz.Runtime.Serialization.Settings.IsDeserializingFromNet4)
+            //        {
+            //            member = member.Replace("+_list", "+list");
+            //        }
+            //        if (member.Equals(name))
+            //        {
+            //            lastPosition = i;
+            //            return lastPosition;
+            //        }
+            //    }
+
+            //    if (Ssz.Runtime.Serialization.Settings.IsDeserializingFromNet4)
+            //    {
+            //        var arr = cache.memberNames.OrderBy(n => n.Length).ToArray();
+            //        for (int i = 0; i < arr.Length; i++)
+            //        {
+            //            // VALFIX
+            //            var member = arr[i];
+            //            if (member.Contains(name, StringComparison.InvariantCultureIgnoreCase))
+            //            {
+            //                lastPosition = i;
+            //                return lastPosition;
+            //            }
+            //        }
+
+            //        // TEMPCODE 
+            //        if (name == "HashSize")
+            //        {
+            //        }
+            //        else if (name == "DataTable.RemotingVersion")
+            //        {
+            //        }
+            //        else if (name == "XmlSchema")
+            //        {
+            //        }
+            //        else if (name == "XmlDiffGram")
+            //        {
+            //        }
+            //        else if (name == "_ignoreCase")
+            //        {
+            //        }
+            //        else if (name == "win32LCID")
+            //        {
+            //        }
+            //        else
+            //        {
+            //        }
+            //    }
+
+            //    //throw new SerializationException(String.Format(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_MissingMember"),name,objectType));
+            //    lastPosition = 0;
+            //    return -1;
+            //}
         }
 
         // Return the member Types in order of memberNames
@@ -852,10 +926,11 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                         }
                     }
                     if (!isFound)
-                    {
+                    {                        
                         // A field on the type isnt found. See if the field has OptionallySerializable and the type has the deserialization constructor
-                        Object [] attrs = cache.memberInfos[i].GetCustomAttributes(typeof(OptionalFieldAttribute), false);
-                        if ((attrs == null || attrs.Length == 0) && !bSimpleAssembly){
+                        Object[] attrs = cache.memberInfos[i].GetCustomAttributes(typeof(OptionalFieldAttribute), false);
+                        if ((attrs == null || attrs.Length == 0) && !bSimpleAssembly)
+                        {
                             // the member isnt optionally serializable
                             throw new SerializationException(SszEnvironment.GetResourceString("Serialization_MissingMember", cache.memberNames[i], objectType, typeof(OptionalFieldAttribute).FullName));
                         }

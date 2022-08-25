@@ -166,7 +166,7 @@ namespace Ssz.Runtime.Serialization
 
                     object value = fields[fieldName];
 
-                    FormatterServices.SerializationSetValue(mi[index], serObj, value);
+                    SszFormatterServices.SerializationSetValue(mi[index], serObj, value);
                 }
             }
 

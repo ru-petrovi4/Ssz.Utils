@@ -28,13 +28,13 @@ namespace Ssz.Runtime.Serialization {
         //The FieldInfo into the containing body.  This will only 
         //apply if the containing body is a field info or another
         //value type.
-        private FieldInfo m_parentField;
+        private System.Reflection.FieldInfo m_parentField;
         
         //The array index of the index into the parent.  This will only
         //apply if the containing body is an array.
         private int[] m_parentIndex;
         
-        public ValueTypeFixupInfo(long containerID, FieldInfo member, int[] parentIndex) {
+        public ValueTypeFixupInfo(long containerID, System.Reflection.FieldInfo member, int[] parentIndex) {
             //If both member and arrayIndex are null, we don't have enough information to create
             //a tunnel to do the fixup.
             if (member==null && parentIndex==null) {
@@ -57,13 +57,13 @@ namespace Ssz.Runtime.Serialization {
                     throw new ArgumentException(SszEnvironment.GetResourceString("Argument_MemberAndArray"));
                 }
                        
-                if (((((FieldInfo)member).FieldType).IsValueType) && containerID==0) {
+                if (((((System.Reflection.FieldInfo)member).FieldType).IsValueType) && containerID==0) {
                     throw new ArgumentException(SszEnvironment.GetResourceString("Argument_MustSupplyContainer"));
                 }
             } 
 
             m_containerID=containerID;
-            m_parentField = (FieldInfo)member;
+            m_parentField = (System.Reflection.FieldInfo)member;
             m_parentIndex = parentIndex;
         }
 
@@ -73,7 +73,7 @@ namespace Ssz.Runtime.Serialization {
             }
         }
 
-        public FieldInfo ParentField {
+        public System.Reflection.FieldInfo ParentField {
             get {
                 return m_parentField;
             }
