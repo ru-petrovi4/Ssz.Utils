@@ -26,16 +26,16 @@ namespace Ssz.Runtime.Serialization.Formatters {
         // Name of parameters, if null the default param names will be used
         String[] FieldNames 
         {
-            [System.Security.SecurityCritical]  // auto-generated_required
+           //[System.Security.SecurityCritical]  // auto-generated_required
             get;
-            [System.Security.SecurityCritical]  // auto-generated_required
+           //[System.Security.SecurityCritical]  // auto-generated_required
             set;
         }
         Type[] FieldTypes 
         {
-            [System.Security.SecurityCritical]  // auto-generated_required
+           //[System.Security.SecurityCritical]  // auto-generated_required
             get;
-            [System.Security.SecurityCritical]  // auto-generated_required
+           //[System.Security.SecurityCritical]  // auto-generated_required
             set;
         }        
     }

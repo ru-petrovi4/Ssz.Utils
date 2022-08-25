@@ -103,7 +103,7 @@ namespace Ssz.Runtime.Serialization {
             return m_field.GetValue(obj);
         }
 
-        [System.Security.SecurityCritical]
+       //[System.Security.SecurityCritical]
         internal Object InternalGetValue(Object obj) {
             FieldInfo field = m_field as FieldInfo;
             if (field != null)
@@ -119,7 +119,7 @@ namespace Ssz.Runtime.Serialization {
             m_field.SetValue(obj, value, invokeAttr, binder, culture);
         }
 
-        [System.Security.SecurityCritical]
+       //[System.Security.SecurityCritical]
         internal void InternalSetValue(Object obj, Object value, BindingFlags invokeAttr, Binder binder, CultureInfo culture) {
             FieldInfo field = m_field as FieldInfo;
             if (field != null)

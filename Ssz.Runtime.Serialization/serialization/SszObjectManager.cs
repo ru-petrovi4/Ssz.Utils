@@ -55,7 +55,7 @@ namespace Ssz.Runtime.Serialization {
         public SszObjectManager(ISurrogateSelector selector, StreamingContext context) : this(selector, context, true, false) {
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal SszObjectManager(ISurrogateSelector selector, StreamingContext context, bool checkSecurity, bool isCrossAppDomain) {
             if (checkSecurity) {
                 //CodeAccessPermission.Demand(PermissionType.SecuritySerialization);          
@@ -81,7 +81,7 @@ namespace Ssz.Runtime.Serialization {
             ArrayMask = MaxArraySize - 1;
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private bool CanCallGetType(Object obj) {
 #if FEATURE_REMOTING                        
             if (RemotingServices.IsTransparentProxy(obj)) {
@@ -248,7 +248,7 @@ namespace Ssz.Runtime.Serialization {
             return true;
         }
     
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void FixupSpecialObject(ObjectHolder holder) {
             ISurrogateSelector uselessSelector=null;
 
@@ -291,7 +291,7 @@ namespace Ssz.Runtime.Serialization {
         **       GetRealObject.  Once we've got the new object, take care of all of the fixups
         **       that we can do now that we've got it.
         ==============================================================================*/
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private bool ResolveObjectReference(ObjectHolder holder) {
             Object tempObject;
             Contract.Assert(holder.IsIncompleteObjectReference,"holder.IsIncompleteObjectReference");
@@ -349,7 +349,7 @@ namespace Ssz.Runtime.Serialization {
         ** value  -- the data to set into the field.
         **Exceptions:
         ==============================================================================*/
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private bool DoValueTypeFixup(System.Reflection.FieldInfo memberToFix, ObjectHolder holder, Object value) {
             TypedReference typedRef;
             System.Reflection.FieldInfo[] fieldsTemp=new System.Reflection.FieldInfo[4];
@@ -489,7 +489,7 @@ namespace Ssz.Runtime.Serialization {
         **Arguments:
         **Exceptions:
         ==============================================================================*/
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal void CompleteObject(ObjectHolder holder, bool bObjectFullyComplete) {
             FixupHolderList fixups=holder.m_missingElements;
             FixupHolder currentFixup;
@@ -655,7 +655,7 @@ namespace Ssz.Runtime.Serialization {
         **Arguments: dependencies The list of dependent objects
         **Exceptions: None.
         ==============================================================================*/
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void DoNewlyRegisteredObjectFixups(ObjectHolder holder) {
             ObjectHolder temp;
             
@@ -718,19 +718,19 @@ namespace Ssz.Runtime.Serialization {
             return holder.ObjectValue;
         }
 
-        [System.Security.SecurityCritical]  // auto-generated_required
+       //[System.Security.SecurityCritical]  // auto-generated_required
         public virtual void RegisterObject(Object obj, long objectID) {
             RegisterObject(obj, objectID, null,0,null);
         }
     
 
-        [System.Security.SecurityCritical]  // auto-generated_required
+       //[System.Security.SecurityCritical]  // auto-generated_required
         public void RegisterObject(Object obj, long objectID, SerializationInfo info) {
             RegisterObject(obj, objectID, info, 0, null);
         }
 
 
-        [System.Security.SecurityCritical]  // auto-generated_required
+       //[System.Security.SecurityCritical]  // auto-generated_required
         public void RegisterObject(Object obj, long objectID, SerializationInfo info, long idOfContainingObj, MemberInfo member) {
             RegisterObject(obj, objectID, info, idOfContainingObj, member, null);
         }
@@ -747,7 +747,7 @@ namespace Ssz.Runtime.Serialization {
             return;
         }
 
-        [System.Security.SecurityCritical]  // auto-generated_required
+       //[System.Security.SecurityCritical]  // auto-generated_required
         public void RegisterObject(Object obj, long objectID, SerializationInfo info, long idOfContainingObj, MemberInfo member, int[] arrayIndex) {
             if (obj==null) {
                 throw new ArgumentNullException("obj");
@@ -864,7 +864,7 @@ namespace Ssz.Runtime.Serialization {
         **Exceptions: ArgumentNullException if obj is null
         **            ArgumentException if obj does not implement ISerializable.
         ==============================================================================*/
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal void CompleteISerializableObject(Object obj, SerializationInfo info, StreamingContext context) {
             if (obj==null) {
                 throw new ArgumentNullException("obj");
@@ -1341,7 +1341,7 @@ namespace Ssz.Runtime.Serialization {
         **           manager -- the ObjectManager being used to track these ObjectHolders.
         **Exceptions: None. Asserts only.
         ==============================================================================*/
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal void UpdateData(Object obj, SerializationInfo info, ISerializationSurrogate surrogate, long idOfContainer, System.Reflection.FieldInfo field, int[] arrayIndex, SszObjectManager manager) {
             Contract.Assert(obj!=null,"obj!=null");
             Contract.Assert(m_id>0,"m_id>0");
@@ -1497,7 +1497,7 @@ namespace Ssz.Runtime.Serialization {
             }
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal void SetObjectValue(Object obj, SszObjectManager manager) {
             m_object = obj;
             if (obj == manager.TopObject)

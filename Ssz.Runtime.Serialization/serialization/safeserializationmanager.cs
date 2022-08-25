@@ -158,7 +158,7 @@ namespace Ssz.Runtime.Serialization
     //
     //    3. Serialize the safe serialization object in GetObjectData, and call its CompleteSerialization method:
     //  
-    //       [SecurityCritical]
+    //       //[SecurityCritical]
     //       void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
     //       {
     //           info.AddValue("m_safeSerializationManager", m_safeSerializationManager, typeof(SafeSerializationManager));
@@ -286,7 +286,7 @@ namespace Ssz.Runtime.Serialization
         {
         }
 
-        [SecurityCritical]
+        //[SecurityCritical]
         private SafeSerializationManager(SerializationInfo info, StreamingContext context)
         {
             // We need to determine if we're being called to really deserialize a SafeSerializationManager,
@@ -320,7 +320,7 @@ namespace Ssz.Runtime.Serialization
         // CompleteSerialization is called by the base ISerializable in its GetObjectData method.  It is
         // responsible for gathering up the serialized object state of any delegates that wish to add their
         // own state to the serialized object.
-        [SecurityCritical]
+        //[SecurityCritical]
         internal void CompleteSerialization(object serializedObject,
                                             SerializationInfo info,
                                             StreamingContext context)
@@ -367,7 +367,7 @@ namespace Ssz.Runtime.Serialization
             }
         }
 
-        [SecurityCritical]
+        //[SecurityCritical]
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("m_serializedStates", m_serializedStates, typeof(List<IDeserializationCallback>));
@@ -376,7 +376,7 @@ namespace Ssz.Runtime.Serialization
         // GetRealObject intercepts the deserialization process in order to allow deserializing part of the
         // object's inheritance heirarchy using standard ISerializable constructors, and the remaining
         // portion using the saved serialization states.
-        [SecurityCritical]
+        //[SecurityCritical]
         object IObjectReference.GetRealObject(StreamingContext context)
         {
             // If we've already deserialized the real object, use that rather than deserializing it again

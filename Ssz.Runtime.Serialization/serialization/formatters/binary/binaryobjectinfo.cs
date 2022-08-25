@@ -102,7 +102,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal static WriteObjectInfo Serialize(Object obj, ISurrogateSelector surrogateSelector, StreamingContext context, SerObjectInfoInit serObjectInfoInit, IFormatterConverter converter, ObjectWriter objectWriter, SerializationBinder binder)
         {
             WriteObjectInfo soi = GetObjectInfo(serObjectInfoInit);
@@ -112,7 +112,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
         // Write constructor
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal void InitSerialize(Object obj, ISurrogateSelector surrogateSelector, StreamingContext context, SerObjectInfoInit serObjectInfoInit, IFormatterConverter converter, ObjectWriter objectWriter, SerializationBinder binder)
         {
             SerTrace.Log( this, objectInfoId," Constructor 1 ",obj);
@@ -180,7 +180,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             }
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal static WriteObjectInfo Serialize(Type objectType, ISurrogateSelector surrogateSelector, StreamingContext context, SerObjectInfoInit serObjectInfoInit, IFormatterConverter converter, SerializationBinder binder)
         {
             WriteObjectInfo soi = GetObjectInfo(serObjectInfoInit);
@@ -189,7 +189,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
         // Write Constructor used for array types or null members
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal void InitSerialize(Type objectType, ISurrogateSelector surrogateSelector, StreamingContext context, SerObjectInfoInit serObjectInfoInit, IFormatterConverter converter, SerializationBinder binder)
         {
 
@@ -332,7 +332,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             }
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void InitMemberInfo()
         {
             SerTrace.Log( this,objectInfoId," ", objectType," InitMemberInfo Entry");
@@ -515,7 +515,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             lastPosition = 0;
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal static ReadObjectInfo Create(Type objectType, ISurrogateSelector surrogateSelector, StreamingContext context, SszObjectManager objectManager, SerObjectInfoInit serObjectInfoInit, IFormatterConverter converter, bool bSimpleAssembly)
         {
             ReadObjectInfo soi = GetObjectInfo(serObjectInfoInit);
@@ -525,7 +525,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 
 
         // Read Constructor
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal void Init(Type objectType, ISurrogateSelector surrogateSelector, StreamingContext context, SszObjectManager objectManager, SerObjectInfoInit serObjectInfoInit, IFormatterConverter converter, bool bSimpleAssembly)
         {
 
@@ -541,7 +541,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             InitReadConstructor(objectType, surrogateSelector, context);
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal static ReadObjectInfo Create(Type objectType, String[] memberNames, Type[] memberTypes, ISurrogateSelector surrogateSelector, StreamingContext context, SszObjectManager objectManager, SerObjectInfoInit serObjectInfoInit, IFormatterConverter converter, bool bSimpleAssembly)
         {
             ReadObjectInfo soi = GetObjectInfo(serObjectInfoInit);
@@ -550,7 +550,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
         // Read Constructor
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal void Init(Type objectType, String[] memberNames, Type[] memberTypes, ISurrogateSelector surrogateSelector, StreamingContext context, SszObjectManager objectManager, SerObjectInfoInit serObjectInfoInit, IFormatterConverter converter, bool bSimpleAssembly)
         {
             SerTrace.Log( this,objectInfoId, " Constructor 5 ",objectType);
@@ -571,7 +571,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                 InitReadConstructor(objectType, surrogateSelector, context);
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void InitReadConstructor(Type objectType, ISurrogateSelector surrogateSelector, StreamingContext context)
         {
             SerTrace.Log( this,objectInfoId," ", objectType," InitReadConstructor Entry ",objectType);
@@ -622,7 +622,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             cache = new SerObjectInfoCache(objectType);
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void InitMemberInfo()
         {
             SerTrace.Log( this,objectInfoId," ", objectType," InitMemberInfo Entry");
@@ -739,7 +739,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
         // Fills in the values for an object
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal  void PopulateObjectMembers(Object obj, Object[] memberData)
         {
             SerTrace.Log( this,objectInfoId," ", objectType," PopulateObjectMembers  isSi ",isSi);

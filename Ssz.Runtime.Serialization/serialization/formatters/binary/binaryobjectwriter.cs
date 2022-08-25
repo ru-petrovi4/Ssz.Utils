@@ -77,7 +77,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 
         // Commences the process of serializing the entire graph.
         // initialize the graph walker.
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal void Serialize(Object graph, Header[] inHeaders, __BinaryWriter serWriter, bool fCheck)
         {
             if (graph == null)
@@ -205,7 +205,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
 #if FEATURE_REMOTING
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private Object[] WriteMethodCall(IMethodCallMessage mcm)
         {
             // In header
@@ -254,7 +254,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private Object[] WriteMethodReturn(IMethodReturnMessage mrm)
         {
             Object    returnValue = mrm.ReturnValue;
@@ -287,7 +287,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
         // returns number of entries added to argsToSerialize
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private static Object[] StoreUserPropertiesForMethodMessage(IMethodMessage msg)
         {
             ArrayList argsToSerialize = null;
@@ -345,7 +345,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
         // Writes a given object to the stream.
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void Write(WriteObjectInfo objectInfo, NameInfo memberNameInfo, NameInfo typeNameInfo)
         {       
 #if _DEBUG
@@ -458,7 +458,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
         // Writes a given object to the stream.
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void Write(WriteObjectInfo objectInfo,   
                            NameInfo memberNameInfo,          
                            NameInfo typeNameInfo,            
@@ -531,7 +531,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             SerTrace.Log( this, "Write 2 Exit");
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void WriteMemberSetup(WriteObjectInfo objectInfo,        
                                       NameInfo memberNameInfo,           
                                       NameInfo typeNameInfo,             
@@ -568,7 +568,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 
 
         // Writes the members of an object
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void WriteMembers(NameInfo memberNameInfo,
                                   NameInfo memberTypeNameInfo,
                                   Object   memberData,
@@ -714,7 +714,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
         // Writes out an array
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void WriteArray(WriteObjectInfo objectInfo, NameInfo memberNameInfo, WriteObjectInfo memberObjectInfo)          
         {
             SerTrace.Log( this, "WriteArray Entry ",objectInfo.obj," ",objectInfo.objectId);
@@ -893,7 +893,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
         // Writes out an array element
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void WriteArrayMember(WriteObjectInfo objectInfo, NameInfo arrayElemTypeNameInfo, Object data)
         {
             SerTrace.Log( this, "WriteArrayMember ",data," baseArrayName ",arrayElemTypeNameInfo.NIname);
@@ -975,7 +975,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 
         // Iterates over a Rectangle array, for each element of the array invokes WriteArrayMember
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void WriteRectangle(WriteObjectInfo objectInfo, int rank, int[] maxA, System.Array array, NameInfo arrayElemNameTypeInfo, int[] lowerBoundA)
         {
             IndexTraceMessage("WriteRectangle  Entry "+rank, maxA);
@@ -1387,7 +1387,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             return assemId;
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private Type GetType(Object obj)
         {
             Type type = null;

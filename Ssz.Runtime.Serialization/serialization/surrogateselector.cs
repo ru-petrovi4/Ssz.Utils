@@ -46,7 +46,7 @@ namespace Ssz.Runtime.Serialization {
             m_surrogates.Add(key, surrogate);  // Hashtable does duplicate checking.
         }
     
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private static bool HasCycle(ISurrogateSelector selector) {
             ISurrogateSelector head;
             ISurrogateSelector tail;
@@ -79,7 +79,7 @@ namespace Ssz.Runtime.Serialization {
 
         // Adds another selector to check if we don't have  match within this selector.
         // The logic is:"Add this onto the list as the first thing that you check after yourself."
-        [System.Security.SecurityCritical]  // auto-generated_required
+       //[System.Security.SecurityCritical]  // auto-generated_required
         public virtual void ChainSelector(ISurrogateSelector selector) {
             ISurrogateSelector temp;
             ISurrogateSelector tempCurr;
@@ -166,14 +166,14 @@ namespace Ssz.Runtime.Serialization {
         }
     
         // Get the next selector on the chain of selectors.
-        [System.Security.SecurityCritical]  // auto-generated_required
+       //[System.Security.SecurityCritical]  // auto-generated_required
         public virtual ISurrogateSelector GetNextSelector() {
             return m_nextSelector;
         }
     
         // Gets the surrogate for a particular type.  If this selector can't
         // provide a surrogate, it checks with all of it's children before returning null.
-        [System.Security.SecurityCritical]  // auto-generated_required
+       //[System.Security.SecurityCritical]  // auto-generated_required
         public virtual ISerializationSurrogate GetSurrogate(Type type, StreamingContext context, out ISurrogateSelector selector) {
             if (type==null) {
                 throw new ArgumentNullException("type");

@@ -101,7 +101,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
          *  has been previously set to Primitive
          * @internalonly
          */     
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal void Run()
         {
             try
@@ -378,7 +378,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 
         // Binary Stream Record Reads
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal void ReadSerializationHeaderRecord()
         {
             SerTrace.Log( this, "ReadSerializationHeaderRecord");
@@ -389,7 +389,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
              this.headerId = (record.headerId > 0 ? objectReader.GetId(record.headerId) : record.headerId);
         }
 
-        [System.Security.SecurityCritical]
+       //[System.Security.SecurityCritical]
         internal void ReadAssembly(BinaryHeaderEnum binaryHeaderEnum)
         {
             SerTrace.Log( this, "ReadAssembly");
@@ -415,7 +415,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 
 #if FEATURE_REMOTING
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal void ReadMethodObject(BinaryHeaderEnum binaryHeaderEnum)
         {
             SerTrace.Log( this, "ReadMethodObject");
@@ -438,7 +438,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         private BinaryObject binaryObject;
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void ReadObject()
         {
             SerTrace.Log( this, "ReadObject");
@@ -510,7 +510,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             objectReader.Parse(pr);
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal void ReadCrossAppDomainMap()
         {
             SerTrace.Log( this, "ReadObjectWithCrossAppDomainMap");
@@ -542,7 +542,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         private BinaryObjectWithMap bowm;
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal void ReadObjectWithMap(BinaryHeaderEnum binaryHeaderEnum)
         {
             SerTrace.Log( this, "ReadObjectWithMap");
@@ -555,7 +555,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             ReadObjectWithMap(bowm);
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void ReadObjectWithMap(BinaryObjectWithMap record)
         {
             BinaryAssemblyInfo assemblyInfo = null;
@@ -641,7 +641,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         private BinaryObjectWithMapTyped bowmt;
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         internal void ReadObjectWithMapTyped(BinaryHeaderEnum binaryHeaderEnum)     
         {
             SerTrace.Log( this, "ReadObjectWithMapTyped");
@@ -656,7 +656,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             ReadObjectWithMapTyped(bowmt);
         }
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void ReadObjectWithMapTyped(BinaryObjectWithMapTyped record)
         {
             BinaryAssemblyInfo assemblyInfo = null;
@@ -736,7 +736,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         internal BinaryObjectString objectString;
         internal BinaryCrossAppDomainString crossAppDomainString;
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void ReadObjectString(BinaryHeaderEnum binaryHeaderEnum)
         {
             SerTrace.Log( this, "ReadObjectString");
@@ -816,7 +816,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         internal MemberPrimitiveTyped memberPrimitiveTyped;
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void ReadMemberPrimitiveTyped()
         {
             SerTrace.Log( this, "ReadObjectPrimitive");
@@ -869,7 +869,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void ReadArray(BinaryHeaderEnum binaryHeaderEnum)
         {
             BinaryAssemblyInfo assemblyInfo = null;
@@ -1005,7 +1005,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         private byte[] byteBuffer;
         private const int chunkSize = 4096;
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void ReadArrayAsBytes(ParseRecord pr)
         {
             if (pr.PRarrayElementTypeCode == InternalPrimitiveTypeE.Byte)
@@ -1051,7 +1051,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         internal MemberPrimitiveUnTyped memberPrimitiveUnTyped;
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void ReadMemberPrimitiveUnTyped()
         {
             SerTrace.Log( this, "ReadMemberPrimitiveUnTyped ");     
@@ -1084,7 +1084,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         internal MemberReference memberReference;
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void ReadMemberReference()
         {
             SerTrace.Log( this, "ReadMemberReference ");
@@ -1116,7 +1116,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         internal ObjectNull objectNull;
 
-        [System.Security.SecurityCritical]  // auto-generated
+       //[System.Security.SecurityCritical]  // auto-generated
         private void ReadObjectNull(BinaryHeaderEnum binaryHeaderEnum)
         {
             SerTrace.Log( this, "ReadObjectNull ");
@@ -1152,7 +1152,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         internal static volatile MessageEnd messageEnd;
 
-        [System.Security.SecurityCritical]
+       //[System.Security.SecurityCritical]
         private void ReadMessageEnd()
         {
             SerTrace.Log( this, "ReadMessageEnd ");
