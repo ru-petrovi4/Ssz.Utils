@@ -77,7 +77,7 @@ namespace System.Reflection
             if (assemblyName == null || typeName == null)
                 throw new SerializationException(Ssz.Runtime.Serialization.SszEnvironment.GetResourceString("Serialization_InsufficientState"));
 
-            Assembly assem = Ssz.Runtime.Serialization.FormatterServices.LoadAssemblyFromString(assemblyName);
+            Assembly assem = SszFormatterServices.LoadAssemblyFromString(assemblyName);
             m_reflectedType = assem.GetType(typeName, true, false) as Type;
             m_memberName = info.GetString("Name");
             m_signature = info.GetString("Signature");

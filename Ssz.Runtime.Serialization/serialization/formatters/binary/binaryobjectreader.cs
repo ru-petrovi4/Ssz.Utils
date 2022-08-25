@@ -32,7 +32,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
     using System.Resources;
     using System.Runtime.CompilerServices;
     using System.Diagnostics.Contracts;
-    using StackCrawlMark = System.Threading.StackCrawlMark;
+    //using StackCrawlMark = System.Threading.StackCrawlMark;
 
     internal sealed class ObjectReader
     {
@@ -41,7 +41,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         internal Stream m_stream;
         internal ISurrogateSelector m_surrogates;
         internal StreamingContext m_context;
-        internal ObjectManager m_objectManager;
+        internal SszObjectManager m_objectManager;
         internal InternalFE formatterEnums;
         internal SerializationBinder m_binder;
 
@@ -74,7 +74,8 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         private bool bIsCrossAppDomain;
 #endif
 
-        private static FileIOPermission sfileIOPermission = new FileIOPermission(PermissionState.Unrestricted);
+        //VALFIX
+        //private static FileIOPermission sfileIOPermission = new FileIOPermission(PermissionState.Unrestricted);
         
         private SerStack ValueFixupStack
         {
@@ -128,11 +129,12 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             // This is a hack to allow us to write a type-limiting deserializer
             // when we know exactly what type to expect at the head of the 
             // object graph.
-            if (m_binder != null) {
-                ResourceReader.TypeLimitingDeserializationBinder tldBinder = m_binder as ResourceReader.TypeLimitingDeserializationBinder;
-                if (tldBinder != null)
-                    tldBinder.ObjectReader = this;
-            }
+            //VALFIX
+            //if (m_binder != null) {
+            //    ResourceReader.TypeLimitingDeserializationBinder tldBinder = m_binder as ResourceReader.TypeLimitingDeserializationBinder;
+            //    if (tldBinder != null)
+            //        tldBinder.ObjectReader = this;
+            //}
 #endif // !FEATURE_PAL && FEATURE_SERIALIZATION
 
             this.formatterEnums = formatterEnums;
@@ -163,7 +165,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
             if (fCheck)
             {
-                CodeAccessPermission.Demand(PermissionType.SecuritySerialization);
+                //CodeAccessPermission.Demand(PermissionType.SecuritySerialization);
             }
 
             this.handler = handler;
@@ -245,12 +247,13 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             bMethodReturn = false;
             bIsCrossAppDomain = isCrossAppDomain;
 #endif
-            bSimpleAssembly =  (formatterEnums.FEassemblyFormat == FormatterAssemblyStyle.Simple);
+            // VALFIX
+            //bSimpleAssembly =  (formatterEnums.FEassemblyFormat == FormatterAssemblyStyle.Simple);
 
-            if (fCheck)
-            {
-                CodeAccessPermission.Demand(PermissionType.SecuritySerialization);
-            }
+            //if (fCheck)
+            //{
+            //    //CodeAccessPermission.Demand(PermissionType.SecuritySerialization);
+            //}
 
             this.handler = handler;
 
@@ -261,7 +264,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 #if FEATURE_REMOTING
                 m_objectManager = new ObjectManager(m_surrogates, m_context, false, bIsCrossAppDomain);
 #else
-                m_objectManager = new ObjectManager(m_surrogates, m_context, false, false);
+                m_objectManager = new SszObjectManager(m_surrogates, m_context, false, false);
 #endif
                 serObjectInfoInit = new SerObjectInfoInit();
             }
@@ -347,7 +350,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 #if FEATURE_REMOTING
             m_objectManager = new ObjectManager(m_surrogates, m_context, false, bIsCrossAppDomain);
 #else
-            m_objectManager = new ObjectManager(m_surrogates, m_context, false, false);
+            m_objectManager = new SszObjectManager(m_surrogates, m_context, false, false);
 #endif
             if (m_formatterConverter == null)
                 m_formatterConverter = new FormatterConverter();
@@ -1364,7 +1367,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 if (bSimpleAssembly)
                 {
                     try {
-                          sfileIOPermission.Assert();
+                          //sfileIOPermission.Assert();
                           try {
 #if FEATURE_FUSION
                               assm = ObjectReader.ResolveSimpleAssemblyName(new AssemblyName(assemblyName));
@@ -1373,7 +1376,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 #endif // FEATURE_FUSION
                           }
                           finally {
-                              CodeAccessPermission.RevertAssert();
+                              //CodeAccessPermission.RevertAssert();
                           }
                     }
                     catch(Exception e){
@@ -1388,7 +1391,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 else {
                     try
                     {
-                          sfileIOPermission.Assert();
+                          //sfileIOPermission.Assert();
                           try {
                               assm = Assembly.Load(assemblyName);
                           }
@@ -1425,10 +1428,15 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         [MethodImplAttribute(MethodImplOptions.NoInlining)] // Methods containing StackCrawlMark local var has to be marked non-inlineable
         private static Assembly ResolveSimpleAssemblyName(AssemblyName assemblyName)
         {
-            StackCrawlMark stackMark = StackCrawlMark.LookForMe;
-            Assembly assm = RuntimeAssembly.LoadWithPartialNameInternal(assemblyName, null, ref stackMark);
+            // VALFIX
+            //StackCrawlMark stackMark = StackCrawlMark.LookForMe;
+            //Assembly assm = RuntimeAssembly.LoadWithPartialNameInternal(assemblyName, null, ref stackMark);
+            //if (assm == null && assemblyName != null)
+            //    assm = RuntimeAssembly.LoadWithPartialNameInternal(assemblyName.Name, null, ref stackMark);
+            //return assm;
+            Assembly assm = RuntimeAssembly.LoadWithPartialNameInternal(assemblyName.Name, null);
             if (assm == null && assemblyName != null)
-                assm = RuntimeAssembly.LoadWithPartialNameInternal(assemblyName.Name, null, ref stackMark);
+                assm = RuntimeAssembly.LoadWithPartialNameInternal(assemblyName.Name, null);
             return assm;
         }
 

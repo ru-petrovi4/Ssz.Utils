@@ -145,7 +145,7 @@ namespace Ssz.Runtime.Serialization
                     }
                 }
                 
-                MemberInfo[] mi = FormatterServices.GetSerializableMembers(serObj.GetType());
+                MemberInfo[] mi = SszFormatterServices.GetSerializableMembers(serObj.GetType());
 
                 for (int index = 0; index < mi.Length; index++)
                 {

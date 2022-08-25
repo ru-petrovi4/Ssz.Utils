@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Globalization;
 using System.Diagnostics.Contracts;
+    using System.Runtime.Serialization;
 
     internal class SerializationEvents
     {
@@ -36,7 +37,7 @@ using System.Diagnostics.Contracts;
             // Traverse the hierarchy to find all methods with the particular attribute
             while (baseType != null && baseType != typeof(Object))
             {
-                RuntimeType rt = (RuntimeType)baseType;
+                Type rt = (Type)baseType;
                 // Get all methods which are declared on this type, instance and public or nonpublic
                 MethodInfo[] mis = baseType.GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
 #if _DEBUG                
@@ -102,7 +103,7 @@ using System.Diagnostics.Contracts;
                 foreach(MethodInfo m in m_OnSerializingMethods)
                 {
                     SerializationEventHandler onSerializing =
-                        (SerializationEventHandler)SszDelegate.CreateDelegateNoSecurityCheck((RuntimeType)typeof(SerializationEventHandler), obj, m);
+                        (SerializationEventHandler)SszDelegate.CreateDelegateNoSecurityCheck((Type)typeof(SerializationEventHandler), obj, m);
                     handler = (SerializationEventHandler)Delegate.Combine(handler, onSerializing);
                 }
                 handler(context);
@@ -121,7 +122,7 @@ using System.Diagnostics.Contracts;
                 foreach(MethodInfo m in m_OnDeserializingMethods)
                 {
                     SerializationEventHandler onDeserializing =
-                        (SerializationEventHandler)SszDelegate.CreateDelegateNoSecurityCheck((RuntimeType)typeof(SerializationEventHandler), obj, m);
+                        (SerializationEventHandler)SszDelegate.CreateDelegateNoSecurityCheck((Type)typeof(SerializationEventHandler), obj, m);
                     handler = (SerializationEventHandler)Delegate.Combine(handler, onDeserializing);
                 }
                 handler(context);
@@ -140,7 +141,7 @@ using System.Diagnostics.Contracts;
                 foreach(MethodInfo m in m_OnDeserializedMethods)
                 {
                     SerializationEventHandler onDeserialized =
-                        (SerializationEventHandler)SszDelegate.CreateDelegateNoSecurityCheck((RuntimeType)typeof(SerializationEventHandler), obj, m);
+                        (SerializationEventHandler)SszDelegate.CreateDelegateNoSecurityCheck((Type)typeof(SerializationEventHandler), obj, m);
                     handler = (SerializationEventHandler)Delegate.Combine(handler, onDeserialized);
                 }
                 handler(context);
@@ -156,7 +157,7 @@ using System.Diagnostics.Contracts;
                 foreach(MethodInfo m in m_OnSerializedMethods)
                 {
                     SerializationEventHandler onSerialized =
-                        (SerializationEventHandler)SszDelegate.CreateDelegateNoSecurityCheck((RuntimeType)typeof(SerializationEventHandler), obj, m);
+                        (SerializationEventHandler)SszDelegate.CreateDelegateNoSecurityCheck((Type)typeof(SerializationEventHandler), obj, m);
                     handler = (SerializationEventHandler)Delegate.Combine(handler, onSerialized);
                 }
             }
@@ -172,7 +173,7 @@ using System.Diagnostics.Contracts;
                 foreach(MethodInfo m in m_OnDeserializedMethods)
                 {
                     SerializationEventHandler onDeserialized =
-                        (SerializationEventHandler)SszDelegate.CreateDelegateNoSecurityCheck((RuntimeType)typeof(SerializationEventHandler), obj, m);
+                        (SerializationEventHandler)SszDelegate.CreateDelegateNoSecurityCheck((Type)typeof(SerializationEventHandler), obj, m);
                     handler = (SerializationEventHandler)Delegate.Combine(handler, onDeserialized);
                 }
             }

@@ -705,7 +705,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                         throw new SerializationException(SszEnvironment.GetResourceString("Serialization_HeaderReflection",valueInfos.Length));
                     valueInfo = valueInfos[0];
                 }
-                FormatterServices.SerializationSetValue(valueInfo, header, obj);
+                    SszFormatterServices.SerializationSetValue(valueInfo, header, obj);
                 break;
             case ValueFixupEnum.Member:
                 SerTrace.Log(this, "Fixup Member new object value ",obj," memberObject ",memberObject);

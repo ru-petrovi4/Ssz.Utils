@@ -114,13 +114,13 @@ namespace Ssz.Runtime.Serialization.Formatters {
                 throw new ArgumentNullException("value");
             Contract.EndContractBlock();
 
-            FormatterServices.SerializationSetValue(fi, target, value);
+            SszFormatterServices.SerializationSetValue(fi, target, value);
         }
 
         /// <internalonly/>
         public static Assembly LoadAssemblyFromString(String assemblyString)
         {
-            return FormatterServices.LoadAssemblyFromString(assemblyString);
+            return SszFormatterServices.LoadAssemblyFromString(assemblyString);
         }
     }
 

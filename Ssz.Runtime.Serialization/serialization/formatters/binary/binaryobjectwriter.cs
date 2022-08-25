@@ -21,19 +21,22 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
     using System.Collections;
     using System.Collections.Generic;
     using System.Text;
+#if FEATURE_REMOTING
     using System.Runtime.Remoting;
     using System.Runtime.Remoting.Messaging;
+#endif
     using System.Runtime.Serialization;
     using System.Security.Permissions;
     using System.Security;
     using System.Diagnostics;
     using System.Globalization;
     using System.Diagnostics.Contracts;
+    using System.Runtime.Serialization.Formatters;
 
     internal sealed  class ObjectWriter
     {
         private Queue m_objectQueue;
-        private ObjectIDGenerator m_idGenerator;
+        private SszObjectIDGenerator m_idGenerator;
         private int m_currentId;
 
         private ISurrogateSelector m_surrogates;
@@ -88,7 +91,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 
             if (fCheck)
             {
-                CodeAccessPermission.Demand(PermissionType.SecuritySerialization);          
+                //CodeAccessPermission.Demand(PermissionType.SecuritySerialization);          
             }
 
             this.serWriter = serWriter;
@@ -103,7 +106,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             bool bMethodCall = false;
             bool bMethodReturn = false;
 
-#if FEATURE_REMOTING        
+#if FEATURE_REMOTING
             // Special case IMethodCallMessage and IMethodReturnMessage for performance
             IMethodCallMessage mess = graph as IMethodCallMessage;
             if (mess != null)
@@ -137,7 +140,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             }
 
             // allocations if methodCall or methodResponse and no graph
-            m_idGenerator = new ObjectIDGenerator();
+            m_idGenerator = new SszObjectIDGenerator();
             m_objectQueue = new Queue();
             m_formatterConverter = new FormatterConverter();
             serObjectInfoInit = new SerObjectInfoInit();        
@@ -345,11 +348,11 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         [System.Security.SecurityCritical]  // auto-generated
         private void Write(WriteObjectInfo objectInfo, NameInfo memberNameInfo, NameInfo typeNameInfo)
         {       
-#if _DEBUG                        
+#if _DEBUG
             SerTrace.Log( this, "Write 1 Entry objectInfo ",objectInfo,", memberNameInfo ",memberNameInfo,", typeNameInfo ",typeNameInfo);
             memberNameInfo.Dump("Write memberNameInfo");
             typeNameInfo.Dump("Write typeNameInfo");
-#endif            
+#endif
             Object obj = objectInfo.obj;
             if (obj==null)
                 throw new ArgumentNullException("objectInfo.obj", SszEnvironment.GetResourceString("ArgumentNull_Obj"));
@@ -1157,11 +1160,11 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 
         private bool WriteKnownValueClass(NameInfo memberNameInfo, NameInfo typeNameInfo, Object data) 
         {
-#if _DEBUG                        
+#if _DEBUG
             SerTrace.Log( this, "WriteKnownValueClass Entry ",typeNameInfo.NIname," ",data," ",memberNameInfo.NIname);
             memberNameInfo.Dump("WriteKnownValueClass memberNameInfo");         
             typeNameInfo.Dump("WriteKnownValueClass typeNameInfo");
-#endif            
+#endif
 
             if (Object.ReferenceEquals(typeNameInfo.NItype, Converter.typeofString))
             {
@@ -1224,7 +1227,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         // Writes a null member into the stream
         private bool CheckForNull(WriteObjectInfo objectInfo, NameInfo memberNameInfo, NameInfo typeNameInfo, Object data)
         {
-#if _DEBUG            
+#if _DEBUG
             SerTrace.Log( this, "CheckForNull Entry data ",Util.PString(data),", memberType ",Util.PString(typeNameInfo.NItype));
 #endif
             bool isNull = false;
@@ -1388,7 +1391,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         private Type GetType(Object obj)
         {
             Type type = null;
-#if FEATURE_REMOTING        
+#if FEATURE_REMOTING
             if (RemotingServices.IsTransparentProxy(obj))
                 type = Converter.typeofMarshalByRefObject;
             else

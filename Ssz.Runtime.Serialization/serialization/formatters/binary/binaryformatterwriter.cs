@@ -765,7 +765,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 WriteDateTime((DateTime)value);
                 break;
             default:
-                throw new SerializationException(Environment.GetResourceString("Serialization_TypeCode",((Enum)code).ToString()));
+                throw new SerializationException(SszEnvironment.GetResourceString("Serialization_TypeCode",((Enum)code).ToString()));
             }
             SerTrace.Log( this, "Write Exit ");
         }

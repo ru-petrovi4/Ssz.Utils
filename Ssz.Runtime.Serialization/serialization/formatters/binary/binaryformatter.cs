@@ -242,8 +242,8 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 if (!typeNameCache.TryGetValue(type, out typeInformation))
                 {
                     bool hasTypeForwardedFrom;
-                    string assemblyName = FormatterServices.GetClrAssemblyName(type, out hasTypeForwardedFrom);
-                    typeInformation = new TypeInformation(FormatterServices.GetClrTypeFullName(type), assemblyName, hasTypeForwardedFrom);
+                    string assemblyName = SszFormatterServices.GetClrAssemblyName(type, out hasTypeForwardedFrom);
+                    typeInformation = new TypeInformation(SszFormatterServices.GetClrTypeFullName(type), assemblyName, hasTypeForwardedFrom);
                     typeNameCache.Add(type, typeInformation);
                 }
                 return typeInformation;

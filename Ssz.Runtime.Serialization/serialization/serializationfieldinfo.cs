@@ -11,7 +11,7 @@
 ** Purpose: Provides a methods of representing imaginary fields
 ** which are unique to serialization.  In this case, what we're
 ** representing is the private members of parent classes.  We
-** aggregate the RuntimeFieldInfo associated with this member 
+** aggregate the FieldInfo associated with this member 
 ** and return a managled form of the name.  The name that we
 ** return is .parentname.fieldname
 **
@@ -33,13 +33,13 @@ namespace Ssz.Runtime.Serialization {
 
         internal const String FakeNameSeparatorString = "+";
 
-        private RuntimeFieldInfo m_field;
+        private FieldInfo m_field;
         private String           m_serializationName;
 
         public override Module Module { get { return m_field.Module; } }
         public override int MetadataToken { get { return m_field.MetadataToken; } } 
 
-        internal SerializationFieldInfo(RuntimeFieldInfo field, String namePrefix) {
+        internal SerializationFieldInfo(FieldInfo field, String namePrefix) {
             Contract.Assert(field!=null,      "[SerializationFieldInfo.ctor]field!=null");
             Contract.Assert(namePrefix!=null, "[SerializationFieldInfo.ctor]namePrefix!=null");
             
@@ -121,7 +121,7 @@ namespace Ssz.Runtime.Serialization {
                 m_field.SetValue(obj, value, invokeAttr, binder, culture);
         }
 
-        internal RuntimeFieldInfo FieldInfo {
+        internal FieldInfo FieldInfo {
             get {
                 return m_field;
             }

@@ -237,7 +237,7 @@ namespace Ssz.Runtime.Serialization {
             SurrogateKey givenValue = (SurrogateKey)item;
             SurrogateKey presentValue = (SurrogateKey)key;
             return presentValue.m_type == givenValue.m_type &&
-                   (presentValue.m_context.m_state & givenValue.m_context.m_state) == givenValue.m_context.m_state &&
+                   (presentValue.m_context.State & givenValue.m_context.State) == givenValue.m_context.State &&
                    presentValue.m_context.Context == givenValue.m_context.Context;
         }
     }

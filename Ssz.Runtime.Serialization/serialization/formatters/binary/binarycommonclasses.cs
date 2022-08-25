@@ -28,6 +28,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
     using System.Diagnostics;
     using System.Globalization;
     using System.Diagnostics.Contracts;
+    using System.Runtime.Serialization;
 
     // Routines to convert between the runtime type and the type as it appears on the wire
     internal static class BinaryConverter
@@ -403,7 +404,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary{
         {
             if (assembly == null)
             {
-                assembly = FormatterServices.LoadAssemblyFromStringNoThrow(assemblyString);
+                assembly = SszFormatterServices.LoadAssemblyFromStringNoThrow(assemblyString);
                 if (assembly == null)
                     throw new SerializationException(SszEnvironment.GetResourceString("Serialization_AssemblyNotFound",assemblyString));
             }
