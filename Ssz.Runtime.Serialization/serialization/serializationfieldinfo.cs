@@ -48,7 +48,7 @@ namespace Ssz.Runtime.Serialization {
 
             //VALFIX
             var name = m_field.Name;
-            if (Ssz.Runtime.Serialization.Settings.IsDeserializingFromNet4)
+            //if (Ssz.Runtime.Serialization.Settings.IsDeserializingFromNet4)
             {
                 if (name == "_list")
                     name = "list";                
