@@ -1469,6 +1469,20 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
        //[System.Security.SecurityCritical]  // auto-generated
         internal Type GetType(BinaryAssemblyInfo assemblyInfo, String name)
         {
+			// VALFIX
+            if (name == "System.DelegateSerializationHolder")
+            {
+                return typeof(DelegateSerializationHolder);
+            }
+            else if (name == "System.DelegateSerializationHolder+DelegateEntry")
+            {
+                return typeof(DelegateSerializationHolder.DelegateEntry);
+            }
+            else if (name == "System.Reflection.MemberInfoSerializationHolder")
+            {
+                return typeof(MemberInfoSerializationHolder);
+            }
+			
             Type objectType = null;
 
             if (((previousName != null) && (previousName.Length == name.Length) && (previousName.Equals(name))) &&
