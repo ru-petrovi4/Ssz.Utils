@@ -4,11 +4,11 @@
 // 
 // ==--==
 #if FEATURE_REMOTING
-namespace Ssz.Runtime.Serialization.Formatters.Binary
+namespace System.Runtime.Serialization.Formatters.Binary
 {
     using System;
     using System.Collections;
-    // using System.Runtime.Remoting.Messaging;
+    using System.Runtime.Remoting.Messaging;
     using System.Reflection;
 
 
@@ -22,12 +22,12 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 
         Type[] _instArgs = null;
         Object[] _args = null;
-        // [System.Security.SecurityCritical] // auto-generated
+        [System.Security.SecurityCritical] // auto-generated
         LogicalCallContext _logicalCallContext = null;
 
         Object[] _properties = null;
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal BinaryMethodCallMessage(String uri, String methodName, String typeName, Type[] instArgs, Object[] args, Object methodSignature, LogicalCallContext callContext, Object[] properties)
         {
             _methodName = methodName;
@@ -77,7 +77,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 
         public LogicalCallContext LogicalCallContext
         {
-            // [System.Security.SecurityCritical]  // auto-generated
+            [System.Security.SecurityCritical]  // auto-generated
             get {return _logicalCallContext;}
         }
 
@@ -105,12 +105,12 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         Object _returnValue = null;
 
         Object[] _args = null;
-        // [System.Security.SecurityCritical] // auto-generated
+        [System.Security.SecurityCritical] // auto-generated
         LogicalCallContext _logicalCallContext = null;
 
         Object[] _properties = null;
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal BinaryMethodReturnMessage(Object returnValue, Object[] args, Exception e, LogicalCallContext callContext, Object[] properties)
         {
             _returnValue = returnValue;
@@ -146,7 +146,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 
         public LogicalCallContext LogicalCallContext
         {
-            // [System.Security.SecurityCritical]  // auto-generated
+            [System.Security.SecurityCritical]  // auto-generated
             get {return _logicalCallContext;}
         }
 

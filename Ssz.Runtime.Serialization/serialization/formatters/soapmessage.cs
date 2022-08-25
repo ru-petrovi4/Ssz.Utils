@@ -13,16 +13,16 @@
  **
  ===========================================================*/
 #if FEATURE_REMOTING
-namespace Ssz.Runtime.Serialization.Formatters {
+namespace System.Runtime.Serialization.Formatters {
     using System.Runtime.Remoting;
-    // using System.Runtime.Remoting.Messaging;
-    using Ssz.Runtime.Serialization;
+    using System.Runtime.Remoting.Messaging;
+    using System.Runtime.Serialization;
     using System;
     // Class is used to return the call object for a SOAP call.
     // This is used when the top SOAP object is a fake object, it contains
     // a method name as the element name instead of the object name.
    [Serializable]
-// [System.Runtime.InteropServices.ComVisible(true)]
+[System.Runtime.InteropServices.ComVisible(true)]
     public class SoapMessage : ISoapMessage
     {
         internal String[] paramNames;

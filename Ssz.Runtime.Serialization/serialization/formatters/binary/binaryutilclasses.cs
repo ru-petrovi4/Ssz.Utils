@@ -18,20 +18,19 @@
 // They are public so that the XMLFormatter can address them. Eventually they will
 // be signed so that they can't be used by external applications.
 
-namespace Ssz.Runtime.Serialization.Formatters.Binary
+namespace System.Runtime.Serialization.Formatters.Binary
 {
     using System;
     using System.Collections;
     using System.Reflection;
     using System.Text;
     using System.Globalization;
-    using Ssz.Runtime.Serialization.Formatters;
+    using System.Runtime.Serialization.Formatters;
     using System.Runtime.Remoting;
-    // using System.Runtime.Remoting.Messaging;
+    using System.Runtime.Remoting.Messaging;
     using System.Runtime.InteropServices;
-    using Ssz.Runtime.Serialization;
-    using System.Diagnostics;
     using System.Runtime.Serialization;
+    using System.Diagnostics;
 
     // The ParseRecord class holds the parsed XML information. There is a
     // ParsedRecord for each XML Element
@@ -461,7 +460,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             }
             catch (Exception)
             {
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_CorruptedStream"));
+                throw new SerializationException(Environment.GetResourceString("Serialization_CorruptedStream"));
             }
         }
 
@@ -551,7 +550,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             }
             catch (Exception)
             {
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_CorruptedStream"));
+                throw new SerializationException(Environment.GetResourceString("Serialization_CorruptedStream"));
             }
         }
     }
@@ -638,14 +637,14 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         [Conditional("_LOGGING")]
         internal static void NVTraceI(String name, String value)
         {
-            Ssz.Runtime.Serialization.BCLDebug.Trace("Binary", "  "+name+((value == null)?" = null":" = "+value));
+            BCLDebug.Trace("Binary", "  "+name+((value == null)?" = null":" = "+value));
         }
 
         // Traces an name value pair
         [Conditional("_LOGGING")]
         internal static void NVTraceI(String name, Object value)
         {
-            Ssz.Runtime.Serialization.BCLDebug.Trace("Binary", "  "+name+((value == null)?" = null":" = "+value.ToString()));
+            BCLDebug.Trace("Binary", "  "+name+((value == null)?" = null":" = "+value.ToString()));
         }
     }
 #endif
@@ -684,7 +683,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             this.objectInfo = objectInfo;
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal void Fixup(ParseRecord record, ParseRecord parent) {
             Object obj = record.PRnewObj;
 #if _DEBUG
@@ -701,10 +700,10 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                 {
                     MemberInfo[] valueInfos = type.GetMember("Value");
                     if (valueInfos.Length != 1)
-                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_HeaderReflection",valueInfos.Length));
+                        throw new SerializationException(Environment.GetResourceString("Serialization_HeaderReflection",valueInfos.Length));
                     valueInfo = valueInfos[0];
                 }
-                    Ssz.Runtime.Serialization.FormatterServices.SerializationSetValue(valueInfo, header, obj);
+                FormatterServices.SerializationSetValue(valueInfo, header, obj);
                 break;
             case ValueFixupEnum.Member:
                 SerTrace.Log(this, "Fixup Member new object value ",obj," memberObject ",memberObject);

@@ -10,10 +10,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Reflection;
-using System.Runtime.Serialization;
 using System.Security;
 
-namespace Ssz.Runtime.Serialization
+namespace System.Runtime.Serialization
 {
     //
     // #SafeSerialization
@@ -158,7 +157,7 @@ namespace Ssz.Runtime.Serialization
     //
     //    3. Serialize the safe serialization object in GetObjectData, and call its CompleteSerialization method:
     //  
-    //       // [SecurityCritical]
+    //       [SecurityCritical]
     //       void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
     //       {
     //           info.AddValue("m_safeSerializationManager", m_safeSerializationManager, typeof(SafeSerializationManager));
@@ -228,7 +227,7 @@ namespace Ssz.Runtime.Serialization
             if (serializedState == null)
                 throw new ArgumentNullException("serializedState");
             if (!serializedState.GetType().IsSerializable)
-                throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_NonSerType", serializedState.GetType(), serializedState.GetType().Assembly.FullName));
+                throw new ArgumentException(Environment.GetResourceString("Serialization_NonSerType", serializedState.GetType(), serializedState.GetType().Assembly.FullName));
 
             m_serializedStates.Add(serializedState);
         }
@@ -274,7 +273,7 @@ namespace Ssz.Runtime.Serialization
         private object m_realObject;
 
         // Real type that should be deserialized
-        private Type m_realType;
+        private RuntimeType m_realType;
         
         // Event fired when we need to collect state to serialize into the parent object
         internal event EventHandler<SafeSerializationEventArgs> SerializeObjectState;
@@ -286,7 +285,7 @@ namespace Ssz.Runtime.Serialization
         {
         }
 
-        // [SecurityCritical]
+        [SecurityCritical]
         private SafeSerializationManager(SerializationInfo info, StreamingContext context)
         {
             // We need to determine if we're being called to really deserialize a SafeSerializationManager,
@@ -295,7 +294,7 @@ namespace Ssz.Runtime.Serialization
             // serialization info to indicate that this is the interception callback and we just need to
             // safe the info.  If that field is not present, then we should be in a real deserialization
             // construction.
-            Type realType = info.GetValue(RealTypeSerializationName, typeof(Type)) as Type;
+            RuntimeType realType = info.GetValueNoThrow(RealTypeSerializationName, typeof(RuntimeType)) as RuntimeType;
 
             if (realType == null)
             {
@@ -318,7 +317,7 @@ namespace Ssz.Runtime.Serialization
         // CompleteSerialization is called by the base ISerializable in its GetObjectData method.  It is
         // responsible for gathering up the serialized object state of any delegates that wish to add their
         // own state to the serialized object.
-        // [SecurityCritical]
+        [SecurityCritical]
         internal void CompleteSerialization(object serializedObject,
                                             SerializationInfo info,
                                             StreamingContext context)
@@ -344,7 +343,7 @@ namespace Ssz.Runtime.Serialization
 
                 // Replace the type to be deserialized by the standard serialization code paths with
                 // ourselves, which allows us to control the deserialization process.
-                info.AddValue(RealTypeSerializationName, serializedObject.GetType(), typeof(Type));
+                info.AddValue(RealTypeSerializationName, serializedObject.GetType(), typeof(RuntimeType));
                 info.SetType(typeof(SafeSerializationManager));
             } 
         }
@@ -365,7 +364,7 @@ namespace Ssz.Runtime.Serialization
             }
         }
 
-        // [SecurityCritical]
+        [SecurityCritical]
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("m_serializedStates", m_serializedStates, typeof(List<IDeserializationCallback>));
@@ -374,7 +373,7 @@ namespace Ssz.Runtime.Serialization
         // GetRealObject intercepts the deserialization process in order to allow deserializing part of the
         // object's inheritance heirarchy using standard ISerializable constructors, and the remaining
         // portion using the saved serialization states.
-        // [SecurityCritical]
+        [SecurityCritical]
         object IObjectReference.GetRealObject(StreamingContext context)
         {
             // If we've already deserialized the real object, use that rather than deserializing it again
@@ -397,30 +396,30 @@ namespace Ssz.Runtime.Serialization
             // First build up the chain starting at the type below Object and working to the real type we
             // serialized.
             Stack inheritanceChain = new Stack();
-            Type currentType = m_realType;
+            RuntimeType currentType = m_realType;
             do
             {
                 inheritanceChain.Push(currentType);
-                currentType = currentType.BaseType as Type;
+                currentType = currentType.BaseType as RuntimeType;
             }
             while (currentType != typeof(object));
 
             // Now look for the first type that does not implement the ISerializable .ctor.  When we find
             // that, previousType will point at the last type that did implement the .ctor.  We require that
             // the .ctor we invoke also be non-transparent
-            ConstructorInfo serializationCtor = null;
-            Type previousType = null;
+            RuntimeConstructorInfo serializationCtor = null;
+            RuntimeType previousType = null;
             do
             {
                 previousType = currentType;
-                currentType = inheritanceChain.Pop() as Type;
+                currentType = inheritanceChain.Pop() as RuntimeType;
                 serializationCtor = currentType.GetSerializationCtor();
             }
             while (serializationCtor != null && serializationCtor.IsSecurityCritical);
             
             // previousType is the last type that did implement the deserialization .ctor before the first
             // type that did not, so we'll grab it's .ctor to use for deserialization.
-            Ssz.Runtime.Serialization.BCLDebug.Assert(previousType != null, "We should have at least one inheritance from the base type");
+            BCLDebug.Assert(previousType != null, "We should have at least one inheritance from the base type");
             serializationCtor = ObjectManager.GetConstructor(previousType);
 
             // Allocate an instance of the final type and run the selected .ctor on that instance to get the

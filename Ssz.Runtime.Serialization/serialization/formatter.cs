@@ -15,7 +15,7 @@
 ===========================================================*/
 
 
-namespace Ssz.Runtime.Serialization {
+namespace System.Runtime.Serialization {
     using System.Threading;
     using System.Runtime.Remoting;
     using System;
@@ -23,15 +23,13 @@ namespace Ssz.Runtime.Serialization {
     using System.Reflection;
     using System.IO;
     using System.Globalization;
-    using System.Runtime.Serialization;
-
     // This abstract class provides some helper methods for implementing
     // IFormatter.  It will manage queueing objects for serialization
     // (the functionality formerly provided by the IGraphWalker interface)
     // and generating ids on a per-object basis.
-    [Serializable]
-// [CLSCompliant(false)]
-// [System.Runtime.InteropServices.ComVisible(true)]
+[Serializable]
+[CLSCompliant(false)]
+[System.Runtime.InteropServices.ComVisible(true)]
     public abstract class Formatter : IFormatter {
     
         protected ObjectIDGenerator m_idGenerator;
@@ -62,7 +60,7 @@ namespace Ssz.Runtime.Serialization {
             Object obj = m_objectQueue.Dequeue();
             objID = m_idGenerator.HasId(obj, out isNew);
             if (isNew) {
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_NoID"));
+                throw new SerializationException(Environment.GetResourceString("Serialization_NoID"));
             }
             
             return obj;
@@ -129,7 +127,7 @@ namespace Ssz.Runtime.Serialization {
         // to call in order to write this particular member to the stream.
         protected virtual void WriteMember(String memberName, Object data) {
 
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[Formatter.WriteMember]data: ", data);
+            BCLDebug.Trace("SER", "[Formatter.WriteMember]data: ", data);
 
             if (data==null) {
                 WriteObjectRef(data, memberName, typeof(Object));
@@ -138,7 +136,7 @@ namespace Ssz.Runtime.Serialization {
 
             Type varType = data.GetType();
     
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[Formatter.WriteMember]data is of type: " , varType);
+            BCLDebug.Trace("SER", "[Formatter.WriteMember]data is of type: " , varType);
 
             if (varType==typeof(Boolean)) {
                 WriteBoolean(Convert.ToBoolean(data, CultureInfo.InvariantCulture), memberName);
@@ -180,7 +178,7 @@ namespace Ssz.Runtime.Serialization {
         }
             
         // Writes an instance of SByte to the stream.
-        // [CLSCompliant(false)]
+        [CLSCompliant(false)]
         protected abstract void WriteSByte(sbyte val, String name);
     
         // Writes an instance of Single to the stream.
@@ -191,15 +189,15 @@ namespace Ssz.Runtime.Serialization {
     
     
         // Writes an instance of an ushort to the stream.
-        // [CLSCompliant(false)]
+        [CLSCompliant(false)]
         protected abstract void WriteUInt16(ushort val, String name);
     
         // Writes an instance of an uint to the stream.
-        // [CLSCompliant(false)]
+        [CLSCompliant(false)]
         protected abstract void WriteUInt32(uint val, String name);
     
         // Writes an instance of a ulong to the stream.
-        // [CLSCompliant(false)]
+        [CLSCompliant(false)]
         protected abstract void WriteUInt64(ulong val, String name);
     
     

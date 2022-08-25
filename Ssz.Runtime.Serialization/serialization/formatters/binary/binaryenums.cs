@@ -13,11 +13,11 @@
  **
  ===========================================================*/
 
-namespace Ssz.Runtime.Serialization.Formatters.Binary
+namespace System.Runtime.Serialization.Formatters.Binary
 {
-    using Ssz.Runtime.Serialization.Formatters;
+    using System.Runtime.Serialization.Formatters;
     using System.Runtime.Remoting;
-    using Ssz.Runtime.Serialization;
+    using System.Runtime.Serialization;
     using System;
     // BinaryHeaderEnum is the first byte on binary records
     // (except for primitive types which do not have a header)

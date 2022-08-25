@@ -13,15 +13,15 @@
  **
  ===========================================================*/
 
-namespace Ssz.Runtime.Serialization.Formatters {
+namespace System.Runtime.Serialization.Formatters {
     using System.Threading;
     using System.Runtime.Remoting;
-    using Ssz.Runtime.Serialization;
+    using System.Runtime.Serialization;
     using System;
     // Enums which specify options to the XML and Binary formatters
     // These will be public so that applications can use them
     [Serializable]
-// [System.Runtime.InteropServices.ComVisible(true)]
+[System.Runtime.InteropServices.ComVisible(true)]
     public enum FormatterTypeStyle
     {
         TypesWhenNeeded = 0, // Types are outputted only for Arrays of Objects, Object Members of type Object, and ISerializable non-primitive value types
@@ -30,14 +30,14 @@ namespace Ssz.Runtime.Serialization.Formatters {
     }
 
     [Serializable]
-// [System.Runtime.InteropServices.ComVisible(true)]
+[System.Runtime.InteropServices.ComVisible(true)]
     public enum FormatterAssemblyStyle
     {
         Simple = 0,
         Full = 1,
     }
 
-// [System.Runtime.InteropServices.ComVisible(true)]
+[System.Runtime.InteropServices.ComVisible(true)]
     public enum TypeFilterLevel {
         Low = 0x2,
         Full = 0x3

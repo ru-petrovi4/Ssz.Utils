@@ -15,19 +15,18 @@ using System.Diagnostics.Contracts;
  ===========================================================*/
 
 
-namespace Ssz.Runtime.Serialization.Formatters.Binary {
+namespace System.Runtime.Serialization.Formatters.Binary {
 
     using System;
     using System.IO;
     using System.Collections;
     using System.Reflection;
     using System.Globalization;
-    using Ssz.Runtime.Serialization.Formatters;
+    using System.Runtime.Serialization.Formatters;
     using System.Threading;
     using System.Runtime.Remoting;
-    using Ssz.Runtime.Serialization;
-    using System.Text;
     using System.Runtime.Serialization;
+    using System.Text;
 
     internal sealed  class __BinaryParser
     {
@@ -102,7 +101,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
          *  has been previously set to Primitive
          * @internalonly
          */     
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal void Run()
         {
             try
@@ -179,14 +178,14 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                             ReadEnd();
                             break;
                         default:
-                            throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_BinaryHeader",inByte));
+                            throw new SerializationException(Environment.GetResourceString("Serialization_BinaryHeader",inByte));
                         }
                         break;
                     case BinaryTypeEnum.Primitive:
                         ReadMemberPrimitiveUnTyped();
                         break;
                     default:
-                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TypeExpected"));
+                        throw new SerializationException(Environment.GetResourceString("Serialization_TypeExpected"));
 
                     }
 
@@ -254,20 +253,20 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             {
 
                 // EOF should never be thrown since there is a MessageEnd record to stop parsing
-                Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", "\n*****EOF*************************\n");
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_StreamEnd"));             
+                BCLDebug.Trace("BINARY", "\n*****EOF*************************\n");
+                throw new SerializationException(Environment.GetResourceString("Serialization_StreamEnd"));             
             }
         }
 
 
         internal void ReadBegin()
         {
-            Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", "\n%%%%%BinaryReaderBegin%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
+            BCLDebug.Trace("BINARY", "\n%%%%%BinaryReaderBegin%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
         }
 
         internal void ReadEnd()
         {
-            Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY","\n%%%%%BinaryReaderEnd%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
+            BCLDebug.Trace("BINARY","\n%%%%%BinaryReaderEnd%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n");
         }
 
         /*
@@ -360,7 +359,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         internal DateTime ReadDateTime()
         {
-            return SszDateTime.FromBinaryRaw(ReadInt64());
+            return DateTime.FromBinaryRaw(ReadInt64());
         }
 
         internal UInt16 ReadUInt16()
@@ -379,7 +378,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 
         // Binary Stream Record Reads
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal void ReadSerializationHeaderRecord()
         {
             SerTrace.Log( this, "ReadSerializationHeaderRecord");
@@ -390,7 +389,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
              this.headerId = (record.headerId > 0 ? objectReader.GetId(record.headerId) : record.headerId);
         }
 
-        // [System.Security.SecurityCritical]
+        [System.Security.SecurityCritical]
         internal void ReadAssembly(BinaryHeaderEnum binaryHeaderEnum)
         {
             SerTrace.Log( this, "ReadAssembly");
@@ -403,7 +402,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 record.assemId = crossAppDomainAssembly.assemId;
                 record.assemblyString = objectReader.CrossAppDomainArray(crossAppDomainAssembly.assemblyIndex) as String;
                 if (record.assemblyString == null)
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_CrossAppDomainError","String", crossAppDomainAssembly.assemblyIndex));
+                    throw new SerializationException(Environment.GetResourceString("Serialization_CrossAppDomainError","String", crossAppDomainAssembly.assemblyIndex));
 
             }
             else
@@ -416,7 +415,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 
 #if FEATURE_REMOTING
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal void ReadMethodObject(BinaryHeaderEnum binaryHeaderEnum)
         {
             SerTrace.Log( this, "ReadMethodObject");
@@ -439,7 +438,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         private BinaryObject binaryObject;
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void ReadObject()
         {
             SerTrace.Log( this, "ReadObject");
@@ -451,7 +450,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
             ObjectMap objectMap = (ObjectMap)ObjectMapIdTable[binaryObject.mapId];
             if (objectMap == null)
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_Map",binaryObject.mapId));
+                throw new SerializationException(Environment.GetResourceString("Serialization_Map",binaryObject.mapId));
 
             ObjectProgress op = GetOp();
             ParseRecord pr = op.pr;
@@ -492,7 +491,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                     op.memberTypeEnum = InternalMemberTypeE.Item;                   
                     break;
                 default:
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_Map",((Enum)objectOp.objectTypeEnum).ToString()));                                     
+                    throw new SerializationException(Environment.GetResourceString("Serialization_Map",((Enum)objectOp.objectTypeEnum).ToString()));                                     
                 }
             }
 
@@ -511,7 +510,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             objectReader.Parse(pr);
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal void ReadCrossAppDomainMap()
         {
             SerTrace.Log( this, "ReadObjectWithCrossAppDomainMap");
@@ -536,14 +535,14 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                     ReadObjectWithMapTyped(binaryObjectWithMapTyped);
                 }
                 else
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_CrossAppDomainError","BinaryObjectMap", mapObject));
+                    throw new SerializationException(Environment.GetResourceString("Serialization_CrossAppDomainError","BinaryObjectMap", mapObject));
             }
         }
 
 
         private BinaryObjectWithMap bowm;
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal void ReadObjectWithMap(BinaryHeaderEnum binaryHeaderEnum)
         {
             SerTrace.Log( this, "ReadObjectWithMap");
@@ -556,7 +555,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             ReadObjectWithMap(bowm);
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void ReadObjectWithMap(BinaryObjectWithMap record)
         {
             BinaryAssemblyInfo assemblyInfo = null;
@@ -568,12 +567,12 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             if (record.binaryHeaderEnum == BinaryHeaderEnum.ObjectWithMapAssemId)
             {
                 if (record.assemId < 1)
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_Assembly",record.name));
+                    throw new SerializationException(Environment.GetResourceString("Serialization_Assembly",record.name));
 
                 assemblyInfo = ((BinaryAssemblyInfo)AssemIdToAssemblyTable[record.assemId]);
 
                 if (assemblyInfo == null)
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_Assembly",record.assemId+" "+record.name));
+                    throw new SerializationException(Environment.GetResourceString("Serialization_Assembly",record.assemId+" "+record.name));
                 SerTrace.Log( this, "ReadObjectWithMap  lookup assemIdToAssembly assemId ",record.assemId," assembly ",assemblyInfo.assemblyString);                
             }
             else if (record.binaryHeaderEnum == BinaryHeaderEnum.ObjectWithMap)
@@ -623,7 +622,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                     op.memberTypeEnum = InternalMemberTypeE.Field;                  
                     break;
                 default:
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ObjectTypeEnum",((Enum)objectOp.objectTypeEnum).ToString()));                      
+                    throw new SerializationException(Environment.GetResourceString("Serialization_ObjectTypeEnum",((Enum)objectOp.objectTypeEnum).ToString()));                      
                 }
 
             }
@@ -642,7 +641,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         private BinaryObjectWithMapTyped bowmt;
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal void ReadObjectWithMapTyped(BinaryHeaderEnum binaryHeaderEnum)     
         {
             SerTrace.Log( this, "ReadObjectWithMapTyped");
@@ -657,7 +656,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             ReadObjectWithMapTyped(bowmt);
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void ReadObjectWithMapTyped(BinaryObjectWithMapTyped record)
         {
             BinaryAssemblyInfo assemblyInfo = null;
@@ -668,11 +667,11 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             if (record.binaryHeaderEnum == BinaryHeaderEnum.ObjectWithMapTypedAssemId)
             {
                 if (record.assemId < 1)
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_AssemblyId",record.name));
+                    throw new SerializationException(Environment.GetResourceString("Serialization_AssemblyId",record.name));
 
                 assemblyInfo = (BinaryAssemblyInfo)AssemIdToAssemblyTable[record.assemId];
                 if (assemblyInfo == null)
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_AssemblyId",record.assemId+" "+record.name));
+                    throw new SerializationException(Environment.GetResourceString("Serialization_AssemblyId",record.assemId+" "+record.name));
 
                 SerTrace.Log( this, "ReadObjectWithMapTyped  lookup assemIdToAssembly assemId ",record.assemId," assembly ",assemblyInfo.assemblyString);                               
             }
@@ -718,7 +717,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                     op.memberTypeEnum = InternalMemberTypeE.Item;                   
                     break;
                 default:
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ObjectTypeEnum",((Enum)objectOp.objectTypeEnum).ToString()));
+                    throw new SerializationException(Environment.GetResourceString("Serialization_ObjectTypeEnum",((Enum)objectOp.objectTypeEnum).ToString()));
                 }
 
             }
@@ -737,7 +736,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         internal BinaryObjectString objectString;
         internal BinaryCrossAppDomainString crossAppDomainString;
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void ReadObjectString(BinaryHeaderEnum binaryHeaderEnum)
         {
             SerTrace.Log( this, "ReadObjectString");
@@ -758,7 +757,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 crossAppDomainString.Dump();
                 objectString.value = objectReader.CrossAppDomainArray(crossAppDomainString.value) as String;
                 if (objectString.value == null)
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_CrossAppDomainError","String", crossAppDomainString.value));
+                    throw new SerializationException(Environment.GetResourceString("Serialization_CrossAppDomainError","String", crossAppDomainString.value));
 
                 objectString.objectId = crossAppDomainString.objectId;
             }
@@ -805,7 +804,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                     prs.PRmemberTypeEnum = InternalMemberTypeE.Item;
                     break;
                 default:
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ObjectTypeEnum",((Enum)objectOp.objectTypeEnum).ToString()));                      
+                    throw new SerializationException(Environment.GetResourceString("Serialization_ObjectTypeEnum",((Enum)objectOp.objectTypeEnum).ToString()));                      
                 }
 
             }
@@ -817,7 +816,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         internal MemberPrimitiveTyped memberPrimitiveTyped;
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void ReadMemberPrimitiveTyped()
         {
             SerTrace.Log( this, "ReadObjectPrimitive");
@@ -862,7 +861,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                     prs.PRmemberTypeEnum = InternalMemberTypeE.Item;
                     break;
                 default:
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ObjectTypeEnum",((Enum)objectOp.objectTypeEnum).ToString()));                                              
+                    throw new SerializationException(Environment.GetResourceString("Serialization_ObjectTypeEnum",((Enum)objectOp.objectTypeEnum).ToString()));                                              
                 }
             }
 
@@ -870,7 +869,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void ReadArray(BinaryHeaderEnum binaryHeaderEnum)
         {
             BinaryAssemblyInfo assemblyInfo = null;
@@ -885,7 +884,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             if (record.binaryTypeEnum == BinaryTypeEnum.ObjectUser)
             {
                 if (record.assemId < 1)
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_AssemblyId",record.typeInformation));
+                    throw new SerializationException(Environment.GetResourceString("Serialization_AssemblyId",record.typeInformation));
 
                 assemblyInfo = (BinaryAssemblyInfo)AssemIdToAssemblyTable[record.assemId];
                 SerTrace.Log( this, "ReadArray  lookup assemIdToAssembly assemId ",record.assemId," assembly ",assemblyInfo.assemblyString);                                
@@ -929,7 +928,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                     op.memberTypeEnum = InternalMemberTypeE.Item;                   
                     break;
                 default:
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ObjectTypeEnum",((Enum)objectOp.objectTypeEnum).ToString()));                                              
+                    throw new SerializationException(Environment.GetResourceString("Serialization_ObjectTypeEnum",((Enum)objectOp.objectTypeEnum).ToString()));                                              
                 }
             }
 
@@ -983,7 +982,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 pr.PRarrayTypeEnum = InternalArrayTypeE.Rectangular;                                        
                 break;
             default:
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ArrayType",((Enum)record.binaryArrayTypeEnum).ToString()));
+                throw new SerializationException(Environment.GetResourceString("Serialization_ArrayType",((Enum)record.binaryArrayTypeEnum).ToString()));
             }
 
             if (!isPrimitiveArray)
@@ -1006,7 +1005,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         private byte[] byteBuffer;
         private const int chunkSize = 4096;
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void ReadArrayAsBytes(ParseRecord pr)
         {
             if (pr.PRarrayElementTypeCode == InternalPrimitiveTypeE.Byte)
@@ -1044,7 +1043,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                         }
                     }
 #endif
-                    Ssz.Runtime.Serialization.SszBuffer.InternalBlockCopy(byteBuffer, 0, array, arrayOffset*typeLength, bufferUsed);
+                    Buffer.InternalBlockCopy(byteBuffer, 0, array, arrayOffset*typeLength, bufferUsed);
                     arrayOffset += numArrayItems;
                 }
             }
@@ -1052,7 +1051,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         internal MemberPrimitiveUnTyped memberPrimitiveUnTyped;
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void ReadMemberPrimitiveUnTyped()
         {
             SerTrace.Log( this, "ReadMemberPrimitiveUnTyped ");     
@@ -1085,7 +1084,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         internal MemberReference memberReference;
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void ReadMemberReference()
         {
             SerTrace.Log( this, "ReadMemberReference ");
@@ -1117,7 +1116,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         internal ObjectNull objectNull;
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void ReadObjectNull(BinaryHeaderEnum binaryHeaderEnum)
         {
             SerTrace.Log( this, "ReadObjectNull ");
@@ -1153,7 +1152,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         internal static volatile MessageEnd messageEnd;
 
-        // [System.Security.SecurityCritical]
+        [System.Security.SecurityCritical]
         private void ReadMessageEnd()
         {
             SerTrace.Log( this, "ReadMessageEnd ");
@@ -1169,7 +1168,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             {
                 SerTrace.Log( this, "ReadMessageEnd  Stack not empty ");
                 stack.Dump();
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_StreamEnd"));
+                throw new SerializationException(Environment.GetResourceString("Serialization_StreamEnd"));
             }
         }
 
@@ -1228,7 +1227,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 var = ReadDateTime();                                                           
                 break;
             default:
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TypeCode",((Enum)code).ToString()));
+                throw new SerializationException(Environment.GetResourceString("Serialization_TypeCode",((Enum)code).ToString()));
             }
             SerTrace.Log( "ReadValue Exit ",var);
             return var;

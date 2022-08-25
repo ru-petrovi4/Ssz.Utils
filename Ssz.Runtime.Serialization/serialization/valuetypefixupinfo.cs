@@ -13,7 +13,7 @@
 ** or the array indices (if the containing body is an array.)
 **
 ============================================================*/
-namespace Ssz.Runtime.Serialization {
+namespace System.Runtime.Serialization {
     using System.Reflection;
     using System.Diagnostics.Contracts;
 
@@ -38,11 +38,11 @@ namespace Ssz.Runtime.Serialization {
             //If both member and arrayIndex are null, we don't have enough information to create
             //a tunnel to do the fixup.
             if (member==null && parentIndex==null) {
-                throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Argument_MustSupplyParent"));
+                throw new ArgumentException(Environment.GetResourceString("Argument_MustSupplyParent"));
             }
             Contract.EndContractBlock();
             
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ValueTypeFixupInfo.ctor]Creating a VTFI with Container ID: ", containerID, " and MemberInfo ", member);
+            BCLDebug.Trace("SER", "[ValueTypeFixupInfo.ctor]Creating a VTFI with Container ID: ", containerID, " and MemberInfo ", member);
 
             if (containerID==0 && member==null) {
                 m_containerID = containerID;
@@ -54,11 +54,11 @@ namespace Ssz.Runtime.Serialization {
             //that the arrayIndex must be null because we can't have a FieldInfo into an array. 
             if (member!=null) {
                 if (parentIndex!=null) {
-                    throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Argument_MemberAndArray"));
+                    throw new ArgumentException(Environment.GetResourceString("Argument_MemberAndArray"));
                 }
                        
                 if (((((FieldInfo)member).FieldType).IsValueType) && containerID==0) {
-                    throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Argument_MustSupplyContainer"));
+                    throw new ArgumentException(Environment.GetResourceString("Argument_MustSupplyContainer"));
                 }
             } 
 

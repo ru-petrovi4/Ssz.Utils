@@ -12,7 +12,7 @@
 **
 **
 ============================================================*/
-namespace Ssz.Runtime.Serialization {
+namespace System.Runtime.Serialization {
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -24,9 +24,8 @@ namespace Ssz.Runtime.Serialization {
     using System.Globalization;
     using System.Diagnostics.Contracts;
     using System.Security.Principal;
-    using System.Runtime.Serialization;
 
-    // [System.Runtime.InteropServices.ComVisible(true)]
+    [System.Runtime.InteropServices.ComVisible(true)]
     public class ObjectManager {
         private const int DefaultInitialSize=16;
         private const int DefaultMaxArraySize=0x1000; //MUST BE A POWER OF 2!
@@ -37,7 +36,7 @@ namespace Ssz.Runtime.Serialization {
         private SerializationEventHandler m_onDeserializedHandler;
 
 #if !FEATURE_PAL
-        private static Type TypeOfWindowsIdentity;
+        private static RuntimeType TypeOfWindowsIdentity;
 #endif
 
         internal ObjectHolder []    m_objects;
@@ -55,10 +54,10 @@ namespace Ssz.Runtime.Serialization {
         public ObjectManager(ISurrogateSelector selector, StreamingContext context) : this(selector, context, true, false) {
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal ObjectManager(ISurrogateSelector selector, StreamingContext context, bool checkSecurity, bool isCrossAppDomain) {
             if (checkSecurity) {
-                // CodeAccessPermission.Demand(PermissionType.SecuritySerialization);          
+                CodeAccessPermission.Demand(PermissionType.SecuritySerialization);          
             }
             m_objects = new ObjectHolder[DefaultInitialSize];
             m_selector = selector;
@@ -81,7 +80,7 @@ namespace Ssz.Runtime.Serialization {
             ArrayMask = MaxArraySize - 1;
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private bool CanCallGetType(Object obj) {
 #if FEATURE_REMOTING                        
             if (RemotingServices.IsTransparentProxy(obj)) {
@@ -111,7 +110,7 @@ namespace Ssz.Runtime.Serialization {
     
         static ObjectManager() {
 #if !FEATURE_PAL && FEATURE_IMPERSONATION
-            TypeOfWindowsIdentity = (Type)typeof(WindowsIdentity);
+            TypeOfWindowsIdentity = (RuntimeType)typeof(WindowsIdentity);
 #endif
         }
 
@@ -169,7 +168,7 @@ namespace Ssz.Runtime.Serialization {
         private void AddObjectHolder(ObjectHolder holder) {
     
             Contract.Assert(holder!=null,"holder!=null");
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[AddObjectHolder]Adding ObjectHolder with id: ", holder.m_id, " Current Bins: ", m_objects.Length);
+            BCLDebug.Trace("SER", "[AddObjectHolder]Adding ObjectHolder with id: ", holder.m_id, " Current Bins: ", m_objects.Length);
             Contract.Assert(holder.m_id>=0,"holder.m_id>=0");
 
             //If the id that we need to place is greater than our current length, and less
@@ -194,7 +193,7 @@ namespace Ssz.Runtime.Serialization {
                     }
                 }
     
-                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[AddObjectHolder]Reallocating m_objects to have ", newSize, " bins");
+                BCLDebug.Trace("SER", "[AddObjectHolder]Reallocating m_objects to have ", newSize, " bins");
                 ObjectHolder[] temp = new ObjectHolder[newSize];
                 Array.Copy(m_objects, temp, m_objects.Length);
                 m_objects = temp;
@@ -202,7 +201,7 @@ namespace Ssz.Runtime.Serialization {
                 
             //Find the bin in which we live and make this new element the first element in the bin.
             int index = (int)(holder.m_id & ArrayMask);
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[AddObjectHolder]Trying to put an object in bin ", index);
+            BCLDebug.Trace("SER", "[AddObjectHolder]Trying to put an object in bin ", index);
     
             ObjectHolder tempHolder = m_objects[index]; 
             holder.m_next = tempHolder;
@@ -216,14 +215,14 @@ namespace Ssz.Runtime.Serialization {
     
             //Find the object required for the fixup.  Throw if we can't find it.
             holder = FindObjectHolder(fixup.m_id);
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.GetCompletionInfo]Getting fixup info for: ", fixup.m_id);
+            BCLDebug.Trace("SER", "[ObjectManager.GetCompletionInfo]Getting fixup info for: ", fixup.m_id);
 
             // CompletelyFixed is our poorly named property which indicates if something requires a SerializationInfo fixup
             // or is an incomplete object reference.  We have this particular branch to handle valuetypes which implement
             // ISerializable.  In that case, we can't do any fixups on them later, so we need to delay the fixups further.
             if (!holder.CompletelyFixed) {
                 if (holder.ObjectValue!=null && holder.ObjectValue is ValueType) {
-                    Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.GetCompletionInfo]ValueType implementing ISerializable.  Delaying fixup.");
+                    BCLDebug.Trace("SER", "[ObjectManager.GetCompletionInfo]ValueType implementing ISerializable.  Delaying fixup.");
                     SpecialFixupObjects.Add(holder);
                     return false;
                 }
@@ -231,24 +230,24 @@ namespace Ssz.Runtime.Serialization {
 
             if (holder==null || holder.CanObjectValueChange || holder.ObjectValue==null) {
                 if (bThrowIfMissing) {
-                    Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[GetCompletionInfo]Unable to find fixup for: ", fixup.m_id);
-                    Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[GetCompletionInfo]Holder: ", ((holder==null)?"<null>":"Non Null"));
-                    Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[GetCompletionInfo]IsIncomplete: ", (holder.IsIncompleteObjectReference));
-                    Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[GetCompletionInfo]Object: ", ((holder.ObjectValue==null)?"<null>":"Non Null"));
+                    BCLDebug.Trace("SER", "[GetCompletionInfo]Unable to find fixup for: ", fixup.m_id);
+                    BCLDebug.Trace("SER", "[GetCompletionInfo]Holder: ", ((holder==null)?"<null>":"Non Null"));
+                    BCLDebug.Trace("SER", "[GetCompletionInfo]IsIncomplete: ", (holder.IsIncompleteObjectReference));
+                    BCLDebug.Trace("SER", "[GetCompletionInfo]Object: ", ((holder.ObjectValue==null)?"<null>":"Non Null"));
                     if (holder==null) {
-                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_NeverSeen", fixup.m_id));
+                        throw new SerializationException(Environment.GetResourceString("Serialization_NeverSeen", fixup.m_id));
                     }
                     if (holder.IsIncompleteObjectReference) {
-                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_IORIncomplete", fixup.m_id));
+                        throw new SerializationException(Environment.GetResourceString("Serialization_IORIncomplete", fixup.m_id));
                     }
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ObjectNotSupplied", fixup.m_id));
+                    throw new SerializationException(Environment.GetResourceString("Serialization_ObjectNotSupplied", fixup.m_id));
                 }
                 return false;
             }
             return true;
         }
     
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void FixupSpecialObject(ObjectHolder holder) {
             ISurrogateSelector uselessSelector=null;
 
@@ -260,7 +259,7 @@ namespace Ssz.Runtime.Serialization {
                 if (returnValue != null)
                 {
                     if (!holder.CanSurrogatedObjectValueChange && returnValue != holder.ObjectValue)
-                        throw new SerializationException(String.Format(CultureInfo.CurrentCulture, Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_NotCyclicallyReferenceableSurrogate"), surrogate.GetType().FullName));
+                        throw new SerializationException(String.Format(CultureInfo.CurrentCulture, Environment.GetResourceString("Serialization_NotCyclicallyReferenceableSurrogate"), surrogate.GetType().FullName));
                     holder.SetObjectValue(returnValue, this);
                 }
                 holder.m_surrogate = null;
@@ -268,7 +267,7 @@ namespace Ssz.Runtime.Serialization {
             } else {
                 //Set the object data 
                 Contract.Assert(holder.ObjectValue is ISerializable,"holder.m_object is ISerializable");
-                Ssz.Runtime.Serialization.BCLDebug.Trace("SER","[ObjectManager.FixupSpecialObject]Fixing up ISerializable object ",holder.ObjectValue," with id ",holder.m_id);
+                BCLDebug.Trace("SER","[ObjectManager.FixupSpecialObject]Fixing up ISerializable object ",holder.ObjectValue," with id ",holder.m_id);
                 CompleteISerializableObject(holder.ObjectValue, holder.SerializationInfo, m_context);
             }
             //Clear anything that we know that we're not going to need.
@@ -291,7 +290,7 @@ namespace Ssz.Runtime.Serialization {
         **       GetRealObject.  Once we've got the new object, take care of all of the fixups
         **       that we can do now that we've got it.
         ==============================================================================*/
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private bool ResolveObjectReference(ObjectHolder holder) {
             Object tempObject;
             Contract.Assert(holder.IsIncompleteObjectReference,"holder.IsIncompleteObjectReference");
@@ -311,8 +310,8 @@ namespace Ssz.Runtime.Serialization {
             try {
                 do {
                     tempObject = holder.ObjectValue;
-                    Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ResolveObjectReference]ID: ", holder.m_id);
-                    Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ResolveObjectReference]HasISerializable: ", holder.HasISerializable);
+                    BCLDebug.Trace("SER", "[ResolveObjectReference]ID: ", holder.m_id);
+                    BCLDebug.Trace("SER", "[ResolveObjectReference]HasISerializable: ", holder.HasISerializable);
                     holder.SetObjectValue(((IObjectReference)(holder.ObjectValue)).GetRealObject(m_context), this);
                     //The object didn't yet have enough information to resolve the reference, so we'll
                     //return false and the graph walker should call us back again after more objects have
@@ -321,19 +320,19 @@ namespace Ssz.Runtime.Serialization {
 
                     if (holder.ObjectValue==null) {
                         holder.SetObjectValue(tempObject, this);
-                        Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "Object: ", holder.m_id, " did NOT have enough information to resolve the IObjectReference.");
+                        BCLDebug.Trace("SER", "Object: ", holder.m_id, " did NOT have enough information to resolve the IObjectReference.");
                         return false;
                     }
                     if (depthCount++==MaxReferenceDepth) {
-                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TooManyReferences"));
+                        throw new SerializationException(Environment.GetResourceString("Serialization_TooManyReferences"));
                     }
                 } while ((holder.ObjectValue is IObjectReference) && (tempObject!=holder.ObjectValue));
             } catch (NullReferenceException) {
-                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ResolveObjectReference]Caught exception trying to call GetRealObject.");
+                BCLDebug.Trace("SER", "[ResolveObjectReference]Caught exception trying to call GetRealObject.");
                 return false;
             }
     
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "Object: ", holder.m_id, " resolved the IObjectReference.");
+            BCLDebug.Trace("SER", "Object: ", holder.m_id, " resolved the IObjectReference.");
             holder.IsIncompleteObjectReference=false;
             DoNewlyRegisteredObjectFixups(holder);
             return true;
@@ -349,7 +348,7 @@ namespace Ssz.Runtime.Serialization {
         ** value  -- the data to set into the field.
         **Exceptions:
         ==============================================================================*/
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private bool DoValueTypeFixup(FieldInfo memberToFix, ObjectHolder holder, Object value) {
             TypedReference typedRef;
             FieldInfo[] fieldsTemp=new FieldInfo[4]; 
@@ -367,7 +366,7 @@ namespace Ssz.Runtime.Serialization {
             //create the path from our outermost containing object down to the actual field which
             //we'd like to set.  This loop is used to build up that list.
             while (holder.RequiresValueTypeFixup) {
-                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[DoValueTypeFixup] valueType fixsite = ", holder.ObjectValue, " fixobj=",value);
+                BCLDebug.Trace("SER", "[DoValueTypeFixup] valueType fixsite = ", holder.ObjectValue, " fixobj=",value);
 
                 //Enlarge the array if required (this is actually fairly unlikely as it would require that we
                 //be nested more than 4 deep.
@@ -448,8 +447,8 @@ namespace Ssz.Runtime.Serialization {
                 //Make the TypedReference and use it to set the value.
                 typedRef = TypedReference.MakeTypedReference(fixupObj, fields);
                 if (memberToFix != null)
-                    //((FieldInfo)memberToFix).SetValueDirectImpl(value, false, typedRef);
-                    ((FieldInfo)memberToFix).SetValueDirect(typedRef, value);
+                    //((RuntimeFieldInfo)memberToFix).SetValueDirectImpl(value, false, typedRef);
+                    ((RuntimeFieldInfo)memberToFix).SetValueDirect(typedRef, value);
                 else
                     TypedReference.SetTypedReference(typedRef, value);
             } else if (memberToFix != null){
@@ -479,7 +478,7 @@ namespace Ssz.Runtime.Serialization {
                 sb.Append("."+intermediateFields[i].Name);
             }
             sb.Append("."+memberToFix.Name+"="+value);
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", sb.ToString());
+            BCLDebug.Trace("SER", sb.ToString());
         }
 
 
@@ -489,7 +488,7 @@ namespace Ssz.Runtime.Serialization {
         **Arguments:
         **Exceptions:
         ==============================================================================*/
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal void CompleteObject(ObjectHolder holder, bool bObjectFullyComplete) {
             FixupHolderList fixups=holder.m_missingElements;
             FixupHolder currentFixup;
@@ -500,7 +499,7 @@ namespace Ssz.Runtime.Serialization {
             
             Contract.Assert(holder!=null,"[ObjectManager.CompleteObject]holder.m_object!=null");
             if (holder.ObjectValue==null) {
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_MissingObject", holder.m_id));
+                throw new SerializationException(Environment.GetResourceString("Serialization_MissingObject", holder.m_id));
             }
     
             if (fixups==null) {
@@ -512,10 +511,10 @@ namespace Ssz.Runtime.Serialization {
                 si = holder.m_serInfo;
 
                 if (si==null) {
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_InvalidFixupDiscovered"));
+                    throw new SerializationException(Environment.GetResourceString("Serialization_InvalidFixupDiscovered"));
                 }
 
-                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.CompleteObject]Complete object ", holder.m_id, " of SI Type: ", si.FullTypeName);
+                BCLDebug.Trace("SER", "[ObjectManager.CompleteObject]Complete object ", holder.m_id, " of SI Type: ", si.FullTypeName);
                 //Walk each of the fixups and complete the name-value pair in the SerializationInfo.
                 if (fixups!=null) {
                     for (int i=0; i<fixups.m_count; i++) {
@@ -526,17 +525,12 @@ namespace Ssz.Runtime.Serialization {
                         if (GetCompletionInfo(fixups.m_values[i], out tempObjectHolder, out fixupInfo, bObjectFullyComplete)) {
                             //Walk the SerializationInfo and find the member needing completion.  All we have to do
                             //at this point is set the member into the Object
-                            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.CompleteObject]Updating object ", holder.m_id, " with object ", tempObjectHolder.m_id);
+                            BCLDebug.Trace("SER", "[ObjectManager.CompleteObject]Updating object ", holder.m_id, " with object ", tempObjectHolder.m_id);
                             Object holderValue = tempObjectHolder.ObjectValue;
-                            // VALFIX
-                            if (CanCallGetType(holderValue))
-                            {
-                                typeof(SerializationInfo).GetMethod("UpdateValue").Invoke(si, new[] { (String)fixupInfo, holderValue, holderValue.GetType() });
-                            }
-                            else
-                            {
-                                typeof(SerializationInfo).GetMethod("UpdateValue").Invoke(si, new[] { (String)fixupInfo, holderValue, typeof(MarshalByRefObject) });
-                                //si.AddValue((String)fixupInfo, holderValue, typeof(MarshalByRefObject));
+                            if (CanCallGetType(holderValue)) {
+                                si.UpdateValue((String)fixupInfo, holderValue, holderValue.GetType());
+                            } else {
+                                si.UpdateValue((String)fixupInfo, holderValue, typeof(MarshalByRefObject));
                             }
                             //Decrement our total number of fixups left to do.
                             fixupsPerformed++;
@@ -550,26 +544,25 @@ namespace Ssz.Runtime.Serialization {
                 }
               
             } else {
-                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.CompleteObject]Non-ISerializableObject: ", holder.m_id);
+                BCLDebug.Trace("SER", "[ObjectManager.CompleteObject]Non-ISerializableObject: ", holder.m_id);
                 for (int i=0; i<fixups.m_count; i++) {
                     currentFixup = fixups.m_values[i];
                     if (currentFixup==null) {
                         continue;
                     }
-                    Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.CompleteObject]Getting fixup info for object: ", currentFixup.m_id);
+                    BCLDebug.Trace("SER", "[ObjectManager.CompleteObject]Getting fixup info for object: ", currentFixup.m_id);
                     if (GetCompletionInfo(currentFixup, out tempObjectHolder, out fixupInfo, bObjectFullyComplete)) {
-                        Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.CompleteObject]Fixing up: ", currentFixup.m_id);
-
+                        BCLDebug.Trace("SER", "[ObjectManager.CompleteObject]Fixing up: ", currentFixup.m_id);
+                        
                         // Check to make sure we are not both reachable from the topObject
                         // and there was a typeloadexception
-                        if (tempObjectHolder.TypeLoadExceptionReachable)
-                        {
+                        if (tempObjectHolder.TypeLoadExceptionReachable){
                             holder.TypeLoadException = tempObjectHolder.TypeLoadException;
                             // If the holder is both reachable and typeloadexceptionreachable
                             // throw an exception with the type name
                             if (holder.Reachable)
                             {
-                                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TypeLoadFailure", holder.TypeLoadException.TypeName));
+                                throw new SerializationException(Environment.GetResourceString("Serialization_TypeLoadFailure", holder.TypeLoadException.TypeName));
                             }
                         }
 
@@ -584,7 +577,7 @@ namespace Ssz.Runtime.Serialization {
                         case FixupHolder.ArrayFixup:
                             Contract.Assert(holder.ObjectValue is Array,"holder.ObjectValue is Array");
                             if (holder.RequiresValueTypeFixup) {
-                                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ValueTypeFixup"));
+                                throw new SerializationException(Environment.GetResourceString("Serialization_ValueTypeFixup"));
                             } else {
                                 ((Array)(holder.ObjectValue)).SetValue(tempObjectHolder.ObjectValue, ((int[])fixupInfo));
                             }
@@ -594,7 +587,7 @@ namespace Ssz.Runtime.Serialization {
                             //Fixup the member directly.
                             MemberInfo tempMember = (MemberInfo)fixupInfo;
                             if (tempMember.MemberType==MemberTypes.Field) {
-                                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.CompleteObject]Fixing member: ", tempMember.Name, " in object ", holder.m_id,
+                                BCLDebug.Trace("SER", "[ObjectManager.CompleteObject]Fixing member: ", tempMember.Name, " in object ", holder.m_id,
                                                " with object ", tempObjectHolder.m_id);
 
                                 // If we have a valuetype that's been boxed to an object and requires a fixup,
@@ -608,7 +601,7 @@ namespace Ssz.Runtime.Serialization {
                                 // to true when we do this.
                                 if (holder.RequiresValueTypeFixup && holder.ValueTypeFixupPerformed) {
                                     if (!DoValueTypeFixup((FieldInfo)tempMember, holder, tempObjectHolder.ObjectValue)) {
-                                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_PartialValueTypeFixup"));
+                                        throw new SerializationException(Environment.GetResourceString("Serialization_PartialValueTypeFixup"));
                                     }
                                 } else {
                                     FormatterServices.SerializationSetValue(tempMember, holder.ObjectValue, tempObjectHolder.ObjectValue);
@@ -617,11 +610,11 @@ namespace Ssz.Runtime.Serialization {
                                     tempObjectHolder.ValueTypeFixupPerformed = true;
                                 }
                             } else {
-                                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_UnableToFixup"));
+                                throw new SerializationException(Environment.GetResourceString("Serialization_UnableToFixup"));
                             }
                             break;
                         default:
-                            throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_UnableToFixup"));
+                            throw new SerializationException(Environment.GetResourceString("Serialization_UnableToFixup"));
                         }
                         //Decrement our total number of fixups left to do.
                         fixupsPerformed++;
@@ -651,12 +644,12 @@ namespace Ssz.Runtime.Serialization {
         **Arguments: dependencies The list of dependent objects
         **Exceptions: None.
         ==============================================================================*/
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void DoNewlyRegisteredObjectFixups(ObjectHolder holder) {
             ObjectHolder temp;
             
             if (holder.CanObjectValueChange) {
-                Ssz.Runtime.Serialization.BCLDebug.Trace("SER","[ObjectManager.DoNewlyRegisteredObjectFixups]Object is an Incomplete Object Reference.  Exiting.");
+                BCLDebug.Trace("SER","[ObjectManager.DoNewlyRegisteredObjectFixups]Object is an Incomplete Object Reference.  Exiting.");
                 return;
             }
 
@@ -664,23 +657,23 @@ namespace Ssz.Runtime.Serialization {
 
             //If we don't have any dependencies, we're done.
             if (dependencies==null) {
-                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[DoNewlyRegisteredObjectFixups]Exiting with no dependencies");
+                BCLDebug.Trace("SER", "[DoNewlyRegisteredObjectFixups]Exiting with no dependencies");
                 return;
             }
             
             //Walk all of the dependencies and decrement the counter on each of uncompleted objects.
             //If one of the counters reaches 0, all of it's fields have been completed and we should
             //go take care of its fixups.
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.DoNewlyRegisteredObjectFixups]Object has ", dependencies.Count, " fixups registered");
+            BCLDebug.Trace("SER", "[ObjectManager.DoNewlyRegisteredObjectFixups]Object has ", dependencies.Count, " fixups registered");
             dependencies.StartEnumeration();
             while (dependencies.MoveNext()) {
                 temp = FindObjectHolder(dependencies.Current);
-                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.DoNewlyRegisteredObjectFixups]Doing a fixup on object: ", temp.m_id);
+                BCLDebug.Trace("SER", "[ObjectManager.DoNewlyRegisteredObjectFixups]Doing a fixup on object: ", temp.m_id);
                 Contract.Assert(temp.DirectlyDependentObjects>0,"temp.m_missingElementsRemaining>0");
                 temp.DecrementFixupsRemaining(this);
                 if (((temp.DirectlyDependentObjects))==0) {
-                    Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[DoNewlyRegisteredObjectFixups]Doing fixup for object ", temp.m_id);
-                    Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[DoNewlyRegisteredObjectFixups]ObjectValue ", ((temp.ObjectValue==null)?"<null>":temp.ObjectValue));
+                    BCLDebug.Trace("SER", "[DoNewlyRegisteredObjectFixups]Doing fixup for object ", temp.m_id);
+                    BCLDebug.Trace("SER", "[DoNewlyRegisteredObjectFixups]ObjectValue ", ((temp.ObjectValue==null)?"<null>":temp.ObjectValue));
                     // If this is null, we have the case where a fixup was registered for a child, the object 
                     // required by the fixup was provided, and the object to be fixed hasn't yet been seen.  
                     if (temp.ObjectValue!=null) {
@@ -690,12 +683,12 @@ namespace Ssz.Runtime.Serialization {
                     }
                 }
             }
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.DoNewlyRegisteredObjectFixups]Exiting.");
+            BCLDebug.Trace("SER", "[ObjectManager.DoNewlyRegisteredObjectFixups]Exiting.");
         }
         
         public virtual Object GetObject(long objectID) {
             if (objectID<=0) {
-                throw new ArgumentOutOfRangeException("objectID", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentOutOfRange_ObjectID"));
+                throw new ArgumentOutOfRangeException("objectID", Environment.GetResourceString("ArgumentOutOfRange_ObjectID"));
             }
             Contract.EndContractBlock();
     
@@ -703,30 +696,30 @@ namespace Ssz.Runtime.Serialization {
             //needs to link to the objects to which they refer, not to the references themselves.
             ObjectHolder holder = FindObjectHolder(objectID);
     
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "GetObject. objectID: ", objectID);
+            BCLDebug.Trace("SER", "GetObject. objectID: ", objectID);
 
             if (holder==null || holder.CanObjectValueChange) { 
-                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "GetObject. holder: null or IncompleteObjectReference");
+                BCLDebug.Trace("SER", "GetObject. holder: null or IncompleteObjectReference");
                 return null;
             }
             
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "GetObject. holder contains: ", ((holder.ObjectValue==null)?"<null>":holder.ObjectValue));
+            BCLDebug.Trace("SER", "GetObject. holder contains: ", ((holder.ObjectValue==null)?"<null>":holder.ObjectValue));
             return holder.ObjectValue;
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated_required
+        [System.Security.SecurityCritical]  // auto-generated_required
         public virtual void RegisterObject(Object obj, long objectID) {
             RegisterObject(obj, objectID, null,0,null);
         }
     
 
-        // [System.Security.SecurityCritical]  // auto-generated_required
+        [System.Security.SecurityCritical]  // auto-generated_required
         public void RegisterObject(Object obj, long objectID, SerializationInfo info) {
             RegisterObject(obj, objectID, info, 0, null);
         }
 
 
-        // [System.Security.SecurityCritical]  // auto-generated_required
+        [System.Security.SecurityCritical]  // auto-generated_required
         public void RegisterObject(Object obj, long objectID, SerializationInfo info, long idOfContainingObj, MemberInfo member) {
             RegisterObject(obj, objectID, info, idOfContainingObj, member, null);
         }
@@ -743,18 +736,18 @@ namespace Ssz.Runtime.Serialization {
             return;
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated_required
+        [System.Security.SecurityCritical]  // auto-generated_required
         public void RegisterObject(Object obj, long objectID, SerializationInfo info, long idOfContainingObj, MemberInfo member, int[] arrayIndex) {
             if (obj==null) {
                 throw new ArgumentNullException("obj");
             }
             if (objectID<=0) {
-                throw new ArgumentOutOfRangeException("objectID", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentOutOfRange_ObjectID"));
+                throw new ArgumentOutOfRangeException("objectID", Environment.GetResourceString("ArgumentOutOfRange_ObjectID"));
             }
             Contract.EndContractBlock();
 
-            if (member!=null && !(member is FieldInfo) && !(member is SerializationFieldInfo)) {
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_UnknownMemberInfo"));
+            if (member!=null && !(member is RuntimeFieldInfo) && !(member is SerializationFieldInfo)) {
+                throw new SerializationException(Environment.GetResourceString("Serialization_UnknownMemberInfo"));
             }
 
             ObjectHolder temp;
@@ -770,7 +763,7 @@ namespace Ssz.Runtime.Serialization {
                     selectorType = typeof(MarshalByRefObject);
                 }
 
-                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.RegisterObject]ID: ", objectID, "\tType: ", selectorType, "\tValue: ", obj);
+                BCLDebug.Trace("SER", "[ObjectManager.RegisterObject]ID: ", objectID, "\tType: ", selectorType, "\tValue: ", obj);
     
                 //If we need a surrogate for this object, lets find it now.
                 surrogate = m_selector.GetSurrogate(selectorType, m_context, out useless);
@@ -793,7 +786,7 @@ namespace Ssz.Runtime.Serialization {
             temp = FindObjectHolder(objectID);
             //This is the first time which we've seen the object, we need to create a new holder.
             if (temp==null) { 
-                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.RegisterObject]Adding a new object holder for ", objectID, "\tValueType: ", obj.GetType());
+                BCLDebug.Trace("SER", "[ObjectManager.RegisterObject]Adding a new object holder for ", objectID, "\tValueType: ", obj.GetType());
                 
                 temp = new ObjectHolder(obj, objectID, info, surrogate, idOfContainingObj, (FieldInfo)member, arrayIndex);
                 AddObjectHolder(temp);
@@ -807,7 +800,7 @@ namespace Ssz.Runtime.Serialization {
             
             //If the object isn't null, we've registered this before.  Not good.
             if (temp.ObjectValue!=null) {
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_RegisterTwice"));
+                throw new SerializationException(Environment.GetResourceString("Serialization_RegisterTwice"));
             }
             
             //Complete the data in the ObjectHolder
@@ -825,7 +818,7 @@ namespace Ssz.Runtime.Serialization {
             }
 
             if (temp.RequiresDelayedFixup) {
-                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.RegisterObject]Tracking incomplete objref for element: ", temp.m_id);
+                BCLDebug.Trace("SER", "[ObjectManager.RegisterObject]Tracking incomplete objref for element: ", temp.m_id);
                 SpecialFixupObjects.Add(temp);   
             } 
 
@@ -833,7 +826,7 @@ namespace Ssz.Runtime.Serialization {
                 //Here's where things get tricky.  If this isn't an instance of IObjectReference, we need to walk it's fixup 
                 //chain and decrement the counters on anything that has reached 0.  Once we've notified all of the dependencies,
                 //we can simply clear the list of dependent objects.
-                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.RegisterObject]Calling DoNewlyRegisteredObjectFixups for element: ", temp.m_id);
+                BCLDebug.Trace("SER", "[ObjectManager.RegisterObject]Calling DoNewlyRegisteredObjectFixups for element: ", temp.m_id);
                 DoNewlyRegisteredObjectFixups(temp);
                 temp.DependentObjects=null;
             }
@@ -847,7 +840,7 @@ namespace Ssz.Runtime.Serialization {
             }
                     
 
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.RegisterObject]Exiting.");
+            BCLDebug.Trace("SER", "[ObjectManager.RegisterObject]Exiting.");
         }
 
         /*=========================CompleteISerializableObject==========================
@@ -860,32 +853,32 @@ namespace Ssz.Runtime.Serialization {
         **Exceptions: ArgumentNullException if obj is null
         **            ArgumentException if obj does not implement ISerializable.
         ==============================================================================*/
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal void CompleteISerializableObject(Object obj, SerializationInfo info, StreamingContext context) {
             if (obj==null) {
                 throw new ArgumentNullException("obj");
             }
 
             if (!(obj is ISerializable)) {
-                throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_NotISer"));
+                throw new ArgumentException(Environment.GetResourceString("Serialization_NotISer"));
             }
             Contract.EndContractBlock();
 
-            ConstructorInfo constInfo = null;
+            RuntimeConstructorInfo constInfo = null;
 
-            Type t = (Type)obj.GetType();
+            RuntimeType t = (RuntimeType)obj.GetType();
 
             try {
 #if !FEATURE_PAL
                 if (t == TypeOfWindowsIdentity && m_isCrossAppDomain)
-                    constInfo = SszWindowsIdentity.GetSpecialSerializationCtor();
+                    constInfo = WindowsIdentity.GetSpecialSerializationCtor();
                 else
 #endif                    
                     constInfo = GetConstructor(t);
             } catch (Exception e) {
-                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[CompleteISerializableObject]Unable to get constructor for: ", t);
-                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[CompleteISerializableObject]Stack trace was: ", e);
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ConstructorNotFound", t), e);
+                BCLDebug.Trace("SER", "[CompleteISerializableObject]Unable to get constructor for: ", t);
+                BCLDebug.Trace("SER", "[CompleteISerializableObject]Stack trace was: ", e);
+                throw new SerializationException(Environment.GetResourceString("Serialization_ConstructorNotFound", t), e);
             }
 
             constInfo.SerializationInvoke(obj, info, context);
@@ -898,12 +891,12 @@ namespace Ssz.Runtime.Serialization {
         **Arguments:
         **Exceptions:
         ==============================================================================*/
-        internal static ConstructorInfo GetConstructor(Type t)
+        internal static RuntimeConstructorInfo GetConstructor(RuntimeType t)
         {
-            ConstructorInfo ci = t.GetSerializationCtor();
+            RuntimeConstructorInfo ci = t.GetSerializationCtor();
 
             if (ci == null)
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ConstructorNotFound", t.FullName));
+                throw new SerializationException(Environment.GetResourceString("Serialization_ConstructorNotFound", t.FullName));
 
             return ci;
         }
@@ -913,7 +906,7 @@ namespace Ssz.Runtime.Serialization {
             ObjectHolder temp;
             int fixupCount=-1;
             
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.DoFixups]Entering");
+            BCLDebug.Trace("SER", "[ObjectManager.DoFixups]Entering");
 
             //The first thing that we need to do is fixup all of the objects which implement
             //IObjectReference.  This is complicated by the fact that we need to deal with IReferenceObjects 
@@ -930,10 +923,10 @@ namespace Ssz.Runtime.Serialization {
                 while (fixupObjectsEnum.MoveNext()) {
                     temp = fixupObjectsEnum.Current;
                     if (temp.ObjectValue == null) {
-                        Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.DoFixups]Object with id: ", temp.m_id, " not found.");
-                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ObjectNotSupplied", temp.m_id));
+                        BCLDebug.Trace("SER", "[ObjectManager.DoFixups]Object with id: ", temp.m_id, " not found.");
+                        throw new SerializationException(Environment.GetResourceString("Serialization_ObjectNotSupplied", temp.m_id));
                     }
-                    Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.DoFixups]Looking at object with id: ", temp.m_id, " which has ", 
+                    BCLDebug.Trace("SER", "[ObjectManager.DoFixups]Looking at object with id: ", temp.m_id, " which has ", 
                                    temp.TotalDependentObjects, " Total Dependent Fixups, but only ", 
                                    (temp.DependentObjects==null)?0:temp.DependentObjects.Count, 
                                    " directly dependent objects. Has it been fixed? ", temp.CompletelyFixed);
@@ -956,20 +949,20 @@ namespace Ssz.Runtime.Serialization {
     
             //If our count is 0, we're done and should just return
             if (m_fixupCount==0) {
-                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.DoFixups]All fixups completed.  We don't need to walk the list.");
+                BCLDebug.Trace("SER", "[ObjectManager.DoFixups]All fixups completed.  We don't need to walk the list.");
                 if (TopObject is TypeLoadExceptionHolder)
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TypeLoadFailure", ((TypeLoadExceptionHolder)TopObject).TypeName));
+                    throw new SerializationException(Environment.GetResourceString("Serialization_TypeLoadFailure", ((TypeLoadExceptionHolder)TopObject).TypeName));
                 return;
             }
     
             //If our count isn't 0, we had at least one case where an object referenced another object twice.
             //Walk the entire list until the count is 0 or until we find an object which we can't complete.
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.DoFixups]Remaining object length is: ", m_objects.Length);
+            BCLDebug.Trace("SER", "[ObjectManager.DoFixups]Remaining object length is: ", m_objects.Length);
             for (int i=0; i<m_objects.Length; i++) {
                 temp = m_objects[i];
                 while (temp!=null) {
                     if (temp.TotalDependentObjects>0 /*|| temp.m_missingElements!=null*/) {
-                        Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.DoFixups]Doing a delayed fixup on object ", temp.m_id);
+                        BCLDebug.Trace("SER", "[ObjectManager.DoFixups]Doing a delayed fixup on object ", temp.m_id);
                         CompleteObject(temp, true);
                     }
                     temp = temp.m_next;
@@ -980,8 +973,8 @@ namespace Ssz.Runtime.Serialization {
             }
 
             // this assert can be trigered by user code that manages fixups manually
-            Ssz.Runtime.Serialization.BCLDebug.Correctness(false, "[ObjectManager.DoFixups] Fixup counting is incorrect.");
-            throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_IncorrectNumberOfFixups"));
+            BCLDebug.Correctness(false, "[ObjectManager.DoFixups] Fixup counting is incorrect.");
+            throw new SerializationException(Environment.GetResourceString("Serialization_IncorrectNumberOfFixups"));
         }
 
         /*================================RegisterFixup=================================
@@ -999,7 +992,7 @@ namespace Ssz.Runtime.Serialization {
             ObjectHolder ohRequired;
             
             if (ohToBeFixed.RequiresSerInfoFixup && fixup.m_fixupType == FixupHolder.MemberFixup) {
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_InvalidFixupType"));
+                throw new SerializationException(Environment.GetResourceString("Serialization_InvalidFixupType"));
             }
 
             //Add the fixup to the list.
@@ -1015,31 +1008,28 @@ namespace Ssz.Runtime.Serialization {
         }
     
         public virtual void RecordFixup(long objectToBeFixed, MemberInfo member, long objectRequired) {
-            
+    
             //Verify our arguments
-            if (objectToBeFixed <= 0 || objectRequired <= 0)
-            {
-                throw new ArgumentOutOfRangeException(((objectToBeFixed <= 0) ? "objectToBeFixed" : "objectRequired"),
-                                                      Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_IdTooSmall"));
+            if (objectToBeFixed<=0 || objectRequired<=0) {
+                throw new ArgumentOutOfRangeException(((objectToBeFixed<=0)?"objectToBeFixed":"objectRequired"),
+                                                      Environment.GetResourceString("Serialization_IdTooSmall"));
             }
 
-            if (member == null)
-            {
+            if (member==null) {
                 throw new ArgumentNullException("member");
             }
             Contract.EndContractBlock();
 
-            if (!(member is FieldInfo) && !(member is SerializationFieldInfo))
-            {
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_InvalidType", member.GetType().ToString()));
+            if (!(member is RuntimeFieldInfo) && !(member is SerializationFieldInfo)) {
+                throw new SerializationException(Environment.GetResourceString("Serialization_InvalidType", member.GetType().ToString()));
             }
 
-
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "RecordFixup.  ObjectToBeFixed: ", objectToBeFixed, "\tMember: ", member.Name, "\tRequiredObject: ", objectRequired);
-
+    
+            BCLDebug.Trace("SER", "RecordFixup.  ObjectToBeFixed: ", objectToBeFixed, "\tMember: ", member.Name, "\tRequiredObject: ", objectRequired);
+    
             //Create a new fixup holder
             FixupHolder fixup = new FixupHolder(objectRequired, member, FixupHolder.MemberFixup);
-
+    
             RegisterFixup(fixup, objectToBeFixed, objectRequired);
         }
     
@@ -1054,7 +1044,7 @@ namespace Ssz.Runtime.Serialization {
             //Verify our arguments
             if (objectToBeFixed<=0 || objectRequired<=0) {
                 throw new ArgumentOutOfRangeException(((objectToBeFixed<=0)?"objectToBeFixed":"objectRequired"),
-                                                      Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_IdTooSmall"));
+                                                      Environment.GetResourceString("Serialization_IdTooSmall"));
             }
     
             if (memberName==null) {
@@ -1062,7 +1052,7 @@ namespace Ssz.Runtime.Serialization {
             }
             Contract.EndContractBlock();
     
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "RecordDelayedFixup.  ObjectToBeFixed: ", objectToBeFixed, "\tMember: ", memberName, "\tRequiredObject: ", objectRequired);
+            BCLDebug.Trace("SER", "RecordDelayedFixup.  ObjectToBeFixed: ", objectToBeFixed, "\tMember: ", memberName, "\tRequiredObject: ", objectRequired);
     
             //Create a new fixup holder
             FixupHolder fixup = new FixupHolder(objectRequired, memberName, FixupHolder.DelayedFixup);
@@ -1080,7 +1070,7 @@ namespace Ssz.Runtime.Serialization {
             int[] indexArray = new int[1];
             indexArray[0]=index;
     
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "RecordArrayElementFixup.  ObjectToBeFixed: ", arrayToBeFixed, "\tIndex: ", index, "\tRequiredObject: ", objectRequired);
+            BCLDebug.Trace("SER", "RecordArrayElementFixup.  ObjectToBeFixed: ", arrayToBeFixed, "\tIndex: ", index, "\tRequiredObject: ", objectRequired);
     
             RecordArrayElementFixup(arrayToBeFixed, indexArray, objectRequired);
         }
@@ -1089,7 +1079,7 @@ namespace Ssz.Runtime.Serialization {
             //Verify our arguments
             if (arrayToBeFixed<=0 || objectRequired<=0) {
                 throw new ArgumentOutOfRangeException(((arrayToBeFixed<=0)?"objectToBeFixed":"objectRequired"),
-                                                      Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_IdTooSmall"));
+                                                      Environment.GetResourceString("Serialization_IdTooSmall"));
             }
     
             if (indices==null) {
@@ -1097,7 +1087,7 @@ namespace Ssz.Runtime.Serialization {
             }
             Contract.EndContractBlock();
     
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "RecordArrayElementFixup.  ArrayToBeFixed: ", arrayToBeFixed, "\tRequiredObject: ", objectRequired);
+            BCLDebug.Trace("SER", "RecordArrayElementFixup.  ArrayToBeFixed: ", arrayToBeFixed, "\tRequiredObject: ", objectRequired);
             FixupHolder fixup = new FixupHolder(objectRequired, indices, FixupHolder.ArrayFixup);
             RegisterFixup(fixup, arrayToBeFixed, objectRequired);
         }
@@ -1203,7 +1193,7 @@ namespace Ssz.Runtime.Serialization {
 
             if (idOfContainingObj!=0 && ((field!=null && field.FieldType.IsValueType) || arrayIndex!=null)) {
                 if (idOfContainingObj == objID) {
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ParentChildIdentical"));
+                    throw new SerializationException(Environment.GetResourceString("Serialization_ParentChildIdentical"));
                 }
 
                 m_valueFixup = new ValueTypeFixupInfo(idOfContainingObj, field, arrayIndex);
@@ -1302,7 +1292,7 @@ namespace Ssz.Runtime.Serialization {
             //is because we need to increment the TotalFixups in the holders as well.
             do {
                 holder = manager.FindOrCreateObjectHolder(holder.ContainerID);
-                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.UpdateDescendentDependencyChain]Looking for holder with id: ", holder.ContainerID);
+                BCLDebug.Trace("SER", "[ObjectManager.UpdateDescendentDependencyChain]Looking for holder with id: ", holder.ContainerID);
                 Contract.Assert(holder!=null, "[ObjectHolder.UpdateTotalDependencyChain]holder!=null");
                 holder.IncrementDescendentFixups(amount);
             } while (holder.RequiresValueTypeFixup);
@@ -1339,7 +1329,7 @@ namespace Ssz.Runtime.Serialization {
         **           manager -- the ObjectManager being used to track these ObjectHolders.
         **Exceptions: None. Asserts only.
         ==============================================================================*/
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal void UpdateData(Object obj, SerializationInfo info, ISerializationSurrogate surrogate, long idOfContainer, FieldInfo field, int[] arrayIndex, ObjectManager manager) {
             Contract.Assert(obj!=null,"obj!=null");
             Contract.Assert(m_id>0,"m_id>0");
@@ -1351,7 +1341,7 @@ namespace Ssz.Runtime.Serialization {
 
             if (idOfContainer!=0 && ((field!=null && field.FieldType.IsValueType) || arrayIndex!=null)) {
                 if (idOfContainer == m_id) {
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ParentChildIdentical"));
+                    throw new SerializationException(Environment.GetResourceString("Serialization_ParentChildIdentical"));
                 }
                 m_valueFixup = new ValueTypeFixupInfo(idOfContainer, field, arrayIndex);
             }
@@ -1418,8 +1408,8 @@ namespace Ssz.Runtime.Serialization {
         // We check whether or not there are any dependent objects. 
         internal bool ValueTypeFixupPerformed {
             get { 
-                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.ValueTypeFixupPerformed]Flags: ", m_flags & VALUETYPE_FIXUP_PERFORMED);
-                Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectManager.ValueTypeFixupPerformed]DependentObjects: ", (m_dependentObjects==null)?"<null>":m_dependentObjects.Count.ToString());
+                BCLDebug.Trace("SER", "[ObjectManager.ValueTypeFixupPerformed]Flags: ", m_flags & VALUETYPE_FIXUP_PERFORMED);
+                BCLDebug.Trace("SER", "[ObjectManager.ValueTypeFixupPerformed]DependentObjects: ", (m_dependentObjects==null)?"<null>":m_dependentObjects.Count.ToString());
                 return ( ((m_flags & VALUETYPE_FIXUP_PERFORMED)!=0)|| 
                         (m_object!=null && ((m_dependentObjects==null) || m_dependentObjects.Count==0))); }
             set { 
@@ -1495,7 +1485,7 @@ namespace Ssz.Runtime.Serialization {
             }
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal void SetObjectValue(Object obj, ObjectManager manager) {
             m_object = obj;
             if (obj == manager.TopObject)
@@ -1627,7 +1617,7 @@ namespace Ssz.Runtime.Serialization {
             int newLength = m_values.Length*2;
             if (newLength<0) {
                 if (newLength==Int32.MaxValue) {
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TooManyElements"));
+                    throw new SerializationException(Environment.GetResourceString("Serialization_TooManyElements"));
                 }
                 newLength=Int32.MaxValue;
             }
@@ -1712,11 +1702,11 @@ namespace Ssz.Runtime.Serialization {
         }
              
         private void EnlargeArray() {
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[LongList.EnlargeArray]Enlarging array of size ", m_values.Length);
+            BCLDebug.Trace("SER", "[LongList.EnlargeArray]Enlarging array of size ", m_values.Length);
             int newLength = m_values.Length*2;
             if (newLength<0) {
                 if (newLength==Int32.MaxValue) {
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TooManyElements"));
+                    throw new SerializationException(Environment.GetResourceString("Serialization_TooManyElements"));
                 }
                 newLength=Int32.MaxValue;
             }
@@ -1757,11 +1747,11 @@ namespace Ssz.Runtime.Serialization {
         }
 
         private void EnlargeArray() {
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SER", "[ObjectHolderList.EnlargeArray]Enlarging array of size ", m_values.Length);
+            BCLDebug.Trace("SER", "[ObjectHolderList.EnlargeArray]Enlarging array of size ", m_values.Length);
             int newLength = m_values.Length*2;
             if (newLength<0) {
                 if (newLength==Int32.MaxValue) {
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TooManyElements"));
+                    throw new SerializationException(Environment.GetResourceString("Serialization_TooManyElements"));
                 }
                 newLength=Int32.MaxValue;
             }

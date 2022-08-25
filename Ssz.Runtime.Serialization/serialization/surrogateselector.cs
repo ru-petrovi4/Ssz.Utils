@@ -14,15 +14,13 @@ using System.Diagnostics.Contracts;
 **
 **
 ===========================================================*/
-namespace Ssz.Runtime.Serialization {
+namespace System.Runtime.Serialization {
 
     using System.Runtime.Remoting;
     using System;
     using System.Collections;
-    using System.Security.Permissions;
-    using System.Runtime.Serialization;
-
-    // [System.Runtime.InteropServices.ComVisible(true)]
+    using System.Security.Permissions;       
+[System.Runtime.InteropServices.ComVisible(true)]
     public class SurrogateSelector : ISurrogateSelector {
        
         internal SurrogateHashtable m_surrogates;
@@ -46,7 +44,7 @@ namespace Ssz.Runtime.Serialization {
             m_surrogates.Add(key, surrogate);  // Hashtable does duplicate checking.
         }
     
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private static bool HasCycle(ISurrogateSelector selector) {
             ISurrogateSelector head;
             ISurrogateSelector tail;
@@ -79,7 +77,7 @@ namespace Ssz.Runtime.Serialization {
 
         // Adds another selector to check if we don't have  match within this selector.
         // The logic is:"Add this onto the list as the first thing that you check after yourself."
-        // [System.Security.SecurityCritical]  // auto-generated_required
+        [System.Security.SecurityCritical]  // auto-generated_required
         public virtual void ChainSelector(ISurrogateSelector selector) {
             ISurrogateSelector temp;
             ISurrogateSelector tempCurr;
@@ -95,14 +93,14 @@ namespace Ssz.Runtime.Serialization {
             // Verify that we don't try and add ourself twice.
             //
             if (selector==this) {
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_DuplicateSelector"));
+                throw new SerializationException(Environment.GetResourceString("Serialization_DuplicateSelector"));
             }
             
             //
             // Verify that the argument doesn't contain a cycle.
             //
             if (!HasCycle(selector)) {
-                throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_SurrogateCycleInArgument"), "selector");
+                throw new ArgumentException(Environment.GetResourceString("Serialization_SurrogateCycleInArgument"), "selector");
             }
 
             //
@@ -116,7 +114,7 @@ namespace Ssz.Runtime.Serialization {
                 tempCurr = tempCurr.GetNextSelector();
             }
             if (tempCurr==this) {
-                throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_SurrogateCycle"), "selector");
+                throw new ArgumentException(Environment.GetResourceString("Serialization_SurrogateCycle"), "selector");
             }
 
             //
@@ -134,7 +132,7 @@ namespace Ssz.Runtime.Serialization {
                     break;
                 }
                 if (tempCurr==tempPrev) {
-                    throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_SurrogateCycle"), "selector");
+                    throw new ArgumentException(Environment.GetResourceString("Serialization_SurrogateCycle"), "selector");
                 }
 
                 if (tempCurr==tempEnd) {
@@ -150,7 +148,7 @@ namespace Ssz.Runtime.Serialization {
                     tempPrev = tempPrev.GetNextSelector();
                 }
                 if (tempCurr==tempPrev) {
-                    throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_SurrogateCycle"), "selector");
+                    throw new ArgumentException(Environment.GetResourceString("Serialization_SurrogateCycle"), "selector");
                 }
             }
 
@@ -166,14 +164,14 @@ namespace Ssz.Runtime.Serialization {
         }
     
         // Get the next selector on the chain of selectors.
-        // [System.Security.SecurityCritical]  // auto-generated_required
+        [System.Security.SecurityCritical]  // auto-generated_required
         public virtual ISurrogateSelector GetNextSelector() {
             return m_nextSelector;
         }
     
         // Gets the surrogate for a particular type.  If this selector can't
         // provide a surrogate, it checks with all of it's children before returning null.
-        // [System.Security.SecurityCritical]  // auto-generated_required
+        [System.Security.SecurityCritical]  // auto-generated_required
         public virtual ISerializationSurrogate GetSurrogate(Type type, StreamingContext context, out ISurrogateSelector selector) {
             if (type==null) {
                 throw new ArgumentNullException("type");
@@ -237,7 +235,7 @@ namespace Ssz.Runtime.Serialization {
             SurrogateKey givenValue = (SurrogateKey)item;
             SurrogateKey presentValue = (SurrogateKey)key;
             return presentValue.m_type == givenValue.m_type &&
-                   (presentValue.m_context.State & givenValue.m_context.State) == givenValue.m_context.State &&
+                   (presentValue.m_context.m_state & givenValue.m_context.m_state) == givenValue.m_context.m_state &&
                    presentValue.m_context.Context == givenValue.m_context.Context;
         }
     }

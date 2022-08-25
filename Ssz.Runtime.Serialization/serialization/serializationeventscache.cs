@@ -13,7 +13,7 @@
 **
 ============================================================*/
 
-namespace Ssz.Runtime.Serialization {
+namespace System.Runtime.Serialization {
 
 using System;
 using System.Collections;
@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Globalization;
 using System.Diagnostics.Contracts;
-    using System.Runtime.Serialization;
 
     internal class SerializationEvents
     {
@@ -37,7 +36,7 @@ using System.Diagnostics.Contracts;
             // Traverse the hierarchy to find all methods with the particular attribute
             while (baseType != null && baseType != typeof(Object))
             {
-                Type rt = (Type)baseType;
+                RuntimeType rt = (RuntimeType)baseType;
                 // Get all methods which are declared on this type, instance and public or nonpublic
                 MethodInfo[] mis = baseType.GetMethods(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
 #if _DEBUG                
@@ -103,7 +102,7 @@ using System.Diagnostics.Contracts;
                 foreach(MethodInfo m in m_OnSerializingMethods)
                 {
                     SerializationEventHandler onSerializing =
-                        (SerializationEventHandler)Ssz.Runtime.Serialization.SszDelegate.CreateDelegateNoSecurityCheck((Type)typeof(SerializationEventHandler), obj, m);
+                        (SerializationEventHandler)Delegate.CreateDelegateNoSecurityCheck((RuntimeType)typeof(SerializationEventHandler), obj, m);
                     handler = (SerializationEventHandler)Delegate.Combine(handler, onSerializing);
                 }
                 handler(context);
@@ -122,7 +121,7 @@ using System.Diagnostics.Contracts;
                 foreach(MethodInfo m in m_OnDeserializingMethods)
                 {
                     SerializationEventHandler onDeserializing =
-                        (SerializationEventHandler)Ssz.Runtime.Serialization.SszDelegate.CreateDelegateNoSecurityCheck((Type)typeof(SerializationEventHandler), obj, m);
+                        (SerializationEventHandler)Delegate.CreateDelegateNoSecurityCheck((RuntimeType)typeof(SerializationEventHandler), obj, m);
                     handler = (SerializationEventHandler)Delegate.Combine(handler, onDeserializing);
                 }
                 handler(context);
@@ -141,14 +140,14 @@ using System.Diagnostics.Contracts;
                 foreach(MethodInfo m in m_OnDeserializedMethods)
                 {
                     SerializationEventHandler onDeserialized =
-                        (SerializationEventHandler)Ssz.Runtime.Serialization.SszDelegate.CreateDelegateNoSecurityCheck((Type)typeof(SerializationEventHandler), obj, m);
+                        (SerializationEventHandler)Delegate.CreateDelegateNoSecurityCheck((RuntimeType)typeof(SerializationEventHandler), obj, m);
                     handler = (SerializationEventHandler)Delegate.Combine(handler, onDeserialized);
                 }
                 handler(context);
             }
         }
 
-        // [System.Security.SecurityCritical]
+        [System.Security.SecurityCritical]
         internal SerializationEventHandler AddOnSerialized(Object obj, SerializationEventHandler handler)
         {
             // Add all OnSerialized methods to a delegate
@@ -157,14 +156,14 @@ using System.Diagnostics.Contracts;
                 foreach(MethodInfo m in m_OnSerializedMethods)
                 {
                     SerializationEventHandler onSerialized =
-                        (SerializationEventHandler)Ssz.Runtime.Serialization.SszDelegate.CreateDelegateNoSecurityCheck((Type)typeof(SerializationEventHandler), obj, m);
+                        (SerializationEventHandler)Delegate.CreateDelegateNoSecurityCheck((RuntimeType)typeof(SerializationEventHandler), obj, m);
                     handler = (SerializationEventHandler)Delegate.Combine(handler, onSerialized);
                 }
             }
             return handler;
         }
 
-        // [System.Security.SecurityCritical]
+        [System.Security.SecurityCritical]
         internal SerializationEventHandler AddOnDeserialized(Object obj, SerializationEventHandler handler)
         {
             // Add all OnDeserialized methods to a delegate
@@ -173,7 +172,7 @@ using System.Diagnostics.Contracts;
                 foreach(MethodInfo m in m_OnDeserializedMethods)
                 {
                     SerializationEventHandler onDeserialized =
-                        (SerializationEventHandler)Ssz.Runtime.Serialization.SszDelegate.CreateDelegateNoSecurityCheck((Type)typeof(SerializationEventHandler), obj, m);
+                        (SerializationEventHandler)Delegate.CreateDelegateNoSecurityCheck((RuntimeType)typeof(SerializationEventHandler), obj, m);
                     handler = (SerializationEventHandler)Delegate.Combine(handler, onDeserialized);
                 }
             }

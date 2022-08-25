@@ -12,9 +12,7 @@
 **
 **
 ===========================================================*/
-using System.Runtime.Serialization;
-
-namespace Ssz.Runtime.Serialization {
+namespace System.Runtime.Serialization {
 
     [Serializable]
     internal delegate void DeserializationEventHandler(Object sender);

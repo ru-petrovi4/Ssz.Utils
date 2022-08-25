@@ -13,9 +13,9 @@
  **
  ===========================================================*/
 
-namespace Ssz.Runtime.Serialization.Formatters {
+namespace System.Runtime.Serialization.Formatters {
     using System;    
-    using Ssz.Runtime.Serialization;
+    using System.Runtime.Serialization;
     using System.Security.Permissions;
     using System.Reflection;
     using System.Diagnostics;
@@ -31,7 +31,7 @@ namespace Ssz.Runtime.Serialization.Formatters {
     // HKEY_CURRENT_USER -> Software -> Microsoft -> .NETFramework
     // new DWORD value ManagedLogFacility 0x32 where
 #endif
-    // 0x2 is Ssz.Runtime.Serialization
+    // 0x2 is System.Runtime.Serialization
     // 0x10 is Binary Formatter
     // 0x20 is Soap Formatter
     //
@@ -40,28 +40,28 @@ namespace Ssz.Runtime.Serialization.Formatters {
 
     // remoting Wsdl logging
     /// <internalonly/>
-    // [System.Security.SecurityCritical]  // auto-generated_required
-    // [System.Runtime.InteropServices.ComVisible(true)]
+    [System.Security.SecurityCritical]  // auto-generated_required
+    [System.Runtime.InteropServices.ComVisible(true)]
     public sealed class InternalRM
     {
         /// <internalonly/>
         [System.Diagnostics.Conditional("_LOGGING")]
         public static void InfoSoap(params Object[]messages)
         {
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SOAP", messages);
+            BCLDebug.Trace("SOAP", messages);
         }
 
         //[System.Diagnostics.Conditional("_LOGGING")]        
         /// <internalonly/>
         public static bool SoapCheckEnabled()
         {
-            return Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("SOAP");
+            return BCLDebug.CheckEnabled("SOAP");
         }
     }
 
     /// <internalonly/>
-    // [System.Security.SecurityCritical]  // auto-generated_required
-    // [System.Runtime.InteropServices.ComVisible(true)]
+    [System.Security.SecurityCritical]  // auto-generated_required
+    [System.Runtime.InteropServices.ComVisible(true)]
     public sealed class InternalST
     {
         private InternalST()
@@ -72,14 +72,14 @@ namespace Ssz.Runtime.Serialization.Formatters {
         [System.Diagnostics.Conditional("_LOGGING")]
         public static void InfoSoap(params Object[]messages)
         {
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SOAP", messages);
+            BCLDebug.Trace("SOAP", messages);
         }
 
         //[System.Diagnostics.Conditional("_LOGGING")]        
         /// <internalonly/>
         public static bool SoapCheckEnabled()
         {
-            return Ssz.Runtime.Serialization.BCLDebug.CheckEnabled("Soap");
+            return BCLDebug.CheckEnabled("Soap");
         }
 
         /// <internalonly/>
@@ -91,7 +91,7 @@ namespace Ssz.Runtime.Serialization.Formatters {
             else
                 messages[0] = messages[0]+" ";                
 
-            Ssz.Runtime.Serialization.BCLDebug.Trace("SOAP",messages);                                
+            BCLDebug.Trace("SOAP",messages);                                
         }
 
         /// <internalonly/>
@@ -129,7 +129,7 @@ namespace Ssz.Runtime.Serialization.Formatters {
         [Conditional("_LOGGING")]
         internal static void InfoLog(params Object[]messages)
         {
-            Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY", messages);
+            BCLDebug.Trace("BINARY", messages);
         }
 
         [Conditional("SER_LOGGING")]            
@@ -139,7 +139,7 @@ namespace Ssz.Runtime.Serialization.Formatters {
                 messages[0] = (messages[0].GetType()).Name+" ";
             else
                 messages[0] = messages[0]+" ";                                
-            Ssz.Runtime.Serialization.BCLDebug.Trace("BINARY",messages);
+            BCLDebug.Trace("BINARY",messages);
         }
     }
 }

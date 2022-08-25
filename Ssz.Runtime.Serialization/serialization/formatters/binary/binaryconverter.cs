@@ -14,11 +14,11 @@
  ===========================================================*/
 
 
-namespace Ssz.Runtime.Serialization.Formatters.Binary {
+namespace System.Runtime.Serialization.Formatters.Binary {
 
     using System.Threading;
     using System.Runtime.Remoting;
-    using Ssz.Runtime.Serialization;
+    using System.Runtime.Serialization;
     using System;
     using System.Reflection;
     using System.Globalization;
@@ -486,7 +486,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             return var;
         }
 
-        internal static Type typeofISerializable = typeof(System.Runtime.Serialization.ISerializable);
+        internal static Type typeofISerializable = typeof(ISerializable);
         internal static Type typeofString = typeof(String);
         internal static Type typeofConverter = typeof(Converter);
         internal static Type typeofBoolean = typeof(Boolean);

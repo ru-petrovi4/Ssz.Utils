@@ -13,7 +13,7 @@
  **
  ===========================================================*/
 
-namespace Ssz.Runtime.Serialization.Formatters.Binary {
+namespace System.Runtime.Serialization.Formatters.Binary {
 
     using System;
     using System.Globalization;
@@ -22,17 +22,15 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
     using System.Collections;
     using System.Text;
     using System.Runtime.Remoting;
-    // using System.Runtime.Remoting.Messaging;
-    using Ssz.Runtime.Serialization;
+    using System.Runtime.Remoting.Messaging;
+    using System.Runtime.Serialization;
     using System.Security.Permissions;
     using System.Security;
     using System.Diagnostics;
     using System.Resources;
     using System.Runtime.CompilerServices;
     using System.Diagnostics.Contracts;
-    using System.Runtime.Serialization;
-
-    //using StackCrawlMark = System.Threading.StackCrawlMark;
+    using StackCrawlMark = System.Threading.StackCrawlMark;
 
     internal sealed class ObjectReader
     {
@@ -41,7 +39,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         internal Stream m_stream;
         internal ISurrogateSelector m_surrogates;
         internal StreamingContext m_context;
-        internal Ssz.Runtime.Serialization.ObjectManager m_objectManager;
+        internal ObjectManager m_objectManager;
         internal InternalFE formatterEnums;
         internal SerializationBinder m_binder;
 
@@ -74,7 +72,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         private bool bIsCrossAppDomain;
 #endif        
 
-        //private static FileIOPermission sfileIOPermission = new FileIOPermission(PermissionState.Unrestricted);
+        private static FileIOPermission sfileIOPermission = new FileIOPermission(PermissionState.Unrestricted);
         
         private SerStack ValueFixupStack
         {
@@ -113,7 +111,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         {
             if (stream == null)
             {
-                throw new ArgumentNullException("stream", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentNull_Stream"));
+                throw new ArgumentNullException("stream", Environment.GetResourceString("ArgumentNull_Stream"));
             }
             Contract.EndContractBlock();
 
@@ -128,12 +126,11 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             // This is a hack to allow us to write a type-limiting deserializer
             // when we know exactly what type to expect at the head of the 
             // object graph.
-            // VALFIX
-            //if (m_binder != null) {
-            //    ResourceReader.TypeLimitingDeserializationBinder tldBinder = m_binder as ResourceReader.TypeLimitingDeserializationBinder;
-            //    if (tldBinder != null)
-            //        tldBinder.ObjectReader = this;
-            //}
+            if (m_binder != null) {
+                ResourceReader.TypeLimitingDeserializationBinder tldBinder = m_binder as ResourceReader.TypeLimitingDeserializationBinder;
+                if (tldBinder != null)
+                    tldBinder.ObjectReader = this;
+            }
 #endif // !FEATURE_PAL && FEATURE_SERIALIZATION
 
             this.formatterEnums = formatterEnums;
@@ -143,10 +140,10 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 
 #if FEATURE_REMOTING
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal Object Deserialize(HeaderHandler handler, __BinaryParser serParser, bool fCheck, bool isCrossAppDomain, IMethodCallMessage methodCallMessage) {
             if (serParser == null)
-                throw new ArgumentNullException("serParser", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentNull_WithParamName", serParser));
+                throw new ArgumentNullException("serParser", Environment.GetResourceString("ArgumentNull_WithParamName", serParser));
             Contract.EndContractBlock();
 
 #if _DEBUG
@@ -164,7 +161,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
             if (fCheck)
             {
-                // CodeAccessPermission.Demand(PermissionType.SecuritySerialization);
+                CodeAccessPermission.Demand(PermissionType.SecuritySerialization);
             }
 
             this.handler = handler;
@@ -187,7 +184,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 #endif                
             {
                 if (TopObject == null)
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TopObject"));
+                    throw new SerializationException(Environment.GetResourceString("Serialization_TopObject"));
 
                 //if TopObject has a surrogate then the actual object may be changed during special fixup
                 //So refresh it using topID.
@@ -232,7 +229,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         internal Object Deserialize(HeaderHandler handler, __BinaryParser serParser, bool fCheck)
         {
             if (serParser == null)
-                throw new ArgumentNullException("serParser", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentNull_WithParamName", serParser));
+                throw new ArgumentNullException("serParser", Environment.GetResourceString("ArgumentNull_WithParamName", serParser));
             Contract.EndContractBlock();
 
 #if _DEBUG
@@ -250,7 +247,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
             if (fCheck)
             {
-                // CodeAccessPermission.Demand(PermissionType.SecuritySerialization);
+                CodeAccessPermission.Demand(PermissionType.SecuritySerialization);
             }
 
             this.handler = handler;
@@ -262,7 +259,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 #if FEATURE_REMOTING
                 m_objectManager = new ObjectManager(m_surrogates, m_context, false, bIsCrossAppDomain);
 #else
-                m_objectManager = new Ssz.Runtime.Serialization.ObjectManager(m_surrogates, m_context, false, false);
+                m_objectManager = new ObjectManager(m_surrogates, m_context, false, false);
 #endif
                 serObjectInfoInit = new SerObjectInfoInit();
             }
@@ -283,7 +280,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 #endif                
             {
                 if (TopObject == null)
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TopObject"));
+                    throw new SerializationException(Environment.GetResourceString("Serialization_TopObject"));
 
                 //if TopObject has a surrogate then the actual object may be changed during special fixup
                 //So refresh it using topID.
@@ -324,7 +321,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 #endif
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private bool HasSurrogate(Type t){
             if (m_surrogates == null)
                 return false;
@@ -332,16 +329,15 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             return m_surrogates.GetSurrogate(t, m_context, out notUsed) != null;
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void CheckSerializable(Type t)
         {
-            // VALFIX
-            //if (!t.IsSerializable && !HasSurrogate(t))            
-            //    throw new SerializationException(String.Format(CultureInfo.InvariantCulture, Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_NonSerType"), 
-            //                                                         t.FullName, t.Assembly.FullName));
+            if (!t.IsSerializable && !HasSurrogate(t))
+                throw new SerializationException(String.Format(CultureInfo.InvariantCulture, Environment.GetResourceString("Serialization_NonSerType"), 
+                                                                     t.FullName, t.Assembly.FullName));
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void InitFullDeserialization()
         {
             bFullDeserialization = true;
@@ -349,7 +345,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 #if FEATURE_REMOTING
             m_objectManager = new ObjectManager(m_surrogates, m_context, false, bIsCrossAppDomain);
 #else
-            m_objectManager = new Ssz.Runtime.Serialization.ObjectManager(m_surrogates, m_context, false, false);
+            m_objectManager = new ObjectManager(m_surrogates, m_context, false, false);
 #endif
             if (m_formatterConverter == null)
                 m_formatterConverter = new FormatterConverter();
@@ -359,17 +355,17 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         internal Object CrossAppDomainArray(int index)
         {
             Contract.Assert((index < crossAppDomainArray.Length),
-                             "[Ssz.Runtime.Serialization.Formatters.BinaryObjectReader index out of range for CrossAppDomainArray]");
+                             "[System.Runtime.Serialization.Formatters.BinaryObjectReader index out of range for CrossAppDomainArray]");
             return crossAppDomainArray[index];
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal ReadObjectInfo CreateReadObjectInfo(Type objectType)
         {
             return ReadObjectInfo.Create(objectType, m_surrogates, m_context, m_objectManager, serObjectInfoInit, m_formatterConverter, bSimpleAssembly);
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal ReadObjectInfo CreateReadObjectInfo(Type objectType, String[] memberNames, Type[] memberTypes)
         {
             return ReadObjectInfo.Create(objectType, memberNames, memberTypes, m_surrogates, m_context, m_objectManager, serObjectInfoInit, m_formatterConverter, bSimpleAssembly);
@@ -377,7 +373,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
 
         // Main Parse routine, called by the XML Parse Handlers in XMLParser and also called internally to
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal void Parse(ParseRecord pr)
         {
 #if _DEBUG
@@ -413,7 +409,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                     break;
                 case InternalParseTypeE.Empty:
                 default:
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_XMLElement", pr.PRname));                  
+                    throw new SerializationException(Environment.GetResourceString("Serialization_XMLElement", pr.PRname));                  
 
             }
         }
@@ -425,7 +421,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 #if _DEBUG
             SerTrace.Log( this, " ParseError ",processing," ",onStack);
 #endif
-            throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ParseError",onStack.PRname+" "+((Enum)onStack.PRparseTypeEnum) + " "+processing.PRname+" "+((Enum)processing.PRparseTypeEnum)));                               
+            throw new SerializationException(Environment.GetResourceString("Serialization_ParseError",onStack.PRname+" "+((Enum)onStack.PRparseTypeEnum) + " "+processing.PRname+" "+((Enum)processing.PRparseTypeEnum)));                               
         }
 
         // Parse the SerializedStreamHeader element. This is the first element in the stream if present
@@ -454,7 +450,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             }
         }
 
-         // [System.Security.SecurityCritical]  // auto-generated
+         [System.Security.SecurityCritical]  // auto-generated
          internal void CheckSecurity(ParseRecord pr)
          {
             InternalST.SoapAssert(pr!=null, "[BinaryObjectReader.CheckSecurity]pr!=null");
@@ -462,7 +458,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             if ((object)t != null){
                 if( IsRemoting){
                     if (typeof(MarshalByRefObject).IsAssignableFrom(t))
-                        throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_MBRAsMBV", t.FullName));
+                        throw new ArgumentException(Environment.GetResourceString("Serialization_MBRAsMBV", t.FullName));
                     FormatterServices.CheckTypeSecurity(t, formatterEnums.FEsecurityLevel);
                 }
             }
@@ -470,7 +466,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 #endif
 
         // New object encountered in stream
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void ParseObject(ParseRecord pr)
         {
 #if _DEBUG
@@ -500,7 +496,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             // If the Type is null, this means we have a typeload issue
             // mark the object with TypeLoadExceptionHolder
             if ((object)pr.PRdtType == null)
-            {   
+            {
                 pr.PRnewObj = new TypeLoadExceptionHolder(pr.PRkeyDt);
                 return;
             }
@@ -543,14 +539,14 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                         pr.PRnewObj = FormatterServices.GetSafeUninitializedObject(pr.PRdtType);                                 
                     else
 #endif                        
-                        pr.PRnewObj = Ssz.Runtime.Serialization.FormatterServices.GetUninitializedObject(pr.PRdtType);            
+                        pr.PRnewObj = FormatterServices.GetUninitializedObject(pr.PRdtType);            
 
                     // Run the OnDeserializing methods
                     m_objectManager.RaiseOnDeserializingEvent(pr.PRnewObj);
             }
 
             if (pr.PRnewObj == null)
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TopObjectInstantiate",pr.PRdtType));
+                throw new SerializationException(Environment.GetResourceString("Serialization_TopObjectInstantiate",pr.PRdtType));
 
             if (pr.PRobjectPositionEnum == InternalObjectPositionE.Top)
             {
@@ -573,7 +569,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 
         // End of object encountered in stream
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void ParseObjectEnd(ParseRecord pr)
         {
 #if _DEBUG
@@ -583,7 +579,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             if (objectPr == null)
                 objectPr = pr;
 
-            //Contract.Assert(objectPr != null, "[Ssz.Runtime.Serialization.Formatters.ParseObjectEnd]objectPr != null");
+            //Contract.Assert(objectPr != null, "[System.Runtime.Serialization.Formatters.ParseObjectEnd]objectPr != null");
 
 #if _DEBUG
             SerTrace.Log( this, "ParseObjectEnd objectPr ",objectPr.Trace());
@@ -668,7 +664,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
 
         // Array object encountered in stream
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void ParseArray(ParseRecord pr)
         {
             SerTrace.Log( this, "ParseArray Entry");
@@ -735,14 +731,14 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                         bCouldBeValueType = false;
                     }
                     else if ((object)pr.PRarrayElementType != null) {
-                        pr.PRnewObj = Ssz.Runtime.Serialization.SszArray.UnsafeCreateInstance(pr.PRarrayElementType, pr.PRlengthA[0]);
+                        pr.PRnewObj = Array.UnsafeCreateInstance(pr.PRarrayElementType, pr.PRlengthA[0]);
                     }
                     pr.PRisLowerBound = false;
                 }
                 else
                 {
                     if ((object)pr.PRarrayElementType != null) {
-                        pr.PRnewObj = Ssz.Runtime.Serialization.SszArray.UnsafeCreateInstance(pr.PRarrayElementType, pr.PRlengthA, pr.PRlowerBoundA);
+                        pr.PRnewObj = Array.UnsafeCreateInstance(pr.PRarrayElementType, pr.PRlengthA, pr.PRlowerBoundA);
                     }
                     pr.PRisLowerBound = true;
                 }
@@ -788,9 +784,9 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
                 if ((object)pr.PRarrayElementType != null){
                     if (!pr.PRisLowerBound)
-                        pr.PRnewObj = Ssz.Runtime.Serialization.SszArray.UnsafeCreateInstance(pr.PRarrayElementType, pr.PRlengthA);
+                        pr.PRnewObj = Array.UnsafeCreateInstance(pr.PRarrayElementType, pr.PRlengthA);
                     else
-                        pr.PRnewObj = Ssz.Runtime.Serialization.SszArray.UnsafeCreateInstance(pr.PRarrayElementType, pr.PRlengthA, pr.PRlowerBoundA);
+                        pr.PRnewObj = Array.UnsafeCreateInstance(pr.PRarrayElementType, pr.PRlengthA, pr.PRlowerBoundA);
                 }
 
                 SerTrace.Log( this, "ParseArray Rectangle Array ",pr.PRnewObj.GetType()," lower Bound ",pr.PRisLowerBound);
@@ -806,7 +802,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 pr.PRlinearlength = sum;
             }
             else
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ArrayType",((Enum)pr.PRarrayTypeEnum)));                               
+                throw new SerializationException(Environment.GetResourceString("Serialization_ArrayType",((Enum)pr.PRarrayTypeEnum)));                               
 
 #if FEATURE_REMOTING
             CheckSecurity(pr);
@@ -848,7 +844,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
 
         // Array object item encountered in stream
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void ParseArrayMember(ParseRecord pr)
         {
             SerTrace.Log( this, "ParseArrayMember Entry");
@@ -962,7 +958,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 {
                     // Array of type object
                     if (pr.PRkeyDt == null)
-                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ArrayTypeObject"));
+                        throw new SerializationException(Environment.GetResourceString("Serialization_ArrayTypeObject"));
 
                     Object var = null;
 
@@ -971,7 +967,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                         ParseString(pr, objectPr);
                         var = pr.PRvalue;
                     }
-                    else if (pr.PRdtTypeCode == InternalPrimitiveTypeE.Invalid)
+                    else if (Object.ReferenceEquals(pr.PRdtTypeCode, InternalPrimitiveTypeE.Invalid))
                     {
                         CheckSerializable(pr.PRdtType);
                         // Not nested and invalid, so it is an empty object
@@ -980,7 +976,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                             var = FormatterServices.GetSafeUninitializedObject(pr.PRdtType);                                 
                         else
 #endif                            
-                            var = Ssz.Runtime.Serialization.FormatterServices.GetUninitializedObject(pr.PRdtType);
+                            var = FormatterServices.GetUninitializedObject(pr.PRdtType);
                     }
                     else
                     {
@@ -1039,7 +1035,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             SerTrace.Log( "ParseArrayMember Exit");     
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void ParseArrayMemberEnd(ParseRecord pr)
         {
             SerTrace.Log( this, "ParseArrayMemberEnd");
@@ -1052,7 +1048,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
 
         // Object member encountered in stream
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void ParseMember(ParseRecord pr)
         {
             SerTrace.Log( this, "ParseMember Entry ");
@@ -1154,7 +1150,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                         objectPr.PRobjectInfo.AddValue(pr.PRname, Convert.FromBase64String(pr.PRvalue), ref objectPr.PRsi, ref objectPr.PRmemberData);                                    
                     }
                     else if (Object.ReferenceEquals(pr.PRdtType, Converter.typeofObject))
-                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_TypeMissing", pr.PRname));
+                        throw new SerializationException(Environment.GetResourceString("Serialization_TypeMissing", pr.PRname));
                     else
                     {
                         SerTrace.Log( this, "Object Class with no memberInfo data  Member "+pr.PRname+" type "+pr.PRdtType);
@@ -1200,7 +1196,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 
         // Object member end encountered in stream
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void ParseMemberEnd(ParseRecord pr)
         {
             SerTrace.Log( this, "ParseMemberEnd");
@@ -1220,7 +1216,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 
         // Processes a string object by getting an internal ID for it and registering it with the objectManager
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void ParseString(ParseRecord pr, ParseRecord parentPr)
         {
             SerTrace.Log( this, "ParseString Entry ",pr.PRobjectId," ",pr.PRvalue," ",pr.PRisRegistered);
@@ -1235,13 +1231,13 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void RegisterObject(Object obj, ParseRecord pr, ParseRecord objectPr)
         {
             RegisterObject(obj, pr, objectPr, false);
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void RegisterObject(Object obj, ParseRecord pr, ParseRecord objectPr, bool bIsString)
         {
             if (!pr.PRisRegistered)
@@ -1288,7 +1284,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         private bool bOldFormatDetected = false;
         private IntSizedArray   valTypeObjectIdTable;
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal long GetId(long objectId)
         {
 
@@ -1334,7 +1330,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             SerTrace.Log( this, message," ", StringBuilderCache.GetStringAndRelease(sb));
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal Type Bind(String assemblyString, String typeString)
         {
             Type type = null;
@@ -1353,7 +1349,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         }
 
         NameCache typeCache = new NameCache();
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal Type FastBindToType(String assemblyName, String typeName)
         {
             Type type = null;
@@ -1366,7 +1362,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 if (bSimpleAssembly)
                 {
                     try {
-                          //sfileIOPermission.Assert();
+                          sfileIOPermission.Assert();
                           try {
 #if FEATURE_FUSION
                               assm = ObjectReader.ResolveSimpleAssemblyName(new AssemblyName(assemblyName));
@@ -1375,7 +1371,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 #endif // FEATURE_FUSION
                           }
                           finally {
-                              // CodeAccessPermission.RevertAssert();
+                              CodeAccessPermission.RevertAssert();
                           }
                     }
                     catch(Exception e){
@@ -1390,12 +1386,12 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 else {
                     try
                     {
-                          //sfileIOPermission.Assert();
+                          sfileIOPermission.Assert();
                           try {
                               assm = Assembly.Load(assemblyName);
                           }
                           finally {
-                              // CodeAccessPermission.RevertAssert();
+                              CodeAccessPermission.RevertAssert();
                           }
                     }
                     catch (Exception e)
@@ -1406,7 +1402,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                     if (assm == null)
                         return null;
 
-                    type = Ssz.Runtime.Serialization.FormatterServices.GetTypeFromAssembly(assm, typeName);
+                    type = FormatterServices.GetTypeFromAssembly(assm, typeName);
                 }
 
                 if ((object)type == null)
@@ -1423,30 +1419,25 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
            return entry.type;
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         [MethodImplAttribute(MethodImplOptions.NoInlining)] // Methods containing StackCrawlMark local var has to be marked non-inlineable
         private static Assembly ResolveSimpleAssemblyName(AssemblyName assemblyName)
         {
-            // VALFIX
-            //StackCrawlMark stackMark = StackCrawlMark.LookForMe;
-            //Assembly assm = RuntimeAssembly.LoadWithPartialNameInternal(assemblyName, null, ref stackMark);
-            //if (assm == null && assemblyName != null)
-            //    assm = RuntimeAssembly.LoadWithPartialNameInternal(assemblyName.Name, null, ref stackMark);
-            //return assm;
-            Assembly assm = RuntimeAssembly.LoadWithPartialNameInternal(assemblyName.Name, null);
+            StackCrawlMark stackMark = StackCrawlMark.LookForMe;
+            Assembly assm = RuntimeAssembly.LoadWithPartialNameInternal(assemblyName, null, ref stackMark);
             if (assm == null && assemblyName != null)
-                assm = RuntimeAssembly.LoadWithPartialNameInternal(assemblyName.Name, null);
+                assm = RuntimeAssembly.LoadWithPartialNameInternal(assemblyName.Name, null, ref stackMark);
             return assm;
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private static void GetSimplyNamedTypeFromAssembly(Assembly assm, string typeName, ref Type type)
         {
             // Catching any exceptions that could be thrown from a failure on assembly load
             // This is necessary, for example, if there are generic parameters that are qualified with a version of the assembly that predates the one available
             try
             {
-                type = Ssz.Runtime.Serialization.FormatterServices.GetTypeFromAssembly(assm, typeName);
+                type = FormatterServices.GetTypeFromAssembly(assm, typeName);
             }
             catch (TypeLoadException) { }
             catch (FileNotFoundException) { }
@@ -1465,23 +1456,9 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
         private Type previousType;
         //private int hit;
         
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal Type GetType(BinaryAssemblyInfo assemblyInfo, String name)
         {
-            // VALFIX
-            if (name == "System.DelegateSerializationHolder")
-            {
-                return typeof(DelegateSerializationHolder);
-            }
-            else if (name == "System.DelegateSerializationHolder+DelegateEntry")
-            {
-                return typeof(DelegateSerializationHolder.DelegateEntry);
-            }
-            else if (name == "System.Reflection.MemberInfoSerializationHolder")
-            {
-                return typeof(MemberInfoSerializationHolder);
-            }            
-
             Type objectType = null;
 
             if (((previousName != null) && (previousName.Length == name.Length) && (previousName.Equals(name))) &&
@@ -1503,7 +1480,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                     }
                     else
                     {
-                        objectType = Ssz.Runtime.Serialization.FormatterServices.GetTypeFromAssembly(sourceAssembly, name);
+                        objectType = FormatterServices.GetTypeFromAssembly(sourceAssembly, name);
                     }
 
                     // here let us do the security check 
@@ -1517,46 +1494,46 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 previousName = name;
                 previousType = objectType;
             }
-            //Console.WriteLine("name "+name+" assembly "+assemblyInfo.assemblyString+" objectType "+objectType);            
+            //Console.WriteLine("name "+name+" assembly "+assemblyInfo.assemblyString+" objectType "+objectType);
             return objectType;
         }
 
-        // [SecuritySafeCritical]
+        [SecuritySafeCritical]
         private static void CheckTypeForwardedTo(Assembly sourceAssembly, Assembly destAssembly, Type resolvedType)
         {
-            if ( !Ssz.Runtime.Serialization.FormatterServices.UnsafeTypeForwardersIsEnabled() && sourceAssembly != destAssembly )
+            if ( !FormatterServices.UnsafeTypeForwardersIsEnabled() && sourceAssembly != destAssembly )
             {
                 // we have a type forward to attribute !
 
                 // we can try to see if the dest assembly has less permissionSet
-                //if (!destAssembly.PermissionSet.IsSubsetOf(sourceAssembly.PermissionSet))
-                //{
-                //    // let us try to see if typeforwardedfrom is there
+                if (!destAssembly.PermissionSet.IsSubsetOf(sourceAssembly.PermissionSet))
+                {
+                    // let us try to see if typeforwardedfrom is there
 
-                //    // let us hit the cache first
-                //    TypeInformation typeInfo = BinaryFormatter.GetTypeInformation(resolvedType);
-                //    if (typeInfo.HasTypeForwardedFrom)
-                //    {
-                //        Assembly typeFowardedFromAssembly = null;
-                //        try
-                //        {
-                //            // if this Assembly.Load failed, we still want to throw security exception
-                //            typeFowardedFromAssembly = Assembly.Load(typeInfo.AssemblyString);
-                //        }
-                //        catch { }
+                    // let us hit the cache first
+                    TypeInformation typeInfo = BinaryFormatter.GetTypeInformation(resolvedType);
+                    if (typeInfo.HasTypeForwardedFrom)
+                    {
+                        Assembly typeFowardedFromAssembly = null;
+                        try
+                        {
+                            // if this Assembly.Load failed, we still want to throw security exception
+                            typeFowardedFromAssembly = Assembly.Load(typeInfo.AssemblyString);
+                        }
+                        catch { }
 
-                //        if (typeFowardedFromAssembly != sourceAssembly)
-                //        {
-                //            // throw security exception
-                //            throw new SecurityException() { Demanded = sourceAssembly.PermissionSet };
-                //        }
-                //    }
-                //    else
-                //    {
-                //        // throw security exception
-                //        throw new SecurityException() { Demanded = sourceAssembly.PermissionSet };
-                //    }
-                //}
+                        if (typeFowardedFromAssembly != sourceAssembly)
+                        {
+                            // throw security exception
+                            throw new SecurityException() { Demanded = sourceAssembly.PermissionSet };
+                        }
+                    }
+                    else
+                    {
+                        // throw security exception
+                        throw new SecurityException() { Demanded = sourceAssembly.PermissionSet };
+                    }
+                }
             }         
         }
 

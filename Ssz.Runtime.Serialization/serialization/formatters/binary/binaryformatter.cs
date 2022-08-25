@@ -13,7 +13,7 @@
  **
  ===========================================================*/
 
-namespace Ssz.Runtime.Serialization.Formatters.Binary {
+namespace System.Runtime.Serialization.Formatters.Binary {
 
     using System;
     using System.IO;
@@ -21,19 +21,18 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
     using System.Globalization;
     using System.Collections;
     using System.Collections.Generic;
-    using Ssz.Runtime.Serialization.Formatters;
+    using System.Runtime.Serialization.Formatters;
 #if FEATURE_REMOTING    
     using System.Runtime.Remoting.Proxies;
 #endif
     using System.Runtime.Remoting;
-    // using System.Runtime.Remoting.Messaging;
+    using System.Runtime.Remoting.Messaging;
 
-    using Ssz.Runtime.Serialization;
+    using System.Runtime.Serialization;
     using System.Security.Permissions;
     using System.Diagnostics.Contracts;
-    using System.Runtime.Serialization;
-
-    // [System.Runtime.InteropServices.ComVisible(true)]
+    
+    [System.Runtime.InteropServices.ComVisible(true)]
     sealed public class BinaryFormatter :
 #if !FEATURE_REMOTING
         IFormatter
@@ -112,7 +111,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             return Deserialize(serializationStream, null);
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal Object Deserialize(Stream serializationStream, HeaderHandler handler, bool fCheck)
         {
 #if FEATURE_REMOTING        
@@ -120,12 +119,12 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 #else
             if (serializationStream == null)
             {
-                throw new ArgumentNullException("serializationStream", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentNull_WithParamName", serializationStream));
+                throw new ArgumentNullException("serializationStream", Environment.GetResourceString("ArgumentNull_WithParamName", serializationStream));
             }
             Contract.EndContractBlock();
 
             if (serializationStream.CanSeek && (serializationStream.Length == 0))
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_Stream"));
+                throw new SerializationException(Environment.GetResourceString("Serialization_Stream"));
 
             SerTrace.Log(this, "Deserialize Entry");
             InternalFE formatterEnums = new InternalFE();
@@ -156,35 +155,35 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
             return Deserialize(serializationStream, handler, true, methodCallMessage);
         }
 #endif
-        // [System.Security.SecurityCritical]  // auto-generated_required
+        [System.Security.SecurityCritical]  // auto-generated_required
         [System.Runtime.InteropServices.ComVisible(false)]
         public Object UnsafeDeserialize(Stream serializationStream, HeaderHandler handler) {
             return Deserialize(serializationStream, handler, false);
         }
 
 #if FEATURE_REMOTING        
-        // [System.Security.SecurityCritical]  // auto-generated_required
+        [System.Security.SecurityCritical]  // auto-generated_required
         [System.Runtime.InteropServices.ComVisible(false)]
         public Object UnsafeDeserializeMethodResponse(Stream serializationStream, HeaderHandler handler, IMethodCallMessage methodCallMessage) {
             return Deserialize(serializationStream, handler, false, methodCallMessage);
         }         
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal Object Deserialize(Stream serializationStream, HeaderHandler handler, bool fCheck, IMethodCallMessage methodCallMessage) {
             return Deserialize(serializationStream, handler, fCheck, false/*isCrossAppDomain*/, methodCallMessage);
         }
 
         // Deserialize the stream into an object graph.
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal Object Deserialize(Stream serializationStream, HeaderHandler handler, bool fCheck, bool isCrossAppDomain, IMethodCallMessage methodCallMessage) {
             if (serializationStream==null)
             {
-                throw new ArgumentNullException("serializationStream", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentNull_WithParamName",serializationStream));
+                throw new ArgumentNullException("serializationStream", Environment.GetResourceString("ArgumentNull_WithParamName",serializationStream));
             }
             Contract.EndContractBlock();
 
             if (serializationStream.CanSeek && (serializationStream.Length == 0))
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_Stream"));
+                throw new SerializationException(Environment.GetResourceString("Serialization_Stream"));
 
             SerTrace.Log(this, "Deserialize Entry");
             InternalFE formatterEnums = new InternalFE();
@@ -214,12 +213,12 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
         // Commences the process of serializing the entire graph.  All of the data (in the appropriate format
         // is emitted onto the stream).
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal void Serialize(Stream serializationStream, Object graph, Header[] headers, bool fCheck)
         {
             if (serializationStream == null)
             {
-                throw new ArgumentNullException("serializationStream", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentNull_WithParamName", serializationStream));
+                throw new ArgumentNullException("serializationStream", Environment.GetResourceString("ArgumentNull_WithParamName", serializationStream));
             }
             Contract.EndContractBlock();
             SerTrace.Log(this, "Serialize Entry");
@@ -243,8 +242,8 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
                 if (!typeNameCache.TryGetValue(type, out typeInformation))
                 {
                     bool hasTypeForwardedFrom;
-                    string assemblyName = Ssz.Runtime.Serialization.FormatterServices.GetClrAssemblyName(type, out hasTypeForwardedFrom);
-                    typeInformation = new TypeInformation(Ssz.Runtime.Serialization.FormatterServices.GetClrTypeFullName(type), assemblyName, hasTypeForwardedFrom);
+                    string assemblyName = FormatterServices.GetClrAssemblyName(type, out hasTypeForwardedFrom);
+                    typeInformation = new TypeInformation(FormatterServices.GetClrTypeFullName(type), assemblyName, hasTypeForwardedFrom);
                     typeNameCache.Add(type, typeInformation);
                 }
                 return typeInformation;

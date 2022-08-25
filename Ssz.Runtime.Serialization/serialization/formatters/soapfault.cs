@@ -15,10 +15,10 @@
  **
  ===========================================================*/
 #if FEATURE_REMOTING
-namespace Ssz.Runtime.Serialization.Formatters
+namespace System.Runtime.Serialization.Formatters
 {
     using System;
-    using Ssz.Runtime.Serialization;
+    using System.Runtime.Serialization;
     using System.Runtime.Remoting;
     using System.Runtime.Remoting.Metadata;
     using System.Globalization;
@@ -28,7 +28,7 @@ namespace Ssz.Runtime.Serialization.Formatters
 
 [Serializable]
 [SoapType(Embedded=true)]    
-// [System.Runtime.InteropServices.ComVisible(true)]
+[System.Runtime.InteropServices.ComVisible(true)]
     public sealed class SoapFault : ISerializable
     {
         String faultCode;
@@ -74,7 +74,7 @@ namespace Ssz.Runtime.Serialization.Formatters
             }
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated_required
+        [System.Security.SecurityCritical]  // auto-generated_required
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("faultcode", "SOAP-ENV:"+faultCode);
@@ -113,7 +113,7 @@ namespace Ssz.Runtime.Serialization.Formatters
 
 [Serializable]
 [SoapType(Embedded=true)]
-// [System.Runtime.InteropServices.ComVisible(true)]
+[System.Runtime.InteropServices.ComVisible(true)]
     public sealed class ServerFault
     {
         String exceptionType;

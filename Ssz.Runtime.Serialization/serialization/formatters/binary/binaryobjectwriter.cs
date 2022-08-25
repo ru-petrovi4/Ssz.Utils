@@ -13,7 +13,7 @@
  **
  ===========================================================*/
 
-namespace Ssz.Runtime.Serialization.Formatters.Binary
+namespace System.Runtime.Serialization.Formatters.Binary
 {    
     using System;
     using System.IO;
@@ -22,14 +22,13 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
     using System.Collections.Generic;
     using System.Text;
     using System.Runtime.Remoting;
-    // using System.Runtime.Remoting.Messaging;
-    using Ssz.Runtime.Serialization;
+    using System.Runtime.Remoting.Messaging;
+    using System.Runtime.Serialization;
     using System.Security.Permissions;
     using System.Security;
     using System.Diagnostics;
     using System.Globalization;
     using System.Diagnostics.Contracts;
-    using System.Runtime.Serialization;
 
     internal sealed  class ObjectWriter
     {
@@ -75,21 +74,21 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 
         // Commences the process of serializing the entire graph.
         // initialize the graph walker.
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         internal void Serialize(Object graph, Header[] inHeaders, __BinaryWriter serWriter, bool fCheck)
         {
             if (graph == null)
-                throw new ArgumentNullException("graph", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentNull_Graph"));
+                throw new ArgumentNullException("graph", Environment.GetResourceString("ArgumentNull_Graph"));
 
             if (serWriter == null)
-                throw new ArgumentNullException("serWriter", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentNull_WithParamName", "serWriter"));
+                throw new ArgumentNullException("serWriter", Environment.GetResourceString("ArgumentNull_WithParamName", "serWriter"));
             Contract.EndContractBlock();
 
             SerTrace.Log(this, "Serialize Entry 2 ", graph, ((headers == null) ? " no headers " : "headers "));
 
             if (fCheck)
             {
-                // CodeAccessPermission.Demand(PermissionType.SecuritySerialization);          
+                CodeAccessPermission.Demand(PermissionType.SecuritySerialization);          
             }
 
             this.serWriter = serWriter;
@@ -203,7 +202,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
 #if FEATURE_REMOTING
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private Object[] WriteMethodCall(IMethodCallMessage mcm)
         {
             // In header
@@ -252,7 +251,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private Object[] WriteMethodReturn(IMethodReturnMessage mrm)
         {
             Object    returnValue = mrm.ReturnValue;
@@ -285,7 +284,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
         // returns number of entries added to argsToSerialize
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private static Object[] StoreUserPropertiesForMethodMessage(IMethodMessage msg)
         {
             ArrayList argsToSerialize = null;
@@ -343,7 +342,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
         // Writes a given object to the stream.
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void Write(WriteObjectInfo objectInfo, NameInfo memberNameInfo, NameInfo typeNameInfo)
         {       
 #if _DEBUG                        
@@ -353,7 +352,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 #endif            
             Object obj = objectInfo.obj;
             if (obj==null)
-                throw new ArgumentNullException("objectInfo.obj", Ssz.Runtime.Serialization.Environment.GetResourceString("ArgumentNull_Obj"));
+                throw new ArgumentNullException("objectInfo.obj", Environment.GetResourceString("ArgumentNull_Obj"));
 
             SerTrace.Log( this, "Write 1 objectInfo obj ",objectInfo.obj," objectId ", objectInfo.objectId, " objectType ", objectInfo.objectType);
             Type objType = objectInfo.objectType;
@@ -456,7 +455,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
         // Writes a given object to the stream.
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void Write(WriteObjectInfo objectInfo,   
                            NameInfo memberNameInfo,          
                            NameInfo typeNameInfo,            
@@ -529,7 +528,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             SerTrace.Log( this, "Write 2 Exit");
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void WriteMemberSetup(WriteObjectInfo objectInfo,        
                                       NameInfo memberNameInfo,           
                                       NameInfo typeNameInfo,             
@@ -566,7 +565,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 
 
         // Writes the members of an object
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void WriteMembers(NameInfo memberNameInfo,
                                   NameInfo memberTypeNameInfo,
                                   Object   memberData,
@@ -712,7 +711,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
         // Writes out an array
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void WriteArray(WriteObjectInfo objectInfo, NameInfo memberNameInfo, WriteObjectInfo memberObjectInfo)          
         {
             SerTrace.Log( this, "WriteArray Entry ",objectInfo.obj," ",objectInfo.objectId);
@@ -891,7 +890,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
         }
 
         // Writes out an array element
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void WriteArrayMember(WriteObjectInfo objectInfo, NameInfo arrayElemTypeNameInfo, Object data)
         {
             SerTrace.Log( this, "WriteArrayMember ",data," baseArrayName ",arrayElemTypeNameInfo.NIname);
@@ -973,7 +972,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
 
         // Iterates over a Rectangle array, for each element of the array invokes WriteArrayMember
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private void WriteRectangle(WriteObjectInfo objectInfo, int rank, int[] maxA, System.Array array, NameInfo arrayElemNameTypeInfo, int[] lowerBoundA)
         {
             IndexTraceMessage("WriteRectangle  Entry "+rank, maxA);
@@ -1078,7 +1077,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             if (isNew)
             {
                 SerTrace.Log( this, "Object " , realObj , " has never been assigned an id.");
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_ObjNoID",realObj));                                                    
+                throw new SerializationException(Environment.GetResourceString("Serialization_ObjNoID",realObj));                                                    
             }
 
             SerTrace.Log( this, "GetNext Exit "+objID," ",realObj);            
@@ -1098,8 +1097,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
                 isNew = false;
                 return previousId;
             }
-            // VALFIX
-            //m_idGenerator.m_currentCount = m_currentId;
+            m_idGenerator.m_currentCount = m_currentId;
             if ((object)type != null && type.IsValueType)
             {
                 if (!assignUniqueIdToValueType)
@@ -1386,7 +1384,7 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary
             return assemId;
         }
 
-        // [System.Security.SecurityCritical]  // auto-generated
+        [System.Security.SecurityCritical]  // auto-generated
         private Type GetType(Object obj)
         {
             Type type = null;
