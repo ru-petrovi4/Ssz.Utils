@@ -14,7 +14,7 @@
  ===========================================================*/
 #if FEATURE_REMOTING
 
-namespace System.Runtime.Serialization
+namespace Ssz.Runtime.Serialization
 {
     using System.Runtime.Remoting;
     using System.Runtime.Remoting.Proxies;
@@ -93,7 +93,7 @@ namespace System.Runtime.Serialization
             else
             {
                 // Getting here means a bug in cloner
-                throw new ArgumentException(Environment.GetResourceString("Arg_SerializationException"));
+                throw new ArgumentException(SszEnvironment.GetResourceString("Arg_SerializationException"));
             }
 
             if (retObj == null)
@@ -157,7 +157,7 @@ namespace System.Runtime.Serialization
                         // [OptionalField].
                         Object [] attrs = mi[index].GetCustomAttributes(typeof(OptionalFieldAttribute), false);
                         if (attrs == null || attrs.Length == 0)
-                            throw new SerializationException(Environment.GetResourceString("Serialization_MissingMember",
+                            throw new SerializationException(SszEnvironment.GetResourceString("Serialization_MissingMember",
                                                                            mi[index],
                                                                            serObj.GetType(),
                                                                            typeof(OptionalFieldAttribute).FullName));

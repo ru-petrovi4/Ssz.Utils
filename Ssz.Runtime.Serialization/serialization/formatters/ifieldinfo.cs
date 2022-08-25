@@ -13,7 +13,7 @@
  **
  ===========================================================*/
 
-namespace System.Runtime.Serialization.Formatters {
+namespace Ssz.Runtime.Serialization.Formatters {
 
     using System.Runtime.Remoting;
     using System.Runtime.Serialization;

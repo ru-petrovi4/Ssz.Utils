@@ -13,7 +13,7 @@
  **
  ===========================================================*/
 
-namespace System.Runtime.Serialization.Formatters.Binary {
+namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
     using System;
     using System.IO;
@@ -24,9 +24,9 @@ namespace System.Runtime.Serialization.Formatters.Binary {
     using System.Runtime.Serialization.Formatters;
 #if FEATURE_REMOTING    
     using System.Runtime.Remoting.Proxies;
-#endif
     using System.Runtime.Remoting;
     using System.Runtime.Remoting.Messaging;
+#endif
 
     using System.Runtime.Serialization;
     using System.Security.Permissions;
@@ -119,12 +119,12 @@ namespace System.Runtime.Serialization.Formatters.Binary {
 #else
             if (serializationStream == null)
             {
-                throw new ArgumentNullException("serializationStream", Environment.GetResourceString("ArgumentNull_WithParamName", serializationStream));
+                throw new ArgumentNullException("serializationStream", SszEnvironment.GetResourceString("ArgumentNull_WithParamName", serializationStream));
             }
             Contract.EndContractBlock();
 
             if (serializationStream.CanSeek && (serializationStream.Length == 0))
-                throw new SerializationException(Environment.GetResourceString("Serialization_Stream"));
+                throw new SerializationException(SszEnvironment.GetResourceString("Serialization_Stream"));
 
             SerTrace.Log(this, "Deserialize Entry");
             InternalFE formatterEnums = new InternalFE();
@@ -178,12 +178,12 @@ namespace System.Runtime.Serialization.Formatters.Binary {
         internal Object Deserialize(Stream serializationStream, HeaderHandler handler, bool fCheck, bool isCrossAppDomain, IMethodCallMessage methodCallMessage) {
             if (serializationStream==null)
             {
-                throw new ArgumentNullException("serializationStream", Environment.GetResourceString("ArgumentNull_WithParamName",serializationStream));
+                throw new ArgumentNullException("serializationStream", SszEnvironment.GetResourceString("ArgumentNull_WithParamName",serializationStream));
             }
             Contract.EndContractBlock();
 
             if (serializationStream.CanSeek && (serializationStream.Length == 0))
-                throw new SerializationException(Environment.GetResourceString("Serialization_Stream"));
+                throw new SerializationException(SszEnvironment.GetResourceString("Serialization_Stream"));
 
             SerTrace.Log(this, "Deserialize Entry");
             InternalFE formatterEnums = new InternalFE();
@@ -218,7 +218,7 @@ namespace System.Runtime.Serialization.Formatters.Binary {
         {
             if (serializationStream == null)
             {
-                throw new ArgumentNullException("serializationStream", Environment.GetResourceString("ArgumentNull_WithParamName", serializationStream));
+                throw new ArgumentNullException("serializationStream", SszEnvironment.GetResourceString("ArgumentNull_WithParamName", serializationStream));
             }
             Contract.EndContractBlock();
             SerTrace.Log(this, "Serialize Entry");

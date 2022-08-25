@@ -13,7 +13,7 @@
 ** or the array indices (if the containing body is an array.)
 **
 ============================================================*/
-namespace System.Runtime.Serialization {
+namespace Ssz.Runtime.Serialization {
     using System.Reflection;
     using System.Diagnostics.Contracts;
 
@@ -38,7 +38,7 @@ namespace System.Runtime.Serialization {
             //If both member and arrayIndex are null, we don't have enough information to create
             //a tunnel to do the fixup.
             if (member==null && parentIndex==null) {
-                throw new ArgumentException(Environment.GetResourceString("Argument_MustSupplyParent"));
+                throw new ArgumentException(SszEnvironment.GetResourceString("Argument_MustSupplyParent"));
             }
             Contract.EndContractBlock();
             
@@ -54,11 +54,11 @@ namespace System.Runtime.Serialization {
             //that the arrayIndex must be null because we can't have a FieldInfo into an array. 
             if (member!=null) {
                 if (parentIndex!=null) {
-                    throw new ArgumentException(Environment.GetResourceString("Argument_MemberAndArray"));
+                    throw new ArgumentException(SszEnvironment.GetResourceString("Argument_MemberAndArray"));
                 }
                        
                 if (((((FieldInfo)member).FieldType).IsValueType) && containerID==0) {
-                    throw new ArgumentException(Environment.GetResourceString("Argument_MustSupplyContainer"));
+                    throw new ArgumentException(SszEnvironment.GetResourceString("Argument_MustSupplyContainer"));
                 }
             } 
 

@@ -13,7 +13,7 @@
  **
  ===========================================================*/
 
-namespace System.Runtime.Serialization.Formatters.Binary
+namespace Ssz.Runtime.Serialization.Formatters.Binary
 {
     using System.Runtime.Serialization.Formatters;
     using System.Runtime.Remoting;

@@ -33,7 +33,7 @@ namespace Ssz.Collections {
             if (ia != null)
                 return ia.CompareTo(b);
 
-            throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Argument_ImplementIComparable"));
+            throw new ArgumentException(Ssz.Runtime.Serialization.SszEnvironment.GetResourceString("Argument_ImplementIComparable"));
         }
 
         public new bool Equals(Object a, Object b) {

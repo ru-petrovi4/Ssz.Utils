@@ -13,11 +13,13 @@
 **
 **
 ============================================================*/
-namespace System.Runtime.Serialization {
+namespace Ssz.Runtime.Serialization {
 
     using System.Runtime.Remoting;
     using System;
     using System.Reflection;
+    using System.Runtime.Serialization;
+
     [Serializable]
     internal class MemberHolder {
 // disable csharp compiler warning #0414: field assigned unused value

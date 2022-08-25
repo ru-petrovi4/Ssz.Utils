@@ -14,7 +14,7 @@
  ===========================================================*/
 
 
-namespace System.Runtime.Serialization.Formatters.Binary{
+namespace Ssz.Runtime.Serialization.Formatters.Binary{
 
     using System;
     using System.IO;
@@ -86,7 +86,7 @@ namespace System.Runtime.Serialization.Formatters.Binary{
                             Contract.Assert(objectInfo!=null, "[BinaryConverter.GetBinaryTypeInfo]objectInfo null for user object");
                             assemId = (int)objectInfo.assemId;
                             if (assemId == 0)
-                                throw new SerializationException(Environment.GetResourceString("Serialization_AssemblyId",typeInformation));
+                                throw new SerializationException(SszEnvironment.GetResourceString("Serialization_AssemblyId",typeInformation));
                         }
                         break;
                     default:
@@ -169,7 +169,7 @@ namespace System.Runtime.Serialization.Formatters.Binary{
                     sout.WriteInt32(assemId);
                     break;                    
                 default:
-                    throw new SerializationException(Environment.GetResourceString("Serialization_TypeWrite",((Enum)binaryTypeEnum).ToString()));
+                    throw new SerializationException(SszEnvironment.GetResourceString("Serialization_TypeWrite",((Enum)binaryTypeEnum).ToString()));
             }
             SerTrace.Log( "BinaryConverter", "WriteTypeInfo Exit");
         }
@@ -200,7 +200,7 @@ namespace System.Runtime.Serialization.Formatters.Binary{
                     readAssemId = input.ReadInt32();
                     break;                    
                 default:
-                    throw new SerializationException(Environment.GetResourceString("Serialization_TypeRead",((Enum)binaryTypeEnum).ToString()));                 
+                    throw new SerializationException(SszEnvironment.GetResourceString("Serialization_TypeRead",((Enum)binaryTypeEnum).ToString()));                 
             }
             SerTrace.Log( "BinaryConverter", "ReadTypeInfo Exit  ",var," assemId ",readAssemId);
             assemId = readAssemId;
@@ -265,7 +265,7 @@ namespace System.Runtime.Serialization.Formatters.Binary{
                     }
                     break;
                 default:
-                    throw new SerializationException(Environment.GetResourceString("Serialization_TypeRead",((Enum)binaryTypeEnum).ToString()));                                     
+                    throw new SerializationException(SszEnvironment.GetResourceString("Serialization_TypeRead",((Enum)binaryTypeEnum).ToString()));                                     
             }
 
 #if _DEBUG
@@ -405,7 +405,7 @@ namespace System.Runtime.Serialization.Formatters.Binary{
             {
                 assembly = FormatterServices.LoadAssemblyFromStringNoThrow(assemblyString);
                 if (assembly == null)
-                    throw new SerializationException(Environment.GetResourceString("Serialization_AssemblyNotFound",assemblyString));
+                    throw new SerializationException(SszEnvironment.GetResourceString("Serialization_AssemblyNotFound",assemblyString));
             }
             return assembly;
         }
@@ -461,7 +461,7 @@ namespace System.Runtime.Serialization.Formatters.Binary{
             
             majorVersion = GetInt32(headerBytes, 9);
             if (majorVersion > binaryFormatterMajorVersion)
-                throw new SerializationException(Environment.GetResourceString("Serialization_InvalidFormat", BitConverter.ToString(headerBytes)));
+                throw new SerializationException(SszEnvironment.GetResourceString("Serialization_InvalidFormat", BitConverter.ToString(headerBytes)));
             
             // binaryHeaderEnum has already been read
             binaryHeaderEnum = (BinaryHeaderEnum)headerBytes[0];
@@ -808,7 +808,7 @@ namespace System.Runtime.Serialization.Formatters.Binary{
         {
             /*
             if (callA.Length != 7)
-                throw new SerializationException(String.Format(Environment.GetResourceString("Serialization_Method")));
+                throw new SerializationException(String.Format(SszEnvironment.GetResourceString("Serialization_Method")));
                 */
 
             if (IOUtil.FlagTest(messageEnum, MessageEnum.ArgsIsArray))
@@ -822,35 +822,35 @@ namespace System.Runtime.Serialization.Formatters.Binary{
                 if (IOUtil.FlagTest(messageEnum, MessageEnum.ArgsInArray))
                 {
                     if (callA.Length < arrayPosition)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_Method"));
+                        throw new SerializationException(SszEnvironment.GetResourceString("Serialization_Method"));
                     args = (Object[])callA[arrayPosition++];
                 }
 
                 if (IOUtil.FlagTest(messageEnum, MessageEnum.GenericMethod))
                 {
                     if (callA.Length < arrayPosition)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_Method"));
+                        throw new SerializationException(SszEnvironment.GetResourceString("Serialization_Method"));
                     instArgs = (Type[])callA[arrayPosition++];
                 }
 
                 if (IOUtil.FlagTest(messageEnum, MessageEnum.MethodSignatureInArray))
                 {
                     if (callA.Length < arrayPosition)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_Method"));
+                        throw new SerializationException(SszEnvironment.GetResourceString("Serialization_Method"));
                     methodSignature = callA[arrayPosition++];
                 }
 
                 if (IOUtil.FlagTest(messageEnum, MessageEnum.ContextInArray))
                 {
                     if (callA.Length < arrayPosition)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_Method"));
+                        throw new SerializationException(SszEnvironment.GetResourceString("Serialization_Method"));
                     callContext = callA[arrayPosition++];
                 }
 
                 if (IOUtil.FlagTest(messageEnum, MessageEnum.PropertyInArray))
                 {
                     if (callA.Length < arrayPosition)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_Method"));
+                        throw new SerializationException(SszEnvironment.GetResourceString("Serialization_Method"));
                     properties = callA[arrayPosition++];
                 }
             }
@@ -1103,35 +1103,35 @@ namespace System.Runtime.Serialization.Formatters.Binary{
                 if (IOUtil.FlagTest(messageEnum, MessageEnum.ArgsInArray))
                 {
                     if (returnA.Length < arrayPosition)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_Method"));
+                        throw new SerializationException(SszEnvironment.GetResourceString("Serialization_Method"));
                     args = (Object[])returnA[arrayPosition++];
                 }
 
                 if (IOUtil.FlagTest(messageEnum, MessageEnum.ReturnValueInArray))
                 {
                     if (returnA.Length < arrayPosition)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_Method"));
+                        throw new SerializationException(SszEnvironment.GetResourceString("Serialization_Method"));
                     returnValue = returnA[arrayPosition++];
                 }
 
                 if (IOUtil.FlagTest(messageEnum, MessageEnum.ExceptionInArray))
                 {
                     if (returnA.Length < arrayPosition)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_Method"));
+                        throw new SerializationException(SszEnvironment.GetResourceString("Serialization_Method"));
                     exception = (Exception)returnA[arrayPosition++];
                 }
 
                 if (IOUtil.FlagTest(messageEnum, MessageEnum.ContextInArray))
                 {
                    if (returnA.Length < arrayPosition)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_Method"));
+                        throw new SerializationException(SszEnvironment.GetResourceString("Serialization_Method"));
                     callContext = returnA[arrayPosition++];
                 }
 
                 if (IOUtil.FlagTest(messageEnum, MessageEnum.PropertyInArray))
                 {
                     if (returnA.Length < arrayPosition)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_Method"));
+                        throw new SerializationException(SszEnvironment.GetResourceString("Serialization_Method"));
                     properties = returnA[arrayPosition++];
                 }
             }
@@ -2120,7 +2120,7 @@ namespace System.Runtime.Serialization.Formatters.Binary{
             this.assemblyInfo = assemblyInfo;
 
             if (assemblyInfo == null)
-                throw new SerializationException(Environment.GetResourceString("Serialization_Assembly",objectName));
+                throw new SerializationException(SszEnvironment.GetResourceString("Serialization_Assembly",objectName));
 
             objectType = objectReader.GetType(assemblyInfo, objectName);
 
@@ -2136,7 +2136,7 @@ namespace System.Runtime.Serialization.Formatters.Binary{
                 BinaryConverter.TypeFromInfo(binaryTypeEnumA[i], typeInformationA[i], objectReader, (BinaryAssemblyInfo)assemIdToAssemblyTable[memberAssemIds[i]],
                                              out primitiveTypeEnum, out typeString, out type, out isVariant);
                 //if ((object)type == null)
-                //    throw new SerializationException(String.Format(Environment.GetResourceString("Serialization_TypeResolved"),objectName+" "+memberNames[i]+" "+typeInformationA[i]));
+                //    throw new SerializationException(String.Format(SszEnvironment.GetResourceString("Serialization_TypeResolved"),objectName+" "+memberNames[i]+" "+typeInformationA[i]));
                 memberTypes[i] = type;
             }
 

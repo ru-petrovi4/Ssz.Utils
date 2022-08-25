@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.Runtime.Serialization
 {
-    internal class Environment
+    internal class SszEnvironment
     {
         internal static string GetResourceString(string v1, params object[] par)
         {

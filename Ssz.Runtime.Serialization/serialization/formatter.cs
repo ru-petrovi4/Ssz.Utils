@@ -15,7 +15,7 @@
 ===========================================================*/
 
 
-namespace System.Runtime.Serialization {
+namespace Ssz.Runtime.Serialization {
     using System.Threading;
     using System.Runtime.Remoting;
     using System;
@@ -23,12 +23,14 @@ namespace System.Runtime.Serialization {
     using System.Reflection;
     using System.IO;
     using System.Globalization;
+    using System.Runtime.Serialization;
+
     // This abstract class provides some helper methods for implementing
     // IFormatter.  It will manage queueing objects for serialization
     // (the functionality formerly provided by the IGraphWalker interface)
     // and generating ids on a per-object basis.
-[Serializable]
-[CLSCompliant(false)]
+    [Serializable]
+//[CLSCompliant(false)]
 [System.Runtime.InteropServices.ComVisible(true)]
     public abstract class Formatter : IFormatter {
     
@@ -60,7 +62,7 @@ namespace System.Runtime.Serialization {
             Object obj = m_objectQueue.Dequeue();
             objID = m_idGenerator.HasId(obj, out isNew);
             if (isNew) {
-                throw new SerializationException(Environment.GetResourceString("Serialization_NoID"));
+                throw new SerializationException(SszEnvironment.GetResourceString("Serialization_NoID"));
             }
             
             return obj;
@@ -178,7 +180,7 @@ namespace System.Runtime.Serialization {
         }
             
         // Writes an instance of SByte to the stream.
-        [CLSCompliant(false)]
+        //[CLSCompliant(false)]
         protected abstract void WriteSByte(sbyte val, String name);
     
         // Writes an instance of Single to the stream.
@@ -189,15 +191,15 @@ namespace System.Runtime.Serialization {
     
     
         // Writes an instance of an ushort to the stream.
-        [CLSCompliant(false)]
+        //[CLSCompliant(false)]
         protected abstract void WriteUInt16(ushort val, String name);
     
         // Writes an instance of an uint to the stream.
-        [CLSCompliant(false)]
+        //[CLSCompliant(false)]
         protected abstract void WriteUInt32(uint val, String name);
     
         // Writes an instance of a ulong to the stream.
-        [CLSCompliant(false)]
+        //[CLSCompliant(false)]
         protected abstract void WriteUInt64(ulong val, String name);
     
     

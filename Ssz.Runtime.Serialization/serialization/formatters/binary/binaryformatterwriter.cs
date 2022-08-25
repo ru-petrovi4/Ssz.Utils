@@ -13,7 +13,7 @@
  **
  ===========================================================*/
 
-namespace System.Runtime.Serialization.Formatters.Binary {
+namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
     using System;
     using System.Collections;
@@ -406,7 +406,7 @@ namespace System.Runtime.Serialization.Formatters.Binary {
             {
                 int numArrayItems = Math.Min(chunkSize/typeLength, array.Length-arrayOffset);
                 int bufferUsed = numArrayItems*typeLength;
-                Buffer.InternalBlockCopy(array, arrayOffset*typeLength, byteBuffer, 0, bufferUsed);
+                SszBuffer.InternalBlockCopy(array, arrayOffset*typeLength, byteBuffer, 0, bufferUsed);
 #if BIGENDIAN
                 // we know that we are writing a primitive type, so just do a simple swap
                 for (int i = 0; i < bufferUsed; i += typeLength) 

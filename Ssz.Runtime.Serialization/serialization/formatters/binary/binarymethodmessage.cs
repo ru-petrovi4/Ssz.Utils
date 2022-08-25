@@ -4,7 +4,7 @@
 // 
 // ==--==
 #if FEATURE_REMOTING
-namespace System.Runtime.Serialization.Formatters.Binary
+namespace Ssz.Runtime.Serialization.Formatters.Binary
 {
     using System;
     using System.Collections;

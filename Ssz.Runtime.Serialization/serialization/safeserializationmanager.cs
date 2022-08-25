@@ -10,9 +10,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Security;
 
-namespace System.Runtime.Serialization
+namespace Ssz.Runtime.Serialization
 {
     //
     // #SafeSerialization
@@ -227,7 +228,7 @@ namespace System.Runtime.Serialization
             if (serializedState == null)
                 throw new ArgumentNullException("serializedState");
             if (!serializedState.GetType().IsSerializable)
-                throw new ArgumentException(Environment.GetResourceString("Serialization_NonSerType", serializedState.GetType(), serializedState.GetType().Assembly.FullName));
+                throw new ArgumentException(SszEnvironment.GetResourceString("Serialization_NonSerType", serializedState.GetType(), serializedState.GetType().Assembly.FullName));
 
             m_serializedStates.Add(serializedState);
         }

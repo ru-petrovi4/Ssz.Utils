@@ -14,7 +14,7 @@
  ===========================================================*/
 
 
-namespace System.Runtime.Serialization.Formatters.Binary {
+namespace Ssz.Runtime.Serialization.Formatters.Binary {
 
     using System.Threading;
     using System.Runtime.Remoting;

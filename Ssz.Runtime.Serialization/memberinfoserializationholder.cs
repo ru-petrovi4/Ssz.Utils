@@ -75,7 +75,7 @@ namespace System.Reflection
             String typeName = info.GetString("ClassName");
             
             if (assemblyName == null || typeName == null)
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_InsufficientState"));
+                throw new SerializationException(Ssz.Runtime.Serialization.SszEnvironment.GetResourceString("Serialization_InsufficientState"));
 
             Assembly assem = Ssz.Runtime.Serialization.FormatterServices.LoadAssemblyFromString(assemblyName);
             m_reflectedType = assem.GetType(typeName, true, false) as Type;
@@ -92,7 +92,7 @@ namespace System.Reflection
         [System.Security.SecurityCritical]  // auto-generated
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context) 
         {
-            throw new NotSupportedException(Ssz.Runtime.Serialization.Environment.GetResourceString("ResId.NotSupported_Method"));
+            throw new NotSupportedException(Ssz.Runtime.Serialization.SszEnvironment.GetResourceString("ResId.NotSupported_Method"));
         }
         #endregion
     
@@ -101,7 +101,7 @@ namespace System.Reflection
         public virtual Object GetRealObject(StreamingContext context) 
         {
             if (m_memberName == null || m_reflectedType == null || m_memberType == 0)
-                throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("ResId.Serialization_InsufficientState"));
+                throw new SerializationException(Ssz.Runtime.Serialization.SszEnvironment.GetResourceString("ResId.Serialization_InsufficientState"));
 
             BindingFlags bindingFlags = 
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | 
@@ -115,7 +115,7 @@ namespace System.Reflection
                     FieldInfo[] fields = m_reflectedType.GetMember(m_memberName, MemberTypes.Field, bindingFlags) as FieldInfo[];
 
                     if (fields.Length == 0)
-                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_UnknownMember", m_memberName));
+                        throw new SerializationException(Ssz.Runtime.Serialization.SszEnvironment.GetResourceString("Serialization_UnknownMember", m_memberName));
 
                     return fields[0];
                 }
@@ -127,7 +127,7 @@ namespace System.Reflection
                     EventInfo[] events = m_reflectedType.GetMember(m_memberName, MemberTypes.Event, bindingFlags) as EventInfo[];
 
                     if (events.Length == 0)
-                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_UnknownMember", m_memberName));
+                        throw new SerializationException(Ssz.Runtime.Serialization.SszEnvironment.GetResourceString("Serialization_UnknownMember", m_memberName));
 
                     return events[0];
                 }
@@ -139,7 +139,7 @@ namespace System.Reflection
                     PropertyInfo[] properties = m_reflectedType.GetMember(m_memberName, MemberTypes.Property, bindingFlags) as PropertyInfo[];
 
                     if (properties.Length == 0)
-                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_UnknownMember", m_memberName));
+                        throw new SerializationException(Ssz.Runtime.Serialization.SszEnvironment.GetResourceString("Serialization_UnknownMember", m_memberName));
 
                     if (properties.Length == 1)
                         return properties[0];
@@ -161,7 +161,7 @@ namespace System.Reflection
                         }
                     }
 
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("ResId.Serialization_UnknownMember", m_memberName));            
+                    throw new SerializationException(Ssz.Runtime.Serialization.SszEnvironment.GetResourceString("ResId.Serialization_UnknownMember", m_memberName));            
                 }
                 #endregion
 
@@ -169,7 +169,7 @@ namespace System.Reflection
                 case MemberTypes.Constructor:
                 {
                     if (m_signature == null)
-                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("ResId.Serialization_NullSignature"));
+                        throw new SerializationException(Ssz.Runtime.Serialization.SszEnvironment.GetResourceString("ResId.Serialization_NullSignature"));
 
                     ConstructorInfo[] constructors = m_reflectedType.GetMember(m_memberName, MemberTypes.Constructor, bindingFlags) as ConstructorInfo[];
 
@@ -193,7 +193,7 @@ namespace System.Reflection
                         }
                     }
 
-                    throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("ResId.Serialization_UnknownMember", m_memberName));            
+                    throw new SerializationException(Ssz.Runtime.Serialization.SszEnvironment.GetResourceString("ResId.Serialization_UnknownMember", m_memberName));            
                 }
                 #endregion
 
@@ -203,7 +203,7 @@ namespace System.Reflection
                     MethodInfo methodInfo = null;
 
                     if (m_signature == null)
-                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("ResId.Serialization_NullSignature"));
+                        throw new SerializationException(Ssz.Runtime.Serialization.SszEnvironment.GetResourceString("ResId.Serialization_NullSignature"));
 
                     Type[] genericArguments = m_info.GetValue("GenericArguments", typeof(Type[])) as Type[]; 
 
@@ -264,7 +264,7 @@ namespace System.Reflection
                     }
 
                     if (methodInfo == null)
-                        throw new SerializationException(Ssz.Runtime.Serialization.Environment.GetResourceString("ResId.Serialization_UnknownMember", m_memberName));            
+                        throw new SerializationException(Ssz.Runtime.Serialization.SszEnvironment.GetResourceString("ResId.Serialization_UnknownMember", m_memberName));            
 
                     if (!methodInfo.IsGenericMethodDefinition)
                         return methodInfo;
@@ -280,7 +280,7 @@ namespace System.Reflection
                 #endregion
 
                 default:
-                    throw new ArgumentException(Ssz.Runtime.Serialization.Environment.GetResourceString("Serialization_MemberTypeNotRecognized"));
+                    throw new ArgumentException(Ssz.Runtime.Serialization.SszEnvironment.GetResourceString("Serialization_MemberTypeNotRecognized"));
             }    
         }
         #endregion

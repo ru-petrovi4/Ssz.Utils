@@ -15,7 +15,7 @@
  **
  ===========================================================*/
 #if FEATURE_REMOTING
-namespace System.Runtime.Serialization.Formatters
+namespace Ssz.Runtime.Serialization.Formatters
 {
     using System;
     using System.Runtime.Serialization;

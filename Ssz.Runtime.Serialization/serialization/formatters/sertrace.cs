@@ -13,7 +13,7 @@
  **
  ===========================================================*/
 
-namespace System.Runtime.Serialization.Formatters {
+namespace Ssz.Runtime.Serialization.Formatters {
     using System;    
     using System.Runtime.Serialization;
     using System.Security.Permissions;

@@ -13,7 +13,7 @@
  **
  ===========================================================*/
 
-namespace System.Runtime.Serialization.Formatters.Binary
+namespace Ssz.Runtime.Serialization.Formatters.Binary
 {    
     using System;
     using System.IO;
@@ -78,10 +78,10 @@ namespace System.Runtime.Serialization.Formatters.Binary
         internal void Serialize(Object graph, Header[] inHeaders, __BinaryWriter serWriter, bool fCheck)
         {
             if (graph == null)
-                throw new ArgumentNullException("graph", Environment.GetResourceString("ArgumentNull_Graph"));
+                throw new ArgumentNullException("graph", SszEnvironment.GetResourceString("ArgumentNull_Graph"));
 
             if (serWriter == null)
-                throw new ArgumentNullException("serWriter", Environment.GetResourceString("ArgumentNull_WithParamName", "serWriter"));
+                throw new ArgumentNullException("serWriter", SszEnvironment.GetResourceString("ArgumentNull_WithParamName", "serWriter"));
             Contract.EndContractBlock();
 
             SerTrace.Log(this, "Serialize Entry 2 ", graph, ((headers == null) ? " no headers " : "headers "));
@@ -352,7 +352,7 @@ namespace System.Runtime.Serialization.Formatters.Binary
 #endif            
             Object obj = objectInfo.obj;
             if (obj==null)
-                throw new ArgumentNullException("objectInfo.obj", Environment.GetResourceString("ArgumentNull_Obj"));
+                throw new ArgumentNullException("objectInfo.obj", SszEnvironment.GetResourceString("ArgumentNull_Obj"));
 
             SerTrace.Log( this, "Write 1 objectInfo obj ",objectInfo.obj," objectId ", objectInfo.objectId, " objectType ", objectInfo.objectType);
             Type objType = objectInfo.objectType;
@@ -1077,7 +1077,7 @@ namespace System.Runtime.Serialization.Formatters.Binary
             if (isNew)
             {
                 SerTrace.Log( this, "Object " , realObj , " has never been assigned an id.");
-                throw new SerializationException(Environment.GetResourceString("Serialization_ObjNoID",realObj));                                                    
+                throw new SerializationException(SszEnvironment.GetResourceString("Serialization_ObjNoID",realObj));                                                    
             }
 
             SerTrace.Log( this, "GetNext Exit "+objID," ",realObj);            

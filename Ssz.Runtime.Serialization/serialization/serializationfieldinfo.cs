@@ -18,7 +18,7 @@
 **
 ============================================================*/
 
-namespace System.Runtime.Serialization {
+namespace Ssz.Runtime.Serialization {
 
     using System;
     using System.Reflection;

@@ -18,7 +18,7 @@
 // They are public so that the XMLFormatter can address them. Eventually they will
 // be signed so that they can't be used by external applications.
 
-namespace System.Runtime.Serialization.Formatters.Binary
+namespace Ssz.Runtime.Serialization.Formatters.Binary
 {
     using System;
     using System.Collections;
@@ -26,8 +26,10 @@ namespace System.Runtime.Serialization.Formatters.Binary
     using System.Text;
     using System.Globalization;
     using System.Runtime.Serialization.Formatters;
+#if FEATURE_REMOTING
     using System.Runtime.Remoting;
     using System.Runtime.Remoting.Messaging;
+#endif
     using System.Runtime.InteropServices;
     using System.Runtime.Serialization;
     using System.Diagnostics;
@@ -37,7 +39,7 @@ namespace System.Runtime.Serialization.Formatters.Binary
     internal sealed class ParseRecord 
 #if _DEBUG
                                         : ITrace
-#endif                                        
+#endif
     {
 // disable csharp compiler warning #0414: field assigned unused value
 #pragma warning disable 0414
@@ -286,7 +288,7 @@ namespace System.Runtime.Serialization.Formatters.Binary
 
         // Push the object onto the stack
         internal void Push(Object obj) {
-#if _DEBUG        
+#if _DEBUG
             SerTrace.Log(this, "Push ",stackId," ",((obj is ITrace)?((ITrace)obj).Trace():""));
 #endif
             if (top == (objects.Length -1))
@@ -303,7 +305,7 @@ namespace System.Runtime.Serialization.Formatters.Binary
 
             Object obj = objects[top];
             objects[top--] = null;
-#if _DEBUG        
+#if _DEBUG
             SerTrace.Log(this, "Pop ",stackId," ",((obj is ITrace)?((ITrace)obj).Trace():""));
 #endif
             return obj;
@@ -320,7 +322,7 @@ namespace System.Runtime.Serialization.Formatters.Binary
         internal Object Peek() {
             if (top < 0)
                 return null;
-#if _DEBUG        
+#if _DEBUG
             SerTrace.Log(this, "Peek ",stackId," ",((objects[top] is ITrace)?((ITrace)objects[top]).Trace():""));
 #endif
             return objects[top];
@@ -330,7 +332,7 @@ namespace System.Runtime.Serialization.Formatters.Binary
         internal Object PeekPeek() {
             if (top < 1)
                 return null;
-#if _DEBUG            
+#if _DEBUG
             SerTrace.Log(this, "PeekPeek ",stackId," ",((objects[top - 1] is ITrace)?((ITrace)objects[top - 1]).Trace():""));
 #endif
             return objects[top - 1];
@@ -355,7 +357,7 @@ namespace System.Runtime.Serialization.Formatters.Binary
             for (int i=0; i<Count(); i++)
             {
                 Object obj = objects[i];
-#if _DEBUG                
+#if _DEBUG
                 SerTrace.Log(this, "Stack Dump ",stackId," "+((obj is ITrace)?((ITrace)obj).Trace():""));
 #endif
             }
@@ -460,7 +462,7 @@ namespace System.Runtime.Serialization.Formatters.Binary
             }
             catch (Exception)
             {
-                throw new SerializationException(Environment.GetResourceString("Serialization_CorruptedStream"));
+                throw new SerializationException(SszEnvironment.GetResourceString("Serialization_CorruptedStream"));
             }
         }
 
@@ -550,7 +552,7 @@ namespace System.Runtime.Serialization.Formatters.Binary
             }
             catch (Exception)
             {
-                throw new SerializationException(Environment.GetResourceString("Serialization_CorruptedStream"));
+                throw new SerializationException(SszEnvironment.GetResourceString("Serialization_CorruptedStream"));
             }
         }
     }
@@ -700,7 +702,7 @@ namespace System.Runtime.Serialization.Formatters.Binary
                 {
                     MemberInfo[] valueInfos = type.GetMember("Value");
                     if (valueInfos.Length != 1)
-                        throw new SerializationException(Environment.GetResourceString("Serialization_HeaderReflection",valueInfos.Length));
+                        throw new SerializationException(SszEnvironment.GetResourceString("Serialization_HeaderReflection",valueInfos.Length));
                     valueInfo = valueInfos[0];
                 }
                 FormatterServices.SerializationSetValue(valueInfo, header, obj);
