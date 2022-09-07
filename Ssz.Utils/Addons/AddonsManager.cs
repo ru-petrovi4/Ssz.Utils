@@ -17,6 +17,7 @@ namespace Ssz.Utils.Addons
 {
     /// <summary>
     ///     Only GetExportedValues<T>() is thread-safe.
+    ///     Lock SyncRoot in every call.
     /// </summary>
     public class AddonsManager
     {
@@ -144,17 +145,17 @@ namespace Ssz.Utils.Addons
                 if (!configurationCsvFile.PathRelativeToRootDirectory.EndsWith(".csv", StringComparison.InvariantCultureIgnoreCase))
                     throw new Exception("addonCsvFile.Name must have .csv extension");
 
-                if (configurationCsvFile.PathRelativeToRootDirectory.Count(f => f == Path.DirectorySeparatorChar) > 1)
-                    throw new Exception("addonCsvFile.PathRelativeToRootDirectory must have no more that 1 Path.DirectorySeparatorChar");
+                if (configurationCsvFile.PathRelativeToRootDirectory.Count(f => f == '/') > 1)
+                    throw new Exception("addonCsvFile.PathRelativeToRootDirectory must have no more that one '/'");
 
-                var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo.FullName, configurationCsvFile.PathRelativeToRootDirectory));
-                if (fileInfo.Exists && !FileSystemHelper.FileSystemTimeIsEquals(fileInfo.LastWriteTimeUtc, configurationCsvFile.LastWriteTimeUtc))
+                var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo.FullName, configurationCsvFile.PathRelativeToRootDirectory_PlatformSpecific));
+                if (fileInfo.Exists && FileSystemHelper.FileSystemTimeIsLess(configurationCsvFile.LastWriteTimeUtc, fileInfo.LastWriteTimeUtc))
                     throw new AddonCsvFileChangedOnDiskException { FilePathRelativeToRootDirectory = configurationCsvFile.PathRelativeToRootDirectory };
             }
 
             foreach (ConfigurationCsvFile configurationCsvFile in configurationCsvFiles.ConfigurationCsvFilesCollection)
             {
-                var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo.FullName, configurationCsvFile.PathRelativeToRootDirectory));
+                var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo.FullName, configurationCsvFile.PathRelativeToRootDirectory_PlatformSpecific));
                 fileInfo.Directory!.Create();                
                 using (var writer = new StreamWriter(fileInfo.FullName, false, new UTF8Encoding(true)))
                 {
@@ -580,6 +581,10 @@ namespace Ssz.Utils.Addons
 
         public class AddonCsvFileChangedOnDiskException : Exception
         {
+            /// <summary>
+            ///     Path relative to the root of the Files Store.
+            ///     Path separator is always '/'. No '/' at the begin, no '/' at the end.   
+            /// </summary>
             public string FilePathRelativeToRootDirectory { get; set; } = @"";
         }
     }

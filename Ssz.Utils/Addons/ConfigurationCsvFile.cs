@@ -3,27 +3,33 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Ssz.Utils.Addons
 {
+    /// <summary>
+    ///     pathRelativeToRootDirectory - Path separator is always '/'. No '/' at the begin, no '/' at the end. 
+    /// </summary>    
     public class ConfigurationCsvFile : IOwnedDataSerializable
     {
         #region public functions
 
         /// <summary>
-        ///     pathRelativeToRootDirectory - no path separator at the begin and end.
+        ///     pathRelativeToRootDirectory - Path separator is always '/'. No '/' at the begin, no '/' at the end. .
         /// </summary>
         /// <param name="pathRelativeToRootDirectory"></param>
         /// <param name="csvFileInfo"></param>
         /// <returns></returns>
         public static ConfigurationCsvFile CreateFromFileInfo(string pathRelativeToRootDirectory, FileInfo csvFileInfo)
         {
+            pathRelativeToRootDirectory = pathRelativeToRootDirectory.Replace(Path.DirectorySeparatorChar, '/');
+
             var addonCsvFile = new ConfigurationCsvFile
             {
                 PathRelativeToRootDirectory = pathRelativeToRootDirectory != @"" ? 
-                    pathRelativeToRootDirectory + Path.DirectorySeparatorChar + csvFileInfo.Name :
+                    pathRelativeToRootDirectory + "/" + csvFileInfo.Name :
                     csvFileInfo.Name,
                 LastWriteTimeUtc = csvFileInfo.LastWriteTimeUtc,
             };
@@ -38,32 +44,37 @@ namespace Ssz.Utils.Addons
 
         /// <summary>        
         /// </summary>
-        public string Name => PathRelativeToRootDirectory.Substring(PathRelativeToRootDirectory.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+        public string Name => PathRelativeToRootDirectory.Substring(PathRelativeToRootDirectory.LastIndexOf('/') + 1);
 
         /// <summary>        
         ///     Path relative to the root of the Files Store.
-        ///     No '\' at the begin, no '\' at the end.        
-        /// </summary>
+        ///     Path separator is always '/'. No '/' at the begin, no '/' at the end.        
+        /// </summary>        
         public string PathRelativeToRootDirectory { get; set; } = @"";
+
+        /// <summary>
+        ///     Substitites to PathRelativeToRootDirectory a platform-specific character used to separate directory levels.
+        /// </summary>
+        public string PathRelativeToRootDirectory_PlatformSpecific => PathRelativeToRootDirectory.Replace('/', Path.DirectorySeparatorChar);
 
         /// <summary>        
         ///     
-        /// </summary>
+        /// </summary>        
         public string SourceId { get; set; } = @"";
 
         /// <summary>        
         ///     
-        /// </summary>
+        /// </summary>        
         public string SourceIdToDisplay { get; set; } = @"";
 
         /// <summary>
         ///     FileInfo.LastWriteTimeUtc
-        /// </summary>
+        /// </summary>        
         public DateTime LastWriteTimeUtc { get; set; } = DateTime.MinValue;
 
         /// <summary>
         ///     File content.
-        /// </summary>
+        /// </summary>        
         public string FileData { get; set; } = null!;
 
         /// <summary>
