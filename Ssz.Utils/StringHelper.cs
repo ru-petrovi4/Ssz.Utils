@@ -15,36 +15,36 @@ namespace Ssz.Utils
         #region public functions
 
         /// <summary>
-        /// Returns <paramref name="thisString"/> with the minimal concatenation of <paramref name="ending"/> (starting from end) that
+        /// Returns <paramref name="str"/> with the minimal concatenation of <paramref name="ending"/> (starting from end) that
         /// results in satisfying .EndsWith(ending).
         /// </summary>
         /// <example>"hel".WithEnding("llo") returns "hello", which is the result of "hel" + "lo".</example>
-        public static string WithEnding(this string? thisString, string ending)
+        public static string WithEnding(string? str, string ending)
         {
-            if (thisString is null)
+            if (str is null)
                 return ending;
 
-            if (thisString.EndsWith(ending))
-                return thisString;
+            if (str.EndsWith(ending))
+                return str;
             
             // Right() is 1-indexed, so include these cases
             // * Append no characters
             // * Append up to N characters, where N is ending length
             for (int length = 1; length <= ending.Length; length++)
             {
-                string tmp = thisString + ending.Right(length);
+                string tmp = str + Right(ending, length);
                 if (tmp.EndsWith(ending))
                     return tmp;
             }
 
-            return thisString;
+            return str;
         }
 
         /// <summary>Gets the rightmost <paramref name="length" /> characters from a string.</summary>
         /// <param name="str">The string to retrieve the substring from.</param>
         /// <param name="length">The number of characters to retrieve.</param>
         /// <returns>The substring.</returns>
-        public static string Right(this string str, int length)
+        public static string Right(string str, int length)
         {            
             if (length < 0)
             {

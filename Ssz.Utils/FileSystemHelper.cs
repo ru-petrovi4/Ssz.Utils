@@ -55,8 +55,8 @@ namespace Ssz.Utils
         /// <param name="targetPath"></param>
         public static void MoveDirectory(string sourcePath, string targetPath)
         {
-            sourcePath = sourcePath.TrimEnd('\\');
-            targetPath = targetPath.TrimEnd('\\');
+            sourcePath = sourcePath.TrimEnd(Path.DirectorySeparatorChar);
+            targetPath = targetPath.TrimEnd(Path.DirectorySeparatorChar);
             var files = Directory.EnumerateFiles(sourcePath, "*", SearchOption.AllDirectories)
                                  .GroupBy(s => Path.GetDirectoryName(s) ?? @"");
             foreach (var folder in files)
@@ -135,11 +135,11 @@ namespace Ssz.Utils
         /// </summary>
         public static bool IsSubPathOf(string path, string baseDirPath)
         {
-            string normalizedPath = Path.GetFullPath(path.Replace('/', '\\')
-                .WithEnding("\\"));
+            string normalizedPath = Path.GetFullPath(
+                StringHelper.WithEnding(path, Path.DirectorySeparatorChar.ToString()));
 
-            string normalizedBaseDirPath = Path.GetFullPath(baseDirPath.Replace('/', '\\')
-                .WithEnding("\\"));
+            string normalizedBaseDirPath = Path.GetFullPath(
+                StringHelper.WithEnding(baseDirPath, Path.DirectorySeparatorChar.ToString()));
 
             return normalizedPath.StartsWith(normalizedBaseDirPath, StringComparison.InvariantCultureIgnoreCase);
         }
@@ -155,11 +155,11 @@ namespace Ssz.Utils
             if (String.IsNullOrEmpty(pathLeft) && String.IsNullOrEmpty(pathRight)) return true;
             if (String.IsNullOrEmpty(pathLeft) || String.IsNullOrEmpty(pathRight)) return false;
 
-            string normalizedPathLeft = Path.GetFullPath(pathLeft!.Replace('/', '\\')
-                .WithEnding("\\"));
+            string normalizedPathLeft = Path.GetFullPath(
+                StringHelper.WithEnding(pathLeft, Path.DirectorySeparatorChar.ToString()));
 
-            string normalizedPathRight = Path.GetFullPath(pathRight!.Replace('/', '\\')
-                .WithEnding("\\"));
+            string normalizedPathRight = Path.GetFullPath(
+                StringHelper.WithEnding(pathRight, Path.DirectorySeparatorChar.ToString()));
 
             return String.Equals(normalizedPathLeft, normalizedPathRight, StringComparison.InvariantCultureIgnoreCase);
         }
