@@ -180,177 +180,176 @@ namespace Ssz.Utils
         {
             var fileData = new CaseInsensitiveDictionary<List<string?>>();
 
-            using (userFriendlyLogger?.BeginScope(Path.GetFileName(fileFullName)))
+            using var fileFullNameScope = userFriendlyLogger?.BeginScope("FileName: " + Path.GetFileName(fileFullName));
+            
+            if (!File.Exists(fileFullName))
             {
-                if (!File.Exists(fileFullName))
+                userFriendlyLogger?.LogError(Properties.Resources.CsvHelper_CsvFileDoesNotExist);
+                return fileData;
+            }
+
+            try
+            {
+                if (defines is null) defines = new Dictionary<Regex, string>();
+                string? filePath = Path.GetDirectoryName(fileFullName);
+                using (var reader = new StreamReader(fileFullName, true))
                 {
-                    userFriendlyLogger?.LogError(Properties.Resources.CsvHelper_CsvFileDoesNotExist);
-                    return fileData;
-                }
+                    string line = "";
+                    string? l;
+                    List<string?>? beginFields = null;
+                    bool inQuotes = false;
+                    while ((l = reader.ReadLine()) is not null)
+                    {                            
+                        l = l.Trim();
 
-                try
-                {
-                    if (defines is null) defines = new Dictionary<Regex, string>();
-                    string? filePath = Path.GetDirectoryName(fileFullName);
-                    using (var reader = new StreamReader(fileFullName, true))
-                    {
-                        string line = "";
-                        string? l;
-                        List<string?>? beginFields = null;
-                        bool inQuotes = false;
-                        while ((l = reader.ReadLine()) is not null)
-                        {                            
-                            l = l.Trim();
-
-                            if (l.Length > 0 && l[l.Length - 1] == '\\')
+                        if (l.Length > 0 && l[l.Length - 1] == '\\')
+                        {
+                            if (line != @"")
                             {
-                                if (line != @"")
+                                if (StringHelper.StartsWithIgnoreCase(line, @"#define"))
                                 {
-                                    if (StringHelper.StartsWithIgnoreCase(line, @"#define"))
-                                    {
-                                        line += @" " + l.Substring(0, l.Length - 1);
-                                        continue;
-                                    }                                    
-                                }
-                                else
-                                {
-                                    if (StringHelper.StartsWithIgnoreCase(l, @"#define"))
-                                    {
-                                        line = l.Substring(0, l.Length - 1);
-                                        continue;
-                                    }                                    
-                                }                                
-                            }
-
-                            line += l;
-
-                            if (line == "") continue;
-
-                            List<string?> fields;
-
-                            if (beginFields is null)
-                            {
-                                if (includeFiles && StringHelper.StartsWithIgnoreCase(line, @"#include") && line.Length > 8)
-                                {
-                                    var q1 = line.IndexOf('"', 8);
-                                    if (q1 != -1 && q1 + 1 < line.Length)
-                                    {
-                                        var q2 = line.IndexOf('"', q1 + 1);
-                                        if (q2 != -1 && q2 > q1 + 1)
-                                        {
-                                            var includeFileName = line.Substring(q1 + 1, q2 - q1 - 1);
-                                            if (includeFileNames is not null)
-                                                includeFileNames.Add(includeFileName.ToUpperInvariant());
-                                            foreach (var kvp in LoadCsvFile(filePath + @"\" + includeFileName, false, defines, userFriendlyLogger))
-                                            {
-                                                if (fileData.ContainsKey(kvp.Key))
-                                                {
-                                                    userFriendlyLogger?.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key='" + kvp.Key + "'");
-                                                }
-                                                fileData[kvp.Key] = kvp.Value;
-                                            }
-                                        }
-                                    }
-
-                                    line = "";
+                                    line += @" " + l.Substring(0, l.Length - 1);
                                     continue;
-                                }
-                                if (StringHelper.StartsWithIgnoreCase(line, @"#define") && line.Length > 7)
-                                {
-                                    int q1 = 7;
-                                    for (; q1 < line.Length; q1++)
-                                    {
-                                        char ch = line[q1];
-                                        if (Char.IsWhiteSpace(ch)) continue;
-                                        else break;
-                                    }
-                                    if (q1 < line.Length)
-                                    {
-                                        int q2 = q1 + 1;
-                                        for (; q2 < line.Length; q2++)
-                                        {
-                                            char ch = line[q2];
-                                            if (Char.IsWhiteSpace(ch)) break;
-                                            else continue;
-                                        }
-                                        string define = line.Substring(q1, q2 - q1);
-                                        string subst = @"";
-                                        if (q2 < line.Length - 1)
-                                        {
-                                            subst = ReplaceDefines(line.Substring(q2 + 1).Trim(), defines);
-                                        }
-                                        defines[new Regex(@"\b" + define + @"\b", RegexOptions.IgnoreCase)] = subst;
-                                    }
-
-                                    line = "";
-                                    continue;
-                                }
-                                if (line[0] == '#')
-                                {
-                                    // Comment, skip
-
-                                    line = "";
-                                    continue;
-                                }
-
-                                fields = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), ref inQuotes);
-                                if (inQuotes)
-                                {
-                                    beginFields = fields;
-                                    line = "";
-                                    continue;
-                                }
+                                }                                    
                             }
                             else
                             {
-                                fields = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), ref inQuotes);
-                                beginFields[beginFields.Count - 1] = beginFields[beginFields.Count - 1] + '\n' + fields[0];
-                                beginFields.AddRange(fields.Skip(1));
-                                if (inQuotes)
+                                if (StringHelper.StartsWithIgnoreCase(l, @"#define"))
                                 {
-                                    line = "";
+                                    line = l.Substring(0, l.Length - 1);
                                     continue;
-                                }
-                                
-                                fields = beginFields;
-                                beginFields = null;                                
-                            }
-
-                            string? field0 = fields[0];
-                            if (field0 is null)
-                            {
-                                fields[0] = @"";
-                                field0 = @"";
-                            }
-                            if (field0 == @"")
-                            {
-                                if (!fields.All(f => String.IsNullOrEmpty(f)))
-                                {
-                                    if (fileData.ContainsKey(@""))
-                                    {
-                                        userFriendlyLogger?.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key=''");
-                                    }
-                                    fileData[@""] = fields;
-                                }
-                            }
-                            else
-                            {
-                                if (fileData.ContainsKey(field0))
-                                {
-                                    userFriendlyLogger?.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key='" + field0 + "'");
-                                }
-                                fileData[field0] = fields;
-                            }
-
-                            line = "";
+                                }                                    
+                            }                                
                         }
+
+                        line += l;
+
+                        if (line == "") continue;
+
+                        List<string?> fields;
+
+                        if (beginFields is null)
+                        {
+                            if (includeFiles && StringHelper.StartsWithIgnoreCase(line, @"#include") && line.Length > 8)
+                            {
+                                var q1 = line.IndexOf('"', 8);
+                                if (q1 != -1 && q1 + 1 < line.Length)
+                                {
+                                    var q2 = line.IndexOf('"', q1 + 1);
+                                    if (q2 != -1 && q2 > q1 + 1)
+                                    {
+                                        var includeFileName = line.Substring(q1 + 1, q2 - q1 - 1);
+                                        if (includeFileNames is not null)
+                                            includeFileNames.Add(includeFileName.ToUpperInvariant());
+                                        foreach (var kvp in LoadCsvFile(filePath + @"\" + includeFileName, false, defines, userFriendlyLogger))
+                                        {
+                                            if (fileData.ContainsKey(kvp.Key))
+                                            {
+                                                userFriendlyLogger?.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key='" + kvp.Key + "'");
+                                            }
+                                            fileData[kvp.Key] = kvp.Value;
+                                        }
+                                    }
+                                }
+
+                                line = "";
+                                continue;
+                            }
+                            if (StringHelper.StartsWithIgnoreCase(line, @"#define") && line.Length > 7)
+                            {
+                                int q1 = 7;
+                                for (; q1 < line.Length; q1++)
+                                {
+                                    char ch = line[q1];
+                                    if (Char.IsWhiteSpace(ch)) continue;
+                                    else break;
+                                }
+                                if (q1 < line.Length)
+                                {
+                                    int q2 = q1 + 1;
+                                    for (; q2 < line.Length; q2++)
+                                    {
+                                        char ch = line[q2];
+                                        if (Char.IsWhiteSpace(ch)) break;
+                                        else continue;
+                                    }
+                                    string define = line.Substring(q1, q2 - q1);
+                                    string subst = @"";
+                                    if (q2 < line.Length - 1)
+                                    {
+                                        subst = ReplaceDefines(line.Substring(q2 + 1).Trim(), defines);
+                                    }
+                                    defines[new Regex(@"\b" + define + @"\b", RegexOptions.IgnoreCase)] = subst;
+                                }
+
+                                line = "";
+                                continue;
+                            }
+                            if (line[0] == '#')
+                            {
+                                // Comment, skip
+
+                                line = "";
+                                continue;
+                            }
+
+                            fields = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), ref inQuotes);
+                            if (inQuotes)
+                            {
+                                beginFields = fields;
+                                line = "";
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            fields = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), ref inQuotes);
+                            beginFields[beginFields.Count - 1] = beginFields[beginFields.Count - 1] + '\n' + fields[0];
+                            beginFields.AddRange(fields.Skip(1));
+                            if (inQuotes)
+                            {
+                                line = "";
+                                continue;
+                            }
+                                
+                            fields = beginFields;
+                            beginFields = null;                                
+                        }
+
+                        string? field0 = fields[0];
+                        if (field0 is null)
+                        {
+                            fields[0] = @"";
+                            field0 = @"";
+                        }
+                        if (field0 == @"")
+                        {
+                            if (!fields.All(f => String.IsNullOrEmpty(f)))
+                            {
+                                if (fileData.ContainsKey(@""))
+                                {
+                                    userFriendlyLogger?.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key=''");
+                                }
+                                fileData[@""] = fields;
+                            }
+                        }
+                        else
+                        {
+                            if (fileData.ContainsKey(field0))
+                            {
+                                userFriendlyLogger?.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key='" + field0 + "'");
+                            }
+                            fileData[field0] = fields;
+                        }
+
+                        line = "";
                     }
                 }
-                catch (Exception ex)
-                {
-                    userFriendlyLogger?.LogError(ex, Properties.Resources.CsvHelper_CsvFileReadingError);
-                }
-            }           
+            }
+            catch (Exception ex)
+            {
+                userFriendlyLogger?.LogError(ex, Properties.Resources.CsvHelper_CsvFileReadingError);
+            }                      
 
             return fileData;
         }        
