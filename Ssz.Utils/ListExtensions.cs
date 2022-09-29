@@ -22,13 +22,17 @@ namespace Ssz.Utils
         /// <param name="otherUniqueCollection"></param>
         /// <param name="equalityComparer"></param>
         public static void Intersect<T>(this List<T> baseCollection, List<T> otherCollection, 
-            out List<T> baseUniqueCollection, out List<T> baseIntersectionCollection, out List<T> otherUniqueCollection,
+            out List<T> baseUniqueCollection, 
+            out List<T> baseIntersectionCollection, 
+            out List<T> otherUniqueCollection,
+            out List<T> otherIntersectionCollection,
             IEqualityComparer<T> equalityComparer)
         {
             baseUniqueCollection = new List<T>(baseCollection.Count);
             baseIntersectionCollection = new List<T>(baseCollection.Count);
             otherUniqueCollection = new List<T>(otherCollection.Count);
             otherUniqueCollection.AddRange(otherCollection);
+            otherIntersectionCollection = new List<T>(baseCollection.Count);
 
             //var otherParallelQuery = otherUniqueCollection.AsParallel();            
             foreach (T baseElement in baseCollection)
@@ -37,6 +41,7 @@ namespace Ssz.Utils
                 int index = otherUniqueCollection.FindIndex(i => equalityComparer.Equals(i, baseElement));
                 if (index != -1)
                 {
+                    otherIntersectionCollection.Add(otherUniqueCollection[index]);
                     otherUniqueCollection.RemoveAt(index);                    
                     baseIntersectionCollection.Add(baseElement);
                 }                    
