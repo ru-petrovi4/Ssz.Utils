@@ -22,7 +22,7 @@ namespace Ssz.Utils.Logging
         {
             Logger = logger;
             if (userFriendlyLogger is null)
-            {                
+            {
                 UserFriendlyLogger = new WrapperUserFriendlyLogger(NullLogger.Instance);
                 WrapperUserFriendlyLogger = new WrapperUserFriendlyLogger(logger);
             }
@@ -38,6 +38,8 @@ namespace Ssz.Utils.Logging
         #region public functions        
 
         ILogger ILoggersSet.Logger => Logger;
+
+        public static ILoggersSet Empty { get; } = new LoggersSet<object>(NullLogger<object>.Instance, null);
 
         public ILogger<TCategoryName> Logger { get; }
 
