@@ -20,7 +20,7 @@ namespace Ssz.Xi.Client
         #region construction and destruction
 
         public XiDataAccessProvider(ILogger<XiDataAccessProvider> logger, IUserFriendlyLogger? userFriendlyLogger = null) :
-            base(logger, userFriendlyLogger)
+            base(new LoggersSet<XiDataAccessProvider>(logger, userFriendlyLogger))
         {
             _xiDataListItemsManager = new XiDataListItemsManager();
             _xiDataJournalListItemsManager = new XiDataJournalListItemsManager();

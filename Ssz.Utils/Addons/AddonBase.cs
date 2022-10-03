@@ -61,23 +61,10 @@ namespace Ssz.Utils.Addons
         /// <summary>
         ///     Addon instance ID for user
         /// </summary>
-        public string InstanceIdToDisplay { get; internal set; } = null!;
+        public string InstanceIdToDisplay { get; internal set; } = null!;        
 
-        /// <summary>
-        ///     AddonsManager Logger
-        /// </summary>
-        public ILogger Logger { get; internal set; } = null!;
+        public ILoggersSet LoggersSet { get; internal set; } = null!;
 
-        /// <summary>
-        ///     AddonsManager UserFriendlyLogger
-        /// </summary>
-        public IUserFriendlyLogger? UserFriendlyLogger { get; internal set; }
-
-        /// <summary>
-        ///     AddonsManager WrapperUserFriendlyLogger: combined Logger and UserFriendlyLogger
-        /// </summary>
-        public WrapperUserFriendlyLogger WrapperUserFriendlyLogger { get; internal set; } = null!;
-        
         public IConfiguration Configuration { get; internal set; } = null!;
         
         public IServiceProvider ServiceProvider { get; internal set; } = null!;

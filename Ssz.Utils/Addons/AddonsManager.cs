@@ -25,7 +25,7 @@ namespace Ssz.Utils.Addons
 
         public AddonsManager(ILogger<AddonsManager> logger, IConfiguration configuration, IServiceProvider serviceProvider)
         {
-            Logger = logger;
+            LoggersSet = new LoggersSet<AddonsManager>(logger, null);
             Configuration = configuration;
             ServiceProvider = serviceProvider;
         }
@@ -52,14 +52,13 @@ namespace Ssz.Utils.Addons
         /// <param name="csvDb"></param>
         public void Initialize(IUserFriendlyLogger? userFriendlyLogger, string addonsSearchPattern, CsvDb csvDb)
         {
-            UserFriendlyLogger = userFriendlyLogger;
-            WrapperUserFriendlyLogger = new WrapperUserFriendlyLogger(Logger, UserFriendlyLogger);
+            LoggersSet.SetUserFriendlyLogger(userFriendlyLogger);            
             AddonsSearchPattern = addonsSearchPattern;
             CsvDb = csvDb;
 
             if (CsvDb.CsvDbDirectoryInfo is null)
             {
-                WrapperUserFriendlyLogger.LogInformation(@"Addons Configuration Directory does not specified.");
+                LoggersSet.WrapperUserFriendlyLogger.LogInformation(@"Addons Configuration Directory does not specified.");
                 return;
             }
 
@@ -119,7 +118,7 @@ namespace Ssz.Utils.Addons
 
             foreach (DirectoryInfo subDirectoryInfo in CsvDb.CsvDbDirectoryInfo.GetDirectories())
             {
-                var subCsvDb = new CsvDb(CsvDb.Logger, CsvDb.UserFriendlyLogger, subDirectoryInfo);
+                var subCsvDb = new CsvDb(CsvDb.LoggersSet.Logger, CsvDb.LoggersSet.UserFriendlyLogger, subDirectoryInfo);
                 foreach (FileInfo csvFileInfo in subCsvDb.GetFileInfos())
                 {
                     result.ConfigurationCsvFilesCollection.Add(ConfigurationCsvFile.CreateFromFileInfo(subDirectoryInfo.Name, csvFileInfo));
@@ -243,7 +242,7 @@ namespace Ssz.Utils.Addons
         {
             if (String.IsNullOrEmpty(addonName))
             {
-                WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonNameIsEmpty);
+                LoggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonNameIsEmpty);
                 return null;
             }
 
@@ -253,7 +252,7 @@ namespace Ssz.Utils.Addons
                 p => String.Equals(p.Name, addonName, StringComparison.InvariantCultureIgnoreCase));
             if (availableAddon is null)
             {
-                WrapperUserFriendlyLogger.LogError(Properties.Resources.AvailableAddonIsNotFound, addonName);
+                LoggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.AvailableAddonIsNotFound, addonName);
                 return null;
             }
 
@@ -275,7 +274,7 @@ namespace Ssz.Utils.Addons
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex, @"_container.GetExportedValues<T> Error.");
+                    LoggersSet.Logger.LogError(ex, @"_container.GetExportedValues<T> Error.");
                 }
             return result;
         }
@@ -284,22 +283,14 @@ namespace Ssz.Utils.Addons
 
         #region protected functions
 
-        protected ILogger Logger { get; }
+        /// <summary>
+        ///     Has UserFriendlyLogger after Initialize(...)
+        /// </summary>
+        protected LoggersSet<AddonsManager> LoggersSet { get; private set; }
 
         protected IConfiguration Configuration { get; }
 
         protected IServiceProvider ServiceProvider { get; }
-
-        /// <summary>
-        ///     Has value after Initialize()
-        /// </summary>
-        protected IUserFriendlyLogger? UserFriendlyLogger { get; private set; }
-
-        /// <summary>
-        ///     Writes to Logger and UserFriendlyLogger, if any.
-        ///     Has value after Initialize()
-        /// </summary>
-        protected WrapperUserFriendlyLogger WrapperUserFriendlyLogger { get; private set; } = null!;
 
         /// <summary>
         ///     Has value after Initialize()
@@ -376,7 +367,7 @@ namespace Ssz.Utils.Addons
                 {
                     if (addonInstanceId.Contains(Path.DirectorySeparatorChar))
                     {
-                        WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonConfigDirectoryError_CannotContainPath, addonInstanceId);
+                        LoggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonConfigDirectoryError_CannotContainPath, addonInstanceId);
                         return null;
                     }
 
@@ -393,12 +384,11 @@ namespace Ssz.Utils.Addons
                         addonConfigDirectoryInfo = null;
                     }
                     if (addonConfigDirectoryInfo is null)
-                        WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonConfigDirectoryError, addonInstanceId);
+                        LoggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonConfigDirectoryError, addonInstanceId);
                 }
 
                 var parameters = new List<object>();
-                if (UserFriendlyLogger is not null)
-                    parameters.Add(UserFriendlyLogger);
+                parameters.Add(LoggersSet.UserFriendlyLogger);
                 if (addonConfigDirectoryInfo is not null)
                     parameters.Add(addonConfigDirectoryInfo);
                 availableAddon.CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, parameters.ToArray());
@@ -411,15 +401,13 @@ namespace Ssz.Utils.Addons
                 availableAddon.Id = NameValueCollectionHelper.GetNameValueCollectionString(idNameValueCollection);
                 availableAddon.InstanceId = addonInstanceId ?? @"";
                 availableAddon.InstanceIdToDisplay = addonInstanceIdToDisplay ?? @"";
-                availableAddon.Logger = Logger;
-                availableAddon.UserFriendlyLogger = UserFriendlyLogger;
-                availableAddon.WrapperUserFriendlyLogger = WrapperUserFriendlyLogger;
+                availableAddon.LoggersSet = new LoggersSet<AddonBase>(ServiceProvider.GetService<ILogger<AddonBase>>()!, LoggersSet.UserFriendlyLogger);                
                 availableAddon.Configuration = Configuration;
                 availableAddon.ServiceProvider = ServiceProvider;
             }
             catch (Exception ex)
             {
-                WrapperUserFriendlyLogger.LogError(ex, Properties.Resources.DesiredAddonFailed, availableAddon.Name);
+                LoggersSet.WrapperUserFriendlyLogger.LogError(ex, Properties.Resources.DesiredAddonFailed, availableAddon.Name);
                 return null;
             }
 

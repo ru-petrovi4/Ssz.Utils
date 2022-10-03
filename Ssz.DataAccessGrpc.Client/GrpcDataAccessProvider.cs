@@ -23,7 +23,7 @@ namespace Ssz.DataAccessGrpc.Client
         #region construction and destruction
 
         public GrpcDataAccessProvider(ILogger<GrpcDataAccessProvider> logger, IUserFriendlyLogger? userFriendlyLogger = null) :
-            base(logger, userFriendlyLogger)
+            base(new LoggersSet<GrpcDataAccessProvider>(logger, userFriendlyLogger))
         {
             _clientConnectionManager = new ClientConnectionManager(logger, ThreadSafeDispatcher);
 
@@ -167,7 +167,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="valueSubscription"></param>
         public override void AddItem(string? elementId, IValueSubscription valueSubscription)
         {
-            Logger.LogDebug("DataAccessGrpcProvider.AddItem() " + elementId);
+            LoggersSet.Logger.LogDebug("DataAccessGrpcProvider.AddItem() " + elementId);
 
             if (elementId == null || elementId == @"")
             {
@@ -388,12 +388,12 @@ namespace Ssz.DataAccessGrpc.Client
                 }
                 catch (RpcException ex)
                 {
-                    Logger.LogError(ex, ex.Status.Detail);
+                    LoggersSet.Logger.LogError(ex, ex.Status.Detail);
                     taskCompletionSource.TrySetException(ex);
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex, "Passthrough exception.");
+                    LoggersSet.Logger.LogError(ex, "Passthrough exception.");
                     taskCompletionSource.TrySetException(ex);
                 }                
             });
@@ -442,7 +442,7 @@ namespace Ssz.DataAccessGrpc.Client
                 }
                 catch (RpcException ex)
                 {
-                    Logger.LogError(ex, ex.Status.Detail);
+                    LoggersSet.Logger.LogError(ex, ex.Status.Detail);
                     if (callbackActionDispatched is not null)
                     {
                         callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
@@ -454,7 +454,7 @@ namespace Ssz.DataAccessGrpc.Client
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex, "Passthrough exception.");
+                    LoggersSet.Logger.LogError(ex, "Passthrough exception.");
                     if (callbackActionDispatched is not null)
                     {
                         callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
@@ -505,7 +505,7 @@ namespace Ssz.DataAccessGrpc.Client
 
 #region notify subscribers disconnected
 
-                    Logger.LogInformation("DataAccessGrpcProvider diconnected");                    
+                    LoggersSet.Logger.LogInformation("DataAccessGrpcProvider diconnected");                    
 
                     IEnumerable<IValueSubscription> valueSubscriptions =
                         _clientElementValueListManager.GetAllClientObjs().OfType<IValueSubscription>();
@@ -553,9 +553,9 @@ namespace Ssz.DataAccessGrpc.Client
                         _clientConnectionManager.InitiateConnection(ServerAddress, ClientApplicationName,
                             ClientWorkstationName, SystemNameToConnect, ContextParams);
 
-                        Logger.LogDebug("End Connecting");
+                        LoggersSet.Logger.LogDebug("End Connecting");
 
-                        Logger.LogInformation("DataAccessGrpcProvider connected to " + ServerAddress);
+                        LoggersSet.Logger.LogInformation("DataAccessGrpcProvider connected to " + ServerAddress);
 
                         IsConnectedEventWaitHandle.Set();                        
                         сallbackDispatcher = CallbackDispatcher;
@@ -576,7 +576,7 @@ namespace Ssz.DataAccessGrpc.Client
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogDebug(ex, "");
+                        LoggersSet.Logger.LogDebug(ex, "");
 
                         LastFailedConnectionDateTimeUtc = nowUtc;
 

@@ -26,8 +26,7 @@ namespace Ssz.Utils
         /// <param name="dispatcher"></param>
         public CsvDb(ILogger<CsvDb> logger, IUserFriendlyLogger? userFriendlyLogger = null, DirectoryInfo? csvDbDirectoryInfo = null, IDispatcher? dispatcher = null)
         {
-            Logger = logger;
-            UserFriendlyLogger = userFriendlyLogger;
+            LoggersSet = new LoggersSet<CsvDb>(logger, userFriendlyLogger);            
             CsvDbDirectoryInfo = csvDbDirectoryInfo;
             Dispatcher = dispatcher;
 
@@ -48,7 +47,7 @@ namespace Ssz.Utils
 
             if (CsvDbDirectoryInfo is not null)
             {
-                Logger.LogInformation("CsvDb Created for: " + CsvDbDirectoryInfo.FullName);
+                LoggersSet.Logger.LogInformation("CsvDb Created for: " + CsvDbDirectoryInfo.FullName);
                 if (Dispatcher is not null)
                     try
                     {
@@ -63,7 +62,7 @@ namespace Ssz.Utils
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogWarning(ex, "AppSettings FilesStore directory error. Please, specify correct directory and restart service.");
+                        LoggersSet.Logger.LogWarning(ex, "AppSettings FilesStore directory error. Please, specify correct directory and restart service.");
                     }
             }
 
@@ -74,13 +73,7 @@ namespace Ssz.Utils
 
         #region public functions
 
-        public ILogger<CsvDb> Logger { get; }
-
-        /// <summary>
-        ///     Messages are localized. Priority is Information, Error, Warning.
-        ///     Can be changed at any time.
-        /// </summary>
-        public IUserFriendlyLogger? UserFriendlyLogger { get; set; }
+        public LoggersSet<CsvDb> LoggersSet { get; }
 
         /// <summary>
         ///     Existing directory info or null.
@@ -529,7 +522,7 @@ namespace Ssz.Utils
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogError(ex, Properties.Resources.CsvDb_CsvFileWritingError + " " + fileFullName);
+                        LoggersSet.Logger.LogError(ex, Properties.Resources.CsvDb_CsvFileWritingError + " " + fileFullName);
                     }
 
                     csvFile.DataIsChangedByProgram = false;
@@ -577,7 +570,7 @@ namespace Ssz.Utils
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex, Properties.Resources.CsvDb_CsvFileWritingError + " " + fileFullName);
+                    LoggersSet.Logger.LogError(ex, Properties.Resources.CsvDb_CsvFileWritingError + " " + fileFullName);
                 }
 
                 csvFile.DataIsChangedByProgram = false;
@@ -595,7 +588,7 @@ namespace Ssz.Utils
             if (csvFile.FileData is null)
             {
                 if (CsvDbDirectoryInfo is not null)
-                    csvFile.FileData = CsvHelper.LoadCsvFile(Path.Combine(CsvDbDirectoryInfo.FullName, csvFile.FileName), true, null, UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
+                    csvFile.FileData = CsvHelper.LoadCsvFile(Path.Combine(CsvDbDirectoryInfo.FullName, csvFile.FileName), true, null, LoggersSet.UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
                 else
                     csvFile.FileData = new CaseInsensitiveDictionary<List<string?>>();
             }

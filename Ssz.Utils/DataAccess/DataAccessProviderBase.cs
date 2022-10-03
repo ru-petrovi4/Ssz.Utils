@@ -16,11 +16,9 @@ namespace Ssz.Utils.DataAccess
     {
         #region construction and destruction
 
-        public DataAccessProviderBase(ILogger logger, IUserFriendlyLogger? userFriendlyLogger = null)
+        public DataAccessProviderBase(ILoggersSet loggersSet)
         {
-            Logger = logger;
-            UserFriendlyLogger = userFriendlyLogger;
-            WrapperUserFriendlyLogger = new WrapperUserFriendlyLogger(Logger, UserFriendlyLogger);            
+            LoggersSet = loggersSet;        
         }
 
         /// <summary>
@@ -51,6 +49,8 @@ namespace Ssz.Utils.DataAccess
         #endregion
 
         #region public functions    
+
+        public ILoggersSet LoggersSet { get; }
 
         /// <summary>
         ///     Can be configured in map, 'TagAndPropertySeparator' key
@@ -210,7 +210,7 @@ namespace Ssz.Utils.DataAccess
         {
             Close();
 
-            Logger.LogDebug("Starting ModelDataProvider. сallbackDispatcher != null: " + (callbackDispatcher is not null).ToString());
+            LoggersSet.Logger.LogDebug("Starting ModelDataProvider. сallbackDispatcher != null: " + (callbackDispatcher is not null).ToString());
 
             _elementIdsMap = elementIdsMap;
             _elementValueListCallbackIsEnabled = elementValueListCallbackIsEnabled;
@@ -333,13 +333,7 @@ namespace Ssz.Utils.DataAccess
 
         #endregion
 
-        #region protected functions
-
-        protected ILogger Logger { get; }
-
-        protected IUserFriendlyLogger? UserFriendlyLogger { get; }
-
-        protected WrapperUserFriendlyLogger WrapperUserFriendlyLogger { get; }
+        #region protected functions        
 
         /// <summary>
         ///     Dispatcher for callbacks to client.

@@ -40,7 +40,7 @@ namespace Ssz.DataAccessGrpc.Client
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex, "Exception");
+                    LoggersSet.Logger.LogError(ex, "Exception");
                 }
             }
             );
