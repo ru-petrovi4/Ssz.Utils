@@ -8,11 +8,11 @@ using System.Windows.Threading;
 
 namespace Ssz.Utils.Wpf
 {   
-    public class DispatcherWrapper : IDispatcher, IDisposable
+    public class WrapperDispatcher : IDispatcher, IDisposable
     {
         #region construction and destruction
 
-        public DispatcherWrapper(Dispatcher dispatcher)
+        public WrapperDispatcher(Dispatcher dispatcher)
         {
             _dispatcher = dispatcher;
         }
@@ -44,7 +44,7 @@ namespace Ssz.Utils.Wpf
         /// <summary>
         ///     Invoked by the .NET Framework while doing heap managment (Finalize).
         /// </summary>
-        ~DispatcherWrapper()
+        ~WrapperDispatcher()
         {
             Dispose(false);
         }

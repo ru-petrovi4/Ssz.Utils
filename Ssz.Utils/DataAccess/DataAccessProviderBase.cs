@@ -220,6 +220,8 @@ namespace Ssz.Utils.DataAccess
             _clientWorkstationName = clientWorkstationName;
             _systemNameToConnect = systemNameToConnect;
             _contextParams = contextParams;
+            if (callbackDispatcher is null)
+                callbackDispatcher = new DefaultDispatcher();
             CallbackDispatcher = callbackDispatcher;
 
             InitializedDateTimeUtc = DateTime.UtcNow;
