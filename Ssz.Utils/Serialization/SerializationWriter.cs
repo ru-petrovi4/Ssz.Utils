@@ -1358,7 +1358,7 @@ namespace Ssz.Utils.Serialization
             WriteSerializedType(SerializedType.OtherType);
             Type type = value.GetType();
             WriteOptimized(type);
-            string s = JsonSerializer.Serialize(this, type);
+            string s = JsonSerializer.Serialize(value, type);
             WriteOptimized(s);
         }
 
