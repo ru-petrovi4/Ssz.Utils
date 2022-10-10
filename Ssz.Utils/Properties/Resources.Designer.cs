@@ -151,6 +151,15 @@ namespace Ssz.Utils.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Duplicate addons.
+        /// </summary>
+        internal static string DuplicateAddonsMessage {
+            get {
+                return ResourceManager.GetString("DuplicateAddonsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Expression error.
         /// </summary>
         internal static string PrepareLambdaExpressionError {

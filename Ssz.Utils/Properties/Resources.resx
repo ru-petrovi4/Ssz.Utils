@@ -147,6 +147,9 @@
   <data name="DesiredAddonFailed" xml:space="preserve">
     <value>Desired addon {0} failed.</value>
   </data>
+  <data name="DuplicateAddonsMessage" xml:space="preserve">
+    <value>Duplicate addons</value>
+  </data>
   <data name="PrepareLambdaExpressionError" xml:space="preserve">
     <value>Expression error</value>
   </data>

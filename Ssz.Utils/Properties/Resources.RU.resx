@@ -147,6 +147,9 @@
   <data name="DesiredAddonFailed" xml:space="preserve">
     <value>Ошибка при получении желаемого плагина {0}.</value>
   </data>
+  <data name="DuplicateAddonsMessage" xml:space="preserve">
+    <value />
+  </data>
   <data name="PrepareLambdaExpressionError" xml:space="preserve">
     <value>Ошибка в выражении</value>
   </data>

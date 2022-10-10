@@ -45,14 +45,16 @@ namespace Ssz.Utils.Addons
         public ObservableCollection<AddonBase> Addons { get; } = new();
 
         /// <summary>
-        ///     
+        /// 
         /// </summary>
         /// <param name="userFriendlyLogger"></param>
+        /// <param name="standardAddons"></param>
         /// <param name="addonsSearchPattern"></param>
         /// <param name="csvDb"></param>
-        public void Initialize(IUserFriendlyLogger? userFriendlyLogger, string addonsSearchPattern, CsvDb csvDb)
+        public void Initialize(IUserFriendlyLogger? userFriendlyLogger, AddonBase[]? standardAddons, string? addonsSearchPattern, CsvDb csvDb)
         {
-            LoggersSet.SetUserFriendlyLogger(userFriendlyLogger);            
+            LoggersSet.SetUserFriendlyLogger(userFriendlyLogger);
+            StandardAddons = standardAddons;
             AddonsSearchPattern = addonsSearchPattern;
             CsvDb = csvDb;
 
@@ -292,10 +294,12 @@ namespace Ssz.Utils.Addons
 
         protected IServiceProvider ServiceProvider { get; }
 
+        protected AddonBase[]? StandardAddons { get; private set; }
+
         /// <summary>
         ///     Has value after Initialize()
         /// </summary>
-        protected string AddonsSearchPattern { get; private set; } = null!;
+        protected string? AddonsSearchPattern { get; private set; }
 
         /// <summary>
         ///     Has value after Initialize()
@@ -431,37 +435,45 @@ namespace Ssz.Utils.Addons
         /// <returns></returns>
         private AddonBase[] GetAvailableAddonsUnconditionally()
         {
-            var exeDirectory = AppContext.BaseDirectory;
-
-            if (exeDirectory is null) return new AddonBase[0];
-
-            var addonsFileInfos = new List<FileInfo>();
-
-            addonsFileInfos.AddRange(
-                Directory.GetFiles(exeDirectory, AddonsSearchPattern, SearchOption.TopDirectoryOnly)
-                    .Select(fn => new FileInfo(fn)));
-            try
-            {
-                string addonsDirerctoryFullname = Path.Combine(exeDirectory, @"Addons");
-                if (Directory.Exists(addonsDirerctoryFullname))
-                    addonsFileInfos.AddRange(
-                        Directory.GetFiles(addonsDirerctoryFullname, AddonsSearchPattern, SearchOption.AllDirectories)
-                            .Select(fn => new FileInfo(fn)));
-            }
-            catch
-            {
-            }
-
             var availableAddonsList = new List<AddonBase>();
-            foreach (FileInfo addonFileInfo in addonsFileInfos)
+
+            if (StandardAddons is not null)
+                availableAddonsList.AddRange(StandardAddons);
+
+            if (!String.IsNullOrEmpty(AddonsSearchPattern))
             {
-                var availableAddon = TryGetAddon(addonFileInfo);
-                if (availableAddon is not null) availableAddonsList.Add(availableAddon);
+                var exeDirectory = AppContext.BaseDirectory;
+
+                if (exeDirectory is null) return new AddonBase[0];
+
+                var addonsFileInfos = new List<FileInfo>();
+
+                addonsFileInfos.AddRange(
+                    Directory.GetFiles(exeDirectory, AddonsSearchPattern, SearchOption.TopDirectoryOnly)
+                        .Select(fn => new FileInfo(fn)));
+                try
+                {
+                    string addonsDirerctoryFullname = Path.Combine(exeDirectory, @"Addons");
+                    if (Directory.Exists(addonsDirerctoryFullname))
+                        addonsFileInfos.AddRange(
+                            Directory.GetFiles(addonsDirerctoryFullname, AddonsSearchPattern, SearchOption.AllDirectories)
+                                .Select(fn => new FileInfo(fn)));
+                }
+                catch
+                {
+                }
+                
+                foreach (FileInfo addonFileInfo in addonsFileInfos)
+                {
+                    var availableAddon = TryGetAddon(addonFileInfo);
+                    if (availableAddon is not null) availableAddonsList.Add(availableAddon);
+                }                               
             }
 
             var availableAddonsDictionary = new Dictionary<Guid, AddonBase>();
             var addedAddonsWithDuplicates = new Dictionary<AddonBase, List<string>>();
             foreach (AddonBase addon in availableAddonsList)
+            {
                 if (!availableAddonsDictionary.TryGetValue(addon.Guid, out var addedAddon))
                 {
                     availableAddonsDictionary.Add(addon.Guid, addon);
@@ -483,33 +495,34 @@ namespace Ssz.Utils.Addons
                             if (p.Guid == addedAddon.Guid && !ReferenceEquals(p, addedAddon))
                                 //Only include the duplicates.  Do not include the original addon that is being
                                 //"properly" loaded up.
-                                duplicateFiles.Add(Path.GetDirectoryName(p.DllFileFullName) ?? "");
+                                duplicateFiles.Add(p.DllFileFullName);
                     }
                 }
+            }
 
-            //#if !DEBUG
-            //            if (addedAddonsWithDuplicates.Count > 0)
-            //            {
-            //                StringBuilder message = new StringBuilder(byte.MaxValue);
-            //                message.AppendLine(Properties.Resources.DuplicateAddonsMessage + ":");
-            //                foreach (var key in addedAddonsWithDuplicates.Keys)
-            //                {
-            //                    message.Append(key.Name);
-            //                    message.Append(" (");
-            //                    message.Append(Path.GetFileName(key.DllFileFullName));
-            //                    message.AppendLine(")");
+#if !DEBUG
+            if (addedAddonsWithDuplicates.Count > 0)
+            {
+                StringBuilder message = new StringBuilder();
+                message.AppendLine(Properties.Resources.DuplicateAddonsMessage + " ");
+                foreach (var key in addedAddonsWithDuplicates.Keys)
+                {
+                    message.Append(key.Name);
+                    message.Append(" (");
+                    message.Append(Path.GetFileName(key.DllFileFullName));
+                    message.AppendLine(")");
 
-            //                    message.Append("    using   - ");
-            //                    message.AppendLine(Path.GetDirectoryName(key.DllFileFullName));
-            //                    message.Append("    ignored - ");
-            //                    foreach (string ignored in addedAddonsWithDuplicates[key])
-            //                    {
-            //                        message.AppendLine(ignored);
-            //                    }
-            //                }
-            //                MessageBoxHelper.ShowWarning(message.ToString());
-            //            }
-            //#endif
+                    message.Append("    using   - ");
+                    message.AppendLine(Path.GetDirectoryName(key.DllFileFullName));
+                    message.Append("    ignored - ");
+                    foreach (string ignored in addedAddonsWithDuplicates[key])
+                    {
+                        message.AppendLine(ignored);
+                    }
+                }
+                LoggersSet.WrapperUserFriendlyLogger.LogWarning(message.ToString());
+            }
+#endif
 
             return availableAddonsDictionary.Values.ToArray();
         }
