@@ -596,8 +596,7 @@ namespace Ssz.Xi.Client
                         //Logger?.LogDebug("End Connecting");
 
                         //Logger.Info("XiDataProvider connected to " + _serverAddress);
-
-                        IsConnectedEventWaitHandle.Set();
+                        
                         сallbackDispatcher = CallbackDispatcher;
                         if (сallbackDispatcher is not null)
                         {
@@ -674,8 +673,6 @@ namespace Ssz.Xi.Client
         /// </summary>
         private void Unsubscribe(bool clearClientSubscriptions)
         {
-            IsConnectedEventWaitHandle.Reset();
-
             var сallbackDispatcher = CallbackDispatcher;
             if (сallbackDispatcher is not null)
             {

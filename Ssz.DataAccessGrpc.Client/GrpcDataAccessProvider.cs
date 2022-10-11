@@ -556,8 +556,7 @@ namespace Ssz.DataAccessGrpc.Client
                         LoggersSet.Logger.LogDebug("End Connecting");
 
                         LoggersSet.Logger.LogInformation("DataAccessGrpcProvider connected to " + ServerAddress);
-
-                        IsConnectedEventWaitHandle.Set();                        
+                                                
                         сallbackDispatcher = CallbackDispatcher;
                         if (сallbackDispatcher is not null)
                         {
@@ -627,8 +626,6 @@ namespace Ssz.DataAccessGrpc.Client
         /// </summary>
         protected virtual void Unsubscribe(bool clearClientSubscriptions)
         {
-            IsConnectedEventWaitHandle.Reset();
-
             var сallbackDispatcher = CallbackDispatcher;
             if (сallbackDispatcher is not null)
             {                
