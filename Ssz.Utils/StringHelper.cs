@@ -143,6 +143,15 @@ namespace Ssz.Utils
             return str.EndsWith(value, StringComparison.InvariantCultureIgnoreCase);
         }
 
+        public static string SafeSubstring(string? str, int startIndex, int length)
+        {
+            if (String.IsNullOrEmpty(str) || startIndex >= str!.Length) 
+                return @"";
+            if (startIndex < 0) 
+                startIndex = 0;
+            return str.Substring(startIndex, Math.Min(length, str!.Length - startIndex));
+        }
+
         #endregion
     }
 }
