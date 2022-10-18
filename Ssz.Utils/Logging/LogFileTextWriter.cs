@@ -111,8 +111,7 @@ namespace Ssz.Utils.Logging
         public override void Flush()
         {
             if (_buffer.Length > 0)
-            {
-                StreamWriter? sw = null;
+            {                
                 try
                 {   
                     if (_options.LogFileMaxSizeInBytes > 0)
@@ -129,20 +128,12 @@ namespace Ssz.Utils.Logging
                             }                            
                         }
                     }
-                    sw = new StreamWriter(LogFileFullName, true, new UTF8Encoding(true));
-                    sw.Write(_buffer.ToString());
+                    File.AppendAllText(LogFileFullName, _buffer.ToString(), new UTF8Encoding(true));                                      
                     _buffer.Clear();                    
                 }
                 catch
                 {
-                }
-                finally
-                {
-                    if (sw is not null)
-                    {
-                        sw.Dispose();
-                    }
-                }
+                }                
             }
         }
 
