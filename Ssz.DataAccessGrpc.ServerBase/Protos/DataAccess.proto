@@ -104,7 +104,7 @@ message InitiateRequest {
   string client_application_name = 1;
   string client_workstation_name = 2;     
   uint32 requested_server_context_timeout_ms = 3;
-  string requested_server_culture_name = 4;
+  string requested_culture_name = 4;
   string system_name_to_connect = 5; 
   map<string, NullableString> context_params = 6;
 }

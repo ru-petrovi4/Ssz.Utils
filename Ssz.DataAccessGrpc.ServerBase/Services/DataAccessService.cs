@@ -34,7 +34,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         request.ClientApplicationName ?? @"", 
                         request.ClientWorkstationName ?? @"",
                         request.RequestedServerContextTimeoutMs,
-                        request.RequestedServerCultureName ?? @"",
+                        request.RequestedCultureName ?? @"",
                         request.SystemNameToConnect ?? @"",
                         new CaseInsensitiveDictionary<string?>(request.ContextParams
                             .Select(cp => KeyValuePair.Create(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)))

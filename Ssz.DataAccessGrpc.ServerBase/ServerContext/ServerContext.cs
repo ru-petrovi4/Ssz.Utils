@@ -27,7 +27,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="clientApplicationName"></param>
         /// <param name="clientWorkstationName"></param>
         /// <param name="requestedServerContextTimeoutMs"></param>
-        /// <param name="requestedServerCultureName"></param>
+        /// <param name="requestedCultureName"></param>
         /// <param name="systemNameToConnect"></param>
         /// <param name="contextParams"></param>
         public ServerContext(
@@ -36,7 +36,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             string clientApplicationName, 
             string clientWorkstationName, 
             uint requestedServerContextTimeoutMs, 
-            string requestedServerCultureName, 
+            string requestedCultureName, 
             string systemNameToConnect, 
             CaseInsensitiveDictionary<string?> contextParams)
         {
@@ -45,7 +45,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             ClientApplicationName = clientApplicationName;
             ClientWorkstationName = clientWorkstationName;
             ContextTimeoutMs = ValidateContextTimeout(requestedServerContextTimeoutMs);
-            CultureInfo = ValidateCultureName(requestedServerCultureName);
+            CultureInfo = ValidateCultureName(requestedCultureName);
             SystemNameToConnect = systemNameToConnect;
             ContextParams = contextParams;
 
