@@ -342,9 +342,10 @@ namespace Ssz.Utils.Addons
                 {
                     newAddons.Add(desiredAndAvailableAddon);
 
-                    catalog.Catalogs.Add(new DirectoryCatalog(
-                            Path.GetDirectoryName(desiredAndAvailableAddon.DllFileFullName)!,
-                            Path.GetFileName(desiredAndAvailableAddon.DllFileFullName)));
+                    if (!String.IsNullOrEmpty(desiredAndAvailableAddon.DllFileFullName))
+                        catalog.Catalogs.Add(new DirectoryCatalog(
+                                Path.GetDirectoryName(desiredAndAvailableAddon.DllFileFullName)!,
+                                Path.GetFileName(desiredAndAvailableAddon.DllFileFullName)));
                 }
             }
 

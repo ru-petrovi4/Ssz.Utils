@@ -276,6 +276,17 @@ namespace Ssz.Utils.DiffMatchPatch
             return diff_main(text1, text2, checklines, deadline);
         }
 
+        public List<Diff> diff_lineMode(string text1, string text2)
+        {            
+            var a = diff_linesToChars(text1, text2);
+            var lineText1 = (string)a[0];
+            var lineText2 = (string)a[1];
+            var lineArray = (List<string>)a[2];
+            var diffs = diff_main(lineText1, lineText2, false);
+            diff_charsToLines(diffs, lineArray);
+            return diffs;
+        }
+
         /**
          * Find the differences between two texts.  Simplifies the problem by
          * stripping any common prefix or suffix off the texts before diffing.
