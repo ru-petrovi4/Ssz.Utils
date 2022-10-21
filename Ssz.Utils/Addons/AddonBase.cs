@@ -23,6 +23,11 @@ namespace Ssz.Utils.Addons
         public const string OptionsCsvFileName = @"Options.csv";
 
         /// <summary>
+        ///     Addon runtime variables .csv file name.
+        /// </summary>
+        public const string VariablesCsvFileName = @"Variables.csv";
+
+        /// <summary>
         ///     Addons list .csv file name.
         /// </summary>
         public const string AddonsCsvFileName = @"Addons.csv";
