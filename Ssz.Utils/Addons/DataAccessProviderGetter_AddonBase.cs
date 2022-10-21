@@ -12,6 +12,8 @@ namespace Ssz.Utils.Addons
 
         public static readonly string DataAccessClient_ContextParams_OptionName = @"%(DataAccess_ContextParams)";
 
+        public static readonly string DataAccessClient_SystemNameToConnect_ToDisplay_OptionName = @"%(DataAccess_SystemNameToConnect_ToDisplay)";
+
         /// <summary>
         ///     Gets initialized IDataAccessProvider or writes to log and returns null.        
         /// </summary>

@@ -178,7 +178,7 @@ namespace Ssz.Utils.Addons
                 List<TAddon> result = new();
                 foreach (var addon in Addons.OfType<TAddon>().OrderBy(a => a.IsDummy).ToArray())
                 {
-                    TAddon? newAddon = CreateAvailableAddon(addon, addon.InstanceId, addon.InstanceIdToDisplay) as TAddon;
+                    TAddon? newAddon = CreateAvailableAddon(addon, addon.InstanceId) as TAddon;
                     if (newAddon is not null)
                         result.Add(newAddon);
                 };
@@ -202,7 +202,7 @@ namespace Ssz.Utils.Addons
                 if (addon is null)
                     return null;
 
-                TAddon? newAddon = CreateAvailableAddon(addon, addon.InstanceId, addon.InstanceIdToDisplay) as TAddon;
+                TAddon? newAddon = CreateAvailableAddon(addon, addon.InstanceId) as TAddon;
                 if (newAddon is null)
                     return null;
 
@@ -226,7 +226,7 @@ namespace Ssz.Utils.Addons
                 if (addon is null)
                     return null;
 
-                TAddon? newAddon = CreateAvailableAddon(addon, addon.InstanceId, addon.InstanceIdToDisplay) as TAddon;
+                TAddon? newAddon = CreateAvailableAddon(addon, addon.InstanceId) as TAddon;
                 if (newAddon is null)
                     return null;
 
@@ -240,7 +240,7 @@ namespace Ssz.Utils.Addons
         /// <param name="addonName"></param>
         /// <param name="addonInstanceId"></param>
         /// <returns></returns>
-        public AddonBase? CreateAvailableAddon(string addonName, string? addonInstanceId, string? addonInstanceIdToDisplay)
+        public AddonBase? CreateAvailableAddon(string addonName, string? addonInstanceId)
         {
             if (String.IsNullOrEmpty(addonName))
             {
@@ -258,7 +258,7 @@ namespace Ssz.Utils.Addons
                 return null;
             }
 
-            return CreateAvailableAddon(availableAddon, addonInstanceId, addonInstanceIdToDisplay);
+            return CreateAvailableAddon(availableAddon, addonInstanceId);
         }
 
         /// <summary>
@@ -334,10 +334,9 @@ namespace Ssz.Utils.Addons
                     continue;
 
                 string addonName = line[1] ?? @"";
-                string addonInstanceId = line[0]!;
-                string? addonInstanceIdToDisplay = line.Count > 2 ? line[2] : null;
+                string addonInstanceId = line[0]!;                
 
-                var desiredAndAvailableAddon = CreateAvailableAddon(addonName, addonInstanceId, addonInstanceIdToDisplay);
+                var desiredAndAvailableAddon = CreateAvailableAddon(addonName, addonInstanceId);
                 if (desiredAndAvailableAddon is not null)
                 {
                     newAddons.Add(desiredAndAvailableAddon);
@@ -359,7 +358,7 @@ namespace Ssz.Utils.Addons
             _availableAddons = null;
         }
 
-        private AddonBase? CreateAvailableAddon(AddonBase availableAddon, string? addonInstanceId, string? addonInstanceIdToDisplay)
+        private AddonBase? CreateAvailableAddon(AddonBase availableAddon, string? addonInstanceId)
         {
             try
             {
@@ -400,12 +399,9 @@ namespace Ssz.Utils.Addons
                 var idNameValueCollection = availableAddon.CsvDb.GetFileInfos().ToDictionary(fi => fi.Name, fi => (string?)new Any(fi.LastWriteTimeUtc).ValueAsString(false));
                 idNameValueCollection.Add(@"addonName", availableAddon.Name);
                 if (!String.IsNullOrEmpty(addonInstanceId))
-                    idNameValueCollection.Add(@"addonInstanceId", addonInstanceId);
-                if (!String.IsNullOrEmpty(addonInstanceIdToDisplay))
-                    idNameValueCollection.Add(@"addonInstanceIdToDisplay", addonInstanceIdToDisplay);
+                    idNameValueCollection.Add(@"addonInstanceId", addonInstanceId);                
                 availableAddon.Id = NameValueCollectionHelper.GetNameValueCollectionString(idNameValueCollection);
-                availableAddon.InstanceId = addonInstanceId ?? @"";
-                availableAddon.InstanceIdToDisplay = addonInstanceIdToDisplay ?? @"";
+                availableAddon.InstanceId = addonInstanceId ?? @"";                
                 availableAddon.LoggersSet = new LoggersSet<AddonBase>(ServiceProvider.GetService<ILogger<AddonBase>>()!, LoggersSet.UserFriendlyLogger);                
                 availableAddon.Configuration = Configuration;
                 availableAddon.ServiceProvider = ServiceProvider;
