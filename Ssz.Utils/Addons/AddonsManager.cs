@@ -310,10 +310,9 @@ namespace Ssz.Utils.Addons
 
         #region private functions
 
-        private void OnCsvDb_CsvFileChanged(CsvFileChangeAction csvFileChangeAction, string? csvFileName)
+        private void OnCsvDb_CsvFileChanged(CsvFileChangeAction csvFileChangeAction, string csvFileName)
         {
-            if (csvFileName == null ||
-                String.Equals(csvFileName, AddonBase.AddonsCsvFileName))
+            if (csvFileName == AddonBase.AddonsCsvFileName)
             {
                 lock (SyncRoot)
                 {
@@ -363,8 +362,7 @@ namespace Ssz.Utils.Addons
             try
             {
                 var availableAddonClone = (AddonBase)Activator.CreateInstance(availableAddon.GetType())!;
-                availableAddonClone.DllFileFullName = availableAddon.DllFileFullName;
-                availableAddon = availableAddonClone;
+                availableAddonClone.DllFileFullName = availableAddon.DllFileFullName;                
 
                 DirectoryInfo? addonConfigDirectoryInfo = null;
                 if (!String.IsNullOrEmpty(addonInstanceId))
@@ -395,24 +393,23 @@ namespace Ssz.Utils.Addons
                 parameters.Add(LoggersSet.UserFriendlyLogger);
                 if (addonConfigDirectoryInfo is not null)
                     parameters.Add(addonConfigDirectoryInfo);
-                availableAddon.CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, parameters.ToArray());
-                var idNameValueCollection = availableAddon.CsvDb.GetFileInfos().ToDictionary(fi => fi.Name, fi => (string?)new Any(fi.LastWriteTimeUtc).ValueAsString(false));
-                idNameValueCollection.Add(@"addonName", availableAddon.Name);
+                availableAddonClone.CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, parameters.ToArray());
+                var idNameValueCollection = availableAddonClone.CsvDb.GetFileInfos().ToDictionary(fi => fi.Name, fi => (string?)new Any(fi.LastWriteTimeUtc).ValueAsString(false));
+                idNameValueCollection.Add(@"/addonName", availableAddonClone.Name);
                 if (!String.IsNullOrEmpty(addonInstanceId))
-                    idNameValueCollection.Add(@"addonInstanceId", addonInstanceId);                
-                availableAddon.Id = NameValueCollectionHelper.GetNameValueCollectionString(idNameValueCollection);
-                availableAddon.InstanceId = addonInstanceId ?? @"";                
-                availableAddon.LoggersSet = new LoggersSet<AddonBase>(ServiceProvider.GetService<ILogger<AddonBase>>()!, LoggersSet.UserFriendlyLogger);                
-                availableAddon.Configuration = Configuration;
-                availableAddon.ServiceProvider = ServiceProvider;
+                    idNameValueCollection.Add(@"/addonInstanceId", addonInstanceId);                
+                availableAddonClone.Id = NameValueCollectionHelper.GetNameValueCollectionString(idNameValueCollection);
+                availableAddonClone.InstanceId = addonInstanceId ?? @"";                
+                availableAddonClone.LoggersSet = new LoggersSet<AddonBase>(ServiceProvider.GetService<ILogger<AddonBase>>()!, LoggersSet.UserFriendlyLogger);                
+                availableAddonClone.Configuration = Configuration;
+                availableAddonClone.ServiceProvider = ServiceProvider;
+                return availableAddonClone;
             }
             catch (Exception ex)
             {
                 LoggersSet.WrapperUserFriendlyLogger.LogError(ex, Properties.Resources.DesiredAddonFailed, availableAddon.Name);
                 return null;
             }
-
-            return availableAddon;
         }
 
         /// <summary>

@@ -17,18 +17,17 @@ namespace Ssz.Utils
         ///     userFriendlyLogger: Messages are localized. Priority is Information, Error, Warning.
         ///     If csvDbDirectoryInfo is null, directory is not used.
         ///     If !csvDbDirectoryInfo.Exists, directory is created.
-        ///     If dispatcher is not null monitors csvDbDirectoryInfo
-        ///     File names must be valid.
+        ///     If callbackDispatcher is not null, monitors csvDbDirectoryInfo for changes.        
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="userFriendlyLogger"></param>
         /// <param name="csvDbDirectoryInfo"></param>
-        /// <param name="dispatcher"></param>
-        public CsvDb(ILogger<CsvDb> logger, IUserFriendlyLogger? userFriendlyLogger = null, DirectoryInfo? csvDbDirectoryInfo = null, IDispatcher? dispatcher = null)
+        /// <param name="callbackDispatcher">Dispatcher for all callbacks</param>
+        public CsvDb(ILogger<CsvDb> logger, IUserFriendlyLogger? userFriendlyLogger = null, DirectoryInfo? csvDbDirectoryInfo = null, IDispatcher? callbackDispatcher = null)
         {
             LoggersSet = new LoggersSet<CsvDb>(logger, userFriendlyLogger);            
             CsvDbDirectoryInfo = csvDbDirectoryInfo;
-            Dispatcher = dispatcher;
+            CallbackDispatcher = callbackDispatcher;
 
             if (CsvDbDirectoryInfo is not null)
             {
@@ -48,7 +47,7 @@ namespace Ssz.Utils
             if (CsvDbDirectoryInfo is not null)
             {
                 LoggersSet.Logger.LogInformation("CsvDb Created for: " + CsvDbDirectoryInfo.FullName);
-                if (Dispatcher is not null)
+                if (CallbackDispatcher is not null)
                     try
                     {
                         _fileSystemWatcher.Created += FileSystemWatcherOnEventAsync;
@@ -76,11 +75,14 @@ namespace Ssz.Utils
         public LoggersSet<CsvDb> LoggersSet { get; }
 
         /// <summary>
-        ///     Existing directory info or null.
+        ///     Existing directory info or null
         /// </summary>
         public DirectoryInfo? CsvDbDirectoryInfo { get; }
 
-        public IDispatcher? Dispatcher { get; }        
+        /// <summary>
+        ///     Dispatcher for all callbacks
+        /// </summary>
+        public IDispatcher? CallbackDispatcher { get; }        
 
         /// <summary>
         /// 
@@ -601,9 +603,9 @@ namespace Ssz.Utils
             await Task.Delay(1000);
             _fileSystemWatcherOnEventIsProcessing = false;
 
-            if (Dispatcher is not null)
+            if (CallbackDispatcher is not null)
             {
-                Dispatcher.BeginInvoke(ct =>
+                CallbackDispatcher.BeginInvoke(ct =>
                 {
                     this.LoadData();                    
                 });
