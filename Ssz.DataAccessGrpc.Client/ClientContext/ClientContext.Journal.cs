@@ -93,7 +93,7 @@ namespace Ssz.DataAccessGrpc.Client
                     ReadEventMessagesJournalReply reply = _resourceManagementClient.ReadEventMessagesJournal(request);
                     SetResourceManagementLastCallUtc();
 
-                    var result = clientEventList.EventMessagesCallback(reply.EventMessagesCollection);
+                    var result = clientEventList.GetEventMessagesCollection(reply.EventMessagesCollection);
                     if (result is not null) 
                         return result;
                 }

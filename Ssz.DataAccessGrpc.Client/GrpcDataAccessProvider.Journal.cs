@@ -72,7 +72,7 @@ namespace Ssz.DataAccessGrpc.Client
             ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 ClientEventList? clientEventList =
-                    _clientEventListManager.GetRelatedClientEventList(OnEventMessagesCallbackInternal);
+                    _clientEventListManager.GetRelatedClientEventList(OnClientEventListManager_EventMessagesCallbackInternal);
 
                 if (clientEventList is null) return;
 

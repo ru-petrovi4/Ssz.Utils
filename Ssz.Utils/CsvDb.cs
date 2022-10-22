@@ -87,7 +87,7 @@ namespace Ssz.Utils
         /// <summary>
         /// 
         /// </summary>
-        public event Action<CsvFileChangeAction, string>? CsvFileChanged;
+        public event EventHandler<CsvFileChangedEventArgs>? CsvFileChanged;
 
         public bool EnableRaisingEvents
         {
@@ -121,6 +121,8 @@ namespace Ssz.Utils
         public void LoadData()
         {
             if (CsvDbDirectoryInfo is null) return;
+
+            List<CsvFileChangedEventArgs> eventArgsList = new();
 
             var newCsvFilesCollection = new Dictionary<string, CsvFile>();
 
@@ -173,7 +175,11 @@ namespace Ssz.Utils
                     else
                     {
                         // Notify about deleted files
-                        CsvFileChanged?.Invoke(CsvFileChangeAction.Removed, kvp.Value.FileName);
+                        eventArgsList.Add(new CsvFileChangedEventArgs 
+                            {
+                                CsvFileChangeAction = CsvFileChangeAction.Removed,
+                                CsvFileName = kvp.Value.FileName 
+                            });
                     }                    
                 }
             }
@@ -190,14 +196,25 @@ namespace Ssz.Utils
 
                     // Notify about changed files
                     if (csvFile.MovedToNewCollection)
-                        CsvFileChanged?.Invoke(CsvFileChangeAction.Updated, kvp.Value.FileName);
+                        eventArgsList.Add(new CsvFileChangedEventArgs
+                            {
+                                CsvFileChangeAction = CsvFileChangeAction.Updated,
+                                CsvFileName = kvp.Value.FileName
+                            });
                     else
-                        CsvFileChanged?.Invoke(CsvFileChangeAction.Added, kvp.Value.FileName);
+                        eventArgsList.Add(new CsvFileChangedEventArgs
+                            {
+                                CsvFileChangeAction = CsvFileChangeAction.Added,
+                                CsvFileName = kvp.Value.FileName
+                            });
                 }
                 csvFile.MovedToNewCollection = false;
             }            
 
             _csvFilesCollection = newCsvFilesCollection;
+            
+            foreach (var eventArgs in eventArgsList)
+                CsvFileChanged?.Invoke(this, eventArgs);
         }
 
         /// <summary>
@@ -496,6 +513,8 @@ namespace Ssz.Utils
         {
             if (CsvDbDirectoryInfo is null) return;
 
+            List<CsvFileChangedEventArgs> eventArgsList = new();
+
             _fileSystemWatcher.EnableRaisingEvents = false;
 
             foreach (var kvp in _csvFilesCollection)
@@ -518,9 +537,17 @@ namespace Ssz.Utils
                         csvFile.FileInfo = new FileInfo(fileFullName);
 
                         if (isNewCsvFile)
-                            CsvFileChanged?.Invoke(CsvFileChangeAction.Added, kvp.Value.FileName);
+                            eventArgsList.Add(new CsvFileChangedEventArgs
+                                {
+                                    CsvFileChangeAction = CsvFileChangeAction.Added,
+                                    CsvFileName = kvp.Value.FileName
+                                });
                         else
-                            CsvFileChanged?.Invoke(CsvFileChangeAction.Updated, kvp.Value.FileName);
+                            eventArgsList.Add(new CsvFileChangedEventArgs
+                                {
+                                    CsvFileChangeAction = CsvFileChangeAction.Updated,
+                                    CsvFileName = kvp.Value.FileName
+                                });
                     }
                     catch (Exception ex)
                     {
@@ -532,6 +559,9 @@ namespace Ssz.Utils
             }
 
             var t = FileSystemWatcherEnableRaisingEventsAsync();
+
+            foreach (var eventArgs in eventArgsList)
+                CsvFileChanged?.Invoke(this, eventArgs);
         }
 
         /// <summary>
@@ -541,11 +571,13 @@ namespace Ssz.Utils
         {
             if (CsvDbDirectoryInfo is null) return;            
 
-            if (string.IsNullOrWhiteSpace(fileName)) return;
+            if (string.IsNullOrWhiteSpace(fileName)) return;            
 
             string fileNameUpper = fileName!.ToUpperInvariant();
 
-            if (!_csvFilesCollection.TryGetValue(fileNameUpper, out CsvFile? csvFile)) return;            
+            if (!_csvFilesCollection.TryGetValue(fileNameUpper, out CsvFile? csvFile)) return;
+
+            List<CsvFileChangedEventArgs> eventArgsList = new();
 
             if (csvFile.DataIsChangedByProgram)
             {
@@ -566,9 +598,17 @@ namespace Ssz.Utils
                     csvFile.FileInfo = new FileInfo(fileFullName);
                     
                     if (isNewCsvFile)
-                        CsvFileChanged?.Invoke(CsvFileChangeAction.Added, csvFile.FileName);
+                        eventArgsList.Add(new CsvFileChangedEventArgs
+                            {
+                                CsvFileChangeAction = CsvFileChangeAction.Added,
+                                CsvFileName = csvFile.FileName
+                            });                    
                     else
-                        CsvFileChanged?.Invoke(CsvFileChangeAction.Updated, csvFile.FileName);
+                        eventArgsList.Add(new CsvFileChangedEventArgs
+                            {
+                                CsvFileChangeAction = CsvFileChangeAction.Updated,
+                                CsvFileName = csvFile.FileName
+                            });                    
                 }
                 catch (Exception ex)
                 {
@@ -578,6 +618,9 @@ namespace Ssz.Utils
                 csvFile.DataIsChangedByProgram = false;
 
                 var t = FileSystemWatcherEnableRaisingEventsAsync();
+
+                foreach (var eventArgs in eventArgsList)
+                    CsvFileChanged?.Invoke(this, eventArgs);
             }
         }
 
@@ -663,6 +706,13 @@ namespace Ssz.Utils
 
             public bool MovedToNewCollection;
         }
+    }
+
+    public class CsvFileChangedEventArgs : EventArgs
+    {        
+        public CsvFileChangeAction CsvFileChangeAction { get; set; }
+
+        public string CsvFileName { get; set; } = @"";
     }
 
     public enum CsvFileChangeAction

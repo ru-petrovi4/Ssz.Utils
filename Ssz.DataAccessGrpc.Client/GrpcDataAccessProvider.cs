@@ -44,7 +44,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <summary>
         ///     Is called using сallbackDispatcher, see Initialize(..).        
         /// </summary>
-        public override event Action<IDataAccessProvider> ValueSubscriptionsUpdated = delegate { };
+        public override event EventHandler ValueSubscriptionsUpdated = delegate { };
 
         /// <summary>
         ///     You can set updateValueItems = false and invoke PollElementValuesChangesAsync(...) manually.
@@ -670,7 +670,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             LastValueSubscriptionsUpdatedDateTimeUtc = DateTime.UtcNow;
 
-            ValueSubscriptionsUpdated(this);
+            ValueSubscriptionsUpdated(this, EventArgs.Empty);
         }
 
 #endregion
@@ -692,7 +692,7 @@ namespace Ssz.DataAccessGrpc.Client
             }
 
             if (eventListCallbackIsEnabled) 
-                _clientEventListManager.EventMessagesCallback += OnEventMessagesCallbackInternal;
+                _clientEventListManager.EventMessagesCallback += OnClientEventListManager_EventMessagesCallbackInternal;
 
             while (true)
             {
@@ -708,7 +708,7 @@ namespace Ssz.DataAccessGrpc.Client
             Unsubscribe(true);
 
             if (eventListCallbackIsEnabled)
-                _clientEventListManager.EventMessagesCallback -= OnEventMessagesCallbackInternal;
+                _clientEventListManager.EventMessagesCallback -= OnClientEventListManager_EventMessagesCallbackInternal;
         }
 
         /// <summary>

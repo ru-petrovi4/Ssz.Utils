@@ -17,7 +17,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <summary>
         ///     Is called using сallbackDispatcher, see Initialize(..).        
         /// </summary>
-        public override event Action<IDataAccessProvider, Utils.DataAccess.EventMessagesCollection> EventMessagesCallback
+        public override event EventHandler<EventMessagesCallbackEventArgs> EventMessagesCallback
         {
             add { ThreadSafeDispatcher.BeginInvoke(ct => _clientEventListManager.EventMessagesCallback += value); }
             remove { ThreadSafeDispatcher.BeginInvoke(ct => _clientEventListManager.EventMessagesCallback -= value); }
@@ -28,7 +28,7 @@ namespace Ssz.DataAccessGrpc.Client
             ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 ClientEventList? clientEventList =
-                    _clientEventListManager.GetRelatedClientEventList(OnEventMessagesCallbackInternal);
+                    _clientEventListManager.GetRelatedClientEventList(OnClientEventListManager_EventMessagesCallbackInternal);
 
                 if (clientEventList is null) return;
 
@@ -50,7 +50,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         #region protected functions
 
-        protected virtual void OnEventMessagesCallback(Utils.DataAccess.EventMessagesCollection eventMessagesCollection)
+        protected virtual void OnClientEventListManager_EventMessagesCallback(Utils.DataAccess.EventMessagesCollection eventMessagesCollection)
         {
         }
 
@@ -58,9 +58,9 @@ namespace Ssz.DataAccessGrpc.Client
 
         #region private functions
 
-        private void OnEventMessagesCallbackInternal(IDataAccessProvider dataAccessProvider, Utils.DataAccess.EventMessagesCollection eventMessagesCollection)
+        private void OnClientEventListManager_EventMessagesCallbackInternal(object? sender, EventMessagesCallbackEventArgs args)
         {
-            OnEventMessagesCallback(eventMessagesCollection);
+            OnClientEventListManager_EventMessagesCallback(args.EventMessagesCollection);
         }
 
         #endregion

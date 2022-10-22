@@ -187,9 +187,9 @@ namespace Ssz.Utils.DataAccess
 
         public object? Obj { get; set; }
 
-        public virtual event Action<IDataAccessProvider> ValueSubscriptionsUpdated = delegate { };
+        public virtual event EventHandler ValueSubscriptionsUpdated = delegate { };
 
-        public virtual event Action<IDataAccessProvider, EventMessagesCollection> EventMessagesCallback = delegate { };
+        public virtual event EventHandler<EventMessagesCallbackEventArgs> EventMessagesCallback = delegate { };
 
         /// <summary>
         ///     You can set updateValueItems = false and invoke PollElementValuesChangesAsync(...) manually.
@@ -346,7 +346,7 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         ///     Dispatcher for callbacks to client.
         /// </summary>
-        protected IDispatcher? CallbackDispatcher { get; private set; }
+        protected IDispatcher? CallbackDispatcher { get; private set; }             
 
         #endregion
 

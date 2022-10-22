@@ -72,7 +72,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// </summary>
         /// <param name="eventMessagesCollection"></param>
         /// <returns></returns>
-        public Utils.DataAccess.EventMessagesCollection? EventMessagesCallback(ServerBase.EventMessagesCollection eventMessagesCollection)
+        public Utils.DataAccess.EventMessagesCollection? GetEventMessagesCollection(ServerBase.EventMessagesCollection eventMessagesCollection)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
@@ -123,7 +123,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
 
             try
             {
-                EventMessagesCallbackEvent(this, eventMessagesCollection);
+                EventMessagesCallback(this, new EventMessagesCallbackEventArgs { EventMessagesCollection = eventMessagesCollection });
             }
             catch
             {
@@ -134,7 +134,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// <summary>
         ///     This event is used to notify the client application when new events are received.
         /// </summary>
-        public event EventMessagesCallbackEventHandler EventMessagesCallbackEvent = delegate { };
+        public event EventHandler<EventMessagesCallbackEventArgs> EventMessagesCallback = delegate { };
 
         #endregion
 

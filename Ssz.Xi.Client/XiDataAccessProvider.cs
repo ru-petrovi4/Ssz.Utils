@@ -34,7 +34,7 @@ namespace Ssz.Xi.Client
         /// <summary>
         ///     Is called using сallbackDoer, see Initialize(..).
         /// </summary>
-        public override event Action<IDataAccessProvider> ValueSubscriptionsUpdated = delegate { };
+        public override event EventHandler ValueSubscriptionsUpdated = delegate { };
 
         /// <summary>
         ///     You can set updateValueItems = false and invoke PollElementValuesChangesAsync(...) manually.
@@ -490,7 +490,7 @@ namespace Ssz.Xi.Client
             }
 
             if (eventListCallbackIsEnabled)
-                _xiEventListItemsManager.EventMessagesCallback += OnEventMessagesCallback;
+                _xiEventListItemsManager.EventMessagesCallback += OnXiEventListItemsManager_EventMessagesCallback;
 
             while (true)
             {
@@ -508,7 +508,7 @@ namespace Ssz.Xi.Client
             _xiServerProxy.Dispose();
             _xiServerProxy = null;
             if (eventListCallbackIsEnabled)
-                _xiEventListItemsManager.EventMessagesCallback -= OnEventMessagesCallback;
+                _xiEventListItemsManager.EventMessagesCallback -= OnXiEventListItemsManager_EventMessagesCallback;
         }
 
         /// <summary>
@@ -552,7 +552,7 @@ namespace Ssz.Xi.Client
                                 }
                                 DataGuid = Guid.NewGuid();
 
-                                ValueSubscriptionsUpdated(this);
+                                ValueSubscriptionsUpdated(this, EventArgs.Empty);
                             });
                         }
                         catch (Exception)
@@ -714,7 +714,7 @@ namespace Ssz.Xi.Client
                 DataGuid = Guid.NewGuid();
             }
 
-            ValueSubscriptionsUpdated(this);
+            ValueSubscriptionsUpdated(this, EventArgs.Empty);
         }
 
         /// <summary>

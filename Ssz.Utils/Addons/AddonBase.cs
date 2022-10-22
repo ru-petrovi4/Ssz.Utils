@@ -73,8 +73,13 @@ namespace Ssz.Utils.Addons
 
         bool IObservableCollectionItem.IsAdded { get; set; }
 
+        public event EventHandler? Initialized;
+
+        public event EventHandler? Closed;
+
         public virtual void Initialize()
-        {            
+        {
+            Initialized?.Invoke(this, EventArgs.Empty);
         }
 
         void IObservableCollectionItem.Update(IObservableCollectionItem item)
@@ -83,6 +88,7 @@ namespace Ssz.Utils.Addons
 
         public virtual void Close()
         {
+            Closed?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion        

@@ -16,7 +16,7 @@ namespace Ssz.Xi.Client
         /// <summary>
         ///     Is called using сallbackDoer, see Initialize(..).        
         /// </summary>
-        public override event Action<IDataAccessProvider, EventMessagesCollection> EventMessagesCallback
+        public override event EventHandler<EventMessagesCallbackEventArgs> EventMessagesCallback
         {
             add { ThreadSafeDispatcher.BeginInvoke(ct => _xiEventListItemsManager.EventMessagesCallback += value); }
             remove { ThreadSafeDispatcher.BeginInvoke(ct => _xiEventListItemsManager.EventMessagesCallback -= value); }
@@ -27,7 +27,7 @@ namespace Ssz.Xi.Client
             ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 IXiEventListProxy? eventListProxy =
-                    _xiEventListItemsManager.GetRelatedXiEventList(OnEventMessagesCallback);
+                    _xiEventListItemsManager.GetRelatedXiEventList(OnXiEventListItemsManager_EventMessagesCallback);
 
                 if (eventListProxy is null) return;
 
@@ -48,7 +48,7 @@ namespace Ssz.Xi.Client
 
         #region private functions
 
-        private void OnEventMessagesCallback(IDataAccessProvider dataAccessProvider, Ssz.Utils.DataAccess.EventMessagesCollection obj)
+        private void OnXiEventListItemsManager_EventMessagesCallback(object? sender, EventMessagesCallbackEventArgs args)
         {
         }
 

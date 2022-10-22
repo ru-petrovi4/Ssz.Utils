@@ -121,7 +121,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <returns></returns>
         private Utils.DataAccess.EventMessagesCollection? EventMessagesCallback(ClientEventList eventList, EventMessagesCollection eventMessagesCollection)
         {
-            Utils.DataAccess.EventMessagesCollection? eventMessagesCollection2 = eventList.EventMessagesCallback(eventMessagesCollection);
+            Utils.DataAccess.EventMessagesCollection? eventMessagesCollection2 = eventList.GetEventMessagesCollection(eventMessagesCollection);
             if (eventMessagesCollection2 is not null && eventMessagesCollection2.EventMessages.Count > 0)
             {
                 eventList.RaiseEventMessagesCallbackEvent(eventMessagesCollection2);
