@@ -31,12 +31,7 @@ namespace Ssz.Utils.Addons
 
         #endregion
 
-        #region public functions
-
-        /// <summary>
-        ///     Lock this in every call
-        /// </summary>
-        public object SyncRoot { get; } = new();
+        #region public functions        
 
         /// <summary>
         ///     Switchd ON addons.
@@ -78,6 +73,7 @@ namespace Ssz.Utils.Addons
         public void Close()
         {
             Addons.SafeClear();
+            _addonsCopy = new AddonBase[0];
 
             CsvDb.CsvFileChanged -= OnCsvDb_CsvFileChanged;            
 
@@ -167,17 +163,15 @@ namespace Ssz.Utils.Addons
         public TAddon[] CreateAddonsThreadSafe<TAddon>()
             where TAddon : AddonBase
         {
-            lock (SyncRoot)
+            List<TAddon> result = new();
+            var addonsCopy = _addonsCopy;
+            foreach (var addon in addonsCopy.OfType<TAddon>().OrderBy(a => a.IsDummy).ToArray())
             {
-                List<TAddon> result = new();
-                foreach (var addon in Addons.OfType<TAddon>().OrderBy(a => a.IsDummy).ToArray())
-                {
-                    TAddon? newAddon = CreateAvailableAddon(addon, addon.InstanceId) as TAddon;
-                    if (newAddon is not null)
-                        result.Add(newAddon);
-                };
-                return result.ToArray();
-            }
+                TAddon? newAddon = CreateAvailableAddonThreadSafe(addon, addon.InstanceId) as TAddon;
+                if (newAddon is not null)
+                    result.Add(newAddon);
+            };
+            return result.ToArray();
         }
 
         /// <summary>
@@ -190,18 +184,16 @@ namespace Ssz.Utils.Addons
             where TAddon : AddonBase
 
         {
-            lock (SyncRoot)
-            {
-                TAddon? addon = Addons.OfType<TAddon>().OrderBy(a => a.IsDummy).FirstOrDefault();
-                if (addon is null)
-                    return null;
+            var addonsCopy = _addonsCopy;
+            TAddon? addon = addonsCopy.OfType<TAddon>().OrderBy(a => a.IsDummy).FirstOrDefault();
+            if (addon is null)
+                return null;
 
-                TAddon? newAddon = CreateAvailableAddon(addon, addon.InstanceId) as TAddon;
-                if (newAddon is null)
-                    return null;
+            TAddon? newAddon = CreateAvailableAddonThreadSafe(addon, addon.InstanceId) as TAddon;
+            if (newAddon is null)
+                return null;
 
-                return newAddon;
-            }
+            return newAddon;
         }
 
         /// <summary>
@@ -213,19 +205,17 @@ namespace Ssz.Utils.Addons
         public TAddon? CreateAddonThreadSafe<TAddon>(string addonName)
             where TAddon : AddonBase
         {
-            lock (SyncRoot)
-            {
-                TAddon? addon = Addons.OfType<TAddon>().OrderBy(a => a.IsDummy)
+            var addonsCopy = _addonsCopy;
+            TAddon? addon = addonsCopy.OfType<TAddon>().OrderBy(a => a.IsDummy)
                     .FirstOrDefault(a => String.Equals(a.Name, addonName, StringComparison.InvariantCultureIgnoreCase));
-                if (addon is null)
-                    return null;
+            if (addon is null)
+                return null;
 
-                TAddon? newAddon = CreateAvailableAddon(addon, addon.InstanceId) as TAddon;
-                if (newAddon is null)
-                    return null;
+            TAddon? newAddon = CreateAvailableAddonThreadSafe(addon, addon.InstanceId) as TAddon;
+            if (newAddon is null)
+                return null;
 
-                return newAddon;
-            }
+            return newAddon;
         }
 
         /// <summary>
@@ -253,7 +243,7 @@ namespace Ssz.Utils.Addons
                 return null;
             }
 
-            return CreateAvailableAddon(availableAddon, addonInstanceId);
+            return CreateAvailableAddonThreadSafe(availableAddon, addonInstanceId);
         }
 
         /// <summary>
@@ -308,23 +298,13 @@ namespace Ssz.Utils.Addons
         private void OnCsvDb_CsvFileChanged(object? sender, CsvFileChangedEventArgs args)
         {            
             if (args.CsvFileName == AddonBase.AddonsCsvFileName)
-            {
-                lock (SyncRoot)
-                {
-                    RefreshAddons();
-                }
-            }
+                RefreshAddons();
         }
 
         private void OnAddonCsvDb_CsvFileChanged(object? sender, CsvFileChangedEventArgs args)
         {
             if (args.CsvFileName == AddonBase.OptionsCsvFileName)
-            {
-                lock (SyncRoot)
-                {
-                    RefreshAddons();
-                }
-            }
+                RefreshAddons();
         }
 
         private void RefreshAddons()
@@ -344,6 +324,8 @@ namespace Ssz.Utils.Addons
                 var desiredAndAvailableAddon = CreateAvailableAddon(addonName, addonInstanceId);
                 if (desiredAndAvailableAddon is not null)
                 {
+                    desiredAndAvailableAddon.Initialized += (s, a) => { ((AddonBase)s!).CsvDb.CsvFileChanged += OnAddonCsvDb_CsvFileChanged; };
+                    desiredAndAvailableAddon.Closed += (s, a) => { ((AddonBase)s!).CsvDb.CsvFileChanged -= OnAddonCsvDb_CsvFileChanged; };
                     newAddons.Add(desiredAndAvailableAddon);
 
                     if (!String.IsNullOrEmpty(desiredAndAvailableAddon.DllFileFullName))
@@ -356,9 +338,10 @@ namespace Ssz.Utils.Addons
             _container = new CompositionContainer(catalog);
 
             Addons.Update(newAddons.OrderBy(a => a.Id).ToArray());
+            _addonsCopy = Addons.ToArray();
         }
 
-        private AddonBase? CreateAvailableAddon(AddonBase availableAddon, string addonInstanceId)
+        private AddonBase? CreateAvailableAddonThreadSafe(AddonBase availableAddon, string addonInstanceId)
         {
             try
             {
@@ -403,9 +386,7 @@ namespace Ssz.Utils.Addons
                 availableAddonClone.InstanceId = addonInstanceId;                
                 availableAddonClone.LoggersSet = new LoggersSet<AddonBase>(ServiceProvider.GetService<ILogger<AddonBase>>()!, LoggersSet.UserFriendlyLogger);                
                 availableAddonClone.Configuration = Configuration;
-                availableAddonClone.ServiceProvider = ServiceProvider;
-                availableAddonClone.Initialized += (s, a) => { ((AddonBase)s!).CsvDb.CsvFileChanged += OnAddonCsvDb_CsvFileChanged; };
-                availableAddonClone.Closed += (s, a) => { ((AddonBase)s!).CsvDb.CsvFileChanged -= OnAddonCsvDb_CsvFileChanged; };
+                availableAddonClone.ServiceProvider = ServiceProvider;                
                 return availableAddonClone;
             }
             catch (Exception ex)
@@ -563,6 +544,8 @@ namespace Ssz.Utils.Addons
         ///     Addons are just created, only DllFileFullName propery is set.
         /// </summary>
         private AddonBase[]? _availableAddons;
+
+        public AddonBase[] _addonsCopy = new AddonBase[0];
 
         #endregion
 
