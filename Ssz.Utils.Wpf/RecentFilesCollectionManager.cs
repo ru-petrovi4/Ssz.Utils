@@ -67,7 +67,7 @@ namespace Ssz.Utils.Wpf
 
         protected override void Dispose(bool disposing)
         {
-            if (Disposed) return;
+            if (IsDisposed) return;
             
             if (disposing)
             {

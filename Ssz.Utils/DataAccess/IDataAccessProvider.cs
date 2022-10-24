@@ -38,7 +38,9 @@ namespace Ssz.Utils.DataAccess
 
         bool IsConnected { get; }
 
-        bool IsDisconnected { get; }        
+        bool IsDisconnected { get; }
+
+        bool IsDisposed { get; }
 
         EventWaitHandle IsConnectedEventWaitHandle { get; }
 
@@ -56,7 +58,7 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         ///     You can use this property as temp storage.
         /// </summary>
-        object? Obj { get; set; }
+        object? Obj { get; set; }        
 
         event EventHandler ValueSubscriptionsUpdated;
 

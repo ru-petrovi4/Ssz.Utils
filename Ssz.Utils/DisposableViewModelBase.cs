@@ -23,7 +23,7 @@ namespace Ssz.Utils
         
         public async ValueTask DisposeAsync()
         {
-            if (Disposed) return;
+            if (IsDisposed) return;
 
             await DisposeAsyncCore();
 
@@ -39,14 +39,14 @@ namespace Ssz.Utils
         /// </summary>
         protected virtual void Dispose(bool disposing)
         {
-            if (Disposed) return;
+            if (IsDisposed) return;
 
             if (disposing)
             {
                 ClearPropertyChangedEvent();
             }            
 
-            Disposed = true;
+            IsDisposed = true;
         }
 
         protected virtual ValueTask DisposeAsyncCore()
@@ -73,7 +73,7 @@ namespace Ssz.Utils
         /// 
         /// </summary>
         [Browsable(false)]
-        public bool Disposed { get; private set; }
+        public bool IsDisposed { get; private set; }
 
 #endregion
     }

@@ -27,7 +27,7 @@ namespace Ssz.Utils.DataAccess
         /// </summary>
         protected override void Dispose(bool disposing)
         {
-            if (Disposed) return;
+            if (IsDisposed) return;
 
             if (disposing)
             {
@@ -39,7 +39,7 @@ namespace Ssz.Utils.DataAccess
 
         protected override async ValueTask DisposeAsyncCore()
         {
-            if (Disposed) return;
+            if (IsDisposed) return;
 
             await CloseAsync();
 

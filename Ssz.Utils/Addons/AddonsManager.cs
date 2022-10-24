@@ -15,8 +15,7 @@ using System.Threading;
 
 namespace Ssz.Utils.Addons
 {
-    /// <summary>
-    ///     Only GetExportedValues<T>() is thread-safe.
+    /// <summary>    
     ///     Lock SyncRoot in every call.
     /// </summary>
     public class AddonsManager
@@ -80,10 +79,7 @@ namespace Ssz.Utils.Addons
         {
             Addons.SafeClear();
 
-            if (CsvDb.CsvDbDirectoryInfo is not null)
-            {
-                CsvDb.CsvFileChanged -= OnCsvDb_CsvFileChanged;
-            }
+            CsvDb.CsvFileChanged -= OnCsvDb_CsvFileChanged;            
 
             _container = null;
         }
@@ -94,10 +90,7 @@ namespace Ssz.Utils.Addons
         /// <returns></returns>
         public ConfigurationCsvFiles ReadConfiguration()
         {
-            ConfigurationCsvFiles result = new();
-
-            if (CsvDb.CsvDbDirectoryInfo is null)
-                return result;
+            ConfigurationCsvFiles result = new();            
 
             List<string?[]> addonsAvailableFileData = new();
 
@@ -122,7 +115,7 @@ namespace Ssz.Utils.Addons
                 result.ConfigurationCsvFilesCollection.Add(ConfigurationCsvFile.CreateFromFileInfo(@"", csvFileInfo));
             }
 
-            foreach (DirectoryInfo subDirectoryInfo in CsvDb.CsvDbDirectoryInfo.GetDirectories())
+            foreach (DirectoryInfo subDirectoryInfo in CsvDb.CsvDbDirectoryInfo!.GetDirectories())
             {
                 var subCsvDb = new CsvDb(CsvDb.LoggersSet.Logger, CsvDb.LoggersSet.UserFriendlyLogger, subDirectoryInfo);
                 foreach (FileInfo csvFileInfo in subCsvDb.GetFileInfos())
@@ -142,9 +135,6 @@ namespace Ssz.Utils.Addons
         /// <exception cref="Exception"></exception>
         public void WriteConfiguration(ConfigurationCsvFiles configurationCsvFiles)
         {
-            if (CsvDb.CsvDbDirectoryInfo is null)
-                return;
-
             foreach (ConfigurationCsvFile configurationCsvFile in configurationCsvFiles.ConfigurationCsvFilesCollection)
             {
                 if (!configurationCsvFile.PathRelativeToRootDirectory.EndsWith(".csv", StringComparison.InvariantCultureIgnoreCase))
@@ -153,14 +143,14 @@ namespace Ssz.Utils.Addons
                 if (configurationCsvFile.PathRelativeToRootDirectory.Count(f => f == '/') > 1)
                     throw new Exception("addonCsvFile.PathRelativeToRootDirectory must have no more that one '/'");
 
-                var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo.FullName, configurationCsvFile.PathRelativeToRootDirectory_PlatformSpecific));
+                var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationCsvFile.PathRelativeToRootDirectory_PlatformSpecific));
                 if (fileInfo.Exists && FileSystemHelper.FileSystemTimeIsLess(configurationCsvFile.LastWriteTimeUtc, fileInfo.LastWriteTimeUtc))
                     throw new AddonCsvFileChangedOnDiskException { FilePathRelativeToRootDirectory = configurationCsvFile.PathRelativeToRootDirectory };
             }
 
             foreach (ConfigurationCsvFile configurationCsvFile in configurationCsvFiles.ConfigurationCsvFilesCollection)
             {
-                var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo.FullName, configurationCsvFile.PathRelativeToRootDirectory_PlatformSpecific));
+                var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationCsvFile.PathRelativeToRootDirectory_PlatformSpecific));
                 fileInfo.Directory!.Create();                
                 using (var writer = new StreamWriter(fileInfo.FullName, false, new UTF8Encoding(true)))
                 {
