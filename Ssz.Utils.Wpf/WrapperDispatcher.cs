@@ -12,7 +12,7 @@ namespace Ssz.Utils.Wpf
     {
         #region construction and destruction
 
-        public WrapperDispatcher(Dispatcher dispatcher)
+        public WrapperDispatcher(System.Windows.Threading.Dispatcher dispatcher)
         {
             _dispatcher = dispatcher;
         }
@@ -73,7 +73,7 @@ namespace Ssz.Utils.Wpf
 
         #region private fields
 
-        private Dispatcher _dispatcher;
+        private System.Windows.Threading.Dispatcher _dispatcher;
 
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
