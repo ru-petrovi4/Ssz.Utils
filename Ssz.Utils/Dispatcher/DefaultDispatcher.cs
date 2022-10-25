@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils
 {
+    /// <summary>
+    ///     Uses SynchronizationContext for doing work.
+    /// </summary>
     public class DefaultDispatcher : IDispatcher
     {   
         #region construction and destruction

@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Ssz.Utils;
+using Ssz.Utils.Dispatcher;
 using Ssz.Utils.Logging;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,7 @@ namespace Ssz.Utils.Addons
     /// <summary>    
     ///     Lock SyncRoot in every call.
     /// </summary>
-    public class AddonsManager
+    public class AddonsManager : IDispatcherObject
     {
         #region construction and destruction
 
@@ -34,9 +35,14 @@ namespace Ssz.Utils.Addons
         #region public functions        
 
         /// <summary>
+        ///     Has value after Initialize(...)
+        /// </summary>
+        public IDispatcher? Dispatcher { get; private set; }
+
+        /// <summary>
         ///     Switchd ON addons.
         /// </summary>
-        public ObservableCollection<AddonBase> Addons { get; } = new();
+        public ObservableCollection<AddonBase> Addons { get; private set; } = new();
 
         /// <summary>
         /// 
@@ -45,7 +51,7 @@ namespace Ssz.Utils.Addons
         /// <param name="standardAddons"></param>
         /// <param name="addonsSearchPattern"></param>
         /// <param name="csvDb"></param>
-        public void Initialize(IUserFriendlyLogger? userFriendlyLogger, AddonBase[]? standardAddons, string? addonsSearchPattern, CsvDb csvDb)
+        public void Initialize(IUserFriendlyLogger? userFriendlyLogger, AddonBase[]? standardAddons, string? addonsSearchPattern, CsvDb csvDb, IDispatcher dispatcher)
         {
             LoggersSet.SetUserFriendlyLogger(userFriendlyLogger);
             StandardAddons = standardAddons;
@@ -57,12 +63,14 @@ namespace Ssz.Utils.Addons
                 LoggersSet.WrapperUserFriendlyLogger.LogInformation(@"CsvDb.CsvDbDirectoryInfo is null.");
                 return;
             }
-            if (CsvDb.CallbackDispatcher is null)
+            if (CsvDb.Dispatcher is null)
             {
                 LoggersSet.WrapperUserFriendlyLogger.LogInformation(@"CsvDb.CallbackDispatcher is null.");
                 return;
             }
             CsvDb.CsvFileChanged += OnCsvDb_CsvFileChanged;
+
+            Dispatcher = dispatcher;
 
             RefreshAddons();
         }
@@ -377,7 +385,7 @@ namespace Ssz.Utils.Addons
                 parameters.Add(LoggersSet.UserFriendlyLogger);
                 if (addonConfigDirectoryInfo is not null)
                     parameters.Add(addonConfigDirectoryInfo);
-                parameters.Add(CsvDb.CallbackDispatcher!);
+                parameters.Add(Dispatcher!);
                 availableAddonClone.CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, parameters.ToArray());                
                 var idNameValueCollection = availableAddonClone.CsvDb.GetValues(AddonBase.OptionsCsvFileName).Where(kvp => kvp.Key != @"").ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Count > 1 ? kvp.Value[1] : null);
                 idNameValueCollection.Add(@"#addonName", availableAddonClone.Name);

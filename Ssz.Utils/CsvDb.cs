@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Ssz.Utils.Dispatcher;
 using Ssz.Utils.Logging;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils
 {
-    public class CsvDb
+    public class CsvDb : IDispatcherObject
     {
         #region construction and destruction
 
@@ -22,12 +23,12 @@ namespace Ssz.Utils
         /// <param name="logger"></param>
         /// <param name="userFriendlyLogger"></param>
         /// <param name="csvDbDirectoryInfo"></param>
-        /// <param name="callbackDispatcher">Dispatcher for all callbacks</param>
-        public CsvDb(ILogger<CsvDb> logger, IUserFriendlyLogger? userFriendlyLogger = null, DirectoryInfo? csvDbDirectoryInfo = null, IDispatcher? callbackDispatcher = null)
+        /// <param name="dispatcher">Dispatcher for all callbacks</param>
+        public CsvDb(ILogger<CsvDb> logger, IUserFriendlyLogger? userFriendlyLogger = null, DirectoryInfo? csvDbDirectoryInfo = null, IDispatcher? dispatcher = null)
         {
             LoggersSet = new LoggersSet<CsvDb>(logger, userFriendlyLogger);            
             CsvDbDirectoryInfo = csvDbDirectoryInfo;
-            CallbackDispatcher = callbackDispatcher;
+            Dispatcher = dispatcher;
 
             if (CsvDbDirectoryInfo is not null)
             {
@@ -47,7 +48,7 @@ namespace Ssz.Utils
             if (CsvDbDirectoryInfo is not null)
             {
                 LoggersSet.Logger.LogInformation("CsvDb Created for: " + CsvDbDirectoryInfo.FullName);
-                if (CallbackDispatcher is not null)
+                if (Dispatcher is not null)
                     try
                     {
                         _fileSystemWatcher.Created += FileSystemWatcherOnEventAsync;
@@ -82,7 +83,7 @@ namespace Ssz.Utils
         /// <summary>
         ///     Dispatcher for all callbacks
         /// </summary>
-        public IDispatcher? CallbackDispatcher { get; }        
+        public IDispatcher? Dispatcher { get; }        
 
         /// <summary>
         /// 
@@ -646,9 +647,9 @@ namespace Ssz.Utils
             await Task.Delay(1000);
             _fileSystemWatcherOnEventIsProcessing = false;
 
-            if (CallbackDispatcher is not null)
+            if (Dispatcher is not null)
             {
-                CallbackDispatcher.BeginInvoke(ct =>
+                Dispatcher.BeginInvoke(ct =>
                 {
                     this.LoadData();                    
                 });

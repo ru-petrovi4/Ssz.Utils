@@ -77,6 +77,9 @@ namespace Ssz.Utils.Addons
 
         public event EventHandler? Closed;
 
+        /// <summary>
+        ///     When overridden call this base class method after your code.
+        /// </summary>
         public virtual void Initialize()
         {
             Initialized?.Invoke(this, EventArgs.Empty);
@@ -86,6 +89,9 @@ namespace Ssz.Utils.Addons
         {            
         }
 
+        /// <summary>
+        ///     When overridden call this base class method before your code.
+        /// </summary>
         public virtual void Close()
         {
             Closed?.Invoke(this, EventArgs.Empty);
