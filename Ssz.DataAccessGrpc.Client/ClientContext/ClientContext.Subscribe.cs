@@ -7,9 +7,9 @@ using Ssz.Utils.DataAccess;
 using System.Linq;
 using System.Threading.Tasks;
 using Grpc.Core;
-using Ssz.Utils;
 using EventMessagesCollection = Ssz.DataAccessGrpc.ServerBase.EventMessagesCollection;
 using Google.Protobuf.Collections;
+using Ssz.Utils;
 
 namespace Ssz.DataAccessGrpc.Client
 {

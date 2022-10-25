@@ -12,7 +12,7 @@ namespace Ssz.Utils.DataAccess
 		
 		public string JobId = @"";
 
-		public double ProgressPercent;
+		public uint ProgressPercent;
 
 		public string? ProgressLabel;
 
