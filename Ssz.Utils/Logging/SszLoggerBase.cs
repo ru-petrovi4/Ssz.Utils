@@ -62,8 +62,14 @@ namespace Ssz.Utils.Logging
 
         protected object SyncRoot { get; } = new();
 
+        /// <summary>
+        ///     Lock SyncRoot before use
+        /// </summary>
         protected Stack<string> ScopeStringsStack { get; } = new();
 
+        /// <summary>
+        ///     Lock SyncRoot before use
+        /// </summary>
         protected CaseInsensitiveDictionary<string?> Fields { get; } = new();
 
         #endregion        

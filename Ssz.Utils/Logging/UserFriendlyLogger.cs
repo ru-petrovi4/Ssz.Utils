@@ -33,7 +33,7 @@ namespace Ssz.Utils.Logging
             Func<TState, Exception?, string> formatter)
         {            
             string line = $"{logLevel,-12}";
-            lock (ScopeStringsStack)
+            lock (SyncRoot)
             {
                 foreach (var scopeString in ScopeStringsStack.Reverse())
                 {

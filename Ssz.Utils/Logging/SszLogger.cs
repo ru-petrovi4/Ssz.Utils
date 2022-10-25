@@ -72,7 +72,7 @@ namespace Ssz.Utils.Logging
                 line1 = $"[ {logLevel,-11} ]";
 
             string line2 = "\t";
-            lock (ScopeStringsStack)
+            lock (SyncRoot)
             {
                 foreach (var scopeString in ScopeStringsStack.Reverse())
                 {
