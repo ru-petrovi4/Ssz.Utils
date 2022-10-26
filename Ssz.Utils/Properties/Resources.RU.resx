@@ -145,7 +145,7 @@
     <value>Ошибка чтения файла</value>
   </data>
   <data name="DesiredAddonFailed" xml:space="preserve">
-    <value>Ошибка при получении желаемого плагина {0}.</value>
+    <value>Ошибка при подключении плагина {0}.</value>
   </data>
   <data name="DuplicateAddonsMessage" xml:space="preserve">
     <value />

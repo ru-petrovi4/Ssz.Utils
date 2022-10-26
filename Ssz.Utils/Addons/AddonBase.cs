@@ -39,7 +39,10 @@ namespace Ssz.Utils.Addons
 
         public abstract Guid Guid { get; }
 
-        public abstract string Name { get; }
+        /// <summary>
+        ///     Cannot contain periods.
+        /// </summary>
+        public abstract string Identifier { get; }
 
         public abstract string Desc { get; }
 
@@ -47,16 +50,19 @@ namespace Ssz.Utils.Addons
 
         public virtual bool IsDummy => false;
 
+        /// <summary>
+        ///     Options cannot contain periods.
+        /// </summary>
         public abstract (string, string)[] OptionsInfo { get; }
 
         public string DllFileFullName { get; internal set; } = @"";        
         
-        public CsvDb CsvDb { get; internal set; } = null!;        
+        public CsvDb CsvDb { get; internal set; } = null!;
 
         /// <summary>
-        ///     Unique ID for addon type and config.
+        ///     Unique ID for addon type and options.
         /// </summary>
-        public string Id { get; internal set; } = null!;
+        public string ObservableCollectionItem_Id { get; internal set; } = null!;
 
         /// <summary>
         ///     Addon instance ID
@@ -69,9 +75,9 @@ namespace Ssz.Utils.Addons
         
         public IServiceProvider ServiceProvider { get; internal set; } = null!;
 
-        bool IObservableCollectionItem.IsDeleted { get; set; }
+        bool IObservableCollectionItem.ObservableCollectionItem_IsDeleted { get; set; }
 
-        bool IObservableCollectionItem.IsAdded { get; set; }
+        bool IObservableCollectionItem.ObservableCollectionItem_IsAdded { get; set; }
 
         public event EventHandler? Initialized;
 

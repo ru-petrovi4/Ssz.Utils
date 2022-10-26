@@ -102,11 +102,11 @@ namespace Ssz.Utils.Addons
             
             foreach (AddonBase availableAddon in _availableAddons)
             {
-                addonsAvailableFileData.Add(new[] { availableAddon.Name, availableAddon.Desc });                
+                addonsAvailableFileData.Add(new[] { availableAddon.Identifier, availableAddon.Desc });                
 
                 foreach (var optionsInfo in availableAddon.OptionsInfo)
                 {
-                    addonsAvailableFileData.Add(new[] { availableAddon.Name + "." + optionsInfo.Item1, optionsInfo.Item2 });                    
+                    addonsAvailableFileData.Add(new[] { availableAddon.Identifier + "." + optionsInfo.Item1, optionsInfo.Item2 });                    
                 }
             }
 
@@ -210,12 +210,12 @@ namespace Ssz.Utils.Addons
         /// </summary>
         /// <typeparam name="TAddon"></typeparam>
         /// <returns></returns>
-        public TAddon? CreateAddonThreadSafe<TAddon>(string addonName)
+        public TAddon? CreateAddonThreadSafe<TAddon>(string addonIdentifier)
             where TAddon : AddonBase
         {
             var addonsCopy = _addonsCopy;
             TAddon? addon = addonsCopy.OfType<TAddon>().OrderBy(a => a.IsDummy)
-                    .FirstOrDefault(a => String.Equals(a.Name, addonName, StringComparison.InvariantCultureIgnoreCase));
+                    .FirstOrDefault(a => String.Equals(a.Identifier, addonIdentifier, StringComparison.InvariantCultureIgnoreCase));
             if (addon is null)
                 return null;
 
@@ -229,12 +229,12 @@ namespace Ssz.Utils.Addons
         /// <summary>
         ///     Create available but not necesary switched ON adddon. 
         /// </summary>
-        /// <param name="addonName"></param>
+        /// <param name="addonIdentifier"></param>
         /// <param name="addonInstanceId"></param>
         /// <returns></returns>
-        public AddonBase? CreateAvailableAddon(string addonName, string addonInstanceId)
+        public AddonBase? CreateAvailableAddon(string addonIdentifier, string addonInstanceId)
         {
-            if (String.IsNullOrEmpty(addonName))
+            if (String.IsNullOrEmpty(addonIdentifier))
             {
                 LoggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonNameIsEmpty);
                 return null;
@@ -244,10 +244,10 @@ namespace Ssz.Utils.Addons
                 _availableAddons = GetAvailableAddonsUnconditionally();
 
             var availableAddon = _availableAddons.FirstOrDefault(
-                p => String.Equals(p.Name, addonName, StringComparison.InvariantCultureIgnoreCase));
+                p => String.Equals(p.Identifier, addonIdentifier, StringComparison.InvariantCultureIgnoreCase));
             if (availableAddon is null)
             {
-                LoggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.AvailableAddonIsNotFound, addonName);
+                LoggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.AvailableAddonIsNotFound, addonIdentifier);
                 return null;
             }
 
@@ -345,7 +345,7 @@ namespace Ssz.Utils.Addons
 
             _container = new CompositionContainer(catalog);
 
-            Addons.Update(newAddons.OrderBy(a => a.Id).ToArray());
+            Addons.Update(newAddons.OrderBy(a => ((IObservableCollectionItem)a).ObservableCollectionItem_Id).ToArray());
             _addonsCopy = Addons.ToArray();
         }
 
@@ -388,9 +388,9 @@ namespace Ssz.Utils.Addons
                 parameters.Add(Dispatcher!);
                 availableAddonClone.CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, parameters.ToArray());                
                 var idNameValueCollection = availableAddonClone.CsvDb.GetValues(AddonBase.OptionsCsvFileName).Where(kvp => kvp.Key != @"").ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Count > 1 ? kvp.Value[1] : null);
-                idNameValueCollection.Add(@"#addonName", availableAddonClone.Name);
+                idNameValueCollection.Add(@"#addonIdentifier", availableAddonClone.Identifier);
                 idNameValueCollection.Add(@"#addonInstanceId", addonInstanceId);                
-                availableAddonClone.Id = NameValueCollectionHelper.GetNameValueCollectionString(idNameValueCollection);
+                availableAddonClone.ObservableCollectionItem_Id = NameValueCollectionHelper.GetNameValueCollectionString(idNameValueCollection);
                 availableAddonClone.InstanceId = addonInstanceId;                
                 availableAddonClone.LoggersSet = new LoggersSet<AddonBase>(ServiceProvider.GetService<ILogger<AddonBase>>()!, LoggersSet.UserFriendlyLogger);                
                 availableAddonClone.Configuration = Configuration;
@@ -399,7 +399,7 @@ namespace Ssz.Utils.Addons
             }
             catch (Exception ex)
             {
-                LoggersSet.WrapperUserFriendlyLogger.LogError(ex, Properties.Resources.DesiredAddonFailed, availableAddon.Name);
+                LoggersSet.WrapperUserFriendlyLogger.LogError(ex, Properties.Resources.DesiredAddonFailed, availableAddon.Identifier);
                 return null;
             }
         }
@@ -482,7 +482,7 @@ namespace Ssz.Utils.Addons
                 message.AppendLine(Properties.Resources.DuplicateAddonsMessage + " ");
                 foreach (var key in addedAddonsWithDuplicates.Keys)
                 {
-                    message.Append(key.Name);
+                    message.Append(key.Identifier);
                     message.Append(" (");
                     message.Append(Path.GetFileName(key.DllFileFullName));
                     message.AppendLine(")");

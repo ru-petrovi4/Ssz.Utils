@@ -23,27 +23,27 @@ namespace Ssz.Utils
         {
             foreach (T o in oldCollection)
             {
-                o.IsDeleted = true;
+                o.ObservableCollectionItem_IsDeleted = true;
             }
 
             foreach (T n in newCollection)
             {
-                var o = oldCollection.FirstOrDefault(i => String.Equals(i.Id, n.Id, StringComparison.InvariantCultureIgnoreCase));
+                var o = oldCollection.FirstOrDefault(i => String.Equals(i.ObservableCollectionItem_Id, n.ObservableCollectionItem_Id, StringComparison.InvariantCultureIgnoreCase));
                 if (o is null)
                 {
-                    n.IsAdded = true;
+                    n.ObservableCollectionItem_IsAdded = true;
                 }
                 else
                 {
-                    n.IsAdded = false;
-                    o.IsDeleted = false;
+                    n.ObservableCollectionItem_IsAdded = false;
+                    o.ObservableCollectionItem_IsDeleted = false;
                     o.Update(n);
                 }
             }
             
             for (int oldCollectionIndex = oldCollection.Count - 1; oldCollectionIndex >= 0; oldCollectionIndex -= 1)
             {
-                if (oldCollection[oldCollectionIndex].IsDeleted)
+                if (oldCollection[oldCollectionIndex].ObservableCollectionItem_IsDeleted)
                 {
                     var o = oldCollection[oldCollectionIndex];
                     oldCollection.RemoveAt(oldCollectionIndex);
@@ -54,12 +54,12 @@ namespace Ssz.Utils
             for (int newCollectionIndex = 0; newCollectionIndex < newCollection.Length; newCollectionIndex++)
             {
                 var n = newCollection[newCollectionIndex];
-                if (n.IsAdded)
+                if (n.ObservableCollectionItem_IsAdded)
                 {
                     int oldCollectionIndex = oldCollection.Count - 1;
                     while (oldCollectionIndex >= 0)
                     {
-                        if (String.Compare(oldCollection[oldCollectionIndex].Id, n.Id) < 0)
+                        if (String.Compare(oldCollection[oldCollectionIndex].ObservableCollectionItem_Id, n.ObservableCollectionItem_Id) < 0)
                             break;
                         oldCollectionIndex -= 1;
                     }
@@ -89,17 +89,17 @@ namespace Ssz.Utils
         /// <summary>
         ///     Need implementation for comparison.
         /// </summary>
-        string Id { get; }
+        string ObservableCollectionItem_Id { get; }
 
         /// <summary>
         ///     Used by the framework.
         /// </summary>
-        bool IsDeleted { get; set; }
+        bool ObservableCollectionItem_IsDeleted { get; set; }
 
         /// <summary>
         ///     Used by the framework.
         /// </summary>
-        bool IsAdded { get; set; }
+        bool ObservableCollectionItem_IsAdded { get; set; }
 
         void Initialize();
 
