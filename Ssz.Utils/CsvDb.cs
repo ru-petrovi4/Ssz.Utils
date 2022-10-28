@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Ssz.Utils
@@ -644,7 +645,8 @@ namespace Ssz.Utils
         {
             if (_fileSystemWatcherOnEventIsProcessing) return;
             _fileSystemWatcherOnEventIsProcessing = true;
-            await Task.Delay(1000);
+            //await Task.Delay(1000); // Some problems with this line 
+            await Task.Run(() => Thread.Sleep(1000)); // Working
             _fileSystemWatcherOnEventIsProcessing = false;
 
             if (Dispatcher is not null)
