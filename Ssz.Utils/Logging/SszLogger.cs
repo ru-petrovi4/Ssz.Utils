@@ -22,7 +22,7 @@ namespace Ssz.Utils.Logging
 
             _logFileTextWriter = new LogFileTextWriter(options);
 
-            _timer = new Timer(OnTimerCallback, null, 1000, 1000);
+            _timer = new Timer(OnTimerCallback, null, 5000, 5000);
         }        
         
         protected override void Dispose(bool disposing)
