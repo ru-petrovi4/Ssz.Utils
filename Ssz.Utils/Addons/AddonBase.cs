@@ -37,42 +37,72 @@ namespace Ssz.Utils.Addons
         /// </summary>
         public const string AddonsAvailableCsvFileName = @"AddonsAvailable.csv";
 
+        /// <summary>
+        ///     Thread-safe
+        /// </summary>
         public abstract Guid Guid { get; }
 
         /// <summary>
         ///     Cannot contain periods.
+        ///     Thread-safe
         /// </summary>
         public abstract string Identifier { get; }
 
+        /// <summary>
+        ///     Thread-safe
+        /// </summary>
         public abstract string Desc { get; }
 
+        /// <summary>
+        ///     Thread-safe
+        /// </summary>
         public abstract string Version { get; }
 
+        /// <summary>
+        ///     Thread-safe
+        /// </summary>
         public virtual bool IsDummy => false;
 
         /// <summary>
         ///     Options cannot contain periods.
+        ///     Thread-safe
         /// </summary>
         public abstract (string, string)[] OptionsInfo { get; }
 
+        /// <summary>
+        ///     Thread-safe
+        /// </summary>
         public string DllFileFullName { get; internal set; } = @"";        
         
         public CsvDb CsvDb { get; internal set; } = null!;
 
+        public CaseInsensitiveDictionary<string?> OptionsThreadSafe { get; internal set; } = null!;
+
         /// <summary>
         ///     Unique ID for addon type and options.
+        ///     Thread-safe
         /// </summary>
         public string ObservableCollectionItem_Id { get; internal set; } = null!;
 
         /// <summary>
         ///     Addon instance ID
+        ///     Thread-safe
         /// </summary>
         public string InstanceId { get; internal set; } = null!;
 
+        /// <summary>
+        ///     Thread-safe
+        /// </summary>
         public ILoggersSet LoggersSet { get; internal set; } = null!;
 
+        /// <summary>
+        ///     Thread-safe
+        /// </summary>
         public IConfiguration Configuration { get; internal set; } = null!;
-        
+
+        /// <summary>
+        ///     Thread-safe
+        /// </summary>
         public IServiceProvider ServiceProvider { get; internal set; } = null!;
 
         bool IObservableCollectionItem.ObservableCollectionItem_IsDeleted { get; set; }

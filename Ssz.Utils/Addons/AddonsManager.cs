@@ -17,7 +17,9 @@ using System.Threading;
 namespace Ssz.Utils.Addons
 {
     /// <summary>    
-    ///     Lock SyncRoot in every call.
+    ///     Only the thread that the Dispatcher was created on may access the AddonsManager directly. 
+    ///     To access a AddonsManager from a thread other than the thread the AddonsManager was created on,
+    ///     call BeginInvoke or BeginAsyncInvoke on the Dispatcher the IDispatcherObject is associated with.
     /// </summary>
     public class AddonsManager : IDispatcherObject
     {
@@ -43,6 +45,11 @@ namespace Ssz.Utils.Addons
         ///     Switchd ON addons.
         /// </summary>
         public ObservableCollection<AddonBase> Addons { get; private set; } = new();
+
+        /// <summary>
+        ///     Thread-safe Switchd ON addons.
+        /// </summary>
+        public AddonBase[] AddonsThreadSafe => _addonsCopy;
 
         /// <summary>
         /// 
@@ -386,8 +393,9 @@ namespace Ssz.Utils.Addons
                 if (addonConfigDirectoryInfo is not null)
                     parameters.Add(addonConfigDirectoryInfo);
                 parameters.Add(Dispatcher!);
-                availableAddonClone.CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, parameters.ToArray());                
-                var idNameValueCollection = availableAddonClone.CsvDb.GetValues(AddonBase.OptionsCsvFileName).Where(kvp => kvp.Key != @"").ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Count > 1 ? kvp.Value[1] : null);
+                availableAddonClone.CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, parameters.ToArray());
+                availableAddonClone.OptionsThreadSafe = new CaseInsensitiveDictionary<string?>(availableAddonClone.CsvDb.GetValues(AddonBase.OptionsCsvFileName).Where(kvp => kvp.Key != @"").Select(kvp => new KeyValuePair<string, string?>(kvp.Key, kvp.Value.Count > 1 ? kvp.Value[1] : null)));
+                var idNameValueCollection = new CaseInsensitiveDictionary<string?>(availableAddonClone.OptionsThreadSafe);                    
                 idNameValueCollection.Add(@"#addonIdentifier", availableAddonClone.Identifier);
                 idNameValueCollection.Add(@"#addonInstanceId", addonInstanceId);                
                 availableAddonClone.ObservableCollectionItem_Id = NameValueCollectionHelper.GetNameValueCollectionString(idNameValueCollection);
