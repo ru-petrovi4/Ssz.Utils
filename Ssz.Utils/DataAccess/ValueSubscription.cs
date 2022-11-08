@@ -15,7 +15,7 @@ namespace Ssz.Utils.DataAccess
         ///     Is used to subscribe for value updating and to write values.
         ///     valueUpdated(oldValue, newValue) is invoked when Value property Updated. Initial Value property is new ValueStatusTimestamp(), Any(null) and Unknown status.        
         /// </summary>
-        public ValueSubscription(IDataAccessProvider dataAccessProvider, string elementId, Action<ValueStatusTimestamp, ValueStatusTimestamp>? valueUpdated = null)
+        public ValueSubscription(IDataAccessProvider dataAccessProvider, string elementId, EventHandler<ValueUpdatedEventArgs>? valueUpdated = null)
         {
             DataAccessProvider = dataAccessProvider;
             ElementId = elementId;
@@ -50,7 +50,12 @@ namespace Ssz.Utils.DataAccess
         {
             var oldValueStatusTimestamp = ValueStatusTimestamp;
             ValueStatusTimestamp = valueStatusTimestamp;            
-            if (_valueUpdated is not null) _valueUpdated(oldValueStatusTimestamp, valueStatusTimestamp);
+            if (_valueUpdated is not null) 
+                _valueUpdated(this, new ValueUpdatedEventArgs
+                {
+                    OldValueStatusTimestamp = oldValueStatusTimestamp,
+                    NewValueStatusTimestamp = valueStatusTimestamp
+                });
         }
 
         /// <summary>
@@ -76,8 +81,15 @@ namespace Ssz.Utils.DataAccess
 
         #region private fields
         
-        private Action<ValueStatusTimestamp, ValueStatusTimestamp>? _valueUpdated;
+        private EventHandler<ValueUpdatedEventArgs>? _valueUpdated;
 
         #endregion
+    }
+
+    public class ValueUpdatedEventArgs : EventArgs
+    {
+        public ValueStatusTimestamp OldValueStatusTimestamp { get; set; }
+
+        public ValueStatusTimestamp NewValueStatusTimestamp { get; set; }
     }
 }
