@@ -214,12 +214,14 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <param name="clientObjs"></param>
         /// <param name="valueStatusTimestamps"></param>
         /// <returns></returns>
-        public object[] Write(object[] clientObjs, ValueStatusTimestamp[] valueStatusTimestamps)
+        public (object[], uint[]) Write(object[] clientObjs, ValueStatusTimestamp[] valueStatusTimestamps)
         {
-            if (DataAccessGrpcList is null || DataAccessGrpcList.Disposed) return clientObjs;
+            if (DataAccessGrpcList is null || DataAccessGrpcList.Disposed) 
+                return (clientObjs, Enumerable.Repeat(JobStatusCodes.FailedPrecondition, clientObjs.Length).ToArray());
 
             int i = -1;
-            var result = new List<object>();
+            var resultObjects = new List<object>();
+            var resultStatusCodes = new List<uint>();
             foreach (var clientObj in clientObjs)
             {
                 i++;
@@ -227,7 +229,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 ClientObjectInfo? clientObjectInfo;
                 if (!ClientObjectInfosDictionary.TryGetValue(clientObj, out clientObjectInfo))
                 {
-                    result.Add(clientObj);
+                    resultObjects.Add(clientObj);
+                    resultStatusCodes.Add(JobStatusCodes.InvalidArgument);
                     continue;
                 }                
                 
@@ -235,7 +238,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                     clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem is null ||
                     clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.StatusCode != StatusCode.OK)
                 {
-                    result.Add(clientObj);
+                    resultObjects.Add(clientObj);
+                    resultStatusCodes.Add(JobStatusCodes.FailedPrecondition);
                     continue;
                 }
                 ClientElementValueListItem dataGrpcElementValueListItem = clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem;
@@ -249,7 +253,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             }
             catch
             {
-                return clientObjs;
+                return (clientObjs, Enumerable.Repeat(JobStatusCodes.UnknownError, clientObjs.Length).ToArray());
             }
 
             foreach (var dataGrpcElementValueListItem in failedItems)
@@ -260,12 +264,13 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 {
                     if (modelItem.ClientObj is not null)
                     {
-                        result.Add(modelItem.ClientObj);
+                        resultObjects.Add(modelItem.ClientObj);
+                        resultStatusCodes.Add(dataGrpcElementValueListItem.WriteStatusCode);
                     }
                 }
             }
 
-            return result.ToArray();
+            return (resultObjects.ToArray(), resultStatusCodes.ToArray());
         }
 
         /// <summary>
@@ -273,17 +278,17 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// </summary>
         /// <param name="clientObj"></param>
         /// <param name="valueStatusTimestamp"></param>
-        public void Write(object clientObj, ValueStatusTimestamp valueStatusTimestamp)
+        public uint Write(object clientObj, ValueStatusTimestamp valueStatusTimestamp)
         {
-            if (DataAccessGrpcList is null || DataAccessGrpcList.Disposed) return;
+            if (DataAccessGrpcList is null || DataAccessGrpcList.Disposed)
+                return JobStatusCodes.FailedPrecondition;
 
             ClientObjectInfo? clientObjectInfo;
-            if (!ClientObjectInfosDictionary.TryGetValue(clientObj, out clientObjectInfo)) return;
+            if (!ClientObjectInfosDictionary.TryGetValue(clientObj, out clientObjectInfo))
+                return JobStatusCodes.InvalidArgument;
             
             if (clientObjectInfo.DataAccessGrpcListItemWrapper is null || clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem is null || clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.StatusCode != StatusCode.OK)
-            {
-                return;
-            }
+                return JobStatusCodes.InvalidArgument;
 
             ClientElementValueListItem dataGrpcElementValueListItem = clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem;
 
@@ -294,6 +299,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 try
                 {
                     DataAccessGrpcList.CommitWriteElementValueListItems();
+
+                    return dataGrpcElementValueListItem.WriteStatusCode;
                 }
                 catch
                 {
@@ -303,6 +310,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             {
                 Logger.LogWarning(ex, "DataAccessGrpcList.CommitWriteElementValueListItems() exception");
             }
+
+            return JobStatusCodes.UnknownError;
         }
 
         /*

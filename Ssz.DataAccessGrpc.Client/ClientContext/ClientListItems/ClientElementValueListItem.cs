@@ -97,7 +97,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientListItems
             return true;
         }
 
-        public void HasWritten(StatusCode writeStatusCode)
+        public void HasWritten(uint writeStatusCode)
         {
             _pendingWriteValueStatusTimestamp = null;
             _writeStatusCode = writeStatusCode;
@@ -127,7 +127,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientListItems
         ///     This property contains the result code associated with writing the PendingWriteValueStatusTimestamp.
         ///     See DataAccessGrpcFaultCodes class for standardized result codes.
         /// </summary>
-        public StatusCode WriteStatusCode
+        public uint WriteStatusCode
         {
             get { return _writeStatusCode; }
         }
@@ -154,7 +154,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientListItems
         /// </summary>
         private ValueStatusTimestamp? _pendingWriteValueStatusTimestamp;
 
-        private StatusCode _writeStatusCode;
+        private uint _writeStatusCode;
 
         /// <summary>
         ///     This data member is the private representation of the DataValue property.

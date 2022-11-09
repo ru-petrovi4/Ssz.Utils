@@ -247,12 +247,12 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override async Task<WriteElementValuesReply> WriteElementValues(WriteElementValuesRequest request, ServerCallContext context)
         {
-            return await GetReplyAsync(() =>
+            return await GetAsyncReplyAsync(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
                     var reply = new WriteElementValuesReply();
-                    reply.Results.Add(serverContext.WriteElementValues(request.ListServerAlias, request.ElementValuesCollection));
+                    reply.Results.Add(await serverContext.WriteElementValuesAsync(request.ListServerAlias, request.ElementValuesCollection));
                     return reply;
                 },
                 context);

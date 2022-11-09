@@ -234,7 +234,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         #region internal functions
 
-        internal List<AliasResult> WriteElementValues(uint listServerAlias, ElementValuesCollection elementValuesCollection)
+        internal async Task<List<AliasResult>> WriteElementValuesAsync(uint listServerAlias, ElementValuesCollection elementValuesCollection)
         {
             ServerListRoot? serverList;
 
@@ -243,7 +243,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Incorrect listServerAlias."));
             }
 
-            return serverList.WriteElementValues(elementValuesCollection);
+            return await serverList.WriteElementValuesAsync(elementValuesCollection);
         }
 
         internal List<EventIdResult> AckAlarms(uint listServerAlias, string operatorName, string comment,

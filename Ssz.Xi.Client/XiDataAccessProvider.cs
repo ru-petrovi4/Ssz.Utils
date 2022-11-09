@@ -230,7 +230,7 @@ namespace Ssz.Xi.Client
         /// <param name="valueSubscription"></param>
         /// <param name="valueStatusTimestamp"></param>
         /// <param name="userFriendlyLogger"></param>
-        public override void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
+        public override Task<uint> WriteAsync(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
         {
             //BeginInvoke(ct =>
             //{
@@ -241,13 +241,15 @@ namespace Ssz.Xi.Client
             //});
 
             var callbackDispatcher = CallbackDispatcher;
-            if (!IsInitialized || callbackDispatcher is null) return;
+            if (!IsInitialized || callbackDispatcher is null) 
+                return Task.FromResult(JobStatusCodes.UnknownError);
 
-            if (!ValueStatusCodes.IsGood(valueStatusTimestamp.ValueStatusCode)) return;
+            if (!ValueStatusCodes.IsGood(valueStatusTimestamp.ValueStatusCode))
+                return Task.FromResult(JobStatusCodes.UnknownError);
             var value = valueStatusTimestamp.Value;
 
             if (!_valueSubscriptionsCollection.TryGetValue(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj))
-                return;
+                return Task.FromResult(JobStatusCodes.UnknownError);
 
             if (userFriendlyLogger is not null && userFriendlyLogger.IsEnabled(LogLevel.Information))
                 userFriendlyLogger.LogInformation("UI TAG: \"" + valueSubscriptionObj.ElementId + "\"; Value from UI: \"" +
@@ -278,7 +280,7 @@ namespace Ssz.Xi.Client
                 {
                 }
 
-                return;
+                return Task.FromResult(JobStatusCodes.OK);
             }
 
             object?[]? resultValues = null;
@@ -288,7 +290,8 @@ namespace Ssz.Xi.Client
                 resultValues =
                     converter.ConvertBack(value.ValueAsObject(),
                         valueSubscriptionObj.ChildValueSubscriptionsList.Count, null, userFriendlyLogger);
-                if (resultValues.Length == 0) return;
+                if (resultValues.Length == 0)
+                    Task.FromResult(JobStatusCodes.OK);
             }
 
             var utcNow = DateTime.UtcNow;
@@ -340,6 +343,8 @@ namespace Ssz.Xi.Client
                             new ValueStatusTimestamp(value, ValueStatusCodes.Good, DateTime.UtcNow));
                 }
             });
+
+            return Task.FromResult(JobStatusCodes.OK);
         }
 
         /// <summary>     
@@ -350,9 +355,10 @@ namespace Ssz.Xi.Client
         /// <param name="valueSubscriptions"></param>
         /// <param name="valueStatusTimestamps"></param>
         /// <returns></returns>
-        public override async Task<IValueSubscription[]> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
+        public override async Task<(IValueSubscription[], uint[])> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
         {
-            var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]>();
+            var taskCompletionSource = new TaskCompletionSource<(IValueSubscription[], uint[])>();
+
             ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 if (_xiServerProxy is null) throw new InvalidOperationException();
@@ -360,8 +366,9 @@ namespace Ssz.Xi.Client
                     XiDataListItemsManagerOnElementValuesCallback, true, ct);
                 object[] failedValueSubscriptions = _xiDataListItemsManager.Write(valueSubscriptions, valueStatusTimestamps);
 
-                taskCompletionSource.SetResult(failedValueSubscriptions.OfType<IValueSubscription>().ToArray());
+                taskCompletionSource.SetResult((failedValueSubscriptions.OfType<IValueSubscription>().ToArray(), Enumerable.Repeat(JobStatusCodes.UnknownError, failedValueSubscriptions.Length).ToArray()));
             });
+
             return await taskCompletionSource.Task;
         }
 

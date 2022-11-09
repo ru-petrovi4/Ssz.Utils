@@ -330,13 +330,14 @@ namespace Ssz.Utils.DataAccess
         {            
         }
 
-        public virtual void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
-        {            
+        public virtual Task<uint> WriteAsync(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
+        {
+            return Task.FromResult(JobStatusCodes.InvalidArgument);
         }
 
-        public virtual Task<IValueSubscription[]> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
+        public virtual Task<(IValueSubscription[], uint[])> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
         {
-            return Task.FromResult<IValueSubscription[]>(new IValueSubscription[0]);
+            return Task.FromResult((new IValueSubscription[0], new uint[0]));
         }
 
         #endregion

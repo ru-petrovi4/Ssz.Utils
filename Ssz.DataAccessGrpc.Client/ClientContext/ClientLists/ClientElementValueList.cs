@@ -107,7 +107,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                                 writer.WriteObject(valueStatusTimestamp.Value.StorageObject);
                                 break;
                         }
-                        item.HasWritten(StatusCode.OK);
+                        item.HasWritten(JobStatusCodes.OK);
                     }
                 }
                 memoryStream.Position = 0;
@@ -119,11 +119,10 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
             {
                 AliasResult[] listAliasesResult = Context.WriteElementValues(ListServerAlias, elementValuesCollection);
                 foreach (AliasResult aliasResult in listAliasesResult)
-                {
-                    ClientElementValueListItem? item = null;
-                    if (ListItemsManager.TryGetValue(aliasResult.ClientAlias, out item))
+                {                    
+                    if (ListItemsManager.TryGetValue(aliasResult.ClientAlias, out ClientElementValueListItem? item))
                     {
-                        item.HasWritten((StatusCode)aliasResult.StatusCode);
+                        item.HasWritten(aliasResult.StatusCode);
                         result.Add(item);
                     }
                 }

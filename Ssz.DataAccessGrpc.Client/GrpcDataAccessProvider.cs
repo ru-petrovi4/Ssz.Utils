@@ -222,6 +222,7 @@ namespace Ssz.DataAccessGrpc.Client
         public override async Task<IValueSubscription[]?> PollElementValuesChangesAsync()
         {
             var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]?>();
+
             ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 _clientElementValueListManager.Subscribe(_clientConnectionManager, CallbackDispatcher,
@@ -230,26 +231,30 @@ namespace Ssz.DataAccessGrpc.Client
                 taskCompletionSource.SetResult(changedValueSubscriptions is not null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null);                
             }
             );
+
             return await taskCompletionSource.Task;
         }
 
         /// <summary>
+        ///     Returns StatusCode (See Ssz.Utils.JobStatusCodes).
         ///     Writes to userFriendlyLogger with Information level.
         /// </summary>
         /// <param name="valueSubscription"></param>
         /// <param name="valueStatusTimestamp"></param>
         /// <param name="userFriendlyLogger"></param>
         /// <exception cref="InvalidOperationException"></exception>
-        public override void Write(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
+        public override async Task<uint> WriteAsync(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
         {
             var callbackDispatcher = CallbackDispatcher;
-            if (!IsInitialized || callbackDispatcher is null) return;
+            if (!IsInitialized || callbackDispatcher is null) 
+                return JobStatusCodes.FailedPrecondition;
 
-            if (!ValueStatusCodes.IsGood(valueStatusTimestamp.ValueStatusCode)) return;
+            if (!ValueStatusCodes.IsGood(valueStatusTimestamp.ValueStatusCode)) 
+                return JobStatusCodes.InvalidArgument;
             var value = valueStatusTimestamp.Value;
 
             if (!_valueSubscriptionsCollection.TryGetValue(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj))
-                return;
+                return JobStatusCodes.InvalidArgument;
 
             if (userFriendlyLogger is not null && userFriendlyLogger.IsEnabled(LogLevel.Information))
                 userFriendlyLogger.LogInformation("UI TAG: \"" + valueSubscriptionObj.ElementId + "\"; Value from UI: \"" +
@@ -280,7 +285,7 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                 }
 
-                return;
+                return JobStatusCodes.OK;
             }
 
             object?[]? resultValues = null;
@@ -290,7 +295,8 @@ namespace Ssz.DataAccessGrpc.Client
                 resultValues =
                     converter.ConvertBack(value.ValueAsObject(),
                         valueSubscriptionObj.ChildValueSubscriptionsList.Count, null, userFriendlyLogger);
-                if (resultValues.Length == 0) return;
+                if (resultValues.Length == 0)
+                    return JobStatusCodes.OK;
             }
 
             var utcNow = DateTime.UtcNow;
@@ -319,10 +325,14 @@ namespace Ssz.DataAccessGrpc.Client
                 }
             }
 
+            var taskCompletionSource = new TaskCompletionSource<uint>();
+
             ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 _clientElementValueListManager.Subscribe(_clientConnectionManager, CallbackDispatcher,
                     OnElementValuesCallback, true, ct);
+
+                uint statusCode = JobStatusCodes.OK;
 
                 if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                 {
@@ -331,39 +341,45 @@ namespace Ssz.DataAccessGrpc.Client
                     {
                         var resultValue = resultValues[i];
                         if (resultValue != SszConverter.DoNothing)
-                            _clientElementValueListManager.Write(valueSubscriptionObj.ChildValueSubscriptionsList[i],
+                            statusCode = _clientElementValueListManager.Write(valueSubscriptionObj.ChildValueSubscriptionsList[i],
                                 new ValueStatusTimestamp(new Any(resultValue), ValueStatusCodes.Good, DateTime.UtcNow));
                     }
                 }
                 else
                 {
                     if (value.ValueAsObject() != SszConverter.DoNothing)
-                        _clientElementValueListManager.Write(valueSubscription,
+                        statusCode = _clientElementValueListManager.Write(valueSubscription,
                             new ValueStatusTimestamp(value, ValueStatusCodes.Good, DateTime.UtcNow));
                 }
+
+                taskCompletionSource.SetResult(statusCode);
             });
+
+            return await taskCompletionSource.Task;
         }
 
         /// <summary>     
         ///     No values mapping and conversion.       
-        ///     returns failed ValueSubscriptions.
-        ///     If connection error, failed ValueSubscriptions is all clientObjs.        
+        ///     Returns failed ValueSubscriptions and StatusCodes (See Ssz.Utils.JobStatusCodes).
+        ///     If connection error, all ValueSubscriptions are failed.       
         /// </summary>
         /// <param name="valueSubscriptions"></param>
         /// <param name="valueStatusTimestamps"></param>
         /// <returns></returns>
-        public override async Task<IValueSubscription[]> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
+        public override async Task<(IValueSubscription[], uint[])> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
         {
-            var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]>();
+            var taskCompletionSource = new TaskCompletionSource<(IValueSubscription[], uint[])>();
+
             ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 _clientElementValueListManager.Subscribe(_clientConnectionManager, CallbackDispatcher,
                     OnElementValuesCallback, true, ct);
-                object[] failedValueSubscriptions = _clientElementValueListManager.Write(valueSubscriptions, valueStatusTimestamps);
+                (object[] failedValueSubscriptions, uint[] faildStatusCodes) = _clientElementValueListManager.Write(valueSubscriptions, valueStatusTimestamps);
 
-                taskCompletionSource.SetResult(failedValueSubscriptions.OfType<IValueSubscription>().ToArray());
+                taskCompletionSource.SetResult((failedValueSubscriptions.OfType<IValueSubscription>().ToArray(), faildStatusCodes));
             }
             );
+
             return await taskCompletionSource.Task;
         }
 
@@ -377,6 +393,7 @@ namespace Ssz.DataAccessGrpc.Client
         public override async Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
         {
             var taskCompletionSource = new TaskCompletionSource<IEnumerable<byte>>();
+
             ThreadSafeDispatcher.BeginInvoke(ct =>
             {                
                 try
@@ -397,6 +414,7 @@ namespace Ssz.DataAccessGrpc.Client
                     taskCompletionSource.TrySetException(ex);
                 }                
             });
+
             return await taskCompletionSource.Task;
         }
 
@@ -412,6 +430,7 @@ namespace Ssz.DataAccessGrpc.Client
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? progressCallbackAction)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
+
             ThreadSafeDispatcher.BeginInvoke(async ct =>
             {
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
@@ -467,6 +486,7 @@ namespace Ssz.DataAccessGrpc.Client
 
                 taskCompletionSource.SetResult(succeeded);
             });
+
             return await taskCompletionSource.Task;
         }
 
