@@ -291,7 +291,7 @@ namespace Ssz.Xi.Client
                     converter.ConvertBack(value.ValueAsObject(),
                         valueSubscriptionObj.ChildValueSubscriptionsList.Count, null, userFriendlyLogger);
                 if (resultValues.Length == 0)
-                    Task.FromResult(JobStatusCodes.OK);
+                    return Task.FromResult(JobStatusCodes.OK);
             }
 
             var utcNow = DateTime.UtcNow;
