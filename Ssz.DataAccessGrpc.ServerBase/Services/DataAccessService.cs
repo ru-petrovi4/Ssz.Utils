@@ -347,27 +347,21 @@ namespace Ssz.DataAccessGrpc.ServerBase
             catch (TaskCanceledException ex)
             {
                 string message = @"Operation cancelled.";
-                _logger.LogWarning(ex, message);
+                _logger.LogDebug(ex, message);
                 throw new RpcException(new Status(StatusCode.Cancelled, message));
             }
             catch (RpcException ex)
             {
                 string message = @"RPC Exception";
-                _logger.LogWarning(ex, message);
+                _logger.LogDebug(ex, message);
                 throw;
             }
-            //catch (LocalizedMessageException ex)
-            //{
-            //    string message = @"LocalizedMessageException";
-            //    _logger.LogWarning(ex, message);
-            //    throw new RpcException(new Status(StatusCode.Internal, ex.Message));
-            //}
             catch (Exception ex)
             {
                 string message = @"General Exception";
-                _logger.LogWarning(ex, message);
-                throw;
-            }            
+                _logger.LogDebug(ex, message);
+                throw new RpcException(new Status(StatusCode.Internal, ex.Message));
+            }
         }
 
         private async Task<TReply> GetAsyncReplyAsync<TReply>(Func<Task<TReply>> func, ServerCallContext context)
@@ -409,26 +403,20 @@ namespace Ssz.DataAccessGrpc.ServerBase
             catch (TaskCanceledException ex)
             {
                 string message = @"Operation cancelled.";
-                _logger.LogWarning(ex, message);
+                _logger.LogDebug(ex, message);
                 throw new RpcException(new Status(StatusCode.Cancelled, message));
             }
             catch (RpcException ex)
             {
                 string message = @"RPC Exception";
-                _logger.LogWarning(ex, message);
+                _logger.LogDebug(ex, message);
                 throw;
-            }
-            //catch (LocalizedMessageException ex)
-            //{
-            //    string message = @"LocalizedMessageException";
-            //    _logger.LogWarning(ex, message);
-            //    throw new RpcException(new Status(StatusCode.Internal, ex.Message));
-            //}
+            }            
             catch (Exception ex)
             {
                 string message = @"General Exception";
-                _logger.LogWarning(ex, message);
-                throw;
+                _logger.LogDebug(ex, message);
+                throw new RpcException(new Status(StatusCode.Internal, ex.Message));
             }
         }
 
