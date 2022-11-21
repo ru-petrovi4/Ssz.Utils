@@ -460,6 +460,45 @@ namespace Ssz.Utils
         }
 
         /// <summary>
+        ///     Pecondition: keys must be unique in values
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public bool FileEquals(string? fileName, IEnumerable<IEnumerable<string?>> values)
+        {
+            if (string.IsNullOrWhiteSpace(fileName)) return false;
+
+            string fileNameUpper = fileName!.ToUpperInvariant();
+
+            if (!fileNameUpper.EndsWith(@".CSV")) return false;
+
+            var valuesList = values.ToList();
+
+            if (!_csvFilesCollection.TryGetValue(fileNameUpper, out CsvFile? csvFile))
+                return valuesList.Count == 0;
+
+            EnsureDataIsLoaded(csvFile);
+
+            if (csvFile.FileData!.Count != valuesList.Count)
+                return false;
+
+            foreach (var valuesLine in values)
+            {
+                var valuesLineList = valuesLine.ToList();
+                string key = valuesLineList[0] ?? @"";
+
+                if (!csvFile.FileData!.TryGetValue(key, out List<string?>? fileLine))
+                    return false;
+
+                if (!Enumerable.SequenceEqual(fileLine, valuesLineList))
+                    return false;                
+            }
+
+            return true;
+        }
+
+        /// <summary>
         ///     Appends values to existing data.
         /// </summary>
         /// <param name="fileName"></param>
@@ -479,14 +518,16 @@ namespace Ssz.Utils
                 csvFile.FileData = new CaseInsensitiveDictionary<List<string?>>();
                 _csvFilesCollection.Add(fileNameUpper, csvFile);
             }
+            else
+            {
+                EnsureDataIsLoaded(csvFile);
+            }            
 
             foreach (var valuesLine in values)
             {
                 var enumerator = valuesLine.GetEnumerator();
                 if (!enumerator.MoveNext()) return;
-                string key = enumerator.Current ?? @"";
-
-                EnsureDataIsLoaded(csvFile);
+                string key = enumerator.Current ?? @"";                
 
                 if (!csvFile.FileData!.TryGetValue(key, out List<string?>? fileLine))
                 {

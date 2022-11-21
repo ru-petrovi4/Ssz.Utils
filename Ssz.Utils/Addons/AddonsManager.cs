@@ -117,9 +117,12 @@ namespace Ssz.Utils.Addons
                 }
             }
 
-            CsvDb.FileClear(AddonBase.AddonsAvailableCsvFileName);
-            CsvDb.SetValues(AddonBase.AddonsAvailableCsvFileName, addonsAvailableFileData);
-            CsvDb.SaveData(AddonBase.AddonsAvailableCsvFileName);
+            if (!CsvDb.FileEquals(AddonBase.AddonsAvailableCsvFileName, addonsAvailableFileData))
+            {
+                CsvDb.FileClear(AddonBase.AddonsAvailableCsvFileName);
+                CsvDb.SetValues(AddonBase.AddonsAvailableCsvFileName, addonsAvailableFileData);
+                CsvDb.SaveData(AddonBase.AddonsAvailableCsvFileName);
+            }           
 
             foreach (FileInfo csvFileInfo in CsvDb.GetFileInfos())
             {
