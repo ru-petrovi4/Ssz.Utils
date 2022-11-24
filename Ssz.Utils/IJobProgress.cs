@@ -16,14 +16,16 @@ namespace Ssz.Utils
         /// <param name="progressDetail"></param>
         /// <param name="jobStatusCode">See consts in JobStatusCodes</param>
         /// <returns></returns>
-        Task SetJobProgressAsync(uint progressPercent, string? progressLabel, string? progressDetail, uint jobStatusCode);
+        Task SetJobProgressAsync(uint? progressPercent, string? progressLabel, string? progressDetail, uint jobStatusCode);
+
+        IJobProgress GetChildJobProgress(uint minProgressPercent, uint maxProgressPercent);
     }
 
     public class DummyJobProgress : IJobProgress
     {
         public static readonly DummyJobProgress Default = new();
 
-        public string JobId => @"";
+        public string JobId => @"";        
 
         /// <summary>
         ///     
@@ -33,9 +35,14 @@ namespace Ssz.Utils
         /// <param name="progressDetail"></param>
         /// <param name="jobStatusCode">See consts in JobStatusCodes</param>
         /// <returns></returns>
-        public Task SetJobProgressAsync(uint progressPercent, string? progressLabel, string? progressDetail, uint jobStatusCode)
+        public Task SetJobProgressAsync(uint? progressPercent, string? progressLabel, string? progressDetail, uint jobStatusCode)
         {
             return Task.CompletedTask;
+        }
+
+        public IJobProgress GetChildJobProgress(uint minProgressPercent, uint maxProgressPercent)
+        {
+            return this;
         }
     }
 
