@@ -152,6 +152,11 @@ namespace Ssz.Utils
             return str.Substring(startIndex, Math.Min(length, str!.Length - startIndex));
         }
 
+        public static string JoinNotNullOrEmpty(string separator, params string?[] values)
+        {
+            return String.Join(separator, values.Where(v => !String.IsNullOrEmpty(v)));
+        }
+
         #endregion
     }
 }
