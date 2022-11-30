@@ -1358,7 +1358,10 @@ namespace Ssz.Utils.Serialization
             WriteSerializedType(SerializedType.OtherType);
             Type type = value.GetType();
             WriteOptimized(type);
-            string s = JsonSerializer.Serialize(value, type);
+            string s = JsonSerializer.Serialize(value, type, new JsonSerializerOptions
+                {
+                    NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowNamedFloatingPointLiterals 
+                });
             WriteOptimized(s);
         }
 

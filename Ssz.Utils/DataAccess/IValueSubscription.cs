@@ -9,8 +9,14 @@ namespace Ssz.Utils.DataAccess
 {
     public interface IValueSubscription
     {
-        void Update(ValueStatusTimestamp valueStatusTimestamp);
-
         string MappedElementIdOrConst { get; set; }
+
+        TypeId? DataTypeId { get; set; }
+
+        bool? IsReadable { get; set; }
+
+        bool? IsWritable { get; set; }
+
+        void Update(ValueStatusTimestamp valueStatusTimestamp);
     }
 }

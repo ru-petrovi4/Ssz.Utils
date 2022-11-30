@@ -1202,7 +1202,10 @@ namespace Ssz.Utils.Serialization
                     var type = ReadOptimizedType();
                     if (type is null) return null;
                     string s = ReadOptimizedString()!;
-                    return JsonSerializer.Deserialize(s, type);
+                    return JsonSerializer.Deserialize(s, type, new JsonSerializerOptions
+                        {
+                            NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowNamedFloatingPointLiterals
+                        });
                 }
                 case SerializedType.UInt16Type:
                     return ReadUInt16();

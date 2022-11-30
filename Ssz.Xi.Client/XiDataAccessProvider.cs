@@ -1035,6 +1035,12 @@ namespace Ssz.Xi.Client
 
             public string MappedElementIdOrConst { get; set; }
 
+            public Ssz.Utils.DataAccess.TypeId? DataTypeId { get; set; }
+
+            public bool? IsReadable { get; set; }
+
+            public bool? IsWritable { get; set; }
+
             public ValueStatusTimestamp ValueStatusTimestamp;
 
             public readonly bool IsConst;

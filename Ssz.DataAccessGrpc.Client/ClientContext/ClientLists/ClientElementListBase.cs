@@ -121,7 +121,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                         {
                             listItem.ServerAlias = r.AliasResult.ServerAlias;
                             listItem.StatusCode = (StatusCode)r.AliasResult.StatusCode;
-                            listItem.ValueTypeId = r.DataTypeId;
+                            listItem.DataTypeId = r.DataTypeId;
                             listItem.IsReadable = r.IsReadable;
                             listItem.IsWritable = r.IsWritable;
 

@@ -43,6 +43,12 @@ namespace Ssz.Utils.DataAccess
         /// </summary>
         public string MappedElementIdOrConst { get; set; } = @"";
 
+        public TypeId? DataTypeId { get; set; }
+
+        public bool? IsReadable { get; set; }
+
+        public bool? IsWritable { get; set; }
+
         /// <summary>
         ///     Can be called from any thread.
         /// </summary>

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Ssz.DataAccessGrpc.Client.ClientLists;
 using Ssz.Utils.DataAccess;
 using Grpc.Core;
+using static Ssz.DataAccessGrpc.Client.Managers.ClientElementValueListManager;
 
 namespace Ssz.DataAccessGrpc.Client.Managers
 {
@@ -34,7 +35,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <param name="callbackIsEnabled"></param>
         /// <param name="ct"></param>
         public void Subscribe(ClientConnectionManager clientConnectionManager, IDispatcher? сallbackDispatcher,
-            ElementValuesCallbackEventHandler elementValuesCallbackEventHandler, bool callbackIsEnabled, CancellationToken ct)
+            EventHandler<ElementValuesCallbackEventArgs> elementValuesCallbackEventHandler, bool callbackIsEnabled, CancellationToken ct)
         {
             try
             {
@@ -67,10 +68,10 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                         {
                             DataAccessGrpcList.ElementValuesCallback +=
                                 (ClientElementValueList dataList, ClientElementValueListItem[] items,
-                                    ValueStatusTimestamp[] values) =>
+                                    ValueStatusTimestamp[] vsts) =>
                                 {
-                                    var changedClientObjs = new List<object>(items.Length);
-                                    var changedValues = new List<ValueStatusTimestamp>(items.Length);
+                                    ElementValuesCallbackEventArgs elementValuesCallbackEventArgs = new();
+                                    elementValuesCallbackEventArgs.ElementValuesCallbackChanges = new(items.Length);
                                     int i = 0;
                                     foreach (ClientElementValueListItem dataGrpcElementValueListItem in items)
                                     {
@@ -81,8 +82,14 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                                             modelItem.ForceNotifyClientObj = false;
                                             if (modelItem.ClientObj is not null)
                                             {
-                                                changedClientObjs.Add(modelItem.ClientObj);
-                                                changedValues.Add(values[i]);
+                                                elementValuesCallbackEventArgs.ElementValuesCallbackChanges.Add(new ElementValuesCallbackChange
+                                                {
+                                                    ClientObj = modelItem.ClientObj,
+                                                    ValueStatusTimestamp = vsts[i],
+                                                    DataTypeId = dataGrpcElementValueListItem.DataTypeId?.ToTypeId(),
+                                                    IsReadable = dataGrpcElementValueListItem.IsReadable,
+                                                    IsWritable = dataGrpcElementValueListItem.IsWritable
+                                                });                                                
                                             }
                                         }
                                         i++;
@@ -96,7 +103,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                                             сallbackDispatcher.BeginInvoke(ct =>
                                             {
                                                 Logger.LogDebug("DataAccessGrpcList.ElementValuesCallback dispatched");
-                                                elementValuesCallbackEventHandler(changedClientObjs.ToArray(), changedValues.ToArray());
+                                                elementValuesCallbackEventHandler(this, elementValuesCallbackEventArgs);
                                             });
                                         }
                                         catch (Exception)
@@ -119,8 +126,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
                 {
                     var utcNow = DateTime.UtcNow;
-                    var changedClientObjs = new List<object>();
-                    var changedValues = new List<ValueStatusTimestamp>();
+                    ElementValuesCallbackEventArgs elementValuesCallbackEventArgs = new();
+                    elementValuesCallbackEventArgs.ElementValuesCallbackChanges = new();
                     foreach (DataAccessGrpcListItemWrapper dataGrpcListItemWrapper in DataAccessGrpcListItemWrappersDictionary.Values)
                     {                        
                         foreach (var modelItem in dataGrpcListItemWrapper.ClientObjectInfosCollection)
@@ -132,24 +139,36 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                                 {
                                     if (dataGrpcListItemWrapper.ItemDoesNotExist)
                                     {
-                                        changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist });
+                                        elementValuesCallbackEventArgs.ElementValuesCallbackChanges.Add(new ElementValuesCallbackChange
+                                        {
+                                            ClientObj = modelItem.ClientObj,
+                                            ValueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist },                                            
+                                        });
                                     }
                                     else if (dataGrpcListItemWrapper.DataAccessGrpcListItem is not null)
                                     {
-                                        changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(dataGrpcListItemWrapper.DataAccessGrpcListItem.ValueStatusTimestamp);
+                                        elementValuesCallbackEventArgs.ElementValuesCallbackChanges.Add(new ElementValuesCallbackChange
+                                        {
+                                            ClientObj = modelItem.ClientObj,
+                                            ValueStatusTimestamp = dataGrpcListItemWrapper.DataAccessGrpcListItem.ValueStatusTimestamp,
+                                            DataTypeId = dataGrpcListItemWrapper.DataAccessGrpcListItem.DataTypeId?.ToTypeId(),
+                                            IsReadable = dataGrpcListItemWrapper.DataAccessGrpcListItem.IsReadable,
+                                            IsWritable = dataGrpcListItemWrapper.DataAccessGrpcListItem.IsWritable
+                                        });
                                     }
                                     else
                                     {
-                                        changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(new ValueStatusTimestamp(new Any(), ValueStatusCodes.Unknown, utcNow));
+                                        elementValuesCallbackEventArgs.ElementValuesCallbackChanges.Add(new ElementValuesCallbackChange
+                                        {
+                                            ClientObj = modelItem.ClientObj,
+                                            ValueStatusTimestamp = new ValueStatusTimestamp(new Any(), ValueStatusCodes.Unknown, utcNow),
+                                        });
                                     }                                                                                                  
                                 }                                
                             }
                         }                                              
                     }                    
-                    if (changedClientObjs.Count > 0)
+                    if (elementValuesCallbackEventArgs.ElementValuesCallbackChanges.Count > 0)
                     {
                         if (ct.IsCancellationRequested) return;
                         if (сallbackDispatcher is not null)
@@ -157,7 +176,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                             try
                             {
                                 сallbackDispatcher.BeginInvoke(ct =>
-                                    elementValuesCallbackEventHandler(changedClientObjs.ToArray(), changedValues.ToArray()));
+                                    elementValuesCallbackEventHandler(this, elementValuesCallbackEventArgs));
                             }
                             catch (Exception)
                             {
@@ -327,12 +346,24 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         }
         */
 
-        #endregion        
+        #endregion       
+    }
 
-        /// <summary>
-        ///     This delegate defines the callback for reporting data updates to the client application.
-        /// </summary>
-        public delegate void ElementValuesCallbackEventHandler(
-            object[] changedClientObjs, ValueStatusTimestamp[] changedValues);
+    public class ElementValuesCallbackEventArgs : EventArgs
+    {
+        public List<ElementValuesCallbackChange> ElementValuesCallbackChanges { get; set; } = null!;
+    }
+
+    public class ElementValuesCallbackChange
+    {
+        public object ClientObj = null!;
+
+        public ValueStatusTimestamp ValueStatusTimestamp;
+
+        public Ssz.Utils.DataAccess.TypeId? DataTypeId;
+
+        public bool? IsReadable;
+
+        public bool? IsWritable;
     }
 }

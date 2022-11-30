@@ -67,94 +67,94 @@ namespace Ssz.DataAccessGrpc.Client.ClientListItems
         ///     This property provides the DataAccessGrpc TypeId for the value contained
         ///     in this list element.
         /// </summary>
-        public Ssz.DataAccessGrpc.ServerBase.TypeId? ValueTypeId
+        public Ssz.DataAccessGrpc.ServerBase.TypeId? DataTypeId
         {
-            get { return _valueTypeId; }
+            get { return _dataTypeId; }
             set
             {
-                _valueTypeId = value;
-                if (_valueTypeId is null)
+                _dataTypeId = value;
+                if (_dataTypeId is null)
                 {
                     ValueTypeCode = TypeCode.Empty;
                     return;
                 }
-                if (_valueTypeId.Namespace is not null)
+                if (_dataTypeId.Namespace is not null)
                 {
                     ValueTypeCode = TypeCode.Object;
                     return;
                 }
-                if (_valueTypeId.SchemaType is not null)
+                if (_dataTypeId.SchemaType is not null)
                 {
                     ValueTypeCode = TypeCode.Object;
                     return;
                 }
 
-                if (0 == string.Compare(typeof (Object).ToString(), _valueTypeId.LocalId, true))
+                if (0 == string.Compare(typeof (Object).ToString(), _dataTypeId.LocalId, true))
                 {
                     ValueTypeCode = TypeCode.Object;
                     return;
                 }
-                if (0 == string.Compare(typeof (Single).ToString(), _valueTypeId.LocalId, true))
+                if (0 == string.Compare(typeof (Single).ToString(), _dataTypeId.LocalId, true))
                 {
                     ValueTypeCode = TypeCode.Single;
                     return;
                 }
-                if (0 == string.Compare(typeof (Int32).ToString(), _valueTypeId.LocalId, true))
+                if (0 == string.Compare(typeof (Int32).ToString(), _dataTypeId.LocalId, true))
                 {
                     ValueTypeCode = TypeCode.Int32;
                     return;
                 }
-                if (0 == string.Compare(typeof (String).ToString(), _valueTypeId.LocalId, true))
+                if (0 == string.Compare(typeof (String).ToString(), _dataTypeId.LocalId, true))
                 {
                     ValueTypeCode = TypeCode.String;
                     return;
                 }
-                if (0 == string.Compare(typeof (SByte).ToString(), _valueTypeId.LocalId, true))
+                if (0 == string.Compare(typeof (SByte).ToString(), _dataTypeId.LocalId, true))
                 {
                     ValueTypeCode = TypeCode.SByte;
                     return;
                 }
-                if (0 == string.Compare(typeof (Int16).ToString(), _valueTypeId.LocalId, true))
+                if (0 == string.Compare(typeof (Int16).ToString(), _dataTypeId.LocalId, true))
                 {
                     ValueTypeCode = TypeCode.Int16;
                     return;
                 }
-                if (0 == string.Compare(typeof (Int64).ToString(), _valueTypeId.LocalId, true))
+                if (0 == string.Compare(typeof (Int64).ToString(), _dataTypeId.LocalId, true))
                 {
                     ValueTypeCode = TypeCode.Int64;
                     return;
                 }
-                if (0 == string.Compare(typeof (Byte).ToString(), _valueTypeId.LocalId, true))
+                if (0 == string.Compare(typeof (Byte).ToString(), _dataTypeId.LocalId, true))
                 {
                     ValueTypeCode = TypeCode.Byte;
                     return;
                 }
-                if (0 == string.Compare(typeof (UInt16).ToString(), _valueTypeId.LocalId, true))
+                if (0 == string.Compare(typeof (UInt16).ToString(), _dataTypeId.LocalId, true))
                 {
                     ValueTypeCode = TypeCode.UInt16;
                     return;
                 }
-                if (0 == string.Compare(typeof (UInt32).ToString(), _valueTypeId.LocalId, true))
+                if (0 == string.Compare(typeof (UInt32).ToString(), _dataTypeId.LocalId, true))
                 {
                     ValueTypeCode = TypeCode.UInt32;
                     return;
                 }
-                if (0 == string.Compare(typeof (UInt64).ToString(), _valueTypeId.LocalId, true))
+                if (0 == string.Compare(typeof (UInt64).ToString(), _dataTypeId.LocalId, true))
                 {
                     ValueTypeCode = TypeCode.UInt64;
                     return;
                 }
-                if (0 == string.Compare(typeof (Double).ToString(), _valueTypeId.LocalId, true))
+                if (0 == string.Compare(typeof (Double).ToString(), _dataTypeId.LocalId, true))
                 {
                     ValueTypeCode = TypeCode.Double;
                     return;
                 }
-                if (0 == string.Compare(typeof (DateTime).ToString(), _valueTypeId.LocalId, true))
+                if (0 == string.Compare(typeof (DateTime).ToString(), _dataTypeId.LocalId, true))
                 {
                     ValueTypeCode = TypeCode.DateTime;
                     return;
                 }
-                if (0 == string.Compare(typeof (Boolean).ToString(), _valueTypeId.LocalId, true))
+                if (0 == string.Compare(typeof (Boolean).ToString(), _dataTypeId.LocalId, true))
                 {
                     ValueTypeCode = TypeCode.Boolean;
                     return;
@@ -164,17 +164,17 @@ namespace Ssz.DataAccessGrpc.Client.ClientListItems
             }
         }
 
-        public TypeCode ValueTypeCode { get; private set; }
-
-        /// <summary>
-        ///     This property indicates whether the value associated with the list element is writable.
-        /// </summary>
-        public bool IsWritable { get; set; }
+        public TypeCode ValueTypeCode { get; private set; }        
 
         /// <summary>
         ///     This property indicates whether the value associated with the list element is readable.
         /// </summary>
         public bool IsReadable { get; set; }
+
+        /// <summary>
+        ///     This property indicates whether the value associated with the list element is writable.
+        /// </summary>
+        public bool IsWritable { get; set; }
 
         /// <summary>
         ///     The Status Code provides the latest status as provided by the DataAccessGrpc ServerBase.
@@ -231,7 +231,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientListItems
         ///     This property provides the DataAccessGrpc TypeId for the value contained
         ///     in this list element.
         /// </summary>
-        private Ssz.DataAccessGrpc.ServerBase.TypeId? _valueTypeId;
+        private Ssz.DataAccessGrpc.ServerBase.TypeId? _dataTypeId;
 
         #endregion
     }

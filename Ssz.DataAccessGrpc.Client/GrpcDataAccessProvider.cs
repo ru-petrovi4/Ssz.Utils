@@ -15,6 +15,7 @@ using System.Globalization;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Ssz.Utils.Logging;
+using static Ssz.DataAccessGrpc.Client.Managers.ClientElementValueListManager;
 
 namespace Ssz.DataAccessGrpc.Client
 {
@@ -671,15 +672,18 @@ namespace Ssz.DataAccessGrpc.Client
         /// <summary>
         ///     Called using сallbackDispatcher.
         /// </summary>
-        /// <param name="changedClientObjs"></param>
-        /// <param name="changedValues"></param>
-        protected void OnElementValuesCallback(object[] changedClientObjs,
-            ValueStatusTimestamp[] changedValues)
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        protected void OnElementValuesCallback(object? sender,
+            ElementValuesCallbackEventArgs eventArgs)
         {
-            for (int i = 0; i < changedClientObjs.Length; i++)
+            foreach (ElementValuesCallbackChange elementValuesCallbackChange in eventArgs.ElementValuesCallbackChanges)
             {
-                var changedValueSubscription = (IValueSubscription)changedClientObjs[i];
-                changedValueSubscription.Update(changedValues[i]);
+                var changedValueSubscription = (IValueSubscription)elementValuesCallbackChange.ClientObj;                
+                changedValueSubscription.DataTypeId = elementValuesCallbackChange.DataTypeId;
+                changedValueSubscription.IsReadable = elementValuesCallbackChange.IsReadable;
+                changedValueSubscription.IsWritable = elementValuesCallbackChange.IsWritable;
+                changedValueSubscription.Update(elementValuesCallbackChange.ValueStatusTimestamp);
             }
             DataGuid = Guid.NewGuid();
 
@@ -1026,6 +1030,12 @@ namespace Ssz.DataAccessGrpc.Client
             public ValueSubscriptionObj? ValueSubscriptionObj;
 
             public string MappedElementIdOrConst { get; set; }
+
+            public Ssz.Utils.DataAccess.TypeId? DataTypeId { get; set; }
+
+            public bool? IsReadable { get; set; }
+
+            public bool? IsWritable { get; set; }
 
             public ValueStatusTimestamp ValueStatusTimestamp;
 
