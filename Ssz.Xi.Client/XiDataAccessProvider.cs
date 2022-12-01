@@ -242,14 +242,14 @@ namespace Ssz.Xi.Client
 
             var callbackDispatcher = CallbackDispatcher;
             if (!IsInitialized || callbackDispatcher is null) 
-                return Task.FromResult(JobStatusCodes.UnknownError);
+                return Task.FromResult(JobStatusCodes.Unknown);
 
             if (!ValueStatusCodes.IsGood(valueStatusTimestamp.ValueStatusCode))
-                return Task.FromResult(JobStatusCodes.UnknownError);
+                return Task.FromResult(JobStatusCodes.Unknown);
             var value = valueStatusTimestamp.Value;
 
             if (!_valueSubscriptionsCollection.TryGetValue(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj))
-                return Task.FromResult(JobStatusCodes.UnknownError);
+                return Task.FromResult(JobStatusCodes.Unknown);
 
             if (userFriendlyLogger is not null && userFriendlyLogger.IsEnabled(LogLevel.Information))
                 userFriendlyLogger.LogInformation("UI TAG: \"" + valueSubscriptionObj.ElementId + "\"; Value from UI: \"" +
@@ -366,7 +366,7 @@ namespace Ssz.Xi.Client
                     XiDataListItemsManagerOnElementValuesCallback, true, ct);
                 object[] failedValueSubscriptions = _xiDataListItemsManager.Write(valueSubscriptions, valueStatusTimestamps);
 
-                taskCompletionSource.SetResult((failedValueSubscriptions.OfType<IValueSubscription>().ToArray(), Enumerable.Repeat(JobStatusCodes.UnknownError, failedValueSubscriptions.Length).ToArray()));
+                taskCompletionSource.SetResult((failedValueSubscriptions.OfType<IValueSubscription>().ToArray(), Enumerable.Repeat(JobStatusCodes.Unknown, failedValueSubscriptions.Length).ToArray()));
             });
 
             return await taskCompletionSource.Task;
@@ -454,7 +454,7 @@ namespace Ssz.Xi.Client
                     {
                         callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
                         {
-                            JobStatusCode = JobStatusCodes.UnknownError
+                            JobStatusCode = JobStatusCodes.Unknown
                         });
                     }
                     succeeded = false;
@@ -1035,15 +1035,11 @@ namespace Ssz.Xi.Client
 
             public string MappedElementIdOrConst { get; set; }
 
-            public Ssz.Utils.DataAccess.TypeId? DataTypeId { get; set; }
-
-            public bool? IsReadable { get; set; }
-
-            public bool? IsWritable { get; set; }
+            public AddItemResult? AddItemResult { get; set; }
 
             public ValueStatusTimestamp ValueStatusTimestamp;
 
-            public readonly bool IsConst;
+            public readonly bool IsConst;            
 
             public void Update(ValueStatusTimestamp valueStatusTimestamp)
             {

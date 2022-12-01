@@ -467,7 +467,7 @@ namespace Ssz.DataAccessGrpc.Client
                     {
                         callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
                         {   
-                            JobStatusCode = JobStatusCodes.UnknownError
+                            JobStatusCode = JobStatusCodes.Unknown
                         });
                     }
                     succeeded = false;
@@ -479,7 +479,7 @@ namespace Ssz.DataAccessGrpc.Client
                     {
                         callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
                         {
-                            JobStatusCode = JobStatusCodes.UnknownError
+                            JobStatusCode = JobStatusCodes.Unknown
                         });
                     }
                     succeeded = false;
@@ -679,10 +679,8 @@ namespace Ssz.DataAccessGrpc.Client
         {
             foreach (ElementValuesCallbackChange elementValuesCallbackChange in eventArgs.ElementValuesCallbackChanges)
             {
-                var changedValueSubscription = (IValueSubscription)elementValuesCallbackChange.ClientObj;                
-                changedValueSubscription.DataTypeId = elementValuesCallbackChange.DataTypeId;
-                changedValueSubscription.IsReadable = elementValuesCallbackChange.IsReadable;
-                changedValueSubscription.IsWritable = elementValuesCallbackChange.IsWritable;
+                var changedValueSubscription = (IValueSubscription)elementValuesCallbackChange.ClientObj;
+                changedValueSubscription.AddItemResult = elementValuesCallbackChange.AddItemResult;
                 changedValueSubscription.Update(elementValuesCallbackChange.ValueStatusTimestamp);
             }
             DataGuid = Guid.NewGuid();
@@ -1031,15 +1029,11 @@ namespace Ssz.DataAccessGrpc.Client
 
             public string MappedElementIdOrConst { get; set; }
 
-            public Ssz.Utils.DataAccess.TypeId? DataTypeId { get; set; }
-
-            public bool? IsReadable { get; set; }
-
-            public bool? IsWritable { get; set; }
+            public AddItemResult? AddItemResult { get; set; }
 
             public ValueStatusTimestamp ValueStatusTimestamp;
 
-            public readonly bool IsConst;
+            public readonly bool IsConst;            
 
             public void Update(ValueStatusTimestamp valueStatusTimestamp)
             {

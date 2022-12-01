@@ -52,7 +52,7 @@ namespace Ssz.Utils
 
         public const uint Cancelled = 1;
 
-        public const uint UnknownError = 2;
+        public const uint Unknown = 2;
 
         /// <summary>
         /// Client specified an invalid argument.  Note that this differs

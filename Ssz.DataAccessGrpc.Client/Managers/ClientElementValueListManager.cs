@@ -85,11 +85,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                                                 elementValuesCallbackEventArgs.ElementValuesCallbackChanges.Add(new ElementValuesCallbackChange
                                                 {
                                                     ClientObj = modelItem.ClientObj,
+                                                    AddItemResult = dataGrpcElementValueListItem.AddItemResult,
                                                     ValueStatusTimestamp = vsts[i],
-                                                    DataTypeId = dataGrpcElementValueListItem.DataTypeId?.ToTypeId(),
-                                                    IsReadable = dataGrpcElementValueListItem.IsReadable,
-                                                    IsWritable = dataGrpcElementValueListItem.IsWritable
-                                                });                                                
+                                                });                                             
                                             }
                                         }
                                         i++;
@@ -150,10 +148,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                                         elementValuesCallbackEventArgs.ElementValuesCallbackChanges.Add(new ElementValuesCallbackChange
                                         {
                                             ClientObj = modelItem.ClientObj,
-                                            ValueStatusTimestamp = dataGrpcListItemWrapper.DataAccessGrpcListItem.ValueStatusTimestamp,
-                                            DataTypeId = dataGrpcListItemWrapper.DataAccessGrpcListItem.DataTypeId?.ToTypeId(),
-                                            IsReadable = dataGrpcListItemWrapper.DataAccessGrpcListItem.IsReadable,
-                                            IsWritable = dataGrpcListItemWrapper.DataAccessGrpcListItem.IsWritable
+                                            AddItemResult = dataGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResult,
+                                            ValueStatusTimestamp = dataGrpcListItemWrapper.DataAccessGrpcListItem.ValueStatusTimestamp,                                            
                                         });
                                     }
                                     else
@@ -255,7 +251,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 
                 if (clientObjectInfo.DataAccessGrpcListItemWrapper is null ||
                     clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem is null ||
-                    clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.StatusCode != StatusCode.OK)
+                    clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResult is null ||
+                    clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResult.AddItemJobStatusCode != JobStatusCodes.OK)
                 {
                     resultObjects.Add(clientObj);
                     resultStatusCodes.Add(JobStatusCodes.FailedPrecondition);
@@ -272,7 +269,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             }
             catch
             {
-                return (clientObjs, Enumerable.Repeat(JobStatusCodes.UnknownError, clientObjs.Length).ToArray());
+                return (clientObjs, Enumerable.Repeat(JobStatusCodes.Unknown, clientObjs.Length).ToArray());
             }
 
             foreach (var dataGrpcElementValueListItem in failedItems)
@@ -306,7 +303,10 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             if (!ClientObjectInfosDictionary.TryGetValue(clientObj, out clientObjectInfo))
                 return JobStatusCodes.InvalidArgument;
             
-            if (clientObjectInfo.DataAccessGrpcListItemWrapper is null || clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem is null || clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.StatusCode != StatusCode.OK)
+            if (clientObjectInfo.DataAccessGrpcListItemWrapper is null || 
+                clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem is null ||
+                clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResult is null ||
+                clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResult.AddItemJobStatusCode != JobStatusCodes.OK)
                 return JobStatusCodes.InvalidArgument;
 
             ClientElementValueListItem dataGrpcElementValueListItem = clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem;
@@ -330,7 +330,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 Logger.LogWarning(ex, "DataAccessGrpcList.CommitWriteElementValueListItems() exception");
             }
 
-            return JobStatusCodes.UnknownError;
+            return JobStatusCodes.Unknown;
         }
 
         /*
@@ -352,18 +352,14 @@ namespace Ssz.DataAccessGrpc.Client.Managers
     public class ElementValuesCallbackEventArgs : EventArgs
     {
         public List<ElementValuesCallbackChange> ElementValuesCallbackChanges { get; set; } = null!;
-    }
+    }    
 
     public class ElementValuesCallbackChange
     {
-        public object ClientObj = null!;
+        public object ClientObj = null!;        
+
+        public AddItemResult? AddItemResult;
 
         public ValueStatusTimestamp ValueStatusTimestamp;
-
-        public Ssz.Utils.DataAccess.TypeId? DataTypeId;
-
-        public bool? IsReadable;
-
-        public bool? IsWritable;
     }
 }

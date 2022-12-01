@@ -120,12 +120,14 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                         if (ListItemsManager.TryGetValue(r.AliasResult.ClientAlias, out listItem))
                         {
                             listItem.ServerAlias = r.AliasResult.ServerAlias;
-                            listItem.StatusCode = (StatusCode)r.AliasResult.StatusCode;
-                            listItem.DataTypeId = r.DataTypeId;
-                            listItem.IsReadable = r.IsReadable;
-                            listItem.IsWritable = r.IsWritable;
-
-                            if (listItem.StatusCode == StatusCode.OK)
+                            listItem.SetAddItemResult(new AddItemResult
+                            {
+                                AddItemJobStatusCode = r.AliasResult.StatusCode,
+                                DataTypeId = r.DataTypeId?.ToTypeId(),
+                                IsReadable = r.IsReadable,
+                                IsWritable = r.IsWritable,
+                            });
+                            if (r.AliasResult.StatusCode == JobStatusCodes.OK)
                             {
                                 listItem.IsInServerList = true;                                
                             }
@@ -216,10 +218,10 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                                     removedListItem.ClientAlias = 0;
                                     removedListItem.IsInClientList = false;                                    
                                 }
-                                else
-                                    // otherwise the value was not deleted from the server, so add it to the list to return
+                                else                                    
                                 {
-                                    removedListItem.StatusCode = (StatusCode)aliasResult.StatusCode;
+                                    // otherwise the value was not deleted from the server, so add it to the list to return
+                                    //removedListItem.AddItemJobStatusCode = aliasResult.StatusCode;
                                     erroredDataAccessGrpcValuesToReturn.Add(removedListItem);
                                 }
                             }

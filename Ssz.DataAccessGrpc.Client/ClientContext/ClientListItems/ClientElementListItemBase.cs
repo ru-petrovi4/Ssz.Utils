@@ -3,6 +3,8 @@ using Ssz.DataAccessGrpc.Client.Data;
 using Ssz.Utils.DataAccess;
 using Ssz.DataAccessGrpc.ServerBase;
 using Grpc.Core;
+using Ssz.Utils;
+using Google.Protobuf.WellKnownTypes;
 
 namespace Ssz.DataAccessGrpc.Client.ClientListItems
 {
@@ -63,125 +65,9 @@ namespace Ssz.DataAccessGrpc.Client.ClientListItems
         /// </summary>
         public uint ServerAlias { get; set; }
 
-        /// <summary>
-        ///     This property provides the DataAccessGrpc TypeId for the value contained
-        ///     in this list element.
-        /// </summary>
-        public Ssz.DataAccessGrpc.ServerBase.TypeId? DataTypeId
-        {
-            get { return _dataTypeId; }
-            set
-            {
-                _dataTypeId = value;
-                if (_dataTypeId is null)
-                {
-                    ValueTypeCode = TypeCode.Empty;
-                    return;
-                }
-                if (_dataTypeId.Namespace is not null)
-                {
-                    ValueTypeCode = TypeCode.Object;
-                    return;
-                }
-                if (_dataTypeId.SchemaType is not null)
-                {
-                    ValueTypeCode = TypeCode.Object;
-                    return;
-                }
+        public AddItemResult? AddItemResult { get; private set; }
 
-                if (0 == string.Compare(typeof (Object).ToString(), _dataTypeId.LocalId, true))
-                {
-                    ValueTypeCode = TypeCode.Object;
-                    return;
-                }
-                if (0 == string.Compare(typeof (Single).ToString(), _dataTypeId.LocalId, true))
-                {
-                    ValueTypeCode = TypeCode.Single;
-                    return;
-                }
-                if (0 == string.Compare(typeof (Int32).ToString(), _dataTypeId.LocalId, true))
-                {
-                    ValueTypeCode = TypeCode.Int32;
-                    return;
-                }
-                if (0 == string.Compare(typeof (String).ToString(), _dataTypeId.LocalId, true))
-                {
-                    ValueTypeCode = TypeCode.String;
-                    return;
-                }
-                if (0 == string.Compare(typeof (SByte).ToString(), _dataTypeId.LocalId, true))
-                {
-                    ValueTypeCode = TypeCode.SByte;
-                    return;
-                }
-                if (0 == string.Compare(typeof (Int16).ToString(), _dataTypeId.LocalId, true))
-                {
-                    ValueTypeCode = TypeCode.Int16;
-                    return;
-                }
-                if (0 == string.Compare(typeof (Int64).ToString(), _dataTypeId.LocalId, true))
-                {
-                    ValueTypeCode = TypeCode.Int64;
-                    return;
-                }
-                if (0 == string.Compare(typeof (Byte).ToString(), _dataTypeId.LocalId, true))
-                {
-                    ValueTypeCode = TypeCode.Byte;
-                    return;
-                }
-                if (0 == string.Compare(typeof (UInt16).ToString(), _dataTypeId.LocalId, true))
-                {
-                    ValueTypeCode = TypeCode.UInt16;
-                    return;
-                }
-                if (0 == string.Compare(typeof (UInt32).ToString(), _dataTypeId.LocalId, true))
-                {
-                    ValueTypeCode = TypeCode.UInt32;
-                    return;
-                }
-                if (0 == string.Compare(typeof (UInt64).ToString(), _dataTypeId.LocalId, true))
-                {
-                    ValueTypeCode = TypeCode.UInt64;
-                    return;
-                }
-                if (0 == string.Compare(typeof (Double).ToString(), _dataTypeId.LocalId, true))
-                {
-                    ValueTypeCode = TypeCode.Double;
-                    return;
-                }
-                if (0 == string.Compare(typeof (DateTime).ToString(), _dataTypeId.LocalId, true))
-                {
-                    ValueTypeCode = TypeCode.DateTime;
-                    return;
-                }
-                if (0 == string.Compare(typeof (Boolean).ToString(), _dataTypeId.LocalId, true))
-                {
-                    ValueTypeCode = TypeCode.Boolean;
-                    return;
-                }
-
-                ValueTypeCode = TypeCode.Object;
-            }
-        }
-
-        public TypeCode ValueTypeCode { get; private set; }        
-
-        /// <summary>
-        ///     This property indicates whether the value associated with the list element is readable.
-        /// </summary>
-        public bool IsReadable { get; set; }
-
-        /// <summary>
-        ///     This property indicates whether the value associated with the list element is writable.
-        /// </summary>
-        public bool IsWritable { get; set; }
-
-        /// <summary>
-        ///     The Status Code provides the latest status as provided by the DataAccessGrpc ServerBase.
-        ///     It is initially set to a failed state to indicated that the current value
-        ///     is not valid.
-        /// </summary>
-        public StatusCode StatusCode { get; set; } = StatusCode.Unknown;
+        public TypeCode ValueTypeCode { get; private set; }
 
         /// <summary>
         ///     This property is the InstanceId of this DataAccessGrpcList element if it has one.
@@ -208,6 +94,100 @@ namespace Ssz.DataAccessGrpc.Client.ClientListItems
         /// </summary>
         public bool PreparedForRemove { get; set; }
 
+        public void SetAddItemResult(AddItemResult? addItemResult)
+        {
+            AddItemResult = addItemResult;            
+            var dataTypeId = addItemResult?.DataTypeId;
+            if (dataTypeId is null)
+            {
+                ValueTypeCode = TypeCode.Empty;
+                return;
+            }
+            if (dataTypeId.Namespace is not null)
+            {
+                ValueTypeCode = TypeCode.Object;
+                return;
+            }
+            if (dataTypeId.SchemaType is not null)
+            {
+                ValueTypeCode = TypeCode.Object;
+                return;
+            }
+
+            if (0 == string.Compare(typeof(Object).ToString(), dataTypeId.LocalId, true))
+            {
+                ValueTypeCode = TypeCode.Object;
+                return;
+            }
+            if (0 == string.Compare(typeof(Single).ToString(), dataTypeId.LocalId, true))
+            {
+                ValueTypeCode = TypeCode.Single;
+                return;
+            }
+            if (0 == string.Compare(typeof(Int32).ToString(), dataTypeId.LocalId, true))
+            {
+                ValueTypeCode = TypeCode.Int32;
+                return;
+            }
+            if (0 == string.Compare(typeof(String).ToString(), dataTypeId.LocalId, true))
+            {
+                ValueTypeCode = TypeCode.String;
+                return;
+            }
+            if (0 == string.Compare(typeof(SByte).ToString(), dataTypeId.LocalId, true))
+            {
+                ValueTypeCode = TypeCode.SByte;
+                return;
+            }
+            if (0 == string.Compare(typeof(Int16).ToString(), dataTypeId.LocalId, true))
+            {
+                ValueTypeCode = TypeCode.Int16;
+                return;
+            }
+            if (0 == string.Compare(typeof(Int64).ToString(), dataTypeId.LocalId, true))
+            {
+                ValueTypeCode = TypeCode.Int64;
+                return;
+            }
+            if (0 == string.Compare(typeof(Byte).ToString(), dataTypeId.LocalId, true))
+            {
+                ValueTypeCode = TypeCode.Byte;
+                return;
+            }
+            if (0 == string.Compare(typeof(UInt16).ToString(), dataTypeId.LocalId, true))
+            {
+                ValueTypeCode = TypeCode.UInt16;
+                return;
+            }
+            if (0 == string.Compare(typeof(UInt32).ToString(), dataTypeId.LocalId, true))
+            {
+                ValueTypeCode = TypeCode.UInt32;
+                return;
+            }
+            if (0 == string.Compare(typeof(UInt64).ToString(), dataTypeId.LocalId, true))
+            {
+                ValueTypeCode = TypeCode.UInt64;
+                return;
+            }
+            if (0 == string.Compare(typeof(Double).ToString(), dataTypeId.LocalId, true))
+            {
+                ValueTypeCode = TypeCode.Double;
+                return;
+            }
+            if (0 == string.Compare(typeof(DateTime).ToString(), dataTypeId.LocalId, true))
+            {
+                ValueTypeCode = TypeCode.DateTime;
+                return;
+            }
+            if (0 == string.Compare(typeof(Boolean).ToString(), dataTypeId.LocalId, true))
+            {
+                ValueTypeCode = TypeCode.Boolean;
+                return;
+            }
+
+            ValueTypeCode = TypeCode.Object;
+        }
+
         #endregion
 
         #region protected functions
@@ -220,18 +200,9 @@ namespace Ssz.DataAccessGrpc.Client.ClientListItems
         /// <returns> Returns the newly incremented update count. </returns>
         protected uint IncrementUpdateCount()
         {
-            return ++UpdateCount;
+            UpdateCount += 1;
+            return UpdateCount;
         }
-
-        #endregion
-
-        #region private fields
-
-        /// <summary>
-        ///     This property provides the DataAccessGrpc TypeId for the value contained
-        ///     in this list element.
-        /// </summary>
-        private Ssz.DataAccessGrpc.ServerBase.TypeId? _dataTypeId;
 
         #endregion
     }

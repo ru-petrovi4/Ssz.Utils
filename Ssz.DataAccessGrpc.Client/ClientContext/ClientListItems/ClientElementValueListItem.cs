@@ -88,11 +88,11 @@ namespace Ssz.DataAccessGrpc.Client.ClientListItems
         /// <returns> Returns TRUE if the data object is writable, otherwise FALSE. </returns>
         public bool PrepareForWrite(ValueStatusTimestamp valueStatusTimestamp)
         {
-            if (!IsWritable)
-            {
-                _pendingWriteValueStatusTimestamp = null;
-                return false;
-            }
+            //if (!IsWritable)
+            //{
+            //    _pendingWriteValueStatusTimestamp = null;
+            //    return false;
+            //}
             _pendingWriteValueStatusTimestamp = valueStatusTimestamp;
             return true;
         }
