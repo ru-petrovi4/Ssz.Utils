@@ -46,6 +46,12 @@ namespace IdentityServer4.Hosting.LocalApiAuthentication
         /// <inheritdoc />
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
+            // TEMPCODE
+            foreach (var header in Request.Headers)
+            {
+
+            }
+
             _logger.LogTrace("HandleAuthenticateAsync called");
 
             string token = null;
