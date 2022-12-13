@@ -34,10 +34,19 @@ namespace Ssz.Utils.Addons
                 LastWriteTimeUtc = csvFileInfo.LastWriteTimeUtc,
             };
 
+            string fileData;
             using (var reader = new StreamReader(csvFileInfo.FullName, true))
             {
-                addonCsvFile.FileData = reader.ReadToEnd();
+                fileData = reader.ReadToEnd();
             }
+            
+            //fileData =
+            //    fileData
+            //    .Replace("\r\n", "\n")
+            //    .Replace("\n\r", "\n")
+            //    .Replace("\r", "\n");
+
+            addonCsvFile.FileData = fileData;
 
             return addonCsvFile;
         }
