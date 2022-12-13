@@ -1,4 +1,5 @@
 using Grpc.Core;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Ssz.Utils;
 using System;
@@ -14,9 +15,10 @@ namespace Ssz.DataAccessGrpc.ServerBase
     {
         #region construction and destruction
 
-        public DataAccessService(ILogger<DataAccessService> logger, ServerWorkerBase serverWorker)
+        public DataAccessService(ILogger<DataAccessService> logger, IConfiguration configuration, ServerWorkerBase serverWorker)
         {
             _logger = logger;
+            _configuration = configuration;
             _serverWorker = serverWorker;            
         }
 
@@ -28,6 +30,15 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             return await GetReplyAsync(() =>
                 {
+                    CaseInsensitiveDictionary<string?> contextParams = new CaseInsensitiveDictionary<string?>(request.ContextParams
+                            .Select(cp => KeyValuePair.Create(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));
+                    string clientPassword = ConfigurationHelper.GetValue(_configuration, @"ClientPassword", @"");
+                    if (clientPassword != @"")
+                    {
+                        var clientPasswordInRequest = contextParams.TryGetValue(@"ClientPassword");
+                        if (clientPasswordInRequest != clientPassword)
+                            throw new RpcException(new Status(StatusCode.PermissionDenied, "Invalid client password."));
+                    }
                     var serverContext = new ServerContext(
                         _logger,
                         _serverWorker,
@@ -36,8 +47,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         request.RequestedServerContextTimeoutMs,
                         request.RequestedCultureName ?? @"",
                         request.SystemNameToConnect ?? @"",
-                        new CaseInsensitiveDictionary<string?>(request.ContextParams
-                            .Select(cp => KeyValuePair.Create(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)))
+                        contextParams
                         );
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
                     _serverWorker.AddServerContext(serverContext);                    
@@ -425,6 +435,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         #region private fields
 
         private readonly ILogger<DataAccessService> _logger;
+        private readonly IConfiguration _configuration;
         private readonly ServerWorkerBase _serverWorker;        
 
         #endregion
