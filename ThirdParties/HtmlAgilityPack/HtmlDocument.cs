@@ -2116,6 +2116,9 @@ namespace HtmlAgilityPack
 
             if (!string.IsNullOrEmpty(charset))
             {
+                // VALFIX
+                if (charset == @"windows-1252")
+                    charset = @"windows-1251";
                 // The following check fixes the the bug described at: http://htmlagilitypack.codeplex.com/WorkItem/View.aspx?WorkItemId=25273
                 if (string.Equals(charset, "utf8", StringComparison.OrdinalIgnoreCase))
                     charset = "utf-8";
