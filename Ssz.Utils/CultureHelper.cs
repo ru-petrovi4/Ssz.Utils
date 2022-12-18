@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Configuration;
 using System.Globalization;
@@ -19,20 +20,21 @@ namespace Ssz.Utils
         ///     Otherwise, CurrentUICulture remains unchanged.        
         /// </summary>
         /// <param name="configuration"></param>
-        public static void InitializeUICulture(IConfiguration configuration)
+        public static void InitializeUICulture(IConfiguration configuration, ILogger logger)
         {            
             string uiCultureName = configuration["UICulture"];
             if (!String.IsNullOrWhiteSpace(uiCultureName))
             {
                 try
                 {
-                    var uiCultureInfo = new CultureInfo(uiCultureName);
+                    var uiCultureInfo = new CultureInfo(uiCultureName, true);
                     CultureInfo.CurrentUICulture = uiCultureInfo;
-                    CultureInfo.DefaultThreadCurrentUICulture = uiCultureInfo;                                     
+                    CultureInfo.DefaultThreadCurrentUICulture = uiCultureInfo;
+                    logger.LogInformation("Current UI culture: " + uiCultureInfo.Name);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    //Logger.Error(ex, "App settings file error. UI Culture not found: " + uiCultureName);
+                    logger.LogError(ex, "App settings file error. UI Culture not found: " + uiCultureName);                    
                 }
             }
         }
