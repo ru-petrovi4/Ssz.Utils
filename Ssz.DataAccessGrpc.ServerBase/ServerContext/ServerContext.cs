@@ -131,18 +131,18 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 await _callbackWorkingTask;
                 _callbackWorkingTask = null;
             }
-
-            try
+            
+            // Dispose of the lists.
+            foreach (ServerListRoot list in _listsManager.ToArray()) // .ToArray() due to thread issues
             {
-                // Dispose of the lists.
-                foreach (ServerListRoot list in _listsManager.ToArray()) // .ToArray() due to thread issues
+                try
                 {
                     list?.Dispose(); // Unknown issue
                 }
-            }
-            catch
-            {
-            }            
+                catch
+                {
+                }
+            }                        
 
             _listsManager.Clear();
         }
@@ -215,7 +215,14 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             foreach (var list in _listsManager)
             {
-                list.DoWork(nowUtc, token);
+                try
+                {
+                    list.DoWork(nowUtc, token);
+                }
+                catch (Exception ex) 
+                {
+                    Logger.LogError(ex, "list.DoWork() Error.");
+                }
             }
         }
 
