@@ -404,19 +404,7 @@ namespace Ssz.Utils
                     writer.WriteLine(FormatForCsv(",", fileLine));
                 }
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static string? GetNullForEmptyString(string? value)
-        {
-            if (value == @"")
-                return null;
-            return value;
-        }
+        }        
 
         #endregion
 
