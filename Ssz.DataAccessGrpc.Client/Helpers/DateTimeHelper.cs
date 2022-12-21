@@ -11,8 +11,10 @@ namespace Ssz.DataAccessGrpc.Client
     {
         public static Timestamp ConvertToTimestamp(DateTime dateTimeUtc)
         {
-            if (dateTimeUtc == default(DateTime))
-                return new Timestamp();
+            if (dateTimeUtc < DateTime.FromFileTimeUtc(0))
+                dateTimeUtc = DateTime.FromFileTimeUtc(0);
+            else if (dateTimeUtc > DateTime.FromFileTimeUtc(0) + TimeSpan.FromDays(365 * 1000))
+                dateTimeUtc = DateTime.FromFileTimeUtc(0) + TimeSpan.FromDays(365 * 1000);
             try
             {
                 return Timestamp.FromDateTime(dateTimeUtc);
