@@ -186,7 +186,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
             if (elementValuesCallbackMessagesCollection.Count > 0)
             {
-                Logger.LogDebug("ServerContext elementValuesCallbackMessagesCollection.Count=" + elementValuesCallbackMessagesCollection.Count);
+                //Logger.LogDebug("ServerContext elementValuesCallbackMessagesCollection.Count=" + elementValuesCallbackMessagesCollection.Count);
 
                 foreach (var g in elementValuesCallbackMessagesCollection.GroupBy(m => m.ListClientAlias))
                 {   

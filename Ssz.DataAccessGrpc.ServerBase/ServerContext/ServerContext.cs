@@ -58,13 +58,19 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// </summary>
         public void Dispose()
         {
-            Dispose(true);
+            if (Disposed) return;
+            Disposed = true;
+
+            Dispose(disposing: true);
+#pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
             GC.SuppressFinalize(this);
+#pragma warning restore CA1816 // Dispose methods should call SuppressFinalize
         }
 
         public async ValueTask DisposeAsync()
         {
             if (Disposed) return;
+            Disposed = true;
 
             await DisposeAsyncCore();
 
@@ -80,8 +86,6 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// </summary>
         protected virtual void Dispose(bool disposing)
         {
-            if (Disposed) return;
-
             if (disposing)
             {
                 if (!IsConcluded)
@@ -105,10 +109,6 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
                 _listsManager.Clear();
             }
-
-            // Release unmanaged resources.
-            // Set large fields to null.			
-            Disposed = true;
         }
 
         protected virtual async ValueTask DisposeAsyncCore()
@@ -130,18 +130,12 @@ namespace Ssz.DataAccessGrpc.ServerBase
             {
                 await _callbackWorkingTask;
                 _callbackWorkingTask = null;
-            }
-            
+            }            
+
             // Dispose of the lists.
-            foreach (ServerListRoot list in _listsManager.ToArray()) // .ToArray() due to thread issues
+            foreach (ServerListRoot list in _listsManager)
             {
-                try
-                {
-                    list?.Dispose(); // Unknown issue
-                }
-                catch
-                {
-                }
+                list.Dispose();
             }                        
 
             _listsManager.Clear();
@@ -213,6 +207,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public void DoWork(DateTime nowUtc, CancellationToken token)
         {
+            if (Disposed)
+                return;
+
             foreach (var list in _listsManager)
             {
                 try
