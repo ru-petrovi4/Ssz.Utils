@@ -124,13 +124,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             else
             {
                 _callbackWorkingTask_CancellationTokenSource.Cancel();
-            }                       
-
-            if (_callbackWorkingTask is not null)
-            {
-                await _callbackWorkingTask;
-                _callbackWorkingTask = null;
-            }            
+            }         
 
             // Dispose of the lists.
             foreach (ServerListRoot list in _listsManager)
@@ -139,6 +133,12 @@ namespace Ssz.DataAccessGrpc.ServerBase
             }                        
 
             _listsManager.Clear();
+
+            if (_callbackWorkingTask is not null)
+            {
+                await _callbackWorkingTask;
+                _callbackWorkingTask = null;
+            }
         }
 
         /// <summary>
@@ -192,7 +192,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             get
             {
-                if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ServerContext.");
+                if (Disposed)
+                    return new ServerListRoot[0];
 
                 return _listsManager.ToArray();
             }
