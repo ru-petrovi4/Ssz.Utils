@@ -28,11 +28,14 @@ namespace Ssz.Utils.Logging
         public uint DaysCountToStoreFiles { get; set; } = 3;
 
         /// <summary>
-        ///     Log lines are appended to file. If size exeeds this limit, file is deleted.
-        ///     If 0, file is always recreated for new logger instance.
+        ///     If size exeeds this limit, new file is created.        
         ///     Default is 50 MB.
         /// </summary>
         public uint LogFileMaxSizeInBytes { get; set; } = 50 * 1024 * 1024;
+
+        public uint LogFilesWarningSizeInBytes { get; set; } = 800 * 1024 * 1024;
+
+        public uint LogFilesMaxSizeInBytes { get; set; } = 1024 * 1024 * 1024;
 
         #endregion        
     }

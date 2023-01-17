@@ -34,7 +34,11 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 }, TaskCreationOptions.LongRunning);
             }
         }
-        
+
+        /// <summary>
+        ///     Thread-safe
+        /// </summary>
+        /// <param name="contextInfoMessage"></param>
         public void AddCallbackMessage(ContextInfoMessage contextInfoMessage)
         {
             if (_responseStream is null) return;
@@ -44,7 +48,11 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 _contextInfoMessagesCollection.Add(contextInfoMessage);
             }
         }
-        
+
+        /// <summary>
+        ///     Thread-safe
+        /// </summary>
+        /// <param name="elementValuesCallbackMessage"></param>
         public void AddCallbackMessage(ElementValuesCallbackMessage elementValuesCallbackMessage)
         {
             if (_responseStream is null) return;
@@ -54,7 +62,11 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 _elementValuesCallbackMessagesCollection.Add(elementValuesCallbackMessage);
             }            
         }
-        
+
+        /// <summary>
+        ///     Thread-safe
+        /// </summary>
+        /// <param name="eventMessagesCallbackMessage"></param>
         public void AddCallbackMessage(EventMessagesCallbackMessage eventMessagesCallbackMessage)
         {
             if (_responseStream is null) return;
@@ -65,6 +77,10 @@ namespace Ssz.DataAccessGrpc.ServerBase
             }
         }
 
+        /// <summary>
+        ///     Thread-safe
+        /// </summary>
+        /// <param name="longrunningPassthroughCallbackMessage"></param>
         public void AddCallbackMessage(LongrunningPassthroughCallbackMessage longrunningPassthroughCallbackMessage)
         {
             if (_responseStream is null) return;
