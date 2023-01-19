@@ -84,7 +84,7 @@ namespace Ssz.Utils.Logging
             {
                 try
                 {
-                    if (_options.LogFileMaxSizeInBytes > 0)
+                    if (_options.LogFileMaxSizeInBytes > 0 && _options.LogFileMaxSizeInBytes < Int64.MaxValue)
                     {
                         var fi = new FileInfo(LogFileFullName);
                         if (fi.Exists && fi.Length > _options.LogFileMaxSizeInBytes)
@@ -112,36 +112,42 @@ namespace Ssz.Utils.Logging
                     .OrderByDescending(f => f.LastWriteTime)
                     .ToList();
 
-                foreach (FileInfo fi in fileInfos.ToArray())
+                if (_options.DaysCountToStoreFiles > 0 && _options.DaysCountToStoreFiles < UInt32.MaxValue)
                 {
-                    if (fi.LastWriteTime < DateTime.Now.AddDays(-_options.DaysCountToStoreFiles))
+                    foreach (FileInfo fi in fileInfos.ToArray())
                     {
-                        try
+                        if (fi.LastWriteTime < DateTime.Now.AddDays(-_options.DaysCountToStoreFiles))
                         {
-                            fi.Delete();
-                            fileInfos.Remove(fi);
-                        }
-                        catch
-                        {
+                            try
+                            {
+                                fi.Delete();
+                                fileInfos.Remove(fi);
+                            }
+                            catch
+                            {
+                            }
                         }
                     }
                 }
 
-                long bytesTotal = 0;
-                foreach (FileInfo fi in fileInfos)
+                if (_options.LogFilesMaxSizeInBytes > 0 && _options.LogFilesMaxSizeInBytes < Int64.MaxValue)
                 {
-                    bytesTotal += fi.Length;
-                    if (bytesTotal > _options.LogFileMaxSizeInBytes)
+                    long bytesTotal = 0;
+                    foreach (FileInfo fi in fileInfos)
                     {
-                        try
+                        bytesTotal += fi.Length;
+                        if (bytesTotal > _options.LogFilesMaxSizeInBytes)
                         {
-                            fi.Delete();                            
-                        }
-                        catch
-                        {
+                            try
+                            {
+                                fi.Delete();
+                            }
+                            catch
+                            {
+                            }
                         }
                     }
-                }
+                }                    
             }            
 
             #endregion

@@ -50,6 +50,11 @@ namespace Ssz.DataAccessGrpc.ServerBase
             ContextParams = contextParams;
 
             ContextId = Guid.NewGuid().ToString();
+
+            _callbackWorkingTask = Task.Factory.StartNew(() =>
+            {
+                CallbackWorkingTaskMainAsync(_callbackWorkingTask_CancellationTokenSource.Token).Wait();
+            }, TaskCreationOptions.LongRunning);
         }
 
         /// <summary>
@@ -88,7 +93,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             if (disposing)
             {
-                if (!IsConcluded)
+                if (!IsConcludeCalled)
                 {
                     AddCallbackMessage(
                         new ContextInfoMessage
@@ -113,7 +118,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         protected virtual async ValueTask DisposeAsyncCore()
         {
-            if (!IsConcluded)
+            if (!IsConcludeCalled)
             {
                 AddCallbackMessage(
                     new ContextInfoMessage
@@ -134,11 +139,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
             _listsManager.Clear();
 
-            if (_callbackWorkingTask is not null)
-            {
-                await _callbackWorkingTask;
-                _callbackWorkingTask = null;
-            }
+            await _callbackWorkingTask;
         }
 
         /// <summary>
@@ -204,7 +205,10 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// </summary>
         public DateTime LastAccessDateTimeUtc { get; set; }
 
-        public bool IsConcluded { get; set; }
+        /// <summary>
+        ///     Did the client call Conclude(...)
+        /// </summary>
+        public bool IsConcludeCalled { get; set; }
 
         public void DoWork(DateTime nowUtc, CancellationToken token)
         {

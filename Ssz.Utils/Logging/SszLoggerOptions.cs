@@ -25,17 +25,26 @@ namespace Ssz.Utils.Logging
 
         public bool DuplicateInConsole { get; set; } = false;
 
-        public uint DaysCountToStoreFiles { get; set; } = 3;
+        /// <summary>
+        ///     Default is unlimited.
+        /// </summary>
+        public uint DaysCountToStoreFiles { get; set; } = UInt32.MaxValue;
 
         /// <summary>
         ///     If size exeeds this limit, new file is created.        
-        ///     Default is 50 MB.
+        ///     Default is 10 MB.
         /// </summary>
-        public uint LogFileMaxSizeInBytes { get; set; } = 50 * 1024 * 1024;
+        public long LogFileMaxSizeInBytes { get; set; } = 10 * 1024 * 1024;
 
-        public uint LogFilesWarningSizeInBytes { get; set; } = 800 * 1024 * 1024;
+        /// <summary>
+        ///     Default is 150 MB
+        /// </summary>
+        public long LogFilesWarningSizeInBytes { get; set; } = 150 * 1024 * 1024;
 
-        public uint LogFilesMaxSizeInBytes { get; set; } = 1024 * 1024 * 1024;
+        /// <summary>
+        ///     Default is 200 MB
+        /// </summary>
+        public long LogFilesMaxSizeInBytes { get; set; } = 200 * 1024 * 1024;
 
         #endregion        
     }

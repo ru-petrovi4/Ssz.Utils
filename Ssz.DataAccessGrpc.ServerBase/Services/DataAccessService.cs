@@ -80,14 +80,14 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override async Task<ConcludeReply> Conclude(ConcludeRequest request, ServerCallContext context)
         {
-            return await GetReplyAsync(() =>
+            return await GetAsyncReplyAsync(async () =>
                 {
                     try
                     {
                         ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
-                        serverContext.IsConcluded = true;
+                        serverContext.IsConcludeCalled = true;
                         _serverWorker.RemoveServerContext(serverContext);                        
-                        var t = serverContext.DisposeAsync();
+                        await serverContext.DisposeAsync();
                     }
                     catch
                     {
@@ -393,7 +393,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
             var taskCompletionSource = new TaskCompletionSource<TReply>();
             context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
-            _serverWorker.ThreadSafeDispatcher.BeginInvoke(async ct =>
+            _serverWorker.ThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
             {
                 _logger.LogTrace("Processing client call in worker thread: " + parentMethodName);
                 try
