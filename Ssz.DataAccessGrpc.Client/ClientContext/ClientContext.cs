@@ -125,7 +125,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             if (disposing)
             {
-                _cancellationTokenSource.Cancel();                                    
+                _cancellationTokenSource.Cancel();
 
                 if (_serverContextIsOperational)
                 {
@@ -133,10 +133,10 @@ namespace Ssz.DataAccessGrpc.Client
 
                     try
                     {
-                        ConcludeReply concludeReply = _resourceManagementClient.Conclude(new ConcludeRequest
+                        var t = _resourceManagementClient.ConcludeAsync(new ConcludeRequest
                         {
                             ContextId = _serverContextId
-                        });                        
+                        });
                     }
                     catch
                     {
