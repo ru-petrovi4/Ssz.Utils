@@ -7,7 +7,6 @@ using Ssz.DataAccessGrpc.Client.ClientListItems;
 using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
-using Ssz.DataAccessGrpc.Client.Data;
 
 namespace Ssz.DataAccessGrpc.Client.ClientLists
 {

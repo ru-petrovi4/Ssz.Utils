@@ -7,11 +7,11 @@ using Ssz.DataAccessGrpc.Client.ClientLists;
 using Ssz.DataAccessGrpc.ServerBase;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Logging;
-using Ssz.DataAccessGrpc.Client.Data;
 using System.Threading.Tasks;
 using Grpc.Core;
 using System.Linq;
 using System.Globalization;
+using Ssz.Utils.DataAccess;
 
 namespace Ssz.DataAccessGrpc.Client.Managers
 {
@@ -32,14 +32,14 @@ namespace Ssz.DataAccessGrpc.Client.Managers
     ///     Each DataAccessGrpcServer in the list represents an DataAccessGrpc server for which the client application
     ///     can create an DataAccessGrpcSubscription.
     /// </summary>
-    internal class ClientConnectionManager : IDisposable
+    internal class ClientContextManager : IDisposable
     {
         #region construction and destruction
 
-        public ClientConnectionManager(ILogger<GrpcDataAccessProvider> logger, IDispatcher callbackDispatcher)
+        public ClientContextManager(ILogger<GrpcDataAccessProvider> logger, IDispatcher workingDispatcher)
         {
             _logger = logger;
-            _callbackDispatcher = callbackDispatcher;
+            _workingDispatcher = workingDispatcher;
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <summary>
         ///     The standard destructor invoked by the .NET garbage collector during Finalize.
         /// </summary>
-        ~ClientConnectionManager()
+        ~ClientContextManager()
         {
             Dispose(false);
         }
@@ -101,29 +101,24 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         {
             get
             {
-                if (_connectionInfo is null) return null;
+                if (_clientContext is null) return null;
 
-                return _connectionInfo.GrpcChannel; 
+                return _clientContext.GrpcChannel; 
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="serverAddress"></param>
-        /// <param name="clientApplicationName"></param>
-        /// <param name="clientWorkstationName"></param>
-        /// <param name="systemNameToConnect"></param>
-        /// <param name="contextParams"></param>
+        public event EventHandler<ContextStatusChangedEventArgs> ServerContextStatusChanged = delegate { };
+        
         public void InitiateConnection(string serverAddress,
             string clientApplicationName,
             string clientWorkstationName,
             string systemNameToConnect,
-            CaseInsensitiveDictionary<string?> contextParams)
+            CaseInsensitiveDictionary<string?> contextParams,
+            IDispatcher? callbackDispatcher)
         {
             if (_disposed) throw new ObjectDisposedException(@"Cannot access a disposed DataAccessGrpcServerProxy.");
 
-            if (_connectionInfo is not null) throw new Exception(@"DataAccessGrpc context already exists.");
+            if (_clientContext is not null) throw new Exception(@"DataAccessGrpc context already exists.");
 
 #if DEBUG            
             TimeSpan requestedServerContextTimeoutMs = new TimeSpan(0, 30, 0);
@@ -142,20 +137,19 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 });
 #endif
 
-                var resourceManagementClient = new DataAccess.DataAccessClient(grpcChannel);                               
+                var resourceManagementClient = new DataAccess.DataAccessClient(grpcChannel);
 
-                var clientContext = new ClientContext(_logger,
-                            _callbackDispatcher,
-                            resourceManagementClient,                            
-                            clientApplicationName, 
+                _clientContext = new ClientContext(_logger,
+                            _workingDispatcher,
+                            grpcChannel,
+                            resourceManagementClient,
+                            clientApplicationName,
                             clientWorkstationName,
                             (uint)requestedServerContextTimeoutMs.TotalMilliseconds,
                             CultureInfo.CurrentUICulture.Name,
                             systemNameToConnect,
                             contextParams
                             );
-
-                _connectionInfo = new ConnectionInfo(grpcChannel, resourceManagementClient, clientContext);
             }
             catch
             { 
@@ -166,7 +160,15 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 throw;
             }
 
-            _connectionInfo.ClientContext.ContextNotifyEvent += ClientContextOnContextNotifyEvent;            
+            _clientContext.ClientContextNotification += ClientContext_OnClientContextNotification;
+            if (callbackDispatcher is not null)
+                _clientContext.ServerContextNotification += (s, a) =>
+                {                    
+                    callbackDispatcher.BeginInvoke(ct =>
+                    {
+                        ServerContextStatusChanged(this, a);
+                    });
+                };
         }
 
         /// <summary>
@@ -190,9 +192,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
-            if (_connectionInfo is null) throw new ConnectionDoesNotExistException();
+            if (_clientContext is null) throw new ConnectionDoesNotExistException();
 
-            return new ClientElementValueList(_connectionInfo.ClientContext, listParams);
+            return new ClientElementValueList(_clientContext, listParams);
         }
 
         /// <summary>
@@ -206,9 +208,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
-            if (_connectionInfo is null) throw new ConnectionDoesNotExistException();
+            if (_clientContext is null) throw new ConnectionDoesNotExistException();
 
-            return new ClientEventList(_connectionInfo.ClientContext, listParams);
+            return new ClientEventList(_clientContext, listParams);
         }
 
         /// <summary>
@@ -222,9 +224,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
-            if (_connectionInfo is null) throw new ConnectionDoesNotExistException();
+            if (_clientContext is null) throw new ConnectionDoesNotExistException();
 
-            return new ClientElementValuesJournalList(_connectionInfo.ClientContext, listParams);
+            return new ClientElementValuesJournalList(_clientContext, listParams);
         }
 
         public void Passthrough(string recipientId,
@@ -232,9 +234,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
-            if (_connectionInfo is null) throw new ConnectionDoesNotExistException();
+            if (_clientContext is null) throw new ConnectionDoesNotExistException();
             
-            _connectionInfo.ClientContext.Passthrough(recipientId,
+            _clientContext.Passthrough(recipientId,
                                       passthroughName, dataToSend, out returnData);
         }
 
@@ -243,9 +245,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
-            if (_connectionInfo is null) throw new ConnectionDoesNotExistException();
+            if (_clientContext is null) throw new ConnectionDoesNotExistException();
 
-            return await _connectionInfo.ClientContext.LongrunningPassthroughAsync(recipientId,
+            return await _clientContext.LongrunningPassthroughAsync(recipientId,
                                       passthroughName, dataToSend, callbackAction);
         }
 
@@ -259,9 +261,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             {
                 if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
-                if (_connectionInfo is null) throw new ConnectionDoesNotExistException();
+                if (_clientContext is null) throw new ConnectionDoesNotExistException();
 
-                return TimeSpan.FromMilliseconds(_connectionInfo.ClientContext.ServerContextTimeoutMs);
+                return TimeSpan.FromMilliseconds(_clientContext.ServerContextTimeoutMs);
             }
         }
 
@@ -274,9 +276,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             {
                 if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
-                if (_connectionInfo is null) throw new ConnectionDoesNotExistException();
+                if (_clientContext is null) throw new ConnectionDoesNotExistException();
 
-                return _connectionInfo.ClientContext.ServerCultureName; 
+                return _clientContext.ServerCultureName; 
             }            
         }
 
@@ -286,7 +288,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// </summary>
         public bool ConnectionExists
         {
-            get { return _connectionInfo is not null; }
+            get { return _clientContext is not null; }
         }
 
         public string ServerContextId
@@ -295,9 +297,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             {
                 if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
-                if (_connectionInfo is null) throw new ConnectionDoesNotExistException();
+                if (_clientContext is null) throw new ConnectionDoesNotExistException();
 
-                return _connectionInfo.ClientContext.ServerContextId;
+                return _clientContext.ServerContextId;
             }
         }
         
@@ -305,10 +307,10 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
-            if (_connectionInfo is null) throw new ConnectionDoesNotExistException();
+            if (_clientContext is null) throw new ConnectionDoesNotExistException();
 
-            _connectionInfo.ClientContext.KeepContextAliveIfNeeded(ct, nowUtc);
-            _connectionInfo.ClientContext.ProcessPendingContextNotificationData();
+            _clientContext.KeepContextAliveIfNeeded(ct, nowUtc);
+            _clientContext.ProcessPendingClientContextNotification();
         }
 
 #endregion
@@ -320,27 +322,25 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// </summary>
         private void CloseConnectionInternal()
         {
-            if (_connectionInfo is null) return;
-
-            _connectionInfo.ClientContext.ContextNotifyEvent -= ClientContextOnContextNotifyEvent;
-            _connectionInfo.ClientContext.Dispose();            
-            _connectionInfo.GrpcChannel.Dispose();
-            _connectionInfo = null;
+            if (_clientContext is null) return;
+            
+            _clientContext.Dispose();
+            _clientContext = null;
         }
 
-        private void ClientContextOnContextNotifyEvent(object sender, ClientContextNotificationData notificationData)
-        {
+        private void ClientContext_OnClientContextNotification(object? sender, ClientContext.ClientContextNotificationEventArgs args)
+        { 
             if (_disposed) return;
 
-            switch (notificationData.ReasonForNotification)
+            switch (args.ReasonForNotification)
             {
-                case ClientContextNotificationType.ResourceManagementFail:
-                case ClientContextNotificationType.ClientKeepAliveException:
-                case ClientContextNotificationType.Shutdown:                
-                case ClientContextNotificationType.ServerKeepAliveError:                
-                case ClientContextNotificationType.GeneralException:
-                case ClientContextNotificationType.PollException:                
-                case ClientContextNotificationType.ResourceManagementDisconnected:                
+                case ClientContext.ClientContextNotificationType.ResourceManagementFail:
+                case ClientContext.ClientContextNotificationType.ClientKeepAliveException:
+                case ClientContext.ClientContextNotificationType.Shutdown:                
+                case ClientContext.ClientContextNotificationType.ServerKeepAliveError:                
+                case ClientContext.ClientContextNotificationType.GeneralException:
+                case ClientContext.ClientContextNotificationType.PollException:                
+                case ClientContext.ClientContextNotificationType.ResourceManagementDisconnected:                
                     CloseConnectionInternal();
                     break;
             }
@@ -354,28 +354,10 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
         private ILogger<GrpcDataAccessProvider> _logger;
 
-        private IDispatcher _callbackDispatcher;
+        private IDispatcher _workingDispatcher;
 
-        private ConnectionInfo? _connectionInfo;
+        private ClientContext? _clientContext;
 
-#endregion
-
-        private class ConnectionInfo
-        {
-            public ConnectionInfo(GrpcChannel grpcChannel,
-                DataAccess.DataAccessClient resourceManagementClient,                
-                ClientContext clientContext)
-            {
-                GrpcChannel = grpcChannel;
-                ResourceManagementClient = resourceManagementClient;                
-                ClientContext = clientContext;
-            }
-
-            public readonly GrpcChannel GrpcChannel;
-
-            public readonly DataAccess.DataAccessClient ResourceManagementClient;
-            
-            public readonly ClientContext ClientContext;
-        }        
+#endregion  
     }
 }

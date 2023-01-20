@@ -26,8 +26,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         ///     Creates List, adds/removes items.
         ///     No throw.
         /// </summary>
-        /// <param name="clientConnectionManager"></param>
-        public void Subscribe(ClientConnectionManager clientConnectionManager)
+        /// <param name="clientContextManager"></param>
+        public void Subscribe(ClientContextManager clientContextManager)
         {
             try
             {
@@ -39,9 +39,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 {
                     try
                     {
-                        if (clientConnectionManager.ConnectionExists)
+                        if (clientContextManager.ConnectionExists)
                         {
-                            DataAccessGrpcList = clientConnectionManager.NewElementValuesJournalList(null);
+                            DataAccessGrpcList = clientContextManager.NewElementValuesJournalList(null);
                         }                            
                     }
                     catch (Exception)

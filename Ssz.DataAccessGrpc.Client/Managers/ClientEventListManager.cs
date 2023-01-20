@@ -28,14 +28,14 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <summary>
         ///     No throw.
         /// </summary>
-        /// <param name="clientConnectionManager"></param>
+        /// <param name="clientContextManager"></param>
         /// <param name="сallbackDispatcher"></param>        
         /// <param name="callbackIsEnabled"></param>
         /// <param name="ct"></param>
-        public void Subscribe(ClientConnectionManager clientConnectionManager, IDispatcher? сallbackDispatcher, bool callbackIsEnabled, CancellationToken ct)
+        public void Subscribe(ClientContextManager clientContextManager, IDispatcher? сallbackDispatcher, bool callbackIsEnabled, CancellationToken ct)
         {
             if (ct.IsCancellationRequested) return;
-            if (!clientConnectionManager.ConnectionExists) return;
+            if (!clientContextManager.ConnectionExists) return;
             if (!_dataGrpcEventItemsMustBeAdded) return;
 
             bool allOk = true;
@@ -50,7 +50,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
                 try
                 {
-                    dataGrpcEventList = clientConnectionManager.NewEventList(null);
+                    dataGrpcEventList = clientContextManager.NewEventList(null);
                 }
                 catch (Exception)
                 {

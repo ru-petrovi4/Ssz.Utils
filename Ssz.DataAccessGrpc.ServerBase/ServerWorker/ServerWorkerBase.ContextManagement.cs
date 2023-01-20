@@ -59,7 +59,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             _serverContextsDictionary.Add(serverContext.ContextId, serverContext);
 
-            ServerContextAddedOrRemoved(serverContext, true);
+            ServerContextAddedOrRemoved(this, new ServerContextAddedOrRemovedEventArgs { ServerContext = serverContext, Added = true });
         }
 
         /// <summary>
@@ -70,25 +70,31 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             _serverContextsDictionary.Remove(serverContext.ContextId);
 
-            ServerContextAddedOrRemoved(serverContext, false);
+            ServerContextAddedOrRemoved(this, new ServerContextAddedOrRemovedEventArgs { ServerContext = serverContext, Added = false });
         }
 
         #endregion
 
-        #region protected functions        
+        #region protected functions  
+
+        protected void ServerContextsAbort(ServerContext[] serverContexts)
+        {
+            foreach (ServerContext serverContext in serverContexts)
+            {
+                ServerContextAddedOrRemoved(this, new ServerContextAddedOrRemovedEventArgs { ServerContext = serverContext, Added = false });
+
+                serverContext.Dispose();
+            }
+        }
 
         protected async Task ServerContextsAbortAsync(ServerContext[] serverContexts)
         {
-            var tasks = new List<Task>(serverContexts.Length);
             foreach (ServerContext serverContext in serverContexts)
             {
-                ServerContextAddedOrRemoved(serverContext, false);
+                ServerContextAddedOrRemoved(this, new ServerContextAddedOrRemovedEventArgs { ServerContext = serverContext, Added = false });
 
-                ValueTask valueTask = serverContext.DisposeAsync();
-                if (!valueTask.IsCompletedSuccessfully) // 'if' here only for optimizations purposes.
-                    tasks.Add(valueTask.AsTask());
+                await serverContext.DisposeAsync();
             }
-            await Task.WhenAll(tasks);
         }        
 
         #endregion

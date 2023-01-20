@@ -7,7 +7,6 @@ using System.Threading;
 using Ssz.Utils;
 using Ssz.DataAccessGrpc.Client.Managers;
 using Ssz.DataAccessGrpc.ServerBase;
-using Ssz.DataAccessGrpc.Client.Data;
 using Microsoft.Extensions.Logging;
 using Ssz.Utils.DataAccess;
 using Grpc.Net.Client;
@@ -15,7 +14,6 @@ using System.Globalization;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Ssz.Utils.Logging;
-using static Ssz.DataAccessGrpc.Client.Managers.ClientElementValueListManager;
 
 namespace Ssz.DataAccessGrpc.Client
 {
@@ -26,7 +24,7 @@ namespace Ssz.DataAccessGrpc.Client
         public GrpcDataAccessProvider(ILogger<GrpcDataAccessProvider> logger, IUserFriendlyLogger? userFriendlyLogger = null) :
             base(new LoggersSet<GrpcDataAccessProvider>(logger, userFriendlyLogger))
         {
-            _clientConnectionManager = new ClientConnectionManager(logger, ThreadSafeDispatcher);
+            _clientContextManager = new ClientContextManager(logger, WorkingThreadSafeDispatcher);
 
             _clientElementValueListManager = new ClientElementValueListManager(logger);
             _clientElementValuesJournalListManager = new ClientElementValuesJournalListManager(logger);
@@ -39,7 +37,16 @@ namespace Ssz.DataAccessGrpc.Client
 
         public GrpcChannel? GrpcChannel
         {
-            get { return _clientConnectionManager.GrpcChannel; }
+            get { return _clientContextManager.GrpcChannel; }
+        }
+
+        /// <summary>
+        ///     Is called using сallbackDispatcher, see Initialize(..).        
+        /// </summary>
+        public override event EventHandler<ContextStatusChangedEventArgs> ContextStatusChanged
+        {
+            add { WorkingThreadSafeDispatcher.BeginInvoke(ct => _clientContextManager.ServerContextStatusChanged += value); }
+            remove { WorkingThreadSafeDispatcher.BeginInvoke(ct => _clientContextManager.ServerContextStatusChanged -= value); }
         }
 
         /// <summary>
@@ -224,9 +231,9 @@ namespace Ssz.DataAccessGrpc.Client
         {
             var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]?>();
 
-            ThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
-                _clientElementValueListManager.Subscribe(_clientConnectionManager, CallbackDispatcher,
+                _clientElementValueListManager.Subscribe(_clientContextManager, CallbackDispatcher,
                     OnElementValuesCallback, true, ct);
                 object[]? changedValueSubscriptions = _clientElementValueListManager.PollChanges();
                 taskCompletionSource.SetResult(changedValueSubscriptions is not null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null);                
@@ -328,9 +335,9 @@ namespace Ssz.DataAccessGrpc.Client
 
             var taskCompletionSource = new TaskCompletionSource<uint>();
 
-            ThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
-                _clientElementValueListManager.Subscribe(_clientConnectionManager, CallbackDispatcher,
+                _clientElementValueListManager.Subscribe(_clientContextManager, CallbackDispatcher,
                     OnElementValuesCallback, true, ct);
 
                 uint statusCode = JobStatusCodes.OK;
@@ -371,9 +378,9 @@ namespace Ssz.DataAccessGrpc.Client
         {
             var taskCompletionSource = new TaskCompletionSource<(IValueSubscription[], uint[])>();
 
-            ThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
-                _clientElementValueListManager.Subscribe(_clientConnectionManager, CallbackDispatcher,
+                _clientElementValueListManager.Subscribe(_clientContextManager, CallbackDispatcher,
                     OnElementValuesCallback, true, ct);
                 (object[] failedValueSubscriptions, uint[] faildStatusCodes) = _clientElementValueListManager.Write(valueSubscriptions, valueStatusTimestamps);
 
@@ -395,12 +402,12 @@ namespace Ssz.DataAccessGrpc.Client
         {
             var taskCompletionSource = new TaskCompletionSource<IEnumerable<byte>>();
 
-            ThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {                
                 try
                 {
                     IEnumerable<byte> returnData;
-                    _clientConnectionManager.Passthrough(recipientId, passthroughName,
+                    _clientContextManager.Passthrough(recipientId, passthroughName,
                         dataToSend, out returnData);
                     taskCompletionSource.SetResult(returnData);                    
                 }
@@ -432,7 +439,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
 
-            ThreadSafeDispatcher.BeginInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
             {
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
                 Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
@@ -456,7 +463,7 @@ namespace Ssz.DataAccessGrpc.Client
                 bool succeeded;
                 try
                 {
-                    uint jobStatusCode = await _clientConnectionManager.LongrunningPassthroughAsync(recipientId, passthroughName,
+                    uint jobStatusCode = await _clientContextManager.LongrunningPassthroughAsync(recipientId, passthroughName,
                         dataToSend, callbackActionDispatched);
                     succeeded = jobStatusCode == JobStatusCodes.OK;
                 }
@@ -498,7 +505,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <summary>
         ///     Dispacther for working thread.
         /// </summary>
-        protected ThreadSafeDispatcher ThreadSafeDispatcher { get; } = new();
+        protected ThreadSafeDispatcher WorkingThreadSafeDispatcher { get; } = new();
 
         /// <summary>
         ///     This dictionary is created, because we can write to const values.
@@ -513,11 +520,11 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="cancellationToken"></param>
         protected virtual async Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
         {
-            await ThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
+            await WorkingThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) return;
 
-            if (!_clientConnectionManager.ConnectionExists)
+            if (!_clientContextManager.ConnectionExists)
             {
                 IDispatcher? сallbackDispatcher;
                 if (IsConnectedEventWaitHandle.WaitOne(0))
@@ -552,7 +559,6 @@ namespace Ssz.DataAccessGrpc.Client
                         {
                         }
                     }
-
 #endregion
                 }
 
@@ -571,8 +577,8 @@ namespace Ssz.DataAccessGrpc.Client
                         //}
 
 
-                        _clientConnectionManager.InitiateConnection(ServerAddress, ClientApplicationName,
-                            ClientWorkstationName, SystemNameToConnect, ContextParams);
+                        _clientContextManager.InitiateConnection(ServerAddress, ClientApplicationName,
+                            ClientWorkstationName, SystemNameToConnect, ContextParams, CallbackDispatcher);
 
                         LoggersSet.Logger.LogDebug("End Connecting");
 
@@ -599,8 +605,6 @@ namespace Ssz.DataAccessGrpc.Client
                         LoggersSet.Logger.LogDebug(ex, "");
 
                         LastFailedConnectionDateTimeUtc = nowUtc;
-
-                        OnInitiateConnectionException(ex);
                     }
                 }
             }
@@ -619,18 +623,18 @@ namespace Ssz.DataAccessGrpc.Client
                 return;
             }
 
-            _clientElementValueListManager.Subscribe(_clientConnectionManager, CallbackDispatcher,
+            _clientElementValueListManager.Subscribe(_clientContextManager, CallbackDispatcher,
                 OnElementValuesCallback, elementValueListCallbackIsEnabled, cancellationToken);
-            _clientEventListManager.Subscribe(_clientConnectionManager, CallbackDispatcher, eventListCallbackIsEnabled, cancellationToken);
+            _clientEventListManager.Subscribe(_clientContextManager, CallbackDispatcher, eventListCallbackIsEnabled, cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) return;
-            if (_clientConnectionManager.ConnectionExists)
+            if (_clientContextManager.ConnectionExists)
             {
                 LastSuccessfulConnectionDateTimeUtc = nowUtc;
                 try
                 {
                     if (cancellationToken.IsCancellationRequested) return;
-                    _clientConnectionManager.DoWork(cancellationToken, nowUtc);
+                    _clientContextManager.DoWork(cancellationToken, nowUtc);
                 }
                 catch
                 {
@@ -662,30 +666,11 @@ namespace Ssz.DataAccessGrpc.Client
                 }
             }
 
-            _clientConnectionManager.CloseConnection();
+            _clientContextManager.CloseConnection();
 
             _clientElementValueListManager.Unsubscribe(clearClientSubscriptions);
             _clientEventListManager.Unsubscribe();
             _clientElementValuesJournalListManager.Unsubscribe(clearClientSubscriptions);            
-        }
-
-        /// <summary>
-        ///     Called using сallbackDispatcher.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
-        protected void OnElementValuesCallback(object? sender,
-            ElementValuesCallbackEventArgs eventArgs)
-        {
-            foreach (ElementValuesCallbackChange elementValuesCallbackChange in eventArgs.ElementValuesCallbackChanges)
-            {
-                var changedValueSubscription = (IValueSubscription)elementValuesCallbackChange.ClientObj;
-                changedValueSubscription.AddItemResult = elementValuesCallbackChange.AddItemResult;
-                changedValueSubscription.Update(elementValuesCallbackChange.ValueStatusTimestamp);
-            }
-            DataGuid = Guid.NewGuid();
-
-            RaiseValueSubscriptionsUpdated();
         }
 
         protected void RaiseValueSubscriptionsUpdated()
@@ -863,7 +848,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             if (valueSubscriptionObj.MapValues is not null)
             {
-                ThreadSafeDispatcher.BeginInvoke(ct =>
+                WorkingThreadSafeDispatcher.BeginInvoke(ct =>
                 {
                     if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                     {
@@ -882,7 +867,7 @@ namespace Ssz.DataAccessGrpc.Client
             }
             else
             {
-                ThreadSafeDispatcher.BeginInvoke(ct =>
+                WorkingThreadSafeDispatcher.BeginInvoke(ct =>
                 {
                     _clientElementValueListManager.AddItem(elementId, valueSubscription);
                 });
@@ -915,7 +900,7 @@ namespace Ssz.DataAccessGrpc.Client
                 }
             }
 
-            ThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                 {
@@ -935,6 +920,25 @@ namespace Ssz.DataAccessGrpc.Client
             });
         }
 
+        /// <summary>
+        ///     Called using сallbackDispatcher.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        private void OnElementValuesCallback(object? sender,
+            ClientElementValueListManager.ElementValuesCallbackEventArgs eventArgs)
+        {
+            foreach (ClientElementValueListManager.ElementValuesCallbackChange elementValuesCallbackChange in eventArgs.ElementValuesCallbackChanges)
+            {
+                var changedValueSubscription = (IValueSubscription)elementValuesCallbackChange.ClientObj;
+                changedValueSubscription.AddItemResult = elementValuesCallbackChange.AddItemResult;
+                changedValueSubscription.Update(elementValuesCallbackChange.ValueStatusTimestamp);
+            }
+            DataGuid = Guid.NewGuid();
+
+            RaiseValueSubscriptionsUpdated();
+        }
+
         #endregion
 
         #region private fields        
@@ -946,7 +950,7 @@ namespace Ssz.DataAccessGrpc.Client
         private Dictionary<IValueSubscription, ValueSubscriptionObj> _valueSubscriptionsCollection =
             new(ReferenceEqualityComparer<IValueSubscription>.Default);
 
-        private ClientConnectionManager _clientConnectionManager { get; }
+        private ClientContextManager _clientContextManager { get; }
 
         private ClientElementValueListManager _clientElementValueListManager { get; }
 

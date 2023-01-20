@@ -16,11 +16,10 @@ namespace Ssz.Utils.DataAccess
 
 		public string? ProgressLabel;
 
-		public string? ProgressDetail;
+		public string? ProgressDetails;
 
-        /// <summary>
-        ///     OK = 0, Cancelled = 1, UnknownError = 2, Error >= 2.
-		///     See consts in JobStatusCodes
+        /// <summary>        
+		///     See consts in <see cref="JobStatusCodes"/>
         /// </summary>
         public uint JobStatusCode;
 

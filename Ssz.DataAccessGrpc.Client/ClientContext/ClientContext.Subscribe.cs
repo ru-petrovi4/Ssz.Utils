@@ -103,12 +103,12 @@ namespace Ssz.DataAccessGrpc.Client
             ClientElementValueListItem[]? changedListItems = dataList.OnElementValuesCallback(elementValuesCollections);
             if (changedListItems is not null && changedListItems.Length > 0)
             {
-                List<ValueStatusTimestamp> changedValuesList = new List<ValueStatusTimestamp>(changedListItems.Length);
+                List<ValueStatusTimestamp> changeValueStatusTimestampsList = new List<ValueStatusTimestamp>(changedListItems.Length);
                 foreach (ClientElementValueListItem changedListItem in changedListItems)
                 {
-                    changedValuesList.Add(changedListItem.ValueStatusTimestamp);
+                    changeValueStatusTimestampsList.Add(changedListItem.ValueStatusTimestamp);
                 }
-                dataList.RaiseElementValuesCallbackEvent(changedListItems, changedValuesList.ToArray());
+                dataList.RaiseElementValuesCallbackEvent(changedListItems, changeValueStatusTimestampsList.ToArray());
             }
             return changedListItems;
         }
@@ -148,7 +148,7 @@ namespace Ssz.DataAccessGrpc.Client
                                 JobId = jobId,
                                 ProgressPercent = longrunningPassthroughCallback.ProgressPercent,
                                 ProgressLabel = longrunningPassthroughCallback.ProgressLabel ?? @"",
-                                ProgressDetail = longrunningPassthroughCallback.ProgressDetail ?? @"",
+                                ProgressDetails = longrunningPassthroughCallback.ProgressDetails ?? @"",
                                 JobStatusCode = jobStatusCode
                             });
                         }

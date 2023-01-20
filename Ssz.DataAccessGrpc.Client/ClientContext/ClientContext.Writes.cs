@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Grpc.Core;
-using Ssz.DataAccessGrpc.Client.Data;
 using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.Utils;
 

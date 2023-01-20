@@ -29,12 +29,12 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         ///     Creates List, adds/removes items.
         ///     No throw.
         /// </summary>
-        /// <param name="clientConnectionManager"></param>
+        /// <param name="clientContextManager"></param>
         /// <param name="сallbackDispatcher"></param>
         /// <param name="elementValuesCallbackEventHandler"></param>
         /// <param name="callbackIsEnabled"></param>
         /// <param name="ct"></param>
-        public void Subscribe(ClientConnectionManager clientConnectionManager, IDispatcher? сallbackDispatcher,
+        public void Subscribe(ClientContextManager clientContextManager, IDispatcher? сallbackDispatcher,
             EventHandler<ElementValuesCallbackEventArgs> elementValuesCallbackEventHandler, bool callbackIsEnabled, CancellationToken ct)
         {
             try
@@ -48,9 +48,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 {
                     try
                     {
-                        if (clientConnectionManager.ConnectionExists)
+                        if (clientContextManager.ConnectionExists)
                         {
-                            DataAccessGrpcList = clientConnectionManager.NewElementValueList(null);
+                            DataAccessGrpcList = clientContextManager.NewElementValueList(null);
                         }                            
                     }
                     catch (Exception)
@@ -67,13 +67,15 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                         if (firstTimeDataConnection)
                         {
                             DataAccessGrpcList.ElementValuesCallback +=
-                                (ClientElementValueList dataList, ClientElementValueListItem[] items,
-                                    ValueStatusTimestamp[] vsts) =>
+                                (object? sender, ClientElementValueList.ElementValuesCallbackEventArgs args) =>
                                 {
+                                    ClientElementValueList dataList = (ClientElementValueList)sender!;
+                                    ClientElementValueListItem[] changedListItems = args.ChangedListItems;
+                                    ValueStatusTimestamp[] changedValues = args.ChangedValueStatusTimestamps;
                                     ElementValuesCallbackEventArgs elementValuesCallbackEventArgs = new();
-                                    elementValuesCallbackEventArgs.ElementValuesCallbackChanges = new(items.Length);
+                                    elementValuesCallbackEventArgs.ElementValuesCallbackChanges = new(changedListItems.Length);
                                     int i = 0;
-                                    foreach (ClientElementValueListItem dataGrpcElementValueListItem in items)
+                                    foreach (ClientElementValueListItem dataGrpcElementValueListItem in changedListItems)
                                     {
                                         var o = dataGrpcElementValueListItem.Obj as DataAccessGrpcListItemWrapper;
                                         if (o is null) throw new InvalidOperationException();
@@ -86,7 +88,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                                                 {
                                                     ClientObj = modelItem.ClientObj,
                                                     AddItemResult = dataGrpcElementValueListItem.AddItemResult,
-                                                    ValueStatusTimestamp = vsts[i],
+                                                    ValueStatusTimestamp = changedValues[i],
                                                 });                                             
                                             }
                                         }
@@ -346,20 +348,20 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         }
         */
 
-        #endregion       
-    }
+        #endregion
 
-    public class ElementValuesCallbackEventArgs : EventArgs
-    {
-        public List<ElementValuesCallbackChange> ElementValuesCallbackChanges { get; set; } = null!;
+        public class ElementValuesCallbackEventArgs : EventArgs
+        {
+            public List<ElementValuesCallbackChange> ElementValuesCallbackChanges { get; set; } = null!;
+        }
+
+        public class ElementValuesCallbackChange
+        {
+            public object ClientObj = null!;
+
+            public AddItemResult? AddItemResult;
+
+            public ValueStatusTimestamp ValueStatusTimestamp;
+        }
     }    
-
-    public class ElementValuesCallbackChange
-    {
-        public object ClientObj = null!;        
-
-        public AddItemResult? AddItemResult;
-
-        public ValueStatusTimestamp ValueStatusTimestamp;
-    }
 }

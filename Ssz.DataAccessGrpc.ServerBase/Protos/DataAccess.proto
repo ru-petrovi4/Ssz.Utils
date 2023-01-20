@@ -52,21 +52,11 @@ message NullableString {
   }
 }
 
-enum State
-{
-  STATE_OPERATIONAL = 0;
-  STATE_DIAGNOSTIC = 1;
-  STATE_INITIALIZING = 2;
-  STATE_FAULTED = 3;
-  STATE_NEEDS_CONFIGURATION = 4;
-  STATE_OUT_OF_SERVICE = 5;
-  STATE_NOT_CONNECTED = 6;
-  STATE_ABORTING = 7;
-  STATE_NOT_OPERATIONAL = 8;
-}
-
-message ContextInfo {  
-  State state = 1;  
+message ContextStatus {  
+  uint32 context_state_code = 1; 
+  string info = 2;
+  string label = 3;
+  string details = 4;
 }
 
 message ElementValuesCallback {    
@@ -87,13 +77,13 @@ message LongrunningPassthroughCallback {
   string job_id = 1;
   uint32 progress_percent = 2;
   string progress_label = 3;
-  string progress_detail = 4;
+  string progress_details = 4;
   uint32 job_status_code = 5;
 }
 
 message CallbackMessage {
   oneof optional_message {    
-    ContextInfo context_info = 1;
+    ContextStatus context_status = 1;
     ElementValuesCallback element_values_callback = 2;
     EventMessagesCallback event_messages_callback = 3;
     LongrunningPassthroughCallback longrunning_passthrough_callback = 4;

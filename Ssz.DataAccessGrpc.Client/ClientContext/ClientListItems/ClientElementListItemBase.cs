@@ -1,5 +1,4 @@
 using System;
-using Ssz.DataAccessGrpc.Client.Data;
 using Ssz.Utils.DataAccess;
 using Ssz.DataAccessGrpc.ServerBase;
 using Grpc.Core;

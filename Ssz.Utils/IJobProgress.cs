@@ -12,11 +12,11 @@ namespace Ssz.Utils
         ///     
         /// </summary>
         /// <param name="progressPercent"></param>
-        /// <param name="progressLabel"></param>
-        /// <param name="progressDetail"></param>
-        /// <param name="jobStatusCode">See consts in JobStatusCodes</param>
+        /// <param name="progressLabel"></param>progressDetails
+        /// <param name="progressDetails"></param>
+        /// <param name="jobStatusCode">See consts in <see cref="JobStatusCodes"/></param>
         /// <returns></returns>
-        Task SetJobProgressAsync(uint? progressPercent, string? progressLabel, string? progressDetail, uint jobStatusCode);
+        Task SetJobProgressAsync(uint? progressPercent, string? progressLabel, string? progressDetails, uint jobStatusCode);
 
         IJobProgress GetChildJobProgress(uint minProgressPercent, uint maxProgressPercent);
     }
@@ -25,17 +25,17 @@ namespace Ssz.Utils
     {
         public static readonly DummyJobProgress Default = new();
 
-        public string JobId => @"";        
+        public string JobId => @"";
 
         /// <summary>
         ///     
         /// </summary>
         /// <param name="progressPercent"></param>
         /// <param name="progressLabel"></param>
-        /// <param name="progressDetail"></param>
-        /// <param name="jobStatusCode">See consts in JobStatusCodes</param>
+        /// <param name="progressDetails"></param>
+        /// <param name="jobStatusCode">See consts in <see cref="JobStatusCodes"/></param>
         /// <returns></returns>
-        public Task SetJobProgressAsync(uint? progressPercent, string? progressLabel, string? progressDetail, uint jobStatusCode)
+        public Task SetJobProgressAsync(uint? progressPercent, string? progressLabel, string? progressDetails, uint jobStatusCode)
         {
             return Task.CompletedTask;
         }
@@ -46,6 +46,9 @@ namespace Ssz.Utils
         }
     }
 
+    /// <summary>
+    ///     Error >= 2
+    /// </summary>
     public static class JobStatusCodes
     {
         public const uint OK = 0;

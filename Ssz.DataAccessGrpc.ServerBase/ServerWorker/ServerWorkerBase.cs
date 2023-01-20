@@ -27,9 +27,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <summary>
         ///     true - added, false - removed
         /// </summary>
-        public event Action<ServerContext, bool> ServerContextAddedOrRemoved = delegate { };
+        public event EventHandler<ServerContextAddedOrRemovedEventArgs> ServerContextAddedOrRemoved = delegate { };
 
-        public event Action ShutdownRequested = delegate { };        
+        public event EventHandler ShutdownRequested = delegate { };        
 
         public abstract ServerListRoot NewServerList(ServerContext serverContext, uint listClientAlias, uint listType, CaseInsensitiveDictionary<string?> listParams);
 
@@ -90,7 +90,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// </summary>
         protected virtual void OnShutdownRequested()
         {
-            ShutdownRequested();
+            ShutdownRequested(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -105,5 +105,12 @@ namespace Ssz.DataAccessGrpc.ServerBase
         }
 
         #endregion
+
+        public class ServerContextAddedOrRemovedEventArgs : EventArgs
+        {
+            public ServerContext ServerContext { get; set; } = null!;
+
+            public bool Added { get; set; }
+        }
     }
 }

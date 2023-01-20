@@ -30,12 +30,12 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <summary>
         ///     Thread-safe
         /// </summary>
-        /// <param name="contextInfoMessage"></param>
-        public void AddCallbackMessage(ContextInfoMessage contextInfoMessage)
+        /// <param name="contextStatusMessage"></param>
+        public void AddCallbackMessage(ContextStatusMessage contextStatusMessage)
         {
             lock (_messagesSyncRoot)
             {
-                _contextInfoMessagesCollection.Add(contextInfoMessage);
+                _contextStatusMessagesCollection.Add(contextStatusMessage);
             }
         }
 
@@ -127,23 +127,23 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         private async Task OnLoopInWorkingThreadAsync(CancellationToken cancellationToken)
         {
-            List<ContextInfoMessage> contextInfoMessagesCollection;
+            List<ContextStatusMessage> contextStatusMessagesCollection;
             List<ElementValuesCallbackMessage> elementValuesCallbackMessagesCollection;
             List<EventMessagesCallbackMessage> eventMessagesCallbackMessagesCollection;
             List<LongrunningPassthroughCallbackMessage> longrunningPassthroughCallbackMessagesCollection;
             lock (_messagesSyncRoot)
             {
-                contextInfoMessagesCollection = _contextInfoMessagesCollection;
+                contextStatusMessagesCollection = _contextStatusMessagesCollection;
                 elementValuesCallbackMessagesCollection = _elementValuesCallbackMessagesCollection;
                 eventMessagesCallbackMessagesCollection = _eventMessagesCallbackMessagesCollection;
                 longrunningPassthroughCallbackMessagesCollection = _longrunningPassthroughCallbackMessagesCollection;
-                _contextInfoMessagesCollection = new List<ContextInfoMessage>();
+                _contextStatusMessagesCollection = new List<ContextStatusMessage>();
                 _elementValuesCallbackMessagesCollection = new List<ElementValuesCallbackMessage>();
                 _eventMessagesCallbackMessagesCollection = new List<EventMessagesCallbackMessage>();
                 _longrunningPassthroughCallbackMessagesCollection = new List<LongrunningPassthroughCallbackMessage>();
             }
 
-            bool hasAbortingMessage = contextInfoMessagesCollection.Any(cim => cim.State == State.Aborting);
+            bool hasAbortingMessage = contextStatusMessagesCollection.Any(cim => cim.ContextStateCode == ContextStateCodes.STATE_ABORTING);
 
             try
             {
@@ -152,18 +152,18 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     if (cancellationToken.IsCancellationRequested)
                         return;
 
-                    if (contextInfoMessagesCollection.Count > 0)
+                    if (contextStatusMessagesCollection.Count > 0)
                     {
-                        Logger.LogDebug("ServerContext contextInfoMessagesCollection.Count=" + contextInfoMessagesCollection.Count);
-                        foreach (ContextInfoMessage contextInfoMessage in contextInfoMessagesCollection)
+                        Logger.LogDebug("ServerContext contextStatusMessagesCollection.Count=" + contextStatusMessagesCollection.Count);
+                        foreach (ContextStatusMessage contextStatusMessage in contextStatusMessagesCollection)
                         {
                             if (cancellationToken.IsCancellationRequested)
                                 return;
 
                             var callbackMessage = new CallbackMessage();
-                            callbackMessage.ContextInfo = new ContextInfo
+                            callbackMessage.ContextStatus = new ContextStatus
                             {
-                                State = contextInfoMessage.State
+                                ContextStateCode = contextStatusMessage.ContextStateCode
                             };
                             await _responseStream.WriteAsync(callbackMessage);
                         }
@@ -252,7 +252,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                                         JobId = longrunningPassthroughCallbackMessage.JobId,
                                         ProgressPercent = longrunningPassthroughCallbackMessage.ProgressPercent,
                                         ProgressLabel = longrunningPassthroughCallbackMessage.ProgressLabel ?? @"",
-                                        ProgressDetail = longrunningPassthroughCallbackMessage.ProgressDetail ?? @"",
+                                        ProgressDetails = longrunningPassthroughCallbackMessage.ProgressDetails ?? @"",
                                         JobStatusCode = longrunningPassthroughCallbackMessage.JobStatusCode,
                                     }
                                 };
@@ -281,7 +281,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         private readonly Object _messagesSyncRoot = new Object();
 
-        private List<ContextInfoMessage> _contextInfoMessagesCollection = new();
+        private List<ContextStatusMessage> _contextStatusMessagesCollection = new();
 
         private List<ElementValuesCallbackMessage> _elementValuesCallbackMessagesCollection = new();
 
@@ -291,9 +291,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         #endregion
 
-        public class ContextInfoMessage
+        public class ContextStatusMessage
         {
-            public State State;
+            public uint ContextStateCode;
         }
 
         public class ElementValuesCallbackMessage

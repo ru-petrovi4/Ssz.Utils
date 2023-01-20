@@ -187,6 +187,8 @@ namespace Ssz.Utils.DataAccess
 
         public object? Obj { get; set; }
 
+        public virtual event EventHandler<ContextStatusChangedEventArgs> ContextStatusChanged = delegate { };
+
         public virtual event EventHandler ValueSubscriptionsUpdated = delegate { };
 
         public virtual event EventHandler<EventMessagesCallbackEventArgs> EventMessagesCallback = delegate { };

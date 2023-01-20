@@ -22,10 +22,10 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="valueSubscription"></param>
         public override void JournalAddItem(string elementId, object valueSubscription)
         {
-            ThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 _clientElementValuesJournalListManager.AddItem(elementId, valueSubscription);
-                _clientElementValuesJournalListManager.Subscribe(_clientConnectionManager);
+                _clientElementValuesJournalListManager.Subscribe(_clientContextManager);
             }
             );
         }
@@ -36,7 +36,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="valueSubscription"></param>
         public override void JournalRemoveItem(object valueSubscription)
         {
-            ThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 _clientElementValuesJournalListManager.RemoveItem(valueSubscription);
             }
@@ -56,7 +56,7 @@ namespace Ssz.DataAccessGrpc.Client
         public override async Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, object[] valueSubscriptionsCollection)
         {
             var taskCompletionSource = new TaskCompletionSource<ValueStatusTimestamp[][]?>();
-            ThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 var result = _clientElementValuesJournalListManager.ReadElementValuesJournals(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, params_, valueSubscriptionsCollection);
 
@@ -69,7 +69,7 @@ namespace Ssz.DataAccessGrpc.Client
         public override async Task<Utils.DataAccess.EventMessagesCollection?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
             var taskCompletionSource = new TaskCompletionSource<Utils.DataAccess.EventMessagesCollection?>();
-            ThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 ClientEventList? clientEventList =
                     _clientEventListManager.GetRelatedClientEventList(OnClientEventListManager_EventMessagesCallbackInternal);
@@ -103,7 +103,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             object clientObj = elementId;
             _clientElementValuesJournalListManager.AddItem(elementId, clientObj);
-            _clientElementValuesJournalListManager.Subscribe(_clientConnectionManager);
+            _clientElementValuesJournalListManager.Subscribe(_clientContextManager);
 
             var data = _clientElementValuesJournalListManager.ReadElementValuesJournals(firstTimestampUtc, secondTimestampUtc, uint.MaxValue, new Ssz.Utils.DataAccess.TypeId(), null, new[] { clientObj });
             if (data is not null)
@@ -111,7 +111,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             // No remove, for optimization
             //ClientElementValuesJournalListManager.RemoveItem(clientObj);
-            //ClientElementValuesJournalListManager.Subscribe(ClientConnectionManager, CallbackDispatcher);
+            //ClientElementValuesJournalListManager.Subscribe(ClientContextManager, CallbackDispatcher);
 
             return new ValueStatusTimestamp[0];
         }

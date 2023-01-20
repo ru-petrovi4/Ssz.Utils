@@ -111,7 +111,10 @@ namespace Ssz.Utils.DataAccess
         }
 
         public Any Value;
-        
+
+        /// <summary>
+        ///     See consts in <see cref="ValueStatusCodes"/>
+        /// </summary>
         public uint ValueStatusCode;
         
         public DateTime TimestampUtc;        

@@ -8,10 +8,11 @@ using Ssz.DataAccessGrpc.Client.Managers;
 using Ssz.DataAccessGrpc.ServerBase;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
-using Ssz.DataAccessGrpc.Client.Data;
 using System.Threading.Tasks;
 using Ssz.DataAccessGrpc.Client.ClientLists;
 using Google.Protobuf.WellKnownTypes;
+using Ssz.Utils.DataAccess;
+using Grpc.Net.Client;
 
 namespace Ssz.DataAccessGrpc.Client
 {
@@ -26,20 +27,10 @@ namespace Ssz.DataAccessGrpc.Client
     internal partial class ClientContext
     {
         #region construction and destruction
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="logger"></param>
-        /// <param name="resourceManagementClient"></param>
-        /// <param name="clientApplicationName"></param>
-        /// <param name="clientWorkstationName"></param>
-        /// <param name="requestedServerContextTimeoutMs"></param>
-        /// <param name="requestedCultureName"></param>
-        /// <param name="systemNameToConnect"></param>
-        /// <param name="contextParams"></param>
+        
         public ClientContext(ILogger<GrpcDataAccessProvider> logger,
-            IDispatcher callbackDispatcher,
+            IDispatcher workingDispatcher,
+            GrpcChannel grpcChannel,
             DataAccess.DataAccessClient resourceManagementClient,            
             string clientApplicationName,
             string clientWorkstationName,            
@@ -49,7 +40,8 @@ namespace Ssz.DataAccessGrpc.Client
             CaseInsensitiveDictionary<string?> contextParams)
         {
             _logger = logger;
-            _callbackDispatcher = callbackDispatcher;
+            _workingDispatcher = workingDispatcher;
+            GrpcChannel = grpcChannel;
             _resourceManagementClient = resourceManagementClient;
             _applicationName = clientApplicationName;
             _workstationName = clientWorkstationName;          
@@ -142,6 +134,11 @@ namespace Ssz.DataAccessGrpc.Client
                     {
                     }
                 }
+
+                ClientContextNotification = delegate { };
+                ServerContextNotification = delegate { };
+
+                GrpcChannel.Dispose();
             }
 
             _disposed = true;
@@ -159,87 +156,43 @@ namespace Ssz.DataAccessGrpc.Client
 
         #region public functions
 
-        public ContextInfo? ServerContextInfo
+        public GrpcChannel GrpcChannel { get; }
+
+        public ContextStatus? ServerContextStatus
         {
             get
             {
-                return _serverContextInfo;
+                return _serverContextStatus;
             }
             private set
             {
-                _serverContextInfo = value;
-                if (_serverContextInfo is not null && _serverContextInfo.State == State.Aborting)
+                _serverContextStatus = value;                
+                if (_serverContextStatus is not null && _serverContextStatus.ContextStateCode == ContextStateCodes.STATE_ABORTING)
                 {
                     _serverContextIsOperational = false;
-                    _pendingContextNotificationData = new ClientContextNotificationData(ClientContextNotificationType.Shutdown,
+                    _pendingClientContextNotificationEventArgs = new ClientContextNotificationEventArgs(ClientContextNotificationType.Shutdown,
                         null);
                 }
+                if (value is not null)
+                    ServerContextNotification(this, new ContextStatusChangedEventArgs
+                    {
+                        ContextStateCode = value.ContextStateCode,
+                        Info = value.Info ?? @"",
+                        Label = value.Label ?? @"",
+                        Details = value.Details ?? @"",
+                    });
             }            
         }
 
-        /// <summary>
-        ///     This method is used to
-        ///     keep the context alive.
-        /// </summary>
-        /// <param name="ct"></param>
-        /// <param name="nowUtc"></param>
-        public void KeepContextAliveIfNeeded(CancellationToken ct, DateTime nowUtc)
-        {
-            if (!_serverContextIsOperational) return;
-                
-            uint timeDiffInMs = (uint) (nowUtc - _resourceManagementLastCallUtc).TotalMilliseconds + 500;
+        public event EventHandler<ContextStatusChangedEventArgs> ServerContextNotification = delegate { };
 
-            if (timeDiffInMs >= KeepAliveIntervalMs)
-            {
-                try
-                {
-                    _resourceManagementClient.ClientKeepAlive(new ClientKeepAliveRequest
-                    {
-                        ContextId = _serverContextId
-                    }, cancellationToken: ct);
-                    
-                    _resourceManagementLastCallUtc = nowUtc;
-                }
-                catch
-                {
-                    _serverContextIsOperational = false;
-                    _pendingContextNotificationData = new ClientContextNotificationData(ClientContextNotificationType.ClientKeepAliveException, null);                    
-                }
-            }
-        }
-
-        /// <summary>        
-        /// </summary>
-        public void ProcessPendingContextNotificationData()
-        {
-            if (_pendingContextNotificationData is not null)
-            {
-                ContextNotifyEvent(this, _pendingContextNotificationData);
-                _pendingContextNotificationData = null;
-            }
-        }
-
-        /// <summary>
-        ///     This event is used to notify the ClientBase user of events that occur within the ClientBase.
-        ///     Caution: Be sure to disconnect the event handler prior to returning.
-        /// </summary>
-        public event ClientContextNotification ContextNotifyEvent = delegate { };
-
-        /// <summary>
-        ///     This property is the server-unique identifier of the context. It is returned by the server
-        ///     when the client application creates the context.
-        /// </summary>
+        public event EventHandler<ClientContextNotificationEventArgs> ClientContextNotification = delegate { };
+        
         public string ServerContextId
         {
             get { return _serverContextId; }
-        }        
-
-        /// <summary>
-        ///     The publically visible context timeout provided to the server (in msecs). If the server fails to
-        ///     receive a call from the client for this period, it will close the context.
-        ///     Within this time period, if there was a communications failure, the client can
-        ///     attempt to ReInitiate the connection with the server for this context.
-        /// </summary>
+        }
+        
         public uint ServerContextTimeoutMs
         {
             get { return _serverContextTimeoutMs; }
@@ -253,15 +206,44 @@ namespace Ssz.DataAccessGrpc.Client
         {
             get { return _serverCultureName; }
         }
-
-        /// <summary>
-        ///     Inidicates, when TRUE, that the context is closing or has completed closing
-        ///     and will not accept any more requests on the context.
-        /// </summary>
+        
         public bool ServerContextIsOperational
         {
             get { return _serverContextIsOperational; }            
-        }        
+        }
+        
+        public void KeepContextAliveIfNeeded(CancellationToken ct, DateTime nowUtc)
+        {
+            if (!_serverContextIsOperational) return;
+
+            uint timeDiffInMs = (uint)(nowUtc - _resourceManagementLastCallUtc).TotalMilliseconds + 500;
+
+            if (timeDiffInMs >= KeepAliveIntervalMs)
+            {
+                try
+                {
+                    _resourceManagementClient.ClientKeepAlive(new ClientKeepAliveRequest
+                    {
+                        ContextId = _serverContextId
+                    }, cancellationToken: ct);
+
+                    _resourceManagementLastCallUtc = nowUtc;
+                }
+                catch
+                {
+                    _serverContextIsOperational = false;
+                    _pendingClientContextNotificationEventArgs = new ClientContextNotificationEventArgs(ClientContextNotificationType.ClientKeepAliveException, null);
+                }
+            }
+        }
+        
+        public void ProcessPendingClientContextNotification()
+        {
+            var pendingClientContextNotificationEventArgs = _pendingClientContextNotificationEventArgs;
+            _pendingClientContextNotificationEventArgs = null;
+            if (pendingClientContextNotificationEventArgs is not null)
+                ClientContextNotification(this, pendingClientContextNotificationEventArgs);
+        }
 
         #endregion
 
@@ -301,7 +283,7 @@ namespace Ssz.DataAccessGrpc.Client
 
                 // if not a server shutdown, then throw the error message from the server
                 //if (IsServerShutdownOrNoContextServerFault(ex as FaultException<DataAccessGrpcFault>)) return;
-                _pendingContextNotificationData = new ClientContextNotificationData(ClientContextNotificationType.ResourceManagementFail,
+                _pendingClientContextNotificationEventArgs = new ClientContextNotificationEventArgs(ClientContextNotificationType.ResourceManagementFail,
                         ex);
 
                 _logger.LogDebug(ex, "RpcException when server method call. Client reconnecting..");
@@ -336,16 +318,15 @@ namespace Ssz.DataAccessGrpc.Client
                 if (!_serverContextIsOperational || cancellationToken.IsCancellationRequested) return;
 
                 CallbackMessage current = reader.Current;
-                _callbackDispatcher.BeginInvoke(ct =>
+                _workingDispatcher.BeginInvoke(ct =>
                 {
                     if (ct.IsCancellationRequested) return;
                     try
                     {
                         switch (current.OptionalMessageCase)
                         {
-                            case CallbackMessage.OptionalMessageOneofCase.ContextInfo:
-                                ContextInfo serverContextInfo = current.ContextInfo;
-                                ServerContextInfo = serverContextInfo;
+                            case CallbackMessage.OptionalMessageOneofCase.ContextStatus:
+                                ServerContextStatus = current.ContextStatus;                                
                                 break;
                             case CallbackMessage.OptionalMessageOneofCase.ElementValuesCallback:
                                 ElementValuesCallback elementValuesCallback = current.ElementValuesCallback;
@@ -357,9 +338,8 @@ namespace Ssz.DataAccessGrpc.Client
                                 ClientEventList eventList = GetEventList(eventMessagesCallback.ListClientAlias);
                                 EventMessagesCallback(eventList, eventMessagesCallback.EventMessagesCollection);
                                 break;
-                            case CallbackMessage.OptionalMessageOneofCase.LongrunningPassthroughCallback:
-                                LongrunningPassthroughCallback longrunningPassthroughCallback = current.LongrunningPassthroughCallback;
-                                LongrunningPassthroughCallback(longrunningPassthroughCallback);
+                            case CallbackMessage.OptionalMessageOneofCase.LongrunningPassthroughCallback:                                
+                                LongrunningPassthroughCallback(current.LongrunningPassthroughCallback);
                                 break;
                         }
                     }
@@ -379,7 +359,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         private ILogger<GrpcDataAccessProvider> _logger;
 
-        private IDispatcher _callbackDispatcher;
+        private IDispatcher _workingDispatcher;
 
         private readonly CancellationTokenSource _cancellationTokenSource = new();
 
@@ -397,13 +377,13 @@ namespace Ssz.DataAccessGrpc.Client
         
         private DateTime _resourceManagementLastCallUtc;        
         
-        private ContextInfo? _serverContextInfo;
+        private ContextStatus? _serverContextStatus;
 
         private AsyncServerStreamingCall<CallbackMessage>? _callbackMessageStream;
         
         private volatile bool _serverContextIsOperational;
 
-        private ClientContextNotificationData? _pendingContextNotificationData;
+        private ClientContextNotificationEventArgs? _pendingClientContextNotificationEventArgs;
 
         /// <summary>
         ///     The time interval that controls when ClientKeepAlive messages are
@@ -412,9 +392,88 @@ namespace Ssz.DataAccessGrpc.Client
         ///     sent.  The value is expressed in milliseconds.  This value is the
         ///     same for all contexts.
         /// </summary>
-        private const uint KeepAliveIntervalMs = 10000;        
+        private const uint KeepAliveIntervalMs = 10000;
 
-        #endregion        
+        #endregion
+
+        public class ClientContextNotificationEventArgs : EventArgs
+        {
+            public ClientContextNotificationEventArgs(ClientContextNotificationType reasonForNotification, object? data)
+            {
+                ReasonForNotification = reasonForNotification;
+                Data = data;
+            }
+
+            /// <summary>
+            ///     This property specifies the reason for the notification.
+            /// </summary>
+            public ClientContextNotificationType ReasonForNotification { get; }
+
+            /// <summary>
+            ///     This property contains the details about the notification.
+            /// </summary>
+            public object? Data { get; }
+        }
+
+        /// <summary>
+        ///     This enumeration indicates why the notification is being sent.
+        /// </summary>
+        public enum ClientContextNotificationType
+        {
+            /// <summary>
+            ///     The server shutting down.
+            ///     The Data property contains a string that describes the reason for the shutdown.
+            /// </summary>
+            Shutdown,
+
+            /// <summary>
+            ///     The WCF connection to the resource management endpoint has been unexpectedly disconnected.
+            ///     The Data property contains a string that describes the failure.
+            /// </summary>
+            ResourceManagementDisconnected,
+
+            /// <summary>
+            ///     The WCF connection to the resource management endpoint has been unexpectedly disconnected and is not recoverable.
+            ///     The Data property contains a string that describes the failure.
+            /// </summary>
+            ResourceManagementFail,
+
+            /// <summary>
+            ///     Data updates or event messages cached by the server for polling have been discarded by the server due to failure to
+            ///     receive a poll for them.
+            ///     The Data property contains a uint that indicates the number discarded.
+            /// </summary>
+            Discards,
+
+            /// <summary>
+            ///     A type conversion error has occurred in the client on received data.
+            ///     The Data property contains a string that describes the conversion error.
+            /// </summary>
+            TypeConversionError,
+
+            /// <summary>
+            ///     A FaultException was received from the server for a ClientKeepAlive request that was issued by the ClientBase.
+            ///     The FaultException type accompanies this notification type.
+            /// </summary>
+            ClientKeepAliveException,
+
+            /// <summary>
+            ///     Callback from server hasn't been recieved > CallbackRate.
+            /// </summary>
+            ServerKeepAliveError,
+
+            /// <summary>
+            ///     A FaultException was received from the server for Poll request that was issued by the ClientBase.
+            ///     The FaultException type accompanies this notification type.
+            /// </summary>
+            PollException,
+
+            /// <summary>
+            ///     A general Exception was received for a request that was issued by the ClientBase.
+            ///     The Exception type accompanies this notification type.
+            /// </summary>
+            GeneralException
+        }
     }
 
     #endregion // Context Management

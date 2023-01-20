@@ -58,9 +58,13 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         ///     You can use this property as temp storage.
         /// </summary>
-        object? Obj { get; set; }        
+        object? Obj { get; set; }
+
+        event EventHandler<ContextStatusChangedEventArgs> ContextStatusChanged;
 
         event EventHandler ValueSubscriptionsUpdated;
+
+        event EventHandler<EventMessagesCallbackEventArgs> EventMessagesCallback;
 
         /// <summary>
         ///     You can set updateValueItems = false and invoke PollElementValuesChangesAsync(...) manually.
@@ -174,10 +178,41 @@ namespace Ssz.Utils.DataAccess
         /// <param name="params_"></param>
         /// <returns></returns>
         Task<EventMessagesCollection?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_);
-
-        event EventHandler<EventMessagesCallbackEventArgs> EventMessagesCallback;
-
+        
         void AckAlarms(string operatorName, string comment, EventId[] eventIdsToAck);        
+    }
+
+    public class ContextStatusChangedEventArgs : EventArgs
+    {
+        /// <summary>
+        ///     See consts in <see cref="ContextStateCodes"/>
+        /// </summary>
+        public uint ContextStateCode { get; set; }
+
+        public string Info { get; set; } = null!;
+
+        /// <summary>
+        ///     User-friendly status label
+        /// </summary>
+        public string Label { get; set; } = null!;
+
+        /// <summary>
+        ///     User-friendly status details
+        /// </summary>
+        public string Details { get; set; } = null!;
+    }
+
+    public static class ContextStateCodes
+    {
+        public const uint STATE_OPERATIONAL = 0;
+        public const uint STATE_DIAGNOSTIC = 1;
+        public const uint STATE_INITIALIZING = 2;
+        public const uint STATE_FAULTED = 3;
+        public const uint STATE_NEEDS_CONFIGURATION = 4;
+        public const uint STATE_OUT_OF_SERVICE = 5;
+        public const uint STATE_NOT_CONNECTED = 6;
+        public const uint STATE_ABORTING = 7;
+        public const uint STATE_NOT_OPERATIONAL = 8;
     }
 
     public class EventMessagesCallbackEventArgs : EventArgs

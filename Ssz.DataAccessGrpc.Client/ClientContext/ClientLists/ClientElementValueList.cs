@@ -7,7 +7,6 @@ using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.Utils.DataAccess;
 using System.IO;
 using Ssz.Utils.Serialization;
-using Ssz.DataAccessGrpc.Client.Data;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 
@@ -228,15 +227,15 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         ///     Throws or invokes ElementValuesCallback event.        
         /// </summary>
         /// <param name="changedListItems"></param>
-        /// <param name="changedValues"></param>
+        /// <param name="changedValueStatusTimestamps"></param>
         public void RaiseElementValuesCallbackEvent(ClientElementValueListItem[] changedListItems,
-            ValueStatusTimestamp[] changedValues)
+            ValueStatusTimestamp[] changedValueStatusTimestamps)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
 
             try
             {
-                ElementValuesCallback(this, changedListItems, changedValues);
+                ElementValuesCallback(this, new ElementValuesCallbackEventArgs(changedListItems, changedValueStatusTimestamps));
             }
             catch
             {
@@ -246,7 +245,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// <summary>
         ///     DataAccessGrpc clients subscribe to this event to obtain the data update callbacks.
         /// </summary>
-        public event ElementValuesCallbackEventHandler ElementValuesCallback = delegate { };
+        public event EventHandler<ElementValuesCallbackEventArgs> ElementValuesCallback = delegate { };
 
         public IEnumerable<ClientElementValueListItem> ListItems
         {
@@ -260,6 +259,19 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         private CaseInsensitiveDictionary<ElementValuesCollection> _incompleteElementValuesCollection = new CaseInsensitiveDictionary<ElementValuesCollection>();
 
         #endregion
+
+        public class ElementValuesCallbackEventArgs : EventArgs
+        {
+            public ElementValuesCallbackEventArgs(ClientElementValueListItem[] changedListItems, ValueStatusTimestamp[] changedValueStatusTimestamps)
+            {
+                ChangedListItems = changedListItems;
+                ChangedValueStatusTimestamps = changedValueStatusTimestamps;
+            }
+
+            public ClientElementValueListItem[] ChangedListItems { get; }
+
+            public ValueStatusTimestamp[] ChangedValueStatusTimestamps { get; }
+        }
     }
 }
 
