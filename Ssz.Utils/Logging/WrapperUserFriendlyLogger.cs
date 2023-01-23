@@ -22,6 +22,7 @@ namespace Ssz.Utils.Logging
         public ILogger[] Loggers { get; }
 
         public IDisposable BeginScope<TState>(TState state)
+            where TState : notnull
         {            
             return new ComplexScope(Loggers.Select(l => l.BeginScope(state)).ToArray());
         }
@@ -40,17 +41,17 @@ namespace Ssz.Utils.Logging
 
         private class ComplexScope : IDisposable
         {
-            public ComplexScope(IDisposable[] disposables)
+            public ComplexScope(IDisposable?[] disposables)
             {
                 _disposables = disposables;
             }
 
             public void Dispose()
             {
-                Array.ForEach(_disposables, d => d.Dispose());
+                Array.ForEach(_disposables, d => d?.Dispose());
             }
 
-            private IDisposable[] _disposables;
+            private IDisposable?[] _disposables;
         }
     }
 }

@@ -38,6 +38,7 @@ namespace Ssz.Utils.Logging
         #region public functions
 
         public IDisposable BeginScope<TState>(TState state)
+            where TState : notnull
         {        
             if (state is ValueTuple<string, string> valueTuple)
                 return new FieldScope(this, valueTuple.Item1, valueTuple.Item2);
