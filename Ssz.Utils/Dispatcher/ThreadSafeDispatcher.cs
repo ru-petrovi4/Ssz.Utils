@@ -63,7 +63,7 @@ namespace Ssz.Utils
                 foreach (Func<CancellationToken, Task> asyncAction in asyncActionsInvocationList)
                 {
                     if (cancellationToken.IsCancellationRequested) return result;
-                    await asyncAction.Invoke(cancellationToken);
+                    await asyncAction.Invoke(cancellationToken).ConfigureAwait(false);
                     result += 1;
                 }                
             }                    

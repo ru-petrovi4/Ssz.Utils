@@ -51,7 +51,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             if (cancellationToken.IsCancellationRequested) return;
 
-            await ThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
+            await ThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken).ConfigureAwait(false);
 
             if (cancellationToken.IsCancellationRequested) return;
             
@@ -62,7 +62,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 {
                     // Expired
                     RemoveServerContext(serverContext);
-                    await serverContext.DisposeAsync();
+                    await serverContext.DisposeAsync().ConfigureAwait(false);
                     Logger.LogWarning("Timeout out Context {0}", serverContext.ContextId);
                 }
                 else
@@ -76,7 +76,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             var serverContexts = _serverContextsDictionary.Values.ToArray();
             _serverContextsDictionary.Clear();
-            await ServerContextsAbortAsync(serverContexts);
+            await ServerContextsAbortAsync(serverContexts).ConfigureAwait(false);
         }
 
         #endregion        

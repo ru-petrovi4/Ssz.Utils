@@ -77,7 +77,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             if (Disposed) return;
             Disposed = true;
 
-            await DisposeAsyncCore();
+            await DisposeAsyncCore().ConfigureAwait(false);
 
             Dispose(disposing: false);
 #pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
@@ -139,7 +139,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
             _listsManager.Clear();
 
-            await _callbackWorkingTask;
+            await _callbackWorkingTask.ConfigureAwait(false);
         }
 
         /// <summary>

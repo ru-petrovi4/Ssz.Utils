@@ -482,6 +482,8 @@ namespace Ssz.Xi.Client
 
         private async Task WorkingTaskMainAsync(CancellationToken cancellationToken)
         {
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(WorkingThreadSafeDispatcher));
+
             _xiServerProxy = new XiServerProxy();
 
             bool elementValueListCallbackIsEnabled;
@@ -502,12 +504,12 @@ namespace Ssz.Xi.Client
             while (true)
             {
                 if (cancellationToken.IsCancellationRequested) break;
-                await Task.Delay(10);
+                await Task.Delay(10).ConfigureAwait(false);
                 if (cancellationToken.IsCancellationRequested) break;                                
 
                 var nowUtc = DateTime.UtcNow;
 
-                await DoWorkAsync(nowUtc, cancellationToken);
+                await DoWorkAsync(nowUtc, cancellationToken).ConfigureAwait(false);
             }            
 
             Unsubscribe(true);
@@ -525,9 +527,10 @@ namespace Ssz.Xi.Client
         /// <param name="cancellationToken"></param>
         private async Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
         {
-            if (_xiServerProxy is null) throw new InvalidOperationException();            
+            if (_xiServerProxy is null) 
+                throw new InvalidOperationException();            
 
-            await WorkingThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
+            await WorkingThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken).ConfigureAwait(false);
 
             if (cancellationToken.IsCancellationRequested) return;
 

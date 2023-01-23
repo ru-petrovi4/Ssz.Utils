@@ -93,7 +93,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             {
                 ServerContextAddedOrRemoved(this, new ServerContextAddedOrRemovedEventArgs { ServerContext = serverContext, Added = false });
 
-                await serverContext.DisposeAsync();
+                await serverContext.DisposeAsync().ConfigureAwait(false);
             }
         }        
 

@@ -520,7 +520,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="cancellationToken"></param>
         protected virtual async Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
         {
-            await WorkingThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
+            await WorkingThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken).ConfigureAwait(false);
 
             if (cancellationToken.IsCancellationRequested) return;
 
@@ -686,6 +686,8 @@ namespace Ssz.DataAccessGrpc.Client
 
         private async Task WorkingTaskMainAsync(CancellationToken cancellationToken)
         {
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(WorkingThreadSafeDispatcher));
+
             bool elementValueListCallbackIsEnabled;
             bool eventListCallbackIsEnabled;
             try
@@ -704,12 +706,12 @@ namespace Ssz.DataAccessGrpc.Client
             while (true)
             {
                 if (cancellationToken.IsCancellationRequested) break;
-                await Task.Delay(10);
+                await Task.Delay(10).ConfigureAwait(false);
                 if (cancellationToken.IsCancellationRequested) break;                
 
                 var nowUtc = DateTime.UtcNow;                
 
-                await DoWorkAsync(nowUtc, cancellationToken);
+                await DoWorkAsync(nowUtc, cancellationToken).ConfigureAwait(false);
             }
 
             Unsubscribe(true);
