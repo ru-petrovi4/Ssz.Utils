@@ -34,6 +34,21 @@ namespace Ssz.Utils
             return result;
         }
 
+        public static T GetValue_Base64<T>(IConfiguration configuration, string key, T defaultValue)
+            where T : notnull
+        {
+            // null if no key in startup args string
+            // null if --Rewiew or -r
+            // "" if --Rewiew=
+            var valueString = configuration[key];
+            if (String.IsNullOrEmpty(valueString))
+                return defaultValue;
+            var result = new Any(Encoding.UTF8.GetString(Convert.FromBase64String(valueString))).ValueAs<T>(false);
+            if (result is null)
+                return defaultValue;
+            return result;
+        }
+
         #endregion
     }
 }
