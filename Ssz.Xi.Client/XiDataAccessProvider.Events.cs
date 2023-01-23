@@ -18,13 +18,13 @@ namespace Ssz.Xi.Client
         /// </summary>
         public override event EventHandler<EventMessagesCallbackEventArgs> EventMessagesCallback
         {
-            add { ThreadSafeDispatcher.BeginInvoke(ct => _xiEventListItemsManager.EventMessagesCallback += value); }
-            remove { ThreadSafeDispatcher.BeginInvoke(ct => _xiEventListItemsManager.EventMessagesCallback -= value); }
+            add { WorkingThreadSafeDispatcher.BeginInvoke(ct => _xiEventListItemsManager.EventMessagesCallback += value); }
+            remove { WorkingThreadSafeDispatcher.BeginInvoke(ct => _xiEventListItemsManager.EventMessagesCallback -= value); }
         }
         
         public override void AckAlarms(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
         {
-            ThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 IXiEventListProxy? eventListProxy =
                     _xiEventListItemsManager.GetRelatedXiEventList(OnXiEventListItemsManager_EventMessagesCallback);

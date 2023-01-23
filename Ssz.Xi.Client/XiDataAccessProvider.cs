@@ -213,7 +213,7 @@ namespace Ssz.Xi.Client
         public override async Task<IValueSubscription[]?> PollElementValuesChangesAsync()
         {
             var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]?>();
-            ThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 if (_xiServerProxy is null) throw new InvalidOperationException();
                 _xiDataListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher,
@@ -320,7 +320,7 @@ namespace Ssz.Xi.Client
                 }
             }
 
-            ThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 _xiDataListItemsManager.Subscribe(_xiServerProxy!, CallbackDispatcher,
                     XiDataListItemsManagerOnElementValuesCallback, true, ct);
@@ -359,7 +359,7 @@ namespace Ssz.Xi.Client
         {
             var taskCompletionSource = new TaskCompletionSource<(IValueSubscription[], uint[])>();
 
-            ThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 if (_xiServerProxy is null) throw new InvalidOperationException();
                 _xiDataListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher,
@@ -382,7 +382,7 @@ namespace Ssz.Xi.Client
         public override async Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
         {
             var taskCompletionSource = new TaskCompletionSource<IEnumerable<byte>>();
-            ThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {                
                 try
                 {
@@ -418,7 +418,7 @@ namespace Ssz.Xi.Client
             Action<LongrunningPassthroughCallback>? progressCallbackAction)
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
-            ThreadSafeDispatcher.BeginInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
             {
                 bool succeeded;
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
@@ -472,7 +472,7 @@ namespace Ssz.Xi.Client
         /// <summary>
         ///     Dispacther for working thread.
         /// </summary>
-        protected ThreadSafeDispatcher ThreadSafeDispatcher { get; } = new();
+        protected ThreadSafeDispatcher WorkingThreadSafeDispatcher { get; } = new();
 
         protected CaseInsensitiveDictionary<ConstItem> ConstItemsDictionary { get; } = new();
 
@@ -527,7 +527,7 @@ namespace Ssz.Xi.Client
         {
             if (_xiServerProxy is null) throw new InvalidOperationException();            
 
-            await ThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
+            await WorkingThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) return;
 
@@ -598,7 +598,7 @@ namespace Ssz.Xi.Client
                          //   workstationName);
 
                         _xiServerProxy.InitiateXiContext(ServerAddress, ClientApplicationName,
-                            workstationName, ThreadSafeDispatcher);
+                            workstationName, WorkingThreadSafeDispatcher);
 
                         //Logger?.LogDebug("End Connecting");
 
@@ -861,7 +861,7 @@ namespace Ssz.Xi.Client
 
             if (valueSubscriptionObj.MapValues is not null)
             {
-                ThreadSafeDispatcher.BeginInvoke(ct =>
+                WorkingThreadSafeDispatcher.BeginInvoke(ct =>
                 {
                     if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                     {
@@ -880,7 +880,7 @@ namespace Ssz.Xi.Client
             }
             else
             {
-                ThreadSafeDispatcher.BeginInvoke(ct =>
+                WorkingThreadSafeDispatcher.BeginInvoke(ct =>
                 {
                     _xiDataListItemsManager.AddItem(elementId, valueSubscription);
                 });
@@ -917,7 +917,7 @@ namespace Ssz.Xi.Client
                 }
             }
 
-            ThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                 {

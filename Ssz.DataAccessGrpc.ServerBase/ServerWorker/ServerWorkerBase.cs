@@ -15,7 +15,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         protected ServerWorkerBase(ILogger logger)
         {
-            Logger = logger;
+            Logger = logger;            
         }
 
         #endregion

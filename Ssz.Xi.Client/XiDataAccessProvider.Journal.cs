@@ -24,7 +24,7 @@ namespace Ssz.Xi.Client
         /// <param name="valueSubscription"></param>
         public override void JournalAddItem(string elementId, object valueSubscription)
         {
-            ThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 _xiDataJournalListItemsManager.AddItem(elementId, valueSubscription);
                 if (_xiServerProxy is null) throw new InvalidOperationException();
@@ -38,7 +38,7 @@ namespace Ssz.Xi.Client
         /// <param name="valueSubscription"></param>
         public override void JournalRemoveItem(object valueSubscription)
         {
-            ThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 _xiDataJournalListItemsManager.RemoveItem(valueSubscription);
             });
@@ -47,7 +47,7 @@ namespace Ssz.Xi.Client
         public override async Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, object[] valueSubscriptionsCollection)
         {
             var taskCompletionSource = new TaskCompletionSource<ValueStatusTimestamp[][]?>();
-            ThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 var xiList = _xiDataJournalListItemsManager.XiList;
                 if (xiList is null || xiList.Disposed)
@@ -103,7 +103,7 @@ namespace Ssz.Xi.Client
         public override async Task<Utils.DataAccess.EventMessagesCollection?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
             var taskCompletionSource = new TaskCompletionSource<Utils.DataAccess.EventMessagesCollection?>();
-            ThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 var result = _xiEventListItemsManager.ReadEventMessagesJournal(firstTimestampUtc, secondTimestampUtc, params_);
                 ElementIdsMap?.AddCommonFieldsToEventMessagesCollection(result);
