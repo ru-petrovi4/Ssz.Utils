@@ -1,5 +1,4 @@
-﻿using Ssz.Utils.Wpf.WpfScreenHelper;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -20,7 +19,7 @@ namespace Ssz.Utils.Wpf
         ///     Ordered by device name.
         /// </summary>
         /// <returns></returns>
-        public static Rect[] GetSystemScreensWorkingAreasInPixels()
+        public static Rect[] GetSystemScreensWorkingAreas()
         {
             var result = new List<Rect>();
 
@@ -29,58 +28,68 @@ namespace Ssz.Utils.Wpf
             foreach (Screen screen in screens)
             {
                 Rectangle workingArea = screen.WorkingArea;
-                result.Add(new Rect(workingArea.Left, workingArea.Top,
-                    workingArea.Width, workingArea.Height));
+                Point p1 = new Point(workingArea.X / PrimaryScreenScaleX, workingArea.Y / PrimaryScreenScaleY);
+                Point p2 = new Point(workingArea.Right / PrimaryScreenScaleX, workingArea.Bottom / PrimaryScreenScaleY);
+                result.Add(new Rect(p1, p2));
             }
 
             return result.ToArray();
         }
 
         /// <summary>
-        ///     Returns primary screen working area in WPF coordinates.        
-        /// </summary>
-        /// <returns></returns>
-        public static Rect GetPrimarySystemScreenWorkingAreaInPixels()
-        {
-            Rectangle workingArea = Screen.AllScreens.First(s => s.Primary).WorkingArea;
-
-            return new Rect(workingArea.Left, workingArea.Top,
-                    workingArea.Width, workingArea.Height);
-        }
-
-        /// <summary>
-        ///     Returns system screen working area containing the point.
-        ///     All values in pixel coordinates.
+        ///     Returns system screen working area containing the point.        
         ///     Returns null, if not found.
         /// </summary>
-        /// <param name="pointInPixels"></param>
+        /// <param name="point"></param>
         /// <returns></returns>
-        public static Rect? GetSystemScreenWorkingAreaInPixels(Point pointInPixels)
+        public static Rect? GetSystemScreenWorkingArea(Point point)
         {
-            foreach (Rect screen in GetSystemScreensWorkingAreasInPixels())
+            foreach (Rect systemScreensWorkingArea in GetSystemScreensWorkingAreas())
             {
-                if (pointInPixels.X >= screen.Left &&
-                    pointInPixels.Y >= screen.Top &&
-                    pointInPixels.X <= screen.Right &&
-                    pointInPixels.Y <= screen.Bottom)
-                    return screen;
+                if (point.X >= systemScreensWorkingArea.Left &&
+                    point.Y >= systemScreensWorkingArea.Top &&
+                    point.X <= systemScreensWorkingArea.Right &&
+                    point.Y <= systemScreensWorkingArea.Bottom)
+                    return systemScreensWorkingArea;
             }
             return null;
+        }
+
+        /// <summary>    
+        ///     Returns system screen working area nearest to the point.
+        ///     Returns null, if not found.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        public static Rect? GetNearestSystemScreenWorkingArea(Point point)
+        {
+            double minDistance = Double.MaxValue;
+            Rect? nearestSystemScreenWorkingArea = null;
+            foreach (Rect systemScreensWorkingArea in GetSystemScreensWorkingAreas())
+            {
+                var distance = GetDistance(point.X, point.Y, systemScreensWorkingArea.Left + systemScreensWorkingArea.Width / 2, systemScreensWorkingArea.Top + systemScreensWorkingArea.Height / 2);
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    nearestSystemScreenWorkingArea = systemScreensWorkingArea;
+                }
+            }
+            return nearestSystemScreenWorkingArea;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="rectInPixels"></param>
+        /// <param name="rect"></param>
         /// <returns></returns>
-        public static bool IsFullyVisible(Rect rectInPixels)
+        public static bool IsFullyVisible(Rect rect)
         {
-            foreach (Rect screenInPixels in GetSystemScreensWorkingAreasInPixels())
+            foreach (Rect systemScreensWorkingArea in GetSystemScreensWorkingAreas())
             {
-                if (rectInPixels.Left >= screenInPixels.Left &&
-                    rectInPixels.Top >= screenInPixels.Top &&
-                    rectInPixels.Right <= screenInPixels.Right &&
-                    rectInPixels.Bottom <= screenInPixels.Bottom)
+                if (rect.Left >= systemScreensWorkingArea.Left &&
+                    rect.Top >= systemScreensWorkingArea.Top &&
+                    rect.Right <= systemScreensWorkingArea.Right &&
+                    rect.Bottom <= systemScreensWorkingArea.Bottom)
                     return true;
             }
             return false;
@@ -114,29 +123,7 @@ namespace Ssz.Utils.Wpf
             {
                 window.Top = rect.Y + rect.Height - window.ActualHeight;
             }
-        }
-
-        /// <summary>
-        ///     All values in pixels coordinates.
-        ///     Returns Rect.Empty if not found.
-        /// </summary>
-        /// <param name="pointInPixels"></param>
-        /// <returns></returns>
-        public static Rect GetNearestSystemScreenWorkingAreaInPixels(Point pointInPixels)
-        {
-            double minDistance = Double.MaxValue;
-            Rect nearestSystemScreen = Rect.Empty;
-            foreach (Rect screen in GetSystemScreensWorkingAreasInPixels())
-            {
-                var distance = GetDistance(pointInPixels.X, pointInPixels.Y, screen.Left + screen.Width / 2, screen.Top + screen.Height / 2);
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    nearestSystemScreen = screen;
-                }
-            }
-            return nearestSystemScreen;
-        }
+        }        
 
         /// <summary>
         /// 
@@ -153,27 +140,12 @@ namespace Ssz.Utils.Wpf
         /// </summary>
         /// <param name="frameworkElement"></param>
         /// <returns></returns>
-        public static Rect GetRectInPixels(FrameworkElement frameworkElement)
-        {            
-            var p1 = frameworkElement.PointToScreen(new Point(0, 0));
-            var p2 = frameworkElement.PointToScreen(new Point(frameworkElement.ActualWidth, frameworkElement.ActualHeight));
-            return new Rect(p1, p2);
-        }
-
-        /// <summary>
-        ///     Returns in WPF coordinates.
-        /// </summary>
-        /// <param name="frameworkElement"></param>
-        /// <returns></returns>
         public static Rect GetRect(FrameworkElement frameworkElement)
         {
-            var p1 = frameworkElement.PointToScreen(new Point(0, 0));
-            var p2 = frameworkElement.PointToScreen(new Point(frameworkElement.ActualWidth, frameworkElement.ActualHeight));
-            var window = Window.GetWindow(frameworkElement);
-            var t = PresentationSource.FromVisual(window).CompositionTarget.TransformFromDevice;
-            p1 = t.Transform(p1);
-            p2 = t.Transform(p2);            
-            return new Rect(p1, p2);
+            var window = Window.GetWindow(frameworkElement);            
+            Point p1 = frameworkElement.TranslatePoint(new Point(0, 0), window);
+            Point p2 = frameworkElement.TranslatePoint(new Point(frameworkElement.ActualWidth, frameworkElement.ActualHeight), window);
+            return new Rect(window.Left + p1.X, window.Top + p1.Y, p2.X - p1.X, p2.Y - p1.Y);
         }
 
         public static Rect GetRect(Window window, Rect rectInPixels)

@@ -17,7 +17,7 @@ namespace Ssz.Utils.Wpf
         /// <param name="value"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public override bool CanConvertFromString(string value, IValueSerializerContext context)
+        public override bool CanConvertFromString(string? value, IValueSerializerContext? context)
         {
             return true;
         }
@@ -28,7 +28,7 @@ namespace Ssz.Utils.Wpf
         /// <param name="value"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public override object ConvertFromString(string value, IValueSerializerContext context)
+        public override object ConvertFromString(string? value, IValueSerializerContext? context)
         { 
             return ConvertFromString(value);
         }
@@ -38,7 +38,7 @@ namespace Ssz.Utils.Wpf
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public object ConvertFromString(string value)
+        public object ConvertFromString(string? value)
         {
             object result = Activator.CreateInstance<T>();
             NameValueCollectionHelper.SetNameValueCollection(ref result, NameValueCollectionHelper.Parse(value));
@@ -51,7 +51,7 @@ namespace Ssz.Utils.Wpf
         /// <param name="value"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public override bool CanConvertToString(object value, IValueSerializerContext context)
+        public override bool CanConvertToString(object? value, IValueSerializerContext? context)
         {
             return NameValueCollectionHelper.CanGetNameValueCollection(value);
         }
@@ -62,12 +62,12 @@ namespace Ssz.Utils.Wpf
         /// <param name="value"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public override string ConvertToString(object value, IValueSerializerContext context)
+        public override string ConvertToString(object? value, IValueSerializerContext? context)
         {
             return ConvertToString(value);
         }
 
-        public string ConvertToString(object value)
+        public string ConvertToString(object? value)
         {
             return
                 NameValueCollectionHelper.GetNameValueCollectionString(

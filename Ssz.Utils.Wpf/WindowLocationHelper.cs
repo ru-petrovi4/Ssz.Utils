@@ -130,39 +130,35 @@ namespace Ssz.Utils.Wpf
 
         private static void WindowOnLoaded(Window window)
         {
-            Point pointInPixels = window.PointToScreen(new Point(window.Left + window.ActualWidth / 2, window.Top + window.ActualHeight / 2));
-            Rect screenInPixels = ScreenHelper.GetNearestSystemScreenWorkingAreaInPixels(pointInPixels);
-            if (screenInPixels == Rect.Empty)
-                return;
-            var t = PresentationSource.FromVisual(window).CompositionTarget.TransformFromDevice;
-            var p1 = t.Transform(screenInPixels.TopLeft);            
-            var p2 = t.Transform(screenInPixels.BottomRight);            
-            var screen = new Rect(p1, p2);
+            Point point = new Point(window.Left + window.ActualWidth / 2, window.Top + window.ActualHeight / 2);
+            Rect? screenWorkingArea = ScreenHelper.GetNearestSystemScreenWorkingArea(point);
+            if (!screenWorkingArea.HasValue || screenWorkingArea.Value == Rect.Empty)
+                return;            
 
-            if (window.Width > screen.Width)
+            if (window.Width > screenWorkingArea.Value.Width)
             {
-                window.Width = screen.Width;
+                window.Width = screenWorkingArea.Value.Width;
             }
-            if (window.Height > screen.Height)
+            if (window.Height > screenWorkingArea.Value.Height)
             {
-                window.Height = screen.Height;
+                window.Height = screenWorkingArea.Value.Height;
             }
 
-            if ((int)window.Left < (int)screen.X)
+            if ((int)window.Left < (int)screenWorkingArea.Value.X)
             {
-                window.Left = screen.X;
+                window.Left = screenWorkingArea.Value.X;
             }
-            if ((int)window.Top < (int)screen.Y)
+            if ((int)window.Top < (int)screenWorkingArea.Value.Y)
             {
-                window.Top = screen.Y;
+                window.Top = screenWorkingArea.Value.Y;
             }
-            if ((int)(window.Left + window.Width) > (int)(screen.X + screen.Width))
+            if ((int)(window.Left + window.Width) > (int)(screenWorkingArea.Value.X + screenWorkingArea.Value.Width))
             {
-                window.Left = screen.X + screen.Width - window.Width;
+                window.Left = screenWorkingArea.Value.X + screenWorkingArea.Value.Width - window.Width;
             }
-            if ((int)(window.Top + window.Height) > (int)(screen.Y + screen.Height))
+            if ((int)(window.Top + window.Height) > (int)(screenWorkingArea.Value.Y + screenWorkingArea.Value.Height))
             {
-                window.Top = screen.Y + screen.Height - window.Height;
+                window.Top = screenWorkingArea.Value.Y + screenWorkingArea.Value.Height - window.Height;
             }
         }
 
