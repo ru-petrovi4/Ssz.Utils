@@ -48,13 +48,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityModel", "ThirdParti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novell.Directory.Ldap", "ThirdParties\Novell.Directory.Ldap\Novell.Directory.Ldap.csproj", "{48D1940E-9BB8-408D-8679-4E7D5FC2BBC0}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Teronis.MSBuild.Packaging.ProjectBuildInPackage", "ThirdParties\Teronis.MSBuild.Packaging.ProjectBuildInPackage\Teronis.MSBuild.Packaging.ProjectBuildInPackage.csproj", "{C3F32A6A-1EB1-477E-9243-53651815074F}"
+EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		ThirdParties\HelixToolkit\HelixToolkit.Shared\HelixToolkit.Shared.projitems*{167a7c1b-3aee-47d1-bf53-34d48ca97138}*SharedItemsImports = 5
-		ThirdParties\HelixToolkit\HelixToolkit.Wpf.Shared\HelixToolkit.Wpf.Shared.projitems*{167a7c1b-3aee-47d1-bf53-34d48ca97138}*SharedItemsImports = 5
-		ThirdParties\HelixToolkit\HelixToolkit.Wpf.Shared\HelixToolkit.Wpf.Shared.projitems*{342788cd-c98c-4856-99f3-e38bceacb2b7}*SharedItemsImports = 13
-		ThirdParties\HelixToolkit\HelixToolkit.Shared\HelixToolkit.Shared.projitems*{4ee18e80-7609-4fff-bd4b-f02728ec0688}*SharedItemsImports = 13
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release_Multiplatform|Any CPU = Release_Multiplatform|Any CPU
@@ -144,6 +140,12 @@ Global
 		{48D1940E-9BB8-408D-8679-4E7D5FC2BBC0}.Release_Multiplatform|Any CPU.Build.0 = Release|Any CPU
 		{48D1940E-9BB8-408D-8679-4E7D5FC2BBC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48D1940E-9BB8-408D-8679-4E7D5FC2BBC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3F32A6A-1EB1-477E-9243-53651815074F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3F32A6A-1EB1-477E-9243-53651815074F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3F32A6A-1EB1-477E-9243-53651815074F}.Release_Multiplatform|Any CPU.ActiveCfg = Release|Any CPU
+		{C3F32A6A-1EB1-477E-9243-53651815074F}.Release_Multiplatform|Any CPU.Build.0 = Release|Any CPU
+		{C3F32A6A-1EB1-477E-9243-53651815074F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3F32A6A-1EB1-477E-9243-53651815074F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -160,5 +162,11 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F9111D02-6686-4C78-A576-F826925964E2}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		ThirdParties\HelixToolkit\HelixToolkit.Shared\HelixToolkit.Shared.projitems*{167a7c1b-3aee-47d1-bf53-34d48ca97138}*SharedItemsImports = 5
+		ThirdParties\HelixToolkit\HelixToolkit.Wpf.Shared\HelixToolkit.Wpf.Shared.projitems*{167a7c1b-3aee-47d1-bf53-34d48ca97138}*SharedItemsImports = 5
+		ThirdParties\HelixToolkit\HelixToolkit.Wpf.Shared\HelixToolkit.Wpf.Shared.projitems*{342788cd-c98c-4856-99f3-e38bceacb2b7}*SharedItemsImports = 13
+		ThirdParties\HelixToolkit\HelixToolkit.Shared\HelixToolkit.Shared.projitems*{4ee18e80-7609-4fff-bd4b-f02728ec0688}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal
