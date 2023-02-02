@@ -49,48 +49,46 @@ namespace Ssz.Utils
             if (resultCount <= 0 || resultCount > 0xFFFF) return new object[0];
 
             var resultValues = new object?[resultCount];
-            var conditionResults = new bool?[resultCount];
+            var conditionResults = new bool[resultCount];
 
-            foreach (SszStatement statement in BackStatements)
+            if (BackStatements.Count > 0)
             {
-                var paramNum = statement.ParamNum;
-                if (paramNum >= 0 && paramNum < resultCount)
-                    if (conditionResults[paramNum] != true)
-                    {
-                        if (new Any(statement.Condition.Evaluate(_values, value, logger, userFriendlyLogger)).ValueAsBoolean(false))
+                foreach (SszStatement statement in BackStatements)
+                {
+                    var paramNum = statement.ParamNum;
+                    if (paramNum >= 0 && paramNum < resultCount)
+                    {                        
+                        if (!conditionResults[paramNum] &&
+                            new Any(statement.Condition.Evaluate(_values, value, logger, userFriendlyLogger)).ValueAsBoolean(false))
                         {
                             resultValues[paramNum] = statement.Value.Evaluate(_values, value, logger, userFriendlyLogger);
                             conditionResults[paramNum] = true;
                         }
-                        else
-                        {
-                            conditionResults[paramNum] = false;
-                        }
-                    }
-            }            
-
-            for (var paramNum = 0; paramNum < resultCount; paramNum++)
-            {
-                var conditionResult = conditionResults[paramNum];
-                if (conditionResult is null)
-                {
-                    resultValues[paramNum] = value;
-                    if (_values is not null && paramNum < _values.Length)
-                        _values[paramNum] = value;
+                    }                        
                 }
-                else
-                {
-                    if (!conditionResult.Value)
-                    {
-                        resultValues[paramNum] = DoNothing;
-                    }
-                    else
-                    {
+
+                for (var paramNum = 0; paramNum < resultCount; paramNum++)
+                {                    
+                    if (conditionResults[paramNum])
+                    {                        
                         if (_values is not null && paramNum < _values.Length)
                             _values[paramNum] = resultValues[paramNum];
                     }
-                }                
+                    else
+                    {
+                        resultValues[paramNum] = DoNothing;
+                    }
+                }
             }
+            else
+            {
+                for (var paramNum = 0; paramNum < resultCount; paramNum++)
+                {
+                    resultValues[paramNum] = value;
+                    if (_values is not null)
+                        _values[paramNum] = value;
+                }                
+            }      
 
             return resultValues;
         }

@@ -1,4 +1,5 @@
-﻿using Ssz.Utils;
+﻿using Microsoft.Extensions.Logging;
+using Ssz.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,9 +75,9 @@ namespace Ssz.Utils.DataAccess
         /// 
         /// </summary>
         /// <param name="valueStatusTimestamp"></param>
-        public async Task<uint> WriteAsync(ValueStatusTimestamp valueStatusTimestamp)
+        public async Task<uint> WriteAsync(ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger = null)
         {
-            return await DataAccessProvider.WriteAsync(this, valueStatusTimestamp, null);
+            return await DataAccessProvider.WriteAsync(this, valueStatusTimestamp, userFriendlyLogger);
         }
 
         #endregion

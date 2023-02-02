@@ -225,21 +225,11 @@ namespace Ssz.Utils
                         if (l.Length > 0 && l[l.Length - 1] == '\\')
                         {
                             if (line != @"")
-                            {
-                                if (StringHelper.StartsWithIgnoreCase(line, @"#define"))
-                                {
-                                    line += @" " + l.Substring(0, l.Length - 1);
-                                    continue;
-                                }                                    
-                            }
+                                line += @" " + l.Substring(0, l.Length - 1);
                             else
-                            {
-                                if (StringHelper.StartsWithIgnoreCase(l, @"#define"))
-                                {
-                                    line = l.Substring(0, l.Length - 1);
-                                    continue;
-                                }                                    
-                            }                                
+                                line = l.Substring(0, l.Length - 1);
+
+                            continue;
                         }
 
                         line += l;
