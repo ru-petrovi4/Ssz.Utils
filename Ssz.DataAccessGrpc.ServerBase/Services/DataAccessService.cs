@@ -138,12 +138,12 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override async Task<AddItemsToListReply> AddItemsToList(AddItemsToListRequest request, ServerCallContext context)
         {
-            return await GetReplyAsync(() =>
+            return await GetAsyncReplyAsync(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
                     var reply = new AddItemsToListReply();
-                    reply.Results.Add(serverContext.AddItemsToList(request.ListServerAlias, request.ItemsToAdd.ToList()));
+                    reply.Results.Add(await serverContext.AddItemsToListAsync(request.ListServerAlias, request.ItemsToAdd.ToList()));
                     return reply;
                 },
                 context);
@@ -151,12 +151,12 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override async Task<RemoveItemsFromListReply> RemoveItemsFromList(RemoveItemsFromListRequest request, ServerCallContext context)
         {
-            return await GetReplyAsync(() =>
+            return await GetAsyncReplyAsync(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
                     var reply = new RemoveItemsFromListReply();
-                    reply.Results.Add(serverContext.RemoveItemsFromList(request.ListServerAlias, request.ServerAliasesToRemove.ToList()));
+                    reply.Results.Add(await serverContext.RemoveItemsFromListAsync(request.ListServerAlias, request.ServerAliasesToRemove.ToList()));
                     return reply;
                 },
                 context);

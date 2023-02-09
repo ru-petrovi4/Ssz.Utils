@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Grpc.Core;
 using Ssz.Utils.DataAccess;
 using Ssz.Utils;
+using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.ServerBase
 {
@@ -84,7 +85,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="listServerAlias"></param>
         /// <param name="itemsToAdd"></param>
         /// <returns></returns>
-        internal List<AddItemToListResult> AddItemsToList(uint listServerAlias, List<ListItemInfo> itemsToAdd)
+        internal async Task<List<AddItemToListResult>> AddItemsToListAsync(uint listServerAlias, List<ListItemInfo> itemsToAdd)
         {
             ServerListRoot? serverList;
 
@@ -93,16 +94,17 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Incorrect listServerAlias."));
             }
 
-            return serverList.AddItemsToList(itemsToAdd);
+            return await serverList.AddItemsToListAsync(itemsToAdd);
         }
 
         /// <summary>
-        /// 
+        ///     Returns failed AliasResults only.
         /// </summary>
         /// <param name="listServerAlias"></param>
         /// <param name="serverAliasesToRemove"></param>
         /// <returns></returns>
-        internal List<AliasResult> RemoveItemsFromList(uint listServerAlias, List<uint> serverAliasesToRemove)
+        /// <exception cref="RpcException"></exception>
+        internal async Task<List<AliasResult>> RemoveItemsFromListAsync(uint listServerAlias, List<uint> serverAliasesToRemove)
         {
             ServerListRoot? serverList;
 
@@ -111,7 +113,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Incorrect listServerAlias."));
             }
 
-            return serverList.RemoveItemsFromList(serverAliasesToRemove);
+            return await serverList.RemoveItemsFromListAsync(serverAliasesToRemove);
         }        
 
         #endregion

@@ -77,12 +77,18 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public bool ListCallbackIsEnabled { get; protected set; }
 
-        public virtual List<AddItemToListResult> AddItemsToList(List<ListItemInfo> itemsToAdd)
+        public virtual Task<List<AddItemToListResult>> AddItemsToListAsync(List<ListItemInfo> itemsToAdd)
         {
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid List Type for this Request."));
         }
 
-        public virtual List<AliasResult> RemoveItemsFromList(List<uint> serverAliasesToRemove)
+        /// <summary>
+        ///     Returns failed AliasResults only.
+        /// </summary>
+        /// <param name="serverAliasesToRemove"></param>
+        /// <returns></returns>
+        /// <exception cref="RpcException"></exception>
+        public virtual Task<List<AliasResult>> RemoveItemsFromListAsync(List<uint> serverAliasesToRemove)
         {
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid List Type for this Request."));
         }
