@@ -117,23 +117,23 @@ namespace Ssz.Utils.DataAccess
         Task<IValueSubscription[]?> PollElementValuesChangesAsync();
 
         /// <summary>
-        ///     Returns StatusCode (See Ssz.Utils.JobStatusCodes).
+        ///     Returns ResultInfo.
         /// </summary>
         /// <param name="valueSubscription"></param>
         /// <param name="valueStatusTimestamp"></param>
         /// <param name="userFriendlyLogger"></param>
         /// <returns></returns>
-        Task<uint> WriteAsync(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger);
+        Task<ResultInfo> WriteAsync(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger);
 
         /// <summary>     
         ///     No values mapping and conversion.       
-        ///     Returns failed ValueSubscriptions and StatusCodes (See Ssz.Utils.JobStatusCodes).
+        ///     Returns failed ValueSubscriptions and ResultInfos.
         ///     If connection error, all ValueSubscriptions are failed.        
         /// </summary>
         /// <param name="valueSubscriptions"></param>
         /// <param name="valueStatusTimestamps"></param>
         /// <returns></returns>
-        Task<(IValueSubscription[], uint[])> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps);
+        Task<(IValueSubscription[], ResultInfo[])> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps);
 
         /// <summary>
         ///     Throws if any errors.

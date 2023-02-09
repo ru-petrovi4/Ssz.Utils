@@ -14,13 +14,21 @@ namespace Ssz.Utils.DataAccess
 
         /// <summary>
         ///     Is used to subscribe for value updating and to write values.
-        ///     valueUpdated(oldValue, newValue) is invoked when Value property Updated. Initial Value property is new ValueStatusTimestamp(), Any(null) and Unknown status.        
+        ///     valueUpdated is invoked when ValueStatusTimestamp property Updated. Initial Value property is new ValueStatusTimestamp(), Any(null) and Unknown status. 
         /// </summary>
-        public ValueSubscription(IDataAccessProvider dataAccessProvider, string elementId, EventHandler<ValueUpdatedEventArgs>? valueUpdated = null)
+        /// <param name="dataAccessProvider"></param>
+        /// <param name="elementId"></param>
+        /// <param name="valueStatusTimestampUpdated"></param>
+        /// <param name="addItemResultUpdated"></param>
+        public ValueSubscription(IDataAccessProvider dataAccessProvider, 
+            string elementId, 
+            EventHandler<ValueStatusTimestampUpdatedEventArgs>? valueStatusTimestampUpdated = null, 
+            EventHandler? addItemResultUpdated = null)
         {
             DataAccessProvider = dataAccessProvider;
             ElementId = elementId;
-            _valueUpdated = valueUpdated;
+            _valueStatusTimestampUpdated = valueStatusTimestampUpdated;
+            _addItemResultUpdated = addItemResultUpdated;
 
             DataAccessProvider.AddItem(ElementId, this);
         }
@@ -29,7 +37,7 @@ namespace Ssz.Utils.DataAccess
         {
             DataAccessProvider.RemoveItem(this);
 
-            _valueUpdated = null;
+            _valueStatusTimestampUpdated = null;
         }
 
         #endregion
@@ -37,45 +45,47 @@ namespace Ssz.Utils.DataAccess
         #region public functions
 
         public IDataAccessProvider DataAccessProvider { get; }
+        
+        public string ElementId { get; }
 
         /// <summary>
-        ///     Id actually used for subscription. Initialized after constructor.       
+        ///     Id actually used for subscription.
         /// </summary>
-        public string MappedElementIdOrConst { get; set; } = @"";
+        public string MappedElementIdOrConst { get; private set; } = @"";        
 
-        public AddItemResult? AddItemResult { get; set; }
+        public AddItemResult AddItemResult { get; private set; } = AddItemResult.UnknownAddItemResult;
+        
+        public ValueStatusTimestamp ValueStatusTimestamp { get; private set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="valueStatusTimestamp"></param>
+        public void Update(string mappedElementIdOrConst)
+        {
+            MappedElementIdOrConst = mappedElementIdOrConst;
+        }
+
+        public void Update(AddItemResult addItemResult)
+        {
+            AddItemResult = addItemResult;
+            if (_addItemResultUpdated is not null)
+                _addItemResultUpdated(this, EventArgs.Empty);
+        }
+        
         public void Update(ValueStatusTimestamp valueStatusTimestamp)
         {
             var oldValueStatusTimestamp = ValueStatusTimestamp;
             ValueStatusTimestamp = valueStatusTimestamp;            
-            if (_valueUpdated is not null) 
-                _valueUpdated(this, new ValueUpdatedEventArgs
+            if (_valueStatusTimestampUpdated is not null) 
+                _valueStatusTimestampUpdated(this, new ValueStatusTimestampUpdatedEventArgs
                 {
                     OldValueStatusTimestamp = oldValueStatusTimestamp,
                     NewValueStatusTimestamp = valueStatusTimestamp
                 });
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string ElementId { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public ValueStatusTimestamp ValueStatusTimestamp { get; private set; }
+        }        
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="valueStatusTimestamp"></param>
-        public async Task<uint> WriteAsync(ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger = null)
+        public async Task<ResultInfo> WriteAsync(ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger = null)
         {
             return await DataAccessProvider.WriteAsync(this, valueStatusTimestamp, userFriendlyLogger);
         }
@@ -84,12 +94,13 @@ namespace Ssz.Utils.DataAccess
 
         #region private fields
 
-        private EventHandler<ValueUpdatedEventArgs>? _valueUpdated;
+        private EventHandler<ValueStatusTimestampUpdatedEventArgs>? _valueStatusTimestampUpdated;
+        private EventHandler? _addItemResultUpdated;
 
         #endregion
     }
 
-    public class ValueUpdatedEventArgs : EventArgs
+    public class ValueStatusTimestampUpdatedEventArgs : EventArgs
     {
         public ValueStatusTimestamp OldValueStatusTimestamp { get; set; }
 

@@ -110,7 +110,8 @@ namespace Ssz.Xi.Client
 
             foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
             {
-                valueSubscriptionObj.ValueSubscription.MappedElementIdOrConst = AddItem(valueSubscriptionObj);
+                valueSubscriptionObj.ValueSubscription.Update(
+                    AddItem(valueSubscriptionObj));
             }
         }
 
@@ -167,7 +168,10 @@ namespace Ssz.Xi.Client
                     try
                     {
                         callbackDispatcher.BeginInvoke(ct =>
-                            valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist }));
+                        {
+                            valueSubscription.Update(AddItemResult.InvalidArgumentAddItemResult);
+                            valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist });
+                        });
                     }
                     catch (Exception)
                     {
@@ -181,7 +185,8 @@ namespace Ssz.Xi.Client
 
             if (IsInitialized)
             {
-                valueSubscription.MappedElementIdOrConst = AddItem(valueSubscriptionObj);
+                valueSubscription.Update(
+                    AddItem(valueSubscriptionObj));
             }
         }
 
@@ -222,15 +227,15 @@ namespace Ssz.Xi.Client
                 taskCompletionSource.SetResult(changedValueSubscriptions is not null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null);
             });
             return await taskCompletionSource.Task;
-        }        
+        }
 
         /// <summary>
-        /// 
+        ///     Returns ResultInfo.
         /// </summary>
         /// <param name="valueSubscription"></param>
         /// <param name="valueStatusTimestamp"></param>
         /// <param name="userFriendlyLogger"></param>
-        public override Task<uint> WriteAsync(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
+        public override Task<ResultInfo> WriteAsync(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
         {
             //BeginInvoke(ct =>
             //{
@@ -242,14 +247,14 @@ namespace Ssz.Xi.Client
 
             var callbackDispatcher = CallbackDispatcher;
             if (!IsInitialized || callbackDispatcher is null) 
-                return Task.FromResult(JobStatusCodes.Unknown);
+                return Task.FromResult(ResultInfo.UnknownResultInfo);
 
             if (!ValueStatusCodes.IsGood(valueStatusTimestamp.ValueStatusCode))
-                return Task.FromResult(JobStatusCodes.Unknown);
+                return Task.FromResult(ResultInfo.UnknownResultInfo);
             var value = valueStatusTimestamp.Value;
 
             if (!_valueSubscriptionsCollection.TryGetValue(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj))
-                return Task.FromResult(JobStatusCodes.Unknown);
+                return Task.FromResult(ResultInfo.UnknownResultInfo);
 
             if (userFriendlyLogger is not null && userFriendlyLogger.IsEnabled(LogLevel.Information))
                 userFriendlyLogger.LogInformation("UI TAG: \"" + valueSubscriptionObj.ElementId + "\"; Value from UI: \"" +
@@ -280,7 +285,7 @@ namespace Ssz.Xi.Client
                 {
                 }
 
-                return Task.FromResult(JobStatusCodes.OK);
+                return Task.FromResult(ResultInfo.OkResultInfo);
             }
 
             object?[]? resultValues = null;
@@ -291,7 +296,7 @@ namespace Ssz.Xi.Client
                     converter.ConvertBack(value.ValueAsObject(),
                         valueSubscriptionObj.ChildValueSubscriptionsList.Count, null, userFriendlyLogger);
                 if (resultValues.Length == 0)
-                    return Task.FromResult(JobStatusCodes.OK);
+                    return Task.FromResult(ResultInfo.OkResultInfo);
             }
 
             var utcNow = DateTime.UtcNow;
@@ -344,20 +349,20 @@ namespace Ssz.Xi.Client
                 }
             });
 
-            return Task.FromResult(JobStatusCodes.OK);
+            return Task.FromResult(ResultInfo.OkResultInfo);
         }
 
         /// <summary>     
         ///     No values mapping and conversion.       
-        ///     returns failed ValueSubscriptions.
-        ///     If connection error, failed ValueSubscriptions is all clientObjs.        
+        ///     Returns failed ValueSubscriptions and ResultInfos.
+        ///     If connection error, all ValueSubscriptions are failed.      
         /// </summary>
         /// <param name="valueSubscriptions"></param>
         /// <param name="valueStatusTimestamps"></param>
         /// <returns></returns>
-        public override async Task<(IValueSubscription[], uint[])> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
+        public override async Task<(IValueSubscription[], ResultInfo[])> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
         {
-            var taskCompletionSource = new TaskCompletionSource<(IValueSubscription[], uint[])>();
+            var taskCompletionSource = new TaskCompletionSource<(IValueSubscription[], ResultInfo[])>();
 
             WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
@@ -365,8 +370,8 @@ namespace Ssz.Xi.Client
                 _xiDataListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher,
                     XiDataListItemsManagerOnElementValuesCallback, true, ct);
                 object[] failedValueSubscriptions = _xiDataListItemsManager.Write(valueSubscriptions, valueStatusTimestamps);
-
-                taskCompletionSource.SetResult((failedValueSubscriptions.OfType<IValueSubscription>().ToArray(), Enumerable.Repeat(JobStatusCodes.Unknown, failedValueSubscriptions.Length).ToArray()));
+                
+                taskCompletionSource.SetResult((failedValueSubscriptions.OfType<IValueSubscription>().ToArray(), Enumerable.Repeat(ResultInfo.UnknownResultInfo, failedValueSubscriptions.Length).ToArray()));
             });
 
             return await taskCompletionSource.Task;
@@ -558,6 +563,7 @@ namespace Ssz.Xi.Client
                             {
                                 foreach (IValueSubscription valueSubscription in valueSubscriptions)
                                 {
+                                    valueSubscription.Update(AddItemResult.UnknownAddItemResult);
                                     valueSubscription.Update(new ValueStatusTimestamp());
                                 }
                                 DataGuid = Guid.NewGuid();
@@ -851,8 +857,11 @@ namespace Ssz.Xi.Client
                     try
                     {
                         callbackDispatcher.BeginInvoke(ct =>
+                        {
+                            valueSubscription.Update(ConstAddItemResult); 
                             valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, ValueStatusCodes.Good,
-                                DateTime.UtcNow)));
+                                DateTime.UtcNow));
+                        });
                     }
                     catch (Exception)
                     {
@@ -959,6 +968,16 @@ namespace Ssz.Xi.Client
         private Dictionary<IValueSubscription, ValueSubscriptionObj> _valueSubscriptionsCollection =
             new(ReferenceEqualityComparer<object>.Default);
 
+        /// <summary>
+        ///     Unspecified Unknown AddItemResult.
+        /// </summary>
+        private static readonly AddItemResult ConstAddItemResult = new AddItemResult
+        {
+            ResultInfo = new ResultInfo { StatusCode = JobStatusCodes.OK },
+            IsReadable = true,
+            IsWritable = true,
+        };
+
         #endregion
 
         protected class ConstItem
@@ -1036,9 +1055,15 @@ namespace Ssz.Xi.Client
 
             public ValueSubscriptionObj? ValueSubscriptionObj;
 
-            public string MappedElementIdOrConst { get; set; }
+            public string MappedElementIdOrConst { get; private set; }
 
-            public AddItemResult? AddItemResult { get; set; }
+            public void Update(string mappedElementIdOrConst)
+            {
+            }
+
+            public void Update(AddItemResult addItemResult)
+            {
+            }
 
             public ValueStatusTimestamp ValueStatusTimestamp;
 

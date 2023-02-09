@@ -96,7 +96,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             {
                 dataGrpcListItemWrapper.DataAccessGrpcListItem = null;
                 dataGrpcListItemWrapper.ConnectionError = false;
-                dataGrpcListItemWrapper.ItemDoesNotExist = false;
+                dataGrpcListItemWrapper.FailedAddItemResult = null;
                 if (clearClientSubscriptions) dataGrpcListItemWrapper.ClientObjectInfosCollection.Clear();
             }
 
@@ -151,19 +151,23 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                         dataGrpcListItemWrapper = new DataAccessGrpcListItemWrapper();
                         _dataGrpcListItemWrappersDictionary.Add(elementId, dataGrpcListItemWrapper);
                     }
-                    clientObjectInfo.ForceNotifyClientObj = true;
+                    else
+                    {
+                        clientObjectInfo.NotifyClientObj_ValueStatusTimestamp = true;
+                    }
+                    clientObjectInfo.NotifyClientObj_AddItemResult = true;
                     clientObjectInfo.DataAccessGrpcListItemWrapper = dataGrpcListItemWrapper;
                     dataGrpcListItemWrapper.ClientObjectInfosCollection.Add(clientObjectInfo);
                 }                
             }
 
-            var dataGrpcListItemWrappersToAdd = new List<DataAccessGrpcListItemWrapper>();
+            var itemsToAdd_DataGrpcListItemWrappers = new List<DataAccessGrpcListItemWrapper>();
             foreach (var kvp in _dataGrpcListItemWrappersDictionary)
             {
                 DataAccessGrpcListItemWrapper dataGrpcListItemWrapper = kvp.Value;
-                if (dataGrpcListItemWrapper.DataAccessGrpcListItem is null && !dataGrpcListItemWrapper.ItemDoesNotExist)
+                if (dataGrpcListItemWrapper.DataAccessGrpcListItem is null && dataGrpcListItemWrapper.FailedAddItemResult is null)
                 {
-                    dataGrpcListItemWrappersToAdd.Add(dataGrpcListItemWrapper);
+                    itemsToAdd_DataGrpcListItemWrappers.Add(dataGrpcListItemWrapper);
                     TDataAccessGrpcListItem? dataGrpcListItem = null;
                     if (DataAccessGrpcList is not null && !DataAccessGrpcList.Disposed)
                     {
@@ -176,7 +180,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                             connectionError = true;
                         }
                     }
-                    else connectionError = true;
+                    else 
+                        connectionError = true;
                     if (dataGrpcListItem is not null)
                     {
                         dataGrpcListItem.Obj = dataGrpcListItemWrapper;
@@ -185,79 +190,84 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 }                
             }
 
-            if (dataGrpcListItemWrappersToAdd.Count > 0)
+            if (itemsToAdd_DataGrpcListItemWrappers.Count > 0)
             {
-                IEnumerable<TDataAccessGrpcListItem>? notAddedDataAccessGrpcListItems = null;
+                IEnumerable<TDataAccessGrpcListItem>? failedItems = null;
                 if (!connectionError && DataAccessGrpcList is not null && !DataAccessGrpcList.Disposed)
                 {
                     try
                     {
-                        notAddedDataAccessGrpcListItems = DataAccessGrpcList.CommitAddItems();
+                        failedItems = DataAccessGrpcList.CommitAddItems();
                     }
                     catch
                     {
                         connectionError = true;
                     }
                 }
-                else connectionError = true;
+                else 
+                    connectionError = true;
 
-                if (notAddedDataAccessGrpcListItems is null) // List doesn't exist or exception when calling to server
+                if (failedItems is null) // List doesn't exist or exception when calling to server
                 {
                     connectionError = true;
 
-                    foreach (var dataGrpcListItemWrapper in dataGrpcListItemWrappersToAdd)
+                    foreach (var dataGrpcListItemWrapper in itemsToAdd_DataGrpcListItemWrappers)
                     {                        
                         if (!dataGrpcListItemWrapper.ConnectionError)
                         {
                             dataGrpcListItemWrapper.ConnectionError = true;
                             foreach (ClientObjectInfo clientObjectInfo in dataGrpcListItemWrapper.ClientObjectInfosCollection)
                             {
-                                clientObjectInfo.ForceNotifyClientObj = true;
+                                clientObjectInfo.NotifyClientObj_AddItemResult = true;
+                                clientObjectInfo.NotifyClientObj_ValueStatusTimestamp = true;
                             }
                         }                        
-                        dataGrpcListItemWrapper.ItemDoesNotExist = false;
+                        dataGrpcListItemWrapper.FailedAddItemResult = null;
                         dataGrpcListItemWrapper.DataAccessGrpcListItem = null;
                     }
                 }
                 else
                 {
-                    foreach (TDataAccessGrpcListItem notAddedDataAccessGrpcListItem in notAddedDataAccessGrpcListItems)
+                    foreach (TDataAccessGrpcListItem failedItem in failedItems)
                     {
-                        var dataGrpcListItemWrapper = notAddedDataAccessGrpcListItem.Obj as DataAccessGrpcListItemWrapper;
+                        var dataGrpcListItemWrapper = failedItem.Obj as DataAccessGrpcListItemWrapper;
                         if (dataGrpcListItemWrapper is null) throw new InvalidOperationException();
-                        dataGrpcListItemWrappersToAdd.Remove(dataGrpcListItemWrapper);
-                        if (!dataGrpcListItemWrapper.ItemDoesNotExist)
+                        itemsToAdd_DataGrpcListItemWrappers.Remove(dataGrpcListItemWrapper);
+                        if (dataGrpcListItemWrapper.FailedAddItemResult is null)
                         {
-                            dataGrpcListItemWrapper.ItemDoesNotExist = true;
+                            dataGrpcListItemWrapper.FailedAddItemResult = failedItem.AddItemResult!;
                             foreach (ClientObjectInfo clientObjectInfo in dataGrpcListItemWrapper.ClientObjectInfosCollection)
                             {
-                                clientObjectInfo.ForceNotifyClientObj = true;
+                                clientObjectInfo.NotifyClientObj_AddItemResult = true;
+                                clientObjectInfo.NotifyClientObj_ValueStatusTimestamp = true;
                             }
                         }                        
                         dataGrpcListItemWrapper.ConnectionError = false;
                         dataGrpcListItemWrapper.DataAccessGrpcListItem = null;
                     }
-                    foreach (var dataGrpcListItemWrapper in dataGrpcListItemWrappersToAdd)
+                    foreach (var dataGrpcListItemWrapper in itemsToAdd_DataGrpcListItemWrappers)
                     {
                         if (dataGrpcListItemWrapper.DataAccessGrpcListItem is null)
                         {
-                            if (!dataGrpcListItemWrapper.ItemDoesNotExist)
+                            if (dataGrpcListItemWrapper.FailedAddItemResult is null)
                             {
-                                dataGrpcListItemWrapper.ItemDoesNotExist = true;
+                                dataGrpcListItemWrapper.FailedAddItemResult = AddItemResult.UnknownAddItemResult;
                                 foreach (ClientObjectInfo clientObjectInfo in dataGrpcListItemWrapper.ClientObjectInfosCollection)
                                 {
-                                    clientObjectInfo.ForceNotifyClientObj = true;
+                                    clientObjectInfo.NotifyClientObj_AddItemResult = true;
+                                    clientObjectInfo.NotifyClientObj_ValueStatusTimestamp = true;
                                 }
                             }
                             dataGrpcListItemWrapper.ConnectionError = false;
                         }
                         else
                         {
-                            dataGrpcListItemWrapper.ItemDoesNotExist = false;
+                            dataGrpcListItemWrapper.FailedAddItemResult = null;
                             dataGrpcListItemWrapper.ConnectionError = false;
                             foreach (ClientObjectInfo clientObjectInfo in dataGrpcListItemWrapper.ClientObjectInfosCollection)
                             {
-                                clientObjectInfo.ForceNotifyClientObj = false;
+                                clientObjectInfo.NotifyClientObj_AddItemResult = true;
+                                clientObjectInfo.NotifyClientObj_ValueStatusTimestamp = false;
                             }
                         }                        
                     }
@@ -354,7 +364,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
             public bool ConnectionError;
 
-            public bool ItemDoesNotExist;
+            public AddItemResult? FailedAddItemResult;
         }
 
         public class ClientObjectInfo
@@ -373,13 +383,18 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
             #region public functions
             
-            public string ElementId { get; private set; }
+            public string ElementId { get; private set; }            
             
+            /// <summary>
+            ///     Has value after initialization till the end
+            /// </summary>
             public DataAccessGrpcListItemWrapper? DataAccessGrpcListItemWrapper { get; set; }
 
             public object? ClientObj { get; set; }
 
-            public bool ForceNotifyClientObj { get; set; }
+            public bool NotifyClientObj_AddItemResult { get; set; }
+
+            public bool NotifyClientObj_ValueStatusTimestamp { get; set; }
 
             #endregion
         }

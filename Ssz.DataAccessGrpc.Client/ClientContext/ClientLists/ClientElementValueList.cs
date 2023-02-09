@@ -51,6 +51,11 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
             return dataListItem;
         }
 
+        /// <summary>
+        ///     Returns failed items only.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ObjectDisposedException"></exception>
         public override IEnumerable<ClientElementValueListItem>? CommitAddItems()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
@@ -66,7 +71,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         }
 
         /// <summary>
-        /// 
+        ///     Returns failed items.
         /// </summary>
         /// <returns></returns>
         public IEnumerable<ClientElementValueListItem> CommitWriteElementValueListItems()
@@ -106,27 +111,27 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                                 writer.WriteObject(valueStatusTimestamp.Value.StorageObject);
                                 break;
                         }
-                        item.HasWritten(JobStatusCodes.OK);
+                        item.HasWritten(ResultInfo.OkResultInfo);
                     }
                 }
                 memoryStream.Position = 0;
                 fullElementValuesCollection.ObjectValues = Google.Protobuf.ByteString.FromStream(memoryStream);
             }
 
-            var result = new List<ClientElementValueListItem>();
+            var failedItems = new List<ClientElementValueListItem>();
             foreach (ElementValuesCollection elementValuesCollection in fullElementValuesCollection.SplitForCorrectGrpcMessageSize())
             {
-                AliasResult[] listAliasesResult = Context.WriteElementValues(ListServerAlias, elementValuesCollection);
-                foreach (AliasResult aliasResult in listAliasesResult)
+                AliasResult[] failedAliasResults = Context.WriteElementValues(ListServerAlias, elementValuesCollection);
+                foreach (AliasResult failedAliasResult in failedAliasResults)
                 {                    
-                    if (ListItemsManager.TryGetValue(aliasResult.ClientAlias, out ClientElementValueListItem? item))
+                    if (ListItemsManager.TryGetValue(failedAliasResult.ClientAlias, out ClientElementValueListItem? item))
                     {
-                        item.HasWritten(aliasResult.StatusCode);
-                        result.Add(item);
+                        item.HasWritten(failedAliasResult.GetResultInfo());
+                        failedItems.Add(item);
                     }
                 }
             }
-            return result;
+            return failedItems;
         }
 
         /// <summary>

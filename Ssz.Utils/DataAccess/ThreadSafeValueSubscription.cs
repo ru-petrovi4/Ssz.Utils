@@ -38,12 +38,13 @@ namespace Ssz.Utils.DataAccess
 
         public IDataAccessProvider DataAccessProvider { get; }
 
-        /// <summary>
-        ///     Id actually used for subscription. Initialized after constructor.       
-        /// </summary>
-        public string MappedElementIdOrConst { get; set; } = @"";
+        public void Update(string mappedElementIdOrConst)
+        {
+        }
 
-        public AddItemResult? AddItemResult { get; set; }        
+        public void Update(AddItemResult addItemResult)
+        {
+        }
 
         /// <summary>
         ///     Can be called from any thread.
@@ -90,7 +91,7 @@ namespace Ssz.Utils.DataAccess
         /// 
         /// </summary>
         /// <param name="valueStatusTimestamp"></param>
-        public async Task<uint> WriteAsync(ValueStatusTimestamp valueStatusTimestamp)
+        public async Task<ResultInfo> WriteAsync(ValueStatusTimestamp valueStatusTimestamp)
         {
             return await DataAccessProvider.WriteAsync(this, valueStatusTimestamp, null);
         }

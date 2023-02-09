@@ -126,6 +126,12 @@ namespace Ssz.DataAccessGrpc.ServerBase
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid List Type for this Request."));
         }
 
+        /// <summary>
+        ///     Returns failed AliasResults only.
+        /// </summary>
+        /// <param name="elementValuesCollection"></param>
+        /// <returns></returns>
+        /// <exception cref="RpcException"></exception>
         public virtual Task<List<AliasResult>> WriteElementValuesAsync(ElementValuesCollection elementValuesCollection)
         {
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid List Type for this Request."));

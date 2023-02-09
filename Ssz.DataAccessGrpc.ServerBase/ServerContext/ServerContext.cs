@@ -98,7 +98,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     AddCallbackMessage(
                         new ContextStatusMessage
                         {
-                            ContextStateCode = ContextStateCodes.STATE_ABORTING
+                            StateCode = ContextStateCodes.STATE_ABORTING
                         });                    
                 }
                 else
@@ -123,7 +123,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 AddCallbackMessage(
                     new ContextStatusMessage
                     {
-                        ContextStateCode = ContextStateCodes.STATE_ABORTING
+                        StateCode = ContextStateCodes.STATE_ABORTING
                     });
             }
             else

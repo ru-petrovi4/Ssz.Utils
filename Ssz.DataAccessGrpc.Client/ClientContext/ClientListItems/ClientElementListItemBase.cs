@@ -93,10 +93,10 @@ namespace Ssz.DataAccessGrpc.Client.ClientListItems
         /// </summary>
         public bool PreparedForRemove { get; set; }
 
-        public void SetAddItemResult(AddItemResult? addItemResult)
+        public void SetAddItemResult(AddItemResult addItemResult)
         {
             AddItemResult = addItemResult;            
-            var dataTypeId = addItemResult?.DataTypeId;
+            var dataTypeId = addItemResult.DataTypeId;
             if (dataTypeId is null)
             {
                 ValueTypeCode = TypeCode.Empty;

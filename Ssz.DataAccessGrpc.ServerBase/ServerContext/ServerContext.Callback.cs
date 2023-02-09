@@ -143,7 +143,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 _longrunningPassthroughCallbackMessagesCollection = new List<LongrunningPassthroughCallbackMessage>();
             }
 
-            bool hasAbortingMessage = contextStatusMessagesCollection.Any(cim => cim.ContextStateCode == ContextStateCodes.STATE_ABORTING);
+            bool hasAbortingMessage = contextStatusMessagesCollection.Any(cim => cim.StateCode == ContextStateCodes.STATE_ABORTING);
 
             try
             {
@@ -163,7 +163,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             var callbackMessage = new CallbackMessage();
                             callbackMessage.ContextStatus = new ContextStatus
                             {
-                                ContextStateCode = contextStatusMessage.ContextStateCode
+                                StateCode = contextStatusMessage.StateCode
                             };
                             await _responseStream.WriteAsync(callbackMessage);
                         }
@@ -293,7 +293,10 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public class ContextStatusMessage
         {
-            public uint ContextStateCode;
+            /// <summary>
+            /// 
+            /// </summary>
+            public uint StateCode;
         }
 
         public class ElementValuesCallbackMessage

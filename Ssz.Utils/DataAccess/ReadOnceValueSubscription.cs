@@ -1,5 +1,6 @@
 ﻿using Ssz.Utils;
 using System;
+using System.Threading.Tasks;
 
 namespace Ssz.Utils.DataAccess
 {
@@ -23,12 +24,16 @@ namespace Ssz.Utils.DataAccess
 
         #region public functions
 
-        /// <summary>
-        ///     ElementId actually used for subscription.
-        /// </summary>
-        public string MappedElementIdOrConst { get; set; } = @"";
+        public string MappedElementIdOrConst { get; private set; } = @"";
 
-        public AddItemResult? AddItemResult { get; set; }        
+        public void Update(string mappedElementIdOrConst)
+        {
+            MappedElementIdOrConst = mappedElementIdOrConst;
+        }
+
+        public void Update(AddItemResult addItemResult)
+        {
+        }
 
         /// <summary>
         /// 

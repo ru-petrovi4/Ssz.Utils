@@ -56,6 +56,10 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
 
         public abstract TClientElementListItemBase PrepareAddItem(string elementId);
 
+        /// <summary>
+        ///     Returns failed items only.
+        /// </summary>
+        /// <returns></returns>
         public abstract IEnumerable<TClientElementListItemBase>? CommitAddItems();
 
         public abstract IEnumerable<TClientElementListItemBase>? CommitRemoveItems();
@@ -82,11 +86,9 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         #region protected functions
 
         /// <summary>
-        ///     This method requests the server to add elements to the list that have been added to the local ClientBase copy
-        ///     of the list. For example, after using the AddNewDataObjectToList() method add a set of data objects to the local
-        ///     ClientBase copy of the list, this method is called to add them to the server's copy of the list in a single call.
+        ///     Returns failed items only.
         /// </summary>
-        /// <returns> The list of elements that were not added to the server or null is call to server failed.</returns>
+        /// <returns></returns>
         protected IEnumerable<TClientElementListItemBase>? CommitAddItemsInternal()
         {
             var listInstanceIdsCollection = new List<ListItemInfo>();
@@ -105,7 +107,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                 listItem.PreparedForAdd = false;
             }
 
-            var resultItems = new List<TClientElementListItemBase>();
+            var failedItems = new List<TClientElementListItemBase>();
 
             if (listInstanceIdsCollection.Count > 0)
             {
@@ -122,7 +124,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                             listItem.ServerAlias = r.AliasResult.ServerAlias;
                             listItem.SetAddItemResult(new AddItemResult
                             {
-                                AddItemJobStatusCode = r.AliasResult.StatusCode,
+                                ResultInfo = r.AliasResult.GetResultInfo(),
                                 DataTypeId = r.DataTypeId?.ToTypeId(),
                                 IsReadable = r.IsReadable,
                                 IsWritable = r.IsWritable,
@@ -137,7 +139,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                                     // remove values that the server failed to add
                                 listItem.ClientAlias = 0;
                                 listItem.IsInClientList = false;
-                                resultItems.Add(listItem);
+                                failedItems.Add(listItem);
                             }
                         }
                     }
@@ -152,7 +154,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                 }
             }
 
-            return resultItems;
+            return failedItems;
         }
 
         /// <summary>

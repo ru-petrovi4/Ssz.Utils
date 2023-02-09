@@ -47,6 +47,12 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public abstract void LongrunningPassthroughCancel(ServerContext serverContext, string jobId);
 
+        /// <summary>
+        ///     Overrides MUST use .ConfigureAwait(false) for all await.
+        /// </summary>
+        /// <param name="nowUtc"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public virtual async Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) return;

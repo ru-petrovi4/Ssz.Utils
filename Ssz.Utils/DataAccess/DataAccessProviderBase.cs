@@ -332,14 +332,29 @@ namespace Ssz.Utils.DataAccess
         {            
         }
 
-        public virtual Task<uint> WriteAsync(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
+        /// <summary>
+        ///     Returns ResultInfo.
+        /// </summary>
+        /// <param name="valueSubscription"></param>
+        /// <param name="valueStatusTimestamp"></param>
+        /// <param name="userFriendlyLogger"></param>
+        /// <returns></returns>
+        public virtual Task<ResultInfo> WriteAsync(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
         {
-            return Task.FromResult(JobStatusCodes.InvalidArgument);
+            return Task.FromResult(new ResultInfo { StatusCode = JobStatusCodes.InvalidArgument });
         }
 
-        public virtual Task<(IValueSubscription[], uint[])> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
+        /// <summary>
+        ///     No values mapping and conversion.       
+        ///     Returns failed ValueSubscriptions and ResultInfos.
+        ///     If connection error, all ValueSubscriptions are failed.
+        /// </summary>
+        /// <param name="valueSubscriptions"></param>
+        /// <param name="valueStatusTimestamps"></param>
+        /// <returns></returns>
+        public virtual Task<(IValueSubscription[], ResultInfo[])> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
         {
-            return Task.FromResult((new IValueSubscription[0], new uint[0]));
+            return Task.FromResult((new IValueSubscription[0], new ResultInfo[0]));
         }
 
         #endregion

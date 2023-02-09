@@ -49,6 +49,11 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
             return dataJournalListItem;
         }
 
+        /// <summary>
+        ///     Returns failed items only.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="ObjectDisposedException"></exception>
         public override IEnumerable<ClientElementValuesJournalListItem>? CommitAddItems()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");

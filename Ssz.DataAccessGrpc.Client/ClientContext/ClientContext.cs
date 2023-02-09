@@ -167,7 +167,7 @@ namespace Ssz.DataAccessGrpc.Client
             private set
             {
                 _serverContextStatus = value;                
-                if (_serverContextStatus is not null && _serverContextStatus.ContextStateCode == ContextStateCodes.STATE_ABORTING)
+                if (_serverContextStatus is not null && _serverContextStatus.StateCode == ContextStateCodes.STATE_ABORTING)
                 {
                     _serverContextIsOperational = false;
                     _pendingClientContextNotificationEventArgs = new ClientContextNotificationEventArgs(ClientContextNotificationType.Shutdown,
@@ -176,7 +176,7 @@ namespace Ssz.DataAccessGrpc.Client
                 if (value is not null)
                     ServerContextNotification(this, new ContextStatusChangedEventArgs
                     {
-                        ContextStateCode = value.ContextStateCode,
+                        ContextStateCode = value.StateCode,
                         Info = value.Info ?? @"",
                         Label = value.Label ?? @"",
                         Details = value.Details ?? @"",
