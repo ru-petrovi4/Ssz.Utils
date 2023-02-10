@@ -330,8 +330,8 @@ namespace Ssz.DataAccessGrpc.Client
                                 break;
                             case CallbackMessage.OptionalMessageOneofCase.ElementValuesCallback:
                                 ElementValuesCallback elementValuesCallback = current.ElementValuesCallback;
-                                ClientElementValueList datalist = GetElementValueList(elementValuesCallback.ListClientAlias);
-                                ElementValuesCallback(datalist, elementValuesCallback.ElementValuesCollection);
+                                ClientElementValueList valueList = GetElementValueList(elementValuesCallback.ListClientAlias);
+                                ElementValuesCallback(valueList, elementValuesCallback.ElementValuesCollection);
                                 break;
                             case CallbackMessage.OptionalMessageOneofCase.EventMessagesCallback:
                                 EventMessagesCallback eventMessagesCallback = current.EventMessagesCallback;

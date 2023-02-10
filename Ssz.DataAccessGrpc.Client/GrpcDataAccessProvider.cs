@@ -432,17 +432,18 @@ namespace Ssz.DataAccessGrpc.Client
         }
 
         /// <summary>
-        ///     Returns true if succeeded.
+        ///     Returns JobStatusCode <see cref="JobStatusCodes"/>
+        ///     No throws.
         /// </summary>
         /// <param name="recipientId"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <param name="progressCallbackAction"></param>
         /// <returns></returns>
-        public override async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend,
+        public override async Task<uint> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend,
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? progressCallbackAction)
         {
-            var taskCompletionSource = new TaskCompletionSource<bool>();
+            var taskCompletionSource = new TaskCompletionSource<uint>();
 
             WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
             {
@@ -465,12 +466,11 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                     callbackActionDispatched = null;
                 }
-                bool succeeded;
+                uint jobStatusCode;
                 try
                 {
-                    uint jobStatusCode = await _clientContextManager.LongrunningPassthroughAsync(recipientId, passthroughName,
+                    jobStatusCode = await _clientContextManager.LongrunningPassthroughAsync(recipientId, passthroughName,
                         dataToSend, callbackActionDispatched);
-                    succeeded = jobStatusCode == JobStatusCodes.OK;
                 }
                 catch (RpcException ex)
                 {
@@ -482,7 +482,7 @@ namespace Ssz.DataAccessGrpc.Client
                             JobStatusCode = JobStatusCodes.Unknown
                         });
                     }
-                    succeeded = false;
+                    jobStatusCode = JobStatusCodes.Unknown;
                 }
                 catch (Exception ex)
                 {
@@ -494,10 +494,10 @@ namespace Ssz.DataAccessGrpc.Client
                             JobStatusCode = JobStatusCodes.Unknown
                         });
                     }
-                    succeeded = false;
+                    jobStatusCode = JobStatusCodes.Unknown;
                 }
 
-                taskCompletionSource.SetResult(succeeded);
+                taskCompletionSource.SetResult(jobStatusCode);
             });
 
             return await taskCompletionSource.Task;

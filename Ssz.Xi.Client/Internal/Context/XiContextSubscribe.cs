@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using Ssz.Xi.Client.Api;
 using Ssz.Xi.Client.Api.ListItems;
@@ -237,19 +238,19 @@ namespace Ssz.Xi.Client.Internal.Context
         /// <summary>
         ///     This method returns the results of invoking an asynchronous passthrough.
         /// </summary>
-        /// <param name="jobId"> The identifier for this invocation of the passthrough defined by the client in the request. </param>
+        /// <param name="invokeId"> The identifier for this invocation of the passthrough defined by the client in the request. </param>
         /// <param name="passthroughResult">
         ///     The result of executing the passthrough, consisting of the result code, the jobId
         ///     supplied in the request, and a byte array. It is up to the client application to interpret this byte array.
         /// </param>
-        public void PassthroughCallback(int jobId, PassthroughResult passthroughResult)
+        public void PassthroughCallback(int invokeId, PassthroughResult passthroughResult)
         {
             lock (_incompleteCommandCallsCollection)
             {
-                if (_incompleteCommandCallsCollection.TryGetValue((uint)jobId, out TaskCompletionSource<bool>? taskCompletionSource))
+                if (_incompleteCommandCallsCollection.TryGetValue((uint)invokeId, out TaskCompletionSource<uint>? taskCompletionSource))
                 {
-                    taskCompletionSource.SetResult(true);
-                    _incompleteCommandCallsCollection.Remove((uint)jobId);
+                    taskCompletionSource.SetResult(JobStatusCodes.OK);
+                    _incompleteCommandCallsCollection.Remove((uint)invokeId);
                 }
             }
         }

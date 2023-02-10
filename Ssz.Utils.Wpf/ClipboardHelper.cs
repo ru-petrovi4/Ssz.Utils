@@ -29,13 +29,13 @@ namespace Ssz.Utils.Wpf
             if (clipboardData is not null)
             {
                 string clipboardDataString = GetClipboardDataString(clipboardData);
-                return CsvHelper.ParseCsv(CultureInfo.CurrentCulture.TextInfo.ListSeparator, clipboardDataString);
+                return CsvHelper.ParseCsvMultiline(CultureInfo.CurrentCulture.TextInfo.ListSeparator, clipboardDataString);
             }
             clipboardData = dataObj.GetData(DataFormats.Text);
             if (clipboardData is not null)
             {
                 string clipboardDataString = GetClipboardDataString(clipboardData);
-                return CsvHelper.ParseCsv("\t", clipboardDataString);
+                return CsvHelper.ParseCsvMultiline("\t", clipboardDataString);
             }
 
             return new List<List<string?>>();

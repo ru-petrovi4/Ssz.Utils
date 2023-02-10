@@ -194,15 +194,12 @@ namespace Ssz.DataAccessGrpc.Client
                     SetResourceManagementLastCallUtc();
                 }
 
-                lock (_longrunningPassthroughRequestsCollection)
+                if (!_longrunningPassthroughRequestsCollection.TryGetValue(jobId, out List<LongrunningPassthroughRequest>? longrunningPassthroughRequestsList))
                 {
-                    if (!_longrunningPassthroughRequestsCollection.TryGetValue(jobId, out List<LongrunningPassthroughRequest>? longrunningPassthroughRequestsList))
-                    {
-                        longrunningPassthroughRequestsList = new List<LongrunningPassthroughRequest>();
-                        _longrunningPassthroughRequestsCollection.Add(jobId, longrunningPassthroughRequestsList);
-                    }
-                    longrunningPassthroughRequestsList.Add(longrunningPassthroughRequest);
+                    longrunningPassthroughRequestsList = new List<LongrunningPassthroughRequest>();
+                    _longrunningPassthroughRequestsCollection.Add(jobId, longrunningPassthroughRequestsList);
                 }
+                longrunningPassthroughRequestsList.Add(longrunningPassthroughRequest);
 
                 return await longrunningPassthroughRequest.TaskCompletionSource.Task;
             }

@@ -118,7 +118,7 @@ namespace Ssz.Utils
         /// <param name="separator"></param>
         /// <param name="sourceString"></param>
         /// <returns></returns>
-        public static List<List<string?>> ParseCsv(string separator, string? sourceString)
+        public static List<List<string?>> ParseCsvMultiline(string separator, string? sourceString)
         {
             if (separator.Length != 1) throw new InvalidOperationException();            
 

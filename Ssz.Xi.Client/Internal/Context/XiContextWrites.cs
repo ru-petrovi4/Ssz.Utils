@@ -129,35 +129,35 @@ namespace Ssz.Xi.Client.Internal.Context
         }
 
         /// <summary>
-        ///     Returns true if succeeded.
-        /// </summary>
+        ///     Returns JobStatusCode <see cref="JobStatusCodes"/>
         /// <param name="recipientId"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <param name="callbackAction"></param>
         /// <returns></returns>
-        public async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend,
+        public async Task<uint> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend,
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackAction)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
             if (_writeEndpoint is null) throw new Exception("No Write Endpoint");
 
-            if (_writeEndpoint.Disposed) return false;
+            if (_writeEndpoint.Disposed) 
+                return JobStatusCodes.Aborted;
 
             string contextId = ContextId;
 
             _writeEndpoint.LastCallUtc = DateTime.UtcNow;
 
-            int jobId;
-            var taskCompletionSource = new TaskCompletionSource<bool>();
+            int invokeId;
+            var taskCompletionSource = new TaskCompletionSource<uint>();
             lock (_incompleteCommandCallsCollection)
             {
-                jobId = (int)_incompleteCommandCallsCollection.Add(taskCompletionSource);
+                invokeId = (int)_incompleteCommandCallsCollection.Add(taskCompletionSource);
             }
             try
             {
-                PassthroughResult? passthroughResult = _writeEndpoint.Proxy.Passthrough(contextId, recipientId, jobId,
+                PassthroughResult? passthroughResult = _writeEndpoint.Proxy.Passthrough(contextId, recipientId, invokeId,
                                       passthroughName, dataToSend ?? new byte[0]);
                 return await taskCompletionSource.Task;
             }
@@ -165,7 +165,7 @@ namespace Ssz.Xi.Client.Internal.Context
             {
                 lock (_incompleteCommandCallsCollection)
                 {
-                    _incompleteCommandCallsCollection.Remove((uint)jobId);
+                    _incompleteCommandCallsCollection.Remove((uint)invokeId);
                 }
                 ProcessRemoteMethodCallException(ex);
                 throw;
@@ -176,7 +176,7 @@ namespace Ssz.Xi.Client.Internal.Context
 
         #region private fields
 
-        private readonly ObjectManager<TaskCompletionSource<bool>> _incompleteCommandCallsCollection = new(256);
+        private readonly ObjectManager<TaskCompletionSource<uint>> _incompleteCommandCallsCollection = new(256);
 
         #endregion
     }

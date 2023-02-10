@@ -412,20 +412,21 @@ namespace Ssz.Xi.Client
         }
 
         /// <summary>
-        ///     Returns true if succeeded.
+        ///     Returns JobStatusCode <see cref="JobStatusCodes"/>
+        ///     No throws.
         /// </summary>
         /// <param name="recipientId"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <param name="progressCallbackAction"></param>
         /// <returns></returns>
-        public override async Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend, 
+        public override async Task<uint> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend, 
             Action<LongrunningPassthroughCallback>? progressCallbackAction)
         {
-            var taskCompletionSource = new TaskCompletionSource<bool>();
+            var taskCompletionSource = new TaskCompletionSource<uint>();
+
             WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
-            {
-                bool succeeded;
+            {                
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
                 Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
                 if (progressCallbackAction is not null && сallbackDispatcher is not null)
@@ -445,12 +446,12 @@ namespace Ssz.Xi.Client
                 {
                     callbackActionDispatched = null;
                 }
-
+                uint jobStatusCode;
                 try
                 {
                     if (_xiServerProxy is null) throw new InvalidOperationException();
 
-                    succeeded = await _xiServerProxy.LongrunningPassthroughAsync(recipientId, passthroughName,
+                    jobStatusCode = await _xiServerProxy.LongrunningPassthroughAsync(recipientId, passthroughName,
                         dataToSend, callbackActionDispatched);
                 }
                 catch
@@ -462,11 +463,12 @@ namespace Ssz.Xi.Client
                             JobStatusCode = JobStatusCodes.Unknown
                         });
                     }
-                    succeeded = false;
+                    jobStatusCode = JobStatusCodes.Unknown;
                 }
 
-                taskCompletionSource.SetResult(succeeded);
+                taskCompletionSource.SetResult(jobStatusCode);
             });
+
             return await taskCompletionSource.Task;
         }
 

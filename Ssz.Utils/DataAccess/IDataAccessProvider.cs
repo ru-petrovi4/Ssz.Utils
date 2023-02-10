@@ -145,14 +145,15 @@ namespace Ssz.Utils.DataAccess
         Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend);
 
         /// <summary>
-        ///     Returns true if succeeded.
+        ///     Returns JobStatusCode <see cref="JobStatusCodes"/>
+        ///     No throws.
         /// </summary>
         /// <param name="recipientId"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <param name="progressCallbackAction"></param>
         /// <returns></returns>
-        Task<bool> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend, Action<LongrunningPassthroughCallback>? progressCallbackAction);
+        Task<uint> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend, Action<LongrunningPassthroughCallback>? progressCallbackAction);
 
         void JournalAddItem(string elementId, object valueJournalSubscription);
 

@@ -13,14 +13,15 @@ namespace Ssz.Utils.Wpf.Converters
 
         public object? Convert(object? value, Type? targetType, object? parameter, CultureInfo culture)
         {
-            var colors = parameter as Array;            
-            if (colors is not null)
+            var a = parameter as Array;            
+            if (a is not null)
             {
                 var intValue = new Any(value).ValueAsInt32(false);                
-                if (intValue >= 0 && intValue < colors.Length)
-                    return colors.GetValue(intValue);
+                if (intValue >= 0 && intValue < a.Length)
+                    return a.GetValue(intValue);
             }
-            return Colors.Transparent;
+
+            return null;
         }
 
         public object? ConvertBack(object? value, Type? targetType, object? parameter, CultureInfo culture)
