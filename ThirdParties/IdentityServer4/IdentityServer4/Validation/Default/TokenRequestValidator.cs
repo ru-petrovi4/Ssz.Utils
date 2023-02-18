@@ -410,8 +410,10 @@ namespace IdentityServer4.Validation
 
             if (userName.IsMissing())
             {
-                LogError("Username is missing");
-                return Invalid(OidcConstants.TokenErrors.InvalidGrant);
+                // VALFIX
+                //LogError("Username is missing");
+                //return Invalid(OidcConstants.TokenErrors.InvalidGrant);
+                userName = "";
             }
 
             if (password.IsMissing())

@@ -242,7 +242,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IIdentityServerBuilder AddDefaultSecretParsers(this IIdentityServerBuilder builder)
         {
-            builder.Services.AddTransient<ISecretParser, BasicAuthenticationSecretParser>();
+            // VALFIX
+            //builder.Services.AddTransient<ISecretParser, BasicAuthenticationSecretParser>();
             builder.Services.AddTransient<ISecretParser, PostBodySecretParser>();
 
             return builder;
