@@ -39,11 +39,30 @@ namespace Ssz.Utils.Logging
 
         public IDisposable BeginScope<TState>(TState state)
             where TState : notnull
-        {        
-            if (state is ValueTuple<string, string> valueTuple)
-                return new FieldScope(this, valueTuple.Item1, valueTuple.Item2);
+        {
+            var t = state.GetType();                            
+            if (t.Name == typeof(ValueTuple<,>).Name)
+                return new Scope(this, 
+                    (new Any(t.GetField("Item1")?.GetValue(state)).ValueAsString(true), t.GetField("Item2")?.GetValue(state)));  
+            else if (state is Array array)
+            {
+                List<(string, object?)> scopeTuples = new(array.Length);
+                foreach (int i in Enumerable.Range(0, array.Length))
+                {
+                    object? o = array.GetValue(i);
+                    if (o is null) 
+                        continue;
+                    t = o.GetType();
+                    if (t.Name == typeof(ValueTuple<,>).Name)
+                        scopeTuples.Add(
+                            (new Any(t.GetField("Item1")?.GetValue(o)).ValueAsString(true), t.GetField("Item2")?.GetValue(o)));
+                    else
+                        scopeTuples.Add((@"", new Any(o).ValueAsString(true)));
+                }
+                return new ScopesSet(this, scopeTuples);
+            }            
             else
-                return new StringScope(this, new Any(state).ValueAsString(true));
+                return new Scope(this, (@"", new Any(state).ValueAsString(true)));
         }
 
         public abstract bool IsEnabled(LogLevel logLevel);
@@ -66,48 +85,96 @@ namespace Ssz.Utils.Logging
         /// <summary>
         ///     Lock SyncRoot before use
         /// </summary>
-        protected Stack<string> ScopeStringsStack { get; } = new();
+        protected List<(string, object?)> ScopesStack { get; } = new();
 
         /// <summary>
         ///     Lock SyncRoot before use
         /// </summary>
-        protected CaseInsensitiveDictionary<string?> Fields { get; } = new();
+        /// <param name="excludeScopeNames"></param>
+        /// <returns></returns>
+        protected string GetScopesString(string[]? excludeScopeNames = null)
+        {
+            string line = @"";
+            foreach (var scope in ScopesStack)
+            {
+                var scopeName = scope.Item1;
+                string scopeValue;
+                if (scope.Item2 is null)
+                    scopeValue = @"<null>";
+                else
+                    scopeValue = EscapeScopeString(new Any(scope.Item2).ValueAsString(true));
+                if (String.IsNullOrEmpty(scopeName))
+                {
+                    line += scopeValue + @"; ";
+                }
+                else
+                {
+                    if (excludeScopeNames is not null && excludeScopeNames.Contains(scopeName, StringComparer.InvariantCultureIgnoreCase))
+                        continue;
+                    line += EscapeScopeString(scopeName) + ": " + scopeValue + @"; ";
+                }
+            }
+            return line;
+        }
+
+        /// <summary>
+        ///     Lock SyncRoot before use
+        ///     Returns empty string if not found.
+        /// </summary>
+        /// <param name="jobIdScopeName"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        protected object? TryGetScopeValue(string jobIdScopeName)
+        {
+            return ScopesStack.FirstOrDefault(s => String.Equals(s.Item1, jobIdScopeName, StringComparison.InvariantCultureIgnoreCase)).Item2;
+        }
+
+        protected static string EscapeScopeString(string scopeString)
+        {
+            if (String.IsNullOrEmpty(scopeString))
+                return "\"\"";
+            if (scopeString.Contains(':') ||
+                        scopeString.Contains(';') ||
+                        scopeString.Contains('"'))
+                scopeString = "\"" + scopeString.Replace("\"", "\"\"") + "\"";
+            return scopeString;
+        }
 
         #endregion        
 
         #region private functions
 
-        private void PushScopeString(string scopeString)
+        private void PushScope((string, object?) scopeTuple)
         {
             lock (SyncRoot)
             {
-                ScopeStringsStack.Push(scopeString);
+                ScopesStack.Add(scopeTuple);
+            }
+        }
+
+        private void PopScope()
+        {
+            lock (SyncRoot)
+            {
+                ScopesStack.RemoveAt(ScopesStack.Count - 1);
+            }
+        }
+
+        private void PushScopes(List<(string, object?)> scopeTuples)
+        {
+            lock (SyncRoot)
+            {
+                ScopesStack.AddRange(scopeTuples);
             }                
         }
 
-        private void PopScopeString()
+        private void PopScopes(int count)
         {
             lock (SyncRoot)
             {
-                ScopeStringsStack.Pop();
+                ScopesStack.RemoveRange(ScopesStack.Count - count, count);
             }
-        }
-
-        private void AddField(string fieldName, string? fieldValue)
-        {
-            lock (SyncRoot)
-            {
-                Fields[fieldName] = fieldValue;
-            }
-        }
-
-        private void RemoveField(string fieldName)
-        {
-            lock (SyncRoot)
-            {
-                Fields.Remove(fieldName);
-            }
-        }
+        }        
 
         #endregion
 
@@ -117,14 +184,14 @@ namespace Ssz.Utils.Logging
 
         #endregion
 
-        private class StringScope : IDisposable
+        private class Scope : IDisposable
         {
             #region construction and destruction
 
-            public StringScope(SszLoggerBase sszLogger, string scopeString)
+            public Scope(SszLoggerBase sszLogger, (string, object?) scopeTuple)
             {
                 _sszLogger  = sszLogger;                
-                _sszLogger.PushScopeString(scopeString);
+                _sszLogger.PushScope(scopeTuple);
             }
 
             public void Dispose()
@@ -132,7 +199,7 @@ namespace Ssz.Utils.Logging
                 var sszLogger = Interlocked.Exchange(ref _sszLogger, null);
                 if (sszLogger is not null)
                 {
-                    sszLogger.PopScopeString();                    
+                    sszLogger.PopScope();                    
                 }
             }
 
@@ -145,15 +212,15 @@ namespace Ssz.Utils.Logging
             #endregion
         }
 
-        private class FieldScope : IDisposable
+        private class ScopesSet : IDisposable
         {
             #region construction and destruction
 
-            public FieldScope(SszLoggerBase sszLogger, string fieldName, string fieldValue)
+            public ScopesSet(SszLoggerBase sszLogger, List<(string, object?)> scopeTuples)
             {
                 _sszLogger = sszLogger;
-                _fieldName = fieldName;
-                _sszLogger.AddField(fieldName, fieldValue);
+                _scopeTuplesCount = scopeTuples.Count;
+                _sszLogger.PushScopes(scopeTuples);
             }
 
             public void Dispose()
@@ -161,7 +228,7 @@ namespace Ssz.Utils.Logging
                 var sszLogger = Interlocked.Exchange(ref _sszLogger, null);
                 if (sszLogger is not null)
                 {
-                    sszLogger.RemoveField(_fieldName);
+                    sszLogger.PopScopes(_scopeTuplesCount);
                 }
             }
 
@@ -171,7 +238,7 @@ namespace Ssz.Utils.Logging
 
             private SszLoggerBase? _sszLogger;
 
-            private readonly string _fieldName;
+            private int _scopeTuplesCount;
 
             #endregion
         }

@@ -61,9 +61,7 @@ namespace Ssz.Utils.Logging
             Func<TState, Exception?, string> formatter)
         {
             if (!IsEnabled(logLevel))
-            {
                 return;
-            }
 
             string line1;
             if (eventId.Id != 0)
@@ -74,11 +72,8 @@ namespace Ssz.Utils.Logging
             string line2 = "\t";
             lock (SyncRoot)
             {
-                foreach (var scopeString in ScopeStringsStack.Reverse())
-                {
-                    line2 += scopeString + @" -> ";
-                }
-            }                
+                line2 += GetScopesString();
+            }            
             line2 += formatter(state, exception);
             Exception? ex = exception;
             while (ex is not null)

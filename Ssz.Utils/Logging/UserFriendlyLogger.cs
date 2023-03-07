@@ -31,15 +31,12 @@ namespace Ssz.Utils.Logging
             TState state,
             Exception? exception,
             Func<TState, Exception?, string> formatter)
-        {            
+        {
             string line = $"{logLevel,-12}";
             lock (SyncRoot)
             {
-                foreach (var scopeString in ScopeStringsStack.Reverse())
-                {
-                    line += scopeString + @" -> ";
-                }
-            }                
+                line += GetScopesString();
+            }            
             line += formatter(state, exception);
             Exception? ex = exception;
             if (ex is not null)

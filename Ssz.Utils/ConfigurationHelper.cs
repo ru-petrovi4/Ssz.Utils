@@ -49,6 +49,27 @@ namespace Ssz.Utils
             return result;
         }
 
+        public static T GetValue_Enum<T>(IConfiguration configuration, string key, T defaultValue)
+            where T : struct, System.Enum
+        {
+            // null if no key in startup args string
+            // null if --Rewiew or -r
+            // "" if --Rewiew=
+            var valueString = configuration[key];
+            if (String.IsNullOrEmpty(valueString))
+                return defaultValue;            
+            return GetValue_Enum<T>(valueString!, defaultValue);
+        }
+
+        public static T GetValue_Enum<T>(string value, T defaultValue)
+            where T : struct, System.Enum
+        {
+            if (!Enum.TryParse<T>(value, out var result))
+                return defaultValue;
+            else
+                return result;
+        }
+
         #endregion
     }
 }

@@ -77,6 +77,67 @@ namespace Ssz.Utils
             return result;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="nameValueCollectionString"></param>
+        /// <returns></returns>
+        public static List<(string, string?)> ParseExact(string? nameValueCollectionString)
+        {
+            var result = new List<(string, string?)>();
+
+            if (nameValueCollectionString is null || nameValueCollectionString == @"") return result;
+
+            int length = nameValueCollectionString.Length;
+            int i = 0;
+
+            while (i <= length)
+            {
+                // find next & while noting first = on the way (and if there are more) 
+
+                int nameValueBeginIndex = i;
+                int equalsCharIndex = -1;
+
+                while (i <= length)
+                {
+                    char ch;
+                    if (i < length) ch = nameValueCollectionString[i];
+                    else ch = default(char);
+
+                    if (ch == '=')
+                    {
+                        if (equalsCharIndex < 0)
+                            equalsCharIndex = i;
+                    }
+                    else if (ch == '&' || ch == default(char))
+                    {
+                        break;
+                    }
+
+                    i++;
+                }
+
+                // extract the name / value pair                
+                if (equalsCharIndex >= 0) // has '=' char
+                {
+                    string name = nameValueCollectionString.Substring(nameValueBeginIndex, equalsCharIndex - nameValueBeginIndex);
+                    string value = nameValueCollectionString.Substring(equalsCharIndex + 1, i - equalsCharIndex - 1);
+
+                    // add name / value pair to the collection
+                    result.Add((UrlDecode(name), UrlDecode(value)));
+                }
+                else
+                {
+                    string name = nameValueCollectionString.Substring(nameValueBeginIndex, i - nameValueBeginIndex);
+                    result.Add((UrlDecode(name), null));
+                }
+
+                i++;
+            }
+
+            return result;
+        }
+
         /// <summary>        
         /// </summary>
         /// <param name="nameValueCollection"></param>

@@ -21,6 +21,12 @@ namespace Ssz.Utils.Logging
 
         public ILogger[] Loggers { get; }
 
+        /// <summary>
+        ///     Returns one disposable for all sub-loggers scopes.
+        /// </summary>
+        /// <typeparam name="TState"></typeparam>
+        /// <param name="state"></param>
+        /// <returns></returns>
         public IDisposable BeginScope<TState>(TState state)
             where TState : notnull
         {            
@@ -32,6 +38,15 @@ namespace Ssz.Utils.Logging
             return Loggers.Any(l => l.IsEnabled(logLevel));
         }
 
+        /// <summary>
+        ///     Logs to all sub-loggers
+        /// </summary>
+        /// <typeparam name="TState"></typeparam>
+        /// <param name="logLevel"></param>
+        /// <param name="eventId"></param>
+        /// <param name="state"></param>
+        /// <param name="exception"></param>
+        /// <param name="formatter"></param>
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
             Array.ForEach(Loggers, l => l.Log(logLevel, eventId, state, exception, formatter));
