@@ -22,11 +22,13 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
             DoubleAliases.Add(nextElementValuesCollection.DoubleAliases);
             DoubleValues.Add(nextElementValuesCollection.DoubleValues);
+            DoubleValueTypeCodes.Add(nextElementValuesCollection.DoubleValueTypeCodes);
             DoubleValueStatusCodes.Add(nextElementValuesCollection.DoubleValueStatusCodes);
             DoubleTimestamps.Add(nextElementValuesCollection.DoubleTimestamps);            
 
             UintAliases.Add(nextElementValuesCollection.UintAliases);
             UintValues.Add(nextElementValuesCollection.UintValues);
+            UintValueTypeCodes.Add(nextElementValuesCollection.UintValueTypeCodes);
             UintValueStatusCodes.Add(nextElementValuesCollection.UintValueStatusCodes);
             UintTimestamps.Add(nextElementValuesCollection.UintTimestamps);            
 
@@ -72,6 +74,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     {
                         resultElementValuesCollection.DoubleAliases.Add(DoubleAliases[localIndex]);
                         resultElementValuesCollection.DoubleValues.Add(DoubleValues[localIndex]);
+                        resultElementValuesCollection.DoubleValueTypeCodes.Add(DoubleValueTypeCodes[localIndex]);
                         resultElementValuesCollection.DoubleValueStatusCodes.Add(DoubleValueStatusCodes[localIndex]);
                         resultElementValuesCollection.DoubleTimestamps.Add(DoubleTimestamps[localIndex]);
                         replyObjectSize += sizeof(uint) + sizeof(double) + sizeof(uint) + 8;
@@ -84,6 +87,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     {
                         resultElementValuesCollection.UintAliases.Add(UintAliases[localIndex]);
                         resultElementValuesCollection.UintValues.Add(UintValues[localIndex]);
+                        resultElementValuesCollection.UintValueTypeCodes.Add(UintValueTypeCodes[localIndex]);
                         resultElementValuesCollection.UintValueStatusCodes.Add(UintValueStatusCodes[localIndex]);
                         resultElementValuesCollection.UintTimestamps.Add(UintTimestamps[localIndex]);
                         replyObjectSize += sizeof(uint) + sizeof(uint) + sizeof(uint) + 8;

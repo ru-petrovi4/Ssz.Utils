@@ -16,21 +16,23 @@ namespace Ssz.DataAccessGrpc.ServerBase
             NextCollectionGuid = nextElementValuesCollection.NextCollectionGuid;
 
             DoubleAliases.Add(nextElementValuesCollection.DoubleAliases);
-            DoubleValueStatusCodes.Add(nextElementValuesCollection.DoubleValueStatusCodes);
-            DoubleTimestamps.Add(nextElementValuesCollection.DoubleTimestamps);
             DoubleValues.Add(nextElementValuesCollection.DoubleValues);
+            DoubleValueTypeCodes.Add(nextElementValuesCollection.DoubleValueTypeCodes);
+            DoubleValueStatusCodes.Add(nextElementValuesCollection.DoubleValueStatusCodes);
+            DoubleTimestamps.Add(nextElementValuesCollection.DoubleTimestamps);            
 
             UintAliases.Add(nextElementValuesCollection.UintAliases);
-            UintValueStatusCodes.Add(nextElementValuesCollection.UintValueStatusCodes);
-            UintTimestamps.Add(nextElementValuesCollection.UintTimestamps);
             UintValues.Add(nextElementValuesCollection.UintValues);
+            UintValueTypeCodes.Add(nextElementValuesCollection.UintValueTypeCodes);
+            UintValueStatusCodes.Add(nextElementValuesCollection.UintValueStatusCodes);
+            UintTimestamps.Add(nextElementValuesCollection.UintTimestamps);            
 
             ObjectAliases.Add(nextElementValuesCollection.ObjectAliases);
-            ObjectValueStatusCodes.Add(nextElementValuesCollection.ObjectValueStatusCodes);
-            ObjectTimestamps.Add(nextElementValuesCollection.ObjectTimestamps);
             ObjectValues = Google.Protobuf.ByteString.CopyFrom(
                 ObjectValues.Concat(nextElementValuesCollection.ObjectValues).ToArray()
                 );
+            ObjectValueStatusCodes.Add(nextElementValuesCollection.ObjectValueStatusCodes);
+            ObjectTimestamps.Add(nextElementValuesCollection.ObjectTimestamps);            
         }
 
         public List<ElementValuesCollection> SplitForCorrectGrpcMessageSize()
@@ -61,20 +63,22 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 }
 
                 elementValuesCollection.DoubleAliases.AddRange(DoubleAliases.Skip(doubleIndex).Take(MaxArrayLength));
-                elementValuesCollection.DoubleValueStatusCodes.AddRange(DoubleValueStatusCodes.Skip(doubleIndex).Take(MaxArrayLength));
-                elementValuesCollection.DoubleTimestamps.AddRange(DoubleTimestamps.Skip(doubleIndex).Take(MaxArrayLength));
                 elementValuesCollection.DoubleValues.AddRange(DoubleValues.Skip(doubleIndex).Take(MaxArrayLength));
+                elementValuesCollection.DoubleValueTypeCodes.AddRange(DoubleValueTypeCodes.Skip(doubleIndex).Take(MaxArrayLength));
+                elementValuesCollection.DoubleValueStatusCodes.AddRange(DoubleValueStatusCodes.Skip(doubleIndex).Take(MaxArrayLength));
+                elementValuesCollection.DoubleTimestamps.AddRange(DoubleTimestamps.Skip(doubleIndex).Take(MaxArrayLength));                
 
                 elementValuesCollection.UintAliases.AddRange(UintAliases.Skip(uintIndex).Take(MaxArrayLength));
-                elementValuesCollection.UintValueStatusCodes.AddRange(UintValueStatusCodes.Skip(uintIndex).Take(MaxArrayLength));
-                elementValuesCollection.UintTimestamps.AddRange(UintTimestamps.Skip(uintIndex).Take(MaxArrayLength));
                 elementValuesCollection.UintValues.AddRange(UintValues.Skip(uintIndex).Take(MaxArrayLength));
+                elementValuesCollection.UintValueTypeCodes.AddRange(UintValueTypeCodes.Skip(uintIndex).Take(MaxArrayLength));
+                elementValuesCollection.UintValueStatusCodes.AddRange(UintValueStatusCodes.Skip(uintIndex).Take(MaxArrayLength));
+                elementValuesCollection.UintTimestamps.AddRange(UintTimestamps.Skip(uintIndex).Take(MaxArrayLength));                
 
                 elementValuesCollection.ObjectAliases.AddRange(ObjectAliases.Skip(objectIndex).Take(MaxArrayLength));
-                elementValuesCollection.ObjectValueStatusCodes.AddRange(ObjectValueStatusCodes.Skip(objectIndex).Take(MaxArrayLength));
-                elementValuesCollection.ObjectTimestamps.AddRange(ObjectTimestamps.Skip(objectIndex).Take(MaxArrayLength));
                 elementValuesCollection.ObjectValues = Google.Protobuf.ByteString.CopyFrom(
                     ObjectValues.Skip(objectByteIndex).Take(MaxByteStringLength).ToArray());
+                elementValuesCollection.ObjectValueStatusCodes.AddRange(ObjectValueStatusCodes.Skip(objectIndex).Take(MaxArrayLength));
+                elementValuesCollection.ObjectTimestamps.AddRange(ObjectTimestamps.Skip(objectIndex).Take(MaxArrayLength));                
 
                 result.Add(elementValuesCollection);
                 doubleIndex += MaxArrayLength;

@@ -94,21 +94,23 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                         {
                             case Ssz.Utils.Any.StorageType.Double:
                                 fullElementValuesCollection.DoubleAliases.Add(alias);
-                                fullElementValuesCollection.DoubleValueStatusCodes.Add(valueStatusTimestamp.ValueStatusCode);
-                                fullElementValuesCollection.DoubleTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));
                                 fullElementValuesCollection.DoubleValues.Add(valueStatusTimestamp.Value.StorageDouble);
+                                fullElementValuesCollection.DoubleValueTypeCodes.Add((uint)valueStatusTimestamp.Value.ValueTypeCode);
+                                fullElementValuesCollection.DoubleValueStatusCodes.Add(valueStatusTimestamp.ValueStatusCode);
+                                fullElementValuesCollection.DoubleTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                
                                 break;
                             case Ssz.Utils.Any.StorageType.UInt32:
                                 fullElementValuesCollection.UintAliases.Add(alias);
-                                fullElementValuesCollection.UintValueStatusCodes.Add(valueStatusTimestamp.ValueStatusCode);
-                                fullElementValuesCollection.UintTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));
                                 fullElementValuesCollection.UintValues.Add(valueStatusTimestamp.Value.StorageUInt32);
+                                fullElementValuesCollection.UintValueTypeCodes.Add((uint)valueStatusTimestamp.Value.ValueTypeCode);
+                                fullElementValuesCollection.UintValueStatusCodes.Add(valueStatusTimestamp.ValueStatusCode);
+                                fullElementValuesCollection.UintTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                
                                 break;
                             case Ssz.Utils.Any.StorageType.Object:
                                 fullElementValuesCollection.ObjectAliases.Add(alias);
-                                fullElementValuesCollection.ObjectValueStatusCodes.Add(valueStatusTimestamp.ValueStatusCode);
-                                fullElementValuesCollection.ObjectTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));
                                 writer.WriteObject(valueStatusTimestamp.Value.StorageObject);
+                                fullElementValuesCollection.ObjectValueStatusCodes.Add(valueStatusTimestamp.ValueStatusCode);
+                                fullElementValuesCollection.ObjectTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                
                                 break;
                         }
                         item.HasWritten(ResultInfo.OkResultInfo);
@@ -182,6 +184,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                     if (item is not null)
                     {
                         item.UpdateValue(elementValuesCollection.DoubleValues[index],
+                            (TypeCode)elementValuesCollection.DoubleValueTypeCodes[index],
                             elementValuesCollection.DoubleValueStatusCodes[index],
                             elementValuesCollection.DoubleTimestamps[index].ToDateTime()
                             );
@@ -195,6 +198,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                     if (item is not null)
                     {
                         item.UpdateValue(elementValuesCollection.UintValues[index],
+                            (TypeCode)elementValuesCollection.UintValueTypeCodes[index],
                             elementValuesCollection.UintValueStatusCodes[index],
                             elementValuesCollection.UintTimestamps[index].ToDateTime()
                             );

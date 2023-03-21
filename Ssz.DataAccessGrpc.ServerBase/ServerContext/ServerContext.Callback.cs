@@ -332,12 +332,14 @@ namespace Ssz.DataAccessGrpc.ServerBase
                                 case Ssz.Utils.Any.StorageType.Double:
                                     fullElementValuesCollection.DoubleAliases.Add(alias);
                                     fullElementValuesCollection.DoubleValues.Add(valueStatusTimestamp.Value.StorageDouble);
+                                    fullElementValuesCollection.DoubleValueTypeCodes.Add((uint)valueStatusTimestamp.Value.ValueTypeCode);
                                     fullElementValuesCollection.DoubleValueStatusCodes.Add(valueStatusTimestamp.ValueStatusCode);
                                     fullElementValuesCollection.DoubleTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                    
                                     break;
                                 case Ssz.Utils.Any.StorageType.UInt32:
                                     fullElementValuesCollection.UintAliases.Add(alias);
                                     fullElementValuesCollection.UintValues.Add(valueStatusTimestamp.Value.StorageUInt32);
+                                    fullElementValuesCollection.UintValueTypeCodes.Add((uint)valueStatusTimestamp.Value.ValueTypeCode);
                                     fullElementValuesCollection.UintValueStatusCodes.Add(valueStatusTimestamp.ValueStatusCode);
                                     fullElementValuesCollection.UintTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                    
                                     break;
