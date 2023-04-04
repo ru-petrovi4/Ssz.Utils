@@ -23,48 +23,48 @@ namespace Ssz.Utils
         {
             foreach (T o in oldCollection)
             {
-                o.ObservableCollectionItem_IsDeleted = true;
+                o.ObservableCollectionItemIsDeleted = true;
             }
 
             foreach (T n in newCollection)
             {
-                var o = oldCollection.FirstOrDefault(i => String.Equals(i.ObservableCollectionItem_Id, n.ObservableCollectionItem_Id, StringComparison.InvariantCultureIgnoreCase));
+                var o = oldCollection.FirstOrDefault(i => String.Equals(i.ObservableCollectionItemId, n.ObservableCollectionItemId, StringComparison.InvariantCultureIgnoreCase));
                 if (o is null)
                 {
-                    n.ObservableCollectionItem_IsAdded = true;
+                    n.ObservableCollectionItemIsAdded = true;
                 }
                 else
                 {
-                    n.ObservableCollectionItem_IsAdded = false;
-                    o.ObservableCollectionItem_IsDeleted = false;
-                    o.Update(n);
+                    n.ObservableCollectionItemIsAdded = false;
+                    o.ObservableCollectionItemIsDeleted = false;
+                    o.ObservableCollectionItemUpdate(n);
                 }
             }
             
             for (int oldCollectionIndex = oldCollection.Count - 1; oldCollectionIndex >= 0; oldCollectionIndex -= 1)
             {
-                if (oldCollection[oldCollectionIndex].ObservableCollectionItem_IsDeleted)
+                if (oldCollection[oldCollectionIndex].ObservableCollectionItemIsDeleted)
                 {
                     var o = oldCollection[oldCollectionIndex];
                     oldCollection.RemoveAt(oldCollectionIndex);
-                    o.Close();
+                    o.ObservableCollectionItemClose();
                 }
             }
 
             for (int newCollectionIndex = 0; newCollectionIndex < newCollection.Length; newCollectionIndex++)
             {
                 var n = newCollection[newCollectionIndex];
-                if (n.ObservableCollectionItem_IsAdded)
+                if (n.ObservableCollectionItemIsAdded)
                 {
                     int oldCollectionIndex = oldCollection.Count - 1;
                     while (oldCollectionIndex >= 0)
                     {
-                        if (String.Compare(oldCollection[oldCollectionIndex].ObservableCollectionItem_Id, n.ObservableCollectionItem_Id) < 0)
+                        if (String.Compare(oldCollection[oldCollectionIndex].ObservableCollectionItemId, n.ObservableCollectionItemId) < 0)
                             break;
                         oldCollectionIndex -= 1;
                     }
                     oldCollectionIndex += 1;
-                    n.Initialize();
+                    n.ObservableCollectionItemInitialize();
                     oldCollection.Insert(oldCollectionIndex, n);                    
                 }                    
             }
@@ -77,7 +77,7 @@ namespace Ssz.Utils
             {
                 var o = collection[collectionIndex];
                 collection.RemoveAt(collectionIndex);
-                o.Close();
+                o.ObservableCollectionItemClose();
             }
         }
 
@@ -89,26 +89,26 @@ namespace Ssz.Utils
         /// <summary>
         ///     Need implementation for comparison.
         /// </summary>
-        string ObservableCollectionItem_Id { get; }
+        string ObservableCollectionItemId { get; }
 
         /// <summary>
         ///     Used by the framework.
         /// </summary>
-        bool ObservableCollectionItem_IsDeleted { get; set; }
+        bool ObservableCollectionItemIsDeleted { get; set; }
 
         /// <summary>
         ///     Used by the framework.
         /// </summary>
-        bool ObservableCollectionItem_IsAdded { get; set; }
+        bool ObservableCollectionItemIsAdded { get; set; }
 
-        void Initialize();
+        void ObservableCollectionItemInitialize();
 
         /// <summary>
         ///     Need implementation for updating.
         /// </summary>
         /// <param name="item"></param>
-        void Update(IObservableCollectionItem item);
+        void ObservableCollectionItemUpdate(IObservableCollectionItem item);
 
-        void Close();
+        void ObservableCollectionItemClose();
     }
 }

@@ -38,34 +38,37 @@ namespace Ssz.Utils.Addons
         public const string AddonsAvailableCsvFileName = @"AddonsAvailable.csv";
 
         /// <summary>
-        ///     Thread-safe
+        ///     Addon GUID, never changes.
+        ///     Does not change when version changes.
+        ///     Thread-safe.
         /// </summary>
         public abstract Guid Guid { get; }
 
         /// <summary>
         ///     Cannot contain periods.
-        ///     Thread-safe
+        ///     Does not change when version changes.
+        ///     Thread-safe.
         /// </summary>
         public abstract string Identifier { get; }
 
         /// <summary>
-        ///     Thread-safe
+        ///     Thread-safe.
         /// </summary>
         public abstract string Desc { get; }
 
         /// <summary>
-        ///     Thread-safe
+        ///     Thread-safe.
         /// </summary>
         public abstract string Version { get; }
 
         /// <summary>
-        ///     Thread-safe
+        ///     Thread-safe.
         /// </summary>
         public virtual bool IsDummy => false;
 
         /// <summary>
         ///     Options cannot contain periods.
-        ///     Thread-safe
+        ///     Thread-safe.
         /// </summary>
         public abstract (string, string)[] OptionsInfo { get; }
 
@@ -76,38 +79,41 @@ namespace Ssz.Utils.Addons
         
         public CsvDb CsvDb { get; internal set; } = null!;
 
+        /// <summary>
+        ///     Do not changes after addon creation.
+        /// </summary>
         public CaseInsensitiveDictionary<string?> OptionsThreadSafe { get; internal set; } = null!;
 
         /// <summary>
         ///     Unique ID for addon type and options.
-        ///     Thread-safe
+        ///     Thread-safe.
         /// </summary>
-        public string ObservableCollectionItem_Id { get; internal set; } = null!;
+        public string ObservableCollectionItemId { get; internal set; } = null!;
 
         /// <summary>
-        ///     Addon instance ID
-        ///     Thread-safe
+        ///     Addon instance ID.
+        ///     Thread-safe.
         /// </summary>
         public string InstanceId { get; internal set; } = null!;
 
         /// <summary>
-        ///     Thread-safe
+        ///     Thread-safe.
         /// </summary>
         public ILoggersSet LoggersSet { get; internal set; } = null!;
 
         /// <summary>
-        ///     Thread-safe
+        ///     Thread-safe.
         /// </summary>
         public IConfiguration Configuration { get; internal set; } = null!;
 
         /// <summary>
-        ///     Thread-safe
+        ///     Thread-safe.
         /// </summary>
         public IServiceProvider ServiceProvider { get; internal set; } = null!;
 
-        bool IObservableCollectionItem.ObservableCollectionItem_IsDeleted { get; set; }
+        bool IObservableCollectionItem.ObservableCollectionItemIsDeleted { get; set; }
 
-        bool IObservableCollectionItem.ObservableCollectionItem_IsAdded { get; set; }
+        bool IObservableCollectionItem.ObservableCollectionItemIsAdded { get; set; }
 
         public event EventHandler? Initialized;
 
@@ -121,10 +127,6 @@ namespace Ssz.Utils.Addons
             Initialized?.Invoke(this, EventArgs.Empty);
         }
 
-        void IObservableCollectionItem.Update(IObservableCollectionItem item)
-        {            
-        }
-
         /// <summary>
         ///     When overridden call this base class method before your code.
         /// </summary>
@@ -133,6 +135,20 @@ namespace Ssz.Utils.Addons
             Closed?.Invoke(this, EventArgs.Empty);
         }
 
-        #endregion        
+        void IObservableCollectionItem.ObservableCollectionItemInitialize()
+        {
+            Initialize();
+        }
+
+        void IObservableCollectionItem.ObservableCollectionItemUpdate(IObservableCollectionItem item)
+        {
+        }
+
+        void IObservableCollectionItem.ObservableCollectionItemClose()
+        {
+            Close();
+        }
+
+        #endregion
     }
 }

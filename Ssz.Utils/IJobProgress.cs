@@ -9,7 +9,7 @@ namespace Ssz.Utils
         string JobId { get; }
 
         /// <summary>
-        ///     
+        ///     If parameter is null, the parameter does not change.
         /// </summary>
         /// <param name="progressPercent"></param>
         /// <param name="progressLabel"></param>progressDetails

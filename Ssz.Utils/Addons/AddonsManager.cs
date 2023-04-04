@@ -47,7 +47,7 @@ namespace Ssz.Utils.Addons
         public ObservableCollection<AddonBase> Addons { get; private set; } = new();
 
         /// <summary>
-        ///     Thread-safe Switchd ON addons.
+        ///     Thread-safe Switched ON addons.
         /// </summary>
         public AddonBase[] AddonsThreadSafe => _addonsCopy;
 
@@ -223,6 +223,9 @@ namespace Ssz.Utils.Addons
         public TAddon? CreateAddonThreadSafe<TAddon>(string addonIdentifier)
             where TAddon : AddonBase
         {
+            if (String.IsNullOrEmpty(addonIdentifier))
+                return null;
+
             var addonsCopy = _addonsCopy;
             TAddon? addon = addonsCopy.OfType<TAddon>().OrderBy(a => a.IsDummy)
                     .FirstOrDefault(a => String.Equals(a.Identifier, addonIdentifier, StringComparison.InvariantCultureIgnoreCase));
@@ -336,10 +339,10 @@ namespace Ssz.Utils.Addons
                 if (line.Count < 2 || String.IsNullOrEmpty(line[0]) || line[0]!.StartsWith("!"))
                     continue;
 
-                string addonName = line[1] ?? @"";
+                string addonIdentifier = line[1] ?? @"";
                 string addonInstanceId = line[0]!;                
 
-                var desiredAndAvailableAddon = CreateAvailableAddon(addonName, addonInstanceId);
+                var desiredAndAvailableAddon = CreateAvailableAddon(addonIdentifier, addonInstanceId);
                 if (desiredAndAvailableAddon is not null)
                 {
                     desiredAndAvailableAddon.Initialized += (s, a) => { ((AddonBase)s!).CsvDb.CsvFileChanged += OnAddonCsvDb_CsvFileChanged; };
@@ -355,7 +358,7 @@ namespace Ssz.Utils.Addons
 
             _container = new CompositionContainer(catalog);
 
-            Addons.Update(newAddons.OrderBy(a => ((IObservableCollectionItem)a).ObservableCollectionItem_Id).ToArray());
+            Addons.Update(newAddons.OrderBy(a => ((IObservableCollectionItem)a).ObservableCollectionItemId).ToArray());
             _addonsCopy = Addons.ToArray();
         }
 
@@ -401,7 +404,7 @@ namespace Ssz.Utils.Addons
                 var idNameValueCollection = new CaseInsensitiveDictionary<string?>(availableAddonClone.OptionsThreadSafe);                    
                 idNameValueCollection.Add(@"#addonIdentifier", availableAddonClone.Identifier);
                 idNameValueCollection.Add(@"#addonInstanceId", addonInstanceId);                
-                availableAddonClone.ObservableCollectionItem_Id = NameValueCollectionHelper.GetNameValueCollectionString(idNameValueCollection);
+                availableAddonClone.ObservableCollectionItemId = NameValueCollectionHelper.GetNameValueCollectionString(idNameValueCollection);
                 availableAddonClone.InstanceId = addonInstanceId;                
                 availableAddonClone.LoggersSet = new LoggersSet<AddonBase>(ServiceProvider.GetService<ILogger<AddonBase>>()!, LoggersSet.UserFriendlyLogger);                
                 availableAddonClone.Configuration = Configuration;

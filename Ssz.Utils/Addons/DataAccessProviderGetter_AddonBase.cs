@@ -6,15 +6,30 @@ namespace Ssz.Utils.Addons
 {
     public abstract class DataAccessProviderGetter_AddonBase : AddonBase
     {
-        public static readonly string DataAccessClient_ServerAddress_OptionName = @"%(DataAccess_ServerAddress)";
+        /// <summary>
+        ///     Standard option name, that implementers can use
+        /// </summary>
+        public static readonly string DataAccessProviderGetter_CommonEventMessageFieldsToAdd_OptionName = @"%(CommonEventMessageFieldsToAdd)";
 
-        public static readonly string DataAccessClient_SystemNameToConnect_OptionName = @"%(DataAccess_SystemNameToConnect)";
+        /// <summary>
+        ///     Standard option name, that implementers can use
+        /// </summary>
+        public static readonly string DataAccessClient_ServerAddress_OptionName = @"%(DataAccessClient_ServerAddress)";
 
-        public static readonly string DataAccessClient_ContextParams_OptionName = @"%(DataAccess_ContextParams)";
+        /// <summary>
+        ///     Standard option name, that implementers can use
+        /// </summary>
+        public static readonly string DataAccessClient_SystemNameToConnect_OptionName = @"%(DataAccessClient_SystemNameToConnect)";
 
-        public static readonly string DataAccessClient_SystemNameToConnect_ToDisplay_OptionName = @"%(DataAccess_SystemNameToConnect_ToDisplay)";
+        /// <summary>
+        ///     Standard option name, that implementers can use
+        /// </summary>
+        public static readonly string DataAccessClient_ContextParams_OptionName = @"%(DataAccessClient_ContextParams)";
 
-        public static readonly string DataAccessClient_CommonEventMessageFieldsToAdd_OptionName = @"%(CommonEventMessageFieldsToAdd)";
+        /// <summary>
+        ///     Standard option name, that implementers can use
+        /// </summary>
+        public static readonly string DataAccessClient_SystemNameToConnect_ToDisplay_OptionName = @"%(DataAccessClient_SystemNameToConnect_ToDisplay)";
 
         /// <summary>
         ///     Gets initialized IDataAccessProvider or writes to log and returns null.        
