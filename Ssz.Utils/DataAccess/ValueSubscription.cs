@@ -90,6 +90,11 @@ namespace Ssz.Utils.DataAccess
             return await DataAccessProvider.WriteAsync(this, valueStatusTimestamp, userFriendlyLogger);
         }
 
+        public void Write(ValueStatusTimestamp valueStatusTimestamp)
+        {
+            var t = DataAccessProvider.WriteAsync(this, valueStatusTimestamp, null);
+        }
+
         #endregion
 
         #region private fields
