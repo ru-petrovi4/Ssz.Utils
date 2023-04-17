@@ -53,7 +53,7 @@ namespace Ssz.Utils
         {
             ClearPropertyChangedEvent();
 
-#if !NETSTANDARD2_0
+#if NET5_0_OR_GREATER
             return ValueTask.CompletedTask;
 #else
             return new ValueTask();

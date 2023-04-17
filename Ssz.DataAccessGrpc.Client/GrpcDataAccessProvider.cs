@@ -15,13 +15,15 @@ using System.Threading.Tasks;
 using Grpc.Core;
 using Ssz.Utils.Logging;
 using static Ssz.DataAccessGrpc.Client.Managers.ClientElementValueListManager;
+using Microsoft.Extensions.Logging.Abstractions;
+using System.Diagnostics.SymbolStore;
 
 namespace Ssz.DataAccessGrpc.Client
 {
     public partial class GrpcDataAccessProvider : DataAccessProviderBase, IDataAccessProvider
     {
         #region construction and destruction
-
+        
         public GrpcDataAccessProvider(ILogger<GrpcDataAccessProvider> logger, IUserFriendlyLogger? userFriendlyLogger = null) :
             base(new LoggersSet<GrpcDataAccessProvider>(logger, userFriendlyLogger))
         {
@@ -30,7 +32,12 @@ namespace Ssz.DataAccessGrpc.Client
             _clientElementValueListManager = new ClientElementValueListManager(logger);
             _clientElementValuesJournalListManager = new ClientElementValuesJournalListManager(logger);
             _clientEventListManager = new ClientEventListManager(logger, this);
-        }        
+        }
+              
+        public GrpcDataAccessProvider() :
+            this(NullLogger<GrpcDataAccessProvider>.Instance)
+        {
+        }
 
         #endregion
 
@@ -214,15 +221,15 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="valueSubscription"></param>
         public override void RemoveItem(IValueSubscription valueSubscription)
         {
-#if NETSTANDARD2_0
+#if NET5_0_OR_GREATER
+            if (!_valueSubscriptionsCollection.Remove(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj))
+                return;            
+#else
             _valueSubscriptionsCollection.TryGetValue(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj);
             if (valueSubscriptionObj is null)
                 return;
             _valueSubscriptionsCollection.Remove(valueSubscription);
-#else
-            if (!_valueSubscriptionsCollection.Remove(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj))
-                return;
-#endif            
+#endif
 
             if (IsInitialized)
             {

@@ -59,12 +59,11 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         {
             if (_clientObjectInfosDictionary.Count == 0)
                 return;
-#if NETSTANDARD2_0
+#if NET5_0_OR_GREATER
             ClientObjectInfo? clientObjectInfo;
-            if (_clientObjectInfosDictionary.TryGetValue(clientObj, out clientObjectInfo))
+            if (_clientObjectInfosDictionary.Remove(clientObj, out clientObjectInfo))
             {
-                _clientObjectInfosToRemove.Add(clientObjectInfo);
-                _clientObjectInfosDictionary.Remove(clientObj);
+                _clientObjectInfosToRemove.Add(clientObjectInfo);                
                 clientObjectInfo.ClientObj = null;
 
                 _dataGrpcItemsMustBeAddedOrRemoved = true;
@@ -72,12 +71,13 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             else
             {
                 Logger.LogError("DataAccessGrpcListItemsManager.RemoveItem() error, clientObj was not added earlier");
-            }
+            }            
 #else
             ClientObjectInfo? clientObjectInfo;
-            if (_clientObjectInfosDictionary.Remove(clientObj, out clientObjectInfo))
+            if (_clientObjectInfosDictionary.TryGetValue(clientObj, out clientObjectInfo))
             {
-                _clientObjectInfosToRemove.Add(clientObjectInfo);                
+                _clientObjectInfosToRemove.Add(clientObjectInfo);
+                _clientObjectInfosDictionary.Remove(clientObj);
                 clientObjectInfo.ClientObj = null;
 
                 _dataGrpcItemsMustBeAddedOrRemoved = true;

@@ -1432,7 +1432,7 @@ namespace System.Linq.Dynamic.Core.Parser
 
             if (type is null)
             {
-#if !NETSTANDARD2_0
+#if NET5_0_OR_GREATER
                 type = DynamicClassFactory.CreateType(properties, _createParameterCtor);
 #else
                 throw new InvalidOperationException();

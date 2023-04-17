@@ -31,7 +31,7 @@ namespace Ssz.Utils.Serialization
 
             _baseStream = baseStream;
             _optimizeSize = optimizeSize;
-#if !NETSTANDARD2_0
+#if NET5_0_OR_GREATER
             _binaryWriter = new BinaryWriter(_baseStream);            
 #else
             _binaryWriter = new BinaryWriterEx(_baseStream);
@@ -2761,7 +2761,7 @@ namespace Ssz.Utils.Serialization
 
         private readonly bool _optimizeSize;
 
-#if !NETSTANDARD2_0
+#if NET5_0_OR_GREATER
         private readonly BinaryWriter _binaryWriter;
 #else
         private class BinaryWriterEx : BinaryWriter

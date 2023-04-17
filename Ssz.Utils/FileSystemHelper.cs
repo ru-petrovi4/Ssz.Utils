@@ -61,7 +61,7 @@ namespace Ssz.Utils
                                  .GroupBy(s => Path.GetDirectoryName(s) ?? @"");
             foreach (var folder in files)
             {
-#if !NETSTANDARD2_0
+#if NET5_0_OR_GREATER
                 var targetFolder = folder.Key.Replace(sourcePath, targetPath, StringComparison.InvariantCultureIgnoreCase);
                 //     Creates all directories and subdirectories in the specified path unless they
                 //     already exist.

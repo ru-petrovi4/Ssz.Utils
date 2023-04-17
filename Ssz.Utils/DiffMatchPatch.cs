@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -1718,7 +1719,11 @@ namespace Ssz.Utils.DiffMatchPatch
                         // decode would change all "+" to " "
                         param = param.Replace("+", "%2b");
 
+#if NET5_0_OR_GREATER
                         param = HttpUtility.UrlDecode(param);
+#else
+                        param = WebUtility.UrlDecode(param);
+#endif
                         //} catch (UnsupportedEncodingException e) {
                         //  // Not likely on modern system.
                         //  throw new Error("This system does not support UTF-8.", e);
@@ -2642,7 +2647,11 @@ namespace Ssz.Utils.DiffMatchPatch
                     }
                     line = text[textPointer].Substring(1);
                     line = line.Replace("+", "%2b");
+#if NET5_0_OR_GREATER
                     line = HttpUtility.UrlDecode(line);
+#else
+                    line = WebUtility.UrlDecode(line);
+#endif                    
                     if (sign == '-')
                     {
                         // Deletion.
@@ -2685,7 +2694,12 @@ namespace Ssz.Utils.DiffMatchPatch
         public static string encodeURI(string str)
         {
             // C# is overzealous in the replacements.  Walk back on a few.
-            return new StringBuilder(HttpUtility.UrlEncode(str))
+#if NET5_0_OR_GREATER
+            str = HttpUtility.UrlEncode(str);
+#else
+            str = WebUtility.UrlDecode(str);
+#endif
+            return new StringBuilder(str)
                 .Replace('+', ' ').Replace("%20", " ").Replace("%21", "!")
                 .Replace("%2a", "*").Replace("%27", "'").Replace("%28", "(")
                 .Replace("%29", ")").Replace("%3b", ";").Replace("%2f", "/")

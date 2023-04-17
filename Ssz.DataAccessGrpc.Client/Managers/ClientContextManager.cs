@@ -127,14 +127,16 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 #endif
             GrpcChannel? grpcChannel = null;            
             try
-            {                
+            {
 #if NET5_0_OR_GREATER
                 grpcChannel = GrpcChannel.ForAddress(serverAddress);
-#else
+#elif NETSTANDARD
                 grpcChannel = GrpcChannel.ForAddress(serverAddress, new GrpcChannelOptions
                 {
                     HttpHandler = new Grpc.Net.Client.Web.GrpcWebHandler(new System.Net.Http.HttpClientHandler())
                 });
+#else
+                grpcChannel = GrpcChannel.ForAddress(serverAddress);
 #endif
 
                 var resourceManagementClient = new DataAccess.DataAccessClient(grpcChannel);
