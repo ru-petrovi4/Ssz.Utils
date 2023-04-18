@@ -88,9 +88,9 @@ namespace Ssz.DataAccessGrpc.Client
                 elementValueListCallbackIsEnabled,
                 eventListCallbackIsEnabled,
                 serverAddress,
-                 clientApplicationName,
-                 clientWorkstationName,
-                 systemNameToConnect, 
+                clientApplicationName,
+                clientWorkstationName,
+                systemNameToConnect, 
                 contextParams,
                 callbackDispatcher);
 
