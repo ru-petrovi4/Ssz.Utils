@@ -32,13 +32,8 @@ namespace Ssz.DataAccessGrpc.Client
             _clientElementValueListManager = new ClientElementValueListManager(logger);
             _clientElementValuesJournalListManager = new ClientElementValuesJournalListManager(logger);
             _clientEventListManager = new ClientEventListManager(logger, this);
-        }
-              
-        public GrpcDataAccessProvider() :
-            this(NullLogger<GrpcDataAccessProvider>.Instance)
-        {
-        }
-
+        }              
+        
         #endregion
 
         #region public functions
