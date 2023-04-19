@@ -101,28 +101,9 @@ namespace Ssz.Utils.Addons
         /// <returns></returns>
         public ConfigurationCsvFiles ReadConfiguration()
         {
-            ConfigurationCsvFiles result = new();            
+            ConfigurationCsvFiles result = new();                        
 
-            List<string?[]> addonsAvailableFileData = new();
-
-            _availableAddons = GetAvailableAddonsUnconditionally();
-            
-            foreach (AddonBase availableAddon in _availableAddons)
-            {
-                addonsAvailableFileData.Add(new[] { availableAddon.Identifier, availableAddon.Desc });                
-
-                foreach (var optionsInfo in availableAddon.OptionsInfo)
-                {
-                    addonsAvailableFileData.Add(new[] { availableAddon.Identifier + "." + optionsInfo.Item1, optionsInfo.Item2 });                    
-                }
-            }
-
-            if (!CsvDb.FileEquals(AddonBase.AddonsAvailableCsvFileName, addonsAvailableFileData))
-            {
-                CsvDb.FileClear(AddonBase.AddonsAvailableCsvFileName);
-                CsvDb.SetValues(AddonBase.AddonsAvailableCsvFileName, addonsAvailableFileData);
-                CsvDb.SaveData(AddonBase.AddonsAvailableCsvFileName);
-            }           
+            _availableAddons = GetAvailableAddonsUnconditionally();                       
 
             foreach (FileInfo csvFileInfo in CsvDb.GetFileInfos())
             {
@@ -531,7 +512,28 @@ namespace Ssz.Utils.Addons
             }
 #endif
 
-            return availableAddonsDictionary.Values.ToArray();
+            var availableAddons = availableAddonsDictionary.Values.ToArray();
+
+            List<string?[]> addonsAvailableFileData = new();
+
+            foreach (AddonBase availableAddon in availableAddons)
+            {
+                addonsAvailableFileData.Add(new[] { availableAddon.Identifier, availableAddon.Desc });
+
+                foreach (var optionsInfo in availableAddon.OptionsInfo)
+                {
+                    addonsAvailableFileData.Add(new[] { availableAddon.Identifier + "." + optionsInfo.Item1, optionsInfo.Item2 });
+                }
+            }
+
+            if (!CsvDb.FileEquals(AddonBase.AddonsAvailableCsvFileName, addonsAvailableFileData))
+            {
+                CsvDb.FileClear(AddonBase.AddonsAvailableCsvFileName);
+                CsvDb.SetValues(AddonBase.AddonsAvailableCsvFileName, addonsAvailableFileData);
+                CsvDb.SaveData(AddonBase.AddonsAvailableCsvFileName);
+            }
+
+            return availableAddons;
         }
 
         /// <summary>
