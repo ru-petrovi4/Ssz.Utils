@@ -152,7 +152,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 //});
                 var handler =  new Grpc.Net.Client.Web.GrpcWebHandler(
                         GrpcWebMode.GrpcWeb,
-                        new HttpClientHandler();
+                        new HttpClientHandler());
                 handler.HttpVersion = HttpVersion.Version11;
                 grpcChannel = GrpcChannel.ForAddress(serverAddress,
                     new GrpcChannelOptions
