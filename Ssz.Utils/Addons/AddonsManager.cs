@@ -185,7 +185,7 @@ namespace Ssz.Utils.Addons
             var addonsCopy = _addonsCopy;
             foreach (var addon in addonsCopy.OfType<TAddon>().OrderBy(a => a.IsDummy).ToArray())
             {
-                TAddon? newAddon = CreateAvailableAddonThreadSafe(addon, addon.InstanceId) as TAddon;
+                TAddon? newAddon = CreateAvailableAddonThreadSafe(addon, addon.InstanceId, null) as TAddon;
                 if (newAddon is not null)
                     result.Add(newAddon);
             };
@@ -207,7 +207,7 @@ namespace Ssz.Utils.Addons
             if (addon is null)
                 return null;
 
-            TAddon? newAddon = CreateAvailableAddonThreadSafe(addon, addon.InstanceId) as TAddon;
+            TAddon? newAddon = CreateAvailableAddonThreadSafe(addon, addon.InstanceId, null) as TAddon;
             if (newAddon is null)
                 return null;
 
@@ -232,7 +232,7 @@ namespace Ssz.Utils.Addons
             if (addon is null)
                 return null;
 
-            TAddon? newAddon = CreateAvailableAddonThreadSafe(addon, addon.InstanceId) as TAddon;
+            TAddon? newAddon = CreateAvailableAddonThreadSafe(addon, addon.InstanceId, null) as TAddon;
             if (newAddon is null)
                 return null;
 
@@ -241,17 +241,22 @@ namespace Ssz.Utils.Addons
 
         /// <summary>
         ///     Create available but not necesary switched ON adddon. 
+        ///     You must specify addonInstanceId or addonOptions.
         /// </summary>
         /// <param name="addonIdentifier"></param>
         /// <param name="addonInstanceId"></param>
+        /// <param name="addonOptions"></param>
         /// <returns></returns>
-        public AddonBase? CreateAvailableAddon(string addonIdentifier, string addonInstanceId)
+        public AddonBase? CreateAvailableAddon(string addonIdentifier, string addonInstanceId, IEnumerable<IEnumerable<string?>>? addonOptions)
         {
+            if (!String.IsNullOrEmpty(addonInstanceId) && addonOptions is not null)
+                throw new InvalidOperationException("You must specify addonInstanceId or addonOptions");
+
             if (String.IsNullOrEmpty(addonIdentifier))
             {
                 LoggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonNameIsEmpty);
                 return null;
-            }
+            }            
 
             if (_availableAddons is null)
                 _availableAddons = GetAvailableAddonsUnconditionally();
@@ -264,7 +269,7 @@ namespace Ssz.Utils.Addons
                 return null;
             }
 
-            return CreateAvailableAddonThreadSafe(availableAddon, addonInstanceId);
+            return CreateAvailableAddonThreadSafe(availableAddon, addonInstanceId, addonOptions);
         }
 
         /// <summary>
@@ -342,7 +347,7 @@ namespace Ssz.Utils.Addons
                 string addonIdentifier = line[1] ?? @"";
                 string addonInstanceId = line[0]!;                
 
-                var desiredAndAvailableAddon = CreateAvailableAddon(addonIdentifier, addonInstanceId);
+                var desiredAndAvailableAddon = CreateAvailableAddon(addonIdentifier, addonInstanceId, null);
                 if (desiredAndAvailableAddon is not null)
                 {
                     desiredAndAvailableAddon.Initialized += (s, a) => { ((AddonBase)s!).CsvDb.CsvFileChanged += OnAddonCsvDb_CsvFileChanged; };
@@ -362,8 +367,18 @@ namespace Ssz.Utils.Addons
             _addonsCopy = Addons.ToArray();
         }
 
-        private AddonBase? CreateAvailableAddonThreadSafe(AddonBase availableAddon, string addonInstanceId)
+        /// <summary>
+        ///     You must specify addonInstanceId or addonOptions.
+        /// </summary>
+        /// <param name="availableAddon"></param>
+        /// <param name="addonInstanceId"></param>
+        /// <param name="addonOptions"></param>
+        /// <returns></returns>
+        private AddonBase? CreateAvailableAddonThreadSafe(AddonBase availableAddon, string addonInstanceId, IEnumerable<IEnumerable<string?>>? addonOptions)
         {
+            if (!String.IsNullOrEmpty(addonInstanceId) && addonOptions is not null)
+                throw new InvalidOperationException("You must specify addonInstanceId or addonOptions");
+
             try
             {
                 var availableAddonClone = (AddonBase)Activator.CreateInstance(availableAddon.GetType())!;
@@ -400,7 +415,10 @@ namespace Ssz.Utils.Addons
                     parameters.Add(addonConfigDirectoryInfo);
                 parameters.Add(Dispatcher!);
                 availableAddonClone.CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, parameters.ToArray());
-                availableAddonClone.OptionsThreadSafe = new CaseInsensitiveDictionary<string?>(availableAddonClone.CsvDb.GetValues(AddonBase.OptionsCsvFileName).Where(kvp => kvp.Key != @"").Select(kvp => new KeyValuePair<string, string?>(kvp.Key, kvp.Value.Count > 1 ? kvp.Value[1] : null)));
+                if (addonOptions is not null)
+                    availableAddonClone.CsvDb.SetValues(AddonBase.OptionsCsvFileName, addonOptions);
+                availableAddonClone.OptionsThreadSafe = new CaseInsensitiveDictionary<string?>(availableAddonClone.CsvDb.GetValues(AddonBase.OptionsCsvFileName)
+                    .Where(kvp => kvp.Key != @"").Select(kvp => new KeyValuePair<string, string?>(kvp.Key, kvp.Value.Count > 1 ? kvp.Value[1] : null)));
                 var idNameValueCollection = new CaseInsensitiveDictionary<string?>(availableAddonClone.OptionsThreadSafe);                    
                 idNameValueCollection.Add(@"#addonIdentifier", availableAddonClone.Identifier);
                 idNameValueCollection.Add(@"#addonInstanceId", addonInstanceId);                

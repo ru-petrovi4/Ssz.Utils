@@ -137,7 +137,7 @@ namespace Ssz.Utils
                 {
                     csvFile = new CsvFile { 
                         FileName = fileInfo.Name,
-                        FileInfo = fileInfo,
+                        OnDiskFileInfo = fileInfo,
                         DataIsChangedOnDisk = true
                     };                    
 
@@ -148,11 +148,11 @@ namespace Ssz.Utils
                     }
                 }
                 else if (Path.GetFileNameWithoutExtension(csvFile.FileName) != Path.GetFileNameWithoutExtension(fileInfo.Name) || // Strict compare
-                    csvFile.FileInfo is null ||
-                    !FileSystemHelper.FileSystemTimeIsEquals(csvFile.FileInfo.LastWriteTimeUtc, fileInfo.LastWriteTimeUtc))
+                    csvFile.OnDiskFileInfo is null ||
+                    csvFile.OnDiskFileInfo.LastWriteTimeUtc != fileInfo.LastWriteTimeUtc)
                 {
                     csvFile.FileName = fileInfo.Name;
-                    csvFile.FileInfo = fileInfo;
+                    csvFile.OnDiskFileInfo = fileInfo;
                     csvFile.DataIsChangedOnDisk = true;
 
                     foreach (CsvFile oldCsvFile in _csvFilesCollection.Values)
@@ -296,7 +296,7 @@ namespace Ssz.Utils
             if (CsvDbDirectoryInfo is null)
                 return new FileInfo[0];
 
-            return _csvFilesCollection.Values.Select(cf => cf.FileInfo).Where(fi => fi is not null).OfType<FileInfo>();
+            return _csvFilesCollection.Values.Select(cf => cf.OnDiskFileInfo).Where(fi => fi is not null).OfType<FileInfo>();
         }
 
         /// <summary>
@@ -568,7 +568,7 @@ namespace Ssz.Utils
                     string fileFullName = Path.Combine(CsvDbDirectoryInfo.FullName, csvFile.FileName);
                     try
                     {
-                        var isNewCsvFile = csvFile.FileInfo is null;
+                        var isNewCsvFile = csvFile.OnDiskFileInfo is null;
                         
                         // If the file to be deleted does not exist, no exception is thrown.
                         File.Delete(fileFullName); // For 'a' to 'A' changes in files names to work.
@@ -577,7 +577,7 @@ namespace Ssz.Utils
                             foreach (var fileLine in csvFile.FileData!.OrderBy(kvp => kvp.Key))
                                 writer.WriteLine(CsvHelper.FormatForCsv(",", fileLine.Value.ToArray()));
                         }                                                
-                        csvFile.FileInfo = new FileInfo(fileFullName);
+                        csvFile.OnDiskFileInfo = new FileInfo(fileFullName);
 
                         if (isNewCsvFile)
                             eventArgsList.Add(new CsvFileChangedEventArgs
@@ -629,7 +629,7 @@ namespace Ssz.Utils
                 string fileFullName = Path.Combine(CsvDbDirectoryInfo.FullName, csvFile.FileName);
                 try
                 {
-                    var isNewCsvFile = csvFile.FileInfo is null;
+                    var isNewCsvFile = csvFile.OnDiskFileInfo is null;
 
                     // If the file to be deleted does not exist, no exception is thrown.
                     File.Delete(fileFullName); // For 'a' to 'A' changes in files names to work.
@@ -638,7 +638,7 @@ namespace Ssz.Utils
                         foreach (var fileLine in csvFile.FileData!.OrderBy(kvp => kvp.Key))
                             writer.WriteLine(CsvHelper.FormatForCsv(",", fileLine.Value.ToArray()));
                     }
-                    csvFile.FileInfo = new FileInfo(fileFullName);
+                    csvFile.OnDiskFileInfo = new FileInfo(fileFullName);
                     
                     if (isNewCsvFile)
                         eventArgsList.Add(new CsvFileChangedEventArgs
@@ -735,7 +735,7 @@ namespace Ssz.Utils
         {
             public string FileName = @"";
 
-            public FileInfo? FileInfo;
+            public FileInfo? OnDiskFileInfo;
 
             public CaseInsensitiveDictionary<List<string?>>? FileData;
 

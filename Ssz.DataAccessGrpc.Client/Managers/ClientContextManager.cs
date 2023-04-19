@@ -12,6 +12,9 @@ using Grpc.Core;
 using System.Linq;
 using System.Globalization;
 using Ssz.Utils.DataAccess;
+using Grpc.Net.Client.Web;
+using System.Net.Http;
+using System.Net;
 
 namespace Ssz.DataAccessGrpc.Client.Managers
 {
@@ -129,12 +132,33 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             try
             {
 #if NET5_0_OR_GREATER
-                grpcChannel = GrpcChannel.ForAddress(serverAddress);
+                //grpcChannel = GrpcChannel.ForAddress(serverAddress);
+                var handler =  new Grpc.Net.Client.Web.GrpcWebHandler(
+                        GrpcWebMode.GrpcWeb,
+                        new HttpClientHandler
+                        {                            
+                            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                        });
+                handler.HttpVersion = HttpVersion.Version11;
+                grpcChannel = GrpcChannel.ForAddress(serverAddress,
+                    new GrpcChannelOptions
+                    {                        
+                        HttpClient = new HttpClient(handler)
+                    });
 #else
-                grpcChannel = GrpcChannel.ForAddress(serverAddress, new GrpcChannelOptions
-                {
-                    HttpHandler = new Grpc.Net.Client.Web.GrpcWebHandler(new System.Net.Http.HttpClientHandler())
-                });
+                //grpcChannel = GrpcChannel.ForAddress(serverAddress, new GrpcChannelOptions
+                //{
+                //    HttpHandler = new Grpc.Net.Client.Web.GrpcWebHandler(new System.Net.Http.HttpClientHandler())
+                //});
+                var handler =  new Grpc.Net.Client.Web.GrpcWebHandler(
+                        GrpcWebMode.GrpcWeb,
+                        new HttpClientHandler();
+                handler.HttpVersion = HttpVersion.Version11;
+                grpcChannel = GrpcChannel.ForAddress(serverAddress,
+                    new GrpcChannelOptions
+                    {                        
+                        HttpClient = new HttpClient(handler)
+                    });
 #endif
 
                 var resourceManagementClient = new DataAccess.DataAccessClient(grpcChannel);

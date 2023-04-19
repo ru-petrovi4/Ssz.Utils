@@ -86,12 +86,15 @@ namespace Ssz.Utils.Addons
 
         /// <summary>
         ///     Unique ID for addon type and options.
+        ///     Contains Addon.Identifier, Addon.InstanceId, Addon.OptionsThreadSafe.
         ///     Thread-safe.
         /// </summary>
         public string ObservableCollectionItemId { get; internal set; } = null!;
 
         /// <summary>
         ///     Addon instance ID.
+        ///     Defines config directory name. 
+        ///     If empty, config directory is not used.
         ///     Thread-safe.
         /// </summary>
         public string InstanceId { get; internal set; } = null!;
