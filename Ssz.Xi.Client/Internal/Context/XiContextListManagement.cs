@@ -65,10 +65,11 @@ namespace Ssz.Xi.Client.Internal.Context
                     updateRate, bufferingRate, filterSet);
                 SetResourceManagementLastCallUtc();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 _lists.Remove(clientListId);
-                ProcessRemoteMethodCallException(ex);
+                // If AE list error it is not problem
+                //ProcessRemoteMethodCallException(ex);
             }
 
             _listArray = _lists.ToArray();
