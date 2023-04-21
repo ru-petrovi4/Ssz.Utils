@@ -112,12 +112,12 @@ namespace Ssz.Xi.Client.Internal.Lists
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiListRoot.");
             
-            if (ListAttributes is null || ListAttributes.Enabled != enableUpdating)
+            if (ServerListId != 0 && (ListAttributes is null || ListAttributes.Enabled != enableUpdating))
             {
-                ListAttributes = _context.EnableListUpdating(ServerListId, enableUpdating);
+                _context.EnableListUpdating(ServerListId, enableUpdating);
                 GetListAttributes();
             }
-            return ListAttributes.Enabled;
+            return ListAttributes == null? false : ListAttributes.Enabled;
         }
 
         /// <summary>
@@ -147,15 +147,18 @@ namespace Ssz.Xi.Client.Internal.Lists
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiListRoot.");
 
-            ModifyListAttrsResult? modListAttrs = _context.ModifyListAttributes(ServerListId, updateRate, bufferingRate,
-                filterSet);
-            if (null != modListAttrs)
+            ModifyListAttrsResult? modListAttrs = null;
+            if (ServerListId != 0)
             {
-                if (ListAttributes is null) throw new InvalidOperationException();
-                if (null != modListAttrs.RevisedUpdateRate)
-                    ListAttributes.UpdateRate = modListAttrs.RevisedUpdateRate.Value;
-                if (null != modListAttrs.RevisedFilterSet) ListAttributes.FilterSet = modListAttrs.RevisedFilterSet;
-            }
+                _context.ModifyListAttributes(ServerListId, updateRate, bufferingRate, filterSet);
+                if (null != modListAttrs)
+                {
+                    if (ListAttributes is null) throw new InvalidOperationException();
+                    if (null != modListAttrs.RevisedUpdateRate)
+                        ListAttributes.UpdateRate = modListAttrs.RevisedUpdateRate.Value;
+                    if (null != modListAttrs.RevisedFilterSet) ListAttributes.FilterSet = modListAttrs.RevisedFilterSet;
+                }
+            }            
             return modListAttrs;
         }
 
@@ -163,13 +166,17 @@ namespace Ssz.Xi.Client.Internal.Lists
         ///     This method is used to retrieve the attributes of this list from the server.
         /// </summary>
         /// <returns> The attributes of this list. </returns>
-        public ListAttributes? GetListAttributes()
+        public void GetListAttributes()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiListRoot.");
 
-            ListAttributes la = _context.GetListAttributes(ServerListId);
-            if (null != la) ListAttributes = la;
-            return la;
+            try 
+            {
+                ListAttributes = _context.GetListAttributes(ServerListId);
+            }
+            catch (Exception) 
+            {
+            }            
         }
 
         /// <summary>
@@ -478,7 +485,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         /// <returns> The result code for the operation. See XiFaultCodes class for standardized result codes. </returns>
         protected uint AddListToEndpoint(XiEndpointRoot? endpoint)
         {
-            if (endpoint is not null && !string.IsNullOrEmpty(endpoint.EndpointId))
+            if (ServerListId != 0 && endpoint is not null && !string.IsNullOrEmpty(endpoint.EndpointId))
             {
                 if (_endpoints.Contains(endpoint)) return XiFaultCodes.S_OK;
 

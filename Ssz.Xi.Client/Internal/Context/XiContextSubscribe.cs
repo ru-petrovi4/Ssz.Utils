@@ -131,14 +131,13 @@ namespace Ssz.Xi.Client.Internal.Context
             if (_pollEndpoint.Disposed) throw new Exception("Poll Endpoint is Disposed.");
 
             EventMessage[]? eventMessages = null;
-            if (XiEndpointRoot.CreateChannelIfNotCreated(_pollEndpoint))
+            if (XiEndpointRoot.CreateChannelIfNotCreated(_pollEndpoint) && eventList.ServerListId != 0)
             {
                 try
                 {
                     eventMessages = _pollEndpoint.Proxy.PollEventChanges(ContextId,
                         eventList.ServerListId,
                         filterSet);
-
 
                     _pollEndpoint.LastCallUtc = DateTime.UtcNow;
                 }

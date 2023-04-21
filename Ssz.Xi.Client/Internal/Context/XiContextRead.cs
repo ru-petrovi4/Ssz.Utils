@@ -99,7 +99,7 @@ namespace Ssz.Xi.Client.Internal.Context
             if (_readEndpoint.Disposed) return new JournalDataValues[0];
 
             JournalDataValues[]? listJDRV = null;
-            if (XiEndpointRoot.CreateChannelIfNotCreated(_readEndpoint))
+            if (XiEndpointRoot.CreateChannelIfNotCreated(_readEndpoint) && serverListId != 0)
             {
                 try
                 {
@@ -146,7 +146,7 @@ namespace Ssz.Xi.Client.Internal.Context
             if (_readEndpoint is null) throw new Exception("No Read Endpoint");
 
             JournalDataValues[]? listJDRV = null;
-            if (XiEndpointRoot.CreateChannelIfNotCreated(_readEndpoint))
+            if (XiEndpointRoot.CreateChannelIfNotCreated(_readEndpoint) && serverListId != 0)
             {
                 try
                 {
@@ -200,7 +200,7 @@ namespace Ssz.Xi.Client.Internal.Context
             if (_readEndpoint is null) throw new Exception("No Read Endpoint");
 
             JournalDataChangedValues[]? listJDCV = null;
-            if (XiEndpointRoot.CreateChannelIfNotCreated(_readEndpoint))
+            if (XiEndpointRoot.CreateChannelIfNotCreated(_readEndpoint) && serverListId != 0)
             {
                 try
                 {
@@ -264,7 +264,7 @@ namespace Ssz.Xi.Client.Internal.Context
             if (_readEndpoint is null) throw new Exception("No Read Endpoint");
 
             JournalDataValues[]? listJDRV = null;
-            if (XiEndpointRoot.CreateChannelIfNotCreated(_readEndpoint))
+            if (XiEndpointRoot.CreateChannelIfNotCreated(_readEndpoint) && serverListId != 0)
             {
                 try
                 {
@@ -316,7 +316,7 @@ namespace Ssz.Xi.Client.Internal.Context
             if (_readEndpoint is null) throw new Exception("No Read Endpoint");
 
             JournalDataPropertyValue[]? JDPVarray = null;
-            if (XiEndpointRoot.CreateChannelIfNotCreated(_readEndpoint))
+            if (XiEndpointRoot.CreateChannelIfNotCreated(_readEndpoint) && serverListId != 0)
             {
                 try
                 {

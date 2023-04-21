@@ -87,15 +87,18 @@ namespace Ssz.Xi.Client.Internal.Context
 
             List<EventIdResult>? listAliasResult = null;
 
-            try
+            if (serverListId != 0)
             {
-                listAliasResult = _writeEndpoint.Proxy.AcknowledgeAlarms(contextId, serverListId,
-                    operatorName, comment, alarmsToAck);
-            }
-            catch (Exception ex)
-            {
-                ProcessRemoteMethodCallException(ex);
-            }
+                try
+                {
+                    listAliasResult = _writeEndpoint.Proxy.AcknowledgeAlarms(contextId, serverListId,
+                        operatorName, comment, alarmsToAck);
+                }
+                catch (Exception ex)
+                {
+                    ProcessRemoteMethodCallException(ex);
+                }
+            }            
 
             return listAliasResult;
         }

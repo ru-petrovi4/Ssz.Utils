@@ -166,15 +166,18 @@ namespace Ssz.Xi.Client.Internal.Context
 
             if (_iResourceManagement is null) throw new InvalidOperationException();
             List<AddDataObjectResult>? results = null;
-            try
+            if (serverListId != 0)
             {
-                results = _iResourceManagement.AddDataObjectsToList(ContextId, serverListId, dataObjectsToAdd);
-                SetResourceManagementLastCallUtc();
-            }
-            catch (Exception ex)
-            {
-                ProcessRemoteMethodCallException(ex);
-            }
+                try
+                {
+                    results = _iResourceManagement.AddDataObjectsToList(ContextId, serverListId, dataObjectsToAdd);
+                    SetResourceManagementLastCallUtc();
+                }
+                catch (Exception ex)
+                {
+                    ProcessRemoteMethodCallException(ex);
+                }
+            }            
             return results;
         }
 
@@ -196,16 +199,19 @@ namespace Ssz.Xi.Client.Internal.Context
 
             if (_iResourceManagement is null) throw new InvalidOperationException();
             List<AliasResult>? results = null;
-            try
+            if (serverListId != 0) 
             {
-                results = _iResourceManagement.RemoveDataObjectsFromList(ContextId, serverListId,
-                    serverAliasesToRemove);
-                SetResourceManagementLastCallUtc();
-            }
-            catch (Exception ex)
-            {
-                ProcessRemoteMethodCallException(ex);
-            }
+                try
+                {
+                    results = _iResourceManagement.RemoveDataObjectsFromList(ContextId, serverListId,
+                        serverAliasesToRemove);
+                    SetResourceManagementLastCallUtc();
+                }
+                catch (Exception ex)
+                {
+                    ProcessRemoteMethodCallException(ex);
+                }
+            }            
             return results;
         }
 
@@ -270,22 +276,25 @@ namespace Ssz.Xi.Client.Internal.Context
         ///     updating of the list is to be disabled.
         /// </param>
         /// <returns> The attributes of the list. </returns>
-        public ListAttributes EnableListUpdating(uint serverListId, bool enableUpdating)
+        public ListAttributes? EnableListUpdating(uint serverListId, bool enableUpdating)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
             if (_iResourceManagement is null) throw new InvalidOperationException();
             ListAttributes? listAttrs = null;
-            try
+            if (serverListId != 0)
             {
-                listAttrs = _iResourceManagement.EnableListUpdating(ContextId, serverListId, enableUpdating);
-                SetResourceManagementLastCallUtc();
-            }
-            catch (CommunicationException)
-            {
-                throw new Exception(
-                    "The connection to the server has been lost. Attempting to re-connect...");
-            }
+                try
+                {
+                    listAttrs = _iResourceManagement.EnableListUpdating(ContextId, serverListId, enableUpdating);
+                    SetResourceManagementLastCallUtc();
+                }
+                catch (CommunicationException)
+                {
+                    throw new Exception(
+                        "The connection to the server has been lost. Attempting to re-connect...");
+                }
+            }               
             return listAttrs;
         }
 
@@ -325,17 +334,20 @@ namespace Ssz.Xi.Client.Internal.Context
 
             if (_iResourceManagement is null) throw new InvalidOperationException();
             List<AliasResult>? listAliasResult = null;
-            try
+            if (serverListId != 0)
             {
-                listAliasResult = _iResourceManagement.EnableListElementUpdating(ContextId, serverListId,
-                    enableUpdating,
-                    serverAliases);
-                SetResourceManagementLastCallUtc();
-            }
-            catch (Exception ex)
-            {
-                ProcessRemoteMethodCallException(ex);
-            }
+                try
+                {
+                    listAliasResult = _iResourceManagement.EnableListElementUpdating(ContextId, serverListId,
+                        enableUpdating,
+                        serverAliases);
+                    SetResourceManagementLastCallUtc();
+                }
+                catch (Exception ex)
+                {
+                    ProcessRemoteMethodCallException(ex);
+                }
+            }            
             return listAliasResult;
         }
 
@@ -431,15 +443,18 @@ namespace Ssz.Xi.Client.Internal.Context
 
             if (_iResourceManagement is null) throw new InvalidOperationException();
             uint uintResult = 0xFFFFFFFFu;
-            try
+            if (serverListId != 0)
             {
-                uintResult = _iResourceManagement.TouchList(ContextId, serverListId);
-                SetResourceManagementLastCallUtc();
-            }
-            catch (Exception ex)
-            {
-                ProcessRemoteMethodCallException(ex);
-            }
+                try
+                {
+                    uintResult = _iResourceManagement.TouchList(ContextId, serverListId);
+                    SetResourceManagementLastCallUtc();
+                }
+                catch (Exception ex)
+                {
+                    ProcessRemoteMethodCallException(ex);
+                }
+            }            
             return uintResult;
         }
 
