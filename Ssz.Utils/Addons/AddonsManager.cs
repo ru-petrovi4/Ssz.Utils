@@ -522,7 +522,7 @@ namespace Ssz.Utils.Addons
 
                 foreach (var optionsInfo in availableAddon.OptionsInfo)
                 {
-                    addonsAvailableFileData.Add(new[] { availableAddon.Identifier + "." + optionsInfo.Item1, optionsInfo.Item2 });
+                    addonsAvailableFileData.Add(new[] { availableAddon.Identifier + "." + optionsInfo.Item1, optionsInfo.Item2, optionsInfo.Item3 });
                 }
             }
 

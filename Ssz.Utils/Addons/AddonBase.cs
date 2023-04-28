@@ -67,10 +67,11 @@ namespace Ssz.Utils.Addons
         public virtual bool IsDummy => false;
 
         /// <summary>
-        ///     Options cannot contain periods.
+        ///     Option names cannot contain periods.
+        ///     (Option Name, Option Description, Option Default Value)
         ///     Thread-safe.
         /// </summary>
-        public abstract (string, string)[] OptionsInfo { get; }
+        public abstract (string, string, string)[] OptionsInfo { get; }
 
         /// <summary>
         ///     Thread-safe
