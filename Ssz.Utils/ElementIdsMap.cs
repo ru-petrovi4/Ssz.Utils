@@ -27,9 +27,9 @@ namespace Ssz.Utils
 
         #region public functions
 
-        public const string StandardMapFileName = @"Map.csv";
+        public const string StandardMapFileName = @"map.csv";
 
-        public const string StandardTagsFileName = @"Tags.csv";
+        public const string StandardTagsFileName = @"tags.csv";
 
         /// <summary>
         ///     Can be configured in map, '%(GenericTag)' key

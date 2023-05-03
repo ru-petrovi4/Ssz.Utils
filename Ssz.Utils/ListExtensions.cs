@@ -53,7 +53,7 @@ namespace Ssz.Utils
         }
 
         /// <summary>
-        /// 
+        ///     Returns -1 if not found.
         /// </summary>
         /// <typeparam name="TSource"></typeparam>
         /// <param name="source"></param>

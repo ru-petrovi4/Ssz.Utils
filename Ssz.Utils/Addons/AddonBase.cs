@@ -20,22 +20,22 @@ namespace Ssz.Utils.Addons
         /// <summary>
         ///     Addon options .csv file name.
         /// </summary>
-        public const string OptionsCsvFileName = @"Options.csv";
+        public const string OptionsCsvFileName = @"options.csv";
 
         /// <summary>
         ///     Addon runtime variables .csv file name.
         /// </summary>
-        public const string VariablesCsvFileName = @"Variables.csv";
+        public const string VariablesCsvFileName = @"variables.csv";
 
         /// <summary>
         ///     Addons list .csv file name.
         /// </summary>
-        public const string AddonsCsvFileName = @"Addons.csv";
+        public const string AddonsCsvFileName = @"addons.csv";
 
         /// <summary>
         ///     Available addons info .csv file name.
         /// </summary>
-        public const string AddonsAvailableCsvFileName = @"AddonsAvailable.csv";
+        public const string AddonsAvailableCsvFileName = @"addons_available.csv";
 
         /// <summary>
         ///     Addon GUID, never changes.
@@ -67,6 +67,11 @@ namespace Ssz.Utils.Addons
         public virtual bool IsDummy => false;
 
         /// <summary>
+        ///     Thread-safe.
+        /// </summary>
+        public virtual bool IsMultiInstance => false;
+
+        /// <summary>
         ///     Option names cannot contain periods.
         ///     (Option Name, Option Description, Option Default Value)
         ///     Thread-safe.
@@ -82,6 +87,7 @@ namespace Ssz.Utils.Addons
 
         /// <summary>
         ///     Do not changes after addon creation.
+        ///     Thread-safe.
         /// </summary>
         public CaseInsensitiveDictionary<string?> OptionsThreadSafe { get; internal set; } = null!;
 
