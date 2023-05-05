@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Ssz.Utils.Logging
 {
-    public interface ILogITAdminEventsLogger : IUserFriendlyLogger
+    public interface IInformationSecurityEventsLogger : IUserFriendlyLogger
     {
     }
 }

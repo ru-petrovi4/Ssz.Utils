@@ -404,12 +404,12 @@ namespace Ssz.Utils.Addons
                 availableAddonClone.CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, parameters.ToArray());
                 if (addonOptions is not null)
                     availableAddonClone.CsvDb.SetValues(AddonBase.OptionsCsvFileName, addonOptions);
-                availableAddonClone.OptionsThreadSafe = new CaseInsensitiveDictionary<string?>(availableAddonClone.CsvDb.GetValues(AddonBase.OptionsCsvFileName)
-                    .Where(kvp => kvp.Key != @"").Select(kvp => new KeyValuePair<string, string?>(kvp.Key, kvp.Value.Count > 1 ? kvp.Value[1] : null)));
-                var idNameValueCollection = new CaseInsensitiveDictionary<string?>(availableAddonClone.OptionsThreadSafe);                    
-                idNameValueCollection.Add(@"#addonIdentifier", availableAddonClone.Identifier);
-                idNameValueCollection.Add(@"#addonInstanceId", addonInstanceId);                
-                availableAddonClone.ObservableCollectionItemId = NameValueCollectionHelper.GetNameValueCollectionString(idNameValueCollection);
+                availableAddonClone.SubstitutedOptionsThreadSafe = new CaseInsensitiveDictionary<string?>(availableAddonClone.CsvDb.GetValues(AddonBase.OptionsCsvFileName)
+                    .Where(kvp => kvp.Key != @"").Select(kvp => new KeyValuePair<string, string?>(kvp.Key, kvp.Value.Count > 1 ? SubstituteOptionValue(kvp.Value[1], availableAddonClone.Identifier) : null)));
+                var observableCollectionItemIds = new CaseInsensitiveDictionary<string?>(availableAddonClone.SubstitutedOptionsThreadSafe);                    
+                observableCollectionItemIds.Add(@"#addonIdentifier", availableAddonClone.Identifier);
+                observableCollectionItemIds.Add(@"#addonInstanceId", addonInstanceId);                
+                availableAddonClone.ObservableCollectionItemId = NameValueCollectionHelper.GetNameValueCollectionString(observableCollectionItemIds);
                 availableAddonClone.InstanceId = addonInstanceId;                
                 availableAddonClone.LoggersSet = new LoggersSet<AddonBase>(ServiceProvider.GetService<ILogger<AddonBase>>()!, LoggersSet.UserFriendlyLogger);                
                 availableAddonClone.Configuration = Configuration;
@@ -421,6 +421,13 @@ namespace Ssz.Utils.Addons
                 LoggersSet.WrapperUserFriendlyLogger.LogError(ex, Properties.Resources.DesiredAddonFailed, availableAddon.Identifier);
                 return null;
             }
+        }
+
+        private string? SubstituteOptionValue(string? optionValue, string addonIdentifier)
+        {
+            if (optionValue is null || !optionValue.StartsWith("appsettings.json:"))
+                return optionValue;
+            return Configuration.GetValue<string>(@"AddonsOptions:" + addonIdentifier + ":" + optionValue.Substring("appsettings.json:".Length));
         }
 
         /// <summary>
