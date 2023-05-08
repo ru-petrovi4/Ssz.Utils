@@ -51,10 +51,19 @@ namespace Ssz.Utils
     /// </summary>
     public static class JobStatusCodes
     {
+        /// <summary>
+        ///     Job is running or succesfully finished.
+        /// </summary>
         public const uint OK = 0;
 
+        /// <summary>
+        ///     Job is cancelled.
+        /// </summary>
         public const uint Cancelled = 1;
 
+        /// <summary>
+        ///     Job is finished with unknown error.
+        /// </summary>
         public const uint Unknown = 2;
 
         /// <summary>
