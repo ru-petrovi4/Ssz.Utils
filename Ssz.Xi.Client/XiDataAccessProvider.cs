@@ -489,8 +489,6 @@ namespace Ssz.Xi.Client
 
         private async Task WorkingTaskMainAsync(CancellationToken cancellationToken)
         {
-            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(WorkingThreadSafeDispatcher));
-
             _xiServerProxy = new XiServerProxy();
 
             bool elementValueListCallbackIsEnabled;

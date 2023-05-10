@@ -694,8 +694,6 @@ namespace Ssz.DataAccessGrpc.Client
 
         private async Task WorkingTaskMainAsync(CancellationToken cancellationToken)
         {
-            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(WorkingThreadSafeDispatcher));
-
             bool elementValueListCallbackIsEnabled;
             bool eventListCallbackIsEnabled;
             try
