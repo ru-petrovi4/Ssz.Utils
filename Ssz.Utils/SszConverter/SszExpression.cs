@@ -73,11 +73,11 @@ namespace Ssz.Utils
 
             if (dataSourceValues is null || dataSourceValues.Length == 0)
             {
-                dDataSourceValues = new double[0];
-                iDataSourceValues = new int[0];
-                uDataSourceValues = new uint[0];
-                bDataSourceValues = new bool[0];
-                sDataSourceValues = new string[0];
+                dDataSourceValues = Array.Empty<double>();
+                iDataSourceValues = Array.Empty<int>();
+                uDataSourceValues = Array.Empty<uint>();
+                bDataSourceValues = Array.Empty<bool>();
+                sDataSourceValues = Array.Empty<string>();
             }
             else
             {

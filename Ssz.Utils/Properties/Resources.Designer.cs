@@ -22,7 +22,7 @@ namespace Ssz.Utils.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Ssz.Utils.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Ssz.Utils.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace Ssz.Utils.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Ssz.Utils.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Cannot find or create addon config directory: {0}.
         /// </summary>
-        internal static string AddonConfigDirectoryError {
+        public static string AddonConfigDirectoryError {
             get {
                 return ResourceManager.GetString("AddonConfigDirectoryError", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Ssz.Utils.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Addon ConfigDirectory Error: Cannot contain subdirectory(-es): {0}.
         /// </summary>
-        internal static string AddonConfigDirectoryError_CannotContainPath {
+        public static string AddonConfigDirectoryError_CannotContainPath {
             get {
                 return ResourceManager.GetString("AddonConfigDirectoryError_CannotContainPath", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Ssz.Utils.Properties {
         /// <summary>
         ///   Looks up a localized string similar to AddonNameIsEmpty.
         /// </summary>
-        internal static string AddonNameIsEmpty {
+        public static string AddonNameIsEmpty {
             get {
                 return ResourceManager.GetString("AddonNameIsEmpty", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Ssz.Utils.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Available Addon is not found: {0}.
         /// </summary>
-        internal static string AvailableAddonIsNotFound {
+        public static string AvailableAddonIsNotFound {
             get {
                 return ResourceManager.GetString("AvailableAddonIsNotFound", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Ssz.Utils.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Calculation error.
         /// </summary>
-        internal static string CalculationLambdaExpressionError {
+        public static string CalculationLambdaExpressionError {
             get {
                 return ResourceManager.GetString("CalculationLambdaExpressionError", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace Ssz.Utils.Properties {
         /// <summary>
         ///   Looks up a localized string similar to File writing error.
         /// </summary>
-        internal static string CsvDb_CsvFileWritingError {
+        public static string CsvDb_CsvFileWritingError {
             get {
                 return ResourceManager.GetString("CsvDb_CsvFileWritingError", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace Ssz.Utils.Properties {
         /// <summary>
         ///   Looks up a localized string similar to File does not exist.
         /// </summary>
-        internal static string CsvHelper_CsvFileDoesNotExist {
+        public static string CsvHelper_CsvFileDoesNotExist {
             get {
                 return ResourceManager.GetString("CsvHelper_CsvFileDoesNotExist", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace Ssz.Utils.Properties {
         /// <summary>
         ///   Looks up a localized string similar to File contains duplicate key.
         /// </summary>
-        internal static string CsvHelper_CsvFileDuplicateKey {
+        public static string CsvHelper_CsvFileDuplicateKey {
             get {
                 return ResourceManager.GetString("CsvHelper_CsvFileDuplicateKey", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace Ssz.Utils.Properties {
         /// <summary>
         ///   Looks up a localized string similar to File reading error.
         /// </summary>
-        internal static string CsvHelper_CsvFileReadingError {
+        public static string CsvHelper_CsvFileReadingError {
             get {
                 return ResourceManager.GetString("CsvHelper_CsvFileReadingError", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace Ssz.Utils.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Desired addon {0} failed..
         /// </summary>
-        internal static string DesiredAddonFailed {
+        public static string DesiredAddonFailed {
             get {
                 return ResourceManager.GetString("DesiredAddonFailed", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace Ssz.Utils.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Duplicate addons.
         /// </summary>
-        internal static string DuplicateAddonsMessage {
+        public static string DuplicateAddonsMessage {
             get {
                 return ResourceManager.GetString("DuplicateAddonsMessage", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace Ssz.Utils.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Expression error.
         /// </summary>
-        internal static string PrepareLambdaExpressionError {
+        public static string PrepareLambdaExpressionError {
             get {
                 return ResourceManager.GetString("PrepareLambdaExpressionError", resourceCulture);
             }
