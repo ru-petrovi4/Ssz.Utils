@@ -32,11 +32,11 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 {
                     CaseInsensitiveDictionary<string?> contextParams = new CaseInsensitiveDictionary<string?>(request.ContextParams
                             .Select(cp => KeyValuePair.Create(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));
-                    string clientPassword = ConfigurationHelper.GetValue(_configuration, @"ClientPassword", @"");
-                    if (clientPassword != @"")
+                    string dataAccessClientPassword = ConfigurationHelper.GetValue(_configuration, @"DataAccessClientPassword", @"");
+                    if (dataAccessClientPassword != @"")
                     {
                         var clientPasswordInRequest = contextParams.TryGetValue(@"ClientPassword");
-                        if (clientPasswordInRequest != clientPassword)
+                        if (clientPasswordInRequest != dataAccessClientPassword)
                             throw new RpcException(new Status(StatusCode.PermissionDenied, "Invalid client password."));
                     }
                     var serverContext = new ServerContext(

@@ -29,13 +29,20 @@ namespace DevAttic.ConfigCrypter.ConfigCrypters.Json
         /// <returns>The content of the config file where the key has been decrypted.</returns>
         public string DecryptKey(string configFileContent, string configKey)
         {
-            var (parsedConfig, settingsToken) = ParseConfig(configFileContent, configKey);
+            try
+            {
+                var (parsedConfig, settingsToken) = ParseConfig(configFileContent, configKey);
 
-            var encryptedValue = _crypter.DecryptString(settingsToken.Value<string>());
-            settingsToken.Replace(encryptedValue);
-            var newConfigContent = parsedConfig.ToString(Formatting.Indented);
+                var encryptedValue = _crypter.DecryptString(settingsToken.Value<string>());
+                settingsToken.Replace(encryptedValue);
+                var newConfigContent = parsedConfig.ToString(Formatting.Indented);
 
-            return newConfigContent;
+                return newConfigContent;
+            }
+            catch
+            {
+                return configFileContent;
+            }            
         }
 
         public void Dispose()
@@ -52,13 +59,20 @@ namespace DevAttic.ConfigCrypter.ConfigCrypters.Json
         /// <returns>The content of the config file where the key has been encrypted.</returns>
         public string EncryptKey(string configFileContent, string configKey)
         {
-            var (parsedConfig, settingsToken) = ParseConfig(configFileContent, configKey);
+            try
+            {
+                var (parsedConfig, settingsToken) = ParseConfig(configFileContent, configKey);
 
-            var encryptedValue = _crypter.EncryptString(settingsToken.Value<string>());
-            settingsToken.Replace(encryptedValue);
-            var newConfigContent = parsedConfig.ToString(Formatting.Indented);
+                var encryptedValue = _crypter.EncryptString(settingsToken.Value<string>());
+                settingsToken.Replace(encryptedValue);
+                var newConfigContent = parsedConfig.ToString(Formatting.Indented);
 
-            return newConfigContent;
+                return newConfigContent;
+            }
+            catch
+            {
+                return configFileContent;
+            }
         }
 
         protected virtual void Dispose(bool disposing)

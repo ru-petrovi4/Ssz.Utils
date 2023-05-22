@@ -31,7 +31,13 @@ namespace DevAttic.ConfigCrypter.ConfigProviders.Json
                 {
                     if (Data.TryGetValue(key, out var encryptedValue))
                     {
-                        Data[key] = crypter.DecryptString(encryptedValue);
+                        try
+                        {
+                            Data[key] = crypter.DecryptString(encryptedValue);
+                        }
+                        catch
+                        {
+                        }
                     }
                 }
             }
