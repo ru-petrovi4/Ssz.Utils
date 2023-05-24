@@ -405,7 +405,7 @@ namespace Ssz.Utils.Addons
                 if (addonOptions is not null)
                     availableAddonClone.CsvDb.SetValues(AddonBase.OptionsCsvFileName, addonOptions);
                 availableAddonClone.SubstitutedOptionsThreadSafe = new CaseInsensitiveDictionary<string?>(availableAddonClone.CsvDb.GetValues(AddonBase.OptionsCsvFileName)
-                    .Where(kvp => kvp.Key != @"").Select(kvp => new KeyValuePair<string, string?>(kvp.Key, kvp.Value.Count > 1 ? SubstituteOptionValue(kvp.Value[1], availableAddonClone.Identifier) : null)));
+                    .Where(kvp => kvp.Key != @"").Select(kvp => new KeyValuePair<string, string?>(kvp.Key, kvp.Value.Count > 1 ? SubstituteOptionValue(kvp.Key, kvp.Value[1], availableAddonClone.Identifier) : null)));
                 var observableCollectionItemIds = new CaseInsensitiveDictionary<string?>(availableAddonClone.SubstitutedOptionsThreadSafe);                    
                 observableCollectionItemIds.Add(@"#addonIdentifier", availableAddonClone.Identifier);
                 observableCollectionItemIds.Add(@"#addonInstanceId", addonInstanceId);                
@@ -423,11 +423,11 @@ namespace Ssz.Utils.Addons
             }
         }
 
-        private string? SubstituteOptionValue(string? optionValue, string addonIdentifier)
+        private string? SubstituteOptionValue(string optionName, string? optionValue, string addonIdentifier)
         {
-            if (optionValue is null || !optionValue.StartsWith("appsettings.json:"))
+            if (optionValue is null || optionValue != @"appsettings.json")
                 return optionValue;
-            return Configuration.GetValue<string>(@"AddonsOptions:" + addonIdentifier + ":" + optionValue.Substring("appsettings.json:".Length));
+            return Configuration.GetValue<string>(@"AddonsOptions:" + addonIdentifier + ":" + optionName);
         }
 
         /// <summary>
