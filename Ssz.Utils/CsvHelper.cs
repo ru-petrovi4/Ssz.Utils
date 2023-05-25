@@ -212,7 +212,10 @@ namespace Ssz.Utils
             {
                 if (defines is null) defines = new Dictionary<Regex, string>();
                 string? filePath = Path.GetDirectoryName(fileFullName);
-                using (var reader = new StreamReader(fileFullName, true))
+
+                Stream stream = File.OpenRead(fileFullName);
+
+                using (var reader = new StreamReader(stream, Encoding.Unicode, true))
                 {
                     string line = "";
                     string? l;
