@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -53,7 +54,7 @@ namespace Ssz.Utils
                         break;
                     }
 
-                    i++;
+                    i += 1;
                 }
 
                 // extract the name / value pair                
@@ -288,17 +289,17 @@ namespace Ssz.Utils
             }
         }
 
-        #endregion
-
-        #region private functions
-
         /// <summary>        
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private static string UrlEncode(string value)
+        [return: NotNullIfNotNull("value")]
+        public static string? UrlEncode(string? value)
         {
-            value = value.Replace(@"%", @"%25");
+            if (String.IsNullOrEmpty(value))
+                return value;
+
+            value = value!.Replace(@"%", @"%25");
             value = value.Replace(@"&", @"%26");
             value = value.Replace(@"=", @"%3D");
             value = value.Replace(@"+", @"%2B");
@@ -307,11 +308,13 @@ namespace Ssz.Utils
 
         /// <summary>        
         /// </summary>
-        private static string UrlDecode(string value)
+        [return: NotNullIfNotNull("value")]
+        public static string? UrlDecode(string? value)
         {
-            if (value == @"") return @"";
+            if (String.IsNullOrEmpty(value))
+                return value;
 
-            int count = value.Length;
+            int count = value!.Length;
             var urlDecoder = new UrlDecoder(count);
 
             // go through the string's chars collapsing %XX and %uXXXX and
@@ -371,6 +374,10 @@ namespace Ssz.Utils
 
             return urlDecoder.GetString();
         }
+
+        #endregion
+
+        #region private functions        
 
         /// <summary>
         ///     Returns -1 if error
