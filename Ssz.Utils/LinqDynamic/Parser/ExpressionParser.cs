@@ -1528,7 +1528,7 @@ namespace System.Linq.Dynamic.Core.Parser
             Expression[] args = ParseArgumentList();
 
             Expression? nullExpressionReference = null;
-            if (_methodFinder.FindMethod(lambda.Type, nameof(Expression.Invoke), false, ref nullExpressionReference, ref args, out MethodBase _) != 1)
+            if (_methodFinder.FindMethod(lambda.Type, nameof(Expression.Invoke), false, ref nullExpressionReference, ref args, out MethodBase? _) != 1)
             {
                 throw ParseError(errorPos, Res.ArgsIncompatibleWithLambda);
             }
