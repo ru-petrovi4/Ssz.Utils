@@ -25,7 +25,7 @@ namespace Ssz.DataAccessGrpc.Client
         #region construction and destruction
         
         public GrpcDataAccessProvider(ILogger<GrpcDataAccessProvider> logger, IUserFriendlyLogger? userFriendlyLogger = null) :
-            base(new LoggersSet<GrpcDataAccessProvider>(logger, userFriendlyLogger))
+            base(new LoggersSet(logger, userFriendlyLogger))
         {
             _clientContextManager = new ClientContextManager(logger, WorkingThreadSafeDispatcher);
 

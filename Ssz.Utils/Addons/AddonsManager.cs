@@ -27,7 +27,7 @@ namespace Ssz.Utils.Addons
 
         public AddonsManager(ILogger<AddonsManager> logger, IConfiguration configuration, IServiceProvider serviceProvider)
         {
-            LoggersSet = new LoggersSet<AddonsManager>(logger, null);
+            LoggersSet = new LoggersSet(logger, null);
             Configuration = configuration;
             ServiceProvider = serviceProvider;
         }
@@ -280,7 +280,7 @@ namespace Ssz.Utils.Addons
         /// <summary>
         ///     Has UserFriendlyLogger after Initialize(...)
         /// </summary>
-        protected LoggersSet<AddonsManager> LoggersSet { get; private set; }
+        protected ILoggersSet LoggersSet { get; private set; }
 
         protected IConfiguration Configuration { get; }
 
@@ -411,7 +411,7 @@ namespace Ssz.Utils.Addons
                 observableCollectionItemIds.Add(@"#addonInstanceId", addonInstanceId);                
                 availableAddonClone.ObservableCollectionItemId = NameValueCollectionHelper.GetNameValueCollectionString(observableCollectionItemIds);
                 availableAddonClone.InstanceId = addonInstanceId;                
-                availableAddonClone.LoggersSet = new LoggersSet<AddonBase>(ServiceProvider.GetService<ILogger<AddonBase>>()!, LoggersSet.UserFriendlyLogger);                
+                availableAddonClone.LoggersSet = new LoggersSet(ServiceProvider.GetService<ILogger<AddonBase>>()!, LoggersSet.UserFriendlyLogger);                
                 availableAddonClone.Configuration = Configuration;
                 availableAddonClone.ServiceProvider = ServiceProvider;                
                 return availableAddonClone;

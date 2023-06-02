@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace Ssz.Utils.Logging
-{    
+{
     public class UserFriendlyLogger : SszLoggerBase
     {
         #region construction and destruction
@@ -23,7 +23,13 @@ namespace Ssz.Utils.Logging
 
         #region public functions
 
-        public override bool IsEnabled(LogLevel logLevel) => true;
+        public LogLevel LogLevel { get; set; } = LogLevel.Trace;
+
+        public override bool IsEnabled(LogLevel logLevel)
+        {
+            if (LogLevel == LogLevel.None) return false;
+            return logLevel >= LogLevel;
+        }
 
         public override void Log<TState>(
             LogLevel logLevel,
@@ -32,6 +38,9 @@ namespace Ssz.Utils.Logging
             Exception? exception,
             Func<TState, Exception?, string> formatter)
         {
+            if (!IsEnabled(logLevel))
+                return;
+
             string line = $"{logLevel,-12}";
             lock (SyncRoot)
             {

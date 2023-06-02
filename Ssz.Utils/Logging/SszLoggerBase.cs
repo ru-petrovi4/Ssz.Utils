@@ -95,7 +95,7 @@ namespace Ssz.Utils.Logging
         protected string GetScopesString(string[]? excludeScopeNames = null)
         {
             string line = @"";
-            foreach (var scope in ScopesStack)
+            foreach (var scope in ScopesStack.Distinct())
             {
                 var scopeName = scope.Item1;
                 string scopeValue;
@@ -119,14 +119,14 @@ namespace Ssz.Utils.Logging
 
         /// <summary>
         ///     Lock SyncRoot before use
-        ///     Returns empty string if not found.
+        ///     Returns null if not found.
         /// </summary>
-        /// <param name="jobIdScopeName"></param>
+        /// <param name="scopeName"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        protected object? TryGetScopeValue(string jobIdScopeName)
+        protected object? TryGetScopeValue(string scopeName)
         {
-            return ScopesStack.FirstOrDefault(s => String.Equals(s.Item1, jobIdScopeName, StringComparison.InvariantCultureIgnoreCase)).Item2;
+            return ScopesStack.FirstOrDefault(s => String.Equals(s.Item1, scopeName, StringComparison.InvariantCultureIgnoreCase)).Item2;
         }
 
         protected static string EscapeScopeString(string scopeString)

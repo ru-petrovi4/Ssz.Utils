@@ -160,6 +160,33 @@ namespace Ssz.Utils.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File does not exist or  is not readable.
+        /// </summary>
+        public static string FileDoesNotExist {
+            get {
+                return ResourceManager.GetString("FileDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File is not readable.
+        /// </summary>
+        public static string FileIsNotReadable {
+            get {
+                return ResourceManager.GetString("FileIsNotReadable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File Name.
+        /// </summary>
+        public static string FileNameScopeName {
+            get {
+                return ResourceManager.GetString("FileNameScopeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Expression error.
         /// </summary>
         public static string PrepareLambdaExpressionError {

@@ -148,7 +148,16 @@
     <value>Ошибка при подключении плагина {0}.</value>
   </data>
   <data name="DuplicateAddonsMessage" xml:space="preserve">
-    <value />
+    <value>Обнаружены плагины дубликаты</value>
+  </data>
+  <data name="FileDoesNotExist" xml:space="preserve">
+    <value>Файл не существует либо нет прав на его чтение</value>
+  </data>
+  <data name="FileIsNotReadable" xml:space="preserve">
+    <value>Нет разрешений на чтение файла</value>
+  </data>
+  <data name="FileNameScopeName" xml:space="preserve">
+    <value>Файл</value>
   </data>
   <data name="PrepareLambdaExpressionError" xml:space="preserve">
     <value>Ошибка в выражении</value>

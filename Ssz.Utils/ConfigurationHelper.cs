@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Ssz.Utils.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -68,6 +71,44 @@ namespace Ssz.Utils
                 return defaultValue;
             else
                 return result;
+        }
+
+        /// <summary>
+        ///     Returns readable file name or String.Empty.
+        ///     Logs with Error log level.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="key"></param>
+        /// <param name="defaultFileName"></param>
+        /// <param name="loggersSet"></param>
+        /// <returns></returns>
+        public static string GetValue_ReadableFileName(IConfiguration configuration, string key, string defaultFileName, ILoggersSet loggersSet)            
+        {
+            string readableFileName = ConfigurationHelper.GetValue<string>(configuration, key, defaultFileName);
+
+            bool fileExists = File.Exists(readableFileName);
+            if (!fileExists)
+            {
+                using var fileNameScope = loggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, readableFileName));
+                loggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.FileDoesNotExist);
+                return @"";
+            }
+            try
+            {
+                using (var fs = File.OpenRead(readableFileName))
+                {
+                    var canRead = fs.CanRead;
+                    if (canRead)
+                        return readableFileName;
+                }
+            }
+            catch (Exception ex)
+            {
+                loggersSet.Logger.LogError(ex, @"GetValue_ReadableFileName Exception.");
+            }
+            using var fileNameScope2 = loggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, readableFileName));
+            loggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.FileIsNotReadable);
+            return @"";
         }
 
         #endregion
