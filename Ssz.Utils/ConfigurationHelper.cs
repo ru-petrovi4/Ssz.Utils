@@ -74,41 +74,75 @@ namespace Ssz.Utils
         }
 
         /// <summary>
-        ///     Returns readable file name or String.Empty.
+        ///     Returns readable and/or writable file name or String.Empty.
         ///     Logs with Error log level.
         /// </summary>
         /// <param name="configuration"></param>
         /// <param name="key"></param>
         /// <param name="defaultFileName"></param>
+        /// <param name="canRead"></param>
+        /// <param name="canWrite"></param>
         /// <param name="loggersSet"></param>
         /// <returns></returns>
-        public static string GetValue_ReadableFileName(IConfiguration configuration, string key, string defaultFileName, ILoggersSet loggersSet)            
+        public static string GetValue_FileName(IConfiguration configuration, string key, string defaultFileName, bool canRead, bool canWrite, ILoggersSet loggersSet)            
         {
-            string readableFileName = ConfigurationHelper.GetValue<string>(configuration, key, defaultFileName);
+            string fileName = GetValue<string>(configuration, key, defaultFileName);            
 
-            bool fileExists = File.Exists(readableFileName);
-            if (!fileExists)
+            if (canRead)
             {
-                using var fileNameScope = loggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, readableFileName));
-                loggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.FileDoesNotExist);
-                return @"";
-            }
-            try
-            {
-                using (var fs = File.OpenRead(readableFileName))
+                bool fileExists = File.Exists(fileName);
+                if (!fileExists)
                 {
-                    var canRead = fs.CanRead;
-                    if (canRead)
-                        return readableFileName;
+                    using var fileNameScope = loggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, fileName));
+                    loggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.FileDoesNotExist);
+                    return @"";
+                }
+
+                try
+                {
+                    using (var fs = File.OpenRead(fileName))
+                    {
+                        if (!fs.CanRead)
+                        {
+                            using var fileNameScope = loggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, fileName));
+                            loggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.FileIsNotReadable);
+                            return @"";
+                        }                        
+                    }
+                }
+                catch (Exception ex)
+                {
+                    using var fileNameScope = loggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, fileName));
+                    loggersSet.Logger.LogError(ex, @"GetValue_FileName(...) Exception.");
+                    loggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.FileIsNotReadable);
+                    return @"";
                 }
             }
-            catch (Exception ex)
+
+            if (canWrite)
             {
-                loggersSet.Logger.LogError(ex, @"GetValue_ReadableFileName Exception.");
+                try
+                {
+                    using (var fs = File.OpenWrite(fileName))
+                    {
+                        if (!fs.CanWrite)
+                        {
+                            using var fileNameScope = loggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, fileName));
+                            loggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.FileIsNotWritable);
+                            return @"";
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    using var fileNameScope = loggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, fileName));
+                    loggersSet.Logger.LogError(ex, @"GetValue_FileName(...) Exception.");
+                    loggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.FileIsNotWritable);
+                    return @"";
+                }
             }
-            using var fileNameScope2 = loggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, readableFileName));
-            loggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.FileIsNotReadable);
-            return @"";
+
+            return fileName;
         }
 
         #endregion

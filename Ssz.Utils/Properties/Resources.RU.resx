@@ -156,6 +156,9 @@
   <data name="FileIsNotReadable" xml:space="preserve">
     <value>Нет разрешений на чтение файла</value>
   </data>
+  <data name="FileIsNotWritable" xml:space="preserve">
+    <value>Нет разрешений на запись в файл</value>
+  </data>
   <data name="FileNameScopeName" xml:space="preserve">
     <value>Файл</value>
   </data>

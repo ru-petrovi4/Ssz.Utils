@@ -58,7 +58,7 @@ namespace Ssz.Utils.Addons
         /// <param name="standardAddons"></param>
         /// <param name="addonsSearchPattern"></param>
         /// <param name="csvDb"></param>
-        public void Initialize(IUserFriendlyLogger? userFriendlyLogger, AddonBase[]? standardAddons, string? addonsSearchPattern, CsvDb csvDb, IDispatcher dispatcher)
+        public void Initialize(IUserFriendlyLogger? userFriendlyLogger, AddonBase[]? standardAddons, string? addonsSearchPattern, CsvDb csvDb, IDispatcher dispatcher, Func<string, string?>? substituteOptionFunc)
         {
             LoggersSet.SetUserFriendlyLogger(userFriendlyLogger);
             StandardAddons = standardAddons;
@@ -78,6 +78,7 @@ namespace Ssz.Utils.Addons
             CsvDb.CsvFileChanged += OnCsvDb_CsvFileChanged;
 
             Dispatcher = dispatcher;
+            _substituteOptionFunc = substituteOptionFunc;
 
             RefreshAddons();
         }
@@ -405,7 +406,7 @@ namespace Ssz.Utils.Addons
                 if (addonOptions is not null)
                     availableAddonClone.CsvDb.SetValues(AddonBase.OptionsCsvFileName, addonOptions);
                 availableAddonClone.SubstitutedOptionsThreadSafe = new CaseInsensitiveDictionary<string?>(availableAddonClone.CsvDb.GetValues(AddonBase.OptionsCsvFileName)
-                    .Where(kvp => kvp.Key != @"").Select(kvp => new KeyValuePair<string, string?>(kvp.Key, kvp.Value.Count > 1 ? SubstituteOptionValue(kvp.Key, kvp.Value[1], availableAddonClone.Identifier) : null)));
+                    .Where(kvp => kvp.Key != @"").Select(kvp => new KeyValuePair<string, string?>(kvp.Key, kvp.Value.Count > 1 ? SubstituteOptionValue(kvp.Key, kvp.Value[1]) : null)));
                 var observableCollectionItemIds = new CaseInsensitiveDictionary<string?>(availableAddonClone.SubstitutedOptionsThreadSafe);                    
                 observableCollectionItemIds.Add(@"#addonIdentifier", availableAddonClone.Identifier);
                 observableCollectionItemIds.Add(@"#addonInstanceId", addonInstanceId);                
@@ -423,11 +424,15 @@ namespace Ssz.Utils.Addons
             }
         }
 
-        private string? SubstituteOptionValue(string optionName, string? optionValue, string addonIdentifier)
+        private string? SubstituteOptionValue(string optionName, string? optionValue)
         {
-            if (optionValue is null || optionValue != @"appsettings.json")
-                return optionValue;
-            return Configuration.GetValue<string>(@"AddonsOptions:" + addonIdentifier + ":" + optionName);
+            if (_substituteOptionFunc is not null && !String.IsNullOrEmpty(optionValue))
+            {
+                string? substitutedOptionValue = _substituteOptionFunc(optionValue!);
+                if (!String.IsNullOrEmpty(substitutedOptionValue))
+                    return substitutedOptionValue;
+            }               
+            return optionValue;
         }
 
         /// <summary>
@@ -600,7 +605,9 @@ namespace Ssz.Utils.Addons
         /// </summary>
         private AddonBase[]? _availableAddons;
 
-        public AddonBase[] _addonsCopy = new AddonBase[0];
+        private AddonBase[] _addonsCopy = new AddonBase[0];
+
+        private Func<string, string?>? _substituteOptionFunc;
 
         #endregion
 

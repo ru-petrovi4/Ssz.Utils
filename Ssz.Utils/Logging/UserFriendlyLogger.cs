@@ -41,7 +41,8 @@ namespace Ssz.Utils.Logging
             if (!IsEnabled(logLevel))
                 return;
 
-            string line = $"{logLevel,-12}";
+            string logLevelString = new Any(logLevel).ValueAsString(true) + @":";
+            string line = $"{logLevelString,-13}";
             lock (SyncRoot)
             {
                 line += GetScopesString();

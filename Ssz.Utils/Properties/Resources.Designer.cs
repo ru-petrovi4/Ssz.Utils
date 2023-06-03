@@ -178,6 +178,15 @@ namespace Ssz.Utils.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File is not writable.
+        /// </summary>
+        public static string FileIsNotWritable {
+            get {
+                return ResourceManager.GetString("FileIsNotWritable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File Name.
         /// </summary>
         public static string FileNameScopeName {
