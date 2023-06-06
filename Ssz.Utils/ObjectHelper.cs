@@ -4,4 +4,141 @@
                     pi = t.GetProperty(defaultPropertyAttribute!.Name!);
                 }                 else                 {
                     pi = t.GetProperty(propertyName);
-                }                  if (pi is null || !pi.CanWrite) return false;                  if (value is null)                 {                                         pi.SetValue(obj, null);                 }                                             else                 {                     pi.SetValue(obj, new Any(value).ValueAs(pi.PropertyType, false));                 }                 return true;             }             catch (Exception)             {                 return false;             }         }          /// <summary>         ///     Searches in properties with [Searchable(true)] or [Browsable(true)] attributes.         ///     [Searchable(true)] attribute has higher priority.         ///     If regex is null matches all properties.                 /// </summary>         public static List<StringPropertyInfo> FindInStringBrowsableProperties(object obj, Regex? regex)         {             var result = new List<StringPropertyInfo>();              foreach (PropertyDescriptor propertyDescriptor in GetProperties(obj))             {                 object? value = propertyDescriptor.GetValue(obj);                  if (value is null) continue;                  var stringValue = value as string;                 if (stringValue is not null)                 {                     bool match = regex is not null ? regex.Match(stringValue).Success : true;                     if (match)                     {                         result.Add(new StringPropertyInfo                         {                             PropertyPath = propertyDescriptor.Name,                             PropertyValue = stringValue,                         });                     }                     continue;                 }                  var listValue = value as IList;                 if (listValue is not null)                 {                     for (int i = 0; i < listValue.Count; i++)                     {                         object? item = listValue[i];                         if (item is null) continue;                         foreach (                             StringPropertyInfo subPropertyInfo in                                 FindInStringBrowsableProperties(item, regex))                         {                             subPropertyInfo.PropertyPath = propertyDescriptor.Name + @"[" + i + @"]." +                                                            subPropertyInfo.PropertyPath;                             result.Add(subPropertyInfo);                         }                     }                     continue;                 }                  foreach (StringPropertyInfo subPropertyInfo in                     FindInStringBrowsableProperties(value, regex))                 {                     subPropertyInfo.PropertyPath = propertyDescriptor.Name + @"." +                                                    subPropertyInfo.PropertyPath;                     result.Add(subPropertyInfo);                 }             }              return result;         }          /// <summary>         ///     Replaces in properties with [Searchable(true)] or [Browsable(true)] attributes.         ///     [Searchable(true)] attribute has higher priority.                 /// </summary>         public static List<StringPropertyInfo> ReplaceInStringBrowsableProperties(object obj, Regex regex,             string replacement)         {             if (replacement is null) replacement = @"";              var result = new List<StringPropertyInfo>();              foreach (PropertyDescriptor propertyDescriptor in GetProperties(obj))             {                 object? value = propertyDescriptor.GetValue(obj);                  if (value is null) continue;                  var stringValue = value as string;                 if (stringValue is not null)                 {                     if (!propertyDescriptor.IsReadOnly)                     {                         string newStringValue = regex.Replace(stringValue, replacement);                         if (newStringValue != stringValue)                         {                             propertyDescriptor.SetValue(obj, newStringValue);                             result.Add(new StringPropertyInfo                             {                                 PropertyPath = propertyDescriptor.Name,                                 PropertyValue = newStringValue,                             });                         }                     }                     continue;                 }                  var listValue = value as IList;                 if (listValue is not null)                 {                     for (int i = 0; i < listValue.Count; i++)                     {                         object? item = listValue[i];                         if (item is not null)                         {                             foreach (                             StringPropertyInfo subPropertyInfo in                                 ReplaceInStringBrowsableProperties(item, regex, replacement))                             {                                 subPropertyInfo.PropertyPath = propertyDescriptor.Name + @"[" + i + @"]." +                                                                subPropertyInfo.PropertyPath;                                 result.Add(subPropertyInfo);                             }                         }                                             }                     continue;                 }                  foreach (StringPropertyInfo subPropertyInfo in                     ReplaceInStringBrowsableProperties(value, regex, replacement))                 {                     subPropertyInfo.PropertyPath = propertyDescriptor.Name + @"." +                                                     subPropertyInfo.PropertyPath;                     result.Add(subPropertyInfo);                 }             }              return result;         }          #endregion          #region private functions          /// <summary>         ///     Returns all Browsable properties of object.         ///     SearchableAttribute can explicitly set whether to return or not the property.                 /// </summary>         private static IEnumerable<PropertyDescriptor> GetProperties(object obj)         {             var result = new List<PropertyDescriptor>();             foreach (PropertyDescriptor propertyDescriptor in TypeDescriptor.GetProperties(obj)                 .OfType<PropertyDescriptor>())             {                 SearchableAttribute? searchableAttribute =                     propertyDescriptor.Attributes.OfType<SearchableAttribute>().FirstOrDefault();                 if (searchableAttribute is not null)                 {                     if (searchableAttribute.Searchable) result.Add(propertyDescriptor);                     continue;                 }                 if (propertyDescriptor.IsBrowsable)                 {                     result.Add(propertyDescriptor);                 }             }             return result;         }          #endregion     }      /// <summary>     ///      /// </summary>     public class StringPropertyInfo     {         #region public functions          /// <summary>         ///     Without '.' at the beginning.         /// </summary>         public string PropertyPath = "";          /// <summary>         ///          /// </summary>         public string PropertyValue = "";          #endregion     }      /// <summary>     ///     For find and replace in string properties support.     /// </summary>     public sealed class SearchableAttribute : Attribute     {         #region construction and destruction          /// <summary>         ///          /// </summary>         /// <param name="searchable"></param>         public SearchableAttribute(bool searchable)         {             Searchable = searchable;         }          #endregion          #region public functions          /// <summary>         ///          /// </summary>         public bool Searchable { get; private set; }          #endregion     } }
+                }                  if (pi is null || !pi.CanWrite) return false;                  if (value is null)                 {                                         pi.SetValue(obj, null);                 }                                             else                 {                     pi.SetValue(obj, new Any(value).ValueAs(pi.PropertyType, false));                 }                 return true;             }             catch (Exception)             {                 return false;             }         }          /// <summary>         ///     Searches in properties with [Searchable(true)] or [Browsable(true)] attributes.         ///     [Searchable(true)] attribute has higher priority.         ///     If regex is null matches all properties.                 /// </summary>         public static List<StringPropertyInfo> FindInStringBrowsableProperties(object obj, Regex? regex)         {             var result = new List<StringPropertyInfo>();              foreach (PropertyDescriptor propertyDescriptor in GetProperties(obj))             {                 object? value = propertyDescriptor.GetValue(obj);                  if (value is null) continue;                  var stringValue = value as string;                 if (stringValue is not null)                 {                     bool match = regex is not null ? regex.Match(stringValue).Success : true;                     if (match)                     {                         result.Add(new StringPropertyInfo                         {                             PropertyPath = propertyDescriptor.Name,                             PropertyValue = stringValue,                         });                     }                     continue;                 }                  var listValue = value as IList;                 if (listValue is not null)                 {                     for (int i = 0; i < listValue.Count; i++)                     {                         object? item = listValue[i];                         if (item is null) continue;                         foreach (                             StringPropertyInfo subPropertyInfo in                                 FindInStringBrowsableProperties(item, regex))                         {                             subPropertyInfo.PropertyPath = propertyDescriptor.Name + @"[" + i + @"]." +                                                            subPropertyInfo.PropertyPath;                             result.Add(subPropertyInfo);                         }                     }                     continue;                 }                  foreach (StringPropertyInfo subPropertyInfo in                     FindInStringBrowsableProperties(value, regex))                 {                     subPropertyInfo.PropertyPath = propertyDescriptor.Name + @"." +                                                    subPropertyInfo.PropertyPath;                     result.Add(subPropertyInfo);                 }             }              return result;         }          /// <summary>         ///     Replaces in properties with [Searchable(true)] or [Browsable(true)] attributes.         ///     [Searchable(true)] attribute has higher priority.                 /// </summary>         public static List<StringPropertyInfo> ReplaceInStringBrowsableProperties(object obj, Regex regex,             string replacement)         {             if (replacement is null) replacement = @"";              var result = new List<StringPropertyInfo>();              foreach (PropertyDescriptor propertyDescriptor in GetProperties(obj))             {                 object? value = propertyDescriptor.GetValue(obj);                  if (value is null) continue;                  var stringValue = value as string;                 if (stringValue is not null)                 {                     if (!propertyDescriptor.IsReadOnly)                     {                         string newStringValue = regex.Replace(stringValue, replacement);                         if (newStringValue != stringValue)                         {                             propertyDescriptor.SetValue(obj, newStringValue);                             result.Add(new StringPropertyInfo                             {                                 PropertyPath = propertyDescriptor.Name,                                 PropertyValue = newStringValue,                             });                         }                     }                     continue;                 }                  var listValue = value as IList;                 if (listValue is not null)                 {                     for (int i = 0; i < listValue.Count; i++)                     {                         object? item = listValue[i];                         if (item is not null)                         {                             foreach (                             StringPropertyInfo subPropertyInfo in                                 ReplaceInStringBrowsableProperties(item, regex, replacement))                             {                                 subPropertyInfo.PropertyPath = propertyDescriptor.Name + @"[" + i + @"]." +                                                                subPropertyInfo.PropertyPath;                                 result.Add(subPropertyInfo);                             }                         }                                             }                     continue;                 }                  foreach (StringPropertyInfo subPropertyInfo in                     ReplaceInStringBrowsableProperties(value, regex, replacement))                 {                     subPropertyInfo.PropertyPath = propertyDescriptor.Name + @"." +                                                     subPropertyInfo.PropertyPath;                     result.Add(subPropertyInfo);                 }             }              return result;         }
+
+        /// <summary>
+        /// Search for a method by name and parameter types.  
+        /// Unlike GetMethod(), does 'loose' matching on generic
+        /// parameter types, and searches base interfaces.
+        /// </summary>
+        /// <exception cref="AmbiguousMatchException"/>
+        public static MethodInfo? GetMethodExt(Type thisType,
+                                                string name,
+                                                params Type[] parameterTypes)
+        {
+            return GetMethodExt(thisType,
+                                name,
+                                BindingFlags.Instance
+                                | BindingFlags.Static
+                                | BindingFlags.Public
+                                | BindingFlags.NonPublic
+                                | BindingFlags.FlattenHierarchy,
+                                parameterTypes);
+        }
+
+        /// <summary>
+        /// Search for a method by name, parameter types, and binding flags.  
+        /// Unlike GetMethod(), does 'loose' matching on generic
+        /// parameter types, and searches base interfaces.
+        /// </summary>
+        /// <exception cref="AmbiguousMatchException"/>
+        public static MethodInfo? GetMethodExt(Type thisType,
+                                                string name,
+                                                BindingFlags bindingFlags,
+                                                params Type[] parameterTypes)
+        {
+            MethodInfo? matchingMethod = null;
+
+            // Check all methods with the specified name, including in base classes
+            GetMethodExt(ref matchingMethod, thisType, name, bindingFlags, parameterTypes);
+
+            // If we're searching an interface, we have to manually search base interfaces
+            if (matchingMethod == null && thisType.IsInterface)
+            {
+                foreach (Type interfaceType in thisType.GetInterfaces())
+                    GetMethodExt(ref matchingMethod,
+                                 interfaceType,
+                                 name,
+                                 bindingFlags,
+                                 parameterTypes);
+            }
+
+            return matchingMethod;
+        }
+
+        private static void GetMethodExt(ref MethodInfo? matchingMethod,
+                                            Type type,
+                                            string name,
+                                            BindingFlags bindingFlags,
+                                            params Type[] parameterTypes)
+        {
+            // Check all methods with the specified name, including in base classes
+            foreach (MethodInfo methodInfo in type.GetMember(name,
+                                                             MemberTypes.Method,
+                                                             bindingFlags))
+            {
+                // Check that the parameter counts and types match, 
+                // with 'loose' matching on generic parameters
+                ParameterInfo[] parameterInfos = methodInfo.GetParameters();
+                if (parameterInfos.Length == parameterTypes.Length)
+                {
+                    int i = 0;
+                    for (; i < parameterInfos.Length; ++i)
+                    {
+                        if (!IsSimilarType(parameterInfos[i].ParameterType, parameterTypes[i]))
+                            break;
+                    }
+                    if (i == parameterInfos.Length)
+                    {
+                        if (matchingMethod == null)
+                            matchingMethod = methodInfo;
+                        else
+                            throw new AmbiguousMatchException(
+                                   "More than one matching method found!");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Special type used to match any generic parameter type in GetMethodExt().
+        /// </summary>
+        public class T
+        { }
+
+        /// <summary>
+        /// Determines if the two types are either identical, or are both generic 
+        /// parameters or generic types with generic parameters in the same
+        ///  locations (generic parameters match any other generic paramter,
+        /// but NOT concrete types).
+        /// </summary>
+        public static bool IsSimilarType(Type thisType, Type type)
+        {
+            // Ignore any 'ref' types
+            if (thisType.IsByRef)
+                thisType = thisType.GetElementType()!;
+            if (type.IsByRef)
+                type = type.GetElementType()!;
+
+            // Handle array types
+            if (thisType.IsArray && type.IsArray)
+                return IsSimilarType(thisType.GetElementType()!, type.GetElementType()!);
+
+            // If the types are identical, or they're both generic parameters 
+            // or the special 'T' type, treat as a match
+            if (thisType == type || ((thisType.IsGenericParameter || thisType == typeof(T)) // (!thisType.IsGenericType && !type.IsGenericType && thisType.Name == type.Name && thisType.Namespace == type.Namespace)
+                                 && (type.IsGenericParameter || type == typeof(T))))
+                return true;
+
+            // Handle any generic arguments
+            if (thisType.IsGenericType && type.IsGenericType)
+            {
+                Type[] thisArguments = thisType.GetGenericArguments();
+                Type[] arguments = type.GetGenericArguments();
+                if (thisArguments.Length == arguments.Length)
+                {
+                    for (int i = 0; i < thisArguments.Length; ++i)
+                    {
+                        if (!IsSimilarType(thisArguments[i], arguments[i]))
+                            return false;
+                    }
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        #endregion 
+        #region private functions 
+        /// <summary>         ///     Returns all Browsable properties of object.         ///     SearchableAttribute can explicitly set whether to return or not the property.                 /// </summary>         private static IEnumerable<PropertyDescriptor> GetProperties(object obj)         {             var result = new List<PropertyDescriptor>();             foreach (PropertyDescriptor propertyDescriptor in TypeDescriptor.GetProperties(obj)                 .OfType<PropertyDescriptor>())             {                 SearchableAttribute? searchableAttribute =                     propertyDescriptor.Attributes.OfType<SearchableAttribute>().FirstOrDefault();                 if (searchableAttribute is not null)                 {                     if (searchableAttribute.Searchable) result.Add(propertyDescriptor);                     continue;                 }                 if (propertyDescriptor.IsBrowsable)                 {                     result.Add(propertyDescriptor);                 }             }             return result;         }          #endregion     }      /// <summary>     ///      /// </summary>     public class StringPropertyInfo     {         #region public functions          /// <summary>         ///     Without '.' at the beginning.         /// </summary>         public string PropertyPath = "";          /// <summary>         ///          /// </summary>         public string PropertyValue = "";          #endregion     }      /// <summary>     ///     For find and replace in string properties support.     /// </summary>     public sealed class SearchableAttribute : Attribute     {         #region construction and destruction          /// <summary>         ///          /// </summary>         /// <param name="searchable"></param>         public SearchableAttribute(bool searchable)         {             Searchable = searchable;         }          #endregion          #region public functions          /// <summary>         ///          /// </summary>         public bool Searchable { get; private set; }          #endregion     } }
