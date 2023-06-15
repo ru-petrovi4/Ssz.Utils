@@ -407,6 +407,10 @@ namespace Ssz.DataAccessGrpc.Client
         /// <returns></returns>
         public override async Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
         {
+            // Early exception
+            if (!_clientContextManager.ConnectionExists)
+                throw new ConnectionDoesNotExistException();
+
             var taskCompletionSource = new TaskCompletionSource<IEnumerable<byte>>();
 
             WorkingThreadSafeDispatcher.BeginInvoke(ct =>
@@ -421,6 +425,10 @@ namespace Ssz.DataAccessGrpc.Client
                 catch (RpcException ex)
                 {
                     LoggersSet.Logger.LogError(ex, ex.Status.Detail);
+                    taskCompletionSource.TrySetException(ex);
+                }
+                catch (ConnectionDoesNotExistException ex)
+                {
                     taskCompletionSource.TrySetException(ex);
                 }
                 catch (Exception ex)
@@ -445,6 +453,39 @@ namespace Ssz.DataAccessGrpc.Client
         public override async Task<uint> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend,
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? progressCallbackAction)
         {
+            // Early exception
+            if (!_clientContextManager.ConnectionExists)
+            {
+                IDispatcher? сallbackDispatcher = CallbackDispatcher;
+                Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
+                if (progressCallbackAction is not null && сallbackDispatcher is not null)
+                {
+                    callbackActionDispatched = a =>
+                    {
+                        try
+                        {
+                            сallbackDispatcher.BeginInvoke(ct => progressCallbackAction(a));
+                        }
+                        catch (Exception)
+                        {
+                        }
+                    };
+                }
+                else
+                {
+                    callbackActionDispatched = null;
+                }
+
+                if (callbackActionDispatched is not null)
+                {
+                    callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
+                    {
+                        JobStatusCode = JobStatusCodes.Unknown
+                    });
+                }
+                return JobStatusCodes.Unknown;
+            }                
+
             var taskCompletionSource = new TaskCompletionSource<uint>();
 
             WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
@@ -481,6 +522,17 @@ namespace Ssz.DataAccessGrpc.Client
                     {
                         callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
                         {   
+                            JobStatusCode = JobStatusCodes.Unknown
+                        });
+                    }
+                    jobStatusCode = JobStatusCodes.Unknown;
+                }
+                catch (ConnectionDoesNotExistException ex)
+                {
+                    if (callbackActionDispatched is not null)
+                    {
+                        callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
+                        {
                             JobStatusCode = JobStatusCodes.Unknown
                         });
                     }

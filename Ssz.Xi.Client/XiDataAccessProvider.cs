@@ -386,6 +386,10 @@ namespace Ssz.Xi.Client
         /// <returns></returns>
         public override async Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
         {
+            // Early exception
+            if (!_xiServerProxy!.ContextExists)
+                throw new XiServerNotExistException();
+
             var taskCompletionSource = new TaskCompletionSource<IEnumerable<byte>>();
             WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {                
@@ -423,6 +427,39 @@ namespace Ssz.Xi.Client
         public override async Task<uint> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend, 
             Action<LongrunningPassthroughCallback>? progressCallbackAction)
         {
+            // Early exception
+            if (!_xiServerProxy!.ContextExists)
+            {
+                IDispatcher? сallbackDispatcher = CallbackDispatcher;
+                Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
+                if (progressCallbackAction is not null && сallbackDispatcher is not null)
+                {
+                    callbackActionDispatched = a =>
+                    {
+                        try
+                        {
+                            сallbackDispatcher.BeginInvoke(ct => progressCallbackAction(a));
+                        }
+                        catch (Exception)
+                        {
+                        }
+                    };
+                }
+                else
+                {
+                    callbackActionDispatched = null;
+                }
+
+                if (callbackActionDispatched is not null)
+                {
+                    callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
+                    {
+                        JobStatusCode = JobStatusCodes.Unknown
+                    });
+                }
+                return JobStatusCodes.Unknown;
+            }
+
             var taskCompletionSource = new TaskCompletionSource<uint>();
 
             WorkingThreadSafeDispatcher.BeginInvoke(async ct =>

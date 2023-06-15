@@ -131,6 +131,8 @@ namespace Ssz.Utils.Addons
         /// <exception cref="Exception"></exception>
         public void WriteConfiguration(ConfigurationCsvFiles configurationCsvFiles)
         {
+            List<ConfigurationCsvFile> configurationCsvFilesToProcess = new(configurationCsvFiles.ConfigurationCsvFilesCollection.Count);
+
             foreach (ConfigurationCsvFile configurationCsvFile in configurationCsvFiles.ConfigurationCsvFilesCollection)
             {
                 if (!configurationCsvFile.PathRelativeToRootDirectory.EndsWith(".csv", StringComparison.InvariantCultureIgnoreCase))
@@ -140,11 +142,31 @@ namespace Ssz.Utils.Addons
                     throw new Exception("addonCsvFile.PathRelativeToRootDirectory must have no more that one '/'");
 
                 var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationCsvFile.PathRelativeToRootDirectory_PlatformSpecific));
-                if (fileInfo.Exists && FileSystemHelper.FileSystemTimeIsLess(configurationCsvFile.LastWriteTimeUtc, fileInfo.LastWriteTimeUtc))
-                    throw new AddonCsvFileChangedOnDiskException { FilePathRelativeToRootDirectory = configurationCsvFile.PathRelativeToRootDirectory };
+                if (fileInfo.Exists)
+                {
+                    string originalFileData = File.ReadAllText(fileInfo.FullName);
+                    if (String.IsNullOrEmpty(originalFileData))
+                    {
+                        if (!String.IsNullOrEmpty(configurationCsvFile.FileData))
+                            configurationCsvFilesToProcess.Add(configurationCsvFile);
+                    }
+                    else
+                    {
+                        if (configurationCsvFile.FileData != originalFileData)
+                        {
+                            if (FileSystemHelper.FileSystemTimeIsLess(configurationCsvFile.LastWriteTimeUtc, fileInfo.LastWriteTimeUtc))
+                                throw new AddonCsvFileChangedOnDiskException { FilePathRelativeToRootDirectory = configurationCsvFile.PathRelativeToRootDirectory };
+                            configurationCsvFilesToProcess.Add(configurationCsvFile);
+                        }
+                    }                    
+                }
+                else
+                {
+                    configurationCsvFilesToProcess.Add(configurationCsvFile);
+                }                    
             }
 
-            foreach (ConfigurationCsvFile configurationCsvFile in configurationCsvFiles.ConfigurationCsvFilesCollection)
+            foreach (ConfigurationCsvFile configurationCsvFile in configurationCsvFilesToProcess)
             {
                 var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationCsvFile.PathRelativeToRootDirectory_PlatformSpecific));
                 fileInfo.Directory!.Create();                

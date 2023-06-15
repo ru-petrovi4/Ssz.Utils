@@ -56,7 +56,10 @@ namespace Ssz.Utils.Serialization
         }
 
         public static void SetOwnedData(IOwnedDataSerializable ownedDataSerializable, byte[] ownedData)            
-        {            
+        {
+            if (ownedData.Length == 0)
+                return;
+
             using (var reader = new SerializationReader(ownedData))
             {
                 ownedDataSerializable.DeserializeOwnedData(reader, null);

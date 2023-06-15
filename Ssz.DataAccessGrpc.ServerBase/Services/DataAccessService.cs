@@ -6,6 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Intrinsics.Arm;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,12 +35,16 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 {
                     CaseInsensitiveDictionary<string?> contextParams = new CaseInsensitiveDictionary<string?>(request.ContextParams
                             .Select(cp => KeyValuePair.Create(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));
-                    string dataAccessClientPassword = ConfigurationHelper.GetValue(_configuration, @"DataAccessClientPassword", @"");
-                    if (dataAccessClientPassword != @"")
+                    string dataAccessClientPasswordHash = ConfigurationHelper.GetValue(_configuration, @"DataAccessClientPasswordHash", @"");
+                    if (dataAccessClientPasswordHash != @"")
                     {
+                        byte[] dataAccessClientPasswordHashBytes = Convert.FromBase64String(dataAccessClientPasswordHash);                                                
                         var clientPasswordInRequest = contextParams.TryGetValue(@"ClientPassword");
-                        if (clientPasswordInRequest != dataAccessClientPassword)
-                            throw new RpcException(new Status(StatusCode.PermissionDenied, "Invalid client password."));
+                        if (String.IsNullOrEmpty(clientPasswordInRequest))
+                            throw new RpcException(new Status(StatusCode.PermissionDenied, "Client password must be specified (ClientPassword context param)."));
+                        byte[] clientPasswordInRequestHashBytes = SHA512.HashData(new UTF8Encoding(false).GetBytes(clientPasswordInRequest));
+                        if (!clientPasswordInRequestHashBytes.SequenceEqual(dataAccessClientPasswordHashBytes))
+                            throw new RpcException(new Status(StatusCode.PermissionDenied, "Invalid client password (ClientPassword context param)."));
                     }
                     var serverContext = new ServerContext(
                         _logger,
