@@ -85,8 +85,8 @@ namespace Ssz.Utils
             if (sourceString is null) return @"";
             if (sourceString == @"") return "\"\"";
 
-            sourceString = sourceString
-                .Replace("\"", "\"\"");
+            sourceString = TextFileHelper.NormalizeNewLine(sourceString
+                .Replace("\"", "\"\""));
 
             return sourceString.Contains(separator) || sourceString.Contains('\"') ||
                 sourceString.Contains('\n') ||

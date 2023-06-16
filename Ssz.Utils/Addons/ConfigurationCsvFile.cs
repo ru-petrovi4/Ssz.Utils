@@ -39,14 +39,8 @@ namespace Ssz.Utils.Addons
             {
                 fileData = reader.ReadToEnd();
             }
-            
-            //fileData =
-            //    fileData
-            //    .Replace("\r\n", "\n")
-            //    .Replace("\n\r", "\n")
-            //    .Replace("\r", "\n");
 
-            addonCsvFile.FileData = fileData;
+            addonCsvFile.FileData = TextFileHelper.NormalizeNewLine(fileData);
 
             return addonCsvFile;
         }
@@ -82,7 +76,7 @@ namespace Ssz.Utils.Addons
         public DateTime LastWriteTimeUtc { get; set; } = DateTime.MinValue;
 
         /// <summary>
-        ///     File content.
+        ///     File content. Always \n as new line char.
         /// </summary>        
         public string FileData { get; set; } = null!;
 

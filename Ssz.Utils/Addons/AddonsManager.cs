@@ -141,10 +141,12 @@ namespace Ssz.Utils.Addons
                 if (configurationCsvFile.PathRelativeToRootDirectory.Count(f => f == '/') > 1)
                     throw new Exception("addonCsvFile.PathRelativeToRootDirectory must have no more that one '/'");
 
+                configurationCsvFile.FileData = TextFileHelper.NormalizeNewLine(configurationCsvFile.FileData);
+
                 var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationCsvFile.PathRelativeToRootDirectory_PlatformSpecific));
                 if (fileInfo.Exists)
                 {
-                    string originalFileData = File.ReadAllText(fileInfo.FullName);
+                    string originalFileData = TextFileHelper.NormalizeNewLine(File.ReadAllText(fileInfo.FullName));
                     if (String.IsNullOrEmpty(originalFileData))
                     {
                         if (!String.IsNullOrEmpty(configurationCsvFile.FileData))
