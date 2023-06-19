@@ -1110,6 +1110,24 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     User ReadNullable<T>() for reading.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        public void WriteNullable<T>(T? value)
+            where T : struct
+        {
+            if (!value.HasValue)
+            {
+                WriteSerializedType(SerializedType.NullType);
+            }
+            else
+            {
+                WriteObject((object)value.Value);
+            }
+        }
+
+        /// <summary>
         ///     Writes a TimeSpan value into the stream.
         ///     Stored Size: 8 bytes
         /// </summary>

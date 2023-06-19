@@ -29,6 +29,8 @@ namespace Ssz.Utils.Addons
         public string AddonIdentifier { get; set; } = @"";
 
         public string AddonInstanceId { get; set; } = @"";
+        
+        public DateTime? LastWorkTimeUtc { get; set; }
 
         /// <summary>
         ///     See consts in <see cref="AddonStateCodes"/>
@@ -58,6 +60,7 @@ namespace Ssz.Utils.Addons
             writer.Write(AddonGuid);
             writer.Write(AddonIdentifier);
             writer.Write(AddonInstanceId);
+            writer.WriteNullable(LastWorkTimeUtc);
             writer.Write(StateCode);            
             writer.Write(Info);
             writer.Write(Label);
@@ -72,6 +75,7 @@ namespace Ssz.Utils.Addons
             AddonGuid = reader.ReadGuid();
             AddonIdentifier = reader.ReadString();
             AddonInstanceId = reader.ReadString();
+            LastWorkTimeUtc = reader.ReadNullable<DateTime>();
             StateCode = reader.ReadUInt32();
             Info = reader.ReadString();
             Label = reader.ReadString();

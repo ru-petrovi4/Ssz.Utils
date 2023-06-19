@@ -130,7 +130,7 @@ namespace Ssz.Utils.Addons
             {
                 AddonGuid = Guid,
                 AddonIdentifier = Identifier,
-                AddonInstanceId = InstanceId,
+                AddonInstanceId = InstanceId,                
                 StateCode = AddonStateCodes.STATE_OPERATIONAL
             };
         }

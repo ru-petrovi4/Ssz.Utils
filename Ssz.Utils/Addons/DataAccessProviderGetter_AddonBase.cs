@@ -1,6 +1,7 @@
 using Ssz.Utils;
 using Ssz.Utils.Addons;
 using Ssz.Utils.DataAccess;
+using System;
 
 namespace Ssz.Utils.Addons
 {
@@ -90,6 +91,7 @@ namespace Ssz.Utils.Addons
                 AddonGuid = Guid,
                 AddonIdentifier = Identifier,
                 AddonInstanceId = InstanceId,
+                LastWorkTimeUtc = DateTime.UtcNow,
                 StateCode = AddonStateCodes.STATE_OPERATIONAL,
                 Label = Properties.Resources.Addon_STATE_OPERATIONAL_DataAccessProviderIsConnected
             };

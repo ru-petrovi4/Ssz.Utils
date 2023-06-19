@@ -323,6 +323,17 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     Use WriteNullable<T>() for reading.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T? ReadNullable<T>()
+            where T : struct
+        {
+            return (T?)ReadObject();
+        }
+
+        /// <summary>
         ///     Returns a TimeSpan value from the stream.
         /// </summary>
         /// <returns> A TimeSpan value. </returns>
