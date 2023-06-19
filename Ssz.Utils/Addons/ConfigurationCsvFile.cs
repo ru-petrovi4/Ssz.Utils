@@ -50,15 +50,9 @@ namespace Ssz.Utils.Addons
         public string Name => PathRelativeToRootDirectory.Substring(PathRelativeToRootDirectory.LastIndexOf('/') + 1);
 
         /// <summary>        
-        ///     Path relative to the root of the Files Store.
-        ///     Path separator is always '/'. No '/' at the begin, no '/' at the end.        
+        ///     
         /// </summary>        
-        public string PathRelativeToRootDirectory { get; set; } = @"";
-
-        /// <summary>
-        ///     Substitites to PathRelativeToRootDirectory a platform-specific character used to separate directory levels.
-        /// </summary>
-        public string PathRelativeToRootDirectory_PlatformSpecific => PathRelativeToRootDirectory.Replace('/', Path.DirectorySeparatorChar);
+        public string SourcePath { get; set; } = @"";
 
         /// <summary>        
         ///     
@@ -69,6 +63,12 @@ namespace Ssz.Utils.Addons
         ///     
         /// </summary>        
         public string SourceIdToDisplay { get; set; } = @"";
+
+        /// <summary>        
+        ///     Path relative to the root of the Files Store.
+        ///     Path separator is always '/'. No '/' at the begin, no '/' at the end.        
+        /// </summary>        
+        public string PathRelativeToRootDirectory { get; set; } = @"";
 
         /// <summary>
         ///     FileInfo.LastWriteTimeUtc
@@ -87,9 +87,10 @@ namespace Ssz.Utils.Addons
         /// <param name="context"></param>
         public void SerializeOwnedData(SerializationWriter writer, object? context)
         {
-            writer.Write(PathRelativeToRootDirectory);
+            writer.Write(SourcePath);
             writer.Write(SourceId);
             writer.Write(SourceIdToDisplay);
+            writer.Write(PathRelativeToRootDirectory);            
             writer.Write(LastWriteTimeUtc);
             writer.Write(FileData);
         }
@@ -101,12 +102,18 @@ namespace Ssz.Utils.Addons
         /// <param name="context"></param>
         public void DeserializeOwnedData(SerializationReader reader, object? context)
         {
-            PathRelativeToRootDirectory = reader.ReadString();
+            SourcePath = reader.ReadString();
             SourceId = reader.ReadString();
             SourceIdToDisplay = reader.ReadString();
+            PathRelativeToRootDirectory = reader.ReadString();            
             LastWriteTimeUtc = reader.ReadDateTime();
             FileData = reader.ReadString();
         }
+
+        /// <summary>
+        ///     Substitites to PathRelativeToRootDirectory a platform-specific character used to separate directory levels.
+        /// </summary>
+        public string GetPathRelativeToRootDirectory_PlatformSpecific() => PathRelativeToRootDirectory.Replace('/', Path.DirectorySeparatorChar);
 
         #endregion
     }

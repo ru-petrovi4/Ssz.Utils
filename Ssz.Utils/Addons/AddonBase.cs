@@ -25,17 +25,7 @@ namespace Ssz.Utils.Addons
         /// <summary>
         ///     Addon runtime variables .csv file name.
         /// </summary>
-        public const string VariablesCsvFileName = @"variables.csv";
-
-        /// <summary>
-        ///     Addons list .csv file name.
-        /// </summary>
-        public const string AddonsCsvFileName = @"addons.csv";
-
-        /// <summary>
-        ///     Available addons info .csv file name.
-        /// </summary>
-        public const string AddonsAvailableCsvFileName = @"addons_available.csv";
+        public const string VariablesCsvFileName = @"variables.csv";        
 
         /// <summary>
         ///     Addon GUID, never changes.
@@ -59,17 +49,17 @@ namespace Ssz.Utils.Addons
         /// <summary>
         ///     Thread-safe.
         /// </summary>
-        public abstract string Version { get; }
-
-        /// <summary>
-        ///     Thread-safe.
-        /// </summary>
-        public virtual bool IsDummy => false;
+        public abstract string Version { get; }        
 
         /// <summary>
         ///     Thread-safe.
         /// </summary>
         public virtual bool IsMultiInstance => false;
+
+        /// <summary>
+        ///     Thread-safe.
+        /// </summary>
+        public virtual bool IsAlwaysSwitchedOn => false;
 
         /// <summary>
         ///     Option names cannot contain periods.
@@ -92,7 +82,7 @@ namespace Ssz.Utils.Addons
         ///     Gets value from appsettings.json:AddonsOptions:_Addon_Identifier_:DataAccessClient_ContextParams
         ///     Thread-safe.
         /// </summary>
-        public CaseInsensitiveDictionary<string?> SubstitutedOptionsThreadSafe { get; internal set; } = null!;
+        public CaseInsensitiveDictionary<string?> OptionsSubstitutedThreadSafe { get; internal set; } = null!;
 
         /// <summary>
         ///     Unique ID for addon type and options.
@@ -128,15 +118,30 @@ namespace Ssz.Utils.Addons
 
         bool IObservableCollectionItem.ObservableCollectionItemIsAdded { get; set; }
 
+        public bool IsInitialized { get; private set; }
+
         public event EventHandler? Initialized;
 
         public event EventHandler? Closed;
+
+        public virtual AddonStatus GetAddonStatus()
+        {
+            return new AddonStatus
+            {
+                AddonGuid = Guid,
+                AddonIdentifier = Identifier,
+                AddonInstanceId = InstanceId,
+                StateCode = AddonStateCodes.STATE_OPERATIONAL
+            };
+        }
 
         /// <summary>
         ///     When overridden call this base class method after your code.
         /// </summary>
         public virtual void Initialize()
         {
+            IsInitialized = true;
+
             Initialized?.Invoke(this, EventArgs.Empty);
         }
 
@@ -146,6 +151,8 @@ namespace Ssz.Utils.Addons
         public virtual void Close()
         {
             Closed?.Invoke(this, EventArgs.Empty);
+
+            IsInitialized = false;
         }
 
         void IObservableCollectionItem.ObservableCollectionItemInitialize()

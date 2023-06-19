@@ -145,6 +145,44 @@ namespace Ssz.Utils
             return fileName;
         }
 
+        /// <summary>
+        ///     Uses IsSecondaryProcess configuration key.
+        ///     Returns false if primary process, true if secondary.
+        /// </summary>
+        /// <remarks>
+        ///     Secondary process is used in load balancing scenarios.
+        /// </remarks>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
+        public static bool IsSecondaryProcess(IConfiguration configuration)
+        {
+            return GetValue(configuration, @"IsSecondaryProcess", false);
+        }
+
+        /// <summary>
+        ///     Uses ProgramDataDirectory configuration key.
+        ///     Returns ProgramDataDirectory full path.
+        ///     Expands environmental variables, if any. Can handle relative path in settings.
+        ///     Throws, if ProgramDataDirectory is not configured.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public static DirectoryInfo GetProgramDataDirectoryInfo(IConfiguration configuration)
+        {
+            string programDataDirectory = GetValue(configuration, @"ProgramDataDirectory", @"");
+            if (programDataDirectory == @"")
+            {
+                throw new Exception(@"AppSettings ProgramDataDirectory is empty");
+            }
+
+            programDataDirectory = Environment.ExpandEnvironmentVariables(programDataDirectory);
+            if (!Path.IsPathRooted(programDataDirectory))
+                programDataDirectory = Path.Combine(AppContext.BaseDirectory, programDataDirectory);
+
+            return new DirectoryInfo(programDataDirectory);
+        }
+
         #endregion
     }
 }

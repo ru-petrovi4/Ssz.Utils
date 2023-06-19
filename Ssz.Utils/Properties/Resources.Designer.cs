@@ -61,6 +61,42 @@ namespace Ssz.Utils.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Addon is not initialized.
+        /// </summary>
+        public static string Addon_STATE_INITIALIZING {
+            get {
+                return ResourceManager.GetString("Addon_STATE_INITIALIZING", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Is not connected to server.
+        /// </summary>
+        public static string Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNotConnected {
+            get {
+                return ResourceManager.GetString("Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNotConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server connection is not initialized.
+        /// </summary>
+        public static string Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNull {
+            get {
+                return ResourceManager.GetString("Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connected to server.
+        /// </summary>
+        public static string Addon_STATE_OPERATIONAL_DataAccessProviderIsConnected {
+            get {
+                return ResourceManager.GetString("Addon_STATE_OPERATIONAL_DataAccessProviderIsConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot find or create addon config directory: {0}.
         /// </summary>
         public static string AddonConfigDirectoryError {

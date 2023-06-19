@@ -31,10 +31,68 @@ namespace Ssz.Utils.Addons
         /// </summary>
         public static readonly string DataAccessClient_SystemNameToConnect_ToDisplay_OptionName = @"%(DataAccessClient_SystemNameToConnect_ToDisplay)";
 
+        public IDataAccessProvider? DataAccessProvider { get; protected set; }
+
         /// <summary>
-        ///     Gets initialized IDataAccessProvider or writes to log and returns null.        
+        ///     Creates initialized IDataAccessProvider or throws. 
+        ///     Addon must be initialized.
         /// </summary>
         /// <returns></returns>
-        public abstract IDataAccessProvider? GetDataAccessProvider(IDispatcher callbackDispatcher);
+        public abstract void InitializeDataAccessProvider(IDispatcher callbackDispatcher);
+
+        /// <summary>
+        ///     Closes DataAccessProvider.
+        ///     Addon must be initialized.
+        /// </summary>
+        public virtual void CloseDataAccessProvider()
+        {
+            if (DataAccessProvider is not null)
+            {
+                DataAccessProvider.Close();
+                DataAccessProvider = null;
+            }
+        }
+
+        public override AddonStatus GetAddonStatus()
+        {
+            if (!IsInitialized)
+                return new AddonStatus
+                {
+                    AddonGuid = Guid,
+                    AddonIdentifier = Identifier,
+                    AddonInstanceId = InstanceId,
+                    StateCode = AddonStateCodes.STATE_INITIALIZING,
+                    Label = Properties.Resources.Addon_STATE_INITIALIZING
+                };
+
+            if (DataAccessProvider is null)
+                return new AddonStatus
+                {
+                    AddonGuid = Guid,
+                    AddonIdentifier = Identifier,
+                    AddonInstanceId = InstanceId,
+                    StateCode = AddonStateCodes.STATE_NOT_OPERATIONAL,
+                    Label = Properties.Resources.Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNull
+                };
+
+            if (!DataAccessProvider.IsConnected)
+                return new AddonStatus
+                {
+                    AddonGuid = Guid,
+                    AddonIdentifier = Identifier,
+                    AddonInstanceId = InstanceId,
+                    StateCode = AddonStateCodes.STATE_NOT_OPERATIONAL,
+                    Label = Properties.Resources.Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNotConnected
+                };
+
+            return new AddonStatus
+            {
+                AddonGuid = Guid,
+                AddonIdentifier = Identifier,
+                AddonInstanceId = InstanceId,
+                StateCode = AddonStateCodes.STATE_OPERATIONAL,
+                Label = Properties.Resources.Addon_STATE_OPERATIONAL_DataAccessProviderIsConnected
+            };
+        }        
     }
 }

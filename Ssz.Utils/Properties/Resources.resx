@@ -126,6 +126,18 @@
   <data name="AddonNameIsEmpty" xml:space="preserve">
     <value>AddonNameIsEmpty</value>
   </data>
+  <data name="Addon_STATE_INITIALIZING" xml:space="preserve">
+    <value>Addon is not initialized</value>
+  </data>
+  <data name="Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNotConnected" xml:space="preserve">
+    <value>Is not connected to server</value>
+  </data>
+  <data name="Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNull" xml:space="preserve">
+    <value>Server connection is not initialized</value>
+  </data>
+  <data name="Addon_STATE_OPERATIONAL_DataAccessProviderIsConnected" xml:space="preserve">
+    <value>Connected to server</value>
+  </data>
   <data name="AvailableAddonIsNotFound" xml:space="preserve">
     <value>Available Addon is not found: {0}</value>
   </data>

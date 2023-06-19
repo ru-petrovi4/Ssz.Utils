@@ -483,19 +483,21 @@ namespace Ssz.Utils
             if (csvFile.FileData!.Count != valuesList.Count)
                 return false;
 
+            StringBuilder valuesString = new();
             foreach (var valuesLine in values)
             {
-                var valuesLineList = valuesLine.ToList();
-                string key = valuesLineList[0] ?? @"";
-
-                if (!csvFile.FileData!.TryGetValue(key, out List<string?>? fileLine))
-                    return false;
-
-                if (!Enumerable.SequenceEqual(fileLine, valuesLineList))
-                    return false;                
+                valuesString.Append(CsvHelper.FormatForCsv(",", valuesLine));
+                valuesString.Append("\n");
             }
 
-            return true;
+            StringBuilder fileDataString = new();
+            foreach (var valuesLine in csvFile.FileData.Values)
+            {
+                fileDataString.Append(CsvHelper.FormatForCsv(",", valuesLine));
+                fileDataString.Append("\n");
+            }
+
+            return valuesString.ToString() == fileDataString.ToString();
         }
 
         /// <summary>

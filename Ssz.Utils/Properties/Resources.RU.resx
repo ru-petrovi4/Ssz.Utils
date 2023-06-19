@@ -126,6 +126,18 @@
   <data name="AddonNameIsEmpty" xml:space="preserve">
     <value>AddonNameIsEmpty</value>
   </data>
+  <data name="Addon_STATE_INITIALIZING" xml:space="preserve">
+    <value>Плагин не инициализирован</value>
+  </data>
+  <data name="Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNotConnected" xml:space="preserve">
+    <value>Нет подключения к серверу</value>
+  </data>
+  <data name="Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNull" xml:space="preserve">
+    <value>Подключение к серверу не инициализировано</value>
+  </data>
+  <data name="Addon_STATE_OPERATIONAL_DataAccessProviderIsConnected" xml:space="preserve">
+    <value>Подключено к серверу</value>
+  </data>
   <data name="AvailableAddonIsNotFound" xml:space="preserve">
     <value>Желаемый плагин {0} не найден.</value>
   </data>
