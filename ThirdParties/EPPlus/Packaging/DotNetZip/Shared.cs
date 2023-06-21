@@ -158,7 +158,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         }
 
 
-#if (Core)
+#if NETCOREAPP
         static System.Text.Encoding ibm437 = System.Text.Encoding.GetEncoding("UTF-8");   
 #else
         static System.Text.Encoding ibm437 = System.Text.Encoding.GetEncoding("IBM437");

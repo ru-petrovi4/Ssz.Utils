@@ -46,7 +46,7 @@ using OfficeOpenXml.Utils.CompundDocument;
 using System.Configuration;
 using OfficeOpenXml.Compatibility;
 using System.Text;
-#if (Core)
+#if NETCOREAPP
 using Microsoft.Extensions.Configuration;
 #endif
 namespace OfficeOpenXml
@@ -425,7 +425,7 @@ namespace OfficeOpenXml
         }
         internal ImageInfo AddImage(byte[] image, Uri uri, string contentType)
         {
-#if (Core)
+#if NETCOREAPP
             var hashProvider = SHA1.Create();
 #else
             var hashProvider = new SHA1CryptoServiceProvider();
@@ -459,7 +459,7 @@ namespace OfficeOpenXml
         }
         internal ImageInfo LoadImage(byte[] image, Uri uri, Packaging.ZipPackagePart imagePart)
         {
-#if (Core)
+#if NETCOREAPP
             var hashProvider = SHA1.Create();
 #else
             var hashProvider = new SHA1CryptoServiceProvider();
@@ -493,7 +493,7 @@ namespace OfficeOpenXml
         }
         internal ImageInfo GetImageInfo(byte[] image)
         {
-#if (Core)
+#if NETCOREAPP
             var hashProvider = SHA1.Create();
 #else
             var hashProvider = new SHA1CryptoServiceProvider();
@@ -526,7 +526,7 @@ namespace OfficeOpenXml
         private void Init()
         {
             DoAdjustDrawings = true;
-#if (Core)
+#if NETCOREAPP
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);  //Add Support for codepage 1252
 
             var build = new ConfigurationBuilder()
@@ -1213,7 +1213,7 @@ namespace OfficeOpenXml
             this._workbook = null;
         }
         static object _lock=new object();
-#if (Core)
+#if NETCOREAPP
         internal int _worksheetAdd=0;
 #else
         internal int _worksheetAdd=1;
