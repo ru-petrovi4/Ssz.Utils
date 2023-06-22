@@ -200,7 +200,7 @@ namespace Ssz.Utils
         {
             var fileData = new CaseInsensitiveDictionary<List<string?>>();
 
-            using var fileFullNameScope = userFriendlyLogger?.BeginScope("FileName: " + Path.GetFileName(fileFullName));
+            using var fileFullNameScope = userFriendlyLogger?.BeginScope((Properties.Resources.FileNameScopeName, Path.GetFileName(fileFullName)));
             
             if (!File.Exists(fileFullName))
             {
@@ -258,7 +258,7 @@ namespace Ssz.Utils
                                         {
                                             if (fileData.ContainsKey(kvp.Key))
                                             {
-                                                userFriendlyLogger?.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key='" + kvp.Key + "'");
+                                                userFriendlyLogger?.LogWarning(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key='" + kvp.Key + "'");
                                             }
                                             fileData[kvp.Key] = kvp.Value;
                                         }
@@ -341,7 +341,7 @@ namespace Ssz.Utils
                             {
                                 if (fileData.ContainsKey(@""))
                                 {
-                                    userFriendlyLogger?.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key=''");
+                                    userFriendlyLogger?.LogWarning(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key=''");
                                 }
                                 fileData[@""] = fields;
                             }
@@ -350,7 +350,7 @@ namespace Ssz.Utils
                         {
                             if (fileData.ContainsKey(field0))
                             {
-                                userFriendlyLogger?.LogError(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key='" + field0 + "'");
+                                userFriendlyLogger?.LogWarning(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key='" + field0 + "'");
                             }
                             fileData[field0] = fields;
                         }
