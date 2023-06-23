@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.FileProviders;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -25,17 +26,15 @@ namespace Ssz.Utils.Logging
             _options = options;
 
             _logsDirectoryFullName = Environment.ExpandEnvironmentVariables(_options.LogsDirectory);
-
-            //     Creates all directories and subdirectories in the specified path unless they
-            //     already exist.
+            
             if (String.IsNullOrEmpty(_logsDirectoryFullName))
             {
                 _logsDirectoryFullName = Directory.GetCurrentDirectory();
             }
-            else
-            {
-                Directory.CreateDirectory(_logsDirectoryFullName);
-            }
+
+            // Creates all directories and subdirectories in the specified path unless they
+            // already exist.
+            Directory.CreateDirectory(_logsDirectoryFullName);            
 
             if (!String.IsNullOrEmpty(_options.LogFileName))
             {
@@ -50,6 +49,24 @@ namespace Ssz.Utils.Logging
                 var exeFileName = new FileInfo(moduleName).Name;
 
                 SetLogFileFullName(exeFileName + @".log");                
+            }
+
+            if (_options.DeleteOldFilesAtStart)
+            {
+                var fileInfos = Directory.GetFiles(_logsDirectoryFullName, _suggestedLogFileNameWithoutExtension + @".*" + _suggestedLogFileNameExtension)
+                    .Select(n => new FileInfo(n))
+                    .OrderByDescending(f => f.LastWriteTime)
+                    .ToList();
+                foreach (FileInfo fi in fileInfos.ToArray())
+                {
+                    try
+                    {
+                        fi.Delete();
+                    }
+                    catch
+                    {
+                    }
+                }
             }
         }
 

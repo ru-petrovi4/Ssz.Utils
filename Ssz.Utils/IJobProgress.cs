@@ -21,9 +21,9 @@ namespace Ssz.Utils
         IJobProgress GetChildJobProgress(uint minProgressPercent, uint maxProgressPercent);
     }
 
-    public class DummyJobProgress : IJobProgress
+    public class NullJobProgress : IJobProgress
     {
-        public static readonly DummyJobProgress Default = new();
+        public static readonly NullJobProgress Instance = new();
 
         public string JobId => @"";
 

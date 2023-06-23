@@ -32,11 +32,16 @@ namespace Ssz.Utils
                 charsetDetector.Feed(bytes, 0, bytes.Length);
             }
             charsetDetector.DataEnd();
-            if (charsetDetector.Encoding == transportEncoding)
+            if (!charsetDetector.IsDone() || charsetDetector.Encoding == transportEncoding)
+            {
                 return zipArchive;
-            zipArchive.Dispose();
-            stream.Position = 0;
-            return new ZipArchive(stream, ZipArchiveMode.Read, true, charsetDetector.Encoding);
+            }
+            else
+            {
+                zipArchive.Dispose();
+                stream.Position = 0;
+                return new ZipArchive(stream, ZipArchiveMode.Read, true, charsetDetector.Encoding);
+            }            
         }
     }
 }

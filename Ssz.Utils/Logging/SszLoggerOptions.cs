@@ -14,6 +14,12 @@ namespace Ssz.Utils.Logging
         public LogLevel LogLevel { get; set; } = LogLevel.Trace;
 
         /// <summary>
+        ///     If true (default is false), only messages with LogLevel are logged.
+        ///     Other messages with higher o lower priority is ignored.
+        /// </summary>
+        public bool LogLevelIsExclusive { get; set; } = false;
+
+        /// <summary>
         ///     If empty (default) logs to current directory.
         /// </summary>
         public string LogsDirectory { get; set; } = @"";
@@ -24,6 +30,11 @@ namespace Ssz.Utils.Logging
         public string LogFileName { get; set; } = @"";
 
         public bool DuplicateInConsole { get; set; } = false;
+
+        /// <summary>
+        ///     Default is false.
+        /// </summary>
+        public bool DeleteOldFilesAtStart { get; set; }
 
         /// <summary>
         ///     Default is unlimited.
