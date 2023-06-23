@@ -50,7 +50,10 @@ namespace Ssz.Utils.Logging
         public override bool IsEnabled(LogLevel logLevel)
         {
             if (Options.LogLevel == LogLevel.None) return false;
-            return logLevel >= Options.LogLevel;
+            if (Options.LogLevelIsExclusive)
+                return logLevel == Options.LogLevel;
+            else
+                return logLevel >= Options.LogLevel;
         }
 
         public override void Log<TState>(
