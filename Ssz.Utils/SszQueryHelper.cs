@@ -72,7 +72,7 @@ namespace Ssz.Utils
         /// <param name="csvDb"></param>
         /// <returns></returns>
         [return: NotNullIfNotNull("originalString")]
-        public static string? ComputeValueOfSszQueries(string? originalString, Func<string, string> getConstantValue, CsvDb? csvDb)
+        public static string? ComputeValueOfSszQueries(string? originalString, Func<string, string> getConstantValue, CsvDb? csvDb = null)
         {
             if (string.IsNullOrWhiteSpace(originalString)) return originalString;
 
