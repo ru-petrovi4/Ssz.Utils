@@ -35,16 +35,24 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 {
                     CaseInsensitiveDictionary<string?> contextParams = new CaseInsensitiveDictionary<string?>(request.ContextParams
                             .Select(cp => KeyValuePair.Create(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));
-                    string dataAccessClientPasswordHash = ConfigurationHelper.GetValue(_configuration, @"DataAccessClientPasswordHash", @"");
-                    if (dataAccessClientPasswordHash != @"")
+                    string dataAccessClientUserName = ConfigurationHelper.GetValue(_configuration, @"DataAccessClientUserName", @"");
+                    if (dataAccessClientUserName != @"")
                     {
-                        byte[] dataAccessClientPasswordHashBytes = Convert.FromBase64String(dataAccessClientPasswordHash);                                                
+                        string dataAccessClientPasswordHash = ConfigurationHelper.GetValue(_configuration, @"DataAccessClientPasswordHash", @"");
+                        if (String.IsNullOrEmpty(dataAccessClientPasswordHash))
+                            throw new RpcException(new Status(StatusCode.PermissionDenied, "Client password hash must be specified (DataAccessClientPasswordHash in appsettings.json)."));
+                        byte[] dataAccessClientPasswordHashBytes = Convert.FromBase64String(dataAccessClientPasswordHash);
+                        var clientUserNameInRequest = contextParams.TryGetValue(@"ClientUserName");
+                        if (String.IsNullOrEmpty(clientUserNameInRequest))
+                            throw new RpcException(new Status(StatusCode.PermissionDenied, "Client user name must be specified (ClientUserName context param)."));
+                        if (!String.Equals(clientUserNameInRequest, dataAccessClientUserName))
+                            throw new RpcException(new Status(StatusCode.PermissionDenied, "Invalid client user name or password (ClientUserName or ClientPassword context params)."));
                         var clientPasswordInRequest = contextParams.TryGetValue(@"ClientPassword");
                         if (String.IsNullOrEmpty(clientPasswordInRequest))
                             throw new RpcException(new Status(StatusCode.PermissionDenied, "Client password must be specified (ClientPassword context param)."));
                         byte[] clientPasswordInRequestHashBytes = SHA512.HashData(new UTF8Encoding(false).GetBytes(clientPasswordInRequest));
                         if (!clientPasswordInRequestHashBytes.SequenceEqual(dataAccessClientPasswordHashBytes))
-                            throw new RpcException(new Status(StatusCode.PermissionDenied, "Invalid client password (ClientPassword context param)."));
+                            throw new RpcException(new Status(StatusCode.PermissionDenied, "Invalid client user name or password (ClientUserName or ClientPassword context params)."));
                     }
                     var serverContext = new ServerContext(
                         _logger,
