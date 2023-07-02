@@ -185,4 +185,12 @@ namespace Ssz.Utils
 
         #endregion
     }
+
+    /// <summary>
+    ///     Interface for configuration values processing.
+    /// </summary>
+    public interface IConfigurationProcessor
+    {
+        string ProcessValue(string value);
+    }
 }

@@ -45,14 +45,14 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         var clientUserNameInRequest = contextParams.TryGetValue(@"ClientUserName");
                         if (String.IsNullOrEmpty(clientUserNameInRequest))
                             throw new RpcException(new Status(StatusCode.PermissionDenied, "Client user name must be specified (ClientUserName context param)."));
-                        if (!String.Equals(clientUserNameInRequest, dataAccessClientUserName))
-                            throw new RpcException(new Status(StatusCode.PermissionDenied, "Invalid client user name or password (ClientUserName or ClientPassword context params)."));
+                        if (!String.Equals(clientUserNameInRequest, dataAccessClientUserName, StringComparison.InvariantCultureIgnoreCase))
+                            throw new RpcException(new Status(StatusCode.PermissionDenied, "Invalid client user name (ClientUserName context params).")); // Invalid client user name or password (ClientUserName or ClientPassword context params)
                         var clientPasswordInRequest = contextParams.TryGetValue(@"ClientPassword");
                         if (String.IsNullOrEmpty(clientPasswordInRequest))
                             throw new RpcException(new Status(StatusCode.PermissionDenied, "Client password must be specified (ClientPassword context param)."));
                         byte[] clientPasswordInRequestHashBytes = SHA512.HashData(new UTF8Encoding(false).GetBytes(clientPasswordInRequest));
                         if (!clientPasswordInRequestHashBytes.SequenceEqual(dataAccessClientPasswordHashBytes))
-                            throw new RpcException(new Status(StatusCode.PermissionDenied, "Invalid client user name or password (ClientUserName or ClientPassword context params)."));
+                            throw new RpcException(new Status(StatusCode.PermissionDenied, "Invalid client password (ClientPassword context params)."));
                     }
                     var serverContext = new ServerContext(
                         _logger,
@@ -378,13 +378,13 @@ namespace Ssz.DataAccessGrpc.ServerBase
             catch (RpcException ex)
             {
                 string message = @"RPC Exception";
-                _logger.LogDebug(ex, message);
+                _logger.LogError(ex, message);
                 throw;
             }
             catch (Exception ex)
             {
                 string message = @"General Exception";
-                _logger.LogDebug(ex, message);
+                _logger.LogCritical(ex, message);
                 throw new RpcException(new Status(StatusCode.Internal, ex.Message));
             }
         }
