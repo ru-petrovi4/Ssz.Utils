@@ -12,24 +12,21 @@ namespace Ssz.Utils
 {
     public class ElementIdsMap
     {
-        #region construction and destruction
-
-        /// <summary>
-        ///     Must be initialized before first use.
-        /// </summary>
-        /// <param name="logger"></param>
-        public ElementIdsMap(ILogger<ElementIdsMap>? logger = null)
-        {
-            _logger = logger;
-        }
-
-        #endregion
-
         #region public functions
 
         public const string StandardMapFileName = @"map.csv";
 
         public const string StandardTagsFileName = @"tags.csv";
+
+        public const string GenericTagParamName = @"%(GenericTag)";
+
+        public const string GenericPropParamName = @"%(GenericProp)";
+
+        public const string TagTypeSeparatorParamName = @"%(TagTypeSeparator)";
+
+        public const string TagAndPropSeparatorParamName = @"%(TagAndPropSeparator)";
+
+        public const string CommonEventMessageFieldsToAddParamName = @"%(CommonEventMessageFieldsToAdd)";
 
         /// <summary>
         ///     Can be configured in map, '%(GenericTag)' key
@@ -37,14 +34,19 @@ namespace Ssz.Utils
         public string GenericTag { get; private set; } = @"%(TAG)";
 
         /// <summary>
+        ///     Can be configured in map, '%(GenericProp)' key
+        /// </summary>
+        public string GenericProp { get; private set; } = @"%(PROP)";
+
+        /// <summary>
         ///     Can be configured in map, '%(TagTypeSeparator)' key
         /// </summary>
         public string TagTypeSeparator { get; private set; } = @":";
 
         /// <summary>
-        ///     Can be configured in map, '%(TagAndPropertySeparator)' key
+        ///     Can be configured in map, '%(TagAndPropSeparator)' key
         /// </summary>
-        public string TagAndPropertySeparator { get; private set; } = @".";
+        public string TagAndPropSeparator { get; private set; } = @".";
 
         /// <summary>
         ///     Not null after Initialize(...)
@@ -77,19 +79,23 @@ namespace Ssz.Utils
             Tags = tags;
             _csvDb = csvDb;
 
-            var values = Map.TryGetValue("%(GenericTag)");
+            var values = Map.TryGetValue(GenericTagParamName);
             if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 GenericTag = values[1] ?? @"";
 
-            values = Map.TryGetValue("%(TagTypeSeparator)");
+            values = Map.TryGetValue(GenericPropParamName);
+            if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
+                GenericProp = values[1] ?? @"";
+
+            values = Map.TryGetValue(TagTypeSeparatorParamName);
             if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 TagTypeSeparator = values[1] ?? @"";
 
-            values = Map.TryGetValue("%(TagAndPropertySeparator)");
+            values = Map.TryGetValue(TagAndPropSeparatorParamName);
             if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
-                TagAndPropertySeparator = values[1] ?? @"";
+                TagAndPropSeparator = values[1] ?? @"";
 
-            values = Map.TryGetValue("%(CommonEventMessageFieldsToAdd)");
+            values = Map.TryGetValue(CommonEventMessageFieldsToAddParamName);
             if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 CommonEventMessageFieldsToAdd = NameValueCollectionHelper.Parse(values[1]);
         }
@@ -112,34 +118,39 @@ namespace Ssz.Utils
             }
 
             string? tagName;
-            string? propertyPath;
+            string? prop;
             string? tagType;
 
-            var separatorIndex = elementId.LastIndexOf(TagAndPropertySeparator);
+            var separatorIndex = elementId.IndexOf(TagAndPropSeparator);
             if (separatorIndex > 0 && separatorIndex < elementId.Length - 1)
             {
                 tagName = elementId.Substring(0, separatorIndex);
-                propertyPath = elementId.Substring(separatorIndex);
+                prop = elementId.Substring(separatorIndex + 1);
                 tagType = GetTagType(tagName);
             }
             else
             {
                 tagName = elementId;
-                propertyPath = null;
+                prop = null;
                 tagType = null;
             }
 
-            if (String.IsNullOrEmpty(propertyPath))
+            if (String.IsNullOrEmpty(prop))
                 return null;
 
             var result = new List<string?> { elementId };
 
             values = null;
-            if (!string.IsNullOrEmpty(tagType))
-                values = Map.TryGetValue(tagType + TagTypeSeparator +
-                                                        GenericTag + propertyPath);
+            if (!String.IsNullOrEmpty(tagType))
+                values = Map.TryGetValue(tagType + TagTypeSeparator + GenericTag + TagAndPropSeparator + prop);
             if (values is null)
-                values = Map.TryGetValue(GenericTag + propertyPath);
+                values = Map.TryGetValue(GenericTag + TagAndPropSeparator + prop);
+            if (values is null && !String.IsNullOrEmpty(tagType))
+                values = Map.TryGetValue(tagType + TagTypeSeparator + GenericTag + TagAndPropSeparator + GenericProp);
+            if (values is null)
+                values = Map.TryGetValue(GenericTag + TagAndPropSeparator + GenericProp);
+            if (values is null)
+                values = Map.TryGetValue(tagName + TagAndPropSeparator + GenericProp);
             if (values is null)
                 return null;
 
@@ -152,6 +163,8 @@ namespace Ssz.Utils
                         {
                             if (String.Equals(constant, GenericTag, StringComparison.InvariantCultureIgnoreCase))
                                 return tagName ?? @"";
+                            if (String.Equals(constant, GenericProp, StringComparison.InvariantCultureIgnoreCase))
+                                return prop ?? @"";
                             if (getConstantValue != null)
                                 return getConstantValue(constant);
                             return @"";
@@ -172,13 +185,13 @@ namespace Ssz.Utils
         ///     Returns null if not found in map file, otherwise result.Count > 1
         /// </summary>
         /// <param name="tagName"></param>
-        /// <param name="propertyPath"></param>
+        /// <param name="prop"></param>
         /// <param name="tagType"></param>
         /// <param name="getConstantValue"></param>
         /// <returns></returns>
-        public List<string?>? GetFromMap(string? tagName, string? propertyPath, string? tagType, Func<string, string>? getConstantValue = null)
+        public List<string?>? GetFromMap(string? tagName, string? prop, string? tagType, Func<string, string>? getConstantValue = null)
         {
-            string elementId = tagName + propertyPath;
+            string elementId = tagName + TagAndPropSeparator + prop;
             if (elementId == @"" || Map.Count == 0) return null;
 
             var values = Map.TryGetValue(elementId);
@@ -190,15 +203,20 @@ namespace Ssz.Utils
 
             var result = new List<string?> { elementId };
 
-            if (String.IsNullOrEmpty(propertyPath))
+            if (String.IsNullOrEmpty(prop))
                 return null;
 
             values = null;
-            if (!string.IsNullOrEmpty(tagType))
-                values = Map.TryGetValue(tagType + TagTypeSeparator +
-                                                        GenericTag + propertyPath);
+            if (!String.IsNullOrEmpty(tagType))
+                values = Map.TryGetValue(tagType + TagTypeSeparator + GenericTag + TagAndPropSeparator + prop);
             if (values is null)
-                values = Map.TryGetValue(GenericTag + propertyPath);
+                values = Map.TryGetValue(GenericTag + TagAndPropSeparator + prop);
+            if (values is null && !String.IsNullOrEmpty(tagType))
+                values = Map.TryGetValue(tagType + TagTypeSeparator + GenericTag + TagAndPropSeparator + GenericProp);
+            if (values is null)
+                values = Map.TryGetValue(GenericTag + TagAndPropSeparator + GenericProp);
+            if (values is null)
+                values = Map.TryGetValue(tagName + TagAndPropSeparator + GenericProp);
             if (values is null)
                 return null;
 
@@ -210,6 +228,8 @@ namespace Ssz.Utils
                     {
                         if (String.Equals(constant, GenericTag, StringComparison.InvariantCultureIgnoreCase))
                             return tagName ?? @"";
+                        if (String.Equals(constant, GenericProp, StringComparison.InvariantCultureIgnoreCase))
+                            return prop ?? @"";
                         if (getConstantValue != null)
                             return getConstantValue(constant);
                         return @"";
@@ -227,7 +247,8 @@ namespace Ssz.Utils
 
         public string GetTagType(string? tagName)
         {
-            if (string.IsNullOrEmpty(tagName)) return "";
+            if (string.IsNullOrEmpty(tagName))
+                return "";
             var tagValues = Tags.TryGetValue(tagName!);
             if (tagValues is null) return "";
             if (tagValues.Count < 2) return "";
@@ -280,8 +301,6 @@ namespace Ssz.Utils
         #endregion
 
         #region private fields
-
-        private ILogger<ElementIdsMap>? _logger;
 
         private CsvDb? _csvDb;
 

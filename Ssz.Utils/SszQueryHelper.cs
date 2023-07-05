@@ -88,12 +88,15 @@ namespace Ssz.Utils
 
         private static string EscapeForSszQuery(string value)
         {
+            if (value == @"")
+                return @"";
             return value.Replace(@",", @"###Comma###").Replace(@"=>", @"###Lambda###");
         }
 
         private static string UnescapeForSszQuery(string value)
         {
-            if (value == @"") return @"";
+            if (value == @"") 
+                return @"";
             return value.Replace(@"###Comma###", @",").Replace(@"###Lambda###", @"=>");
         }
 
@@ -137,7 +140,7 @@ namespace Ssz.Utils
                     string constant = a.Trim();
                     if (constant == @"") return @""; // Query is not resolved
                     constant = @"%(" + constant + @")";
-                    string valueOfQuery = getConstantValue(constant);
+                    string valueOfQuery = getConstantValue(constant) ?? @""; // For safe getConstantValue call
                     dataSourceValues.Add(valueOfQuery);
                 }
 
@@ -151,7 +154,7 @@ namespace Ssz.Utils
                 string constant = UnescapeForSszQuery(parts[0].Trim());
                 if (constant == @"") return @""; // Query is not resolved
                 constant = @"%(" + constant + @")";
-                string valueOfSszQuery = getConstantValue(constant);
+                string valueOfSszQuery = getConstantValue(constant) ?? @"";
                 if (valueOfSszQuery == @"" && parts.Length == 2)
                     valueOfSszQuery = UnescapeForSszQuery(parts[1].Trim());
                 return valueOfSszQuery;
