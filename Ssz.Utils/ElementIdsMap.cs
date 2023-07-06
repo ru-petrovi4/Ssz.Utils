@@ -108,78 +108,70 @@ namespace Ssz.Utils
         /// <returns></returns>
         public List<string?>? GetFromMap(string elementId, Func<string, string>? getConstantValue = null)
         {
-            if (elementId == @"" || Map.Count == 0) return null;
+            if (elementId == @"" || Map.Count == 0) 
+                return null;
 
             var values = Map.TryGetValue(elementId);
             if (values is not null)
             {
-                if (values.Count == 1) values.Add("");
+                if (values.Count == 1)
+                    values.Add("");
                 return values;
             }
 
             string? tagName;
-            string? prop;
-            string? tagType;
+            string? prop;            
 
             var separatorIndex = elementId.IndexOf(TagAndPropSeparator);
             if (separatorIndex > 0 && separatorIndex < elementId.Length - 1)
             {
                 tagName = elementId.Substring(0, separatorIndex);
-                prop = elementId.Substring(separatorIndex + 1);
-                tagType = GetTagType(tagName);
+                prop = elementId.Substring(separatorIndex + 1);                
             }
             else
             {
                 tagName = elementId;
-                prop = null;
-                tagType = null;
+                prop = null;                
             }
 
-            if (String.IsNullOrEmpty(prop))
+            if (String.IsNullOrEmpty(tagName) || String.IsNullOrEmpty(prop))
                 return null;
 
-            var result = new List<string?> { elementId };
+            string tagType = GetTagType(tagName);
 
-            values = null;
-            if (!String.IsNullOrEmpty(tagType))
-                values = Map.TryGetValue(tagType + TagTypeSeparator + GenericTag + TagAndPropSeparator + prop);
-            if (values is null)
-                values = Map.TryGetValue(GenericTag + TagAndPropSeparator + prop);
-            if (values is null && !String.IsNullOrEmpty(tagType))
-                values = Map.TryGetValue(tagType + TagTypeSeparator + GenericTag + TagAndPropSeparator + GenericProp);
-            if (values is null)
-                values = Map.TryGetValue(GenericTag + TagAndPropSeparator + GenericProp);
-            if (values is null)
-                values = Map.TryGetValue(tagName + TagAndPropSeparator + GenericProp);
-            if (values is null)
-                return null;
-
-            if (values.Count > 1)
-            {
-                for (var i = 1; i < values.Count; i++)
-                {
-                    string? v = SszQueryHelper.ComputeValueOfSszQueries(values[i],
-                        constant =>
-                        {
-                            if (String.Equals(constant, GenericTag, StringComparison.InvariantCultureIgnoreCase))
-                                return tagName ?? @"";
-                            if (String.Equals(constant, GenericProp, StringComparison.InvariantCultureIgnoreCase))
-                                return prop ?? @"";
-                            if (getConstantValue != null)
-                                return getConstantValue(constant);
-                            return @"";
-                        }
-                        , _csvDb);
-                    result.Add(v ?? @"");
-                }
-            }
-            else
-            {
-                result.Add("");
-            }
-
-            return result;
+            return GetFromMapInternal(elementId, tagName, prop!, tagType, getConstantValue);
         }
+
+        /// <summary>
+        ///     Returns null if not found in map file, otherwise result.Count > 1
+        /// </summary>
+        /// <param name="tagName"></param>
+        /// <param name="prop"></param>
+        /// <param name="tagType"></param>
+        /// <param name="getConstantValue"></param>
+        /// <returns></returns>
+        public List<string?>? GetFromMap(string? tagName, string? prop, Func<string, string>? getConstantValue = null)
+        {
+            string elementId = tagName + TagAndPropSeparator + prop;
+            if (elementId == @"" || Map.Count == 0)
+                return null;
+
+            var values = Map.TryGetValue(elementId);
+            if (values is not null)
+            {
+                if (values.Count == 1) 
+                    values.Add("");
+                return values;
+            }
+
+            if (String.IsNullOrEmpty(tagName) || String.IsNullOrEmpty(prop))
+                return null;
+
+            string tagType = GetTagType(tagName);
+
+            return GetFromMapInternal(elementId, tagName!, prop!, tagType, getConstantValue);
+        }
+
 
         /// <summary>
         ///     Returns null if not found in map file, otherwise result.Count > 1
@@ -192,57 +184,21 @@ namespace Ssz.Utils
         public List<string?>? GetFromMap(string? tagName, string? prop, string? tagType, Func<string, string>? getConstantValue = null)
         {
             string elementId = tagName + TagAndPropSeparator + prop;
-            if (elementId == @"" || Map.Count == 0) return null;
+            if (elementId == @"" || Map.Count == 0) 
+                return null;
 
             var values = Map.TryGetValue(elementId);
             if (values is not null)
             {
-                if (values.Count == 1) values.Add("");
+                if (values.Count == 1) 
+                    values.Add("");
                 return values;
             }
 
-            var result = new List<string?> { elementId };
-
-            if (String.IsNullOrEmpty(prop))
+            if (String.IsNullOrEmpty(tagName) || String.IsNullOrEmpty(prop))
                 return null;
 
-            values = null;
-            if (!String.IsNullOrEmpty(tagType))
-                values = Map.TryGetValue(tagType + TagTypeSeparator + GenericTag + TagAndPropSeparator + prop);
-            if (values is null)
-                values = Map.TryGetValue(GenericTag + TagAndPropSeparator + prop);
-            if (values is null && !String.IsNullOrEmpty(tagType))
-                values = Map.TryGetValue(tagType + TagTypeSeparator + GenericTag + TagAndPropSeparator + GenericProp);
-            if (values is null)
-                values = Map.TryGetValue(GenericTag + TagAndPropSeparator + GenericProp);
-            if (values is null)
-                values = Map.TryGetValue(tagName + TagAndPropSeparator + GenericProp);
-            if (values is null)
-                return null;
-
-            if (values.Count > 1)
-            {
-                for (var i = 1; i < values.Count; i++)
-                {
-                    string? v = SszQueryHelper.ComputeValueOfSszQueries(values[i], constant =>
-                    {
-                        if (String.Equals(constant, GenericTag, StringComparison.InvariantCultureIgnoreCase))
-                            return tagName ?? @"";
-                        if (String.Equals(constant, GenericProp, StringComparison.InvariantCultureIgnoreCase))
-                            return prop ?? @"";
-                        if (getConstantValue != null)
-                            return getConstantValue(constant);
-                        return @"";
-                    }, _csvDb);
-                    result.Add(v ?? @"");
-                }
-            }
-            else
-            {
-                result.Add("");
-            }
-
-            return result;
+            return GetFromMapInternal(elementId, tagName!, prop!, tagType, getConstantValue);
         }
 
         public string GetTagType(string? tagName)
@@ -296,6 +252,62 @@ namespace Ssz.Utils
             }            
 
             return eventMessagesCollection;
+        }
+
+        #endregion        
+
+        #region private functions
+
+        /// <summary>
+        ///     Preconditions: tagName and prop are not empty strings.
+        /// </summary>
+        /// <param name="elementId"></param>
+        /// <param name="tagName"></param>
+        /// <param name="prop"></param>
+        /// <param name="tagType"></param>
+        /// <param name="getConstantValue"></param>
+        /// <returns></returns>
+        private List<string?>? GetFromMapInternal(string elementId, string tagName, string prop, string? tagType, Func<string, string>? getConstantValue)
+        {
+            List<string?>? values = null;
+            if (!String.IsNullOrEmpty(tagType))
+                values = Map.TryGetValue(tagType + TagTypeSeparator + GenericTag + TagAndPropSeparator + prop);
+            if (values is null)
+                values = Map.TryGetValue(GenericTag + TagAndPropSeparator + prop);
+            if (values is null && !String.IsNullOrEmpty(tagType))
+                values = Map.TryGetValue(tagType + TagTypeSeparator + GenericTag + TagAndPropSeparator + GenericProp);
+            if (values is null)
+                values = Map.TryGetValue(GenericTag + TagAndPropSeparator + GenericProp);
+            if (values is null)
+                values = Map.TryGetValue(tagName + TagAndPropSeparator + GenericProp);
+            if (values is null)
+                return null;
+
+            var result = new List<string?> { elementId };
+
+            if (values.Count > 1)
+            {
+                for (var i = 1; i < values.Count; i++)
+                {
+                    string? v = SszQueryHelper.ComputeValueOfSszQueries(values[i], constant =>
+                    {
+                        if (String.Equals(constant, GenericTag, StringComparison.InvariantCultureIgnoreCase))
+                            return tagName;
+                        if (String.Equals(constant, GenericProp, StringComparison.InvariantCultureIgnoreCase))
+                            return prop;
+                        if (getConstantValue != null)
+                            return getConstantValue(constant);
+                        return @"";
+                    }, _csvDb);
+                    result.Add(v ?? @"");
+                }
+            }
+            else
+            {
+                result.Add("");
+            }
+
+            return result;
         }
 
         #endregion
