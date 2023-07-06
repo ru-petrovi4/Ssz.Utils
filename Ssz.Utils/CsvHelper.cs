@@ -212,8 +212,13 @@ namespace Ssz.Utils
             {
                 if (defines is null) defines = new Dictionary<Regex, string>();
                 string? filePath = Path.GetDirectoryName(fileFullName);
-
-                Stream stream = File.OpenRead(fileFullName);
+                
+                using MemoryStream stream = new ();
+                using (FileStream fileStream = File.Open(fileFullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    fileStream.CopyTo(stream);
+                }
+                stream.Position = 0;
 
                 using (var reader = new StreamReader(stream, Encoding.Unicode, true))
                 {
@@ -222,7 +227,7 @@ namespace Ssz.Utils
                     List<string?>? beginFields = null;
                     bool inQuotes = false;
                     while ((l = reader.ReadLine()) is not null)
-                    {                            
+                    {
                         l = l.Trim();
 
                         if (l.Length > 0 && l[l.Length - 1] == '\\')
@@ -324,9 +329,9 @@ namespace Ssz.Utils
                                 line = "";
                                 continue;
                             }
-                                
+
                             fields = beginFields;
-                            beginFields = null;                                
+                            beginFields = null;
                         }
 
                         string? field0 = fields[0];
