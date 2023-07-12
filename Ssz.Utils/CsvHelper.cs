@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 using Ssz.Utils.Logging;
+using Ude;
 
 namespace Ssz.Utils
 {
@@ -182,6 +184,26 @@ namespace Ssz.Utils
         }
 
         /// <summary>
+        ///     Returns StreamReader with correct encoding.
+        /// </summary>
+        /// <param name="csvFileFullName"></param>
+        /// <returns></returns>
+        public static StreamReader GetStreamReader(string csvFileFullName)
+        {
+            int bytesCount = (int)(new FileInfo(csvFileFullName).Length);
+            byte[] bytes = new byte[bytesCount];
+            using (FileStream fileStream = File.Open(csvFileFullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))            
+            {
+                fileStream.Read(bytes, 0, bytesCount);
+            }            
+            CharsetDetector charsetDetector = new();
+            charsetDetector.Feed(bytes, 0, bytesCount);
+            charsetDetector.DataEnd();
+
+            return new StreamReader(new MemoryStream(bytes), charsetDetector.Encoding, true);
+        }
+
+        /// <summary>
         ///     First column in file is Key and must be unique.
         ///     With procerssing #include, #define, comments.
         ///     If file does not exist, returns empty result.
@@ -212,15 +234,8 @@ namespace Ssz.Utils
             {
                 if (defines is null) defines = new Dictionary<Regex, string>();
                 string? filePath = Path.GetDirectoryName(fileFullName);
-                
-                using MemoryStream stream = new ();
-                using (FileStream fileStream = File.Open(fileFullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                {
-                    fileStream.CopyTo(stream);
-                }
-                stream.Position = 0;
 
-                using (var reader = new StreamReader(stream, Encoding.Unicode, true))
+                using (var reader = GetStreamReader(fileFullName))
                 {
                     string line = "";
                     string? l;

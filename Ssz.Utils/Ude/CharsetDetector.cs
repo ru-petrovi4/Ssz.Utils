@@ -112,7 +112,14 @@ namespace Ude
         {
             get 
             { 
-                return Encoding.GetEncoding(charset!); 
+                try
+                {
+                    return Encoding.GetEncoding(charset!);
+                }
+                catch
+                {
+                    return Encoding.UTF8;
+                }
             }
         }
 

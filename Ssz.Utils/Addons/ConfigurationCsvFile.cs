@@ -35,7 +35,7 @@ namespace Ssz.Utils.Addons
             };
 
             string fileData;
-            using (var reader = new StreamReader(csvFileInfo.FullName, Encoding.Unicode, true))
+            using (var reader = CsvHelper.GetStreamReader(csvFileInfo.FullName))
             {
                 fileData = reader.ReadToEnd();
             }
