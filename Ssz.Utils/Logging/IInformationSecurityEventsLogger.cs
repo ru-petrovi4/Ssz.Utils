@@ -28,4 +28,64 @@ namespace Ssz.Utils.Logging
         {            
         }
     }
+
+    public static class InformationSecurityEventsConstants
+    {
+        public const string UserScopeName = @"User";
+        public const string SourceIpAddressScopeName = @"SourceIpAddress";
+        public const string SourceHostScopeName = @"SourceHost";
+        public const string SeverityScopeName = @"Severity";
+        public const string SucceededScopeName = @"Succeeded";
+        public const string EventNameScopeName = @"EventName";
+        public const string EventSubjectScopeName = @"EventSubject";
+        public const string EventObjectScopeName = @"EventObject";
+        public const string EventAdditionalFieldsScopeName = @"EventAdditionalFields";
+    }
+    
+    public static class InformationSecurityEventsLoggerExtensions
+    {
+        /// <summary>
+        ///     Extension method that creates a structured logging record
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <param name="user"></param>
+        /// <param name="sourceIpAddress"></param>
+        /// <param name="sourceHost"></param>
+        /// <param name="eventId"></param>
+        /// <param name="severity"></param>
+        /// <param name="succeeded"></param>
+        /// <param name="eventName"></param>
+        /// <param name="eventSubject"></param>
+        /// <param name="eventObject"></param>
+        /// <param name="eventAdditionalFields"></param>
+        /// <param name="eventDesc"></param>
+        /// <param name="eventDescArgs"></param>
+        public static void InformationSecurityEvent(this ILogger logger,
+            string user,
+            string sourceIpAddress,
+            string sourceHost,
+            int eventId,
+            int severity,
+            bool succeeded,
+            string eventName,
+            string eventSubject,
+            string eventObject,
+            string eventAdditionalFields,
+            string eventDesc,
+            params object?[] eventDescArgs)
+        {
+            using var scope = logger.BeginScope(new (string, object?)[] {
+                (InformationSecurityEventsConstants.UserScopeName, user),
+                (InformationSecurityEventsConstants.SourceIpAddressScopeName, sourceIpAddress),
+                (InformationSecurityEventsConstants.SourceHostScopeName, sourceHost),
+                (InformationSecurityEventsConstants.SeverityScopeName, severity),
+                (InformationSecurityEventsConstants.SucceededScopeName, succeeded),
+                (InformationSecurityEventsConstants.EventNameScopeName, eventName),
+                (InformationSecurityEventsConstants.EventSubjectScopeName, eventSubject),
+                (InformationSecurityEventsConstants.EventObjectScopeName, eventObject),
+                (InformationSecurityEventsConstants.EventAdditionalFieldsScopeName, eventAdditionalFields)
+            });
+            logger.Log(LogLevel.Information, new EventId(eventId, eventId.ToString()), eventDesc, eventDescArgs);
+        }
+    }
 }
