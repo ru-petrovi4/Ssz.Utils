@@ -1,0 +1,98 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>An Open Source library for creating and parsing MIME, S/MIME, PGP messages on desktop and mobile platforms.</Description>
+    <AssemblyTitle>MimeKit</AssemblyTitle>
+    <VersionPrefix>4.1.0</VersionPrefix>
+    <LangVersion>10</LangVersion>
+    <Authors>Jeffrey Stedfast</Authors>
+    <_LegacyFrameworks>net462</_LegacyFrameworks>
+    <_LegacyFrameworks Condition=" Exists('C:\Windows') ">$(_LegacyFrameworks);net48</_LegacyFrameworks>
+    <TargetFrameworks>$(_LegacyFrameworks);netstandard2.0;netstandard2.1;net7.0</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>MimeKit</AssemblyName>
+    <PackageId>MimeKit</PackageId>
+    <PackageTags>mime;encryption;dkim;security;smime;s/mime;openpgp;pgp;mbox;email;parser;tnef;net462;net47;net48;net7.0;netstandard;netstandard2.0;netstandard2.1</PackageTags>
+    <PackageProjectUrl>https://github.com/jstedfast/MimeKit</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/jstedfast/MimeKit/blob/master/License.md</PackageLicenseUrl>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <RootNamespace>MimeKit</RootNamespace>
+    <DefineConstants>$(DefineConstants);ENABLE_CRYPTO;ENABLE_SNM</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyOriginatorKeyFile>mimekit.snk</AssemblyOriginatorKeyFile>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <SignAssembly>true</SignAssembly>
+    <DebugSymbols>true</DebugSymbols>
+    <NoWarn>1701;1702;CA1835;IDE0016;IDE0056;IDE0057;IDE0063;IDE0066;IDE0090</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' And $(TargetFramework.StartsWith('net4')) ">
+    <DebugType>full</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" $(TargetFramework.StartsWith('net4')) Or $(TargetFramework.StartsWith('net7')) ">
+    <DefineConstants>$(DefineConstants);SERIALIZABLE</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('net4')) ">
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Security" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('netstandard2.')) Or $(TargetFramework.StartsWith('net7')) ">
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="7.0.2" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('netstandard2.')) ">
+    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('net4')) Or $(TargetFramework.StartsWith('netstandard2.')) ">
+    <PackageReference Include="System.Buffers" Version="4.5.1" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Text\HtmlEntityDecoder.g.cs">
+      <DependentUpon>HtmlEntityDecoder.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Cryptography\NpgsqlCertificateDatabase.cs" />
+    <Compile Remove="Cryptography\MacSecureMimeContext.cs" />
+    <Compile Remove="Cryptography\LdapUri.cs" />
+    <Compile Remove="Utils\OptimizedOrdinalComparer.cs" />
+    <Compile Include="Utils\OptimizedOrdinalComparer.cs" Condition=" $(TargetFramework.StartsWith('net4')) Or '$(TargetFramework)' == 'netstandard2.0' " />
+  </ItemGroup>
+
+</Project>
