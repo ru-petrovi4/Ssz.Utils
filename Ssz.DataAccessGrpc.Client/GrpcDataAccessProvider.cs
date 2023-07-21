@@ -30,8 +30,8 @@ namespace Ssz.DataAccessGrpc.Client
         {
             _clientContextManager = new ClientContextManager(logger, WorkingThreadSafeDispatcher);
 
-            _clientElementValueListManager = new ClientElementValueListManager(logger, ConfigurationHelper.GetValue<bool>(configuration, @"GrpcDataAccessProvider:UnsubscribeValueListItemsFromServer", true));
-            _clientElementValuesJournalListManager = new ClientElementValuesJournalListManager(logger, ConfigurationHelper.GetValue<bool>(configuration, @"GrpcDataAccessProvider:UnsubscribeValuesJournalListItemsFromServer", true));
+            _clientElementValueListManager = new ClientElementValueListManager(logger, ConfigurationHelper.GetValue<bool>(configuration, @"DataAccessProvider:UnsubscribeValueListItemsFromServer", true));
+            _clientElementValuesJournalListManager = new ClientElementValuesJournalListManager(logger, ConfigurationHelper.GetValue<bool>(configuration, @"DataAccessProvider:UnsubscribeValuesJournalListItemsFromServer", true));
             _clientEventListManager = new ClientEventListManager(logger, this);
         }              
         
