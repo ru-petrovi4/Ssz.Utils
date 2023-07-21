@@ -17,6 +17,7 @@ using Ssz.Utils.Logging;
 using static Ssz.DataAccessGrpc.Client.Managers.ClientElementValueListManager;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Diagnostics.SymbolStore;
+using Microsoft.Extensions.Configuration;
 
 namespace Ssz.DataAccessGrpc.Client
 {
@@ -24,13 +25,13 @@ namespace Ssz.DataAccessGrpc.Client
     {
         #region construction and destruction
         
-        public GrpcDataAccessProvider(ILogger<GrpcDataAccessProvider> logger, IUserFriendlyLogger? userFriendlyLogger = null) :
+        public GrpcDataAccessProvider(IConfiguration configuration, ILogger<GrpcDataAccessProvider> logger, IUserFriendlyLogger? userFriendlyLogger = null) :
             base(new LoggersSet(logger, userFriendlyLogger))
         {
             _clientContextManager = new ClientContextManager(logger, WorkingThreadSafeDispatcher);
 
-            _clientElementValueListManager = new ClientElementValueListManager(logger);
-            _clientElementValuesJournalListManager = new ClientElementValuesJournalListManager(logger);
+            _clientElementValueListManager = new ClientElementValueListManager(logger, ConfigurationHelper.GetValue<bool>(configuration, @"GrpcDataAccessProvider:UnsubscribeValueListItemsFromServer", true));
+            _clientElementValuesJournalListManager = new ClientElementValuesJournalListManager(logger, ConfigurationHelper.GetValue<bool>(configuration, @"GrpcDataAccessProvider:UnsubscribeValuesJournalListItemsFromServer", true));
             _clientEventListManager = new ClientEventListManager(logger, this);
         }              
         

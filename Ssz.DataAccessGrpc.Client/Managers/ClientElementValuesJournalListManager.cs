@@ -13,8 +13,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
     {
         #region construction and destruction
 
-        public ClientElementValuesJournalListManager(ILogger<GrpcDataAccessProvider> logger) :
-            base(logger, true)
+        public ClientElementValuesJournalListManager(ILogger<GrpcDataAccessProvider> logger, bool unsubscribeItemsFromServer) :
+            base(logger, unsubscribeItemsFromServer)
         {
         }
 
