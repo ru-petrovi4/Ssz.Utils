@@ -88,26 +88,22 @@ namespace Ssz.Utils.DataAccess
 
         public override bool Equals(object? obj)
         {            
-            if (!(obj is ValueStatusTimestamp)) return false;            
-            return Equals((ValueStatusTimestamp)obj);
-        }
-
-        public bool Equals(ValueStatusTimestamp that)
-        {            
-            return ValueStatusCode == that.ValueStatusCode && TimestampUtc == that.TimestampUtc && Value == that.Value;
-        }
+            if (obj is ValueStatusTimestamp valueStatusTimestamp)
+                return Equals(valueStatusTimestamp, 0.0);
+            return false;
+        }        
 
         /// <summary>
-        ///     Uses ValueAsDouble(false), ValueAsInt32(false), ValueAsString(false) depending of ValueStorageType.
+        ///     Uses ValueAsDouble(false), ValueAsUInt32(false), ValueAsString(false) depending of ValueStorageType.
         ///     Returns true if diff is less than or equal deadband.
         ///     TimestampUtc is NOT compared.
         /// </summary>
         /// <param name="that"></param>
         /// <param name="deadband"></param>
         /// <returns></returns>
-        public bool Compare(ValueStatusTimestamp that, double deadband = 0.0)
+        public bool Equals(ValueStatusTimestamp that, double deadband)
         {
-            return ValueStatusCode == that.ValueStatusCode && Value.Compare(that.Value, deadband);
+            return ValueStatusCode == that.ValueStatusCode && Value.CompareTo(that.Value, deadband) == 0;
         }
 
         public Any Value;
