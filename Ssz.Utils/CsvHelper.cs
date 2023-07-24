@@ -197,10 +197,28 @@ namespace Ssz.Utils
                 fileStream.Read(bytes, 0, bytesCount);
             }            
             CharsetDetector charsetDetector = new();
-            charsetDetector.Feed(bytes, 0, bytesCount);
+            charsetDetector.Feed(bytes, 0, bytes.Length);
             charsetDetector.DataEnd();
 
             return new StreamReader(new MemoryStream(bytes), charsetDetector.Encoding, true);
+        }
+
+        /// <summary>
+        ///     Returns StreamReader with correct encoding.
+        /// </summary>
+        /// <param name="csvFileFullName"></param>
+        /// <returns></returns>
+        public static StreamReader GetStreamReader(Stream stream)
+        {   
+            MemoryStream memoryStream = new();
+            stream.CopyTo(memoryStream);
+            byte[] bytes = memoryStream.ToArray();
+            CharsetDetector charsetDetector = new();
+            charsetDetector.Feed(bytes, 0, bytes.Length);
+            charsetDetector.DataEnd();
+
+            memoryStream.Position = 0;
+            return new StreamReader(memoryStream, charsetDetector.Encoding, true);
         }
 
         /// <summary>
