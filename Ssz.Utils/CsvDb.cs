@@ -192,7 +192,7 @@ namespace Ssz.Utils
                 if (csvFile.DataIsChangedOnDisk)
                 {
                     csvFile.IncludeFileNamesCollection.Clear();
-                    csvFile.FileData = null;
+                    csvFile.Data = null;
                     csvFile.DataIsChangedOnDisk = false;
                     csvFile.DataIsChangedByProgram = false;
 
@@ -239,7 +239,7 @@ namespace Ssz.Utils
             if (CsvDbDirectoryInfo is not null)
                 csvFile.FileName = fileName;
             csvFile.IncludeFileNamesCollection.Clear();
-            csvFile.FileData = new CaseInsensitiveDictionary<List<string?>>();
+            csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
             csvFile.DataIsChangedByProgram = true;            
 
             return true;
@@ -263,7 +263,7 @@ namespace Ssz.Utils
             
             if (!_csvFilesCollection.TryGetValue(fileName!.ToUpperInvariant(), out CsvFile? csvFile)) return false;
             csvFile.IncludeFileNamesCollection.Clear();
-            csvFile.FileData = new CaseInsensitiveDictionary<List<string?>>();
+            csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
             csvFile.DataIsChangedByProgram = true;
             return true;
         }
@@ -276,7 +276,7 @@ namespace Ssz.Utils
 
             EnsureDataIsLoaded(csvFile);
 
-            bool removed = csvFile.FileData!.Remove(key);
+            bool removed = csvFile.Data!.Remove(key);
             if (removed)
                 csvFile.DataIsChangedByProgram = true;
             return removed;
@@ -304,7 +304,7 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public CaseInsensitiveDictionary<List<string?>> GetValues(string? fileName)
+        public CaseInsensitiveDictionary<List<string?>> GetData(string? fileName)
         {
             if (string.IsNullOrWhiteSpace(fileName)) return new CaseInsensitiveDictionary<List<string?>>();
             
@@ -312,7 +312,7 @@ namespace Ssz.Utils
 
             EnsureDataIsLoaded(csvFile);
             
-            return csvFile.FileData!;
+            return csvFile.Data!;
         }
 
         /// <summary>
@@ -329,8 +329,8 @@ namespace Ssz.Utils
 
             EnsureDataIsLoaded(csvFile);
             
-            if (csvFile.FileData!.Count == 0) return 1;
-            return csvFile.FileData.Keys.Max(k => new Any(k).ValueAsUInt32(false)) + 1;
+            if (csvFile.Data!.Count == 0) return 1;
+            return csvFile.Data.Keys.Max(k => new Any(k).ValueAsUInt32(false)) + 1;
         }
 
         /// <summary>
@@ -347,8 +347,8 @@ namespace Ssz.Utils
 
             EnsureDataIsLoaded(csvFile);
 
-            if (!csvFile.FileData!.TryGetValue(key, out List<string?>? fileLine)) return null;
-            return fileLine;
+            if (!csvFile.Data!.TryGetValue(key, out List<string?>? values)) return null;
+            return values;
         }
 
         public string? GetValue(string? fileName, string key, int column)
@@ -359,23 +359,23 @@ namespace Ssz.Utils
 
             EnsureDataIsLoaded(csvFile);
 
-            if (!csvFile.FileData!.TryGetValue(key, out List<string?>? fileLine)) return null;
-            if (column >= fileLine.Count) return null;
-            return fileLine[column];
+            if (!csvFile.Data!.TryGetValue(key, out List<string?>? values)) return null;
+            if (column >= values.Count) return null;
+            return values[column];
         }
 
         public static string? GetValue(CaseInsensitiveDictionary<List<string?>> data, string key, int column)
         {
             if (column < 0) return null;
-            if (!data.TryGetValue(key, out List<string?>? fileLine)) return null;
-            if (column >= fileLine.Count) return null;
-            return fileLine[column];
+            if (!data.TryGetValue(key, out List<string?>? values)) return null;
+            if (column >= values.Count) return null;
+            return values[column];
         }
 
-        public static string? GetValue(List<string?> fileLine, int column)
+        public static string? GetValue(List<string?> values, int column)
         {
-            if (column < 0 || column >= fileLine.Count) return null;
-            return fileLine[column];
+            if (column < 0 || column >= values.Count) return null;
+            return values[column];
         }
 
         public void SetValue(string? fileName, string key, int column, string? value)
@@ -390,114 +390,27 @@ namespace Ssz.Utils
             {
                 csvFile = new CsvFile();                
                 csvFile.FileName = fileName;                
-                csvFile.FileData = new CaseInsensitiveDictionary<List<string?>>();
+                csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
                 _csvFilesCollection.Add(fileNameUpper, csvFile);
             }
 
             EnsureDataIsLoaded(csvFile);
 
-            if (!csvFile.FileData!.TryGetValue(key, out List<string?>? fileLine))
+            if (!csvFile.Data!.TryGetValue(key, out List<string?>? values))
             {
-                fileLine = new List<string?> { key };
-                csvFile.FileData.Add(key, fileLine);
+                values = new List<string?> { key };
+                csvFile.Data.Add(key, values);
             }
 
-            if (column >= fileLine.Count)
+            if (column >= values.Count)
             {
-                fileLine.Capacity = column + 1;
-                fileLine.AddRange(Enumerable.Repeat<string?>(null, column + 1 - fileLine.Count));
+                values.Capacity = column + 1;
+                values.AddRange(Enumerable.Repeat<string?>(null, column + 1 - values.Count));
             }
 
-            if (column > 0) fileLine[column] = value;
+            if (column > 0) values[column] = value;
 
             csvFile.DataIsChangedByProgram = true;
-        }
-
-        /// <summary>
-        ///     Appends valuesLine to existing data.
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <param name="valuesLine"></param>
-        public void SetValues(string? fileName, IEnumerable<string?> valuesLine)
-        {
-            if (string.IsNullOrWhiteSpace(fileName)) return;
-
-            string fileNameUpper = fileName!.ToUpperInvariant();
-
-            if (!fileNameUpper.EndsWith(@".CSV")) return;
-
-            if (!_csvFilesCollection.TryGetValue(fileNameUpper, out CsvFile? csvFile))
-            {
-                csvFile = new CsvFile();
-                csvFile.FileName = fileName;                
-                csvFile.FileData = new CaseInsensitiveDictionary<List<string?>>();
-                _csvFilesCollection.Add(fileNameUpper, csvFile);
-            }
-
-            var enumerator = valuesLine.GetEnumerator();
-            if (!enumerator.MoveNext()) return;
-            string key = enumerator.Current ?? @"";
-
-            EnsureDataIsLoaded(csvFile);
-
-            if (!csvFile.FileData!.TryGetValue(key, out List<string?>? fileLine))
-            {
-                fileLine = new List<string?> { key };
-                csvFile.FileData.Add(key, fileLine);
-            }
-            else
-            {
-                fileLine.Clear();
-                fileLine.Add(key);
-            }
-
-            while (enumerator.MoveNext())
-            {
-                fileLine.Add(enumerator.Current);
-            }
-
-            csvFile.DataIsChangedByProgram = true;
-        }
-
-        /// <summary>
-        ///     Pecondition: keys must be unique in values
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <param name="values"></param>
-        /// <returns></returns>
-        public bool FileEquals(string? fileName, IEnumerable<IEnumerable<string?>> values)
-        {
-            if (string.IsNullOrWhiteSpace(fileName)) return false;
-
-            string fileNameUpper = fileName!.ToUpperInvariant();
-
-            if (!fileNameUpper.EndsWith(@".CSV")) return false;
-
-            var valuesList = values.ToList();
-
-            if (!_csvFilesCollection.TryGetValue(fileNameUpper, out CsvFile? csvFile))
-                return valuesList.Count == 0;
-
-            EnsureDataIsLoaded(csvFile);
-
-            if (csvFile.FileData!.Count != valuesList.Count)
-                return false;
-
-            StringBuilder valuesString = new();
-            foreach (var valuesLine in values)
-            {
-                valuesString.Append(CsvHelper.FormatForCsv(",", valuesLine));
-                valuesString.Append("\n");
-            }
-
-            StringBuilder fileDataString = new();
-            foreach (var valuesLine in csvFile.FileData.Values)
-            {
-                fileDataString.Append(CsvHelper.FormatForCsv(",", valuesLine));
-                fileDataString.Append("\n");
-            }
-
-            return valuesString.ToString() == fileDataString.ToString();
         }
 
         /// <summary>
@@ -505,7 +418,7 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="values"></param>
-        public void SetValues(string? fileName, IEnumerable<IEnumerable<string?>> values)
+        public void SetValues(string? fileName, IEnumerable<string?> values)
         {
             if (string.IsNullOrWhiteSpace(fileName)) return;
 
@@ -517,36 +430,123 @@ namespace Ssz.Utils
             {
                 csvFile = new CsvFile();
                 csvFile.FileName = fileName;
-                csvFile.FileData = new CaseInsensitiveDictionary<List<string?>>();
+                csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
+                _csvFilesCollection.Add(fileNameUpper, csvFile);
+            }
+
+            var enumerator = values.GetEnumerator();
+            if (!enumerator.MoveNext()) return;
+            string key = enumerator.Current ?? @"";
+
+            EnsureDataIsLoaded(csvFile);
+
+            if (!csvFile.Data!.TryGetValue(key, out List<string?>? existingValues))
+            {
+                existingValues = new List<string?> { key };
+                csvFile.Data.Add(key, existingValues);
+            }
+            else
+            {
+                existingValues.Clear();
+                existingValues.Add(key);
+            }
+
+            while (enumerator.MoveNext())
+            {
+                existingValues.Add(enumerator.Current);
+            }
+
+            csvFile.DataIsChangedByProgram = true;
+        }
+
+        /// <summary>
+        ///     Pecondition: keys must be unique in values
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public bool FileEquals(string? fileName, IEnumerable<IEnumerable<string?>> data)
+        {
+            if (string.IsNullOrWhiteSpace(fileName)) return false;
+
+            string fileNameUpper = fileName!.ToUpperInvariant();
+
+            if (!fileNameUpper.EndsWith(@".CSV")) return false;
+
+            var valuesList = data.ToList();
+
+            if (!_csvFilesCollection.TryGetValue(fileNameUpper, out CsvFile? csvFile))
+                return valuesList.Count == 0;
+
+            EnsureDataIsLoaded(csvFile);
+
+            if (csvFile.Data!.Count != valuesList.Count)
+                return false;
+
+            StringBuilder valuesString = new();
+            foreach (var values in data)
+            {
+                valuesString.Append(CsvHelper.FormatForCsv(",", values));
+                valuesString.Append("\n");
+            }
+
+            StringBuilder fileDataString = new();
+            foreach (var values in csvFile.Data.Values)
+            {
+                fileDataString.Append(CsvHelper.FormatForCsv(",", values));
+                fileDataString.Append("\n");
+            }
+
+            return valuesString.ToString() == fileDataString.ToString();
+        }
+
+        /// <summary>
+        ///     Appends values to existing data.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="data"></param>
+        public void SetData(string? fileName, IEnumerable<IEnumerable<string?>> data)
+        {
+            if (string.IsNullOrWhiteSpace(fileName)) return;
+
+            string fileNameUpper = fileName!.ToUpperInvariant();
+
+            if (!fileNameUpper.EndsWith(@".CSV")) return;
+
+            if (!_csvFilesCollection.TryGetValue(fileNameUpper, out CsvFile? csvFile))
+            {
+                csvFile = new CsvFile();
+                csvFile.FileName = fileName;
+                csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
                 _csvFilesCollection.Add(fileNameUpper, csvFile);
             }
             else
             {
                 EnsureDataIsLoaded(csvFile);
-            }            
+            }
 
-            foreach (var valuesLine in values)
+            foreach (var values in data)
             {
-                var enumerator = valuesLine.GetEnumerator();
+                var enumerator = values.GetEnumerator();
                 if (!enumerator.MoveNext()) return;
-                string key = enumerator.Current ?? @"";                
+                string key = enumerator.Current ?? @"";
 
-                if (!csvFile.FileData!.TryGetValue(key, out List<string?>? fileLine))
+                if (!csvFile.Data!.TryGetValue(key, out List<string?>? existingValues))
                 {
-                    fileLine = new List<string?> { key };
-                    csvFile.FileData.Add(key, fileLine);
+                    existingValues = new List<string?> { key };
+                    csvFile.Data.Add(key, existingValues);
                 }
                 else
                 {
-                    fileLine.Clear();
-                    fileLine.Add(key);
+                    existingValues.Clear();
+                    existingValues.Add(key);
                 }
 
                 while (enumerator.MoveNext())
                 {
-                    fileLine.Add(enumerator.Current);
+                    existingValues.Add(enumerator.Current);
                 }
-            }            
+            }
 
             csvFile.DataIsChangedByProgram = true;
         }
@@ -576,8 +576,8 @@ namespace Ssz.Utils
                         File.Delete(fileFullName); // For 'a' to 'A' changes in files names to work.
                         using (var writer = new StreamWriter(fileFullName, false, new UTF8Encoding(true)))
                         {
-                            foreach (var fileLine in csvFile.FileData!.OrderBy(kvp => kvp.Key))
-                                writer.WriteLine(CsvHelper.FormatForCsv(",", fileLine.Value.ToArray()));
+                            foreach (var values in csvFile.Data!.OrderBy(kvp => kvp.Key))
+                                writer.WriteLine(CsvHelper.FormatForCsv(",", values.Value.ToArray()));
                         }                                                
                         csvFile.OnDiskFileInfo = new FileInfo(fileFullName);
 
@@ -637,8 +637,8 @@ namespace Ssz.Utils
                     File.Delete(fileFullName); // For 'a' to 'A' changes in files names to work.
                     using (var writer = new StreamWriter(fileFullName, false, new UTF8Encoding(true)))
                     {
-                        foreach (var fileLine in csvFile.FileData!.OrderBy(kvp => kvp.Key))
-                            writer.WriteLine(CsvHelper.FormatForCsv(",", fileLine.Value.ToArray()));
+                        foreach (var values in csvFile.Data!.OrderBy(kvp => kvp.Key))
+                            writer.WriteLine(CsvHelper.FormatForCsv(",", values.Value.ToArray()));
                     }
                     csvFile.OnDiskFileInfo = new FileInfo(fileFullName);
                     
@@ -675,12 +675,12 @@ namespace Ssz.Utils
 
         private void EnsureDataIsLoaded(CsvFile csvFile)
         {
-            if (csvFile.FileData is null)
+            if (csvFile.Data is null)
             {
                 if (CsvDbDirectoryInfo is not null)
-                    csvFile.FileData = CsvHelper.LoadCsvFile(Path.Combine(CsvDbDirectoryInfo.FullName, csvFile.FileName), true, null, LoggersSet.UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
+                    csvFile.Data = CsvHelper.LoadCsvFile(Path.Combine(CsvDbDirectoryInfo.FullName, csvFile.FileName), true, null, LoggersSet.UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
                 else
-                    csvFile.FileData = new CaseInsensitiveDictionary<List<string?>>();
+                    csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
             }
         }
 
@@ -739,7 +739,7 @@ namespace Ssz.Utils
 
             public FileInfo? OnDiskFileInfo;
 
-            public CaseInsensitiveDictionary<List<string?>>? FileData;
+            public CaseInsensitiveDictionary<List<string?>>? Data;
 
             /// <summary>            
             ///     File names in Upper-Case

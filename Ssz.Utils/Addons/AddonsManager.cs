@@ -367,7 +367,7 @@ namespace Ssz.Utils.Addons
 
             var newAddons = new Dictionary<Guid, AddonBase>();
             var catalog = new AggregateCatalog();
-            foreach (var line in CsvDb.GetValues(AddonsCsvFileName).Values)
+            foreach (var line in CsvDb.GetData(AddonsCsvFileName).Values)
             {
                 if (line.Count < 2 || String.IsNullOrEmpty(line[0]) || line[0]!.StartsWith("!"))
                     continue;
@@ -424,11 +424,11 @@ namespace Ssz.Utils.Addons
         /// </summary>
         /// <param name="availableAddon"></param>
         /// <param name="addonInstanceId"></param>
-        /// <param name="addonOptions"></param>
+        /// <param name="addonOptionsData"></param>
         /// <returns></returns>
-        private AddonBase? CreateAvailableAddonThreadSafe(AddonBase availableAddon, string addonInstanceId, IEnumerable<IEnumerable<string?>>? addonOptions)
+        private AddonBase? CreateAvailableAddonThreadSafe(AddonBase availableAddon, string addonInstanceId, IEnumerable<IEnumerable<string?>>? addonOptionsData)
         {
-            if (!String.IsNullOrEmpty(addonInstanceId) && addonOptions is not null)
+            if (!String.IsNullOrEmpty(addonInstanceId) && addonOptionsData is not null)
                 throw new InvalidOperationException("You must specify addonInstanceId or addonOptions");
 
             try
@@ -466,19 +466,27 @@ namespace Ssz.Utils.Addons
                 if (addonConfigDirectoryInfo is not null)
                     parameters.Add(addonConfigDirectoryInfo);
                 parameters.Add(Dispatcher!);
-                availableAddonClone.CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, parameters.ToArray());
-                if (addonOptions is not null)
-                    availableAddonClone.CsvDb.SetValues(AddonBase.OptionsCsvFileName, addonOptions);
 
-                availableAddonClone.OptionsSubstitutedThreadSafe = new CaseInsensitiveDictionary<string?>(availableAddonClone.CsvDb.GetValues(AddonBase.OptionsCsvFileName)
-                    .Where(kvp => kvp.Key != @"").Select(kvp => new KeyValuePair<string, string?>(kvp.Key, kvp.Value.Count > 1 ? SubstituteOptionValue(kvp.Key, kvp.Value[1]) : null)));
-                foreach (var optionInfo in availableAddon.OptionsInfo)
+                availableAddonClone.CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, parameters.ToArray());                
+                if (addonOptionsData is not null)
                 {
-                    if (!availableAddonClone.OptionsSubstitutedThreadSafe.ContainsKey(optionInfo.Item1))
+                    foreach (var addonOptionsValues in addonOptionsData)
                     {
-                        availableAddonClone.OptionsSubstitutedThreadSafe.Add(optionInfo.Item1, SubstituteOptionValue(optionInfo.Item1, optionInfo.Item3));
+                        availableAddonClone.CsvDb.SetValues(AddonBase.OptionsCsvFileName, addonOptionsValues);
                     }
                 }
+                var existingOptionsData = availableAddonClone.CsvDb.GetData(AddonBase.OptionsCsvFileName);
+                foreach (var optionInfo in availableAddon.OptionsInfo)
+                {
+                    if (!existingOptionsData.ContainsKey(optionInfo.Item1))
+                    {
+                        availableAddonClone.CsvDb.SetValues(AddonBase.OptionsCsvFileName, new string?[] { optionInfo.Item1, optionInfo.Item3 });                        
+                    }
+                }
+                availableAddonClone.CsvDb.SaveData();
+
+                availableAddonClone.OptionsSubstitutedThreadSafe = new CaseInsensitiveDictionary<string?>(availableAddonClone.CsvDb.GetData(AddonBase.OptionsCsvFileName)
+                    .Where(kvp => kvp.Key != @"").Select(kvp => new KeyValuePair<string, string?>(kvp.Key, kvp.Value.Count > 1 ? SubstituteOptionValue(kvp.Key, kvp.Value[1]) : null)));                
 
                 var observableCollectionItemIds = new CaseInsensitiveDictionary<string?>(availableAddonClone.OptionsSubstitutedThreadSafe);                    
                 observableCollectionItemIds.Add(@"#addonIdentifier", availableAddonClone.Identifier);
@@ -605,7 +613,7 @@ namespace Ssz.Utils.Addons
 
             var availableAddons = availableAddonsDictionary.Values.ToArray();
 
-            if (AddonsManagerOptions.CreateAddonsAvailableFile)
+            if (AddonsManagerOptions.CanModifyAddonsCsvFiles)
             {
                 List<string?[]> addonsAvailableFileData = new()
                 {
@@ -635,7 +643,7 @@ namespace Ssz.Utils.Addons
                 if (!CsvDb.FileEquals(AddonsAvailableCsvFileName, addonsAvailableFileData))
                 {
                     CsvDb.FileClear(AddonsAvailableCsvFileName);
-                    CsvDb.SetValues(AddonsAvailableCsvFileName, addonsAvailableFileData);
+                    CsvDb.SetData(AddonsAvailableCsvFileName, addonsAvailableFileData);
                     CsvDb.SaveData(AddonsAvailableCsvFileName);
                 }
             }            
@@ -714,6 +722,6 @@ namespace Ssz.Utils.Addons
     {
         public string? AddonsSearchPattern { get; set; }
 
-        public bool CreateAddonsAvailableFile { get; set; }
+        public bool CanModifyAddonsCsvFiles { get; set; } = true;
     }
 }
