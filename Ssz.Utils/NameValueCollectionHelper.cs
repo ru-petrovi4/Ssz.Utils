@@ -18,15 +18,16 @@ namespace Ssz.Utils
         #region public functions
 
         /// <summary>
-        /// 
+        ///     Returns immutable dictionary.
         /// </summary>
         /// <param name="nameValueCollectionString"></param>
         /// <returns></returns>
         public static CaseInsensitiveDictionary<string?> Parse(string? nameValueCollectionString)
         {
-            var result = new CaseInsensitiveDictionary<string?>();
+            if (nameValueCollectionString is null || nameValueCollectionString == @"") 
+                return EmptyCaseInsensitiveDictionary;
 
-            if (nameValueCollectionString is null || nameValueCollectionString == @"") return result;
+            var result = new CaseInsensitiveDictionary<string?>();
 
             int length = nameValueCollectionString.Length;
             int i = 0;
@@ -87,7 +88,8 @@ namespace Ssz.Utils
         {
             var result = new List<(string, string?)>();
 
-            if (nameValueCollectionString is null || nameValueCollectionString == @"") return result;
+            if (nameValueCollectionString is null || nameValueCollectionString == @"") 
+                return result;
 
             int length = nameValueCollectionString.Length;
             int i = 0;
@@ -231,15 +233,17 @@ namespace Ssz.Utils
             return true;
         }
 
-        /// <summary>        
+        /// <summary>   
+        ///     Returns immutable dictionary.
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
         public static CaseInsensitiveDictionary<string?> GetNameValueCollectionFromObject(object? obj)
         {
-            var result = new CaseInsensitiveDictionary<string?>();
+            if (obj is null) 
+                return EmptyCaseInsensitiveDictionary;
 
-            if (obj is null) return result;
+            var result = new CaseInsensitiveDictionary<string?>();
 
             PropertyInfo[] props = obj.GetType().GetProperties();
             foreach (PropertyInfo prop in props)
@@ -397,6 +401,8 @@ namespace Ssz.Utils
 
         #endregion
 
+        private static readonly CaseInsensitiveDictionary<string?> EmptyCaseInsensitiveDictionary = new();
+ 
         private class UrlDecoder
         {
             #region construction and destruction
