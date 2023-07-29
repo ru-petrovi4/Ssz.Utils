@@ -30,8 +30,7 @@ namespace Ssz.Utils
         {
             baseUniqueCollection = new List<T>(baseCollection.Count);
             baseIntersectionCollection = new List<T>(baseCollection.Count);
-            otherUniqueCollection = new List<T>(otherCollection.Count);
-            otherUniqueCollection.AddRange(otherCollection);
+            otherUniqueCollection = new List<T>(otherCollection);            
             otherIntersectionCollection = new List<T>(baseCollection.Count);
 
             //var otherParallelQuery = otherUniqueCollection.AsParallel();            
