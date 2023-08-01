@@ -48,7 +48,7 @@ namespace Ssz.Utils
 
             if (CsvDbDirectoryInfo is not null)
             {
-                LoggersSet.Logger.LogInformation("CsvDb Created for: " + CsvDbDirectoryInfo.FullName);
+                LoggersSet.Logger.LogDebug("CsvDb Created for: " + CsvDbDirectoryInfo.FullName);
                 if (Dispatcher is not null)
                     try
                     {
