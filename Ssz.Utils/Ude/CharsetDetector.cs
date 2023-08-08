@@ -108,7 +108,7 @@ namespace Ude
             get { return charset!; }
         }
 
-        public Encoding Encoding
+        public Encoding? Encoding
         {
             get 
             { 
@@ -118,7 +118,7 @@ namespace Ude
                 }
                 catch
                 {
-                    return Encoding.UTF8;
+                    return null;
                 }
             }
         }

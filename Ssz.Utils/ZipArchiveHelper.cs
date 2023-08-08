@@ -40,7 +40,7 @@ namespace Ssz.Utils
             {
                 zipArchive.Dispose();
                 stream.Position = 0;
-                return new ZipArchive(stream, ZipArchiveMode.Read, true, charsetDetector.Encoding);
+                return new ZipArchive(stream, ZipArchiveMode.Read, true, charsetDetector.Encoding ?? Encoding.UTF8);
             }            
         }
     }

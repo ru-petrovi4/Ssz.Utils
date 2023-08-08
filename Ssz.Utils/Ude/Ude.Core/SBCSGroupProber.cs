@@ -145,11 +145,12 @@ namespace Ude.Core
                 else
                     probers[i].DumpStatus();
             }
-            Console.WriteLine(" SBCS Group found best match [{0}] confidence {1}.",  
-                probers[bestGuess].GetCharsetName(), cf);
+            if (bestGuess != -1)
+                Console.WriteLine(" SBCS Group found best match [{0}] confidence {1}.",  
+                    probers[bestGuess].GetCharsetName(), cf);
         }
 
-        public override void Reset ()
+        public override void Reset()
         {
             int activeNum = 0;
             for (int i = 0; i < PROBERS_NUM; i++) {

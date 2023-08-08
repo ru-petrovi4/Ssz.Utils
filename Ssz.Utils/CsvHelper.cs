@@ -188,7 +188,7 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="csvFileFullName"></param>
         /// <returns></returns>
-        public static StreamReader GetStreamReader(string csvFileFullName)
+        public static StreamReader GetStreamReader(string csvFileFullName, Encoding defaultEncoding)
         {
             int bytesCount = (int)(new FileInfo(csvFileFullName).Length);
             byte[] bytes = new byte[bytesCount];
@@ -200,7 +200,7 @@ namespace Ssz.Utils
             charsetDetector.Feed(bytes, 0, bytes.Length);
             charsetDetector.DataEnd();
 
-            return new StreamReader(new MemoryStream(bytes), charsetDetector.Encoding, true);
+            return new StreamReader(new MemoryStream(bytes), charsetDetector.Encoding ?? defaultEncoding, true);
         }
 
         /// <summary>
@@ -208,7 +208,7 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="csvFileFullName"></param>
         /// <returns></returns>
-        public static StreamReader GetStreamReader(Stream stream)
+        public static StreamReader GetStreamReader(Stream stream, Encoding defaultEncoding)
         {   
             MemoryStream memoryStream = new();
             stream.CopyTo(memoryStream);
@@ -218,7 +218,7 @@ namespace Ssz.Utils
             charsetDetector.DataEnd();
 
             memoryStream.Position = 0;
-            return new StreamReader(memoryStream, charsetDetector.Encoding, true);
+            return new StreamReader(memoryStream, charsetDetector.Encoding ?? defaultEncoding, true);
         }
 
         /// <summary>
@@ -253,7 +253,7 @@ namespace Ssz.Utils
                 if (defines is null) defines = new Dictionary<Regex, string>();
                 string? filePath = Path.GetDirectoryName(fileFullName);
 
-                using (var reader = GetStreamReader(fileFullName))
+                using (var reader = GetStreamReader(fileFullName, Encoding.UTF8))
                 {
                     string line = "";
                     string? l;
