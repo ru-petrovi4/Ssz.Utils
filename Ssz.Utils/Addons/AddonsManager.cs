@@ -153,7 +153,8 @@ namespace Ssz.Utils.Addons
         /// <exception cref="Exception"></exception>
         public void WriteConfiguration(ConfigurationCsvFiles configurationCsvFiles)
         {
-            List<ConfigurationCsvFile> configurationCsvFilesToProcess = new(configurationCsvFiles.ConfigurationCsvFilesCollection.Count);
+            List<ConfigurationCsvFile> configurationCsvFilesToWrite = new(configurationCsvFiles.ConfigurationCsvFilesCollection.Count);
+            List<ConfigurationCsvFile> configurationCsvFilesToDelete = new(configurationCsvFiles.ConfigurationCsvFilesCollection.Count);
 
             foreach (ConfigurationCsvFile configurationCsvFile in configurationCsvFiles.ConfigurationCsvFilesCollection)
             {
@@ -163,7 +164,13 @@ namespace Ssz.Utils.Addons
                 if (configurationCsvFile.PathRelativeToRootDirectory.Count(f => f == '/') > 1)
                     throw new Exception("addonCsvFile.PathRelativeToRootDirectory must have no more that one '/'");
 
-                configurationCsvFile.FileData = TextFileHelper.NormalizeNewLine(configurationCsvFile.FileData);
+                if (configurationCsvFile.IsDeleted)
+                {
+                    configurationCsvFilesToDelete.Add(configurationCsvFile);
+                    continue;
+                }
+
+                configurationCsvFile.FileData = TextFileHelper.NormalizeNewLine(configurationCsvFile.FileData) ?? @"";
 
                 var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationCsvFile.GetPathRelativeToRootDirectory_PlatformSpecific()));
                 if (fileInfo.Exists)
@@ -172,7 +179,7 @@ namespace Ssz.Utils.Addons
                     if (String.IsNullOrEmpty(originalFileData))
                     {
                         if (!String.IsNullOrEmpty(configurationCsvFile.FileData))
-                            configurationCsvFilesToProcess.Add(configurationCsvFile);
+                            configurationCsvFilesToWrite.Add(configurationCsvFile);
                     }
                     else
                     {
@@ -180,24 +187,41 @@ namespace Ssz.Utils.Addons
                         {
                             if (FileSystemHelper.FileSystemTimeIsLess(configurationCsvFile.LastWriteTimeUtc, fileInfo.LastWriteTimeUtc))
                                 throw new AddonCsvFileChangedOnDiskException { FilePathRelativeToRootDirectory = configurationCsvFile.PathRelativeToRootDirectory };
-                            configurationCsvFilesToProcess.Add(configurationCsvFile);
+                            configurationCsvFilesToWrite.Add(configurationCsvFile);
                         }
                     }                    
                 }
                 else
                 {
-                    configurationCsvFilesToProcess.Add(configurationCsvFile);
+                    configurationCsvFilesToWrite.Add(configurationCsvFile);
                 }                    
             }
 
-            foreach (ConfigurationCsvFile configurationCsvFile in configurationCsvFilesToProcess)
+            foreach (ConfigurationCsvFile configurationCsvFile in configurationCsvFilesToWrite)
             {
                 var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationCsvFile.GetPathRelativeToRootDirectory_PlatformSpecific()));
-                fileInfo.Directory!.Create();                
+                //     Creates all directories and subdirectories in the specified path unless they
+                //     already exist.
+                Directory.CreateDirectory(fileInfo.Directory!.FullName);                
                 using (var writer = new StreamWriter(fileInfo.FullName, false, new UTF8Encoding(true)))
                 {
                     writer.Write(configurationCsvFile.FileData);
                 }
+            }
+
+            foreach (ConfigurationCsvFile configurationCsvFile in configurationCsvFilesToDelete)
+            {
+                var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationCsvFile.GetPathRelativeToRootDirectory_PlatformSpecific()));
+                if (fileInfo.Exists)
+                {
+                    try
+                    {
+                        fileInfo.Delete();
+                    }
+                    catch
+                    {
+                    }
+                }                
             }
         }
 

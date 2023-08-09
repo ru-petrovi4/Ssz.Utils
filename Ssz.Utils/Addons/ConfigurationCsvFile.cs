@@ -81,6 +81,11 @@ namespace Ssz.Utils.Addons
         public string FileData { get; set; } = null!;
 
         /// <summary>
+        ///     Whether file must be deleted
+        /// </summary>
+        public bool IsDeleted { get; set; }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="writer"></param>
@@ -93,6 +98,7 @@ namespace Ssz.Utils.Addons
             writer.Write(PathRelativeToRootDirectory);            
             writer.Write(LastWriteTimeUtc);
             writer.Write(FileData);
+            writer.Write(IsDeleted);
         }
 
         /// <summary>
@@ -108,6 +114,7 @@ namespace Ssz.Utils.Addons
             PathRelativeToRootDirectory = reader.ReadString();            
             LastWriteTimeUtc = reader.ReadDateTime();
             FileData = reader.ReadString();
+            IsDeleted = reader.ReadBoolean();
         }
 
         /// <summary>

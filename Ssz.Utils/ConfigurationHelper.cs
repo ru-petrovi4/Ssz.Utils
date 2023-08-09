@@ -162,25 +162,32 @@ namespace Ssz.Utils
         /// <summary>
         ///     Uses ProgramDataDirectory configuration key.
         ///     Returns ProgramDataDirectory full path.
-        ///     Expands environmental variables, if any. Can handle relative path in settings.
-        ///     Throws, if ProgramDataDirectory is not configured.
+        ///     Expands environmental variables, if any. 
+        ///     if ProgramDataDirectory is relative path, AppContext.BaseDirectory is used for relation.
+        ///     if ProgramDataDirectory is not configured, returns app current directory.
         /// </summary>
         /// <param name="configuration"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public static DirectoryInfo GetProgramDataDirectoryInfo(IConfiguration configuration)
+        public static string GetProgramDataDirectoryFullName(IConfiguration configuration)
         {
-            string programDataDirectory = GetValue(configuration, @"ProgramDataDirectory", @"");
-            if (programDataDirectory == @"")
+            string programDataDirectoryFullName = GetValue<string>(configuration, @"ProgramDataDirectory", @"");
+            if (programDataDirectoryFullName != @"")
             {
-                throw new Exception(@"AppSettings ProgramDataDirectory is empty");
+                programDataDirectoryFullName = Environment.ExpandEnvironmentVariables(programDataDirectoryFullName);
+
+                if (!Path.IsPathRooted(programDataDirectoryFullName))
+                    programDataDirectoryFullName = Path.Combine(AppContext.BaseDirectory, programDataDirectoryFullName);
+
+                // Creates all directories and subdirectories in the specified path unless they already exist.
+                Directory.CreateDirectory(programDataDirectoryFullName);
             }
+            else
+            {
+                programDataDirectoryFullName = Directory.GetCurrentDirectory();
+            }   
 
-            programDataDirectory = Environment.ExpandEnvironmentVariables(programDataDirectory);
-            if (!Path.IsPathRooted(programDataDirectory))
-                programDataDirectory = Path.Combine(AppContext.BaseDirectory, programDataDirectory);
-
-            return new DirectoryInfo(programDataDirectory);
+            return programDataDirectoryFullName;
         }
 
         #endregion
