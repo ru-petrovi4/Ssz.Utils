@@ -202,7 +202,7 @@ namespace Ssz.Utils
 
             logger?.LogDebug(@"charsetDetector.Encoding: " + charsetDetector.Encoding?.EncodingName);
 
-            return new StreamReader(new MemoryStream(bytes), charsetDetector.Encoding ?? defaultEncoding, true);
+            return new StreamReader(new MemoryStream(bytes), charsetDetector.Encoding ?? defaultEncoding, false);
         }
 
         /// <summary>
@@ -222,7 +222,7 @@ namespace Ssz.Utils
             logger?.LogDebug(@"charsetDetector.Encoding: " + charsetDetector.Encoding?.EncodingName);
 
             memoryStream.Position = 0;
-            return new StreamReader(memoryStream, charsetDetector.Encoding ?? defaultEncoding, true);
+            return new StreamReader(memoryStream, charsetDetector.Encoding ?? defaultEncoding, false);
         }
 
         /// <summary>
