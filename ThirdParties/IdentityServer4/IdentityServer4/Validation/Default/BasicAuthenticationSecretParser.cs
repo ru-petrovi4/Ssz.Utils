@@ -53,7 +53,15 @@ namespace IdentityServer4.Validation
             _logger.LogDebug("Start parsing Basic Authentication secret");
 
             var notfound = Task.FromResult<ParsedSecret>(null);
-            var authorizationHeader = context.Request.Headers["Authorization"].FirstOrDefault();
+
+            var headers = context.Request.Headers["Authorization"];
+
+            if (headers.Count > 1)
+            {
+                return notfound;
+            }
+
+            var authorizationHeader = headers.FirstOrDefault();
 
             if (authorizationHeader.IsMissing())
             {
