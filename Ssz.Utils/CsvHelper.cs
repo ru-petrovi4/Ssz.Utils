@@ -188,7 +188,7 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="csvFileFullName"></param>
         /// <returns></returns>
-        public static StreamReader GetStreamReader(string csvFileFullName, Encoding defaultEncoding)
+        public static StreamReader GetStreamReader(string csvFileFullName, Encoding defaultEncoding, ILogger? logger = null)
         {
             int bytesCount = (int)(new FileInfo(csvFileFullName).Length);
             byte[] bytes = new byte[bytesCount];
@@ -200,6 +200,8 @@ namespace Ssz.Utils
             charsetDetector.Feed(bytes, 0, bytes.Length);
             charsetDetector.DataEnd();
 
+            logger?.LogDebug(@"charsetDetector.Encoding: " + charsetDetector.Encoding?.EncodingName);
+
             return new StreamReader(new MemoryStream(bytes), charsetDetector.Encoding ?? defaultEncoding, true);
         }
 
@@ -208,7 +210,7 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="csvFileFullName"></param>
         /// <returns></returns>
-        public static StreamReader GetStreamReader(Stream stream, Encoding defaultEncoding)
+        public static StreamReader GetStreamReader(Stream stream, Encoding defaultEncoding, ILogger? logger = null)
         {   
             MemoryStream memoryStream = new();
             stream.CopyTo(memoryStream);
@@ -216,6 +218,8 @@ namespace Ssz.Utils
             CharsetDetector charsetDetector = new();
             charsetDetector.Feed(bytes, 0, bytes.Length);
             charsetDetector.DataEnd();
+
+            logger?.LogDebug(@"charsetDetector.Encoding: " + charsetDetector.Encoding?.EncodingName);
 
             memoryStream.Position = 0;
             return new StreamReader(memoryStream, charsetDetector.Encoding ?? defaultEncoding, true);
