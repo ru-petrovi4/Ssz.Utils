@@ -228,6 +228,7 @@ namespace Ssz.Utils
             string output = process.StandardOutput.ReadToEnd();
             string error = process.StandardError.ReadToEnd();
             Console.WriteLine(output); // I am invoked using ProcessStartInfoClass!
+            process.WaitForExit();
         }
 
         #endregion
