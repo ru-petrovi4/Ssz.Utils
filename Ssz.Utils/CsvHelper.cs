@@ -90,9 +90,10 @@ namespace Ssz.Utils
             sourceString = TextFileHelper.NormalizeNewLine(sourceString
                 .Replace("\"", "\"\""));
 
-            return sourceString.Contains(separator) || sourceString.Contains('\"') ||
-                sourceString.Contains('\n') ||
-                sourceString.StartsWith(" ") || sourceString.EndsWith(" ")
+            return sourceString.Contains(separator) || sourceString.Contains('\"') 
+                || sourceString.Contains('\n')
+                || sourceString.Contains('\\')
+                || sourceString.Trim() != sourceString
                 ? "\"" + sourceString + "\""
                 : sourceString;
         }
