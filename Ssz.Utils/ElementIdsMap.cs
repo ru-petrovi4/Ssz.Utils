@@ -118,28 +118,16 @@ namespace Ssz.Utils
                     values.Add("");
                 return values;
             }
-
-            string? tagName;
-            string? prop;            
-
+            
             var separatorIndex = elementId.IndexOf(TagAndPropSeparator);
-            if (separatorIndex > 0 && separatorIndex < elementId.Length - 1)
-            {
-                tagName = elementId.Substring(0, separatorIndex);
-                prop = elementId.Substring(separatorIndex + 1);                
-            }
-            else
-            {
-                tagName = elementId;
-                prop = null;                
-            }
-
-            if (String.IsNullOrEmpty(tagName) || String.IsNullOrEmpty(prop))
+            if (separatorIndex < 1)
                 return null;
+            string tagName = elementId.Substring(0, separatorIndex);
+            string prop = elementId.Substring(separatorIndex + 1);
 
             string tagType = GetTagType(tagName);
 
-            return GetFromMapInternal(elementId, tagName, prop!, tagType, getConstantValue);
+            return GetFromMapInternal(elementId, tagName, prop, tagType, getConstantValue);
         }
 
         /// <summary>
@@ -164,12 +152,12 @@ namespace Ssz.Utils
                 return values;
             }
 
-            if (String.IsNullOrEmpty(tagName) || String.IsNullOrEmpty(prop))
+            if (String.IsNullOrEmpty(tagName))
                 return null;
 
             string tagType = GetTagType(tagName);
 
-            return GetFromMapInternal(elementId, tagName!, prop!, tagType, getConstantValue);
+            return GetFromMapInternal(elementId, tagName!, prop ?? @"", tagType, getConstantValue);
         }
 
 
@@ -195,10 +183,10 @@ namespace Ssz.Utils
                 return values;
             }
 
-            if (String.IsNullOrEmpty(tagName) || String.IsNullOrEmpty(prop))
+            if (String.IsNullOrEmpty(tagName))
                 return null;
 
-            return GetFromMapInternal(elementId, tagName!, prop!, tagType, getConstantValue);
+            return GetFromMapInternal(elementId, tagName!, prop ?? @"", tagType, getConstantValue);
         }
 
         public string GetTagType(string? tagName)
@@ -259,7 +247,7 @@ namespace Ssz.Utils
         #region private functions
 
         /// <summary>
-        ///     Preconditions: tagName and prop are not empty strings.
+        ///     Preconditions: tagName != String.Empty
         /// </summary>
         /// <param name="elementId"></param>
         /// <param name="tagName"></param>
