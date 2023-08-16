@@ -220,10 +220,13 @@ namespace Ssz.Utils
             charsetDetector.Feed(bytes, 0, bytes.Length);
             charsetDetector.DataEnd();
 
-            logger?.LogDebug(@"charsetDetector.Encoding: " + charsetDetector.Encoding?.EncodingName);
+            var encoding = charsetDetector.Encoding ?? defaultEncoding;
+            if (charsetDetector.Confidence < 0.5)
+                encoding = defaultEncoding;
+            logger?.LogDebug(@"Detected Encoding: " + encoding.EncodingName);
 
             memoryStream.Position = 0;
-            return new StreamReader(memoryStream, charsetDetector.Encoding ?? defaultEncoding, false);
+            return new StreamReader(memoryStream, encoding, false);
         }
 
         /// <summary>
