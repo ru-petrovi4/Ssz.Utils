@@ -22,9 +22,11 @@ namespace Ssz.Utils
         /// <param name="key"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
-        public static T GetValue<T>(IConfiguration configuration, string key, T defaultValue)
+        public static T GetValue<T>(IConfiguration? configuration, string key, T defaultValue)
             where T : notnull
         {
+            if (configuration is null)
+                return defaultValue;
             // null if no key in startup args string
             // null if --Rewiew or -r
             // "" if --Rewiew=
@@ -37,9 +39,11 @@ namespace Ssz.Utils
             return result;
         }
 
-        public static T GetValue_Base64<T>(IConfiguration configuration, string key, T defaultValue)
+        public static T GetValue_Base64<T>(IConfiguration? configuration, string key, T defaultValue)
             where T : notnull
         {
+            if (configuration is null)
+                return defaultValue;
             // null if no key in startup args string
             // null if --Rewiew or -r
             // "" if --Rewiew=
@@ -52,9 +56,11 @@ namespace Ssz.Utils
             return result;
         }
 
-        public static T GetValue_Enum<T>(IConfiguration configuration, string key, T defaultValue)
+        public static T GetValue_Enum<T>(IConfiguration? configuration, string key, T defaultValue)
             where T : struct, System.Enum
         {
+            if (configuration is null)
+                return defaultValue;
             // null if no key in startup args string
             // null if --Rewiew or -r
             // "" if --Rewiew=
@@ -154,7 +160,7 @@ namespace Ssz.Utils
         /// </remarks>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public static bool IsSecondaryProcess(IConfiguration configuration)
+        public static bool IsSecondaryProcess(IConfiguration? configuration)
         {
             return GetValue(configuration, @"IsSecondaryProcess", false);
         }
@@ -169,8 +175,8 @@ namespace Ssz.Utils
         /// <param name="configuration"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public static string GetProgramDataDirectoryFullName(IConfiguration configuration)
-        {
+        public static string GetProgramDataDirectoryFullName(IConfiguration? configuration)
+        {            
             string programDataDirectoryFullName = GetValue<string>(configuration, @"ProgramDataDirectory", @"");
             if (programDataDirectoryFullName != @"")
             {
