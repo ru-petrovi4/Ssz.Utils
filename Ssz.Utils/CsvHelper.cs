@@ -234,7 +234,8 @@ namespace Ssz.Utils
         ///     With procerssing #include, #define, comments.
         ///     If file does not exist, returns empty result.
         ///     userFriendlyLogger: Messages are localized. Priority is Information, Error, Warning.
-        ///     includeFileNames: File names in Upper-Case.
+        ///     includeFiles: if true, processes #include directives.
+        ///     includeFileNames: returns all include file names.
         ///     Result: List.Count >= 1, List[0] is not null
         /// </summary>
         /// <param name="fileFullName"></param>
@@ -246,22 +247,41 @@ namespace Ssz.Utils
         public static CaseInsensitiveDictionary<List<string?>> LoadCsvFile(string fileFullName, bool includeFiles, Dictionary<Regex, string>? defines = null,
             IUserFriendlyLogger? userFriendlyLogger = null, List<string>? includeFileNames = null)
         {
-            var fileData = new CaseInsensitiveDictionary<List<string?>>();
-
-            using var fileFullNameScope = userFriendlyLogger?.BeginScope((Properties.Resources.FileNameScopeName, Path.GetFileName(fileFullName)));
-            
-            if (!File.Exists(fileFullName))
+            using (FileStream fileStream = File.Open(fileFullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                userFriendlyLogger?.LogError(Properties.Resources.CsvHelper_CsvFileDoesNotExist);
-                return fileData;
+                if (includeFiles)
+                    return LoadCsvFile(fileStream, Path.GetDirectoryName(fileFullName), defines, userFriendlyLogger, includeFileNames);
+                else
+                    return LoadCsvFile(fileStream, null, defines, userFriendlyLogger, includeFileNames);
             }
+        }
+
+        /// <summary>
+        ///     First column in file is Key and must be unique.
+        ///     With procerssing #include, #define, comments.
+        ///     If file does not exist, returns empty result.
+        ///     userFriendlyLogger: Messages are localized. Priority is Information, Error, Warning.
+        ///     includeFilesDirectory: if not null, processes #include directives.
+        ///     includeFileNames: returns all include file names.
+        ///     Result: List.Count >= 1, List[0] is not null
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="includeFilesDirectory"></param>
+        /// <param name="defines"></param>
+        /// <param name="userFriendlyLogger"></param>
+        /// <param name="includeFileNames"></param>
+        /// <returns></returns>
+        public static CaseInsensitiveDictionary<List<string?>> LoadCsvFile(Stream stream, string? includeFilesDirectory, Dictionary<Regex, string>? defines = null,
+            IUserFriendlyLogger? userFriendlyLogger = null, List<string>? includeFileNames = null)
+        {
+            var fileData = new CaseInsensitiveDictionary<List<string?>>();
 
             try
             {
-                if (defines is null) defines = new Dictionary<Regex, string>();
-                string? filePath = Path.GetDirectoryName(fileFullName);
+                if (defines is null) 
+                    defines = new Dictionary<Regex, string>();                
 
-                using (var reader = GetStreamReader(fileFullName, Encoding.UTF8))
+                using (var reader = GetStreamReader(stream, Encoding.UTF8))
                 {
                     string line = "";
                     string? l;
@@ -289,7 +309,7 @@ namespace Ssz.Utils
 
                         if (beginFields is null)
                         {
-                            if (includeFiles && StringHelper.StartsWithIgnoreCase(line, @"#include") && line.Length > 8)
+                            if (includeFilesDirectory is not null && StringHelper.StartsWithIgnoreCase(line, @"#include") && line.Length > 8)
                             {
                                 var q1 = line.IndexOf('"', 8);
                                 if (q1 != -1 && q1 + 1 < line.Length)
@@ -299,8 +319,9 @@ namespace Ssz.Utils
                                     {
                                         var includeFileName = line.Substring(q1 + 1, q2 - q1 - 1);
                                         if (includeFileNames is not null)
-                                            includeFileNames.Add(includeFileName.ToUpperInvariant());
-                                        foreach (var kvp in LoadCsvFile(filePath + @"\" + includeFileName, false, defines, userFriendlyLogger))
+                                            includeFileNames.Add(includeFileName);
+                                        CaseInsensitiveDictionary<List<string?>> includeFileData = LoadCsvFile(Path.Combine(includeFilesDirectory, includeFileName), false, defines, userFriendlyLogger);
+                                        foreach (var kvp in includeFileData)
                                         {
                                             if (fileData.ContainsKey(kvp.Key))
                                             {

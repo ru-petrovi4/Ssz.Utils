@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Ssz.Utils
 {
@@ -203,10 +204,33 @@ namespace Ssz.Utils
             set => SetValue(ref _isUiToDataSourceWarning, value);
         }
 
+        public int GetInputsCount()
+        {
+            if (String.IsNullOrEmpty(_expressionString))
+                return 0;
+            Regex regex = new(@"d\[(?<n>[0-9]+)\]|i\[(?<n>[0-9]+)\]|u\[(?<n>[0-9]+)\]|b\[(?<n>[0-9]+)\]|s\[(?<n>[0-9]+)\]", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);                        
+            var m = regex.Matches(_expressionString);
+            int inputsCount = 0;
+            foreach (int i in Enumerable.Range(0, m.Count))
+            {
+                var g = m[i].Groups["n"];
+                if (g is not null)
+                {
+                    int c = new Any(g.Value).ValueAsInt32(false);
+                    if (c > inputsCount)
+                        inputsCount = c;
+                }
+            }
+            return inputsCount;
+        }
+
         #endregion
 
         #region protected functions
 
+        /// <summary>
+        ///     If true - possible valid. If false - certainly invalid.
+        /// </summary>
         protected bool IsValidInternal;
 
         protected bool Equals(SszExpression other)
