@@ -103,7 +103,7 @@ namespace IdentityServer4.Validation
                 RequireSignedTokens = true,
                 RequireExpirationTime = true,
                 
-                ClockSkew = TimeSpan.FromMinutes(5)
+                ClockSkew = TimeSpan.FromSeconds(10)
             };
             try
             {

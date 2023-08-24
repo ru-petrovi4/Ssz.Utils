@@ -252,7 +252,8 @@ namespace IdentityServer4.Validation
             {
                 ValidIssuer = _context.HttpContext.GetIdentityServerIssuerUri(),
                 IssuerSigningKeys = validationKeys.Select(k => k.Key),
-                ValidateLifetime = validateLifetime
+                ValidateLifetime = validateLifetime,
+                ClockSkew = TimeSpan.FromSeconds(10)
             };
 
             if (audience.IsPresent())

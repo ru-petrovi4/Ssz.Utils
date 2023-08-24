@@ -173,13 +173,13 @@ namespace Ssz.DataAccessGrpc.Client
                     _pendingClientContextNotificationEventArgs = new ClientContextNotificationEventArgs(ClientContextNotificationType.Shutdown,
                         null);
                 }
-                if (value is not null)
+                if (_serverContextStatus is not null)
                     ServerContextNotification(this, new ContextStatusChangedEventArgs
                     {
-                        ContextStateCode = value.StateCode,
-                        Info = value.Info ?? @"",
-                        Label = value.Label ?? @"",
-                        Details = value.Details ?? @"",
+                        ContextStateCode = _serverContextStatus.StateCode,
+                        Info = _serverContextStatus.Info ?? @"",
+                        Label = _serverContextStatus.Label ?? @"",
+                        Details = _serverContextStatus.Details ?? @"",
                     });
             }            
         }

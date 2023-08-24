@@ -172,7 +172,9 @@ namespace IdentityServer4.Validation
                 ValidateAudience = true,
 
                 RequireSignedTokens = true,
-                RequireExpirationTime = true
+                RequireExpirationTime = true,
+
+                ClockSkew = TimeSpan.FromSeconds(10),
             };
 
             if (Options.StrictJarValidation)
