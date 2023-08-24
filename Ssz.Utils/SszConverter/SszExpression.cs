@@ -216,7 +216,7 @@ namespace Ssz.Utils
                 var g = m[i].Groups["n"];
                 if (g is not null)
                 {
-                    int c = new Any(g.Value).ValueAsInt32(false);
+                    int c = new Any(g.Value).ValueAsInt32(false) + 1;
                     if (c > inputsCount)
                         inputsCount = c;
                 }
