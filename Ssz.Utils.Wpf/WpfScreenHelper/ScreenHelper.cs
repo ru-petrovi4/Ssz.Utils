@@ -24,14 +24,20 @@ namespace Ssz.Utils.Wpf
             var result = new List<Rect>();
 
             Screen[] screens = Screen.AllScreens.OrderByDescending(s => s.Primary).ThenBy(s => s.DeviceName).ToArray();
-
-            foreach (Screen screen in screens)
+            if (screens.Length == 0)
             {
-                Rectangle workingArea = screen.WorkingArea;
-                Point p1 = new Point(workingArea.X / PrimaryScreenScaleX, workingArea.Y / PrimaryScreenScaleY);
-                Point p2 = new Point(workingArea.Right / PrimaryScreenScaleX, workingArea.Bottom / PrimaryScreenScaleY);
-                result.Add(new Rect(p1, p2));
+                result.Add(new Rect(0, 0, SystemParameters.PrimaryScreenWidth, SystemParameters.PrimaryScreenHeight));
             }
+            else
+            {
+                foreach (Screen screen in screens)
+                {
+                    Rectangle workingArea = screen.WorkingArea;
+                    Point p1 = new Point(workingArea.X / PrimaryScreenScaleX, workingArea.Y / PrimaryScreenScaleY);
+                    Point p2 = new Point(workingArea.Right / PrimaryScreenScaleX, workingArea.Bottom / PrimaryScreenScaleY);
+                    result.Add(new Rect(p1, p2));
+                }
+            }            
 
             return result.ToArray();
         }
