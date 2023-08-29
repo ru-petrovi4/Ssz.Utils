@@ -418,7 +418,7 @@ namespace Ssz.Utils
         {
             if (string.IsNullOrWhiteSpace(fileName)) return;
 
-            if (!fileName!.EndsWith(@".CSV")) return;
+            if (!fileName!.EndsWith(@".csv", StringComparison.InvariantCultureIgnoreCase)) return;
 
             if (!_csvFilesCollection.TryGetValue(fileName!, out CsvFile? csvFile))
             {
