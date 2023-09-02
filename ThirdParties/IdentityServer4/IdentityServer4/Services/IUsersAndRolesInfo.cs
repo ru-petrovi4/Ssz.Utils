@@ -19,5 +19,15 @@ namespace IdentityServer4.Services
         /// </summary>
         /// <returns></returns>
         Task<string[]> GetRolesAsync();
+
+        /// <summary>
+        ///     SuperUser Is Enabled
+        /// </summary>
+        bool SuperUserIsEnabled { get; }
+
+        /// <summary>
+        ///     TestUsers Is Enabled
+        /// </summary>
+        bool TestUsersIsEnabled { get; }
     }
 }
