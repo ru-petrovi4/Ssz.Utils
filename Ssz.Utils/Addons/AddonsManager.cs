@@ -375,13 +375,13 @@ namespace Ssz.Utils.Addons
 
         private void OnCsvDb_CsvFileChanged(object? sender, CsvFileChangedEventArgs args)
         {            
-            if (args.CsvFileName == AddonsCsvFileName)
+            if (String.Equals(args.CsvFileName, AddonsCsvFileName, StringComparison.InvariantCultureIgnoreCase))
                 RefreshAddons();
         }
 
         private void OnAddonCsvDb_CsvFileChanged(object? sender, CsvFileChangedEventArgs args)
         {
-            if (args.CsvFileName == AddonBase.OptionsCsvFileName)
+            if (String.Equals(args.CsvFileName, AddonBase.OptionsCsvFileName, StringComparison.InvariantCultureIgnoreCase))
                 RefreshAddons();
         }
 
