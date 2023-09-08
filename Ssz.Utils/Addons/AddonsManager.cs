@@ -68,7 +68,7 @@ namespace Ssz.Utils.Addons
         /// <param name="standardAddons"></param>
         /// <param name="addonsSearchPattern"></param>
         /// <param name="csvDb"></param>
-        public void Initialize(IUserFriendlyLogger? userFriendlyLogger, AddonBase[]? standardAddons, CsvDb csvDb, IDispatcher dispatcher, Func<string, string?>? substituteOptionFunc, AddonsManagerOptions addonsManagerOptions)
+        public void Initialize(IUserFriendlyLogger? userFriendlyLogger, AddonBase[]? standardAddons, CsvDb csvDb, IDispatcher dispatcher, Func<string?, string?>? substituteOptionFunc, AddonsManagerOptions addonsManagerOptions)
         {
             LoggersSet.SetUserFriendlyLogger(userFriendlyLogger);
             StandardAddons = standardAddons;
@@ -510,7 +510,7 @@ namespace Ssz.Utils.Addons
                 availableAddonClone.CsvDb.SaveData();
 
                 availableAddonClone.OptionsSubstitutedThreadSafe = new CaseInsensitiveDictionary<string?>(availableAddonClone.CsvDb.GetData(AddonBase.OptionsCsvFileName)
-                    .Where(kvp => kvp.Key != @"").Select(kvp => new KeyValuePair<string, string?>(kvp.Key, kvp.Value.Count > 1 ? SubstituteOptionValue(kvp.Key, kvp.Value[1]) : null)));                
+                    .Where(kvp => kvp.Key != @"").Select(kvp => new KeyValuePair<string, string?>(kvp.Key, kvp.Value.Count > 1 ? SubstituteOption(kvp.Value[1]) : null)));                
 
                 var observableCollectionItemIds = new CaseInsensitiveDictionary<string?>(availableAddonClone.OptionsSubstitutedThreadSafe);                    
                 observableCollectionItemIds.Add(@"#addonIdentifier", availableAddonClone.Identifier);
@@ -529,15 +529,12 @@ namespace Ssz.Utils.Addons
             }
         }
 
-        private string? SubstituteOptionValue(string optionName, string? optionValue)
+        private string? SubstituteOption(string? optionValue)
         {
-            if (_substituteOptionFunc is not null && !String.IsNullOrEmpty(optionValue))
-            {
-                string? substitutedOptionValue = _substituteOptionFunc(optionValue!);
-                if (!String.IsNullOrEmpty(substitutedOptionValue))
-                    return substitutedOptionValue;
-            }               
-            return optionValue;
+            if (_substituteOptionFunc is not null)
+                return _substituteOptionFunc(optionValue);
+            else             
+                return optionValue;
         }
 
         /// <summary>
@@ -728,7 +725,7 @@ namespace Ssz.Utils.Addons
 
         private AddonBase[] _addonsCopy = new AddonBase[0];
 
-        private Func<string, string?>? _substituteOptionFunc;
+        private Func<string?, string?>? _substituteOptionFunc;
 
         #endregion
 

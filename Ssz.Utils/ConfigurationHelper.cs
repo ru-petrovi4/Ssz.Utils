@@ -204,6 +204,6 @@ namespace Ssz.Utils
     /// </summary>
     public interface IConfigurationProcessor
     {
-        string ProcessValue(string value);
+        string? ProcessValue(string? value);
     }
 }
