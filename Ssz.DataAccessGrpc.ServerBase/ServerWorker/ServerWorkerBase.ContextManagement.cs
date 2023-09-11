@@ -47,6 +47,13 @@ namespace Ssz.DataAccessGrpc.ServerBase
             return serverContext;
         }
 
+        public ServerContext? TryLookupServerContext(string contextId)
+        {
+            ServerContext? serverContext;
+            _serverContextsDictionary.TryGetValue(contextId, out serverContext);            
+            return serverContext;
+        }
+
         #endregion
 
         #region internal functions

@@ -97,15 +97,12 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             return await GetAsyncReplyAsync(async () =>
                 {
-                    try
+                    ServerContext? serverContext = _serverWorker.TryLookupServerContext(request.ContextId ?? @"");
+                    if (serverContext is not null)
                     {
-                        ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                         serverContext.IsConcludeCalled = true;
-                        _serverWorker.RemoveServerContext(serverContext);                        
+                        _serverWorker.RemoveServerContext(serverContext);
                         await serverContext.DisposeAsync();
-                    }
-                    catch
-                    {
                     }
                     return new ConcludeReply();
                 },
@@ -116,8 +113,11 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             return await GetReplyAsync(() =>
                 {
-                    ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
-                    serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
+                    ServerContext? serverContext = _serverWorker.TryLookupServerContext(request.ContextId ?? @"");
+                    if (serverContext is not null)
+                    {
+                        serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
+                    }
                     return new ClientKeepAliveReply();
                 },
                 context);

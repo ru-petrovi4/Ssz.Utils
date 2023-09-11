@@ -175,21 +175,13 @@ namespace Ssz.Utils.Addons
                 var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationCsvFile.GetPathRelativeToRootDirectory_PlatformSpecific()));
                 if (fileInfo.Exists)
                 {
-                    string originalFileData = TextFileHelper.NormalizeNewLine(File.ReadAllText(fileInfo.FullName));
-                    if (String.IsNullOrEmpty(originalFileData))
+                    string onDiskFileData = TextFileHelper.NormalizeNewLine(File.ReadAllText(fileInfo.FullName));
+                    if (configurationCsvFile.FileData != onDiskFileData)
                     {
-                        if (!String.IsNullOrEmpty(configurationCsvFile.FileData))
-                            configurationCsvFilesToWrite.Add(configurationCsvFile);
+                        if (FileSystemHelper.FileSystemTimeIsLess(configurationCsvFile.LastWriteTimeUtc, fileInfo.LastWriteTimeUtc))
+                            throw new AddonCsvFileChangedOnDiskException { FilePathRelativeToRootDirectory = configurationCsvFile.PathRelativeToRootDirectory };
+                        configurationCsvFilesToWrite.Add(configurationCsvFile);
                     }
-                    else
-                    {
-                        if (configurationCsvFile.FileData != originalFileData)
-                        {
-                            if (FileSystemHelper.FileSystemTimeIsLess(configurationCsvFile.LastWriteTimeUtc, fileInfo.LastWriteTimeUtc))
-                                throw new AddonCsvFileChangedOnDiskException { FilePathRelativeToRootDirectory = configurationCsvFile.PathRelativeToRootDirectory };
-                            configurationCsvFilesToWrite.Add(configurationCsvFile);
-                        }
-                    }                    
                 }
                 else
                 {
