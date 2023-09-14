@@ -33,6 +33,10 @@ namespace Ssz.Utils.Wpf
                         if (rectString is not null)
                         {
                             var registryRect = (RegistryRect)NameValueCollectionValueSerializer<RegistryRect>.Instance.ConvertFromString(rectString);
+                            if (registryRect.Width < 5)
+                                registryRect.Width = Double.NaN;
+                            if (registryRect.Height < 5)
+                                registryRect.Height = Double.NaN;
                             rect = new Rect(registryRect.X, registryRect.Y, registryRect.Width, registryRect.Height);
                         }
                     }
