@@ -699,7 +699,7 @@ namespace Ssz.Utils.Serialization
             
             if (value is Array valueArray)
             {
-                WriteArrayInternal(valueArray, typeof (object));
+                WriteArrayInternal(valueArray, valueArray.GetType().GetElementType() ?? typeof(object));
                 return;
             }
             
@@ -1063,7 +1063,7 @@ namespace Ssz.Utils.Serialization
             
             if (value is Array valueArray)
             {
-                WriteArrayInternal(valueArray, typeof (object));
+                WriteArrayInternal(valueArray, valueArray.GetType().GetElementType() ?? typeof(object));
                 return;
             }
             
@@ -2583,6 +2583,7 @@ namespace Ssz.Utils.Serialization
                 else
                 {
                     WriteSerializedType(SerializedType.EmptyTypedArrayType);
+                    WriteOptimized(elementType);
                 }
                 return;
             }

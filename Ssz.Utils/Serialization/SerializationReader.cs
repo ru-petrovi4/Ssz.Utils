@@ -283,7 +283,7 @@ namespace Ssz.Utils.Serialization
         {
             ThrowIfBlockEnding();
             
-            return (T?)ReadObjectInternal((SerializedType)_binaryReader.ReadByte());
+            return (T?)ReadObjectInternal((SerializedType)_binaryReader.ReadByte(), typeof(T));
         }
 
         /// <summary>
@@ -1117,8 +1117,11 @@ namespace Ssz.Utils.Serialization
         /// <summary>
         ///     Returns an object based on supplied SerializedType.
         /// </summary>
-        /// <returns> An object instance. </returns>
-        private object? ReadObjectInternal(SerializedType typeCode)
+        /// <param name="typeCode"></param>
+        /// <param name="elementType"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        private object? ReadObjectInternal(SerializedType typeCode, Type? objectType = null)
         {
             switch (typeCode)
             {
@@ -1293,7 +1296,6 @@ namespace Ssz.Utils.Serialization
 
                     return Enum.ToObject(enumType, ReadUInt64());
                 }
-
                 case SerializedType.EnumType:
                 {
                     Type? enumType = ReadOptimizedType();
@@ -1310,23 +1312,22 @@ namespace Ssz.Utils.Serialization
 
                     return Enum.ToObject(enumType, ReadUInt64());
                 }
-
                 case SerializedType.StringDirect:
                 {
                     return _binaryReader.ReadString();
                 }
-
                 case SerializedType.OptimizedStringType:
                 {
-                    if (_stringsList is null) throw new InvalidOperationException();
+                    if (_stringsList is null) 
+                            throw new InvalidOperationException();
                     int index = ReadOptimizedInt32();
                     return _stringsList[index];
                 }
-
                 default:
                 {
-                    object? result = ReadArrayInternal(typeCode, typeof (object));
-                    if (result is not null) return result;
+                    object? result = ReadArrayInternal(typeCode, objectType?.GetElementType());
+                    if (result is not null) 
+                        return result;
 
                     throw new InvalidOperationException("Unrecognized TypeCode: " + typeCode);
                 }
@@ -1621,25 +1622,33 @@ namespace Ssz.Utils.Serialization
         /// <param name="typeCode"> The SerializedType to check. </param>
         /// <param name="elementType"> The Type of array element; </param>
         /// <returns> </returns>
-        private object? ReadArrayInternal(SerializedType typeCode, Type elementType)
+        private object? ReadArrayInternal(SerializedType typeCode, Type? elementType)
         {
             switch (typeCode)
             {
                 case SerializedType.EmptyObjectArrayType:
                     return new object[0];
                 case SerializedType.EmptyTypedArrayType:
-                    return Array.CreateInstance(elementType, 0);
+                {
+                    var deserializedElementType = ReadOptimizedType();
+                    if (deserializedElementType is not null &&
+                        elementType is not null &&
+                        deserializedElementType != elementType)
+                            throw new InvalidOperationException();
+                    return Array.CreateInstance((deserializedElementType ?? elementType) ?? typeof(object), 0);
+                }                    
                 case SerializedType.ObjectArrayType:
                     return ReadOptimizedObjectArray(typeof (object));
                 case SerializedType.AllTrueOptimizeFlagsType: // Obsolete
                 case SerializedType.OwnedDataSerializableTypedArrayType:
                 {
                     int length = ReadOptimizedInt32();
-                    Array result = Array.CreateInstance(elementType, length);
+                    Array result = Array.CreateInstance(elementType!, length);
                     for (int i = 0; i < length; i++)
                     {
-                        IOwnedDataSerializable? value = Activator.CreateInstance(elementType) as IOwnedDataSerializable;
-                        if (value is null) throw new InvalidOperationException();
+                        IOwnedDataSerializable? value = Activator.CreateInstance(elementType!) as IOwnedDataSerializable;
+                        if (value is null) 
+                            throw new InvalidOperationException();
                         ReadOwnedData(value, null);
                         result.SetValue(value, i);
                     }
@@ -1680,7 +1689,7 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.CharArrayType:
                     return ReadCharArray();
                 case SerializedType.TypedArrayType:
-                    return ReadOptimizedObjectArray(elementType);
+                    return ReadOptimizedObjectArray(elementType ?? typeof(object));
             }
 
             return null;

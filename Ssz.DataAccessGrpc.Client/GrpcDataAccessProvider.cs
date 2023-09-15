@@ -59,7 +59,7 @@ namespace Ssz.DataAccessGrpc.Client
         public override event EventHandler ValueSubscriptionsUpdated = delegate { };
 
         /// <summary>
-        ///     You can set updateValueItems = false and invoke PollElementValuesChangesAsync(...) manually.
+        ///     You can set elementValueListCallbackIsEnabled = false and invoke PollElementValuesChangesAsync(...) manually.
         /// </summary>
         /// <param name="elementIdsMap"></param>
         /// <param name="elementValueListCallbackIsEnabled"></param>
