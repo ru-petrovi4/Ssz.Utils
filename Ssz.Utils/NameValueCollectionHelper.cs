@@ -24,10 +24,10 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static CaseInsensitiveDictionary<string?> Parse(string? nameValueCollectionString)
         {
-            if (nameValueCollectionString is null || nameValueCollectionString == @"") 
-                return EmptyCaseInsensitiveDictionary;
-
             var result = new CaseInsensitiveDictionary<string?>();
+
+            if (nameValueCollectionString is null || nameValueCollectionString == @"") 
+                return result;           
 
             int length = nameValueCollectionString.Length;
             int i = 0;
