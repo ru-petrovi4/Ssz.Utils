@@ -16,8 +16,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
     {
         #region construction and destruction
 
-        public ClientElementValueListManager(ILogger<GrpcDataAccessProvider> logger, bool unsubscribeItemsFromServer) :
-            base(logger, unsubscribeItemsFromServer)
+        public ClientElementValueListManager(ILogger<GrpcDataAccessProvider> logger) :
+            base(logger)
         {
         }
 
@@ -32,10 +32,15 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <param name="clientContextManager"></param>
         /// <param name="сallbackDispatcher"></param>
         /// <param name="elementValuesCallbackEventHandler"></param>
+        /// <param name="unsubscribeItemsFromServer"></param>
         /// <param name="callbackIsEnabled"></param>
         /// <param name="ct"></param>
-        public void Subscribe(ClientContextManager clientContextManager, IDispatcher? сallbackDispatcher,
-            EventHandler<ElementValuesCallbackEventArgs> elementValuesCallbackEventHandler, bool callbackIsEnabled, CancellationToken ct)
+        public void Subscribe(ClientContextManager clientContextManager, 
+            IDispatcher? сallbackDispatcher,
+            EventHandler<ElementValuesCallbackEventArgs> elementValuesCallbackEventHandler,
+            bool unsubscribeItemsFromServer,
+            bool callbackIsEnabled, 
+            CancellationToken ct)
         {
             try
             {
@@ -58,7 +63,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                     }
                 }
 
-                bool connectionError = SubscribeInitial();
+                bool connectionError = SubscribeInitial(unsubscribeItemsFromServer);
 
                 try
                 {

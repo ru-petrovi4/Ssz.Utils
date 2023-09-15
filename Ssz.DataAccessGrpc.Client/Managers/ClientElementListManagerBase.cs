@@ -15,10 +15,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
     {
         #region construction and destruction
 
-        protected ClientElementListManagerBase(ILogger<GrpcDataAccessProvider> logger, bool unsubscribeItemsFromServer)
+        protected ClientElementListManagerBase(ILogger<GrpcDataAccessProvider> logger)
         {
             Logger = logger;
-            UnsubscribeItemsFromServer = unsubscribeItemsFromServer;
         }
 
         #endregion
@@ -119,11 +118,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
         #region protected functions
 
-        protected ILogger<GrpcDataAccessProvider> Logger { get; }
+        protected ILogger<GrpcDataAccessProvider> Logger { get; }        
 
-        protected TDataAccessGrpcList? DataAccessGrpcList { get; set; }
-
-        protected bool UnsubscribeItemsFromServer { get; }
+        protected TDataAccessGrpcList? DataAccessGrpcList { get; set; }        
 
         protected ClientObjectInfo? GetClientObjectInfo(object clientObj)
         {
@@ -136,7 +133,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         ///     Returns whether connection errors occur.
         /// </summary>
         /// <returns></returns>
-        protected bool SubscribeInitial()
+        protected bool SubscribeInitial(bool unsubscribeItemsFromServer)
         {
             bool connectionError = false;
             
@@ -284,7 +281,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                         var clientObjectInfos = dataGrpcListItemWrapper.ClientObjectInfosCollection;
                         clientObjectInfos.Remove(clientObjectInfo);
                         clientObjectInfo.DataAccessGrpcListItemWrapper = null;
-                        if (UnsubscribeItemsFromServer)
+                        if (unsubscribeItemsFromServer)
                         {
                             // Remove DataAccessGrpc Item
                             var dataGrpcListItem = dataGrpcListItemWrapper.DataAccessGrpcListItem;
@@ -292,13 +289,13 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                             {
                                 dataGrpcListItem.PrepareForRemove();
                                 dataGrpcListItem.Obj = null;
-                            }
-                            dataGrpcListItemWrapper.DataAccessGrpcListItem = null;
+                                dataGrpcListItemWrapper.DataAccessGrpcListItem = null;
+                            }                            
                         }                        
                     }
                 }
 
-                if (UnsubscribeItemsFromServer)
+                if (unsubscribeItemsFromServer)
                 {
                     if (!connectionError && DataAccessGrpcList is not null && !DataAccessGrpcList.Disposed)
                     {
@@ -311,7 +308,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                             connectionError = true;
                         }
                     }
-                    else connectionError = true;
+                    else 
+                        connectionError = true;
                 }
             }
 

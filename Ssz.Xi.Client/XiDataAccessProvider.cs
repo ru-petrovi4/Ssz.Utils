@@ -37,35 +37,32 @@ namespace Ssz.Xi.Client
         public override event EventHandler ValueSubscriptionsUpdated = delegate { };
 
         /// <summary>
-        ///     You can set updateValueItems = false and invoke PollElementValuesChangesAsync(...) manually.
+        ///     You can set DataAccessProviderOptions.ElementValueListCallbackIsEnabled = false and invoke PollElementValuesChangesAsync(...) manually.
         /// </summary>
         /// <param name="elementIdsMap"></param>
-        /// <param name="elementValueListCallbackIsEnabled"></param>
-        /// <param name="eventListCallbackIsEnabled"></param>
         /// <param name="serverAddress"></param>
         /// <param name="clientApplicationName"></param>
         /// <param name="clientWorkstationName"></param>
         /// <param name="systemNameToConnect"></param>
         /// <param name="contextParams"></param>
+        /// <param name="options"></param>
         /// <param name="callbackDispatcher"></param>
-        public override void Initialize(ElementIdsMap? elementIdsMap,
-            bool elementValueListCallbackIsEnabled,
-            bool eventListCallbackIsEnabled,
+        public override void Initialize(ElementIdsMap? elementIdsMap,            
             string serverAddress,
             string clientApplicationName,
             string clientWorkstationName,
             string systemNameToConnect,
             CaseInsensitiveDictionary<string?> contextParams,
+            DataAccessProviderOptions options,
             IDispatcher? callbackDispatcher)
         {
-            base.Initialize(elementIdsMap,
-                elementValueListCallbackIsEnabled,
-                eventListCallbackIsEnabled,
+            base.Initialize(elementIdsMap,                
                 serverAddress,
                  clientApplicationName,
                  clientWorkstationName,
                  systemNameToConnect,
                  contextParams,
+                 options,
                  callbackDispatcher);
 
             //string pollIntervalMsString =
@@ -527,18 +524,8 @@ namespace Ssz.Xi.Client
         private async Task WorkingTaskMainAsync(CancellationToken cancellationToken)
         {
             _xiServerProxy = new XiServerProxy();
-
-            bool elementValueListCallbackIsEnabled;
-            bool eventListCallbackIsEnabled;
-            try
-            {
-                elementValueListCallbackIsEnabled = ElementValueListCallbackIsEnabled;
-                eventListCallbackIsEnabled = EventListCallbackIsEnabled;
-            }
-            catch
-            {
-                return;
-            }
+            
+            bool eventListCallbackIsEnabled = Options.EventListCallbackIsEnabled;            
 
             if (eventListCallbackIsEnabled)
                 _xiEventListItemsManager.EventMessagesCallback += OnXiEventListItemsManager_EventMessagesCallback;
@@ -675,23 +662,16 @@ namespace Ssz.Xi.Client
                 }
             }
 
-            if (cancellationToken.IsCancellationRequested) return;
-            bool elementValueListCallbackIsEnabled;
-            bool eventListCallbackIsEnabled;
-            try
-            {
-                elementValueListCallbackIsEnabled = ElementValueListCallbackIsEnabled;
-                eventListCallbackIsEnabled = EventListCallbackIsEnabled;
-            }
-            catch
-            {
+            if (!IsInitialized || cancellationToken.IsCancellationRequested) 
                 return;
-            }
+            
             _xiDataListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher,
-                XiDataListItemsManagerOnElementValuesCallback, elementValueListCallbackIsEnabled, cancellationToken);
+                XiDataListItemsManagerOnElementValuesCallback, Options.ElementValueListCallbackIsEnabled, cancellationToken);
             _xiEventListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher, true, cancellationToken);
 
-            if (cancellationToken.IsCancellationRequested) return;
+            if (!IsInitialized || cancellationToken.IsCancellationRequested) 
+                return;
+
             if (_xiServerProxy.ContextExists)
             {
                 LastSuccessfulConnectionDateTimeUtc = nowUtc;
@@ -707,7 +687,7 @@ namespace Ssz.Xi.Client
                     {
                         if (cancellationToken.IsCancellationRequested) return;
 
-                        if (elementValueListCallbackIsEnabled)
+                        if (Options.ElementValueListCallbackIsEnabled)
                             _xiDataListItemsManager.PollChangesIfNotCallbackable();
 
                         _xiEventListItemsManager.PollChangesIfNotCallbackable();

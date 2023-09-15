@@ -24,8 +24,10 @@ namespace Ssz.DataAccessGrpc.Client
         {
             WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
+                if (!IsInitialized)
+                    return;
                 _clientElementValuesJournalListManager.AddItem(elementId, valueSubscription);
-                _clientElementValuesJournalListManager.Subscribe(_clientContextManager);
+                _clientElementValuesJournalListManager.Subscribe(_clientContextManager, Options.UnsubscribeValuesJournalListItemsFromServer);
             }
             );
         }
@@ -101,17 +103,22 @@ namespace Ssz.DataAccessGrpc.Client
         protected IEnumerable<ValueStatusTimestamp> ReadElementValuesJournalInternal(string elementId, DateTime firstTimestampUtc,
             DateTime secondTimestampUtc)
         {
+            if (!IsInitialized)
+                return new ValueStatusTimestamp[0];
+
             object clientObj = elementId;
             _clientElementValuesJournalListManager.AddItem(elementId, clientObj);
-            _clientElementValuesJournalListManager.Subscribe(_clientContextManager);
+            _clientElementValuesJournalListManager.Subscribe(_clientContextManager, Options.UnsubscribeValuesJournalListItemsFromServer);
 
             var data = _clientElementValuesJournalListManager.ReadElementValuesJournals(firstTimestampUtc, secondTimestampUtc, uint.MaxValue, new Ssz.Utils.DataAccess.TypeId(), null, new[] { clientObj });
             if (data is not null)
                 return data[0];
 
-            // No remove, for optimization
-            //ClientElementValuesJournalListManager.RemoveItem(clientObj);
-            //ClientElementValuesJournalListManager.Subscribe(ClientContextManager, CallbackDispatcher);
+            if (Options.UnsubscribeValuesJournalListItemsFromServer)
+            {
+                _clientElementValuesJournalListManager.RemoveItem(clientObj);
+                _clientElementValuesJournalListManager.Subscribe(_clientContextManager, Options.UnsubscribeValuesJournalListItemsFromServer);
+            }
 
             return new ValueStatusTimestamp[0];
         }

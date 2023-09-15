@@ -57,96 +57,35 @@ namespace Ssz.Utils.DataAccess
         /// </summary>
         public string TagAndPropertySeparator { get; private set; } = @".";
 
-        public ElementIdsMap? ElementIdsMap
-        {
-            get
-            {
-                if (!IsInitialized) throw new Exception("Not Initialized");
-                return _elementIdsMap;
-            }
-        }
-
-        /// <summary>
-        ///     Used in DataAccessGrpc ElementValueList initialization.
-        /// </summary>
-        public bool ElementValueListCallbackIsEnabled
-        {
-            get
-            {
-                if (!IsInitialized) throw new Exception("Not Initialized");
-                return _elementValueListCallbackIsEnabled;
-            }
-        }
-
-        public bool EventListCallbackIsEnabled
-        {
-            get
-            {
-                if (!IsInitialized) throw new Exception("Not Initialized");
-                return _eventListCallbackIsEnabled;
-            }
-        }
+        public ElementIdsMap? ElementIdsMap { get; private set; }
 
         /// <summary>
         ///     DataAccessGrpc Server connection string.
         /// </summary>
-        public string ServerAddress
-        {
-            get
-            {
-                if (!IsInitialized) throw new Exception("Not Initialized");
-                return _serverAddress;
-            }
-        }
+        public string ServerAddress { get; private set; } = @"";
 
         /// <summary>
         ///     DataAccessGrpc Systems Names.
         /// </summary>
-        public string SystemNameToConnect
-        {
-            get
-            {
-                if (!IsInitialized) throw new Exception("Not Initialized");
-                return _systemNameToConnect;
-            }
-        }
+        public string SystemNameToConnect { get; private set; } = @"";
 
         /// <summary>
         ///     Used in DataAccessGrpc Context initialization.
         /// </summary>
-        public string ClientApplicationName
-        {
-            get
-            {
-                if (!IsInitialized) throw new Exception("Not Initialized");
-                return _clientApplicationName;
-            }
-        }
+        public string ClientApplicationName { get; private set; } = @"";
 
         /// <summary>
         ///     Used in DataAccessGrpc Context initialization.
         /// </summary>
-        public string ClientWorkstationName
-        {
-            get
-            {
-                if (!IsInitialized) throw new Exception("Not Initialized");
-                return _clientWorkstationName;
-            }
-        }
+        public string ClientWorkstationName { get; private set; } = @"";
 
         /// <summary>
         ///     Used in DataAccessGrpc Context initialization.
         ///     Can be null
         /// </summary>
-        public CaseInsensitiveDictionary<string?> ContextParams
-        {
-            get
-            {
-                if (!IsInitialized) throw new Exception("Not Initialized");
-                return _contextParams;
-            }
-        }
+        public CaseInsensitiveDictionary<string?> ContextParams { get; private set; } = new();
+
+        public DataAccessProviderOptions Options { get; private set; } = new();
 
         public bool IsInitialized
         {
@@ -194,40 +133,37 @@ namespace Ssz.Utils.DataAccess
         public virtual event EventHandler<EventMessagesCallbackEventArgs> EventMessagesCallback = delegate { };
 
         /// <summary>
-        ///     You can set updateValueItems = false and invoke PollElementValuesChangesAsync(...) manually.
+        ///     You can set DataAccessProviderOptions.ElementValueListCallbackIsEnabled = false and invoke PollElementValuesChangesAsync(...) manually.
         /// </summary>
         /// <param name="elementIdsMap"></param>
-        /// <param name="elementValueListCallbackIsEnabled"></param>
-        /// <param name="eventListCallbackIsEnabled"></param>
         /// <param name="serverAddress"></param>
         /// <param name="clientApplicationName"></param>
         /// <param name="clientWorkstationName"></param>
         /// <param name="systemNameToConnect"></param>
         /// <param name="contextParams"></param>
+        /// <param name="options"></param>
         /// <param name="callbackDispatcher"></param>
         public virtual void Initialize(
-            ElementIdsMap? elementIdsMap,
-            bool elementValueListCallbackIsEnabled,
-            bool eventListCallbackIsEnabled,
+            ElementIdsMap? elementIdsMap,            
             string serverAddress,
             string clientApplicationName,
             string clientWorkstationName,
             string systemNameToConnect,
             CaseInsensitiveDictionary<string?> contextParams,
+            DataAccessProviderOptions options,
             IDispatcher? callbackDispatcher)
         {
             Close();
 
             LoggersSet.Logger.LogDebug("Starting ModelDataProvider. сallbackDispatcher != null: " + (callbackDispatcher is not null).ToString());
 
-            _elementIdsMap = elementIdsMap;
-            _elementValueListCallbackIsEnabled = elementValueListCallbackIsEnabled;
-            _eventListCallbackIsEnabled = eventListCallbackIsEnabled;
-            _serverAddress = serverAddress;
-            _clientApplicationName = clientApplicationName;
-            _clientWorkstationName = clientWorkstationName;
-            _systemNameToConnect = systemNameToConnect;
-            _contextParams = contextParams;
+            ElementIdsMap = elementIdsMap;                     
+            ServerAddress = serverAddress;
+            ClientApplicationName = clientApplicationName;
+            ClientWorkstationName = clientWorkstationName;
+            SystemNameToConnect = systemNameToConnect;
+            ContextParams = contextParams;
+            Options = options;
             if (callbackDispatcher is null)
                 callbackDispatcher = new DefaultDispatcher();
             CallbackDispatcher = callbackDispatcher;
@@ -241,14 +177,13 @@ namespace Ssz.Utils.DataAccess
         {
             if (!IsInitialized) return;
 
-            Initialize(_elementIdsMap,
-                _elementValueListCallbackIsEnabled,
-                _eventListCallbackIsEnabled,
-                _serverAddress,
-                _clientApplicationName,
-                _clientWorkstationName,
-                _systemNameToConnect,
-                _contextParams,
+            Initialize(ElementIdsMap,                
+                ServerAddress,
+                ClientApplicationName,
+                ClientWorkstationName,
+                SystemNameToConnect,
+                ContextParams,
+                Options,
                 CallbackDispatcher);
         }
 
@@ -258,8 +193,8 @@ namespace Ssz.Utils.DataAccess
 
             IsInitialized = false;
 
-            _elementIdsMap = null;
-            _contextParams = new CaseInsensitiveDictionary<string?>();
+            ElementIdsMap = null;
+            ContextParams = new CaseInsensitiveDictionary<string?>();
             CallbackDispatcher = null;
         }
 
@@ -363,7 +298,7 @@ namespace Ssz.Utils.DataAccess
         public virtual Task<(IValueSubscription[], ResultInfo[])> WriteAsync(IValueSubscription[] valueSubscriptions, ValueStatusTimestamp[] valueStatusTimestamps)
         {
             return Task.FromResult((new IValueSubscription[0], new ResultInfo[0]));
-        }
+        }        
 
         #endregion
 
@@ -376,41 +311,7 @@ namespace Ssz.Utils.DataAccess
 
         #endregion
 
-        #region private fields
-
-        private ElementIdsMap? _elementIdsMap;
-
-        /// <summary>
-        ///     Used in DataAccessGrpc ElementValueList initialization.
-        /// </summary>
-        private bool _elementValueListCallbackIsEnabled;
-
-        private bool _eventListCallbackIsEnabled;
-
-        /// <summary>
-        ///     DataAccessGrpc Server connection string.
-        /// </summary>
-        private string _serverAddress = "";
-
-        /// <summary>
-        ///     DataAccessGrpc Systems Names.
-        /// </summary>
-        private string _systemNameToConnect = @"";
-
-        /// <summary>
-        ///     Used in DataAccessGrpc Context initialization.
-        /// </summary>
-        private string _clientApplicationName = "";
-
-        /// <summary>
-        ///     Used in DataAccessGrpc Context initialization.
-        /// </summary>
-        private string _clientWorkstationName = "";
-
-        /// <summary>
-        ///     Used in DataAccessGrpc Context initialization.
-        /// </summary>
-        private CaseInsensitiveDictionary<string?> _contextParams = new();
+        #region private fields        
 
         private bool _isInitialized;
 

@@ -17,13 +17,6 @@ namespace Ssz.Utils.DataAccess
     {
         ElementIdsMap? ElementIdsMap { get; }
 
-        /// <summary>
-        ///     Used in DataAccessGrpc ElementValueList initialization.
-        /// </summary>
-        bool ElementValueListCallbackIsEnabled { get; }
-
-        bool EventListCallbackIsEnabled { get; }        
-
         string ServerAddress { get; }
 
         string SystemNameToConnect { get; }
@@ -33,6 +26,8 @@ namespace Ssz.Utils.DataAccess
         string ClientWorkstationName { get; }
 
         CaseInsensitiveDictionary<string?> ContextParams { get; }
+
+        DataAccessProviderOptions Options { get; }
 
         bool IsInitialized { get; }
 
@@ -67,25 +62,23 @@ namespace Ssz.Utils.DataAccess
         event EventHandler<EventMessagesCallbackEventArgs> EventMessagesCallback;
 
         /// <summary>
-        ///     You can set updateValueItems = false and invoke PollElementValuesChangesAsync(...) manually.
+        ///     
         /// </summary>
         /// <param name="elementIdsMap"></param>
-        /// <param name="elementValueListCallbackIsEnabled"></param>
-        /// <param name="eventListCallbackIsEnabled"></param>
         /// <param name="serverAddress"></param>
         /// <param name="clientApplicationName"></param>
         /// <param name="clientWorkstationName"></param>
         /// <param name="systemNameToConnect"></param>
         /// <param name="contextParams"></param>
+        /// <param name="options"></param>
         /// <param name="callbackDispatcher"></param>
-        void Initialize(ElementIdsMap? elementIdsMap,
-            bool elementValueListCallbackIsEnabled,
-            bool eventListCallbackIsEnabled,
+        void Initialize(ElementIdsMap? elementIdsMap,            
             string serverAddress,
             string clientApplicationName,
             string clientWorkstationName,
             string systemNameToConnect,
             CaseInsensitiveDictionary<string?> contextParams,
+            DataAccessProviderOptions options,
             IDispatcher? callbackDispatcher);
 
         /// <summary>
@@ -219,5 +212,16 @@ namespace Ssz.Utils.DataAccess
     public class EventMessagesCallbackEventArgs : EventArgs
     {
         public EventMessagesCollection EventMessagesCollection { get; set; } = null!;
+    }
+
+    public class DataAccessProviderOptions
+    {
+        public bool ElementValueListCallbackIsEnabled { get; set; } = true;
+
+        public bool EventListCallbackIsEnabled { get; set; } = true;
+
+        public bool UnsubscribeValueListItemsFromServer { get; set; } = true;
+
+        public bool UnsubscribeValuesJournalListItemsFromServer { get; set; } = true;        
     }
 }

@@ -25,13 +25,13 @@ namespace Ssz.DataAccessGrpc.Client
     {
         #region construction and destruction
         
-        public GrpcDataAccessProvider(IConfiguration configuration, ILogger<GrpcDataAccessProvider> logger, IUserFriendlyLogger? userFriendlyLogger = null) :
+        public GrpcDataAccessProvider(ILogger<GrpcDataAccessProvider> logger, IUserFriendlyLogger? userFriendlyLogger = null) :
             base(new LoggersSet(logger, userFriendlyLogger))
         {
             _clientContextManager = new ClientContextManager(logger, WorkingThreadSafeDispatcher);
 
-            _clientElementValueListManager = new ClientElementValueListManager(logger, ConfigurationHelper.GetValue<bool>(configuration, @"DataAccessProvider:UnsubscribeValueListItemsFromServer", true));
-            _clientElementValuesJournalListManager = new ClientElementValuesJournalListManager(logger, ConfigurationHelper.GetValue<bool>(configuration, @"DataAccessProvider:UnsubscribeValuesJournalListItemsFromServer", true));
+            _clientElementValueListManager = new ClientElementValueListManager(logger);
+            _clientElementValuesJournalListManager = new ClientElementValuesJournalListManager(logger);
             _clientEventListManager = new ClientEventListManager(logger, this);
         }              
         
@@ -59,35 +59,32 @@ namespace Ssz.DataAccessGrpc.Client
         public override event EventHandler ValueSubscriptionsUpdated = delegate { };
 
         /// <summary>
-        ///     You can set elementValueListCallbackIsEnabled = false and invoke PollElementValuesChangesAsync(...) manually.
+        ///     You can set DataAccessProviderOptions.ElementValueListCallbackIsEnabled = false and invoke PollElementValuesChangesAsync(...) manually.
         /// </summary>
         /// <param name="elementIdsMap"></param>
-        /// <param name="elementValueListCallbackIsEnabled"></param>
-        /// <param name="eventListCallbackIsEnabled"></param>
         /// <param name="serverAddress"></param>
         /// <param name="clientApplicationName"></param>
         /// <param name="clientWorkstationName"></param>
         /// <param name="systemNameToConnect"></param>
         /// <param name="contextParams"></param>
+        /// <param name="options"></param>
         /// <param name="callbackDispatcher"></param>
-        public override void Initialize(ElementIdsMap? elementIdsMap,
-            bool elementValueListCallbackIsEnabled,
-            bool eventListCallbackIsEnabled,
+        public override void Initialize(ElementIdsMap? elementIdsMap,            
             string serverAddress,
             string clientApplicationName,
             string clientWorkstationName,
             string systemNameToConnect,
             CaseInsensitiveDictionary<string?> contextParams,
+            DataAccessProviderOptions options,
             IDispatcher? callbackDispatcher)
         {
-            base.Initialize(elementIdsMap,
-                elementValueListCallbackIsEnabled,
-                eventListCallbackIsEnabled,
+            base.Initialize(elementIdsMap,                
                 serverAddress,
                 clientApplicationName,
                 clientWorkstationName,
                 systemNameToConnect, 
                 contextParams,
+                options,
                 callbackDispatcher);
 
             //string pollIntervalMsString =
@@ -242,8 +239,13 @@ namespace Ssz.DataAccessGrpc.Client
 
             WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
+                if (!IsInitialized)
+                {
+                    taskCompletionSource.SetResult(null);
+                    return;
+                }
                 _clientElementValueListManager.Subscribe(_clientContextManager, CallbackDispatcher,
-                    OnElementValuesCallback, true, ct);
+                    OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, ct);
                 object[]? changedValueSubscriptions = _clientElementValueListManager.PollChanges();
                 taskCompletionSource.SetResult(changedValueSubscriptions is not null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null);                
             }
@@ -345,10 +347,16 @@ namespace Ssz.DataAccessGrpc.Client
 
             WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
-                _clientElementValueListManager.Subscribe(_clientContextManager, CallbackDispatcher,
-                    OnElementValuesCallback, true, ct);
-
                 var resultInfo = ResultInfo.OkResultInfo;
+
+                if (!IsInitialized)
+                {
+                    taskCompletionSource.SetResult(resultInfo);
+                    return;
+                }
+
+                _clientElementValueListManager.Subscribe(_clientContextManager, CallbackDispatcher,
+                    OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, ct);                
 
                 if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                 {
@@ -388,8 +396,15 @@ namespace Ssz.DataAccessGrpc.Client
 
             WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
+                if (!IsInitialized)
+                {
+                    var failedResultInfo = new ResultInfo { StatusCode = JobStatusCodes.FailedPrecondition };
+                    taskCompletionSource.SetResult((valueSubscriptions, Enumerable.Repeat(failedResultInfo, valueSubscriptions.Length).ToArray()));
+                    return;
+                }
+
                 _clientElementValueListManager.Subscribe(_clientContextManager, CallbackDispatcher,
-                    OnElementValuesCallback, true, ct);
+                    OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, ct);
                 (object[] failedValueSubscriptions, ResultInfo[] failedResultInfos) = _clientElementValueListManager.Write(valueSubscriptions, valueStatusTimestamps);
 
                 taskCompletionSource.SetResult((failedValueSubscriptions.OfType<IValueSubscription>().ToArray(), failedResultInfos));
@@ -637,7 +652,6 @@ namespace Ssz.DataAccessGrpc.Client
                         //        //NameValueCollectionHelper.GetNameValueCollectionString(_dataGrpcContextParams.OfType<string?>()));
                         //}
 
-
                         _clientContextManager.InitiateConnection(ServerAddress, ClientApplicationName,
                             ClientWorkstationName, SystemNameToConnect, ContextParams, CallbackDispatcher);
 
@@ -670,25 +684,16 @@ namespace Ssz.DataAccessGrpc.Client
                 }
             }
 
-            if (cancellationToken.IsCancellationRequested) 
-                return;
-            bool elementValueListCallbackIsEnabled;
-            bool eventListCallbackIsEnabled;
-            try
-            {
-                elementValueListCallbackIsEnabled = ElementValueListCallbackIsEnabled;
-                eventListCallbackIsEnabled = EventListCallbackIsEnabled;
-            }
-            catch
-            {
-                return;
-            }
+            if (!IsInitialized || cancellationToken.IsCancellationRequested) 
+                return;            
 
             _clientElementValueListManager.Subscribe(_clientContextManager, CallbackDispatcher,
-                OnElementValuesCallback, elementValueListCallbackIsEnabled, cancellationToken);
-            _clientEventListManager.Subscribe(_clientContextManager, CallbackDispatcher, eventListCallbackIsEnabled, cancellationToken);
+                OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, cancellationToken);
+            _clientEventListManager.Subscribe(_clientContextManager, CallbackDispatcher, Options.EventListCallbackIsEnabled, cancellationToken);
 
-            if (cancellationToken.IsCancellationRequested) return;
+            if (cancellationToken.IsCancellationRequested) 
+                return;
+
             if (_clientContextManager.ConnectionExists)
             {
                 LastSuccessfulConnectionDateTimeUtc = nowUtc;
@@ -747,17 +752,10 @@ namespace Ssz.DataAccessGrpc.Client
 
         private async Task WorkingTaskMainAsync(CancellationToken cancellationToken)
         {
-            bool elementValueListCallbackIsEnabled;
-            bool eventListCallbackIsEnabled;
-            try
-            {
-                elementValueListCallbackIsEnabled = ElementValueListCallbackIsEnabled;
-                eventListCallbackIsEnabled = EventListCallbackIsEnabled;
-            }
-            catch
-            {
+            if (!IsInitialized)
                 return;
-            }
+            
+            bool eventListCallbackIsEnabled = Options.ElementValueListCallbackIsEnabled;            
 
             if (eventListCallbackIsEnabled) 
                 _clientEventListManager.EventMessagesCallback += OnClientEventListManager_EventMessagesCallbackInternal;

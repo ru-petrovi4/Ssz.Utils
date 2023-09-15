@@ -13,8 +13,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
     {
         #region construction and destruction
 
-        public ClientElementValuesJournalListManager(ILogger<GrpcDataAccessProvider> logger, bool unsubscribeItemsFromServer) :
-            base(logger, unsubscribeItemsFromServer)
+        public ClientElementValuesJournalListManager(ILogger<GrpcDataAccessProvider> logger) :
+            base(logger)
         {
         }
 
@@ -27,7 +27,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         ///     No throw.
         /// </summary>
         /// <param name="clientContextManager"></param>
-        public void Subscribe(ClientContextManager clientContextManager)
+        /// <param name="unsubscribeItemsFromServer"></param>
+        public void Subscribe(ClientContextManager clientContextManager, bool unsubscribeItemsFromServer)
         {
             try
             {
@@ -49,7 +50,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                     }
                 }
 
-                bool connectionError = SubscribeInitial();
+                bool connectionError = SubscribeInitial(unsubscribeItemsFromServer);
 
                 if (!connectionError)
                 {
