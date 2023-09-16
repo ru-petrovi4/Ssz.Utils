@@ -13,6 +13,9 @@ namespace Ssz.Utils.Wpf
         public static void InitializeWindow(Window window, string category, bool rememberSize, double initialWidth = Double.NaN,
             double initialHeight = Double.NaN)
         {
+            if (category is null)
+                category = @""; // Normalize
+
             List<WindowSlot>? windowSlots;
             if (!WindowSlotsDictionary.TryGetValue(category, out windowSlots))
             {
@@ -99,6 +102,9 @@ namespace Ssz.Utils.Wpf
         /// <returns></returns>
         public static Window? TryActivateExistingWindow(string category)
         {
+            if (category is null)
+                category = @""; // Normalize
+
             List<WindowSlot>? windowSlots;
             if (!WindowSlotsDictionary.TryGetValue(category, out windowSlots))
             {
@@ -114,7 +120,19 @@ namespace Ssz.Utils.Wpf
             occupiedWindowSlot.Window?.Activate();
 
             return occupiedWindowSlot.Window;
-        }   
+        }
+
+        public static void ResetWindowsSettings()
+        {
+            RegistryKey? registryKey = GetOrCreateSszRegistryKey();
+            if (registryKey is not null)
+            {
+                foreach (string valueName in registryKey.GetValueNames())
+                {
+                    registryKey.DeleteValue(valueName);
+                }                
+            }
+        }
 
         #endregion
 

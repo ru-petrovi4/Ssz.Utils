@@ -240,10 +240,10 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static CaseInsensitiveDictionary<string?> GetNameValueCollectionFromObject(object? obj)
         {
-            if (obj is null) 
-                return EmptyCaseInsensitiveDictionary;
-
             var result = new CaseInsensitiveDictionary<string?>();
+
+            if (obj is null) 
+                return result;            
 
             PropertyInfo[] props = obj.GetType().GetProperties();
             foreach (PropertyInfo prop in props)
@@ -399,9 +399,7 @@ namespace Ssz.Utils
                         : -1;
         }
 
-        #endregion
-
-        private static readonly CaseInsensitiveDictionary<string?> EmptyCaseInsensitiveDictionary = new();
+        #endregion        
  
         private class UrlDecoder
         {
