@@ -141,16 +141,7 @@ namespace Ssz.Utils
         {
             if (str is null) return false;
             return str.EndsWith(value, StringComparison.InvariantCultureIgnoreCase);
-        }
-
-        public static string SafeSubstring(string? str, int startIndex, int length)
-        {
-            if (String.IsNullOrEmpty(str) || startIndex >= str!.Length) 
-                return @"";
-            if (startIndex < 0) 
-                startIndex = 0;
-            return str.Substring(startIndex, Math.Min(length, str!.Length - startIndex));
-        }
+        }        
 
         public static string JoinNotNullOrEmpty(string separator, params string?[] values)
         {

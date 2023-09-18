@@ -23,13 +23,9 @@ namespace Ssz.Utils.Wpf
         {
             var result = new List<Rect>();
 
-            Screen[] screens = Screen.AllScreens.OrderByDescending(s => s.Primary).ThenBy(s => s.DeviceName).ToArray();
-            if (screens.Length == 0)
+            try
             {
-                result.Add(new Rect(0, 0, SystemParameters.PrimaryScreenWidth, SystemParameters.PrimaryScreenHeight));
-            }
-            else
-            {
+                Screen[] screens = Screen.AllScreens.OrderByDescending(s => s.Primary).ThenBy(s => s.DeviceName).ToArray();
                 foreach (Screen screen in screens)
                 {
                     Rectangle workingArea = screen.WorkingArea;
@@ -37,7 +33,13 @@ namespace Ssz.Utils.Wpf
                     Point p2 = new Point(workingArea.Right / PrimaryScreenScaleX, workingArea.Bottom / PrimaryScreenScaleY);
                     result.Add(new Rect(p1, p2));
                 }
-            }            
+            }
+            catch
+            {
+            }
+            
+            if (result.Count == 0)
+                result.Add(new Rect(0, 0, SystemParameters.PrimaryScreenWidth, SystemParameters.PrimaryScreenHeight));
 
             return result.ToArray();
         }
