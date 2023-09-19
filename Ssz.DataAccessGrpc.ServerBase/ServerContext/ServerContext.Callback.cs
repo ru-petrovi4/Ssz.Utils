@@ -265,7 +265,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             finally
             {
                 if (hasAbortingMessage)
-                    _callbackWorkingTask_CancellationTokenSource.Cancel();
+                    CallbackWorkingTask_CancellationTokenSource.Cancel();
             }            
         }
 
@@ -275,9 +275,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         private IServerStreamWriter<CallbackMessage>? _responseStream;
 
-        private readonly Task _callbackWorkingTask;
-
-        private readonly CancellationTokenSource _callbackWorkingTask_CancellationTokenSource = new CancellationTokenSource();
+        private readonly Task _callbackWorkingTask;        
 
         private readonly Object _messagesSyncRoot = new Object();
 

@@ -79,18 +79,18 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override async Task SubscribeForCallback(SubscribeForCallbackRequest request, IServerStreamWriter<CallbackMessage> responseStream, ServerCallContext context)
         {
-            await GetReplyAsync(() =>
+            ServerContext serverContext = await GetReplyAsync(() =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
-                    serverContext.SetResponseStream(responseStream);                    
-                    return new ConcludeReply();
+                    serverContext.SetResponseStream(responseStream);
+                    return serverContext;
                 },
                 context);
 
             var taskCompletionSource = new TaskCompletionSource<object?>();
-            context.CancellationToken.Register(() => taskCompletionSource.SetResult(null));
-            await taskCompletionSource.Task;            
+            serverContext.CallbackWorkingTask_CancellationTokenSource.Token.Register(() => taskCompletionSource.SetResult(null));
+            await taskCompletionSource.Task;
         }
 
         public override async Task<ConcludeReply> Conclude(ConcludeRequest request, ServerCallContext context)
@@ -352,7 +352,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             }            
 
             var taskCompletionSource = new TaskCompletionSource<TReply>();            
-            context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
+            //context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
             _serverWorker.ThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 _logger.LogTrace("Processing client call in worker thread: " + parentMethodName);
@@ -407,7 +407,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             }
 
             var taskCompletionSource = new TaskCompletionSource<TReply>();
-            context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
+            //context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
             _serverWorker.ThreadSafeDispatcher.BeginInvoke(async ct =>
             {
                 _logger.LogTrace("Processing client call in worker thread: " + parentMethodName);

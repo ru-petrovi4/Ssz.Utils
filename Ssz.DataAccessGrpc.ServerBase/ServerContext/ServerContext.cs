@@ -53,7 +53,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
             _callbackWorkingTask = Task.Factory.StartNew(() =>
             {
-                CallbackWorkingTaskMainAsync(_callbackWorkingTask_CancellationTokenSource.Token).Wait();
+                CallbackWorkingTaskMainAsync(CallbackWorkingTask_CancellationTokenSource.Token).Wait();
             }, TaskCreationOptions.LongRunning);
         }
 
@@ -103,7 +103,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 }
                 else
                 {
-                    _callbackWorkingTask_CancellationTokenSource.Cancel();
+                    CallbackWorkingTask_CancellationTokenSource.Cancel();
                 }
 
                 // Dispose of the lists.
@@ -128,7 +128,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             }
             else
             {
-                _callbackWorkingTask_CancellationTokenSource.Cancel();
+                CallbackWorkingTask_CancellationTokenSource.Cancel();
             }         
 
             // Dispose of the lists.
@@ -153,6 +153,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
         #endregion
 
         #region public functions
+
+        public CancellationTokenSource CallbackWorkingTask_CancellationTokenSource { get; } = new CancellationTokenSource();
 
         public bool Disposed { get; private set; }
 
