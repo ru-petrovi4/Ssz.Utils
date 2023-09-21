@@ -125,8 +125,13 @@ namespace Ude.Core
                     return;
                 }
                 // VALFIX
-                if (buf[1] == '\0') {
+                if (len > 6 && buf[3] == '\0' && buf[5] == '\0') {
                     detectedCharset = "UTF-16LE";
+                    done = true;
+                    return;
+                }
+                else if (len > 5 && buf[2] == '\0' && buf[4] == '\0') {
+                    detectedCharset = "UTF-16BE";
                     done = true;
                     return;
                 }

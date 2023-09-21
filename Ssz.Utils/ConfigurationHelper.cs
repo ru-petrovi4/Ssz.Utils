@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Ssz.Utils.Logging;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -201,9 +202,10 @@ namespace Ssz.Utils
 
     /// <summary>
     ///     Interface for configuration values processing.
-    /// </summary>
+    /// </summary>    
     public interface IConfigurationProcessor
     {
+        [return: NotNullIfNotNull("value")]
         string? ProcessValue(string? value);
     }
 }

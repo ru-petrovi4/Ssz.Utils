@@ -381,7 +381,7 @@ namespace Ssz.Utils.Addons
         {
             _availableAddons = GetAvailableAddonsUnconditionally();            
 
-            var newAddons = new Dictionary<Guid, AddonBase>();
+            List<AddonBase> newAddons = new();
             var catalog = new AggregateCatalog();
             foreach (var line in CsvDb.GetData(AddonsCsvFileName).Values)
             {
@@ -399,8 +399,8 @@ namespace Ssz.Utils.Addons
                 if (desiredAndAvailableAddon is not null && (desiredAndAvailableAddon.IsAlwaysSwitchedOn || switchedOn))
                 {
                     desiredAndAvailableAddon.Initialized += (s, a) => { ((AddonBase)s!).CsvDb.CsvFileChanged += OnAddonCsvDb_CsvFileChanged; };
-                    desiredAndAvailableAddon.Closed += (s, a) => { ((AddonBase)s!).CsvDb.CsvFileChanged -= OnAddonCsvDb_CsvFileChanged; };
-                    newAddons.Add(desiredAndAvailableAddon.Guid, desiredAndAvailableAddon);
+                    desiredAndAvailableAddon.Closed += (s, a) => { ((AddonBase)s!).CsvDb.CsvFileChanged -= OnAddonCsvDb_CsvFileChanged; };                    
+                    newAddons.Add(desiredAndAvailableAddon);
 
                     if (!String.IsNullOrEmpty(desiredAndAvailableAddon.DllFileFullName))
                         catalog.Catalogs.Add(new DirectoryCatalog(
@@ -410,8 +410,8 @@ namespace Ssz.Utils.Addons
             }
 
             foreach (var availableAddon in _availableAddons)
-            {
-                if (availableAddon.IsAlwaysSwitchedOn && !newAddons.ContainsKey(availableAddon.Guid))
+            {                
+                if (availableAddon.IsAlwaysSwitchedOn && !newAddons.Any(a => a.Guid == availableAddon.Guid))
                 {
                     var desiredAndAvailableAddon = CreateAvailableAddonThreadSafe(availableAddon, availableAddon.Identifier, null);
 
@@ -419,7 +419,7 @@ namespace Ssz.Utils.Addons
                     {
                         desiredAndAvailableAddon.Initialized += (s, a) => { ((AddonBase)s!).CsvDb.CsvFileChanged += OnAddonCsvDb_CsvFileChanged; };
                         desiredAndAvailableAddon.Closed += (s, a) => { ((AddonBase)s!).CsvDb.CsvFileChanged -= OnAddonCsvDb_CsvFileChanged; };
-                        newAddons.Add(desiredAndAvailableAddon.Guid, desiredAndAvailableAddon);
+                        newAddons.Add(desiredAndAvailableAddon);
 
                         if (!String.IsNullOrEmpty(desiredAndAvailableAddon.DllFileFullName))
                             catalog.Catalogs.Add(new DirectoryCatalog(
@@ -431,7 +431,7 @@ namespace Ssz.Utils.Addons
 
             _container = new CompositionContainer(catalog);
 
-            Addons.Update(newAddons.Values.OrderBy(a => ((IObservableCollectionItem)a).ObservableCollectionItemId).ToArray());
+            Addons.Update(newAddons.OrderBy(a => ((IObservableCollectionItem)a).ObservableCollectionItemId).ToArray());
             _addonsCopy = Addons.ToArray();
         }
 
