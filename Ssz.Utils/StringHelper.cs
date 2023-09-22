@@ -160,6 +160,12 @@ namespace Ssz.Utils
             return value;
         }
 
+        public static byte[] GetUTF8BytesWithBomPreamble(string? value)
+        {
+            var data = Encoding.UTF8.GetBytes(value ?? @"");
+            return Encoding.UTF8.GetPreamble().Concat(data).ToArray();
+        }
+
         #endregion
     }
 }
