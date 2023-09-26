@@ -21,7 +21,7 @@ namespace Ssz.Utils
         /// <summary>
         ///     Детали о статусе исполнение или детали об ошибке
         /// </summary>		
-        string ProgressDetail { get; }
+        string ProgressDetails { get; }
 
         /// <summary>
         ///     See consts in <see cref="JobStatusCodes"/>.        
@@ -67,7 +67,7 @@ namespace Ssz.Utils
         /// <summary>
         ///     Детали о статусе исполнение или детали об ошибке
         /// </summary>		
-        public string ProgressDetail { get; private set; } = @"";
+        public string ProgressDetails { get; private set; } = @"";
 
         /// <summary>
         ///     See consts in <see cref="JobStatusCodes"/>.        
