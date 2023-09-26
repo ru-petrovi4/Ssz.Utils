@@ -35,7 +35,7 @@ namespace Ssz.Utils.Addons
             };
 
             string fileData;
-            using (var reader = CsvHelper.GetStreamReader(csvFileInfo.FullName, Encoding.UTF8))
+            using (var reader = CharsetDetectorHelper.GetStreamReader(csvFileInfo.FullName, Encoding.UTF8))
             {
                 fileData = reader.ReadToEnd();
             }
