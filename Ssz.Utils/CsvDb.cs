@@ -48,6 +48,18 @@ namespace Ssz.Utils
 
             if (CsvDbDirectoryInfo is not null)
             {
+                try
+                {
+                    string file = Path.Combine(CsvDbDirectoryInfo.FullName, Guid.NewGuid().ToString().ToLower());
+                    File.CreateText(file).Close();
+                    CsvDbDirectoryIsCaseInsensistve = File.Exists(file.ToUpper());
+                    File.Delete(file);                    
+                    CsvDbDirectoryHasWriteAccess = true;
+                }
+                catch
+                {                      
+                }
+
                 LoggersSet.Logger.LogDebug("CsvDb Created for: " + CsvDbDirectoryInfo.FullName);
                 if (Dispatcher is not null)
                     try
@@ -67,6 +79,11 @@ namespace Ssz.Utils
                     }
             }
 
+            if (CsvDbDirectoryIsCaseInsensistve)
+                _csvFilesCollection = new CaseInsensitiveDictionary<CsvFile>();
+            else
+                _csvFilesCollection = new Dictionary<string, CsvFile>();
+
             LoadData();
         }
 
@@ -80,6 +97,10 @@ namespace Ssz.Utils
         ///     Existing directory info or null
         /// </summary>
         public DirectoryInfo? CsvDbDirectoryInfo { get; }
+
+        public bool CsvDbDirectoryIsCaseInsensistve { get; } = true;
+
+        public bool CsvDbDirectoryHasWriteAccess { get; }
 
         /// <summary>
         ///     Dispatcher for all callbacks
@@ -126,7 +147,11 @@ namespace Ssz.Utils
 
             List<CsvFileChangedEventArgs> eventArgsList = new();
 
-            var newCsvFilesCollection = new Dictionary<string, CsvFile>();
+            Dictionary<string, CsvFile> newCsvFilesCollection;
+            if (CsvDbDirectoryIsCaseInsensistve)
+                newCsvFilesCollection = new CaseInsensitiveDictionary<CsvFile>();
+            else
+                newCsvFilesCollection = new Dictionary<string, CsvFile>();
 
             foreach (FileInfo fileInfo in CsvDbDirectoryInfo.GetFiles(@"*", SearchOption.TopDirectoryOnly).Where(f => f.Name.EndsWith(@".csv",
                 StringComparison.InvariantCultureIgnoreCase)))
@@ -718,8 +743,7 @@ namespace Ssz.Utils
         /// <summary>
         ///     [File name with .csv extensione, CsvFile]
         /// </summary>
-        private Dictionary<string, CsvFile> _csvFilesCollection =
-            new();        
+        private Dictionary<string, CsvFile> _csvFilesCollection;        
 
         private readonly FileSystemWatcher _fileSystemWatcher = new();
 
