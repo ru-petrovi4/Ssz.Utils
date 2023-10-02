@@ -485,22 +485,10 @@ namespace Ssz.Utils.Serialization
         public void Write(Guid value)
         {
             _binaryWriter.Write(value.ToByteArray());
-        }
+        }        
 
         /// <summary>
-        ///     Allows any object implementing IOwnedDataSerializable to serialize itself
-        ///     into this SerializationWriter.
-        ///     A context may also be used to give the object an indication of what data
-        ///     to store.        
-        /// </summary>
-        /// <param name="target"> The IOwnedDataSerializable object to ask for owned data </param>
-        /// <param name="context"> An arbtritrary object </param>
-        public void WriteOwnedData(IOwnedDataSerializable target, object? context)
-        {
-            target.SerializeOwnedData(this, context);
-        }
-
-        /// <summary>
+        ///     Use ReadObject() or ReadObjectTyped() for read.
         ///     Stores an object into the stream using the fewest number of bytes possible.
         ///     Stored Size: 1 byte upwards depending on type and/or content.
         ///     1 byte: null, DBNull.Value, Boolean
@@ -1012,33 +1000,14 @@ namespace Ssz.Utils.Serialization
             }
 
             WriteOtherType(value);
-        }
+        }        
 
         /// <summary>
-        ///     Use ReadOwnedDataSerializableAndRecreatable.T for read.
+        ///     Use ReadObject() or ReadObjectTyped() for read.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
-        /// <param name="context"></param>
-        public void WriteOwnedDataSerializableAndRecreatable<T>(T? value, object? context)
-            where T : class, IOwnedDataSerializable, new()
-        {
-            if (value is null)
-            {
-                WriteSerializedType(SerializedType.NullType);
-                return;
-            }
-
-            WriteSerializedType(SerializedType.OwnedDataSerializableType);            
-            value.SerializeOwnedData(this, context);
-        }
-
-        /// <summary>
-        ///     Use ReadObject.T for read.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value"></param>
-        public void WriteObject<T>(T? value)
+        public void WriteObjectTyped<T>(T? value)
             where T : class
         {
             if (value is null)
@@ -1089,6 +1058,39 @@ namespace Ssz.Utils.Serialization
             }
 
             WriteOtherType(value);
+        }
+
+        /// <summary>
+        ///     Use ReadOwnedDataSerializable(...) for read.
+        ///     Allows any object implementing IOwnedDataSerializable to serialize itself
+        ///     into this SerializationWriter.
+        ///     A context may also be used to give the object an indication of what data
+        ///     to store.        
+        /// </summary>
+        /// <param name="target"> The IOwnedDataSerializable object to ask for owned data </param>
+        /// <param name="context"> An arbtritrary object </param>
+        public void WriteOwnedDataSerializable(IOwnedDataSerializable target, object? context)
+        {
+            target.SerializeOwnedData(this, context);
+        }
+
+        /// <summary>
+        ///     Use ReadOwnedDataSerializableAndRecreatable(...) for read.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="context"></param>
+        public void WriteOwnedDataSerializableAndRecreatable<T>(T? value, object? context)
+            where T : class, IOwnedDataSerializable, new()
+        {
+            if (value is null)
+            {
+                WriteSerializedType(SerializedType.NullType);
+                return;
+            }
+
+            WriteSerializedType(SerializedType.OwnedDataSerializableType);
+            value.SerializeOwnedData(this, context);
         }
 
         /// <summary>
@@ -1158,11 +1160,11 @@ namespace Ssz.Utils.Serialization
         //}
 
         /// <summary>        
-        ///     Use ReadNullableArray T () for reading.
+        ///     Use ReadArray() for reading.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="values"></param>
-        public void WriteNullableArray<T>(T[]? values)
+        public void WriteArray<T>(T[]? values)
         {
             if (values is null)
             {
@@ -1191,6 +1193,7 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     use ReadList() for reading.
         ///     Writes a nullable generic List into the stream.
         ///     Objects can be of different types.
         /// </summary>
@@ -1202,7 +1205,7 @@ namespace Ssz.Utils.Serialization
         /// </remarks>
         /// <typeparam name="T"> The list Type. </typeparam>
         /// <param name="value"> The generic List. </param>
-        public void Write<T>(IList<T>? value)
+        public void WriteList<T>(IList<T>? value)
         {
             if (value is null)
             {
@@ -1215,8 +1218,8 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Writes list of same type not null objects. 
         ///     use ReadListOfOwnedDataSerializable(...) for reading.
+        ///     Writes list of same type not null objects.         
         /// </summary>        
         /// <param name="values"></param>
         /// <param name="context"></param>
@@ -1232,8 +1235,8 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Writes list of strings. 
         ///     use ReadListOfStrings() for reading.
+        ///     Writes list of strings.    
         /// </summary>
         /// <param name="values"></param>
         public void WriteListOfStrings(ICollection<string> values)
@@ -1246,6 +1249,7 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     Use ReadDictionary() for reading.
         ///     Writes a generic Dictionary into the stream.
         /// </summary>
         /// <remarks>
@@ -1257,11 +1261,18 @@ namespace Ssz.Utils.Serialization
         /// <typeparam name="TK"> The key Type. </typeparam>
         /// <typeparam name="TV"> The value Type. </typeparam>
         /// <param name="value"> The generic dictionary. </param>
-        public void Write<TK, TV>(Dictionary<TK, TV> value)
+        public void WriteDictionary<TK, TV>(Dictionary<TK, TV>? value)
             where TK : notnull
         {
-            WriteArrayInternal(value.Keys.ToArray(), typeof (TK));
-            WriteArrayInternal(value.Values.ToArray(), typeof (TV));
+            if (value is null)
+            {
+                WriteSerializedType(SerializedType.NullType);
+            }
+            else
+            {
+                WriteArrayInternal(value.Keys.ToArray(), typeof(TK));
+                WriteArrayInternal(value.Values.ToArray(), typeof(TV));
+            }            
         }
 
         //public void WriteCaseInsensitiveDictionary<T>(CaseInsensitiveDictionary<T> value)

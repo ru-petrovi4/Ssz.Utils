@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ssz.Utils.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils.DataAccess
 {
-    public struct ValueStatusTimestamp
+    public struct ValueStatusTimestamp: IOwnedDataSerializable
     {
         #region construction and destruction
 
@@ -104,6 +105,20 @@ namespace Ssz.Utils.DataAccess
         public bool Equals(ValueStatusTimestamp that, double deadband)
         {
             return ValueStatusCode == that.ValueStatusCode && Value.CompareTo(that.Value, deadband) == 0;
+        }
+
+        public void SerializeOwnedData(SerializationWriter writer, object? context)
+        {
+            writer.WriteOwnedDataSerializable(Value, context);
+            writer.Write(ValueStatusCode);
+            writer.Write(TimestampUtc);
+        }
+
+        public void DeserializeOwnedData(SerializationReader reader, object? context)
+        {
+            reader.ReadOwnedDataSerializable(Value, context);
+            ValueStatusCode = reader.ReadUInt32();
+            TimestampUtc = reader.ReadDateTime();
         }
 
         public Any Value;

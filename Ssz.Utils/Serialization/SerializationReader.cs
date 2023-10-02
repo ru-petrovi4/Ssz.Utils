@@ -247,22 +247,10 @@ namespace Ssz.Utils.Serialization
             ThrowIfBlockEnding();
 
             return new Guid(_binaryReader.ReadBytes(16));
-        }
+        }        
 
         /// <summary>
-        ///     Allows an existing object, implementing IOwnedDataSerializable, to
-        ///     retrieve its owned data from the stream.
-        /// </summary>
-        /// <param name="target"> Any IOwnedDataSerializable object. </param>
-        /// <param name="context"> An optional, arbitrary object to allow context to be provided. </param>
-        public void ReadOwnedData(IOwnedDataSerializable target, object? context)
-        {
-            ThrowIfBlockEnding();
-
-            target.DeserializeOwnedData(this, context);
-        }
-
-        /// <summary>
+        ///     Use WriteObject(...) or WriteObjectTyped(...) for write.
         ///     Returns an object based on the SerializedType read next from the stream.
         /// </summary>
         /// <returns> An object instance. </returns>
@@ -274,11 +262,12 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     Use WriteObject(...) or WriteObjectTyped(...) for write.
         ///     Throws if saved object not correct type;
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T? ReadObject<T>()
+        public T? ReadObjectTyped<T>()
             where T : notnull
         {
             ThrowIfBlockEnding();
@@ -287,6 +276,21 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     Use WriteOwnedDataSerializable(...) for writing.
+        ///     Allows an existing object, implementing IOwnedDataSerializable, to
+        ///     retrieve its owned data from the stream.
+        /// </summary>
+        /// <param name="target"> Any IOwnedDataSerializable object. </param>
+        /// <param name="context"> An optional, arbitrary object to allow context to be provided. </param>
+        public void ReadOwnedDataSerializable(IOwnedDataSerializable target, object? context)
+        {
+            ThrowIfBlockEnding();
+
+            target.DeserializeOwnedData(this, context);
+        }
+
+        /// <summary>
+        ///     Use WriteOwnedDataSerializableAndRecreatable(...) for writing.
         ///     Throws if saved object not correct type;
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -297,7 +301,8 @@ namespace Ssz.Utils.Serialization
             ThrowIfBlockEnding();
 
             var serializedType = (SerializedType)_binaryReader.ReadByte();
-            if (serializedType == SerializedType.NullType) return null;
+            if (serializedType == SerializedType.NullType) 
+                return null;
 
             var t = new T();
             t.DeserializeOwnedData(this, context);
@@ -371,11 +376,11 @@ namespace Ssz.Utils.Serialization
         //}
 
         /// <summary>
-        ///     Use WriteNullableArray T (...) for writing.
+        ///     Use WriteArray(...) for writing.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T[]? ReadNullableArray<T>()
+        public T[]? ReadArray<T>()
         {
             ThrowIfBlockEnding();
 
@@ -404,6 +409,7 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     Use WriteList(...) for writing.
         ///     Returns a generic List populated with values from the stream or null.
         /// </summary>
         /// <typeparam name="T"> The list Type. </typeparam>
@@ -414,17 +420,20 @@ namespace Ssz.Utils.Serialization
 
             SerializedType typeCode = ReadTypeCode();
 
-            if (typeCode == SerializedType.NullType) return null;
+            if (typeCode == SerializedType.NullType) 
+                return null;
 
             var arr = (IEnumerable?)ReadArrayInternal(typeCode, typeof(T));
-            if (arr is null) return new List<T>();
-            else return new List<T>(arr.OfType<T>());
+            if (arr is null) 
+                return new List<T>();
+            else 
+                return new List<T>(arr.OfType<T>());
         }
 
         /// <summary>
+        ///     Use WriteListOfOwnedDataSerializable(...) for writing.
         ///     Reads list of same objects.
-        ///     func is constructor function.      
-        ///     Use WriteListOfOwnedDataSerializable for writing.
+        ///     func is constructor function.              
         /// </summary>        
         /// <param name="func"></param>
         /// <param name="context"></param>
@@ -460,25 +469,34 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     Use WriteDictionary(...) for writing.
         ///     Populates a pre-existing generic dictionary with keys and values from the stream.
         ///     This allows a generic dictionary to be created without using the default constructor.
         /// </summary>
         /// <typeparam name="TK"> The key Type. </typeparam>
         /// <typeparam name="TV"> The value Type. </typeparam>
-        public void ReadDictionary<TK, TV>(Dictionary<TK, TV> dictionary)
+        public Dictionary<TK, TV>? ReadDictionary<TK, TV>()
             where TK : notnull
         {
             ThrowIfBlockEnding();
 
-            var keys = (TK[]?)ReadArrayInternal(ReadTypeCode(), typeof(TK));
+            SerializedType typeCode = ReadTypeCode();
+
+            if (typeCode == SerializedType.NullType) 
+                return null;
+
+            var keys = (TK[]?)ReadArrayInternal(typeCode, typeof(TK));
             var values = (TV[]?)ReadArrayInternal(ReadTypeCode(), typeof(TV));
 
-            if (keys is null || values is null) throw new InvalidOperationException();
+            if (keys is null || values is null) 
+                throw new InvalidOperationException();
 
+            Dictionary<TK, TV> dictionary = new();
             for (int i = 0; i < keys.Length; i++)
             {
-                dictionary.Add(keys[i], values[i]);
+                dictionary[keys[i]] = values[i];
             }
+            return dictionary;
         }
 
         /// <summary>
@@ -1649,7 +1667,7 @@ namespace Ssz.Utils.Serialization
                         IOwnedDataSerializable? value = Activator.CreateInstance(elementType!) as IOwnedDataSerializable;
                         if (value is null) 
                             throw new InvalidOperationException();
-                        ReadOwnedData(value, null);
+                            ReadOwnedDataSerializable(value, null);
                         result.SetValue(value, i);
                     }
                     return result;
