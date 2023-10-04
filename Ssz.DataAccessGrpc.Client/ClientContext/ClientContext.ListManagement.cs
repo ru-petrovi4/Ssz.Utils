@@ -28,15 +28,15 @@ namespace Ssz.DataAccessGrpc.Client
         ///     3) EventList - used to obtain process events as they occur.
         ///     4) EventJournalList - used to obtain a historical list of process events.
         /// </summary>
-        /// <param name="dataGrpcList"></param>
+        /// <param name="dataAccessGrpcList"></param>
         /// <param name="listParams"></param>
-        public void DefineList(ClientListRoot dataGrpcList, CaseInsensitiveDictionary<string>? listParams)
+        public void DefineList(ClientListRoot dataAccessGrpcList, CaseInsensitiveDictionary<string>? listParams)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
             if (!ServerContextIsOperational) throw new InvalidOperationException();
 
-            uint listClientAlias = _lists.Add(dataGrpcList);
+            uint listClientAlias = _lists.Add(dataAccessGrpcList);
             
             try
             {
@@ -44,7 +44,7 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                     ContextId = this.ServerContextId,
                     ListClientAlias = listClientAlias,
-                    ListType = dataGrpcList.ListType
+                    ListType = dataAccessGrpcList.ListType
                 };
                 if (listParams is not null)
                     foreach (var kvp in listParams)
@@ -54,9 +54,9 @@ namespace Ssz.DataAccessGrpc.Client
                 SetResourceManagementLastCallUtc();
                 if ((StatusCode)reply.Result.StatusCode == StatusCode.OK)
                 {
-                    dataGrpcList.ListClientAlias = listClientAlias;
-                    dataGrpcList.ListServerAlias = reply.Result.ServerAlias;
-                    dataGrpcList.IsInServerContext = true;
+                    dataAccessGrpcList.ListClientAlias = listClientAlias;
+                    dataAccessGrpcList.ListServerAlias = reply.Result.ServerAlias;
+                    dataAccessGrpcList.IsInServerContext = true;
                 }                
             }
             catch (Exception ex)
@@ -70,9 +70,9 @@ namespace Ssz.DataAccessGrpc.Client
         /// <summary>
         ///     This method deletes a list from the DataAccessGrpc ServerBase.
         /// </summary>
-        /// <param name="dataGrpcList"> The list to deleted </param>
+        /// <param name="dataAccessGrpcList"> The list to deleted </param>
         /// <returns> The results of the deletion. </returns>
-        public AliasResult? RemoveList(ClientListRoot dataGrpcList)
+        public AliasResult? RemoveList(ClientListRoot dataAccessGrpcList)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -81,7 +81,7 @@ namespace Ssz.DataAccessGrpc.Client
             // Only do the delete of this list from the server 
             // if the context dispose is not running and the
             // list has list attributes.
-            if (dataGrpcList.IsInServerContext)
+            if (dataAccessGrpcList.IsInServerContext)
             {                
                 try
                 {
@@ -89,11 +89,11 @@ namespace Ssz.DataAccessGrpc.Client
                     {
                         ContextId = _serverContextId                        
                     };
-                    request.ListServerAliases.Add(dataGrpcList.ListServerAlias);
+                    request.ListServerAliases.Add(dataAccessGrpcList.ListServerAlias);
                     DeleteListsReply reply = _resourceManagementClient.DeleteLists(request);
                     SetResourceManagementLastCallUtc();
-                    _lists.Remove(dataGrpcList.ListClientAlias);
-                    dataGrpcList.IsInServerContext = false;
+                    _lists.Remove(dataAccessGrpcList.ListClientAlias);
+                    dataAccessGrpcList.IsInServerContext = false;
                     return reply.Results.FirstOrDefault();
                 }
                 catch (Exception ex)
@@ -272,9 +272,9 @@ namespace Ssz.DataAccessGrpc.Client
         /// <returns> The specified list </returns>
         private ClientElementValueList GetElementValueList(uint clientListId)
         {
-            ClientListRoot? dataGrpcListRoot;
-            _lists.TryGetValue(clientListId, out dataGrpcListRoot);
-            var result = dataGrpcListRoot as ClientElementValueList;
+            ClientListRoot? dataAccessGrpcListRoot;
+            _lists.TryGetValue(clientListId, out dataAccessGrpcListRoot);
+            var result = dataAccessGrpcListRoot as ClientElementValueList;
             if (result is null)
             {
                 //_logger.
@@ -290,9 +290,9 @@ namespace Ssz.DataAccessGrpc.Client
         /// <returns> The specified list </returns>
         private ClientElementValuesJournalList GetElementValuesJournalList(uint clientListId)
         {
-            ClientListRoot? dataGrpcListRoot;
-            _lists.TryGetValue(clientListId, out dataGrpcListRoot);
-            var result = dataGrpcListRoot as ClientElementValuesJournalList;
+            ClientListRoot? dataAccessGrpcListRoot;
+            _lists.TryGetValue(clientListId, out dataAccessGrpcListRoot);
+            var result = dataAccessGrpcListRoot as ClientElementValuesJournalList;
             if (result is null) throw new InvalidOperationException();
             return result;
         }
@@ -304,9 +304,9 @@ namespace Ssz.DataAccessGrpc.Client
         /// <returns> The specified list </returns>
         private ClientEventList GetEventList(uint clientListId)
         {
-            ClientListRoot? dataGrpcListRoot;
-            _lists.TryGetValue(clientListId, out dataGrpcListRoot);            
-            var result = dataGrpcListRoot as ClientEventList;
+            ClientListRoot? dataAccessGrpcListRoot;
+            _lists.TryGetValue(clientListId, out dataAccessGrpcListRoot);            
+            var result = dataAccessGrpcListRoot as ClientEventList;
             if (result is null) throw new InvalidOperationException();
             return result;
         }

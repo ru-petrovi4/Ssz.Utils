@@ -132,9 +132,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                     var utcNow = DateTime.UtcNow;
                     ElementValuesCallbackEventArgs elementValuesCallbackEventArgs = new();
                     elementValuesCallbackEventArgs.ElementValuesCallbackChanges = new();
-                    foreach (DataAccessGrpcListItemWrapper dataGrpcListItemWrapper in DataAccessGrpcListItemWrappersDictionary.Values)
+                    foreach (DataAccessGrpcListItemWrapper dataAccessGrpcListItemWrapper in DataAccessGrpcListItemWrappersDictionary.Values)
                     {                        
-                        foreach (var clientObjectInfo in dataGrpcListItemWrapper.ClientObjectInfosCollection)
+                        foreach (var clientObjectInfo in dataAccessGrpcListItemWrapper.ClientObjectInfosCollection)
                         {
                             bool notifyClientObj_AddItemResult = clientObjectInfo.NotifyClientObj_AddItemResult;
                             bool notifyClientObj_ValueStatusTimestamp = clientObjectInfo.NotifyClientObj_ValueStatusTimestamp;
@@ -148,27 +148,27 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                                     {
                                         ClientObj = clientObjectInfo.ClientObj
                                     };
-                                    if (dataGrpcListItemWrapper.FailedAddItemResult is not null)
+                                    if (dataAccessGrpcListItemWrapper.FailedAddItemResult is not null)
                                     {
                                         if (notifyClientObj_AddItemResult)
                                         {
-                                            elementValuesCallbackChange.AddItemResult = dataGrpcListItemWrapper.FailedAddItemResult;
+                                            elementValuesCallbackChange.AddItemResult = dataAccessGrpcListItemWrapper.FailedAddItemResult;
                                         }
                                         if (notifyClientObj_ValueStatusTimestamp)
                                         {
                                             elementValuesCallbackChange.ValueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist };
                                         }                                        
                                     }
-                                    else if (dataGrpcListItemWrapper.DataAccessGrpcListItem is not null &&
-                                            dataGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResult is not null)
+                                    else if (dataAccessGrpcListItemWrapper.DataAccessGrpcListItem is not null &&
+                                            dataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResult is not null)
                                     {
                                         if (notifyClientObj_AddItemResult)
                                         {
-                                            elementValuesCallbackChange.AddItemResult = dataGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResult;
+                                            elementValuesCallbackChange.AddItemResult = dataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResult;
                                         }
                                         if (notifyClientObj_ValueStatusTimestamp)
                                         {
-                                            elementValuesCallbackChange.ValueStatusTimestamp = dataGrpcListItemWrapper.DataAccessGrpcListItem.ValueStatusTimestamp;
+                                            elementValuesCallbackChange.ValueStatusTimestamp = dataAccessGrpcListItemWrapper.DataAccessGrpcListItem.ValueStatusTimestamp;
                                         }                                       
                                     }
                                     else
@@ -365,10 +365,10 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// </summary>
         public Any TryRead(string id)
         {
-            var dataGrpcListItem = DataAccessGrpcListItemsDictionary.TryGetValue(id);
-            if (dataGrpcListItem is null) return new Any();
+            var dataAccessGrpcListItem = DataAccessGrpcListItemsDictionary.TryGetValue(id);
+            if (dataAccessGrpcListItem is null) return new Any();
             
-            return dataGrpcListItem.ValueStatusTimestamp.Value;
+            return dataAccessGrpcListItem.ValueStatusTimestamp.Value;
         }
         */
 

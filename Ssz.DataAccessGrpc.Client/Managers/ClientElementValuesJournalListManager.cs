@@ -81,8 +81,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
             try
             {
-                var dataGrpcList = DataAccessGrpcList;
-                if (dataGrpcList is not null && !dataGrpcList.Disposed)
+                var dataAccessGrpcList = DataAccessGrpcList;
+                if (dataAccessGrpcList is not null && !dataAccessGrpcList.Disposed)
                 {
                     var serverAliases = new List<uint>();
                     foreach (var valueSubscription in valueSubscriptionsCollection)
@@ -98,7 +98,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                         }
                     }
 
-                    result = dataGrpcList.ReadElementValuesJournals(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, params_, serverAliases.ToArray());
+                    result = dataAccessGrpcList.ReadElementValuesJournals(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, params_, serverAliases.ToArray());
                 }
                 else
                 {
