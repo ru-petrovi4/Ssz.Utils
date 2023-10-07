@@ -5,17 +5,17 @@ using System.Text;
 
 namespace Ssz.Utils.Addons
 {
-    public class ConfigurationCsvFiles : IOwnedDataSerializable
+    public class ConfigurationFiles : IOwnedDataSerializable
     {
         #region public functions        
 
-        public List<ConfigurationCsvFile> ConfigurationCsvFilesCollection { get; set; } = new();        
+        public List<ConfigurationFile> ConfigurationFilesCollection { get; set; } = new();        
 
         public void SerializeOwnedData(SerializationWriter writer, object? context)
         {
             using (writer.EnterBlock(1))
             {
-                writer.WriteListOfOwnedDataSerializable(ConfigurationCsvFilesCollection, context);
+                writer.WriteListOfOwnedDataSerializable(ConfigurationFilesCollection, context);
             }
         }
 
@@ -26,7 +26,7 @@ namespace Ssz.Utils.Addons
                 switch (block.Version)
                 {
                     case 1:
-                        ConfigurationCsvFilesCollection = reader.ReadListOfOwnedDataSerializable(() => new ConfigurationCsvFile(), context);
+                        ConfigurationFilesCollection = reader.ReadListOfOwnedDataSerializable(() => new ConfigurationFile(), context);
                         break;
                     default:
                         throw new BlockUnsupportedVersionException();

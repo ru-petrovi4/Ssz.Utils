@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -122,23 +123,22 @@ namespace Ssz.Utils.Addons
         ///     SourceId property is empty in result.
         /// </summary>
         /// <returns></returns>
-        public ConfigurationCsvFiles ReadConfiguration()
+        public ConfigurationFiles ReadConfiguration()
         {
-            ConfigurationCsvFiles result = new();                        
+            ConfigurationFiles result = new();                        
 
             _availableAddons = GetAvailableAddonsUnconditionally();                       
 
             foreach (FileInfo csvFileInfo in CsvDb.GetFileInfos())
             {
-                result.ConfigurationCsvFilesCollection.Add(ConfigurationCsvFile.CreateFromFileInfo(@"", csvFileInfo));
+                result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(@"", csvFileInfo));
             }
 
             foreach (DirectoryInfo subDirectoryInfo in CsvDb.CsvDbDirectoryInfo!.GetDirectories())
-            {
-                var subCsvDb = new CsvDb(CsvDb.LoggersSet.Logger, CsvDb.LoggersSet.UserFriendlyLogger, subDirectoryInfo);
-                foreach (FileInfo csvFileInfo in subCsvDb.GetFileInfos())
+            {                
+                foreach (FileInfo fileInfo in subDirectoryInfo.GetFiles())
                 {
-                    result.ConfigurationCsvFilesCollection.Add(ConfigurationCsvFile.CreateFromFileInfo(subDirectoryInfo.Name, csvFileInfo));
+                    result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(subDirectoryInfo.Name, fileInfo));
                 }
             }
 
@@ -147,63 +147,76 @@ namespace Ssz.Utils.Addons
 
         /// <summary>
         ///     Throws AddonCsvFileChangedOnDiskException, if any file changed on disk and no data writtten.
+        ///     File content is always UTF8-encoded and \n as new line char, if .csv.
         /// </summary>
-        /// <param name="configurationCsvFiles"></param>
+        /// <param name="configurationFiles"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public void WriteConfiguration(ConfigurationCsvFiles configurationCsvFiles)
+        public void WriteConfiguration(ConfigurationFiles configurationFiles)
         {
-            List<ConfigurationCsvFile> configurationCsvFilesToWrite = new(configurationCsvFiles.ConfigurationCsvFilesCollection.Count);
-            List<ConfigurationCsvFile> configurationCsvFilesToDelete = new(configurationCsvFiles.ConfigurationCsvFilesCollection.Count);
+            List<ConfigurationFile> configurationFilesToWrite = new(configurationFiles.ConfigurationFilesCollection.Count);
+            List<ConfigurationFile> configurationFilesToDelete = new(configurationFiles.ConfigurationFilesCollection.Count);
 
-            foreach (ConfigurationCsvFile configurationCsvFile in configurationCsvFiles.ConfigurationCsvFilesCollection)
+            foreach (ConfigurationFile configurationFile in configurationFiles.ConfigurationFilesCollection)
             {
-                if (!configurationCsvFile.PathRelativeToRootDirectory.EndsWith(".csv", StringComparison.InvariantCultureIgnoreCase))
-                    throw new Exception("addonCsvFile.Name must have .csv extension");
+                int slashCount = configurationFile.PathRelativeToRootDirectory.Count(f => f == '/');
 
-                if (configurationCsvFile.PathRelativeToRootDirectory.Count(f => f == '/') > 1)
+                if (slashCount == 0 && configurationFile.Name != AddonsCsvFileName)
+                {
+                    // TEMPCODE
+                    continue;
+                    //throw new Exception("addonCsvFile.Name must have .csv extension");
+                }                
+                if (slashCount > 1)
                     throw new Exception("addonCsvFile.PathRelativeToRootDirectory must have no more that one '/'");
 
-                if (configurationCsvFile.IsDeleted)
+                if (configurationFile.IsDeleted)
                 {
-                    configurationCsvFilesToDelete.Add(configurationCsvFile);
-                    continue;
+                    configurationFilesToDelete.Add(configurationFile);                    
                 }
-
-                configurationCsvFile.FileData = TextFileHelper.NormalizeNewLine(configurationCsvFile.FileData) ?? @"";
-
-                var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationCsvFile.GetPathRelativeToRootDirectory_PlatformSpecific()));
-                if (fileInfo.Exists)
+                else
                 {
-                    string onDiskFileData = TextFileHelper.NormalizeNewLine(File.ReadAllText(fileInfo.FullName));
-                    if (configurationCsvFile.FileData != onDiskFileData)
+                    var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationFile.GetPathRelativeToRootDirectory_PlatformSpecific()));
+                    if (fileInfo.Exists)
                     {
-                        if (FileSystemHelper.FileSystemTimeIsLess(configurationCsvFile.LastWriteTimeUtc, fileInfo.LastWriteTimeUtc))
-                            throw new AddonCsvFileChangedOnDiskException { FilePathRelativeToRootDirectory = configurationCsvFile.PathRelativeToRootDirectory };
-                        configurationCsvFilesToWrite.Add(configurationCsvFile);
+                        ConfigurationFile onDiskConfigurationFile = ConfigurationFile.CreateFromFileInfo(configurationFile.PathRelativeToRootDirectory, fileInfo);
+                        if (!configurationFile.FileData.SequenceEqual(onDiskConfigurationFile.FileData))
+                        {
+                            if (FileSystemHelper.FileSystemTimeIsLess(configurationFile.LastWriteTimeUtc, fileInfo.LastWriteTimeUtc))
+                                throw new AddonCsvFileChangedOnDiskException { FilePathRelativeToRootDirectory = configurationFile.PathRelativeToRootDirectory };
+                            configurationFilesToWrite.Add(configurationFile);
+                        }
+                    }
+                    else
+                    {
+                        configurationFilesToWrite.Add(configurationFile);
+                    }
+                }                            
+            }
+
+            foreach (ConfigurationFile configurationFile in configurationFilesToWrite)
+            {
+                var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationFile.GetPathRelativeToRootDirectory_PlatformSpecific()));
+                //     Creates all directories and subdirectories in the specified path unless they
+                //     already exist.
+                Directory.CreateDirectory(fileInfo.Directory!.FullName);
+
+                if (fileInfo.Name.EndsWith(".csv", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    using (var writer = new StreamWriter(fileInfo.FullName, false, new UTF8Encoding(true)))
+                    {
+                        writer.Write(Encoding.UTF8.GetString(configurationFile.FileData));
                     }
                 }
                 else
                 {
-                    configurationCsvFilesToWrite.Add(configurationCsvFile);
-                }                    
-            }
-
-            foreach (ConfigurationCsvFile configurationCsvFile in configurationCsvFilesToWrite)
-            {
-                var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationCsvFile.GetPathRelativeToRootDirectory_PlatformSpecific()));
-                //     Creates all directories and subdirectories in the specified path unless they
-                //     already exist.
-                Directory.CreateDirectory(fileInfo.Directory!.FullName);                
-                using (var writer = new StreamWriter(fileInfo.FullName, false, new UTF8Encoding(true)))
-                {
-                    writer.Write(configurationCsvFile.FileData);
+                    File.WriteAllBytes(fileInfo.FullName, configurationFile.FileData);
                 }
             }
 
-            foreach (ConfigurationCsvFile configurationCsvFile in configurationCsvFilesToDelete)
+            foreach (ConfigurationFile configurationFile in configurationFilesToDelete)
             {
-                var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationCsvFile.GetPathRelativeToRootDirectory_PlatformSpecific()));
+                var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationFile.GetPathRelativeToRootDirectory_PlatformSpecific()));
                 if (fileInfo.Exists)
                 {
                     try
