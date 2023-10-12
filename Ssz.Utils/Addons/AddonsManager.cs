@@ -127,20 +127,27 @@ namespace Ssz.Utils.Addons
         {
             ConfigurationFiles result = new();                        
 
-            _availableAddons = GetAvailableAddonsUnconditionally();                       
-
-            foreach (FileInfo csvFileInfo in CsvDb.GetFileInfos())
+            try
             {
-                result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(@"", csvFileInfo));
-            }
+                _availableAddons = GetAvailableAddonsUnconditionally();
 
-            foreach (DirectoryInfo subDirectoryInfo in CsvDb.CsvDbDirectoryInfo!.GetDirectories())
-            {                
-                foreach (FileInfo fileInfo in subDirectoryInfo.GetFiles())
+                foreach (FileInfo csvFileInfo in CsvDb.GetFileInfos())
                 {
-                    result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(subDirectoryInfo.Name, fileInfo));
+                    result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(@"", csvFileInfo));
+                }
+
+                foreach (DirectoryInfo subDirectoryInfo in CsvDb.CsvDbDirectoryInfo!.GetDirectories())
+                {
+                    foreach (FileInfo fileInfo in subDirectoryInfo.GetFiles())
+                    {
+                        result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(subDirectoryInfo.Name, fileInfo));
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                LoggersSet.WrapperUserFriendlyLogger.LogError(ex, @"Cannot read configuration files.");
+            }            
 
             return result;
         }

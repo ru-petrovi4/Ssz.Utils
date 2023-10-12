@@ -45,13 +45,15 @@ namespace Ssz.Utils.Addons
             }
             else
             {
-                int bytesCount = (int)fileInfo.Length;
-                byte[] fileData = new byte[bytesCount];
-                using (FileStream fileStream = File.Open(fileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                {
-                    fileStream.Read(fileData, 0, bytesCount);
-                }                             
-                configurationFile.FileData = fileData;
+                // TEMPCODE
+                //int bytesCount = (int)fileInfo.Length;
+                //byte[] fileData = new byte[bytesCount];
+                //using (FileStream fileStream = File.Open(fileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                //{
+                //    fileStream.Read(fileData, 0, bytesCount);
+                //}                             
+                //configurationFile.FileData = fileData;
+                configurationFile.FileData = new byte[0];
             }
 
             return configurationFile;
