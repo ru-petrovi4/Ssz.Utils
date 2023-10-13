@@ -17,43 +17,69 @@ namespace Ssz.Utils.Addons
         #region public functions
 
         /// <summary>
-        ///     pathRelativeToRootDirectory - Path separator is always '/'. No '/' at the begin, no '/' at the end. .
+        ///     pathRelativeToRootDirectory_NoFIleName - Path separator is always '/'. No '/' at the begin, no '/' at the end. .
         /// </summary>
-        /// <param name="pathRelativeToRootDirectory"></param>
+        /// <param name="pathRelativeToRootDirectory_NoFileName"></param>
         /// <param name="fileInfo"></param>
         /// <returns></returns>
-        public static ConfigurationFile CreateFromFileInfo(string pathRelativeToRootDirectory, FileInfo fileInfo)
+        public static ConfigurationFile CreateFromFileInfo(string pathRelativeToRootDirectory_NoFileName, FileInfo fileInfo, bool readBigFileData)
         {
-            pathRelativeToRootDirectory = pathRelativeToRootDirectory.Replace(Path.DirectorySeparatorChar, '/');
+            pathRelativeToRootDirectory_NoFileName = pathRelativeToRootDirectory_NoFileName.Replace(Path.DirectorySeparatorChar, '/');
 
             ConfigurationFile configurationFile = new()
             {
-                PathRelativeToRootDirectory = pathRelativeToRootDirectory != @"" ? 
-                    pathRelativeToRootDirectory + "/" + fileInfo.Name :
+                PathRelativeToRootDirectory = pathRelativeToRootDirectory_NoFileName != @"" ? 
+                    pathRelativeToRootDirectory_NoFileName + "/" + fileInfo.Name :
                     fileInfo.Name,
                 LastWriteTimeUtc = fileInfo.LastWriteTimeUtc,
             };            
 
             if (fileInfo.Name.EndsWith(@".csv", StringComparison.InvariantCultureIgnoreCase))
             {
-                string fileDataString;
-                using (var reader = CharsetDetectorHelper.GetStreamReader(fileInfo.FullName, Encoding.UTF8))
+                bool readFileData;
+                if (readBigFileData)
                 {
-                    fileDataString = reader.ReadToEnd();
+                    readFileData = true;
                 }
-                configurationFile.FileData = Encoding.UTF8.GetBytes(TextFileHelper.NormalizeNewLine(fileDataString));                
+                else
+                {
+                    int slashCount = configurationFile.PathRelativeToRootDirectory.Count(f => f == '/');
+                    if (slashCount == 0)
+                        readFileData = true;
+                    else
+                        readFileData = String.Equals(fileInfo.Name, AddonBase.OptionsCsvFileName, StringComparison.InvariantCultureIgnoreCase);
+                }                
+
+                if (readFileData)
+                {
+                    string fileDataString;
+                    using (var reader = CharsetDetectorHelper.GetStreamReader(fileInfo.FullName, Encoding.UTF8))
+                    {
+                        fileDataString = reader.ReadToEnd();
+                    }
+                    configurationFile.FileData = Encoding.UTF8.GetBytes(TextFileHelper.NormalizeNewLine(fileDataString));
+                }
+                else
+                {
+                    configurationFile.FileData = null;
+                }
             }
             else
             {
-                // TEMPCODE
-                //int bytesCount = (int)fileInfo.Length;
-                //byte[] fileData = new byte[bytesCount];
-                //using (FileStream fileStream = File.Open(fileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                //{
-                //    fileStream.Read(fileData, 0, bytesCount);
-                //}                             
-                //configurationFile.FileData = fileData;
-                configurationFile.FileData = new byte[0];
+                if (readBigFileData)
+                {
+                    int bytesCount = (int)fileInfo.Length;
+                    byte[] fileData = new byte[bytesCount];
+                    using (FileStream fileStream = File.Open(fileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        fileStream.Read(fileData, 0, bytesCount);
+                    }
+                    configurationFile.FileData = fileData;
+                }
+                else
+                {
+                    configurationFile.FileData = null;
+                }                
             }
 
             return configurationFile;
@@ -80,7 +106,7 @@ namespace Ssz.Utils.Addons
 
         /// <summary>        
         ///     Path relative to the root of the Files Store.
-        ///     Path separator is always '/'. No '/' at the begin, no '/' at the end.        
+        ///     Path separator is always '/'. No '/' at the begin, file name at the end.        
         /// </summary>        
         public string PathRelativeToRootDirectory { get; set; } = @"";
 
@@ -92,7 +118,7 @@ namespace Ssz.Utils.Addons
         /// <summary>
         ///     File content. Always UTF8-encoded and \n as new line char, if .csv.
         /// </summary>        
-        public byte[] FileData { get; set; } = null!;
+        public byte[]? FileData { get; set; } = null!;
 
         /// <summary>
         ///     Whether file must be deleted
@@ -111,7 +137,7 @@ namespace Ssz.Utils.Addons
             writer.Write(SourceIdToDisplay);
             writer.Write(PathRelativeToRootDirectory);            
             writer.Write(LastWriteTimeUtc);
-            writer.Write(FileData);
+            writer.WriteNullableByteArray(FileData);
             writer.Write(IsDeleted);
         }
 
@@ -127,7 +153,7 @@ namespace Ssz.Utils.Addons
             SourceIdToDisplay = reader.ReadString();
             PathRelativeToRootDirectory = reader.ReadString();            
             LastWriteTimeUtc = reader.ReadDateTime();
-            FileData = reader.ReadByteArray();
+            FileData = reader.ReadNullableByteArray();
             IsDeleted = reader.ReadBoolean();
         }
 

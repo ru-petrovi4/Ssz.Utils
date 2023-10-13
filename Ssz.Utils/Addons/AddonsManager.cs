@@ -123,26 +123,45 @@ namespace Ssz.Utils.Addons
         ///     SourceId property is empty in result.
         /// </summary>
         /// <returns></returns>
-        public ConfigurationFiles ReadConfiguration()
+        public ConfigurationFiles ReadConfiguration(string? pathRelativeToRootDirectory)
         {
             ConfigurationFiles result = new();                        
 
             try
             {
-                _availableAddons = GetAvailableAddonsUnconditionally();
-
-                foreach (FileInfo csvFileInfo in CsvDb.GetFileInfos())
+                if (String.IsNullOrEmpty(pathRelativeToRootDirectory)) 
                 {
-                    result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(@"", csvFileInfo));
-                }
+                    _availableAddons = GetAvailableAddonsUnconditionally();
 
-                foreach (DirectoryInfo subDirectoryInfo in CsvDb.CsvDbDirectoryInfo!.GetDirectories())
-                {
-                    foreach (FileInfo fileInfo in subDirectoryInfo.GetFiles())
+                    foreach (FileInfo csvFileInfo in CsvDb.GetFileInfos())
                     {
-                        result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(subDirectoryInfo.Name, fileInfo));
+                        result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(@"", csvFileInfo, false));
+                    }
+
+                    foreach (DirectoryInfo subDirectoryInfo in CsvDb.CsvDbDirectoryInfo!.GetDirectories())
+                    {
+                        foreach (FileInfo fileInfo in subDirectoryInfo.GetFiles())
+                        {
+                            result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(subDirectoryInfo.Name, fileInfo, false));
+                        }
                     }
                 }
+                else
+                {
+                    int slashCount = pathRelativeToRootDirectory!.Count(f => f == '/');
+
+                    if (slashCount == 0 && !pathRelativeToRootDirectory!.EndsWith(@".csv", StringComparison.InvariantCultureIgnoreCase))
+                        throw new Exception("pathRelativeToRootDirectory must have .csv extension, if requests file from root directory.");
+                    if (slashCount > 1)
+                        throw new Exception("pathRelativeToRootDirectory must have no more that one '/'");
+
+                    var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, pathRelativeToRootDirectory!.Replace('/', Path.DirectorySeparatorChar)));
+                    if (!fileInfo.Exists)
+                        throw new Exception("pathRelativeToRootDirectory: file does not exist.");
+
+                    result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(pathRelativeToRootDirectory!.Substring(0, pathRelativeToRootDirectory!.Length - fileInfo.Name.Length), 
+                        fileInfo, true));
+                }                
             }
             catch (Exception ex)
             {
@@ -183,11 +202,15 @@ namespace Ssz.Utils.Addons
                 }
                 else
                 {
+                    if (configurationFile.FileData is null)
+                        throw new InvalidOperationException("configurationFile.FileData is null");
+
                     var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationFile.GetPathRelativeToRootDirectory_PlatformSpecific()));
                     if (fileInfo.Exists)
                     {
-                        ConfigurationFile onDiskConfigurationFile = ConfigurationFile.CreateFromFileInfo(configurationFile.PathRelativeToRootDirectory, fileInfo);
-                        if (!configurationFile.FileData.SequenceEqual(onDiskConfigurationFile.FileData))
+                        ConfigurationFile onDiskConfigurationFile = ConfigurationFile.CreateFromFileInfo(configurationFile.PathRelativeToRootDirectory.Substring(0, configurationFile.PathRelativeToRootDirectory.Length - fileInfo.Name.Length), 
+                            fileInfo, true);
+                        if (!configurationFile.FileData!.SequenceEqual(onDiskConfigurationFile.FileData!))
                         {
                             if (FileSystemHelper.FileSystemTimeIsLess(configurationFile.LastWriteTimeUtc, fileInfo.LastWriteTimeUtc))
                                 throw new AddonCsvFileChangedOnDiskException { FilePathRelativeToRootDirectory = configurationFile.PathRelativeToRootDirectory };
@@ -212,12 +235,12 @@ namespace Ssz.Utils.Addons
                 {
                     using (var writer = new StreamWriter(fileInfo.FullName, false, new UTF8Encoding(true)))
                     {
-                        writer.Write(Encoding.UTF8.GetString(configurationFile.FileData));
+                        writer.Write(Encoding.UTF8.GetString(configurationFile.FileData!));
                     }
                 }
                 else
                 {
-                    File.WriteAllBytes(fileInfo.FullName, configurationFile.FileData);
+                    File.WriteAllBytes(fileInfo.FullName, configurationFile.FileData!);
                 }
             }
 
