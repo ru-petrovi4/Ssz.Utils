@@ -1188,6 +1188,8 @@ namespace Ssz.Utils.Serialization
             }
             else
             {
+                WriteSerializedType(SerializedType.ByteArrayType);
+
                 WriteArrayInternal(values);
             }            
         }
