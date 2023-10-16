@@ -70,6 +70,15 @@ namespace Ssz.Utils.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error in addon work!.
+        /// </summary>
+        public static string Addon_STATE_NOT_OPERATIONAL {
+            get {
+                return ResourceManager.GetString("Addon_STATE_NOT_OPERATIONAL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Is not connected to server.
         /// </summary>
         public static string Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNotConnected {
@@ -84,6 +93,15 @@ namespace Ssz.Utils.Properties {
         public static string Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNull {
             get {
                 return ResourceManager.GetString("Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string Addon_STATE_OPERATIONAL {
+            get {
+                return ResourceManager.GetString("Addon_STATE_OPERATIONAL", resourceCulture);
             }
         }
         

@@ -129,11 +129,17 @@
   <data name="Addon_STATE_INITIALIZING" xml:space="preserve">
     <value>Плагин не инициализирован</value>
   </data>
+  <data name="Addon_STATE_NOT_OPERATIONAL" xml:space="preserve">
+    <value>При работе плагина возникла ошибка!</value>
+  </data>
   <data name="Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNotConnected" xml:space="preserve">
     <value>Нет подключения к серверу</value>
   </data>
   <data name="Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNull" xml:space="preserve">
     <value>Подключение к серверу не инициализировано</value>
+  </data>
+  <data name="Addon_STATE_OPERATIONAL" xml:space="preserve">
+    <value>OK</value>
   </data>
   <data name="Addon_STATE_OPERATIONAL_DataAccessProviderIsConnected" xml:space="preserve">
     <value>Подключено к серверу</value>
