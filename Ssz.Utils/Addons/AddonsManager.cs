@@ -159,7 +159,7 @@ namespace Ssz.Utils.Addons
                     if (!fileInfo.Exists)
                         throw new Exception("pathRelativeToRootDirectory: file does not exist.");
 
-                    result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(pathRelativeToRootDirectory!.Substring(0, pathRelativeToRootDirectory!.Length - fileInfo.Name.Length), 
+                    result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(pathRelativeToRootDirectory!.Substring(0, pathRelativeToRootDirectory!.Length - fileInfo.Name.Length - 1), 
                         fileInfo, true));
                 }                
             }
