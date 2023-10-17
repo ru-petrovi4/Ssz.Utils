@@ -24,8 +24,6 @@ namespace Ssz.Utils.Addons
         /// <returns></returns>
         public static ConfigurationFile CreateFromFileInfo(string pathRelativeToRootDirectory_NoFileName, FileInfo fileInfo, bool readBigFileData)
         {
-            pathRelativeToRootDirectory_NoFileName = pathRelativeToRootDirectory_NoFileName.Replace(Path.DirectorySeparatorChar, '/');
-
             ConfigurationFile configurationFile = new()
             {
                 PathRelativeToRootDirectory = pathRelativeToRootDirectory_NoFileName != @"" ? 

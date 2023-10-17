@@ -159,8 +159,13 @@ namespace Ssz.Utils.Addons
                     if (!fileInfo.Exists)
                         throw new Exception("pathRelativeToRootDirectory: file does not exist.");
 
-                    result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(pathRelativeToRootDirectory!.Substring(0, pathRelativeToRootDirectory!.Length - fileInfo.Name.Length - 1), 
-                        fileInfo, true));
+                    string pathRelativeToRootDirectory_NoFileName;
+                    int i = pathRelativeToRootDirectory.LastIndexOf('/');
+                    if (i < 0)
+                        pathRelativeToRootDirectory_NoFileName = pathRelativeToRootDirectory;
+                    else
+                        pathRelativeToRootDirectory_NoFileName = pathRelativeToRootDirectory.Substring(0, i);
+                    result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(pathRelativeToRootDirectory_NoFileName, fileInfo, true));
                 }                
             }
             catch (Exception ex)
@@ -208,8 +213,14 @@ namespace Ssz.Utils.Addons
                     var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationFile.GetPathRelativeToRootDirectory_PlatformSpecific()));
                     if (fileInfo.Exists)
                     {
-                        ConfigurationFile onDiskConfigurationFile = ConfigurationFile.CreateFromFileInfo(configurationFile.PathRelativeToRootDirectory.Substring(0, configurationFile.PathRelativeToRootDirectory.Length - fileInfo.Name.Length), 
-                            fileInfo, true);
+                        string pathRelativeToRootDirectory_NoFileName;
+                        int i = configurationFile.PathRelativeToRootDirectory.LastIndexOf('/');
+                        if (i < 0)
+                            pathRelativeToRootDirectory_NoFileName = configurationFile.PathRelativeToRootDirectory;
+                        else
+                            pathRelativeToRootDirectory_NoFileName = configurationFile.PathRelativeToRootDirectory.Substring(0, i);                       
+
+                        ConfigurationFile onDiskConfigurationFile = ConfigurationFile.CreateFromFileInfo(pathRelativeToRootDirectory_NoFileName, fileInfo, true);
                         if (!configurationFile.FileData!.SequenceEqual(onDiskConfigurationFile.FileData!))
                         {
                             if (FileSystemHelper.FileSystemTimeIsLess(configurationFile.LastWriteTimeUtc, fileInfo.LastWriteTimeUtc))
