@@ -135,19 +135,21 @@ namespace Ssz.Utils.Addons
 
                     foreach (FileInfo csvFileInfo in CsvDb.GetFileInfos())
                     {
-                        result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(@"", csvFileInfo, false));
+                        result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(csvFileInfo.Name, csvFileInfo, false));
                     }
 
                     foreach (DirectoryInfo subDirectoryInfo in CsvDb.CsvDbDirectoryInfo!.GetDirectories())
                     {
                         foreach (FileInfo fileInfo in subDirectoryInfo.GetFiles())
                         {
-                            result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(subDirectoryInfo.Name, fileInfo, false));
+                            result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(subDirectoryInfo.Name + @"/" + fileInfo.Name, fileInfo, false));
                         }
                     }
                 }
                 else
                 {
+                    pathRelativeToRootDirectory = pathRelativeToRootDirectory!.Replace(Path.DirectorySeparatorChar, '/'); // Normalize
+
                     int slashCount = pathRelativeToRootDirectory!.Count(f => f == '/');
 
                     if (slashCount == 0 && !pathRelativeToRootDirectory!.EndsWith(@".csv", StringComparison.InvariantCultureIgnoreCase))
@@ -158,14 +160,8 @@ namespace Ssz.Utils.Addons
                     var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, pathRelativeToRootDirectory!.Replace('/', Path.DirectorySeparatorChar)));
                     if (!fileInfo.Exists)
                         throw new Exception("pathRelativeToRootDirectory: file does not exist.");
-
-                    string pathRelativeToRootDirectory_NoFileName;
-                    int i = pathRelativeToRootDirectory.LastIndexOf('/');
-                    if (i < 0)
-                        pathRelativeToRootDirectory_NoFileName = pathRelativeToRootDirectory;
-                    else
-                        pathRelativeToRootDirectory_NoFileName = pathRelativeToRootDirectory.Substring(0, i);
-                    result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(pathRelativeToRootDirectory_NoFileName, fileInfo, true));
+                    
+                    result.ConfigurationFilesCollection.Add(ConfigurationFile.CreateFromFileInfo(pathRelativeToRootDirectory, fileInfo, true));
                 }                
             }
             catch (Exception ex)
@@ -190,6 +186,8 @@ namespace Ssz.Utils.Addons
 
             foreach (ConfigurationFile configurationFile in configurationFiles.ConfigurationFilesCollection)
             {
+                configurationFile.PathRelativeToRootDirectory = configurationFile.PathRelativeToRootDirectory!.Replace(Path.DirectorySeparatorChar, '/'); // Normalize
+
                 int slashCount = configurationFile.PathRelativeToRootDirectory.Count(f => f == '/');
 
                 if (slashCount == 0 && configurationFile.Name != AddonsCsvFileName)
@@ -213,14 +211,7 @@ namespace Ssz.Utils.Addons
                     var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationFile.GetPathRelativeToRootDirectory_PlatformSpecific()));
                     if (fileInfo.Exists)
                     {
-                        string pathRelativeToRootDirectory_NoFileName;
-                        int i = configurationFile.PathRelativeToRootDirectory.LastIndexOf('/');
-                        if (i < 0)
-                            pathRelativeToRootDirectory_NoFileName = configurationFile.PathRelativeToRootDirectory;
-                        else
-                            pathRelativeToRootDirectory_NoFileName = configurationFile.PathRelativeToRootDirectory.Substring(0, i);                       
-
-                        ConfigurationFile onDiskConfigurationFile = ConfigurationFile.CreateFromFileInfo(pathRelativeToRootDirectory_NoFileName, fileInfo, true);
+                        ConfigurationFile onDiskConfigurationFile = ConfigurationFile.CreateFromFileInfo(configurationFile.PathRelativeToRootDirectory, fileInfo, true);
                         if (!configurationFile.FileData!.SequenceEqual(onDiskConfigurationFile.FileData!))
                         {
                             if (FileSystemHelper.FileSystemTimeIsLess(configurationFile.LastWriteTimeUtc, fileInfo.LastWriteTimeUtc))

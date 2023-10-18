@@ -17,18 +17,16 @@ namespace Ssz.Utils.Addons
         #region public functions
 
         /// <summary>
-        ///     pathRelativeToRootDirectory_NoFIleName - Path separator is always '/'. No '/' at the begin, no '/' at the end. .
+        ///     pathRelativeToRootDirectory_NoFIleName - Path separator is always '/'. No '/' at the begin, file name at the end.
         /// </summary>
-        /// <param name="pathRelativeToRootDirectory_NoFileName"></param>
+        /// <param name="pathRelativeToRootDirectory"></param>
         /// <param name="fileInfo"></param>
         /// <returns></returns>
-        public static ConfigurationFile CreateFromFileInfo(string pathRelativeToRootDirectory_NoFileName, FileInfo fileInfo, bool readBigFileData)
+        public static ConfigurationFile CreateFromFileInfo(string pathRelativeToRootDirectory, FileInfo fileInfo, bool readBigFileData)
         {
             ConfigurationFile configurationFile = new()
             {
-                PathRelativeToRootDirectory = pathRelativeToRootDirectory_NoFileName != @"" ? 
-                    pathRelativeToRootDirectory_NoFileName + "/" + fileInfo.Name :
-                    fileInfo.Name,
+                PathRelativeToRootDirectory = pathRelativeToRootDirectory,
                 LastWriteTimeUtc = fileInfo.LastWriteTimeUtc,
             };            
 
