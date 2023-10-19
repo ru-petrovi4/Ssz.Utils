@@ -120,6 +120,11 @@ namespace Ssz.Utils.Addons
 
         public bool IsInitialized { get; private set; }
 
+        /// <summary>
+        ///     Last successful work time.
+        /// </summary>
+        public DateTime? LastWorkTimeUtc { get; set; }
+
         public event EventHandler? Initialized;
 
         public event EventHandler? Closed;
@@ -130,7 +135,8 @@ namespace Ssz.Utils.Addons
             {
                 AddonGuid = Guid,
                 AddonIdentifier = Identifier,
-                AddonInstanceId = InstanceId,                
+                AddonInstanceId = InstanceId,
+                LastWorkTimeUtc = LastWorkTimeUtc,
                 StateCode = AddonStateCodes.STATE_OPERATIONAL
             };
         }

@@ -91,7 +91,7 @@ namespace Ssz.Utils.Addons
                 AddonGuid = Guid,
                 AddonIdentifier = Identifier,
                 AddonInstanceId = InstanceId,
-                LastWorkTimeUtc = DateTime.UtcNow,
+                LastWorkTimeUtc = LastWorkTimeUtc,
                 StateCode = AddonStateCodes.STATE_OPERATIONAL,
                 Label = Properties.Resources.Addon_STATE_OPERATIONAL_DataAccessProviderIsConnected
             };

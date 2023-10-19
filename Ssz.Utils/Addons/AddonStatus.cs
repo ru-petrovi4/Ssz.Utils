@@ -29,7 +29,10 @@ namespace Ssz.Utils.Addons
         public string AddonIdentifier { get; set; } = @"";
 
         public string AddonInstanceId { get; set; } = @"";
-        
+
+        /// <summary>
+        ///     Last successful work time.
+        /// </summary>
         public DateTime? LastWorkTimeUtc { get; set; }
 
         /// <summary>
