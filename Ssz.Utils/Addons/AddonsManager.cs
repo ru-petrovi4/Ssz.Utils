@@ -336,6 +336,39 @@ namespace Ssz.Utils.Addons
         }        
 
         /// <summary>
+        ///     Create available but not necesary switched ON adddon. 
+        ///     You must specify addonInstanceId or addonOptions.
+        /// </summary>
+        /// <param name="addonIdentifier"></param>
+        /// <param name="addonInstanceId"></param>
+        /// <param name="addonOptions"></param>
+        /// <returns></returns>
+        public AddonBase? CreateAvailableAddon(string addonIdentifier, string addonInstanceId, IEnumerable<IEnumerable<string?>>? addonOptions)
+        {
+            if (!String.IsNullOrEmpty(addonInstanceId) && addonOptions is not null)
+                throw new InvalidOperationException("You must specify addonInstanceId or addonOptions");
+
+            if (String.IsNullOrEmpty(addonIdentifier))
+            {
+                LoggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonNameIsEmpty);
+                return null;
+            }
+
+            if (_availableAddons is null)
+                _availableAddons = GetAvailableAddonsUnconditionally();
+
+            var availableAddon = _availableAddons.FirstOrDefault(
+                p => String.Equals(p.Identifier, addonIdentifier, StringComparison.InvariantCultureIgnoreCase));
+            if (availableAddon is null)
+            {
+                LoggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.AvailableAddonIsNotFound, addonIdentifier);
+                return null;
+            }
+
+            return CreateAvailableAddonThreadSafe(availableAddon, addonInstanceId, addonOptions);
+        }
+
+        /// <summary>
         ///     
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -378,40 +411,7 @@ namespace Ssz.Utils.Addons
         /// <summary>
         ///     Has value after Initialize()
         /// </summary>
-        protected CsvDb CsvDb { get; private set; } = null!;
-
-        /// <summary>
-        ///     Create available but not necesary switched ON adddon. 
-        ///     You must specify addonInstanceId or addonOptions.
-        /// </summary>
-        /// <param name="addonIdentifier"></param>
-        /// <param name="addonInstanceId"></param>
-        /// <param name="addonOptions"></param>
-        /// <returns></returns>
-        protected AddonBase? CreateAvailableAddon(string addonIdentifier, string addonInstanceId, IEnumerable<IEnumerable<string?>>? addonOptions)
-        {
-            if (!String.IsNullOrEmpty(addonInstanceId) && addonOptions is not null)
-                throw new InvalidOperationException("You must specify addonInstanceId or addonOptions");
-
-            if (String.IsNullOrEmpty(addonIdentifier))
-            {
-                LoggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonNameIsEmpty);
-                return null;
-            }
-
-            if (_availableAddons is null)
-                _availableAddons = GetAvailableAddonsUnconditionally();
-
-            var availableAddon = _availableAddons.FirstOrDefault(
-                p => String.Equals(p.Identifier, addonIdentifier, StringComparison.InvariantCultureIgnoreCase));
-            if (availableAddon is null)
-            {
-                LoggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.AvailableAddonIsNotFound, addonIdentifier);
-                return null;
-            }
-
-            return CreateAvailableAddonThreadSafe(availableAddon, addonInstanceId, addonOptions);
-        }
+        protected CsvDb CsvDb { get; private set; } = null!;        
 
         #endregion
 
