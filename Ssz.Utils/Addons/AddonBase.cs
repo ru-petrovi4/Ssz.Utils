@@ -64,8 +64,11 @@ namespace Ssz.Utils.Addons
         /// <summary>
         ///     Option names cannot contain periods.
         ///     (Option Name, Option Description, Option Default Value)
-        ///     Thread-safe.
+        ///     Thread-safe. 
         /// </summary>
+        /// <remarks>
+        ///     Use OptionsSubstitutedThreadSafe.TryGetValue(EventsToleranceSeconds_OptionName) to extract values.
+        /// </remarks>
         public abstract (string, string, string)[] OptionsInfo { get; }
 
         /// <summary>
