@@ -164,7 +164,7 @@ namespace Ssz.Utils
         {
             var data = Encoding.UTF8.GetBytes(value ?? @"");
             return Encoding.UTF8.GetPreamble().Concat(data).ToArray();
-        }
+        }        
 
         #endregion
     }
