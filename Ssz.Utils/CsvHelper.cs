@@ -83,13 +83,11 @@ namespace Ssz.Utils
         public static string FormatValueForCsv(string separator, string? sourceString)
         {
             if (separator.Length != 1) throw new InvalidOperationException();
-
             if (sourceString is null) return @"";
             if (sourceString == @"") return "\"\"";
 
-            sourceString = TextFileHelper.NormalizeNewLine(sourceString
-                .Replace("\"", "\"\""));
-
+            sourceString = TextFileHelper.NormalizeNewLine(sourceString);
+            sourceString = sourceString.Replace("\"", "\"\"");
             return sourceString.Contains(separator) || sourceString.Contains('\"') 
                 || sourceString.Contains('\n')
                 || sourceString.Contains('\\')

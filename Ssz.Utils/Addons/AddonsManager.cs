@@ -233,17 +233,7 @@ namespace Ssz.Utils.Addons
                 //     already exist.
                 Directory.CreateDirectory(fileInfo.Directory!.FullName);
 
-                if (fileInfo.Name.EndsWith(".csv", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    using (var writer = new StreamWriter(fileInfo.FullName, false, new UTF8Encoding(true)))
-                    {
-                        writer.Write(Encoding.UTF8.GetString(configurationFile.FileData!));
-                    }
-                }
-                else
-                {
-                    File.WriteAllBytes(fileInfo.FullName, configurationFile.FileData!);
-                }
+                File.WriteAllBytes(fileInfo.FullName, configurationFile.FileData!);                
             }
 
             foreach (ConfigurationFile configurationFile in configurationFilesToDelete)

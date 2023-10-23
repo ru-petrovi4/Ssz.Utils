@@ -591,8 +591,8 @@ namespace Ssz.Utils
                         File.Delete(fileFullName); // For 'a' to 'A' changes in files names to work.
                         using (var writer = new StreamWriter(fileFullName, false, new UTF8Encoding(true)))
                         {
-                            foreach (var values in csvFile.Data!.OrderBy(kvp => kvp.Key))
-                                writer.WriteLine(CsvHelper.FormatForCsv(",", values.Value.ToArray()));
+                            foreach (var kvp2 in csvFile.Data!.OrderBy(i => i.Key))
+                                writer.WriteLine(CsvHelper.FormatForCsv(",", kvp2.Value));
                         }                                                
                         csvFile.OnDiskFileInfo = new FileInfo(fileFullName);
 

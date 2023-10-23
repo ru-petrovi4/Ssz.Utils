@@ -53,7 +53,8 @@ namespace Ssz.Utils.Addons
                     {
                         fileDataString = reader.ReadToEnd();
                     }
-                    configurationFile.FileData = Encoding.UTF8.GetBytes(TextFileHelper.NormalizeNewLine(fileDataString));
+                    fileDataString = TextFileHelper.NormalizeNewLine(fileDataString);
+                    configurationFile.FileData = StringHelper.GetUTF8BytesWithBomPreamble(fileDataString);
                 }
                 else
                 {
@@ -112,7 +113,8 @@ namespace Ssz.Utils.Addons
         public DateTime LastWriteTimeUtc { get; set; } = DateTime.MinValue;
 
         /// <summary>
-        ///     File content. Always UTF8-encoded and \n as new line char, if .csv.
+        ///     File content. 
+        ///     If .csv., UTF8-encoded with preamble and \n as new line char.
         /// </summary>        
         public byte[]? FileData { get; set; } = null!;
 
