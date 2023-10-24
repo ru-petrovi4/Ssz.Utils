@@ -859,8 +859,7 @@ namespace OfficeOpenXml
             if (nf.Bold) fs |= FontStyle.Bold;
             if (nf.UnderLine) fs |= FontStyle.Underline;
             if (nf.Italic) fs |= FontStyle.Italic;
-            if (nf.Strike) fs |= FontStyle.Strikeout;
-            var nfont = new Font(nf.Name, nf.Size, fs);
+            if (nf.Strike) fs |= FontStyle.Strikeout;            
 
             var normalSize = Convert.ToSingle(ExcelWorkbook.GetWidthPixels(nf.Name, nf.Size));
 
