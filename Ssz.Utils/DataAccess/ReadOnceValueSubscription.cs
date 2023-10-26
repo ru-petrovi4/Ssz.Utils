@@ -29,11 +29,7 @@ namespace Ssz.Utils.DataAccess
         public void Update(string mappedElementIdOrConst)
         {
             MappedElementIdOrConst = mappedElementIdOrConst;
-        }
-
-        public void Update(AddItemResult addItemResult)
-        {
-        }
+        }        
 
         /// <summary>
         /// 
@@ -41,7 +37,8 @@ namespace Ssz.Utils.DataAccess
         /// <param name="valueStatusTimestamp"></param>
         void IValueSubscription.Update(ValueStatusTimestamp valueStatusTimestamp)
         {
-            if (valueStatusTimestamp.ValueStatusCode == ValueStatusCodes.Unknown) return;
+            if (ValueStatusCodes.IsUnknown(valueStatusTimestamp.ValueStatusCode))
+                return;
 
             _dataProvider.RemoveItem(this);            
 

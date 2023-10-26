@@ -186,8 +186,7 @@ namespace Ssz.DataAccessGrpc.Client
                     try
                     {
                         callbackDispatcher.BeginInvoke(ct =>
-                        {
-                            valueSubscription.Update(AddItemResult.InvalidArgumentAddItemResult);
+                        {                            
                             valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist });
                         });
                     }
@@ -622,9 +621,8 @@ namespace Ssz.DataAccessGrpc.Client
                             сallbackDispatcher.BeginInvoke(ct =>
                             {
                                 foreach (IValueSubscription valueSubscription in valueSubscriptions)
-                                {
-                                    valueSubscription.Update(AddItemResult.UnknownAddItemResult);
-                                    valueSubscription.Update(new ValueStatusTimestamp());
+                                {                                    
+                                    valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown });
                                 }
                                 DataGuid = Guid.NewGuid();
 
@@ -894,8 +892,7 @@ namespace Ssz.DataAccessGrpc.Client
                     try
                     {
                         callbackDispatcher.BeginInvoke(ct =>
-                        {
-                            valueSubscription.Update(ConstAddItemResult);
+                        {                            
                             valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, ValueStatusCodes.Good,
                                 DateTime.UtcNow));
                         });
@@ -992,11 +989,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             foreach (ClientElementValueListManager.ElementValuesCallbackChange elementValuesCallbackChange in eventArgs.ElementValuesCallbackChanges)
             {
-                var changedValueSubscription = (IValueSubscription)elementValuesCallbackChange.ClientObj;
-                if (elementValuesCallbackChange.AddItemResult is not null)
-                {
-                    changedValueSubscription.Update(elementValuesCallbackChange.AddItemResult);
-                }
+                var changedValueSubscription = (IValueSubscription)elementValuesCallbackChange.ClientObj;                
                 if (elementValuesCallbackChange.ValueStatusTimestamp.HasValue)
                 {
                     changedValueSubscription.Update(elementValuesCallbackChange.ValueStatusTimestamp.Value);
@@ -1020,16 +1013,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         private ClientContextManager _clientContextManager { get; }
 
-        private ClientElementValueListManager _clientElementValueListManager { get; }
-
-        /// <summary>
-        ///     Unspecified Unknown AddItemResult.
-        /// </summary>
-        private static readonly AddItemResult ConstAddItemResult = new AddItemResult {
-            ResultInfo = new ResultInfo { StatusCode = JobStatusCodes.OK },
-            IsReadable = true,
-            IsWritable = true,
-        };
+        private ClientElementValueListManager _clientElementValueListManager { get; }        
 
         #endregion
 
@@ -1069,14 +1053,14 @@ namespace Ssz.DataAccessGrpc.Client
             {
                 if (ChildValueSubscriptionsList is null) return;
 
-                if (ChildValueSubscriptionsList.Any(vs => vs.ValueStatusTimestamp.ValueStatusCode == ValueStatusCodes.ItemDoesNotExist))
+                if (ChildValueSubscriptionsList.Any(vs => ValueStatusCodes.IsItemDoesNotExist(vs.ValueStatusTimestamp.ValueStatusCode)))
                 {
                     ValueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist });
                     return;
                 }
-                if (ChildValueSubscriptionsList.Any(vs => vs.ValueStatusTimestamp.ValueStatusCode == ValueStatusCodes.Unknown))
+                if (ChildValueSubscriptionsList.Any(vs => ValueStatusCodes.IsUnknown(vs.ValueStatusTimestamp.ValueStatusCode)))
                 {
-                    ValueSubscription.Update(new ValueStatusTimestamp());
+                    ValueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown });
                     return;
                 }
 
@@ -1112,13 +1096,9 @@ namespace Ssz.DataAccessGrpc.Client
 
             public void Update(string mappedElementIdOrConst)
             {
-            }
+            }            
 
-            public void Update(AddItemResult addItemResult)
-            {
-            }
-
-            public ValueStatusTimestamp ValueStatusTimestamp;
+            public ValueStatusTimestamp ValueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown };
 
             public readonly bool IsConst;            
 

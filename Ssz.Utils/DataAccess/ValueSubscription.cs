@@ -14,21 +14,18 @@ namespace Ssz.Utils.DataAccess
 
         /// <summary>
         ///     Is used to subscribe for value updating and to write values.
-        ///     valueUpdated is invoked when ValueStatusTimestamp property Updated. Initial Value property is new ValueStatusTimestamp(), Any(null) and Unknown status. 
+        ///     valueUpdated is invoked when ValueStatusTimestamp property Updated. Initial Value property is Any(null) and ValueStatusCode is Unknown status. 
         /// </summary>
         /// <param name="dataAccessProvider"></param>
         /// <param name="elementId"></param>
-        /// <param name="valueStatusTimestampUpdated"></param>
-        /// <param name="addItemResultUpdated"></param>
+        /// <param name="valueStatusTimestampUpdated"></param>        
         public ValueSubscription(IDataAccessProvider dataAccessProvider, 
             string elementId, 
-            EventHandler<ValueStatusTimestampUpdatedEventArgs>? valueStatusTimestampUpdated = null, 
-            EventHandler? addItemResultUpdated = null)
+            EventHandler<ValueStatusTimestampUpdatedEventArgs>? valueStatusTimestampUpdated = null)
         {
             DataAccessProvider = dataAccessProvider;
             ElementId = elementId;
-            _valueStatusTimestampUpdated = valueStatusTimestampUpdated;
-            _addItemResultUpdated = addItemResultUpdated;
+            _valueStatusTimestampUpdated = valueStatusTimestampUpdated;            
 
             DataAccessProvider.AddItem(ElementId, this);
         }
@@ -51,23 +48,14 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         ///     Id actually used for subscription.
         /// </summary>
-        public string MappedElementIdOrConst { get; private set; } = @"";        
+        public string MappedElementIdOrConst { get; private set; } = @"";
 
-        public AddItemResult AddItemResult { get; private set; } = AddItemResult.UnknownAddItemResult;
-        
-        public ValueStatusTimestamp ValueStatusTimestamp { get; private set; }
+        public ValueStatusTimestamp ValueStatusTimestamp { get; private set; } = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown };
 
         public void Update(string mappedElementIdOrConst)
         {
             MappedElementIdOrConst = mappedElementIdOrConst;
-        }
-
-        public void Update(AddItemResult addItemResult)
-        {
-            AddItemResult = addItemResult;
-            if (_addItemResultUpdated is not null)
-                _addItemResultUpdated(this, EventArgs.Empty);
-        }
+        }        
         
         public void Update(ValueStatusTimestamp valueStatusTimestamp)
         {
@@ -99,8 +87,7 @@ namespace Ssz.Utils.DataAccess
 
         #region private fields
 
-        private EventHandler<ValueStatusTimestampUpdatedEventArgs>? _valueStatusTimestampUpdated;
-        private EventHandler? _addItemResultUpdated;
+        private EventHandler<ValueStatusTimestampUpdatedEventArgs>? _valueStatusTimestampUpdated;        
 
         #endregion
     }

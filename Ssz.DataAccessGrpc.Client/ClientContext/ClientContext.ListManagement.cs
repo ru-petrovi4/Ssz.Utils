@@ -121,7 +121,7 @@ namespace Ssz.DataAccessGrpc.Client
         ///     The list of results. The size and order of this list matches the size and order of the objectsToAdd
         ///     parameter.
         /// </returns>
-        public List<AddItemToListResult> AddItemsToList(uint listServerAlias, List<ListItemInfo> itemsToAdd)
+        public List<AliasResult> AddItemsToList(uint listServerAlias, List<ListItemInfo> itemsToAdd)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 

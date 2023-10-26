@@ -165,8 +165,7 @@ namespace Ssz.Xi.Client
                     try
                     {
                         callbackDispatcher.BeginInvoke(ct =>
-                        {
-                            valueSubscription.Update(AddItemResult.InvalidArgumentAddItemResult);
+                        {                            
                             valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist });
                         });
                     }
@@ -586,9 +585,8 @@ namespace Ssz.Xi.Client
                             сallbackDispatcher.BeginInvoke(ct =>
                             {
                                 foreach (IValueSubscription valueSubscription in valueSubscriptions)
-                                {
-                                    valueSubscription.Update(AddItemResult.UnknownAddItemResult);
-                                    valueSubscription.Update(new ValueStatusTimestamp());
+                                {                                    
+                                    valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown });
                                 }
                                 DataGuid = Guid.NewGuid();
 
@@ -874,8 +872,7 @@ namespace Ssz.Xi.Client
                     try
                     {
                         callbackDispatcher.BeginInvoke(ct =>
-                        {
-                            valueSubscription.Update(ConstAddItemResult); 
+                        {                            
                             valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, ValueStatusCodes.Good,
                                 DateTime.UtcNow));
                         });
@@ -985,16 +982,6 @@ namespace Ssz.Xi.Client
         private Dictionary<IValueSubscription, ValueSubscriptionObj> _valueSubscriptionsCollection =
             new(ReferenceEqualityComparer<object>.Default);
 
-        /// <summary>
-        ///     Unspecified Unknown AddItemResult.
-        /// </summary>
-        private static readonly AddItemResult ConstAddItemResult = new AddItemResult
-        {
-            ResultInfo = new ResultInfo { StatusCode = JobStatusCodes.OK },
-            IsReadable = true,
-            IsWritable = true,
-        };
-
         #endregion
 
         protected class ConstItem
@@ -1033,14 +1020,14 @@ namespace Ssz.Xi.Client
             {
                 if (ChildValueSubscriptionsList is null) return;
 
-                if (ChildValueSubscriptionsList.Any(vs => vs.ValueStatusTimestamp.ValueStatusCode == ValueStatusCodes.ItemDoesNotExist))
+                if (ChildValueSubscriptionsList.Any(vs => ValueStatusCodes.IsItemDoesNotExist(vs.ValueStatusTimestamp.ValueStatusCode)))
                 {
                     ValueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist });
                     return;
                 }
-                if (ChildValueSubscriptionsList.Any(vs => vs.ValueStatusTimestamp.ValueStatusCode == ValueStatusCodes.Unknown))
+                if (ChildValueSubscriptionsList.Any(vs => ValueStatusCodes.IsUnknown(vs.ValueStatusTimestamp.ValueStatusCode)))
                 {
-                    ValueSubscription.Update(new ValueStatusTimestamp());
+                    ValueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown });
                     return;
                 }
 
@@ -1078,13 +1065,9 @@ namespace Ssz.Xi.Client
             {
             }
 
-            public void Update(AddItemResult addItemResult)
-            {
-            }
+            public ValueStatusTimestamp ValueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown };
 
-            public ValueStatusTimestamp ValueStatusTimestamp;
-
-            public readonly bool IsConst;            
+        public readonly bool IsConst;            
 
             public void Update(ValueStatusTimestamp valueStatusTimestamp)
             {

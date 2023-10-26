@@ -127,7 +127,7 @@ namespace Ssz.Utils.DataAccess
         {
             if (!DataAccessProvider.IsConnected)
             {
-                subscription.Update(new ValueStatusTimestamp());
+                subscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown });
                 return;
             }
 

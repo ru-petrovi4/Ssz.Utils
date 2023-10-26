@@ -95,7 +95,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             {
                 dataAccessGrpcListItemWrapper.DataAccessGrpcListItem = null;
                 dataAccessGrpcListItemWrapper.ConnectionError = false;
-                dataAccessGrpcListItemWrapper.FailedAddItemResult = null;
+                dataAccessGrpcListItemWrapper.FailedAddItemResultInfo = null;
                 if (clearClientSubscriptions) dataAccessGrpcListItemWrapper.ClientObjectInfosCollection.Clear();
             }
 
@@ -151,8 +151,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                     else
                     {
                         clientObjectInfo.NotifyClientObj_ValueStatusTimestamp = true;
-                    }
-                    clientObjectInfo.NotifyClientObj_AddItemResult = true;
+                    }                    
                     clientObjectInfo.DataAccessGrpcListItemWrapper = dataAccessGrpcListItemWrapper;
                     dataAccessGrpcListItemWrapper.ClientObjectInfosCollection.Add(clientObjectInfo);
                 }                
@@ -162,7 +161,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             foreach (var kvp in _dataAccessGrpcListItemWrappersDictionary)
             {
                 DataAccessGrpcListItemWrapper dataAccessGrpcListItemWrapper = kvp.Value;
-                if (dataAccessGrpcListItemWrapper.DataAccessGrpcListItem is null && dataAccessGrpcListItemWrapper.FailedAddItemResult is null)
+                if (dataAccessGrpcListItemWrapper.DataAccessGrpcListItem is null && dataAccessGrpcListItemWrapper.FailedAddItemResultInfo is null)
                 {
                     itemsToAdd_DataGrpcListItemWrappers.Add(dataAccessGrpcListItemWrapper);
                     TDataAccessGrpcListItem? dataAccessGrpcListItem = null;
@@ -214,12 +213,11 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                         {
                             dataAccessGrpcListItemWrapper.ConnectionError = true;
                             foreach (ClientObjectInfo clientObjectInfo in dataAccessGrpcListItemWrapper.ClientObjectInfosCollection)
-                            {
-                                clientObjectInfo.NotifyClientObj_AddItemResult = true;
+                            {                                
                                 clientObjectInfo.NotifyClientObj_ValueStatusTimestamp = true;
                             }
                         }                        
-                        dataAccessGrpcListItemWrapper.FailedAddItemResult = null;
+                        dataAccessGrpcListItemWrapper.FailedAddItemResultInfo = null;
                         dataAccessGrpcListItemWrapper.DataAccessGrpcListItem = null;
                     }
                 }
@@ -230,12 +228,11 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                         var dataAccessGrpcListItemWrapper = failedItem.Obj as DataAccessGrpcListItemWrapper;
                         if (dataAccessGrpcListItemWrapper is null) throw new InvalidOperationException();
                         itemsToAdd_DataGrpcListItemWrappers.Remove(dataAccessGrpcListItemWrapper);
-                        if (dataAccessGrpcListItemWrapper.FailedAddItemResult is null)
+                        if (dataAccessGrpcListItemWrapper.FailedAddItemResultInfo is null)
                         {
-                            dataAccessGrpcListItemWrapper.FailedAddItemResult = failedItem.AddItemResult!;
+                            dataAccessGrpcListItemWrapper.FailedAddItemResultInfo = failedItem.AddItemResultInfo!;
                             foreach (ClientObjectInfo clientObjectInfo in dataAccessGrpcListItemWrapper.ClientObjectInfosCollection)
-                            {
-                                clientObjectInfo.NotifyClientObj_AddItemResult = true;
+                            {                                
                                 clientObjectInfo.NotifyClientObj_ValueStatusTimestamp = true;
                             }
                         }                        
@@ -246,12 +243,11 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                     {
                         if (dataAccessGrpcListItemWrapper.DataAccessGrpcListItem is null)
                         {
-                            if (dataAccessGrpcListItemWrapper.FailedAddItemResult is null)
+                            if (dataAccessGrpcListItemWrapper.FailedAddItemResultInfo is null)
                             {
-                                dataAccessGrpcListItemWrapper.FailedAddItemResult = AddItemResult.UnknownAddItemResult;
+                                dataAccessGrpcListItemWrapper.FailedAddItemResultInfo = ResultInfo.UnknownResultInfo;
                                 foreach (ClientObjectInfo clientObjectInfo in dataAccessGrpcListItemWrapper.ClientObjectInfosCollection)
-                                {
-                                    clientObjectInfo.NotifyClientObj_AddItemResult = true;
+                                {                                    
                                     clientObjectInfo.NotifyClientObj_ValueStatusTimestamp = true;
                                 }
                             }
@@ -259,11 +255,10 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                         }
                         else
                         {
-                            dataAccessGrpcListItemWrapper.FailedAddItemResult = null;
+                            dataAccessGrpcListItemWrapper.FailedAddItemResultInfo = null;
                             dataAccessGrpcListItemWrapper.ConnectionError = false;
                             foreach (ClientObjectInfo clientObjectInfo in dataAccessGrpcListItemWrapper.ClientObjectInfosCollection)
-                            {
-                                clientObjectInfo.NotifyClientObj_AddItemResult = true;
+                            {                                
                                 clientObjectInfo.NotifyClientObj_ValueStatusTimestamp = false;
                             }
                         }                        
@@ -367,7 +362,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
             public bool ConnectionError;
 
-            public AddItemResult? FailedAddItemResult;
+            public ResultInfo? FailedAddItemResultInfo;
         }
 
         public class ClientObjectInfo
@@ -394,8 +389,6 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             public DataAccessGrpcListItemWrapper? DataAccessGrpcListItemWrapper { get; set; }
 
             public object? ClientObj { get; set; }
-
-            public bool NotifyClientObj_AddItemResult { get; set; }
 
             public bool NotifyClientObj_ValueStatusTimestamp { get; set; }
 

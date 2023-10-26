@@ -64,9 +64,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientListItems
         /// </summary>
         public uint ServerAlias { get; set; }
 
-        public AddItemResult? AddItemResult { get; private set; }
-
-        public TypeCode ValueTypeCode { get; private set; }
+        public ResultInfo? AddItemResultInfo { get; set; }
 
         /// <summary>
         ///     This property is the InstanceId of this DataAccessGrpcList element if it has one.
@@ -92,100 +90,6 @@ namespace Ssz.DataAccessGrpc.Client.ClientListItems
         ///     Marked For Remove From Server
         /// </summary>
         public bool PreparedForRemove { get; set; }
-
-        public void SetAddItemResult(AddItemResult addItemResult)
-        {
-            AddItemResult = addItemResult;            
-            var dataTypeId = addItemResult.DataTypeId;
-            if (dataTypeId is null)
-            {
-                ValueTypeCode = TypeCode.Empty;
-                return;
-            }
-            if (dataTypeId.Namespace is not null)
-            {
-                ValueTypeCode = TypeCode.Object;
-                return;
-            }
-            if (dataTypeId.SchemaType is not null)
-            {
-                ValueTypeCode = TypeCode.Object;
-                return;
-            }
-
-            if (0 == string.Compare(typeof(Object).ToString(), dataTypeId.LocalId, true))
-            {
-                ValueTypeCode = TypeCode.Object;
-                return;
-            }
-            if (0 == string.Compare(typeof(Single).ToString(), dataTypeId.LocalId, true))
-            {
-                ValueTypeCode = TypeCode.Single;
-                return;
-            }
-            if (0 == string.Compare(typeof(Int32).ToString(), dataTypeId.LocalId, true))
-            {
-                ValueTypeCode = TypeCode.Int32;
-                return;
-            }
-            if (0 == string.Compare(typeof(String).ToString(), dataTypeId.LocalId, true))
-            {
-                ValueTypeCode = TypeCode.String;
-                return;
-            }
-            if (0 == string.Compare(typeof(SByte).ToString(), dataTypeId.LocalId, true))
-            {
-                ValueTypeCode = TypeCode.SByte;
-                return;
-            }
-            if (0 == string.Compare(typeof(Int16).ToString(), dataTypeId.LocalId, true))
-            {
-                ValueTypeCode = TypeCode.Int16;
-                return;
-            }
-            if (0 == string.Compare(typeof(Int64).ToString(), dataTypeId.LocalId, true))
-            {
-                ValueTypeCode = TypeCode.Int64;
-                return;
-            }
-            if (0 == string.Compare(typeof(Byte).ToString(), dataTypeId.LocalId, true))
-            {
-                ValueTypeCode = TypeCode.Byte;
-                return;
-            }
-            if (0 == string.Compare(typeof(UInt16).ToString(), dataTypeId.LocalId, true))
-            {
-                ValueTypeCode = TypeCode.UInt16;
-                return;
-            }
-            if (0 == string.Compare(typeof(UInt32).ToString(), dataTypeId.LocalId, true))
-            {
-                ValueTypeCode = TypeCode.UInt32;
-                return;
-            }
-            if (0 == string.Compare(typeof(UInt64).ToString(), dataTypeId.LocalId, true))
-            {
-                ValueTypeCode = TypeCode.UInt64;
-                return;
-            }
-            if (0 == string.Compare(typeof(Double).ToString(), dataTypeId.LocalId, true))
-            {
-                ValueTypeCode = TypeCode.Double;
-                return;
-            }
-            if (0 == string.Compare(typeof(DateTime).ToString(), dataTypeId.LocalId, true))
-            {
-                ValueTypeCode = TypeCode.DateTime;
-                return;
-            }
-            if (0 == string.Compare(typeof(Boolean).ToString(), dataTypeId.LocalId, true))
-            {
-                ValueTypeCode = TypeCode.Boolean;
-                return;
-            }
-
-            ValueTypeCode = TypeCode.Object;
-        }
 
         #endregion
 

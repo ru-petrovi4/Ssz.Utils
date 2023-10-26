@@ -14,7 +14,7 @@ namespace Ssz.Utils.DataAccess
 
         /// <summary>
         ///     Is used to subscribe for value updating and to write values.
-        ///     valueUpdated(oldValue, newValue) is invoked when Value property Updated. Initial Value property is new ValueStatusTimestamp(), Any(null) and Unknown status.        
+        ///     valueUpdated(oldValue, newValue) is invoked when Value property Updated. Initial Value property is Any(null) and ValueStatusCode is Unknown status.        
         /// </summary>
         public ThreadSafeValueSubscription(IDataAccessProvider dataAccessProvider, string elementId, Action<ValueStatusTimestamp, ValueStatusTimestamp>? valueUpdated = null)
         {
@@ -40,11 +40,7 @@ namespace Ssz.Utils.DataAccess
 
         public void Update(string mappedElementIdOrConst)
         {
-        }
-
-        public void Update(AddItemResult addItemResult)
-        {
-        }
+        }        
 
         /// <summary>
         ///     Can be called from any thread.
@@ -58,9 +54,10 @@ namespace Ssz.Utils.DataAccess
                 oldValueStatusTimestamp = _valueStatusTimestamp;
                 _valueStatusTimestamp = valueStatusTimestamp;
             }
-            if (valueStatusTimestamp.ValueStatusCode != ValueStatusCodes.Unknown)
+            if (!ValueStatusCodes.IsUnknown(valueStatusTimestamp.ValueStatusCode))
                 ValueStatusTimestampUpdated.Set();
-            if (_valueUpdated is not null) _valueUpdated(oldValueStatusTimestamp, valueStatusTimestamp);
+            if (_valueUpdated is not null) 
+                _valueUpdated(oldValueStatusTimestamp, valueStatusTimestamp);
         }
 
         /// <summary>
@@ -102,7 +99,7 @@ namespace Ssz.Utils.DataAccess
 
         private Action<ValueStatusTimestamp, ValueStatusTimestamp>? _valueUpdated;
 
-        private ValueStatusTimestamp _valueStatusTimestamp;
+        private ValueStatusTimestamp _valueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown };
 
         private readonly object _valueStatusTimestampSyncRoot = new Object();
 

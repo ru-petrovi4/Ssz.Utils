@@ -113,23 +113,17 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
             {
                 try
                 {
-                    List<AddItemToListResult> result = Context.AddItemsToList(ListServerAlias,
+                    List<AliasResult> result = Context.AddItemsToList(ListServerAlias,
                         listInstanceIdsCollection);
                     
-                    foreach (AddItemToListResult r in result)
+                    foreach (AliasResult r in result)
                     {
                         TClientElementListItemBase? listItem = null;
-                        if (ListItemsManager.TryGetValue(r.AliasResult.ClientAlias, out listItem))
+                        if (ListItemsManager.TryGetValue(r.ClientAlias, out listItem))
                         {
-                            listItem.ServerAlias = r.AliasResult.ServerAlias;
-                            listItem.SetAddItemResult(new AddItemResult
-                            {
-                                ResultInfo = r.AliasResult.GetResultInfo(),
-                                DataTypeId = r.DataTypeId?.ToTypeId(),
-                                IsReadable = r.IsReadable,
-                                IsWritable = r.IsWritable,
-                            });
-                            if (r.AliasResult.StatusCode == JobStatusCodes.OK)
+                            listItem.ServerAlias = r.ServerAlias;
+                            listItem.AddItemResultInfo = r.GetResultInfo();
+                            if (r.StatusCode == JobStatusCodes.OK)
                             {
                                 listItem.IsInServerList = true;                                
                             }

@@ -85,7 +85,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="listServerAlias"></param>
         /// <param name="itemsToAdd"></param>
         /// <returns></returns>
-        internal async Task<List<AddItemToListResult>> AddItemsToListAsync(uint listServerAlias, List<ListItemInfo> itemsToAdd)
+        internal async Task<List<AliasResult>> AddItemsToListAsync(uint listServerAlias, List<ListItemInfo> itemsToAdd)
         {
             ServerListRoot? serverList;
 

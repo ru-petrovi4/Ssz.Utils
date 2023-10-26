@@ -26,7 +26,7 @@ namespace Ssz.Utils.DataAccess
         public ValueStatusTimestamp(Any value, DateTime timestampUtc)
         {
             Value = value;
-            ValueStatusCode = DataAccess.ValueStatusCodes.Good;
+            ValueStatusCode = ValueStatusCodes.Good;
             TimestampUtc = timestampUtc;
         }
 
@@ -37,7 +37,7 @@ namespace Ssz.Utils.DataAccess
         public ValueStatusTimestamp(Any value)
         {
             Value = value;
-            ValueStatusCode = DataAccess.ValueStatusCodes.Good;
+            ValueStatusCode = ValueStatusCodes.Good;
             TimestampUtc = DateTime.UtcNow;
         }
 
@@ -135,12 +135,24 @@ namespace Ssz.Utils.DataAccess
 
     public static class ValueStatusCodes
     {
-        public const uint Unknown = 0;
+        public const uint Good = 0; // 0
 
-        public const uint ItemDoesNotExist = 1;
+        public const uint Unknown = 0b00000001;  // 1
 
-        public const uint Good = 2;
+        public const uint ItemDoesNotExist = 0b00000010;  // 2
 
-        public static bool IsGood(uint valueStatusCode) => valueStatusCode >= Good;
+        public const uint Readable = 0b00000100;  // 4
+
+        public const uint Writable = 0b00001000;  // 8          
+
+        public static bool IsGood(uint valueStatusCode) => (valueStatusCode & 0b00000011) == 0;
+
+        public static bool IsUnknown(uint valueStatusCode) => (valueStatusCode & Unknown) != 0;
+
+        public static bool IsItemDoesNotExist(uint valueStatusCode) => (valueStatusCode & ItemDoesNotExist) != 0;
+
+        public static bool IsReadable(uint valueStatusCode) => (valueStatusCode & Readable) != 0;
+
+        public static bool IsWritable(uint valueStatusCode) => (valueStatusCode & Writable) != 0;
     }
 }

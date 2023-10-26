@@ -135,12 +135,10 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                     foreach (DataAccessGrpcListItemWrapper dataAccessGrpcListItemWrapper in DataAccessGrpcListItemWrappersDictionary.Values)
                     {                        
                         foreach (var clientObjectInfo in dataAccessGrpcListItemWrapper.ClientObjectInfosCollection)
-                        {
-                            bool notifyClientObj_AddItemResult = clientObjectInfo.NotifyClientObj_AddItemResult;
+                        {                            
                             bool notifyClientObj_ValueStatusTimestamp = clientObjectInfo.NotifyClientObj_ValueStatusTimestamp;
-                            if (notifyClientObj_AddItemResult || notifyClientObj_ValueStatusTimestamp)
-                            {
-                                clientObjectInfo.NotifyClientObj_AddItemResult = false;
+                            if (notifyClientObj_ValueStatusTimestamp)
+                            {                                
                                 clientObjectInfo.NotifyClientObj_ValueStatusTimestamp = false;
                                 if (clientObjectInfo.ClientObj is not null)
                                 {
@@ -148,35 +146,23 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                                     {
                                         ClientObj = clientObjectInfo.ClientObj
                                     };
-                                    if (dataAccessGrpcListItemWrapper.FailedAddItemResult is not null)
-                                    {
-                                        if (notifyClientObj_AddItemResult)
-                                        {
-                                            elementValuesCallbackChange.AddItemResult = dataAccessGrpcListItemWrapper.FailedAddItemResult;
-                                        }
+                                    if (dataAccessGrpcListItemWrapper.FailedAddItemResultInfo is not null)
+                                    {                                        
                                         if (notifyClientObj_ValueStatusTimestamp)
                                         {
                                             elementValuesCallbackChange.ValueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist };
                                         }                                        
                                     }
                                     else if (dataAccessGrpcListItemWrapper.DataAccessGrpcListItem is not null &&
-                                            dataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResult is not null)
-                                    {
-                                        if (notifyClientObj_AddItemResult)
-                                        {
-                                            elementValuesCallbackChange.AddItemResult = dataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResult;
-                                        }
+                                            dataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResultInfo is not null)
+                                    {                                        
                                         if (notifyClientObj_ValueStatusTimestamp)
                                         {
                                             elementValuesCallbackChange.ValueStatusTimestamp = dataAccessGrpcListItemWrapper.DataAccessGrpcListItem.ValueStatusTimestamp;
                                         }                                       
                                     }
                                     else
-                                    {
-                                        if (notifyClientObj_AddItemResult)
-                                        {
-                                            elementValuesCallbackChange.AddItemResult = AddItemResult.UnknownAddItemResult;
-                                        }
+                                    {                                        
                                         if (notifyClientObj_ValueStatusTimestamp)
                                         {
                                             elementValuesCallbackChange.ValueStatusTimestamp = new ValueStatusTimestamp(new Any(), ValueStatusCodes.Unknown, utcNow);
@@ -277,8 +263,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 
                 if (clientObjectInfo.DataAccessGrpcListItemWrapper is null ||
                     clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem is null ||
-                    clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResult is null ||
-                    clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResult.ResultInfo.StatusCode != JobStatusCodes.OK)
+                    clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResultInfo is null ||
+                    clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResultInfo.StatusCode != JobStatusCodes.OK)
                 {
                     objects.Add(clientObj);
                     resultInfos.Add(new ResultInfo { StatusCode = JobStatusCodes.FailedPrecondition });
@@ -331,8 +317,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             
             if (clientObjectInfo.DataAccessGrpcListItemWrapper is null || 
                 clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem is null ||
-                clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResult is null ||
-                clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResult.ResultInfo.StatusCode != JobStatusCodes.OK)
+                clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResultInfo is null ||
+                clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResultInfo.StatusCode != JobStatusCodes.OK)
                 return new ResultInfo { StatusCode = JobStatusCodes.FailedPrecondition };
 
             ClientElementValueListItem dataGrpcElementValueListItem = clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem;
@@ -382,11 +368,6 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         public class ElementValuesCallbackChange
         {
             public object ClientObj = null!;
-            
-            /// <summary>
-            ///     Need update if not null
-            /// </summary>
-            public AddItemResult? AddItemResult;
 
             /// <summary>
             ///     Need update if not null

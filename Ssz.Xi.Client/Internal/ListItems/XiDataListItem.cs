@@ -199,7 +199,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         /// <summary>
         ///     This data member is the private representation of the DataValue property.
         /// </summary>
-        private ValueStatusTimestamp _valueStatusTimestamp = new ValueStatusTimestamp();
+        private ValueStatusTimestamp _valueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown };
 
         #endregion
     }

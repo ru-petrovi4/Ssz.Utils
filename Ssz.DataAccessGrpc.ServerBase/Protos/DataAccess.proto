@@ -159,15 +159,8 @@ message AddItemsToListRequest {
   repeated ListItemInfo items_to_add = 3;
 }
 
-message AddItemToListResult {  
-  AliasResult alias_result = 1;
-  TypeId data_type_id = 2; 
-  bool is_readable = 3;
-  bool is_writable = 4;
-}
-
 message AddItemsToListReply {  
-  repeated AddItemToListResult results = 1;
+  repeated AliasResult results = 1;
 }
 
 message RemoveItemsFromListRequest {

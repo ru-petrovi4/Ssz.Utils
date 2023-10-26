@@ -77,7 +77,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public bool ListCallbackIsEnabled { get; protected set; }
 
-        public virtual Task<List<AddItemToListResult>> AddItemsToListAsync(List<ListItemInfo> itemsToAdd)
+        public virtual Task<List<AliasResult>> AddItemsToListAsync(List<ListItemInfo> itemsToAdd)
         {
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid List Type for this Request."));
         }
