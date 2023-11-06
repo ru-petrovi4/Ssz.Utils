@@ -214,6 +214,42 @@ namespace Ssz.Utils.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The configuration file &apos;{0}&apos; was not found and is not optional..
+        /// </summary>
+        public static string Error_FileNotFound {
+            get {
+                return ResourceManager.GetString("Error_FileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File path must be a non-empty string..
+        /// </summary>
+        public static string Error_InvalidFilePath {
+            get {
+                return ResourceManager.GetString("Error_InvalidFilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A duplicate key &apos;{0}&apos; was found..
+        /// </summary>
+        public static string Error_KeyIsDuplicated {
+            get {
+                return ResourceManager.GetString("Error_KeyIsDuplicated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not parse the YAML file: {0}..
+        /// </summary>
+        public static string Error_YamlParseError {
+            get {
+                return ResourceManager.GetString("Error_YamlParseError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File does not exist or  is not readable.
         /// </summary>
         public static string FileDoesNotExist {
