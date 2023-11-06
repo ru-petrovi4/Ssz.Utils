@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 
-namespace DevAttic.ConfigCrypter.CertificateLoaders
+namespace Ssz.Utils.ConfigCrypter.CertificateLoaders
 {
     /// <summary>
     /// Loader that loads a certificate from the filesystem.
@@ -8,14 +8,14 @@ namespace DevAttic.ConfigCrypter.CertificateLoaders
     public class FilesystemCertificateLoader : ICertificateLoader
     {
         private readonly string _certificatePath;
-        private readonly string _certificatePassword;
+        private readonly string? _certificatePassword;
 
         /// <summary>
         /// Creates an instance of the certificate loader.
         /// </summary>
         /// <param name="certificatePath">Fully qualified path to the certificate (.pfx file).</param>
         /// <param name="certificatePassword">Password of the certificate, if available.</param>
-        public FilesystemCertificateLoader(string certificatePath, string certificatePassword = null)
+        public FilesystemCertificateLoader(string certificatePath, string? certificatePassword = null)
         {
             _certificatePath = certificatePath;
             _certificatePassword = certificatePassword;
@@ -25,7 +25,7 @@ namespace DevAttic.ConfigCrypter.CertificateLoaders
         /// Loads a certificate from the given location on the filesystem.
         /// </summary>
         /// <returns>A X509Certificate2 instance.</returns>
-        public X509Certificate2 LoadCertificate()
+        public X509Certificate2? LoadCertificate()
         {
             return string.IsNullOrEmpty(_certificatePassword) ?
                 new X509Certificate2(_certificatePath) :

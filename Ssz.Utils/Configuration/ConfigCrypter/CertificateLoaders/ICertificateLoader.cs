@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 
-namespace DevAttic.ConfigCrypter.CertificateLoaders
+namespace Ssz.Utils.ConfigCrypter.CertificateLoaders
 {
     /// <summary>
     /// Responsible for loading a certificate.
@@ -12,6 +12,6 @@ namespace DevAttic.ConfigCrypter.CertificateLoaders
         /// Loads a certificate.
         /// </summary>
         /// <returns>A X509Certificate2 instance.</returns>
-        X509Certificate2 LoadCertificate();
+        X509Certificate2? LoadCertificate();
     }
 }

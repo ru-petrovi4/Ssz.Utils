@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
-namespace DevAttic.ConfigCrypter.Crypters
+namespace Ssz.Utils.ConfigCrypter.Crypters
 {
     /// <summary>
     /// A crypter that is used to encrypt and decrypt simple strings.
@@ -12,13 +13,15 @@ namespace DevAttic.ConfigCrypter.Crypters
         /// </summary>
         /// <param name="value">String to decrypt.</param>
         /// <returns>Encrypted string.</returns>
-        string DecryptString(string value);
+        [return: NotNullIfNotNull(nameof(value))]
+        string? DecryptString(string? value);
 
         /// <summary>
         /// Encrypts the given string.
         /// </summary>
         /// <param name="value">String to encrypt.</param>
         /// <returns>Encrypted string.</returns>
-        string EncryptString(string value);
+        [return: NotNullIfNotNull(nameof(value))]
+        string? EncryptString(string? value);
     }
 }

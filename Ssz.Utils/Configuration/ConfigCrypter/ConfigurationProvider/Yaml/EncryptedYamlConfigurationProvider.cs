@@ -1,21 +1,21 @@
 ﻿using Ssz.Utils.Yaml;
 
-namespace DevAttic.ConfigCrypter.ConfigProviders.Yaml
+namespace Ssz.Utils.ConfigCrypter.ConfigurationProviders.Yaml
 {
     /// <summary>
     ///  Yaml configuration provider that uses the underlying crypter to decrypt the given keys.
     /// </summary>
-    public class EncryptedYamlConfigProvider : YamlConfigurationProvider
+    public class EncryptedYamlConfigurationProvider : YamlConfigurationProvider
     {
-        private readonly EncryptedYamlConfigSource _YamlConfigSource;
+        private readonly EncryptedYamlConfigurationSource _configurationSource;
 
         /// <summary>
         /// Creates an instance of the EncryptedYamlConfigProvider.
         /// </summary>
-        /// <param name="source">EncryptedYamlConfigSource that is used to configure the provider.</param>
-        public EncryptedYamlConfigProvider(EncryptedYamlConfigSource source) : base(source)
+        /// <param name="configurationSource">EncryptedYamlConfigSource that is used to configure the provider.</param>
+        public EncryptedYamlConfigurationProvider(EncryptedYamlConfigurationSource configurationSource) : base(configurationSource)
         {
-            _YamlConfigSource = source;
+            _configurationSource = configurationSource;
         }
 
         /// <summary>
@@ -25,9 +25,9 @@ namespace DevAttic.ConfigCrypter.ConfigProviders.Yaml
         {
             base.Load();
 
-            using (var crypter = _YamlConfigSource.CrypterFactory(_YamlConfigSource))
+            using (var crypter = _configurationSource.CrypterFactory(_configurationSource))
             {
-                foreach (var key in _YamlConfigSource.KeysToDecrypt)
+                foreach (var key in _configurationSource.KeysToDecrypt)
                 {
                     if (Data.TryGetValue(key, out var encryptedValue))
                     {

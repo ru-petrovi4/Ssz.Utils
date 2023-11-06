@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using DevAttic.ConfigCrypter.CertificateLoaders;
+using Ssz.Utils.ConfigCrypter.CertificateLoaders;
 
-namespace DevAttic.ConfigCrypter.Crypters
+namespace Ssz.Utils.ConfigCrypter.Crypters
 {
     /// <summary>
     /// RSA based crypter that uses the public and private key of a certificate to encrypt and decrypt strings.
@@ -12,8 +13,8 @@ namespace DevAttic.ConfigCrypter.Crypters
     public class RSACrypter : ICrypter
     {
         private readonly ICertificateLoader _certificateLoader;
-        private RSA _privateKey;
-        private RSA _publicKey;
+        private RSA? _privateKey;
+        private RSA? _publicKey;
 
         /// <summary>
         ///  Creates an instance of the RSACrypter.
@@ -22,7 +23,12 @@ namespace DevAttic.ConfigCrypter.Crypters
         public RSACrypter(ICertificateLoader certificateLoader)
         {
             _certificateLoader = certificateLoader;
-            InitKeys();
+
+            using (var certificate = _certificateLoader.LoadCertificate())
+            {
+                _privateKey = certificate!.GetRSAPrivateKey();
+                _publicKey = certificate!.GetRSAPublicKey();
+            }
         }
 
         /// <summary>
@@ -30,12 +36,23 @@ namespace DevAttic.ConfigCrypter.Crypters
         /// </summary>
         /// <param name="value">String to decrypt.</param>
         /// <returns>Encrypted string.</returns>
-        public string DecryptString(string value)
+        [return: NotNullIfNotNull(nameof(value))]
+        public string? DecryptString(string? value)
         {
-            var decodedBase64 = Convert.FromBase64String(value);
-            var decryptedValue = _privateKey.Decrypt(decodedBase64, RSAEncryptionPadding.OaepSHA512);
+            if (String.IsNullOrEmpty(value))
+                return value;
 
-            return Encoding.UTF8.GetString(decryptedValue);
+#if NET7_0_OR_GREATER
+            Span<byte> buffer = new Span<byte>(new byte[value.Length]);
+            if (!Convert.TryFromBase64String(value, buffer, out int bytesParsed))
+                return value;
+            var decryptedBytes = _privateKey!.Decrypt(buffer, RSAEncryptionPadding.OaepSHA512);
+#else       
+            var encryptedBytes = Convert.FromBase64String(value);
+            var decryptedBytes = _privateKey!.Decrypt(encryptedBytes, RSAEncryptionPadding.OaepSHA512);            
+#endif
+
+            return Encoding.UTF8.GetString(decryptedBytes);
         }
 
         /// <summary>
@@ -52,11 +69,15 @@ namespace DevAttic.ConfigCrypter.Crypters
         /// </summary>
         /// <param name="value">String to encrypt.</param>
         /// <returns>Encrypted string.</returns>
-        public string EncryptString(string value)
+        [return: NotNullIfNotNull(nameof(value))]
+        public string? EncryptString(string? value)
         {
-            var encryptedValue = _publicKey.Encrypt(Encoding.UTF8.GetBytes(value), RSAEncryptionPadding.OaepSHA512);
+            if (String.IsNullOrEmpty(value)) 
+                return value;
 
-            return Convert.ToBase64String(encryptedValue);
+            var encryptedBytes = _publicKey!.Encrypt(Encoding.UTF8.GetBytes(value), RSAEncryptionPadding.OaepSHA512);
+
+            return Convert.ToBase64String(encryptedBytes);
         }
 
         /// <summary>
@@ -70,15 +91,6 @@ namespace DevAttic.ConfigCrypter.Crypters
                 _privateKey?.Dispose();
                 _publicKey?.Dispose();
             }
-        }
-
-        private void InitKeys()
-        {
-            using (var certificate = _certificateLoader.LoadCertificate())
-            {
-                _privateKey = certificate.GetRSAPrivateKey();
-                _publicKey = certificate.GetRSAPublicKey();
-            }
-        }
+        }        
     }
 }

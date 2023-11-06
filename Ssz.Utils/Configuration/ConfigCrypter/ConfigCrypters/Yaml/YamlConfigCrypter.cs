@@ -1,9 +1,10 @@
 ﻿using System;
-using DevAttic.ConfigCrypter.Crypters;
+using System.Collections.Generic;
+using Ssz.Utils.ConfigCrypter.Crypters;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace DevAttic.ConfigCrypter.ConfigCrypters.Yaml
+namespace Ssz.Utils.ConfigCrypter.ConfigCrypters.Yaml
 {
     /// <summary>
     /// Config crypter that encrypts and decrypts keys in Yaml config files.
@@ -25,13 +26,15 @@ namespace DevAttic.ConfigCrypter.ConfigCrypters.Yaml
         /// Decrypts the key in the given content of a config file.
         /// </summary>
         /// <param name="configFileContent">String content of a config file.</param>
-        /// <param name="configKey">Key of the config entry. The key has to be in YamlPath format.</param>
+        /// <param name="configKeys">Keys of the config entry. The key has to be in YamlPath format.</param>
         /// <returns>The content of the config file where the key has been decrypted.</returns>
-        public string DecryptKey(string configFileContent, string configKey)
+        public string DecryptKeys(string configFileContent, IEnumerable<string> configKeys)
         {
             try
             {                
                 var newConfigContent = configFileContent;
+
+                //throw new NotImplementedException();
 
                 return newConfigContent;
             }
@@ -51,13 +54,15 @@ namespace DevAttic.ConfigCrypter.ConfigCrypters.Yaml
         /// Encrypts the key in the given content of a config file.
         /// </summary>
         /// <param name="configFileContent">String content of a config file.</param>
-        /// <param name="configKey">Key of the config entry. The key has to be in YamlPath format.</param>
+        /// <param name="configKeys">Keys of the config entry. The key has to be in YamlPath format.</param>
         /// <returns>The content of the config file where the key has been encrypted.</returns>
-        public string EncryptKey(string configFileContent, string configKey)
+        public string EncryptKeys(string configFileContent, IEnumerable<string> configKeys)
         {
             try
             {                
                 var newConfigContent = configFileContent;
+
+                //throw new NotImplementedException();
 
                 return newConfigContent;
             }
