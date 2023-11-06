@@ -41,8 +41,7 @@ namespace Ssz.Utils.Logging
             if (!IsEnabled(logLevel))
                 return;
 
-            string logLevelString = new Any(logLevel).ValueAsString(true) + @":";
-            string line = $"{logLevelString,-13}";
+            string line = $"{DateTime.Now:O}  {logLevel,-11}  ID:{eventId.Id}  ";
             lock (SyncRoot)
             {
                 line += GetScopesString();
@@ -51,7 +50,7 @@ namespace Ssz.Utils.Logging
             Exception? ex = exception;
             if (ex is not null)
             {                
-                line += "\tException: " + ex.Message;
+                line += "  Exception: " + ex.Message;
             }
 
             _writeLineAction(line);

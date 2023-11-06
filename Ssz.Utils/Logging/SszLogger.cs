@@ -32,7 +32,7 @@ namespace Ssz.Utils.Logging
             if (disposing)
             {
                 _timer.Dispose();
-                lock (_logFileTextWriter)
+                lock (SyncRoot)
                 {
                     _logFileTextWriter.Dispose();
                 }
@@ -66,48 +66,33 @@ namespace Ssz.Utils.Logging
             if (!IsEnabled(logLevel))
                 return;
 
-            string line1;
-            if (eventId.Id != 0)
-                line1 = $"[ {eventId.Id}: {logLevel,-11} ]";
-            else
-                line1 = $"[ {logLevel,-11} ]";
-
-            string line2 = "\t";
+            string header = $"{DateTime.Now:O}  {logLevel,-11}  ID:{eventId.Id}";
+            
             lock (SyncRoot)
             {
-                line2 += GetScopesString();
-            }            
-            line2 += formatter(state, exception);
-            Exception? ex = exception;
-            while (ex is not null)
-            {
-                line2 += "\n";
-                line2 += "\tException: ";
-                line2 += ex.Message;
+                string content = "\t";
+                content += GetScopesString();
+                content += formatter(state, exception);
+                Exception? ex = exception;
+                while (ex is not null)
+                {
+                    content += "\n\tException: ";
+                    content += ex.Message;
+                    content += "\n";
+                    content += ex.StackTrace;
 
-                line2 += "\n";
-                line2 += "\tStackTrace: ";
-                line2 += ex.StackTrace;
+                    ex = ex.InnerException;
+                }
 
-                ex = ex.InnerException;
-            }
-
-            if (Options.DuplicateInConsole)
-            {
                 ConsoleColor originalColor = Console.ForegroundColor;
-
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine(line1);
-
+                Console.WriteLine(header);
                 Console.ForegroundColor = originalColor;
-                Console.WriteLine(line2);
-            }
-            lock (_logFileTextWriter)
-            {
-                _logFileTextWriter.WriteLine(line1);
+                Console.WriteLine(content);
 
-                _logFileTextWriter.WriteLine(line2);
-            }
+                _logFileTextWriter.WriteLine(header);
+                _logFileTextWriter.WriteLine(content);            
+            }                        
         }
 
         #endregion        
@@ -118,7 +103,7 @@ namespace Ssz.Utils.Logging
         {
             if (Disposed) return;
 
-            lock (_logFileTextWriter)
+            lock (SyncRoot)
             {
                 _logFileTextWriter.Flush();
             }            
@@ -130,7 +115,7 @@ namespace Ssz.Utils.Logging
 
         private Timer _timer;
 
-        private readonly string _name;
+        private readonly string _name;        
 
         private readonly LogFileTextWriter _logFileTextWriter;
 
