@@ -3,9 +3,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using Ssz.Utils.ConfigCrypter.CertificateLoaders;
+using Ssz.Utils.ConfigurationCrypter.CertificateLoaders;
 
-namespace Ssz.Utils.ConfigCrypter.Crypters
+namespace Ssz.Utils.ConfigurationCrypter.Crypters
 {
     /// <summary>
     /// RSA based crypter that uses the public and private key of a certificate to encrypt and decrypt strings.
@@ -46,7 +46,7 @@ namespace Ssz.Utils.ConfigCrypter.Crypters
             Span<byte> buffer = new Span<byte>(new byte[value.Length]);
             if (!Convert.TryFromBase64String(value, buffer, out int bytesParsed))
                 return value;
-            var decryptedBytes = _privateKey!.Decrypt(buffer, RSAEncryptionPadding.OaepSHA512);
+            var decryptedBytes = _privateKey!.Decrypt(buffer.Slice(0, bytesParsed), RSAEncryptionPadding.OaepSHA512);
 #else       
             var encryptedBytes = Convert.FromBase64String(value);
             var decryptedBytes = _privateKey!.Decrypt(encryptedBytes, RSAEncryptionPadding.OaepSHA512);            

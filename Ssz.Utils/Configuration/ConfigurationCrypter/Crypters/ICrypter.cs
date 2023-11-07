@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Ssz.Utils.ConfigCrypter.Crypters
+namespace Ssz.Utils.ConfigurationCrypter.Crypters
 {
     /// <summary>
     /// A crypter that is used to encrypt and decrypt simple strings.

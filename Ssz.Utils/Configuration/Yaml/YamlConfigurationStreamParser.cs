@@ -10,9 +10,7 @@ namespace Ssz.Utils.Yaml
 {
     internal class YamlConfigurationStreamParser
     {
-        private readonly IDictionary<string, string?> _data = new SortedDictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
-        private readonly Stack<string> _context = new();
-        private string _currentPath = @"";
+        #region public functions
 
         public IDictionary<string, string?> Parse(Stream input)
         {
@@ -34,32 +32,30 @@ namespace Ssz.Utils.Yaml
             return _data;
         }
 
-        private void VisitYamlNodePair(KeyValuePair<YamlNode, YamlNode> yamlNodePair)
+        #endregion        
+
+        #region private functions        
+
+        private void VisitYamlNode(YamlNode yamlNode)
         {
-            var context = ((YamlScalarNode)yamlNodePair.Key).Value ?? @"";
-            VisitYamlNode(context, yamlNodePair.Value);
+            if (yamlNode is YamlScalarNode scalarNode)
+            {                
+                VisitYamlScalarNode(scalarNode);
+            }
+            if (yamlNode is YamlMappingNode mappingNode)
+            {
+                VisitYamlMappingNode(mappingNode);
+            }
+            if (yamlNode is YamlSequenceNode sequenceNode)
+            {
+                VisitYamlSequenceNode(sequenceNode);
+            }
         }
 
-        private void VisitYamlNode(string context, YamlNode node)
-        {
-            if (node is YamlScalarNode scalarNode)
-            {
-                VisitYamlScalarNode(context, scalarNode);
-            }
-            if (node is YamlMappingNode mappingNode)
-            {
-                VisitYamlMappingNode(context, mappingNode);
-            }
-            if (node is YamlSequenceNode sequenceNode)
-            {
-                VisitYamlSequenceNode(context, sequenceNode);
-            }
-        }
-
-        private void VisitYamlScalarNode(string context, YamlScalarNode yamlValue)
+        private void VisitYamlScalarNode(YamlScalarNode yamlScalarNode)
         {
             //a node with a single 1-1 mapping 
-            EnterContext(context);
+
             var currentKey = _currentPath;
 
             if (_data.ContainsKey(currentKey))
@@ -67,45 +63,36 @@ namespace Ssz.Utils.Yaml
                 throw new FormatException(String.Format(Resources.Error_YamlParseError, currentKey));
             }
 
-            _data[currentKey] = IsNullValue(yamlValue) ? null : yamlValue.Value;
-            ExitContext();
+            _data[currentKey] = IsNullValue(yamlScalarNode) ? null : yamlScalarNode.Value;            
         }
 
-        private void VisitYamlMappingNode(YamlMappingNode node)
-        {
-            foreach (var yamlNodePair in node.Children)
+        private void VisitYamlMappingNode(YamlMappingNode yamlMappingNode)
+        { 
+            foreach (var yamlNodePair in yamlMappingNode.Children)
             {
-                VisitYamlNodePair(yamlNodePair);
+                var context = ((YamlScalarNode)yamlNodePair.Key).Value ?? @"";
+
+                EnterContext(context);
+
+                VisitYamlNode(yamlNodePair.Value);
+
+                ExitContext();
             }
         }
 
-        private void VisitYamlMappingNode(string context, YamlMappingNode yamlValue)
+        private void VisitYamlSequenceNode(YamlSequenceNode yamlSequenceNode)
         {
-            //a node with an associated sub-document
-            EnterContext(context);
+            //a node with an associated list            
 
-            VisitYamlMappingNode(yamlValue);
-
-            ExitContext();
-        }
-
-        private void VisitYamlSequenceNode(string context, YamlSequenceNode yamlValue)
-        {
-            //a node with an associated list
-            EnterContext(context);
-
-            VisitYamlSequenceNode(yamlValue);
-
-            ExitContext();
-        }
-
-        private void VisitYamlSequenceNode(YamlSequenceNode node)
-        {
-            for (int i = 0; i < node.Children.Count; i++)
+            for (int i = 0; i < yamlSequenceNode.Children.Count; i++)
             {
-                VisitYamlNode(i.ToString(), node.Children[i]);
-            }
-        }
+                EnterContext(i.ToString());
+
+                VisitYamlNode(yamlSequenceNode.Children[i]);
+
+                ExitContext();
+            }            
+        }        
 
         private void EnterContext(string context)
         {
@@ -119,15 +106,25 @@ namespace Ssz.Utils.Yaml
             _currentPath = ConfigurationPath.Combine(_context.Reverse());
         }
 
-        private bool IsNullValue(YamlScalarNode yamlValue)
+        private bool IsNullValue(YamlScalarNode yamlScalarNode)
         {
-            return yamlValue.Style == YamlDotNet.Core.ScalarStyle.Plain
+            return yamlScalarNode.Style == YamlDotNet.Core.ScalarStyle.Plain
                 && (
-                    yamlValue.Value == "~"
-                    || yamlValue.Value == "null"
-                    || yamlValue.Value == "Null"
-                    || yamlValue.Value == "NULL"
+                    yamlScalarNode.Value == "~"
+                    || yamlScalarNode.Value == "null"
+                    || yamlScalarNode.Value == "Null"
+                    || yamlScalarNode.Value == "NULL"
                 );
         }
+
+        #endregion
+
+        #region private fields
+
+        private readonly IDictionary<string, string?> _data = new SortedDictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
+        private readonly Stack<string> _context = new();
+        private string _currentPath = @"";
+
+        #endregion
     }
 }

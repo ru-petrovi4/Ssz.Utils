@@ -1,10 +1,10 @@
-﻿using Ssz.Utils.ConfigCrypter.CertificateLoaders;
-using Ssz.Utils.ConfigCrypter.ConfigurationProviders.Yaml;
+﻿using Ssz.Utils.ConfigurationCrypter.CertificateLoaders;
+using Ssz.Utils.ConfigurationCrypter.ConfigurationProviders.Yaml;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using System;
 
-namespace Ssz.Utils.ConfigCrypter.Extensions
+namespace Ssz.Utils.ConfigurationCrypter.Extensions
 {
     public static class ConfigurationBuilderExtensions
     {

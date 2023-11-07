@@ -1,6 +1,6 @@
 ﻿using Ssz.Utils.Yaml;
 
-namespace Ssz.Utils.ConfigCrypter.ConfigurationProviders.Yaml
+namespace Ssz.Utils.ConfigurationCrypter.ConfigurationProviders.Yaml
 {
     /// <summary>
     ///  Yaml configuration provider that uses the underlying crypter to decrypt the given keys.

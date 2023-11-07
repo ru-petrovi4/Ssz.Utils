@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 
-namespace Ssz.Utils.ConfigCrypter.CertificateLoaders
+namespace Ssz.Utils.ConfigurationCrypter.CertificateLoaders
 {
     /// <summary>
     /// Loader that loads a certificate from the filesystem.

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using Ssz.Utils.ConfigCrypter.CertificateLoaders;
-using Ssz.Utils.ConfigCrypter.Crypters;
+using Ssz.Utils.ConfigurationCrypter.CertificateLoaders;
+using Ssz.Utils.ConfigurationCrypter.Crypters;
 using Microsoft.Extensions.Configuration;
 using Ssz.Utils.Yaml;
 
-namespace Ssz.Utils.ConfigCrypter.ConfigurationProviders.Yaml
+namespace Ssz.Utils.ConfigurationCrypter.ConfigurationProviders.Yaml
 {
     /// <summary>
     /// ConfigurationSource for encrypted Yaml config files.
