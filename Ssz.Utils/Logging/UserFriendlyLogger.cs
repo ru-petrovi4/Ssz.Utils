@@ -41,12 +41,19 @@ namespace Ssz.Utils.Logging
             if (!IsEnabled(logLevel))
                 return;
 
-            string line = $"{DateTime.Now:O}  {logLevel,-11}  ID:{eventId.Id}  ";
+            string line = $"{logLevel,-11} {DateTime.Now:O} ID:{eventId.Id}  ";
             lock (SyncRoot)
             {
                 line += GetScopesString();
-            }            
-            line += formatter(state, exception);
+            }
+            try
+            {
+                line += formatter(state, exception);
+            }
+            catch
+            {
+                line += "<Invalid message params>";
+            }
             Exception? ex = exception;
             if (ex is not null)
             {                

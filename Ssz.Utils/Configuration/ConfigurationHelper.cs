@@ -101,7 +101,7 @@ namespace Ssz.Utils
                 if (!fileExists)
                 {
                     using var fileNameScope = loggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, fileName));
-                    loggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.FileDoesNotExist);
+                    loggersSet.WrapperUserFriendlyLogger.LogWarning(Properties.Resources.FileDoesNotExist);
                     return @"";
                 }
 
@@ -112,7 +112,7 @@ namespace Ssz.Utils
                         if (!fs.CanRead)
                         {
                             using var fileNameScope = loggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, fileName));
-                            loggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.FileIsNotReadable);
+                            loggersSet.WrapperUserFriendlyLogger.LogWarning(Properties.Resources.FileIsNotReadable);
                             return @"";
                         }                        
                     }
@@ -120,8 +120,8 @@ namespace Ssz.Utils
                 catch (Exception ex)
                 {
                     using var fileNameScope = loggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, fileName));
-                    loggersSet.Logger.LogError(ex, @"GetValue_FileName(...) Exception.");
-                    loggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.FileIsNotReadable);
+                    loggersSet.Logger.LogWarning(ex, @"GetValue_FileName(...) Exception.");
+                    loggersSet.WrapperUserFriendlyLogger.LogWarning(Properties.Resources.FileIsNotReadable);
                     return @"";
                 }
             }
@@ -135,7 +135,7 @@ namespace Ssz.Utils
                         if (!fs.CanWrite)
                         {
                             using var fileNameScope = loggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, fileName));
-                            loggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.FileIsNotWritable);
+                            loggersSet.WrapperUserFriendlyLogger.LogWarning(Properties.Resources.FileIsNotWritable);
                             return @"";
                         }
                     }
@@ -143,8 +143,8 @@ namespace Ssz.Utils
                 catch (Exception ex)
                 {
                     using var fileNameScope = loggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, fileName));
-                    loggersSet.Logger.LogError(ex, @"GetValue_FileName(...) Exception.");
-                    loggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.FileIsNotWritable);
+                    loggersSet.Logger.LogWarning(ex, @"GetValue_FileName(...) Exception.");
+                    loggersSet.WrapperUserFriendlyLogger.LogWarning(Properties.Resources.FileIsNotWritable);
                     return @"";
                 }
             }

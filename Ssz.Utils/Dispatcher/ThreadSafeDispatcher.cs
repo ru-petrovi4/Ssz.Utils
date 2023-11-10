@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,15 @@ namespace Ssz.Utils
 {
     public class ThreadSafeDispatcher : IDispatcher
     {
+        #region construction and destruction
+
+        public ThreadSafeDispatcher(ILogger? logger = null)
+        {
+            _logger = logger;
+        }
+
+        #endregion
+
         #region public functions       
 
         public void BeginInvoke(Action<CancellationToken> action)
@@ -51,8 +61,16 @@ namespace Ssz.Utils
                 var actionsInvocationList = actions.GetInvocationList();
                 foreach (Action<CancellationToken> action in actionsInvocationList)
                 {
-                    if (cancellationToken.IsCancellationRequested) return result;
-                    action.Invoke(cancellationToken);
+                    if (cancellationToken.IsCancellationRequested) 
+                        return result;
+                    try
+                    {
+                        action.Invoke(cancellationToken);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger?.LogError(ex, @"action.Invoke(cancellationToken) Error.");
+                    }                    
                     result += 1;
                 }                
             }
@@ -62,8 +80,16 @@ namespace Ssz.Utils
                 var asyncActionsInvocationList = asyncActions.GetInvocationList();
                 foreach (Func<CancellationToken, Task> asyncAction in asyncActionsInvocationList)
                 {
-                    if (cancellationToken.IsCancellationRequested) return result;
-                    await asyncAction.Invoke(cancellationToken).ConfigureAwait(false);
+                    if (cancellationToken.IsCancellationRequested)
+                        return result;
+                    try
+                    {
+                        await asyncAction.Invoke(cancellationToken).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger?.LogError(ex, @"await asyncAction.Invoke(cancellationToken) Error.");
+                    }                    
                     result += 1;
                 }                
             }                    
@@ -73,6 +99,8 @@ namespace Ssz.Utils
         #endregion
 
         #region private fields
+
+        private readonly ILogger? _logger;
 
         private Action<CancellationToken>? _actions;
 
