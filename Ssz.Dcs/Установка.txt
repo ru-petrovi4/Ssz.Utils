@@ -1,0 +1,5 @@
+1. Везде установить windowsdesktop-runtime-6.0.0-win-x64.exe
+2. Везде установить aspnetcore-runtime-6.0.0-win-x64.exe
+3. На сервере установить Ssz Dcs Central Server Setup
+4. На клиентах установить Ssz Dcs Central Server Client, при установке указать имя компьютера сервера или оставить localhost, если установка на том же компьютере, где установлен сервер.
+5. Файлы модели обновлять на сервере в папке C:\ProgramData\Ssz\Dcs.CentralServer\FilesStore\

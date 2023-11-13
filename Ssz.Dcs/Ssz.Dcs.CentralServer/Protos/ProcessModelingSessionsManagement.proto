@@ -1,0 +1,138 @@
+syntax = "proto3";
+
+option csharp_namespace = "Ssz.Dcs.CentralServer";
+
+import "google/protobuf/timestamp.proto";
+
+service ProcessModelingSessionsManagement {
+  rpc InitiateProcessModelingSession (InitiateProcessModelingSessionRequest) returns (InitiateProcessModelingSessionReply);
+
+  rpc GetProcessModelingSessionProps (GetProcessModelingSessionPropsRequest) returns (GetProcessModelingSessionPropsReply);
+
+  rpc ConcludeProcessModelingSession (ConcludeProcessModelingSessionRequest) returns (ConcludeProcessModelingSessionReply);  
+
+  rpc SetOperatorSessionProps (SetOperatorSessionPropsRequest) returns (SetOperatorSessionPropsReply);
+
+  rpc ConcludeOperatorSession (ConcludeOperatorSessionRequest) returns (ConcludeOperatorSessionReply);    
+
+  rpc NotifyJobProgress (NotifyJobProgressRequest) returns (NotifyJobProgressReply);    
+
+  rpc NotifyJournalEvent (NotifyJournalEventRequest) returns (NotifyJournalEventReply);  
+
+  rpc InsertUser (InsertUserRequest) returns (InsertUserReply);
+
+  rpc UpdateUser (UpdateUserRequest) returns (UpdateUserReply);
+
+  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserReply);
+}
+
+message InitiateProcessModelingSessionRequest {
+  string client_application_name = 1;
+  string client_workstation_name = 2;      
+  string process_model_name = 3;
+  string instructor_user_name = 4;
+  uint32 instructor_access_flags = 5;
+  string mode = 6;
+}
+
+message InitiateProcessModelingSessionReply {  
+  string process_modeling_session_id = 1;
+}
+
+message ConcludeProcessModelingSessionRequest {  
+  string process_modeling_session_id = 1;
+}
+
+message ConcludeProcessModelingSessionReply {  
+}
+
+message GetProcessModelingSessionPropsRequest {   
+  string process_modeling_session_id = 1;
+}
+
+message GetProcessModelingSessionPropsReply {  
+  string process_model_name = 1;
+  string process_model_name_to_display = 2;
+  string instructor_user_name = 3;
+  uint32 instructor_access_flags = 4;
+  string mode = 5;
+}
+
+message InitiateOperatorSessionRequest {
+  string operator_session_id = 1;
+  string process_modeling_session_id = 2;
+  string operator_workstation_name = 3;
+  string operator_role_id = 4;
+  string operator_role_name = 5;
+  string interface_path_relative_to_data_directory = 6;
+  string interface_name_to_display = 7;
+  string interface_additional_command_line = 8;
+}
+
+message InitiateOperatorSessionReply {  
+}
+
+message ConcludeOperatorSessionRequest {  
+  string operator_session_id = 1;
+}
+
+message ConcludeOperatorSessionReply {  
+}
+
+message SetOperatorSessionPropsRequest {  
+  string operator_session_id = 1;
+  string operator_user_name = 2;  
+}
+
+message SetOperatorSessionPropsReply {  
+}
+
+message NotifyJobProgressRequest {  
+  string job_id = 1;
+  uint32 progress_percent = 2; 
+  string progress_label_resource_name = 3;  
+  string progress_details = 4;
+  uint32 job_status_code = 5;
+}
+
+message NotifyJobProgressReply {  
+}
+
+message NotifyJournalEventRequest {  
+  string process_modeling_session_id = 1;
+  uint32 event_type = 2;
+  google.protobuf.Timestamp occurrence_time = 3;  
+  string text_message = 4;
+}
+
+message NotifyJournalEventReply {  
+}
+
+message InsertUserRequest {  
+  string data_access_utility_context_id = 1;  
+  string user_name = 2;
+  string personnel_number = 3;
+  string windows_user_name = 4;  
+}
+
+message InsertUserReply {   
+}
+
+message UpdateUserRequest {  
+  string data_access_utility_context_id = 1;
+  string user_name = 2;
+  string new_user_name = 3;
+  string new_personnel_number = 4;
+  string new_windows_user_name = 5;  
+}
+
+message UpdateUserReply {   
+}
+
+message DeleteUserRequest { 
+  string data_access_utility_context_id = 1;
+  string user_name = 2;  
+}
+
+message DeleteUserReply {   
+}

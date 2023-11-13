@@ -1,0 +1,82 @@
+﻿using JsonApiDotNetCore.Resources;
+using JsonApiDotNetCore.Resources.Annotations;
+using Ssz.Utils.Serialization;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Ssz.Dcs.CentralServer.Common.EntityFramework
+{
+    [Resource]
+    public class ScenarioResult : Identifiable<Int64>, IOwnedDataSerializable
+    {
+        #region public functions        
+
+        [ForeignKey(nameof(ProcessModelingSessionId))]
+        public ProcessModelingSession ProcessModelingSession { get; set; } = null!;
+
+        public Int64 ProcessModelingSessionId { get; set; }
+
+        public List<OperatorSession> OperatorSessions { get; set; } = new();
+
+        public DateTime StartDateTimeUtc { get; set; }
+
+        public DateTime? FinishDateTimeUtc { get; set; }
+
+        public UInt64 StartProcessModelTimeSeconds { get; set; }
+
+        public UInt64 FinishProcessModelTimeSeconds { get; set; }
+
+        public string ScenarioName { get; set; } = @"";
+
+        public string InitialConditionName { get; set; } = @"";
+
+        /// <summary>
+        ///     Штрафные баллы
+        /// </summary>
+        public int Penalty { get; set; }
+
+        public int MaxPenalty { get; set; }
+
+        public UInt64 ScenarioMaxProcessModelTimeSeconds { get; set; }
+
+        /// <summary>
+        ///     Оценка
+        /// </summary>
+        public string Status { get; set; } = @"";
+
+        public void SerializeOwnedData(SerializationWriter writer, object? context)
+        {
+            writer.Write(StartDateTimeUtc);
+            writer.WriteNullable(FinishDateTimeUtc);
+            writer.Write(StartProcessModelTimeSeconds);
+            writer.Write(FinishProcessModelTimeSeconds);
+            writer.Write(ScenarioName);
+            writer.Write(InitialConditionName);
+            writer.Write(Penalty);
+            writer.Write(MaxPenalty);
+            writer.Write(ScenarioMaxProcessModelTimeSeconds);
+            writer.Write(Status);
+        }
+
+        public void DeserializeOwnedData(SerializationReader reader, object? context)
+        {
+            StartDateTimeUtc = reader.ReadDateTime();            
+            FinishDateTimeUtc = reader.ReadNullable<DateTime>();            
+            StartProcessModelTimeSeconds = reader.ReadUInt64();
+            FinishProcessModelTimeSeconds = reader.ReadUInt64();
+            ScenarioName = reader.ReadString();
+            InitialConditionName = reader.ReadString();
+            Penalty = reader.ReadInt32();
+            MaxPenalty = reader.ReadInt32();
+            ScenarioMaxProcessModelTimeSeconds = reader.ReadUInt64();
+            Status = reader.ReadString();
+        }
+
+        #endregion
+    }
+}

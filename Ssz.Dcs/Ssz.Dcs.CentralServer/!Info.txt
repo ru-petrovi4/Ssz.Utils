@@ -1,0 +1,15 @@
+﻿appsettings.json всегда ищется в Current Directory
+Если ProgramDataDirectory не задана, то это Current Directory
+
+
+Константы для SystemName см. в Ssz.Dcs.CentralServer.Common/DataAccessConstants.cs
+SystemName это либо: 
+- "" - Utility Context
+- "DCS" - DCS Mode
+- "MODEL" - Default process modeling session
+- "<Process modeling session ID>" - Pprocess modeling session with specific ID
+
+
+
+Add-Migration Initialization -Context SqliteDcsCentralServerDbContext -OutputDir Migrations\SqliteMigrations
+Add-Migration Initialization -Context NpgsqlDcsCentralServerDbContext -OutputDir Migrations\NpgsqlMigrations
