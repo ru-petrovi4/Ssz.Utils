@@ -62,7 +62,7 @@ namespace Ssz.Dcs.CentralServer
 
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "CDT DCS CentralServer API", Version = "v1.0.0" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Ssz DCS CentralServer API", Version = "v1.0.0" });
 
                 //options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, @"Ssz.Dcs.CentralServer.Common.xml"));
                 //options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, @"Ssz.Dcs.CentralServer.xml"));

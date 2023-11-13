@@ -8,7 +8,7 @@ Logging:
     Microsoft.Hosting.Lifetime: "Warning"    
   SszLogger:     
     # путь до директории где будут храниться файлы журналов событий
-    LogsDirectory: "%ProgramData%\\CDT\\Logs"
+    LogsDirectory: "%ProgramData%\\Ssz\\Logs"
     # базовое имя файлов журналов
     LogFileName: "DeltaSim.CentralServer.log"
     # Флаг указывающий на необходимость дублирования события в стандартный поток вывода приложения
@@ -38,7 +38,7 @@ DcsCentralServerAddonDesc: "Центральный сервер DeltaSim"
 AllowedHosts: "*"
 # задается язык сообщений в журналах событий которые доступны через веб интерфейс ИТ-решения возможные значения RU EN
 UICulture: "RU"
-ProgramDataDirectory: "C:\\CDT.CentralServer"
+ProgramDataDirectory: "C:\\Ssz.CentralServer"
 DataAccessClientUserName: ""
 DataAccessClientPasswordHash: ""  
 #"DbType": "Postgres"

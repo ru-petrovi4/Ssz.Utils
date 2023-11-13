@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define dt GetDateTimeString('yyyy/mm/dd', '.', '');
-#define Company "CDT"
+#define Company "Ssz"
 
 [Setup]
 AllowNoIcons=yes
