@@ -21,8 +21,7 @@ namespace Ssz.Dcs.CentralServer
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="dataAccessProviderGetter_Addon"></param>
-        /// <param name="callbackDispatcher"></param>
+        /// <param name="dataAccessProviderGetter_Addon"></param>       
         public EngineSession(DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon)
         {            
             DataAccessProviderGetter_Addon = dataAccessProviderGetter_Addon;

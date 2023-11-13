@@ -10,7 +10,7 @@ Logging:
     # путь до директории где будут храниться файлы журналов событий
     LogsDirectory: "%ProgramData%\\Ssz\\Logs"
     # базовое имя файлов журналов
-    LogFileName: "DeltaSim.CentralServer.log"
+    LogFileName: "Dcs.CentralServer.log"
     # Флаг указывающий на необходимость дублирования события в стандартный поток вывода приложения
     DuplicateInConsole: "true"
     # количество дней которое должны храниться файлы журналов
@@ -30,11 +30,11 @@ Kestrel:
   Certificates: 
     Default: 
       # имя файла сертификата. Должен быть расположен в папке данных центрального сервера ПАЗ-Чек
-      Path: "Simcode_IdentityServer.pfx"
+      Path: "DefaultCertificate.pfx"
       # пароль от файла сертификата
       Password: "identityserver"
       AllowInvalid: true
-DcsCentralServerAddonDesc: "Центральный сервер DeltaSim"
+DcsCentralServerAddonDesc: "Центральный сервер SSZ.DCS"
 AllowedHosts: "*"
 # задается язык сообщений в журналах событий которые доступны через веб интерфейс ИТ-решения возможные значения RU EN
 UICulture: "RU"
