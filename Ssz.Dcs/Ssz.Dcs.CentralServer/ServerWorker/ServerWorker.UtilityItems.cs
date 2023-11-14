@@ -233,7 +233,7 @@ namespace Ssz.Dcs.CentralServer
             public void UpdateValue(string value, DateTime nowUtc)
             {
                 bool updated = false;
-                if (ValueStatusCodes.IsUnknown(_valueStatusTimestamp.ValueStatusCode))
+                if (ValueStatusCodes.IsUncertain(_valueStatusTimestamp.ValueStatusCode))
                 {
                     _valueStatusTimestamp = new ValueStatusTimestamp(new Any(value), ValueStatusCodes.Good, nowUtc);
                     updated = true;
@@ -260,7 +260,7 @@ namespace Ssz.Dcs.CentralServer
 
             #region private fields
 
-            private ValueStatusTimestamp _valueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown };
+            private ValueStatusTimestamp _valueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain };
 
             #endregion
         }

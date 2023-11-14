@@ -1,5 +1,4 @@
-﻿---
-Logging: 
+﻿Logging: 
   LogLevel: 
     # задается уровень логирования событий в файлы журналов
     Default: "Warning"

@@ -54,7 +54,7 @@ namespace Ssz.Utils.DataAccess
                 oldValueStatusTimestamp = _valueStatusTimestamp;
                 _valueStatusTimestamp = valueStatusTimestamp;
             }
-            if (!ValueStatusCodes.IsUnknown(valueStatusTimestamp.ValueStatusCode))
+            if (!ValueStatusCodes.IsUncertain(valueStatusTimestamp.ValueStatusCode))
                 ValueStatusTimestampUpdated.Set();
             if (_valueUpdated is not null) 
                 _valueUpdated(oldValueStatusTimestamp, valueStatusTimestamp);
@@ -99,7 +99,7 @@ namespace Ssz.Utils.DataAccess
 
         private Action<ValueStatusTimestamp, ValueStatusTimestamp>? _valueUpdated;
 
-        private ValueStatusTimestamp _valueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown };
+        private ValueStatusTimestamp _valueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain };
 
         private readonly object _valueStatusTimestampSyncRoot = new Object();
 

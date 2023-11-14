@@ -74,6 +74,28 @@ namespace YamlDotNet.RepresentationModel
         }
 
         /// <summary>
+        /// Called when this object is visiting a <see cref="YamlCommentNode"/>.
+        /// </summary>
+        /// <param name="comment">
+        /// The <see cref="YamlCommentNode"/> that is being visited.
+        /// </param>
+        protected virtual void Visit(YamlCommentNode comment)
+        {
+            // Do nothing.
+        }
+
+        /// <summary>
+        /// Called after this object finishes visiting a <see cref="YamlCommentNode"/>.
+        /// </summary>
+        /// <param name="comment">
+        /// The <see cref="YamlCommentNode"/> that has been visited.
+        /// </param>
+        protected virtual void Visited(YamlCommentNode comment)
+        {
+            // Do nothing.
+        }
+
+        /// <summary>
         /// Called when this object is visiting a <see cref="YamlScalarNode"/>.
         /// </summary>
         /// <param name="scalar">
@@ -208,6 +230,12 @@ namespace YamlDotNet.RepresentationModel
             Visit(document);
             VisitChildren(document);
             Visited(document);
+        }
+
+        void IYamlVisitor.Visit(YamlCommentNode comment)
+        {
+            Visit(comment);
+            Visited(comment);
         }
 
         void IYamlVisitor.Visit(YamlScalarNode scalar)

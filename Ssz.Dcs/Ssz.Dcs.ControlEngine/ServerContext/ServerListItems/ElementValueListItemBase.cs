@@ -23,7 +23,7 @@ namespace Ssz.Dcs.ControlEngine.ServerListItems
 
         public bool Changed { get; set; }
 
-        public ValueStatusTimestamp ValueStatusTimestamp { get; private set; } = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown };
+        public ValueStatusTimestamp ValueStatusTimestamp { get; private set; } = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain };
 
         /// <summary>
         ///     Updates value unconditionally
@@ -31,9 +31,9 @@ namespace Ssz.Dcs.ControlEngine.ServerListItems
         /// <param name="valueStatusTimestamp"></param>
         public void UpdateValueStatusTimestamp(ValueStatusTimestamp valueStatusTimestamp)
         {
-            if (ValueStatusCodes.IsUnknown(valueStatusTimestamp.ValueStatusCode))
+            if (ValueStatusCodes.IsUncertain(valueStatusTimestamp.ValueStatusCode))
             {
-                if (!ValueStatusCodes.IsUnknown(ValueStatusTimestamp.ValueStatusCode))
+                if (!ValueStatusCodes.IsUncertain(ValueStatusTimestamp.ValueStatusCode))
                 {
                     ValueStatusTimestamp = valueStatusTimestamp;
                     Changed = true;
@@ -51,14 +51,14 @@ namespace Ssz.Dcs.ControlEngine.ServerListItems
 
         public void Touch()
         {
-            if (ValueStatusCodes.IsUnknown(ValueStatusTimestamp.ValueStatusCode))
+            if (ValueStatusCodes.IsUncertain(ValueStatusTimestamp.ValueStatusCode))
                 return;
             Changed = true;
         }
 
         public void Reset()
         {
-            ValueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown };
+            ValueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain };
             Changed = false;
             PendingWriteValueStatusTimestamp = null;
         }

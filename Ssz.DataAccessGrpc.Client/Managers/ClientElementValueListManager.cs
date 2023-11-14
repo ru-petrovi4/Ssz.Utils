@@ -150,7 +150,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                                     {                                        
                                         if (notifyClientObj_ValueStatusTimestamp)
                                         {
-                                            elementValuesCallbackChange.ValueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist };
+                                            elementValuesCallbackChange.ValueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.BadNodeIdUnknown };
                                         }                                        
                                     }
                                     else if (dataAccessGrpcListItemWrapper.DataAccessGrpcListItem is not null &&
@@ -165,7 +165,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                                     {                                        
                                         if (notifyClientObj_ValueStatusTimestamp)
                                         {
-                                            elementValuesCallbackChange.ValueStatusTimestamp = new ValueStatusTimestamp(new Any(), ValueStatusCodes.Unknown, utcNow);
+                                            elementValuesCallbackChange.ValueStatusTimestamp = new ValueStatusTimestamp(new Any(), ValueStatusCodes.Uncertain, utcNow);
                                         }                                        
                                     }
                                     elementValuesCallbackEventArgs.ElementValuesCallbackChanges.Add(elementValuesCallbackChange);

@@ -43,6 +43,14 @@ namespace YamlDotNet.RepresentationModel
         void Visit(YamlDocument document);
 
         /// <summary>
+        /// Visits a <see cref="YamlCommentNode"/>.
+        /// </summary>
+        /// <param name="comment">
+        /// The <see cref="YamlCommentNode"/> that is being visited.
+        /// </param>
+        void Visit(YamlCommentNode comment);
+
+        /// <summary>
         /// Visits a <see cref="YamlScalarNode"/>.
         /// </summary>
         /// <param name="scalar">

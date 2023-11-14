@@ -155,7 +155,7 @@ namespace Ssz.Xi.Client.Api
                                     if (xiListItemWrapper.ItemDoesNotExist)
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist });
+                                        changedValues.Add(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.BadNodeIdUnknown });
                                     }
                                     else if (xiListItemWrapper.XiListItem is not null)
                                     {
@@ -165,7 +165,7 @@ namespace Ssz.Xi.Client.Api
                                     else
                                     {
                                         changedClientObjs.Add(modelItem.ClientObj);
-                                        changedValues.Add(new ValueStatusTimestamp(new Any(), ValueStatusCodes.Unknown, utcNow));
+                                        changedValues.Add(new ValueStatusTimestamp(new Any(), ValueStatusCodes.Uncertain, utcNow));
                                     }                                                                                                  
                                 }                                
                             }

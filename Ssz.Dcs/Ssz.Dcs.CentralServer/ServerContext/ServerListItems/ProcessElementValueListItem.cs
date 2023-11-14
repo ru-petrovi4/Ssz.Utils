@@ -40,9 +40,9 @@ namespace Ssz.Dcs.CentralServer.ServerListItems
 
         public void ValueSubscriptionsOnValueChanged()
         {
-            if (ValueSubscriptionsCollection.All(vs => ValueStatusCodes.IsItemDoesNotExist(vs.ValueStatusTimestamp.ValueStatusCode)))
+            if (ValueSubscriptionsCollection.All(vs => ValueStatusCodes.IsBad(vs.ValueStatusTimestamp.ValueStatusCode)))
             {
-                UpdateValueStatusTimestamp(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist });
+                UpdateValueStatusTimestamp(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Bad });
             }
             else
             {
@@ -53,7 +53,7 @@ namespace Ssz.Dcs.CentralServer.ServerListItems
                 }
                 else
                 {
-                    UpdateValueStatusTimestamp(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown });
+                    UpdateValueStatusTimestamp(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain });
                 }
             }
         }

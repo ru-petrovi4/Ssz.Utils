@@ -50,7 +50,7 @@ namespace Ssz.Utils.DataAccess
         /// </summary>
         public string MappedElementIdOrConst { get; private set; } = @"";
 
-        public ValueStatusTimestamp ValueStatusTimestamp { get; private set; } = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown };
+        public ValueStatusTimestamp ValueStatusTimestamp { get; private set; } = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain };
 
         public void Update(string mappedElementIdOrConst)
         {

@@ -216,7 +216,7 @@ namespace Ssz.Utils.DataAccess
                 try
                 {
                     callbackDispatcher.BeginInvoke(ct =>
-                        valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist }));
+                        valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.BadNodeIdUnknown }));
                 }
                 catch (Exception)
                 {

@@ -160,7 +160,7 @@ namespace Ssz.Dcs.CentralServer
                 {
                     foreach (ValueSubscription valueSubscription in item.ValueSubscriptionsCollection)
                     {
-                        if (ValueStatusCodes.IsItemDoesNotExist(valueSubscription.ValueStatusTimestamp.ValueStatusCode))
+                        if (ValueStatusCodes.IsBad(valueSubscription.ValueStatusTimestamp.ValueStatusCode))
                             continue;
                         var pendingWrite = valueSubscription.DataAccessProvider.Obj as PendingWrite;
                         if (pendingWrite is null) continue;

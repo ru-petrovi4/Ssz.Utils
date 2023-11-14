@@ -132,27 +132,4 @@ namespace Ssz.Utils.DataAccess
 
         #endregion
     }
-
-    public static class ValueStatusCodes
-    {
-        public const uint Good = 0; // 0
-
-        public const uint Unknown = 0b00000001;  // 1
-
-        public const uint ItemDoesNotExist = 0b00000010;  // 2
-
-        public const uint Readable = 0b00000100;  // 4
-
-        public const uint Writable = 0b00001000;  // 8          
-
-        public static bool IsGood(uint valueStatusCode) => (valueStatusCode & 0b00000011) == 0;
-
-        public static bool IsUnknown(uint valueStatusCode) => (valueStatusCode & Unknown) != 0;
-
-        public static bool IsItemDoesNotExist(uint valueStatusCode) => (valueStatusCode & ItemDoesNotExist) != 0;
-
-        public static bool IsReadable(uint valueStatusCode) => (valueStatusCode & Readable) != 0;
-
-        public static bool IsWritable(uint valueStatusCode) => (valueStatusCode & Writable) != 0;
-    }
 }

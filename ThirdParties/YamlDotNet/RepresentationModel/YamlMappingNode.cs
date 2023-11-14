@@ -71,7 +71,22 @@ namespace YamlDotNet.RepresentationModel
             var hasUnresolvedAliases = false;
             while (!parser.TryConsume<MappingEnd>(out var _))
             {
+                while (parser.Accept<Comment>(out var alias))
+                {
+                    var keyValue = new YamlCommentNode(parser, state);
+                    //children.Add(keyValue, keyValue);
+                    continue;
+                }
+
                 var key = ParseNode(parser, state);
+
+                while (parser.Accept<Comment>(out var alias))
+                {
+                    var keyValue = new YamlCommentNode(parser, state);
+                    //children.Add(keyValue, keyValue);
+                    continue;
+                }
+
                 var value = ParseNode(parser, state);
 
                 try

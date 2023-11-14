@@ -56,7 +56,7 @@ namespace Ssz.Dcs.ControlEngine
         /// <summary>
         ///     Runtime field.
         /// </summary>
-        public ValueStatusTimestamp ValueStatusTimestamp { get; private set; } = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown };
+        public ValueStatusTimestamp ValueStatusTimestamp { get; private set; } = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain };
 
         public void Update(ValueStatusTimestamp valueStatusTimestamp)
         {

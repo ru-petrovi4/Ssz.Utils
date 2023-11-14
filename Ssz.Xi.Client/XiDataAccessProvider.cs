@@ -166,7 +166,7 @@ namespace Ssz.Xi.Client
                     {
                         callbackDispatcher.BeginInvoke(ct =>
                         {                            
-                            valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist });
+                            valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.BadNodeIdUnknown });
                         });
                     }
                     catch (Exception)
@@ -586,7 +586,7 @@ namespace Ssz.Xi.Client
                             {
                                 foreach (IValueSubscription valueSubscription in valueSubscriptions)
                                 {                                    
-                                    valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown });
+                                    valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain });
                                 }
                                 DataGuid = Guid.NewGuid();
 
@@ -1020,14 +1020,14 @@ namespace Ssz.Xi.Client
             {
                 if (ChildValueSubscriptionsList is null) return;
 
-                if (ChildValueSubscriptionsList.Any(vs => ValueStatusCodes.IsItemDoesNotExist(vs.ValueStatusTimestamp.ValueStatusCode)))
+                if (ChildValueSubscriptionsList.Any(vs => ValueStatusCodes.IsBad(vs.ValueStatusTimestamp.ValueStatusCode)))
                 {
-                    ValueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist });
+                    ValueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Bad });
                     return;
                 }
-                if (ChildValueSubscriptionsList.Any(vs => ValueStatusCodes.IsUnknown(vs.ValueStatusTimestamp.ValueStatusCode)))
+                if (ChildValueSubscriptionsList.Any(vs => ValueStatusCodes.IsUncertain(vs.ValueStatusTimestamp.ValueStatusCode)))
                 {
-                    ValueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown });
+                    ValueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain });
                     return;
                 }
 
@@ -1065,7 +1065,7 @@ namespace Ssz.Xi.Client
             {
             }
 
-            public ValueStatusTimestamp ValueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown };
+            public ValueStatusTimestamp ValueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain };
 
         public readonly bool IsConst;            
 

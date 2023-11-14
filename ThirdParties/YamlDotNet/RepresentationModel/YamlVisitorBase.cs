@@ -49,6 +49,17 @@ namespace YamlDotNet.RepresentationModel
         }
 
         /// <summary>
+        /// Called when this object is visiting a <see cref="YamlCommentNode"/>.
+        /// </summary>
+        /// <param name="comment">
+        /// The <see cref="YamlCommentNode"/> that is being visited.
+        /// </param>
+        public virtual void Visit(YamlCommentNode comment)
+        {
+            // Do nothing.
+        }
+
+        /// <summary>
         /// Called when this object is visiting a <see cref="YamlScalarNode"/>.
         /// </summary>
         /// <param name="scalar">

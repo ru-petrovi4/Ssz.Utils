@@ -56,7 +56,7 @@ namespace Ssz.Dcs.ControlEngine
                             item.Connection.Dispose();
                             item.Connection = null;
                         }
-                        item.UpdateValueStatusTimestamp(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Unknown });
+                        item.UpdateValueStatusTimestamp(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain });
                     }
                 }
                 else
@@ -233,7 +233,7 @@ namespace Ssz.Dcs.ControlEngine
             }
             if (item.InvalidElementId)
             {
-                item.UpdateValueStatusTimestamp(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.ItemDoesNotExist });
+                item.UpdateValueStatusTimestamp(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.BadNodeIdUnknown });
             }
         }
 
