@@ -92,7 +92,21 @@ namespace Ssz.Utils.Logging
                 }
 
                 ConsoleColor originalColor = Console.ForegroundColor;
-                Console.ForegroundColor = ConsoleColor.Green;
+                switch (logLevel)
+                {
+                    case LogLevel.Critical:
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        break;
+                    case LogLevel.Error:
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        break;
+                    case LogLevel.Warning:
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        break;
+                    case LogLevel.Information:
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        break;
+                }
                 Console.WriteLine(header);
                 Console.ForegroundColor = originalColor;
                 Console.WriteLine(content);
