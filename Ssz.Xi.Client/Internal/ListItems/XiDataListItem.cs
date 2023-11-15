@@ -3,6 +3,7 @@ using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using Ssz.Xi.Client.Api;
 using Ssz.Xi.Client.Api.ListItems;
+using Xi.Contracts.Constants;
 using Xi.Contracts.Data;
 
 namespace Ssz.Xi.Client.Internal.ListItems
@@ -43,9 +44,9 @@ namespace Ssz.Xi.Client.Internal.ListItems
         {
             var any = new Any();
             any.Set(valueUInt32, ValueTypeCode, false);
-            _valueStatusTimestamp = new ValueStatusTimestamp(any, statusCode, timestampUtc);           
+            _valueStatusTimestamp = new ValueStatusTimestamp(any, NormalizeStatusCode(statusCode), timestampUtc);           
             IncrementUpdateCount();
-        }
+        }        
 
         /// <summary>
         ///     This method is called by the ClientBase when a new value has been received for
@@ -60,7 +61,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         {
             var any = new Any();
             any.Set(valueDouble, ValueTypeCode, false);
-            _valueStatusTimestamp = new ValueStatusTimestamp(any, statusCode, timestampUtc);            
+            _valueStatusTimestamp = new ValueStatusTimestamp(any, NormalizeStatusCode(statusCode), timestampUtc);            
             IncrementUpdateCount();
         }
 
@@ -76,7 +77,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         public void UpdateValue(object? valueObject, uint statusCode, DateTime timestampUtc)
         {
             var any = new Any(valueObject);            
-            _valueStatusTimestamp = new ValueStatusTimestamp(any, statusCode, timestampUtc);            
+            _valueStatusTimestamp = new ValueStatusTimestamp(any, NormalizeStatusCode(statusCode), timestampUtc);            
             IncrementUpdateCount();
         }
 
@@ -186,6 +187,19 @@ namespace Ssz.Xi.Client.Internal.ListItems
         public bool PreparedForTouch { get; private set; }
 
         #endregion
+
+        #region private functions
+
+        private uint NormalizeStatusCode(uint statusCode)
+        {
+            return ValueStatusCodes.Good;
+            //if ((XiStatusCode.StatusBits(statusCode) & (byte)XiStatusCodeStatusBits.GoodNonSpecific) != 0)
+            //    return ValueStatusCodes.Good;
+            //else
+            //    return ValueStatusCodes.Bad;
+        }
+
+        #endregion        
 
         #region private fields
 
