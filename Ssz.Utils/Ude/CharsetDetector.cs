@@ -111,7 +111,9 @@ namespace Ude
         public Encoding? Encoding
         {
             get 
-            { 
+            {
+                if (String.IsNullOrEmpty(charset))
+                    return null;
                 try
                 {
                     return Encoding.GetEncoding(charset!);

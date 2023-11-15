@@ -116,7 +116,7 @@ namespace YamlDotNet.Core
         /// </summary>
         /// <param name="input">The input.</param>
         /// <param name="skipComments">Indicates whether comments should be ignored</param>
-        public Scanner(TextReader input, bool skipComments = false)
+        public Scanner(TextReader input, bool skipComments = true)
         {
             analyzer = new CharacterAnalyzer<LookAheadBuffer>(new LookAheadBuffer(input, 1024));
             cursor = new Cursor();
