@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Ssz.Utils.DataAccess
 {
-    public static class ValueStatusCodes
+    public class ValueStatusCodes
     {
         /// <summary>
         /// The operation failed.
