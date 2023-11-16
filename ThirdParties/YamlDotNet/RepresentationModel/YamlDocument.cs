@@ -66,8 +66,20 @@ namespace YamlDotNet.RepresentationModel
 
             while (!parser.TryConsume<DocumentEnd>(out var _))
             {
+                List<YamlCommentNode> localCommentNodes = new();
+                while (parser.Accept<Comment>(out var _))
+                {
+                    localCommentNodes.Add(new YamlCommentNode(parser, state));
+                    continue;
+                }
+                if (localCommentNodes.Count == 0)
+                    localCommentNodes = null;
+
+                if (parser.TryConsume<DocumentEnd>(out var _))
+                    break;
+
                 Debug.Assert(RootNode == null);
-                RootNode = YamlNode.ParseNode(parser, state).Item1;
+                (RootNode, localCommentNodes) = YamlNode.ParseNode(parser, state, localCommentNodes);
 
                 if (RootNode is YamlAliasNode)
                 {

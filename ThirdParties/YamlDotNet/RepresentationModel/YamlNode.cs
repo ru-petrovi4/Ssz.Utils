@@ -78,17 +78,8 @@ namespace YamlDotNet.RepresentationModel
         /// Parses the node represented by the next event in <paramref name="parser" />.
         /// </summary>
         /// <returns>Returns the node that has been parsed.</returns>
-        internal static (YamlNode, List<YamlCommentNode>?) ParseNode(IParser parser, DocumentLoadingState state)
+        internal static (YamlNode, List<YamlCommentNode>?) ParseNode(IParser parser, DocumentLoadingState state, List<YamlCommentNode>? commentNodes)
         {
-            List<YamlCommentNode> commentNodes = new();
-            while (parser.Accept<Comment>(out var _))
-            {
-                commentNodes.Add(new YamlCommentNode(parser, state));                
-                continue;
-            }
-            if (commentNodes.Count == 0)
-                commentNodes = null;
-
             if (parser.Accept<Scalar>(out var _))
             {
                 return (new YamlScalarNode(parser, state), commentNodes);

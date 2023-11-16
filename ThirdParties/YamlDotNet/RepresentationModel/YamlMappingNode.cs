@@ -70,36 +70,70 @@ namespace YamlDotNet.RepresentationModel
 
             var hasUnresolvedAliases = false;
             while (!parser.TryConsume<MappingEnd>(out var _))
-            {                
-                var key = ParseNode(parser, state);                
+            {
+                if (commentNodes is not null)
+                {
+                    foreach (var commentNode in commentNodes)
+                    {
+                        children.Add(commentNode, commentNode);
+                    }
+                    commentNodes = null;
+                }                
 
-                var value = ParseNode(parser, state);
+                List<YamlCommentNode> localCommentNodes = new();
+                while (parser.Accept<Comment>(out var _))
+                {
+                    localCommentNodes.Add(new YamlCommentNode(parser, state));
+                    continue;
+                }
+                if (localCommentNodes.Count == 0)
+                    localCommentNodes = null;
+
+                if (parser.TryConsume<MappingEnd>(out var _))
+                    break;
+
+                (var key, localCommentNodes) = ParseNode(parser, state, localCommentNodes);
+
+                if (localCommentNodes is not null)
+                {
+                    foreach (var commentNode in localCommentNodes)
+                    {
+                        children.Add(commentNode, commentNode);
+                    }
+                }
+
+                localCommentNodes = new();
+                while (parser.Accept<Comment>(out var _))
+                {
+                    localCommentNodes.Add(new YamlCommentNode(parser, state));
+                    continue;
+                }
+                if (localCommentNodes.Count == 0)
+                    localCommentNodes = null;
+
+                if (parser.TryConsume<MappingEnd>(out var _))
+                    break;
+
+                (var value, localCommentNodes) = ParseNode(parser, state, localCommentNodes);
+
+                if (localCommentNodes is not null)
+                {
+                    foreach (var commentNode in localCommentNodes)
+                    {
+                        children.Add(commentNode, commentNode);
+                    }
+                }
 
                 try
-                {
-                    if (commentNodes is not null)
-                    {
-                        foreach (var commentNode in commentNodes)
-                        {
-                            children.Add(commentNode, commentNode);
-                        }
-                        commentNodes = null;
-                    }
-                    if (key.Item2 is not null)
-                    {
-                        foreach (var commentNode in key.Item2)
-                        {
-                            children.Add(commentNode, commentNode);
-                        }                        
-                    }
-                    children.Add(key.Item1, value.Item1);
+                {                    
+                    children.Add(key, value);
                 }
                 catch (ArgumentException err)
                 {
-                    throw new YamlException(key.Item1.Start, key.Item1.End, "Duplicate key", err);
+                    throw new YamlException(key.Start, key.End, "Duplicate key", err);
                 }
 
-                hasUnresolvedAliases |= key.Item1 is YamlAliasNode || value.Item1 is YamlAliasNode;
+                hasUnresolvedAliases |= key is YamlAliasNode || value is YamlAliasNode;
             }
 
             if (hasUnresolvedAliases)

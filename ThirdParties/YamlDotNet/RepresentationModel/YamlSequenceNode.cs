@@ -74,7 +74,19 @@ namespace YamlDotNet.RepresentationModel
             var hasUnresolvedAliases = false;
             while (!parser.TryConsume<SequenceEnd>(out var _))
             {
-                var child = ParseNode(parser, state);
+                List<YamlCommentNode> localCommentNodes = new();
+                while (parser.Accept<Comment>(out var _))
+                {
+                    localCommentNodes.Add(new YamlCommentNode(parser, state));
+                    continue;
+                }
+                if (localCommentNodes.Count == 0)
+                    localCommentNodes = null;
+
+                if (parser.TryConsume<SequenceEnd>(out var _))
+                    break;
+
+                (var child, localCommentNodes) = ParseNode(parser, state, localCommentNodes);
                 if (commentNodes is not null)
                 {
                     foreach (var commentNode in commentNodes)
@@ -83,15 +95,15 @@ namespace YamlDotNet.RepresentationModel
                     }
                     commentNodes = null;
                 }
-                if (child.Item2 is not null)
+                if (localCommentNodes is not null)
                 {
-                    foreach (var commentNode in child.Item2)
+                    foreach (var commentNode in localCommentNodes)
                     {
                         children.Add(commentNode);
                     }
                 }
-                children.Add(child.Item1);
-                hasUnresolvedAliases |= child.Item1 is YamlAliasNode;
+                children.Add(child);
+                hasUnresolvedAliases |= child is YamlAliasNode;
             }
 
             if (hasUnresolvedAliases)
