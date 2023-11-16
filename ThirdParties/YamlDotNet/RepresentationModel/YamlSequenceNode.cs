@@ -60,12 +60,12 @@ namespace YamlDotNet.RepresentationModel
         /// <summary>
         /// Initializes a new instance of the <see cref="YamlSequenceNode"/> class.
         /// </summary>
-        internal YamlSequenceNode(IParser parser, DocumentLoadingState state)
+        internal YamlSequenceNode(IParser parser, DocumentLoadingState state, List<YamlCommentNode>? commentNodes)
         {
-            Load(parser, state);
+            Load(parser, state, commentNodes);
         }
 
-        private void Load(IParser parser, DocumentLoadingState state)
+        private void Load(IParser parser, DocumentLoadingState state, List<YamlCommentNode>? commentNodes = null)
         {
             var sequence = parser.Consume<SequenceStart>();
             Load(sequence, state);
@@ -75,8 +75,23 @@ namespace YamlDotNet.RepresentationModel
             while (!parser.TryConsume<SequenceEnd>(out var _))
             {
                 var child = ParseNode(parser, state);
-                children.Add(child);
-                hasUnresolvedAliases |= child is YamlAliasNode;
+                if (commentNodes is not null)
+                {
+                    foreach (var commentNode in commentNodes)
+                    {
+                        children.Add(commentNode);
+                    }
+                    commentNodes = null;
+                }
+                if (child.Item2 is not null)
+                {
+                    foreach (var commentNode in child.Item2)
+                    {
+                        children.Add(commentNode);
+                    }
+                }
+                children.Add(child.Item1);
+                hasUnresolvedAliases |= child.Item1 is YamlAliasNode;
             }
 
             if (hasUnresolvedAliases)

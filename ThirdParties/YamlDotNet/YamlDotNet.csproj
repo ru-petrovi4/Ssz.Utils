@@ -13,7 +13,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>Latest</LangVersion>
     <Nullable>enable</Nullable>
 
     <NetStandard>false</NetStandard>

@@ -57,12 +57,12 @@ namespace YamlDotNet.RepresentationModel
         /// <summary>
         /// Initializes a new instance of the <see cref="YamlMappingNode"/> class.
         /// </summary>
-        internal YamlMappingNode(IParser parser, DocumentLoadingState state)
+        internal YamlMappingNode(IParser parser, DocumentLoadingState state, List<YamlCommentNode>? commentNodes)
         {
-            Load(parser, state);
+            Load(parser, state, commentNodes);
         }
 
-        private void Load(IParser parser, DocumentLoadingState state)
+        private void Load(IParser parser, DocumentLoadingState state, List<YamlCommentNode>? commentNodes = null)
         {
             var mapping = parser.Consume<MappingStart>();
             Load(mapping, state);
@@ -70,35 +70,36 @@ namespace YamlDotNet.RepresentationModel
 
             var hasUnresolvedAliases = false;
             while (!parser.TryConsume<MappingEnd>(out var _))
-            {
-                while (parser.Accept<Comment>(out var alias))
-                {
-                    var keyValue = new YamlCommentNode(parser, state);
-                    //children.Add(keyValue, keyValue);
-                    continue;
-                }
-
-                var key = ParseNode(parser, state);
-
-                while (parser.Accept<Comment>(out var alias))
-                {
-                    var keyValue = new YamlCommentNode(parser, state);
-                    //children.Add(keyValue, keyValue);
-                    continue;
-                }
+            {                
+                var key = ParseNode(parser, state);                
 
                 var value = ParseNode(parser, state);
 
                 try
                 {
-                    children.Add(key, value);
+                    if (commentNodes is not null)
+                    {
+                        foreach (var commentNode in commentNodes)
+                        {
+                            children.Add(commentNode, commentNode);
+                        }
+                        commentNodes = null;
+                    }
+                    if (key.Item2 is not null)
+                    {
+                        foreach (var commentNode in key.Item2)
+                        {
+                            children.Add(commentNode, commentNode);
+                        }                        
+                    }
+                    children.Add(key.Item1, value.Item1);
                 }
                 catch (ArgumentException err)
                 {
-                    throw new YamlException(key.Start, key.End, "Duplicate key", err);
+                    throw new YamlException(key.Item1.Start, key.Item1.End, "Duplicate key", err);
                 }
 
-                hasUnresolvedAliases |= key is YamlAliasNode || value is YamlAliasNode;
+                hasUnresolvedAliases |= key.Item1 is YamlAliasNode || value.Item1 is YamlAliasNode;
             }
 
             if (hasUnresolvedAliases)
@@ -258,8 +259,15 @@ namespace YamlDotNet.RepresentationModel
             emitter.Emit(new MappingStart(Anchor, Tag, true, Style));
             foreach (var entry in children)
             {
-                entry.Key.Save(emitter, state);
-                entry.Value.Save(emitter, state);
+                if (entry.Key is YamlCommentNode)
+                {
+                    entry.Key.Save(emitter, state);
+                }
+                else
+                {
+                    entry.Key.Save(emitter, state);
+                    entry.Value.Save(emitter, state);
+                }                
             }
             emitter.Emit(new MappingEnd());
         }

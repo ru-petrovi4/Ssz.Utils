@@ -70,13 +70,16 @@ namespace Ssz.Utils.Yaml
         { 
             foreach (var yamlNodePair in yamlMappingNode.Children)
             {
-                var context = ((YamlScalarNode)yamlNodePair.Key).Value ?? @"";
+                if (yamlNodePair.Key is YamlScalarNode yamlScalarNode)
+                {
+                    var context = yamlScalarNode.Value ?? @"";
 
-                EnterContext(context);
+                    EnterContext(context);
 
-                VisitYamlNode(yamlNodePair.Value);
+                    VisitYamlNode(yamlNodePair.Value);
 
-                ExitContext();
+                    ExitContext();
+                }
             }
         }
 

@@ -67,7 +67,7 @@ namespace YamlDotNet.RepresentationModel
             while (!parser.TryConsume<DocumentEnd>(out var _))
             {
                 Debug.Assert(RootNode == null);
-                RootNode = YamlNode.ParseNode(parser, state);
+                RootNode = YamlNode.ParseNode(parser, state).Item1;
 
                 if (RootNode is YamlAliasNode)
                 {

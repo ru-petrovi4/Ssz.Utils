@@ -142,16 +142,19 @@ namespace Ssz.Utils.ConfigurationCrypter.ConfigurationCrypters.Yaml
         {
             foreach (var yamlNodePair in yamlMappingNode.Children)
             {
-                var context = ((YamlScalarNode)yamlNodePair.Key).Value ?? @"";
+                if (yamlNodePair.Key is YamlScalarNode yamlScalarNode)
+                {
+                    var context = yamlScalarNode.Value ?? @"";
 
-                EnterContext(context);
+                    EnterContext(context);
 
-                if (configKeys is not null && configKeys.Contains(_currentPath))
-                    VisitYamlNode(yamlNodePair.Value, null, func);
-                else
-                    VisitYamlNode(yamlNodePair.Value, configKeys, func);
+                    if (configKeys is not null && configKeys.Contains(_currentPath))
+                        VisitYamlNode(yamlNodePair.Value, null, func);
+                    else
+                        VisitYamlNode(yamlNodePair.Value, configKeys, func);
 
-                ExitContext();
+                    ExitContext();
+                }
             }
         }
 

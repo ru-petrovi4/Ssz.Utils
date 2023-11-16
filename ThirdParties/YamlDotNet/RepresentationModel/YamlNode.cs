@@ -78,26 +78,35 @@ namespace YamlDotNet.RepresentationModel
         /// Parses the node represented by the next event in <paramref name="parser" />.
         /// </summary>
         /// <returns>Returns the node that has been parsed.</returns>
-        internal static YamlNode ParseNode(IParser parser, DocumentLoadingState state)
+        internal static (YamlNode, List<YamlCommentNode>?) ParseNode(IParser parser, DocumentLoadingState state)
         {
+            List<YamlCommentNode> commentNodes = new();
+            while (parser.Accept<Comment>(out var _))
+            {
+                commentNodes.Add(new YamlCommentNode(parser, state));                
+                continue;
+            }
+            if (commentNodes.Count == 0)
+                commentNodes = null;
+
             if (parser.Accept<Scalar>(out var _))
             {
-                return new YamlScalarNode(parser, state);
+                return (new YamlScalarNode(parser, state), commentNodes);
             }
 
             if (parser.Accept<SequenceStart>(out var _))
             {
-                return new YamlSequenceNode(parser, state);
+                return (new YamlSequenceNode(parser, state, commentNodes), null);
             }
 
             if (parser.Accept<MappingStart>(out var _))
             {
-                return new YamlMappingNode(parser, state);
+                return (new YamlMappingNode(parser, state, commentNodes), null);
             }
 
             if (parser.TryConsume<AnchorAlias>(out var alias))
             {
-                return state.TryGetNode(alias.Value, out var node) ? node : new YamlAliasNode(alias.Value);
+                return (state.TryGetNode(alias.Value, out var node) ? node : new YamlAliasNode(alias.Value), commentNodes);
             }
 
             throw new ArgumentException("The current event is of an unsupported type.", nameof(parser));
