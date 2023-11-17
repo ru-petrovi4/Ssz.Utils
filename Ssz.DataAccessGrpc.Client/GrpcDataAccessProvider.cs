@@ -119,11 +119,11 @@ namespace Ssz.DataAccessGrpc.Client
             var cancellationToken = _cancellationTokenSource.Token;
 
             var previousWorkingTask = _workingTask;
-            _workingTask = Task.Factory.StartNew(() =>
+            _workingTask = Task.Factory.StartNew(async () =>
             {
                 if (previousWorkingTask is not null)
-                    previousWorkingTask.Wait();
-                WorkingTaskMainAsync(cancellationToken).Wait();
+                    await previousWorkingTask;
+                await WorkingTaskMainAsync(cancellationToken);
             }, TaskCreationOptions.LongRunning);
 
             foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
@@ -236,16 +236,16 @@ namespace Ssz.DataAccessGrpc.Client
         {
             var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]?>();
 
-            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
             {
                 if (!IsInitialized)
                 {
                     taskCompletionSource.SetResult(null);
                     return;
                 }
-                _clientElementValueListManager.Subscribe(_clientContextManager, CallbackDispatcher,
+                await _clientElementValueListManager.SubscribeAsync(_clientContextManager, CallbackDispatcher,
                     OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, ct);
-                object[]? changedValueSubscriptions = _clientElementValueListManager.PollChanges();
+                object[]? changedValueSubscriptions = await _clientElementValueListManager.PollChangesAsync();
                 taskCompletionSource.SetResult(changedValueSubscriptions is not null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null);                
             }
             );
@@ -344,7 +344,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             var taskCompletionSource = new TaskCompletionSource<ResultInfo>();
 
-            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
             {
                 var resultInfo = ResultInfo.OkResultInfo;
 
@@ -354,7 +354,7 @@ namespace Ssz.DataAccessGrpc.Client
                     return;
                 }
 
-                _clientElementValueListManager.Subscribe(_clientContextManager, CallbackDispatcher,
+                await _clientElementValueListManager.SubscribeAsync(_clientContextManager, CallbackDispatcher,
                     OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, ct);                
 
                 if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
@@ -364,14 +364,14 @@ namespace Ssz.DataAccessGrpc.Client
                     {
                         var resultValue = resultValues[i];
                         if (resultValue != SszConverter.DoNothing)
-                            resultInfo = _clientElementValueListManager.Write(valueSubscriptionObj.ChildValueSubscriptionsList[i],
+                            resultInfo = await _clientElementValueListManager.WriteAsync(valueSubscriptionObj.ChildValueSubscriptionsList[i],
                                 new ValueStatusTimestamp(new Any(resultValue), ValueStatusCodes.Good, DateTime.UtcNow));
                     }
                 }
                 else
                 {
                     if (value.ValueAsObject() != SszConverter.DoNothing)
-                        resultInfo = _clientElementValueListManager.Write(valueSubscription,
+                        resultInfo = await _clientElementValueListManager.WriteAsync(valueSubscription,
                             new ValueStatusTimestamp(value, ValueStatusCodes.Good, DateTime.UtcNow));
                 }
 
@@ -393,7 +393,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             var taskCompletionSource = new TaskCompletionSource<(IValueSubscription[], ResultInfo[])>();
 
-            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
             {
                 if (!IsInitialized)
                 {
@@ -402,9 +402,9 @@ namespace Ssz.DataAccessGrpc.Client
                     return;
                 }
 
-                _clientElementValueListManager.Subscribe(_clientContextManager, CallbackDispatcher,
+                await _clientElementValueListManager.SubscribeAsync(_clientContextManager, CallbackDispatcher,
                     OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, ct);
-                (object[] failedValueSubscriptions, ResultInfo[] failedResultInfos) = _clientElementValueListManager.Write(valueSubscriptions, valueStatusTimestamps);
+                (object[] failedValueSubscriptions, ResultInfo[] failedResultInfos) = await _clientElementValueListManager.WriteAsync(valueSubscriptions, valueStatusTimestamps);
 
                 taskCompletionSource.SetResult((failedValueSubscriptions.OfType<IValueSubscription>().ToArray(), failedResultInfos));
             }
@@ -428,13 +428,11 @@ namespace Ssz.DataAccessGrpc.Client
 
             var taskCompletionSource = new TaskCompletionSource<IEnumerable<byte>>();
 
-            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
             {                
                 try
                 {
-                    IEnumerable<byte> returnData;
-                    _clientContextManager.Passthrough(recipientId, passthroughName,
-                        dataToSend, out returnData);
+                    IEnumerable<byte> returnData = await _clientContextManager.PassthroughAsync(recipientId, passthroughName, dataToSend);
                     taskCompletionSource.SetResult(returnData);                    
                 }
                 catch (RpcException ex)
@@ -503,7 +501,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             var taskCompletionSource = new TaskCompletionSource<uint>();
 
-            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
             {
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
                 Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
@@ -650,7 +648,7 @@ namespace Ssz.DataAccessGrpc.Client
                         //        //NameValueCollectionHelper.GetNameValueCollectionString(_dataGrpcContextParams.OfType<string?>()));
                         //}
 
-                        _clientContextManager.InitiateConnection(ServerAddress, ClientApplicationName,
+                        await _clientContextManager.InitiateConnectionAsync(ServerAddress, ClientApplicationName,
                             ClientWorkstationName, SystemNameToConnect, ContextParams, CallbackDispatcher);
 
                         LoggersSet.Logger.LogDebug("End Connecting");
@@ -685,9 +683,9 @@ namespace Ssz.DataAccessGrpc.Client
             if (!IsInitialized || cancellationToken.IsCancellationRequested) 
                 return;            
 
-            _clientElementValueListManager.Subscribe(_clientContextManager, CallbackDispatcher,
+            await _clientElementValueListManager.SubscribeAsync(_clientContextManager, CallbackDispatcher,
                 OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, cancellationToken);
-            _clientEventListManager.Subscribe(_clientContextManager, CallbackDispatcher, Options.EventListCallbackIsEnabled, cancellationToken);
+            await _clientEventListManager.SubscribeAsync(_clientContextManager, CallbackDispatcher, Options.EventListCallbackIsEnabled, cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) 
                 return;

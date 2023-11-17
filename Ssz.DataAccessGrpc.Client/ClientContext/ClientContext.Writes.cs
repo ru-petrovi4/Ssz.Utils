@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Grpc.Core;
@@ -24,7 +25,7 @@ namespace Ssz.DataAccessGrpc.Client
         ///     The list server aliases and result codes for the data objects whose write failed. Returns empty if all writes
         ///     succeeded.
         /// </returns>
-        public AliasResult[] WriteElementValues(uint listServerAlias, ElementValuesCollection elementValuesCollection)
+        public async Task<AliasResult[]> WriteElementValuesAsync(uint listServerAlias, ElementValuesCollection elementValuesCollection)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -38,7 +39,7 @@ namespace Ssz.DataAccessGrpc.Client
                     ListServerAlias = listServerAlias,
                     ElementValuesCollection = elementValuesCollection
                 };
-                WriteElementValuesReply reply = _resourceManagementClient.WriteElementValues(request);
+                WriteElementValuesReply reply = await _resourceManagementClient.WriteElementValuesAsync(request);
                 SetResourceManagementLastCallUtc();
                 return reply.Results.ToArray();                
             }
@@ -58,7 +59,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="comment"></param>
         /// <param name="eventIdsToAck"></param>
         /// <returns></returns>
-        public EventIdResult[] AckAlarms(uint listServerAlias,
+        public async Task<EventIdResult[]> AckAlarmsAsync(uint listServerAlias,
             string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
@@ -75,7 +76,7 @@ namespace Ssz.DataAccessGrpc.Client
                     Comment = comment,                   
                 };
                 request.EventIdsToAck.Add(eventIdsToAck.Select(e => new EventId(e)));
-                AckAlarmsReply reply = _resourceManagementClient.AckAlarms(request);
+                AckAlarmsReply reply = await _resourceManagementClient.AckAlarmsAsync(request);
                 SetResourceManagementLastCallUtc();
                 return reply.Results.ToArray();
             }
@@ -86,7 +87,7 @@ namespace Ssz.DataAccessGrpc.Client
             }
         }
 
-        public void Passthrough(string recipientId, string passthroughName, byte[] dataToSend, out IEnumerable<byte> returnData)
+        public async Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
 
@@ -96,7 +97,7 @@ namespace Ssz.DataAccessGrpc.Client
             {
                 var passthroughDataToSendFull = new PassthroughData();
                 passthroughDataToSendFull.Data = ByteString.CopyFrom(dataToSend);
-                returnData = new byte[0];                            
+                IEnumerable<byte> returnData = new byte[0];                            
                 foreach (var passthroughDataToSend in passthroughDataToSendFull.SplitForCorrectGrpcMessageSize())
                 {
                     var request = new PassthroughRequest
@@ -108,7 +109,7 @@ namespace Ssz.DataAccessGrpc.Client
                     };                    
                     while (true)
                     {
-                        PassthroughReply reply = _resourceManagementClient.Passthrough(request);
+                        PassthroughReply reply = await _resourceManagementClient.PassthroughAsync(request);
                         request.DataToSend = new PassthroughData();
                         SetResourceManagementLastCallUtc();
                         IEnumerable<byte>? returnDataTemp = null;
@@ -141,7 +142,9 @@ namespace Ssz.DataAccessGrpc.Client
                         returnData = returnDataTemp;                                           
                         break;
                     }
-                }                                
+                }
+
+                return returnData;
             }
             catch (Exception ex)
             {

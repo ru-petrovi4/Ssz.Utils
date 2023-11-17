@@ -7,6 +7,7 @@ using Ssz.DataAccessGrpc.Client.ClientListItems;
 using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
+using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.Client.ClientLists
 {
@@ -22,16 +23,28 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// </summary>
         /// <param name="context"></param>
         /// <param name="listParams"></param>
-        public ClientEventList(ClientContext context, CaseInsensitiveDictionary<string>? listParams)
+        public ClientEventList(ClientContext context)
             : base(context)
         {
-            ListType = (uint)StandardListType.EventList;
-            Context.DefineList(this, listParams);
+            ListType = (uint)StandardListType.EventList;            
         }
 
         #endregion
 
         #region public functions
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="listParams"></param>
+        /// <returns></returns>
+        /// <exception cref="ObjectDisposedException"></exception>
+        public async Task DefineListAsync(CaseInsensitiveDictionary<string>? listParams)
+        {
+            if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
+
+            await Context.DefineListAsync(this, listParams);
+        }
 
         /// <summary>
         ///     Returns the array EventIds and result codes for the alarms whose
@@ -41,22 +54,22 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// <param name="comment"></param>
         /// <param name="eventIdsToAck"></param>
         /// <returns></returns>
-        public EventIdResult[] AckAlarms(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
+        public async Task<EventIdResult[]> AckAlarmsAsync(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
-            return Context.AckAlarms(ListServerAlias, operatorName, comment, eventIdsToAck);
+            return await Context.AckAlarmsAsync(ListServerAlias, operatorName, comment, eventIdsToAck);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public Utils.DataAccess.EventMessagesCollection PollEventsChanges()
+        public async Task<Utils.DataAccess.EventMessagesCollection> PollEventsChangesAsync()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
-            return Context.PollEventsChanges(this);
+            return await Context.PollEventsChangesAsync(this);
         }
 
         public Utils.DataAccess.EventMessagesCollection ReadEventMessagesJournal(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)

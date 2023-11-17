@@ -22,12 +22,12 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="valueSubscription"></param>
         public override void JournalAddItem(string elementId, object valueSubscription)
         {
-            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
             {
                 if (!IsInitialized)
                     return;
                 _clientElementValuesJournalListManager.AddItem(elementId, valueSubscription);
-                _clientElementValuesJournalListManager.Subscribe(_clientContextManager, Options.UnsubscribeValuesJournalListItemsFromServer);
+                await _clientElementValuesJournalListManager.SubscribeAsync(_clientContextManager, Options.UnsubscribeValuesJournalListItemsFromServer);
             }
             );
         }
@@ -100,7 +100,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         #region protected functions
 
-        protected IEnumerable<ValueStatusTimestamp> ReadElementValuesJournalInternal(string elementId, DateTime firstTimestampUtc,
+        protected async Task<IEnumerable<ValueStatusTimestamp>> ReadElementValuesJournalInternalAsync(string elementId, DateTime firstTimestampUtc,
             DateTime secondTimestampUtc)
         {
             if (!IsInitialized)
@@ -108,7 +108,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             object clientObj = elementId;
             _clientElementValuesJournalListManager.AddItem(elementId, clientObj);
-            _clientElementValuesJournalListManager.Subscribe(_clientContextManager, Options.UnsubscribeValuesJournalListItemsFromServer);
+            await _clientElementValuesJournalListManager.SubscribeAsync(_clientContextManager, Options.UnsubscribeValuesJournalListItemsFromServer);
 
             var data = _clientElementValuesJournalListManager.ReadElementValuesJournals(firstTimestampUtc, secondTimestampUtc, uint.MaxValue, new Ssz.Utils.DataAccess.TypeId(), null, new[] { clientObj });
             if (data is not null)
@@ -117,7 +117,7 @@ namespace Ssz.DataAccessGrpc.Client
             if (Options.UnsubscribeValuesJournalListItemsFromServer)
             {
                 _clientElementValuesJournalListManager.RemoveItem(clientObj);
-                _clientElementValuesJournalListManager.Subscribe(_clientContextManager, Options.UnsubscribeValuesJournalListItemsFromServer);
+                await _clientElementValuesJournalListManager.SubscribeAsync(_clientContextManager, Options.UnsubscribeValuesJournalListItemsFromServer);
             }
 
             return new ValueStatusTimestamp[0];

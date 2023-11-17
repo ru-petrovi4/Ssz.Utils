@@ -9,6 +9,7 @@ using System.IO;
 using Ssz.Utils.Serialization;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.Client.ClientLists
 {
@@ -24,16 +25,28 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// </summary>
         /// <param name="context"></param>
         /// <param name="listParams"></param>
-        public ClientElementValueList(ClientContext context, CaseInsensitiveDictionary<string>? listParams)
+        public ClientElementValueList(ClientContext context)
             : base(context)
         {
-            ListType = (uint)StandardListType.ElementValueList;
-            Context.DefineList(this, listParams);
+            ListType = (uint)StandardListType.ElementValueList;            
         }
 
         #endregion
 
         #region public functions
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="listParams"></param>
+        /// <returns></returns>
+        /// <exception cref="ObjectDisposedException"></exception>
+        public async Task DefineListAsync(CaseInsensitiveDictionary<string>? listParams)
+        {
+            if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
+
+            await Context.DefineListAsync(this, listParams);
+        }
 
         /// <summary>
         /// 
@@ -74,7 +87,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         ///     Returns failed items.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<ClientElementValueListItem> CommitWriteElementValueListItems()
+        public async Task<IEnumerable<ClientElementValueListItem>> CommitWriteElementValueListItemsAsync()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
 
@@ -123,7 +136,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
             var failedItems = new List<ClientElementValueListItem>();
             foreach (ElementValuesCollection elementValuesCollection in fullElementValuesCollection.SplitForCorrectGrpcMessageSize())
             {
-                AliasResult[] failedAliasResults = Context.WriteElementValues(ListServerAlias, elementValuesCollection);
+                AliasResult[] failedAliasResults = await Context.WriteElementValuesAsync(ListServerAlias, elementValuesCollection);
                 foreach (AliasResult failedAliasResult in failedAliasResults)
                 {                    
                     if (ListItemsManager.TryGetValue(failedAliasResult.ClientAlias, out ClientElementValueListItem? item))
@@ -140,11 +153,11 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// 
         /// </summary>
         /// <returns></returns>
-        public ClientElementValueListItem[] PollElementValuesChanges()
+        public async Task<ClientElementValueListItem[]> PollElementValuesChangesAsync()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
 
-            return Context.PollElementValuesChanges(this);
+            return await Context.PollElementValuesChangesAsync(this);
         }
 
         /// <summary>

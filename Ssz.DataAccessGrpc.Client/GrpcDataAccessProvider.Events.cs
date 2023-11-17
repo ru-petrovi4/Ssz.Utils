@@ -25,7 +25,7 @@ namespace Ssz.DataAccessGrpc.Client
         
         public override void AckAlarms(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
         {
-            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
             {
                 ClientEventList? clientEventList =
                     _clientEventListManager.GetRelatedClientEventList(OnClientEventListManager_EventMessagesCallbackInternal);
@@ -36,7 +36,7 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                     if (clientEventList.Disposed) return;
 
-                    clientEventList.AckAlarms(operatorName, comment, eventIdsToAck);
+                    await clientEventList.AckAlarmsAsync(operatorName, comment, eventIdsToAck);
                 }
                 catch (Exception ex)
                 {

@@ -9,6 +9,7 @@ using Ssz.DataAccessGrpc.Client.ClientLists;
 using Ssz.Utils.DataAccess;
 using Grpc.Core;
 using static Ssz.DataAccessGrpc.Client.Managers.ClientElementValueListManager;
+using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.Client.Managers
 {
@@ -35,7 +36,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <param name="unsubscribeItemsFromServer"></param>
         /// <param name="callbackIsEnabled"></param>
         /// <param name="ct"></param>
-        public void Subscribe(ClientContextManager clientContextManager, 
+        public async Task SubscribeAsync(ClientContextManager clientContextManager, 
             IDispatcher? сallbackDispatcher,
             EventHandler<ElementValuesCallbackEventArgs> elementValuesCallbackEventHandler,
             bool unsubscribeItemsFromServer,
@@ -55,7 +56,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                     {
                         if (clientContextManager.ConnectionExists)
                         {
-                            DataAccessGrpcList = clientContextManager.NewElementValueList(null);
+                            DataAccessGrpcList = await clientContextManager.NewElementValueListAsync(null);
                         }                            
                     }
                     catch (Exception)
@@ -204,13 +205,13 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <summary>        
         ///     No throw. Returns null or changed clientObjs (not null, but possibly zero-lenghth).
         /// </summary>
-        public object[]? PollChanges()
+        public async Task<object[]?> PollChangesAsync()
         {
             if (DataAccessGrpcList is null || DataAccessGrpcList.Disposed) return null;
             try
             {
                 var changedClientObjs = new List<object>();
-                ClientElementValueListItem[] changedClientElementValueListItems = DataAccessGrpcList.PollElementValuesChanges();
+                ClientElementValueListItem[] changedClientElementValueListItems = await DataAccessGrpcList.PollElementValuesChangesAsync();
                 foreach (ClientElementValueListItem dataGrpcElementValueListItem in changedClientElementValueListItems)
                 {
                     var o = dataGrpcElementValueListItem.Obj as DataAccessGrpcListItemWrapper;
@@ -238,7 +239,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <param name="clientObjs"></param>
         /// <param name="valueStatusTimestamps"></param>
         /// <returns></returns>
-        public (object[], ResultInfo[]) Write(object[] clientObjs, ValueStatusTimestamp[] valueStatusTimestamps)
+        public async Task<(object[], ResultInfo[])> WriteAsync(object[] clientObjs, ValueStatusTimestamp[] valueStatusTimestamps)
         {
             if (DataAccessGrpcList is null || DataAccessGrpcList.Disposed)
             {
@@ -277,7 +278,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             IEnumerable<ClientElementValueListItem> failedItems;
             try
             {
-                failedItems = DataAccessGrpcList.CommitWriteElementValueListItems();
+                failedItems = await DataAccessGrpcList.CommitWriteElementValueListItemsAsync();
             }
             catch
             {                
@@ -306,7 +307,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// </summary>
         /// <param name="clientObj"></param>
         /// <param name="valueStatusTimestamp"></param>
-        public ResultInfo Write(object clientObj, ValueStatusTimestamp valueStatusTimestamp)
+        public async Task<ResultInfo> WriteAsync(object clientObj, ValueStatusTimestamp valueStatusTimestamp)
         {
             if (DataAccessGrpcList is null || DataAccessGrpcList.Disposed)
                 return new ResultInfo { StatusCode = JobStatusCodes.FailedPrecondition };
@@ -329,7 +330,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
                 try
                 {
-                    DataAccessGrpcList.CommitWriteElementValueListItems();
+                    await DataAccessGrpcList.CommitWriteElementValueListItemsAsync();
 
                     return dataGrpcElementValueListItem.WriteResultInfo!;
                 }

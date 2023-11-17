@@ -1358,8 +1358,8 @@ namespace Ssz.Utils.DataAccess
 
         public static bool IsGood(uint valueStatusCode) =>       (valueStatusCode & 0b11000000000000000000000000000000) == 0;
 
-        public static bool IsBad(uint valueStatusCode) =>        (valueStatusCode & 0b10000000000000000000000000000000) == 1;
+        public static bool IsBad(uint valueStatusCode) =>        (valueStatusCode & 0b10000000000000000000000000000000) != 0;
 
-        public static bool IsUncertain(uint valueStatusCode) =>  (valueStatusCode & 0b01000000000000000000000000000000) == 1;
+        public static bool IsUncertain(uint valueStatusCode) =>  (valueStatusCode & 0b01000000000000000000000000000000) != 0;
     }
 }

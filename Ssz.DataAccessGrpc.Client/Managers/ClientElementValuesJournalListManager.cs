@@ -6,6 +6,7 @@ using Ssz.DataAccessGrpc.Client.ClientLists;
 using Ssz.Utils.DataAccess;
 using System.Collections.Generic;
 using Ssz.DataAccessGrpc.ServerBase;
+using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.Client.Managers
 {
@@ -28,7 +29,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// </summary>
         /// <param name="clientContextManager"></param>
         /// <param name="unsubscribeItemsFromServer"></param>
-        public void Subscribe(ClientContextManager clientContextManager, bool unsubscribeItemsFromServer)
+        public async Task SubscribeAsync(ClientContextManager clientContextManager, bool unsubscribeItemsFromServer)
         {
             try
             {
@@ -42,7 +43,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                     {
                         if (clientContextManager.ConnectionExists)
                         {
-                            DataAccessGrpcList = clientContextManager.NewElementValuesJournalList(null);
+                            DataAccessGrpcList = await clientContextManager.NewElementValuesJournalListAsync(null);
                         }                            
                     }
                     catch (Exception)

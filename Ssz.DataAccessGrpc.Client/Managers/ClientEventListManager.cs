@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using Ssz.DataAccessGrpc.Client.ClientLists;
 using Ssz.DataAccessGrpc.Client.ClientListItems;
 using Ssz.Utils.DataAccess;
+using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace Ssz.DataAccessGrpc.Client.Managers
 {
@@ -32,7 +34,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <param name="сallbackDispatcher"></param>        
         /// <param name="callbackIsEnabled"></param>
         /// <param name="ct"></param>
-        public void Subscribe(ClientContextManager clientContextManager, IDispatcher? сallbackDispatcher, bool callbackIsEnabled, CancellationToken ct)
+        public async Task SubscribeAsync(ClientContextManager clientContextManager, IDispatcher? сallbackDispatcher, bool callbackIsEnabled, CancellationToken ct)
         {
             if (ct.IsCancellationRequested) return;
             if (!clientContextManager.ConnectionExists) return;
@@ -50,7 +52,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
                 try
                 {
-                    dataGrpcEventList = clientContextManager.NewEventList(null);
+                    dataGrpcEventList = await clientContextManager.NewEventListAsync(null);
                 }
                 catch (Exception)
                 {
@@ -113,7 +115,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         ///     If not Pollable, does nothing.
         ///     No throw.
         /// </summary>
-        public void PollChanges()
+        public async Task PollChangesAsync()
         {
             foreach (var kvp in _eventMessagesCallbackEventHandlers)
             {
@@ -122,7 +124,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 if (dataGrpcEventList is null || dataGrpcEventList.Disposed) continue;
                 try
                 {
-                    dataGrpcEventList.PollEventsChanges();
+                    await dataGrpcEventList.PollEventsChangesAsync();
                 }
                 catch
                 {

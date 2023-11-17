@@ -24,7 +24,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// </summary>
         /// <param name="tagValueList"></param>
         /// <returns></returns>
-        public ClientElementValueListItem[] PollElementValuesChanges(ClientElementValueList tagValueList)
+        public async Task<ClientElementValueListItem[]> PollElementValuesChangesAsync(ClientElementValueList tagValueList)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -39,7 +39,7 @@ namespace Ssz.DataAccessGrpc.Client
                         ContextId = _serverContextId,
                         ListServerAlias = tagValueList.ListServerAlias
                     };
-                    PollElementValuesChangesReply reply = _resourceManagementClient.PollElementValuesChanges(request);
+                    PollElementValuesChangesReply reply = await _resourceManagementClient.PollElementValuesChangesAsync(request);
                     SetResourceManagementLastCallUtc();
 
                     var changedItems = ElementValuesCallback(tagValueList, reply.ElementValuesCollection);
@@ -58,7 +58,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// </summary>
         /// <param name="eventList"></param>
         /// <returns></returns>
-        public Utils.DataAccess.EventMessagesCollection PollEventsChanges(ClientEventList eventList)
+        public async Task<Utils.DataAccess.EventMessagesCollection> PollEventsChangesAsync(ClientEventList eventList)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -73,7 +73,7 @@ namespace Ssz.DataAccessGrpc.Client
                         ContextId = _serverContextId,
                         ListServerAlias = eventList.ListServerAlias
                     };
-                    PollEventsChangesReply reply = _resourceManagementClient.PollEventsChanges(request);
+                    PollEventsChangesReply reply = await _resourceManagementClient.PollEventsChangesAsync(request);
                     SetResourceManagementLastCallUtc();
 
                     var eventMessagesCollection = EventMessagesCallback(eventList, reply.EventMessagesCollection);

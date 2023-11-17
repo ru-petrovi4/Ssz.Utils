@@ -33,51 +33,14 @@ namespace Ssz.DataAccessGrpc.Client
             GrpcChannel grpcChannel,
             DataAccess.DataAccessClient resourceManagementClient,            
             string clientApplicationName,
-            string clientWorkstationName,            
-            uint requestedServerContextTimeoutMs,
-            string requestedCultureName,
-            string systemNameToConnect,
-            CaseInsensitiveDictionary<string?> contextParams)
+            string clientWorkstationName)
         {
             _logger = logger;
             _workingDispatcher = workingDispatcher;
             GrpcChannel = grpcChannel;
             _resourceManagementClient = resourceManagementClient;
             _applicationName = clientApplicationName;
-            _workstationName = clientWorkstationName;          
-
-            var initiateRequest = new InitiateRequest
-            {
-                ClientApplicationName = clientApplicationName,
-                ClientWorkstationName = clientWorkstationName,
-                RequestedServerContextTimeoutMs = requestedServerContextTimeoutMs,
-                RequestedCultureName = requestedCultureName,
-            };
-            initiateRequest.SystemNameToConnect = systemNameToConnect;
-            foreach (var kvp in contextParams)
-                initiateRequest.ContextParams.Add(kvp.Key, 
-                    kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
-
-            InitiateReply initiateReply = _resourceManagementClient.Initiate(initiateRequest);
-            _serverContextId = initiateReply.ContextId;
-            _serverContextTimeoutMs = initiateReply.ServerContextTimeoutMs;
-            _serverCultureName = initiateReply.ServerCultureName;
-
-            if (_serverContextId == @"") throw new Exception("Server returns empty contextId.");
-
-            SetResourceManagementLastCallUtc();
-
-            _callbackMessageStream = resourceManagementClient.SubscribeForCallback(new SubscribeForCallbackRequest
-                {
-                    ContextId = _serverContextId
-                });
-
-            _serverContextIsOperational = true;
-
-            Task.Factory.StartNew(() =>
-            {
-                ReadCallbackMessagesAsync(_callbackMessageStream.ResponseStream, _cancellationTokenSource.Token).Wait();
-            }, TaskCreationOptions.LongRunning);
+            _workstationName = clientWorkstationName;
         }
 
         /// <summary>
@@ -211,7 +174,47 @@ namespace Ssz.DataAccessGrpc.Client
         {
             get { return _serverContextIsOperational; }            
         }
-        
+
+        public async Task InitiateAsync(uint requestedServerContextTimeoutMs,
+            string requestedCultureName,
+            string systemNameToConnect,
+            CaseInsensitiveDictionary<string?> contextParams)
+        {            
+            var initiateRequest = new InitiateRequest
+            {
+                ClientApplicationName = _applicationName,
+                ClientWorkstationName = _workstationName,
+                RequestedServerContextTimeoutMs = requestedServerContextTimeoutMs,
+                RequestedCultureName = requestedCultureName,
+            };
+            initiateRequest.SystemNameToConnect = systemNameToConnect;
+            foreach (var kvp in contextParams)
+                initiateRequest.ContextParams.Add(kvp.Key,
+                    kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
+
+            InitiateReply initiateReply = await _resourceManagementClient.InitiateAsync(initiateRequest);
+            _serverContextId = initiateReply.ContextId;
+            _serverContextTimeoutMs = initiateReply.ServerContextTimeoutMs;
+            _serverCultureName = initiateReply.ServerCultureName;
+
+            if (_serverContextId == @"") 
+                throw new Exception("Server returns empty contextId.");
+
+            SetResourceManagementLastCallUtc();
+
+            _callbackMessageStream = _resourceManagementClient.SubscribeForCallback(new SubscribeForCallbackRequest
+            {
+                ContextId = _serverContextId
+            });
+
+            _serverContextIsOperational = true;
+
+            var t = Task.Factory.StartNew(async () =>
+            {
+                await ReadCallbackMessagesAsync(_callbackMessageStream.ResponseStream, _cancellationTokenSource.Token);
+            }, TaskCreationOptions.LongRunning);
+        }
+
         public void KeepContextAliveIfNeeded(CancellationToken ct, DateTime nowUtc)
         {
             if (!_serverContextIsOperational) return;
@@ -369,12 +372,12 @@ namespace Ssz.DataAccessGrpc.Client
         
         private readonly string _workstationName;
         
-        private readonly string _serverContextId;
+        private string _serverContextId = null!;
         
-        private readonly uint _serverContextTimeoutMs;
+        private uint _serverContextTimeoutMs;
         
-        private readonly string _serverCultureName;
-        
+        private string _serverCultureName = null!;
+
         private DateTime _resourceManagementLastCallUtc;        
         
         private ContextStatus? _serverContextStatus;

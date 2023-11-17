@@ -7,6 +7,7 @@ using Ssz.DataAccessGrpc.Client.ClientListItems;
 using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.Utils.DataAccess;
 using Ssz.Utils;
+using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.Client.ClientLists
 {
@@ -22,16 +23,28 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// </summary>
         /// <param name="context"></param>
         /// <param name="listParams"></param>
-        public ClientElementValuesJournalList(ClientContext context, CaseInsensitiveDictionary<string>? listParams)
+        public ClientElementValuesJournalList(ClientContext context)
             : base(context)
         {
-            ListType = (uint)StandardListType.ElementValuesJournalList;
-            Context.DefineList(this, listParams);
+            ListType = (uint)StandardListType.ElementValuesJournalList;            
         }
 
         #endregion
 
         #region public functions
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="listParams"></param>
+        /// <returns></returns>
+        /// <exception cref="ObjectDisposedException"></exception>
+        public async Task DefineListAsync(CaseInsensitiveDictionary<string>? listParams)
+        {
+            if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
+
+            await Context.DefineListAsync(this, listParams);
+        }
 
         /// <summary>
         /// 

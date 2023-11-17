@@ -7,6 +7,7 @@ using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.Utils.DataAccess;
 using Grpc.Core;
 using Google.Protobuf.WellKnownTypes;
+using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.Client
 {
@@ -30,7 +31,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// </summary>
         /// <param name="dataAccessGrpcList"></param>
         /// <param name="listParams"></param>
-        public void DefineList(ClientListRoot dataAccessGrpcList, CaseInsensitiveDictionary<string>? listParams)
+        public async Task DefineListAsync(ClientListRoot dataAccessGrpcList, CaseInsensitiveDictionary<string>? listParams)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -50,7 +51,7 @@ namespace Ssz.DataAccessGrpc.Client
                     foreach (var kvp in listParams)
                         request.ListParams.Add(kvp.Key,
                             kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });                
-                var reply = _resourceManagementClient.DefineList(request);
+                var reply = await _resourceManagementClient.DefineListAsync(request);
                 SetResourceManagementLastCallUtc();
                 if ((StatusCode)reply.Result.StatusCode == StatusCode.OK)
                 {

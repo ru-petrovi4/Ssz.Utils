@@ -1,5 +1,6 @@
 ﻿using Ssz.Utils;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Ssz.Utils.DataAccess
@@ -10,7 +11,7 @@ namespace Ssz.Utils.DataAccess
 
         /// <summary>
         ///     Is used to one-time read value.
-        ///     Callback is invoked when valueStatusTimestamp.ValueStatusCode != StatusCodes.Unknown       
+        ///     Callback is invoked when valueStatusTimestamp.ValueStatusCode != StatusCodes.Uncertain       
         /// </summary>
         public ReadOnceValueSubscription(IDataAccessProvider dataProvider, string elementId, Action<ValueStatusTimestamp>? setValueAction)
         {
@@ -25,6 +26,8 @@ namespace Ssz.Utils.DataAccess
         #region public functions
 
         public string MappedElementIdOrConst { get; private set; } = @"";
+
+        public SemaphoreSlim SemaphoreSlim { get; private set; } = new(0);
 
         public void Update(string mappedElementIdOrConst)
         {
@@ -47,6 +50,8 @@ namespace Ssz.Utils.DataAccess
                 _setValueAction(valueStatusTimestamp);
                 _setValueAction = null;
             }
+
+            SemaphoreSlim.Release();
         }
 
         #endregion

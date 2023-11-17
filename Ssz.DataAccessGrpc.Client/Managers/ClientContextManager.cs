@@ -112,7 +112,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
         public event EventHandler<ContextStatusChangedEventArgs> ServerContextStatusChanged = delegate { };
         
-        public void InitiateConnection(string serverAddress,
+        public async Task InitiateConnectionAsync(string serverAddress,
             string clientApplicationName,
             string clientWorkstationName,
             string systemNameToConnect,
@@ -168,7 +168,10 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                             grpcChannel,
                             resourceManagementClient,
                             clientApplicationName,
-                            clientWorkstationName,
+                            clientWorkstationName
+                            );
+
+                await _clientContext.InitiateAsync(
                             (uint)requestedServerContextTimeoutMs.TotalMilliseconds,
                             CultureInfo.CurrentUICulture.Name,
                             systemNameToConnect,
@@ -212,13 +215,15 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <param name="bufferingRate"> The buffering rate for the list. 0 if not used. </param>
         /// <param name="filterSet"> The filter set for the list. Null if not used. </param>
         /// <returns> Returns the new data list. </returns>
-        public ClientElementValueList NewElementValueList(CaseInsensitiveDictionary<string>? listParams)
+        public async Task<ClientElementValueList> NewElementValueListAsync(CaseInsensitiveDictionary<string>? listParams)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
             if (_clientContext is null) throw new ConnectionDoesNotExistException();
 
-            return new ClientElementValueList(_clientContext, listParams);
+            var list = new ClientElementValueList(_clientContext);
+            await list.DefineListAsync(listParams);
+            return list;
         }
 
         /// <summary>
@@ -228,13 +233,15 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <param name="bufferingRate"> The buffering rate for the list. 0 if not used. </param>
         /// <param name="filterSet"> The filter set for the list. Null if not used. </param>
         /// <returns> Returns the new data list. </returns>
-        public ClientEventList NewEventList(CaseInsensitiveDictionary<string>? listParams)
+        public async Task<ClientEventList> NewEventListAsync(CaseInsensitiveDictionary<string>? listParams)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
             if (_clientContext is null) throw new ConnectionDoesNotExistException();
-
-            return new ClientEventList(_clientContext, listParams);
+            
+            var list = new ClientEventList(_clientContext);
+            await list.DefineListAsync(listParams);
+            return list;
         }
 
         /// <summary>
@@ -244,24 +251,26 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <param name="bufferingRate"> The buffering rate for the list. 0 if not used. </param>
         /// <param name="filterSet"> The filter set for the list. Null if not used. </param>
         /// <returns> Returns the new data list. </returns>
-        public ClientElementValuesJournalList NewElementValuesJournalList(CaseInsensitiveDictionary<string>? listParams)
-        {
-            if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
-
-            if (_clientContext is null) throw new ConnectionDoesNotExistException();
-
-            return new ClientElementValuesJournalList(_clientContext, listParams);
-        }
-
-        public void Passthrough(string recipientId,
-                                      string passthroughName, byte[] dataToSend, out IEnumerable<byte> returnData)
+        public async Task<ClientElementValuesJournalList> NewElementValuesJournalListAsync(CaseInsensitiveDictionary<string>? listParams)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
             if (_clientContext is null) throw new ConnectionDoesNotExistException();
             
-            _clientContext.Passthrough(recipientId,
-                                      passthroughName, dataToSend, out returnData);
+            var list = new ClientElementValuesJournalList(_clientContext);
+            await list.DefineListAsync(listParams);
+            return list;
+        }
+
+        public async Task<IEnumerable<byte>> PassthroughAsync(string recipientId,
+                                      string passthroughName, byte[] dataToSend)
+        {
+            if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
+
+            if (_clientContext is null) throw new ConnectionDoesNotExistException();
+            
+            return await _clientContext.PassthroughAsync(recipientId,
+                                      passthroughName, dataToSend);
         }
 
         public async Task<uint> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend,

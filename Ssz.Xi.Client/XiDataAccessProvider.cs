@@ -458,7 +458,7 @@ namespace Ssz.Xi.Client
 
             var taskCompletionSource = new TaskCompletionSource<uint>();
 
-            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
             {                
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
                 Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
