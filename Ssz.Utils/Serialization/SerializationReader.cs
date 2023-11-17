@@ -212,10 +212,12 @@ namespace Ssz.Utils.Serialization
 
         public bool IsBlockEnding()
         {
-            if (_blockEndingPositionsStack.Count == 0) return false;
+            if (_blockEndingPositionsStack.Count == 0) 
+                return false;
             long blockEndingPosition = _blockEndingPositionsStack.Peek();
-            if (blockEndingPosition == 0) return false;
-            return _baseStream.Position == blockEndingPosition;
+            if (blockEndingPosition == 0) 
+                return false;
+            return _baseStream.Position >= blockEndingPosition;
         }
 
         /// <summary>
@@ -233,7 +235,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> A DateTime value. </returns>
         public DateTime ReadDateTime()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return DateTime.FromBinary(_binaryReader.ReadInt64());
         }
@@ -244,7 +246,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> A DateTime value. </returns>
         public Guid ReadGuid()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return new Guid(_binaryReader.ReadBytes(16));
         }        
@@ -256,7 +258,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> An object instance. </returns>
         public object? ReadObject()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return ReadObjectInternal((SerializedType)_binaryReader.ReadByte());
         }
@@ -270,7 +272,7 @@ namespace Ssz.Utils.Serialization
         public T? ReadObjectTyped<T>()
             where T : notnull
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
             
             return (T?)ReadObjectInternal((SerializedType)_binaryReader.ReadByte(), typeof(T));
         }
@@ -284,7 +286,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="context"> An optional, arbitrary object to allow context to be provided. </param>
         public void ReadOwnedDataSerializable(IOwnedDataSerializable target, object? context)
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             target.DeserializeOwnedData(this, context);
         }
@@ -298,7 +300,7 @@ namespace Ssz.Utils.Serialization
         public T? ReadOwnedDataSerializableAndRecreatable<T>(object? context)
             where T : class, IOwnedDataSerializable, new()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             var serializedType = (SerializedType)_binaryReader.ReadByte();
             if (serializedType == SerializedType.NullType) 
@@ -344,7 +346,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> A TimeSpan value. </returns>
         public TimeSpan ReadTimeSpan()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return new TimeSpan(_binaryReader.ReadInt64());
         }
@@ -355,7 +357,7 @@ namespace Ssz.Utils.Serialization
         ///// <returns> A System.Windows.Point value. </returns>
         //public Point ReadPoint()
         //{
-        //    ThrowIfBlockEnding();
+        //    if (IsBlockEnding()) throw new BlockEndingException();
 
         //    double x = _binaryReader.ReadDouble();
         //    double y = _binaryReader.ReadDouble();
@@ -368,7 +370,7 @@ namespace Ssz.Utils.Serialization
         ///// <returns> A System.Windows.Size value. </returns>
         //public Size ReadSize()
         //{
-        //    ThrowIfBlockEnding();
+        //    if (IsBlockEnding()) throw new BlockEndingException();
 
         //    double x = _binaryReader.ReadDouble();
         //    double y = _binaryReader.ReadDouble();
@@ -382,7 +384,7 @@ namespace Ssz.Utils.Serialization
         /// <returns></returns>
         public T[]? ReadArray<T>()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             SerializedType typeCode = ReadTypeCode();
 
@@ -398,7 +400,7 @@ namespace Ssz.Utils.Serialization
         /// <returns></returns>
         public byte[]? ReadNullableByteArray()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             SerializedType typeCode = ReadTypeCode();
 
@@ -416,7 +418,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> A new generic List or null. </returns>
         public List<T>? ReadList<T>()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             SerializedType typeCode = ReadTypeCode();
 
@@ -478,7 +480,7 @@ namespace Ssz.Utils.Serialization
         public Dictionary<TK, TV>? ReadDictionary<TK, TV>()
             where TK : notnull
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             SerializedType typeCode = ReadTypeCode();
 
@@ -505,7 +507,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> A BitArray instance. </returns>
         public BitArray? ReadBitArray()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             if (ReadTypeCode() == SerializedType.NullType) return null;
 
@@ -514,77 +516,77 @@ namespace Ssz.Utils.Serialization
 
         public int PeekChar()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return _binaryReader.PeekChar();
         }
 
         public bool ReadBoolean()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return _binaryReader.ReadBoolean();
         }
         
         public sbyte ReadSByte()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return _binaryReader.ReadSByte();
         }
 
         public byte ReadByte()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return _binaryReader.ReadByte();
         }
 
         public char ReadChar()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return _binaryReader.ReadChar();
         }
         
         public ushort ReadUInt16()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return _binaryReader.ReadUInt16();
         }
 
         public short ReadInt16()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return _binaryReader.ReadInt16();
         }
         
         public uint ReadUInt32()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return ReadUInt32OptimizedOrNot();
         }
 
         public int ReadInt32()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return ReadInt32OptimizedOrNot();
         }
         
         public ulong ReadUInt64()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return _binaryReader.ReadUInt64();
         }
 
         public long ReadInt64()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return _binaryReader.ReadInt64();
         }
@@ -631,49 +633,49 @@ namespace Ssz.Utils.Serialization
 
         public float ReadSingle()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return _binaryReader.ReadSingle();
         }
 
         public double ReadDouble()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return _binaryReader.ReadDouble();
         }
 
         public decimal ReadDecimal()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return _binaryReader.ReadDecimal();
         }
 
         public int ReadRawChars(char[] buffer, int index, int count)
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return _binaryReader.Read(buffer, index, count);
         }
 
         public char[] ReadRawChars(int count)
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return _binaryReader.ReadChars(count);
         }
 
         public int ReadRawBytes(byte[] buffer, int index, int count)
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return _binaryReader.Read(buffer, index, count);
         }
 
         public byte[] ReadRawBytes(int count)
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return _binaryReader.ReadBytes(count);
         }
@@ -684,14 +686,14 @@ namespace Ssz.Utils.Serialization
         /// <returns></returns>
         public byte[] ReadByteArray()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return ReadByteArrayInternal();
         }
 
         public void SkipString()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             SerializedType typeCode = ReadTypeCode();
 
@@ -741,7 +743,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> A BitArray instance. </returns>
         private BitArray ReadOptimizedBitArray()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             int length = ReadOptimizedInt32();
             if (length == 0) return new BitArray(0);
@@ -755,7 +757,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> A DateTime value. </returns>
         private DateTime ReadOptimizedDateTime()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             // Read date information from first three bytes
             var dateMask = new BitVector32(_binaryReader.ReadByte() | (_binaryReader.ReadByte() << 8) | (_binaryReader.ReadByte() << 16));
@@ -797,7 +799,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> A Decimal value. </returns>
         private Decimal ReadOptimizedDecimal()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             byte flags = _binaryReader.ReadByte();
             int lo = 0;
@@ -936,7 +938,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> An object[] instance. </returns>
         private object?[] ReadOptimizedObjectArray(Type elementType)
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             int length = ReadOptimizedInt32();
             var result =
@@ -982,7 +984,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> A string value. </returns>
         private string? ReadOptimizedString()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             SerializedType typeCode = ReadTypeCode();
 
@@ -1017,7 +1019,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> A TimeSpan value. </returns>
         private TimeSpan ReadOptimizedTimeSpan()
         {
-            ThrowIfBlockEnding();
+            if (IsBlockEnding()) throw new BlockEndingException();
 
             return DecodeTimeSpan(ReadByte());
         }
@@ -1030,15 +1032,7 @@ namespace Ssz.Utils.Serialization
         private Type? ReadOptimizedType()
         {
             return GetType(ReadOptimizedString()!, true);
-        }
-
-        private void ThrowIfBlockEnding()
-        {
-            if (_blockEndingPositionsStack.Count == 0) return;
-            long blockEndingPosition = _blockEndingPositionsStack.Peek();
-            if (blockEndingPosition == 0) return;
-            if (_baseStream.Position >= blockEndingPosition) throw new BlockEndingException();
-        }
+        }        
 
         private Type? GetType(string typeString, bool throwOnError)
         {
@@ -1930,7 +1924,7 @@ namespace Ssz.Utils.Serialization
 
 //public int Read()
 //{
-//    ThrowIfBlockEnding();
+//    if (IsBlockEnding()) throw new BlockEndingException();
 
 //    return _binaryReader.Read();
 //}
