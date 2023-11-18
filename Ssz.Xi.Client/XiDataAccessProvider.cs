@@ -22,9 +22,6 @@ namespace Ssz.Xi.Client
         public XiDataAccessProvider(ILogger<XiDataAccessProvider> logger, IUserFriendlyLogger? userFriendlyLogger = null) :
             base(new LoggersSet<XiDataAccessProvider>(logger, userFriendlyLogger))
         {
-            WorkingThreadSafeDispatcher = new();
-            WorkingSynchronizationContext = new DispatcherSynchronizationContext(WorkingThreadSafeDispatcher);
-
             _xiDataListItemsManager = new XiDataListItemsManager();
             _xiDataJournalListItemsManager = new XiDataJournalListItemsManager();
             _xiEventListItemsManager = new XiEventListItemsManager(this);
@@ -105,7 +102,6 @@ namespace Ssz.Xi.Client
             {
                 if (previousWorkingTask is not null)
                     await previousWorkingTask;
-                SynchronizationContext.SetSynchronizationContext(WorkingSynchronizationContext);
                 await WorkingTaskMainAsync(cancellationToken);
             }, TaskCreationOptions.LongRunning);            
 
@@ -424,7 +420,7 @@ namespace Ssz.Xi.Client
         /// <param name="dataToSend"></param>
         /// <param name="progressCallbackAction"></param>
         /// <returns></returns>
-        public override async Task<uint> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend, 
+        public override async Task<Task<uint>> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend, 
             Action<LongrunningPassthroughCallback>? progressCallbackAction)
         {
             // Early exception
@@ -457,12 +453,12 @@ namespace Ssz.Xi.Client
                         JobStatusCode = JobStatusCodes.Unknown
                     });
                 }
-                return JobStatusCodes.Unknown;
+                return Task.FromResult(JobStatusCodes.Unknown);
             }
 
-            var taskCompletionSource = new TaskCompletionSource<uint>();
+            var taskCompletionSource = new TaskCompletionSource<Task<uint>>();
 
-            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
             {                
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
                 Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
@@ -483,12 +479,12 @@ namespace Ssz.Xi.Client
                 {
                     callbackActionDispatched = null;
                 }
-                uint jobStatusCode;
+                Task<uint> jobStatusCodeTask;
                 try
                 {
                     if (_xiServerProxy is null) throw new InvalidOperationException();
 
-                    jobStatusCode = await _xiServerProxy.LongrunningPassthroughAsync(recipientId, passthroughName,
+                    jobStatusCodeTask = await _xiServerProxy.LongrunningPassthroughAsync(recipientId, passthroughName,
                         dataToSend, callbackActionDispatched);
                 }
                 catch
@@ -500,10 +496,10 @@ namespace Ssz.Xi.Client
                             JobStatusCode = JobStatusCodes.Unknown
                         });
                     }
-                    jobStatusCode = JobStatusCodes.Unknown;
+                    jobStatusCodeTask = Task.FromResult(JobStatusCodes.Unknown);
                 }
 
-                taskCompletionSource.SetResult(jobStatusCode);
+                taskCompletionSource.SetResult(jobStatusCodeTask);
             });
 
             return await taskCompletionSource.Task;
@@ -516,12 +512,7 @@ namespace Ssz.Xi.Client
         /// <summary>
         ///     Dispacther for working thread.
         /// </summary>
-        protected ThreadSafeDispatcher WorkingThreadSafeDispatcher { get; } 
-
-        /// <summary>
-        ///     Synchronization Context for working thread.
-        /// </summary>
-        protected DispatcherSynchronizationContext WorkingSynchronizationContext { get; }
+        protected ThreadSafeDispatcher WorkingThreadSafeDispatcher { get; } = new();        
 
         protected CaseInsensitiveDictionary<ConstItem> ConstItemsDictionary { get; } = new();
 

@@ -146,7 +146,7 @@ namespace Ssz.Utils.DataAccess
         /// <param name="dataToSend"></param>
         /// <param name="progressCallbackAction"></param>
         /// <returns></returns>
-        Task<uint> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend, Action<LongrunningPassthroughCallback>? progressCallbackAction);
+        Task<Task<uint>> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend, Action<LongrunningPassthroughCallback>? progressCallbackAction);
 
         void JournalAddItem(string elementId, object valueJournalSubscription);
 

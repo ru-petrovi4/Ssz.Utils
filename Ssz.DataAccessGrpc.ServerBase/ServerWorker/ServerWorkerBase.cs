@@ -16,9 +16,6 @@ namespace Ssz.DataAccessGrpc.ServerBase
         protected ServerWorkerBase(ILogger logger)
         {
             Logger = logger;
-
-            ThreadSafeDispatcher = new();
-            SynchronizationContext = new DispatcherSynchronizationContext(ThreadSafeDispatcher);
         }
 
         #endregion
@@ -28,12 +25,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <summary>
         ///     Dispacther for worker.
         /// </summary>
-        public ThreadSafeDispatcher ThreadSafeDispatcher { get; }
-
-        /// <summary>
-        ///     Synchronization Context for worker.
-        /// </summary>
-        public DispatcherSynchronizationContext SynchronizationContext { get; }
+        public ThreadSafeDispatcher ThreadSafeDispatcher { get; } = new();        
 
         /// <summary>
         ///     true - added, false - removed

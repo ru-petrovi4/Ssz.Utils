@@ -239,9 +239,9 @@ namespace Ssz.Utils.DataAccess
         /// <param name="dataToSend"></param>
         /// <param name="progressCallbackAction"></param>
         /// <returns></returns>
-        public virtual Task<uint> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend, Action<LongrunningPassthroughCallback>? progressCallbackAction)
+        public virtual Task<Task<uint>> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend, Action<LongrunningPassthroughCallback>? progressCallbackAction)
         {            
-            return Task.FromResult(JobStatusCodes.OK);
+            return Task.FromResult(Task.FromResult(JobStatusCodes.OK));
         }
 
         /// <summary>

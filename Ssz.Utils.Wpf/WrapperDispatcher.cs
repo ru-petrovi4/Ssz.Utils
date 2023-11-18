@@ -62,7 +62,7 @@ namespace Ssz.Utils.Wpf
             _dispatcher.BeginInvoke(action, _cancellationTokenSource.Token);
         }
 
-        public void BeginExclusiveInvoke(Func<CancellationToken, Task> action)
+        public void BeginAsyncInvoke(Func<CancellationToken, Task> action)
         {
             if (Disposed) return;
 

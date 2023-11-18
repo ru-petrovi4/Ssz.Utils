@@ -22,7 +22,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="valueSubscription"></param>
         public override void JournalAddItem(string elementId, object valueSubscription)
         {
-            WorkingThreadSafeDispatcher.BeginExclusiveInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
             {
                 if (!IsInitialized)
                     return;

@@ -53,8 +53,6 @@ namespace Ssz.Dcs.ControlEngine
         {
             Logger.LogDebug("ExecuteAsync begin.");
 
-            SynchronizationContext.SetSynchronizationContext(_serverWorker.SynchronizationContext);
-
             //_utilityDataAccessProvider.EventMessagesCallback += UtilityDataAccessProviderOnEventMessagesCallback;
             _utilityDataAccessProvider.Initialize(null,                
                 Program.Options.GetCentralServerAddress(),

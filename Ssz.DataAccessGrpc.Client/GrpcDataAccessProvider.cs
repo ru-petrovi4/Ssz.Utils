@@ -28,9 +28,6 @@ namespace Ssz.DataAccessGrpc.Client
         public GrpcDataAccessProvider(ILogger<GrpcDataAccessProvider> logger, IUserFriendlyLogger? userFriendlyLogger = null) :
             base(new LoggersSet(logger, userFriendlyLogger))
         {
-            WorkingThreadSafeDispatcher = new();
-            WorkingSynchronizationContext = new DispatcherSynchronizationContext(WorkingThreadSafeDispatcher);
-
             _clientContextManager = new ClientContextManager(logger, WorkingThreadSafeDispatcher);
 
             _clientElementValueListManager = new ClientElementValueListManager(logger);
@@ -126,7 +123,6 @@ namespace Ssz.DataAccessGrpc.Client
             {
                 if (previousWorkingTask is not null)
                     await previousWorkingTask;
-                SynchronizationContext.SetSynchronizationContext(WorkingSynchronizationContext);
                 await WorkingTaskMainAsync(cancellationToken);
             }, TaskCreationOptions.LongRunning);
 
@@ -240,7 +236,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]?>();
 
-            WorkingThreadSafeDispatcher.BeginExclusiveInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
             {
                 if (!IsInitialized)
                 {
@@ -348,7 +344,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             var taskCompletionSource = new TaskCompletionSource<ResultInfo>();
 
-            WorkingThreadSafeDispatcher.BeginExclusiveInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
             {
                 var resultInfo = ResultInfo.OkResultInfo;
 
@@ -397,7 +393,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             var taskCompletionSource = new TaskCompletionSource<(IValueSubscription[], ResultInfo[])>();
 
-            WorkingThreadSafeDispatcher.BeginExclusiveInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
             {
                 if (!IsInitialized)
                 {
@@ -432,7 +428,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             var taskCompletionSource = new TaskCompletionSource<IEnumerable<byte>>();
 
-            WorkingThreadSafeDispatcher.BeginExclusiveInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
             {                
                 try
                 {
@@ -467,7 +463,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="dataToSend"></param>
         /// <param name="progressCallbackAction"></param>
         /// <returns></returns>
-        public override async Task<uint> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend,
+        public override async Task<Task<uint>> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend,
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? progressCallbackAction)
         {
             // Early exception
@@ -500,13 +496,13 @@ namespace Ssz.DataAccessGrpc.Client
                         JobStatusCode = JobStatusCodes.Unknown
                     });
                 }
-                return JobStatusCodes.Unknown;
+                return Task.FromResult(JobStatusCodes.Unknown);
             }                
 
-            var taskCompletionSource = new TaskCompletionSource<uint>();
+            var taskCompletionSource = new TaskCompletionSource<Task<uint>>();
 
             // Do not use BeginExclusiveInvoke() because long running task
-            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
             {
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
                 Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
@@ -527,10 +523,10 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                     callbackActionDispatched = null;
                 }
-                uint jobStatusCode;
+                Task<uint> jobStatusCodeTask;
                 try
                 {
-                    jobStatusCode = await _clientContextManager.LongrunningPassthroughAsync(recipientId, passthroughName,
+                    jobStatusCodeTask = await _clientContextManager.LongrunningPassthroughAsync(recipientId, passthroughName,
                         dataToSend, callbackActionDispatched);
                 }
                 catch (RpcException ex)
@@ -543,7 +539,7 @@ namespace Ssz.DataAccessGrpc.Client
                             JobStatusCode = JobStatusCodes.Unknown
                         });
                     }
-                    jobStatusCode = JobStatusCodes.Unknown;
+                    jobStatusCodeTask = Task.FromResult(JobStatusCodes.Unknown);
                 }
                 catch (ConnectionDoesNotExistException ex)
                 {
@@ -554,7 +550,7 @@ namespace Ssz.DataAccessGrpc.Client
                             JobStatusCode = JobStatusCodes.Unknown
                         });
                     }
-                    jobStatusCode = JobStatusCodes.Unknown;
+                    jobStatusCodeTask = Task.FromResult(JobStatusCodes.Unknown);
                 }
                 catch (Exception ex)
                 {
@@ -566,10 +562,10 @@ namespace Ssz.DataAccessGrpc.Client
                             JobStatusCode = JobStatusCodes.Unknown
                         });
                     }
-                    jobStatusCode = JobStatusCodes.Unknown;
+                    jobStatusCodeTask = Task.FromResult(JobStatusCodes.Unknown);
                 }
 
-                taskCompletionSource.SetResult(jobStatusCode);
+                taskCompletionSource.SetResult(jobStatusCodeTask);
             });
 
             return await taskCompletionSource.Task;
@@ -578,16 +574,11 @@ namespace Ssz.DataAccessGrpc.Client
         #endregion
 
         #region protected functions
-        
+
         /// <summary>
         ///     Dispacther for working thread.
         /// </summary>
-        protected ThreadSafeDispatcher WorkingThreadSafeDispatcher { get; }
-
-        /// <summary>
-        ///     Synchronization Context for working thread.
-        /// </summary>
-        protected DispatcherSynchronizationContext WorkingSynchronizationContext { get; }
+        protected ThreadSafeDispatcher WorkingThreadSafeDispatcher { get; } = new();        
 
         /// <summary>
         ///     This dictionary is created, because we can write to const values.

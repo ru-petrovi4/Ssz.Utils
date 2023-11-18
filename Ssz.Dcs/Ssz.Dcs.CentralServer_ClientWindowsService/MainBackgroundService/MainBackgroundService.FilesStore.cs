@@ -297,7 +297,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 DatasCollection = dsFilesStoreFileDatasCollection
             };
 
-            uint jobStatusCode = await UtilityDataAccessProvider.LongrunningPassthroughAsync("", LongrunningPassthroughConstants.SaveFiles,
+            uint jobStatusCode = await await UtilityDataAccessProvider.LongrunningPassthroughAsync("", LongrunningPassthroughConstants.SaveFiles,
                 SerializationHelper.GetOwnedData(request), null);
 
             return jobStatusCode;

@@ -163,7 +163,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public async Task<uint> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend,
+        public async Task<Task<uint>> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend,
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackAction)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
@@ -204,7 +204,7 @@ namespace Ssz.DataAccessGrpc.Client
                 }
                 longrunningPassthroughRequestsList.Add(longrunningPassthroughRequest);
 
-                return await longrunningPassthroughRequest.TaskCompletionSource.Task;
+                return longrunningPassthroughRequest.TaskCompletionSource.Task;
             }
             catch (Exception ex)
             {                

@@ -39,8 +39,6 @@ namespace Ssz.Dcs.CentralServer
         {
             Logger.LogDebug("ExecuteAsync begin.");
 
-            SynchronizationContext.SetSynchronizationContext(_serverWorker.SynchronizationContext);
-
             while (true)
             {
                 if (cancellationToken.IsCancellationRequested) break;

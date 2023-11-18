@@ -173,11 +173,11 @@ namespace Ssz.Dcs.CentralServer
 
         #region private functions    
 
-        private async void LongrunningPassthrough_ProcessContext(ServerContext serverContext, string jobId, string recipientId, string passthroughName, byte[] dataToSend)
+        private void LongrunningPassthrough_ProcessContext(ServerContext serverContext, string jobId, string recipientId, string passthroughName, byte[] dataToSend)
         {
             ObservableCollection<EngineSession> engineSessions = GetEngineSessions(serverContext);
 
-            var tasks = new List<Task<uint>>();
+            var tasks = new List<Task<Task<uint>>>();
 
             if (!String.IsNullOrEmpty(recipientId))
             {
@@ -212,42 +212,48 @@ namespace Ssz.Dcs.CentralServer
                     tasks.Add(engineSession.DataAccessProvider.LongrunningPassthroughAsync(recipientId, passthroughName, dataToSend, null));
                 }
 
-            bool allSucceeded;
-            try
+            Task.Factory.StartNew(async () =>
             {
-                allSucceeded = (await Task.WhenAll(tasks)).All(jsc => JobStatusCodes.IsOK(jsc));
-            }
-            catch
-            {
-                allSucceeded = false;
-            }
-            if (!allSucceeded)
-            {
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                bool allSucceeded = true;
+                foreach (var task in tasks)
                 {
-                    JobId = jobId,
-                    ProgressPercent = 100,
-                    ProgressLabel = Resources.ResourceManager.GetString(Properties.ResourceStrings.OperationError_ProgressLabel, serverContext.CultureInfo),
-                    JobStatusCode = JobStatusCodes.InvalidArgument
-                });
-            }
-            else
-            {
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                    try
+                    {
+                        if (!JobStatusCodes.IsOK(await await task))
+                            allSucceeded = false;
+                    }
+                    catch
+                    {
+                        allSucceeded = false;
+                    }
+                }
+                if (!allSucceeded)
                 {
-                    JobId = jobId,
-                    ProgressPercent = 100,
-                    ProgressLabel = Resources.ResourceManager.GetString(Properties.ResourceStrings.OperationCompleted_ProgressLabel, serverContext.CultureInfo),
-                    JobStatusCode = JobStatusCodes.OK
-                });
-            }
+                    serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                    {
+                        JobId = jobId,
+                        ProgressPercent = 100,
+                        ProgressLabel = Resources.ResourceManager.GetString(Properties.ResourceStrings.OperationError_ProgressLabel, serverContext.CultureInfo),
+                        JobStatusCode = JobStatusCodes.InvalidArgument
+                    });
+                }
+                else
+                {
+                    serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                    {
+                        JobId = jobId,
+                        ProgressPercent = 100,
+                        ProgressLabel = Resources.ResourceManager.GetString(Properties.ResourceStrings.OperationCompleted_ProgressLabel, serverContext.CultureInfo),
+                        JobStatusCode = JobStatusCodes.OK
+                    });
+                }
+            }, TaskCreationOptions.LongRunning);            
         }
 
         /// <summary>
         ///     Always throws.
         /// </summary>
-        /// <param name="ex"></param>
-        /// <param name="returnData"></param>
+        /// <param name="ex"></param>        
         private void ThrowRpcException(Exception? ex)
         {            
             if (ex is not null)
