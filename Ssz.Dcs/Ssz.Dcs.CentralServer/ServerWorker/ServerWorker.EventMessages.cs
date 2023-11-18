@@ -153,6 +153,31 @@ namespace Ssz.Dcs.CentralServer
             utilityEventMessageNotification(targetWorkstationName, eventMessage);
         }
 
+        private void Generate_RunInstructorExe_UtilityEvent(
+            string targetWorkstationName,
+            ProcessModelingSession processModelingSession, string binDirectoryFullName, string arguments)
+        {            
+            Action<string?, Ssz.Utils.DataAccess.EventMessage>? utilityEventMessageNotification = UtilityEventMessageNotification;
+            if (utilityEventMessageNotification is null) return;
+
+            var eventMessage = new Ssz.Utils.DataAccess.EventMessage(
+                new Ssz.Utils.DataAccess.EventId
+                {
+                    Conditions = new List<Ssz.Utils.DataAccess.TypeId> { EventMessageConstants.RunInstructorExe_TypeId }
+                }
+                );
+            
+            eventMessage.EventType = EventType.SystemEvent;
+            eventMessage.OccurrenceTimeUtc = DateTime.UtcNow;
+            eventMessage.TextMessage = CsvHelper.FormatForCsv(",", new[] {
+                processModelingSession.ProcessModelingSessionId,
+                binDirectoryFullName,
+                arguments
+            });
+
+            utilityEventMessageNotification(targetWorkstationName, eventMessage);
+        }
+
         private void Generate_DownloadChangedFiles_SystemEvent(
             string targetWorkstationName,
             string jobId,

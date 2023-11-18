@@ -70,14 +70,17 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
         private void LaunchInstructor(string processModelingSessionId, DirectoryInfo processDirectoryInfo, DirectoryInfo binDirectoryInfo)
         {
-            string exeFileFullName = Path.Combine(binDirectoryInfo.FullName, DataAccessConstants.Instructor_ClientApplicationName + @".exe");
+            string binDirectoryFullName = binDirectoryInfo.FullName;
             string arguments = "-d \"" + processDirectoryInfo.FullName +
                 "\" --CentralServerAddress=" + ConfigurationHelper.GetValue<string>(Configuration, @"CentralServerAddress", @"") +
                 " -s \"" + processModelingSessionId + "\"";
 
-            Logger.LogDebug("Ssz.Dcs.Instructor.exe is starting.. " + exeFileFullName + @" " + arguments);            
+            Logger.LogDebug("Ssz.Dcs.Instructor.exe is starting.. " + binDirectoryFullName + @" " + arguments);
 
-            ProcessHelper.StartProcessAsCurrentUser(exeFileFullName, @" " + arguments, binDirectoryInfo.FullName, true);
+            var t = UtilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.ProcessModelingSession_RunInstructorExe,
+                   Encoding.UTF8.GetBytes(CsvHelper.FormatForCsv(processModelingSessionId,
+                   binDirectoryFullName,
+                   arguments)));            
         }
 
         #endregion

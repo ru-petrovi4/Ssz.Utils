@@ -21,6 +21,6 @@ namespace Ssz.Utils
         /// 
         /// </summary>
         /// <param name="action"></param>
-        void BeginAsyncInvoke(Func<CancellationToken, Task> action);
+        void BeginExclusiveInvoke(Func<CancellationToken, Task> action);
     }
 }

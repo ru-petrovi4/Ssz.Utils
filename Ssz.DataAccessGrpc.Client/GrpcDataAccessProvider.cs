@@ -28,6 +28,9 @@ namespace Ssz.DataAccessGrpc.Client
         public GrpcDataAccessProvider(ILogger<GrpcDataAccessProvider> logger, IUserFriendlyLogger? userFriendlyLogger = null) :
             base(new LoggersSet(logger, userFriendlyLogger))
         {
+            WorkingThreadSafeDispatcher = new();
+            WorkingSynchronizationContext = new DispatcherSynchronizationContext(WorkingThreadSafeDispatcher);
+
             _clientContextManager = new ClientContextManager(logger, WorkingThreadSafeDispatcher);
 
             _clientElementValueListManager = new ClientElementValueListManager(logger);
@@ -123,6 +126,7 @@ namespace Ssz.DataAccessGrpc.Client
             {
                 if (previousWorkingTask is not null)
                     await previousWorkingTask;
+                SynchronizationContext.SetSynchronizationContext(WorkingSynchronizationContext);
                 await WorkingTaskMainAsync(cancellationToken);
             }, TaskCreationOptions.LongRunning);
 
@@ -236,7 +240,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]?>();
 
-            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginExclusiveInvoke(async ct =>
             {
                 if (!IsInitialized)
                 {
@@ -344,7 +348,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             var taskCompletionSource = new TaskCompletionSource<ResultInfo>();
 
-            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginExclusiveInvoke(async ct =>
             {
                 var resultInfo = ResultInfo.OkResultInfo;
 
@@ -393,7 +397,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             var taskCompletionSource = new TaskCompletionSource<(IValueSubscription[], ResultInfo[])>();
 
-            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginExclusiveInvoke(async ct =>
             {
                 if (!IsInitialized)
                 {
@@ -428,7 +432,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             var taskCompletionSource = new TaskCompletionSource<IEnumerable<byte>>();
 
-            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginExclusiveInvoke(async ct =>
             {                
                 try
                 {
@@ -501,7 +505,8 @@ namespace Ssz.DataAccessGrpc.Client
 
             var taskCompletionSource = new TaskCompletionSource<uint>();
 
-            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
+            // Do not use BeginExclusiveInvoke() because long running task
+            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
             {
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
                 Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
@@ -577,7 +582,12 @@ namespace Ssz.DataAccessGrpc.Client
         /// <summary>
         ///     Dispacther for working thread.
         /// </summary>
-        protected ThreadSafeDispatcher WorkingThreadSafeDispatcher { get; } = new();
+        protected ThreadSafeDispatcher WorkingThreadSafeDispatcher { get; }
+
+        /// <summary>
+        ///     Synchronization Context for working thread.
+        /// </summary>
+        protected DispatcherSynchronizationContext WorkingSynchronizationContext { get; }
 
         /// <summary>
         ///     This dictionary is created, because we can write to const values.
@@ -592,7 +602,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="cancellationToken"></param>
         protected virtual async Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
         {
-            await WorkingThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken).ConfigureAwait(false);
+            await WorkingThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) return;
 
@@ -759,12 +769,12 @@ namespace Ssz.DataAccessGrpc.Client
             while (true)
             {
                 if (cancellationToken.IsCancellationRequested) break;
-                await Task.Delay(10).ConfigureAwait(false);
+                await Task.Delay(10);
                 if (cancellationToken.IsCancellationRequested) break;                
 
                 var nowUtc = DateTime.UtcNow;                
 
-                await DoWorkAsync(nowUtc, cancellationToken).ConfigureAwait(false);
+                await DoWorkAsync(nowUtc, cancellationToken);
             }
 
             Unsubscribe(true);

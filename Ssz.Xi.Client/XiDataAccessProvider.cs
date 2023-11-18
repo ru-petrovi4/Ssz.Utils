@@ -22,6 +22,9 @@ namespace Ssz.Xi.Client
         public XiDataAccessProvider(ILogger<XiDataAccessProvider> logger, IUserFriendlyLogger? userFriendlyLogger = null) :
             base(new LoggersSet<XiDataAccessProvider>(logger, userFriendlyLogger))
         {
+            WorkingThreadSafeDispatcher = new();
+            WorkingSynchronizationContext = new DispatcherSynchronizationContext(WorkingThreadSafeDispatcher);
+
             _xiDataListItemsManager = new XiDataListItemsManager();
             _xiDataJournalListItemsManager = new XiDataJournalListItemsManager();
             _xiEventListItemsManager = new XiEventListItemsManager(this);
@@ -98,11 +101,12 @@ namespace Ssz.Xi.Client
             var cancellationToken = _cancellationTokenSource.Token;
 
             var previousWorkingTask = _workingTask;
-            _workingTask = Task.Factory.StartNew(() =>
+            _workingTask = Task.Factory.StartNew(async () =>
             {
                 if (previousWorkingTask is not null)
-                    previousWorkingTask.Wait();
-                WorkingTaskMainAsync(cancellationToken).Wait();
+                    await previousWorkingTask;
+                SynchronizationContext.SetSynchronizationContext(WorkingSynchronizationContext);
+                await WorkingTaskMainAsync(cancellationToken);
             }, TaskCreationOptions.LongRunning);            
 
             foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
@@ -458,7 +462,7 @@ namespace Ssz.Xi.Client
 
             var taskCompletionSource = new TaskCompletionSource<uint>();
 
-            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
             {                
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
                 Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
@@ -512,7 +516,12 @@ namespace Ssz.Xi.Client
         /// <summary>
         ///     Dispacther for working thread.
         /// </summary>
-        protected ThreadSafeDispatcher WorkingThreadSafeDispatcher { get; } = new();
+        protected ThreadSafeDispatcher WorkingThreadSafeDispatcher { get; } 
+
+        /// <summary>
+        ///     Synchronization Context for working thread.
+        /// </summary>
+        protected DispatcherSynchronizationContext WorkingSynchronizationContext { get; }
 
         protected CaseInsensitiveDictionary<ConstItem> ConstItemsDictionary { get; } = new();
 
@@ -532,12 +541,12 @@ namespace Ssz.Xi.Client
             while (true)
             {
                 if (cancellationToken.IsCancellationRequested) break;
-                await Task.Delay(10).ConfigureAwait(false);
+                await Task.Delay(10);
                 if (cancellationToken.IsCancellationRequested) break;                                
 
                 var nowUtc = DateTime.UtcNow;
 
-                await DoWorkAsync(nowUtc, cancellationToken).ConfigureAwait(false);
+                await DoWorkAsync(nowUtc, cancellationToken);
             }            
 
             Unsubscribe(true);
@@ -558,7 +567,7 @@ namespace Ssz.Xi.Client
             if (_xiServerProxy is null) 
                 throw new InvalidOperationException();            
 
-            await WorkingThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken).ConfigureAwait(false);
+            await WorkingThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) return;
 

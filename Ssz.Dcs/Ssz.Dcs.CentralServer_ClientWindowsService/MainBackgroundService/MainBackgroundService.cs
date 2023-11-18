@@ -28,6 +28,9 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             Configuration = configuration;
             Environment = environment;
 
+            _threadSafeDispatcher = new();
+            _synchronizationContext = new DispatcherSynchronizationContext(_threadSafeDispatcher);
+
             FilesStoreDirectoryInfo = ProgramDataDirectoryHelper.GetFilesStoreDirectoryInfo(Configuration);
 
             UtilityDataAccessProvider = ActivatorUtilities.CreateInstance<GrpcDataAccessProvider>(serviceProvider);
@@ -65,6 +68,8 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
         {
             Logger.LogDebug("ExecuteAsync begin.");
 
+            SynchronizationContext.SetSynchronizationContext(_synchronizationContext);
+
             string centralServerAddress = ConfigurationHelper.GetValue<string>(Configuration, @"CentralServerAddress", @"");
             if (centralServerAddress == @"")
             {
@@ -83,10 +88,10 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             while (true)
             {
                 if (cancellationToken.IsCancellationRequested) break;
-                await Task.Delay(10).ConfigureAwait(false);
+                await Task.Delay(10);
                 if (cancellationToken.IsCancellationRequested) break;
 
-                await _threadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken).ConfigureAwait(false);
+                await _threadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
             }
 
             UtilityDataAccessProvider.Close();
@@ -96,7 +101,9 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
         #region private fields
 
-        private readonly ThreadSafeDispatcher _threadSafeDispatcher = new();
+        private readonly ThreadSafeDispatcher _threadSafeDispatcher;
+
+        private readonly DispatcherSynchronizationContext _synchronizationContext;
 
         #endregion
     }

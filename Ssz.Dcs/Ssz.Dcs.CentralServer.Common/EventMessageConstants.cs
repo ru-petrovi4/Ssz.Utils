@@ -14,7 +14,9 @@ namespace Ssz.Dcs.CentralServer.Common
 
         public static readonly TypeId LaunchOperator_TypeId = new("", "Ssz.Dcs", "LaunchOperator");
 
-        public static readonly TypeId RunOperatorExe_TypeId = new("", "Ssz.Dcs", "RunOperatorExe");
+        public static readonly TypeId RunInstructorExe_TypeId = new("", "Ssz.Dcs", "RunInstructorExe");
+
+        public static readonly TypeId RunOperatorExe_TypeId = new("", "Ssz.Dcs", "RunOperatorExe");        
 
         public static readonly TypeId LaunchEngine_TypeId = new("", "Ssz.Dcs", "LaunchEngine");
 

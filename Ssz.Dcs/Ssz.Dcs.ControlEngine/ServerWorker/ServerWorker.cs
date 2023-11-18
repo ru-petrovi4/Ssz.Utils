@@ -40,7 +40,7 @@ namespace Ssz.Dcs.ControlEngine
 
             DoWorkUtilityItems(nowUtc, cancellationToken);
 
-            await base.DoWorkAsync(nowUtc, cancellationToken).ConfigureAwait(false);
+            await base.DoWorkAsync(nowUtc, cancellationToken);
         }
 
         #endregion        

@@ -15,14 +15,25 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         protected ServerWorkerBase(ILogger logger)
         {
-            Logger = logger;            
+            Logger = logger;
+
+            ThreadSafeDispatcher = new();
+            SynchronizationContext = new DispatcherSynchronizationContext(ThreadSafeDispatcher);
         }
 
         #endregion
 
         #region public functions
 
-        public ThreadSafeDispatcher ThreadSafeDispatcher { get; } = new();
+        /// <summary>
+        ///     Dispacther for worker.
+        /// </summary>
+        public ThreadSafeDispatcher ThreadSafeDispatcher { get; }
+
+        /// <summary>
+        ///     Synchronization Context for worker.
+        /// </summary>
+        public DispatcherSynchronizationContext SynchronizationContext { get; }
 
         /// <summary>
         ///     true - added, false - removed
@@ -48,7 +59,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         public abstract void LongrunningPassthroughCancel(ServerContext serverContext, string jobId);
 
         /// <summary>
-        ///     Overrides MUST use .ConfigureAwait(false) for all await.
+        ///     
         /// </summary>
         /// <param name="nowUtc"></param>
         /// <param name="cancellationToken"></param>
@@ -57,7 +68,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             if (cancellationToken.IsCancellationRequested) return;
 
-            await ThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken).ConfigureAwait(false);
+            await ThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) return;
             
@@ -68,7 +79,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 {
                     // Expired
                     RemoveServerContext(serverContext);
-                    await serverContext.DisposeAsync().ConfigureAwait(false);
+                    await serverContext.DisposeAsync();
                     Logger.LogWarning("Timeout out Context {0}", serverContext.ContextId);
                 }
                 else

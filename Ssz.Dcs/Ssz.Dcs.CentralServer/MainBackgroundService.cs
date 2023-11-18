@@ -39,15 +39,17 @@ namespace Ssz.Dcs.CentralServer
         {
             Logger.LogDebug("ExecuteAsync begin.");
 
+            SynchronizationContext.SetSynchronizationContext(_serverWorker.SynchronizationContext);
+
             while (true)
             {
                 if (cancellationToken.IsCancellationRequested) break;
-                await Task.Delay(3).ConfigureAwait(false);
+                await Task.Delay(3);
                 if (cancellationToken.IsCancellationRequested) break;
 
                 DateTime nowUtc = DateTime.UtcNow;
 
-                await _serverWorker.DoWorkAsync(nowUtc, cancellationToken).ConfigureAwait(false);
+                await _serverWorker.DoWorkAsync(nowUtc, cancellationToken);
             }
 
             await _serverWorker.ShutdownAsync().ConfigureAwait(false);

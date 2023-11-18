@@ -134,6 +134,22 @@ namespace Ssz.Dcs.CentralServer
             return operatorSession.LaunchOperatorJobId!;
         }
 
+        private void ProcessModelingSession_RunInstructorExe_Passthrough(ServerContext serverContext, byte[] dataToSend, out byte[] returnData)
+        {
+            returnData = new byte[0];
+
+            string?[] parts = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend));
+            if (parts.Length < 3)
+                throw new InvalidOperationException();
+
+            ProcessModelingSession? processModelingSession = GetProcessModelingSessionOrNull(parts[0]);
+            
+            if (processModelingSession is null)
+                return;
+
+            Generate_RunInstructorExe_UtilityEvent(processModelingSession.InitiatorClientWorkstationName, processModelingSession, parts[1]!, parts[2]!);
+        }
+
         private string ProcessModelingSession_SubscribeForLaunchOperatorProgress_LongrunningPassthrough(ServerContext serverContext, byte[] dataToSend)
         {
             string operatorSessionId = Encoding.UTF8.GetString(dataToSend);            
@@ -163,8 +179,9 @@ namespace Ssz.Dcs.CentralServer
         ///     processServerContext with ContextParams['OperatorSessionId'] != String.Empty
         /// </summary>
         /// <param name="processServerContext"></param>
-        /// <param name="operatorSessionId"></param>
         /// <param name="added"></param>
+        /// <param name="systemNameToConnect"></param>
+        /// <exception cref="RpcException"></exception>
         private void OnProcessServerContext_AddedOrRemoved(ServerContext processServerContext, bool added, string systemNameToConnect)
         {
             if (!String.Equals(systemNameToConnect, DataAccessConstants.Dcs_SystemName, StringComparison.InvariantCultureIgnoreCase))

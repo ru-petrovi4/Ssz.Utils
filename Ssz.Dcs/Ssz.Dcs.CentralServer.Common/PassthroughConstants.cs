@@ -30,6 +30,12 @@ namespace Ssz.Dcs.CentralServer.Common
         public const string GetUsers = @"GetUsers";
 
         /// <summary>
+        ///     Utility DataAccessProvider (systemNameToConnect is String.Empty).        
+        ///     Request: UTF8 string with ProcessModelingSessionId,programpath,commandline. 
+        /// </summary>
+        public const string ProcessModelingSession_RunInstructorExe = @"ProcessModelingSession.RunInstructorExe";        
+
+        /// <summary>
         ///     Utility Context (systemNameToConnect is String.Empty).
         ///     Request: ScenarioResult bytes.
         ///     Reply: empty
@@ -61,7 +67,7 @@ namespace Ssz.Dcs.CentralServer.Common
         ///     Process Context (systemNameToConnect is not String.Empty).
         ///     Request: ConfigurationCsvFiles        
         /// </summary>
-        public const string WriteConfiguration = @"WriteConfiguration";
+        public const string WriteConfiguration = @"WriteConfiguration";        
 
         /// <summary>
         ///     Process Context DataAccessProvider (systemNameToConnect is not String.Empty).
@@ -107,7 +113,7 @@ namespace Ssz.Dcs.CentralServer.Common
 
         /// <summary>
         ///     Utility DataAccessProvider (systemNameToConnect is String.Empty).        
-        ///     Request: UTF8 string with OperatorSessionId,programpath,commandline. 
+        ///     Request: UTF8 string with OperatorSessionId,BinDirectoryInfo.FullName,DataDirectoryInfo.FullName. 
         /// </summary>
         public const string ProcessModelingSession_RunOperatorExe = @"ProcessModelingSession.RunOperatorExe";
 

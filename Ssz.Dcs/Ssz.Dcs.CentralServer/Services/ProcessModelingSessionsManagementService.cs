@@ -219,7 +219,7 @@ namespace Ssz.Dcs.CentralServer
         {
             var taskCompletionSource = new TaskCompletionSource<TReply>();
             //context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
-            _serverWorker.ThreadSafeDispatcher.BeginInvoke(async ct =>
+            _serverWorker.ThreadSafeDispatcher.BeginExclusiveInvoke(async ct =>
             {                
                 try
                 {

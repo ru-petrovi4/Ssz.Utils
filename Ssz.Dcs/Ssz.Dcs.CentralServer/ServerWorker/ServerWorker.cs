@@ -81,7 +81,7 @@ namespace Ssz.Dcs.CentralServer
 
             DoWorkUtilityItems(nowUtc, cancellationToken);
 
-            await base.DoWorkAsync(nowUtc, cancellationToken).ConfigureAwait(false);
+            await base.DoWorkAsync(nowUtc, cancellationToken);
         }
 
         #endregion

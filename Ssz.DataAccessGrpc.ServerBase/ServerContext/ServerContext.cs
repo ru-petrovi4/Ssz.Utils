@@ -139,7 +139,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
             _listsManager.Clear();
 
-            await _callbackWorkingTask.ConfigureAwait(false);
+            await _callbackWorkingTask;
         }
 
         /// <summary>

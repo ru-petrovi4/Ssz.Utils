@@ -22,7 +22,7 @@ namespace Ssz.Utils
 
         #region public functions
 
-        public void BeginAsyncInvoke(Func<CancellationToken, Task> action)
+        public void BeginExclusiveInvoke(Func<CancellationToken, Task> action)
         {
             _synchronizationContext?.Post(OnBeginAsyncInvoke_Dispatched, action);
         }

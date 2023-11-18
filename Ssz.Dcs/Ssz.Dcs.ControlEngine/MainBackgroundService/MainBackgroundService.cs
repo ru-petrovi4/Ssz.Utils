@@ -53,6 +53,8 @@ namespace Ssz.Dcs.ControlEngine
         {
             Logger.LogDebug("ExecuteAsync begin.");
 
+            SynchronizationContext.SetSynchronizationContext(_serverWorker.SynchronizationContext);
+
             //_utilityDataAccessProvider.EventMessagesCallback += UtilityDataAccessProviderOnEventMessagesCallback;
             _utilityDataAccessProvider.Initialize(null,                
                 Program.Options.GetCentralServerAddress(),
@@ -95,7 +97,7 @@ namespace Ssz.Dcs.ControlEngine
             while (true)
             {
                 if (cancellationToken.IsCancellationRequested || _shutdownRequested) break;
-                await Task.Delay(3).ConfigureAwait(false);
+                await Task.Delay(3);
                 if (cancellationToken.IsCancellationRequested || _shutdownRequested) break;
 
                 DateTime nowUtc = DateTime.UtcNow;
@@ -111,7 +113,7 @@ namespace Ssz.Dcs.ControlEngine
                 //        device.DoWork((UInt64)modelTimeSeconds * 1000, nowUtc, cancellationToken);
                 //}               
 
-                await _serverWorker.DoWorkAsync(nowUtc, cancellationToken).ConfigureAwait(false);
+                await _serverWorker.DoWorkAsync(nowUtc, cancellationToken);
             }
 
             _processDataAccessProvider.Close();

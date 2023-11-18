@@ -41,7 +41,10 @@ namespace Ssz.Dcs.CentralServer
                             return returnData;
                         case PassthroughConstants.GetUsers:
                             GetUsersPassthrough(out returnData);
-                            return returnData;                        
+                            return returnData;
+                        case PassthroughConstants.ProcessModelingSession_RunInstructorExe:
+                            ProcessModelingSession_RunInstructorExe_Passthrough(serverContext, dataToSend, out returnData);
+                            return returnData;
                         default:
                             throw new RpcException(new Status(StatusCode.InvalidArgument, "Unknown passthroughName."));
                     }                
@@ -131,7 +134,7 @@ namespace Ssz.Dcs.CentralServer
                         case LongrunningPassthroughConstants.ProcessModelingSession_LaunchOperator:
                             return ProcessModelingSession_LaunchOperator_LongrunningPassthrough(serverContext, dataToSend);
                         case LongrunningPassthroughConstants.ProcessModelingSession_RunOperatorExe:
-                            return ProcessModelingSession_RunOperatorExe_LongrunningPassthrough(serverContext, dataToSend);
+                            return ProcessModelingSession_RunOperatorExe_LongrunningPassthrough(serverContext, dataToSend);                        
                         case LongrunningPassthroughConstants.ProcessModelingSession_SubscribeForLaunchOperatorProgress:
                             return ProcessModelingSession_SubscribeForLaunchOperatorProgress_LongrunningPassthrough(serverContext, dataToSend);
                         case LongrunningPassthroughConstants.ProcessModelingSession_DownloadChangedFiles:
