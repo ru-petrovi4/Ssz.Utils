@@ -94,9 +94,11 @@ namespace Ssz.Dcs.ControlEngine
 
             while (true)
             {
-                if (cancellationToken.IsCancellationRequested || _shutdownRequested) break;
+                if (cancellationToken.IsCancellationRequested || _shutdownRequested) 
+                    break;
                 await Task.Delay(3);
-                if (cancellationToken.IsCancellationRequested || _shutdownRequested) break;
+                if (cancellationToken.IsCancellationRequested || _shutdownRequested) 
+                    break;
 
                 DateTime nowUtc = DateTime.UtcNow;
                 
@@ -111,7 +113,14 @@ namespace Ssz.Dcs.ControlEngine
                 //        device.DoWork((UInt64)modelTimeSeconds * 1000, nowUtc, cancellationToken);
                 //}               
 
-                await _serverWorker.DoWorkAsync(nowUtc, cancellationToken);
+                try
+                {
+                    await _serverWorker.DoWorkAsync(nowUtc, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, @"_serverWorker.DoWorkAsync(...) Exception");
+                }                
             }
 
             _processDataAccessProvider.Close();
@@ -119,9 +128,9 @@ namespace Ssz.Dcs.ControlEngine
             ((ServerWorker)_serverWorker).Device = null;
             device.Dispose();            
 
-            await _serverWorker.ShutdownAsync().ConfigureAwait(false);
+            await _serverWorker.ShutdownAsync();
             
-            await _utilityDataAccessProvider.DisposeAsync().ConfigureAwait(false);
+            await _utilityDataAccessProvider.DisposeAsync();
 
             Program.SafeShutdown();
         }

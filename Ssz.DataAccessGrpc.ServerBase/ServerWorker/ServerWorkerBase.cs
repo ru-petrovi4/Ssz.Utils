@@ -58,15 +58,18 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <returns></returns>
         public virtual async Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) return;
+            if (cancellationToken.IsCancellationRequested) 
+                return;
 
             await ThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
 
-            if (cancellationToken.IsCancellationRequested) return;
+            if (cancellationToken.IsCancellationRequested) 
+                return;
             
             foreach (ServerContext serverContext in _serverContextsDictionary.Values.ToArray())
             {
-                if (cancellationToken.IsCancellationRequested) return;                
+                if (cancellationToken.IsCancellationRequested) 
+                    return;                
                 if (nowUtc - serverContext.LastAccessDateTimeUtc > TimeSpan.FromMilliseconds(serverContext.ContextTimeoutMs))
                 {
                     // Expired
@@ -85,7 +88,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             var serverContexts = _serverContextsDictionary.Values.ToArray();
             _serverContextsDictionary.Clear();
-            await ServerContextsAbortAsync(serverContexts).ConfigureAwait(false);
+            await ServerContextsAbortAsync(serverContexts);
         }
 
         #endregion        

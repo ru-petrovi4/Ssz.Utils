@@ -106,13 +106,17 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             while (true)
             {
-                if (cancellationToken.IsCancellationRequested) break;
+                if (cancellationToken.IsCancellationRequested) 
+                    break;
                 await Task.Delay(10);
-                if (cancellationToken.IsCancellationRequested) break;
+                if (cancellationToken.IsCancellationRequested) 
+                    break;
 
                 try
                 {
-                    await OnLoopInWorkingThreadAsync(cancellationToken);
+                    bool exitTask = await OnLoopInWorkingThreadAsync(cancellationToken);
+                    if (exitTask)
+                        break;
                 }
                 catch (Exception ex)
                 {
@@ -125,7 +129,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             Logger.LogDebug(@"ServerContext Callback Thread Exit");
         }
 
-        private async Task OnLoopInWorkingThreadAsync(CancellationToken cancellationToken)
+        private async Task<bool> OnLoopInWorkingThreadAsync(CancellationToken cancellationToken)
         {
             List<ContextStatusMessage> contextStatusMessagesCollection;
             List<ElementValuesCallbackMessage> elementValuesCallbackMessagesCollection;
@@ -150,7 +154,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 if (_responseStream is not null)
                 {
                     if (cancellationToken.IsCancellationRequested)
-                        return;
+                        return true;
 
                     if (contextStatusMessagesCollection.Count > 0)
                     {
@@ -158,7 +162,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         foreach (ContextStatusMessage contextStatusMessage in contextStatusMessagesCollection)
                         {
                             if (cancellationToken.IsCancellationRequested)
-                                return;
+                                return true;
 
                             var callbackMessage = new CallbackMessage();
                             callbackMessage.ContextStatus = new ContextStatus
@@ -172,7 +176,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     if (!hasAbortingMessage)
                     {
                         if (cancellationToken.IsCancellationRequested)
-                            return;
+                            return true;
 
                         if (elementValuesCallbackMessagesCollection.Count > 0)
                         {
@@ -190,7 +194,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                                 foreach (ElementValuesCallback elementValuesCallback in elementValuesCallbackMessage.SplitForCorrectGrpcMessageSize())
                                 {
                                     if (cancellationToken.IsCancellationRequested)
-                                        return;
+                                        return true;
 
                                     var callbackMessage = new CallbackMessage
                                     {
@@ -202,7 +206,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         }
 
                         if (cancellationToken.IsCancellationRequested)
-                            return;
+                            return true;
 
                         if (eventMessagesCallbackMessagesCollection.Count > 0)
                         {
@@ -220,7 +224,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                                 foreach (EventMessagesCallback eventMessagesCallback in eventMessagesCallbackMessage.SplitForCorrectGrpcMessageSize())
                                 {
                                     if (cancellationToken.IsCancellationRequested)
-                                        return;
+                                        return true;
 
                                     Logger.LogDebug("_responseStream.WriteAsync(callbackMessage)");
                                     var callbackMessage = new CallbackMessage
@@ -233,7 +237,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         }
 
                         if (cancellationToken.IsCancellationRequested)
-                            return;
+                            return true;
 
                         if (longrunningPassthroughCallbackMessagesCollection.Count > 0)
                         {
@@ -242,7 +246,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             foreach (var longrunningPassthroughCallbackMessage in longrunningPassthroughCallbackMessagesCollection)
                             {
                                 if (cancellationToken.IsCancellationRequested)
-                                    return;
+                                    return true;
 
                                 Logger.LogDebug("_responseStream.WriteAsync(callbackMessage)");
                                 var callbackMessage = new CallbackMessage
@@ -266,7 +270,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
             {
                 if (hasAbortingMessage)
                     CallbackWorkingTask_CancellationTokenSource.Cancel();
-            }            
+            }
+
+            return false;
         }
 
         #endregion

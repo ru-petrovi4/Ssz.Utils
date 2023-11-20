@@ -77,7 +77,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             if (Disposed) return;
             Disposed = true;
 
-            await DisposeAsyncCore().ConfigureAwait(false);
+            await DisposeAsyncCore();
 
             Dispose(disposing: false);
 #pragma warning disable CA1816 // Dispose methods should call SuppressFinalize

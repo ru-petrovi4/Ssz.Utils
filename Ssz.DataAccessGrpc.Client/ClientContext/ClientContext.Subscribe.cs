@@ -10,6 +10,8 @@ using Grpc.Core;
 using EventMessagesCollection = Ssz.DataAccessGrpc.ServerBase.EventMessagesCollection;
 using Google.Protobuf.Collections;
 using Ssz.Utils;
+using System.Threading;
+using Microsoft.Extensions.Logging;
 
 namespace Ssz.DataAccessGrpc.Client
 {
@@ -86,11 +88,94 @@ namespace Ssz.DataAccessGrpc.Client
                 ProcessRemoteMethodCallException(ex);
                 throw;
             }
-        }        
+        }
 
         #endregion
 
         #region private functions
+
+        private async Task ReadCallbackMessagesAsync(IAsyncStreamReader<CallbackMessage> reader, CancellationToken cancellationToken)
+        {
+            while (true)
+            {
+                if (!_serverContextIsOperational || cancellationToken.IsCancellationRequested) 
+                    return;
+
+                try
+                {
+                    if (!await reader.MoveNext(cancellationToken)) 
+                        return;
+                }
+                //catch (RpcException e) when (e.StatusCode == StatusCode.NotFound)
+                //{
+                //    break;
+                //}
+                //catch (OperationCanceledException)
+                //{
+                //    break;
+                //}
+                catch
+                {
+                    _serverContextIsOperational = false;
+                    _pendingClientContextNotificationEventArgs = new ClientContextNotificationEventArgs(ClientContextNotificationType.ReadCallbackMessagesException, null);
+                    return;
+                }
+
+                if (!_serverContextIsOperational || cancellationToken.IsCancellationRequested) 
+                    return;
+
+                CallbackMessage current = reader.Current;
+                _workingDispatcher.BeginInvoke(ct =>
+                {
+                    if (ct.IsCancellationRequested) return;
+                    try
+                    {
+                        switch (current.OptionalMessageCase)
+                        {
+                            case CallbackMessage.OptionalMessageOneofCase.ContextStatus:
+                                ServerContextStatusCallback(current.ContextStatus);
+                                break;
+                            case CallbackMessage.OptionalMessageOneofCase.ElementValuesCallback:
+                                ElementValuesCallback elementValuesCallback = current.ElementValuesCallback;
+                                ClientElementValueList valueList = GetElementValueList(elementValuesCallback.ListClientAlias);
+                                ElementValuesCallback(valueList, elementValuesCallback.ElementValuesCollection);
+                                break;
+                            case CallbackMessage.OptionalMessageOneofCase.EventMessagesCallback:
+                                EventMessagesCallback eventMessagesCallback = current.EventMessagesCallback;
+                                ClientEventList eventList = GetEventList(eventMessagesCallback.ListClientAlias);
+                                EventMessagesCallback(eventList, eventMessagesCallback.EventMessagesCollection);
+                                break;
+                            case CallbackMessage.OptionalMessageOneofCase.LongrunningPassthroughCallback:
+                                LongrunningPassthroughCallback(current.LongrunningPassthroughCallback);
+                                break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Callback message exception.");
+                    }
+                });
+            }
+        }
+
+        private void ServerContextStatusCallback(ContextStatus contextStatus)
+        {
+            ServerContextStatus = contextStatus;
+            if (ServerContextStatus is not null && ServerContextStatus.StateCode == ContextStateCodes.STATE_ABORTING)
+            {
+                _serverContextIsOperational = false;
+                _pendingClientContextNotificationEventArgs = new ClientContextNotificationEventArgs(ClientContextNotificationType.Shutdown,
+                    null);
+            }
+            if (ServerContextStatus is not null)
+                ServerContextNotification(this, new ContextStatusChangedEventArgs
+                {
+                    ContextStateCode = ServerContextStatus.StateCode,
+                    Info = ServerContextStatus.Info ?? @"",
+                    Label = ServerContextStatus.Label ?? @"",
+                    Details = ServerContextStatus.Details ?? @"",
+                });
+        }
 
         /// <summary>
         ///     Returns null, if incomplete ElementValuesCollection.

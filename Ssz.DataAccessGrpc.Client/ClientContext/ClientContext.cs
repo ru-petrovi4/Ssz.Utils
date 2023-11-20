@@ -121,31 +121,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         public GrpcChannel GrpcChannel { get; }
 
-        public ContextStatus? ServerContextStatus
-        {
-            get
-            {
-                return _serverContextStatus;
-            }
-            private set
-            {
-                _serverContextStatus = value;                
-                if (_serverContextStatus is not null && _serverContextStatus.StateCode == ContextStateCodes.STATE_ABORTING)
-                {
-                    _serverContextIsOperational = false;
-                    _pendingClientContextNotificationEventArgs = new ClientContextNotificationEventArgs(ClientContextNotificationType.Shutdown,
-                        null);
-                }
-                if (_serverContextStatus is not null)
-                    ServerContextNotification(this, new ContextStatusChangedEventArgs
-                    {
-                        ContextStateCode = _serverContextStatus.StateCode,
-                        Info = _serverContextStatus.Info ?? @"",
-                        Label = _serverContextStatus.Label ?? @"",
-                        Details = _serverContextStatus.Details ?? @"",
-                    });
-            }            
-        }
+        public ContextStatus? ServerContextStatus { get; private set; }        
 
         public event EventHandler<ContextStatusChangedEventArgs> ServerContextNotification = delegate { };
 
@@ -286,73 +262,14 @@ namespace Ssz.DataAccessGrpc.Client
 
                 // if not a server shutdown, then throw the error message from the server
                 //if (IsServerShutdownOrNoContextServerFault(ex as FaultException<DataAccessGrpcFault>)) return;
-                _pendingClientContextNotificationEventArgs = new ClientContextNotificationEventArgs(ClientContextNotificationType.ResourceManagementFail,
+                _pendingClientContextNotificationEventArgs = new ClientContextNotificationEventArgs(ClientContextNotificationType.RemoteMethodCallException,
                         ex);
 
                 _logger.LogDebug(ex, "RpcException when server method call. Client reconnecting..");
             }
 
             _logger.LogDebug(ex, "Exception when server method call.");
-        }
-
-        private async Task ReadCallbackMessagesAsync(IAsyncStreamReader<CallbackMessage> reader, CancellationToken cancellationToken)
-        {
-            while (true)
-            {
-                if (!_serverContextIsOperational || cancellationToken.IsCancellationRequested) return;
-
-                try
-                {
-                    if (!await reader.MoveNext(cancellationToken)) return;
-                }
-                //catch (RpcException e) when (e.StatusCode == StatusCode.NotFound)
-                //{
-                //    break;
-                //}
-                //catch (OperationCanceledException)
-                //{
-                //    break;
-                //}
-                catch
-                {
-                    return;
-                }
-
-                if (!_serverContextIsOperational || cancellationToken.IsCancellationRequested) return;
-
-                CallbackMessage current = reader.Current;
-                _workingDispatcher.BeginInvoke(ct =>
-                {
-                    if (ct.IsCancellationRequested) return;
-                    try
-                    {
-                        switch (current.OptionalMessageCase)
-                        {
-                            case CallbackMessage.OptionalMessageOneofCase.ContextStatus:
-                                ServerContextStatus = current.ContextStatus;                                
-                                break;
-                            case CallbackMessage.OptionalMessageOneofCase.ElementValuesCallback:
-                                ElementValuesCallback elementValuesCallback = current.ElementValuesCallback;
-                                ClientElementValueList valueList = GetElementValueList(elementValuesCallback.ListClientAlias);
-                                ElementValuesCallback(valueList, elementValuesCallback.ElementValuesCollection);
-                                break;
-                            case CallbackMessage.OptionalMessageOneofCase.EventMessagesCallback:
-                                EventMessagesCallback eventMessagesCallback = current.EventMessagesCallback;
-                                ClientEventList eventList = GetEventList(eventMessagesCallback.ListClientAlias);
-                                EventMessagesCallback(eventList, eventMessagesCallback.EventMessagesCollection);
-                                break;
-                            case CallbackMessage.OptionalMessageOneofCase.LongrunningPassthroughCallback:                                
-                                LongrunningPassthroughCallback(current.LongrunningPassthroughCallback);
-                                break;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "Callback message exception.");
-                    }
-                });
-            }
-        }        
+        }   
 
         #endregion
 
@@ -378,9 +295,7 @@ namespace Ssz.DataAccessGrpc.Client
         
         private string _serverCultureName = null!;
 
-        private DateTime _resourceManagementLastCallUtc;        
-        
-        private ContextStatus? _serverContextStatus;
+        private DateTime _resourceManagementLastCallUtc;
 
         private AsyncServerStreamingCall<CallbackMessage>? _callbackMessageStream;
         
@@ -424,58 +339,22 @@ namespace Ssz.DataAccessGrpc.Client
         public enum ClientContextNotificationType
         {
             /// <summary>
-            ///     The server shutting down.
-            ///     The Data property contains a string that describes the reason for the shutdown.
+            ///     The server shutting down.            
             /// </summary>
             Shutdown,
 
             /// <summary>
-            ///     The WCF connection to the resource management endpoint has been unexpectedly disconnected.
-            ///     The Data property contains a string that describes the failure.
+            ///     Remote Method Call Exception.            
             /// </summary>
-            ResourceManagementDisconnected,
+            RemoteMethodCallException,
 
-            /// <summary>
-            ///     The WCF connection to the resource management endpoint has been unexpectedly disconnected and is not recoverable.
-            ///     The Data property contains a string that describes the failure.
-            /// </summary>
-            ResourceManagementFail,
-
-            /// <summary>
-            ///     Data updates or event messages cached by the server for polling have been discarded by the server due to failure to
-            ///     receive a poll for them.
-            ///     The Data property contains a uint that indicates the number discarded.
-            /// </summary>
-            Discards,
-
-            /// <summary>
-            ///     A type conversion error has occurred in the client on received data.
-            ///     The Data property contains a string that describes the conversion error.
-            /// </summary>
-            TypeConversionError,
-
-            /// <summary>
-            ///     A FaultException was received from the server for a ClientKeepAlive request that was issued by the ClientBase.
-            ///     The FaultException type accompanies this notification type.
+            /// <summary>            
             /// </summary>
             ClientKeepAliveException,
 
-            /// <summary>
-            ///     Callback from server hasn't been recieved > CallbackRate.
+            /// <summary>            
             /// </summary>
-            ServerKeepAliveError,
-
-            /// <summary>
-            ///     A FaultException was received from the server for Poll request that was issued by the ClientBase.
-            ///     The FaultException type accompanies this notification type.
-            /// </summary>
-            PollException,
-
-            /// <summary>
-            ///     A general Exception was received for a request that was issued by the ClientBase.
-            ///     The Exception type accompanies this notification type.
-            /// </summary>
-            GeneralException
+            ReadCallbackMessagesException
         }
     }
 

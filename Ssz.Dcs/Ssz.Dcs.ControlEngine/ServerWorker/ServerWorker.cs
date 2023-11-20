@@ -33,7 +33,8 @@ namespace Ssz.Dcs.ControlEngine
 
         public override async Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) return;
+            if (cancellationToken.IsCancellationRequested) 
+                return;
 
             if (Device is not null)
                 Device.DoWork(nowUtc, cancellationToken);

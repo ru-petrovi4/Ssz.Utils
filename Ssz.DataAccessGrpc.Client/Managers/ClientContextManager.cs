@@ -367,13 +367,10 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
             switch (args.ReasonForNotification)
             {
-                case ClientContext.ClientContextNotificationType.ResourceManagementFail:
-                case ClientContext.ClientContextNotificationType.ClientKeepAliveException:
-                case ClientContext.ClientContextNotificationType.Shutdown:                
-                case ClientContext.ClientContextNotificationType.ServerKeepAliveError:                
-                case ClientContext.ClientContextNotificationType.GeneralException:
-                case ClientContext.ClientContextNotificationType.PollException:                
-                case ClientContext.ClientContextNotificationType.ResourceManagementDisconnected:                
+                case ClientContext.ClientContextNotificationType.RemoteMethodCallException:
+                case ClientContext.ClientContextNotificationType.ClientKeepAliveException:                
+                case ClientContext.ClientContextNotificationType.Shutdown:
+                case ClientContext.ClientContextNotificationType.ReadCallbackMessagesException:
                     CloseConnectionInternal();
                     break;
             }

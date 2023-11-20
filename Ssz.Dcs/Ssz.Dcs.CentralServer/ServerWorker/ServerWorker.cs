@@ -73,11 +73,13 @@ namespace Ssz.Dcs.CentralServer
 
         public override async Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested) return;            
+            if (cancellationToken.IsCancellationRequested) 
+                return;            
 
             Cleanup(nowUtc, cancellationToken);
 
-            if (cancellationToken.IsCancellationRequested) return;
+            if (cancellationToken.IsCancellationRequested) 
+                return;
 
             DoWorkUtilityItems(nowUtc, cancellationToken);
 
