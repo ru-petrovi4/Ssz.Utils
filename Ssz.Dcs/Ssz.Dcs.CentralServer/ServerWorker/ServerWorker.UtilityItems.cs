@@ -47,7 +47,7 @@ namespace Ssz.Dcs.CentralServer
         ///     valueSubscription is not null.
         ///     If valueSubscription is not subscribed - does nothing.
         /// </summary>
-        /// <param name="valueSubscription"></param>
+        /// <param name="listItem"></param>
         public void RemoveUtilityElementValueListItem(UtilityElementValueListItem listItem)
         {
             string elementId = listItem.ElementId;

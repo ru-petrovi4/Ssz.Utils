@@ -163,7 +163,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
                 var resourceManagementClient = new DataAccess.DataAccessClient(grpcChannel);
 
-                _clientContext = new ClientContext(_logger,
+                var clientContext = new ClientContext(_logger,
                             _workingDispatcher,
                             grpcChannel,
                             resourceManagementClient,
@@ -171,15 +171,17 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                             clientWorkstationName
                             );
 
-                await _clientContext.InitiateAsync(
+                await clientContext.InitiateAsync(
                             (uint)requestedServerContextTimeoutMs.TotalMilliseconds,
                             CultureInfo.CurrentUICulture.Name,
                             systemNameToConnect,
                             contextParams
                             );
+
+                _clientContext = clientContext;
             }
             catch
-            { 
+            {                
                 if (grpcChannel is not null)
                 {                    
                     grpcChannel.Dispose();
