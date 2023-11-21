@@ -51,7 +51,7 @@ namespace Ssz.Dcs.ControlEngine
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            Logger.LogDebug("ExecuteAsync begin.");
+            Logger.LogDebug("ExecuteAsync begin.");            
 
             //_utilityDataAccessProvider.EventMessagesCallback += UtilityDataAccessProviderOnEventMessagesCallback;
             _utilityDataAccessProvider.Initialize(null,                

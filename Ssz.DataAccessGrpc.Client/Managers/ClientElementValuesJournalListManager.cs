@@ -51,7 +51,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                     }
                 }
 
-                bool connectionError = SubscribeInitial(unsubscribeItemsFromServer);
+                bool connectionError = await SubscribeInitialAsync(unsubscribeItemsFromServer);
 
                 if (!connectionError)
                 {
@@ -74,7 +74,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <param name="params_"></param>
         /// <param name="valueSubscriptionsCollection"></param>
         /// <returns></returns>
-        public ValueStatusTimestamp[][]? ReadElementValuesJournals(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation,
+        public async Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation,
             CaseInsensitiveDictionary<string?>? params_,
             object[] valueSubscriptionsCollection)
         {
@@ -99,7 +99,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                         }
                     }
 
-                    result = dataAccessGrpcList.ReadElementValuesJournals(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, params_, serverAliases.ToArray());
+                    result = await dataAccessGrpcList.ReadElementValuesJournalsAsync(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, params_, serverAliases.ToArray());
                 }
                 else
                 {

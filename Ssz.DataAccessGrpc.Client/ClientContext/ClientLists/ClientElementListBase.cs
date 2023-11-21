@@ -5,6 +5,7 @@ using Ssz.DataAccessGrpc.Client.ClientListItems;
 using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.Utils.DataAccess;
 using Grpc.Core;
+using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.Client.ClientLists
 {
@@ -60,9 +61,9 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         ///     Returns failed items only.
         /// </summary>
         /// <returns></returns>
-        public abstract IEnumerable<TClientElementListItemBase>? CommitAddItems();
+        public abstract Task<IEnumerable<TClientElementListItemBase>?> CommitAddItemsAsync();
 
-        public abstract IEnumerable<TClientElementListItemBase>? CommitRemoveItems();
+        public abstract Task<IEnumerable<TClientElementListItemBase>?> CommitRemoveItemsAsync();
 
         /// <summary>
         ///     This method returns data objects selected from the list by the match predicate.
@@ -89,7 +90,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         ///     Returns failed items only.
         /// </summary>
         /// <returns></returns>
-        protected IEnumerable<TClientElementListItemBase>? CommitAddItemsInternal()
+        protected async Task<IEnumerable<TClientElementListItemBase>?> CommitAddItemsInternalAsync()
         {
             var listInstanceIdsCollection = new List<ListItemInfo>();
 
@@ -113,7 +114,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
             {
                 try
                 {
-                    List<AliasResult> result = Context.AddItemsToList(ListServerAlias,
+                    List<AliasResult> result = await Context.AddItemsToListAsync(ListServerAlias,
                         listInstanceIdsCollection);
                     
                     foreach (AliasResult r in result)
@@ -163,7 +164,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         ///     </para>
         /// </summary>
         /// <returns> The list of elements that could not be removed from the server list or null is call to server failed.</returns>
-        protected IEnumerable<TClientElementListItemBase>? CommitRemoveItemsInternal()
+        protected async Task<IEnumerable<TClientElementListItemBase>?> CommitRemoveItemsInternalAsync()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcAndElementValuesJournalListBase.");
 
@@ -192,7 +193,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                     List<AliasResult>? aliasResultList = null;
                     // a null list means all were successfully removed or are no longer defined in the server
                     if (Context.ServerContextIsOperational) // if still connected to the server
-                        aliasResultList = Context.RemoveItemsFromList(ListServerAlias, serverAliasesToRemove);
+                        aliasResultList = await Context.RemoveItemsFromListAsync(ListServerAlias, serverAliasesToRemove);
 
                     // Remove each value from the client list unless there was an error and it could not be removed
                     // if there were errors and the value could not be removed from the server

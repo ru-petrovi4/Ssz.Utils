@@ -73,7 +73,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// </summary>
         /// <param name="dataAccessGrpcList"> The list to deleted </param>
         /// <returns> The results of the deletion. </returns>
-        public AliasResult? RemoveList(ClientListRoot dataAccessGrpcList)
+        public async Task<AliasResult?> RemoveListAsync(ClientListRoot dataAccessGrpcList)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -86,15 +86,15 @@ namespace Ssz.DataAccessGrpc.Client
             {                
                 try
                 {
+                    SetResourceManagementLastCallUtc();
+                    _lists.Remove(dataAccessGrpcList.ListClientAlias);
+                    dataAccessGrpcList.IsInServerContext = false;
                     var request = new DeleteListsRequest
                     {
                         ContextId = _serverContextId                        
                     };
                     request.ListServerAliases.Add(dataAccessGrpcList.ListServerAlias);
-                    DeleteListsReply reply = _resourceManagementClient.DeleteLists(request);
-                    SetResourceManagementLastCallUtc();
-                    _lists.Remove(dataAccessGrpcList.ListClientAlias);
-                    dataAccessGrpcList.IsInServerContext = false;
+                    DeleteListsReply reply = await _resourceManagementClient.DeleteListsAsync(request);                    
                     return reply.Results.FirstOrDefault();
                 }
                 catch (Exception ex)
@@ -122,7 +122,7 @@ namespace Ssz.DataAccessGrpc.Client
         ///     The list of results. The size and order of this list matches the size and order of the objectsToAdd
         ///     parameter.
         /// </returns>
-        public List<AliasResult> AddItemsToList(uint listServerAlias, List<ListItemInfo> itemsToAdd)
+        public async Task<List<AliasResult>> AddItemsToListAsync(uint listServerAlias, List<ListItemInfo> itemsToAdd)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -136,7 +136,7 @@ namespace Ssz.DataAccessGrpc.Client
                     ListServerAlias = listServerAlias
                 };
                 request.ItemsToAdd.Add(itemsToAdd);
-                var reply = _resourceManagementClient.AddItemsToList(request);
+                var reply = await _resourceManagementClient.AddItemsToListAsync(request);
                 SetResourceManagementLastCallUtc();
                 return reply.Results.ToList();
             }
@@ -159,7 +159,7 @@ namespace Ssz.DataAccessGrpc.Client
         ///     The list identifiers and result codes for data objects whose removal failed. Returns null if all removals
         ///     succeeded.
         /// </returns>
-        public List<AliasResult> RemoveItemsFromList(uint listServerAlias, List<uint> serverAliasesToRemove)
+        public async Task<List<AliasResult>> RemoveItemsFromListAsync(uint listServerAlias, List<uint> serverAliasesToRemove)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -173,7 +173,7 @@ namespace Ssz.DataAccessGrpc.Client
                     ListServerAlias = listServerAlias
                 };
                 request.ServerAliasesToRemove.Add(serverAliasesToRemove);
-                var reply = _resourceManagementClient.RemoveItemsFromList(request);
+                var reply = await _resourceManagementClient.RemoveItemsFromListAsync(request);
                 SetResourceManagementLastCallUtc();
                 return reply.Results.ToList();
             }
@@ -200,7 +200,7 @@ namespace Ssz.DataAccessGrpc.Client
         ///     updating of the list is to be disabled.
         /// </param>
         /// <returns> The attributes of the list. </returns>
-        public bool EnableListCallback(uint listServerAlias, bool enable)
+        public async Task<bool> EnableListCallbackAsync(uint listServerAlias, bool enable)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -214,7 +214,7 @@ namespace Ssz.DataAccessGrpc.Client
                     ListServerAlias = listServerAlias,
                     Enable = enable
                 };
-                var reply = _resourceManagementClient.EnableListCallback(request);
+                var reply = await _resourceManagementClient.EnableListCallbackAsync(request);
                 SetResourceManagementLastCallUtc();
                 return reply.Enabled;
             }
@@ -247,13 +247,14 @@ namespace Ssz.DataAccessGrpc.Client
 
             try
             {
+                SetResourceManagementLastCallUtc();
+
                 var request = new TouchListRequest
                 {
                     ContextId = this.ServerContextId,
                     ListServerAlias = listServerAlias
                 };
-                var touchLisReply = _resourceManagementClient.TouchList(request);
-                SetResourceManagementLastCallUtc();                
+                var t = _resourceManagementClient.TouchListAsync(request);                             
             }
             catch (Exception ex)
             {

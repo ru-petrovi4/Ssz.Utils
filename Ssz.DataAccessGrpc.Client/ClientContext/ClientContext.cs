@@ -181,7 +181,7 @@ namespace Ssz.DataAccessGrpc.Client
             _callbackMessageStream = _resourceManagementClient.SubscribeForCallback(new SubscribeForCallbackRequest
             {
                 ContextId = _serverContextId
-            });
+            }, new CallOptions());
 
             _serverContextIsOperational = true;
 
@@ -191,7 +191,7 @@ namespace Ssz.DataAccessGrpc.Client
             }, TaskCreationOptions.LongRunning);
         }
 
-        public void KeepContextAliveIfNeeded(CancellationToken ct, DateTime nowUtc)
+        public async Task KeepContextAliveIfNeededAsync(CancellationToken ct, DateTime nowUtc)
         {
             if (!_serverContextIsOperational) return;
 
@@ -201,12 +201,12 @@ namespace Ssz.DataAccessGrpc.Client
             {
                 try
                 {
-                    _resourceManagementClient.ClientKeepAlive(new ClientKeepAliveRequest
+                    _resourceManagementLastCallUtc = nowUtc;
+
+                    await _resourceManagementClient.ClientKeepAliveAsync(new ClientKeepAliveRequest
                     {
                         ContextId = _serverContextId
-                    }, cancellationToken: ct);
-
-                    _resourceManagementLastCallUtc = nowUtc;
+                    }, cancellationToken: ct);                    
                 }
                 catch
                 {

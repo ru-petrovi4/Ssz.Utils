@@ -344,7 +344,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
             if (_clientContext is null) throw new ConnectionDoesNotExistException();
 
-            _clientContext.KeepContextAliveIfNeeded(ct, nowUtc);
+            var t = _clientContext.KeepContextAliveIfNeededAsync(ct, nowUtc);
             _clientContext.ProcessPendingClientContextNotification();
         }
 

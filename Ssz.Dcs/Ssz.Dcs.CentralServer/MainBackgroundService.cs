@@ -37,7 +37,7 @@ namespace Ssz.Dcs.CentralServer
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            Logger.LogDebug("ExecuteAsync begin.");
+            Logger.LogDebug("ExecuteAsync begin.");        
 
             while (true)
             {

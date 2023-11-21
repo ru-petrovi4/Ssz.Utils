@@ -16,18 +16,22 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
     {
         #region public functions        
 
+        [Attr]
         public Guid OpCompUserId { get; set; }
 
+        [Attr]
         public string OpCompUserNameToDisplay { get; set; } = @"";
 
         /// <summary>
         ///     Domain\UserName
         /// </summary>
+        [Attr]
         public string OpCompUserWindowsUserName { get; set; } = @"";
-        
+
+        [HasOne]
         [ForeignKey(nameof(OperatorId))]       
         public User Operator { get; set; } = null!;
-
+        
         public Int64? OperatorId { get; set; }
 
         #endregion

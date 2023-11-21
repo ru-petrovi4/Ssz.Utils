@@ -16,37 +16,49 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
     {
         #region public functions        
 
+        [HasOne]
         [ForeignKey(nameof(ProcessModelingSessionId))]
         public ProcessModelingSession ProcessModelingSession { get; set; } = null!;
 
         public Int64 ProcessModelingSessionId { get; set; }
 
+        [HasMany]
         public List<OperatorSession> OperatorSessions { get; set; } = new();
 
+        [Attr]
         public DateTime StartDateTimeUtc { get; set; }
 
+        [Attr]
         public DateTime? FinishDateTimeUtc { get; set; }
 
+        [Attr]
         public UInt64 StartProcessModelTimeSeconds { get; set; }
 
+        [Attr]
         public UInt64 FinishProcessModelTimeSeconds { get; set; }
 
+        [Attr]
         public string ScenarioName { get; set; } = @"";
 
+        [Attr]
         public string InitialConditionName { get; set; } = @"";
 
         /// <summary>
         ///     Штрафные баллы
         /// </summary>
+        [Attr]
         public int Penalty { get; set; }
 
+        [Attr]
         public int MaxPenalty { get; set; }
 
+        [Attr]
         public UInt64 ScenarioMaxProcessModelTimeSeconds { get; set; }
 
         /// <summary>
         ///     Оценка
         /// </summary>
+        [Attr]
         public string Status { get; set; } = @"";
 
         public void SerializeOwnedData(SerializationWriter writer, object? context)

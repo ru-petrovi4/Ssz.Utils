@@ -69,18 +69,18 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// </summary>
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
-        public override IEnumerable<ClientElementValueListItem>? CommitAddItems()
+        public override async Task<IEnumerable<ClientElementValueListItem>?> CommitAddItemsAsync()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
 
-            return CommitAddItemsInternal();
+            return await CommitAddItemsInternalAsync();
         }
 
-        public override IEnumerable<ClientElementValueListItem>? CommitRemoveItems()
+        public override async Task<IEnumerable<ClientElementValueListItem>?> CommitRemoveItemsAsync()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
 
-            return CommitRemoveItemsInternal();
+            return await CommitRemoveItemsInternalAsync();
         }
 
         /// <summary>

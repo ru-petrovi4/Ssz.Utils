@@ -6,6 +6,7 @@ using Ssz.Utils.DataAccess;
 using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.Utils;
 using Google.Protobuf.WellKnownTypes;
+using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.Client
 {
@@ -29,7 +30,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public ValueStatusTimestamp[][] ReadElementValuesJournals(ClientElementValuesJournalList clientElementValuesJournalList, DateTime firstTimestampUtc,
+        public async Task<ValueStatusTimestamp[][]> ReadElementValuesJournalsAsync(ClientElementValuesJournalList clientElementValuesJournalList, DateTime firstTimestampUtc,
             DateTime secondTimestampUtc,
             uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, uint[] serverAliases)
         {
@@ -55,7 +56,7 @@ namespace Ssz.DataAccessGrpc.Client
                             request.Params.Add(kvp.Key,
                                 kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
                     request.ServerAliases.Add(serverAliases);
-                    ReadElementValuesJournalsReply reply = _resourceManagementClient.ReadElementValuesJournals(request);
+                    ReadElementValuesJournalsReply reply = await _resourceManagementClient.ReadElementValuesJournalsAsync(request);
                     SetResourceManagementLastCallUtc();
 
                     var result = clientElementValuesJournalList.OnReadElementValuesJournals(reply.ElementValuesJournalsCollection);
@@ -69,7 +70,7 @@ namespace Ssz.DataAccessGrpc.Client
             }
         }
 
-        public Utils.DataAccess.EventMessagesCollection ReadEventMessagesJournal(ClientEventList clientEventList, DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
+        public async Task<Utils.DataAccess.EventMessagesCollection> ReadEventMessagesJournalAsync(ClientEventList clientEventList, DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -90,7 +91,7 @@ namespace Ssz.DataAccessGrpc.Client
                         foreach (var kvp in params_)
                             request.Params.Add(kvp.Key,
                                 kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
-                    ReadEventMessagesJournalReply reply = _resourceManagementClient.ReadEventMessagesJournal(request);
+                    ReadEventMessagesJournalReply reply = await _resourceManagementClient.ReadEventMessagesJournalAsync(request);
                     SetResourceManagementLastCallUtc();
 
                     var result = clientEventList.GetEventMessagesCollection(reply.EventMessagesCollection);

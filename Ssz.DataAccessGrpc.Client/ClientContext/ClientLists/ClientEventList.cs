@@ -72,11 +72,11 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
             return await Context.PollEventsChangesAsync(this);
         }
 
-        public Utils.DataAccess.EventMessagesCollection ReadEventMessagesJournal(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
+        public async Task<Utils.DataAccess.EventMessagesCollection> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
-            return Context.ReadEventMessagesJournal(this, firstTimestampUtc, secondTimestampUtc, params_);
+            return await Context.ReadEventMessagesJournalAsync(this, firstTimestampUtc, secondTimestampUtc, params_);
         }
 
         /// <summary>

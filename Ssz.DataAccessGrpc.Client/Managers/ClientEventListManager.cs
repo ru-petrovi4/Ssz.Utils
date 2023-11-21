@@ -92,7 +92,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
                         if (callbackIsEnabled)
                         {
-                            dataGrpcEventList.EnableListCallback(true);
+                            await dataGrpcEventList.EnableListCallbackAsync(true);
                         }
                     }
                     catch (Exception)

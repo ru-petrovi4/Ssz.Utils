@@ -15,33 +15,41 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
     public class ProcessModelingSession : Identifiable<Int64>
     {
         #region public functions        
-        
+
+        [HasOne]
         [ForeignKey(nameof(InstructorUserId))]
         public User InstructorUser { get; set; } = null!;
 
         public Int64 InstructorUserId { get; set; }
 
+        [Attr]
         public DateTime StartDateTimeUtc { get; set; }
 
+        [Attr]
         public DateTime? FinishDateTimeUtc { get; set; }
 
+        [Attr]
         public byte Type { get; set; }
-        
+
+        [Attr]
         public string ProcessModelName { get; set; } = @"";
 
         /// <summary>
         ///     Предприятие
         /// </summary>
+        [Attr]
         public string Enterprise { get; set; } = @"";
 
         /// <summary>
         ///     Производство
         /// </summary>
+        [Attr]
         public string Plant { get; set; } = @"";
 
         /// <summary>
         ///     Установка
         /// </summary>
+        [Attr]
         public string Unit { get; set; } = @"";
 
         #endregion

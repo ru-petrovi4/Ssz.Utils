@@ -58,9 +58,9 @@ namespace Ssz.DataAccessGrpc.Client
         public override async Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, object[] valueSubscriptionsCollection)
         {
             var taskCompletionSource = new TaskCompletionSource<ValueStatusTimestamp[][]?>();
-            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
             {
-                var result = _clientElementValuesJournalListManager.ReadElementValuesJournals(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, params_, valueSubscriptionsCollection);
+                var result = await _clientElementValuesJournalListManager.ReadElementValuesJournalsAsync(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, params_, valueSubscriptionsCollection);
 
                 taskCompletionSource.SetResult(result);
             }
@@ -71,7 +71,7 @@ namespace Ssz.DataAccessGrpc.Client
         public override async Task<Utils.DataAccess.EventMessagesCollection?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
             var taskCompletionSource = new TaskCompletionSource<Utils.DataAccess.EventMessagesCollection?>();
-            WorkingThreadSafeDispatcher.BeginInvoke(ct =>
+            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
             {
                 ClientEventList? clientEventList =
                     _clientEventListManager.GetRelatedClientEventList(OnClientEventListManager_EventMessagesCallbackInternal);
@@ -82,7 +82,7 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                     if (clientEventList.Disposed) return;
 
-                    var result = clientEventList.ReadEventMessagesJournal(firstTimestampUtc, secondTimestampUtc, params_);
+                    var result = await clientEventList.ReadEventMessagesJournalAsync(firstTimestampUtc, secondTimestampUtc, params_);
                     ElementIdsMap?.AddCommonFieldsToEventMessagesCollection(result);
                     taskCompletionSource.SetResult(result);
                 }
@@ -110,7 +110,7 @@ namespace Ssz.DataAccessGrpc.Client
             _clientElementValuesJournalListManager.AddItem(elementId, clientObj);
             await _clientElementValuesJournalListManager.SubscribeAsync(_clientContextManager, Options.UnsubscribeValuesJournalListItemsFromServer);
 
-            var data = _clientElementValuesJournalListManager.ReadElementValuesJournals(firstTimestampUtc, secondTimestampUtc, uint.MaxValue, new Ssz.Utils.DataAccess.TypeId(), null, new[] { clientObj });
+            var data = await _clientElementValuesJournalListManager.ReadElementValuesJournalsAsync(firstTimestampUtc, secondTimestampUtc, uint.MaxValue, new Ssz.Utils.DataAccess.TypeId(), null, new[] { clientObj });
             if (data is not null)
                 return data[0];
 

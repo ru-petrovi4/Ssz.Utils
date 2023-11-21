@@ -64,7 +64,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                     }
                 }
 
-                bool connectionError = SubscribeInitial(unsubscribeItemsFromServer);
+                bool connectionError = await SubscribeInitialAsync(unsubscribeItemsFromServer);
 
                 try
                 {
@@ -118,7 +118,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                                 };
                             if (callbackIsEnabled)
                             {
-                                DataAccessGrpcList.EnableListCallback(true);
+                                await DataAccessGrpcList.EnableListCallbackAsync(true);
                             }
                         }
                     }

@@ -67,18 +67,18 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// </summary>
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
-        public override IEnumerable<ClientElementValuesJournalListItem>? CommitAddItems()
+        public override async Task<IEnumerable<ClientElementValuesJournalListItem>?> CommitAddItemsAsync()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
 
-            return CommitAddItemsInternal();
+            return await CommitAddItemsInternalAsync();
         }
 
-        public override IEnumerable<ClientElementValuesJournalListItem>? CommitRemoveItems()
+        public override async Task<IEnumerable<ClientElementValuesJournalListItem>?> CommitRemoveItemsAsync()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
 
-            return CommitRemoveItemsInternal();
+            return await CommitRemoveItemsInternalAsync();
         }
         
         /// <summary>
@@ -92,12 +92,12 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// <param name="serverAliases"></param>
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
-        public ValueStatusTimestamp[][] ReadElementValuesJournals(DateTime firstTimestamp, DateTime secondTimestamp,
+        public async Task<ValueStatusTimestamp[][]> ReadElementValuesJournalsAsync(DateTime firstTimestamp, DateTime secondTimestamp,
             uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, uint[] serverAliases)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValuesJournalList.");
 
-            return Context.ReadElementValuesJournals(this,
+            return await Context.ReadElementValuesJournalsAsync(this,
                 firstTimestamp,
                 secondTimestamp,
                 numValuesPerAlias,

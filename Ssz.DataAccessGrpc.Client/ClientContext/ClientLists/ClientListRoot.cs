@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.Client.ClientLists
 {
@@ -47,7 +48,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                 {
                     try
                     {
-                        _clientContext.RemoveList(this);
+                        var t = _clientContext.RemoveListAsync(this);
                     }
                     catch (Exception)
                     {
@@ -88,13 +89,13 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         ///     updating of the list is to be disabled.
         /// </param>
         /// <returns> Returns TRUE if the list was successfully enabled or disabled. </returns>
-        public bool EnableListCallback(bool enable)
+        public async Task<bool> EnableListCallbackAsync(bool enable)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientListRoot.");
             
             if (CallbackIsEnabled != enable)
             {
-                CallbackIsEnabled = _clientContext.EnableListCallback(ListServerAlias, enable);                
+                CallbackIsEnabled = await _clientContext.EnableListCallbackAsync(ListServerAlias, enable);                
             }
             return CallbackIsEnabled;
         }

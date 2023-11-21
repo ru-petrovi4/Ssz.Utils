@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Ssz.DataAccessGrpc.Client.ClientListItems;
 using Ssz.DataAccessGrpc.Client.ClientLists;
 using Ssz.Utils.DataAccess;
+using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.Client.Managers
 {
@@ -133,7 +134,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         ///     Returns whether connection errors occur.
         /// </summary>
         /// <returns></returns>
-        protected bool SubscribeInitial(bool unsubscribeItemsFromServer)
+        protected async Task<bool> SubscribeInitialAsync(bool unsubscribeItemsFromServer)
         {
             bool connectionError = false;
             
@@ -159,7 +160,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
             var itemsToAdd_DataGrpcListItemWrappers = new List<DataAccessGrpcListItemWrapper>();
             foreach (var kvp in _dataAccessGrpcListItemWrappersDictionary)
-            {
+            { 
                 DataAccessGrpcListItemWrapper dataAccessGrpcListItemWrapper = kvp.Value;
                 if (dataAccessGrpcListItemWrapper.DataAccessGrpcListItem is null && dataAccessGrpcListItemWrapper.FailedAddItemResultInfo is null)
                 {
@@ -193,7 +194,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 {
                     try
                     {
-                        failedItems = DataAccessGrpcList.CommitAddItems();
+                        failedItems = await DataAccessGrpcList.CommitAddItemsAsync();
                     }
                     catch
                     {
@@ -297,7 +298,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                     {
                         try
                         {
-                            DataAccessGrpcList.CommitRemoveItems();
+                            await DataAccessGrpcList.CommitRemoveItemsAsync();
                         }
                         catch
                         {
