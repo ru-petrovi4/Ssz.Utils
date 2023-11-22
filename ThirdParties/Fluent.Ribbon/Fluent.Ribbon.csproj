@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-	<TargetFrameworks>net462;net7.0-windows</TargetFrameworks>
+	<TargetFrameworks>net462;net8.0-windows</TargetFrameworks>
 	<LangVersion>Latest</LangVersion>
 	<UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>

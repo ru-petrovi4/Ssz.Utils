@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
     
     <RepositoryUrl>https://github.com/aaubry/YamlDotNet</RepositoryUrl>
     <Description>YamlDotNet is a .NET library for YAML. YamlDotNet provides low level parsing and emitting of YAML as well as a high level object model similar to XmlDocument. A serialization library is also included that allows to read and write objects from and to YAML streams.</Description>
@@ -41,7 +41,7 @@
     <NetStandard>true</NetStandard>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
     <NetStandard>true</NetStandard>
   </PropertyGroup>
 

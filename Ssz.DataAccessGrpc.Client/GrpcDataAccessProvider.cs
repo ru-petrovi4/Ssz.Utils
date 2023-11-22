@@ -122,7 +122,7 @@ namespace Ssz.DataAccessGrpc.Client
             _workingTask = Task.Factory.StartNew(async () =>
             {
                 if (previousWorkingTask is not null)
-                    await previousWorkingTask;
+                    await await previousWorkingTask;
                 await WorkingTaskMainAsync(cancellationToken);
             }, TaskCreationOptions.LongRunning);
 
@@ -166,7 +166,7 @@ namespace Ssz.DataAccessGrpc.Client
             Close();
 
             if (_workingTask is not null)
-                await _workingTask;
+                await await _workingTask;
         }
 
         /// <summary>        
@@ -1003,7 +1003,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         #region private fields        
 
-        private Task? _workingTask;
+        private Task<Task>? _workingTask;
 
         private CancellationTokenSource? _cancellationTokenSource;        
 

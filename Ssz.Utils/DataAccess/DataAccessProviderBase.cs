@@ -173,18 +173,30 @@ namespace Ssz.Utils.DataAccess
             IsInitialized = true;
         }
 
-        public virtual void ReInitialize()
+        public virtual async Task ReInitializeAsync()
         {
-            if (!IsInitialized) return;
+            if (!IsInitialized) 
+                return;
 
-            Initialize(ElementIdsMap,                
-                ServerAddress,
-                ClientApplicationName,
-                ClientWorkstationName,
-                SystemNameToConnect,
-                ContextParams,
-                Options,
-                CallbackDispatcher);
+            var elementIdsMap = ElementIdsMap;
+            var serverAddress = ServerAddress;
+            var clientApplicationName = ClientApplicationName;
+            var clientWorkstationName = ClientWorkstationName;
+            var systemNameToConnect = SystemNameToConnect;
+            var contextParams = ContextParams;
+            var options = Options;
+            var callbackDispatcher = CallbackDispatcher;
+
+            await CloseAsync();
+
+            Initialize(elementIdsMap,                
+                serverAddress,
+                clientApplicationName,
+                clientWorkstationName,
+                systemNameToConnect,
+                contextParams,
+                options,
+                callbackDispatcher);
         }
 
         public virtual void Close()

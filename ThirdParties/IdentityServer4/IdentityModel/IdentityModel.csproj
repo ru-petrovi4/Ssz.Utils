@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	
   <PropertyGroup>
-	<TargetFrameworks>net7.0</TargetFrameworks>
+	<TargetFrameworks>net8.0</TargetFrameworks>
     <Authors>Dominick Baier;Brock Allen</Authors>
     <Description>OpenID Connect &amp; OAuth 2.0 client library</Description>    
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -10,7 +10,7 @@
   </PropertyGroup>
   
   <!--Conditional Package references -->
-  <ItemGroup Condition="'$(TargetFramework)' != 'net5.0' and '$(TargetFramework)' != 'net7.0'">
+  <ItemGroup Condition="'$(TargetFramework)' != 'net5.0' and '$(TargetFramework)' != 'net8.0'">
     <PackageReference Include="System.Text.Json" Version="6.0.5" />
   </ItemGroup>   	
   

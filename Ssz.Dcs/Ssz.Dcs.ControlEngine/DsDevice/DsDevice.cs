@@ -370,27 +370,30 @@ namespace Ssz.Dcs.ControlEngine
 
         private void FileSystemWatcherOnEvent(object sender, FileSystemEventArgs e)
         {
-            LoadDataEventAsync();
+            var t = LoadDataEventAsync();
         }
 
         private void OnCsvDb_CsvFileChanged(object? sender, CsvFileChangedEventArgs args)
-        {            
-            if (args.CsvFileName == @"" ||
+        {
+            _dispatcher!.BeginAsyncInvoke(async ct =>
+            {
+                if (args.CsvFileName == @"" ||
                 String.Equals(args.CsvFileName, ElementIdsMap.StandardMapFileName, StringComparison.InvariantCultureIgnoreCase) ||
                 String.Equals(args.CsvFileName, ElementIdsMap.StandardTagsFileName, StringComparison.InvariantCultureIgnoreCase))
-            {
-                ElementIdsMap.Initialize(CsvDb.GetData(ElementIdsMap.StandardMapFileName), CsvDb.GetData(ElementIdsMap.StandardTagsFileName), CsvDb);
-                // If not initialized then does nothing.
-                ProcessDataAccessProvider.ReInitialize();
-            }
+                {
+                    ElementIdsMap.Initialize(CsvDb.GetData(ElementIdsMap.StandardMapFileName), CsvDb.GetData(ElementIdsMap.StandardTagsFileName), CsvDb);
+                    // If not initialized then does nothing.
+                    await ProcessDataAccessProvider.ReInitializeAsync();
+                }
 
-            if (args.CsvFileName.EndsWith(@".BLOCK.CSV", StringComparison.InvariantCultureIgnoreCase))
-            {
-                LoadDataEventAsync();
-            }
+                if (args.CsvFileName.EndsWith(@".BLOCK.CSV", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    await LoadDataEventAsync();
+                }
+            });            
         }
 
-        private async void LoadDataEventAsync()
+        private async Task LoadDataEventAsync()
         {
             if (_loadDataEventIsProcessing) return;
             _loadDataEventIsProcessing = true;

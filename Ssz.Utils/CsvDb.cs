@@ -715,7 +715,7 @@ namespace Ssz.Utils
             {
                 Dispatcher.BeginInvoke(ct =>
                 {
-                    this.LoadData();                    
+                    LoadData();                    
                 });
             }            
         }

@@ -86,7 +86,7 @@ namespace Ssz.Utils.DataAccess
         ///     Items must be added again.
         ///     If not initialized then does nothing.
         /// </summary>
-        public void ReInitialize();
+        public Task ReInitializeAsync();
 
         /// <summary>
         ///     You can call Dispose() instead of this method.

@@ -73,11 +73,11 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
             var cancellationToken = _cancellationTokenSource.Token;
 
             var previousWorkingTask = _workingTask;
-            _workingTask = Task.Factory.StartNew(() =>
+            _workingTask = Task.Factory.StartNew(async ct =>
             {
                 if (previousWorkingTask is not null)
-                    previousWorkingTask.Wait();
-                WorkingTaskMainAsync(cancellationToken).Wait();
+                    await await previousWorkingTask;
+                await WorkingTaskMainAsync(cancellationToken);
             }, TaskCreationOptions.LongRunning);
         }
 
@@ -475,7 +475,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
 
         #region private fields        
 
-        private Task? _workingTask;
+        private Task<Task>? _workingTask;
 
         private CancellationTokenSource? _cancellationTokenSource;        
 

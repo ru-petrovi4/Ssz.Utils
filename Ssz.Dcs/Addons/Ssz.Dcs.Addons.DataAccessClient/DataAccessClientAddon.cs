@@ -85,16 +85,19 @@ namespace Ssz.Dcs.Addons.DataAccessClient
 
             CsvDb.CsvFileChanged += (sender, args) =>
             {
-                if (args.CsvFileName == @"" ||
-                    String.Equals(args.CsvFileName, ElementIdsMap.StandardMapFileName, StringComparison.InvariantCultureIgnoreCase) ||
-                    String.Equals(args.CsvFileName, ElementIdsMap.StandardTagsFileName, StringComparison.InvariantCultureIgnoreCase))
+                callbackDispatcher.BeginAsyncInvoke(async ct =>
                 {
-                    if (dataAccessProvider.IsDisposed)
-                        return;
-                    elementIdsMap.Initialize(CsvDb.GetData(ElementIdsMap.StandardMapFileName), CsvDb.GetData(ElementIdsMap.StandardTagsFileName), CsvDb);
-                    // If not initialized then does nothing.
-                    dataAccessProvider.ReInitialize();
-                };
+                    if (args.CsvFileName == @"" ||
+                        String.Equals(args.CsvFileName, ElementIdsMap.StandardMapFileName, StringComparison.InvariantCultureIgnoreCase) ||
+                        String.Equals(args.CsvFileName, ElementIdsMap.StandardTagsFileName, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        if (dataAccessProvider.IsDisposed)
+                            return;
+                        elementIdsMap.Initialize(CsvDb.GetData(ElementIdsMap.StandardMapFileName), CsvDb.GetData(ElementIdsMap.StandardTagsFileName), CsvDb);
+                        // If not initialized then does nothing.
+                        await dataAccessProvider.ReInitializeAsync();
+                    };
+                });                
             };            
 
             DataAccessProvider = dataAccessProvider;

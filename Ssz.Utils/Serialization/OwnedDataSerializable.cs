@@ -51,9 +51,10 @@ namespace Ssz.Utils.Serialization
                         string s = reader.ReadString();
                         object? temp = JsonSerializer.Deserialize(s, GetType(), context as JsonSerializerOptions);
                         if (temp is null) throw new InvalidOperationException();
-                        MemberInfo[] members = FormatterServices.GetSerializableMembers(GetType());
-                        FormatterServices.PopulateObjectMembers(this, members,
-                            FormatterServices.GetObjectData(temp, members));
+                        // TODO
+                        //MemberInfo[] members = FormatterServices.GetSerializableMembers(GetType());
+                        //FormatterServices.PopulateObjectMembers(this, members,
+                        //    FormatterServices.GetObjectData(temp, members));
                         break;
                     default:
                         throw new BlockUnsupportedVersionException();
