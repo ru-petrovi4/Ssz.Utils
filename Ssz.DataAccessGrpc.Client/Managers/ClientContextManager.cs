@@ -131,35 +131,15 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             GrpcChannel? grpcChannel = null;            
             try
             {
-#if NET5_0_OR_GREATER
-                //grpcChannel = GrpcChannel.ForAddress(serverAddress);
-                var handler =  new Grpc.Net.Client.Web.GrpcWebHandler(
-                        GrpcWebMode.GrpcWeb,
-                        new HttpClientHandler
-                        {                            
-                            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-                        });
-                handler.HttpVersion = HttpVersion.Version11;
-                grpcChannel = GrpcChannel.ForAddress(serverAddress,
-                    new GrpcChannelOptions
-                    {                        
-                        HttpClient = new HttpClient(handler)
-                    });
-#else
-                //grpcChannel = GrpcChannel.ForAddress(serverAddress, new GrpcChannelOptions
-                //{
-                //    HttpHandler = new Grpc.Net.Client.Web.GrpcWebHandler(new System.Net.Http.HttpClientHandler())
-                //});
-                var handler =  new Grpc.Net.Client.Web.GrpcWebHandler(
+                var handler = new GrpcWebHandler(
                         GrpcWebMode.GrpcWeb,
                         new HttpClientHandler());
                 handler.HttpVersion = HttpVersion.Version11;
                 grpcChannel = GrpcChannel.ForAddress(serverAddress,
                     new GrpcChannelOptions
-                    {                        
+                    {
                         HttpClient = new HttpClient(handler)
                     });
-#endif
 
                 var resourceManagementClient = new DataAccess.DataAccessClient(grpcChannel);
 

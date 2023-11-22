@@ -34,6 +34,10 @@ namespace Ssz.Utils
             while (actions != actions2);
         }
 
+        /// <summary>
+        ///     Warning! Do not use with DispatcherSynchronizationContext.
+        /// </summary>
+        /// <param name="asyncAction"></param>
         public void BeginAsyncInvoke(Func<CancellationToken, Task> asyncAction)
         {
             Func<CancellationToken, Task>? asyncActions2;
