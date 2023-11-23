@@ -117,12 +117,9 @@ namespace Ssz.DataAccessGrpc.Client
 
             _cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = _cancellationTokenSource.Token;
-
-            var previousWorkingTask = _workingTask;
+            
             _workingTask = Task.Factory.StartNew(async () =>
-            {
-                if (previousWorkingTask is not null)
-                    await await previousWorkingTask;
+            {                
                 await WorkingTaskMainAsync(cancellationToken);
             }, TaskCreationOptions.LongRunning);
 
@@ -131,17 +128,16 @@ namespace Ssz.DataAccessGrpc.Client
                 valueSubscriptionObj.ValueSubscription.Update(
                     AddItem(valueSubscriptionObj));
             }
-        }
+        }        
 
         /// <summary>
-        ///     Tou can call Dispose() instead of this method.
-        ///     Closes without waiting working thread exit.
+        ///     Tou can call DisposeAsync() instead of this method.
+        ///     Closes WITH waiting working thread exit.
         /// </summary>
-        public override void Close()
+        public override async Task CloseAsync()
         {
-            if (!IsInitialized) return;
-
-            base.Close();
+            if (!IsInitialized)
+                return;            
 
             foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
             {
@@ -154,19 +150,12 @@ namespace Ssz.DataAccessGrpc.Client
             {
                 _cancellationTokenSource.Cancel();
                 _cancellationTokenSource = null;
-            }            
-        }
-
-        /// <summary>
-        ///     Tou can call DisposeAsync() instead of this method.
-        ///     Closes WITH waiting working thread exit.
-        /// </summary>
-        public override async Task CloseAsync()
-        {
-            Close();
+            }
 
             if (_workingTask is not null)
                 await await _workingTask;
+
+            await base.CloseAsync();
         }
 
         /// <summary>        

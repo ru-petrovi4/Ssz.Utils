@@ -71,32 +71,12 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
 
             _cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = _cancellationTokenSource.Token;
-
-            var previousWorkingTask = _workingTask;
+            
             _workingTask = Task.Factory.StartNew(async ct =>
-            {
-                if (previousWorkingTask is not null)
-                    await await previousWorkingTask;
+            {                
                 await WorkingTaskMainAsync(cancellationToken);
             }, TaskCreationOptions.LongRunning);
-        }
-
-        /// <summary>
-        ///     Tou can call Dispose() instead of this method.
-        ///     Closes without waiting working thread exit.
-        /// </summary>
-        public override void Close()
-        {
-            if (!IsInitialized) return;
-
-            base.Close();
-
-            if (_cancellationTokenSource is not null)
-            {
-                _cancellationTokenSource.Cancel();
-                _cancellationTokenSource = null;
-            }
-        }
+        }        
 
         /// <summary>
         ///     Tou can call DisposeAsync() instead of this method.
@@ -104,10 +84,19 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
         /// </summary>
         public override async Task CloseAsync()
         {
-            Close();
+            if (!IsInitialized) 
+                return;            
+
+            if (_cancellationTokenSource is not null)
+            {
+                _cancellationTokenSource.Cancel();
+                _cancellationTokenSource = null;
+            }
 
             if (_workingTask is not null)
                 await _workingTask;
+
+            await base.CloseAsync();
         }        
 
         #endregion        

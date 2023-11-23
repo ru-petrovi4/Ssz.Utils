@@ -31,7 +31,7 @@ namespace Ssz.Utils.DataAccess
 
             if (disposing)
             {
-                Close();
+                var t = CloseAsync();
             }
 
             base.Dispose(disposing);
@@ -153,7 +153,8 @@ namespace Ssz.Utils.DataAccess
             DataAccessProviderOptions options,
             IDispatcher? callbackDispatcher)
         {
-            Close();
+            if (IsInitialized)
+                throw new InvalidOperationException(@"Must be not initialized (closed or newly created).");
 
             LoggersSet.Logger.LogDebug("Starting ModelDataProvider. сallbackDispatcher != null: " + (callbackDispatcher is not null).ToString());
 
@@ -175,8 +176,8 @@ namespace Ssz.Utils.DataAccess
 
         public virtual async Task ReInitializeAsync()
         {
-            if (!IsInitialized) 
-                return;
+            if (!IsInitialized)
+                throw new InvalidOperationException(@"Must be initialized.");
 
             var elementIdsMap = ElementIdsMap;
             var serverAddress = ServerAddress;
@@ -197,22 +198,18 @@ namespace Ssz.Utils.DataAccess
                 contextParams,
                 options,
                 callbackDispatcher);
-        }
+        }        
 
-        public virtual void Close()
+        public virtual Task CloseAsync()
         {
-            if (!IsInitialized) return;
+            if (!IsInitialized)
+                return Task.CompletedTask;
 
             IsInitialized = false;
 
             ElementIdsMap = null;
             ContextParams = new CaseInsensitiveDictionary<string?>();
             CallbackDispatcher = null;
-        }
-
-        public virtual Task CloseAsync()
-        {
-            Close();
 
             return Task.CompletedTask;
         }

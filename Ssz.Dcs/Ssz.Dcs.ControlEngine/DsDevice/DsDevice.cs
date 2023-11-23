@@ -375,29 +375,33 @@ namespace Ssz.Dcs.ControlEngine
 
         private void OnCsvDb_CsvFileChanged(object? sender, CsvFileChangedEventArgs args)
         {
-            _dispatcher!.BeginAsyncInvoke(async ct =>
+            if (args.CsvFileName == @"" ||
+                    String.Equals(args.CsvFileName, ElementIdsMap.StandardMapFileName, StringComparison.InvariantCultureIgnoreCase) ||
+                    String.Equals(args.CsvFileName, ElementIdsMap.StandardTagsFileName, StringComparison.InvariantCultureIgnoreCase))
             {
-                if (args.CsvFileName == @"" ||
-                String.Equals(args.CsvFileName, ElementIdsMap.StandardMapFileName, StringComparison.InvariantCultureIgnoreCase) ||
-                String.Equals(args.CsvFileName, ElementIdsMap.StandardTagsFileName, StringComparison.InvariantCultureIgnoreCase))
+                _dispatcher!.BeginAsyncInvoke(async ct =>
                 {
-                    ElementIdsMap.Initialize(CsvDb.GetData(ElementIdsMap.StandardMapFileName), CsvDb.GetData(ElementIdsMap.StandardTagsFileName), CsvDb);
-                    // If not initialized then does nothing.
-                    await ProcessDataAccessProvider.ReInitializeAsync();
-                }
+                    if (ProcessDataAccessProvider.IsInitialized)
+                    {
+                        ElementIdsMap.Initialize(CsvDb.GetData(ElementIdsMap.StandardMapFileName), CsvDb.GetData(ElementIdsMap.StandardTagsFileName), CsvDb);
+                        // If not initialized then does nothing.
+                        await ProcessDataAccessProvider.ReInitializeAsync();
+                    }                    
+                });                
+            }
 
-                if (args.CsvFileName.EndsWith(@".BLOCK.CSV", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    await LoadDataEventAsync();
-                }
-            });            
+            if (args.CsvFileName.EndsWith(@".BLOCK.CSV", StringComparison.InvariantCultureIgnoreCase))
+            {
+                var t = LoadDataEventAsync();
+            }                       
         }
 
         private async Task LoadDataEventAsync()
         {
             if (_loadDataEventIsProcessing) return;
             _loadDataEventIsProcessing = true;
-            await Task.Delay(1000);
+            //await Task.Delay(1000); // Some problems with this line 
+            await Task.Run(() => Thread.Sleep(1000)); // Working
             _loadDataEventIsProcessing = false;
 
             _dispatcher!.BeginInvoke(ct =>

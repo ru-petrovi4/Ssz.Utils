@@ -123,7 +123,7 @@ namespace Ssz.Dcs.ControlEngine
                 }                
             }
 
-            _processDataAccessProvider.Close();
+            await _processDataAccessProvider.CloseAsync();
 
             ((ServerWorker)_serverWorker).Device = null;
             device.Dispose();            

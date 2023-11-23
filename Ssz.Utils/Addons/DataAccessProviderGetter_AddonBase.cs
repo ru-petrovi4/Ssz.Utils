@@ -49,7 +49,7 @@ namespace Ssz.Utils.Addons
         {
             if (DataAccessProvider is not null)
             {
-                DataAccessProvider.Close();
+                var t = DataAccessProvider.CloseAsync();
                 DataAccessProvider = null;
             }
         }

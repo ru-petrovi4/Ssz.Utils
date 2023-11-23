@@ -22,33 +22,71 @@ namespace Ssz.Utils
 
         #region public functions
 
-        public void BeginAsyncInvoke(Func<CancellationToken, Task> action)
+        public async Task<T> Invoke<T>(Func<CancellationToken, T> action)
         {
-            _synchronizationContext?.Post(OnBeginAsyncInvoke_Dispatched, action);
+            var taskCompletionSource = new TaskCompletionSource<T>();
+            _synchronizationContext?.Post(state =>
+            {
+                try
+                {                    
+                    var result = action(CancellationToken.None);
+                    taskCompletionSource.SetResult(result);
+                }
+                catch (Exception ex)
+                {
+                    taskCompletionSource.SetException(ex);
+                }
+            }, null);
+            return await taskCompletionSource.Task;
+        }
+
+        public async Task<T> AsyncInvoke<T>(Func<CancellationToken, Task<T>> action)
+        {
+            var taskCompletionSource = new TaskCompletionSource<T>();
+            _synchronizationContext?.Post(async state =>
+            {
+                try
+                {
+                    var result = await action(CancellationToken.None);
+                    taskCompletionSource.SetResult(result);
+                }
+                catch (Exception ex)
+                {
+                    taskCompletionSource.SetException(ex);
+                }
+            }, null);
+            return await taskCompletionSource.Task;
         }
 
         public void BeginInvoke(Action<CancellationToken> action)
         {
-            _synchronizationContext?.Post(OnBeginInvoke_Dispatched, action);
+            _synchronizationContext?.Post(state =>
+            {
+                try
+                {
+                    action(CancellationToken.None);                    
+                }
+                catch
+                {                    
+                }
+            }, null);
         }
 
-        #endregion
-
-        #region private functions
-
-        private async void OnBeginAsyncInvoke_Dispatched(object? state)
+        public void BeginAsyncInvoke(Func<CancellationToken, Task> action)
         {
-            Func<CancellationToken, Task> action = (Func<CancellationToken, Task>)state!;
-            await action.Invoke(CancellationToken.None);
-        }
+            _synchronizationContext?.Post(async state =>
+            {
+                try
+                {
+                    await action(CancellationToken.None);                    
+                }
+                catch
+                {                    
+                }
+            }, null);
+        }        
 
-        private void OnBeginInvoke_Dispatched(object? state)
-        {
-            Action<CancellationToken> action = (Action<CancellationToken>)state!;
-            action.Invoke(CancellationToken.None);
-        }
-
-        #endregion
+        #endregion        
 
         #region private fields
 

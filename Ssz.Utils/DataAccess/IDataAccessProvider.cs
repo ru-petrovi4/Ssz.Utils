@@ -62,7 +62,7 @@ namespace Ssz.Utils.DataAccess
         event EventHandler<EventMessagesCallbackEventArgs> EventMessagesCallback;
 
         /// <summary>
-        ///     
+        ///     Precondition: must be not initializied (closed or newly created).        
         /// </summary>
         /// <param name="elementIdsMap"></param>
         /// <param name="serverAddress"></param>
@@ -83,20 +83,13 @@ namespace Ssz.Utils.DataAccess
 
         /// <summary>
         ///     Re-initializes this object with same settings.
-        ///     Items must be added again.
-        ///     If not initialized then does nothing.
+        ///     Items must not be added again.
+        ///     Precondition: must be initializied.   
         /// </summary>
-        public Task ReInitializeAsync();
+        Task ReInitializeAsync();        
 
         /// <summary>
-        ///     You can call Dispose() instead of this method.
-        ///     Closes without waiting working thread exit.
-        /// </summary>
-        void Close();
-
-        /// <summary>
-        ///     Tou can call DisposeAsync() instead of this method.
-        ///     Closes WITH waiting working thread exit.
+        ///     You can call DisposeAsync() or Dispose() instead of this method.        
         /// </summary>
         Task CloseAsync();
 

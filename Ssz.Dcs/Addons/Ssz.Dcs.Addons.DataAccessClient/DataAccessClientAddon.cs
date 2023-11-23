@@ -48,13 +48,7 @@ namespace Ssz.Dcs.Addons.DataAccessClient
         public override void InitializeDataAccessProvider(IDispatcher callbackDispatcher)
         {
             if (!IsInitialized)
-                throw new InvalidOperationException();
-
-            if (DataAccessProvider is not null)
-            {
-                DataAccessProvider.Close();
-                DataAccessProvider = null;
-            }
+                throw new InvalidOperationException();            
 
             string serverAddress = OptionsSubstitutedThreadSafe.TryGetValue(DataAccessClient_ServerAddress_OptionName) ?? @"";
             string systemNameToConnect = OptionsSubstitutedThreadSafe.TryGetValue(DataAccessClient_SystemNameToConnect_OptionName) ?? @"";
@@ -85,19 +79,20 @@ namespace Ssz.Dcs.Addons.DataAccessClient
 
             CsvDb.CsvFileChanged += (sender, args) =>
             {
-                callbackDispatcher.BeginAsyncInvoke(async ct =>
-                {
-                    if (args.CsvFileName == @"" ||
+                if (args.CsvFileName == @"" ||
                         String.Equals(args.CsvFileName, ElementIdsMap.StandardMapFileName, StringComparison.InvariantCultureIgnoreCase) ||
                         String.Equals(args.CsvFileName, ElementIdsMap.StandardTagsFileName, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    callbackDispatcher.BeginAsyncInvoke(async ct =>
                     {
-                        if (dataAccessProvider.IsDisposed)
-                            return;
-                        elementIdsMap.Initialize(CsvDb.GetData(ElementIdsMap.StandardMapFileName), CsvDb.GetData(ElementIdsMap.StandardTagsFileName), CsvDb);
-                        // If not initialized then does nothing.
-                        await dataAccessProvider.ReInitializeAsync();
-                    };
-                });                
+                        if (dataAccessProvider.IsInitialized)
+                        {
+                            elementIdsMap.Initialize(CsvDb.GetData(ElementIdsMap.StandardMapFileName), CsvDb.GetData(ElementIdsMap.StandardTagsFileName), CsvDb);
+                            // If not initialized then does nothing.
+                            await dataAccessProvider.ReInitializeAsync();
+                        }                        
+                    });                    
+                };            
             };            
 
             DataAccessProvider = dataAccessProvider;

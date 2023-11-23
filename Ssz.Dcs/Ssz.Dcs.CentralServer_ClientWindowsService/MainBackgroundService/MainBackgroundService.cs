@@ -89,7 +89,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 await _threadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
             }
 
-            UtilityDataAccessProvider.Close();
+            await UtilityDataAccessProvider.CloseAsync();
         }
 
         #endregion

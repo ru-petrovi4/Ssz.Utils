@@ -19,7 +19,43 @@ namespace Ssz.Utils
 
         #endregion
 
-        #region public functions       
+        #region public functions   
+
+        public async Task<T> Invoke<T>(Func<CancellationToken, T> action)
+        {
+            var taskCompletionSource = new TaskCompletionSource<T>();
+            BeginInvoke(ct =>
+            {
+                try
+                {
+                    var result = action(ct);
+                    taskCompletionSource.SetResult(result);
+                }
+                catch (Exception ex)
+                {
+                    taskCompletionSource.SetException(ex);
+                }
+            });
+            return await taskCompletionSource.Task;
+        }
+
+        public async Task<T> AsyncInvoke<T>(Func<CancellationToken, Task<T>> action)
+        {
+            var taskCompletionSource = new TaskCompletionSource<T>();
+            BeginAsyncInvoke(async ct =>
+            {
+                try
+                {
+                    var result = await action(ct);
+                    taskCompletionSource.SetResult(result);
+                }
+                catch (Exception ex)
+                {
+                    taskCompletionSource.SetException(ex);
+                }
+            });
+            return await taskCompletionSource.Task;
+        }        
 
         public void BeginInvoke(Action<CancellationToken> action)
         {

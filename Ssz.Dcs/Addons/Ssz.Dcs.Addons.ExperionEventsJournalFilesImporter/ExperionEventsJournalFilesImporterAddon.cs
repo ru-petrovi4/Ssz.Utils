@@ -71,13 +71,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
         public override void InitializeDataAccessProvider(IDispatcher callbackDispatcher)
         {
             if (!IsInitialized)
-                throw new InvalidOperationException();
-
-            if (DataAccessProvider is not null)
-            {
-                DataAccessProvider.Close();
-                DataAccessProvider = null;
-            }
+                throw new InvalidOperationException();            
 
             var dataAccessProvider = ActivatorUtilities.CreateInstance<ExperionEventsJournalFiles_DataAccessProvider>(ServiceProvider, this, LoggersSet.UserFriendlyLogger);
 

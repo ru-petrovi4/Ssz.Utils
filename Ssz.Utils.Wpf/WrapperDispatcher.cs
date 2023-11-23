@@ -55,6 +55,42 @@ namespace Ssz.Utils.Wpf
 
         public bool Disposed { get; private set; }
 
+        public async Task<T> Invoke<T>(Func<CancellationToken, T> action)
+        {
+            var taskCompletionSource = new TaskCompletionSource<T>();
+            _ = _dispatcher.BeginInvoke(() =>
+            {
+                try
+                {
+                    var result = action(CancellationToken.None);
+                    taskCompletionSource.SetResult(result);
+                }
+                catch (Exception ex)
+                {
+                    taskCompletionSource.SetException(ex);
+                }
+            });
+            return await taskCompletionSource.Task;
+        }
+
+        public async Task<T> AsyncInvoke<T>(Func<CancellationToken, Task<T>> action)
+        {
+            var taskCompletionSource = new TaskCompletionSource<T>();
+            _ = _dispatcher.BeginInvoke(async () =>
+            {
+                try
+                {
+                    var result = await action(CancellationToken.None);
+                    taskCompletionSource.SetResult(result);
+                }
+                catch (Exception ex)
+                {
+                    taskCompletionSource.SetException(ex);
+                }
+            });
+            return await taskCompletionSource.Task;
+        }
+
         public void BeginInvoke(Action<CancellationToken> action)
         {
             if (Disposed) return;
