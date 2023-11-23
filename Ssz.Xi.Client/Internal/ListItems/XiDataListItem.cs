@@ -192,11 +192,11 @@ namespace Ssz.Xi.Client.Internal.ListItems
 
         private uint NormalizeStatusCode(uint statusCode)
         {
-            return ValueStatusCodes.Good;
+            return StatusCodes.Good;
             //if ((XiStatusCode.StatusBits(statusCode) & (byte)XiStatusCodeStatusBits.GoodNonSpecific) != 0)
-            //    return ValueStatusCodes.Good;
+            //    return StatusCodes.Good;
             //else
-            //    return ValueStatusCodes.Bad;
+            //    return StatusCodes.Bad;
         }
 
         #endregion        
@@ -213,7 +213,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         /// <summary>
         ///     This data member is the private representation of the DataValue property.
         /// </summary>
-        private ValueStatusTimestamp _valueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain };
+        private ValueStatusTimestamp _valueStatusTimestamp = new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain };
 
         #endregion
     }

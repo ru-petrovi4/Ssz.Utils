@@ -7,7 +7,7 @@ namespace Ssz.Utils.DataAccess
     public class ResultInfo
     {
         /// <summary>
-        ///     Status code <see cref="JobStatusCodes"/>
+        ///     Status code <see cref="StatusCodes"/>
         /// </summary>
         public uint StatusCode { get; set; }
 
@@ -27,18 +27,13 @@ namespace Ssz.Utils.DataAccess
         public string Details { get; set; } = @"";
 
         /// <summary>
-        ///     Unspecified OK result.
+        ///     Unspecified Good result.
         /// </summary>
-        public static readonly ResultInfo OkResultInfo = new ResultInfo { StatusCode = JobStatusCodes.OK };
+        public static readonly ResultInfo GoodResultInfo = new ResultInfo { StatusCode = StatusCodes.Good };        
 
         /// <summary>
-        ///     Unspecified Cancelled result.
+        ///     Unspecified Uncertain result.
         /// </summary>
-        public static readonly ResultInfo CancelledResultInfo = new ResultInfo { StatusCode = JobStatusCodes.Cancelled };
-
-        /// <summary>
-        ///     Unspecified Unknown result.
-        /// </summary>
-        public static readonly ResultInfo UnknownResultInfo = new ResultInfo { StatusCode = JobStatusCodes.Unknown };
+        public static readonly ResultInfo UncertainResultInfo = new ResultInfo { StatusCode = StatusCodes.Uncertain };
     }
 }

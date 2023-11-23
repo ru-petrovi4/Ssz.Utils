@@ -109,24 +109,24 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                                 fullElementValuesCollection.DoubleAliases.Add(alias);
                                 fullElementValuesCollection.DoubleValues.Add(valueStatusTimestamp.Value.StorageDouble);
                                 fullElementValuesCollection.DoubleValueTypeCodes.Add((uint)valueStatusTimestamp.Value.ValueTypeCode);
-                                fullElementValuesCollection.DoubleValueStatusCodes.Add(valueStatusTimestamp.ValueStatusCode);
+                                fullElementValuesCollection.DoubleStatusCodes.Add(valueStatusTimestamp.StatusCode);
                                 fullElementValuesCollection.DoubleTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                
                                 break;
                             case Ssz.Utils.Any.StorageType.UInt32:
                                 fullElementValuesCollection.UintAliases.Add(alias);
                                 fullElementValuesCollection.UintValues.Add(valueStatusTimestamp.Value.StorageUInt32);
                                 fullElementValuesCollection.UintValueTypeCodes.Add((uint)valueStatusTimestamp.Value.ValueTypeCode);
-                                fullElementValuesCollection.UintValueStatusCodes.Add(valueStatusTimestamp.ValueStatusCode);
+                                fullElementValuesCollection.UintStatusCodes.Add(valueStatusTimestamp.StatusCode);
                                 fullElementValuesCollection.UintTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                
                                 break;
                             case Ssz.Utils.Any.StorageType.Object:
                                 fullElementValuesCollection.ObjectAliases.Add(alias);
                                 writer.WriteObject(valueStatusTimestamp.Value.StorageObject);
-                                fullElementValuesCollection.ObjectValueStatusCodes.Add(valueStatusTimestamp.ValueStatusCode);
+                                fullElementValuesCollection.ObjectStatusCodes.Add(valueStatusTimestamp.StatusCode);
                                 fullElementValuesCollection.ObjectTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                
                                 break;
                         }
-                        item.HasWritten(ResultInfo.OkResultInfo);
+                        item.HasWritten(ResultInfo.GoodResultInfo);
                     }
                 }
                 memoryStream.Position = 0;
@@ -198,7 +198,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                     {
                         item.UpdateValue(elementValuesCollection.DoubleValues[index],
                             (TypeCode)elementValuesCollection.DoubleValueTypeCodes[index],
-                            elementValuesCollection.DoubleValueStatusCodes[index],
+                            elementValuesCollection.DoubleStatusCodes[index],
                             elementValuesCollection.DoubleTimestamps[index].ToDateTime()
                             );
                         changedListItems.Add(item);
@@ -212,7 +212,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                     {
                         item.UpdateValue(elementValuesCollection.UintValues[index],
                             (TypeCode)elementValuesCollection.UintValueTypeCodes[index],
-                            elementValuesCollection.UintValueStatusCodes[index],
+                            elementValuesCollection.UintStatusCodes[index],
                             elementValuesCollection.UintTimestamps[index].ToDateTime()
                             );
                         changedListItems.Add(item);
@@ -231,7 +231,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                             if (item is not null)
                             {
                                 item.UpdateValue(objectValue,
-                                    elementValuesCollection.ObjectValueStatusCodes[index],
+                                    elementValuesCollection.ObjectStatusCodes[index],
                                     elementValuesCollection.ObjectTimestamps[index].ToDateTime()
                                     );
                                 changedListItems.Add(item);

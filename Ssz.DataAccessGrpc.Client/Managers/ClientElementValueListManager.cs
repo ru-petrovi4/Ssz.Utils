@@ -151,7 +151,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                                     {                                        
                                         if (notifyClientObj_ValueStatusTimestamp)
                                         {
-                                            elementValuesCallbackChange.ValueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.BadNodeIdUnknown };
+                                            elementValuesCallbackChange.ValueStatusTimestamp = new ValueStatusTimestamp { StatusCode = StatusCodes.BadNodeIdUnknown };
                                         }                                        
                                     }
                                     else if (dataAccessGrpcListItemWrapper.DataAccessGrpcListItem is not null &&
@@ -166,7 +166,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                                     {                                        
                                         if (notifyClientObj_ValueStatusTimestamp)
                                         {
-                                            elementValuesCallbackChange.ValueStatusTimestamp = new ValueStatusTimestamp(new Any(), ValueStatusCodes.Uncertain, utcNow);
+                                            elementValuesCallbackChange.ValueStatusTimestamp = new ValueStatusTimestamp(new Any(), StatusCodes.Uncertain, utcNow);
                                         }                                        
                                     }
                                     elementValuesCallbackEventArgs.ElementValuesCallbackChanges.Add(elementValuesCallbackChange);
@@ -243,7 +243,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         {
             if (DataAccessGrpcList is null || DataAccessGrpcList.Disposed)
             {
-                var failedResultInfo = new ResultInfo { StatusCode = JobStatusCodes.FailedPrecondition };
+                var failedResultInfo = new ResultInfo { StatusCode = StatusCodes.BadInvalidState };
                 return (clientObjs, Enumerable.Repeat(failedResultInfo, clientObjs.Length).ToArray());
             }                
 
@@ -258,17 +258,17 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 if (!ClientObjectInfosDictionary.TryGetValue(clientObj, out clientObjectInfo))
                 {
                     objects.Add(clientObj);
-                    resultInfos.Add(new ResultInfo { StatusCode = JobStatusCodes.InvalidArgument });
+                    resultInfos.Add(new ResultInfo { StatusCode = StatusCodes.BadInvalidArgument });
                     continue;
                 }                
                 
                 if (clientObjectInfo.DataAccessGrpcListItemWrapper is null ||
                     clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem is null ||
                     clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResultInfo is null ||
-                    clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResultInfo.StatusCode != JobStatusCodes.OK)
+                    !StatusCodes.IsGood(clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResultInfo.StatusCode))
                 {
                     objects.Add(clientObj);
-                    resultInfos.Add(new ResultInfo { StatusCode = JobStatusCodes.FailedPrecondition });
+                    resultInfos.Add(new ResultInfo { StatusCode = StatusCodes.BadInvalidState });
                     continue;
                 }
                 ClientElementValueListItem dataGrpcElementValueListItem = clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem;
@@ -282,7 +282,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             }
             catch
             {                
-                return (clientObjs, Enumerable.Repeat(ResultInfo.UnknownResultInfo, clientObjs.Length).ToArray());
+                return (clientObjs, Enumerable.Repeat(ResultInfo.UncertainResultInfo, clientObjs.Length).ToArray());
             }
 
             foreach (var failedItem in failedItems)
@@ -310,17 +310,17 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         public async Task<ResultInfo> WriteAsync(object clientObj, ValueStatusTimestamp valueStatusTimestamp)
         {
             if (DataAccessGrpcList is null || DataAccessGrpcList.Disposed)
-                return new ResultInfo { StatusCode = JobStatusCodes.FailedPrecondition };
+                return new ResultInfo { StatusCode = StatusCodes.BadInvalidState };
 
             ClientObjectInfo? clientObjectInfo;
             if (!ClientObjectInfosDictionary.TryGetValue(clientObj, out clientObjectInfo))
-                return new ResultInfo { StatusCode = JobStatusCodes.InvalidArgument };
+                return new ResultInfo { StatusCode = StatusCodes.BadInvalidArgument };
             
             if (clientObjectInfo.DataAccessGrpcListItemWrapper is null || 
                 clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem is null ||
                 clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResultInfo is null ||
-                clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResultInfo.StatusCode != JobStatusCodes.OK)
-                return new ResultInfo { StatusCode = JobStatusCodes.FailedPrecondition };
+                !StatusCodes.IsGood(clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem.AddItemResultInfo.StatusCode))
+                return new ResultInfo { StatusCode = StatusCodes.BadInvalidState };
 
             ClientElementValueListItem dataGrpcElementValueListItem = clientObjectInfo.DataAccessGrpcListItemWrapper.DataAccessGrpcListItem;
 
@@ -343,7 +343,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 Logger.LogWarning(ex, "DataAccessGrpcList.CommitWriteElementValueListItems() exception");
             }
 
-            return ResultInfo.UnknownResultInfo;
+            return ResultInfo.UncertainResultInfo;
         }
 
         /*

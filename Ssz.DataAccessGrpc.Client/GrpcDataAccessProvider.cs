@@ -176,7 +176,7 @@ namespace Ssz.DataAccessGrpc.Client
                     {
                         callbackDispatcher.BeginInvoke(ct =>
                         {                            
-                            valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.BadNodeIdUnknown });
+                            valueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.BadNodeIdUnknown });
                         });
                     }
                     catch (Exception)
@@ -253,14 +253,14 @@ namespace Ssz.DataAccessGrpc.Client
         {
             var callbackDispatcher = CallbackDispatcher;
             if (!IsInitialized || callbackDispatcher is null) 
-                return new ResultInfo { StatusCode = JobStatusCodes.FailedPrecondition };
+                return new ResultInfo { StatusCode = StatusCodes.BadInvalidState };
 
-            if (!ValueStatusCodes.IsGood(valueStatusTimestamp.ValueStatusCode)) 
-                return new ResultInfo { StatusCode = JobStatusCodes.InvalidArgument };
+            if (!StatusCodes.IsGood(valueStatusTimestamp.StatusCode)) 
+                return new ResultInfo { StatusCode = StatusCodes.BadInvalidArgument };
             var value = valueStatusTimestamp.Value;
 
             if (!_valueSubscriptionsCollection.TryGetValue(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj))
-                return new ResultInfo { StatusCode = JobStatusCodes.InvalidArgument };
+                return new ResultInfo { StatusCode = StatusCodes.BadInvalidArgument };
 
             if (userFriendlyLogger is not null && userFriendlyLogger.IsEnabled(LogLevel.Information))
                 userFriendlyLogger.LogInformation("UI TAG: \"" + valueSubscriptionObj.ElementId + "\"; Value from UI: \"" +
@@ -291,7 +291,7 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                 }
 
-                return ResultInfo.OkResultInfo;
+                return ResultInfo.GoodResultInfo;
             }
 
             object?[]? resultValues = null;
@@ -302,7 +302,7 @@ namespace Ssz.DataAccessGrpc.Client
                     converter.ConvertBack(value.ValueAsObject(),
                         valueSubscriptionObj.ChildValueSubscriptionsList.Count, null, userFriendlyLogger);
                 if (resultValues.Length == 0)
-                    return ResultInfo.OkResultInfo;
+                    return ResultInfo.GoodResultInfo;
             }
 
             var utcNow = DateTime.UtcNow;
@@ -335,7 +335,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
             {
-                var resultInfo = ResultInfo.OkResultInfo;
+                var resultInfo = ResultInfo.GoodResultInfo;
 
                 if (!IsInitialized)
                 {
@@ -354,14 +354,14 @@ namespace Ssz.DataAccessGrpc.Client
                         var resultValue = resultValues[i];
                         if (resultValue != SszConverter.DoNothing)
                             resultInfo = await _clientElementValueListManager.WriteAsync(valueSubscriptionObj.ChildValueSubscriptionsList[i],
-                                new ValueStatusTimestamp(new Any(resultValue), ValueStatusCodes.Good, DateTime.UtcNow));
+                                new ValueStatusTimestamp(new Any(resultValue), StatusCodes.Good, DateTime.UtcNow));
                     }
                 }
                 else
                 {
                     if (value.ValueAsObject() != SszConverter.DoNothing)
                         resultInfo = await _clientElementValueListManager.WriteAsync(valueSubscription,
-                            new ValueStatusTimestamp(value, ValueStatusCodes.Good, DateTime.UtcNow));
+                            new ValueStatusTimestamp(value, StatusCodes.Good, DateTime.UtcNow));
                 }
 
                 taskCompletionSource.SetResult(resultInfo);
@@ -386,7 +386,7 @@ namespace Ssz.DataAccessGrpc.Client
             {
                 if (!IsInitialized)
                 {
-                    var failedResultInfo = new ResultInfo { StatusCode = JobStatusCodes.FailedPrecondition };
+                    var failedResultInfo = new ResultInfo { StatusCode = StatusCodes.BadInvalidState };
                     taskCompletionSource.SetResult((valueSubscriptions, Enumerable.Repeat(failedResultInfo, valueSubscriptions.Length).ToArray()));
                     return;
                 }
@@ -444,7 +444,7 @@ namespace Ssz.DataAccessGrpc.Client
         }
 
         /// <summary>
-        ///     Returns JobStatusCode <see cref="JobStatusCodes"/>
+        ///     Returns StatusCode <see cref="StatusCodes"/>
         ///     No throws.
         /// </summary>
         /// <param name="recipientId"></param>
@@ -482,10 +482,10 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                     callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
                     {
-                        JobStatusCode = JobStatusCodes.Unknown
+                        StatusCode = StatusCodes.Uncertain
                     });
                 }
-                return Task.FromResult(JobStatusCodes.Unknown);
+                return Task.FromResult(StatusCodes.Uncertain);
             }                
 
             var taskCompletionSource = new TaskCompletionSource<Task<uint>>();
@@ -512,10 +512,10 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                     callbackActionDispatched = null;
                 }
-                Task<uint> jobStatusCodeTask;
+                Task<uint> statusCodeTask;
                 try
                 {
-                    jobStatusCodeTask = await _clientContextManager.LongrunningPassthroughAsync(recipientId, passthroughName,
+                    statusCodeTask = await _clientContextManager.LongrunningPassthroughAsync(recipientId, passthroughName,
                         dataToSend, callbackActionDispatched);
                 }
                 catch (RpcException ex)
@@ -525,10 +525,10 @@ namespace Ssz.DataAccessGrpc.Client
                     {
                         callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
                         {   
-                            JobStatusCode = JobStatusCodes.Unknown
+                            StatusCode = StatusCodes.Uncertain
                         });
                     }
-                    jobStatusCodeTask = Task.FromResult(JobStatusCodes.Unknown);
+                    statusCodeTask = Task.FromResult(StatusCodes.Uncertain);
                 }
                 catch (ConnectionDoesNotExistException ex)
                 {
@@ -536,10 +536,10 @@ namespace Ssz.DataAccessGrpc.Client
                     {
                         callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
                         {
-                            JobStatusCode = JobStatusCodes.Unknown
+                            StatusCode = StatusCodes.Uncertain
                         });
                     }
-                    jobStatusCodeTask = Task.FromResult(JobStatusCodes.Unknown);
+                    statusCodeTask = Task.FromResult(StatusCodes.Uncertain);
                 }
                 catch (Exception ex)
                 {
@@ -548,13 +548,13 @@ namespace Ssz.DataAccessGrpc.Client
                     {
                         callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
                         {
-                            JobStatusCode = JobStatusCodes.Unknown
+                            StatusCode = StatusCodes.Uncertain
                         });
                     }
-                    jobStatusCodeTask = Task.FromResult(JobStatusCodes.Unknown);
+                    statusCodeTask = Task.FromResult(StatusCodes.Uncertain);
                 }
 
-                taskCompletionSource.SetResult(jobStatusCodeTask);
+                taskCompletionSource.SetResult(statusCodeTask);
             });
 
             return await taskCompletionSource.Task;
@@ -610,7 +610,7 @@ namespace Ssz.DataAccessGrpc.Client
                             {
                                 foreach (IValueSubscription valueSubscription in valueSubscriptions)
                                 {                                    
-                                    valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain });
+                                    valueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain });
                                 }
                                 DataGuid = Guid.NewGuid();
 
@@ -881,7 +881,7 @@ namespace Ssz.DataAccessGrpc.Client
                     {
                         callbackDispatcher.BeginInvoke(ct =>
                         {                            
-                            valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, ValueStatusCodes.Good,
+                            valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, StatusCodes.Good,
                                 DateTime.UtcNow));
                         });
                     }
@@ -1041,14 +1041,14 @@ namespace Ssz.DataAccessGrpc.Client
             {
                 if (ChildValueSubscriptionsList is null) return;
 
-                if (ChildValueSubscriptionsList.Any(vs => ValueStatusCodes.IsBad(vs.ValueStatusTimestamp.ValueStatusCode)))
+                if (ChildValueSubscriptionsList.Any(vs => StatusCodes.IsBad(vs.ValueStatusTimestamp.StatusCode)))
                 {
-                    ValueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Bad });
+                    ValueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.Bad });
                     return;
                 }
-                if (ChildValueSubscriptionsList.Any(vs => ValueStatusCodes.IsUncertain(vs.ValueStatusTimestamp.ValueStatusCode)))
+                if (ChildValueSubscriptionsList.Any(vs => StatusCodes.IsUncertain(vs.ValueStatusTimestamp.StatusCode)))
                 {
-                    ValueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain });
+                    ValueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain });
                     return;
                 }
 
@@ -1058,7 +1058,7 @@ namespace Ssz.DataAccessGrpc.Client
                 SszConverter converter = Converter ?? SszConverter.Empty;                
                 var convertedValue = converter.Convert(values.ToArray(), null, null);
                 if (convertedValue == SszConverter.DoNothing) return;
-                ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), ValueStatusCodes.Good,
+                ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), StatusCodes.Good,
                     DateTime.UtcNow));
             }
         }
@@ -1086,7 +1086,7 @@ namespace Ssz.DataAccessGrpc.Client
             {
             }            
 
-            public ValueStatusTimestamp ValueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain };
+            public ValueStatusTimestamp ValueStatusTimestamp = new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain };
 
             public readonly bool IsConst;            
 

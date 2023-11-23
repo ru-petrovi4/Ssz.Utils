@@ -56,7 +56,7 @@ namespace Ssz.Dcs.CentralServer
                             JobId = jobProgress.JobId,
                             ProgressPercent = 100,
                             ProgressLabel = jobProgress.JobTimeout_ProgressLabel,
-                            JobStatusCode = JobStatusCodes.Aborted
+                            StatusCode = StatusCodes.BadInvalidState
                         });
                     }                  
                 }

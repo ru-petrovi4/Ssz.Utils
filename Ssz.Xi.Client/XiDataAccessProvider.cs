@@ -155,7 +155,7 @@ namespace Ssz.Xi.Client
                     {
                         callbackDispatcher.BeginInvoke(ct =>
                         {                            
-                            valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.BadNodeIdUnknown });
+                            valueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.BadNodeIdUnknown });
                         });
                     }
                     catch (Exception)
@@ -232,14 +232,14 @@ namespace Ssz.Xi.Client
 
             var callbackDispatcher = CallbackDispatcher;
             if (!IsInitialized || callbackDispatcher is null) 
-                return Task.FromResult(ResultInfo.UnknownResultInfo);
+                return Task.FromResult(ResultInfo.UncertainResultInfo);
 
-            if (!ValueStatusCodes.IsGood(valueStatusTimestamp.ValueStatusCode))
-                return Task.FromResult(ResultInfo.UnknownResultInfo);
+            if (!StatusCodes.IsGood(valueStatusTimestamp.StatusCode))
+                return Task.FromResult(ResultInfo.UncertainResultInfo);
             var value = valueStatusTimestamp.Value;
 
             if (!_valueSubscriptionsCollection.TryGetValue(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj))
-                return Task.FromResult(ResultInfo.UnknownResultInfo);
+                return Task.FromResult(ResultInfo.UncertainResultInfo);
 
             if (userFriendlyLogger is not null && userFriendlyLogger.IsEnabled(LogLevel.Information))
                 userFriendlyLogger.LogInformation("UI TAG: \"" + valueSubscriptionObj.ElementId + "\"; Value from UI: \"" +
@@ -270,7 +270,7 @@ namespace Ssz.Xi.Client
                 {
                 }
 
-                return Task.FromResult(ResultInfo.OkResultInfo);
+                return Task.FromResult(ResultInfo.GoodResultInfo);
             }
 
             object?[]? resultValues = null;
@@ -281,7 +281,7 @@ namespace Ssz.Xi.Client
                     converter.ConvertBack(value.ValueAsObject(),
                         valueSubscriptionObj.ChildValueSubscriptionsList.Count, null, userFriendlyLogger);
                 if (resultValues.Length == 0)
-                    return Task.FromResult(ResultInfo.OkResultInfo);
+                    return Task.FromResult(ResultInfo.GoodResultInfo);
             }
 
             var utcNow = DateTime.UtcNow;
@@ -323,18 +323,18 @@ namespace Ssz.Xi.Client
                         var resultValue = resultValues[i];
                         if (resultValue != SszConverter.DoNothing)
                             _xiDataListItemsManager.Write(valueSubscriptionObj.ChildValueSubscriptionsList[i],
-                                new ValueStatusTimestamp(new Any(resultValue), ValueStatusCodes.Good, DateTime.UtcNow));
+                                new ValueStatusTimestamp(new Any(resultValue), StatusCodes.Good, DateTime.UtcNow));
                     }
                 }
                 else
                 {
                     if (value.ValueAsObject() != SszConverter.DoNothing)
                         _xiDataListItemsManager.Write(valueSubscription,
-                            new ValueStatusTimestamp(value, ValueStatusCodes.Good, DateTime.UtcNow));
+                            new ValueStatusTimestamp(value, StatusCodes.Good, DateTime.UtcNow));
                 }
             });
 
-            return Task.FromResult(ResultInfo.OkResultInfo);
+            return Task.FromResult(ResultInfo.GoodResultInfo);
         }
 
         /// <summary>     
@@ -356,7 +356,7 @@ namespace Ssz.Xi.Client
                     XiDataListItemsManagerOnElementValuesCallback, true, ct);
                 object[] failedValueSubscriptions = _xiDataListItemsManager.Write(valueSubscriptions, valueStatusTimestamps);
                 
-                taskCompletionSource.SetResult((failedValueSubscriptions.OfType<IValueSubscription>().ToArray(), Enumerable.Repeat(ResultInfo.UnknownResultInfo, failedValueSubscriptions.Length).ToArray()));
+                taskCompletionSource.SetResult((failedValueSubscriptions.OfType<IValueSubscription>().ToArray(), Enumerable.Repeat(ResultInfo.UncertainResultInfo, failedValueSubscriptions.Length).ToArray()));
             });
 
             return await taskCompletionSource.Task;
@@ -401,7 +401,7 @@ namespace Ssz.Xi.Client
         }
 
         /// <summary>
-        ///     Returns JobStatusCode <see cref="JobStatusCodes"/>
+        ///     Returns StatusCode <see cref="StatusCodes"/>
         ///     No throws.
         /// </summary>
         /// <param name="recipientId"></param>
@@ -439,10 +439,10 @@ namespace Ssz.Xi.Client
                 {
                     callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
                     {
-                        JobStatusCode = JobStatusCodes.Unknown
+                        StatusCode = StatusCodes.Uncertain
                     });
                 }
-                return Task.FromResult(JobStatusCodes.Unknown);
+                return Task.FromResult(StatusCodes.Uncertain);
             }
 
             var taskCompletionSource = new TaskCompletionSource<Task<uint>>();
@@ -468,12 +468,12 @@ namespace Ssz.Xi.Client
                 {
                     callbackActionDispatched = null;
                 }
-                Task<uint> jobStatusCodeTask;
+                Task<uint> statusCodeTask;
                 try
                 {
                     if (_xiServerProxy is null) throw new InvalidOperationException();
 
-                    jobStatusCodeTask = await _xiServerProxy.LongrunningPassthroughAsync(recipientId, passthroughName,
+                    statusCodeTask = await _xiServerProxy.LongrunningPassthroughAsync(recipientId, passthroughName,
                         dataToSend, callbackActionDispatched);
                 }
                 catch
@@ -482,13 +482,13 @@ namespace Ssz.Xi.Client
                     {
                         callbackActionDispatched(new Utils.DataAccess.LongrunningPassthroughCallback
                         {
-                            JobStatusCode = JobStatusCodes.Unknown
+                            StatusCode = StatusCodes.Uncertain
                         });
                     }
-                    jobStatusCodeTask = Task.FromResult(JobStatusCodes.Unknown);
+                    statusCodeTask = Task.FromResult(StatusCodes.Uncertain);
                 }
 
-                taskCompletionSource.SetResult(jobStatusCodeTask);
+                taskCompletionSource.SetResult(statusCodeTask);
             });
 
             return await taskCompletionSource.Task;
@@ -575,7 +575,7 @@ namespace Ssz.Xi.Client
                             {
                                 foreach (IValueSubscription valueSubscription in valueSubscriptions)
                                 {                                    
-                                    valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain });
+                                    valueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain });
                                 }
                                 DataGuid = Guid.NewGuid();
 
@@ -862,7 +862,7 @@ namespace Ssz.Xi.Client
                     {
                         callbackDispatcher.BeginInvoke(ct =>
                         {                            
-                            valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, ValueStatusCodes.Good,
+                            valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, StatusCodes.Good,
                                 DateTime.UtcNow));
                         });
                     }
@@ -1009,14 +1009,14 @@ namespace Ssz.Xi.Client
             {
                 if (ChildValueSubscriptionsList is null) return;
 
-                if (ChildValueSubscriptionsList.Any(vs => ValueStatusCodes.IsBad(vs.ValueStatusTimestamp.ValueStatusCode)))
+                if (ChildValueSubscriptionsList.Any(vs => StatusCodes.IsBad(vs.ValueStatusTimestamp.StatusCode)))
                 {
-                    ValueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Bad });
+                    ValueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.Bad });
                     return;
                 }
-                if (ChildValueSubscriptionsList.Any(vs => ValueStatusCodes.IsUncertain(vs.ValueStatusTimestamp.ValueStatusCode)))
+                if (ChildValueSubscriptionsList.Any(vs => StatusCodes.IsUncertain(vs.ValueStatusTimestamp.StatusCode)))
                 {
-                    ValueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain });
+                    ValueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain });
                     return;
                 }
 
@@ -1026,7 +1026,7 @@ namespace Ssz.Xi.Client
                 SszConverter converter = Converter ?? SszConverter.Empty;
                 var convertedValue = converter.Convert(values.ToArray(), null, null);
                 if (convertedValue == SszConverter.DoNothing) return;
-                ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), ValueStatusCodes.Good,
+                ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), StatusCodes.Good,
                     DateTime.UtcNow));
             }
         }
@@ -1054,7 +1054,7 @@ namespace Ssz.Xi.Client
             {
             }
 
-            public ValueStatusTimestamp ValueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain };
+            public ValueStatusTimestamp ValueStatusTimestamp = new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain };
 
         public readonly bool IsConst;            
 

@@ -59,7 +59,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     if (localIndex < elementValuesJournal.DoubleTimestamps.Count)
                     {
                         resultElementValuesJournal.DoubleValues.Add(elementValuesJournal.DoubleValues[localIndex]);
-                        resultElementValuesJournal.DoubleValueStatusCodes.Add(elementValuesJournal.DoubleValueStatusCodes[localIndex]);
+                        resultElementValuesJournal.DoubleStatusCodes.Add(elementValuesJournal.DoubleStatusCodes[localIndex]);
                         resultElementValuesJournal.DoubleTimestamps.Add(elementValuesJournal.DoubleTimestamps[localIndex]);
                         replyObjectSize += sizeof(double) + sizeof(uint) + 8;
                         index += 1;
@@ -70,7 +70,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     if (localIndex < elementValuesJournal.UintTimestamps.Count)
                     {
                         resultElementValuesJournal.UintValues.Add(elementValuesJournal.UintValues[localIndex]);
-                        resultElementValuesJournal.UintValueStatusCodes.Add(elementValuesJournal.UintValueStatusCodes[localIndex]);
+                        resultElementValuesJournal.UintStatusCodes.Add(elementValuesJournal.UintStatusCodes[localIndex]);
                         resultElementValuesJournal.UintTimestamps.Add(elementValuesJournal.UintTimestamps[localIndex]);
                         replyObjectSize += sizeof(uint) + sizeof(uint) + 8;
                         index += 1;
@@ -80,7 +80,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     localIndex = index - elementValuesJournal.DoubleTimestamps.Count - elementValuesJournal.UintTimestamps.Count - finishedCount;
                     if (localIndex < elementValuesJournal.ObjectTimestamps.Count)
                     {                        
-                        resultElementValuesJournal.ObjectValueStatusCodes.Add(elementValuesJournal.ObjectValueStatusCodes[localIndex]);
+                        resultElementValuesJournal.ObjectStatusCodes.Add(elementValuesJournal.ObjectStatusCodes[localIndex]);
                         resultElementValuesJournal.ObjectTimestamps.Add(elementValuesJournal.ObjectTimestamps[localIndex]);
                         replyObjectSize += sizeof(uint) + 8;
                         index += 1;

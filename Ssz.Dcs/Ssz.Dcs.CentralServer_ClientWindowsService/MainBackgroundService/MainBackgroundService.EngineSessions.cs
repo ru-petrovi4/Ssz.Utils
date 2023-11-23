@@ -73,19 +73,19 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                         break;
                 }
 
-                await SetJobProgressAsync(jobId, 100, null, null, JobStatusCodes.OK);
+                await SetJobProgressAsync(jobId, 100, null, null, StatusCodes.Good);
             }
             catch (RpcException ex)
             {
                 Logger.LogError(ex, "Launch Engine Failed.");
 
-                await SetJobProgressAsync(jobId, 100, null, ex.Status.Detail, JobStatusCodes.Aborted);
+                await SetJobProgressAsync(jobId, 100, null, ex.Status.Detail, StatusCodes.BadInvalidState);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Launch Engine Failed.");
 
-                await SetJobProgressAsync(jobId, 100, null, ex.Message, JobStatusCodes.Aborted);
+                await SetJobProgressAsync(jobId, 100, null, ex.Message, StatusCodes.BadInvalidState);
             }            
         }
 
@@ -102,7 +102,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
             if (!ConfigurationHelper.GetValue<bool>(Configuration, @"FilesStoreSyncWithCentralServer", false))
             {
-                await SetJobProgressAsync(jobId, 100, null, null, JobStatusCodes.OK);
+                await SetJobProgressAsync(jobId, 100, null, null, StatusCodes.Good);
                 return;
             }            
 
@@ -127,7 +127,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                         progressInfo.Index += 1;
                         if (progressInfo.Index % 10 == 0)
                         {
-                            await SetJobProgressAsync(progressInfo.JobId, progressInfo.GetPercent(), progressInfo.ProgressLabelResourceName, null, JobStatusCodes.OK);
+                            await SetJobProgressAsync(progressInfo.JobId, progressInfo.GetPercent(), progressInfo.ProgressLabelResourceName, null, StatusCodes.Good);
                         }
                     }
                     
@@ -146,19 +146,19 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     }
                 }
 
-                await SetJobProgressAsync(jobId, 100, null, null, JobStatusCodes.OK);
+                await SetJobProgressAsync(jobId, 100, null, null, StatusCodes.Good);
             }
             catch (RpcException ex)
             {
                 Logger.LogError(ex, "Launch Engine Failed.");
 
-                await SetJobProgressAsync(jobId, 100, null, ex.Status.Detail, JobStatusCodes.Aborted);
+                await SetJobProgressAsync(jobId, 100, null, ex.Status.Detail, StatusCodes.BadInvalidState);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Launch Engine Failed.");
 
-                await SetJobProgressAsync(jobId, 100, null, ex.Message, JobStatusCodes.Aborted);
+                await SetJobProgressAsync(jobId, 100, null, ex.Message, StatusCodes.BadInvalidState);
             }
         }
 
@@ -175,7 +175,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
             if (!ConfigurationHelper.GetValue<bool>(Configuration, @"FilesStoreSyncWithCentralServer", false))
             {
-                await SetJobProgressAsync(jobId, 100, null, null, JobStatusCodes.OK);
+                await SetJobProgressAsync(jobId, 100, null, null, StatusCodes.Good);
                 return;
             }            
 
@@ -199,7 +199,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                         progressInfo.Index += 1;
                         if (progressInfo.Index % 10 == 0)
                         {
-                            await SetJobProgressAsync(progressInfo.JobId, progressInfo.GetPercent(), progressInfo.ProgressLabelResourceName, null, JobStatusCodes.OK);
+                            await SetJobProgressAsync(progressInfo.JobId, progressInfo.GetPercent(), progressInfo.ProgressLabelResourceName, null, StatusCodes.Good);
                         }
                     }
 
@@ -215,19 +215,19 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     }
                 }                
 
-                await SetJobProgressAsync(jobId, 100, null, null, JobStatusCodes.OK);
+                await SetJobProgressAsync(jobId, 100, null, null, StatusCodes.Good);
             }
             catch (RpcException ex)
             {
                 Logger.LogError(ex, "Launch Engine Failed.");
 
-                await SetJobProgressAsync(jobId, 100, null, ex.Status.Detail, JobStatusCodes.Aborted);
+                await SetJobProgressAsync(jobId, 100, null, ex.Status.Detail, StatusCodes.BadInvalidState);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Launch Engine Failed.");
 
-                await SetJobProgressAsync(jobId, 100, null, ex.Message, JobStatusCodes.Aborted);
+                await SetJobProgressAsync(jobId, 100, null, ex.Message, StatusCodes.BadInvalidState);
             }            
         }
 

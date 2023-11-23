@@ -78,19 +78,19 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             {
                 Logger.LogError(ex, "LaunchOperator Failed.");
 
-                await SetJobProgressAsync(jobId, 100, ex.PprogressLabelResourceName, ex.ProgressDetails, JobStatusCodes.Aborted);
+                await SetJobProgressAsync(jobId, 100, ex.PprogressLabelResourceName, ex.ProgressDetails, StatusCodes.BadInvalidState);
             }
             catch (RpcException ex)
             {
                 Logger.LogError(ex, "LaunchOperator Failed.");
 
-                await SetJobProgressAsync(jobId, 100, Ssz.Dcs.CentralServer.Properties.ResourceStrings.LaunchedOperatorProgressLabel, ex.Status.Detail, JobStatusCodes.Aborted);
+                await SetJobProgressAsync(jobId, 100, Ssz.Dcs.CentralServer.Properties.ResourceStrings.LaunchedOperatorProgressLabel, ex.Status.Detail, StatusCodes.BadInvalidState);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "LaunchOperator Failed.");
 
-                await SetJobProgressAsync(jobId, 100, Ssz.Dcs.CentralServer.Properties.ResourceStrings.LaunchedOperatorProgressLabel, ex.Message, JobStatusCodes.Aborted);
+                await SetJobProgressAsync(jobId, 100, Ssz.Dcs.CentralServer.Properties.ResourceStrings.LaunchedOperatorProgressLabel, ex.Message, StatusCodes.BadInvalidState);
             }            
         }
 

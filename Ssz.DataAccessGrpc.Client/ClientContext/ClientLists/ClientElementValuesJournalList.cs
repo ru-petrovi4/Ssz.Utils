@@ -140,22 +140,22 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                 {
                     var valuesList = new List<ValueStatusTimestamp>();
 
-                    for (int index = 0; index < elementValuesJournal.DoubleValueStatusCodes.Count; index++)
+                    for (int index = 0; index < elementValuesJournal.DoubleStatusCodes.Count; index++)
                     {
                         valuesList.Add(new ValueStatusTimestamp
                         {
                             Value = new Any(elementValuesJournal.DoubleValues[index]),
-                            ValueStatusCode = elementValuesJournal.DoubleValueStatusCodes[index],
+                            StatusCode = elementValuesJournal.DoubleStatusCodes[index],
                             TimestampUtc = elementValuesJournal.DoubleTimestamps[index].ToDateTime()
                         }
                         );
                     }
-                    for (int index = 0; index < elementValuesJournal.UintValueStatusCodes.Count; index++)
+                    for (int index = 0; index < elementValuesJournal.UintStatusCodes.Count; index++)
                     {
                         valuesList.Add(new ValueStatusTimestamp
                         {
                             Value = new Any(elementValuesJournal.UintValues[index]),
-                            ValueStatusCode = elementValuesJournal.UintValueStatusCodes[index],
+                            StatusCode = elementValuesJournal.UintStatusCodes[index],
                             TimestampUtc = elementValuesJournal.UintTimestamps[index].ToDateTime()
                         }
                         );

@@ -64,7 +64,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     progressInfo.Index += 1;
                     if (progressInfo.Index % 10 == 0)
                     {
-                        await SetJobProgressAsync(progressInfo.JobId, progressInfo.GetPercent(), progressInfo.ProgressLabelResourceName, null, JobStatusCodes.OK);
+                        await SetJobProgressAsync(progressInfo.JobId, progressInfo.GetPercent(), progressInfo.ProgressLabelResourceName, null, StatusCodes.Good);
                     }
                 }                
 
@@ -297,13 +297,13 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 DatasCollection = dsFilesStoreFileDatasCollection
             };
 
-            uint jobStatusCode = await await UtilityDataAccessProvider.LongrunningPassthroughAsync("", LongrunningPassthroughConstants.SaveFiles,
+            uint statusCode = await await UtilityDataAccessProvider.LongrunningPassthroughAsync("", LongrunningPassthroughConstants.SaveFiles,
                 SerializationHelper.GetOwnedData(request), null);
 
-            return jobStatusCode;
+            return statusCode;
         }
 
-        private async Task SetJobProgressAsync(string jobId, uint progressPercent, string? progressLabelResourceName, string? progressDetails, uint jobStatusCode)
+        private async Task SetJobProgressAsync(string jobId, uint progressPercent, string? progressLabelResourceName, string? progressDetails, uint statusCode)
         {
             if (jobId == @"") return;
             try
@@ -318,7 +318,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     ProgressPercent = progressPercent,
                     ProgressLabelResourceName = progressLabelResourceName ?? @"",
                     ProgressDetails = progressDetails ?? "",
-                    JobStatusCode = jobStatusCode
+                    StatusCode = statusCode
                 };
                 var reply = await sessionsManagementClient.NotifyJobProgressAsync(request);                
             }

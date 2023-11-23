@@ -63,7 +63,7 @@ namespace Ssz.Dcs.CentralServer
         }
 
         /// <summary>
-        ///     Reruns Status Code <see cref="Ssz.Utils.JobStatusCodes"/>
+        ///     Reruns Status Code <see cref="Ssz.Utils.StatusCodes"/>
         /// </summary>
         /// <param name="listItem"></param>
         /// <param name="value"></param>
@@ -80,7 +80,7 @@ namespace Ssz.Dcs.CentralServer
 
             _utilityItemsDoWorkNeeded = true;
 
-            return JobStatusCodes.OK;
+            return StatusCodes.Good;
         }
 
         #endregion
@@ -233,9 +233,9 @@ namespace Ssz.Dcs.CentralServer
             public void UpdateValue(string value, DateTime nowUtc)
             {
                 bool updated = false;
-                if (ValueStatusCodes.IsUncertain(_valueStatusTimestamp.ValueStatusCode))
+                if (StatusCodes.IsUncertain(_valueStatusTimestamp.StatusCode))
                 {
-                    _valueStatusTimestamp = new ValueStatusTimestamp(new Any(value), ValueStatusCodes.Good, nowUtc);
+                    _valueStatusTimestamp = new ValueStatusTimestamp(new Any(value), StatusCodes.Good, nowUtc);
                     updated = true;
                 }
                 else
@@ -260,7 +260,7 @@ namespace Ssz.Dcs.CentralServer
 
             #region private fields
 
-            private ValueStatusTimestamp _valueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain };
+            private ValueStatusTimestamp _valueStatusTimestamp = new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain };
 
             #endregion
         }

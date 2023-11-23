@@ -124,7 +124,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                         {
                             listItem.ServerAlias = r.ServerAlias;
                             listItem.AddItemResultInfo = r.GetResultInfo();
-                            if (r.StatusCode == JobStatusCodes.OK)
+                            if (StatusCodes.IsGood(r.StatusCode))
                             {
                                 listItem.IsInServerList = true;                                
                             }
@@ -218,7 +218,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                                 else                                    
                                 {
                                     // otherwise the value was not deleted from the server, so add it to the list to return
-                                    //removedListItem.AddItemJobStatusCode = aliasResult.StatusCode;
+                                    //removedListItem.AddItemStatusCode = aliasResult.StatusCode;
                                     erroredDataAccessGrpcValuesToReturn.Add(removedListItem);
                                 }
                             }

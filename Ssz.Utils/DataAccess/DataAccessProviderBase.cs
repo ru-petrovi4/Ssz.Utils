@@ -225,7 +225,7 @@ namespace Ssz.Utils.DataAccess
                 try
                 {
                     callbackDispatcher.BeginInvoke(ct =>
-                        valueSubscription.Update(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.BadNodeIdUnknown }));
+                        valueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.BadNodeIdUnknown }));
                 }
                 catch (Exception)
                 {
@@ -241,7 +241,7 @@ namespace Ssz.Utils.DataAccess
         }
 
         /// <summary>
-        ///     Returns JobStatusCode <see cref="JobStatusCodes"/>
+        ///     Returns StatusCode <see cref="StatusCodes"/>
         /// </summary>
         /// <param name="recipientId"></param>
         /// <param name="passthroughName"></param>
@@ -250,7 +250,7 @@ namespace Ssz.Utils.DataAccess
         /// <returns></returns>
         public virtual Task<Task<uint>> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend, Action<LongrunningPassthroughCallback>? progressCallbackAction)
         {            
-            return Task.FromResult(Task.FromResult(JobStatusCodes.OK));
+            return Task.FromResult(Task.FromResult(StatusCodes.Good));
         }
 
         /// <summary>
@@ -293,7 +293,7 @@ namespace Ssz.Utils.DataAccess
         /// <returns></returns>
         public virtual Task<ResultInfo> WriteAsync(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
         {
-            return Task.FromResult(new ResultInfo { StatusCode = JobStatusCodes.InvalidArgument });
+            return Task.FromResult(new ResultInfo { StatusCode = StatusCodes.BadInvalidArgument });
         }
 
         /// <summary>

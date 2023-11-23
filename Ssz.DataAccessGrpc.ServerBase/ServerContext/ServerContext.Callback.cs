@@ -257,7 +257,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                                         ProgressPercent = longrunningPassthroughCallbackMessage.ProgressPercent,
                                         ProgressLabel = longrunningPassthroughCallbackMessage.ProgressLabel ?? @"",
                                         ProgressDetails = longrunningPassthroughCallbackMessage.ProgressDetails ?? @"",
-                                        JobStatusCode = longrunningPassthroughCallbackMessage.JobStatusCode,
+                                        StatusCode = longrunningPassthroughCallbackMessage.StatusCode,
                                     }
                                 };
                                 await _responseStream.WriteAsync(callbackMessage);
@@ -337,20 +337,20 @@ namespace Ssz.DataAccessGrpc.ServerBase
                                     fullElementValuesCollection.DoubleAliases.Add(alias);
                                     fullElementValuesCollection.DoubleValues.Add(valueStatusTimestamp.Value.StorageDouble);
                                     fullElementValuesCollection.DoubleValueTypeCodes.Add((uint)valueStatusTimestamp.Value.ValueTypeCode);
-                                    fullElementValuesCollection.DoubleValueStatusCodes.Add(valueStatusTimestamp.ValueStatusCode);
+                                    fullElementValuesCollection.DoubleStatusCodes.Add(valueStatusTimestamp.StatusCode);
                                     fullElementValuesCollection.DoubleTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                    
                                     break;
                                 case Ssz.Utils.Any.StorageType.UInt32:
                                     fullElementValuesCollection.UintAliases.Add(alias);
                                     fullElementValuesCollection.UintValues.Add(valueStatusTimestamp.Value.StorageUInt32);
                                     fullElementValuesCollection.UintValueTypeCodes.Add((uint)valueStatusTimestamp.Value.ValueTypeCode);
-                                    fullElementValuesCollection.UintValueStatusCodes.Add(valueStatusTimestamp.ValueStatusCode);
+                                    fullElementValuesCollection.UintStatusCodes.Add(valueStatusTimestamp.StatusCode);
                                     fullElementValuesCollection.UintTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                    
                                     break;
                                 case Ssz.Utils.Any.StorageType.Object:
                                     fullElementValuesCollection.ObjectAliases.Add(alias);
                                     writer.WriteObject(valueStatusTimestamp.Value.StorageObject);
-                                    fullElementValuesCollection.ObjectValueStatusCodes.Add(valueStatusTimestamp.ValueStatusCode);
+                                    fullElementValuesCollection.ObjectStatusCodes.Add(valueStatusTimestamp.StatusCode);
                                     fullElementValuesCollection.ObjectTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                    
                                     break;
                             }

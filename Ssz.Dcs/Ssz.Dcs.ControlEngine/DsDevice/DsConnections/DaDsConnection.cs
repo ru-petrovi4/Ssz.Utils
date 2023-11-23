@@ -56,7 +56,7 @@ namespace Ssz.Dcs.ControlEngine
         /// <summary>
         ///     Runtime field.
         /// </summary>
-        public ValueStatusTimestamp ValueStatusTimestamp { get; private set; } = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain };
+        public ValueStatusTimestamp ValueStatusTimestamp { get; private set; } = new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain };
 
         public void Update(ValueStatusTimestamp valueStatusTimestamp)
         {
@@ -123,16 +123,16 @@ namespace Ssz.Dcs.ControlEngine
         }
 
         /// <summary>
-        ///     Returns Status Code (see Ssz.Utils.JobStatusCodes)
+        ///     Returns Status Code (see Ssz.Utils.StatusCodes)
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public override async Task<ResultInfo> SetValueAsync(Any value)
         {
             if (!Subscribe())
-                return new ResultInfo { StatusCode = JobStatusCodes.FailedPrecondition };
+                return new ResultInfo { StatusCode = StatusCodes.BadInvalidState };
 
-            return await ParentModule.Device.ProcessDataAccessProvider.WriteAsync(this, new ValueStatusTimestamp(value, ValueStatusCodes.Good, DateTime.UtcNow), null);                       
+            return await ParentModule.Device.ProcessDataAccessProvider.WriteAsync(this, new ValueStatusTimestamp(value, StatusCodes.Good, DateTime.UtcNow), null);                       
         }
 
         #endregion

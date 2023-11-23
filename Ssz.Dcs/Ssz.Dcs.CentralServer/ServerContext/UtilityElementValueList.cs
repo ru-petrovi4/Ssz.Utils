@@ -111,7 +111,7 @@ namespace Ssz.Dcs.CentralServer
                 if (valueStatusTimestamp is not null)
                 {
                     var statusCode = ((ServerWorker)ServerContext.ServerWorker).WriteUtilityElementValueListItem(item, valueStatusTimestamp.Value.Value);
-                    if (statusCode != JobStatusCodes.OK)
+                    if (!StatusCodes.IsGood(statusCode))
                         failedAliasResults.Add(new AliasResult
                             {
                                 StatusCode = statusCode,

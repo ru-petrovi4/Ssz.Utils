@@ -27,7 +27,7 @@ namespace Ssz.Dcs.CentralServer
             uint progressPercent, 
             string progressLabelResourceName,
             string progressDetails,
-            uint jobStatusCode)
+            uint statusCode)
         {
             JobProgress? jobProgress = _jobProgressesCollection.TryGetValue(jobId);
             if (jobProgress is null)
@@ -36,7 +36,7 @@ namespace Ssz.Dcs.CentralServer
             jobProgress.ForTimeout_LastDateTimeUtc = DateTime.UtcNow;
             jobProgress.ProgressPercent = progressPercent;
             jobProgress.ProgressLabelResourceName = progressLabelResourceName;
-            jobProgress.JobStatusCode = jobStatusCode;
+            jobProgress.StatusCode = statusCode;
 
             foreach (ServerContext serverContext in jobProgress.ProgressSubscribers)
             {   
@@ -57,11 +57,11 @@ namespace Ssz.Dcs.CentralServer
                     ProgressPercent = progressPercent,
                     ProgressLabel = progressLabel,
                     ProgressDetails = progressDetails,
-                    JobStatusCode = jobStatusCode
+                    StatusCode = statusCode
                 });
             }
 
-            if (jobStatusCode != JobStatusCodes.OK || progressPercent == 100)
+            if (!StatusCodes.IsGood(statusCode) || progressPercent == 100)
             {
                 jobProgress.JobCompletedDateTimeUtc = DateTime.UtcNow;
                 jobProgress.ProgressSubscribers.Clear();
@@ -90,7 +90,7 @@ namespace Ssz.Dcs.CentralServer
                     JobId = jobId,
                     ProgressPercent = 100,
                     ProgressLabel = Resources.ResourceManager.GetString(ResourceStrings.OperationCompleted_ProgressLabel, serverContext.CultureInfo),
-                    JobStatusCode = JobStatusCodes.OK
+                    StatusCode = StatusCodes.Good
                 });
             }
             else
@@ -101,7 +101,7 @@ namespace Ssz.Dcs.CentralServer
                     JobId = jobId,
                     ProgressPercent = jobProgress.ProgressPercent,
                     ProgressLabel = Resources.ResourceManager.GetString(jobProgress.ProgressLabelResourceName, serverContext.CultureInfo),
-                    JobStatusCode = jobProgress.JobStatusCode
+                    StatusCode = jobProgress.StatusCode
                 });
             }
             return jobProgress;
@@ -151,7 +151,7 @@ namespace Ssz.Dcs.CentralServer
             /// <summary>
             ///     Current value
             /// </summary>
-            public uint JobStatusCode { get; set; }
+            public uint StatusCode { get; set; }
 
             /// <summary>
             ///     Time for inactivity time-out check.

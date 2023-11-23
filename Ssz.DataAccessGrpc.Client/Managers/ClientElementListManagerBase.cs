@@ -246,7 +246,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                         {
                             if (dataAccessGrpcListItemWrapper.FailedAddItemResultInfo is null)
                             {
-                                dataAccessGrpcListItemWrapper.FailedAddItemResultInfo = ResultInfo.UnknownResultInfo;
+                                dataAccessGrpcListItemWrapper.FailedAddItemResultInfo = ResultInfo.UncertainResultInfo;
                                 foreach (ClientObjectInfo clientObjectInfo in dataAccessGrpcListItemWrapper.ClientObjectInfosCollection)
                                 {                                    
                                     clientObjectInfo.NotifyClientObj_ValueStatusTimestamp = true;

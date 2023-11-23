@@ -40,20 +40,20 @@ namespace Ssz.Dcs.CentralServer.ServerListItems
 
         public void ValueSubscriptionsOnValueChanged()
         {
-            if (ValueSubscriptionsCollection.All(vs => ValueStatusCodes.IsBad(vs.ValueStatusTimestamp.ValueStatusCode)))
+            if (ValueSubscriptionsCollection.All(vs => StatusCodes.IsBad(vs.ValueStatusTimestamp.StatusCode)))
             {
-                UpdateValueStatusTimestamp(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Bad });
+                UpdateValueStatusTimestamp(new ValueStatusTimestamp { StatusCode = StatusCodes.Bad });
             }
             else
             {
-                ValueSubscription? valueSubscription = ValueSubscriptionsCollection.FirstOrDefault(vs => ValueStatusCodes.IsGood(vs.ValueStatusTimestamp.ValueStatusCode));
+                ValueSubscription? valueSubscription = ValueSubscriptionsCollection.FirstOrDefault(vs => StatusCodes.IsGood(vs.ValueStatusTimestamp.StatusCode));
                 if (valueSubscription is not null)
                 {
                     UpdateValueStatusTimestamp(valueSubscription.ValueStatusTimestamp);
                 }
                 else
                 {
-                    UpdateValueStatusTimestamp(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain });
+                    UpdateValueStatusTimestamp(new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain });
                 }
             }
         }

@@ -219,7 +219,7 @@ namespace Ssz.DataAccessGrpc.Client
             var jobId = longrunningPassthroughCallback.JobId ?? @"";
             if (_longrunningPassthroughRequestsCollection.TryGetValue(jobId, out List<LongrunningPassthroughRequest>? longrunningPassthroughRequestsList))
             {
-                var jobStatusCode = longrunningPassthroughCallback.JobStatusCode;
+                var statusCode = longrunningPassthroughCallback.StatusCode;
 
                 foreach (LongrunningPassthroughRequest longrunningPassthroughRequest in longrunningPassthroughRequestsList)
                 {
@@ -232,18 +232,18 @@ namespace Ssz.DataAccessGrpc.Client
                             ProgressPercent = longrunningPassthroughCallback.ProgressPercent,
                             ProgressLabel = longrunningPassthroughCallback.ProgressLabel ?? @"",
                             ProgressDetails = longrunningPassthroughCallback.ProgressDetails ?? @"",
-                            JobStatusCode = jobStatusCode
+                            StatusCode = statusCode
                         });
                     }
 
-                    if (jobStatusCode != JobStatusCodes.OK ||
+                    if (!StatusCodes.IsGood(statusCode) ||
                         longrunningPassthroughCallback.ProgressPercent == 100)
                     {
-                        longrunningPassthroughRequest.TaskCompletionSource.SetResult(jobStatusCode);
+                        longrunningPassthroughRequest.TaskCompletionSource.SetResult(statusCode);
                     }
                 }
 
-                if (jobStatusCode != JobStatusCodes.OK ||
+                if (!StatusCodes.IsGood(statusCode) ||
                         longrunningPassthroughCallback.ProgressPercent == 100)
                 {
                     _longrunningPassthroughRequestsCollection.Remove(jobId);

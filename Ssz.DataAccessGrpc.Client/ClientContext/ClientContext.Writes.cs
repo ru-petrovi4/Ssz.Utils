@@ -154,7 +154,7 @@ namespace Ssz.DataAccessGrpc.Client
         }
 
         /// <summary>
-        ///     Returns JobStatusCode
+        ///     Returns StatusCode
         /// </summary>
         /// <param name="recipientId"></param>
         /// <param name="passthroughName"></param>

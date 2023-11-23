@@ -112,7 +112,7 @@ namespace Ssz.Dcs.CentralServer
                         request.ProgressPercent,
                         request.ProgressLabelResourceName ?? @"",
                         request.ProgressDetails ?? @"",
-                        request.JobStatusCode);
+                        request.StatusCode);
                     var reply = new NotifyJobProgressReply
                     {
                     };

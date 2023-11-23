@@ -52,19 +52,19 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
                 LaunchInstructor(processModelingSessionId, workingDirectories.ProcessDirectoryInfo, workingDirectories.BinDirectoryInfo);
 
-                await SetJobProgressAsync(jobId, InstructorLaunchingMaxPercent, Ssz.Dcs.CentralServer.Properties.ResourceStrings.LaunchedInstructorProgressLabel, null, JobStatusCodes.OK);
+                await SetJobProgressAsync(jobId, InstructorLaunchingMaxPercent, Ssz.Dcs.CentralServer.Properties.ResourceStrings.LaunchedInstructorProgressLabel, null, StatusCodes.Good);
             }
             catch (RpcException ex)
             {
                 Logger.LogError(ex, "Launch Engine Failed.");
 
-                await SetJobProgressAsync(jobId, 100, null, ex.Status.Detail, JobStatusCodes.Aborted);
+                await SetJobProgressAsync(jobId, 100, null, ex.Status.Detail, StatusCodes.BadInvalidState);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Launch Engine Failed.");
 
-                await SetJobProgressAsync(jobId, 100, null, ex.Message, JobStatusCodes.Aborted);
+                await SetJobProgressAsync(jobId, 100, null, ex.Message, StatusCodes.BadInvalidState);
             }            
         }
 

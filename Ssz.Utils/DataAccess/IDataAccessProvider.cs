@@ -131,7 +131,7 @@ namespace Ssz.Utils.DataAccess
         Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend);
 
         /// <summary>
-        ///     Returns JobStatusCode <see cref="JobStatusCodes"/>
+        ///     Returns StatusCode <see cref="StatusCodes"/>
         ///     No throws.
         /// </summary>
         /// <param name="recipientId"></param>

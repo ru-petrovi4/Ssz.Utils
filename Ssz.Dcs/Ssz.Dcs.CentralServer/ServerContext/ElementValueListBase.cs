@@ -116,7 +116,7 @@ namespace Ssz.Dcs.CentralServer
                         item.PendingWriteValueStatusTimestamp = new ValueStatusTimestamp
                             {
                                 Value = new Any(elementValuesCollection.DoubleValues[index], (TypeCode)elementValuesCollection.DoubleValueTypeCodes[index], false),
-                                ValueStatusCode = elementValuesCollection.DoubleValueStatusCodes[index],
+                                StatusCode = elementValuesCollection.DoubleStatusCodes[index],
                                 TimestampUtc = elementValuesCollection.DoubleTimestamps[index].ToDateTime()
                             };
                         items.Add(item);
@@ -131,7 +131,7 @@ namespace Ssz.Dcs.CentralServer
                         item.PendingWriteValueStatusTimestamp = new ValueStatusTimestamp
                         {
                             Value = new Any(elementValuesCollection.UintValues[index], (TypeCode)elementValuesCollection.UintValueTypeCodes[index], false),
-                            ValueStatusCode = elementValuesCollection.UintValueStatusCodes[index],
+                            StatusCode = elementValuesCollection.UintStatusCodes[index],
                             TimestampUtc = elementValuesCollection.UintTimestamps[index].ToDateTime()
                         };
                         items.Add(item);
@@ -152,7 +152,7 @@ namespace Ssz.Dcs.CentralServer
                                 item.PendingWriteValueStatusTimestamp = new ValueStatusTimestamp
                                 {
                                     Value = new Any(objectValue),
-                                    ValueStatusCode = elementValuesCollection.ObjectValueStatusCodes[index],
+                                    StatusCode = elementValuesCollection.ObjectStatusCodes[index],
                                     TimestampUtc = elementValuesCollection.ObjectTimestamps[index].ToDateTime()
                                 };
                                 items.Add(item);

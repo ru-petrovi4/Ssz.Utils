@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Ssz.Utils.DataAccess
+namespace Ssz.Utils
 {
-    public class ValueStatusCodes
+    public class StatusCodes
     {
         /// <summary>
         /// The operation failed.
@@ -1356,10 +1356,10 @@ namespace Ssz.Utils.DataAccess
         /// </summary>
         public const uint BadDataSetIdInvalid = 0x80E70000;
 
-        public static bool IsGood(uint valueStatusCode) =>       (valueStatusCode & 0b11000000000000000000000000000000) == 0;
+        public static bool IsGood(uint statusCode) =>       (statusCode & 0b11000000000000000000000000000000) == 0;
 
-        public static bool IsBad(uint valueStatusCode) =>        (valueStatusCode & 0b10000000000000000000000000000000) != 0;
+        public static bool IsBad(uint statusCode) =>        (statusCode & 0b10000000000000000000000000000000) != 0;
 
-        public static bool IsUncertain(uint valueStatusCode) =>  (valueStatusCode & 0b01000000000000000000000000000000) != 0;
+        public static bool IsUncertain(uint statusCode) =>  (statusCode & 0b01000000000000000000000000000000) != 0;
     }
 }

@@ -116,9 +116,9 @@ namespace Ssz.Dcs.ControlEngine
             public void UpdateValue(string value, DateTime nowUtc)
             {
                 bool updated = false;
-                if (ValueStatusCodes.IsUncertain(_valueStatusTimestamp.ValueStatusCode))
+                if (StatusCodes.IsUncertain(_valueStatusTimestamp.StatusCode))
                 {
-                    _valueStatusTimestamp = new ValueStatusTimestamp(new Any(value), ValueStatusCodes.Good, nowUtc);
+                    _valueStatusTimestamp = new ValueStatusTimestamp(new Any(value), StatusCodes.Good, nowUtc);
                     updated = true;
                 }
                 else
@@ -143,7 +143,7 @@ namespace Ssz.Dcs.ControlEngine
 
             #region private fields
 
-            private ValueStatusTimestamp _valueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain };
+            private ValueStatusTimestamp _valueStatusTimestamp = new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain };
 
             #endregion
         }

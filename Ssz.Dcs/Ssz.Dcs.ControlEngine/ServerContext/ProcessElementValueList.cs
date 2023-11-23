@@ -56,7 +56,7 @@ namespace Ssz.Dcs.ControlEngine
                             item.Connection.Dispose();
                             item.Connection = null;
                         }
-                        item.UpdateValueStatusTimestamp(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain });
+                        item.UpdateValueStatusTimestamp(new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain });
                     }
                 }
                 else
@@ -70,7 +70,7 @@ namespace Ssz.Dcs.ControlEngine
                         }
                         if (item.Connection is not null)
                         {
-                            item.UpdateValueStatusTimestamp(new ValueStatusTimestamp(item.Connection.GetValue(), ValueStatusCodes.Good, nowUtc));
+                            item.UpdateValueStatusTimestamp(new ValueStatusTimestamp(item.Connection.GetValue(), StatusCodes.Good, nowUtc));
                         }                        
                     }
                 }                
@@ -128,7 +128,7 @@ namespace Ssz.Dcs.ControlEngine
             {
                 results.Add(new AliasResult
                 {
-                    StatusCode = JobStatusCodes.OK,
+                    StatusCode = StatusCodes.Good,
                     ServerAlias = item.ServerAlias,
                     ClientAlias = item.ClientAlias
                 });
@@ -159,7 +159,7 @@ namespace Ssz.Dcs.ControlEngine
                 {
                     resultsList.Add(new AliasResult
                         {
-                            StatusCode = JobStatusCodes.Unavailable,
+                            StatusCode = StatusCodes.Uncertain,
                             ServerAlias = item.ServerAlias,
                             ClientAlias = item.ClientAlias
                         });
@@ -184,7 +184,7 @@ namespace Ssz.Dcs.ControlEngine
                     if (valueStatusTimestamp is not null)
                     {
                         var resultInfo = await item.Connection.SetValueAsync(valueStatusTimestamp.Value.Value);
-                        if (resultInfo.StatusCode != JobStatusCodes.OK)
+                        if (!StatusCodes.IsGood(resultInfo.StatusCode))
                             resultsList.Add(new AliasResult
                                 {
                                     StatusCode = resultInfo.StatusCode,
@@ -233,7 +233,7 @@ namespace Ssz.Dcs.ControlEngine
             }
             if (item.InvalidElementId)
             {
-                item.UpdateValueStatusTimestamp(new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.BadNodeIdUnknown });
+                item.UpdateValueStatusTimestamp(new ValueStatusTimestamp { StatusCode = StatusCodes.BadNodeIdUnknown });
             }
         }
 

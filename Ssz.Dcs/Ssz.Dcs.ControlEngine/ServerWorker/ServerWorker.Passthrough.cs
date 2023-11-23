@@ -82,7 +82,7 @@ namespace Ssz.Dcs.ControlEngine
                 {
                     JobId = jobId,
                     ProgressPercent = 100,
-                    JobStatusCode = JobStatusCodes.OK
+                    StatusCode = StatusCodes.Good
                 });
             }
             catch (Exception ex)
@@ -92,7 +92,7 @@ namespace Ssz.Dcs.ControlEngine
                 {
                     JobId = jobId,
                     ProgressPercent = 100,
-                    JobStatusCode = JobStatusCodes.InvalidArgument
+                    StatusCode = StatusCodes.BadInvalidArgument
                 });
             }
         }
@@ -112,7 +112,7 @@ namespace Ssz.Dcs.ControlEngine
                 {
                     JobId = jobId,
                     ProgressPercent = 100,
-                    JobStatusCode = JobStatusCodes.OK
+                    StatusCode = StatusCodes.Good
                 });
             }
             catch (Exception ex)
@@ -122,7 +122,7 @@ namespace Ssz.Dcs.ControlEngine
                 {
                     JobId = jobId,
                     ProgressPercent = 100,
-                    JobStatusCode = JobStatusCodes.InvalidArgument
+                    StatusCode = StatusCodes.BadInvalidArgument
                 });
             }            
         }        
@@ -139,7 +139,7 @@ namespace Ssz.Dcs.ControlEngine
                 {
                     JobId = jobId,
                     ProgressPercent = 100,
-                    JobStatusCode = JobStatusCodes.OK
+                    StatusCode = StatusCodes.Good
                 });
             }
             catch (Exception ex)
@@ -149,7 +149,7 @@ namespace Ssz.Dcs.ControlEngine
                 {
                     JobId = jobId,
                     ProgressPercent = 100,
-                    JobStatusCode = JobStatusCodes.InvalidArgument
+                    StatusCode = StatusCodes.BadInvalidArgument
                 });
             }            
         }

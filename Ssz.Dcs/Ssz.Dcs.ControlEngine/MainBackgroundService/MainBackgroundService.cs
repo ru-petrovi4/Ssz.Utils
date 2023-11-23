@@ -106,7 +106,7 @@ namespace Ssz.Dcs.ControlEngine
                     nowUtc - _processDataAccessProvider.LastSuccessfulConnectionDateTimeUtc > DataAccessConstants.UnrecoverableTimeout)
                     break;
 
-                //if (modelTimeValueSubscription.ValueStatusTimestamp.ValueStatusCode == ValueStatusCode.Good)
+                //if (modelTimeValueSubscription.ValueStatusTimestamp.StatusCode == StatusCode.Good)
                 //{
                 //    int modelTimeSeconds = modelTimeValueSubscription.ValueStatusTimestamp.Value.ValueAsInt32(false);
                 //    if (modelTimeSeconds > 0)

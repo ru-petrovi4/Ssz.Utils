@@ -115,17 +115,17 @@ namespace Ssz.Dcs.CentralServer
                                     {
                                         case Ssz.Utils.Any.StorageType.Double:
                                             elementValuesJournal.DoubleValues.Add(vst.Value.StorageDouble);
-                                            elementValuesJournal.DoubleValueStatusCodes.Add(vst.ValueStatusCode);
+                                            elementValuesJournal.DoubleStatusCodes.Add(vst.StatusCode);
                                             elementValuesJournal.DoubleTimestamps.Add(Ssz.DataAccessGrpc.ServerBase.DateTimeHelper.ConvertToTimestamp(vst.TimestampUtc));
                                             break;
                                         case Ssz.Utils.Any.StorageType.UInt32:
                                             elementValuesJournal.UintValues.Add(vst.Value.StorageUInt32);
-                                            elementValuesJournal.UintValueStatusCodes.Add(vst.ValueStatusCode);
+                                            elementValuesJournal.UintStatusCodes.Add(vst.StatusCode);
                                             elementValuesJournal.UintTimestamps.Add(Ssz.DataAccessGrpc.ServerBase.DateTimeHelper.ConvertToTimestamp(vst.TimestampUtc));
                                             break;
                                         case Ssz.Utils.Any.StorageType.Object:
                                             writer.WriteObject(vst.Value.StorageObject);
-                                            elementValuesJournal.ObjectValueStatusCodes.Add(vst.ValueStatusCode);
+                                            elementValuesJournal.ObjectStatusCodes.Add(vst.StatusCode);
                                             elementValuesJournal.ObjectTimestamps.Add(Ssz.DataAccessGrpc.ServerBase.DateTimeHelper.ConvertToTimestamp(vst.TimestampUtc));
                                             break;
                                     }

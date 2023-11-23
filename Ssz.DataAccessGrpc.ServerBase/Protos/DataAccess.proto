@@ -78,7 +78,7 @@ message LongrunningPassthroughCallback {
   uint32 progress_percent = 2;
   string progress_label = 3;
   string progress_details = 4;
-  uint32 job_status_code = 5;
+  uint32 status_code = 5;
 }
 
 message CallbackMessage {
@@ -198,18 +198,18 @@ message ElementValuesCollection {
   repeated fixed32 double_aliases = 3;
   repeated double double_values = 4;
   repeated uint32 double_value_type_codes = 5;
-  repeated uint32 double_value_status_codes = 6;
+  repeated uint32 double_status_codes = 6;
   repeated google.protobuf.Timestamp double_timestamps = 7;  
 
   repeated fixed32 uint_aliases = 8;
   repeated uint32 uint_values = 9;
   repeated uint32 uint_value_type_codes = 10;
-  repeated uint32 uint_value_status_codes = 11;
+  repeated uint32 uint_status_codes = 11;
   repeated google.protobuf.Timestamp uint_timestamps = 12;  
 
   repeated fixed32 object_aliases = 13;
   bytes object_values = 14;  
-  repeated uint32 object_value_status_codes = 15;
+  repeated uint32 object_status_codes = 15;
   repeated google.protobuf.Timestamp object_timestamps = 16;    
 }
 
@@ -300,15 +300,15 @@ message ElementValuesJournalsCollection {
 
 message ElementValuesJournal {
   repeated double double_values = 1;
-  repeated uint32 double_value_status_codes = 2;
+  repeated uint32 double_status_codes = 2;
   repeated google.protobuf.Timestamp double_timestamps = 3;  
   
   repeated uint32 uint_values = 4;
-  repeated uint32 uint_value_status_codes = 5;
+  repeated uint32 uint_status_codes = 5;
   repeated google.protobuf.Timestamp uint_timestamps = 6;  
 
   bytes object_values = 7;
-  repeated uint32 object_value_status_codes = 8;
+  repeated uint32 object_status_codes = 8;
   repeated google.protobuf.Timestamp object_timestamps = 9;  
 }
 

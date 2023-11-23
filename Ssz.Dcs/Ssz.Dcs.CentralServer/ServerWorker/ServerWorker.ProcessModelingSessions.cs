@@ -232,7 +232,7 @@ namespace Ssz.Dcs.CentralServer
                         JobId = jobId,
                         ProgressPercent = 100,
                         ProgressLabel = Resources.ResourceManager.GetString(ResourceStrings.OperationCompleted_ProgressLabel, serverContext.CultureInfo),
-                        JobStatusCode = JobStatusCodes.OK
+                        StatusCode = StatusCodes.Good
                     });
                 }
                 else
@@ -353,7 +353,7 @@ namespace Ssz.Dcs.CentralServer
                 JobId = jobId,
                 ProgressPercent = 100,
                 ProgressLabel = Resources.ResourceManager.GetString(ResourceStrings.OperationCompleted_ProgressLabel, serverContext.CultureInfo),
-                JobStatusCode = JobStatusCodes.OK
+                StatusCode = StatusCodes.Good
             });
         }
 
@@ -471,7 +471,7 @@ namespace Ssz.Dcs.CentralServer
                 _processTimeSecondsSubscription = new ValueSubscription(dataAccessProvider, "SYSTEM.MODEL_TIME",
                         (sender, args) =>
                         {
-                            if (ValueStatusCodes.IsGood(args.NewValueStatusTimestamp.ValueStatusCode))
+                            if (StatusCodes.IsGood(args.NewValueStatusTimestamp.StatusCode))
                             {
                                 ProcessTimeSeconds = args.NewValueStatusTimestamp.Value.ValueAsUInt64(false);
                             }

@@ -28,7 +28,7 @@ namespace Ssz.Dcs.CentralServer.ServerListItems
 
 //public void UpdateIfChanged(Any value)
 //{
-//    if (ValueStatusTimestamp.StatusCode == StatusCodes.Unknown)
+//    if (ValueStatusTimestamp.StatusCode == StatusCodes.Uncertain)
 //    {
 //        ValueStatusTimestamp.Value = value;
 //        ValueStatusTimestamp.StatusCode = StatusCodes.Good;

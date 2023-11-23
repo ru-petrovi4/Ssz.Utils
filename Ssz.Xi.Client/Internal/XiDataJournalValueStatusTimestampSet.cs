@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using Ssz.Xi.Client.Api;
 using Ssz.Xi.Client.Internal.ListItems;
@@ -213,10 +214,10 @@ namespace Ssz.Xi.Client.Internal
             {
                 for (int idx = 0; idx < journalDataValues.HistoricalValues.DoubleStatusCodes.Length; idx++)
                 {
-                    var xiValueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain };
+                    var xiValueStatusTimestamp = new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain };
                     xiValueStatusTimestamp.Value.Set(journalDataValues.HistoricalValues.DoubleValues[idx],
                         _owningXiDataJournalListItem.ValueTypeCode, false);
-                    xiValueStatusTimestamp.ValueStatusCode = journalDataValues.HistoricalValues.DoubleStatusCodes[idx];
+                    xiValueStatusTimestamp.StatusCode = journalDataValues.HistoricalValues.DoubleStatusCodes[idx];
                     xiValueStatusTimestamp.TimestampUtc = journalDataValues.HistoricalValues.DoubleTimeStamps[idx];
 
                     _xiValueStatusTimestampsList.Add(xiValueStatusTimestamp);
@@ -228,10 +229,10 @@ namespace Ssz.Xi.Client.Internal
             {
                 for (int idx = 0; idx < journalDataValues.HistoricalValues.UintStatusCodes.Length; idx++)
                 {
-                    var xiValueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain };
+                    var xiValueStatusTimestamp = new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain };
                     xiValueStatusTimestamp.Value.Set(journalDataValues.HistoricalValues.UintValues[idx],
                         _owningXiDataJournalListItem.ValueTypeCode, false);
-                    xiValueStatusTimestamp.ValueStatusCode = journalDataValues.HistoricalValues.UintStatusCodes[idx];
+                    xiValueStatusTimestamp.StatusCode = journalDataValues.HistoricalValues.UintStatusCodes[idx];
                     xiValueStatusTimestamp.TimestampUtc = journalDataValues.HistoricalValues.UintTimeStamps[idx];
 
                     _xiValueStatusTimestampsList.Add(xiValueStatusTimestamp);
@@ -243,9 +244,9 @@ namespace Ssz.Xi.Client.Internal
             {
                 for (int idx = 0; idx < journalDataValues.HistoricalValues.ObjectStatusCodes.Length; idx++)
                 {
-                    var xiValueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain };
+                    var xiValueStatusTimestamp = new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain };
                     xiValueStatusTimestamp.Value.Set(journalDataValues.HistoricalValues.ObjectValues[idx]);
-                    xiValueStatusTimestamp.ValueStatusCode = journalDataValues.HistoricalValues.ObjectStatusCodes[idx];
+                    xiValueStatusTimestamp.StatusCode = journalDataValues.HistoricalValues.ObjectStatusCodes[idx];
                     xiValueStatusTimestamp.TimestampUtc = journalDataValues.HistoricalValues.ObjectTimeStamps[idx];
 
                     _xiValueStatusTimestampsList.Add(xiValueStatusTimestamp);

@@ -219,7 +219,7 @@ namespace Ssz.Dcs.CentralServer
                 {
                     try
                     {
-                        if (!JobStatusCodes.IsOK(await await task))
+                        if (!StatusCodes.IsGood(await await task))
                             allSucceeded = false;
                     }
                     catch
@@ -234,7 +234,7 @@ namespace Ssz.Dcs.CentralServer
                         JobId = jobId,
                         ProgressPercent = 100,
                         ProgressLabel = Resources.ResourceManager.GetString(Properties.ResourceStrings.OperationError_ProgressLabel, serverContext.CultureInfo),
-                        JobStatusCode = JobStatusCodes.InvalidArgument
+                        StatusCode = StatusCodes.BadInvalidArgument
                     });
                 }
                 else
@@ -244,7 +244,7 @@ namespace Ssz.Dcs.CentralServer
                         JobId = jobId,
                         ProgressPercent = 100,
                         ProgressLabel = Resources.ResourceManager.GetString(Properties.ResourceStrings.OperationCompleted_ProgressLabel, serverContext.CultureInfo),
-                        JobStatusCode = JobStatusCodes.OK
+                        StatusCode = StatusCodes.Good
                     });
                 }
             }, TaskCreationOptions.LongRunning);            
@@ -356,7 +356,7 @@ namespace Ssz.Dcs.CentralServer
                     JobId = jobId,
                     ProgressPercent = 100,
                     ProgressLabel = Resources.ResourceManager.GetString(Ssz.Dcs.CentralServer.Properties.ResourceStrings.OperationCompleted_ProgressLabel, serverContext.CultureInfo),
-                    JobStatusCode = JobStatusCodes.OK
+                    StatusCode = StatusCodes.Good
                 });
             }
             catch (Exception ex)
@@ -367,7 +367,7 @@ namespace Ssz.Dcs.CentralServer
                     JobId = jobId,
                     ProgressPercent = 100,
                     ProgressLabel = Resources.ResourceManager.GetString(Properties.ResourceStrings.OperationError_ProgressLabel, serverContext.CultureInfo),
-                    JobStatusCode = JobStatusCodes.PermissionDenied
+                    StatusCode = StatusCodes.BadResourceUnavailable
                 });
             }
         }
@@ -397,7 +397,7 @@ namespace Ssz.Dcs.CentralServer
                     JobId = jobId,
                     ProgressPercent = 100,
                     ProgressLabel = Resources.ResourceManager.GetString(Properties.ResourceStrings.OperationCompleted_ProgressLabel, serverContext.CultureInfo),
-                    JobStatusCode = JobStatusCodes.OK
+                    StatusCode = StatusCodes.Good
                 });
             }
             catch (Exception ex)
@@ -408,7 +408,7 @@ namespace Ssz.Dcs.CentralServer
                     JobId = jobId,
                     ProgressPercent = 100,
                     ProgressLabel = Resources.ResourceManager.GetString(Properties.ResourceStrings.OperationError_ProgressLabel, serverContext.CultureInfo),
-                    JobStatusCode = JobStatusCodes.PermissionDenied
+                    StatusCode = StatusCodes.BadResourceUnavailable
                 });
             }
 
@@ -434,7 +434,7 @@ namespace Ssz.Dcs.CentralServer
                     JobId = jobId,
                     ProgressPercent = 100,
                     ProgressLabel = Resources.ResourceManager.GetString(Properties.ResourceStrings.OperationCompleted_ProgressLabel, serverContext.CultureInfo),
-                    JobStatusCode = JobStatusCodes.OK
+                    StatusCode = StatusCodes.Good
                 });
             }
             catch (Exception ex)
@@ -445,7 +445,7 @@ namespace Ssz.Dcs.CentralServer
                     JobId = jobId,
                     ProgressPercent = 100,
                     ProgressLabel = Resources.ResourceManager.GetString(Properties.ResourceStrings.OperationError_ProgressLabel, serverContext.CultureInfo),
-                    JobStatusCode = JobStatusCodes.PermissionDenied
+                    StatusCode = StatusCodes.BadResourceUnavailable
                 });
             }
 

@@ -92,7 +92,7 @@ message NotifyJobProgressRequest {
   uint32 progress_percent = 2; 
   string progress_label_resource_name = 3;  
   string progress_details = 4;
-  uint32 job_status_code = 5;
+  uint32 status_code = 5;
 }
 
 message NotifyJobProgressReply {  

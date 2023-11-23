@@ -466,7 +466,7 @@ namespace Ssz.Xi.Client.Api
         }
 
         /// <summary>
-        ///     Returns JobStatusCode <see cref="JobStatusCodes"/>
+        ///     Returns StatusCode <see cref="StatusCodes"/>
         /// </summary>
         /// <param name="recipientId"></param>
         /// <param name="passthroughName"></param>

@@ -106,7 +106,7 @@ namespace Ssz.Dcs.CentralServer
 
                 results.Add(new AliasResult
                 {
-                    StatusCode = JobStatusCodes.OK,
+                    StatusCode = StatusCodes.Good,
                     ServerAlias = item.ServerAlias,
                     ClientAlias = item.ClientAlias
                 });
@@ -135,7 +135,7 @@ namespace Ssz.Dcs.CentralServer
                 {
                     failedAliasResults.Add(new AliasResult
                         {
-                            StatusCode = JobStatusCodes.Unavailable,
+                            StatusCode = StatusCodes.Uncertain,
                             ServerAlias = item.ServerAlias,
                             ClientAlias = item.ClientAlias
                         });
@@ -160,7 +160,7 @@ namespace Ssz.Dcs.CentralServer
                 {
                     foreach (ValueSubscription valueSubscription in item.ValueSubscriptionsCollection)
                     {
-                        if (ValueStatusCodes.IsBad(valueSubscription.ValueStatusTimestamp.ValueStatusCode))
+                        if (StatusCodes.IsBad(valueSubscription.ValueStatusTimestamp.StatusCode))
                             continue;
                         var pendingWrite = valueSubscription.DataAccessProvider.Obj as PendingWrite;
                         if (pendingWrite is null) continue;
@@ -168,7 +168,7 @@ namespace Ssz.Dcs.CentralServer
                         pendingWrite.ValueStatusTimestamps.Add(valueStatusTimestamp.Value);
                         aliasResultsDicitionary[valueSubscription] = new AliasResult
                             {
-                                StatusCode = JobStatusCodes.OK,
+                                StatusCode = StatusCodes.Good,
                                 ClientAlias = item.ClientAlias,
                                 ServerAlias = item.ServerAlias,
                             };                        
@@ -233,7 +233,7 @@ namespace Ssz.Dcs.CentralServer
                 }
             }
 
-            return aliasResultsDicitionary.Values.Where(r => r.StatusCode != JobStatusCodes.OK).ToList();
+            return aliasResultsDicitionary.Values.Where(r => !StatusCodes.IsGood(r.StatusCode)).ToList();
         }
 
         #endregion

@@ -25,7 +25,7 @@ namespace Ssz.Dcs.CentralServer
             ValueStatusTimestamp oldValueStatusTimestamp,
             ValueStatusTimestamp newValueStatusTimestamp)
         {
-            if (processModelingSession is null || !ValueStatusCodes.IsGood(newValueStatusTimestamp.ValueStatusCode))
+            if (processModelingSession is null || !StatusCodes.IsGood(newValueStatusTimestamp.StatusCode))
                 return;
 
             if (elementId == @"" || StringHelper.StartsWithIgnoreCase(elementId, @"SYSTEM."))

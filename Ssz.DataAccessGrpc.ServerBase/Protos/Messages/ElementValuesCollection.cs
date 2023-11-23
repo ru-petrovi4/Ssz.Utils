@@ -23,20 +23,20 @@ namespace Ssz.DataAccessGrpc.ServerBase
             DoubleAliases.Add(nextElementValuesCollection.DoubleAliases);
             DoubleValues.Add(nextElementValuesCollection.DoubleValues);
             DoubleValueTypeCodes.Add(nextElementValuesCollection.DoubleValueTypeCodes);
-            DoubleValueStatusCodes.Add(nextElementValuesCollection.DoubleValueStatusCodes);
+            DoubleStatusCodes.Add(nextElementValuesCollection.DoubleStatusCodes);
             DoubleTimestamps.Add(nextElementValuesCollection.DoubleTimestamps);            
 
             UintAliases.Add(nextElementValuesCollection.UintAliases);
             UintValues.Add(nextElementValuesCollection.UintValues);
             UintValueTypeCodes.Add(nextElementValuesCollection.UintValueTypeCodes);
-            UintValueStatusCodes.Add(nextElementValuesCollection.UintValueStatusCodes);
+            UintStatusCodes.Add(nextElementValuesCollection.UintStatusCodes);
             UintTimestamps.Add(nextElementValuesCollection.UintTimestamps);            
 
             ObjectAliases.Add(nextElementValuesCollection.ObjectAliases);
             ObjectValues = UnsafeByteOperations.UnsafeWrap(
                 ObjectValues.Concat(nextElementValuesCollection.ObjectValues).ToArray()
                 );
-            ObjectValueStatusCodes.Add(nextElementValuesCollection.ObjectValueStatusCodes);
+            ObjectStatusCodes.Add(nextElementValuesCollection.ObjectStatusCodes);
             ObjectTimestamps.Add(nextElementValuesCollection.ObjectTimestamps);            
         }
 
@@ -75,7 +75,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         resultElementValuesCollection.DoubleAliases.Add(DoubleAliases[localIndex]);
                         resultElementValuesCollection.DoubleValues.Add(DoubleValues[localIndex]);
                         resultElementValuesCollection.DoubleValueTypeCodes.Add(DoubleValueTypeCodes[localIndex]);
-                        resultElementValuesCollection.DoubleValueStatusCodes.Add(DoubleValueStatusCodes[localIndex]);
+                        resultElementValuesCollection.DoubleStatusCodes.Add(DoubleStatusCodes[localIndex]);
                         resultElementValuesCollection.DoubleTimestamps.Add(DoubleTimestamps[localIndex]);
                         replyObjectSize += sizeof(uint) + sizeof(double) + sizeof(uint) + 8;
                         index += 1;
@@ -88,7 +88,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         resultElementValuesCollection.UintAliases.Add(UintAliases[localIndex]);
                         resultElementValuesCollection.UintValues.Add(UintValues[localIndex]);
                         resultElementValuesCollection.UintValueTypeCodes.Add(UintValueTypeCodes[localIndex]);
-                        resultElementValuesCollection.UintValueStatusCodes.Add(UintValueStatusCodes[localIndex]);
+                        resultElementValuesCollection.UintStatusCodes.Add(UintStatusCodes[localIndex]);
                         resultElementValuesCollection.UintTimestamps.Add(UintTimestamps[localIndex]);
                         replyObjectSize += sizeof(uint) + sizeof(uint) + sizeof(uint) + 8;
                         index += 1;
@@ -99,7 +99,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     if (localIndex < ObjectTimestamps.Count)
                     {
                         resultElementValuesCollection.ObjectAliases.Add(ObjectAliases[localIndex]);                        
-                        resultElementValuesCollection.ObjectValueStatusCodes.Add(ObjectValueStatusCodes[localIndex]);
+                        resultElementValuesCollection.ObjectStatusCodes.Add(ObjectStatusCodes[localIndex]);
                         resultElementValuesCollection.ObjectTimestamps.Add(ObjectTimestamps[localIndex]);
                         replyObjectSize += sizeof(uint) + sizeof(uint) + 8;
                         index += 1;

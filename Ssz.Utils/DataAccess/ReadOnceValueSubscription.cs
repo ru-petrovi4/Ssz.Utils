@@ -11,7 +11,7 @@ namespace Ssz.Utils.DataAccess
 
         /// <summary>
         ///     Is used to one-time read value.
-        ///     Callback is invoked when valueStatusTimestamp.ValueStatusCode != StatusCodes.Uncertain       
+        ///     Callback is invoked when valueStatusTimestamp.StatusCode != StatusCodes.Uncertain       
         /// </summary>
         public ReadOnceValueSubscription(IDataAccessProvider dataProvider, string elementId, Action<ValueStatusTimestamp>? setValueAction)
         {
@@ -40,7 +40,7 @@ namespace Ssz.Utils.DataAccess
         /// <param name="valueStatusTimestamp"></param>
         void IValueSubscription.Update(ValueStatusTimestamp valueStatusTimestamp)
         {
-            if (ValueStatusCodes.IsUncertain(valueStatusTimestamp.ValueStatusCode))
+            if (StatusCodes.IsUncertain(valueStatusTimestamp.StatusCode))
                 return;
 
             _dataProvider.RemoveItem(this);            

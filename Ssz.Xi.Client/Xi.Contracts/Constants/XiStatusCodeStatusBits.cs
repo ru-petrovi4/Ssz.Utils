@@ -52,7 +52,7 @@ namespace Xi.Contracts.Constants
 	/// In these cases, the Xi server can construct an Xi Status Code that indicates BAD SERVER ACCESS. 
 	/// BAD SERVER ACCESS can also be constructed by the Xi Server when the returned HRESULT indicates 
 	/// failure.</para>
-	/// <para>See ValueStatusCode in both Xi Common Support and Xi OPC Com API for additional 
+	/// <para>See StatusCode in both Xi Common Support and Xi OPC Com API for additional 
 	/// details on the encoding of HRESULT values.</para>
 	/// </summary>
 	public enum XiStatusCodeStatusBits : uint
@@ -481,7 +481,7 @@ namespace Xi.Contracts.Constants
 		/// Any use a SUCCEEDED(hr) is considered a deviation from 
 		/// the Xi Specification.
 		/// This value represents a SUCCEEDED(hr) S R C N bits clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// </summary>
 		BadServerAccessWithSuccessHResult = 0x24,
 
@@ -494,20 +494,20 @@ namespace Xi.Contracts.Constants
 		/// Any use a SUCCEEDED(hr) is considered a deviation from 
 		/// the Xi Specification.
 		/// This value represents a SUCCEEDED(hr) S R C N bits clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// This value is in Xi Status Code bit position.
 		/// </summary>
 		BadServerAccessWithSuccessHResultBits = 0x90000000,
 
 		/// <summary>
 		/// This value represents a FAILED(hr) S bit set with the R C N bits clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// </summary>
 		BadServerAccessHResultFailNTStatusWarning = 0x25,
 
 		/// <summary>
 		/// This value represents a FAILED(hr) S bit set with the R C N bits clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// This value is in Xi Status Code bit position.
 		/// </summary>
 		BadServerAccessHResultFailNTStatusWarningBits = 0x94000000,
@@ -521,7 +521,7 @@ namespace Xi.Contracts.Constants
 		/// only.  Any use a Success severity is considered a deviation 
 		/// from the Xi Specification.
 		/// This value represents a Win32 status with N bit set and S R C bits clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// This value is in Xi Status Code bit position.
 		/// </summary>
 		BadServerAccessNTStatusInformational = 0x26,
@@ -535,7 +535,7 @@ namespace Xi.Contracts.Constants
 		/// only.  Any use a Success severity is considered a deviation 
 		/// from the Xi Specification.
 		/// This value represents a Win32 status with N bit set and S R C bits clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// This value is in Xi Status Code bit position.
 		/// </summary>
 		BadServerAccessSuccessNTStatusInfoBits = 0x98000000,
@@ -549,7 +549,7 @@ namespace Xi.Contracts.Constants
 		/// only.  Any use a Informational severity is considered a deviation 
 		/// from the Xi Specification.
 		/// This value represents a Win32 status with N R bits set and S C bits clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// </summary>
 		BadServerAccessNTStatusError = 0x27,
 
@@ -562,111 +562,111 @@ namespace Xi.Contracts.Constants
 		/// only.  Any use a Informational severity is considered a deviation 
 		/// from the Xi Specification.
 		/// This value represents a Win32 status with N R bits set and S C bits clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// This value is in Xi Status Code bit position.
 		/// </summary>
 		BadServerAccessNTStatusErrorBits = 0x9C000000,
 
 		/// <summary>
 		/// This value represents a Win32 status with S N bits set and R C bits clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// </summary>
 		BadServerAccessHResultNTStatusSuccess = 0x28,
 
 		/// <summary>
 		/// This value represents a Win32 status with S N bits set and R C bits clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// This value is in Xi Status Code bit position.
 		/// </summary>
 		BadServerAccessHResultNTStatusSuccessBits = 0xA0000000,
 
 		/// <summary>
 		/// This value represents a Win32 status with S R N bits set and C bit clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// </summary>
 		BadServerAccessHResultNTStatusInfo = 0x29,
 
 		/// <summary>
 		/// This value represents a Win32 status with S R N bits set and C bit clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// This value is in Xi Status Code bit position.
 		/// </summary>
 		BadServerAccessHResultNTStatusInfoBits = 0xA4000000,
 
 		/// <summary>
 		/// This value represents a SUCCEEDED(hr) C bit set and S R N bits clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// </summary>
 		BadServerAccessHResultNTStatusWarning = 0x2A,
 
 		/// <summary>
 		/// This value represents a SUCCEEDED(hr) C bit set and S R N bits clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// This value is in Xi Status Code bit position.
 		/// </summary>
 		BadServerAccessHResultNTStatusWarningBits = 0xA8000000,
 
 		/// <summary>
 		/// This value represents a FAILED(hr) S C bits set with the R N bits clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// </summary>
 		BadServerAccessHResultNTStatusError = 0x2B,
 
 		/// <summary>
 		/// This value represents a FAILED(hr) S C bits set with the R N bits clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// This value is in Xi Status Code bit position.
 		/// </summary>
 		BadServerAccessHResultNTStatusErrorBits = 0xAC000000,
 
 		/// <summary>
 		/// This value represents a Win32 status with N C bits set and S R bits clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// </summary>
 		BadServerAccessCustNTStatusSuccess = 0x2C,
 
 		/// <summary>
 		/// This value represents a Win32 status with N C bits set and S R bits clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// This value is in Xi Status Code bit position.
 		/// </summary>
 		BadServerAccessCustNTStatusSuccessBits = 0xB0000000,
 
 		/// <summary>
 		/// This value represents a Win32 status with R C N bits set and S bit clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// </summary>
 		BadServerAccessCustNTStatusInfo = 0x2D,
 
 		/// <summary>
 		/// This value represents a Win32 status with R C N bits set and S bit clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// This value is in Xi Status Code bit position.
 		/// </summary>
 		BadServerAccessCustNTStatusInfoBits = 0xB4000000,
 
 		/// <summary>
 		/// This value represents a Win32 status with S N C bits set and R bit clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// </summary>
 		BadServerAcccessCustNTStatusWarning = 0x2E,
 
 		/// <summary>
 		/// This value represents a Win32 status with S N C bits set and R bit clear.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// This value is in Xi Status Code bit position.
 		/// </summary>
 		BadServerAcccessCustNTStatusWarningBits = 0xB8000000,
 
 		/// <summary>
 		/// This value represents a Win32 status with S R N C bits set.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// </summary>
 		BadServerAccessCustNTStatusError = 0x2F,
 
 		/// <summary>
 		/// This value represents a Win32 status with S R N C bits set.
-		/// See Xi Common Support ValueStatusCode class.
+		/// See Xi Common Support StatusCode class.
 		/// This value is in Xi Status Code bit position.
 		/// </summary>
 		BadServerAccessCustNTStatusErrorBits = 0xBC000000,
@@ -756,7 +756,7 @@ namespace Xi.Contracts.Constants
 	/// This enumeration defines value that are helpful 
 	/// while encoding and decoding HRESULT codes and
 	/// Win32 error codes.
-	/// See Xi Common Support ValueStatusCode class.
+	/// See Xi Common Support StatusCode class.
 	/// See http://msdn.microsoft.com/en-us/library/cc231196(v=PROT.10).aspx 
 	/// </summary>
 	public enum HResultBitCodes : uint

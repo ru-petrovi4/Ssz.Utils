@@ -132,7 +132,7 @@ namespace Ssz.Xi.Client.Internal.Context
         }
 
         /// <summary>
-        ///     Returns JobStatusCode <see cref="JobStatusCodes"/>
+        ///     Returns StatusCode <see cref="StatusCodes"/>
         /// <param name="recipientId"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
@@ -146,7 +146,7 @@ namespace Ssz.Xi.Client.Internal.Context
             if (_writeEndpoint is null) throw new Exception("No Write Endpoint");
 
             if (_writeEndpoint.Disposed) 
-                return Task.FromResult(Task.FromResult(JobStatusCodes.Aborted));
+                return Task.FromResult(Task.FromResult(StatusCodes.BadInvalidState));
 
             string contextId = ContextId;
 

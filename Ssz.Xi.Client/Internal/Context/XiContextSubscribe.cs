@@ -248,7 +248,7 @@ namespace Ssz.Xi.Client.Internal.Context
             {
                 if (_incompleteCommandCallsCollection.TryGetValue((uint)invokeId, out TaskCompletionSource<uint>? taskCompletionSource))
                 {
-                    taskCompletionSource.SetResult(JobStatusCodes.OK);
+                    taskCompletionSource.SetResult(StatusCodes.Good);
                     _incompleteCommandCallsCollection.Remove((uint)invokeId);
                 }
             }

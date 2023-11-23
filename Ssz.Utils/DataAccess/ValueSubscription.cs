@@ -14,7 +14,7 @@ namespace Ssz.Utils.DataAccess
 
         /// <summary>
         ///     Is used to subscribe for value updating and to write values.
-        ///     valueUpdated is invoked when ValueStatusTimestamp property Updated. Initial Value property is Any(null) and ValueStatusCode is Unknown status. 
+        ///     valueUpdated is invoked when ValueStatusTimestamp property Updated. Initial Value property is Any(null) and StatusCode is Unknown status. 
         /// </summary>
         /// <param name="dataAccessProvider"></param>
         /// <param name="elementId"></param>
@@ -50,7 +50,7 @@ namespace Ssz.Utils.DataAccess
         /// </summary>
         public string MappedElementIdOrConst { get; private set; } = @"";
 
-        public ValueStatusTimestamp ValueStatusTimestamp { get; private set; } = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain };
+        public ValueStatusTimestamp ValueStatusTimestamp { get; private set; } = new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain };
 
         public void Update(string mappedElementIdOrConst)
         {

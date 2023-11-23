@@ -11,33 +11,33 @@ namespace Ssz.Utils.DataAccess
     {
         #region construction and destruction
 
-        public ValueStatusTimestamp(Any value, uint valueStatusCode, DateTime timestampUtc)
+        public ValueStatusTimestamp(Any value, uint statusCode, DateTime timestampUtc)
         {
             Value = value;
-            ValueStatusCode = valueStatusCode;
+            StatusCode = statusCode;
             TimestampUtc = timestampUtc;
         }
 
         /// <summary>
-        ///     ValueStatusCode.Good
+        ///     StatusCode.Good
         /// </summary>
         /// <param name="value"></param>
         /// <param name="timestampUtc"></param>
         public ValueStatusTimestamp(Any value, DateTime timestampUtc)
         {
             Value = value;
-            ValueStatusCode = ValueStatusCodes.Good;
+            StatusCode = StatusCodes.Good;
             TimestampUtc = timestampUtc;
         }
 
         /// <summary>
-        ///     ValueStatusCode.Good, DateTime.UtcNow
+        ///     StatusCode.Good, DateTime.UtcNow
         /// </summary>
         /// <param name="value"></param>
         public ValueStatusTimestamp(Any value)
         {
             Value = value;
-            ValueStatusCode = ValueStatusCodes.Good;
+            StatusCode = StatusCodes.Good;
             TimestampUtc = DateTime.UtcNow;
         }
 
@@ -58,7 +58,7 @@ namespace Ssz.Utils.DataAccess
             sb.Append(", TS = ");
             sb.Append(TimestampUtc.ToString("u"));
             sb.Append(", SC = 0x");
-            sb.Append(ValueStatusCode.ToString("X4"));
+            sb.Append(StatusCode.ToString("X4"));
             return sb.ToString();
         }
 
@@ -104,29 +104,29 @@ namespace Ssz.Utils.DataAccess
         /// <returns></returns>
         public bool Equals(ValueStatusTimestamp that, double deadband)
         {
-            return ValueStatusCode == that.ValueStatusCode && Value.CompareTo(that.Value, deadband) == 0;
+            return StatusCode == that.StatusCode && Value.CompareTo(that.Value, deadband) == 0;
         }
 
         public void SerializeOwnedData(SerializationWriter writer, object? context)
         {
             writer.WriteOwnedDataSerializable(Value, context);
-            writer.Write(ValueStatusCode);
+            writer.Write(StatusCode);
             writer.Write(TimestampUtc);
         }
 
         public void DeserializeOwnedData(SerializationReader reader, object? context)
         {
             reader.ReadOwnedDataSerializable(Value, context);
-            ValueStatusCode = reader.ReadUInt32();
+            StatusCode = reader.ReadUInt32();
             TimestampUtc = reader.ReadDateTime();
         }
 
         public Any Value;
 
         /// <summary>
-        ///     See consts in <see cref="ValueStatusCodes"/>
+        ///     See consts in <see cref="StatusCodes"/>
         /// </summary>
-        public uint ValueStatusCode;
+        public uint StatusCode;
         
         public DateTime TimestampUtc;        
 

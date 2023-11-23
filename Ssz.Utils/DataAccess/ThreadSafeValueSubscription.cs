@@ -14,7 +14,7 @@ namespace Ssz.Utils.DataAccess
 
         /// <summary>
         ///     Is used to subscribe for value updating and to write values.
-        ///     valueUpdated(oldValue, newValue) is invoked when Value property Updated. Initial Value property is Any(null) and ValueStatusCode is Unknown status.        
+        ///     valueUpdated(oldValue, newValue) is invoked when Value property Updated. Initial Value property is Any(null) and StatusCode is Unknown status.        
         /// </summary>
         public ThreadSafeValueSubscription(IDataAccessProvider dataAccessProvider, string elementId, Action<ValueStatusTimestamp, ValueStatusTimestamp>? valueUpdated = null)
         {
@@ -54,7 +54,7 @@ namespace Ssz.Utils.DataAccess
                 oldValueStatusTimestamp = _valueStatusTimestamp;
                 _valueStatusTimestamp = valueStatusTimestamp;
             }
-            if (!ValueStatusCodes.IsUncertain(valueStatusTimestamp.ValueStatusCode))
+            if (!StatusCodes.IsUncertain(valueStatusTimestamp.StatusCode))
                 ValueStatusTimestampUpdated.Set();
             if (_valueUpdated is not null) 
                 _valueUpdated(oldValueStatusTimestamp, valueStatusTimestamp);
@@ -66,7 +66,7 @@ namespace Ssz.Utils.DataAccess
         public string ElementId { get; }
 
         /// <summary>
-        ///     Is set when ValueStatusTimestamp.ValueStatusCode != ValueStatusCode.Unknown
+        ///     Is set when ValueStatusTimestamp.StatusCode != StatusCode.Unknown
         /// </summary>
         public readonly ManualResetEvent ValueStatusTimestampUpdated = new ManualResetEvent(false);
 
@@ -99,7 +99,7 @@ namespace Ssz.Utils.DataAccess
 
         private Action<ValueStatusTimestamp, ValueStatusTimestamp>? _valueUpdated;
 
-        private ValueStatusTimestamp _valueStatusTimestamp = new ValueStatusTimestamp { ValueStatusCode = ValueStatusCodes.Uncertain };
+        private ValueStatusTimestamp _valueStatusTimestamp = new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain };
 
         private readonly object _valueStatusTimestampSyncRoot = new Object();
 

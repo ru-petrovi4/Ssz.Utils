@@ -19,9 +19,9 @@ namespace Ssz.Utils.DataAccess
 		public string? ProgressDetails;
 
         /// <summary>        
-		///     See consts in <see cref="JobStatusCodes"/>
+		///     See consts in <see cref="StatusCodes"/>
         /// </summary>
-        public uint JobStatusCode;
+        public uint StatusCode;
 
 		#endregion
 	}

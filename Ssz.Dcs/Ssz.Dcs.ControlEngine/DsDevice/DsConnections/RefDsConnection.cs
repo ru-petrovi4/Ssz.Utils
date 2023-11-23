@@ -99,7 +99,7 @@ namespace Ssz.Dcs.ControlEngine
         }
 
         /// <summary>
-        ///     Returns Status Code (see Ssz.Utils.JobStatusCodes)
+        ///     Returns Status Code (see Ssz.Utils.StatusCodes)
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>

@@ -392,14 +392,14 @@ namespace Ssz.Dcs.ControlEngine
 
         /// <summary>    
         ///     connection must belong to this module.
-        ///     Returns Status Code (see Ssz.Utils.JobStatusCodes)
+        ///     Returns Status Code (see Ssz.Utils.StatusCodes)
         /// </summary>
         /// <param name="connection"></param>
         /// <returns></returns>
         public ResultInfo SetParamValue(RefDsConnection connection, Any value)
         {
             if (!PrepareConnection(connection, true))
-                return new ResultInfo { StatusCode = JobStatusCodes.FailedPrecondition };
+                return new ResultInfo { StatusCode = StatusCodes.BadInvalidState };
 
             var block = DsBlocksTempRuntimeData.DescendantDsBlocks[connection.DsBlockIndexInModule];
             ref var param = ref block.Params[connection.ParamIndex!.Value];
@@ -422,7 +422,7 @@ namespace Ssz.Dcs.ControlEngine
             if (connection.IsRefToMajorParam())
                 block.OnMajorParamsChanged();
 
-            return ResultInfo.OkResultInfo;
+            return ResultInfo.GoodResultInfo;
         }
 
         #endregion        
