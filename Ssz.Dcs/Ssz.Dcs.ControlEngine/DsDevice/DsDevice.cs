@@ -89,7 +89,7 @@ namespace Ssz.Dcs.ControlEngine
 
             Modules = new[] { _deviceModule };
 
-            OnCsvDb_CsvFileChanged(null, new CsvFileChangedEventArgs { CsvFileChangeAction = CsvFileChangeAction.Added, CsvFileName = @"" });
+            ElementIdsMap.Initialize(CsvDb.GetData(ElementIdsMap.StandardMapFileName), CsvDb.GetData(ElementIdsMap.StandardTagsFileName), CsvDb);
         }
 
         // <summary>
