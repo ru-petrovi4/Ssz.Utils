@@ -178,6 +178,11 @@ namespace Ssz.DataAccessGrpc.ServerBase
         public uint ContextTimeoutMs { get; }
 
         /// <summary>
+        ///   The negotiated timeout in milliseconds.
+        /// </summary>
+        public uint ContextStatusCallbackPeriodMs { get; } = 5000;
+
+        /// <summary>
         ///   User's culture, negotiated when context was created.
         /// </summary>
         public CultureInfo CultureInfo { get; }
@@ -207,6 +212,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// </summary>
         public DateTime LastAccessDateTimeUtc { get; set; }
 
+        public DateTime? LastContextStatusCallbackDateTimeUtc { get; set; }
+
         /// <summary>
         ///     Did the client call Conclude(...)
         /// </summary>
@@ -223,9 +230,23 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 {
                     list.DoWork(nowUtc, token);
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     Logger.LogError(ex, "list.DoWork() Error.");
+                }
+            }
+
+            if (LastContextStatusCallbackDateTimeUtc is null ||
+                nowUtc - LastContextStatusCallbackDateTimeUtc.Value >= TimeSpan.FromMilliseconds(ContextStatusCallbackPeriodMs))
+            {
+                if (!IsConcludeCalled)
+                {
+                    AddCallbackMessage(
+                            new ContextStatusMessage
+                            {
+                                StateCode = ContextStateCodes.STATE_OPERATIONAL
+                            });
+                    LastContextStatusCallbackDateTimeUtc = nowUtc;
                 }
             }
         }
