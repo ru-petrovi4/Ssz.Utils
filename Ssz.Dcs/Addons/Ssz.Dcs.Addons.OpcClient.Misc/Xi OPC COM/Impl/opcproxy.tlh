@@ -1,0 +1,575 @@
+﻿// Created by Microsoft (R) C/C++ Compiler Version 15.00.30729.01 (0c095d61).
+//
+// d:\junkproj\atldll\debug\opcproxy.tlh
+//
+// C++ source equivalent of Win32 type library C:\EmersonCommon\opcproxy.dll
+// compiler-generated file created 03/12/09 at 13:28:52 - DO NOT EDIT!
+
+#pragma once
+#pragma pack(push, 8)
+
+#include <comdef.h>
+
+//
+// Forward references and typedefs
+//
+
+struct __declspec(uuid("b28eedb2-ac6f-11d1-84d5-00608cb8a7e9"))
+/* LIBID */ __OPCDA;
+struct __declspec(uuid("39c13a4d-011e-11d0-9675-0020afd8adb3"))
+/* interface */ IOPCServer;
+struct tagOPCSERVERSTATUS;
+enum tagOPCSERVERSTATE;
+enum tagOPCENUMSCOPE;
+struct __declspec(uuid("39c13a4e-011e-11d0-9675-0020afd8adb3"))
+/* interface */ IOPCServerPublicGroups;
+struct __declspec(uuid("39c13a4f-011e-11d0-9675-0020afd8adb3"))
+/* interface */ IOPCBrowseServerAddressSpace;
+enum tagOPCNAMESPACETYPE;
+enum tagOPCBROWSEDIRECTION;
+enum tagOPCBROWSETYPE;
+struct __declspec(uuid("39c13a50-011e-11d0-9675-0020afd8adb3"))
+/* interface */ IOPCGroupStateMgt;
+struct __declspec(uuid("39c13a51-011e-11d0-9675-0020afd8adb3"))
+/* interface */ IOPCPublicGroupStateMgt;
+struct __declspec(uuid("39c13a52-011e-11d0-9675-0020afd8adb3"))
+/* interface */ IOPCSyncIO;
+enum tagOPCDATASOURCE;
+struct tagOPCITEMSTATE;
+struct __declspec(uuid("39c13a53-011e-11d0-9675-0020afd8adb3"))
+/* interface */ IOPCAsyncIO;
+struct __declspec(uuid("39c13a54-011e-11d0-9675-0020afd8adb3"))
+/* interface */ IOPCItemMgt;
+struct tagOPCITEMDEF;
+struct tagOPCITEMRESULT;
+struct __declspec(uuid("39c13a55-011e-11d0-9675-0020afd8adb3"))
+/* interface */ IEnumOPCItemAttributes;
+struct tagOPCITEMATTRIBUTES;
+enum tagOPCEUTYPE;
+struct __declspec(uuid("39c13a70-011e-11d0-9675-0020afd8adb3"))
+/* interface */ IOPCDataCallback;
+struct __declspec(uuid("39c13a71-011e-11d0-9675-0020afd8adb3"))
+/* interface */ IOPCAsyncIO2;
+struct __declspec(uuid("39c13a72-011e-11d0-9675-0020afd8adb3"))
+/* interface */ IOPCItemProperties;
+
+//
+// Smart pointer typedef declarations
+//
+
+_COM_SMARTPTR_TYPEDEF(IOPCServer, __uuidof(IOPCServer));
+_COM_SMARTPTR_TYPEDEF(IOPCServerPublicGroups, __uuidof(IOPCServerPublicGroups));
+_COM_SMARTPTR_TYPEDEF(IOPCBrowseServerAddressSpace, __uuidof(IOPCBrowseServerAddressSpace));
+_COM_SMARTPTR_TYPEDEF(IOPCGroupStateMgt, __uuidof(IOPCGroupStateMgt));
+_COM_SMARTPTR_TYPEDEF(IOPCPublicGroupStateMgt, __uuidof(IOPCPublicGroupStateMgt));
+_COM_SMARTPTR_TYPEDEF(IOPCSyncIO, __uuidof(IOPCSyncIO));
+_COM_SMARTPTR_TYPEDEF(IOPCAsyncIO, __uuidof(IOPCAsyncIO));
+_COM_SMARTPTR_TYPEDEF(IOPCItemMgt, __uuidof(IOPCItemMgt));
+_COM_SMARTPTR_TYPEDEF(IEnumOPCItemAttributes, __uuidof(IEnumOPCItemAttributes));
+_COM_SMARTPTR_TYPEDEF(IOPCDataCallback, __uuidof(IOPCDataCallback));
+_COM_SMARTPTR_TYPEDEF(IOPCAsyncIO2, __uuidof(IOPCAsyncIO2));
+_COM_SMARTPTR_TYPEDEF(IOPCItemProperties, __uuidof(IOPCItemProperties));
+
+//
+// Type library items
+//
+
+enum tagOPCSERVERSTATE
+{
+    OPC_STATUS_RUNNING = 1,
+    OPC_STATUS_FAILED = 2,
+    OPC_STATUS_NOCONFIG = 3,
+    OPC_STATUS_SUSPENDED = 4,
+    OPC_STATUS_TEST = 5
+};
+
+#pragma pack(push, 4)
+
+struct tagOPCSERVERSTATUS
+{
+    struct _FILETIME ftStartTime;
+    struct _FILETIME ftCurrentTime;
+    struct _FILETIME ftLastUpdateTime;
+    enum tagOPCSERVERSTATE dwServerState;
+    unsigned long dwGroupCount;
+    unsigned long dwBandWidth;
+    unsigned short wMajorVersion;
+    unsigned short wMinorVersion;
+    unsigned short wBuildNumber;
+    unsigned short wReserved;
+    LPWSTR szVendorInfo;
+};
+
+#pragma pack(pop)
+
+enum tagOPCENUMSCOPE
+{
+    OPC_ENUM_PRIVATE_CONNECTIONS = 1,
+    OPC_ENUM_PUBLIC_CONNECTIONS = 2,
+    OPC_ENUM_ALL_CONNECTIONS = 3,
+    OPC_ENUM_PRIVATE = 4,
+    OPC_ENUM_PUBLIC = 5,
+    OPC_ENUM_ALL = 6
+};
+
+struct __declspec(uuid("39c13a4d-011e-11d0-9675-0020afd8adb3"))
+IOPCServer : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall AddGroup (
+        /*[in]*/ LPWSTR szName,
+        /*[in]*/ long bActive,
+        /*[in]*/ unsigned long dwRequestedUpdateRate,
+        /*[in]*/ unsigned long hClientGroup,
+        /*[in]*/ long * pTimeBias,
+        /*[in]*/ float * pPercentDeadband,
+        /*[in]*/ unsigned long dwLCID,
+        /*[out]*/ unsigned long * phServerGroup,
+        /*[out]*/ unsigned long * pRevisedUpdateRate,
+        /*[in]*/ GUID * riid,
+        /*[out]*/ IUnknown * * ppUnk ) = 0;
+      virtual HRESULT __stdcall GetErrorString (
+        /*[in]*/ HRESULT dwError,
+        /*[in]*/ unsigned long dwLocale,
+        /*[out]*/ LPWSTR * ppString ) = 0;
+      virtual HRESULT __stdcall GetGroupByName (
+        /*[in]*/ LPWSTR szName,
+        /*[in]*/ GUID * riid,
+        /*[out]*/ IUnknown * * ppUnk ) = 0;
+      virtual HRESULT __stdcall GetStatus (
+        /*[out]*/ struct tagOPCSERVERSTATUS * * ppServerStatus ) = 0;
+      virtual HRESULT __stdcall RemoveGroup (
+        /*[in]*/ unsigned long hServerGroup,
+        /*[in]*/ long bForce ) = 0;
+      virtual HRESULT __stdcall CreateGroupEnumerator (
+        /*[in]*/ enum tagOPCENUMSCOPE dwScope,
+        /*[in]*/ GUID * riid,
+        /*[out]*/ IUnknown * * ppUnk ) = 0;
+};
+
+struct __declspec(uuid("39c13a4e-011e-11d0-9675-0020afd8adb3"))
+IOPCServerPublicGroups : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall GetPublicGroupByName (
+        /*[in]*/ LPWSTR szName,
+        /*[in]*/ GUID * riid,
+        /*[out]*/ IUnknown * * ppUnk ) = 0;
+      virtual HRESULT __stdcall RemovePublicGroup (
+        /*[in]*/ unsigned long hServerGroup,
+        /*[in]*/ long bForce ) = 0;
+};
+
+enum tagOPCNAMESPACETYPE
+{
+    OPC_NS_HIERARCHIAL = 1,
+    OPC_NS_FLAT = 2
+};
+
+enum tagOPCBROWSEDIRECTION
+{
+    OPC_BROWSE_UP = 1,
+    OPC_BROWSE_DOWN = 2,
+    OPC_BROWSE_TO = 3
+};
+
+enum tagOPCBROWSETYPE
+{
+    OPC_BRANCH = 1,
+    OPC_LEAF = 2,
+    OPC_FLAT = 3
+};
+
+struct __declspec(uuid("39c13a4f-011e-11d0-9675-0020afd8adb3"))
+IOPCBrowseServerAddressSpace : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall QueryOrganization (
+        /*[out]*/ enum tagOPCNAMESPACETYPE * pNameSpaceType ) = 0;
+      virtual HRESULT __stdcall ChangeBrowsePosition (
+        /*[in]*/ enum tagOPCBROWSEDIRECTION dwBrowseDirection,
+        /*[in]*/ LPWSTR szString ) = 0;
+      virtual HRESULT __stdcall BrowseOPCItemIDs (
+        /*[in]*/ enum tagOPCBROWSETYPE dwBrowseFilterType,
+        /*[in]*/ LPWSTR szFilterCriteria,
+        /*[in]*/ unsigned short vtDataTypeFilter,
+        /*[in]*/ unsigned long dwAccessRightsFilter,
+        /*[out]*/ struct IEnumString * * ppIEnumString ) = 0;
+      virtual HRESULT __stdcall GetItemID (
+        /*[in]*/ LPWSTR szItemDataID,
+        /*[out]*/ LPWSTR * szItemID ) = 0;
+      virtual HRESULT __stdcall BrowseAccessPaths (
+        /*[in]*/ LPWSTR szItemID,
+        /*[out]*/ struct IEnumString * * ppIEnumString ) = 0;
+};
+
+struct __declspec(uuid("39c13a50-011e-11d0-9675-0020afd8adb3"))
+IOPCGroupStateMgt : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall GetState (
+        /*[out]*/ unsigned long * pUpdateRate,
+        /*[out]*/ long * pActive,
+        /*[out]*/ LPWSTR * ppName,
+        /*[out]*/ long * pTimeBias,
+        /*[out]*/ float * pPercentDeadband,
+        /*[out]*/ unsigned long * pLCID,
+        /*[out]*/ unsigned long * phClientGroup,
+        /*[out]*/ unsigned long * phServerGroup ) = 0;
+      virtual HRESULT __stdcall SetState (
+        /*[in]*/ unsigned long * pRequestedUpdateRate,
+        /*[out]*/ unsigned long * pRevisedUpdateRate,
+        /*[in]*/ long * pActive,
+        /*[in]*/ long * pTimeBias,
+        /*[in]*/ float * pPercentDeadband,
+        /*[in]*/ unsigned long * pLCID,
+        /*[in]*/ unsigned long * phClientGroup ) = 0;
+      virtual HRESULT __stdcall SetName (
+        /*[in]*/ LPWSTR szName ) = 0;
+      virtual HRESULT __stdcall CloneGroup (
+        /*[in]*/ LPWSTR szName,
+        /*[in]*/ GUID * riid,
+        /*[out]*/ IUnknown * * ppUnk ) = 0;
+};
+
+struct __declspec(uuid("39c13a51-011e-11d0-9675-0020afd8adb3"))
+IOPCPublicGroupStateMgt : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall GetState (
+        /*[out]*/ long * pPublic ) = 0;
+      virtual HRESULT __stdcall MoveToPublic ( ) = 0;
+};
+
+enum tagOPCDATASOURCE
+{
+    OPC_DS_CACHE = 1,
+    OPC_DS_DEVICE = 2
+};
+
+#pragma pack(push, 8)
+
+struct tagOPCITEMSTATE
+{
+    unsigned long hClient;
+    struct _FILETIME ftTimeStamp;
+    unsigned short wQuality;
+    unsigned short wReserved;
+    VARIANT vDataValue;
+};
+
+#pragma pack(pop)
+
+struct __declspec(uuid("39c13a52-011e-11d0-9675-0020afd8adb3"))
+IOPCSyncIO : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall Read (
+        /*[in]*/ enum tagOPCDATASOURCE dwSource,
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * phServer,
+        /*[out]*/ struct tagOPCITEMSTATE * * ppItemValues,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall Write (
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ VARIANT * pItemValues,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+};
+
+struct __declspec(uuid("39c13a53-011e-11d0-9675-0020afd8adb3"))
+IOPCAsyncIO : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall Read (
+        /*[in]*/ unsigned long dwConnection,
+        /*[in]*/ enum tagOPCDATASOURCE dwSource,
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * phServer,
+        /*[out]*/ unsigned long * pTransactionID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall Write (
+        /*[in]*/ unsigned long dwConnection,
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ VARIANT * pItemValues,
+        /*[out]*/ unsigned long * pTransactionID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall Refresh (
+        /*[in]*/ unsigned long dwConnection,
+        /*[in]*/ enum tagOPCDATASOURCE dwSource,
+        /*[out]*/ unsigned long * pTransactionID ) = 0;
+      virtual HRESULT __stdcall Cancel (
+        /*[in]*/ unsigned long dwTransactionID ) = 0;
+};
+
+#pragma pack(push, 4)
+
+struct tagOPCITEMDEF
+{
+    LPWSTR szAccessPath;
+    LPWSTR szItemID;
+    long bActive;
+    unsigned long hClient;
+    unsigned long dwBlobSize;
+    unsigned char * pBlob;
+    unsigned short vtRequestedDataType;
+    unsigned short wReserved;
+};
+
+#pragma pack(pop)
+
+#pragma pack(push, 4)
+
+struct tagOPCITEMRESULT
+{
+    unsigned long hServer;
+    unsigned short vtCanonicalDataType;
+    unsigned short wReserved;
+    unsigned long dwAccessRights;
+    unsigned long dwBlobSize;
+    unsigned char * pBlob;
+};
+
+#pragma pack(pop)
+
+struct __declspec(uuid("39c13a54-011e-11d0-9675-0020afd8adb3"))
+IOPCItemMgt : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall AddItems (
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ struct tagOPCITEMDEF * pItemArray,
+        /*[out]*/ struct tagOPCITEMRESULT * * ppAddResults,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall ValidateItems (
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ struct tagOPCITEMDEF * pItemArray,
+        /*[in]*/ long bBlobUpdate,
+        /*[out]*/ struct tagOPCITEMRESULT * * ppValidationResults,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall RemoveItems (
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * phServer,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall SetActiveState (
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ long bActive,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall SetClientHandles (
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ unsigned long * phClient,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall SetDatatypes (
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ unsigned short * pRequestedDatatypes,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall CreateEnumerator (
+        /*[in]*/ GUID * riid,
+        /*[out]*/ IUnknown * * ppUnk ) = 0;
+};
+
+enum tagOPCEUTYPE
+{
+    OPC_NOENUM = 0,
+    OPC_ANALOG = 1,
+    OPC_ENUMERATED = 2
+};
+
+#pragma pack(push, 8)
+
+struct tagOPCITEMATTRIBUTES
+{
+    LPWSTR szAccessPath;
+    LPWSTR szItemID;
+    long bActive;
+    unsigned long hClient;
+    unsigned long hServer;
+    unsigned long dwAccessRights;
+    unsigned long dwBlobSize;
+    unsigned char * pBlob;
+    unsigned short vtRequestedDataType;
+    unsigned short vtCanonicalDataType;
+    enum tagOPCEUTYPE dwEUType;
+    VARIANT vEUInfo;
+};
+
+#pragma pack(pop)
+
+struct __declspec(uuid("39c13a55-011e-11d0-9675-0020afd8adb3"))
+IEnumOPCItemAttributes : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall Next (
+        /*[in]*/ unsigned long celt,
+        /*[out]*/ struct tagOPCITEMATTRIBUTES * * ppItemArray,
+        /*[out]*/ unsigned long * pceltFetched ) = 0;
+      virtual HRESULT __stdcall Skip (
+        /*[in]*/ unsigned long celt ) = 0;
+      virtual HRESULT __stdcall Reset ( ) = 0;
+      virtual HRESULT __stdcall Clone (
+        /*[out]*/ struct IEnumOPCItemAttributes * * ppEnumItemAttributes ) = 0;
+};
+
+struct __declspec(uuid("39c13a70-011e-11d0-9675-0020afd8adb3"))
+IOPCDataCallback : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall OnDataChange (
+        /*[in]*/ unsigned long dwTransid,
+        /*[in]*/ unsigned long hGroup,
+        /*[in]*/ HRESULT hrMasterquality,
+        /*[in]*/ HRESULT hrMastererror,
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * phClientItems,
+        /*[in]*/ VARIANT * pvValues,
+        /*[in]*/ unsigned short * pwQualities,
+        /*[in]*/ struct _FILETIME * pftTimeStamps,
+        /*[in]*/ HRESULT * pErrors ) = 0;
+      virtual HRESULT __stdcall OnReadComplete (
+        /*[in]*/ unsigned long dwTransid,
+        /*[in]*/ unsigned long hGroup,
+        /*[in]*/ HRESULT hrMasterquality,
+        /*[in]*/ HRESULT hrMastererror,
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * phClientItems,
+        /*[in]*/ VARIANT * pvValues,
+        /*[in]*/ unsigned short * pwQualities,
+        /*[in]*/ struct _FILETIME * pftTimeStamps,
+        /*[in]*/ HRESULT * pErrors ) = 0;
+      virtual HRESULT __stdcall OnWriteComplete (
+        /*[in]*/ unsigned long dwTransid,
+        /*[in]*/ unsigned long hGroup,
+        /*[in]*/ HRESULT hrMastererr,
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * pClienthandles,
+        /*[in]*/ HRESULT * pErrors ) = 0;
+      virtual HRESULT __stdcall OnCancelComplete (
+        /*[in]*/ unsigned long dwTransid,
+        /*[in]*/ unsigned long hGroup ) = 0;
+};
+
+struct __declspec(uuid("39c13a71-011e-11d0-9675-0020afd8adb3"))
+IOPCAsyncIO2 : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall Read (
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[out]*/ unsigned long * pdwCancelID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall Write (
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ VARIANT * pItemValues,
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[out]*/ unsigned long * pdwCancelID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall Refresh2 (
+        /*[in]*/ enum tagOPCDATASOURCE dwSource,
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[out]*/ unsigned long * pdwCancelID ) = 0;
+      virtual HRESULT __stdcall Cancel2 (
+        /*[in]*/ unsigned long dwCancelID ) = 0;
+      virtual HRESULT __stdcall SetEnable (
+        /*[in]*/ long bEnable ) = 0;
+      virtual HRESULT __stdcall GetEnable (
+        /*[out]*/ long * pbEnable ) = 0;
+};
+
+struct __declspec(uuid("39c13a72-011e-11d0-9675-0020afd8adb3"))
+IOPCItemProperties : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall QueryAvailableProperties (
+        /*[in]*/ LPWSTR szItemID,
+        /*[out]*/ unsigned long * pdwCount,
+        /*[out]*/ unsigned long * * ppPropertyIDs,
+        /*[out]*/ LPWSTR * * ppDescriptions,
+        /*[out]*/ unsigned short * * ppvtDataTypes ) = 0;
+      virtual HRESULT __stdcall GetItemProperties (
+        /*[in]*/ LPWSTR szItemID,
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * pdwPropertyIDs,
+        /*[out]*/ VARIANT * * ppvData,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall LookupItemIDs (
+        /*[in]*/ LPWSTR szItemID,
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * pdwPropertyIDs,
+        /*[out]*/ LPWSTR * * ppszNewItemIDs,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+};
+
+//
+// Named GUID constants initializations
+//
+
+extern "C" const GUID __declspec(selectany) LIBID_OPCDA =
+    {0xb28eedb2,0xac6f,0x11d1,{0x84,0xd5,0x00,0x60,0x8c,0xb8,0xa7,0xe9}};
+extern "C" const GUID __declspec(selectany) IID_IOPCServer =
+    {0x39c13a4d,0x011e,0x11d0,{0x96,0x75,0x00,0x20,0xaf,0xd8,0xad,0xb3}};
+extern "C" const GUID __declspec(selectany) IID_IOPCServerPublicGroups =
+    {0x39c13a4e,0x011e,0x11d0,{0x96,0x75,0x00,0x20,0xaf,0xd8,0xad,0xb3}};
+extern "C" const GUID __declspec(selectany) IID_IOPCBrowseServerAddressSpace =
+    {0x39c13a4f,0x011e,0x11d0,{0x96,0x75,0x00,0x20,0xaf,0xd8,0xad,0xb3}};
+extern "C" const GUID __declspec(selectany) IID_IOPCGroupStateMgt =
+    {0x39c13a50,0x011e,0x11d0,{0x96,0x75,0x00,0x20,0xaf,0xd8,0xad,0xb3}};
+extern "C" const GUID __declspec(selectany) IID_IOPCPublicGroupStateMgt =
+    {0x39c13a51,0x011e,0x11d0,{0x96,0x75,0x00,0x20,0xaf,0xd8,0xad,0xb3}};
+extern "C" const GUID __declspec(selectany) IID_IOPCSyncIO =
+    {0x39c13a52,0x011e,0x11d0,{0x96,0x75,0x00,0x20,0xaf,0xd8,0xad,0xb3}};
+extern "C" const GUID __declspec(selectany) IID_IOPCAsyncIO =
+    {0x39c13a53,0x011e,0x11d0,{0x96,0x75,0x00,0x20,0xaf,0xd8,0xad,0xb3}};
+extern "C" const GUID __declspec(selectany) IID_IOPCItemMgt =
+    {0x39c13a54,0x011e,0x11d0,{0x96,0x75,0x00,0x20,0xaf,0xd8,0xad,0xb3}};
+extern "C" const GUID __declspec(selectany) IID_IEnumOPCItemAttributes =
+    {0x39c13a55,0x011e,0x11d0,{0x96,0x75,0x00,0x20,0xaf,0xd8,0xad,0xb3}};
+extern "C" const GUID __declspec(selectany) IID_IOPCDataCallback =
+    {0x39c13a70,0x011e,0x11d0,{0x96,0x75,0x00,0x20,0xaf,0xd8,0xad,0xb3}};
+extern "C" const GUID __declspec(selectany) IID_IOPCAsyncIO2 =
+    {0x39c13a71,0x011e,0x11d0,{0x96,0x75,0x00,0x20,0xaf,0xd8,0xad,0xb3}};
+extern "C" const GUID __declspec(selectany) IID_IOPCItemProperties =
+    {0x39c13a72,0x011e,0x11d0,{0x96,0x75,0x00,0x20,0xaf,0xd8,0xad,0xb3}};
+
+#pragma pack(pop)

@@ -1,0 +1,210 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6B9EEE8C-B70F-49E7-BFDB-F0E7C12602D2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Xi.OPC.Wrapper.Impl</RootNamespace>
+    <AssemblyName>Xi.OPC.Wrapper.Impl</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Xi.OPC.Wrapper.Impl.XML</DocumentationFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <NoWarn>1591,1711,1570,1572,1573</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Xi.OPC.Wrapper.Impl.XML</DocumentationFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <PlatformTarget>x86</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>1591,1711,1570,1572,1573</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release_USO410_AND_LESS|x86'">
+    <OutputPath>..\..\..\bin\Release\</OutputPath>
+    <DefineConstants>TRACE;USO410_AND_LESS</DefineConstants>
+    <DocumentationFile>..\..\..\bin\Release\Xi.OPC.Wrapper.Impl.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>1591,1711,1570,1572,1573</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Net">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Context\ContextImplContextMgt.cs" />
+    <Compile Include="Context\ContextImpl.cs" />
+    <Compile Include="Context\ContextImplAlarmsEvents.cs" />
+    <Compile Include="Context\ContextImplEndpointMgt.cs" />
+    <Compile Include="Context\ContextImplListMgt.cs" />
+    <Compile Include="Context\OpcAeBrowser.cs" />
+    <Compile Include="Context\OpcBrowser.cs" />
+    <Compile Include="Context\OpcContextImpl.cs" />
+    <Compile Include="Context\OpcDaBrowser.cs" />
+    <Compile Include="Context\OpcCallbacks.cs" />
+    <Compile Include="Context\OpcHdaBrowser.cs" />
+    <Compile Include="Context\OpcServerInfo.cs" />
+    <Compile Include="Lists and Data\DataList.cs" />
+    <Compile Include="Lists and Data\DataJournalList.cs" />
+    <Compile Include="Lists and Data\DataJournalListValue.cs" />
+    <Compile Include="Lists and Data\DataListValue.cs" />
+    <Compile Include="Lists and Data\EventJournalList.cs" />
+    <Compile Include="Lists and Data\EventListValue.cs" />
+    <Compile Include="Lists and Data\EventList.cs" />
+    <Compile Include="Context\ContextImplDiscoveryMethods.cs" />
+    <Compile Include="Service\OnInitializeServerData.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\ResourceManagementImpl.cs" />
+    <Compile Include="Service\XiServiceMain.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Ssz.Utils.Net4\Ssz.Utils.Net4.csproj">
+      <Project>{35fbd383-f754-4e4e-9a1f-f6eab6a6eb09}</Project>
+      <Name>Ssz.Utils.Net4</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Ssz.Utils\Ssz.Utils.csproj">
+      <Project>{4e177cf8-b666-4b36-9ccb-427cf4c173b5}</Project>
+      <Name>Ssz.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Xi Common Support\Xi.Common.Support.csproj">
+      <Project>{55E828C6-D017-411B-8B0E-5EBB3030D79A}</Project>
+      <Name>Xi.Common.Support</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Xi Contracts Constants\Xi.Contract.Constants.csproj">
+      <Project>{49251555-ABA5-4587-BA12-FF06A895A70F}</Project>
+      <Name>Xi.Contract.Constants</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Xi Contracts\Xi.Contracts.csproj">
+      <Project>{F92703BF-619B-4BC9-BAE0-1493160B89B9}</Project>
+      <Name>Xi.Contracts</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Xi OPC COM\API\Xi.OPC.COM.API.csproj">
+      <Project>{339668E5-223E-485A-A026-74F3B92281A3}</Project>
+      <Name>Xi.OPC.COM.API</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Xi OPC COM\Impl\Xi OPC COM Impl.vcxproj">
+      <Project>{dffb40e3-be18-4b82-99d3-2aa382ef418c}</Project>
+      <Name>Xi.OPC.COM.Impl</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Xi Server Base\Xi.Server.Base.csproj">
+      <Project>{01B26CC7-5F9B-4A48-B1A6-1D8E65FD24D3}</Project>
+      <Name>Xi.Server.Base</Name>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>rem "$(ProjectDir)..\..\Field View\Honeywell.WpfHmi.Common\CopyRefDLLIfCompiledwithoutUso.bat" "$(ProjectDir)$(OutDir)" "$(ProjectDir)..\"</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

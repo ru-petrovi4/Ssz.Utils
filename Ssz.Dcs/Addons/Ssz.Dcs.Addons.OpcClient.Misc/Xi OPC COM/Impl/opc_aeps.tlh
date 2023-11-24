@@ -1,0 +1,346 @@
+﻿// Created by Microsoft (R) C/C++ Compiler Version 15.00.30729.01 (b3701a52).
+//
+// d:\junkproj\atldll\debug\opc_aeps.tlh
+//
+// C++ source equivalent of Win32 type library C:\EmersonCommon\opc_aeps.dll
+// compiler-generated file created 03/12/09 at 13:28:52 - DO NOT EDIT!
+
+#pragma once
+#pragma pack(push, 8)
+
+#include <comdef.h>
+
+//
+// Forward references and typedefs
+//
+
+struct __declspec(uuid("65168844-5783-11d1-84a0-00608cb8a7e9"))
+/* LIBID */ __OPC_AE;
+struct __declspec(uuid("65168851-5783-11d1-84a0-00608cb8a7e9"))
+/* interface */ IOPCEventServer;
+struct __MIDL___MIDL_itf_opc_ae_0209_0005;
+enum __MIDL___MIDL_itf_opc_ae_0209_0003;
+struct __MIDL___MIDL_itf_opc_ae_0209_0006;
+struct __declspec(uuid("65168855-5783-11d1-84a0-00608cb8a7e9"))
+/* interface */ IOPCEventSubscriptionMgt;
+struct __declspec(uuid("65168857-5783-11d1-84a0-00608cb8a7e9"))
+/* interface */ IOPCEventAreaBrowser;
+enum __MIDL___MIDL_itf_opc_ae_0209_0001;
+enum __MIDL___MIDL_itf_opc_ae_0209_0002;
+struct __declspec(uuid("6516885f-5783-11d1-84a0-00608cb8a7e9"))
+/* interface */ IOPCEventSink;
+struct __MIDL___MIDL_itf_opc_ae_0209_0004;
+struct __declspec(uuid("58e13251-ac87-11d1-84d5-00608cb8a7e9"))
+/* interface */ OPCEventServerCATID;
+typedef struct __MIDL___MIDL_itf_opc_ae_0209_0005 OPCEVENTSERVERSTATUS;
+typedef struct __MIDL___MIDL_itf_opc_ae_0209_0006 OPCCONDITIONSTATE;
+typedef enum __MIDL___MIDL_itf_opc_ae_0209_0001 OPCAEBROWSEDIRECTION;
+typedef enum __MIDL___MIDL_itf_opc_ae_0209_0002 OPCAEBROWSETYPE;
+typedef struct __MIDL___MIDL_itf_opc_ae_0209_0004 ONEVENTSTRUCT;
+
+//
+// Smart pointer typedef declarations
+//
+
+_COM_SMARTPTR_TYPEDEF(IOPCEventServer, __uuidof(IOPCEventServer));
+_COM_SMARTPTR_TYPEDEF(IOPCEventSubscriptionMgt, __uuidof(IOPCEventSubscriptionMgt));
+_COM_SMARTPTR_TYPEDEF(IOPCEventAreaBrowser, __uuidof(IOPCEventAreaBrowser));
+_COM_SMARTPTR_TYPEDEF(IOPCEventSink, __uuidof(IOPCEventSink));
+_COM_SMARTPTR_TYPEDEF(OPCEventServerCATID, __uuidof(OPCEventServerCATID));
+
+//
+// Type library items
+//
+
+enum __MIDL___MIDL_itf_opc_ae_0209_0003
+{
+    OPCAE_STATUS_RUNNING = 1,
+    OPCAE_STATUS_FAILED = 2,
+    OPCAE_STATUS_NOCONFIG = 3,
+    OPCAE_STATUS_SUSPENDED = 4,
+    OPCAE_STATUS_TEST = 5
+};
+
+#pragma pack(push, 4)
+
+struct __MIDL___MIDL_itf_opc_ae_0209_0005
+{
+    struct _FILETIME ftStartTime;
+    struct _FILETIME ftCurrentTime;
+    struct _FILETIME ftLastUpdateTime;
+    enum __MIDL___MIDL_itf_opc_ae_0209_0003 dwServerState;
+    unsigned short wMajorVersion;
+    unsigned short wMinorVersion;
+    unsigned short wBuildNumber;
+    unsigned short wReserved;
+    LPWSTR szVendorInfo;
+};
+
+#pragma pack(pop)
+
+struct __declspec(uuid("65168851-5783-11d1-84a0-00608cb8a7e9"))
+IOPCEventServer : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall GetStatus (
+        /*[out]*/ OPCEVENTSERVERSTATUS * * ppEventServerStatus ) = 0;
+      virtual HRESULT __stdcall CreateEventSubscription (
+        /*[in]*/ long bActive,
+        /*[in]*/ unsigned long dwBufferTime,
+        /*[in]*/ unsigned long dwMaxSize,
+        /*[in]*/ unsigned long hClientSubscription,
+        /*[in]*/ GUID * riid,
+        /*[out]*/ IUnknown * * ppUnk,
+        /*[out]*/ unsigned long * pdwRevisedBufferTime,
+        /*[out]*/ unsigned long * pdwRevisedMaxSize ) = 0;
+      virtual HRESULT __stdcall QueryAvailableFilters (
+        /*[out]*/ unsigned long * pdwFilterMask ) = 0;
+      virtual HRESULT __stdcall QueryEventCategories (
+        /*[in]*/ unsigned long dwEventType,
+        /*[out]*/ unsigned long * pdwCount,
+        /*[out]*/ unsigned long * * ppdwEventCategories,
+        /*[out]*/ LPWSTR * * ppszEventCategoryDescs ) = 0;
+      virtual HRESULT __stdcall QueryConditionNames (
+        /*[in]*/ unsigned long dwEventCategory,
+        /*[out]*/ unsigned long * pdwCount,
+        /*[out]*/ LPWSTR * * ppszConditionNames ) = 0;
+      virtual HRESULT __stdcall QuerySubConditionNames (
+        /*[in]*/ LPWSTR szConditionName,
+        /*[out]*/ unsigned long * pdwCount,
+        /*[out]*/ LPWSTR * * ppszSubConditionNames ) = 0;
+      virtual HRESULT __stdcall QuerySourceConditions (
+        /*[in]*/ LPWSTR szSource,
+        /*[out]*/ unsigned long * pdwCount,
+        /*[out]*/ LPWSTR * * ppszConditionNames ) = 0;
+      virtual HRESULT __stdcall QueryEventAttributes (
+        /*[in]*/ unsigned long dwEventCategory,
+        /*[out]*/ unsigned long * pdwCount,
+        /*[out]*/ unsigned long * * ppdwAttrIDs,
+        /*[out]*/ LPWSTR * * ppszAttrDescs,
+        /*[out]*/ unsigned short * * ppvtAttrTypes ) = 0;
+      virtual HRESULT __stdcall TranslateToItemIDs (
+        /*[in]*/ LPWSTR szSource,
+        /*[in]*/ unsigned long dwEventCategory,
+        /*[in]*/ LPWSTR szConditionName,
+        /*[in]*/ LPWSTR szSubconditionName,
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * pdwAssocAttrIDs,
+        /*[out]*/ LPWSTR * * ppszAttrItemIDs,
+        /*[out]*/ LPWSTR * * ppszNodeNames,
+        /*[out]*/ GUID * * ppCLSIDs ) = 0;
+      virtual HRESULT __stdcall GetConditionState (
+        /*[in]*/ LPWSTR szSource,
+        /*[in]*/ LPWSTR szConditionName,
+        /*[in]*/ unsigned long dwNumEventAttrs,
+        /*[in]*/ unsigned long * pdwAttributeIDs,
+        /*[out]*/ OPCCONDITIONSTATE * * ppConditionState ) = 0;
+      virtual HRESULT __stdcall EnableConditionByArea (
+        /*[in]*/ unsigned long dwNumAreas,
+        /*[in]*/ LPWSTR * pszAreas ) = 0;
+      virtual HRESULT __stdcall EnableConditionBySource (
+        /*[in]*/ unsigned long dwNumSources,
+        /*[in]*/ LPWSTR * pszSources ) = 0;
+      virtual HRESULT __stdcall DisableConditionByArea (
+        /*[in]*/ unsigned long dwNumAreas,
+        /*[in]*/ LPWSTR * pszAreas ) = 0;
+      virtual HRESULT __stdcall DisableConditionBySource (
+        /*[in]*/ unsigned long dwNumSources,
+        /*[in]*/ LPWSTR * pszSources ) = 0;
+      virtual HRESULT __stdcall AckCondition (
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ LPWSTR szAcknowledgerID,
+        /*[in]*/ LPWSTR szComment,
+        /*[in]*/ LPWSTR * pszSource,
+        /*[in]*/ LPWSTR * pszConditionName,
+        /*[in]*/ struct _FILETIME * pftActiveTime,
+        /*[in]*/ unsigned long * pdwCookie,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall CreateAreaBrowser (
+        /*[in]*/ GUID * riid,
+        /*[out]*/ IUnknown * * ppUnk ) = 0;
+};
+
+#pragma pack(push, 4)
+
+struct __MIDL___MIDL_itf_opc_ae_0209_0006
+{
+    unsigned short wState;
+    unsigned short wReserved1;
+    LPWSTR szActiveSubCondition;
+    LPWSTR szASCDefinition;
+    unsigned long dwASCSeverity;
+    LPWSTR szASCDescription;
+    unsigned short wQuality;
+    unsigned short wReserved2;
+    struct _FILETIME ftLastAckTime;
+    struct _FILETIME ftSubCondLastActive;
+    struct _FILETIME ftCondLastActive;
+    struct _FILETIME ftCondLastInactive;
+    LPWSTR szAcknowledgerID;
+    LPWSTR szComment;
+    unsigned long dwNumSCs;
+    LPWSTR * pszSCNames;
+    LPWSTR * pszSCDefinitions;
+    unsigned long * pdwSCSeverities;
+    LPWSTR * pszSCDescriptions;
+    unsigned long dwNumEventAttrs;
+    VARIANT * pEventAttributes;
+    HRESULT * pErrors;
+};
+
+#pragma pack(pop)
+
+struct __declspec(uuid("65168855-5783-11d1-84a0-00608cb8a7e9"))
+IOPCEventSubscriptionMgt : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall SetFilter (
+        /*[in]*/ unsigned long dwEventType,
+        /*[in]*/ unsigned long dwNumCategories,
+        /*[in]*/ unsigned long * pdwEventCategories,
+        /*[in]*/ unsigned long dwLowSeverity,
+        /*[in]*/ unsigned long dwHighSeverity,
+        /*[in]*/ unsigned long dwNumAreas,
+        /*[in]*/ LPWSTR * pszAreaList,
+        /*[in]*/ unsigned long dwNumSources,
+        /*[in]*/ LPWSTR * pszSourceList ) = 0;
+      virtual HRESULT __stdcall GetFilter (
+        /*[out]*/ unsigned long * pdwEventType,
+        /*[out]*/ unsigned long * pdwNumCategories,
+        /*[out]*/ unsigned long * * ppdwEventCategories,
+        /*[out]*/ unsigned long * pdwLowSeverity,
+        /*[out]*/ unsigned long * pdwHighSeverity,
+        /*[out]*/ unsigned long * pdwNumAreas,
+        /*[out]*/ LPWSTR * * ppszAreaList,
+        /*[out]*/ unsigned long * pdwNumSources,
+        /*[out]*/ LPWSTR * * ppszSourceList ) = 0;
+      virtual HRESULT __stdcall SelectReturnedAttributes (
+        /*[in]*/ unsigned long dwEventCategory,
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * dwAttributeIDs ) = 0;
+      virtual HRESULT __stdcall GetReturnedAttributes (
+        /*[in]*/ unsigned long dwEventCategory,
+        /*[out]*/ unsigned long * pdwCount,
+        /*[out]*/ unsigned long * * ppdwAttributeIDs ) = 0;
+      virtual HRESULT __stdcall Refresh (
+        /*[in]*/ unsigned long dwConnection ) = 0;
+      virtual HRESULT __stdcall CancelRefresh (
+        /*[in]*/ unsigned long dwConnection ) = 0;
+      virtual HRESULT __stdcall GetState (
+        /*[out]*/ long * pbActive,
+        /*[out]*/ unsigned long * pdwBufferTime,
+        /*[out]*/ unsigned long * pdwMaxSize,
+        /*[out]*/ unsigned long * phClientSubscription ) = 0;
+      virtual HRESULT __stdcall SetState (
+        /*[in]*/ long * pbActive,
+        /*[in]*/ unsigned long * pdwBufferTime,
+        /*[in]*/ unsigned long * pdwMaxSize,
+        /*[in]*/ unsigned long hClientSubscription,
+        /*[out]*/ unsigned long * pdwRevisedBufferTime,
+        /*[out]*/ unsigned long * pdwRevisedMaxSize ) = 0;
+};
+
+enum __MIDL___MIDL_itf_opc_ae_0209_0001
+{
+    OPCAE_BROWSE_UP = 1,
+    OPCAE_BROWSE_DOWN = 2,
+    OPCAE_BROWSE_TO = 3
+};
+
+enum __MIDL___MIDL_itf_opc_ae_0209_0002
+{
+    OPC_AREA = 1,
+    OPC_SOURCE = 2
+};
+
+struct __declspec(uuid("65168857-5783-11d1-84a0-00608cb8a7e9"))
+IOPCEventAreaBrowser : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall ChangeBrowsePosition (
+        /*[in]*/ OPCAEBROWSEDIRECTION dwBrowseDirection,
+        /*[in]*/ LPWSTR szString ) = 0;
+      virtual HRESULT __stdcall BrowseOPCAreas (
+        /*[in]*/ OPCAEBROWSETYPE dwBrowseFilterType,
+        /*[in]*/ LPWSTR szFilterCriteria,
+        /*[out]*/ struct IEnumString * * ppIEnumString ) = 0;
+      virtual HRESULT __stdcall GetQualifiedAreaName (
+        /*[in]*/ LPWSTR szAreaName,
+        /*[out]*/ LPWSTR * pszQualifiedAreaName ) = 0;
+      virtual HRESULT __stdcall GetQualifiedSourceName (
+        /*[in]*/ LPWSTR szSourceName,
+        /*[out]*/ LPWSTR * pszQualifiedSourceName ) = 0;
+};
+
+struct __declspec(uuid("6516885f-5783-11d1-84a0-00608cb8a7e9"))
+IOPCEventSink : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall OnEvent (
+        /*[in]*/ unsigned long hClientSubscription,
+        /*[in]*/ long bRefresh,
+        /*[in]*/ long bLastRefresh,
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ ONEVENTSTRUCT * pEvents ) = 0;
+};
+
+#pragma pack(push, 4)
+
+struct __MIDL___MIDL_itf_opc_ae_0209_0004
+{
+    unsigned short wChangeMask;
+    unsigned short wNewState;
+    LPWSTR szSource;
+    struct _FILETIME ftTime;
+    LPWSTR szMessage;
+    unsigned long dwEventType;
+    unsigned long dwEventCategory;
+    unsigned long dwSeverity;
+    LPWSTR szConditionName;
+    LPWSTR szSubconditionName;
+    unsigned short wQuality;
+    unsigned short wReserved;
+    long bAckRequired;
+    struct _FILETIME ftActiveTime;
+    unsigned long dwCookie;
+    unsigned long dwNumEventAttrs;
+    VARIANT * pEventAttributes;
+    LPWSTR szActorID;
+};
+
+#pragma pack(pop)
+
+struct __declspec(uuid("58e13251-ac87-11d1-84d5-00608cb8a7e9"))
+OPCEventServerCATID
+{};
+
+//
+// Named GUID constants initializations
+//
+
+extern "C" const GUID __declspec(selectany) LIBID_OPC_AE =
+    {0x65168844,0x5783,0x11d1,{0x84,0xa0,0x00,0x60,0x8c,0xb8,0xa7,0xe9}};
+extern "C" const GUID __declspec(selectany) IID_IOPCEventServer =
+    {0x65168851,0x5783,0x11d1,{0x84,0xa0,0x00,0x60,0x8c,0xb8,0xa7,0xe9}};
+extern "C" const GUID __declspec(selectany) IID_IOPCEventSubscriptionMgt =
+    {0x65168855,0x5783,0x11d1,{0x84,0xa0,0x00,0x60,0x8c,0xb8,0xa7,0xe9}};
+extern "C" const GUID __declspec(selectany) IID_IOPCEventAreaBrowser =
+    {0x65168857,0x5783,0x11d1,{0x84,0xa0,0x00,0x60,0x8c,0xb8,0xa7,0xe9}};
+extern "C" const GUID __declspec(selectany) IID_IOPCEventSink =
+    {0x6516885f,0x5783,0x11d1,{0x84,0xa0,0x00,0x60,0x8c,0xb8,0xa7,0xe9}};
+extern "C" const GUID __declspec(selectany) IID_OPCEventServerCATID =
+    {0x58e13251,0xac87,0x11d1,{0x84,0xd5,0x00,0x60,0x8c,0xb8,0xa7,0xe9}};
+
+#pragma pack(pop)

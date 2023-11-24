@@ -1,0 +1,201 @@
+/**********************************************************************
+ * Copyright © 2009, 2010, 2011, 2012 OPC Foundation, Inc. 
+ *
+ * The source code and all binaries built with the OPC .NET 3.0 source
+ * code are subject to the terms of the Express Interface Public
+ * License (Xi-PL).  See http://www.opcfoundation.org/License/Xi-PL/
+ *
+ * The source code may be distributed from an OPC member company in
+ * its original or modified form to its customers and to any others who
+ * have software that needs to interoperate with the OPC member's OPC
+* .NET 3.0 products. No other redistribution is permitted.
+ *
+ * You must not remove this notice, or any other, from this software.
+ *
+ *********************************************************************/
+
+using System.Collections.Generic;
+using System.ServiceModel;
+using Xi.Contracts.Data;
+
+namespace Xi.Contracts
+{
+	/// <summary>
+	/// This interface is composed of methods used to write/update 
+	/// data, alarms, and events and their histories.
+	/// </summary>
+	[ServiceContract(Namespace = "urn:xi/contracts")]
+	public interface IWrite
+	{
+		/// <summary>
+		/// <para>This method is used to write the values of one or more 
+		/// data objects in a list.  It is also used as a keep-alive for the 
+		/// write endpoint by setting the listId parameter to 0. In this case,
+		/// null is returned immediately.</para>
+		/// </summary>
+		/// <param name="contextId">
+		/// The context identifier.
+		/// </param>
+		/// <param name="listId">
+		/// The server identifier of the list that contains data objects to be read.
+		/// Null if this is a keep-alive.
+		/// </param>
+		/// <param name="writeValueArrays">
+		/// The server aliases and values of the data objects to write.
+		/// </param>
+		/// <returns>
+		/// The list server aliases and result codes for the data objects whose 
+		/// write failed. Returns null if all writes succeeded or null if this 
+		/// is a keep-alive.  
+		/// </returns>
+		[OperationContract, FaultContract(typeof(XiFault))]
+		List<AliasResult> WriteValues(string contextId, uint listId,
+									WriteValueArrays writeValueArrays);
+
+		/// <summary>
+		/// This method is used to write the data value, status, and 
+		/// timestamp for one or more data objects.
+		/// </summary>
+		/// <param name="contextId">
+		/// The context identifier.
+		/// </param>
+		/// <param name="listId">
+		/// The server identifier of the list that contains the data objects 
+		/// to be written.</param>
+		/// <param name="writeValueArrays">
+		/// The list of values to be written. For performance purposes, this list 
+		/// is represented by typed parallel arrays for the server alias, value,
+		/// timestamp, and status. See the definition of DataValueArraysWithAlias 
+		/// for more information.
+		/// </param>
+		/// <returns>
+		/// The list of error results.  Only values that could not be written are 
+		/// included in this list.
+		/// </returns>
+		[OperationContract, FaultContract(typeof(XiFault))]
+		List<AliasResult> WriteVST(string contextId, uint listId,
+									DataValueArraysWithAlias writeValueArrays);
+
+		/// <summary>
+		/// <para>This method is used to modify historical data values.  
+		/// The modification type parameter indicates the type of 
+		/// modification to perform.  </para>
+		/// </summary>
+		/// <param name="contextId">
+		/// The context identifier.
+		/// </param>
+		/// <param name="listId">
+		/// The server identifier of the list that contains the data objects 
+		/// to be written.
+		/// </param>
+		/// <param name="modificationType">
+		/// Indicates the type of modification to perform.  
+		/// </param>
+		/// <param name="valuesToWrite">
+		/// The array of historical values to write.  Each is identified 
+		/// by its list id, its server alias, and its timestamp.
+		/// </param>
+		/// <returns>
+		/// The list of identifiers and error codes for each data object 
+		/// whose write failed. Returns null if all writes succeeded.  
+		/// </returns>
+		[OperationContract, FaultContract(typeof(XiFault))]
+		List<DataJournalWriteResult> WriteJournalData(string contextId, uint listId,
+			ModificationType modificationType, WriteJournalValues[] valuesToWrite);
+
+		/// <summary>
+		/// <para>This method is used to modify historical alarms and/or 
+		/// events. The modification type parameter indicates the type of 
+		/// modification to perform.  </para>
+		/// </summary>
+		/// <param name="contextId">
+		/// The context identifier.
+		/// </param>
+		/// <param name="listId">
+		/// The server identifier of the list that contains the alarms and/or 
+		/// events to be written.
+		/// </param>
+		/// <param name="modificationType">
+		/// Indicates the type of modification to perform.  
+		/// </param>
+		/// <param name="eventsToWrite">
+		/// The list of historical alarms and/or events to write.  Each 
+		/// is identified by its EventId contained in the EventMessage.
+		/// </param>
+		/// <returns>
+		/// The list server aliases and result codes for the alarms and/or 
+		/// events whose write failed. Returns null if all writes succeeded.  
+		/// </returns>
+		[OperationContract, FaultContract(typeof(XiFault))]
+		List<EventIdResult> WriteJournalEvents(string contextId, uint listId,
+			ModificationType modificationType, EventMessage[] eventsToWrite);
+
+		/// <summary>
+		/// <para>This method is used to acknowledge one or more alarms.</para>
+		/// </summary>
+		/// <param name="contextId">
+		/// The context identifier.
+		/// </param>
+		/// <param name="listId">
+		/// The server identifier for the list that contains the alarms to be 
+		/// acknowledged.
+		/// </param>
+		/// <param name="operatorName">
+		/// The name or other identifier of the operator who is acknowledging 
+		/// the alarm.
+		/// </param>
+		/// <param name="comment">
+		/// An optional comment submitted by the operator to accompany the 
+		/// acknowledgement.
+		/// </param>
+		/// <param name="alarmsToAck">
+		/// The list of alarms to acknowledge.
+		/// </param>
+		/// <returns>
+		/// The list EventIds and result codes for the alarms whose 
+		/// acknowledgement failed. Returns null if all acknowledgements 
+		/// succeeded.  
+		/// </returns>
+		[OperationContract, FaultContract(typeof(XiFault))]
+		List<EventIdResult> AcknowledgeAlarms(string contextId, uint listId,
+			string operatorName, string comment, List<EventId> alarmsToAck);
+
+		/// <summary>
+		/// This method allows the client to send a message to the server that 
+		/// the server delivers unmodified to the intended recipient.
+		/// </summary>
+		/// <param name="contextId">
+		/// The context identifier.
+		/// </param>
+		/// <param name="recipientId">
+		/// The recipient identifier. The list of recipients is contained in 
+		/// the RecipientPassthroughs MIB element.   
+		/// </param>
+		/// <param name="invokeId">
+		/// A client-defined integer identifier for this invocation of the passthrough.  When
+		/// used with asynchronous passthroughs, the server returns the invokeId with the response.  
+		/// </param>
+		/// <param name="passthroughName">
+		/// The name of the passthrough message. The list of passthroughs for a recipient 
+		/// is contained in the RecipientPassthroughs MIB element.   
+		/// </param>
+		/// <param name="DataToSend">
+		/// The Data To Send is just an array of bytes.  No interpretation of the data 
+		/// is made by the Xi server.  This byte array is forwarded unaltered to the 
+		/// underlying system.  It is up to the client application to format this byte 
+		/// array in a valid format for the underlying system.
+		/// </param>
+		/// <returns>
+		/// The Passthrough Result returns a Result value and a byte array as 
+		/// returned from the underlying system.  It is up to the client 
+		/// application to interpret this byte array.  If the passthrough returns its 
+		/// response asynchronously, the result code in the response indicates whether 
+		/// the passthrough was invoked. The results of asynchronous passthroughs are 
+		/// returned via the callback or poll interface.
+		/// </returns>
+		[OperationContract, FaultContract(typeof(XiFault))]
+		PassthroughResult Passthrough(string contextId, string recipientId, int invokeId,
+									  string passthroughName, byte[] DataToSend);
+
+	}
+}

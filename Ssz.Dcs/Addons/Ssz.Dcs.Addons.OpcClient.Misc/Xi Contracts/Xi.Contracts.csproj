@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F92703BF-619B-4BC9-BAE0-1493160B89B9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Xi.Contracts</RootNamespace>
+    <AssemblyName>Xi.Contracts</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>bin\Release\Xi.Contracts.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel.Web">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Data\AddDataObjectResult.cs" />
+    <Compile Include="Data\AlarmEnabledState.cs" />
+    <Compile Include="Data\ErrorInfo.cs" />
+    <Compile Include="Data\AlarmSummary.cs" />
+    <Compile Include="Data\AlarmCondition.cs" />
+    <Compile Include="Data\AlarmMessageData.cs" />
+    <Compile Include="Data\AlarmDescription.cs" />
+    <Compile Include="Data\AlarmState.cs" />
+    <Compile Include="Data\AliasUpdate.cs" />
+    <Compile Include="Data\DataValueArrays.cs" />
+    <Compile Include="Data\EndpointConfiguration.cs" />
+    <Compile Include="Data\EventMessageField.cs" />
+    <Compile Include="Data\FilterSet.cs" />
+    <Compile Include="Data\AliasAndCalculation.cs" />
+    <Compile Include="Data\JournalDataChangedValues.cs" />
+    <Compile Include="Data\MexEndpointInfo.cs" />
+    <Compile Include="Data\ModifyListAttrsResult.cs" />
+    <Compile Include="Data\ObjectAttributeFlags.cs" />
+    <Compile Include="Data\ORedFilters.cs" />
+    <Compile Include="Data\ParameterDefinition.cs" />
+    <Compile Include="Data\ServerDetails.cs" />
+    <Compile Include="Data\DataJournalWriteResult.cs" />
+    <Compile Include="Data\FindCriteria.cs" />
+    <Compile Include="Data\ObjectPath.cs" />
+    <Compile Include="Data\ServerStatus.cs" />
+    <Compile Include="Data\EndpointConfigurationEx.cs" />
+    <Compile Include="Data\SetCallbackResult.cs" />
+    <Compile Include="Data\XiFault.cs" />
+    <Compile Include="Data\XiStatusCode.cs" />
+    <Compile Include="Data\StringTableEntry.cs" />
+    <Compile Include="Data\TypeId.cs" />
+    <Compile Include="Data\TypeIdResult.cs" />
+    <Compile Include="Data\EventIdResult.cs" />
+    <Compile Include="Data\FilterCriterion.cs" />
+    <Compile Include="Data\JournalDataPropertyValue.cs" />
+    <Compile Include="Data\ListInstanceId.cs" />
+    <Compile Include="Data\ObjectRole.cs" />
+    <Compile Include="Data\EndpointDefinition.cs" />
+    <Compile Include="Data\CategoryConfiguration.cs" />
+    <Compile Include="Data\EventId.cs" />
+    <Compile Include="Data\EventMessage.cs" />
+    <Compile Include="Data\EventType.cs" />
+    <Compile Include="Data\AliasResult.cs" />
+    <Compile Include="Data\PassthroughResult.cs" />
+    <Compile Include="Data\DataValueArraysWithAlias.cs" />
+    <Compile Include="Data\RequestedString.cs" />
+    <Compile Include="Data\WriteJournalValues.cs" />
+    <Compile Include="Data\ModificationAttributesList.cs" />
+    <Compile Include="Data\DataJournalOptions.cs" />
+    <Compile Include="Data\JournalDataValues.cs" />
+    <Compile Include="Data\ListAttributes.cs" />
+    <Compile Include="Data\StandardMib.cs" />
+    <Compile Include="Data\ModificationType.cs" />
+    <Compile Include="Data\PassthroughMessage.cs" />
+    <Compile Include="Data\RecipientPassthroughs.cs" />
+    <Compile Include="Data\TypeAttributes.cs" />
+    <Compile Include="Data\ObjectAttributes.cs" />
+    <Compile Include="Data\InstanceId.cs" />
+    <Compile Include="Data\ServerEntry.cs" />
+    <Compile Include="Data\ServerState.cs" />
+    <Compile Include="Data\WriteValueArrays.cs" />
+    <Compile Include="ICallback.cs" />
+    <Compile Include="IWrite.cs" />
+    <Compile Include="IServerDiscovery.cs" />
+    <Compile Include="IRead.cs" />
+    <Compile Include="IPoll.cs" />
+    <Compile Include="IRestRead.cs" />
+    <Compile Include="IResourceManagement.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Data\ServerDescription.cs" />
+    <Compile Include="Data\XiMethods.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="key.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Ssz.Utils\Ssz.Utils.csproj">
+      <Project>{4e177cf8-b666-4b36-9ccb-427cf4c173b5}</Project>
+      <Name>Ssz.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

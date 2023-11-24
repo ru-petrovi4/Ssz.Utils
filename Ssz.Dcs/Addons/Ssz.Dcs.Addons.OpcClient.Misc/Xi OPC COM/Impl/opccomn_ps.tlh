@@ -1,0 +1,156 @@
+﻿// Created by Microsoft (R) C/C++ Compiler Version 15.00.30729.01 (8a3dc2d4).
+//
+// d:\junkproj\atldll\debug\opccomn_ps.tlh
+//
+// C++ source equivalent of Win32 type library C:\EmersonCommon\opccomn_ps.dll
+// compiler-generated file created 03/12/09 at 13:28:52 - DO NOT EDIT!
+
+#pragma once
+#pragma pack(push, 8)
+
+#include <comdef.h>
+
+//
+// Forward references and typedefs
+//
+
+struct __declspec(uuid("b28eedb1-ac6f-11d1-84d5-00608cb8a7e9"))
+/* LIBID */ __OPCCOMN;
+struct __declspec(uuid("f31dfde2-07b6-11d2-b2d8-0060083ba1fb"))
+/* interface */ IOPCCommon;
+struct __declspec(uuid("f31dfde1-07b6-11d2-b2d8-0060083ba1fb"))
+/* interface */ IOPCShutdown;
+struct __declspec(uuid("13486d50-4821-11d2-a494-3cb306c10000"))
+/* interface */ IOPCServerList;
+struct __declspec(uuid("9dd0b56c-ad9e-43ee-8305-487f3188bf7a"))
+/* interface */ IOPCServerList2;
+struct __declspec(uuid("55c382c8-21c7-4e88-96c1-becfb1e3f483"))
+/* interface */ IOPCEnumGUID;
+
+//
+// Smart pointer typedef declarations
+//
+
+_COM_SMARTPTR_TYPEDEF(IOPCCommon, __uuidof(IOPCCommon));
+_COM_SMARTPTR_TYPEDEF(IOPCShutdown, __uuidof(IOPCShutdown));
+_COM_SMARTPTR_TYPEDEF(IOPCServerList, __uuidof(IOPCServerList));
+_COM_SMARTPTR_TYPEDEF(IOPCEnumGUID, __uuidof(IOPCEnumGUID));
+_COM_SMARTPTR_TYPEDEF(IOPCServerList2, __uuidof(IOPCServerList2));
+
+//
+// Type library items
+//
+
+struct __declspec(uuid("f31dfde2-07b6-11d2-b2d8-0060083ba1fb"))
+IOPCCommon : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall SetLocaleID (
+        /*[in]*/ unsigned long dwLcid ) = 0;
+      virtual HRESULT __stdcall GetLocaleID (
+        /*[out]*/ unsigned long * pdwLcid ) = 0;
+      virtual HRESULT __stdcall QueryAvailableLocaleIDs (
+        /*[out]*/ unsigned long * pdwCount,
+        /*[out]*/ unsigned long * * pdwLcid ) = 0;
+      virtual HRESULT __stdcall GetErrorString (
+        /*[in]*/ HRESULT dwError,
+        /*[out]*/ LPWSTR * ppString ) = 0;
+      virtual HRESULT __stdcall SetClientName (
+        /*[in]*/ LPWSTR szName ) = 0;
+};
+
+struct __declspec(uuid("f31dfde1-07b6-11d2-b2d8-0060083ba1fb"))
+IOPCShutdown : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall ShutdownRequest (
+        /*[in]*/ LPWSTR szReason ) = 0;
+};
+
+struct __declspec(uuid("13486d50-4821-11d2-a494-3cb306c10000"))
+IOPCServerList : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall EnumClassesOfCategories (
+        /*[in]*/ unsigned long cImplemented,
+        /*[in]*/ GUID * rgcatidImpl,
+        /*[in]*/ unsigned long cRequired,
+        /*[in]*/ GUID * rgcatidReq,
+        /*[out]*/ struct IEnumGUID * * ppenumClsid ) = 0;
+      virtual HRESULT __stdcall GetClassDetails (
+        /*[in]*/ GUID * clsid,
+        /*[out]*/ LPWSTR * ppszProgID,
+        /*[out]*/ LPWSTR * ppszUserType ) = 0;
+      virtual HRESULT __stdcall CLSIDFromProgID (
+        /*[in]*/ LPWSTR szProgId,
+        /*[out]*/ GUID * clsid ) = 0;
+};
+
+struct __declspec(uuid("55c382c8-21c7-4e88-96c1-becfb1e3f483"))
+IOPCEnumGUID : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall Next (
+        /*[in]*/ unsigned long celt,
+        /*[out]*/ GUID * rgelt,
+        /*[out]*/ unsigned long * pceltFetched ) = 0;
+      virtual HRESULT __stdcall Skip (
+        /*[in]*/ unsigned long celt ) = 0;
+      virtual HRESULT __stdcall Reset ( ) = 0;
+      virtual HRESULT __stdcall Clone (
+        /*[out]*/ struct IOPCEnumGUID * * ppenum ) = 0;
+};
+
+struct __declspec(uuid("9dd0b56c-ad9e-43ee-8305-487f3188bf7a"))
+IOPCServerList2 : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall EnumClassesOfCategories (
+        /*[in]*/ unsigned long cImplemented,
+        /*[in]*/ GUID * rgcatidImpl,
+        /*[in]*/ unsigned long cRequired,
+        /*[in]*/ GUID * rgcatidReq,
+        /*[out]*/ struct IOPCEnumGUID * * ppenumClsid ) = 0;
+      virtual HRESULT __stdcall GetClassDetails (
+        /*[in]*/ GUID * clsid,
+        /*[out]*/ LPWSTR * ppszProgID,
+        /*[out]*/ LPWSTR * ppszUserType,
+        /*[out]*/ LPWSTR * ppszVerIndProgID ) = 0;
+      virtual HRESULT __stdcall CLSIDFromProgID (
+        /*[in]*/ LPWSTR szProgId,
+        /*[out]*/ GUID * clsid ) = 0;
+};
+
+//
+// Named GUID constants initializations
+//
+
+extern "C" const GUID __declspec(selectany) LIBID_OPCCOMN =
+    {0xb28eedb1,0xac6f,0x11d1,{0x84,0xd5,0x00,0x60,0x8c,0xb8,0xa7,0xe9}};
+extern "C" const GUID __declspec(selectany) IID_IOPCCommon =
+    {0xf31dfde2,0x07b6,0x11d2,{0xb2,0xd8,0x00,0x60,0x08,0x3b,0xa1,0xfb}};
+extern "C" const GUID __declspec(selectany) IID_IOPCShutdown =
+    {0xf31dfde1,0x07b6,0x11d2,{0xb2,0xd8,0x00,0x60,0x08,0x3b,0xa1,0xfb}};
+extern "C" const GUID __declspec(selectany) IID_IOPCServerList =
+    {0x13486d50,0x4821,0x11d2,{0xa4,0x94,0x3c,0xb3,0x06,0xc1,0x00,0x00}};
+extern "C" const GUID __declspec(selectany) IID_IOPCEnumGUID =
+    {0x55c382c8,0x21c7,0x4e88,{0x96,0xc1,0xbe,0xcf,0xb1,0xe3,0xf4,0x83}};
+extern "C" const GUID __declspec(selectany) IID_IOPCServerList2 =
+    {0x9dd0b56c,0xad9e,0x43ee,{0x83,0x05,0x48,0x7f,0x31,0x88,0xbf,0x7a}};
+
+#pragma pack(pop)

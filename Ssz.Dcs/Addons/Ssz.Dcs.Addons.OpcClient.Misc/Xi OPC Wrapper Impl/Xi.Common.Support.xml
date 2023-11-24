@@ -1,0 +1,281 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Xi.Common.Support</name>
+    </assembly>
+    <members>
+        <member name="T:Xi.Common.Support.FaultSR">
+            <summary>
+            This class is used to lookup error codes
+            </summary>
+        </member>
+        <member name="M:Xi.Common.Support.FaultSR.#ctor(System.String)">
+            <summary>
+            Constructor which creates the dictionary from an XML definition.
+            </summary>
+            <param name="errorDictionary"></param>
+        </member>
+        <member name="M:Xi.Common.Support.FaultSR.ParseErrorNumber(System.String)">
+            <summary>
+            Parses out error codes and allows for both integer and hexidecimal varieties.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xi.Common.Support.FaultSR.#ctor(System.Collections.Generic.Dictionary{System.UInt32,System.String})">
+            <summary>
+            Constructor which takes the error codes as a Dictionary.
+            </summary>
+            <param name="errorCodes"></param>
+        </member>
+        <member name="M:Xi.Common.Support.FaultSR.#ctor">
+            <summary>
+            Internal constructor which creates the default set if the server does not supply them
+            </summary>
+        </member>
+        <member name="M:Xi.Common.Support.FaultSR.Get(System.UInt32)">
+            <summary>
+            Retrieves the error text for a given error code.
+            </summary>
+            <param name="errorCode">Error Code</param>
+            <returns>Text Message</returns>
+        </member>
+        <member name="T:Xi.Common.Support.Extensions.FaultHelpers">
+            <summary>
+            Simple class to help process WCF faults
+            </summary>
+        </member>
+        <member name="M:Xi.Common.Support.Extensions.FaultHelpers.Create(System.Exception)">
+            <summary>
+            This processes an exception and wraps it into an XiFault object
+            and rethrows as a FaultException
+            </summary>
+            <param name="ex"></param>
+        </member>
+        <member name="M:Xi.Common.Support.Extensions.FaultHelpers.Create(System.String)">
+            <summary>
+            This throws a new FaultException with the XiFault detail
+            </summary>
+            <param name="message">Error string</param>
+        </member>
+        <member name="M:Xi.Common.Support.Extensions.FaultHelpers.Create(System.UInt32)">
+            <summary>
+            This throws a new FaultException with the XiFault detail
+            </summary>
+            <param name="errorCode">Error string</param>
+        </member>
+        <member name="M:Xi.Common.Support.Extensions.FaultHelpers.Create(System.UInt32,System.String)">
+            <summary>
+            This throws a new FaultException with the XiFault detail
+            </summary>
+            <param name="errorCode">Error code</param>
+            <param name="message">Error string</param>
+        </member>
+        <member name="M:Xi.Common.Support.Extensions.FaultHelpers.Succeeded(System.UInt32)">
+            <summary>
+            This method provides funcationality like the SUCCEEDED macro.
+            </summary>
+            <param name="errorCode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xi.Common.Support.Extensions.FaultHelpers.Failed(System.UInt32)">
+            <summary>
+            This method provides funcationality like the FAILED marco.
+            </summary>
+            <param name="errorCode"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Xi.Common.Support.Extensions.ChannelCloser">
+            <summary>
+            This class is used to properly close a WCF client proxy.  It aborts or closes
+            the proxy based on the channel status and whether an exception is encountered.
+            It has two calling methods, one where the proxy has a short life, and the other
+            to be used when the proxy is held over the life of a single method.
+            </summary>
+            <example>
+            Usage 1: Short lived proxy
+            void SomeMethod()
+            {
+                SomeWcfProxy proxy = new SomeWcfProxy();
+                using (new ChannelCloser(proxy))
+                {
+                   proxy.MakeCall();
+                    ...
+                }
+            }
+            
+            Usage 2: Long lived proxy
+            void CreateProxy()
+            {
+                SomeWcfProxy proxy = new SomeWcfProxy();
+                ...
+            }
+            void DestroyProxy()
+            {
+               ChannelCloser.Close(proxy);
+            }
+            </example>
+        </member>
+        <member name="M:Xi.Common.Support.Extensions.ChannelCloser.#ctor(System.Object)">
+            <summary>
+            Constructs a WCF channel closer object
+            </summary>
+            <param name="channelObj">WCF proxy object</param>
+        </member>
+        <member name="M:Xi.Common.Support.Extensions.ChannelCloser.Dispose">
+            <summary>
+            Properly releases and closes the held WCF proxy
+            </summary>
+        </member>
+        <member name="M:Xi.Common.Support.Extensions.ChannelCloser.Close(System.Object)">
+            <summary>
+            This method closes the passed proxy object
+            </summary>
+            <param name="obj"></param>
+        </member>
+        <member name="T:Xi.Common.Support.Extensions.OperationContextExt">
+            <summary>
+            This class provides some extension helpers for pulling data out of the 
+            WCF operation context.  Note that these are only usable in the call context of
+            an active WCF operation.
+            </summary>
+        </member>
+        <member name="M:Xi.Common.Support.Extensions.OperationContextExt.GetCurrentUser(System.ServiceModel.OperationContext)">
+            <summary>
+            This returns the current user (if any) on the operation context.
+            </summary>
+            <param name="ctx">Operation Context</param>
+            <returns>Username</returns>
+        </member>
+        <member name="M:Xi.Common.Support.Extensions.OperationContextExt.GetRemoteAddress(System.ServiceModel.OperationContext,System.String@,System.Int32@)">
+            <summary>
+            This returns the remote client's IP address and port when they are using a TCP/IP based channel
+            </summary>
+            <param name="ctx">Operation Context</param>
+            <param name="ipAddress">Returning IP address</param>
+            <param name="port">Returnign port</param>
+            <returns>True/False success code</returns>
+        </member>
+        <member name="M:Xi.Common.Support.Extensions.OperationContextExt.GetBinding(System.ServiceModel.OperationContext)">
+            <summary>
+            This returns the binding which was used to create the current operation context.
+            </summary>
+            <param name="ctx">Operation Context</param>
+            <returns>Binding name</returns>
+        </member>
+        <member name="T:Xi.Common.Support.XiBasicDataValueTypes">
+            <summary>
+            This enumeration defines the association between a data value, 
+            generally a VARIANT, and how it may be converted back after 
+            transport.  There are three ways values are transported, 
+            as "long", as "double" and as "object".  The conversions to 
+            long and double may cause the loss of the underlying data type.
+            By including an array of values from this enumeration conversion 
+            back to the original data type is possible.
+            </summary>
+        </member>
+        <member name="F:Xi.Common.Support.XiBasicDataValueTypes.DataValueTypeUnknown">
+            <summary>
+            VT_EMPTY is transported using long with this data type.
+            </summary>
+        </member>
+        <member name="F:Xi.Common.Support.XiBasicDataValueTypes.DataValueTypeInt8">
+            <summary>
+            Signed integers are transported as long with one of these data types.
+            </summary>
+        </member>
+        <member name="F:Xi.Common.Support.XiBasicDataValueTypes.DataValueTypeUInt8">
+            <summary>
+            Unsigned integers are transported as long with one of these data types.
+            </summary>
+        </member>
+        <member name="F:Xi.Common.Support.XiBasicDataValueTypes.DataValueTypeFloat32">
+            <summary>
+            Floating point values are transported as Double with one of these data Types.
+            </summary>
+        </member>
+        <member name="F:Xi.Common.Support.XiBasicDataValueTypes.DataValueTypeObject">
+            <summary>
+            Most other data types are transported as object using one of these data types.
+            However, some of these may be transported as long.
+            </summary>
+        </member>
+        <member name="F:Xi.Common.Support.XiBasicDataValueTypes.DataValueTypeNotEstablished">
+            <summary>
+            The data type was not established.
+            </summary>
+        </member>
+        <member name="T:Xi.Common.Support.Extensions.DataValueArrayExt">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Xi.Common.Support.Extensions.DataValueArrayExt.HasDataValues(Xi.Contracts.Data.DataValueArrays)">
+            <summary>
+            Returns true if at least one value in the DataValueArrays
+            </summary>
+            <param name="valueArrays"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Xi.Common.Support.Extensions.PNRPHelper">
+            <summary>
+            These methods are used to set and resolve PNRP services through the
+            PeerToPeer protocol stack built into Windows Vista/Windows 7 and optionally
+            available on Windows XP.
+            </summary>
+        </member>
+        <member name="M:Xi.Common.Support.Extensions.PNRPHelper.ResolveServices(System.String)">
+            <summary>
+            Locate all the registered services for a given mesh name
+            </summary>
+            <param name="meshName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Xi.Common.Support.Extensions.PNRPHelper.RegisterService(System.String,System.Int32,System.String)">
+            <summary>
+            This registers a given port + url with a specified mesh
+            </summary>
+            <param name="meshName"></param>
+            <param name="port"></param>
+            <param name="url"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Xi.Common.Support.TransportDataType">
+            <summary>
+            This enumeration is not include in any contract interface method.
+            However, it may be useful to other elements of the system.
+            </summary>
+        </member>
+        <member name="F:Xi.Common.Support.TransportDataType.Unknown">
+            <summary>
+            Unknown how the data value is / was transported.
+            VT_EMPTY in an Unknown type
+            </summary>
+        </member>
+        <member name="F:Xi.Common.Support.TransportDataType.Double">
+            <summary>
+            The data value is / was transported as a double (64 Bits).
+            </summary>
+        </member>
+        <member name="F:Xi.Common.Support.TransportDataType.Uint">
+            <summary>
+            The data value is / was transported as a uint (32 Bits).
+            </summary>
+        </member>
+        <member name="F:Xi.Common.Support.TransportDataType.Object">
+            <summary>
+            The data value is / was transported as an object.
+            </summary>
+        </member>
+        <member name="F:Xi.Common.Support.TransportDataType.EventMessage">
+            <summary>
+            The data value is / was transported as an Event Message;
+            </summary>
+        </member>
+        <member name="F:Xi.Common.Support.TransportDataType.MaxTransportDataType">
+            <summary>
+            This must be the last entry in the enum!
+            </summary>
+        </member>
+    </members>
+</doc>

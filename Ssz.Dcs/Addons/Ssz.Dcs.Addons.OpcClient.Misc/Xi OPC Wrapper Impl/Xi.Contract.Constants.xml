@@ -1,0 +1,1402 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Xi.Contract.Constants</name>
+    </assembly>
+    <members>
+        <member name="T:Xi.Contracts.Constants.JournalDataSampleTypes">
+            <summary>
+            Standard sample types for historical data
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.JournalDataSampleTypes.RawDataSamples">
+            <summary>
+            This is the Calculation LocalId for Raw Data Reads.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.JournalDataSampleTypes.AtTimeDataSamples">
+            <summary>
+            This is the Calculation LocalId for Specific Times.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.JournalDataSampleTypes.ChangedDataSamples">
+            <summary>
+            This is the Calculation LocalId for Changed Samples.
+            </summary>
+        </member>
+        <member name="T:Xi.Contracts.Constants.FilterOperator">
+            <summary>
+            This enumeration defines the standard operators that can be used in 
+            filters to compare an operand with a value.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperator.Equal">
+            <summary>
+            Equals.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperator.LessThan">
+            <summary>
+            Less than.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperator.LessThanOrEqual">
+            <summary>
+            Less than or equals.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperator.GreaterThan">
+            <summary>
+            Greater than.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperator.GreaterThanOrEqual">
+            <summary>
+            Greater than or equals.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperator.NotEqual">
+            <summary>
+            Not equals.
+            </summary>
+        </member>
+        <member name="M:Xi.Contracts.Constants.FilterOperator.ToString(System.UInt32)">
+            <summary>
+            This method converts a standard filter operator to a string.
+            </summary>
+            <param name="filterOperator">
+            The filter operator to convert.
+            </param>
+            <returns>The string representation of the filter operator.</returns>
+        </member>
+        <member name="T:Xi.Contracts.Constants.InstanceIds">
+            <summary>
+            This class defines standard instance ids.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.InstanceIds.ResourceType_MIB">
+            <summary>
+            The ResourceType for access to the Standard and Vendor MIBs.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.InstanceIds.ResourceType_DA">
+            <summary>
+            The ResourceType for access to Data.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.InstanceIds.ResourceType_AE">
+            <summary>
+            The ResourceType for access to alarms and events.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.InstanceIds.ResourceType_HDA">
+            <summary>
+            The ResourceType for access to historical (journaled) data.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.InstanceIds.ResourceType_HAE">
+            <summary>
+            The ResourceType for access to historical (journaled) alarms and events.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.InstanceIds.MibCurrentVersion">
+            <summary>
+            The InstanceId used for subscribing to the Current Version of the 
+            Standard MIB.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.InstanceIds.ServerStateId">
+            <summary>
+            The InstanceId of the standard ServerState object.
+            </summary>
+        </member>
+        <member name="T:Xi.Contracts.Constants.ContextOptions">
+            <summary>
+            <para>Context Options provides a set of flags that may be set 
+            as part of the Initiate to allow for debug/tracing and other 
+            options to be set for the client's context with the server.
+            The implementation of ContextOptions is vendor-specific.</para>
+            <para>Values below 0xFFFFFF (the low order 24-bits) are reserved. 
+            Vendors may use the high order 8 bits.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ContextOptions.NoOptions">
+            <summary>
+            No options are set for the Context.  
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ContextOptions.EnableEnhancedErrorInfo">
+            <summary>
+            ErrorInfo objects with non-empty ErrorMessages are enabled 
+            for the Context.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ContextOptions.EnableMethodTrace">
+            <summary>
+            Enable tracing of method Xi Server method invocations
+            for this context.  When en baled all calls to Xi Contract
+            methods are recorded in the Windows event log.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ContextOptions.EnableDetailTrace">
+            <summary>
+            Enable tracing of internal method invocations. 
+            Implementation is server dependent.  It is 
+            intended to provide additional details to the
+            method invocations logged by EnableMethodTrace.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ContextOptions.EnableErrorLogging">
+            <summary>
+            Enable the logging of error conditions that occur while
+            the server is running.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ContextOptions.EnablePerfCounters">
+            <summary>
+            Performance counters are enabled for the Context.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ContextOptions.EnableAccessToData">
+            <summary>
+            Selectively enable access to the server for data.
+            If one of the EnableAccessTo bits is not set,
+            then then all types of access are enabled. 
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ContextOptions.EnableAccessToAlarmsAndEvents">
+            <summary>
+            Connect to the server for Alarms and Events Access.
+            If one of the EnableAccessTo bits is not set,
+            then then all types of access are enabled. 
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ContextOptions.EnableAccessToJournalData">
+            <summary>
+            Connect to the server for Historical Data Access.
+            If one of the EnableAccessTo bits is not set,
+            then then all types of access are enabled. 
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ContextOptions.EnableAccessToJournalAlarmsAndEvents">
+            <summary>
+            Connect to the server for Historical Alarms and Events Access.
+            If one of the EnableAccessTo bits is not set,
+            then then all types of access are enabled. 
+            </summary>
+        </member>
+        <member name="T:Xi.Contracts.Constants.AlarmStateChangeCodes">
+            <summary>
+            This class holds a set of constants used to inform a client 
+            as to the cause / reason for the event message to be sent.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.AlarmStateChangeCodes.Active">
+            <summary>
+            The Active State has changed
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.AlarmStateChangeCodes.Acknowledge">
+            <summary>
+            The Acknowledge State has changed. 
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.AlarmStateChangeCodes.Disable">
+            <summary>
+            The Disable State has changed.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.AlarmStateChangeCodes.Priority">
+            <summary>
+            The Priority has changed.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.AlarmStateChangeCodes.Subcondition">
+            <summary>
+            The Subcondition has changed.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.AlarmStateChangeCodes.Message">
+            <summary>
+            The Message has changed.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.AlarmStateChangeCodes.RequestedField">
+            <summary>
+            One or more of the Requested Fields has changed.
+            </summary>
+        </member>
+        <member name="T:Xi.Contracts.Constants.XiStatusCodeHistoricalValueType">
+            <summary>
+            The HistoricalValueType is a 3-bit property that describes the 
+            the historical data value associated with the Status Code.  
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeHistoricalValueType.NotUsed">
+            <summary>
+            The historical value type is not used. 
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeHistoricalValueType.RawValue">
+            <summary>
+            The value is the raw value.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeHistoricalValueType.NoValue">
+            <summary>
+            No value exists in the journal for the requested data object 
+            that meets the specified selection criteria.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeHistoricalValueType.ExtraValue">
+            <summary>
+            More than one value exists at same timestamp. 
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeHistoricalValueType.LostValue">
+            <summary>
+            Collection started / stopped / lost.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeHistoricalValueType.InterpolatedValue">
+            <summary>
+            The value has been interpolated.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeHistoricalValueType.CalculatedValue">
+            <summary>
+            The value has been calculated.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeHistoricalValueType.PartialCalculatedValue">
+            <summary>
+            The value is a calculated value for an incomplete interval.
+            </summary>
+        </member>
+        <member name="T:Xi.Contracts.Constants.FilterOperandValues">
+            <summary>
+            This class defines standard constant values for filter operands.
+            All values are case independent and should be up-shifted or down-shifted by 
+            the server when used in comparisons.. They are defined here in camel case 
+            for read-ability in displays.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandValues.Branch">
+            <summary>
+            A valid value for FilterOperand.BranchOrLeaf.  
+            This value is used to select objects that are branches.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandValues.Leaf">
+            <summary>
+            A valid value for FilterOperand.BranchOrLeaf.
+            This value is used to select objects that are leaves.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandValues.Read">
+            <summary>
+            A valid value for FilterOperand.AccessRight.
+            This value is used to select readable objects.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandValues.Write">
+            <summary>
+            A valid FilterOperand.AccessRight value.
+            This value is used to select writable objects.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandValues.AbsoluteValue">
+            <summary>
+            A valid FilterOperand.ExceptionDeviationType value.
+            This value is used to select values whose change is calcuated 
+            using absolute value.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandValues.PercentOfSpan">
+            <summary>
+            A valid FilterOperand.ExceptionDeviationType value.
+            This value is used to select values whose change is calcuated 
+            using percent of span.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandValues.PercentOfValue">
+            <summary>
+            A valid FilterOperand.ExceptionDeviationType value.
+            This value is used to select values whose change is calcuated 
+            using percent of value.
+            </summary>
+        </member>
+        <member name="T:Xi.Contracts.Constants.XiSchemaType">
+            <summary>
+            This enumeration specifies the standard Xi schema types.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiSchemaType.Xi">
+            <summary>
+            <para>This SchemaType indicates that the type is defined by the 
+            Xi Interface Contracts or by the .NET CLS, and that LocalId member 
+            of the Xi TypeId is the string representation of the type using the 
+            typeof() method. For this schema type, the Namespace element of the 
+            TypeId is always null, since the namespace is incorporated into the 
+            .NET type name.  </para> 
+            <para>E.g. "typeof(double).ToString()" results in a TypeId as follows:</para>
+            <para>	SchemaType = null</para>
+            <para>	Namespace = null</para>
+            <para>	LocalId = "System.Double"</para>
+            <para>The string for the Xi SchemaType is null to 
+            allow the TypeId.ToString() method to create a simple 
+            TypeId string.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiSchemaType.LocalServer">
+            <summary>
+            This SchemaType indicates that the type is defined by the 
+            local server and that type of the LocalId member of the TypeId 
+            is one of the standard CLS scalar types (e.g. int, string). 
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiSchemaType.Xml">
+            <summary>
+            This SchemaType indicates that the type is defined using 
+            a W3C XML Schema.  
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiSchemaType.ASN1">
+            <summary>
+            This SchemaType indicates that the type is defined using 
+            the CCITT X.680 Abstract Syntax Notation One (ASN.1). 
+            ASN.1 is used for defining data types.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiSchemaType.EDDL">
+            <summary>
+            <para>This SchemaType indicates that the type is defined 
+            using the IEC 61804 EDDL language. The EDDL SchemaType 
+            is used to define object types for device parameters 
+            and blocks. Example parameters include Setpoint and 
+            ProcessVariable, and example blocks include PID, AI, 
+            and AO blocks.</para>
+            <para>The EDDL SchemaType is also used to define the data 
+            types for device blocks and parameters.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiSchemaType.FmsOdIndex">
+            <summary>
+            <para>This SchemaType indicates that the type is defined 
+            using the IEC 61158 FMS Object Dictionary (FMS OD). The 
+            FMS OD SchemaType is used to define data types for device 
+            data, including function block data, network management 
+            data, and system management data.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiSchemaType.FFProfileNumber">
+            <summary>
+            <para>This SchemaType indicates that the type is defined 
+            by the Fieldbus Foundation using a profile number.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiSchemaType.OPC">
+            <summary>
+            This SchemaType indicates that the LocalId of the TypeId 
+            identifies the semantic type of an OPC element, such as a 
+            DA Property, AE Attribute, AE Condition, or HDA Attribute. 
+            </summary>
+        </member>
+        <member name="T:Xi.Contracts.Constants.PnrpMeshNames">
+            <summary>
+            This class defines standard mesh names used to register Xi Servers and 
+            Xi Discovery Servers
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.PnrpMeshNames.XiDiscoveryServerMesh">
+            <summary>
+            <para>The Peer TypeId Resolution Protocol (PNRP) standard peer name for the 
+            mesh of Xi Directory Services.  The IServerDiscovery.DiscoverServers() 
+            method supported by Xi Directory Services is used by clients to access 
+            a list Xi Servers.</para>
+            <para>Xi Directory Services maintain a list of Xi servers that it 
+            discovers using PNRP XiDiscoveryServerMesh and/or other means. </para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.PnrpMeshNames.XiServerMesh">
+            <summary>
+            The standard peer name for the mesh of Xi Servers.  This mesh is used 
+            by Xi Directory Services to discover Xi servers that are capable of 
+            registering themselves using the Peer TypeId Resolution Protocol (PNRP).
+            </summary>
+        </member>
+        <member name="T:Xi.Contracts.Constants.ObjectRoleIds">
+            <summary>
+            Object Roles are identified using TypeIds. This allows different 
+            organizations to define ObjectRoles.  This class defines standard 
+            ObjectRoles.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ObjectRoleIds.AreaRootRoleId">
+            <summary>
+            <para>The TypeId for the object that represents the 
+            plant area root. Plant area roots may themselves be 
+            plant areas.</para> 
+            <para>Each system is allowed to have only one plant area 
+            root to allow clients to easily discover the areas of a 
+            system.  However, plants may have multiple systems, each 
+            with its own plant area root.  It is required that the  
+            area root for a system is located directly below the 
+            "Root" of the system.  </para>
+            <para>Plant areas can always be found directly below the 
+            area root object or directly under another plant area. 
+            Therefore, the path of plant areas always contain the name 
+            of the area root followed by one or more area names.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ObjectRoleIds.AreaRoleId">
+            <summary>
+            The TypeId for objects that represent plant areas.  The 
+            description of AreaRoot describes the organization of plant 
+            areas beneath the Area Root.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ObjectRoleIds.EventSourceRoleId">
+            <summary>
+            The TypeId for objects that represent event sources.  Event  
+            soruces can always be found directly below a plant area.  It  
+            is also possible that they can be found below other objects 
+            in the system, but there must be at least one path to them in 
+            which they are a direct child of an area.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ObjectRoleIds.OpcBranchRoleId">
+            <summary>
+            The TypeId for objects that represent Opc Server Branches.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ObjectRoleIds.OpcLeafRoleId">
+            <summary>
+            The TypeId for objects that represent Opc Server Leaves.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ObjectRoleIds.OpcPropertyRoleId">
+            <summary>
+            The TypeId for objects that represent Opc Server Properties.
+            </summary>
+        </member>
+        <member name="T:Xi.Contracts.Constants.XiStatusCodeLimitBits">
+            <summary>
+            The Limit bits indicates whether a value is liimited or not.
+            It is valid regardless of the values of the StatusBits and SubstatusBits. 
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeLimitBits.NotLimited">
+            <summary>
+            The value is free to move up or down. 
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeLimitBits.LowLimited">
+            <summary>
+            The value has ‘pegged’ at some lower limit and 
+            cannot move any lower.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeLimitBits.HighLimited">
+            <summary>
+            The value has ‘pegged’ at some high limit and 
+            cannot move any higher.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeLimitBits.Constant">
+            <summary>
+            The value is a constant and cannot move.
+            </summary>
+        </member>
+        <member name="T:Xi.Contracts.Constants.SortType">
+            <summary>
+            This enumeration specifies how a list is sorted.
+            The sort keys are defined by the list attributes.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.SortType.NotSorted">
+            <summary>
+            The list is not sorted.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.SortType.Ascending">
+            <summary>
+            The list is sorted in ascending order.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.SortType.Descending">
+            <summary>
+            The list is sorted in descending order.
+            </summary>
+        </member>
+        <member name="T:Xi.Contracts.Constants.ServerType">
+            <summary>
+            This class defines standard server types.  A server may 
+            support one or more server types.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ServerType.Xi_ServerDiscoveryServer">
+            <summary>
+            The server is a server discovery server.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ServerType.Xi_DataServer">
+            <summary>
+            The server is a native Xi data server.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ServerType.Xi_EventServer">
+            <summary>
+            The server is a native Xi event server.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ServerType.Xi_DataJournalServer">
+            <summary>
+            The server is a native Xi data journal server.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ServerType.Xi_EventJournalServer">
+            <summary>
+            The server is a native Xi event journal server.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ServerType.OPC_DA205_Wrapper">
+            <summary>
+            The server wraps an OPC DA 2.05 server.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ServerType.OPC_AE11_Wrapper">
+            <summary>
+            The server wraps an OPC Alarms and Events 1.1 server.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ServerType.OPC_HDA12_Wrapper">
+            <summary>
+            The server wraps an OPC HDA 1.2 server.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ServerType.OPC_DA30_Wrapper">
+            <summary>
+            The server wraps an OPC DA 3.0 server.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ServerType.OPC_XMLDA_Wrapper">
+            <summary>
+            The server wraps an OPC XMLDA server.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ServerType.OPC_UA_DA_Wrapper">
+            <summary>
+            The server wraps an OPC UA Data Access server.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ServerType.OPC_UA_AC_Wrapper">
+            <summary>
+            The server wraps an OPC UA Alarms and Conditions server.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.ServerType.OPC_UA_HDA_Wrapper">
+            <summary>
+            The server wraps an OPC UA Historical Data Access server.
+            </summary>
+        </member>
+        <member name="M:Xi.Contracts.Constants.ServerType.ToString(System.UInt32)">
+            <summary>
+            This method constructs a string that contains each of the server 
+            types specified by the serverTypes parameter.
+            </summary>
+            <param name="serverTypes">
+            A bit-mask that identifies each of the server types.
+            </param>
+            <returns>
+            The string representation of the server types.
+            </returns>
+        </member>
+        <member name="T:Xi.Contracts.Constants.EndpointInterfaceType">
+            <summary>
+            This class defines the string representation for the Xi Interface Types.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.EndpointInterfaceType.IServerDiscovery">
+            <summary>
+            The IServerDiscovery interface.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.EndpointInterfaceType.IResourceManagement">
+            <summary>
+            The IResourceManagement interface.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.EndpointInterfaceType.IRead">
+            <summary>
+            The IRead interface.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.EndpointInterfaceType.IWrite">
+            <summary>
+            The IWrite interface.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.EndpointInterfaceType.IPoll">
+            <summary>
+            The IPoll interface.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.EndpointInterfaceType.IRegisterForCallback">
+            <summary>
+            The IRegisterForCallback interface and the associated ICallback.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.EndpointInterfaceType.IRestRead">
+            <summary>
+            The IRestRead interface.
+            </summary>
+        </member>
+        <member name="T:Xi.Contracts.Constants.XiNamespace">
+            <summary>
+            This class defines the standard namespaces defined for the Xi specification.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiNamespace.Xi">
+            <summary>
+            The Xi namespace. The string for the Xi Namespace is null because 
+            the .NET namespace is embedded in the type id when calling the 
+            TypeId.ToString() method to create a TypeId string.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiNamespace.OPCDA205">
+            <summary>
+            The OPC DA 2.05 namespace.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiNamespace.OPCDA30">
+            <summary>
+            The OPC DA 3.0 namespace.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiNamespace.OPCAEAttribute">
+            <summary>
+            The namespace for OPC Alarms and Events Attributes.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiNamespace.OPCAECategory">
+            <summary>
+            The namespace for OPC Alarms and Events Categories.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiNamespace.OPCHDA">
+            <summary>
+            The OPC HDA 1.2 namespace.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiNamespace.OPCUA10">
+            <summary>
+            The OPC UA 1.0 namespace.
+            </summary>
+        </member>
+        <member name="T:Xi.Contracts.Constants.StandardListType">
+            <summary>
+            This enumeration specifies the standard types of lists.
+            The enumerated values between 0 and 4095 inclusive are reserved 
+            for standard types.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.StandardListType.DataList">
+            <summary>
+            The type of list that contains data objects.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.StandardListType.DataJournalList">
+            <summary>
+            The type of list that contains historical data objects.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.StandardListType.EventList">
+            <summary>
+            The type of list that contains alarms and events.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.StandardListType.EventJournalList">
+            <summary>
+            The type of list that contains historical alarms and events.
+            </summary>
+        </member>
+        <member name="T:Xi.Contracts.Constants.XiStatusCodeStatusBits">
+            <summary>
+            <para>The Status Bits indicate whether a value is good, bad, or uncertain, and when bad, 
+            whether or not the bad status was assigned by the server. Server assigned bad status codes 
+            are typically assigned when the server is unable to retrieve the value from the system.</para>  
+            <para>The Status Bits also include a description of the status that describes why a value was good,
+            bad, or uncertain.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.BadNonSpecific">
+            <summary>
+            The value is bad but no specific reason is known. 
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.BadConfigError">
+            <summary>
+            There is some server specific problem with the 
+            configuration. For example the item in question has 
+            been deleted from the configuration.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.BadNotConnected">
+            <summary>
+            The input is required to be logically connected to 
+            something but is not. This quality may reflect that no 
+            value is available at this time, for reasons like the 
+            value may have not been provided by the data source.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.BadDeviceFailure">
+            <summary>
+            A device failure has been detected.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.BadSensorFailure">
+            <summary>
+            A sensor failure had been detected (the ’Limits’ field 
+            can provide additional diagnostic information in some 
+            situations).
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.BadLastKnownValue">
+            <summary>
+            Communications have failed. However, the last known value 
+            is available. Note that the ‘age’ of the value may be 
+            determined from its timestamp.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.BadCommFailure">
+            <summary>
+            Communications have failed. There is no last known 
+            value available.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.BadOutOfService">
+            <summary>
+            The block is off scan or otherwise locked. This code 
+            is also used when the Monitored Item or Subscription
+            is disabled.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.BadWaitingForInitialData">
+            <summary>
+            After Items are added to a group, it may take some time 
+            for the server to actually obtain values for these items. 
+            In such cases the client might perform a read (from cache), 
+            or establish a ConnectionPoint based subscription and/or 
+            execute a Refresh on such a subscription before the values 
+            are available. This substatus is only available from 
+            OPC DA 3.0 or newer servers.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.UncertainNonSpecific">
+            <summary>
+            There is no specific reason why the value is uncertain. 
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.UncertainLastUsableValue">
+            <summary>
+            Whatever was writing this value has stopped doing so. The 
+            returned value should be regarded as ‘stale’. Note that this 
+            differs from a BAD value with Substatus = Last Known Value. 
+            That status is associated specifically with a detectable 
+            communications error on a ‘fetched’ value. This error is 
+            associated with the failure of some external source to ‘put’ 
+            something into the value within an acceptable period of time. 
+            Note that the ‘age’ of the value can be determined from 
+            the timestamp. 
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.UncertainSensorNotAccurate">
+            <summary>
+            Either the value has ‘pegged’ at one of the sensor limits 
+            (in which case the limit field should be set to LowLimited 
+            or HighLimited) or the sensor is otherwise known to be out 
+            of calibration via some form of internal diagnostics (in 
+            which case the limit field should be NotLimited). 
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.UncertainEngineeringUnitsExceeded">
+            <summary>
+            The returned value is outside the limits defined for this 
+            parameter. Note that in this case (per the Fieldbus 
+            Specification) the ‘Limits’ field indicates which limit 
+            has been exceeded but does NOT necessarily imply that the 
+            value cannot move farther out of range. 
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.UncertainSubNormal">
+            <summary>
+            The value is derived from multiple sources and has less 
+            than the required number of Good sources. 
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.BadServerAccessNonSpecific">
+            <summary>
+            The value is bad but no specific reason is known.        
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.BadServerAccessInstanceIdInvalid">
+            <summary>
+            The format of the InstanceId is not valid. 
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.BadServerAccessObjectUnknown">
+            <summary>
+            The InstanceId refers to a object that could not be found.         
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.BadServerAccessObjectElementUnknown">
+            <summary>
+            The InstanceId refers to element of an object and that 
+            element could not be found.         
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.BadServerAccessAccessDenied">
+            <summary>
+            Access to the value was denied.         
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.GoodNonSpecific">
+            <summary>
+            The value is good. This is the general mask for all good values.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeStatusBits.GoodLocalOverride">
+            <summary>
+            The value has been Overridden. Typically this is means the 
+            input has been disconnected and a manually entered value has 
+            been ‘forced’.        
+            </summary>
+        </member>
+        <member name="T:Xi.Contracts.Constants.XiFeatures">
+            <summary>
+            This enumeration assigns a flag value to each of the Xi 
+            features and then defines standard sets of features required  
+            for all data, event, data journal, and event journal servers.  
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiFeatures.StatusCodeWrite_Feature">
+            <summary>
+            The server supports the capability to write status codes.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiFeatures.TimestampWrite_Feature">
+            <summary>
+            The server supports the capability to write timestamps.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiFeatures.CustomDataType_Feature">
+            <summary>
+            The server supports custom data types.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiFeatures.AbsoluteDeadband_Feature">
+            <summary>
+            The server supports the use of absolute deadband filters in 
+            addition to the standard percent deadband filters.  Percent 
+            deadband filters define the the percent of change relative 
+            to the valid value range for a data object, while absolute 
+            deadband defines the percentage of change relative to the 
+            value (the range is not taken into account).
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiFeatures.IndexedAccess_Feature">
+            <summary>
+            The server supports the capability to access individual elements 
+            of arrays and structures. Individual elements are identified 
+            using 0-based indexes for arrays and 1-based indexes for 
+            structures.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiFeatures.ElementIdRangeAccess_Feature">
+            <summary>
+            The server supports the capability to access a range of array 
+            elements or fields of a structure. Ranges are identified using 
+            a pair of indexes.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiFeatures.MibVersionSubscribe_Feature">
+            <summary>
+            The server supports the capability to add the Standard MIB 
+            Version number to a list.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiFeatures.BufferingRate_Feature">
+            <summary>
+            The server supports the bufferingRate parameter of the 
+            IResourceManagement.DefineList() method.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiFeatures.Xi_DataServerFeatures">
+            <summary>
+            Required features for native Xi data servers.
+            </summary>
+        </member>
+        <member name="T:Xi.Contracts.Constants.FilterOperandNames">
+            <summary>
+            A string that represents the name of operand of a single filter criterion.  
+            All values are case independent and should be up-shifted or down-shifted by 
+            the server when used in comparisons.. They are defined here in camel case 
+            for read-ability in displays.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.AccessRight">
+            <summary>
+            <para>The access rights of an object.</para>  
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>The valid values for this operand are FilterOperandValues.Read 
+            and FilterOperandValues.Write. </para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.BranchOrLeaf">
+            <summary>
+            <para>The default behavior for filtering is to select both branches 
+            and leaves. This filter operand allows the client to select one 
+            or the other. </para>
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>The valid values for this operand are FilterOperandValues.Branch 
+            and FilterOperandValues.Leaf. </para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.DataType">
+            <summary>
+            <para>The name of the data type.</para>  
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>Valid values are constructed by using the ToString() method 
+            for the TypeId of the data type.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.Name">
+            <summary>
+            <para>The name of the object.</para>  
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>Valid names are strings.  Servers may optionally support 
+            the use of the '?' character to represent any single character 
+            and the '*' to represent multiple characters.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.StartingObjectAttributes">
+            <summary>
+            <para>An operand with an integer value that specifies whether the server 
+            is to return ObjectAttributes only for the object identified by the 
+            starting path or for it plus the objects found below it.  The default 
+            behavior when this filter operand is omitted is to return ObjectAttributes 
+            only for the objects found below the object identified by the starting path.</para>
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>The valid values for this operand are the integer representations 
+            of the StartingObjectFilterValues enumeration.</para>
+            <para>For example, (int)StartingObjectFilterValues.AllObjects
+            is used to return ObjectAttributes for the starting object and all 
+            objects below it. </para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.AlarmState">
+            <summary>
+            <para>The alarm state of an alarm message.</para>  
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>The valid values are defined by the AlarmState enumeration.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.Area">
+            <summary>
+            <para>The area of an event message.</para> 
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>Valid values for this operand are objects whose role is 
+            ObjectRole.AreaRoleId. </para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.EventCategory">
+            <summary>
+            <para>The category of an event message.</para>  
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>The valid values for this operand are the categoryIds of the 
+            categories defined by the EventCategoryConfigurations Mib element. </para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.EventConditionName">
+            <summary>
+            <para>The InstanceId of an Event Condition of an event message.</para>  
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>Valid names are strings generated using the InstanceId ToString() 
+            method.  Servers may optionally support the use of the '?' character 
+            to represent any single character and the '*' to represent multiple 
+            characters.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.EventPriority">
+            <summary>
+            <para>The priority of an event message.</para>  
+            <para>All operators defined by the FilterOperator class are valid.</para>
+            <para>The valid values for this operand are integer values. </para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.EventSourceId">
+            <summary>
+            <para>The string representation of the InstanceId of an Event Source 
+            of an event message.</para>  
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>Valid values are the FullyQualifiedId of InstanceIds of EventSources. 
+            Servers may optionally support the use of the '?' character 
+            to represent any single character and the '*' to represent multiple 
+            characters in the LocalId property of the InstanceId.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.EventType">
+            <summary>
+            <para>The type of an event message.</para> 
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>Valid values for this operand are defined by the 
+            EventType enumeration. </para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.MulitplexedAlarmContainer">
+            <summary>
+            <para>The name of a grouped or eclipsed alarm of an event message.</para>
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>Valid names are strings.  Servers may optionally support 
+            the use of the '?' character to represent any single character 
+            and the '*' to represent multiple characters.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.OperatorName">
+            <summary>
+            <para>The operator name of an event message.</para>  
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>Valid values are strings.  Servers may optionally support the 
+            use of the '?' character to represent any single character and the 
+            '*' to represent multiple characters.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.OccurrenceId">
+            <summary>
+            <para>The occurrence id of an event message.</para>
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>Valid values are strings.  Servers may optionally support the 
+            use of the '?' character to represent any single character and the 
+            '*' to represent multiple characters.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.OccurrenceTime">
+            <summary>
+            <para>The occurrence time of an event.</para>  
+            <para>All operators defined by the FilterOperator class are valid.</para>
+            <para>The valid values for this operand are DateTime values. </para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.TextMessage">
+            <summary>
+            <para>The text message of an event message.</para>  
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>Valid values are strings.  Servers may optionally support the 
+            use of the '?' character to represent any single character and the 
+            '*' to represent multiple characters.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.TimeLastActive">
+            <summary>
+            <para>The last active time of an alarm.</para>  
+            <para>All operators defined by the FilterOperator class are valid.</para>
+            <para>The valid values for this operand are DateTime values. </para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.AbsoluteDeadband">
+            <summary>
+            <para>The absolute deadband for a floating point value.  If a value has changed by 
+            this absolute amount it is considered to have changed for subscription purposes, and 
+            will be returned in a poll response or in a callback.</para>  
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>The valid values for this operand are double values. </para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.PercentDeadband">
+            <summary>
+            <para>The percent deadband for a floating point value.  If a value has changed by 
+            this percent it is considered to have changed for subscription purposes, and will 
+            be returned in a poll response or in a callback.</para>  
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>The valid values for this operand are double values. </para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.Archiving">
+            <summary>
+            <para>The flag that indicates, when TRUE, that a data journal is 
+            collecting history a value. </para>
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>The value of this operand is a boolean value. </para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.DataObjectId">
+            <summary>
+            <para>The id of the data object within the server that generated a 
+            historical value.</para>
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>Valid values are strings.  Servers may optionally support the 
+            use of the '?' character to represent any single character and the 
+            '*' to represent multiple characters.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.DerivingEquation">
+            <summary>
+            <para>The equation used to derive a value.</para>
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>Valid values are strings.  Servers may optionally support the 
+            use of the '?' character to represent any single character and the 
+            '*' to represent multiple characters.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.EngineeringUnits">
+            <summary>
+            <para>The engineering units of a value. </para>
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>All operators defined by the FilterOperator class are valid.</para>
+            <para>Valid values are strings.  Servers may optionally support the 
+            use of the '?' character to represent any single character and the 
+            '*' to represent multiple characters.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.ExceptionDeviation">
+            <summary>
+            <para>The minimum change in a data value that causes the value of a data 
+            object to be recorded by the data journal. The ExceptionDeviationType 
+            indicates whether the change is calcuated using absolute value, percent of span, 
+            or percent of value.  </para>
+            <para>All operators defined by the FilterOperator class are valid.</para>
+            <para>Valid values are doubles.  </para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.ExceptionDeviationType">
+            <summary>
+            <para>Indicates whether ExceptionDeviation is expressed in absolute value, 
+            percent of span, or percent of value.  </para>
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>The valid values for this operand are FilterOperandValues.AbsoluteValue, 
+            FilterOperandValues.PercentOfSpan, and FilterOperandValues.PercentOfValue. </para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.MaxTimeInterval">
+            <summary>
+            <para>The maximum time interval between entries of a historical value. </para>
+            <para>All operators defined by the FilterOperator class are valid.</para>
+            <para>Valid values are TimeSpans.  </para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.MaxValue">
+            <summary>
+            <para>The highest valid value for a data object (its top of span).</para>
+            <para>All operators defined by the FilterOperator class are valid, except for 
+            "GTE" and "GT".</para>
+            <para>The valid values for this operand are dependent on the type of the value. </para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.MinValue">
+            <summary>
+            <para>The highest valid value for a data object (its bottom of span).</para>
+            <para>All operators defined by the FilterOperator class are valid, except for 
+            "LTE" and "LT".</para>
+            <para>The valid values for this operand are dependent on the type of the value. </para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.NormalMaximum">
+            <summary>
+            <para>The upper limit for the normal maximum of a historical value.</para>
+            <para>All operators defined by the FilterOperator class are valid.</para>
+            <para>Valid values are the string respresentations of the data object value. 
+            Servers may optionally support the use of the '?' character to represent any 
+            single character and the '*' to represent multiple characters.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.NormalMinimum">
+            <summary>
+            <para>The lower limit for the normal minimum of a historical value.</para>
+            <para>All operators defined by the FilterOperator class are valid.</para>
+            <para>Valid values are the string respresentations of the data object value. 
+            Servers may optionally support the use of the '?' character to represent any 
+            single character and the '*' to represent multiple characters.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.OpcHdaTimestampExpression">
+            <summary>
+            <para>The timestamp of a value represented by an expression.</para>  
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>The valid values for this operand are defined by the OPC HDA 
+            specification. </para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.ServerMachineName">
+            <summary>
+            <para>The name or IP address of the machine which the server that 
+            generated a historical data value runs.</para>
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>Valid values are strings.  Servers may optionally support the 
+            use of the '?' character to represent any single character and the 
+            '*' to represent multiple characters.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.ServerName">
+            <summary>
+            <para>The name the server that generated a historical data value runs.</para>
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>Valid values are strings.  Servers may optionally support the 
+            use of the '?' character to represent any single character and the 
+            '*' to represent multiple characters.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.ServerType">
+            <summary>
+            <para>The type of server that generated a historical value.</para>
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>Valid values include the ToString("G") values for the ServerType 
+            enumeration.  Servers may optionally support the use of the '?' character 
+            to represent any single character and the '*' to represent multiple 
+            characters.</para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.Stepped">
+            <summary>
+            <para>The flag that indicates, when TRUE, that a data journal value 
+            is stepped. When FALSE, it is interpolated. </para>
+            <para>The only valid FilterOperator is "EQ" (equals).</para>
+            <para>The value of this operand is a boolean value. </para>
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.FilterOperandNames.Timestamp">
+            <summary>
+            <para>The timestamp of a value in DateTime format.</para>  
+            <para>All operators defined by the FilterOperator class are valid.</para>
+            <para>The valid values for this operand are DateTime values. </para>
+            </summary>
+        </member>
+        <member name="T:Xi.Contracts.Constants.XiStatusCodeAdditionalDetailType">
+            <summary>
+            The AdditionalDetailType indicates how the 16-bit AdditionalDetail 
+            property of the StatusCode is used. Unused values are reserved. 
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeAdditionalDetailType.NotUsed">
+            <summary>
+            The AdditionalDetail property is not used and should be ignored.
+            Its value should be set to 0. 
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeAdditionalDetailType.VendorSpecificDetail">
+            <summary>
+            The AdditionalDetail property contains a vendor-specific value. 
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeAdditionalDetailType.DefaultHResult">
+            <summary>
+            The AdditionalDetail property contains the low order 16-bits 
+            of the default HRESULT (Facility Code = 0). The StatusCode.HRESULT() 
+            method creates this HRESULT from the status code.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeAdditionalDetailType.XiHResult">
+            <summary>
+            The AdditionalDetail property contains the low order 16-bits 
+            of an Xi HRESULT (Facility Code = 0x777). The StatusCode.HRESULT() 
+            method creates this HRESULT from the status code.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeAdditionalDetailType.IO_ERROR_CODE">
+            <summary>
+            The AdditionalDetail property contains the low order 16-bits 
+            of a FACILITY_IO_ERROR_CODE NTSTATUS (Facility Code = 4). The 
+            StatusCode.HRESULT() method creates this HRESULT from the status code.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeAdditionalDetailType.ITF_HResult">
+            <summary>
+            The AdditionalDetail property contains the low order 16-bits 
+            of a COM FACILITY_ITF HRESULT (Facility Code = 4). The 
+            StatusCode.HRESULT() method creates this HRESULT from the status code.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeAdditionalDetailType.Win32HResult">
+            <summary>
+            The AdditionalDetail property contains the low order 16-bits 
+            of a Win32 HRESULT (Facility Code = 5). The StatusCode.HRESULT() 
+            method creates this HRESULT from the status code.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.XiStatusCodeAdditionalDetailType.AdditionalErrorCode">
+            <summary>
+            <para>This code is used to indicate that an additional HRESULT 
+            accompanies this StatusCode.  The additional HRESULT is contained 
+            in the HResult member of an ErrorInfo object that is located in the 
+            ErrorInfo list contained in the DataValueArrays in which this StatusCode 
+            is present.</para>  
+            <para>This code does not have to be present if the Context was opened 
+            with ContextOptions set to DebugErrorMessages using either the 
+            Initiate() or ReInitiate() method.</para>
+            </summary>
+        </member>
+        <member name="M:Xi.Contracts.Constants.XiStatusCodeAdditionalDetailType.VendorSpecific(System.UInt32)">
+            <summary>
+            This property returns the AdditionalDetail as a 16-bit vendor-specific value 
+            if the AdditionalDetailType is set to AdditionalDetailType.VendorSpecific.  
+            If the AdditionalDetailType is set to a different value, 0 is returned.
+            </summary>
+            <param name="statusCode">
+            The 32-bit status code from which AdditionalDetail is to be extracted. 
+            </param>
+            <returns>
+            The vendor-specific AdditionalDetail value. 0 if the AdditionalDetailType 
+            indicates that the AdditionalDetail does not contain a vendor-specific value.
+            </returns>
+        </member>
+        <member name="M:Xi.Contracts.Constants.XiStatusCodeAdditionalDetailType.HResult(System.UInt32)">
+            <summary>
+            <para>This property returns the AdditionalDetail as a 32-bit HRESULT.  
+            
+            The HRESULT is constructed by setting the high order 16 bits of 
+            the HRESULT as follows. The AdditionalDetailType indicates how the 
+            Facility bits are set.</para>
+            <para>Bit(s)   Value</para>
+            <para>16 (MSB) Severity. Set to 0 if the Status Bits indicate Good.</para>
+            <para>15       R-bit. Set to 0.</para>
+            <para>14       C-bit. Set to 0.</para>
+            <para>13       N-bit. Set to 0.</para>
+            <para>12       X-bit. Set to 0.</para>
+            <para>11-1     Facility. Set to the appropriate facility code. E.g.:</para>
+            <para>           0 (FACILITY_NULL) for the default HResult </para>
+            <para>           4 (FACILITY_ITF) for COM</para> 
+            <para>           7 (FACILITY_WIN32) for WIN32</para>
+            <para>           0x777 for Xi specific</para>
+            </summary>
+            <param name="statusCode">
+            The 16-bit status code from which HResult is to be constructed. 
+            </param>
+            <returns>
+            The HResult value. 0 if the AdditionalDetailType indicates that the 
+            AdditionalDetail does not contain an HRESULT.
+            </returns>
+        </member>
+        <member name="T:Xi.Contracts.Constants.StartingObjectFilterValues">
+            <summary>
+            This enumeration defines the valid values for the StartingObjectAttributes 
+            filter operand.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.StartingObjectFilterValues.StartingObjectOnly">
+            <summary>
+            A valid FilterOperand.StartingObjectAttributes value.
+            This value is used to specify that the server is to return 
+            ObjectAttributes only for the object identified by the starting 
+            path.
+            </summary>
+        </member>
+        <member name="F:Xi.Contracts.Constants.StartingObjectFilterValues.AllObjects">
+            <summary>
+            A valid FilterOperand.StartingObjectAttributes value.
+            This value is used to specify that the server is to return 
+            ObjectAttributes for the object identified by the starting 
+            path AND for the objects found below it.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,743 @@
+﻿// Created by Microsoft (R) C/C++ Compiler Version 15.00.30729.01 (6867d504).
+//
+// d:\junkproj\atldll\debug\opchda_ps.tlh
+//
+// C++ source equivalent of Win32 type library C:\EmersonCommon\opchda_ps.dll
+// compiler-generated file created 03/12/09 at 13:28:52 - DO NOT EDIT!
+
+#pragma once
+#pragma pack(push, 8)
+
+#include <comdef.h>
+
+//
+// Forward references and typedefs
+//
+
+struct __declspec(uuid("1f1217ba-dee0-11d2-a5e5-000086339399"))
+/* LIBID */ __OPCHDA;
+struct __declspec(uuid("7de5b060-e089-11d2-a5e6-000086339399"))
+/* interface */ CATID_OPCHDAServer10;
+struct __declspec(uuid("1f1217b0-dee0-11d2-a5e5-000086339399"))
+/* interface */ IOPCHDA_Server;
+enum tagOPCHDA_SERVERSTATUS;
+enum tagOPCHDA_OPERATORCODES;
+struct __declspec(uuid("1f1217b1-dee0-11d2-a5e5-000086339399"))
+/* interface */ IOPCHDA_Browser;
+enum tagOPCHDA_BROWSETYPE;
+enum tagOPCHDA_BROWSEDIRECTION;
+struct __declspec(uuid("1f1217b2-dee0-11d2-a5e5-000086339399"))
+/* interface */ IOPCHDA_SyncRead;
+struct tagOPCHDA_TIME;
+struct tagOPCHDA_ITEM;
+struct tagOPCHDA_MODIFIEDITEM;
+enum tagOPCHDA_EDITTYPE;
+struct tagOPCHDA_ATTRIBUTE;
+struct __declspec(uuid("1f1217b3-dee0-11d2-a5e5-000086339399"))
+/* interface */ IOPCHDA_SyncUpdate;
+enum tagOPCHDA_UPDATECAPABILITIES;
+struct __declspec(uuid("1f1217b4-dee0-11d2-a5e5-000086339399"))
+/* interface */ IOPCHDA_SyncAnnotations;
+enum tagOPCHDA_ANNOTATIONCAPABILITIES;
+struct tagOPCHDA_ANNOTATION;
+struct __declspec(uuid("1f1217b5-dee0-11d2-a5e5-000086339399"))
+/* interface */ IOPCHDA_AsyncRead;
+struct __declspec(uuid("1f1217b6-dee0-11d2-a5e5-000086339399"))
+/* interface */ IOPCHDA_AsyncUpdate;
+struct __declspec(uuid("1f1217b7-dee0-11d2-a5e5-000086339399"))
+/* interface */ IOPCHDA_AsyncAnnotations;
+struct __declspec(uuid("1f1217b8-dee0-11d2-a5e5-000086339399"))
+/* interface */ IOPCHDA_Playback;
+struct __declspec(uuid("1f1217b9-dee0-11d2-a5e5-000086339399"))
+/* interface */ IOPCHDA_DataCallback;
+
+//
+// Smart pointer typedef declarations
+//
+
+_COM_SMARTPTR_TYPEDEF(CATID_OPCHDAServer10, __uuidof(CATID_OPCHDAServer10));
+_COM_SMARTPTR_TYPEDEF(IOPCHDA_Browser, __uuidof(IOPCHDA_Browser));
+_COM_SMARTPTR_TYPEDEF(IOPCHDA_Server, __uuidof(IOPCHDA_Server));
+_COM_SMARTPTR_TYPEDEF(IOPCHDA_SyncRead, __uuidof(IOPCHDA_SyncRead));
+_COM_SMARTPTR_TYPEDEF(IOPCHDA_SyncUpdate, __uuidof(IOPCHDA_SyncUpdate));
+_COM_SMARTPTR_TYPEDEF(IOPCHDA_SyncAnnotations, __uuidof(IOPCHDA_SyncAnnotations));
+_COM_SMARTPTR_TYPEDEF(IOPCHDA_AsyncRead, __uuidof(IOPCHDA_AsyncRead));
+_COM_SMARTPTR_TYPEDEF(IOPCHDA_AsyncUpdate, __uuidof(IOPCHDA_AsyncUpdate));
+_COM_SMARTPTR_TYPEDEF(IOPCHDA_AsyncAnnotations, __uuidof(IOPCHDA_AsyncAnnotations));
+_COM_SMARTPTR_TYPEDEF(IOPCHDA_Playback, __uuidof(IOPCHDA_Playback));
+_COM_SMARTPTR_TYPEDEF(IOPCHDA_DataCallback, __uuidof(IOPCHDA_DataCallback));
+
+//
+// Type library items
+//
+
+struct __declspec(uuid("7de5b060-e089-11d2-a5e6-000086339399"))
+CATID_OPCHDAServer10 : IUnknown
+{};
+    const LPWSTR OPC_CATEGORY_DESCRIPTION_HDA10 = (wchar_t*) L"OPC History Data Access Servers Version 1.0";
+    const unsigned long OPCHDA_DATA_TYPE = 1;
+    const unsigned long OPCHDA_DESCRIPTION = 2;
+    const unsigned long OPCHDA_ENG_UNITS = 3;
+    const unsigned long OPCHDA_STEPPED = 4;
+    const unsigned long OPCHDA_ARCHIVING = 5;
+    const unsigned long OPCHDA_DERIVE_EQUATION = 6;
+    const unsigned long OPCHDA_NODE_NAME = 7;
+    const unsigned long OPCHDA_PROCESS_NAME = 8;
+    const unsigned long OPCHDA_SOURCE_NAME = 9;
+    const unsigned long OPCHDA_SOURCE_TYPE = 10;
+    const unsigned long OPCHDA_NORMAL_MAXIMUM = 11;
+    const unsigned long OPCHDA_NORMAL_MINIMUM = 12;
+    const unsigned long OPCHDA_ITEMID = 13;
+    const unsigned long OPCHDA_MAX_TIME_INT = 14;
+    const unsigned long OPCHDA_MIN_TIME_INT = 15;
+    const unsigned long OPCHDA_EXCEPTION_DEV = 16;
+    const unsigned long OPCHDA_EXCEPTION_DEV_TYPE = 17;
+    const unsigned long OPCHDA_HIGH_ENTRY_LIMIT = 18;
+    const unsigned long OPCHDA_LOW_ENTRY_LIMIT = 19;
+    const LPWSTR OPCHDA_ATTRNAME_DATA_TYPE = (wchar_t*) L"Data Type";
+    const LPWSTR OPCHDA_ATTRNAME_DESCRIPTION = (wchar_t*) L"Description";
+    const LPWSTR OPCHDA_ATTRNAME_ENG_UNITS = (wchar_t*) L"Eng Units";
+    const LPWSTR OPCHDA_ATTRNAME_STEPPED = (wchar_t*) L"Stepped";
+    const LPWSTR OPCHDA_ATTRNAME_ARCHIVING = (wchar_t*) L"Archiving";
+    const LPWSTR OPCHDA_ATTRNAME_DERIVE_EQUATION = (wchar_t*) L"Derive Equation";
+    const LPWSTR OPCHDA_ATTRNAME_NODE_NAME = (wchar_t*) L"Node Name";
+    const LPWSTR OPCHDA_ATTRNAME_PROCESS_NAME = (wchar_t*) L"Process Name";
+    const LPWSTR OPCHDA_ATTRNAME_SOURCE_NAME = (wchar_t*) L"Source Name";
+    const LPWSTR OPCHDA_ATTRNAME_SOURCE_TYPE = (wchar_t*) L"Source Type";
+    const LPWSTR OPCHDA_ATTRNAME_NORMAL_MAXIMUM = (wchar_t*) L"Normal Maximum";
+    const LPWSTR OPCHDA_ATTRNAME_NORMAL_MINIMUM = (wchar_t*) L"Normal Minimum";
+    const LPWSTR OPCHDA_ATTRNAME_ITEMID = (wchar_t*) L"ItemID";
+    const LPWSTR OPCHDA_ATTRNAME_MAX_TIME_INT = (wchar_t*) L"Max Time Interval";
+    const LPWSTR OPCHDA_ATTRNAME_MIN_TIME_INT = (wchar_t*) L"Min Time Interval";
+    const LPWSTR OPCHDA_ATTRNAME_EXCEPTION_DEV = (wchar_t*) L"Exception Deviation";
+    const LPWSTR OPCHDA_ATTRNAME_EXCEPTION_DEV_TYPE = (wchar_t*) L"Exception Dev Type";
+    const LPWSTR OPCHDA_ATTRNAME_HIGH_ENTRY_LIMIT = (wchar_t*) L"High Entry Limit";
+    const LPWSTR OPCHDA_ATTRNAME_LOW_ENTRY_LIMIT = (wchar_t*) L"Low Entry Limit";
+    const LPWSTR OPCHDA_AGGRNAME_INTERPOLATIVE = (wchar_t*) L"Interpolative";
+    const LPWSTR OPCHDA_AGGRNAME_TOTAL = (wchar_t*) L"Total";
+    const LPWSTR OPCHDA_AGGRNAME_AVERAGE = (wchar_t*) L"Average";
+    const LPWSTR OPCHDA_AGGRNAME_TIMEAVERAGE = (wchar_t*) L"Time Average";
+    const LPWSTR OPCHDA_AGGRNAME_COUNT = (wchar_t*) L"Count";
+    const LPWSTR OPCHDA_AGGRNAME_STDEV = (wchar_t*) L"Standard Deviation";
+    const LPWSTR OPCHDA_AGGRNAME_MINIMUMACTUALTIME = (wchar_t*) L"Minimum Actual Time";
+    const LPWSTR OPCHDA_AGGRNAME_MINIMUM = (wchar_t*) L"Minimum";
+    const LPWSTR OPCHDA_AGGRNAME_MAXIMUMACTUALTIME = (wchar_t*) L"Maximum Actual Time";
+    const LPWSTR OPCHDA_AGGRNAME_MAXIMUM = (wchar_t*) L"Maximum";
+    const LPWSTR OPCHDA_AGGRNAME_START = (wchar_t*) L"Start";
+    const LPWSTR OPCHDA_AGGRNAME_END = (wchar_t*) L"End";
+    const LPWSTR OPCHDA_AGGRNAME_DELTA = (wchar_t*) L"Delta";
+    const LPWSTR OPCHDA_AGGRNAME_REGSLOPE = (wchar_t*) L"Regression Line Slope";
+    const LPWSTR OPCHDA_AGGRNAME_REGCONST = (wchar_t*) L"Regression Line Constant";
+    const LPWSTR OPCHDA_AGGRNAME_REGDEV = (wchar_t*) L"Regression Line Error";
+    const LPWSTR OPCHDA_AGGRNAME_VARIANCE = (wchar_t*) L"Variance";
+    const LPWSTR OPCHDA_AGGRNAME_RANGE = (wchar_t*) L"Range";
+    const LPWSTR OPCHDA_AGGRNAME_DURATIONGOOD = (wchar_t*) L"Duration Good";
+    const LPWSTR OPCHDA_AGGRNAME_DURATIONBAD = (wchar_t*) L"Duration Bad";
+    const LPWSTR OPCHDA_AGGRNAME_PERCENTGOOD = (wchar_t*) L"Percent Good";
+    const LPWSTR OPCHDA_AGGRNAME_PERCENTBAD = (wchar_t*) L"Percent Bad";
+    const LPWSTR OPCHDA_AGGRNAME_WORSTQUALITY = (wchar_t*) L"Worst Quality";
+    const LPWSTR OPCHDA_AGGRNAME_ANNOTATIONS = (wchar_t*) L"Annotations";
+    const unsigned long OPCHDA_EXTRADATA = 65536;
+    const unsigned long OPCHDA_INTERPOLATED = 131072;
+    const unsigned long OPCHDA_RAW = 262144;
+    const unsigned long OPCHDA_CALCULATED = 524288;
+    const unsigned long OPCHDA_NOBOUND = 1048576;
+    const unsigned long OPCHDA_NODATA = 2097152;
+    const unsigned long OPCHDA_DATALOST = 4194304;
+    const unsigned long OPCHDA_CONVERSION = 8388608;
+    const unsigned long OPCHDA_PARTIAL = 16777216;
+
+enum tagOPCHDA_SERVERSTATUS
+{
+    OPCHDA_UP = 1,
+    OPCHDA_DOWN = 2,
+    OPCHDA_INDETERMINATE = 3
+};
+
+enum tagOPCHDA_OPERATORCODES
+{
+    OPCHDA_EQUAL = 1,
+    OPCHDA_LESS = 2,
+    OPCHDA_LESSEQUAL = 3,
+    OPCHDA_GREATER = 4,
+    OPCHDA_GREATEREQUAL = 5,
+    OPCHDA_NOTEQUAL = 6
+};
+
+enum tagOPCHDA_BROWSETYPE
+{
+    OPCHDA_BRANCH = 1,
+    OPCHDA_LEAF = 2,
+    OPCHDA_FLAT = 3,
+    OPCHDA_ITEMS = 4
+};
+
+enum tagOPCHDA_BROWSEDIRECTION
+{
+    OPCHDA_BROWSE_UP = 1,
+    OPCHDA_BROWSE_DOWN = 2,
+    OPCHDA_BROWSE_DIRECT = 3
+};
+
+struct __declspec(uuid("1f1217b1-dee0-11d2-a5e5-000086339399"))
+IOPCHDA_Browser : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall GetEnum (
+        /*[in]*/ enum tagOPCHDA_BROWSETYPE dwBrowseType,
+        /*[out]*/ struct IEnumString * * ppIEnumString ) = 0;
+      virtual HRESULT __stdcall ChangeBrowsePosition (
+        /*[in]*/ enum tagOPCHDA_BROWSEDIRECTION dwBrowseDirection,
+        /*[in]*/ LPWSTR szString ) = 0;
+      virtual HRESULT __stdcall GetItemID (
+        /*[in]*/ LPWSTR szNode,
+        /*[out]*/ LPWSTR * pszItemID ) = 0;
+      virtual HRESULT __stdcall GetBranchPosition (
+        /*[out]*/ LPWSTR * pszBranchPos ) = 0;
+};
+
+struct __declspec(uuid("1f1217b0-dee0-11d2-a5e5-000086339399"))
+IOPCHDA_Server : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall GetItemAttributes (
+        /*[out]*/ unsigned long * pdwCount,
+        /*[out]*/ unsigned long * * ppdwAttrID,
+        /*[out]*/ LPWSTR * * ppszAttrName,
+        /*[out]*/ LPWSTR * * ppszAttrDesc,
+        /*[out]*/ unsigned short * * ppvtAttrDataType ) = 0;
+      virtual HRESULT __stdcall GetAggregates (
+        /*[out]*/ unsigned long * pdwCount,
+        /*[out]*/ unsigned long * * ppdwAggrID,
+        /*[out]*/ LPWSTR * * ppszAggrName,
+        /*[out]*/ LPWSTR * * ppszAggrDesc ) = 0;
+      virtual HRESULT __stdcall GetHistorianStatus (
+        /*[out]*/ enum tagOPCHDA_SERVERSTATUS * pwStatus,
+        /*[out]*/ struct _FILETIME * * pftCurrentTime,
+        /*[out]*/ struct _FILETIME * * pftStartTime,
+        /*[out]*/ unsigned short * pwMajorVersion,
+        /*[out]*/ unsigned short * pwMinorVersion,
+        /*[out]*/ unsigned short * pwBuildNumber,
+        /*[out]*/ unsigned long * pdwMaxReturnValues,
+        /*[out]*/ LPWSTR * ppszStatusString,
+        /*[out]*/ LPWSTR * ppszVendorInfo ) = 0;
+      virtual HRESULT __stdcall GetItemHandles (
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ LPWSTR * pszItemID,
+        /*[in]*/ unsigned long * phClient,
+        /*[out]*/ unsigned long * * pphServer,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall ReleaseItemHandles (
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * phServer,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall ValidateItemIDs (
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ LPWSTR * pszItemID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall CreateBrowse (
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * pdwAttrID,
+        /*[in]*/ enum tagOPCHDA_OPERATORCODES * pOperator,
+        /*[in]*/ VARIANT * vFilter,
+        /*[out]*/ struct IOPCHDA_Browser * * pphBrowser,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+};
+
+#pragma pack(push, 4)
+
+struct tagOPCHDA_TIME
+{
+    long bString;
+    LPWSTR szTime;
+    struct _FILETIME ftTime;
+};
+
+#pragma pack(pop)
+
+#pragma pack(push, 4)
+
+struct tagOPCHDA_ITEM
+{
+    unsigned long hClient;
+    unsigned long haAggregate;
+    unsigned long dwCount;
+    struct _FILETIME * pftTimeStamps;
+    unsigned long * pdwQualities;
+    VARIANT * pvDataValues;
+};
+
+#pragma pack(pop)
+
+enum tagOPCHDA_EDITTYPE
+{
+    OPCHDA_INSERT = 1,
+    OPCHDA_REPLACE = 2,
+    OPCHDA_INSERTREPLACE = 3,
+    OPCHDA_DELETE = 4
+};
+
+#pragma pack(push, 4)
+
+struct tagOPCHDA_MODIFIEDITEM
+{
+    unsigned long hClient;
+    unsigned long dwCount;
+    struct _FILETIME * pftTimeStamps;
+    unsigned long * pdwQualities;
+    VARIANT * pvDataValues;
+    struct _FILETIME * pftModificationTime;
+    enum tagOPCHDA_EDITTYPE * pEditType;
+    LPWSTR * szUser;
+};
+
+#pragma pack(pop)
+
+#pragma pack(push, 4)
+
+struct tagOPCHDA_ATTRIBUTE
+{
+    unsigned long hClient;
+    unsigned long dwNumValues;
+    unsigned long dwAttributeID;
+    struct _FILETIME * ftTimeStamps;
+    VARIANT * vAttributeValues;
+};
+
+#pragma pack(pop)
+
+struct __declspec(uuid("1f1217b2-dee0-11d2-a5e5-000086339399"))
+IOPCHDA_SyncRead : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall ReadRaw (
+        /*[in,out]*/ struct tagOPCHDA_TIME * htStartTime,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htEndTime,
+        /*[in]*/ unsigned long dwNumValues,
+        /*[in]*/ long bBounds,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[out]*/ struct tagOPCHDA_ITEM * * ppItemValues,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall ReadProcessed (
+        /*[in,out]*/ struct tagOPCHDA_TIME * htStartTime,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htEndTime,
+        /*[in]*/ struct _FILETIME ftResampleInterval,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ unsigned long * haAggregate,
+        /*[out]*/ struct tagOPCHDA_ITEM * * ppItemValues,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall ReadAtTime (
+        /*[in]*/ unsigned long dwNumTimeStamps,
+        /*[in]*/ struct _FILETIME * ftTimeStamps,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[out]*/ struct tagOPCHDA_ITEM * * ppItemValues,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall ReadModified (
+        /*[in,out]*/ struct tagOPCHDA_TIME * htStartTime,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htEndTime,
+        /*[in]*/ unsigned long dwNumValues,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[out]*/ struct tagOPCHDA_MODIFIEDITEM * * ppItemValues,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall ReadAttribute (
+        /*[in,out]*/ struct tagOPCHDA_TIME * htStartTime,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htEndTime,
+        /*[in]*/ unsigned long hServer,
+        /*[in]*/ unsigned long dwNumAttributes,
+        /*[in]*/ unsigned long * pdwAttributeIDs,
+        /*[out]*/ struct tagOPCHDA_ATTRIBUTE * * ppAttributeValues,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+};
+
+enum tagOPCHDA_UPDATECAPABILITIES
+{
+    OPCHDA_INSERTCAP = 1,
+    OPCHDA_REPLACECAP = 2,
+    OPCHDA_INSERTREPLACECAP = 4,
+    OPCHDA_DELETERAWCAP = 8,
+    OPCHDA_DELETEATTIMECAP = 16
+};
+
+struct __declspec(uuid("1f1217b3-dee0-11d2-a5e5-000086339399"))
+IOPCHDA_SyncUpdate : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall QueryCapabilities (
+        /*[out]*/ enum tagOPCHDA_UPDATECAPABILITIES * pCapabilities ) = 0;
+      virtual HRESULT __stdcall Insert (
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ struct _FILETIME * ftTimeStamps,
+        /*[in]*/ VARIANT * vDataValues,
+        /*[in]*/ unsigned long * pdwQualities,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall Replace (
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ struct _FILETIME * ftTimeStamps,
+        /*[in]*/ VARIANT * vDataValues,
+        /*[in]*/ unsigned long * pdwQualities,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall InsertReplace (
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ struct _FILETIME * ftTimeStamps,
+        /*[in]*/ VARIANT * vDataValues,
+        /*[in]*/ unsigned long * pdwQualities,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall DeleteRaw (
+        /*[in,out]*/ struct tagOPCHDA_TIME * htStartTime,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htEndTime,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall DeleteAtTime (
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ struct _FILETIME * ftTimeStamps,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+};
+
+enum tagOPCHDA_ANNOTATIONCAPABILITIES
+{
+    OPCHDA_READANNOTATIONCAP = 1,
+    OPCHDA_INSERTANNOTATIONCAP = 2
+};
+
+#pragma pack(push, 4)
+
+struct tagOPCHDA_ANNOTATION
+{
+    unsigned long hClient;
+    unsigned long dwNumValues;
+    struct _FILETIME * ftTimeStamps;
+    LPWSTR * szAnnotation;
+    struct _FILETIME * ftAnnotationTime;
+    LPWSTR * szUser;
+};
+
+#pragma pack(pop)
+
+struct __declspec(uuid("1f1217b4-dee0-11d2-a5e5-000086339399"))
+IOPCHDA_SyncAnnotations : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall QueryCapabilities (
+        /*[out]*/ enum tagOPCHDA_ANNOTATIONCAPABILITIES * pCapabilities ) = 0;
+      virtual HRESULT __stdcall Read (
+        /*[in,out]*/ struct tagOPCHDA_TIME * htStartTime,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htEndTime,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[out]*/ struct tagOPCHDA_ANNOTATION * * ppAnnotationValues,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall Insert (
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ struct _FILETIME * ftTimeStamps,
+        /*[in]*/ struct tagOPCHDA_ANNOTATION * pAnnotationValues,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+};
+
+struct __declspec(uuid("1f1217b5-dee0-11d2-a5e5-000086339399"))
+IOPCHDA_AsyncRead : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall ReadRaw (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htStartTime,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htEndTime,
+        /*[in]*/ unsigned long dwNumValues,
+        /*[in]*/ long bBounds,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[out]*/ unsigned long * pdwCancelID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall AdviseRaw (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htStartTime,
+        /*[in]*/ struct _FILETIME ftUpdateInterval,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[out]*/ unsigned long * pdwCancelID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall ReadProcessed (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htStartTime,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htEndTime,
+        /*[in]*/ struct _FILETIME ftResampleInterval,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ unsigned long * haAggregate,
+        /*[out]*/ unsigned long * pdwCancelID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall AdviseProcessed (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htStartTime,
+        /*[in]*/ struct _FILETIME ftResampleInterval,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ unsigned long * haAggregate,
+        /*[in]*/ unsigned long dwNumIntervals,
+        /*[out]*/ unsigned long * pdwCancelID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall ReadAtTime (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in]*/ unsigned long dwNumTimeStamps,
+        /*[in]*/ struct _FILETIME * ftTimeStamps,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[out]*/ unsigned long * pdwCancelID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall ReadModified (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htStartTime,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htEndTime,
+        /*[in]*/ unsigned long dwNumValues,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[out]*/ unsigned long * pdwCancelID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall ReadAttribute (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htStartTime,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htEndTime,
+        /*[in]*/ unsigned long hServer,
+        /*[in]*/ unsigned long dwNumAttributes,
+        /*[in]*/ unsigned long * dwAttributeIDs,
+        /*[out]*/ unsigned long * pdwCancelID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall Cancel (
+        /*[in]*/ unsigned long dwCancelID ) = 0;
+};
+
+struct __declspec(uuid("1f1217b6-dee0-11d2-a5e5-000086339399"))
+IOPCHDA_AsyncUpdate : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall QueryCapabilities (
+        /*[out]*/ enum tagOPCHDA_UPDATECAPABILITIES * pCapabilities ) = 0;
+      virtual HRESULT __stdcall Insert (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ struct _FILETIME * ftTimeStamps,
+        /*[in]*/ VARIANT * vDataValues,
+        /*[in]*/ unsigned long * pdwQualities,
+        /*[out]*/ unsigned long * pdwCancelID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall Replace (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ struct _FILETIME * ftTimeStamps,
+        /*[in]*/ VARIANT * vDataValues,
+        /*[in]*/ unsigned long * pdwQualities,
+        /*[out]*/ unsigned long * pdwCancelID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall InsertReplace (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ struct _FILETIME * ftTimeStamps,
+        /*[in]*/ VARIANT * vDataValues,
+        /*[in]*/ unsigned long * pdwQualities,
+        /*[out]*/ unsigned long * pdwCancelID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall DeleteRaw (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htStartTime,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htEndTime,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[out]*/ unsigned long * pdwCancelID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall DeleteAtTime (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ struct _FILETIME * ftTimeStamps,
+        /*[out]*/ unsigned long * pdwCancelID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall Cancel (
+        /*[in]*/ unsigned long dwCancelID ) = 0;
+};
+
+struct __declspec(uuid("1f1217b7-dee0-11d2-a5e5-000086339399"))
+IOPCHDA_AsyncAnnotations : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall QueryCapabilities (
+        /*[out]*/ enum tagOPCHDA_ANNOTATIONCAPABILITIES * pCapabilities ) = 0;
+      virtual HRESULT __stdcall Read (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htStartTime,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htEndTime,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[out]*/ unsigned long * pdwCancelID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall Insert (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ struct _FILETIME * ftTimeStamps,
+        /*[in]*/ struct tagOPCHDA_ANNOTATION * pAnnotationValues,
+        /*[out]*/ unsigned long * pdwCancelID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall Cancel (
+        /*[in]*/ unsigned long dwCancelID ) = 0;
+};
+
+struct __declspec(uuid("1f1217b8-dee0-11d2-a5e5-000086339399"))
+IOPCHDA_Playback : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall ReadRawWithUpdate (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htStartTime,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htEndTime,
+        /*[in]*/ unsigned long dwNumValues,
+        /*[in]*/ struct _FILETIME ftUpdateDuration,
+        /*[in]*/ struct _FILETIME ftUpdateInterval,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[out]*/ unsigned long * pdwCancelID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall ReadProcessedWithUpdate (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htStartTime,
+        /*[in,out]*/ struct tagOPCHDA_TIME * htEndTime,
+        /*[in]*/ struct _FILETIME ftResampleInterval,
+        /*[in]*/ unsigned long dwNumIntervals,
+        /*[in]*/ struct _FILETIME ftUpdateInterval,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ unsigned long * phServer,
+        /*[in]*/ unsigned long * haAggregate,
+        /*[out]*/ unsigned long * pdwCancelID,
+        /*[out]*/ HRESULT * * ppErrors ) = 0;
+      virtual HRESULT __stdcall Cancel (
+        /*[in]*/ unsigned long dwCancelID ) = 0;
+};
+
+struct __declspec(uuid("1f1217b9-dee0-11d2-a5e5-000086339399"))
+IOPCHDA_DataCallback : IUnknown
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall OnDataChange (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in]*/ HRESULT hrStatus,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ struct tagOPCHDA_ITEM * pItemValues,
+        /*[in]*/ HRESULT * phrErrors ) = 0;
+      virtual HRESULT __stdcall OnReadComplete (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in]*/ HRESULT hrStatus,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ struct tagOPCHDA_ITEM * pItemValues,
+        /*[in]*/ HRESULT * phrErrors ) = 0;
+      virtual HRESULT __stdcall OnReadModifiedComplete (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in]*/ HRESULT hrStatus,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ struct tagOPCHDA_MODIFIEDITEM * pItemValues,
+        /*[in]*/ HRESULT * phrErrors ) = 0;
+      virtual HRESULT __stdcall OnReadAttributeComplete (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in]*/ HRESULT hrStatus,
+        /*[in]*/ unsigned long hClient,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ struct tagOPCHDA_ATTRIBUTE * pAttributeValues,
+        /*[in]*/ HRESULT * phrErrors ) = 0;
+      virtual HRESULT __stdcall OnReadAnnotations (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in]*/ HRESULT hrStatus,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ struct tagOPCHDA_ANNOTATION * pAnnotationValues,
+        /*[in]*/ HRESULT * phrErrors ) = 0;
+      virtual HRESULT __stdcall OnInsertAnnotations (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in]*/ HRESULT hrStatus,
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * phClients,
+        /*[in]*/ HRESULT * phrErrors ) = 0;
+      virtual HRESULT __stdcall OnPlayback (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in]*/ HRESULT hrStatus,
+        /*[in]*/ unsigned long dwNumItems,
+        /*[in]*/ struct tagOPCHDA_ITEM * * ppItemValues,
+        /*[in]*/ HRESULT * phrErrors ) = 0;
+      virtual HRESULT __stdcall OnUpdateComplete (
+        /*[in]*/ unsigned long dwTransactionID,
+        /*[in]*/ HRESULT hrStatus,
+        /*[in]*/ unsigned long dwCount,
+        /*[in]*/ unsigned long * phClients,
+        /*[in]*/ HRESULT * phrErrors ) = 0;
+      virtual HRESULT __stdcall OnCancelComplete (
+        /*[in]*/ unsigned long dwCancelID ) = 0;
+};
+
+//
+// Named GUID constants initializations
+//
+
+extern "C" const GUID __declspec(selectany) LIBID_OPCHDA =
+    {0x1f1217ba,0xdee0,0x11d2,{0xa5,0xe5,0x00,0x00,0x86,0x33,0x93,0x99}};
+extern "C" const GUID __declspec(selectany) IID_CATID_OPCHDAServer10 =
+    {0x7de5b060,0xe089,0x11d2,{0xa5,0xe6,0x00,0x00,0x86,0x33,0x93,0x99}};
+extern "C" const GUID __declspec(selectany) IID_IOPCHDA_Browser =
+    {0x1f1217b1,0xdee0,0x11d2,{0xa5,0xe5,0x00,0x00,0x86,0x33,0x93,0x99}};
+extern "C" const GUID __declspec(selectany) IID_IOPCHDA_Server =
+    {0x1f1217b0,0xdee0,0x11d2,{0xa5,0xe5,0x00,0x00,0x86,0x33,0x93,0x99}};
+extern "C" const GUID __declspec(selectany) IID_IOPCHDA_SyncRead =
+    {0x1f1217b2,0xdee0,0x11d2,{0xa5,0xe5,0x00,0x00,0x86,0x33,0x93,0x99}};
+extern "C" const GUID __declspec(selectany) IID_IOPCHDA_SyncUpdate =
+    {0x1f1217b3,0xdee0,0x11d2,{0xa5,0xe5,0x00,0x00,0x86,0x33,0x93,0x99}};
+extern "C" const GUID __declspec(selectany) IID_IOPCHDA_SyncAnnotations =
+    {0x1f1217b4,0xdee0,0x11d2,{0xa5,0xe5,0x00,0x00,0x86,0x33,0x93,0x99}};
+extern "C" const GUID __declspec(selectany) IID_IOPCHDA_AsyncRead =
+    {0x1f1217b5,0xdee0,0x11d2,{0xa5,0xe5,0x00,0x00,0x86,0x33,0x93,0x99}};
+extern "C" const GUID __declspec(selectany) IID_IOPCHDA_AsyncUpdate =
+    {0x1f1217b6,0xdee0,0x11d2,{0xa5,0xe5,0x00,0x00,0x86,0x33,0x93,0x99}};
+extern "C" const GUID __declspec(selectany) IID_IOPCHDA_AsyncAnnotations =
+    {0x1f1217b7,0xdee0,0x11d2,{0xa5,0xe5,0x00,0x00,0x86,0x33,0x93,0x99}};
+extern "C" const GUID __declspec(selectany) IID_IOPCHDA_Playback =
+    {0x1f1217b8,0xdee0,0x11d2,{0xa5,0xe5,0x00,0x00,0x86,0x33,0x93,0x99}};
+extern "C" const GUID __declspec(selectany) IID_IOPCHDA_DataCallback =
+    {0x1f1217b9,0xdee0,0x11d2,{0xa5,0xe5,0x00,0x00,0x86,0x33,0x93,0x99}};
+
+#pragma pack(pop)

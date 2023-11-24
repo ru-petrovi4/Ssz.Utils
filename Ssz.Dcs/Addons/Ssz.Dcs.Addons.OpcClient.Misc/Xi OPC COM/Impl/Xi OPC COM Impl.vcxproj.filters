@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\OPCda">
+      <UniqueIdentifier>{14442ab5-163e-4670-99c2-f6798e28352f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\OPCae">
+      <UniqueIdentifier>{f1197641-7810-41d5-9ee1-3139b9a2a8b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\OPChda">
+      <UniqueIdentifier>{ab8f09f7-d870-464e-aa47-092cbfe378e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\OPCda">
+      <UniqueIdentifier>{dfa3db90-5270-4fd3-9637-c87f5dbfcdda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\OPCae">
+      <UniqueIdentifier>{6a7db3f3-73a2-48d0-9dd1-b3e48ccdee01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\OPChda">
+      <UniqueIdentifier>{f9eb195f-5400-45e0-bcb2-59cefd0e3e27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CreateInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Helper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IEnumStrings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Xi.OPC.COM.Implementation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OPCda\OPCDaDataCallback.cpp">
+      <Filter>Source Files\OPCda</Filter>
+    </ClCompile>
+    <ClCompile Include="OPCda\OPCDaGroup.cpp">
+      <Filter>Source Files\OPCda</Filter>
+    </ClCompile>
+    <ClCompile Include="OPCda\OPCDaServer.cpp">
+      <Filter>Source Files\OPCda</Filter>
+    </ClCompile>
+    <ClCompile Include="OPCae\OPCAeAreaBrowser.cpp">
+      <Filter>Source Files\OPCae</Filter>
+    </ClCompile>
+    <ClCompile Include="OPCae\OPCAeEventSink.cpp">
+      <Filter>Source Files\OPCae</Filter>
+    </ClCompile>
+    <ClCompile Include="OPCae\OPCAeServer.cpp">
+      <Filter>Source Files\OPCae</Filter>
+    </ClCompile>
+    <ClCompile Include="OPCae\OPCAeSubscription.cpp">
+      <Filter>Source Files\OPCae</Filter>
+    </ClCompile>
+    <ClCompile Include="OPChda\OPCHdaBrowser.cpp">
+      <Filter>Source Files\OPChda</Filter>
+    </ClCompile>
+    <ClCompile Include="OPChda\OPCHdaServer.cpp">
+      <Filter>Source Files\OPChda</Filter>
+    </ClCompile>
+    <ClCompile Include="OPCae\OPCAeShutdownCallback.cpp">
+      <Filter>Source Files\OPCae</Filter>
+    </ClCompile>
+    <ClCompile Include="OPCda\OPCDaShutdownCallback.cpp">
+      <Filter>Source Files\OPCda</Filter>
+    </ClCompile>
+    <ClCompile Include="OPChda\OPCHdaShutdownCallback.cpp">
+      <Filter>Source Files\OPChda</Filter>
+    </ClCompile>
+    <ClCompile Include="OPChda\UsoHdaServer.cpp">
+      <Filter>Source Files\OPChda</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CreateInstance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dllmain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IEnumStrings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OPCda\OPCDaDataCallback.h">
+      <Filter>Header Files\OPCda</Filter>
+    </ClInclude>
+    <ClInclude Include="OPCda\OPCDaGroup.h">
+      <Filter>Header Files\OPCda</Filter>
+    </ClInclude>
+    <ClInclude Include="OPCda\OPCDaServer.h">
+      <Filter>Header Files\OPCda</Filter>
+    </ClInclude>
+    <ClInclude Include="OPCae\OPCAeAreaBrowser.h">
+      <Filter>Header Files\OPCae</Filter>
+    </ClInclude>
+    <ClInclude Include="OPCae\OPCAeEventSink.h">
+      <Filter>Header Files\OPCae</Filter>
+    </ClInclude>
+    <ClInclude Include="OPCae\OPCAeServer.h">
+      <Filter>Header Files\OPCae</Filter>
+    </ClInclude>
+    <ClInclude Include="OPCae\OPCAeSubscription.h">
+      <Filter>Header Files\OPCae</Filter>
+    </ClInclude>
+    <ClInclude Include="OPChda\OPCHdaBrowser.h">
+      <Filter>Header Files\OPChda</Filter>
+    </ClInclude>
+    <ClInclude Include="OPChda\OPCHdaServer.h">
+      <Filter>Header Files\OPChda</Filter>
+    </ClInclude>
+    <ClInclude Include="OPCae\OPCAeShutdownCallback.h">
+      <Filter>Header Files\OPCae</Filter>
+    </ClInclude>
+    <ClInclude Include="OPChda\OPCHdaShutdownCallback.h">
+      <Filter>Header Files\OPChda</Filter>
+    </ClInclude>
+    <ClInclude Include="OPCda\OPCDaShutdownCallback.h">
+      <Filter>Header Files\OPCda</Filter>
+    </ClInclude>
+    <ClInclude Include="OPChda\UsoHdaServer.h">
+      <Filter>Header Files\OPChda</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="opc_aeps.tlh">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="opccomn_ps.tlh">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="opchda_ps.tlh">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="opcproxy.tlh">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="uso_opc_access.tlb">
+      <Filter>Header Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Xi.OPC.COM.Implementation.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
