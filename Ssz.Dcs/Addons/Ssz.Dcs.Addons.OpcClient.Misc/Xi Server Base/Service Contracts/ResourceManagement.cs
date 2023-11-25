@@ -130,21 +130,13 @@ namespace Xi.Server.Base
 			    {
 			        OperationContext ctx = OperationContext.Current;
 
-			        List<EndpointDefinition> listEndpointDefinitions =
-			            (from ep in ServiceHost.Description.Endpoints
-			             where ep.Contract.Name.EndsWith(typeof(IRead).Name)
-			                   || ep.Contract.Name.EndsWith(typeof(IRestRead).Name)
-			                   || ep.Contract.Name.EndsWith(typeof(IPoll).Name)
-			                   || ep.Contract.Name.EndsWith(typeof(IWrite).Name)
-			                   || ep.Contract.Name.EndsWith(typeof(IRegisterForCallback).Name)
-			             select new EndpointDefinition
-			             {
-			                 EndpointId = Guid.NewGuid().ToString(),
-			                 BindingName = ep.Binding.Name,
-			                 ContractType = ep.Contract.Name,
-			                 Url = ep.Address.Uri.AbsoluteUri,
-			                 EndpointDescription = ep,
-			             }).ToList<EndpointDefinition>();
+                    List<EndpointDefinition> listEndpointDefinitions = new List<EndpointDefinition>
+					{						
+						new EndpointDefinition() { EndpointId = nameof(IRead) },
+						new EndpointDefinition() { EndpointId = nameof(IWrite) },
+						new EndpointDefinition() { EndpointId = nameof(IPoll) },
+						new EndpointDefinition() { EndpointId = nameof(IRegisterForCallback) },
+					};                    
 
 			        // check security for this context
 			        OnValidateContextSecurity(applicationName, workstationName, ctx);

@@ -70,6 +70,15 @@ namespace Ssz.Dcs.CentralServer.Common.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to parameter DbType is not set..
+        /// </summary>
+        public static string DbTypeIsNotConfigured {
+            get {
+                return ResourceManager.GetString("DbTypeIsNotConfigured", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Operator.
         /// </summary>
         public static string DefaultTrainee_RoleName {

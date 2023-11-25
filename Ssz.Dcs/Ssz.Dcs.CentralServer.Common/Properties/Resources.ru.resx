@@ -120,6 +120,9 @@
   <data name="DbInitializationSuccess" xml:space="preserve">
     <value>Инициализация БД прошла успешно</value>
   </data>
+  <data name="DbTypeIsNotConfigured" xml:space="preserve">
+    <value>Параметр DbType не задан</value>
+  </data>
   <data name="DefaultTrainee_RoleName" xml:space="preserve">
     <value>Оператор</value>
   </data>

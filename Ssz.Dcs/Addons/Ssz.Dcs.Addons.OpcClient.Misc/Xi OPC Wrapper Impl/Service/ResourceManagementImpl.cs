@@ -120,19 +120,7 @@ namespace Xi.OPC.Wrapper.Impl
 		{
 			ContextImpl contextImpl = new ContextImpl(this, ctx.SessionId, applicationName, workstationName, ref localeId,
 				ref contextTimeout, contextOptions, userIdentity);
-
-			List<EndpointDefinition> epDefs = new List<EndpointDefinition>
-            {
-				new EndpointDefinition() { EndpointId = nameof(IResourceManagement) },
-                new EndpointDefinition() { EndpointId = nameof(IRead) },
-                new EndpointDefinition() { EndpointId = nameof(IWrite) },
-                new EndpointDefinition() { EndpointId = nameof(IPoll) },
-                new EndpointDefinition() { EndpointId = nameof(ICallback) },
-            };
-
-			if ((epDefs == null) || (epDefs.Count == 0))
-				throw FaultHelpers.Create("Unable to locate connected Resource Management Endpoint");
-
+			
 			reInitiateKey = contextImpl.ReInitiateKey;
 			localeId = contextImpl.LocaleId;
 			contextTimeout = (uint)contextImpl.ContextTimeout.TotalMilliseconds;

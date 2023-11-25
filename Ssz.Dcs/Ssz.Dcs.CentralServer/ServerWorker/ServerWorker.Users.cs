@@ -29,13 +29,16 @@ namespace Ssz.Dcs.CentralServer
             {
                 using (var dbContext = _dbContextFactory.CreateDbContext())
                 {
-                    dbContext.Users.Add(new User
+                    if (dbContext.IsConfigured)
                     {
-                        UserName = userName,
-                        PersonnelNumber = personnelNumber,
-                        WindowsUserName = windowsUserName,
-                    });
-                    dbContext.SaveChanges();                    
+                        dbContext.Users.Add(new User
+                        {
+                            UserName = userName,
+                            PersonnelNumber = personnelNumber,
+                            WindowsUserName = windowsUserName,
+                        });
+                        dbContext.SaveChanges();
+                    }  
                 }
             }
             catch (Exception ex)
@@ -51,16 +54,19 @@ namespace Ssz.Dcs.CentralServer
             {
                 using (var dbContext = _dbContextFactory.CreateDbContext())
                 {
-                    var user = dbContext.Users.FirstOrDefault(u => u.UserName == userName);
-                    if (user is null)
+                    if (dbContext.IsConfigured)
                     {
-                        Logger.LogError("Delete user failed. " + userName);
-                        throw new RpcException(new Status(StatusCode.InvalidArgument, Properties.Resources.DeleteUserError));
-                    }
-                    user.UserName = newUserName;
-                    user.PersonnelNumber = newPersonnelNumber;
-                    user.WindowsUserName = newWindowsUserName;
-                    dbContext.SaveChanges();
+                        var user = dbContext.Users.FirstOrDefault(u => u.UserName == userName);
+                        if (user is null)
+                        {
+                            Logger.LogError("Delete user failed. " + userName);
+                            throw new RpcException(new Status(StatusCode.InvalidArgument, Properties.Resources.DeleteUserError));
+                        }
+                        user.UserName = newUserName;
+                        user.PersonnelNumber = newPersonnelNumber;
+                        user.WindowsUserName = newWindowsUserName;
+                        dbContext.SaveChanges();
+                    }                    
                 }
             }
             catch (Exception ex)
@@ -93,14 +99,17 @@ namespace Ssz.Dcs.CentralServer
             {
                 using (var dbContext = _dbContextFactory.CreateDbContext())
                 {
-                    var user = dbContext.Users.FirstOrDefault(u => u.UserName == userName);
-                    if (user is null)
+                    if (dbContext.IsConfigured)
                     {
-                        Logger.LogError("Delete user failed. " + userName);
-                        throw new RpcException(new Status(StatusCode.InvalidArgument, Properties.Resources.DeleteUserError));
-                    }
-                    dbContext.Users.Remove(user);
-                    dbContext.SaveChanges();
+                        var user = dbContext.Users.FirstOrDefault(u => u.UserName == userName);
+                        if (user is null)
+                        {
+                            Logger.LogError("Delete user failed. " + userName);
+                            throw new RpcException(new Status(StatusCode.InvalidArgument, Properties.Resources.DeleteUserError));
+                        }
+                        dbContext.Users.Remove(user);
+                        dbContext.SaveChanges();
+                    }                    
                 }
             }
             catch (Exception ex)
@@ -116,20 +125,23 @@ namespace Ssz.Dcs.CentralServer
 
         private void GetUsersPassthrough(out byte[] returnData)
         {
+            returnData = new byte[0];
             try
             {
                 using (var dbContext = _dbContextFactory.CreateDbContext())
                 {
-                    var reply = new GetUsersReply
+                    if (dbContext.IsConfigured)
                     {
-                        UsersCollection = dbContext.Users.ToList()
-                    };
-                    returnData = SerializationHelper.GetOwnedData(reply);
+                        var reply = new GetUsersReply
+                        {
+                            UsersCollection = dbContext.Users.ToList()
+                        };
+                        returnData = SerializationHelper.GetOwnedData(reply);
+                    }                    
                 }
             }
             catch (Exception ex)
-            {
-                returnData = new byte[0];
+            {                
                 ThrowRpcException(ex);
             }
         }
@@ -152,12 +164,15 @@ namespace Ssz.Dcs.CentralServer
 
                     using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        scenarioResult.ProcessModelingSessionId = processModelingSession.DbEnity_ProcessModelingSessionId.Value;
-                        scenarioResult.OperatorSessions.AddRange(dbContext.OperatorSessions.Where(os => operatorSessionsIds.Contains(os.Id)));
+                        if (dbContext.IsConfigured)
+                        {
+                            scenarioResult.ProcessModelingSessionId = processModelingSession.DbEnity_ProcessModelingSessionId.Value;
+                            scenarioResult.OperatorSessions.AddRange(dbContext.OperatorSessions.Where(os => operatorSessionsIds.Contains(os.Id)));
 
-                        dbContext.ScenarioResults.Add(scenarioResult);
+                            dbContext.ScenarioResults.Add(scenarioResult);
 
-                        await dbContext.SaveChangesAsync();
+                            await dbContext.SaveChangesAsync();
+                        }                        
                     }
                 }                    
             }

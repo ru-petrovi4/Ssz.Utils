@@ -71,22 +71,25 @@ namespace Ssz.Dcs.CentralServer
             {
                 using (var dbContext = _dbContextFactory.CreateDbContext())
                 {
-                    var instructorUser = dbContext.Users.FirstOrDefault(u => u.UserName == instructorUserName);
-                    if (instructorUser is not null)
+                    if (dbContext.IsConfigured)
                     {
-                        var dbEnity_ProcessModelingSession = new Common.EntityFramework.ProcessModelingSession
+                        var instructorUser = dbContext.Users.FirstOrDefault(u => u.UserName == instructorUserName);
+                        if (instructorUser is not null)
                         {
-                            InstructorUser = instructorUser,
-                            StartDateTimeUtc = DateTime.UtcNow,
-                            ProcessModelName = processModelName,
-                            Enterprise = data.TryGetValue(@"Enterprise")?.Skip(1)?.FirstOrDefault() ?? @"",
-                            Plant = data.TryGetValue(@"Plant")?.Skip(1)?.FirstOrDefault() ?? @"",
-                            Unit = processModelingSession.ProcessModelNameToDisplay
-                        };
-                        dbContext.ProcessModelingSessions.Add(dbEnity_ProcessModelingSession);
-                        dbContext.SaveChanges();
-                        processModelingSession.DbEnity_ProcessModelingSessionId = dbEnity_ProcessModelingSession.Id;
-                    }
+                            var dbEnity_ProcessModelingSession = new Common.EntityFramework.ProcessModelingSession
+                            {
+                                InstructorUser = instructorUser,
+                                StartDateTimeUtc = DateTime.UtcNow,
+                                ProcessModelName = processModelName,
+                                Enterprise = data.TryGetValue(@"Enterprise")?.Skip(1)?.FirstOrDefault() ?? @"",
+                                Plant = data.TryGetValue(@"Plant")?.Skip(1)?.FirstOrDefault() ?? @"",
+                                Unit = processModelingSession.ProcessModelNameToDisplay
+                            };
+                            dbContext.ProcessModelingSessions.Add(dbEnity_ProcessModelingSession);
+                            dbContext.SaveChanges();
+                            processModelingSession.DbEnity_ProcessModelingSessionId = dbEnity_ProcessModelingSession.Id;
+                        }
+                    }                    
                 }
             }
             catch (Exception ex)
@@ -109,12 +112,15 @@ namespace Ssz.Dcs.CentralServer
                 {
                     using (var dbContext = _dbContextFactory.CreateDbContext())
                     {
-                        var dbEnity_ProcessModelingSession = dbContext.ProcessModelingSessions.FirstOrDefault(pms => pms.Id == processModelingSession.DbEnity_ProcessModelingSessionId.Value);
-                        if (dbEnity_ProcessModelingSession is not null)
+                        if (dbContext.IsConfigured)
                         {
-                            dbEnity_ProcessModelingSession.FinishDateTimeUtc = DateTime.UtcNow;
-                            dbContext.SaveChanges();
-                        };
+                            var dbEnity_ProcessModelingSession = dbContext.ProcessModelingSessions.FirstOrDefault(pms => pms.Id == processModelingSession.DbEnity_ProcessModelingSessionId.Value);
+                            if (dbEnity_ProcessModelingSession is not null)
+                            {
+                                dbEnity_ProcessModelingSession.FinishDateTimeUtc = DateTime.UtcNow;
+                                dbContext.SaveChanges();
+                            };
+                        }                        
                     }                    
                 }                
             }

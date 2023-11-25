@@ -27,11 +27,10 @@ namespace Ssz.Dcs.CentralServer.Common.Helpers
         public static void InitializeOrUpdateDb(IServiceProvider serviceProvider, IConfiguration configuration, ILoggersSet loggersSet)
         {
             string dbType = ConfigurationHelper.GetValue(configuration, @"DbType", @"");
-            if (String.Equals(dbType, @"Postgres", StringComparison.InvariantCultureIgnoreCase))
-            {
-                var dbContextFactory = serviceProvider.GetRequiredService<IDbContextFactory<NpgsqlDcsCentralServerDbContext>>();
-
-                using var dbContext = dbContextFactory.CreateDbContext();
+            if (String.Equals(dbType, @"postgres", StringComparison.InvariantCultureIgnoreCase))
+            {   
+                using var dbContext = serviceProvider.GetRequiredService<IDbContextFactory<NpgsqlDcsCentralServerDbContext>>()
+                    .CreateDbContext();
 
                 // Applies any pending migrations for the context to the database. Will create the database
                 // if it does not already exist.
@@ -45,11 +44,10 @@ namespace Ssz.Dcs.CentralServer.Common.Helpers
 
                 InitializePostgresCrypto(dbContext);
             }
-            else
+            else if (String.Equals(dbType, @"sqlite", StringComparison.InvariantCultureIgnoreCase))
             {
-                var dbContextFactory = serviceProvider.GetRequiredService<IDbContextFactory<SqliteDcsCentralServerDbContext>>();
-
-                using var dbContext = dbContextFactory.CreateDbContext();
+                using var dbContext = serviceProvider.GetRequiredService<IDbContextFactory<SqliteDcsCentralServerDbContext>>()
+                    .CreateDbContext();
 
                 // Applies any pending migrations for the context to the database. Will create the database
                 // if it does not already exist.
@@ -61,7 +59,10 @@ namespace Ssz.Dcs.CentralServer.Common.Helpers
                 {
                 }
             }
-
+            else
+            {
+                Console.WriteLine(Properties.Resources.DbTypeIsNotConfigured);
+            }
 
             //var licenseFileInfo = new LicenseFileInfo
             //{
@@ -78,29 +79,30 @@ namespace Ssz.Dcs.CentralServer.Common.Helpers
             //    }
             //};
 
-            var dbContextFactory2 = serviceProvider.GetRequiredService<IDbContextFactory<DcsCentralServerDbContext>>();
+            using var dbContext2 = serviceProvider.GetRequiredService<IDbContextFactory<DcsCentralServerDbContext>>()
+                .CreateDbContext();
 
-            using var dbContext2 = dbContextFactory2.CreateDbContext();
-
-            if (!dbContext2.Users.Any())
+            if (dbContext2.IsConfigured) 
             {
-                var user = new User
+                if (!dbContext2.Users.Any())
                 {
-                    UserName = DbConstants.DefaultInstructorUserName,
-                };
-                dbContext2.Users.Add(user);
+                    var user = new User
+                    {
+                        UserName = DbConstants.DefaultInstructorUserName,
+                    };
+                    dbContext2.Users.Add(user);
 
-                user = new User
-                {
-                    UserName = DbConstants.DefaultTraineeUserName,
-                };
-                dbContext2.Users.Add(user);
-            }
+                    user = new User
+                    {
+                        UserName = DbConstants.DefaultTraineeUserName,
+                    };
+                    dbContext2.Users.Add(user);
+                }
 
-            dbContext2.SaveChanges();            
+                dbContext2.SaveChanges();
+            }                      
 
-            Console.WriteLine(Properties.Resources.DbInitializationSuccess);
-            
+            Console.WriteLine(Properties.Resources.DbInitializationSuccess);            
         }        
 
         #endregion

@@ -39,7 +39,7 @@ namespace Ssz.Dcs.CentralServer
                 {
                     operatorSession.OperatorInterfaceConnected = false;
                     OperatorSessionsCollection.Remove(operatorSession.OperatorSessionId);
-                    SetOperatorSessionStatus(_dbContextFactory, operatorSession, OperatorSessionConstants.ShutdownedOperator);
+                    SetOperatorSessionStatus(operatorSession, OperatorSessionConstants.ShutdownedOperator);
                     utilityItemsDoWorkNeeded = true;
                 }
             }

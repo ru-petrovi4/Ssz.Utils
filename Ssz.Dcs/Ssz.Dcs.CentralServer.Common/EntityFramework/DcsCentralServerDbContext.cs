@@ -6,6 +6,74 @@ using System.IO;
 
 namespace Ssz.Dcs.CentralServer.Common.EntityFramework
 {
+    public class SqliteDcsCentralServerDbContext : DcsCentralServerDbContext
+    {
+        #region construction and destruction
+
+        /// <summary>
+        ///     Nullable params for design-time tools.
+        /// </summary>
+        /// <param name="configuration"></param>
+        public SqliteDcsCentralServerDbContext(IConfiguration? configuration = null)
+        {
+            _configuration = configuration;
+        }
+
+        #endregion
+
+        #region protected functions
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            string programDataDirectoryFullName = ConfigurationHelper.GetProgramDataDirectoryFullName(_configuration);
+
+            optionsBuilder.UseSqlite("Data Source=" + Path.Combine(programDataDirectoryFullName, @"DcsCentralServer.db"),
+                    o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                .EnableThreadSafetyChecks(false);
+        }
+
+        #endregion
+
+        #region private fields
+
+        private IConfiguration? _configuration;
+
+        #endregion
+    }
+
+    public class NpgsqlDcsCentralServerDbContext : DcsCentralServerDbContext
+    {
+        #region construction and destruction
+
+        /// <summary>
+        ///     Nullable params for design-time tools.
+        /// </summary>
+        /// <param name="configuration"></param>
+        public NpgsqlDcsCentralServerDbContext(IConfiguration? configuration = null)
+        {
+            _configuration = configuration;
+        }
+
+        #endregion
+
+        #region protected functions
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseNpgsql(_configuration?.GetConnectionString("MainDbConnection"),
+                            o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                        .EnableThreadSafetyChecks(false);
+        }
+
+        #endregion
+
+        #region private fields
+
+        private IConfiguration? _configuration;
+
+        #endregion
+    }
+
     /// <summary>
     ///     To add migration: 
     ///     Startup project - Ssz.Dcs.CentralServer    
@@ -29,7 +97,9 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
 
         #endregion
 
-        #region public functions        
+        #region public functions      
+        
+        public bool IsConfigured { get; private set; }
 
         /// <summary>
         /// 
@@ -69,19 +139,25 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
             if (_configuration is not null)
             {
                 string dbType = ConfigurationHelper.GetValue(_configuration, @"DbType", @"");
-                if (String.Equals(dbType, @"Postgres", StringComparison.InvariantCultureIgnoreCase))
+                if (String.Equals(dbType, @"postgres", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    optionsBuilder.UseNpgsql(
-                        _configuration.GetConnectionString("MainDbConnection"),
+                    optionsBuilder.UseNpgsql(_configuration.GetConnectionString("MainDbConnection"),
                             o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
                         .EnableThreadSafetyChecks(false);
+                    IsConfigured = true;
+                    return;
+                }
+                else if (String.Equals(dbType, @"sqlite", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    string programDataDirectoryFullName = ConfigurationHelper.GetProgramDataDirectoryFullName(_configuration);
+
+                    optionsBuilder.UseSqlite("Data Source=" + Path.Combine(programDataDirectoryFullName, @"DcsCentralServer.db"),
+                            o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                        .EnableThreadSafetyChecks(false);
+                    IsConfigured = true;
                     return;
                 }
             }            
-
-            string programDataDirectoryFullName = ConfigurationHelper.GetProgramDataDirectoryFullName(_configuration);
-
-            optionsBuilder.UseSqlite("Data Source=" + Path.Combine(programDataDirectoryFullName, @"DcsCentralServer.db"));
         }
 
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -96,72 +172,5 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
         private IConfiguration? _configuration;
 
         #endregion
-    }
-
-    public class SqliteDcsCentralServerDbContext : DcsCentralServerDbContext
-    {
-        #region construction and destruction
-
-        /// <summary>
-        ///     Nullable params for design-time tools.
-        /// </summary>
-        /// <param name="configuration"></param>
-        public SqliteDcsCentralServerDbContext(IConfiguration? configuration = null)
-        {
-            _configuration = configuration;
-        }
-
-        #endregion
-
-        #region protected functions
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            string programDataDirectoryFullName = ConfigurationHelper.GetProgramDataDirectoryFullName(_configuration);
-
-            optionsBuilder.UseSqlite("Data Source=" + Path.Combine(programDataDirectoryFullName, @"DcsCentralServer.db"));
-        }
-
-        #endregion
-
-        #region private fields
-
-        private IConfiguration? _configuration;
-
-        #endregion
-    }
-
-    public class NpgsqlDcsCentralServerDbContext : DcsCentralServerDbContext
-    {
-        #region construction and destruction
-
-        /// <summary>
-        ///     Nullable params for design-time tools.
-        /// </summary>
-        /// <param name="configuration"></param>
-        public NpgsqlDcsCentralServerDbContext(IConfiguration? configuration = null)
-        {
-            _configuration = configuration;
-        }
-
-        #endregion
-
-        #region protected functions
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseNpgsql(
-                        _configuration?.GetConnectionString("MainDbConnection"),
-                            o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
-                        .EnableThreadSafetyChecks(false);
-        }
-
-        #endregion
-
-        #region private fields
-
-        private IConfiguration? _configuration;
-
-        #endregion
-    }
+    }    
 }

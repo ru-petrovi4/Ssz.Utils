@@ -64,7 +64,7 @@ namespace Ssz.Dcs.CentralServer
                 {
                     operatorSession = new OperatorSession(operatorSessionId, utilityServerContext.ClientWorkstationName);
 
-                    SetOperatorSessionStatus(_dbContextFactory, operatorSession, OperatorSessionConstants.ReadyToLaunchOperator);
+                    SetOperatorSessionStatus(operatorSession, OperatorSessionConstants.ReadyToLaunchOperator);
 
                     OperatorSessionsCollection.Add(operatorSession.OperatorSessionId, operatorSession);
                 }

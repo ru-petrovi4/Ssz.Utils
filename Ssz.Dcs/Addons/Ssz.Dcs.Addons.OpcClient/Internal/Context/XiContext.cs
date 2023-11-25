@@ -169,7 +169,10 @@ namespace Ssz.Xi.Client.Internal.Context
             {
                 _contextId = null;
                 if (_xiServerInfo is not null)
-                    _xiServerInfo.OnStartDataServer();
+                {
+                    _xiServerInfo.OnStopDataServer();
+                    _xiServerInfo = null;
+                }
                 throw;
             }
         }
@@ -256,6 +259,11 @@ namespace Ssz.Xi.Client.Internal.Context
                     {
                         StaticActiveContexts.Remove(ContextId);
                     }
+
+                if (_xiServerInfo is not null)
+                {
+                    _xiServerInfo.OnStopDataServer();                    
+                }
             }
 
             _iResourceManagement = null;

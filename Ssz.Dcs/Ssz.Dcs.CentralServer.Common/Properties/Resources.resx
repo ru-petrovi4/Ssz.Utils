@@ -120,6 +120,9 @@
   <data name="DbInitializationSuccess" xml:space="preserve">
     <value>DB initialization success</value>
   </data>
+  <data name="DbTypeIsNotConfigured" xml:space="preserve">
+    <value>parameter DbType is not set.</value>
+  </data>
   <data name="DefaultTrainee_RoleName" xml:space="preserve">
     <value>Operator</value>
   </data>

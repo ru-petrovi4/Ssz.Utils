@@ -389,23 +389,24 @@ namespace Xi.Server.Base
 		/// <returns>true/false</returns>
 		public bool ValidateSecurity(OperationContext ctx)
 		{
-			// Validate context ID
-			if (ctx == null)
-				return false;
+			return true;
+			//// Validate context ID
+			//if (ctx == null)
+			//	return false;
 
-			// Not the same transport connection?
-			if (ctx.SessionId != TransportSessionId)
-				return false;
+			//// Not the same transport connection?
+			//if (ctx.SessionId != TransportSessionId)
+			//	return false;
 
-			// No security?
-			if (ctx.ServiceSecurityContext == null)
-				return false;
+			//// No security?
+			//if (ctx.ServiceSecurityContext == null)
+			//	return false;
 
-			// Different user name?
-			if (ctx.ServiceSecurityContext.PrimaryIdentity.Name != Identity.Name)
-				return false;
+			//// Different user name?
+			//if (ctx.ServiceSecurityContext.PrimaryIdentity.Name != Identity.Name)
+			//	return false;
 
-			return OnValidateSecurity(ctx);
+			//return OnValidateSecurity(ctx);
 		}
 
 		/// <summary>

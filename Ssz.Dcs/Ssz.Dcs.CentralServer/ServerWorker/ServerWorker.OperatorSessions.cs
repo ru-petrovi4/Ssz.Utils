@@ -88,7 +88,7 @@ namespace Ssz.Dcs.CentralServer
             operatorSession.DsProject_PathRelativeToDataDirectory = dsProject_PathRelativeToDataDirectory;
             operatorSession.Interface_NameToDisplay = interface_NameToDisplay;
             operatorSession.OperatorPlay_AdditionalCommandLine = operatorPlay_AdditionalCommandLine;
-            SetOperatorSessionStatus(_dbContextFactory, operatorSession, OperatorSessionConstants.LaunchingOperator);
+            SetOperatorSessionStatus(operatorSession, OperatorSessionConstants.LaunchingOperator);
 
             _utilityItemsDoWorkNeeded = true;
 
@@ -233,7 +233,7 @@ namespace Ssz.Dcs.CentralServer
                 {
                     operatorSession.OperatorInterfaceConnected = true;
                     operatorSession.ForTimeout_LastDateTimeUtc = null;
-                    SetOperatorSessionStatus(_dbContextFactory, operatorSession, OperatorSessionConstants.LaunchedOperator);                                                         
+                    SetOperatorSessionStatus(operatorSession, OperatorSessionConstants.LaunchedOperator);                                                         
                     _utilityItemsDoWorkNeeded = true;
                 }   
             }
@@ -249,14 +249,14 @@ namespace Ssz.Dcs.CentralServer
                     else
                     {
                         OperatorSessionsCollection.Remove(operatorSession.OperatorSessionId);
-                        SetOperatorSessionStatus(_dbContextFactory, operatorSession, OperatorSessionConstants.ShutdownedOperator);
+                        SetOperatorSessionStatus(operatorSession, OperatorSessionConstants.ShutdownedOperator);
                         _utilityItemsDoWorkNeeded = true;
                     }                    
                 }
             }
         }
 
-        private void SetOperatorSessionStatus(IDbContextFactory<Common.EntityFramework.DcsCentralServerDbContext> dbContextFactory, OperatorSession operatorSession, int operatorSessionStatus)
+        private void SetOperatorSessionStatus(OperatorSession operatorSession, int operatorSessionStatus)
         {
             operatorSession.OperatorSessionStatus = operatorSessionStatus;
             switch (operatorSessionStatus)
@@ -269,19 +269,22 @@ namespace Ssz.Dcs.CentralServer
                         {
                             using (var dbContext = _dbContextFactory.CreateDbContext())
                             {
-                                var operatorUser = dbContext.Users.FirstOrDefault(u => u.UserName == operatorSession.OperatorUserName);
-                                if (operatorUser is not null)
+                                if (dbContext.IsConfigured) 
                                 {
-                                    var dbEnity_OperatorSession = new Common.EntityFramework.OperatorSession
+                                    var operatorUser = dbContext.Users.FirstOrDefault(u => u.UserName == operatorSession.OperatorUserName);
+                                    if (operatorUser is not null)
                                     {
-                                        OperatorUser = operatorUser,
-                                        StartDateTimeUtc = DateTime.UtcNow,
-                                        ProcessModelingSessionId = operatorSession.ProcessModelingSession.DbEnity_ProcessModelingSessionId.Value,
-                                    };
-                                    dbContext.OperatorSessions.Add(dbEnity_OperatorSession);
-                                    dbContext.SaveChanges();
-                                    operatorSession.DbEnity_OperatorSessionId = dbEnity_OperatorSession.Id;
-                                }
+                                        var dbEnity_OperatorSession = new Common.EntityFramework.OperatorSession
+                                        {
+                                            OperatorUser = operatorUser,
+                                            StartDateTimeUtc = DateTime.UtcNow,
+                                            ProcessModelingSessionId = operatorSession.ProcessModelingSession.DbEnity_ProcessModelingSessionId.Value,
+                                        };
+                                        dbContext.OperatorSessions.Add(dbEnity_OperatorSession);
+                                        dbContext.SaveChanges();
+                                        operatorSession.DbEnity_OperatorSessionId = dbEnity_OperatorSession.Id;
+                                    }
+                                }                                
                             }
                         }
                         catch (Exception ex)
@@ -297,12 +300,15 @@ namespace Ssz.Dcs.CentralServer
                         {
                             using (var dbContext = _dbContextFactory.CreateDbContext())
                             {
-                                var dbEnity_OperatorSession = dbContext.OperatorSessions.FirstOrDefault(pms => pms.Id == operatorSession.DbEnity_OperatorSessionId.Value);
-                                if (dbEnity_OperatorSession is not null)
+                                if (dbContext.IsConfigured)
                                 {
-                                    dbEnity_OperatorSession.FinishDateTimeUtc = DateTime.UtcNow;
-                                    dbContext.SaveChanges();
-                                };
+                                    var dbEnity_OperatorSession = dbContext.OperatorSessions.FirstOrDefault(pms => pms.Id == operatorSession.DbEnity_OperatorSessionId.Value);
+                                    if (dbEnity_OperatorSession is not null)
+                                    {
+                                        dbEnity_OperatorSession.FinishDateTimeUtc = DateTime.UtcNow;
+                                        dbContext.SaveChanges();
+                                    };
+                                }                                
                             }
                         }
                     }
