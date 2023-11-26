@@ -130,14 +130,12 @@ namespace Ssz.Dcs.CentralServer
             {
                 using (var dbContext = _dbContextFactory.CreateDbContext())
                 {
+                    var reply = new GetUsersReply();
                     if (dbContext.IsConfigured)
                     {
-                        var reply = new GetUsersReply
-                        {
-                            UsersCollection = dbContext.Users.ToList()
-                        };
-                        returnData = SerializationHelper.GetOwnedData(reply);
-                    }                    
+                        reply.UsersCollection = dbContext.Users.ToList();                        
+                    }
+                    returnData = SerializationHelper.GetOwnedData(reply);
                 }
             }
             catch (Exception ex)

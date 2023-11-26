@@ -99,7 +99,21 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
 
         #region public functions      
         
-        public bool IsConfigured { get; private set; }
+        public bool IsConfigured
+        {
+            get
+            {
+                if (_configuration is not null)
+                {
+                    string dbType = ConfigurationHelper.GetValue(_configuration, @"DbType", @"");
+                    if (String.Equals(dbType, @"postgres", StringComparison.InvariantCultureIgnoreCase))
+                        return true;
+                    else if (String.Equals(dbType, @"sqlite", StringComparison.InvariantCultureIgnoreCase))
+                        return true;
+                }
+                return false;
+            }
+        }
 
         /// <summary>
         /// 
@@ -144,8 +158,6 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
                     optionsBuilder.UseNpgsql(_configuration.GetConnectionString("MainDbConnection"),
                             o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
                         .EnableThreadSafetyChecks(false);
-                    IsConfigured = true;
-                    return;
                 }
                 else if (String.Equals(dbType, @"sqlite", StringComparison.InvariantCultureIgnoreCase))
                 {
@@ -153,9 +165,7 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
 
                     optionsBuilder.UseSqlite("Data Source=" + Path.Combine(programDataDirectoryFullName, @"DcsCentralServer.db"),
                             o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
-                        .EnableThreadSafetyChecks(false);
-                    IsConfigured = true;
-                    return;
+                        .EnableThreadSafetyChecks(false);                    
                 }
             }            
         }

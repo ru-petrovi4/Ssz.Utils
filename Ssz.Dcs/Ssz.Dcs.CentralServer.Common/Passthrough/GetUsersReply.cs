@@ -12,7 +12,7 @@ namespace Ssz.Dcs.CentralServer.Common.Passthrough
     {
         #region public functions
 
-        public List<User> UsersCollection { get; set; } = null!;
+        public List<User> UsersCollection { get; set; } = new();
 
         public override void SerializeOwnedData(SerializationWriter writer, object? context)
         {

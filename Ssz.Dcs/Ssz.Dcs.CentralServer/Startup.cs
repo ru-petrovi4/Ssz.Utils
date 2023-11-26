@@ -47,18 +47,18 @@ namespace Ssz.Dcs.CentralServer
             {
                 options.UseCentralRoutePrefix(new RouteAttribute(RouteNamespace));
             }).AddApiExplorer(); // For Swagger
-            services.AddJsonApi<DcsCentralServerDbContext>(
-                options =>
-                {
-                    options.Namespace = RouteNamespace; // CentralRoutePrefix not added here, because already root prefix
-                    options.DefaultPageSize = null;
-                    options.IncludeTotalResourceCount = true;
-                    options.IncludeExceptionStackTraceInErrors = true;
-                    options.AllowClientGeneratedIds = true;
-                    options.SerializerOptions.DictionaryKeyPolicy = null; // Fix first letter lower-case
-                },
-                discover => discover.AddCurrentAssembly(),
-                mvcBuilder: mvcBuilder);
+            //services.AddJsonApi<DcsCentralServerDbContext>(
+            //    options =>
+            //    {
+            //        options.Namespace = RouteNamespace; // CentralRoutePrefix not added here, because already root prefix
+            //        options.DefaultPageSize = null;
+            //        options.IncludeTotalResourceCount = true;
+            //        options.IncludeExceptionStackTraceInErrors = true;
+            //        options.AllowClientGeneratedIds = true;
+            //        options.SerializerOptions.DictionaryKeyPolicy = null; // Fix first letter lower-case
+            //    },
+            //    discover => discover.AddCurrentAssembly(),
+            //    mvcBuilder: mvcBuilder);
 
             services.AddSwaggerGen(options =>
             {
@@ -83,7 +83,7 @@ namespace Ssz.Dcs.CentralServer
             }
 
             app.UseRouting();
-            app.UseJsonApi();
+            //app.UseJsonApi();
             app.UseSwagger(); // http://localhost:60060/swagger/v1/swagger.json
             app.UseSwaggerUI(options =>
             {
