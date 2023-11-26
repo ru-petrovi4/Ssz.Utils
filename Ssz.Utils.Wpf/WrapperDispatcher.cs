@@ -55,7 +55,7 @@ namespace Ssz.Utils.Wpf
 
         public bool Disposed { get; private set; }
 
-        public async Task<T> Invoke<T>(Func<CancellationToken, T> action)
+        public async Task<T> InvokeAsync<T>(Func<CancellationToken, T> action)
         {
             var taskCompletionSource = new TaskCompletionSource<T>();
             _ = _dispatcher.BeginInvoke(() =>
@@ -73,7 +73,7 @@ namespace Ssz.Utils.Wpf
             return await taskCompletionSource.Task;
         }
 
-        public async Task<T> AsyncInvoke<T>(Func<CancellationToken, Task<T>> action)
+        public async Task<T> InvokeExAsync<T>(Func<CancellationToken, Task<T>> action)
         {
             var taskCompletionSource = new TaskCompletionSource<T>();
             _ = _dispatcher.BeginInvoke(async () =>
@@ -98,7 +98,7 @@ namespace Ssz.Utils.Wpf
             _dispatcher.BeginInvoke(action, _cancellationTokenSource.Token);
         }
 
-        public void BeginAsyncInvoke(Func<CancellationToken, Task> action)
+        public void BeginInvokeEx(Func<CancellationToken, Task> action)
         {
             if (Disposed) return;
 

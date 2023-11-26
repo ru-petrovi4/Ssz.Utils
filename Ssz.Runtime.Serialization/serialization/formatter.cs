@@ -32,7 +32,9 @@ namespace Ssz.Runtime.Serialization {
     [Serializable]
 //[CLSCompliant(false)]
 [System.Runtime.InteropServices.ComVisible(true)]
-    public abstract class Formatter : IFormatter {
+    public abstract class Formatter
+        // : IFormatter 
+    {
     
         protected ObjectIDGenerator m_idGenerator;
         protected Queue m_objectQueue;

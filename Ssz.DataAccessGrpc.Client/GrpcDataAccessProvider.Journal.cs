@@ -22,7 +22,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="valueSubscription"></param>
         public override void JournalAddItem(string elementId, object valueSubscription)
         {
-            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
             {
                 if (!IsInitialized)
                     return;
@@ -58,7 +58,7 @@ namespace Ssz.DataAccessGrpc.Client
         public override async Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, object[] valueSubscriptionsCollection)
         {
             var taskCompletionSource = new TaskCompletionSource<ValueStatusTimestamp[][]?>();
-            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
             {
                 var result = await _clientElementValuesJournalListManager.ReadElementValuesJournalsAsync(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, params_, valueSubscriptionsCollection);
 
@@ -71,7 +71,7 @@ namespace Ssz.DataAccessGrpc.Client
         public override async Task<Utils.DataAccess.EventMessagesCollection?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
             var taskCompletionSource = new TaskCompletionSource<Utils.DataAccess.EventMessagesCollection?>();
-            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
             {
                 ClientEventList? clientEventList =
                     _clientEventListManager.GetRelatedClientEventList(OnClientEventListManager_EventMessagesCallbackInternal);

@@ -225,7 +225,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]?>();
 
-            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
             {
                 if (!IsInitialized)
                 {
@@ -333,7 +333,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             var taskCompletionSource = new TaskCompletionSource<ResultInfo>();
 
-            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
             {
                 var resultInfo = ResultInfo.GoodResultInfo;
 
@@ -382,7 +382,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             var taskCompletionSource = new TaskCompletionSource<(IValueSubscription[], ResultInfo[])>();
 
-            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
             {
                 if (!IsInitialized)
                 {
@@ -417,7 +417,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             var taskCompletionSource = new TaskCompletionSource<IEnumerable<byte>>();
 
-            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
             {                
                 try
                 {
@@ -491,7 +491,7 @@ namespace Ssz.DataAccessGrpc.Client
             var taskCompletionSource = new TaskCompletionSource<Task<uint>>();
 
             // Do not use BeginExclusiveInvoke() because long running task
-            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
             {
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
                 Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;

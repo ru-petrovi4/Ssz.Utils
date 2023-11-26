@@ -21,7 +21,7 @@ namespace Ssz.Utils
 
         #region public functions   
 
-        public async Task<T> Invoke<T>(Func<CancellationToken, T> action)
+        public async Task<T> InvokeAsync<T>(Func<CancellationToken, T> action)
         {
             var taskCompletionSource = new TaskCompletionSource<T>();
             BeginInvoke(ct =>
@@ -39,10 +39,10 @@ namespace Ssz.Utils
             return await taskCompletionSource.Task;
         }
 
-        public async Task<T> AsyncInvoke<T>(Func<CancellationToken, Task<T>> action)
+        public async Task<T> InvokeExAsync<T>(Func<CancellationToken, Task<T>> action)
         {
             var taskCompletionSource = new TaskCompletionSource<T>();
-            BeginAsyncInvoke(async ct =>
+            BeginInvokeEx(async ct =>
             {
                 try
                 {
@@ -74,7 +74,7 @@ namespace Ssz.Utils
         ///     Warning! Do not use with DispatcherSynchronizationContext.
         /// </summary>
         /// <param name="asyncAction"></param>
-        public void BeginAsyncInvoke(Func<CancellationToken, Task> asyncAction)
+        public void BeginInvokeEx(Func<CancellationToken, Task> asyncAction)
         {
             Func<CancellationToken, Task>? asyncActions2;
             Func<CancellationToken, Task>? asyncActions = _asyncActions;

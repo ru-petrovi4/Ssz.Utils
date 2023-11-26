@@ -22,7 +22,7 @@ namespace Ssz.Utils
 
         #region public functions
 
-        public async Task<T> Invoke<T>(Func<CancellationToken, T> action)
+        public async Task<T> InvokeAsync<T>(Func<CancellationToken, T> action)
         {
             var taskCompletionSource = new TaskCompletionSource<T>();
             _synchronizationContext?.Post(state =>
@@ -40,7 +40,7 @@ namespace Ssz.Utils
             return await taskCompletionSource.Task;
         }
 
-        public async Task<T> AsyncInvoke<T>(Func<CancellationToken, Task<T>> action)
+        public async Task<T> InvokeExAsync<T>(Func<CancellationToken, Task<T>> action)
         {
             var taskCompletionSource = new TaskCompletionSource<T>();
             _synchronizationContext?.Post(async state =>
@@ -72,7 +72,7 @@ namespace Ssz.Utils
             }, null);
         }
 
-        public void BeginAsyncInvoke(Func<CancellationToken, Task> action)
+        public void BeginInvokeEx(Func<CancellationToken, Task> action)
         {
             _synchronizationContext?.Post(async state =>
             {

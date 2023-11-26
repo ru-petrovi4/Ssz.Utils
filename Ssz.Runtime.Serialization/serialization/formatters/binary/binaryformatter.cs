@@ -33,12 +33,12 @@ namespace Ssz.Runtime.Serialization.Formatters.Binary {
     using System.Diagnostics.Contracts;
     
     [System.Runtime.InteropServices.ComVisible(true)]
-    sealed public class BinaryFormatter :
-#if !FEATURE_REMOTING
-        IFormatter
-#else
-        IRemotingFormatter 
-#endif
+    sealed public class BinaryFormatter
+//#if !FEATURE_REMOTING
+//        : IFormatter
+//#else
+//        : IRemotingFormatter 
+//#endif
     {
 
         internal ISurrogateSelector m_surrogates;

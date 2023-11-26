@@ -408,7 +408,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
             var taskCompletionSource = new TaskCompletionSource<TReply>();
             //context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
-            _serverWorker.ThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
+            _serverWorker.ThreadSafeDispatcher.BeginInvokeEx(async ct =>
             {
                 _logger.LogTrace("Processing client call in worker thread: " + parentMethodName);
                 try

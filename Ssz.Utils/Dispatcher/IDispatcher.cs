@@ -15,13 +15,13 @@ namespace Ssz.Utils
         /// 
         /// </summary>
         /// <param name="action"></param>
-        Task<T> Invoke<T>(Func<CancellationToken, T> action);
+        Task<T> InvokeAsync<T>(Func<CancellationToken, T> action);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="action"></param>
-        Task<T> AsyncInvoke<T>(Func<CancellationToken, Task<T>> action);
+        Task<T> InvokeExAsync<T>(Func<CancellationToken, Task<T>> action);
 
         /// <summary>
         /// 
@@ -33,6 +33,6 @@ namespace Ssz.Utils
         /// 
         /// </summary>
         /// <param name="action"></param>
-        void BeginAsyncInvoke(Func<CancellationToken, Task> action);
+        void BeginInvokeEx(Func<CancellationToken, Task> action);
     }
 }
