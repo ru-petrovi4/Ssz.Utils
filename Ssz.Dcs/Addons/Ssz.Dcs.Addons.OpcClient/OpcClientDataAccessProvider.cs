@@ -447,7 +447,7 @@ namespace Ssz.Dcs.Addons.OpcClient
 
             var taskCompletionSource = new TaskCompletionSource<Task<uint>>();
 
-            WorkingThreadSafeDispatcher.BeginAsyncInvoke(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
             {                
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
                 Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;

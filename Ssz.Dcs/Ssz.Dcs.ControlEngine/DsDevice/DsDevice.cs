@@ -379,7 +379,7 @@ namespace Ssz.Dcs.ControlEngine
                     String.Equals(args.CsvFileName, ElementIdsMap.StandardMapFileName, StringComparison.InvariantCultureIgnoreCase) ||
                     String.Equals(args.CsvFileName, ElementIdsMap.StandardTagsFileName, StringComparison.InvariantCultureIgnoreCase))
             {
-                _dispatcher!.BeginAsyncInvoke(async ct =>
+                _dispatcher!.BeginInvokeEx(async ct =>
                 {
                     if (ProcessDataAccessProvider.IsInitialized)
                     {

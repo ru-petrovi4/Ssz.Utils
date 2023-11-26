@@ -33,7 +33,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 {
                     Logger.LogDebug("eventMessage, LaunchInstructor_TypeId: " + eventMessage.TextMessage);
 
-                    _threadSafeDispatcher.BeginAsyncInvoke(async ct =>
+                    _threadSafeDispatcher.BeginInvokeEx(async ct =>
                     {
                         await LaunchInstructorAsync(eventMessage.TextMessage);
                     });
@@ -42,7 +42,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 {
                     Logger.LogDebug("eventMessage, LaunchEngine_TypeId: " + eventMessage.TextMessage);
 
-                    _threadSafeDispatcher.BeginAsyncInvoke(async ct =>
+                    _threadSafeDispatcher.BeginInvokeEx(async ct =>
                     {
                         await LaunchEnineAsync(eventMessage.TextMessage);
                     });
@@ -51,7 +51,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 {
                     Logger.LogDebug("eventMessage, PrepareLaunchOperator_TypeId: " + eventMessage.TextMessage);
 
-                    _threadSafeDispatcher.BeginAsyncInvoke(async ct =>
+                    _threadSafeDispatcher.BeginInvokeEx(async ct =>
                     {
                         await LaunchOperatorAsync(eventMessage.TextMessage);
                     });
@@ -60,7 +60,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 {
                     Logger.LogDebug("eventMessage, DownloadChangedFiles_TypeId: " + eventMessage.TextMessage);
 
-                    _threadSafeDispatcher.BeginAsyncInvoke(async ct =>
+                    _threadSafeDispatcher.BeginInvokeEx(async ct =>
                     {
                         await DownloadChangedFilesAsync(eventMessage.TextMessage);
                     });
@@ -69,7 +69,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 {
                     Logger.LogDebug("eventMessage, UploadChangedFiles_TypeId: " + eventMessage.TextMessage);
 
-                    _threadSafeDispatcher.BeginAsyncInvoke(async ct =>
+                    _threadSafeDispatcher.BeginInvokeEx(async ct =>
                     {
                         await UploadChangedFilesAsync(eventMessage.TextMessage);
                     });

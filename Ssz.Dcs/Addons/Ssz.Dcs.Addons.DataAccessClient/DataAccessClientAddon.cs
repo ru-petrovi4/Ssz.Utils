@@ -83,7 +83,7 @@ namespace Ssz.Dcs.Addons.DataAccessClient
                         String.Equals(args.CsvFileName, ElementIdsMap.StandardMapFileName, StringComparison.InvariantCultureIgnoreCase) ||
                         String.Equals(args.CsvFileName, ElementIdsMap.StandardTagsFileName, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    callbackDispatcher.BeginAsyncInvoke(async ct =>
+                    callbackDispatcher.BeginInvokeEx(async ct =>
                     {
                         if (dataAccessProvider.IsInitialized)
                         {
