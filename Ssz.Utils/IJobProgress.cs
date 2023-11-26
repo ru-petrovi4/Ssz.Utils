@@ -26,7 +26,7 @@ namespace Ssz.Utils
         /// <summary>
         ///     See consts in <see cref="StatusCodes"/>.        
         /// </summary>
-        public uint StatusCode { get; }
+        public uint JobStatusCode { get; }
 
         /// <summary>
         ///     If parameter is null, the parameter does not change.
@@ -72,7 +72,7 @@ namespace Ssz.Utils
         /// <summary>
         ///     See consts in <see cref="StatusCodes"/>.        
         /// </summary>
-        public uint StatusCode { get; private set; }
+        public uint JobStatusCode { get; private set; }
 
         /// <summary>
         ///     
