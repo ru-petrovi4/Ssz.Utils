@@ -31,6 +31,7 @@ using Xi.OPC.COM.API;
 using Xi.Server.Base;
 
 using COMservers = Xi.OPC.COM.Impl.CCreateInstance;
+using Ssz.Utils;
 
 namespace Xi.OPC.Wrapper.Impl
 {
@@ -38,7 +39,112 @@ namespace Xi.OPC.Wrapper.Impl
 	[ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.PerCall)]
 	public partial class XiOPCWrapper : ServerBase<ContextImpl, ListRoot>
 	{
-		private static List<OpcServerInfo> _OpcWrappedServers = new List<OpcServerInfo>();
+        public static void Initialize(CaseInsensitiveDictionary<string> contextParams)
+        {
+            // Check the App.Config file for the server type.
+            // By changing the App.Config file it is possible to connect 
+            // to different OPC COM Servers.  The servers supported by this 
+            // implementation are:
+            // 1) OPC DA 2.05
+            // 2) OPC HDA 1.2
+            // 3) OPC A&E 1.1
+
+            // Start with the base server type and then add the wrapped servers
+            _ThisServerEntry.ServerDescription.ServerTypes = 0;//|= BaseXiServerType;
+
+            // TODO:  Add support for additional server types as necessary
+
+            string daServerProgId = contextParams.TryGetValue(@"%(OpcDa_ProgId)");
+            if (!string.IsNullOrEmpty(daServerProgId))
+            {
+                OpcServerInfo daOpcServerInfo = new OpcServerInfo();
+                daOpcServerInfo.ServerType = ServerType.OPC_DA205_Wrapper;
+                daOpcServerInfo.HostName = contextParams.TryGetValue(@"%(OpcDa_Host)");
+                daOpcServerInfo.ProgId = daServerProgId;
+                _OpcWrappedServers.Add(daOpcServerInfo);
+
+                _ThisServerEntry.ServerDescription.ServerTypes |= ServerType.OPC_DA205_Wrapper;
+                _NumServerTypes++;
+                _WrappedServerRoots.Add(new ObjectAttributes
+                {
+                    DataTypeId = null,
+                    ObjectFlags = 0,
+                    Name = DA205_RootName,
+                    InstanceId = null,
+                    Roles = null
+                });
+            }
+            string hdaServerProgId = contextParams.TryGetValue(@"%(OpcHda_ProgId)");
+            if (!string.IsNullOrEmpty(hdaServerProgId))
+            {
+                OpcServerInfo hdaOpcServerInfo = new OpcServerInfo();
+                hdaOpcServerInfo.ServerType = ServerType.OPC_HDA12_Wrapper;
+                hdaOpcServerInfo.HostName = contextParams.TryGetValue(@"%(OpcHda_Host)");
+                hdaOpcServerInfo.ProgId = hdaServerProgId;
+                _OpcWrappedServers.Add(hdaOpcServerInfo);
+
+                _ThisServerEntry.ServerDescription.ServerTypes |= ServerType.OPC_HDA12_Wrapper;
+                _NumServerTypes++;
+                _WrappedServerRoots.Add(new ObjectAttributes
+                {
+                    DataTypeId = null,
+                    ObjectFlags = 0,
+                    Name = HDA_RootName,
+                    InstanceId = null,
+                    Roles = null
+                });
+            }
+
+            var usoServerProgId = contextParams.TryGetValue(@"%(UsoHda_ProgId)");
+            if (!string.IsNullOrEmpty(usoServerProgId))
+            {
+                var hdaOpcServerInfo = new OpcServerInfo
+                {
+                    ServerType = ServerType.Xi_EventJournalServer,
+                    HostName = contextParams.TryGetValue(@"%(UsoHda_Host)"),
+                    ProgId = usoServerProgId
+                };
+
+                _OpcWrappedServers.Add(hdaOpcServerInfo);
+
+                _ThisServerEntry.ServerDescription.ServerTypes |= ServerType.Xi_EventJournalServer;
+                _NumServerTypes++;
+                _WrappedServerRoots.Add(new ObjectAttributes
+                {
+                    DataTypeId = null,
+                    ObjectFlags = 0,
+                    Name = HDA_RootName,
+                    InstanceId = null,
+                    Roles = null
+                });
+            }
+
+            string aeServerProgId = contextParams.TryGetValue(@"%(OpcAe_ProgId)");
+            if (!string.IsNullOrEmpty(aeServerProgId))
+            {
+                OpcServerInfo aeOpcServerInfo = new OpcServerInfo();
+                aeOpcServerInfo.ServerType = ServerType.OPC_AE11_Wrapper;
+                aeOpcServerInfo.HostName = contextParams.TryGetValue(@"%(OpcAe_Host)");
+                aeOpcServerInfo.ProgId = aeServerProgId;
+                _OpcWrappedServers.Add(aeOpcServerInfo);
+
+                _ThisServerEntry.ServerDescription.ServerTypes |= ServerType.OPC_AE11_Wrapper;
+                _NumServerTypes++;
+                _WrappedServerRoots.Add(new ObjectAttributes
+                {
+                    DataTypeId = null,
+                    ObjectFlags = 0,
+                    Name = AE_RootName,
+                    InstanceId = null,
+                    Roles = new List<TypeId>() { ObjectRoleIds.AreaRootRoleId }
+                });
+            }
+
+            //Set the ServerNamespace to null - there are no server specific types
+            _ThisServerEntry.ServerDescription.ServerNamespace = null;
+        }
+
+        private static List<OpcServerInfo> _OpcWrappedServers = new List<OpcServerInfo>();
 		public static List<OpcServerInfo> OpcWrappedServers
 		{
 			get { return _OpcWrappedServers; }
@@ -76,122 +182,7 @@ namespace Xi.OPC.Wrapper.Impl
 			// prior to the first CoCreateInstance.
 			cliHRESULT HR = COMservers.InitializeCOM();
 			if (HR.Failed && !Debugger.IsAttached)
-				throw FaultHelpers.Create((uint)HR.hResult, "OPC COM Services Initialization Failed.");
-
-			// Determine if the server supports callback and poll endpoints
-			ServiceEndpoint callBackEndpoint = XiOPCWrapper.ServiceHost.Description.Endpoints.Find(typeof(IRegisterForCallback));
-			if (callBackEndpoint != null) // OK to be null for Directory servers
-			{
-				_CallbacksSupported = true;
-			}
-			ServiceEndpoint pollingEndpoint = XiOPCWrapper.ServiceHost.Description.Endpoints.Find(typeof(IPoll));
-			if (pollingEndpoint != null) // OK to be null for Directory servers
-			{
-				_PollingSupported = true;
-			}
-
-			// Check the App.Config file for the server type.
-			// By changing the App.Config file it is possible to connect 
-			// to different OPC COM Servers.  The servers supported by this 
-			// implementation are:
-			// 1) OPC DA 2.05
-			// 2) OPC HDA 1.2
-			// 3) OPC A&E 1.1
-
-			// Start with the base server type and then add the wrapped servers
-			_ThisServerEntry.ServerDescription.ServerTypes |= BaseXiServerType;
-
-			// TODO:  Add support for additional server types as necessary
-
-			NameValueCollection appSettings = ConfigurationManager.AppSettings;
-			string daServerProgId = appSettings["OPCDA"];
-			if (!string.IsNullOrEmpty(daServerProgId))
-			{
-				OpcServerInfo daOpcServerInfo = new OpcServerInfo();
-				daOpcServerInfo.ServerType = ServerType.OPC_DA205_Wrapper;
-				daOpcServerInfo.HostName = appSettings["OPCDAHOST"];
-				daOpcServerInfo.ProgId = daServerProgId;
-				_OpcWrappedServers.Add(daOpcServerInfo);
-
-				_ThisServerEntry.ServerDescription.ServerTypes |= ServerType.OPC_DA205_Wrapper;
-				_NumServerTypes++;
-				_WrappedServerRoots.Add(new ObjectAttributes
-				{
-					DataTypeId = null,
-					ObjectFlags = 0,
-					Name = DA205_RootName,
-					InstanceId = null,
-					Roles = null
-				});
-			}
-			string hdaServerProgId = appSettings["OPCHDA"];
-			if (!string.IsNullOrEmpty(hdaServerProgId))
-			{
-				OpcServerInfo hdaOpcServerInfo = new OpcServerInfo();
-				hdaOpcServerInfo.ServerType = ServerType.OPC_HDA12_Wrapper;
-				hdaOpcServerInfo.HostName = appSettings["OPCHDAHOST"];
-				hdaOpcServerInfo.ProgId = hdaServerProgId;
-				_OpcWrappedServers.Add(hdaOpcServerInfo);
-
-				_ThisServerEntry.ServerDescription.ServerTypes |= ServerType.OPC_HDA12_Wrapper;
-				_NumServerTypes++;
-				_WrappedServerRoots.Add(new ObjectAttributes
-				{
-					DataTypeId = null,
-					ObjectFlags = 0,
-					Name = HDA_RootName,
-					InstanceId = null,
-					Roles = null
-				});
-			}
-
-            var usoServerProgId = appSettings["USOHDA"];
-            if (!string.IsNullOrEmpty(usoServerProgId))
-            {
-                var hdaOpcServerInfo = new OpcServerInfo
-                {
-                    ServerType = ServerType.Xi_EventJournalServer,
-                    HostName = appSettings["USOHDAHOST"],
-                    ProgId = usoServerProgId
-                };
-
-                _OpcWrappedServers.Add(hdaOpcServerInfo);
-
-                _ThisServerEntry.ServerDescription.ServerTypes |= ServerType.Xi_EventJournalServer;
-                _NumServerTypes++;
-                _WrappedServerRoots.Add(new ObjectAttributes
-                {
-                    DataTypeId = null,
-                    ObjectFlags = 0,
-                    Name = HDA_RootName,
-                    InstanceId = null,
-                    Roles = null
-                });
-            }
-
-            string aeServerProgId = appSettings["OPCAE"];
-			if (!string.IsNullOrEmpty(aeServerProgId))
-			{
-				OpcServerInfo aeOpcServerInfo = new OpcServerInfo();
-				aeOpcServerInfo.ServerType = ServerType.OPC_AE11_Wrapper;
-				aeOpcServerInfo.HostName = appSettings["OPCAEHOST"];
-				aeOpcServerInfo.ProgId = aeServerProgId;
-				_OpcWrappedServers.Add(aeOpcServerInfo);
-
-				_ThisServerEntry.ServerDescription.ServerTypes |= ServerType.OPC_AE11_Wrapper;
-				_NumServerTypes++;
-				_WrappedServerRoots.Add(new ObjectAttributes
-				{
-					DataTypeId = null,
-					ObjectFlags = 0,
-					Name = AE_RootName,
-					InstanceId = null,
-					Roles = new List<TypeId>() { ObjectRoleIds.AreaRootRoleId }
-				});
-			}
-
-			//Set the ServerNamespace to null - there are no server specific types
-			_ThisServerEntry.ServerDescription.ServerNamespace = null;
+				throw FaultHelpers.Create((uint)HR.hResult, "OPC COM Services Initialization Failed.");	
 		}
 
 		/// <summary>

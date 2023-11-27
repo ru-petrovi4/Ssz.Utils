@@ -70,11 +70,65 @@ namespace Ssz.Dcs.Addons.OpcClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to OPC AE Server Host.
+        /// </summary>
+        public static string OpcAe_Host_Option {
+            get {
+                return ResourceManager.GetString("OpcAe_Host_Option", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OPC AE Server ProgID.
+        /// </summary>
+        public static string OpcAe_ProgId_Option {
+            get {
+                return ResourceManager.GetString("OpcAe_ProgId_Option", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Data access client.
         /// </summary>
         public static string OpcClientAddon_Desc {
             get {
                 return ResourceManager.GetString("OpcClientAddon_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OPC DA Server Host.
+        /// </summary>
+        public static string OpcDa_Host_Option {
+            get {
+                return ResourceManager.GetString("OpcDa_Host_Option", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OPC DA Server ProgID.
+        /// </summary>
+        public static string OpcDa_ProgId_Option {
+            get {
+                return ResourceManager.GetString("OpcDa_ProgId_Option", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OPC HDA Server Host.
+        /// </summary>
+        public static string OpcHda_Host_Option {
+            get {
+                return ResourceManager.GetString("OpcHda_Host_Option", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OPC HDA Server ProgID.
+        /// </summary>
+        public static string OpcHda_ProgId_Option {
+            get {
+                return ResourceManager.GetString("OpcHda_ProgId_Option", resourceCulture);
             }
         }
         
@@ -102,6 +156,24 @@ namespace Ssz.Dcs.Addons.OpcClient.Properties {
         public static string SystemNameToConnect_ToDisplay_Option {
             get {
                 return ResourceManager.GetString("SystemNameToConnect_ToDisplay_Option", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to USO OPC HDA Server Host.
+        /// </summary>
+        public static string UsoHda_Host_Option {
+            get {
+                return ResourceManager.GetString("UsoHda_Host_Option", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to USO OPC HDA Server ProgID.
+        /// </summary>
+        public static string UsoHda_ProgId_Option {
+            get {
+                return ResourceManager.GetString("UsoHda_ProgId_Option", resourceCulture);
             }
         }
     }

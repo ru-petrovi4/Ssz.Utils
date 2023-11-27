@@ -105,13 +105,13 @@ namespace Xi.Server.Base
 		/// This flag indicates, when TRUE, that the server has a callback endpoint.
 		/// It is set by the implementation subclass.
 		/// </summary>
-		protected static bool _CallbacksSupported = false;
+		protected static bool _CallbacksSupported = true;
 
 		/// <summary>
 		/// This flag indicates, when TRUE, that the server has a poll endpoint.
 		/// It is set by the implementation subclass.
 		/// </summary>
-		protected static bool _PollingSupported = false;
+		protected static bool _PollingSupported = true;
 
 		/// <summary>
 		/// This method initializes the server data.

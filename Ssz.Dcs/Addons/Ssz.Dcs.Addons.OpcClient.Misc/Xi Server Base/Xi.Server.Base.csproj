@@ -100,7 +100,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Base Classes\ServerRoot.cs" />
-    <Compile Include="Base Classes\XiDiscoveryMain.cs" />
     <Compile Include="Base Classes\XiDiscoveryServerResolver.cs" />
     <Compile Include="Context\ContextBaseCallback.cs" />
     <Compile Include="Context\ContextBaseContextMgt.cs" />

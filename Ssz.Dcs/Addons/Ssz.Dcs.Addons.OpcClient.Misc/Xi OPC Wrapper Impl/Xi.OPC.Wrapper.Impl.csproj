@@ -131,9 +131,9 @@
     <Compile Include="Lists and Data\EventListValue.cs" />
     <Compile Include="Lists and Data\EventList.cs" />
     <Compile Include="Context\ContextImplDiscoveryMethods.cs" />
-    <Compile Include="Service\OnInitializeServerData.cs" />
+    <Compile Include="Service\XiOPCWrapper.OnInitializeServerData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service\ResourceManagementImpl.cs" />
+    <Compile Include="Service\XiOPCWrapper.ResourceManagementImpl.cs" />
     <Compile Include="Service\XiServiceMain.cs" />
   </ItemGroup>
   <ItemGroup>

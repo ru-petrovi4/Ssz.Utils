@@ -590,28 +590,11 @@ namespace Ssz.Dcs.Addons.OpcClient
                     #endregion                    
                 }                
 
-                if (IsInitialized && !String.IsNullOrWhiteSpace(ServerAddress) &&
+                if (IsInitialized && ContextParams.Count > 0 &&
                     nowUtc > LastFailedConnectionDateTimeUtc + TimeSpan.FromSeconds(5))
                 {
                     try
                     {
-                        string workstationName = ClientWorkstationName;
-#if NETSTANDARD2_0
-                        var dictionary = new CaseInsensitiveDictionary<string?>(ContextParams.Count);
-                        foreach (var kvp in ContextParams)
-                            dictionary.Add(kvp.Key, kvp.Value);                        
-                        string xiContextParamsString =
-                            NameValueCollectionHelper.GetNameValueCollectionString(dictionary);
-#else
-                        string xiContextParamsString =
-                            NameValueCollectionHelper.GetNameValueCollectionString(ContextParams);
-#endif
-
-                        if (!String.IsNullOrEmpty(xiContextParamsString))
-                        {
-                            workstationName += @"?" + xiContextParamsString;
-                        }
-
                         //Logger?.LogDebug("Connecting. Endpoint: {0}. ApplicationName: {1}. WorkstationName: {2}",
                         //    _serverAddress,
                         //    _applicationName,

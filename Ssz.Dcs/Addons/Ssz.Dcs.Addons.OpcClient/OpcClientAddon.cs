@@ -17,6 +17,22 @@ namespace Ssz.Dcs.Addons.OpcClient
     {
         #region public functions
 
+        public static readonly string OpcDa_Host_OptionName = @"%(OpcDa_Host)";
+
+        public static readonly string OpcAe_Host_OptionName = @"%(OpcAe_Host)";
+
+        public static readonly string OpcHda_Host_OptionName = @"%(OpcHda_Host)";
+
+        public static readonly string UsoHda_Host_OptionName = @"%(UsoHda_Host)";
+
+        public static readonly string OpcDa_ProgId_OptionName = @"%(OpcDa_ProgId)";
+
+        public static readonly string OpcAe_ProgId_OptionName = @"%(OpcAe_ProgId)";
+
+        public static readonly string OpcHda_ProgId_OptionName = @"%(OpcHda_ProgId)";
+
+        public static readonly string UsoHda_ProgId_OptionName = @"%(UsoHda_ProgId)";
+
         public static readonly Guid AddonGuid = new Guid(@"D963D4F1-C7BC-4964-8003-EBE582F7336A");
 
         public static readonly string AddonIdentifier = @"OpcClient";
@@ -33,10 +49,14 @@ namespace Ssz.Dcs.Addons.OpcClient
 
         public override (string, string, string)[] OptionsInfo => new (string, string, string)[]
         {
-            //(OpcClient_ServerAddress_OptionName, Properties.Resources.ServerAddress_Option, @"http://localhost:60080/SimcodePlatServer/ServerDiscovery"),
-            //(OpcClient_SystemNameToConnect_OptionName, Properties.Resources.SystemNameToConnect_Option, @""),
-            //(OpcClient_ContextParams_OptionName, Properties.Resources.ContextParams_Option, @""),
-            //(OpcClient_SystemNameToConnect_ToDisplay_OptionName, Properties.Resources.SystemNameToConnect_ToDisplay_Option, @"OPC NET Server"),
+            (OpcDa_Host_OptionName, Properties.Resources.OpcDa_Host_Option, @"localhost"),
+            (OpcAe_Host_OptionName, Properties.Resources.OpcAe_Host_Option, @"localhost"),
+            (OpcHda_Host_OptionName, Properties.Resources.OpcHda_Host_Option, @"localhost"),
+            (UsoHda_Host_OptionName, Properties.Resources.UsoHda_Host_Option, @"localhost"),
+            (OpcDa_ProgId_OptionName, Properties.Resources.OpcDa_ProgId_Option, @"Uso.OpcDAServer"),
+            (OpcAe_ProgId_OptionName, Properties.Resources.OpcAe_ProgId_Option, @"Uso.OpcAEServer"),
+            (OpcHda_ProgId_OptionName, Properties.Resources.OpcHda_ProgId_Option, @"Uso.OpcHdaServer"),
+            (UsoHda_ProgId_OptionName, Properties.Resources.UsoHda_ProgId_Option, @"Uso.OpcHdaServer"),
         };
 
         /// <summary>
@@ -63,7 +83,17 @@ namespace Ssz.Dcs.Addons.OpcClient
                 @"Ssz.Dcs.Addons.OpcClient",
                 Environment.MachineName,
                 @"",
-                new CaseInsensitiveDictionary<string?>(),
+                new CaseInsensitiveDictionary<string?>
+                {
+                    { OpcDa_Host_OptionName, OptionsSubstitutedThreadSafe.TryGetValue(OpcDa_Host_OptionName) },
+                    { OpcAe_Host_OptionName, OptionsSubstitutedThreadSafe.TryGetValue(OpcAe_Host_OptionName) },
+                    { OpcHda_Host_OptionName, OptionsSubstitutedThreadSafe.TryGetValue(OpcHda_Host_OptionName) },
+                    { UsoHda_Host_OptionName, OptionsSubstitutedThreadSafe.TryGetValue(UsoHda_Host_OptionName) },
+                    { OpcDa_ProgId_OptionName, OptionsSubstitutedThreadSafe.TryGetValue(OpcDa_ProgId_OptionName) },
+                    { OpcAe_ProgId_OptionName, OptionsSubstitutedThreadSafe.TryGetValue(OpcAe_ProgId_OptionName) },
+                    { OpcHda_ProgId_OptionName, OptionsSubstitutedThreadSafe.TryGetValue(OpcHda_ProgId_OptionName) },
+                    { UsoHda_ProgId_OptionName, OptionsSubstitutedThreadSafe.TryGetValue(UsoHda_ProgId_OptionName) },
+                },
                 new DataAccessProviderOptions(),
                 callbackDispatcher);
 

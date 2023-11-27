@@ -68,7 +68,7 @@ namespace Ssz.Xi.Client.Internal.Context
             try
             {
                 _xiServerInfo = new XiServiceMain(XiServiceMain.MainProgramType.ServiceModeDataServer);
-                _xiServerInfo.OnStartDataServer();
+                _xiServerInfo.OnStartDataServer(_contextParams);
                 _serverKeepAliveSkipCount = keepAliveSkipCount;
                 _serverCallbackRate = callbackRate;
 
@@ -114,9 +114,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 //        _localeId = localeId;
                 //    }
                 //}
-                _localeId = localeId;
-
-                _contextOptions = contextOptions;                
+                _localeId = localeId;       
 
                 _iResourceManagement = _xiServerInfo as IResourceManagement;
                 if (_iResourceManagement is null)
@@ -175,7 +173,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 }
                 throw;
             }
-        }
+        }        
 
         /// <summary>
         ///     This method disposes of the object.  It is invoked by the client application, client base, or

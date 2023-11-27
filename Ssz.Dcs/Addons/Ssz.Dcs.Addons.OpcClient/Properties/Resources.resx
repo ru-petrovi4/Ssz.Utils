@@ -120,8 +120,26 @@
   <data name="ContextParams_Option" xml:space="preserve">
     <value>Context params</value>
   </data>
+  <data name="OpcAe_Host_Option" xml:space="preserve">
+    <value>OPC AE Server Host</value>
+  </data>
+  <data name="OpcAe_ProgId_Option" xml:space="preserve">
+    <value>OPC AE Server ProgID</value>
+  </data>
   <data name="OpcClientAddon_Desc" xml:space="preserve">
     <value>Data access client</value>
+  </data>
+  <data name="OpcDa_Host_Option" xml:space="preserve">
+    <value>OPC DA Server Host</value>
+  </data>
+  <data name="OpcDa_ProgId_Option" xml:space="preserve">
+    <value>OPC DA Server ProgID</value>
+  </data>
+  <data name="OpcHda_Host_Option" xml:space="preserve">
+    <value>OPC HDA Server Host</value>
+  </data>
+  <data name="OpcHda_ProgId_Option" xml:space="preserve">
+    <value>OPC HDA Server ProgID</value>
   </data>
   <data name="ServerAddress_Option" xml:space="preserve">
     <value>Data access server address</value>
@@ -131,5 +149,11 @@
   </data>
   <data name="SystemNameToConnect_ToDisplay_Option" xml:space="preserve">
     <value>System name to display to user</value>
+  </data>
+  <data name="UsoHda_Host_Option" xml:space="preserve">
+    <value>USO OPC HDA Server Host</value>
+  </data>
+  <data name="UsoHda_ProgId_Option" xml:space="preserve">
+    <value>USO OPC HDA Server ProgID</value>
   </data>
 </root>

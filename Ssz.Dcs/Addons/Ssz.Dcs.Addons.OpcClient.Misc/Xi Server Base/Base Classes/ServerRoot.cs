@@ -148,16 +148,12 @@ namespace Xi.Server.Base
 		/// This is used to create the service host object
 		/// </summary>
 		/// <param name="serviceType"></param>
-		public static void Initialize(Type serviceType)
-		{
-		    ServiceHost = !shouldChangeBaseAddresses()
-		        ? new ServiceHost(serviceType, ServiceHostBaseAddressArray)
-		        : new CustomAddressAwareServiceHost(serviceType /*, ServiceHostBaseAddressArray*/);
-
+		public static void Initialize()
+		{		    
 			_ThisServerEntry = new ServerEntry();
 			_ThisServerEntry.ServerDescription = new ServerDescription();
-			_ThisServerEntry.ServerDescription.HostName = System.Environment.MachineName;
-		}
+			_ThisServerEntry.ServerDescription.HostName = System.Environment.MachineName;			
+        }
 
 		/// <summary>
 		/// This starts the XiServer class - one of the Create methods must be called
@@ -170,115 +166,115 @@ namespace Xi.Server.Base
 		/// <returns></returns>
 		public static bool Start(string serverMesh, bool isIIShosted)
 		{
-			if (ServiceHost == null)
-				throw new InvalidOperationException("ServiceHost has not been created.  Call Create() prior to Start()");
+            if (ServiceHost == null)
+                throw new InvalidOperationException("ServiceHost has not been created.  Call Create() prior to Start()");
 
-			if (!isIIShosted)
-			{
-				if (ServiceHost.State != CommunicationState.Created)
-					throw new InvalidOperationException("ServiceHost has already been started or is in some improper state.");
-			}
+            if (!isIIShosted)
+            {
+                if (ServiceHost.State != CommunicationState.Created)
+                    throw new InvalidOperationException("ServiceHost has already been started or is in some improper state.");
+            }
 
-			Logger.Verbose("Server is starting.");
-			try
-			{
-				// set the base elements of the server description to support 
-				// Identify() method calls called without a context.
-				NameValueCollection appSettings = ConfigurationManager.AppSettings;
+            Logger.Verbose("Server is starting.");
+            try
+            {
+                // set the base elements of the server description to support 
+                // Identify() method calls called without a context.
+                NameValueCollection appSettings = ConfigurationManager.AppSettings;
 
-				if (0 == string.Compare(PnrpMeshNames.XiDiscoveryServerMesh, serverMesh, true))
-				{
-					_ThisServerEntry.ServerDescription.ServerTypes = ServerType.Xi_ServerDiscoveryServer;
-					_NumServerTypes++;
-				}
+                if (0 == string.Compare(PnrpMeshNames.XiDiscoveryServerMesh, serverMesh, true))
+                {
+                    _ThisServerEntry.ServerDescription.ServerTypes = ServerType.Xi_ServerDiscoveryServer;
+                    _NumServerTypes++;
+                }
 
-				string vendorName = appSettings["Vendor"];
-				if (null != vendorName && 0 < vendorName.Length)
-				{
-					_ThisServerEntry.ServerDescription.VendorName = vendorName;
-					//Set the VendorNamespace to the VendorName
-					_ThisServerEntry.ServerDescription.VendorNamespace = vendorName;
-				}
+                string vendorName = appSettings["Vendor"];
+                if (null != vendorName && 0 < vendorName.Length)
+                {
+                    _ThisServerEntry.ServerDescription.VendorName = vendorName;
+                    //Set the VendorNamespace to the VendorName
+                    _ThisServerEntry.ServerDescription.VendorNamespace = vendorName;
+                }
 
-				string userInfo = appSettings["UserInfo"];
-				if (null != userInfo && 0 < vendorName.Length)
-				{
-					_ThisServerEntry.ServerDescription.UserInfo = userInfo;
-				}
+                string userInfo = appSettings["UserInfo"];
+                if (null != userInfo && 0 < vendorName.Length)
+                {
+                    _ThisServerEntry.ServerDescription.UserInfo = userInfo;
+                }
 
-				string serverName = appSettings["Server"];
-				if (null != serverName && 0 < serverName.Length)
-				{
-					_ThisServerEntry.ServerDescription.ServerName = serverName;
-				}
+                string serverName = appSettings["Server"];
+                if (null != serverName && 0 < serverName.Length)
+                {
+                    _ThisServerEntry.ServerDescription.ServerName = serverName;
+                }
 
-				_ThisServerEntry.ServerDescription.ServiceName = "XiServices";
-				string serviceName = appSettings["Service"];
-				if (null != serviceName && 0 < serviceName.Length)
-				{
-					_ThisServerEntry.ServerDescription.ServiceName = serviceName;
-				}
+                _ThisServerEntry.ServerDescription.ServiceName = "XiServices";
+                string serviceName = appSettings["Service"];
+                if (null != serviceName && 0 < serviceName.Length)
+                {
+                    _ThisServerEntry.ServerDescription.ServiceName = serviceName;
+                }
 
-				string systemName = appSettings["System"];
-				if (null != systemName && 0 < systemName.Length)
-				{
-					_ThisServerEntry.ServerDescription.SystemName = systemName;
-				}
+                string systemName = appSettings["System"];
+                if (null != systemName && 0 < systemName.Length)
+                {
+                    _ThisServerEntry.ServerDescription.SystemName = systemName;
+                }
 
-				// discover all MEX endpoints
-				Collection<ServiceEndpoint> mexEndpoints = ServerRoot.ServiceHost.Description.Endpoints.FindAll(typeof(IMetadataExchange));
+                // discover all MEX endpoints
+                Collection<ServiceEndpoint> mexEndpoints = ServerRoot.ServiceHost.Description.Endpoints.FindAll(typeof(IMetadataExchange));
 
-				_ThisServerEntry.MexEndpoints = new List<MexEndpointInfo>(mexEndpoints.Count);
-				if (mexEndpoints != null) // OK to be null for Directory servers
-				{
-					foreach (var ep in mexEndpoints)
-					{
-						MexEndpointInfo mep = new MexEndpointInfo()
-						{
-							Description = ep.Binding.Name,
-							EndpointName = ep.Name,
-							Url = ReplaceLocalhostInURLwithHostname(ep.ListenUri.AbsoluteUri)
-						};
-						_ThisServerEntry.MexEndpoints.Add(mep);
-					}
-				}
-				// copy a selection of endpoint setting into the server info
-				_ThisServerEntry.EndpointServerSettings = CopyEndpointSettings(ServerRoot.ServiceHost.Description);
+                _ThisServerEntry.MexEndpoints = new List<MexEndpointInfo>(mexEndpoints.Count);
+                if (mexEndpoints != null) // OK to be null for Directory servers
+                {
+                    foreach (var ep in mexEndpoints)
+                    {
+                        MexEndpointInfo mep = new MexEndpointInfo()
+                        {
+                            Description = ep.Binding.Name,
+                            EndpointName = ep.Name,
+                            Url = ReplaceLocalhostInURLwithHostname(ep.ListenUri.AbsoluteUri)
+                        };
+                        _ThisServerEntry.MexEndpoints.Add(mep);
+                    }
+                }
+                // copy a selection of endpoint setting into the server info
+                _ThisServerEntry.EndpointServerSettings = CopyEndpointSettings(ServerRoot.ServiceHost.Description);
 
-				// Set the endpoint timeout to a big value
-				// Setting of the binding timeouts should probably be based off of values in the App.Config file
-				Collection<ServiceEndpoint> allEndpoints = ServiceHost.Description.Endpoints;
-				foreach (var ep in allEndpoints)
-				{
-					ep.Binding.ReceiveTimeout = new TimeSpan(20, 0, 0, 0);
-					ep.Binding.SendTimeout = new TimeSpan(0, 15, 0);
-				}
+                // Set the endpoint timeout to a big value
+                // Setting of the binding timeouts should probably be based off of values in the App.Config file
+                Collection<ServiceEndpoint> allEndpoints = ServiceHost.Description.Endpoints;
+                foreach (var ep in allEndpoints)
+                {
+                    ep.Binding.ReceiveTimeout = new TimeSpan(20, 0, 0, 0);
+                    ep.Binding.SendTimeout = new TimeSpan(0, 15, 0);
+                }
 
-				if (!isIIShosted)  //don't open when IIS hosted
-					ServiceHost.Open();
+                if (!isIIShosted)  //don't open when IIS hosted
+                    ServiceHost.Open();
 
-				// Start the Resolver Thread if this is a Discovery Server 
-				if ((_ThisServerEntry.ServerDescription.ServerTypes & ServerType.Xi_ServerDiscoveryServer) > 0)
-				{
-					_ServerEntriesLock = new Mutex();
-					_resolverThread = new Thread(ResolverThread) { Name = "Xi Discovery Resolver Thread", IsBackground = true };
-					_resolverThread.Start();
-				}
-				else
-				{
-					EndpointConfigurationExList = getEndpointConfigExList();
-				}
-			}
+                // Start the Resolver Thread if this is a Discovery Server 
+                if ((_ThisServerEntry.ServerDescription.ServerTypes & ServerType.Xi_ServerDiscoveryServer) > 0)
+                {
+                    _ServerEntriesLock = new Mutex();
+                    _resolverThread = new Thread(ResolverThread) { Name = "Xi Discovery Resolver Thread", IsBackground = true };
+                    _resolverThread.Start();
+                }
+                else
+                {
+                    EndpointConfigurationExList = getEndpointConfigExList();
+                }
+            }
 
-			catch (Exception ex)
-			{
-				Logger.Error(ex);
-				try { ServiceHost.Close(); }
-				catch { /* do nothing */ }
-			}
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                try { ServiceHost.Close(); }
+                catch { /* do nothing */ }
+            }
 
-			return true;
-		}
+            return true;
+        }
 
 		/// <summary>
 		/// This method returns a list of EndpointConfigurationEx objects for the endpoints supported by the server
@@ -564,7 +560,7 @@ namespace Xi.Server.Base
 					ServiceHost = null;
 				}
 			}
-		}
+		}        
 
         private static bool shouldChangeBaseAddresses()
         {

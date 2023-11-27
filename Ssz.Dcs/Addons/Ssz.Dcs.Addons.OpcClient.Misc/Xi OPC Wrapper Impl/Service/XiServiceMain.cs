@@ -27,6 +27,7 @@ using Xi.Contracts.Data;
 using Xi.Server.Base;
 
 using ContextManager = Xi.Server.Base.ContextManager<Xi.OPC.Wrapper.Impl.ContextImpl, Xi.Server.Base.ListRoot>;
+using Ssz.Utils;
 
 
 namespace Xi.OPC.Wrapper.Impl
@@ -106,9 +107,9 @@ namespace Xi.OPC.Wrapper.Impl
 		/// <summary>
 		/// 
 		/// </summary>
-		public bool OnStartDataServer()
+		public bool OnStartDataServer(Ssz.Utils.CaseInsensitiveDictionary<string> contextParams)
 		{
-			return OnStartDataServer(0, 0);
+			return OnStartDataServer(contextParams, 0, 0);
 		}
 
 		/// <summary>
@@ -121,7 +122,7 @@ namespace Xi.OPC.Wrapper.Impl
 		/// to each wrapped COM server. The value of 0 indicates that only the initial attempt 
 		/// will be made.</param>
 		/// <returns>Returns true if the startup succeeded. Otherwise false.</returns>
-		public bool OnStartDataServer(int xiInitiateDelay, int numCOMserverRetries)
+		public bool OnStartDataServer(Ssz.Utils.CaseInsensitiveDictionary<string> contextParams, int xiInitiateDelay, int numCOMserverRetries)
 		{
 			_xiInitiateDelay = xiInitiateDelay;
 			_numCOMserverRetries = numCOMserverRetries;
@@ -130,8 +131,10 @@ namespace Xi.OPC.Wrapper.Impl
 			// TODO: Replace "OPC .NET" with the name of the server in the startup message below 
 			WriteLine("OPC .NET Server Starting");
 
-			XiOPCWrapper.Initialize(typeof(XiOPCWrapper));
-			ContextManager.StartContextMonitor();
+			XiOPCWrapper.Initialize();
+            XiOPCWrapper.Initialize(contextParams);
+
+            ContextManager.StartContextMonitor();
 
 			XiOPCWrapper.Start();
 			Collection<ServiceEndpoint> serverDiscoveryEPs = XiOPCWrapper.ServiceHost.Description.
@@ -162,12 +165,12 @@ namespace Xi.OPC.Wrapper.Impl
 			// TODO: Replace "OPC .NET" with the name of the server in the startup successful message below 
 			WriteLine("OPC .NET Server Started");
 			return true;
-		}
+		}        
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public void OnStopDataServer()
+        /// <summary>
+        /// 
+        /// </summary>
+        public void OnStopDataServer()
 		{
 			ServerStatus serverStatus = new ServerStatus();
 			serverStatus.ServerType = XiOPCWrapper.BaseXiServerType;
