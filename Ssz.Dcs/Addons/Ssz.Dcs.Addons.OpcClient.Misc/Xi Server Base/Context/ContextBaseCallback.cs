@@ -38,17 +38,7 @@ namespace Xi.Server.Base
 		/// Indicates, when TRUE, that the Callback endpoint is open
 		/// </summary>
 		public bool CallbackEndpointOpen { get { return (null != _iCallback); } }
-		private ICallback _iCallback = null;
-
-		/// <summary>
-		/// Indicates, when TRUE, that the Poll endpoint is open
-		/// </summary>
-		public bool PollEndpointOpen { get { return _iPollEndpointEntry != null; } }
-		public EndpointEntry<TList> IPollEndpointEntry { get { return _iPollEndpointEntry; } }
-		protected EndpointEntry<TList> _iPollEndpointEntry;
-
-		public EndpointEntry<TList> IRegisterForCallbackEndpointEntry { get { return _iRegisterForCallbackEndpointEntry; } }
-		protected EndpointEntry<TList> _iRegisterForCallbackEndpointEntry;
+		private ICallback _iCallback = null;			
 
 		protected uint _keepAliveSkipCount;
 
@@ -195,31 +185,6 @@ namespace Xi.Server.Base
 			lock (ContextLock)
 			{
 				_iCallback = iCallBack;
-
-				if (_iRegisterForCallbackEndpointEntry == null)
-				{
-					OperationContext ctx = OperationContext.Current;
-					List<EndpointDefinition> epDefs =
-						(from ep in ServerRoot.ServiceHost.Description.Endpoints
-						 where ep.Contract.Name.EndsWith(typeof(IRegisterForCallback).Name)
-							&& ep.Address.Uri.OriginalString == ctx.Channel.LocalAddress.Uri.OriginalString
-						 select new EndpointDefinition
-						 {
-							 EndpointId = Guid.NewGuid().ToString(),
-							 BindingName = ep.Binding.Name,
-							 ContractType = ep.Contract.Name,
-							 Url = ep.Address.Uri.AbsoluteUri,
-							 EndpointDescription = ep,
-						 }
-						).ToList<EndpointDefinition>();
-
-					if ((epDefs == null) || (epDefs.Count == 0))
-						throw FaultHelpers.Create("Unable to locate connected IRegisterForCallback Endpoint");
-
-					_iRegisterForCallbackEndpointEntry = new EndpointEntry<TList>(epDefs[0]);
-
-					AuthorizeEndpointUse(_iRegisterForCallbackEndpointEntry);
-				}
 			}
 			// do not lock the context for this call. Let the called method lock it instead
 			// to allow for overrides that may have the potential for deadlocks

@@ -65,36 +65,6 @@ namespace Xi.Server.Base
 		}
 
 		/// <summary>
-		/// The standard server MIB
-		/// </summary>
-		protected static StandardMib _StandardMib;
-
-		/// <summary>
-		/// The publicly accessible property for the standard server MIB. 
-		/// </summary>
-		public static StandardMib StandardMib
-		{
-			get { return _StandardMib; }
-			private set { }
-		}
-
-		/// <summary>
-		/// The optional server-specific MIB.  Entries in the 
-		/// VendorMib are identified and described in the 
-		/// standard server MIB.
-		/// </summary>
-		protected static DataValueArrays _VendorMib;
-
-		/// <summary>
-		/// The publicly accessible property for the server-specific MIB. 
-		/// </summary>
-		public static DataValueArrays VendorMib
-		{
-			get { return _VendorMib; }
-			private set { }
-		}
-
-		/// <summary>
 		/// The details of the server description. This information is not 
 		/// returned in the ServerDescription if the Identify() method is 
 		/// called without a context id.
@@ -123,8 +93,7 @@ namespace Xi.Server.Base
 		/// The result code that indicates the success or failure of this method.
 		/// </returns>
 		protected void InitializeServerData(TContext context)
-		{
-			InitializeMib(context);
+		{			
 			InitializeServerDescription(context);
 			ServerDescription.XiContractsVersionNumber =
 				Assembly.GetAssembly(typeof(IResourceManagement)).GetName().Version.ToString();
@@ -201,152 +170,6 @@ namespace Xi.Server.Base
 		/// the next time a context is opened for Historical Alarms and Events.
 		/// </summary>
 		public static bool HAeLocaleIdSet = false;
-
-		/// <summary>
-		/// This method initializes the server MIB.
-		/// </summary>
-		/// <param name="context">
-		/// The context for this method invocation
-		/// </param>
-		protected void InitializeMib(TContext context)
-		{
-			if (_StandardMib == null)
-			{
-				_StandardMib = new StandardMib();
-				_StandardMib.CurrentVersion = 1;
-				DaRolesMethodsAndFeaturesSet = false;
-				AeRolesMethodsAndFeaturesSet = false;
-			}
-
-			uint SupportedServerTypes = _ThisServerEntry.ServerDescription.ServerTypes;
-			if (_StandardMib.ObjectRoles == null)
-				_StandardMib.ObjectRoles = new List<ObjectRole>();
-
-			// Customize the MIB for this server
-			OnSetServerRoles(context);
-			OnSetServerMethodsAndFeatures(context); // set server-specific methods and features
-			OnSetVendorMib(context);
-
-			// Now set the standard roles, methods,and features
-			if (context.IsAccessibleDataAccess)
-			{
-				if (DaRolesMethodsAndFeaturesSet == false)
-				{
-					// Set the base roles for DA
-					ObjectRole role = new ObjectRole()
-					{
-						RoleId = ObjectRoleIds.OpcBranchRoleId,
-						Name = "OPC Branch",
-						Description = "Used to identify OPC DA Branches"
-					};
-					_StandardMib.ObjectRoles.Add(role);
-
-					role = new ObjectRole()
-					{
-						RoleId = ObjectRoleIds.OpcLeafRoleId,
-						Name = "OPC Leaf",
-						Description = "Used to identify OPC DA Leaves"
-					};
-					_StandardMib.ObjectRoles.Add(role);
-
-					role = new ObjectRole()
-					{
-						RoleId = ObjectRoleIds.OpcPropertyRoleId,
-						Name = "OPC Property",
-						Description = "Used to identify OPC DA Properties"
-					};
-					_StandardMib.ObjectRoles.Add(role);
-
-					// then add in the required methods for this server type
-					if (_CallbacksSupported && _PollingSupported)
-						_StandardMib.MethodsSupported |= (ulong)XiMethods.FullDataServerMethodProfile;
-					else if (_CallbacksSupported)
-						_StandardMib.MethodsSupported |= (ulong)XiMethods.CallbackDataServerMethodProfile;
-					else if (_PollingSupported)
-						_StandardMib.MethodsSupported |= (ulong)XiMethods.PolledDataServerMethodProfile;
-					else
-						_StandardMib.MethodsSupported |= (ulong)XiMethods.BasicDataServerMethodProfile;
-
-					DaRolesMethodsAndFeaturesSet = true;
-				}
-			}
-
-			// set the additional StandardMib elements for OPC A&E servers
-			if (context.IsAccessibleAlarmsAndEvents)
-			{
-				if (AeRolesMethodsAndFeaturesSet == false)
-				{
-					if (_StandardMib.ObjectRoles == null)
-						_StandardMib.ObjectRoles = new List<ObjectRole>();
-
-					// Set the base roles for A&E
-					ObjectRole role = new ObjectRole()
-					{
-						RoleId = ObjectRoleIds.AreaRootRoleId,
-						Name = "Area Root",
-						Description = "Default Area Root Role"
-					};
-					_StandardMib.ObjectRoles.Add(role);
-
-					role = new ObjectRole()
-					{
-						RoleId = ObjectRoleIds.AreaRoleId,
-						Name = "Area",
-						Description = "Default Area Role"
-					};
-					_StandardMib.ObjectRoles.Add(role);
-
-					role = new ObjectRole()
-					{
-						RoleId = ObjectRoleIds.EventSourceRoleId,
-						Name = "Event Source",
-						Description = "Default Event Source Role"
-					};
-					_StandardMib.ObjectRoles.Add(role);
-
-					// Set the Event Filters
-					if (_StandardMib.EventMessageFilters == null)
-						_StandardMib.EventMessageFilters = OnGetEventFilters(context);
-
-					// Set the Event Categories
-					if (_StandardMib.EventCategoryConfigurations == null)
-						_StandardMib.EventCategoryConfigurations = OnGetCategoryConfiguration(context);
-
-					// then add in the required methods for this server type
-					if (_CallbacksSupported && _PollingSupported)
-						_StandardMib.MethodsSupported |= (ulong)XiMethods.FullEventServerMethodProfile;
-					else if (_CallbacksSupported)
-						_StandardMib.MethodsSupported |= (ulong)XiMethods.CallbackEventServerMethodProfile;
-					else if (_PollingSupported)
-						_StandardMib.MethodsSupported |= (ulong)XiMethods.CallbackEventServerMethodProfile;
-					else
-						_StandardMib.MethodsSupported |= (ulong)XiMethods.BasicEventServerMethodProfile;
-
-					AeRolesMethodsAndFeaturesSet = true;
-				}
-			}
-
-			// set the additional StandardMib elements for OPC HDA servers
-			if (context.IsAccessibleJournalDataAccess)
-			{
-				// Call the HDA server to get the options
-				// Set the Data Journal Options
-				if (_StandardMib.DataJournalOptions == null)
-					_StandardMib.DataJournalOptions = OnGetDataJournalOptions(context);
-
-				// then add in the required methods for this server type
-				_StandardMib.MethodsSupported |= (ulong)XiMethods.DataJournalMethodProfile;
-			}
-
-			if (context.IsAccessibleJournalAlarmsAndEvents)
-			{
-				if ((SupportedServerTypes & ServerType.Xi_EventJournalServer) != 0)
-					_StandardMib.MethodsSupported |= (ulong)XiMethods.EventJournalMethodProfile;
-			}
-
-			// TO DO: Add in the required features for each server type
-			_StandardMib.FeaturesSupported |= 0;
-		}
 
 		/// <summary>
 		/// This method initializes the Server Description.
@@ -449,12 +272,7 @@ namespace Xi.Server.Base
 		/// <summary>
 		/// Override this method in a server specific subclass of ServerBase
 		/// </summary>
-		protected abstract void OnSetServerMethodsAndFeatures(TContext context);
-
-		/// <summary>
-		/// Override this method in a server specific subclass of ServerBase
-		/// </summary>
-		protected abstract void OnSetVendorMib(TContext context);
+		protected abstract void OnSetServerMethodsAndFeatures(TContext context);		
 
 		/// <summary>
 		/// Override this method in a server specific subclass of ServerBase

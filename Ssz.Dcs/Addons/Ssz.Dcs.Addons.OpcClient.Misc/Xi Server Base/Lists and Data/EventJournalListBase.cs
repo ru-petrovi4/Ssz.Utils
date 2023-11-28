@@ -26,8 +26,8 @@ namespace Xi.Server.Base
 	public abstract class EventJournalListBase : EventListRoot
 	{
 		public EventJournalListBase(ContextBase<ListRoot> context, uint clientId, uint updateRate,
-									uint bufferingRate, uint listType, uint listKey, StandardMib mib)
-			: base(context, clientId, updateRate, bufferingRate, listType, listKey, mib)
+									uint bufferingRate, uint listType, uint listKey)
+			: base(context, clientId, updateRate, bufferingRate, listType, listKey)
 		{
 		}
 	}

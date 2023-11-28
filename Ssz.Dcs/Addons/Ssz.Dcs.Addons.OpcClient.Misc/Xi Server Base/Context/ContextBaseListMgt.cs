@@ -232,11 +232,7 @@ namespace Xi.Server.Base
 					{
 						TList list = dictionaryEntry.Value;
 						list.BeingDeleted = false;
-						removedLists.Add(list);
-						foreach (var ep in _XiEndpoints)
-						{
-							ep.Value.OnRemoveListFromEndpoint(list);
-						}
+						removedLists.Add(list);						
 					}
 					_XiLists.Clear();
 				}
@@ -250,12 +246,7 @@ namespace Xi.Server.Base
 						TList list = null;
 						if (_XiLists.TryGetValue(listKey, out list))
 						{
-							removedLists.Add(list);
-							// Remove each list from the endpoints to which it is assigned
-							foreach (var ep in _XiEndpoints)
-							{
-								ep.Value.OnRemoveListFromEndpoint(list);
-							}
+							removedLists.Add(list);							
 							_XiLists.Remove(listKey);
 						}
 						else

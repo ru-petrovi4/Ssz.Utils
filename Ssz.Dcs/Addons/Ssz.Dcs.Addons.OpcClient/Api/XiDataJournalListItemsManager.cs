@@ -45,17 +45,6 @@ namespace Ssz.Xi.Client.Api
                 {                    
                     if (!connectionError && XiList is not null && !XiList.Disposed)
                     {
-                        if (firstTimeDataJournalConnection)
-                        {
-                            try
-                            {
-                                XiList.Readable = true;
-                            }
-                            catch
-                            {
-                            }                            
-                        }
-
                         XiList.EnableListUpdating(true);
                     }
                 }

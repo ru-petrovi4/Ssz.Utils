@@ -46,8 +46,8 @@ namespace Xi.OPC.Wrapper.Impl
 		/// <param name="listType"></param>
 		/// <param name="listKey"></param>
 		internal DataList(ContextImpl context, uint clientId, uint updateRate, uint bufferingRate,
-			uint listType, uint listKey, FilterSet filterSet, StandardMib mib)
-			: base(context, clientId, updateRate, bufferingRate, listType, listKey, mib)
+			uint listType, uint listKey, FilterSet filterSet)
+			: base(context, clientId, updateRate, bufferingRate, listType, listKey)
 		{
 			if (context.IsAccessibleDataAccess == false)
 				context.ThrowDisconnectedServerException(context.IOPCServer_ProgId);
@@ -377,7 +377,7 @@ namespace Xi.OPC.Wrapper.Impl
 
 				if (bufferingRate != null)
 				{
-					BufferingRate = NegotiateBufferingRate(XiOPCWrapper.StandardMib, (uint)bufferingRate);
+					BufferingRate = NegotiateBufferingRate((uint)bufferingRate);
 					bufferingRate = BufferingRate;
 				}
 
@@ -596,9 +596,7 @@ namespace Xi.OPC.Wrapper.Impl
 		/// </param>
 		public override DataValueArraysWithAlias OnReadData(
 			List<uint> serverAliases)
-		{
-			if (null == _iReadEndpointEntry)
-				throw FaultHelpers.Create(XiFaultCodes.E_LISTNOTATTACHEDTOENDPOINT, "List not attached to the IRead endpoint.");
+		{			
 			if (!Enabled)
 				throw FaultHelpers.Create(XiFaultCodes.E_LISTDISABLED, "List not Enabled.");
 
@@ -885,9 +883,6 @@ namespace Xi.OPC.Wrapper.Impl
 		/// <returns></returns>
 		public override List<AliasResult> OnWriteValues(WriteValueArrays writeValueArrays)
 		{
-			if (null == _iWriteEndpointEntry)
-				throw FaultHelpers.Create(XiFaultCodes.E_LISTNOTATTACHEDTOENDPOINT, "List not attached to the IWrite endpoint.");
-
             var context = (ContextImpl)OwnerContext;
 			if (context.IsAccessibleDataAccess == false)
 				context.ThrowDisconnectedServerException(context.IOPCServer_ProgId);

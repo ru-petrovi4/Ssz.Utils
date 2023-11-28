@@ -102,15 +102,12 @@
     <Compile Include="Base Classes\ServerRoot.cs" />
     <Compile Include="Base Classes\XiDiscoveryServerResolver.cs" />
     <Compile Include="Context\ContextBaseCallback.cs" />
-    <Compile Include="Context\ContextBaseContextMgt.cs" />
     <Compile Include="Context\ContextBaseDiscoveryMethods.cs" />
     <Compile Include="Context\ContextBaseAlarmsEvents.cs" />
-    <Compile Include="Context\ContextBaseEndpointMgt.cs" />
     <Compile Include="Context\ContextBasePoll.cs" />
     <Compile Include="Context\ContextBaseListMgt.cs" />
     <Compile Include="Context\ContextBaseRead.cs" />
     <Compile Include="Context\ContextBaseWrite.cs" />
-    <Compile Include="Endpoints\EndpointEntry.cs" />
     <Compile Include="Lists and Data\DataJournalListValueBase.cs" />
     <Compile Include="Lists and Data\DataListBase.cs" />
     <Compile Include="Lists and Data\DataJournalListBase.cs" />

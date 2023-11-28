@@ -66,8 +66,8 @@ namespace Xi.OPC.Wrapper.Impl
 		: DataJournalListBase
 	{
 		internal DataJournalList(ContextImpl context, uint clientId, uint updateRate, uint bufferingRate,
-			uint listType, uint listKey, FilterSet filterSet, StandardMib mib)
-			: base(context, clientId, updateRate, bufferingRate, listType, listKey, mib)
+			uint listType, uint listKey, FilterSet filterSet)
+			: base(context, clientId, updateRate, bufferingRate, listType, listKey)
 		{
 		}
 
@@ -277,9 +277,7 @@ namespace Xi.OPC.Wrapper.Impl
 		public override JournalDataValues[] OnReadJournalDataForTimeInterval(
 			FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp,
 			uint numValuesPerAlias, List<uint> serverAliases)
-		{
-			if (null == _iReadEndpointEntry)
-				throw FaultHelpers.Create(XiFaultCodes.E_LISTNOTATTACHEDTOENDPOINT, "List not attached to the IRead endpoint.");
+		{			
 			if (!Enabled)
 				throw FaultHelpers.Create(XiFaultCodes.E_LISTDISABLED, "List not Enabled.");
 
@@ -410,9 +408,7 @@ namespace Xi.OPC.Wrapper.Impl
 		/// <returns></returns>
 		public override JournalDataValues[] OnReadJournalDataAtSpecificTimes(
 			List<DateTime> timestamps, List<uint> serverAliases)
-		{
-			if (null == _iReadEndpointEntry)
-				throw FaultHelpers.Create(XiFaultCodes.E_LISTNOTATTACHEDTOENDPOINT, "List not attached to the IRead endpoint.");
+		{			
 			if (!Enabled)
 				throw FaultHelpers.Create(XiFaultCodes.E_LISTDISABLED, "List not Enabled.");
 
@@ -538,9 +534,7 @@ namespace Xi.OPC.Wrapper.Impl
 		public override JournalDataChangedValues[] OnReadJournalDataChanges(
 			FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp,
 			uint numValuesPerAlias, List<uint> serverAliases)
-		{
-			if (null == _iReadEndpointEntry)
-				throw FaultHelpers.Create(XiFaultCodes.E_LISTNOTATTACHEDTOENDPOINT, "List not attached to the IRead endpoint.");
+		{			
 			if (!Enabled)
 				throw FaultHelpers.Create(XiFaultCodes.E_LISTDISABLED, "List not Enabled.");
 
@@ -670,9 +664,7 @@ namespace Xi.OPC.Wrapper.Impl
 		public override JournalDataValues[] OnReadCalculatedJournalData(
 				FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp, TimeSpan calculationPeriod,
 				List<AliasAndCalculation> serverAliasesAndCalculations)
-		{
-			if (null == _iReadEndpointEntry)
-				throw FaultHelpers.Create(XiFaultCodes.E_LISTNOTATTACHEDTOENDPOINT, "List not attached to the IRead endpoint.");
+		{			
 			if (!Enabled)
 				throw FaultHelpers.Create(XiFaultCodes.E_LISTDISABLED, "List not Enabled.");
 
@@ -773,9 +765,7 @@ namespace Xi.OPC.Wrapper.Impl
 		public override JournalDataPropertyValue[] OnReadJournalDataProperties(
 			FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp, uint serverAlias,
 			List<TypeId> propertiesToRead)
-		{
-			if (null == _iReadEndpointEntry)
-				throw FaultHelpers.Create(XiFaultCodes.E_LISTNOTATTACHEDTOENDPOINT, "List not attached to the IRead endpoint.");
+		{			
 			if (!Enabled)
 				throw FaultHelpers.Create(XiFaultCodes.E_LISTDISABLED, "List not Enabled.");
 

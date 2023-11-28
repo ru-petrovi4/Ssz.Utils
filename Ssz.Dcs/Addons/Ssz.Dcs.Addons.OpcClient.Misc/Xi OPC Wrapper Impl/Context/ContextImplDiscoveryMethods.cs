@@ -530,35 +530,5 @@ namespace Xi.OPC.Wrapper.Impl
 			//}
 			return null;
 		}
-
-		/// <summary>
-		/// This method implements the server-specific behavior of the corresponding 
-		/// Xi interface method.  It overrides its virtual method in the ContextBase 
-		/// class of the ServerBase project.
-		/// </summary>
-		/// <returns>
-		/// The standard MIB is returned.
-		/// </returns>
-		public override StandardMib OnGetStandardMib()
-		{
-			return XiOPCWrapper.StandardMib;
-		}
-
-		/// <summary>
-		/// This method implements the server-specific behavior of the corresponding 
-		/// Xi interface method.  It overrides its virtual method in the ContextBase 
-		/// class of the ServerBase project.
-		/// </summary>
-		/// <param name="vendorMibInstanceIds">
-		/// The list of identifiers for the vendor MIB objects to be returned.
-		/// </param>
-		/// <returns>
-		/// The requested vendor-specific MIB objects.
-		/// </returns>
-		public override DataValueArrays OnGetVendorMib(List<InstanceId> vendorMibInstanceIds)
-		{
-			return XiOPCWrapper.VendorMib;
-		}
-
 	}
 }

@@ -40,8 +40,8 @@ namespace Xi.Server.Base
 		/// <param name="listType"></param>
 		/// <param name="listKey"></param>
 		public DataListBase(ContextBase<ListRoot> context, uint clientId, uint updateRate,
-							uint bufferingRate, uint listType, uint listKey, StandardMib mib)
-			: base(context, clientId, updateRate, bufferingRate, listType, listKey, mib)
+							uint bufferingRate, uint listType, uint listKey)
+			: base(context, clientId, updateRate, bufferingRate, listType, listKey)
 		{
 		}
 
@@ -53,9 +53,7 @@ namespace Xi.Server.Base
 		/// </summary>
 		/// <returns></returns>
 		public override DataValueArraysWithAlias OnPollDataChanges()
-		{
-			if (null == _iPollEndpointEntry)
-				throw FaultHelpers.Create(XiFaultCodes.E_LISTNOTATTACHEDTOENDPOINT, "List not attached to the IPoll endpoint.");
+		{			
 			if (!Enabled)
 				throw FaultHelpers.Create(XiFaultCodes.E_LISTDISABLED, "List not Enabled.");
 
@@ -147,9 +145,7 @@ namespace Xi.Server.Base
 		/// <param name="serverAliases"></param>
 		/// <returns></returns>
 		public override DataValueArraysWithAlias OnReadData(List<uint> serverAliases)
-		{
-			if (null == _iReadEndpointEntry)
-				throw FaultHelpers.Create(XiFaultCodes.E_LISTNOTATTACHEDTOENDPOINT, "List not attached to the IRead endpoint.");
+		{			
 			if (!Enabled)
 				throw FaultHelpers.Create(XiFaultCodes.E_LISTDISABLED, "List not Enabled.");
 

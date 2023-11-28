@@ -97,7 +97,6 @@
     <Compile Include="DataTypeCoercion.cs" />
     <Compile Include="Extensions\ContractDataExt.cs" />
     <Compile Include="Extensions\DataValueArrayExt.cs" />
-    <Compile Include="Extensions\OperationContextExt.cs" />
     <Compile Include="PNRPHelper.cs" />
     <Compile Include="Extensions\StdMibExt.cs" />
     <Compile Include="Extensions\TimeSpanExt.cs" />

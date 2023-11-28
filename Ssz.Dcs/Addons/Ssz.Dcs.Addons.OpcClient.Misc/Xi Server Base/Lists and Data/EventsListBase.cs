@@ -34,8 +34,8 @@ namespace Xi.Server.Base
 		: EventListRoot
 	{
 		public EventsListBase(ContextBase<ListRoot> context, uint clientId, uint updateRate,
-								uint bufferingRate, uint listType, uint listKey, StandardMib mib)
-			: base(context, clientId, updateRate, bufferingRate, listType, listKey, mib)
+								uint bufferingRate, uint listType, uint listKey)
+			: base(context, clientId, updateRate, bufferingRate, listType, listKey)
 		{
 		}
 
@@ -73,9 +73,7 @@ namespace Xi.Server.Base
 		/// <param name="filterSet"></param>
 		/// <returns></returns>
 		public override EventMessage[] OnPollEventChanges(FilterSet filterSet)
-		{
-			if (null == _iPollEndpointEntry)
-				throw FaultHelpers.Create(XiFaultCodes.E_LISTNOTATTACHEDTOENDPOINT, "List not attached to the IPoll endpoint.");
+		{			
 			if (!Enabled)
 				throw FaultHelpers.Create(XiFaultCodes.E_LISTDISABLED, "List not Enabled.");
 

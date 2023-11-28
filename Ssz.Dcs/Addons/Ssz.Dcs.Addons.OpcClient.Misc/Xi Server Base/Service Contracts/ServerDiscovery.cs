@@ -33,7 +33,6 @@ namespace Xi.Server.Base
 	public partial class ServerRoot:
 		IServerDiscovery
 	{
-
 		/// <summary>
 		/// The list is used by Directory Servers to record the Xi Resource Management Endpoints 
 		/// that it returns in the DiscoverServers() method.  It is null if the server is not a 
@@ -54,17 +53,7 @@ namespace Xi.Server.Base
 		{
 			get { return _ThisServerEntry; }
 			private set { }
-		}
-
-		/// <summary>
-		/// The publicly accessible property for ThisServerEntry. 
-		/// </summary>
-		public static List<EndpointConfigurationEx> EndpointConfigurationExList
-		{
-			get { return _EndpointConfigurationExList; }
-			private set { _EndpointConfigurationExList = value; }
-		}
-		protected static List<EndpointConfigurationEx> _EndpointConfigurationExList;
+		}		
 
 		/// <summary>
 		/// The publicly accessible property for the ServerDescription. 
@@ -178,44 +167,6 @@ namespace Xi.Server.Base
 					throw FaultHelpers.Create(ex);
 				}
 			}
-		}
-
-		/// <summary>
-		/// This method returns an abbreviated set of endpoint definition parameters for 
-		/// use by Silverlight clients and other clients that cannot use Metadata Exhange 
-		/// to retrieve complete endpoint descriptions from the server.  Client 
-		/// applications capable of using Metadata Exchange should not call this method.
-		/// </summary>
-		/// <returns>
-		/// Returns a list of EndpointConfigurationEx objects, one for each endpoint 
-		/// supported by the server.
-		/// </returns>
-		public List<EndpointConfigurationEx> DiscoverAbbreviatedEndpointInfo()
-		{
-            using (Logger.EnterMethod())
-			{
-				if (string.IsNullOrEmpty(_ThisServerEntry.ServerDescription.ServerDiscoveryUrl))
-					throw FaultHelpers.Create("Server is initializing");
-				return EndpointConfigurationExList;
-			}
-		}
-		private byte[] policyContent;         // the policy to return to the client
-
-
-		//-----------------------------------------------
-		/// <summary>
-		/// This method reads the clientaccesspolicy.xml from the EXE directory and returns 
-		/// the content to the requester.
-		/// </summary>
-		/// <returns>Returns the clientaccesspolicy.xml as a stream</returns>
-		public Stream GetSilverlightPolicy()
-		{
-			// Load the policy file
-			FileStream policyStream = new FileStream("clientaccesspolicy.xml", FileMode.Open);
-			policyContent = new byte[policyStream.Length];
-			policyStream.Read(policyContent, 0, policyContent.Length);
-			policyStream.Close();
-			return new MemoryStream(policyContent); ;
-		}
+		}		
 	}
 }

@@ -33,25 +33,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         {
             StandardListType = StandardListType.EventList;
             ListAttributes = Context.DefineList(this, updateRate, bufferingRate, filterSet);
-
-            if (Context.StandardMib.EventCategoryConfigurations is not null)
-            {
-                foreach (CategoryConfiguration category in Context.StandardMib.EventCategoryConfigurations)
-                {
-                    if (category.EventMessageFields is not null && category.EventMessageFields.Count > 0)
-                    {
-                        var categoryFields = new XiCategorySpecificFields(category.CategoryId);
-                        foreach (ParameterDefinition? field in category.EventMessageFields)
-                        {
-                            if (field is null) throw new InvalidOperationException();
-                            var optField = new XiEventMsgFieldDesc(field.Name ?? "", field.Description ?? "", field.ObjectTypeId ?? new TypeId(),
-                                field.DataTypeId ?? new TypeId());
-                            categoryFields.OptionalEventMsgFields.Add(optField);
-                        }
-                        CategorySpecificFieldDictionary[category.Name ?? ""] = categoryFields;
-                    }
-                }
-            }
+            
             // TODO: enable the following four lines to test new sorting algorithms for event messages
             // this tests the initial sort
             //EventMessage[] eventsArray = GetEventMessages();
@@ -1520,35 +1502,12 @@ namespace Ssz.Xi.Client.Internal.Lists
         //public uint TotalDeliveredEventMessages
         //{
         //    get { return _totalDeliveredEventMessages; }
-        //}
-
-        /// <summary>
-        ///     This property is the publically visible ReadOnlyCollection of Category Specific Event Message Fields
-        /// </summary>
-        public ReadOnlyCollection<KeyValuePair<string, XiCategorySpecificFields>> CategorySpecificFieldCollection
-        {
-            get
-            {
-                if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiEventList.");
-
-                return
-                    new ReadOnlyCollection<KeyValuePair<string, XiCategorySpecificFields>>(
-                        _CategorySpecificFieldDict.ToList());
-            }
-        }
+        //}        
 
         #endregion
 
         #region protected functions
-
-        /// <summary>
-        ///     This property is the internally visible Dictionary of Category Specific Event Message Fields
-        /// </summary>
-        protected Dictionary<string, XiCategorySpecificFields> CategorySpecificFieldDictionary
-        {
-            get { return _CategorySpecificFieldDict; }
-        }
-
+                
         /*
         /// <summary>
         ///   The method inserts the specified alarms into the sorted event list and returns the 
@@ -1921,14 +1880,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         /// </summary>
         private static string? _lastEventMessagesCallbackExceptionMessage;
 
-        // TODO: Update the methods in this region if the ordering of the Event List is to be changed
-
-        /// <summary>
-        ///     This data member is the private representation of CategorySpecificFieldCollection and
-        ///     CategorySpecificFieldDictionary
-        /// </summary>
-        private readonly Dictionary<string, XiCategorySpecificFields> _CategorySpecificFieldDict =
-            new Dictionary<string, XiCategorySpecificFields>();        
+        // TODO: Update the methods in this region if the ordering of the Event List is to be changed        
 
         /// <summary>
         ///     This data member is the private representation of MaxAnyEventAge

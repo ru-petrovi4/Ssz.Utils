@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ssz.Xi.Client.Internal.Endpoints;
+using Xi.Contracts;
 using Xi.Contracts.Data;
 
 namespace Ssz.Xi.Client.Internal.Context
@@ -39,25 +40,17 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_readEndpoint is null) throw new Exception("No Read Endpoint");
-
-            if (_readEndpoint.Disposed) return null;
+            if (_xiServerInfo is null) throw new Exception("No Read Endpoint");
 
             DataValueArraysWithAlias? readValueList = null;
-            if (XiEndpointRoot.CreateChannelIfNotCreated(_readEndpoint))
+            try
             {
-                try
-                {
-                    readValueList = _readEndpoint.Proxy.ReadData(ContextId, serverListId,
-                        serverAliases);
-
-
-                    _readEndpoint.LastCallUtc = DateTime.UtcNow;
-                }
-                catch (Exception ex)
-                {
-                    ProcessRemoteMethodCallException(ex);
-                }
+                readValueList = ((IRead)_xiServerInfo.Server).ReadData(ContextId, serverListId,
+                    serverAliases);
+            }
+            catch (Exception ex)
+            {
+                ProcessRemoteMethodCallException(ex);
             }
             return readValueList;
         }
@@ -94,28 +87,22 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_readEndpoint is null) throw new Exception("No Read Endpoint");
-
-            if (_readEndpoint.Disposed) return new JournalDataValues[0];
+            if (_xiServerInfo is null) throw new Exception("No Read Endpoint");
+            
 
             JournalDataValues[]? listJDRV = null;
-            if (XiEndpointRoot.CreateChannelIfNotCreated(_readEndpoint) && serverListId != 0)
+            try
             {
-                try
-                {
-                    listJDRV = _readEndpoint.Proxy.ReadJournalDataForTimeInterval(ContextId,
-                        serverListId,
-                        firstTimestamp,
-                        secondTimestamp,
-                        numValuesPerAlias,
-                        serverAliases);
-
-                    _readEndpoint.LastCallUtc = DateTime.UtcNow;
-                }
-                catch (Exception ex)
-                {
-                    ProcessRemoteMethodCallException(ex);
-                }
+                listJDRV = ((IRead)_xiServerInfo.Server).ReadJournalDataForTimeInterval(ContextId,
+                    serverListId,
+                    firstTimestamp,
+                    secondTimestamp,
+                    numValuesPerAlias,
+                    serverAliases);
+            }
+            catch (Exception ex)
+            {
+                ProcessRemoteMethodCallException(ex);
             }
             return listJDRV;
         }
@@ -143,24 +130,19 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_readEndpoint is null) throw new Exception("No Read Endpoint");
+            if (_xiServerInfo is null) throw new Exception("No Read Endpoint");
 
             JournalDataValues[]? listJDRV = null;
-            if (XiEndpointRoot.CreateChannelIfNotCreated(_readEndpoint) && serverListId != 0)
+            try
             {
-                try
-                {
-                    listJDRV = _readEndpoint.Proxy.ReadJournalDataAtSpecificTimes(ContextId,
-                        serverListId,
-                        timestamps,
-                        serverAliases);
-
-                    _readEndpoint.LastCallUtc = DateTime.UtcNow;
-                }
-                catch (Exception ex)
-                {
-                    ProcessRemoteMethodCallException(ex);
-                }
+                listJDRV = ((IRead)_xiServerInfo.Server).ReadJournalDataAtSpecificTimes(ContextId,
+                    serverListId,
+                    timestamps,
+                    serverAliases);
+            }
+            catch (Exception ex)
+            {
+                ProcessRemoteMethodCallException(ex);
             }
             return listJDRV;
         }
@@ -197,26 +179,20 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_readEndpoint is null) throw new Exception("No Read Endpoint");
+            if (_xiServerInfo is null) throw new Exception("No Read Endpoint");
 
             JournalDataChangedValues[]? listJDCV = null;
-            if (XiEndpointRoot.CreateChannelIfNotCreated(_readEndpoint) && serverListId != 0)
+            try
             {
-                try
-                {
-                    listJDCV = _readEndpoint.Proxy.ReadJournalDataChanges(ContextId, serverListId,
-                        firstTimestamp,
-                        secondTimestamp,
-                        numValuesPerAlias,
-                        serverAliases);
-
-
-                    _readEndpoint.LastCallUtc = DateTime.UtcNow;
-                }
-                catch (Exception ex)
-                {
-                    ProcessRemoteMethodCallException(ex);
-                }
+                listJDCV = ((IRead)_xiServerInfo.Server).ReadJournalDataChanges(ContextId, serverListId,
+                    firstTimestamp,
+                    secondTimestamp,
+                    numValuesPerAlias,
+                    serverAliases);
+            }
+            catch (Exception ex)
+            {
+                ProcessRemoteMethodCallException(ex);
             }
             return listJDCV;
         }
@@ -261,22 +237,19 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_readEndpoint is null) throw new Exception("No Read Endpoint");
+            if (_xiServerInfo is null) throw new Exception("No Read Endpoint");
 
             JournalDataValues[]? listJDRV = null;
-            if (XiEndpointRoot.CreateChannelIfNotCreated(_readEndpoint) && serverListId != 0)
+            if ( serverListId != 0)
             {
                 try
                 {
-                    listJDRV = _readEndpoint.Proxy.ReadCalculatedJournalData(ContextId,
+                    listJDRV = ((IRead)_xiServerInfo.Server).ReadCalculatedJournalData(ContextId,
                         serverListId,
                         firstTimestamp,
                         secondTimestamp,
                         calculationPeriod,
                         serverAliasesAndCalculations);
-
-
-                    _readEndpoint.LastCallUtc = DateTime.UtcNow;
                 }
                 catch (Exception ex)
                 {
@@ -313,27 +286,21 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_readEndpoint is null) throw new Exception("No Read Endpoint");
+            if (_xiServerInfo is null) throw new Exception("No Read Endpoint");
 
             JournalDataPropertyValue[]? JDPVarray = null;
-            if (XiEndpointRoot.CreateChannelIfNotCreated(_readEndpoint) && serverListId != 0)
+            try
             {
-                try
-                {
-                    JDPVarray = _readEndpoint.Proxy.ReadJournalDataProperties(ContextId,
-                        serverListId,
-                        firstTimestamp,
-                        secondTimestamp,
-                        serverAlias,
-                        propertiesToRead);
-
-
-                    _readEndpoint.LastCallUtc = DateTime.UtcNow;
-                }
-                catch (Exception ex)
-                {
-                    ProcessRemoteMethodCallException(ex);
-                }
+                JDPVarray = ((IRead)_xiServerInfo.Server).ReadJournalDataProperties(ContextId,
+                    serverListId,
+                    firstTimestamp,
+                    secondTimestamp,
+                    serverAlias,
+                    propertiesToRead);
+            }
+            catch (Exception ex)
+            {
+                ProcessRemoteMethodCallException(ex);
             }
             return JDPVarray;
         }

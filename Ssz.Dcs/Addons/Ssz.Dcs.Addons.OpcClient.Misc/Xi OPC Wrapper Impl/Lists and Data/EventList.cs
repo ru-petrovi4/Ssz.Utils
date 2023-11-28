@@ -88,8 +88,8 @@ namespace Xi.OPC.Wrapper.Impl
         }
 
 		internal EventsList(ContextImpl context, uint clientId, uint updateRate, uint bufferingRate,
-							uint listType, uint listKey, FilterSet filterSet, StandardMib mib)
-			: base(context, clientId, updateRate, bufferingRate, listType, listKey, mib)
+							uint listType, uint listKey, FilterSet filterSet)
+			: base(context, clientId, updateRate, bufferingRate, listType, listKey)
 		{
 			IOPCEventSubscriptionMgtCli iOpcEventSubsMgt = null;
 			uint uiRevisedBuffer = 0; // OPC A&E name for update rate 

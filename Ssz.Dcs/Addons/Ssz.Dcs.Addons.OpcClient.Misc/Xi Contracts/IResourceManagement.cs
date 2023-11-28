@@ -93,33 +93,6 @@ namespace Xi.Contracts
 			out string reInitiateKey);
 
 		/// <summary>
-		/// <para>This method is used to reinitate an existing context 
-		/// after a failure of the underlying WCF connection.  The 
-		/// server must reauthenticate the client when this method is 
-		/// called.</para> 
-		/// </summary>
-		/// <param name="existingContextId">
-		/// The context identifier of the existing context to reinitate. 
-		/// </param>
-		/// <param name="contextOptions">
-		/// This parameter enables various  options for the context that may 
-		/// be used, for example, to aide in diagnosing issues. This value 
-		/// may be different than that used in the previous initiation/reinitiation 
-		/// of the context.  See ContextOptions enum for the valid values.
-		/// </param>
-		/// <param name="reInitiateKey">
-		/// A server-specific string that was returned to the client in the last 
-		/// Initiate() or ReInitiate() method call that was used for the context.
-		/// This parameter is used to prevent interloping clients from re-initiating 
-		/// a context using only the context id that was obtained through observing 
-		/// message sent to unencrypted Xi endpoints.  The reinitiate key value 
-		/// returned to the client by this method is server-specific. 
-		/// </param>
-		[OperationContract, FaultContract(typeof(XiFault))]
-		void ReInitiate(string existingContextId, ref uint contextOptions, 
-			ref string reInitiateKey);
-
-		/// <summary>
 		/// This method is used to close a context. When the context 
 		/// is closed, all resources/endpoints associated with the  
 		/// context are released.
@@ -128,21 +101,7 @@ namespace Xi.Contracts
 		/// The context identifier of the context to close. 
 		/// </param>
 		[OperationContract, FaultContract(typeof(XiFault))]
-		void Conclude(string contextId);
-
-		/// <summary>
-		/// To prevent a client – server context from timing out, it is 
-		/// necessary for the client to invoke a server method on the 
-		/// context within the contextTimeout interval.  The ClientKeepAlive 
-		/// method is a very low overhead method for keeping a context alive 
-		/// when a client has no other actions to perform.  A common situation 
-		/// may be where the client has setup ICallback to monitor data values.
-		/// </summary>
-		/// <param name="contextId">
-		/// The context identifier.
-		/// </param>
-		[OperationContract, FaultContract(typeof(XiFault))]
-		void ClientKeepAlive(string contextId);
+		void Conclude(string contextId);		
 
 		#endregion
 
@@ -309,120 +268,8 @@ namespace Xi.Contracts
 		/// </returns>
 		[OperationContract, FaultContract(typeof(XiFault))]
 		List<ObjectPath> FindRootPaths(string contextId, ObjectPath objectPath);
-
-		/// <summary>
-		/// <para>This method is used to read the standard MIB.</para>  
-		/// </summary>
-		/// <param name="contextId">
-		/// The context identifier.
-		/// </param>
-		/// <returns>
-		/// The standard MIB is returned.
-		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
-		StandardMib GetStandardMib(string contextId);
-
-		/// <summary>
-		/// <para>This method is used to read the vendor-specific MIB objects.</para>  
-		/// </summary>
-		/// <param name="contextId">
-		/// The context identifier.
-		/// </param>
-		/// <param name="vendorMibInstanceIds">
-		/// The list of identifiers for the vendor MIB objects to be returned.
-		/// </param>
-		/// <returns>
-		/// The requested vendor-specific MIB objects.
-		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
-		DataValueArrays GetVendorMib(string contextId, List<InstanceId> vendorMibInstanceIds);
  
-		#endregion
-
-		#region Endpoint Management
-
-		/// <summary>
-		/// <para>This method opens an endpoint that can be used to 
-		/// access one or more lists.  Each newly opened endpoint is 
-		/// assigned its own unique identifier.  It may be that the 
-		/// server supports only one endpoint of each type (e.g. Read). 
-		/// In this case a second attempt to open a Read endpoint will 
-		/// succeed and the EndpointId of the already opened Read 
-		/// endpoint will be returned.  </para>
-		/// </summary>
-		/// <param name="contextId">
-		/// The context identifier.
-		/// </param>
-		/// <param name="contractType">
-		/// <para>The type of the endpoint as specified by the interface that it 
-		/// supports.  IResourceManagement and IServerDiscovery cannot be created.</para>
-		/// <para>The values are defined using the typeof(IXXX).Name property, where IXXX is 
-		/// the contract name (e.g. IRead).  This value is also used as the value of the 
-		/// following property: </para>
-		/// <para> System.ServiceModel.Description.ServiceEndpoint.Contract.Name  </para>
-		/// </param>
-		/// <param name="endpointUrl">
-		/// The URL of the endpoint as defined by System.ServiceModel.Description.ServiceEndpoint.Address.Uri.OriginalString.
-		/// </param>
-		/// <returns>
-		/// The definition of the endpoint.
-		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
-		EndpointDefinition OpenEndpoint(string contextId, string contractType, string endpointUrl);
-
-		/// <summary>
-		/// This method adds a list to an endpoint.
-		/// </summary>
-		/// <param name="contextId">
-		/// The context identifier.
-		/// </param>
-		/// <param name="endpointId">
-		/// A string value that uniquely identifies the endpoint (may be a GUID) 
-		/// to which the list is to be added.
-		/// </param>
-		/// <param name="serverListId">
-		/// The identifier of the list to add to the endpoint.
-		/// </param>
-		/// <returns>
-		/// The list identifier and result code for the list whose 
-		/// add failed. Returns null if the add succeeded.  
-		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
-		AliasResult AddListToEndpoint(string contextId, string endpointId, uint serverListId);
-
-		/// <summary>
-		/// This method removes one or more lists from an endpoint.
-		/// </summary>
-		/// <param name="contextId">
-		/// The context identifier.
-		/// </param>
-		/// <param name="endpointId">
-		/// A string value that uniquely identifies the endpoint (may be a GUID) 
-		/// from which the list is to be removed.
-		/// </param>
-		/// <param name="listIds">
-		/// The identifiers of the lists to remove from the endpoint.
-		/// </param>
-		/// <returns>
-		/// The list identifiers and result codes for the lists whose 
-		/// removal failed. Returns null if all removals succeeded.  
-		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
-		List<AliasResult> RemoveListsFromEndpoint(string contextId, string endpointId, List<uint> listIds);
-
-		/// <summary>
-		/// This method closes an endpoint.
-		/// </summary>
-		/// <param name="contextId">
-		/// The context identifier.
-		/// </param>
-		/// <param name="endpointId">
-		/// A string value the uniquely identified the endpoint (may be a GUID) to be deleted.
-		/// </param>
-		[OperationContract, FaultContract(typeof(XiFault))]
-		void CloseEndpoint(string contextId, string endpointId);
-
-		#endregion
+		#endregion		
 
 		#region List Management
 		/// <summary>

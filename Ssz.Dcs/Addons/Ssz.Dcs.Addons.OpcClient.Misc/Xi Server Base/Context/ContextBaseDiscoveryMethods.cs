@@ -110,27 +110,5 @@ namespace Xi.Server.Base
 		/// invalid.  
 		/// </returns>
 		public abstract List<ObjectPath> OnFindRootPaths(ObjectPath objectPath);
-
-		/// <summary>
-		/// This method is to be overridden by the context implementation in the 
-		/// Server Implementation project.
-		/// </summary>
-		/// <returns>
-		/// The standard MIB is returned.
-		/// </returns>
-		public abstract StandardMib OnGetStandardMib();
-
-		/// <summary>
-		/// This method is to be overridden by the context implementation in the 
-		/// Server Implementation project.
-		/// </summary>
-		/// <param name="vendorMibInstanceIds">
-		/// The list of identifiers for the vendor MIB objects to be returned.
-		/// </param>
-		/// <returns>
-		/// The requested vendor-specific MIB objects.
-		/// </returns>
-		public abstract DataValueArrays OnGetVendorMib(List<InstanceId> vendorMibInstanceIds);
-
 	}
 }

@@ -111,10 +111,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Context\ContextImplContextMgt.cs" />
     <Compile Include="Context\ContextImpl.cs" />
     <Compile Include="Context\ContextImplAlarmsEvents.cs" />
-    <Compile Include="Context\ContextImplEndpointMgt.cs" />
     <Compile Include="Context\ContextImplListMgt.cs" />
     <Compile Include="Context\OpcAeBrowser.cs" />
     <Compile Include="Context\OpcBrowser.cs" />

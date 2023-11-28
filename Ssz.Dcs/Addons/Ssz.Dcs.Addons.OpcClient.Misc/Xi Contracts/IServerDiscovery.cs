@@ -53,27 +53,6 @@ namespace Xi.Contracts
 		/// The description of the server. 
 		/// </returns>
 		[OperationContract, FaultContract(typeof(XiFault))]
-		ServerEntry DiscoverServerInfo();
-
-		/// <summary>
-		/// This method returns an abbreviated set of endpoint definition parameters for 
-		/// use by Silverlight clients and other clients that cannot use Metadata Exhange 
-		/// to retrieve complete endpoint descriptions from the server.  Client 
-		/// applications capable of using Metadata Exchange should not call this method.
-		/// </summary>
-		/// <returns>
-		/// Returns a list of EndpointConfigurationEx objects, one for each endpoint 
-		/// supported by the server.
-		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
-		List<EndpointConfigurationEx> DiscoverAbbreviatedEndpointInfo();
-
-		/// <summary>
-		/// This method reads the clientaccesspolicy.xml from the EXE directory and returns 
-		/// the content to the requester.
-		/// </summary>
-		/// <returns>Returns the clientaccesspolicy.xml as a stream.</returns>
-		[OperationContract, WebGet(UriTemplate = "clientaccesspolicy.xml")]
-		Stream GetSilverlightPolicy();
+		ServerEntry DiscoverServerInfo();				
 	}
 }

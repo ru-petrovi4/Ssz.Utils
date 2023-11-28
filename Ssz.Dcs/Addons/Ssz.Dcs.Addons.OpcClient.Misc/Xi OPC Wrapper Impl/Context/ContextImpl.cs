@@ -82,7 +82,7 @@ namespace Xi.OPC.Wrapper.Impl
         {
             get
             {
-                return (string.IsNullOrEmpty(_userId) ? Identity.Name : _userId);
+                return _userId;
             }
         }
         public string ComputerAndUserId
@@ -112,18 +112,7 @@ namespace Xi.OPC.Wrapper.Impl
                     let right = kv.ElementAtOrDefault(1)
                     where left == findParameter
                     select right).FirstOrDefault() ?? "";
-        }
-
-	    public override bool OnValidateSecurity(OperationContext ctx)
-		{
-			// TODO: Implement additional context security
-			return true;
-		}
-
-		public override void OnReInitiate(OperationContext ctx)
-		{
-			// TODO: Implement additional context security
-		}
+        }	    
 
 		protected override bool Dispose(bool isDisposing)
 		{

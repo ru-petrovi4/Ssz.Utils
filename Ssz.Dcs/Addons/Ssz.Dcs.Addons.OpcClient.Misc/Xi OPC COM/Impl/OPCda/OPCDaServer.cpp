@@ -373,15 +373,32 @@ namespace Impl {
 		CComHeapPtr<tagOPCSERVERSTATUS> pServerStatus;
 		cliHRESULT HR = IOPCServer->GetStatus(&pServerStatus);
 
-
 		if (HR.Succeeded && nullptr != pServerStatus)
 		{
 			ServerStatus = gcnew OPCSERVERSTATUS();
-			ServerStatus->dtStartTime = DateTime::FromFileTimeUtc(*((long long*)&pServerStatus->ftStartTime));
-			ServerStatus->dtCurrentTime = DateTime::FromFileTimeUtc(*((long long*)&pServerStatus->ftCurrentTime));
+			try
+			{
+				ServerStatus->dtStartTime = DateTime::FromFileTimeUtc(*((long long*)&pServerStatus->ftStartTime));
+			}
+			catch (...)
+			{
+			}
+			try
+			{
+				ServerStatus->dtCurrentTime = DateTime::FromFileTimeUtc(*((long long*)&pServerStatus->ftCurrentTime));
+			}
+			catch (...)
+			{
+			}
 			if ((long long)0 != (*((long long*)&pServerStatus->ftLastUpdateTime)))
 			{
-				ServerStatus->dtLastUpdateTime = DateTime::FromFileTimeUtc(*((long long*)&pServerStatus->ftLastUpdateTime));
+				try
+				{
+					ServerStatus->dtLastUpdateTime = DateTime::FromFileTimeUtc(*((long long*)&pServerStatus->ftLastUpdateTime));
+				}
+				catch (...)
+				{
+				}
 			}
 			ServerStatus->dwServerState = (OPCSERVERSTATE)(unsigned short)pServerStatus->dwServerState;
 			ServerStatus->dwGroupCount = pServerStatus->dwGroupCount;

@@ -30,76 +30,6 @@ namespace Xi.OPC.Wrapper.Impl
 	public partial class XiOPCWrapper : ServerBase<ContextImpl, ListRoot>
 	{
 		/// <summary>
-		/// The server implementation override used to validate the security for the 
-		/// IResourceManagement.Initiate() method.
-		/// </summary>
-		/// <param name="applicationName">The client application name to authorize.</param>
-		/// <param name="workstationName">The client workstation name to authorize</param>
-		/// <param name="ctx">The Operation Context to authorize</param>
-		protected override void OnValidateContextSecurity(string applicationName, string workstationName,
-			OperationContext ctx)
-		{
-			if (string.IsNullOrEmpty(applicationName))
-			{
-				ArgumentNullException ane = new ArgumentNullException("applicationName");
-				throw FaultHelpers.Create(ane);
-			}
-			else
-			{
-				// TODO:  Add security checks for the client applicationName
-				//        throw an exception if the checks fail
-			}
-
-			if (string.IsNullOrEmpty(workstationName))
-			{
-				ArgumentNullException ane = new ArgumentNullException("workstationName");
-				throw FaultHelpers.Create(ane);
-			}
-			else
-			{
-				// TODO:  Add security checks for the client workstationName
-				//        throw an exception if the checks fail
-			}
-
-			// TODO:  Add security checks related to the WCF operation context
-			//        such as the ctx.Channel.RemoteAddress 
-			//        throw an exception if the checks fail
-		}
-
-		/// <summary>
-		/// The server implementation override used to support the 
-		/// IResourceManagement.Initiate() method.
-		/// </summary>
-		/// <param name="ctx">The Operation Context that identifies the calling user.</param>
-		protected override System.Security.Principal.IIdentity OnGetPrimaryIdentity(OperationContext ctx)
-		{
-			// TODO:  Set the user identity appropriately for this server
-
-			// This implementation defaults to the current logged on user, and overrides that 
-			// with the calling user identity.
-			System.Security.Principal.IIdentity identity = System.Security.Principal.WindowsIdentity.GetCurrent();
-			if ((ctx.ServiceSecurityContext != null) && (ctx.ServiceSecurityContext.PrimaryIdentity != null))
-			{
-				identity = ctx.ServiceSecurityContext.PrimaryIdentity;
-			}
-			return identity;
-		}
-
-		/// <summary>
-		/// This method is to be overridden by the context implementation in the 
-		/// Server Implementation project.
-		/// </summary>
-		/// <param name="requestedContextOptions">The requested context options</param>
-		/// <returns>The context options supported for this context.</returns>
-		public override uint OnNegotiateContextOptions(uint requestedContextOptions)
-		{
-			uint negotiatedContextOptions = requestedContextOptions;
-			// TODO:  Add code for supported context options
-			// Do not add code here to validate requested server types. They will be negotiated in the Implementation subclass.
-			return negotiatedContextOptions;
-		}
-
-		/// <summary>
 		/// The server implementation override used to support the 
 		/// IResourceManagement.Initiate() method.
 		/// </summary>
@@ -114,11 +44,11 @@ namespace Xi.OPC.Wrapper.Impl
 		/// <param name="reInitiateKey"></param>
 		/// <returns>An instance of a context to be used by this client.</returns>
 		protected override ContextImpl OnInitiate(string applicationName, string workstationName,
-			ref uint localeId, ref uint contextTimeout, uint contextOptions, OperationContext ctx,
-			System.Security.Principal.IIdentity userIdentity, List<EndpointDefinition> listEndpointDefinitions,
+			ref uint localeId, ref uint contextTimeout, uint contextOptions,
+			System.Security.Principal.IIdentity userIdentity,
 			out string reInitiateKey)
 		{
-			ContextImpl contextImpl = new ContextImpl(this, ctx.SessionId, applicationName, workstationName, ref localeId,
+			ContextImpl contextImpl = new ContextImpl(this, Guid.NewGuid().ToString(), applicationName, workstationName, ref localeId,
 				ref contextTimeout, contextOptions, userIdentity);
 			
 			reInitiateKey = contextImpl.ReInitiateKey;
@@ -129,8 +59,6 @@ namespace Xi.OPC.Wrapper.Impl
 			//	ep => ep.BindingName == "WebHttpBinding" && ep.ContractType == typeof(IRestRead).Name);
 			//if (restRead != null)
 			//	restRead.Url = string.Format("{0}/changes/{1}/{2}", restRead.Url, contextImpl.Id, typeof(IRestRead).Name);
-
-			contextImpl.AddEndpointsToContext(listEndpointDefinitions);
 
 			// Connect to the requested OPC COM Servers.
 			uint requestedServers = contextImpl.NegotiatedContextOptions;

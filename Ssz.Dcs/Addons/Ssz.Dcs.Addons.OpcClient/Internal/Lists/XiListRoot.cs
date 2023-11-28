@@ -49,13 +49,6 @@ namespace Ssz.Xi.Client.Internal.Lists
 
             if (disposing)
             {
-                foreach (XiEndpointRoot endpoint in Endpoints)
-                {
-                    if (!endpoint.Disposed) endpoint.UnassignList(this);
-                }
-
-                _endpoints.Clear();
-
                 if (!_context.ServerContextIsClosing)
                 {
                     try
@@ -197,25 +190,7 @@ namespace Ssz.Xi.Client.Internal.Lists
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiListRoot.");
 
             return _context.TouchList(ServerListId);
-        }
-
-        /// <summary>
-        ///     Use this method to update this Xi List with a replacement Xi Endpoint.
-        ///     The method is used when an endpoint loses communication and is replaced
-        ///     by a new endpoint
-        /// </summary>
-        /// <param name="failedEndpoint"> The failed endpoint </param>
-        /// <param name="replacementEndpoint"> The endpoint that replaces the failed endpoint </param>
-        public void ReplaceEndpointInList(XiEndpointRoot failedEndpoint, XiEndpointRoot replacementEndpoint)
-        {
-            if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiListRoot.");
-
-            if (_endpoints.Contains(failedEndpoint))
-            {
-                _endpoints.Add(replacementEndpoint);
-                _endpoints.Remove(failedEndpoint);
-            }
-        }
+        }        
 
         /// <summary>
         ///     This property provides the Xi Context to which this list belongs.
@@ -277,248 +252,11 @@ namespace Ssz.Xi.Client.Internal.Lists
         ///     This property is provided for the Xi Client application to associate this list
         ///     with an object of its choosing.
         /// </summary>
-        public object? ClientTag { get; set; }
-
-        /// <summary>
-        ///     List of Xi Endpoints to which this Xi List has been added.
-        /// </summary>
-        public IEnumerable<XiEndpointRoot> Endpoints
-        {
-            get { return _endpoints; }
-        }
-
-        /// <summary>
-        ///     This property indicates whether this subscription can be used to read values from the server.
-        ///     Setting this property to TRUE causes this subscription to open an endpoint with the server
-        ///     for reading.
-        /// </summary>
-        public bool Readable
-        {
-            get
-            {
-                if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiListRoot.");
-
-                XiReadEndpoint? readEndpoint = _context.ReadEndpoint;
-                if (readEndpoint is not null)
-                {
-                    if (readEndpoint.Disposed) return false;
-                    return readEndpoint.HasListAttached(this);
-                }
-                return false;
-            }
-            set
-            {
-                if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiListRoot.");
-
-                if (value)
-                {
-                    _context.OpenEndpointForContract(typeof (IRead).Name);
-                    AddListToEndpoint(_context.ReadEndpoint);
-                }
-                else RemoveListFromEndpoint(_context.ReadEndpoint);
-            }
-        }
-
-        /// <summary>
-        ///     This property indicates whether this subscription can be used to write values to the server.
-        ///     Setting this property to TRUE causes this subscription to open an endpoint with the server
-        ///     for writing.
-        /// </summary>
-        public bool Writeable
-        {
-            get
-            {
-                if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiListRoot.");
-
-                XiWriteEndpoint? writeEndpoint = _context.WriteEndpoint;
-                if (writeEndpoint is not null)
-                {
-                    if (writeEndpoint.Disposed) return false;
-                    return writeEndpoint.HasListAttached(this);
-                }
-                return false;
-            }
-            set
-            {
-                if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiListRoot.");
-
-                if (value)
-                {
-                    _context.OpenEndpointForContract(typeof (IWrite).Name);
-                    AddListToEndpoint(_context.WriteEndpoint);
-                }
-                else RemoveListFromEndpoint(_context.WriteEndpoint);
-            }
-        }
-
-        /*
-        /// <summary>
-        ///   This property indicates whether this subscription can receive updates from the server. 
-        ///   Setting this property to TRUE causes this subscription to be registered with the server 
-        ///   for updates. When TRUE, the client application  will receive updates through an event 
-        ///   specific to the type of the subscription.
-        /// </summary>
-        public bool Subscribeable
-        {
-            get
-            {
-                bool bCallbackEndpoint = (_context.CallbackEndpoint is not null);
-                bool bPollEndpoind = (_context.PollEndpoint is not null);
-                if (bCallbackEndpoint) return _context.CallbackEndpoint.HasListAttached(this);
-                if (bPollEndpoind) return _context.PollEndpoint.HasListAttached(this);
-                return false;
-            }
-            set
-            {
-                bool bCallbackEndpoint = (_context.CallbackEndpoint is not null);
-                bool bPollEndpoint = (_context.PollEndpoint is not null);
-                if (value)
-                {
-                    if (!bCallbackEndpoint && !bPollEndpoint)
-                    {
-                        if (
-                            string.Compare(Uri.UriSchemeHttp,
-                                           _context.ResourceManagementServiceEndpoint.ListenUri.Scheme, true) ==
-                            0 ||
-                            string.Compare(Uri.UriSchemeHttps,
-                                           _context.ResourceManagementServiceEndpoint.ListenUri.
-                                               Scheme, true) == 0)
-                        {
-                            _context.OpenEndpointForContract(typeof (IPoll).Name);
-                            bPollEndpoint = (_context.PollEndpoint is not null);
-                        }
-                        else
-                        {
-                            _context.OpenEndpointForContract(typeof (IRegisterForCallback).Name);
-                            bCallbackEndpoint = (_context.CallbackEndpoint is not null);
-                        }
-                    }
-                    if (bCallbackEndpoint) AddListToEndpoint(_context.CallbackEndpoint);
-                    if (bPollEndpoint)
-                    {
-                        AddListToEndpoint(_context.PollEndpoint);
-                        //_context.StartPolling();
-                    }
-                }
-                else
-                {
-                    if (bCallbackEndpoint) RemoveListFromEndpoint(_context.CallbackEndpoint);
-                    if (bPollEndpoint) RemoveListFromEndpoint(_context.PollEndpoint);
-                }
-            }
-        }*/
-
-        /// <summary>
-        ///     This property indicates whether this subscription can be used to read values from the server.
-        ///     Setting this property to TRUE causes this subscription to open an endpoint with the server
-        ///     for reading.
-        /// </summary>
-        public bool Callbackable
-        {
-            get
-            {
-                if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiListRoot.");
-
-                XiCallbackEndpoint? callbackEndpoint = _context.CallbackEndpoint;
-                if (callbackEndpoint is not null)
-                {
-                    if (callbackEndpoint.Disposed) return false;
-                    return callbackEndpoint.HasListAttached(this);
-                }
-                return false;
-            }
-            set
-            {
-                if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiListRoot.");
-
-                if (value)
-                {
-                    _context.OpenEndpointForContract(typeof (IRegisterForCallback).Name);
-                    AddListToEndpoint(_context.CallbackEndpoint);
-                }
-                else RemoveListFromEndpoint(_context.CallbackEndpoint);
-            }
-        }
-
-        /// <summary>
-        ///     This property indicates whether this subscription can be used to read values from the server.
-        ///     Setting this property to TRUE causes this subscription to open an endpoint with the server
-        ///     for reading.
-        /// </summary>
-        public bool Pollable
-        {
-            get
-            {
-                if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiListRoot.");
-
-                XiPollEndpoint? pollEndpoint = _context.PollEndpoint;
-                if (pollEndpoint is not null)
-                {
-                    if (pollEndpoint.Disposed) return false;
-                    return pollEndpoint.HasListAttached(this);
-                }
-                return false;
-            }
-            set
-            {
-                if (Disposed) throw new ObjectDisposedException("Cannot access a disposed XiListRoot.");
-
-                if (value)
-                {
-                    _context.OpenEndpointForContract(typeof (IPoll).Name);
-                    AddListToEndpoint(_context.PollEndpoint);
-                }
-                else RemoveListFromEndpoint(_context.PollEndpoint);
-            }
-        }
+        public object? ClientTag { get; set; }        
 
         public bool Disposed { get; private set; }
 
-        #endregion
-
-        #region protected functions
-
-        /// <summary>
-        ///     This method is used to add an XiList to an Xi Endpoint.
-        /// </summary>
-        /// <param name="endpoint"> The endpoint to which the list is to be added. </param>
-        /// <returns> The result code for the operation. See XiFaultCodes class for standardized result codes. </returns>
-        protected uint AddListToEndpoint(XiEndpointRoot? endpoint)
-        {
-            if (ServerListId != 0 && endpoint is not null && !string.IsNullOrEmpty(endpoint.EndpointId))
-            {
-                if (_endpoints.Contains(endpoint)) return XiFaultCodes.S_OK;
-
-                uint errCode = _context.AddListToEndpoint(ServerListId, endpoint.EndpointId);
-                if (errCode == XiFaultCodes.S_OK)
-                {
-                    _endpoints.Add(endpoint);
-                    if (!endpoint.Disposed) endpoint.AssignList(this);
-                }
-                return errCode;
-            }
-            return XiFaultCodes.E_ENDPOINTERROR;
-        }
-
-        /// <summary>
-        ///     This method removes this list from the specified Xi Endpoint.
-        /// </summary>
-        /// <param name="endpoint"> The endpoint from which this list is to be removed. </param>
-        /// <returns> The result code. </returns>
-        protected uint RemoveListFromEndpoint(XiEndpointRoot? endpoint)
-        {
-            if (endpoint is null || !_endpoints.Contains(endpoint)) return XiFaultCodes.S_OK;
-
-            uint errCode = _context.RemoveListFromEndpoint(ServerListId, endpoint.EndpointId);
-            if (errCode == XiFaultCodes.S_OK)
-            {
-                if (!endpoint.Disposed) endpoint.UnassignList(this);
-                _endpoints.Remove(endpoint);
-            }
-            return errCode;
-        }
-
-        #endregion
+        #endregion        
 
         #region private fields
 
@@ -526,12 +264,7 @@ namespace Ssz.Xi.Client.Internal.Lists
         ///     This data member is the private representation of
         ///     the public Context property.
         /// </summary>
-        private readonly XiContext _context;
-
-        /// <summary>
-        ///     List of Xi Endpoints to which this Xi List has been added.
-        /// </summary>
-        private readonly List<XiEndpointRoot> _endpoints = new List<XiEndpointRoot>(10);
+        private readonly XiContext _context;        
 
         #endregion
     }

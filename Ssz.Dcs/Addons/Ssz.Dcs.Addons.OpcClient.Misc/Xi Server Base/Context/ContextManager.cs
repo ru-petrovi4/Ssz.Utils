@@ -131,38 +131,21 @@ namespace Xi.Server.Base
 				throw FaultHelpers.Create(XiFaultCodes.E_SERVER_SHUTDOWN, ShutdownReason);
 			}
 			TContext context = null;
-			OperationContext ctx = OperationContext.Current;
-			if (null != ctx)
-			{
-				if (!(validate && (ctx.ServiceSecurityContext == null
-								   || ctx.ServiceSecurityContext.PrimaryIdentity == null)
-					 )
-				   )
-				{
-					lock (_activeContexts)
-					{
-						if (_activeContexts.TryGetValue(contextId, out context))
-						{
-							if (validate == false || context.ValidateSecurity(ctx))
-							{
-								if ((context.Concluded) || (context.Concluding))
-									throw FaultHelpers.Create("Context is closed");
-								else
-								{
-									if (concluding)
-										context.Concluding = concluding;
-									context.LastAccess = DateTime.UtcNow;
-								}
-							}
-						}
-					}
-				}
-				if (null == context)
-				{
-					ctx.Channel.Close();
-				}
-			}
-			return context;
+            lock (_activeContexts)
+            {
+                if (_activeContexts.TryGetValue(contextId, out context))
+                {
+                    if ((context.Concluded) || (context.Concluding))
+                        throw FaultHelpers.Create("Context is closed");
+                    else
+                    {
+                        if (concluding)
+                            context.Concluding = concluding;
+                        context.LastAccess = DateTime.UtcNow;
+                    }
+                }
+            }
+            return context;
 		}
 
 		/// <summary>

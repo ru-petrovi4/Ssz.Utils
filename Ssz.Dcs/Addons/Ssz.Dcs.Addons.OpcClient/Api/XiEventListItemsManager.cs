@@ -21,6 +21,8 @@ namespace Ssz.Xi.Client.Api
 
         #endregion
 
+        private bool _callbackable;
+
         #region public functions
 
         /// <summary>
@@ -32,6 +34,8 @@ namespace Ssz.Xi.Client.Api
         /// <param name="ct"></param>
         public void Subscribe(XiServerProxy xiServerProxy, IDispatcher? сallbackDoer, bool callbackable, CancellationToken ct)
         {
+            _callbackable = callbackable;
+
             if (ct.IsCancellationRequested) return;
             if (!xiServerProxy.ContextExists) return;
             if (!_xiEventItemsMustBeAdded) return;
@@ -104,32 +108,7 @@ namespace Ssz.Xi.Client.Api
                                     {
                                     }
                                 }
-                            };
-
-                        if (callbackable)
-                        {
-                            try
-                            {
-                                xiEventList.Callbackable = true;
-                            }
-                            catch
-                            {
-                            }                            
-                        }
-                        try
-                        {
-                            xiEventList.Pollable = true;
-                        }
-                        catch
-                        {
-                        }
-                        try
-                        {
-                            xiEventList.Writeable = true;
-                        }
-                        catch
-                        {
-                        }
+                            };                        
 
                         xiEventList.EnableListUpdating(true);
                     }
@@ -161,16 +140,16 @@ namespace Ssz.Xi.Client.Api
                 IXiEventListProxy? xiEventList = _eventMessagesCallbackEventHandlers[kvp.Key].P;
 
                 if (xiEventList is null || xiEventList.Disposed) continue;
-                if (xiEventList.Pollable)
-                {
-                    try
-                    {
-                        xiEventList.PollEventChanges(null);
-                    }
-                    catch
-                    {
-                    }
-                }   
+                //if (xiEventList.Pollable)
+                //{
+                //    try
+                //    {
+                //        xiEventList.PollEventChanges(null);
+                //    }
+                //    catch
+                //    {
+                //    }
+                //}   
             }            
         }
 
@@ -191,16 +170,16 @@ namespace Ssz.Xi.Client.Api
                 IXiEventListProxy? xiEventList = _eventMessagesCallbackEventHandlers[kvp.Key].P;
 
                 if (xiEventList is null || xiEventList.Disposed) continue;
-                if (xiEventList.Pollable && !xiEventList.Callbackable)
-                {
-                    try
-                    {
-                        xiEventList.PollEventChanges(null);
-                    }
-                    catch
-                    {
-                    }
-                }   
+                //if (xiEventList.Pollable && !xiEventList.Callbackable)
+                //{
+                //    try
+                //    {
+                //        xiEventList.PollEventChanges(null);
+                //    }
+                //    catch
+                //    {
+                //    }
+                //}   
             }
         }
 

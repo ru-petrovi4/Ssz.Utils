@@ -512,6 +512,15 @@ namespace Ssz.Xi.Client.Internal
             }
         }
 
+        public static uint NormalizeStatusCode(uint statusCode)
+        {
+            return StatusCodes.Good;
+            //if ((XiStatusCode.StatusBits(statusCode) & (byte)XiStatusCodeStatusBits.GoodNonSpecific) != 0)
+            //    return StatusCodes.Good;
+            //else
+            //    return StatusCodes.Bad;
+        }
+
         #endregion
 
         #region private functions

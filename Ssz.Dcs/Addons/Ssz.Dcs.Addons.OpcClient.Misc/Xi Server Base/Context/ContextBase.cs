@@ -102,8 +102,6 @@ namespace Xi.Server.Base
 			{
 				if (!Concluded)
 					OnConclude();
-
-				CloseEndpointConnections();
 			}
 
 			_hasBeenDisposed = true;
@@ -123,14 +121,7 @@ namespace Xi.Server.Base
 		/// <summary>
 		/// The collection of lists for this context.
 		/// </summary>
-		protected readonly Dictionary<uint, TList> _XiLists = new Dictionary<uint, TList>();		
-
-		/// <summary>
-		/// The collection of Endpoints for this context.
-		/// The key for this dictionary is the Endpoint LocalId a GUID created by the Xi Server.
-		/// </summary>
-		protected readonly Dictionary<string, EndpointEntry<TList>> _XiEndpoints
-			= new Dictionary<string, EndpointEntry<TList>>();
+		protected readonly Dictionary<uint, TList> _XiLists = new Dictionary<uint, TList>();
 
 		private Random rand = new Random(unchecked((int)(DateTime.UtcNow.Ticks & 0x000000007FFFFFFFFL)));
 		/// <summary>
@@ -315,22 +306,7 @@ namespace Xi.Server.Base
 		internal bool CheckTimeout(DateTime timeNow)
 		{
 			return (timeNow - LastAccess) > ContextTimeout;
-		}
-
-		/// <summary>
-		/// Invoke this method to set the valid endpoint for this context.
-		/// </summary>
-		/// <param name="listEndpointDefinitions"></param>
-		public virtual void AddEndpointsToContext(List<EndpointDefinition> listEndpointDefinitions)
-		{
-			lock (ContextLock)
-			{
-				foreach (var ed in listEndpointDefinitions)
-				{
-					_XiEndpoints.Add(ed.EndpointId, new EndpointEntry<TList>(ed));
-				}
-			}
-		}
+		}		
 
 		/// <summary>
 		/// Indicates, when TRUE, that OnConclude has been completed on this context
@@ -358,14 +334,6 @@ namespace Xi.Server.Base
 		/// </summary>
 		public void OnConclude()
 		{
-			lock (ContextLock)
-			{
-				// remove all lists from the read, write, and subscribe endpoints
-				foreach (var ep in _XiEndpoints)
-					if (ep.Value.IsOpen)
-						OnCloseEndpoint(ep.Value.EndpointDefinition.EndpointId);
-			}
-
 			List<TList> removedLists = new List<TList>();
 			List<AliasResult> listAliasResult = RemoveListsFromContext(null, out removedLists);
 			DisposeLists(removedLists);
@@ -378,46 +346,6 @@ namespace Xi.Server.Base
 		/// Override this method in an implementation subclass to release resources 
 		/// held by the server, such as connections to wrapped servers.
 		/// </summary>
-		public abstract void OnReleaseResources();
-
-		/// <summary>
-		/// This validates the security credentials of the user each time the
-		/// context is retrieved.  It should ensure the Paged credentials match
-		/// the current transport security credentials.
-		/// </summary>
-		/// <param name="ctx">WCF operation context currently active</param>
-		/// <returns>true/false</returns>
-		public bool ValidateSecurity(OperationContext ctx)
-		{
-			return true;
-			//// Validate context ID
-			//if (ctx == null)
-			//	return false;
-
-			//// Not the same transport connection?
-			//if (ctx.SessionId != TransportSessionId)
-			//	return false;
-
-			//// No security?
-			//if (ctx.ServiceSecurityContext == null)
-			//	return false;
-
-			//// Different user name?
-			//if (ctx.ServiceSecurityContext.PrimaryIdentity.Name != Identity.Name)
-			//	return false;
-
-			//return OnValidateSecurity(ctx);
-		}
-
-		/// <summary>
-		/// This abstract method is to be overridden to provide additional context
-		/// security validation.
-		/// </summary>
-		/// <param name="ctx">WCF operation context currently active</param>
-		/// <returns>true/false</returns>
-		public virtual bool OnValidateSecurity(OperationContext ctx)
-		{
-			return true;
-		}
+		public abstract void OnReleaseResources();				
 	}
 }

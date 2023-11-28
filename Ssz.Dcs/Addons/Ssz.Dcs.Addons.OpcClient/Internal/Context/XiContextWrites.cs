@@ -26,14 +26,10 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_writeEndpoint is null) throw new Exception("No Write Endpoint");
+            if (_xiServerInfo is null) throw new Exception("No Write Endpoint");            
 
-            if (_writeEndpoint.Disposed) return null;
-
-            IWrite iWrite = _writeEndpoint.Proxy;
-            string contextId = ContextId;
-
-            _writeEndpoint.LastCallUtc = DateTime.UtcNow;
+            IWrite iWrite = _xiServerInfo.Server;
+            string contextId = ContextId;           
 
             List<AliasResult>? listAliasResult = null;
 
@@ -77,13 +73,9 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_writeEndpoint is null) throw new Exception("No Write Endpoint");
-
-            if (_writeEndpoint.Disposed) return null;
+            if (_xiServerInfo is null) throw new Exception("No Write Endpoint");            
 
             string contextId = ContextId;
-
-            _writeEndpoint.LastCallUtc = DateTime.UtcNow;
 
             List<EventIdResult>? listAliasResult = null;
 
@@ -91,7 +83,7 @@ namespace Ssz.Xi.Client.Internal.Context
             {
                 try
                 {
-                    listAliasResult = _writeEndpoint.Proxy.AcknowledgeAlarms(contextId, serverListId,
+                    listAliasResult = ((IWrite)_xiServerInfo.Server).AcknowledgeAlarms(contextId, serverListId,
                         operatorName, comment, alarmsToAck);
                 }
                 catch (Exception ex)
@@ -108,19 +100,15 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_writeEndpoint is null) throw new Exception("No Write Endpoint");
-
-            if (_writeEndpoint.Disposed) return null;
+            if (_xiServerInfo is null) throw new Exception("No Write Endpoint");
 
             string contextId = ContextId;
-
-            _writeEndpoint.LastCallUtc = DateTime.UtcNow;
 
             PassthroughResult? passthroughResult = null;
 
             try
             {
-                passthroughResult = _writeEndpoint.Proxy.Passthrough(contextId, recipientId, 0,
+                passthroughResult = ((IWrite)_xiServerInfo.Server).Passthrough(contextId, recipientId, 0,
                                       passthroughName, dataToSend);
             }
             catch (Exception ex)
@@ -143,14 +131,9 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_writeEndpoint is null) throw new Exception("No Write Endpoint");
-
-            if (_writeEndpoint.Disposed) 
-                return Task.FromResult(Task.FromResult(StatusCodes.BadInvalidState));
+            if (_xiServerInfo is null) throw new Exception("No Write Endpoint");            
 
             string contextId = ContextId;
-
-            _writeEndpoint.LastCallUtc = DateTime.UtcNow;
 
             int invokeId;
             var taskCompletionSource = new TaskCompletionSource<uint>();
@@ -160,7 +143,7 @@ namespace Ssz.Xi.Client.Internal.Context
             }
             try
             {
-                PassthroughResult? passthroughResult = _writeEndpoint.Proxy.Passthrough(contextId, recipientId, invokeId,
+                PassthroughResult? passthroughResult = ((IWrite)_xiServerInfo.Server).Passthrough(contextId, recipientId, invokeId,
                                       passthroughName, dataToSend ?? new byte[0]);
                 return Task.FromResult(taskCompletionSource.Task);
             }

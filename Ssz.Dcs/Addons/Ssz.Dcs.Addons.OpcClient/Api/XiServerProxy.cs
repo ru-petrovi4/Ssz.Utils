@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Ssz.Dcs.Addons.OpcClient;
 using Ssz.Utils;
 using Ssz.Xi.Client.Api.Lists;
 using Ssz.Xi.Client.Internal;
@@ -104,7 +105,7 @@ namespace Ssz.Xi.Client.Api
             {
                 _context = new XiContext(contextParams,
                             (uint)_contextTimeout.TotalMilliseconds,
-                            _contextOptions, _localeId, applicationName, workstationName, _keepAliveSkipCount,
+                            _localeId, applicationName, workstationName, _keepAliveSkipCount,
                             _callbackRate, xiCallbackDoer);
 
                 _context.ContextNotifyEvent += XiContext_ContextNotifyEvent;
@@ -305,8 +306,7 @@ namespace Ssz.Xi.Client.Api
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
 
             if (_context is null) throw new XiServerNotExistException();
-
-            _context.OpenEndpointForContract(typeof(IWrite).Name);
+            
             return _context.Passthrough(recipientId,
                                       passthroughName, dataToSend);
         }
@@ -325,19 +325,9 @@ namespace Ssz.Xi.Client.Api
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
 
             if (_context is null) throw new XiServerNotExistException();
-
-            _context.OpenEndpointForContract(typeof(IWrite).Name);
+            
             return await _context.LongrunningPassthroughAsync(recipientId, passthroughName, dataToSend, callbackAction);
-        }        
-
-        /// <summary>
-        ///     This property contains the context options that are used when connecting to the server.
-        /// </summary>
-        public uint ContextOptions_
-        {
-            get { return _contextOptions; }
-            set { if (_context is null) _contextOptions = value; }
-        }
+        }                
 
         /// <summary>
         ///     This property is the Windows LocaleId (language/culture id) for the context.
@@ -366,23 +356,7 @@ namespace Ssz.Xi.Client.Api
         public bool ContextExists
         {
             get { return _context is not null; }
-        }
-
-        /// <summary>
-        ///     This property contains the Standard MIB (Management Information Base) retrieved from the server
-        ///     during context establishment.
-        /// </summary>
-        public StandardMib StandardMib
-        {
-            get
-            {
-                if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
-
-                if (_context is null) throw new XiServerNotExistException();
-
-                return _context.StandardMib;
-            }
-        }
+        }        
 
         /// <summary>
         ///     This property contains the client-requested keepAliveSkipCount for the subscription.
@@ -436,6 +410,15 @@ namespace Ssz.Xi.Client.Api
             if (_context is null) throw new XiServerNotExistException();
 
             _context.KeepContextAlive(nowUtc);
+        }
+
+        public static uint NormalizeStatusCode(uint statusCode)
+        {
+            return StatusCodes.Good;
+            //if ((XiStatusCode.StatusBits(statusCode) & (byte)XiStatusCodeStatusBits.GoodNonSpecific) != 0)
+            //    return StatusCodes.Good;
+            //else
+            //    return StatusCodes.Bad;
         }
 
         #endregion
@@ -518,12 +501,7 @@ namespace Ssz.Xi.Client.Api
     ///   This data member is the private representation of the CallbackRate public member.
     /// </summary>
         private TimeSpan _callbackRate = new TimeSpan(0, 0, 10);
-#endif
-
-        /// <summary>
-        ///     This data member is the private representation of the ServerOptions public property.
-        /// </summary>
-        private uint _contextOptions = (uint) ContextOptions.NoOptions;
+#endif        
 
 #if DEBUG
         /// <summary>

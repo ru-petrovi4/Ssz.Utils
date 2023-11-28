@@ -7,6 +7,7 @@ using Ssz.Xi.Client.Api;
 using Ssz.Xi.Client.Api.ListItems;
 using Ssz.Xi.Client.Internal.Endpoints;
 using Ssz.Xi.Client.Internal.Lists;
+using Xi.Contracts;
 using Xi.Contracts.Data;
 using EventMessage = Xi.Contracts.Data.EventMessage;
 
@@ -59,23 +60,16 @@ namespace Ssz.Xi.Client.Internal.Context
 
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_pollEndpoint is null) throw new Exception("No Poll Endpoint.");
-
-            if (_pollEndpoint.Disposed) throw new Exception("Poll Endpoint is Disposed.");
+            if (_xiServerInfo is null) throw new Exception("No Poll Endpoint.");
 
             DataValueArraysWithAlias? readValueList = null;
-            if (XiEndpointRoot.CreateChannelIfNotCreated(_pollEndpoint))
+            try
             {
-                try
-                {
-                    readValueList = _pollEndpoint.Proxy.PollDataChanges(ContextId, dataList.ServerListId);
-
-                    _pollEndpoint.LastCallUtc = DateTime.UtcNow;
-                }
-                catch (Exception ex)
-                {
-                    ProcessRemoteMethodCallException(ex);
-                }
+                readValueList = ((IPoll)_xiServerInfo.Server).PollDataChanges(ContextId, dataList.ServerListId);
+            }
+            catch (Exception ex)
+            {
+                ProcessRemoteMethodCallException(ex);
             }
 
             IXiDataListItem[]? changedListItems = ElementValuesCallbackInternal(dataList, readValueList);
@@ -126,20 +120,16 @@ namespace Ssz.Xi.Client.Internal.Context
 
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_pollEndpoint is null) throw new Exception("No Poll Endpoint");
-
-            if (_pollEndpoint.Disposed) throw new Exception("Poll Endpoint is Disposed.");
+            if (_xiServerInfo is null) throw new Exception("No Poll Endpoint");            
 
             EventMessage[]? eventMessages = null;
-            if (XiEndpointRoot.CreateChannelIfNotCreated(_pollEndpoint) && eventList.ServerListId != 0)
+            if (eventList.ServerListId != 0)
             {
                 try
                 {
-                    eventMessages = _pollEndpoint.Proxy.PollEventChanges(ContextId,
+                    eventMessages = ((IPoll)_xiServerInfo.Server).PollEventChanges(ContextId,
                         eventList.ServerListId,
                         filterSet);
-
-                    _pollEndpoint.LastCallUtc = DateTime.UtcNow;
                 }
                 catch (Exception ex)
                 {
@@ -200,8 +190,6 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) return;
 
-            if (_callbackEndpoint is not null) _callbackEndpoint.LastCallUtc = DateTime.UtcNow;
-
             XiDataList? datalist = GetDataList(clientListId);
             if (datalist is null) return;
 
@@ -225,8 +213,6 @@ namespace Ssz.Xi.Client.Internal.Context
         public void EventMessagesCallback(uint clientListId, EventMessage[] eventMessages)
         {
             if (_disposed) return;
-
-            if (_callbackEndpoint is not null) _callbackEndpoint.LastCallUtc = DateTime.UtcNow;
 
             XiEventList? eventList = GetEventList(clientListId);
             if (eventList is null) return;

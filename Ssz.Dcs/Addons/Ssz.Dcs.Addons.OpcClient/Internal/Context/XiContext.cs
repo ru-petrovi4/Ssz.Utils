@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Principal;
 using System.Threading;
+using Ssz.Dcs.Addons.OpcClient;
 using Ssz.Utils;
 using Ssz.Xi.Client.Api;
 using Ssz.Xi.Client.Internal.Endpoints;
@@ -57,7 +58,7 @@ namespace Ssz.Xi.Client.Internal.Context
         /// </returns>
         public XiContext(CaseInsensitiveDictionary<string?> contextParams,
             uint contextTimeout,
-            uint contextOptions, uint localeId, string applicationName,
+            uint localeId, string applicationName,
             string workstationName, uint keepAliveSkipCount,
             TimeSpan callbackRate, IDispatcher xiCallbackDoer)
         {
@@ -84,11 +85,14 @@ namespace Ssz.Xi.Client.Internal.Context
 
                 _serverContextTimeoutInMs = ValidateServerContextTimeout(contextTimeout);
 
-                // make the send timeout that WCF uses to timeout a request greater than the context timeout to allow the keep-alive mechanism to work properly
-                _sendTimeout = new TimeSpan(0, 0, 0, 0, (int) (_serverContextTimeoutInMs + _serverContextTimeoutInMs));
-
-                _contextOptions = contextOptions;
-
+                _contextOptions = 0;
+                if (!String.IsNullOrEmpty(contextParams.TryGetValue(OpcClientAddon.OpcDa_ProgId_OptionName)))
+                    _contextOptions |= (uint)ContextOptions.EnableDataAccess;
+                if (!String.IsNullOrEmpty(contextParams.TryGetValue(OpcClientAddon.OpcAe_ProgId_OptionName)))
+                    _contextOptions |= (uint)ContextOptions.EnableAlarmsAndEventsAccess;
+                if (!String.IsNullOrEmpty(contextParams.TryGetValue(OpcClientAddon.OpcHda_ProgId_OptionName)))
+                    _contextOptions |= (uint)ContextOptions.EnableJournalDataAccess;
+                
                 //if (localeId != 0)
                 //{
                 //    if (_xiServerInfo.ServerEntry.ServerDescription?.SupportedLocaleIds is not null &&
@@ -116,30 +120,11 @@ namespace Ssz.Xi.Client.Internal.Context
                 //}
                 _localeId = localeId;       
 
-                _iResourceManagement = _xiServerInfo as IResourceManagement;
+                _iResourceManagement = _xiServerInfo.Server as IResourceManagement;
                 if (_iResourceManagement is null)
                     throw new Exception("Failed to create the IResourceManagement WCF Channel");
 
-                _readEndpoint = new XiReadEndpoint(_xiServerInfo as IRead, 
-                    new EndpointDefinition { EndpointId = nameof(IRead) },
-                    TimeSpan.Zero,
-                    TimeSpan.Zero,
-                    0);
-                _writeEndpoint = new XiWriteEndpoint(_xiServerInfo as IWrite,
-                    new EndpointDefinition { EndpointId = nameof(IWrite) },
-                    TimeSpan.Zero,
-                    TimeSpan.Zero,
-                    0);
-                _pollEndpoint = new XiPollEndpoint(_xiServerInfo as IPoll,
-                    new EndpointDefinition { EndpointId = nameof(IPoll) },
-                    TimeSpan.Zero,
-                    TimeSpan.Zero,
-                    0);
-                _callbackEndpoint = new XiCallbackEndpoint(_xiServerInfo as IRegisterForCallback,
-                    new EndpointDefinition { EndpointId = nameof(IRead) },
-                    TimeSpan.Zero,
-                    TimeSpan.Zero,
-                    0,
+                _callbackEndpoint = new XiCallbackEndpoint(_xiServerInfo.Server as IRegisterForCallback,                    
                     _xiCallbackDoer);
 
                 try
@@ -155,6 +140,8 @@ namespace Ssz.Xi.Client.Internal.Context
                 }
 
                 if (_contextId is null) throw new Exception("Server returns null contextId.");
+
+                _callbackEndpoint.SetCallback(ContextId, _serverKeepAliveSkipCount, _serverCallbackRate);
 
                 SetResourceManagementLastCallUtc();
 
@@ -226,23 +213,7 @@ namespace Ssz.Xi.Client.Internal.Context
 
                     _iResourceManagement = null;
                 }
-
-                // Dispose of the Read, Write, and Subscribe Endpoints
-                if (_readEndpoint is not null)
-                {
-                    _readEndpoint.Dispose();
-                    _readEndpoint = null;
-                }
-                if (_writeEndpoint is not null)
-                {
-                    _writeEndpoint.Dispose();
-                    _writeEndpoint = null;
-                }
-                if (_pollEndpoint is not null)
-                {
-                    _pollEndpoint.Dispose();
-                    _pollEndpoint = null;
-                }
+                
                 if (_callbackEndpoint is not null)
                 {
                     _callbackEndpoint.Dispose();
@@ -264,10 +235,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 }
             }
 
-            _iResourceManagement = null;
-            _readEndpoint = null;
-            _writeEndpoint = null;
-            _pollEndpoint = null;
+            _iResourceManagement = null;            
             _callbackEndpoint = null;            
             _listArray = null;            
 
@@ -450,35 +418,14 @@ namespace Ssz.Xi.Client.Internal.Context
             }
             SetResourceManagementLastCallUtc();
             return objectAttributes;
-        }
-
-        /// <summary>
-        ///     This method is used to read the standard MIB.
-        /// </summary>
-        /// <returns> The standard MIB is returned. </returns>
-        public StandardMib? GetStandardMib()
-        {
-            if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
-
-            return GetStandardMibInternal();
-        }
+        }        
 
         /// <summary>
         ///     This method is used to
         ///     keep the context alive.
         /// </summary>
         public void KeepContextAlive(DateTime nowUtc)
-        {
-            uint timeDiffInMs = (uint) (nowUtc - _resourceManagementLastCallUtc).TotalMilliseconds + 500;
-
-            bool bKeepAliveIntervalExpired = timeDiffInMs >= KeepAliveIntervalMs;
-
-            if (bKeepAliveIntervalExpired)
-            {
-                if (!ServerContextIsClosing) 
-                    KeepEndpointsAlive(nowUtc);
-            }
-            
+        {   
             if (_pendingContextNotificationData is not null)
             {
                 RaiseContextNotifyEvent(this, _pendingContextNotificationData);
@@ -513,7 +460,7 @@ namespace Ssz.Xi.Client.Internal.Context
         /// <summary>
         ///     The ContextOptions for this context. See Contracts.Constants.ContextOptions for standard values.
         /// </summary>
-        public uint ContextOptions
+        public uint ContextOptions_
         {
             get { return _contextOptions; }
         }
@@ -571,24 +518,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             get { return _serverContextIsClosing; }
             set { _serverContextIsClosing = value; }
-        }
-
-        /// <summary>
-        ///     This property is the standard MIB of the server.  This property is retrieved from the server during establishment
-        ///     of the context.
-        /// </summary>
-        public StandardMib StandardMib
-        {
-            get
-            {
-                if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
-
-                if (null == _standardMib) GetStandardMibInternal(); // This method updates _StandardMib
-                if (null == _standardMib) throw new Exception("Failed to obtain the Standard MIB");
-
-                return _standardMib;
-            }
-        }
+        }        
 
         #endregion
 
@@ -597,26 +527,7 @@ namespace Ssz.Xi.Client.Internal.Context
         private void SetResourceManagementLastCallUtc()
         {
             _resourceManagementLastCallUtc = DateTime.UtcNow;
-        }
-
-        /// <summary>
-        ///     This method is used to read the standard MIB.
-        /// </summary>
-        /// <returns> The standard MIB is returned. </returns>
-        private StandardMib? GetStandardMibInternal()
-        {
-            if (_iResourceManagement is null) throw new InvalidOperationException();
-            try
-            {
-                _standardMib = _iResourceManagement.GetStandardMib(ContextId);
-            }
-            catch (Exception ex)
-            {
-                ProcessRemoteMethodCallException(ex);
-            }
-            SetResourceManagementLastCallUtc();
-            return _standardMib;
-        }
+        }        
 
         /// <summary>
         ///     <para>
@@ -825,84 +736,7 @@ namespace Ssz.Xi.Client.Internal.Context
             }
 
             throw ex;
-        }
-
-        /// <summary>
-        ///     This method keeps the endpoints of the context alive, but only if the ResourceManagment
-        ///     endpoint is connected to the server
-        /// </summary>
-        private void KeepEndpointsAlive(DateTime nowUtc)
-        {
-            // Test the ResourceManagement state individually since its state can change as a result of any of the actions taken
-            try
-            {
-                if (!ServerContextIsClosing) // reduce the timing window by checking this again here
-                {
-                    // set to ResponsePending to prevent multiple calls from queueing up internally in WCF
-                    if (_iResourceManagement is null) throw new InvalidOperationException();
-                    _iResourceManagement.ClientKeepAlive(ContextId);
-                    // set this immediately
-                    _resourceManagementLastCallUtc = nowUtc;
-                    // only set last access if the call to the server succeeded
-                }
-            }
-            catch (FaultException<XiFault> fex)
-            {
-                // if not a server shutdown exception, notify the client of this server error
-                if (!IsServerShutdownOrNoContextServerFault(fex))
-                    _pendingContextNotificationData =
-                        new XiContextNotificationData(XiContextNotificationType.ClientKeepAliveException, null);
-            }
-            catch
-            {
-                // if not a comms exception, then the server must be down so treat it like a comms exception
-            }
-
-            /*
-            // Only check the state of the other endpoints if the ResourceManagement endpoint is open
-            if (ResourceManagementChannel is not null && ResourceManagementChannel.State == CommunicationState.Opened && _callbackEndpoint is not null)
-            {
-                using (_callbackEndpoint.SyncRoot.Enter())
-                {
-                    // if a Read Keep-Alive was sent and the response was not received or if the endpoint has timed-out, 
-                    // reset the endpoint
-                    if (!_callbackEndpoint.Disposed && _callbackEndpoint.Channel.State != CommunicationState.Opened)
-                    {
-                        ReEstablishCallbackEp();
-                    }
-                }
-            }
-
-            // and this should be handled in the same execution of this method
-            if (ResourceManagementChannel is null || ResourceManagementChannel.State != CommunicationState.Opened) ReInitiateContext();
-            */
-
-            // check to see if a callback hasn't been received during the callback rate interval
-            // Do this whether or not the ResourceManagement endpoint is open
-            if (_callbackEndpoint is not null)
-            {
-                if (!_callbackEndpoint.Disposed)
-                {
-                    DateTime callbackEndpointLastCallUtc;
-                    lock (_callbackEndpointLastCallUtcSyncRoot)
-                    {
-                        callbackEndpointLastCallUtc = _callbackEndpointLastCallUtc;
-                    }
-                    // Use an int for timeDiffMsecs to cover the case when a just received callback came after 
-                    // timeThisLoop
-                    // Subtract 2 seconds from the time difference to provide a little buffer to accommodate 
-                    // server timer variations and network delays
-                    var timeDiffMsecs = (int) (nowUtc - callbackEndpointLastCallUtc).TotalMilliseconds;
-                    if (timeDiffMsecs >
-                        _callbackEndpoint.CallbackRate.TotalMilliseconds +
-                        _callbackEndpoint.CallbackRate.TotalMilliseconds)
-                    {
-                        _pendingContextNotificationData =
-                            new XiContextNotificationData(XiContextNotificationType.ServerKeepAliveError, null);
-                    }
-                }
-            }
-        }
+        }        
 
         #endregion
 
@@ -927,7 +761,7 @@ namespace Ssz.Xi.Client.Internal.Context
         ///     them into the preferred order of use. For example, if the client and server are on the
         ///     same machine, the netPipe endpoints will sort to the top.
         /// </summary>
-        private XiServiceMain _xiServerInfo;
+        private XiServiceMain? _xiServerInfo;
 
         /// <summary>
         ///     This property contains the client-requested keepAliveSkipCount for the subscription.
@@ -984,6 +818,8 @@ namespace Ssz.Xi.Client.Internal.Context
         /// </summary>
         private IResourceManagement? _iResourceManagement;
 
+        private XiCallbackEndpoint? _callbackEndpoint;
+
         /// <summary>
         ///     This data member is the private representation of the LocaleId interface property.
         /// </summary>
@@ -1013,12 +849,7 @@ namespace Ssz.Xi.Client.Internal.Context
         /// <summary>
         ///     The status of the server
         /// </summary>
-        private List<ServerStatus>? _serverStatusList;
-
-        /// <summary>
-        ///     This data member is the private representation of the StandardMib interface property.
-        /// </summary>
-        private StandardMib? _standardMib;
+        private List<ServerStatus>? _serverStatusList;        
 
         /// <summary>
         ///     Inidicates, when TRUE, that the context is closing or has completed closing

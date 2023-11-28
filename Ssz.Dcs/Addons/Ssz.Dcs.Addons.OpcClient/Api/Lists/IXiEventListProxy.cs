@@ -16,12 +16,7 @@ namespace Ssz.Xi.Client.Api.Lists
         /// </summary>
         object? ClientTag { get; set; }
 
-        bool EnableListUpdating(bool enableUpdating);
-
-        bool Readable { get; set; }
-        bool Writeable { get; set; }
-        bool Callbackable { get; set; }
-        bool Pollable { get; set; }
+        bool EnableListUpdating(bool enableUpdating);        
 
         /// <summary>
         ///     Throws or returns new IXiEventListItems (not null, but possibly zero-lenghth).

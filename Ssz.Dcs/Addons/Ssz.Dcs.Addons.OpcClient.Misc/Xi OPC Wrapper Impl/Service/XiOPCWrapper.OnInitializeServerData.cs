@@ -410,25 +410,7 @@ namespace Xi.OPC.Wrapper.Impl
 			// e.g.
 			//	_StandardMib.MethodsSupported |= (ulong)XiMethods.IRead_ReadJournalDataAtSpecificTimes;
 			//	_StandardMib.FeaturesSupported |= (ulong)XiFeatures.CustomDataType_Feature;
-		}
-
-		/// <summary>
-		/// This override adds the server-specific methods and features to the 
-		/// standard methods and features required by the server types supported 
-		/// by the server. 
-		/// interface method.
-		/// </summary>
-		/// <param name="context">
-		/// The context identifier.
-		/// </param>
-		protected override void OnSetVendorMib(ContextImpl context)
-		{
-			// TODO:  If the server supports Vendor Specific MIB elements:
-			//        1)  Put their definition in the MIB, 
-			//        2)  Create a Vendor MIB List object,
-			//        3)  Create an entry for each Vendor Specific MIB element,
-			//        4)  Add each entry to the VendorMib list.
-		}
+		}		
 
 		/// <summary>
 		/// This override gets the locale ids supported by a single server type of the server. 

@@ -636,7 +636,8 @@ namespace Ssz.Dcs.Addons.OpcClient
             
             _xiDataListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher,
                 XiDataListItemsManagerOnElementValuesCallback, Options.ElementValueListCallbackIsEnabled, cancellationToken);
-            _xiEventListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher, true, cancellationToken);
+            if (!String.IsNullOrEmpty(ContextParams.TryGetValue(OpcClientAddon.OpcAe_ProgId_OptionName)))
+                _xiEventListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher, true, cancellationToken);
 
             if (!IsInitialized || cancellationToken.IsCancellationRequested) 
                 return;

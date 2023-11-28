@@ -112,17 +112,19 @@ namespace Xi.OPC.Wrapper.Impl
 			return OnStartDataServer(contextParams, 0, 0);
 		}
 
-		/// <summary>
-		/// This method starts the Xi server and attempts to connect to the wrapped COM servers
-		/// </summary>
-		/// <param name="xiInitiateDelay">Time to wait before attempting to connect to the 
-		/// Xi server.  This allows the startup to wait for external conditions, such as the 
-		/// startup of the COM servers to take place.</param>
-		/// <param name="numCOMserverRetries">The number of times the startup will retry to connect 
-		/// to each wrapped COM server. The value of 0 indicates that only the initial attempt 
-		/// will be made.</param>
-		/// <returns>Returns true if the startup succeeded. Otherwise false.</returns>
-		public bool OnStartDataServer(Ssz.Utils.CaseInsensitiveDictionary<string> contextParams, int xiInitiateDelay, int numCOMserverRetries)
+		public XiOPCWrapper Server { get; private set; }
+
+        /// <summary>
+        /// This method starts the Xi server and attempts to connect to the wrapped COM servers
+        /// </summary>
+        /// <param name="xiInitiateDelay">Time to wait before attempting to connect to the 
+        /// Xi server.  This allows the startup to wait for external conditions, such as the 
+        /// startup of the COM servers to take place.</param>
+        /// <param name="numCOMserverRetries">The number of times the startup will retry to connect 
+        /// to each wrapped COM server. The value of 0 indicates that only the initial attempt 
+        /// will be made.</param>
+        /// <returns>Returns true if the startup succeeded. Otherwise false.</returns>
+        public bool OnStartDataServer(Ssz.Utils.CaseInsensitiveDictionary<string> contextParams, int xiInitiateDelay, int numCOMserverRetries)
 		{
 			_xiInitiateDelay = xiInitiateDelay;
 			_numCOMserverRetries = numCOMserverRetries;
@@ -137,34 +139,9 @@ namespace Xi.OPC.Wrapper.Impl
             ContextManager.StartContextMonitor();
 
 			XiOPCWrapper.Start();
-			Collection<ServiceEndpoint> serverDiscoveryEPs = XiOPCWrapper.ServiceHost.Description.
-				Endpoints.FindAll(typeof(Xi.Contracts.IServerDiscovery));
-			string url = ServerRoot.ReplaceLocalhostInURLwithHostname(serverDiscoveryEPs[0].ListenUri.AbsoluteUri);
+			Server = new XiOPCWrapper();
 
-			// TODO: Replace "OPC .NET" with the name of the server in the discovery url message below 
-			WriteLine("OPC .NET Server Discovery URL:  " + url);
-
-			Collection<ServiceEndpoint> mexEndpoints = XiOPCWrapper.ServiceHost.Description.
-				Endpoints.FindAll(typeof(IMetadataExchange));
-			url = ServerRoot.ReplaceLocalhostInURLwithHostname(mexEndpoints[0].ListenUri.AbsoluteUri);
-			ConsoleWriteLine("MEX URL:  " + url);
-
-			System.Threading.Thread loadMexThread
-				= new System.Threading.Thread(LoadMexEndpoints) { Name = "Xi Load Mex Thread", IsBackground = true };
-			loadMexThread.Start();
-            
-			System.Threading.Thread loadInitiateThread
-				= new System.Threading.Thread(ConnectToServerToInitializeServerData) { Name = "Xi Load Initiate Thread", IsBackground = true };
-			loadInitiateThread.Start();
-
-			ServerRoot.PnrpMeshName = PnrpMeshNames.XiServerMesh;
-			System.Threading.Thread pnrpThread
-				= new System.Threading.Thread(XiOPCWrapper.RegisterPNRP) { Name = "Xi PNRP Registration Thread", IsBackground = true };
-			pnrpThread.Start();
-	
-			// TODO: Replace "OPC .NET" with the name of the server in the startup successful message below 
-			WriteLine("OPC .NET Server Started");
-			return true;
+            return true;
 		}        
 
         /// <summary>
@@ -179,8 +156,7 @@ namespace Xi.OPC.Wrapper.Impl
 			serverStatus.CurrentTime = DateTime.UtcNow;
 			// TODO: Replace "OPC .NET" with the name of the server in the server stopped message below 
 			ContextManager.OnShutdown(serverStatus, "OPC .NET Service Stopped");
-			ContextManager.StopContextMonitor();
-			XiOPCWrapper.Stop();
+			ContextManager.StopContextMonitor();			
 			// TODO: Replace "OPC .NET" with the name of the server in the server stopped message below 
 			WriteLine("OPC .NET Service Stopped");
 		}
@@ -244,75 +220,5 @@ namespace Xi.OPC.Wrapper.Impl
 				}
 			}
 		}
-
-		private void ConnectToServerToInitializeServerData()
-		{
-			System.Threading.Thread.Sleep(_xiInitiateDelay); // wait to give the COM servers time to start
-
-			string contextId = null;
-			IResourceManagement resourceManagement = null;
-
-			while (_numCOMserverRetries > -1)
-			{
-				_numCOMserverRetries--;
-
-				uint contextOptions = (uint)ContextOptions.NoOptions;
-				try
-				{
-					// Connect to the server to allow it to finish initialization
-					ServiceEndpoint endpoint = XiOPCWrapper.ServiceHost.Description.Endpoints.Find(typeof(IResourceManagement));
-					ChannelFactory<IResourceManagement> sdFac = new ChannelFactory<IResourceManagement>(endpoint);
-					resourceManagement = sdFac.CreateChannel();
-					uint lcid = (uint)System.Globalization.CultureInfo.CurrentCulture.LCID;
-					uint contextTimeout = 0;
-					string reInitiateKey = null;
-					XiOPCWrapper.ServerInitializing = true;
-					contextId = resourceManagement.Initiate(
-						XiOPCWrapper.ThisServerEntry.ServerDescription.ServerName, System.Environment.MachineName,
-						ref lcid, ref contextTimeout, ref contextOptions, out reInitiateKey);
-				}
-				catch //(Exception e)
-				{
-				    //Logger.Verbose(e);
-					return;
-				}
-				finally
-				{
-					if (null != resourceManagement && null != contextId)
-					{
-						try
-						{
-							resourceManagement.Conclude(contextId);
-                            // supress klocwork error reporting
-                            var channel = resourceManagement as IChannel;
-                            if (null != channel)
-                                channel.Close();
-							resourceManagement = null;
-							contextId = null;
-						}
-						catch (Exception ex)
-						{
-							// TODO: Replace "OPC .NET" with the name of the server in the server Conclude message below 
-							WriteLine("DeltaV OPC .NET Server Conclude() failed: " + ex.Message);
-							throw (ex);
-						}
-					}
-				}
-				if (   (_xiInitiateDelay == 0)
-					||
-					   (   ((contextOptions & (uint)ContextOptions.EnableDataAccess) > 0)
-						&& ((contextOptions & (uint)ContextOptions.EnableAlarmsAndEventsAccess) > 0)
-					   )
-				   )
-				{
-					break; // break out of the while loop if there is no delay or if both the DA and A&E servers started
-				}
-				else if (_xiInitiateDelay > 0) // Wait for the COM servers to start up.
-				{
-					System.Threading.Thread.Sleep(_xiInitiateDelay);
-				}
-			}
-		}
-
 	}
 }

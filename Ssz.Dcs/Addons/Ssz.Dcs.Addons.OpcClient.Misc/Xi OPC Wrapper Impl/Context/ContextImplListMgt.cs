@@ -107,16 +107,16 @@ namespace Xi.OPC.Wrapper.Impl
 			} // end Context lock
 
 			if (newOpcDaGroup)
-				listBase = new DataList(this, clientId, updateRate, bufferingRate, listType, listKey, filterSet, XiOPCWrapper.StandardMib);
+				listBase = new DataList(this, clientId, updateRate, bufferingRate, listType, listKey, filterSet);
 
 			if (newOpcHdaList)
-				listBase = new DataJournalList(this, clientId, updateRate, bufferingRate, listType, listKey, filterSet, XiOPCWrapper.StandardMib);
+				listBase = new DataJournalList(this, clientId, updateRate, bufferingRate, listType, listKey, filterSet);
 
 			if (newOpcAeSubscription)
-				listBase = new EventsList(this, clientId, updateRate, bufferingRate, listType, listKey, filterSet, XiOPCWrapper.StandardMib);
+				listBase = new EventsList(this, clientId, updateRate, bufferingRate, listType, listKey, filterSet);
 
 			if (newHaeList)
-				listBase = new EventListJournal(this, clientId, updateRate, bufferingRate, listType, listKey, filterSet, XiOPCWrapper.StandardMib);
+				listBase = new EventListJournal(this, clientId, updateRate, bufferingRate, listType, listKey, filterSet);
 
 			listAttrs = AddXiList(listBase); // this method locks the Context while adding the new list to it
 			listAttrs.ResultCode = rc;

@@ -127,23 +127,7 @@ namespace Xi.Server.Base
 				}
 
 			    try
-			    {
-			        OperationContext ctx = OperationContext.Current;
-
-                    List<EndpointDefinition> listEndpointDefinitions = new List<EndpointDefinition>
-					{						
-						new EndpointDefinition() { EndpointId = nameof(IRead) },
-						new EndpointDefinition() { EndpointId = nameof(IWrite) },
-						new EndpointDefinition() { EndpointId = nameof(IPoll) },
-						new EndpointDefinition() { EndpointId = nameof(IRegisterForCallback) },
-					};                    
-
-			        // check security for this context
-			        OnValidateContextSecurity(applicationName, workstationName, ctx);
-
-			        // Get the user identity used by this server
-			        System.Security.Principal.IIdentity userIdentity = OnGetPrimaryIdentity(ctx);
-
+			    {			        
 			        // negotiate the context options for this context
 			        uint negotiatedContextOptions = NegotiateContextOptions(contextOptions);
 
@@ -151,9 +135,9 @@ namespace Xi.Server.Base
 			        uint localeId1 = localeId;
 			        TContext tContext = OnInitiate(applicationName, workstationName,
 			            ref localeId1, ref contextTimeout, negotiatedContextOptions,
-			            ctx, userIdentity, listEndpointDefinitions, out reInitiateKey);
+			            null, out reInitiateKey);
 
-			        Logger.Verbose("Context being created for {0}", tContext.Identity.Name);
+			        //Logger.Verbose("Context being created for {0}", tContext.Identity.Name);
 			        ContextManager<TContext, TList>.AddContext(tContext);
 
 			        // The StandardMib, VendorMib, and ServerDescription are initialized when the wrapper initiates its first context for a client.
@@ -163,14 +147,12 @@ namespace Xi.Server.Base
 			            InitializeServerData(tContext);
 			        }
 			        catch (FaultException<XiFault> fe)
-			        {
-			            _StandardMib = null;
+			        {			            
 			            _ServerDetails = null;
 			            throw fe;
 			        }
 			        catch (Exception ex)
-			        {
-			            _StandardMib = null;
+			        {			            
 			            _ServerDetails = null;
 			            throw (ex);
 			        }
@@ -206,24 +188,6 @@ namespace Xi.Server.Base
 		}
 
 		/// <summary>
-		/// This method is called prior to calling OnInitiate to validate security for the context.  
-		/// If any problems are found, an XiFault should be thrown to communicate them to the client.
-		/// </summary>
-		/// <param name="applicationName">The client application name to authorize.</param>
-		/// <param name="workstationName">The client workstation name to authorize</param>
-		/// <param name="ctx">The Operation Context to authorize</param>
-		protected abstract void OnValidateContextSecurity(string applicationName, string workstationName,
-			OperationContext ctx);
-
-		/// <summary>
-		/// This method is called prior to calling OnInitiate to set the Identity for the context 
-		/// appropriately for this server.
-		/// </summary>
-		/// <param name="ctx">The Operation Context that identifies the calling user.</param>
-		/// <returns>The user identity to be used for this context</returns>
-		protected abstract System.Security.Principal.IIdentity OnGetPrimaryIdentity(OperationContext ctx);
-
-		/// <summary>
 		/// This method is called prior to calling OnInitiate to set the context options for the 
 		/// context being opened.  This method is defined for the ServerBase class instead of the 
 		/// ContextBase class to ensure that it is called. The ContextBase construction is done by 
@@ -246,19 +210,8 @@ namespace Xi.Server.Base
 				requestedContextOptions |= (uint)ContextOptions.EnableJournalAlarmsAndEventsAccess;
 			}
 			// call the override for the implementation-specific support for the requested options
-			return OnNegotiateContextOptions(requestedContextOptions);
-		}
-
-		/// <summary>
-		/// This method is to be overridden by the context implementation in the 
-		/// Server Implementation project to set the context options.  
-		/// <summary>
-		/// This method is to be overridden by the context implementation in the 
-		/// Server Implementation project.
-		/// </summary>
-		/// <param name="contextOptions">The requested context options</param>
-		/// <returns>The context options negotiated for this context</returns>
-		public abstract uint OnNegotiateContextOptions(uint requestedContextOptions);
+			return requestedContextOptions;
+		}		
 
 		/// to validate the passed context information.  If any problems are found, a XiFault 
 		/// should be thrown to communicate them to the client.
@@ -274,49 +227,9 @@ namespace Xi.Server.Base
 		/// <param name="reInitiateKey"></param>
 		/// <returns>An instance of a Context Implementation</returns>
 		protected abstract TContext OnInitiate(string applicationName, string workstationName,
-			ref uint localeId, ref uint contextTimeout, uint contextOptions, OperationContext ctx,
-			System.Security.Principal.IIdentity userIdentity, List<EndpointDefinition> listEndpointDefinitions, 
+			ref uint localeId, ref uint contextTimeout, uint contextOptions, 
+			System.Security.Principal.IIdentity userIdentity, 
 			out string reInitiateKey);
-
-		/// <summary>
-		/// <para>This method is used to reinitate an existing context 
-		/// after a failure of the underlying WCF connection.  The 
-		/// server must reauthenticate the client when this method is 
-		/// called.</para> 
-		/// </summary>
-		/// <param name="existingContext">
-		/// The context identifier of the existing context to reinitate. 
-		/// </param>
-		void IResourceManagement.ReInitiate(string existingContext, ref uint contextOptions,
-			ref string reInitiateKey)
-		{
-            using (Logger.EnterMethod(existingContext))
-			{
-				Logger.Info("ReInitiate requested.");
-				try
-				{
-					// Don't validate the context here
-					// It will be validated in OnReInitiate()
-					TContext context = ContextManager<TContext, TList>.LookupContext(existingContext, false);
-					if (context == null)
-						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
-
-					bool allowDifferentClientIpAddress = ((context.NegotiatedContextOptions & (uint)ContextOptions.AllowDifferentClientIpAddress) > 0);
-					// negotiate the context options for this context
-					uint negotiatedContextOptions = NegotiateContextOptions(contextOptions);
-
-					context.OnReInitiate(allowDifferentClientIpAddress, negotiatedContextOptions, ref reInitiateKey);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
-				catch (Exception ex)
-				{
-					throw FaultHelpers.Create(ex);
-				}
-			}
-		}
 
 		/// <summary>
 		/// This method is used to close a context. When the context 
@@ -349,38 +262,7 @@ namespace Xi.Server.Base
 					throw FaultHelpers.Create(ex);
 				}
 			}
-		}
-
-		/// <summary>
-		/// This method should be invoked by a client that is not actively 
-		/// invoking other methods that use a Context LocalId to keep the 
-		/// client – server context from timing out.
-		/// </summary>
-		/// <param name="contextId"></param>
-		void IResourceManagement.ClientKeepAlive(
-			string contextId)
-		{
-            using (Logger.EnterMethod(contextId, DateTime.Now))
-			{
-				try
-				{
-					TContext context = ContextManager<TContext, TList>.LookupContext(contextId);
-					if (context != null)
-					{
-						context.OnClientKeepAlive();
-						return;
-					}
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
-				catch (Exception ex)
-				{
-					throw FaultHelpers.Create(ex);
-				}
-			}
-		}
+		}		
 
 		#endregion
 
@@ -680,240 +562,7 @@ namespace Xi.Server.Base
 					throw FaultHelpers.Create(ex);
 				}
 			}
-		}
-
-		/// <summary>
-		/// <para>This method is used to read the standard MIB.</para>  
-		/// </summary>
-		/// <param name="contextId">
-		/// The context identifier.
-		/// </param>
-		/// <returns>
-		/// The standard MIB is returned.
-		/// </returns>
-		StandardMib IResourceManagement.GetStandardMib(
-			string contextId)
-		{
-			using (Logger.EnterMethod(contextId))
-			{
-				try
-				{
-					TContext context = ContextManager<TContext, TList>.LookupContext(contextId);
-					if (context == null)
-						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
-
-					return context.OnGetStandardMib();
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
-				catch (Exception ex)
-				{
-					throw FaultHelpers.Create(ex);
-				}
-			}
-		}
-
-		/// <summary>
-		/// <para>This method is used to read the vendor-specific MIB objects.</para>  
-		/// </summary>
-		/// <param name="contextId">
-		/// The context identifier.
-		/// </param>
-		/// <param name="vendorMibInstanceIds">
-		/// The list of identifiers for the vendor MIB objects to be returned.
-		/// </param>
-		/// <returns>
-		/// The requested vendor-specific MIB objects.
-		/// </returns>
-		DataValueArrays IResourceManagement.GetVendorMib(
-			string contextId, List<InstanceId> vendorMibInstanceId)
-		{
-            using (Logger.EnterMethod(contextId))
-			{
-				try
-				{
-					TContext context = ContextManager<TContext, TList>.LookupContext(contextId);
-					if (context == null)
-						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
-
-					return context.OnGetVendorMib(vendorMibInstanceId);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
-				catch (Exception ex)
-				{
-					throw FaultHelpers.Create(ex);
-				}
-			}
-		}
-
-		#endregion
-
-		#region Endpoint Management
-
-		/// <summary>
-		/// <para>This method opens an endpoint that can be used to 
-		/// access one or more lists.  Each newly opened endpoint is 
-		/// assigned its own unique identifier.  </para>
-		/// </summary>
-		/// <param name="contextId">
-		/// The context identifier.
-		/// </param>
-		/// <param name="contractType">
-		/// <para>The type of the endpoint as specified by the interface that it 
-		/// supports.  IResourceManagement and IServerDiscovery cannot be created.</para>
-		/// <para>The values are defined using the typeof(IXXX).Name property, where IXXX is 
-		/// the contract name (e.g. IRead).  This value is also used as the value of the 
-		/// following property: </para>
-		/// <para> System.ServiceModel.Description.ServiceEndpoint.Contract.Name  </para>
-		/// </param>
-		/// <param name="endpointUrl">
-		/// The URL of the endpoint as defined by System.ServiceModel.Description.ServiceEndpoint.Address.Uri.OriginalString.
-		/// </param>
-		/// <returns>
-		/// The definition of the endpoint.
-		/// </returns>
-		EndpointDefinition IResourceManagement.OpenEndpoint(
-			string contextId, string contractType, string endpointUrl)
-		{
-			using (Logger.EnterMethod(contextId, contractType, endpointUrl))
-			{
-				try
-				{
-					TContext context = ContextManager<TContext, TList>.LookupContext(contextId);
-					if (context == null)
-						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
-					return context.OnOpenEndpoint(contractType, endpointUrl);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
-				catch (Exception ex)
-				{
-					throw FaultHelpers.Create(ex);
-				}
-			}
-		}
-
-		/// <summary>
-		/// This method adds a list to an endpoint.
-		/// </summary>
-		/// <param name="contextId">
-		/// The context identifier.
-		/// </param>
-		/// <param name="endpointId">
-		/// A string value that uniquely identifies the endpoint 
-		/// to which the list is to be added.
-		/// </param>
-		/// <param name="serverListId">
-		/// The identifier of the list to add to the endpoint.
-		/// </param>
-		/// <returns>
-		/// The list identifier and result code for the list whose 
-		/// add failed. Returns null if the add succeeded.  Throws 
-		/// a fault if the specified context could not be found.
-		/// </returns>
-		AliasResult IResourceManagement.AddListToEndpoint(
-			string contextId, string endpointId, uint serverListId)
-		{
-            using (Logger.EnterMethod(contextId, endpointId))
-			{
-				try
-				{
-					TContext context = ContextManager<TContext, TList>.LookupContext(contextId);
-					if (context == null)
-						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
-					return context.OnAddListToEndpoint(endpointId, serverListId);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
-				catch (Exception ex)
-				{
-					throw FaultHelpers.Create(ex);
-				}
-			}
-		}
-
-		/// <summary>
-		/// This method removes one or more lists from an endpoint.
-		/// </summary>
-		/// <param name="contextId">
-		/// The context identifier.
-		/// </param>
-		/// <param name="endpointId">
-		/// A string value that uniquely identifies the endpoint 
-		/// from which the list is to be removed.
-		/// </param>
-		/// <param name="listIds">
-		/// The identifiers of the lists to remove from the endpoint.
-		/// </param>
-		/// <returns>
-		/// The list identifiers and result codes for the lists whose 
-		/// removal failed. Returns null if all removals succeeded.  
-		/// </returns>
-		List<AliasResult> IResourceManagement.RemoveListsFromEndpoint(
-			string contextId, string endpointId, List<uint> listIds)
-		{
-            using (Logger.EnterMethod(contextId, endpointId))
-			{
-				try
-				{
-					TContext context = ContextManager<TContext, TList>.LookupContext(contextId);
-					if (context == null)
-						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
-					return context.OnRemoveListsFromEndpoint(endpointId, listIds);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
-				catch (Exception ex)
-				{
-					throw FaultHelpers.Create(ex);
-				}
-			}
-		}
-
-		/// <summary>
-		/// This method closes an endpoint.
-		/// </summary>
-		/// <param name="contextId">
-		/// The context identifier.
-		/// </param>
-		/// <param name="endpointId">
-		/// The endpoint LocalId of the endpoint to be deleted.
-		/// </param>
-		void IResourceManagement.CloseEndpoint(
-			string contextId, string endpointId)
-		{
-            using (Logger.EnterMethod(contextId, endpointId))
-			{
-				try
-				{
-					TContext context = ContextManager<TContext, TList>.LookupContext(contextId);
-					if (context == null)
-						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
-
-					context.OnCloseEndpoint(endpointId);
-					return;
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
-				catch (Exception ex)
-				{
-					throw FaultHelpers.Create(ex);
-				}
-			}
-		}
+		}		
 
 		#endregion
 

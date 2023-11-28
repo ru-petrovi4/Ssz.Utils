@@ -15,6 +15,8 @@ namespace Ssz.Xi.Client.Api
 {
     public class XiDataListItemsManager : XiListItemsManager<IXiDataListItem, IXiDataListProxy>
     {
+        private bool _callbackable;
+
         #region public functions
 
         /// <summary>
@@ -29,6 +31,8 @@ namespace Ssz.Xi.Client.Api
         public void Subscribe(XiServerProxy xiServerProxy, IDispatcher? сallbackDoer,
             ElementValuesCallbackEventHandler elementValuesCallbackEventHandler, bool callbackable, CancellationToken ct)
         {
+            _callbackable = callbackable;
+
             try
             {
                 if (ct.IsCancellationRequested) return;                
@@ -94,38 +98,7 @@ namespace Ssz.Xi.Client.Api
                                         {
                                         }
                                     }
-                                };
-                            if (callbackable)
-                            {
-                                try
-                                {
-                                    XiList.Callbackable = true;
-                                }
-                                catch
-                                {
-                                }                                
-                            }
-                            try
-                            {
-                                XiList.Pollable = true;
-                            }
-                            catch
-                            {
-                            }                            
-                            try
-                            {
-                                XiList.Readable = true;
-                            }
-                            catch
-                            {
-                            }                            
-                            try
-                            {
-                                XiList.Writeable = true;
-                            }
-                            catch
-                            {
-                            }                            
+                                };                                                      
 
                             XiList.EnableListUpdating(true);
                         }
@@ -203,30 +176,30 @@ namespace Ssz.Xi.Client.Api
         public object[]? PollChanges()
         {
             if (XiList is null || XiList.Disposed) return null;
-            if (XiList.Pollable)
-            {
-                try
-                {
-                    var changedClientObjs = new List<object>();
-                    IXiDataListItem[] changedXiDataListItems = XiList.PollDataChanges();
-                    foreach (IXiDataListItem xiDataListItem in changedXiDataListItems)
-                    {
-                        var o = xiDataListItem.Obj as XiListItemWrapper;
-                        if (o is null) throw new InvalidOperationException();
-                        foreach (var modelItem in o.ClientObjectInfosCollection)
-                        {                            
-                            if (modelItem.ClientObj is not null)
-                            {
-                                changedClientObjs.Add(modelItem.ClientObj);                                
-                            }
-                        }                        
-                    }
-                    return changedClientObjs.ToArray();
-                }
-                catch
-                {   
-                }
-            }
+            //if (XiList.Pollable)
+            //{
+            //    try
+            //    {
+            //        var changedClientObjs = new List<object>();
+            //        IXiDataListItem[] changedXiDataListItems = XiList.PollDataChanges();
+            //        foreach (IXiDataListItem xiDataListItem in changedXiDataListItems)
+            //        {
+            //            var o = xiDataListItem.Obj as XiListItemWrapper;
+            //            if (o is null) throw new InvalidOperationException();
+            //            foreach (var modelItem in o.ClientObjectInfosCollection)
+            //            {                            
+            //                if (modelItem.ClientObj is not null)
+            //                {
+            //                    changedClientObjs.Add(modelItem.ClientObj);                                
+            //                }
+            //            }                        
+            //        }
+            //        return changedClientObjs.ToArray();
+            //    }
+            //    catch
+            //    {   
+            //    }
+            //}
             return null;
         }
 
@@ -237,16 +210,16 @@ namespace Ssz.Xi.Client.Api
         public void PollChangesIfNotCallbackable()
         {
             if (XiList is null || XiList.Disposed) return;
-            if (XiList.Pollable && !XiList.Callbackable)
-            {
-                try
-                {
-                    XiList.PollDataChanges();                    
-                }
-                catch
-                {                    
-                }
-            }            
+            //if (XiList.Pollable && !XiList.Callbackable)
+            //{
+            //    try
+            //    {
+            //        XiList.PollDataChanges();                    
+            //    }
+            //    catch
+            //    {                    
+            //    }
+            //}            
         }
 
         /// <summary>

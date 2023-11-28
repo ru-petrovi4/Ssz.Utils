@@ -46,14 +46,14 @@ namespace Xi.Server.Base
 		/// <param name="listType"></param>
 		/// <param name="listKey"></param>
 		public ListRoot(ContextBase<ListRoot> context, uint clientId, uint updateRate, uint bufferingRate,
-						uint listType, uint listKey, StandardMib mib)
+						uint listType, uint listKey)
 		{
 			_context = context;
 			_serverId = listKey;
 			_clientId = clientId;
 			_listType = listType;
 			UpdateRate = updateRate; // to be negotiated later
-			BufferingRate = NegotiateBufferingRate(mib, bufferingRate);
+			BufferingRate = NegotiateBufferingRate(bufferingRate);
 		}
 
 		/// <summary>
@@ -259,18 +259,12 @@ namespace Xi.Server.Base
 		/// <summary>
 		/// Use this property to determine if this list may be polled for data values.
 		/// </summary>
-		public bool PollingActivated { get { return (null != _iPollEndpointEntry); } }
+		public bool PollingActivated { get { return false; } }
 
 		/// <summary>
 		/// Use this property to determine if this list is activily reporting data value changes
 		/// </summary>
-		public bool CallbackActivated { get { return (null != _iRegisterForCallbackEndpointEntry); } }
-
-		protected EndpointEntry<ListRoot> _iReadEndpointEntry = null;
-		protected EndpointEntry<ListRoot> _iPollEndpointEntry = null;
-		protected EndpointEntry<ListRoot> _iRestReadEndpointEntry = null;
-		protected EndpointEntry<ListRoot> _iWriteEndpointEntry = null;
-		protected EndpointEntry<ListRoot> _iRegisterForCallbackEndpointEntry = null;
+		public bool CallbackActivated { get { return true; } }		
 
 		/// <summary>
 		/// This queue contains the values {always a subclass of Value Root}
@@ -404,155 +398,23 @@ namespace Xi.Server.Base
 			}
 		}
 
-		// ********************************************************************************
-		#region Endpoint Management
-
-		public virtual AliasResult OnAddListToEndpoint(EndpointEntry<ListRoot> endpointEntry)
-		{
-			lock (_ListTransactionLock)
-			{
-				bool okayToAddToEndpoint = false;
-				if (endpointEntry.EndpointDefinition.ContractType == typeof(IRead).Name)
-				{
-					if (null == _iReadEndpointEntry)
-					{
-						okayToAddToEndpoint = true;
-						_iReadEndpointEntry = endpointEntry;
-					}
-				}
-				else if (endpointEntry.EndpointDefinition.ContractType == typeof(IWrite).Name)
-				{
-					if (null == _iWriteEndpointEntry)
-					{
-						okayToAddToEndpoint = true;
-						_iWriteEndpointEntry = endpointEntry;
-					}
-				}
-				else if (endpointEntry.EndpointDefinition.ContractType == typeof(IPoll).Name)
-				{
-					if (null == _iPollEndpointEntry && null == _iRegisterForCallbackEndpointEntry)
-					{
-						okayToAddToEndpoint = true;
-						_iPollEndpointEntry = endpointEntry;
-					}
-				}
-				else if (endpointEntry.EndpointDefinition.ContractType == typeof(IRegisterForCallback).Name)
-				{
-					if (null == _iRegisterForCallbackEndpointEntry && null == _iPollEndpointEntry)
-					{
-						okayToAddToEndpoint = true;
-						_iRegisterForCallbackEndpointEntry = endpointEntry;
-					}
-				}
-				else if (endpointEntry.EndpointDefinition.ContractType == typeof(IRestRead).Name)
-				{
-					if (null == _iRestReadEndpointEntry)
-					{
-						okayToAddToEndpoint = true;
-						_iRestReadEndpointEntry = endpointEntry;
-					}
-				}
-				if (okayToAddToEndpoint)
-				{
-					endpointEntry.OnAddListToEndpoint(this);
-					return null; // return null if the add succeeded
-				}
-				return new AliasResult(XiFaultCodes.E_ENDPOINTERROR, this.ClientId, this.ServerId);
-			}
-		}
-
-		/// <summary>
-		/// Removes this list from the specified endpoint
-		/// </summary>
-		/// <param name="endpointEntry">The specified endpoint</param>
-		/// <returns>Returns null if successful, otherwise, the reason for failure is returned.</returns>
-		public virtual AliasResult OnRemoveListFromEndpoint(EndpointEntry<ListRoot> endpointEntry)
-		{
-			lock (_ListTransactionLock)
-			{
-				bool okayToRemoveFromEndpoint = RemoveEndpointReference(endpointEntry);
-				if (okayToRemoveFromEndpoint)
-				{
-					endpointEntry.OnRemoveListFromEndpoint(this);
-					return null;  // return null if the removal succeeded
-				}
-				return new AliasResult(XiFaultCodes.E_ENDPOINTERROR, this.ClientId, this.ServerId);
-			}
-		}
-
-		public virtual bool RemoveEndpointReference(EndpointEntry<ListRoot> endpointEntry)
-		{
-			bool okayToRemoveFromEndpoint = false;
-			if (endpointEntry.EndpointDefinition.ContractType == typeof(IRead).Name)
-			{
-				if (null != _iReadEndpointEntry)
-				{
-					okayToRemoveFromEndpoint = true;
-					_iReadEndpointEntry = null;
-				}
-			}
-			else if (endpointEntry.EndpointDefinition.ContractType == typeof(IRegisterForCallback).Name)
-			{
-				if (null != _iRegisterForCallbackEndpointEntry)
-				{
-					okayToRemoveFromEndpoint = true;
-					_iRegisterForCallbackEndpointEntry = null;
-				}
-			}
-			else if (endpointEntry.EndpointDefinition.ContractType == typeof(IWrite).Name)
-			{
-				if (null != _iWriteEndpointEntry)
-				{
-					okayToRemoveFromEndpoint = true;
-					_iWriteEndpointEntry = null;
-				}
-			}
-			else if (endpointEntry.EndpointDefinition.ContractType == typeof(IPoll).Name)
-			{
-				if (null != _iPollEndpointEntry)
-				{
-					okayToRemoveFromEndpoint = true;
-					_iPollEndpointEntry = null;
-				}
-			}
-			else if (endpointEntry.EndpointDefinition.ContractType == typeof(IRestRead).Name)
-			{
-				if (null != _iRestReadEndpointEntry)
-				{
-					okayToRemoveFromEndpoint = true;
-					_iRestReadEndpointEntry = null;
-				}
-			}
-			return okayToRemoveFromEndpoint;
-		}
-
 		public void AuthorizeEndpointUse(Type contractType)
 		{
-			OperationContext operationContext = OperationContext.Current;
-			EndpointEntry<ListRoot> endpointEntry = null;
+			//if (contractType == typeof(IRead))
+			//	endpointEntry = _iReadEndpointEntry;
 
-			if (contractType == typeof(IRead))
-				endpointEntry = _iReadEndpointEntry;
+			//else if (contractType == typeof(IPoll))
+			//	endpointEntry = _iPollEndpointEntry;
 
-			else if (contractType == typeof(IPoll))
-				endpointEntry = _iPollEndpointEntry;
+			//else if (contractType == typeof(IWrite))
+			//	endpointEntry = _iWriteEndpointEntry;
 
-			else if (contractType == typeof(IWrite))
-				endpointEntry = _iWriteEndpointEntry;
+			//else if (contractType == typeof(IRegisterForCallback))
+			//	endpointEntry = _iRegisterForCallbackEndpointEntry;
 
-			else if (contractType == typeof(IRegisterForCallback))
-				endpointEntry = _iRegisterForCallbackEndpointEntry;
-
-			else if (contractType == typeof(IRestRead))
-				endpointEntry = _iRestReadEndpointEntry;
-
-			if (endpointEntry != null)
-			{
-				_context.AuthorizeEndpointUse(endpointEntry);
-			}
+			//else if (contractType == typeof(IRestRead))
+			//	endpointEntry = _iRestReadEndpointEntry;
 		}
-
-		#endregion
 
 		// ********************************************************************************
 		#region List Management
@@ -603,14 +465,11 @@ namespace Xi.Server.Base
 		/// for the list.
 		/// </summary>
 		/// <returns>The negotiated buffering rate.</returns>
-		protected uint NegotiateBufferingRate(StandardMib mib, uint requestedBufferingRate)
+		protected uint NegotiateBufferingRate(uint requestedBufferingRate)
 		{
 			uint negotiatedBufferingRate = 0;
-			if ((mib.FeaturesSupported & (uint)XiFeatures.BufferingRate_Feature) > 0)
-			{
-				OnNegotiateBufferingRate(requestedBufferingRate);
-			}
-			return negotiatedBufferingRate;
+            OnNegotiateBufferingRate(requestedBufferingRate);
+            return negotiatedBufferingRate;
 		}
 
 		/// <summary>

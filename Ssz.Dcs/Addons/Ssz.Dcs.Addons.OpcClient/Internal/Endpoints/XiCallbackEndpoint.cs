@@ -10,7 +10,7 @@ namespace Ssz.Xi.Client.Internal.Endpoints
     /// <summary>
     ///     This class defines endpoints that support the Xi IRegisterForCallback and ICallback interfaces.
     /// </summary>
-    internal sealed class XiCallbackEndpoint : XiEndpointRoot
+    internal sealed class XiCallbackEndpoint: IDisposable
     {
         #region construction and destruction
 
@@ -26,12 +26,7 @@ namespace Ssz.Xi.Client.Internal.Endpoints
         /// <param name="sendTimeout"> The length of time WCF will wait for a response before throwing an exception. </param>
         /// <param name="maxItemsInObjectGraph"> The number of objects the server will serialize into a single response. </param>
         /// <param name="xiCallbackDoer"></param>
-        internal XiCallbackEndpoint(IRegisterForCallback? iRegisterForCallback, EndpointDefinition endpointDefinition,
-            TimeSpan receiveTimeout, TimeSpan sendTimeout,
-            int maxItemsInObjectGraph, IDispatcher xiCallbackDoer)
-            : base(
-                endpointDefinition, receiveTimeout, sendTimeout,
-                maxItemsInObjectGraph)
+        internal XiCallbackEndpoint(IRegisterForCallback? iRegisterForCallback, IDispatcher xiCallbackDoer)            
         {
             _xiCallbackDoer = xiCallbackDoer;
 
@@ -56,13 +51,9 @@ namespace Ssz.Xi.Client.Internal.Endpoints
         ///     </para>
         /// </param>
         /// <returns> Returns TRUE to indicate that the object has been disposed. </returns>
-        protected override void Dispose(bool disposing)
+        public void Dispose()
         {
-            if (Disposed) return;
-
             _xiCallback = null;
-
-            base.Dispose(disposing);
         }
 
         #endregion
@@ -105,7 +96,7 @@ namespace Ssz.Xi.Client.Internal.Endpoints
             _callbackRate = callbackRate;
 
             SetCallbackResult scr = _iRegisterForCallback.SetCallback(contextId, keepAliveSkipCount,
-                callbackRate);
+                callbackRate, _xiCallback);
         }
 
         /// <summary>

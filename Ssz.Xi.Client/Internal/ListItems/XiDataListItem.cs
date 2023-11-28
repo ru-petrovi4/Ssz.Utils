@@ -44,7 +44,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         {
             var any = new Any();
             any.Set(valueUInt32, ValueTypeCode, false);
-            _valueStatusTimestamp = new ValueStatusTimestamp(any, NormalizeStatusCode(statusCode), timestampUtc);           
+            _valueStatusTimestamp = new ValueStatusTimestamp(any, XiServerInfo.NormalizeStatusCode(statusCode), timestampUtc);           
             IncrementUpdateCount();
         }        
 
@@ -61,7 +61,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         {
             var any = new Any();
             any.Set(valueDouble, ValueTypeCode, false);
-            _valueStatusTimestamp = new ValueStatusTimestamp(any, NormalizeStatusCode(statusCode), timestampUtc);            
+            _valueStatusTimestamp = new ValueStatusTimestamp(any, XiServerInfo.NormalizeStatusCode(statusCode), timestampUtc);            
             IncrementUpdateCount();
         }
 
@@ -77,7 +77,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         public void UpdateValue(object? valueObject, uint statusCode, DateTime timestampUtc)
         {
             var any = new Any(valueObject);            
-            _valueStatusTimestamp = new ValueStatusTimestamp(any, NormalizeStatusCode(statusCode), timestampUtc);            
+            _valueStatusTimestamp = new ValueStatusTimestamp(any, XiServerInfo.NormalizeStatusCode(statusCode), timestampUtc);            
             IncrementUpdateCount();
         }
 
@@ -185,19 +185,6 @@ namespace Ssz.Xi.Client.Internal.ListItems
         ///     Marked For Read From Server
         /// </summary>
         public bool PreparedForTouch { get; private set; }
-
-        #endregion
-
-        #region private functions
-
-        private uint NormalizeStatusCode(uint statusCode)
-        {
-            return StatusCodes.Good;
-            //if ((XiStatusCode.StatusBits(statusCode) & (byte)XiStatusCodeStatusBits.GoodNonSpecific) != 0)
-            //    return StatusCodes.Good;
-            //else
-            //    return StatusCodes.Bad;
-        }
 
         #endregion        
 

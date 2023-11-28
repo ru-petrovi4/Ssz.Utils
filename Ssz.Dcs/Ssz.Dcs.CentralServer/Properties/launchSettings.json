@@ -2,10 +2,11 @@
   "profiles": {
     "Ssz.Dcs.CentralServer": {
       "commandName": "Project",
-      "externalUrlConfiguration": true,	  
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "externalUrlConfiguration": true,
+      "nativeDebugging": true
     }
   }
 }
