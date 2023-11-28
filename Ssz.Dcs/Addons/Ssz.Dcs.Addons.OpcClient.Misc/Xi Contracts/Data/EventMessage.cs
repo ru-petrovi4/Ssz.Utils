@@ -133,6 +133,10 @@ namespace Xi.Contracts.Data
 		/// </summary>
 		[DataMember] public List<object> ClientRequestedFields;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
         public Ssz.Utils.DataAccess.EventMessage ToEventMessage()
         {
             var eventInfo = new Ssz.Utils.DataAccess.EventMessage(EventId != null ? EventId.ToEventId() : new Ssz.Utils.DataAccess.EventId());

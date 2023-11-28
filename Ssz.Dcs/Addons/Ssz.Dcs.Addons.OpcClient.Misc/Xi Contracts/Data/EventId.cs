@@ -30,11 +30,18 @@ namespace Xi.Contracts.Data
 	{
         #region Data Members
 
+        /// <summary>
+        /// 
+        /// </summary>
         public EventId()
         {
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventId"></param>
         public EventId(Ssz.Utils.DataAccess.EventId eventId)
         {
             SourceId = new InstanceId("", "", eventId.SourceElementId);
@@ -92,6 +99,10 @@ namespace Xi.Contracts.Data
 		/// </summary>
 		[DataMember] public Nullable<DateTime> TimeLastActive;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public Ssz.Utils.DataAccess.EventId ToEventId()
         {
             var eventId = new Ssz.Utils.DataAccess.EventId();

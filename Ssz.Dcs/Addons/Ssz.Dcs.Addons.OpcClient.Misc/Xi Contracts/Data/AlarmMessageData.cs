@@ -55,6 +55,10 @@ namespace Xi.Contracts.Data
 		/// </summary>
 		[DataMember] public Nullable<DateTime> TimeLastActive;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
         public Ssz.Utils.DataAccess.AlarmMessageData ToAlarmMessageData()
         {
             var alarmMessageData = new Ssz.Utils.DataAccess.AlarmMessageData();

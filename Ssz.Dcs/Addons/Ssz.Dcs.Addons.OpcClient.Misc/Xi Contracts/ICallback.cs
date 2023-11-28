@@ -143,38 +143,39 @@ namespace Xi.Contracts
 	[ServiceContract(Namespace = "urn:xi/contracts", CallbackContract = typeof(ICallback))]
 	public interface IRegisterForCallback
 	{
-		/// <summary>
-		/// This method is invoked to allow the client to set or change the 
-		/// keepAliveSkipCount and callbackRate. The first time this method is 
-		/// invoked the server obtains the callback interface from the client.  
-		/// Therefore, this method must be called at least once for each 
-		/// callback endpoint to enable the server to make the callbacks.
-		/// </summary>
-		/// <param name="contextId">
-		/// The context identifier.
-		/// </param>
-		/// <param name="keepAliveSkipCount">
-		/// The client-requested keepAliveSkipCount for lists that the server may negotiate 
-		/// up or down. The keepAliveSkipCount indicates the number of consecutive 
-		/// UpdateRate cycles for a list that occur with nothing to send before an empty 
-		/// callback is sent to indicate a keep-alive message. For example, if the value 
-		/// of this parameter is 1, then a keep-alive callback will be sent each UpdateRate 
-		/// cycle for each list assigned to the callback for which there is nothing to send. 
-		/// A value of 0 indicates that keep-alives are not to be sent for any list assigned 
-		/// to the callback.
-		/// </param>
-		/// <param name="callbackRate">
-		/// <para>The callback rate indicates the maximum time between callbacks that are sent 
-		/// to the client. The server may negotiate this value up or down, but a null value or 
-		/// a value representing 0 time is not valid.  </para>
-		/// <para>If there are no callbacks to be sent containing data or events for this period 
-		/// of time, an empty callback will be sent as a keep-alive.  The timer for this 
-		/// time-interval starts when the SetCallback() response is returned by the server.  </para>
-		/// </param>
-		/// <returns>
-		/// The results of the operation, including the negotiated keep-alive skip count and callback rate.
-		/// </returns>
-		[OperationContract]
+        /// <summary>
+        /// This method is invoked to allow the client to set or change the 
+        /// keepAliveSkipCount and callbackRate. The first time this method is 
+        /// invoked the server obtains the callback interface from the client.  
+        /// Therefore, this method must be called at least once for each 
+        /// callback endpoint to enable the server to make the callbacks.
+        /// </summary>
+        /// <param name="contextId">
+        /// The context identifier.
+        /// </param>
+        /// <param name="keepAliveSkipCount">
+        /// The client-requested keepAliveSkipCount for lists that the server may negotiate 
+        /// up or down. The keepAliveSkipCount indicates the number of consecutive 
+        /// UpdateRate cycles for a list that occur with nothing to send before an empty 
+        /// callback is sent to indicate a keep-alive message. For example, if the value 
+        /// of this parameter is 1, then a keep-alive callback will be sent each UpdateRate 
+        /// cycle for each list assigned to the callback for which there is nothing to send. 
+        /// A value of 0 indicates that keep-alives are not to be sent for any list assigned 
+        /// to the callback.
+        /// </param>
+        /// <param name="callbackRate">
+        /// <para>The callback rate indicates the maximum time between callbacks that are sent 
+        /// to the client. The server may negotiate this value up or down, but a null value or 
+        /// a value representing 0 time is not valid.  </para>
+        /// <para>If there are no callbacks to be sent containing data or events for this period 
+        /// of time, an empty callback will be sent as a keep-alive.  The timer for this 
+        /// time-interval starts when the SetCallback() response is returned by the server.  </para>
+        /// </param>
+        /// <param name="iCallBack"></param>
+        /// <returns>
+        /// The results of the operation, including the negotiated keep-alive skip count and callback rate.
+        /// </returns>
+        [OperationContract]
 		SetCallbackResult SetCallback(string contextId, uint keepAliveSkipCount, TimeSpan callbackRate, ICallback iCallBack);
 
 	}

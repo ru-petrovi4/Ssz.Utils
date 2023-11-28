@@ -70,6 +70,10 @@ namespace Xi.Contracts.Data
             LocalId = id;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="typeId"></param>
         public TypeId(Ssz.Utils.DataAccess.TypeId typeId)
         {
             SchemaType = typeId.SchemaType;
@@ -234,6 +238,10 @@ namespace Xi.Contracts.Data
             return typeIdString ?? "";
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public Ssz.Utils.DataAccess.TypeId ToTypeId()
         {
             var typeId = new Ssz.Utils.DataAccess.TypeId();
