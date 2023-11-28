@@ -3,8 +3,9 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>    
     <Nullable>enable</Nullable>
-	<LangVersion>Latest</LangVersion>
-    <BaseOutputPath>..\..\Ssz.Dcs.CentralServer\bin\</BaseOutputPath>
+	<LangVersion>Latest</LangVersion>    
+    <Platforms>AnyCPU;x86</Platforms>
+	<BaseOutputPath>..\..\Ssz.Dcs.CentralServer\bin\</BaseOutputPath>
   </PropertyGroup>
 
   <ItemGroup>

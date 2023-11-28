@@ -6,9 +6,9 @@
 	<Nullable>enable</Nullable>
 	<LangVersion>Latest</LangVersion>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
-	<NoWarn>$(NoWarn);1591</NoWarn>
-	<PlatformTarget>AnyCPU</PlatformTarget>
+	<NoWarn>$(NoWarn);1591</NoWarn>	
 	<Platforms>AnyCPU;x86</Platforms>
+	<RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
 
   <ItemGroup>
