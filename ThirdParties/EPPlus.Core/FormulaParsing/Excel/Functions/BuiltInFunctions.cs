@@ -166,7 +166,7 @@ namespace OfficeOpenXml.FormulaParsing.Excel.Functions
             Functions["column"] = new Column(){SkipArgumentEvaluation = true};
             Functions["columns"] = new Columns(){SkipArgumentEvaluation = true};
             Functions["choose"] = new Choose();
-            Functions["index"] = new RefAndLookup.Index();
+            Functions["index"] = new Index();
             Functions["indirect"] = new Indirect();
             Functions["offset"] = new Offset(){SkipArgumentEvaluation = true};
             // Date

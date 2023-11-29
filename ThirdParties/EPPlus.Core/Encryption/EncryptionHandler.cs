@@ -285,12 +285,7 @@ namespace OfficeOpenXml.Encryption
             switch (ei.HashAlgorithm)
             {
                 case eHashAlogorithm.RIPEMD160:
-#if NET5_0_OR_GREATER || NETSTANDARD2_0
-                    throw new NotSupportedException("RIPEMD-160 is banned by SDL.");
 
-#else
-                    return new HMACRIPEMD160(salt);
-#endif
                 case eHashAlogorithm.MD5:
                     return new HMACMD5(salt);
                 case eHashAlogorithm.SHA1:
@@ -654,11 +649,7 @@ namespace OfficeOpenXml.Encryption
                     return new MD5CryptoServiceProvider();
 #endif
                 case eHashAlogorithm.RIPEMD160:
-#if NET5_0_OR_GREATER || NETSTANDARD2_0
-                    throw new NotSupportedException("RIPEMD-160 is banned by SDL.");
-#else
-                    return new RIPEMD160Managed();
-#endif
+
                 case eHashAlogorithm.SHA1:
 #if NET5_0_OR_GREATER
                     return SHA1.Create();
