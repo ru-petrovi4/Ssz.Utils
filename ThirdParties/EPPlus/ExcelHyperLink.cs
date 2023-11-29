@@ -49,7 +49,7 @@ namespace OfficeOpenXml
         {
             OriginalUri = (Uri)this;
         }
-#if !Core
+#if !NET5_0_OR_GREATER
         /// <summary>
         /// A new hyperlink with the specified URI. This syntax is obsolete
         /// </summary>

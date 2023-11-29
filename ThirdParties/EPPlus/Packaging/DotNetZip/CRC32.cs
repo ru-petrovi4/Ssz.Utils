@@ -793,7 +793,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Crc
             throw new NotSupportedException();
         }
 
-#if !Core
+#if !NET5_0_OR_GREATER
         void IDisposable.Dispose()
         {
             Close();

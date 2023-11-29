@@ -236,15 +236,7 @@ Release Candidate changes
     <NeutralLanguage />
     <PackageLicenseFile>lgpl-3.0.txt</PackageLicenseFile>
   </PropertyGroup>
-  
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0'">
-    <DefineConstants>Core</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Platform)'=='AnyCPU'">
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\EPPlus.xml</DocumentationFile>
-  </PropertyGroup>
-
+	
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
@@ -260,14 +252,6 @@ Release Candidate changes
     </PackageReference>
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="readme.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="lgpl-3.0.txt">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+  </ItemGroup>  
+	
 </Project>

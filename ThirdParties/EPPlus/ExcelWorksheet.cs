@@ -1158,7 +1158,7 @@ namespace OfficeOpenXml
                 if (xr.LocalName == nodeText || xr.LocalName == altNode) return true;
             }
             while (xr.Read());
-#if !Core
+#if !NET5_0_OR_GREATER
             xr.Close();
 #endif
             return false;
