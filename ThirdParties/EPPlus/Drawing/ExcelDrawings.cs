@@ -35,7 +35,7 @@ using System.Text;
 using System.Xml;
 using System.Collections;
 using System.IO;
-using System.Drawing;
+using System.DrawingCore;
 using System.Linq;
 using OfficeOpenXml.Drawing.Chart;
 using OfficeOpenXml.Table.PivotTable;

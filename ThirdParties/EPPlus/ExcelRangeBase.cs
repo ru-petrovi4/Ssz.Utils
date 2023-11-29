@@ -39,7 +39,7 @@ using System.Threading;
 using OfficeOpenXml.FormulaParsing;
 using OfficeOpenXml.Style;
 using System.Xml;
-using System.Drawing;
+using System.DrawingCore;
 using System.Globalization;
 using System.Collections;
 using OfficeOpenXml.Table;

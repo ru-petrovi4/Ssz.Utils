@@ -37,7 +37,7 @@ using OfficeOpenXml.Utils;
 using System.Xml;
 using OfficeOpenXml.ConditionalFormatting.Contracts;
 using System.Text.RegularExpressions;
-using System.Drawing;
+using System.DrawingCore;
 
 namespace OfficeOpenXml.ConditionalFormatting
 {

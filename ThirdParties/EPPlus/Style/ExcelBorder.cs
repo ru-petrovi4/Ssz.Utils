@@ -156,7 +156,7 @@ namespace OfficeOpenXml.Style
         /// </summary>
         /// <param name="Style">The border style</param>
         /// <param name="Color">The color of the border</param>
-        public void BorderAround(ExcelBorderStyle Style, System.Drawing.Color Color)
+        public void BorderAround(ExcelBorderStyle Style, System.DrawingCore.Color Color)
         {            
             var addr=new ExcelAddress(_address);
             SetBorderAroundStyle(Style, addr);

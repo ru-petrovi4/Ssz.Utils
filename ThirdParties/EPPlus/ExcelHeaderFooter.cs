@@ -33,7 +33,7 @@
 using System;
 using System.Xml;
 using System.Text.RegularExpressions;
-using System.Drawing;
+using System.DrawingCore;
 using System.Collections.Generic;
 using OfficeOpenXml.Drawing.Vml;
 using System.IO;

@@ -33,7 +33,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
+using System.DrawingCore;
 using System.Globalization;
 using System.IO;
 using System.Security;

@@ -34,7 +34,7 @@ using System.Xml;
 using System.Linq;
 using System.Collections.Generic;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
-using draw=System.Drawing;
+using draw=System.DrawingCore;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Style.XmlAccess;
 using OfficeOpenXml.Style.Dxf;
