@@ -38,7 +38,7 @@ namespace OfficeOpenXml.Compatibility
     {
         public static bool IsPrimitive(object v)
         {
-#if NETCOREAPP            
+#if NET5_0_OR_GREATER            
             return v.GetType().GetTypeInfo().IsPrimitive;
 #else
             return v.GetType().IsPrimitive;
@@ -46,7 +46,7 @@ namespace OfficeOpenXml.Compatibility
         }
         public static bool IsSubclassOf(Type t, Type c)
         {
-#if NETCOREAPP            
+#if NET5_0_OR_GREATER            
             return t.GetTypeInfo().IsSubclassOf(c);
 #else
             return t.IsSubclassOf(c);
@@ -55,7 +55,7 @@ namespace OfficeOpenXml.Compatibility
 
         internal static bool IsGenericType(Type t)
         {
-#if NETCOREAPP            
+#if NET5_0_OR_GREATER            
             return t.GetTypeInfo().IsGenericType;
 #else
             return t.IsGenericType;
@@ -64,7 +64,7 @@ namespace OfficeOpenXml.Compatibility
         }
         public static object GetPropertyValue(object v, string name)
         {
-#if NETCOREAPP
+#if NET5_0_OR_GREATER
             return v.GetType().GetTypeInfo().GetProperty(name).GetValue(v, null);
 #else
             return v.GetType().GetProperty(name).GetValue(v, null);

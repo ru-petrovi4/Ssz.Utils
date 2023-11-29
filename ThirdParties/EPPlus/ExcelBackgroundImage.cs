@@ -88,7 +88,7 @@ namespace OfficeOpenXml
                 }
                 else
                 {
-#if NETCOREAPP
+#if NET5_0_OR_GREATER
                     var img=ImageCompat.GetImageAsByteArray(value);
 #else
                     ImageConverter ic = new ImageConverter();
@@ -147,7 +147,7 @@ namespace OfficeOpenXml
             var relID = GetXmlNodeString(BACKGROUNDPIC_PATH);
             if (relID != "")
             {
-#if NETCOREAPP
+#if NET5_0_OR_GREATER
                 var img=ImageCompat.GetImageAsByteArray(Image);
 #else
                 var ic = new ImageConverter();

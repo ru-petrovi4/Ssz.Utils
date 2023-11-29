@@ -1009,7 +1009,7 @@ namespace OfficeOpenXml
 			_worksheets = worksheets;
 		}
 
-#if NETCOREAPP
+#if NET5_0_OR_GREATER
         /// <summary>
         /// Returns the worksheet at the specified position. 
         /// </summary>

@@ -63,7 +63,7 @@ namespace OfficeOpenXml.Drawing
                 ContentType = GetContentType(f.Extension);
                 _image = Image.FromStream(Part.GetStream());
 
-#if NETCOREAPP
+#if NET5_0_OR_GREATER
                 byte[] iby = ImageCompat.GetImageAsByteArray(_image);
 #else
                 ImageConverter ic =new ImageConverter();
@@ -128,7 +128,7 @@ namespace OfficeOpenXml.Drawing
             var imagestream = new FileStream(imageFile.FullName, FileMode.Open, FileAccess.Read);
             _image = Image.FromStream(imagestream);
 
-#if NETCOREAPP
+#if NET5_0_OR_GREATER
             var img=ImageCompat.GetImageAsByteArray(_image);
 #else
             ImageConverter ic = new ImageConverter();
@@ -228,7 +228,7 @@ namespace OfficeOpenXml.Drawing
         #endregion
         private string SavePicture(Image image)
         {
-#if NETCOREAPP
+#if NET5_0_OR_GREATER
             byte[] img = ImageCompat.GetImageAsByteArray(image);
 #else
             ImageConverter ic = new ImageConverter();
