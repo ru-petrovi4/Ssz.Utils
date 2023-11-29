@@ -7,8 +7,7 @@
 	<LangVersion>Latest</LangVersion>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	<NoWarn>$(NoWarn);1591</NoWarn>	
-	<Platforms>AnyCPU;x86</Platforms>
-	<RunPostBuildEvent>Always</RunPostBuildEvent>
+	<Platforms>AnyCPU;x86</Platforms>	
   </PropertyGroup>
 
   <ItemGroup>
