@@ -22,7 +22,7 @@ namespace Ssz.Utils.Yaml
             }
             catch (YamlException e)
             {
-                throw new FormatException(String.Format(Resources.Error_YamlParseError, e.Message), e);
+                throw new FormatException(String.Format(Resources.Error_YamlParseError, e.Start.Line, e.Start.Column) + " " + e.Message);
             }
         }
     }

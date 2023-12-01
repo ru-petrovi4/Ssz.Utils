@@ -28,11 +28,11 @@ namespace Ssz.Dcs.CentralServer.Common
         /// <summary>
         ///     Throws if any errors.
         /// </summary>
-        /// <param name="recipientId"></param>
+        /// <param name="recipientPath"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <returns></returns>
-        public override Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
+        public override Task<IEnumerable<byte>> PassthroughAsync(string recipientPath, string passthroughName, byte[] dataToSend)
         {
             switch (passthroughName)
             {

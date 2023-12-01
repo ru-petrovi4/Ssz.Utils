@@ -241,11 +241,20 @@ namespace Ssz.Utils.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not parse the YAML file: {0}..
+        ///   Looks up a localized string similar to Could not parse the YAML file (Line: {0}, Col: {1})..
         /// </summary>
         public static string Error_YamlParseError {
             get {
                 return ResourceManager.GetString("Error_YamlParseError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not parse the YAML file, duplicated key: {0}..
+        /// </summary>
+        public static string Error_YamlParseError_DuplicateKey {
+            get {
+                return ResourceManager.GetString("Error_YamlParseError_DuplicateKey", resourceCulture);
             }
         }
         

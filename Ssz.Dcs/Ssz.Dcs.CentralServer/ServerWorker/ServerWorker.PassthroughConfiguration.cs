@@ -87,7 +87,7 @@ namespace Ssz.Dcs.CentralServer
             return SerializationHelper.GetOwnedData(addonStatuses);
         }
 
-        private async Task<byte[]> ReadConfigurationPassthroughAsync(ServerContext serverContext, byte[] dataToSend)
+        private async Task<byte[]> ReadConfigurationPassthroughAsync(ServerContext serverContext, string recipientPath, byte[] dataToSend)
         {
             ObservableCollection<EngineSession> engineSessions = GetEngineSessions(serverContext);
             ConfigurationFiles configurationFiles;
@@ -148,12 +148,10 @@ namespace Ssz.Dcs.CentralServer
                 }
             }
             else
-            {
-                var args = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend));
-                string? sourcePath = args[0];
-                string? pathRelativeToRootDirectory = args[1];
+            {                
+                string? pathRelativeToRootDirectory = Encoding.UTF8.GetString(dataToSend);
                           
-                if (String.IsNullOrEmpty(sourcePath))
+                if (String.IsNullOrEmpty(recipientPath))
                 {
                     configurationFiles = _addonsManager.ReadConfiguration(pathRelativeToRootDirectory);
                 }
@@ -163,15 +161,15 @@ namespace Ssz.Dcs.CentralServer
 
                     string beginSourcePath;
                     string remainingSourcePath;
-                    int i = sourcePath.IndexOf('/');
+                    int i = recipientPath.IndexOf('/');
                     if (i >= 0)
                     {
-                        beginSourcePath = sourcePath.Substring(0, i);
-                        remainingSourcePath = sourcePath.Substring(i + 1);
+                        beginSourcePath = recipientPath.Substring(0, i);
+                        remainingSourcePath = recipientPath.Substring(i + 1);
                     }
                     else
                     {
-                        beginSourcePath = sourcePath;
+                        beginSourcePath = recipientPath;
                         remainingSourcePath = @"";
                     }
                     EngineSession? engineSession = engineSessions.FirstOrDefault(es =>
@@ -182,7 +180,7 @@ namespace Ssz.Dcs.CentralServer
                     if (engineSession is not null)
                     {
                         var task = engineSession.DataAccessProvider.PassthroughAsync(remainingSourcePath, PassthroughConstants.ReadConfiguration,
-                            Encoding.UTF8.GetBytes(Ssz.Utils.CsvHelper.FormatForCsv(remainingSourcePath, pathRelativeToRootDirectory)));
+                            Encoding.UTF8.GetBytes(pathRelativeToRootDirectory));
 
                         try
                         {
@@ -217,7 +215,7 @@ namespace Ssz.Dcs.CentralServer
             return SerializationHelper.GetOwnedData(configurationFiles);
         }
 
-        private async Task WriteConfigurationPassthroughAsync(ServerContext serverContext, byte[] dataToSend)
+        private async Task WriteConfigurationPassthroughAsync(ServerContext serverContext, string recipientPath, byte[] dataToSend)
         {
             try
             {
@@ -252,6 +250,10 @@ namespace Ssz.Dcs.CentralServer
                             beginSourcePath = sourcePath;
                             remainingSourcePath = @"";
                         }
+                        foreach (var configurationFile in configurationFiles.ConfigurationFilesCollection)
+                        {
+                            configurationFile.SourcePath = remainingSourcePath;
+                        }
                         EngineSession? engineSession = engineSessions.FirstOrDefault(es =>
                             String.Equals(
                                 es.DataAccessProviderGetter_Addon.InstanceId,
@@ -259,7 +261,7 @@ namespace Ssz.Dcs.CentralServer
                                 StringComparison.InvariantCultureIgnoreCase));
                         if (engineSession is not null)
                         {
-                            tasks.Add(engineSession.DataAccessProvider.PassthroughAsync(remainingSourcePath, PassthroughConstants.WriteConfiguration,
+                            tasks.Add(engineSession.DataAccessProvider.PassthroughAsync(@"", PassthroughConstants.WriteConfiguration,
                                 SerializationHelper.GetOwnedData(configurationFiles)));
                         }
                     }

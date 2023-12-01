@@ -359,7 +359,7 @@ message PassthroughData {
 
 message PassthroughRequest {
   string context_id = 1;
-  string recipient_id = 2;
+  string recipient_path = 2;
   string passthrough_name = 3;
   PassthroughData data_to_send = 4;
 }
@@ -370,7 +370,7 @@ message PassthroughReply {
 
 message LongrunningPassthroughRequest {  
   string context_id = 1;  
-  string recipient_id = 2;
+  string recipient_path = 2;
   string passthrough_name = 3;
   PassthroughData data_to_send = 4;
 }

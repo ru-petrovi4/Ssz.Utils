@@ -168,6 +168,12 @@
   <data name="DuplicateAddonsMessage" xml:space="preserve">
     <value>Обнаружены плагины дубликаты</value>
   </data>
+  <data name="Error_YamlParseError" xml:space="preserve">
+    <value>Ошибка при чтении YAML файла (Строка: {0}, Столбец: {1}).</value>
+  </data>
+  <data name="Error_YamlParseError_DuplicateKey" xml:space="preserve">
+    <value>Ошибка при чтении YAML файла, дубликат ключа: {0}.</value>
+  </data>
   <data name="FileDoesNotExist" xml:space="preserve">
     <value>Файл не существует либо нет прав на его чтение</value>
   </data>

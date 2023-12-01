@@ -17,7 +17,7 @@ namespace Ssz.Dcs.ControlEngine
     {
         #region public functions
         
-        public override Task<byte[]> PassthroughAsync(ServerContext serverContext, string recipientId, string passthroughName, byte[] dataToSend)
+        public override Task<byte[]> PassthroughAsync(ServerContext serverContext, string recipientPath, string passthroughName, byte[] dataToSend)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace Ssz.Dcs.ControlEngine
             }
         }
 
-        public override string LongrunningPassthrough(ServerContext serverContext, string recipientId, string passthroughName, byte[] dataToSend)
+        public override string LongrunningPassthrough(ServerContext serverContext, string recipientPath, string passthroughName, byte[] dataToSend)
         {
             string jobId = Guid.NewGuid().ToString();
             try

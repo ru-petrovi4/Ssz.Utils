@@ -365,11 +365,11 @@ namespace Ssz.Xi.Client
         /// <summary>
         ///     Throws if any errors.
         /// </summary>
-        /// <param name="recipientId"></param>
+        /// <param name="recipientPath"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <returns></returns>
-        public override async Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
+        public override async Task<IEnumerable<byte>> PassthroughAsync(string recipientPath, string passthroughName, byte[] dataToSend)
         {
             // Early exception
             if (!_xiServerProxy!.ContextExists)
@@ -381,7 +381,7 @@ namespace Ssz.Xi.Client
                 try
                 {
                     if (_xiServerProxy is null) throw new InvalidOperationException();
-                    PassthroughResult? passthroughResult = _xiServerProxy.Passthrough(recipientId, passthroughName,
+                    PassthroughResult? passthroughResult = _xiServerProxy.Passthrough(recipientPath, passthroughName,
                         dataToSend);
                     if (passthroughResult is not null && passthroughResult.ResultCode == 0) // SUCCESS
                     {

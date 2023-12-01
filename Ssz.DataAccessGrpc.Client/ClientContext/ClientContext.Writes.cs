@@ -87,7 +87,7 @@ namespace Ssz.DataAccessGrpc.Client
             }
         }
 
-        public async Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
+        public async Task<IEnumerable<byte>> PassthroughAsync(string recipientPath, string passthroughName, byte[] dataToSend)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
 
@@ -103,7 +103,7 @@ namespace Ssz.DataAccessGrpc.Client
                     var request = new PassthroughRequest
                     {
                         ContextId = _serverContextId,
-                        RecipientId = recipientId,
+                        RecipientPath = recipientPath,
                         PassthroughName = passthroughName,
                         DataToSend = passthroughDataToSend
                     };                    
@@ -156,14 +156,14 @@ namespace Ssz.DataAccessGrpc.Client
         /// <summary>
         ///     Returns StatusCode
         /// </summary>
-        /// <param name="recipientId"></param>
+        /// <param name="recipientPath"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <param name="callbackAction"></param>
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public async Task<Task<uint>> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend,
+        public async Task<Task<uint>> LongrunningPassthroughAsync(string recipientPath, string passthroughName, byte[]? dataToSend,
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackAction)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
@@ -187,7 +187,7 @@ namespace Ssz.DataAccessGrpc.Client
                     var request = new ServerBase.LongrunningPassthroughRequest
                     {                        
                         ContextId = _serverContextId,
-                        RecipientId = recipientId,
+                        RecipientPath = recipientPath,
                         PassthroughName = passthroughName,
                         DataToSend = passthroughDataToSend
                     };

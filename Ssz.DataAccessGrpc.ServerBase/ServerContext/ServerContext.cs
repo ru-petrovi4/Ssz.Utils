@@ -308,7 +308,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             serverList.TouchList();
         }
 
-        internal async Task<PassthroughReply> PassthroughAsync(string recipientId, string passthroughName, PassthroughData dataToSend)
+        internal async Task<PassthroughReply> PassthroughAsync(string recipientPath, string passthroughName, PassthroughData dataToSend)
         {
             var reply = new PassthroughReply();
             var returnData = new PassthroughData();
@@ -354,7 +354,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 return reply;
             }
 
-            byte[] returnDataArray = await ServerWorker.PassthroughAsync(this, recipientId, passthroughName, dataToSendTemp.ToArray());            
+            byte[] returnDataArray = await ServerWorker.PassthroughAsync(this, recipientPath, passthroughName, dataToSendTemp.ToArray());            
             if (returnDataArray.Length > MaxLength)
             {
                 _pendingPassthroughReplyData = returnDataArray;
@@ -372,7 +372,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             return reply;
         }
 
-        internal LongrunningPassthroughReply LongrunningPassthrough(string recipientId, string passthroughName, PassthroughData dataToSend)
+        internal LongrunningPassthroughReply LongrunningPassthrough(string recipientPath, string passthroughName, PassthroughData dataToSend)
         {
             var reply = new LongrunningPassthroughReply();
 
@@ -397,7 +397,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 return reply;
             }            
             
-            reply.JobId = ServerWorker.LongrunningPassthrough(this, recipientId, passthroughName, dataToSendTemp.ToArray());            
+            reply.JobId = ServerWorker.LongrunningPassthrough(this, recipientPath, passthroughName, dataToSendTemp.ToArray());            
 
             return reply;
         }

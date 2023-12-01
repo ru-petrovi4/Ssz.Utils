@@ -124,22 +124,22 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         ///     Throws if any errors.
         /// </summary>
-        /// <param name="recipientId"></param>
+        /// <param name="recipientPath"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <returns></returns>
-        Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend);
+        Task<IEnumerable<byte>> PassthroughAsync(string recipientPath, string passthroughName, byte[] dataToSend);
 
         /// <summary>
         ///     Returns StatusCode <see cref="StatusCodes"/>
         ///     No throws.
         /// </summary>
-        /// <param name="recipientId"></param>
+        /// <param name="recipientPath"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <param name="progressCallbackAction"></param>
         /// <returns></returns>
-        Task<Task<uint>> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend, Action<LongrunningPassthroughCallback>? progressCallbackAction);
+        Task<Task<uint>> LongrunningPassthroughAsync(string recipientPath, string passthroughName, byte[] dataToSend, Action<LongrunningPassthroughCallback>? progressCallbackAction);
 
         void JournalAddItem(string elementId, object valueJournalSubscription);
 

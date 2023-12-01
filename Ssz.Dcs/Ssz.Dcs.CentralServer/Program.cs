@@ -111,6 +111,10 @@ namespace Ssz.Dcs.CentralServer
                     })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    //services.Configure<HostOptions>(hostOptions =>
+                    //{
+                    //    hostOptions.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
+                    //});
                     services.AddHostedService<MainBackgroundService>();
                 })                
                 .UseWindowsService();

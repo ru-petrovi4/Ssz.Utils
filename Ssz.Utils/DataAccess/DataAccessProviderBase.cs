@@ -243,12 +243,12 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         ///     Returns StatusCode <see cref="StatusCodes"/>
         /// </summary>
-        /// <param name="recipientId"></param>
+        /// <param name="recipientPath"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <param name="progressCallbackAction"></param>
         /// <returns></returns>
-        public virtual Task<Task<uint>> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend, Action<LongrunningPassthroughCallback>? progressCallbackAction)
+        public virtual Task<Task<uint>> LongrunningPassthroughAsync(string recipientPath, string passthroughName, byte[] dataToSend, Action<LongrunningPassthroughCallback>? progressCallbackAction)
         {            
             return Task.FromResult(Task.FromResult(StatusCodes.Good));
         }
@@ -256,11 +256,11 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         ///     Throws if any errors.
         /// </summary>
-        /// <param name="recipientId"></param>
+        /// <param name="recipientPath"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <returns></returns>
-        public virtual Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
+        public virtual Task<IEnumerable<byte>> PassthroughAsync(string recipientPath, string passthroughName, byte[] dataToSend)
         {
             return Task.FromResult<IEnumerable<byte>>(new byte[0]);
         }

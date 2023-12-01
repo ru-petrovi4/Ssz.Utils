@@ -178,7 +178,10 @@
     <value>A duplicate key '{0}' was found.</value>
   </data>
   <data name="Error_YamlParseError" xml:space="preserve">
-    <value>Could not parse the YAML file: {0}.</value>
+    <value>Could not parse the YAML file (Line: {0}, Col: {1}).</value>
+  </data>
+  <data name="Error_YamlParseError_DuplicateKey" xml:space="preserve">
+    <value>Could not parse the YAML file, duplicated key: {0}.</value>
   </data>
   <data name="FileDoesNotExist" xml:space="preserve">
     <value>File does not exist or  is not readable</value>

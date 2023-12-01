@@ -303,7 +303,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;                    
-                    return await serverContext.PassthroughAsync(request.RecipientId ?? @"", request.PassthroughName ?? @"", request.DataToSend);
+                    return await serverContext.PassthroughAsync(request.RecipientPath ?? @"", request.PassthroughName ?? @"", request.DataToSend);
                 },
                 context);
         }
@@ -314,7 +314,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
-                    return serverContext.LongrunningPassthrough(request.RecipientId ?? @"", request.PassthroughName ?? @"", request.DataToSend);
+                    return serverContext.LongrunningPassthrough(request.RecipientPath ?? @"", request.PassthroughName ?? @"", request.DataToSend);
                 },
                 context);
         }

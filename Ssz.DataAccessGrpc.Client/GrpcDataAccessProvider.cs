@@ -405,11 +405,11 @@ namespace Ssz.DataAccessGrpc.Client
         /// <summary>
         ///     Throws if any errors.
         /// </summary>
-        /// <param name="recipientId"></param>
+        /// <param name="recipientPath"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <returns></returns>
-        public override async Task<IEnumerable<byte>> PassthroughAsync(string recipientId, string passthroughName, byte[] dataToSend)
+        public override async Task<IEnumerable<byte>> PassthroughAsync(string recipientPath, string passthroughName, byte[] dataToSend)
         {
             // Early exception
             if (!_clientContextManager.ConnectionExists)
@@ -421,7 +421,7 @@ namespace Ssz.DataAccessGrpc.Client
             {                
                 try
                 {
-                    IEnumerable<byte> returnData = await _clientContextManager.PassthroughAsync(recipientId, passthroughName, dataToSend);
+                    IEnumerable<byte> returnData = await _clientContextManager.PassthroughAsync(recipientPath, passthroughName, dataToSend);
                     taskCompletionSource.SetResult(returnData);                    
                 }
                 catch (RpcException ex)
@@ -447,12 +447,12 @@ namespace Ssz.DataAccessGrpc.Client
         ///     Returns StatusCode <see cref="StatusCodes"/>
         ///     No throws.
         /// </summary>
-        /// <param name="recipientId"></param>
+        /// <param name="recipientPath"></param>
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <param name="progressCallbackAction"></param>
         /// <returns></returns>
-        public override async Task<Task<uint>> LongrunningPassthroughAsync(string recipientId, string passthroughName, byte[]? dataToSend,
+        public override async Task<Task<uint>> LongrunningPassthroughAsync(string recipientPath, string passthroughName, byte[]? dataToSend,
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? progressCallbackAction)
         {
             // Early exception
@@ -515,7 +515,7 @@ namespace Ssz.DataAccessGrpc.Client
                 Task<uint> statusCodeTask;
                 try
                 {
-                    statusCodeTask = await _clientContextManager.LongrunningPassthroughAsync(recipientId, passthroughName,
+                    statusCodeTask = await _clientContextManager.LongrunningPassthroughAsync(recipientPath, passthroughName,
                         dataToSend, callbackActionDispatched);
                 }
                 catch (RpcException ex)

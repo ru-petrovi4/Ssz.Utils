@@ -60,7 +60,7 @@ namespace Ssz.Utils.Yaml
 
             if (_data.ContainsKey(currentKey))
             {
-                throw new FormatException(String.Format(Resources.Error_YamlParseError, currentKey));
+                throw new FormatException(String.Format(Resources.Error_YamlParseError_DuplicateKey, currentKey));
             }
 
             _data[currentKey] = IsNullValue(yamlScalarNode) ? null : yamlScalarNode.Value;            
