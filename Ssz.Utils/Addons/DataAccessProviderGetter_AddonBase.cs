@@ -34,6 +34,8 @@ namespace Ssz.Utils.Addons
 
         public IDataAccessProvider? DataAccessProvider { get; protected set; }
 
+        public bool IsConfigurationPassthroughSupported { get; protected set; }
+
         /// <summary>
         ///     Creates initialized IDataAccessProvider or throws. 
         ///     Addon must be initialized.

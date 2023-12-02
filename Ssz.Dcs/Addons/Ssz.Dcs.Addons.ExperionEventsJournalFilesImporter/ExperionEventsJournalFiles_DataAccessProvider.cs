@@ -18,13 +18,14 @@ using System.Threading.Tasks;
 
 namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
 {
-    internal class ExperionEventsJournalFiles_DataAccessProvider : FromAddon_DataAccessProviderBase
+    internal class ExperionEventsJournalFiles_DataAccessProvider : DataAccessProviderBase
     {
         #region construction and destruction
 
         public ExperionEventsJournalFiles_DataAccessProvider(ExperionEventsJournalFilesImporterAddon addon, ILogger<ExperionEventsJournalFiles_DataAccessProvider> logger, IUserFriendlyLogger? userFriendlyLogger = null) :
-            base(addon, new LoggersSet(logger, userFriendlyLogger))
-        {            
+            base(new LoggersSet(logger, userFriendlyLogger))
+        {
+            Addon = addon;
         }
 
         #endregion
@@ -97,11 +98,35 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                 await _workingTask;
 
             await base.CloseAsync();
-        }        
+        }
 
-        #endregion        
+        /// <summary>
+        ///     Throws if any errors.
+        /// </summary>
+        /// <param name="recipientPath"></param>
+        /// <param name="passthroughName"></param>
+        /// <param name="dataToSend"></param>
+        /// <returns></returns>
+        public override Task<IEnumerable<byte>> PassthroughAsync(string recipientPath, string passthroughName, byte[] dataToSend)
+        {
+            switch (passthroughName)
+            {
+                case PassthroughConstants.SetAddonVariables:
+                    var nameValuesCollectionString = Encoding.UTF8.GetString(dataToSend);
+                    var nameValuesCollection = NameValueCollectionHelper.Parse(nameValuesCollectionString);
+                    Addon.CsvDb.SetData(AddonBase.VariablesCsvFileName, nameValuesCollection.Select(kvp => new string?[] { kvp.Key, kvp.Value }));
+                    Addon.CsvDb.SaveData();
+                    break;
+            }
+
+            return Task.FromResult<IEnumerable<byte>>(new byte[0]);
+        }
+
+        #endregion
 
         #region private functions
+
+        private AddonBase Addon { get; }
 
         private async Task WorkingTaskMainAsync(CancellationToken cancellationToken)
         {

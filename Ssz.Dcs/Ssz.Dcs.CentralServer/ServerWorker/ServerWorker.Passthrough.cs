@@ -110,9 +110,9 @@ namespace Ssz.Dcs.CentralServer
                     return returnData;
                 }
             }
-            catch (RpcException ex)
+            catch (RpcException)
             {
-                throw ex;
+                throw;
             }
             catch (Exception ex)
             {

@@ -100,18 +100,22 @@ namespace Ssz.Dcs.CentralServer
                 {
                     if (engineSessions.Count > 0)
                     {
-                        var tasks = new List<Task<IEnumerable<byte>>>(engineSessions.Count);
+                        var taskInfos = new List<(Task<IEnumerable<byte>>, EngineSession)>(engineSessions.Count);
 
                         foreach (EngineSession engineSession in engineSessions)
                         {
-                            Logger.LogDebug("dataAccessProvider.Passthrough passthroughName=ReadConfiguration");
-                            tasks.Add(engineSession.DataAccessProvider.PassthroughAsync(@"", PassthroughConstants.ReadConfiguration, new byte[0]));
+                            if (engineSession.DataAccessProviderGetter_Addon.IsConfigurationPassthroughSupported)
+                            {
+                                Logger.LogDebug("dataAccessProvider.Passthrough passthroughName=ReadConfiguration");
+                                taskInfos.Add((engineSession.DataAccessProvider.PassthroughAsync(@"", PassthroughConstants.ReadConfiguration, new byte[0]),
+                                    engineSession));
+                            }
                         }
 
-                        foreach (int i in Enumerable.Range(0, engineSessions.Count))
+                        foreach (var taskInfo in taskInfos)
                         {
-                            EngineSession engineSession = engineSessions[i];
-                            var task = tasks[i];
+                            var task = taskInfo.Item1;
+                            EngineSession engineSession = taskInfo.Item2;                            
                             try
                             {
                                 var replyConfigurationFiles = new ConfigurationFiles();
@@ -173,6 +177,7 @@ namespace Ssz.Dcs.CentralServer
                         remainingSourcePath = @"";
                     }
                     EngineSession? engineSession = engineSessions.FirstOrDefault(es =>
+                        es.DataAccessProviderGetter_Addon.IsConfigurationPassthroughSupported &&
                         String.Equals(
                             es.DataAccessProviderGetter_Addon.InstanceId,
                             beginSourcePath,
@@ -255,6 +260,7 @@ namespace Ssz.Dcs.CentralServer
                             configurationFile.SourcePath = remainingSourcePath;
                         }
                         EngineSession? engineSession = engineSessions.FirstOrDefault(es =>
+                            es.DataAccessProviderGetter_Addon.IsConfigurationPassthroughSupported &&
                             String.Equals(
                                 es.DataAccessProviderGetter_Addon.InstanceId,
                                 beginSourcePath,

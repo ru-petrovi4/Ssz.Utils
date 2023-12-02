@@ -48,7 +48,9 @@ namespace Ssz.Dcs.Addons.DataAccessClient
         public override void InitializeDataAccessProvider(IDispatcher callbackDispatcher)
         {
             if (!IsInitialized)
-                throw new InvalidOperationException();            
+                throw new InvalidOperationException();
+
+            IsConfigurationPassthroughSupported = true;
 
             string serverAddress = OptionsSubstitutedThreadSafe.TryGetValue(DataAccessClient_ServerAddress_OptionName) ?? @"";
             string systemNameToConnect = OptionsSubstitutedThreadSafe.TryGetValue(DataAccessClient_SystemNameToConnect_OptionName) ?? @"";
