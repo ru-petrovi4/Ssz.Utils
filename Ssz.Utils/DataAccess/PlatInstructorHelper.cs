@@ -173,11 +173,9 @@ namespace Ssz.Utils.DataAccess
 
                     if (!changed) return Task.FromResult((IEnumerable<AlarmInfoViewModelBase>?)null);
                 }
-                else
-                {
-                    alarmConditionChanged = (eventMessage.AlarmMessageData.AlarmStateChange & AlarmStateChangeCodes.Active) != 0;
-                    unackedChanged = (eventMessage.AlarmMessageData.AlarmStateChange & AlarmStateChangeCodes.Acknowledge) != 0;
-                }
+
+                alarmConditionChanged = (eventMessage.AlarmMessageData.AlarmStateChange & AlarmStateChangeCodes.Active) != 0;
+                unackedChanged = (eventMessage.AlarmMessageData.AlarmStateChange & AlarmStateChangeCodes.Acknowledge) != 0;
 
                 AlarmConditionState? conditionState;
                 if (condition != AlarmConditionType.None)
