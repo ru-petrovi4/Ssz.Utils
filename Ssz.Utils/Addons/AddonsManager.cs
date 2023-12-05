@@ -683,11 +683,11 @@ namespace Ssz.Utils.Addons
                 foreach (AddonBase availableAddon in availableAddons)
                 {
                     addonsAvailableFileData.Add(new[] {
-                    availableAddon.Identifier,
-                    availableAddon.Desc,
-                    new Any(availableAddon.IsMultiInstance).ValueAsString(false),
-                    new Any(availableAddon.IsAlwaysSwitchedOn).ValueAsString(false)
-                });
+                        availableAddon.Identifier,
+                        availableAddon.Desc,
+                        new Any(availableAddon.IsMultiInstance).ValueAsString(false),
+                        new Any(availableAddon.IsAlwaysSwitchedOn).ValueAsString(false)
+                    });
 
                     foreach (var optionsInfo in availableAddon.OptionsInfo)
                     {
