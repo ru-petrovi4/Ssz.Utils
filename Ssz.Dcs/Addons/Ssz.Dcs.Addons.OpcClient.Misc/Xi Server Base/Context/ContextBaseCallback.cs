@@ -104,12 +104,7 @@ namespace Xi.Server.Base
 		            iCallback.InformationReport(Id, listId, readValueList);
 		            _lastCallbackTime = DateTime.UtcNow;
 		        }
-		    }
-		    catch (CommunicationObjectAbortedException ex)
-		    {
-                Logger.Verbose(ex);
-                _iCallback = null;
-            }
+		    }		    
 		    catch (Exception ex)
 		    {
 		        Logger.Verbose(ex);
@@ -140,12 +135,7 @@ namespace Xi.Server.Base
 					iCallback.EventNotification(Id, listId, eventsArray);
 					_lastCallbackTime = DateTime.UtcNow;
 				}
-			}
-            catch (CommunicationObjectAbortedException ex)
-            {
-                Logger.Verbose(ex);
-                _iCallback = null;
-            }
+			}            
             catch (Exception ex)
 			{
                 Logger.Verbose(ex);

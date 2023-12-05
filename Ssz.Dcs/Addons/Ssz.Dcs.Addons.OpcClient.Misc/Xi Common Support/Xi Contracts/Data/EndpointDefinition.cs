@@ -27,15 +27,6 @@ namespace Xi.Contracts.Data
 	[DebuggerDisplay("{Url}")]
 	public class EndpointDefinition
 	{
-		#region Server Local Data Members
-
-		/// <summary>
-		/// This member is used locally by the server. It is not serialized and sent to the client.
-		/// </summary>
-		public System.ServiceModel.Description.ServiceEndpoint EndpointDescription;
-
-		#endregion // Server Local Data Members
-
 		#region Data Members
 
 		/// <summary>

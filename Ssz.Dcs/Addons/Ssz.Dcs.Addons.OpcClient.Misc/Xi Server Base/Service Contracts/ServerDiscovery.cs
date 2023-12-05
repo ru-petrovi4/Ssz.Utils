@@ -16,8 +16,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ServiceModel;
-using System.ServiceModel.Web;
 using System.IO;
 using Ssz.Utils;
 using Xi.Common.Support;
@@ -81,11 +79,7 @@ namespace Xi.Server.Base
 				try
 				{
 					return OnDiscoverServers();
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -157,11 +151,7 @@ namespace Xi.Server.Base
 					serverEntry.EndpointServerSettings                     = _ThisServerEntry.EndpointServerSettings;
 					serverEntry.ServerDescription.ServerDetails            = null; // get this through the Identify method - DiscoverServerInfo can be called without a context
 					return serverEntry;
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);

@@ -17,9 +17,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using System.ServiceModel;
-using System.ServiceModel.Channels;
-using System.ServiceModel.Description;
 using System.Diagnostics;
 using Xi.Contracts;
 using Xi.Contracts.Constants;
@@ -159,66 +156,6 @@ namespace Xi.OPC.Wrapper.Impl
 			ContextManager.StopContextMonitor();			
 			// TODO: Replace "OPC .NET" with the name of the server in the server stopped message below 
 			WriteLine("OPC .NET Service Stopped");
-		}
-
-		private void LoadMexEndpoints()
-		{
-			if (   (XiOPCWrapper.ThisServerEntry != null)
-				&& (XiOPCWrapper.ThisServerEntry.MexEndpoints != null)
-				&& (XiOPCWrapper.ThisServerEntry.MexEndpoints.Count > 0)
-			   )
-			{
-				foreach (var mexEP in XiOPCWrapper.ThisServerEntry.MexEndpoints)
-				{
-					if (!string.IsNullOrEmpty(mexEP.Url))
-					{
-						try
-						{
-							//ServiceEndpointCollection endpoints = MetadataResolver.Resolve(typeof(IResourceManagement),
-							//                    MexEndpointAddress, MetadataExchangeClientMode.MetadataExchange);
-							// ---> fails because the default buffer size is too small
-							// Alternate approach:
-
-							// Mex WsHttpBinding constructor parameter 
-							bool mexReliableEnabled = false;
-
-							WSHttpBinding mexBnd = new WSHttpBinding(SecurityMode.None, mexReliableEnabled);
-							mexBnd.MaxReceivedMessageSize = 2147483647;
-							mexBnd.ReaderQuotas.MaxArrayLength = 2147483647;
-							mexBnd.ReaderQuotas.MaxBytesPerRead = 2147483647;
-							mexBnd.ReaderQuotas.MaxDepth = 2147483647;
-							mexBnd.ReaderQuotas.MaxNameTableCharCount = 2147483647;
-							mexBnd.ReaderQuotas.MaxStringContentLength = 2147483647;
-
-							MetadataExchangeClient mexClient = new MetadataExchangeClient(mexBnd);
-
-							List<ContractDescription> contracts = new List<ContractDescription>();
-							contracts.Add(new ContractDescription("IResourceManagement", "urn:xi/contracts"));
-
-							//ServiceEndpointCollection endpoints = MetadataResolver.Resolve(contracts,
-							//                    MexEndpointAddress, MetadataExchangeClientMode.MetadataExchange, mexClient );
-							// result is empty for unknown reasons
-							// Alternate approach:
-							MetadataSet metadataSet = mexClient.GetMetadata(new EndpointAddress(mexEP.Url));
-							WsdlImporter importer = new WsdlImporter(metadataSet);
-							Collection<ContractDescription> __contractDescriptions = importer.ImportAllContracts();
-
-							//Resolve wsdl into ServiceEndpointCollection
-							UriBuilder mexUriBuilder = new UriBuilder(mexEP.Url);
-							ServiceEndpointCollection serviceEndpointCollection = MetadataResolver.Resolve(
-								__contractDescriptions, mexUriBuilder.Uri,
-								MetadataExchangeClientMode.MetadataExchange, mexClient);
-
-							break;
-						}
-						catch //(Exception e)
-						{
-						    //Logger.Verbose(e);
-						    // do nothing if this mex ep doesn't work
-						}
-					}
-				}
-			}
-		}
+		}		
 	}
 }

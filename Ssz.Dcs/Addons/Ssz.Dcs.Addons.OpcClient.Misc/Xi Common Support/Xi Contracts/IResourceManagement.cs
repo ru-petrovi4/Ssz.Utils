@@ -30,7 +30,7 @@ namespace Xi.Contracts
 	/// events, and</para> 
 	/// <para>- create read and write endpoints and add one or more lists to them. </para>
 	/// </summary>
-	[ServiceContract(Namespace = "urn:xi/contracts")]
+	//[ServiceContract(Namespace = "urn:xi/contracts")]
 	public interface IResourceManagement
 	{
 		#region Context Management
@@ -87,7 +87,7 @@ namespace Xi.Contracts
 		/// <returns>
 		/// The server generated context id.
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		string Initiate(string applicationName, string workstationName, 
 			ref uint localeId, ref uint contextTimeout, ref uint contextOptions, 
 			out string reInitiateKey);
@@ -100,7 +100,7 @@ namespace Xi.Contracts
 		/// <param name="contextId">
 		/// The context identifier of the context to close. 
 		/// </param>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		void Conclude(string contextId);		
 
 		#endregion
@@ -121,7 +121,7 @@ namespace Xi.Contracts
 		/// <returns>
 		/// The description of the server. 
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		ServerDescription Identify(string contextId);
 
 		/// <summary>
@@ -134,7 +134,7 @@ namespace Xi.Contracts
 		/// <returns>
 		/// The status of the Xi server and the status of wrapped servers. 
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<ServerStatus> Status(string contextId);
 
 		/// <summary>
@@ -151,7 +151,7 @@ namespace Xi.Contracts
 		/// the requested text descriptions. The size and order of this 
 		/// list matches the size and order of the resultCodes parameter.
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<RequestedString> LookupResultCodes(string contextId, List<uint> resultCodes);
 
 		/// <summary>
@@ -195,7 +195,7 @@ namespace Xi.Contracts
 		/// were found that meet the filter criteria, or if the call was made 
 		/// with a null findCriteria and there are no more objects to return.</para>
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<ObjectAttributes> FindObjects(string contextId, FindCriteria findCriteria, uint numberToReturn);
 
 		/// <summary>
@@ -240,7 +240,7 @@ namespace Xi.Contracts
 		/// were found that meet the filter criteria, or if the call was made 
 		/// with a null findCriteria and there are no more types to return.</para>
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<TypeAttributes> FindTypes(string contextId, FindCriteria findCriteria, uint numberToReturn);
 
 		/// <summary>
@@ -266,7 +266,7 @@ namespace Xi.Contracts
 		/// object. An exception is thrown if the specified objectPath is 
 		/// invalid.  
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<ObjectPath> FindRootPaths(string contextId, ObjectPath objectPath);
  
 		#endregion		
@@ -328,7 +328,7 @@ namespace Xi.Contracts
 		/// <returns>
 		/// The attributes created for the list.
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		ListAttributes DefineList(string contextId, uint clientId, uint listType,
 			uint updateRate, uint bufferingRate, FilterSet filterSet);
 
@@ -348,7 +348,7 @@ namespace Xi.Contracts
 		/// of this list matches the size and order of the listAliases 
 		/// parameter.  
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<ListAttributes> GetListAttributes(string contextId, List<uint> listIds);
 
 		/// <summary>
@@ -376,7 +376,7 @@ namespace Xi.Contracts
 		/// in the list contains the new client alias from the request and its 
 		/// corresponding new server alias assigned by the server.
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<AliasResult> RenewAliases(string contextId, uint listId, List<AliasUpdate> newAliases);
 
 		/// <summary>
@@ -393,7 +393,7 @@ namespace Xi.Contracts
 		/// The list identifiers and result codes for the lists whose 
 		/// deletion failed. Returns null if all deletes succeeded.  
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<AliasResult> DeleteLists(string contextId, List<uint> listIds);
 
 		/// <summary>
@@ -420,7 +420,7 @@ namespace Xi.Contracts
 		/// The list of results. The size and order of this list matches 
 		/// the size and order of the objectsToAdd parameter.   
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<AddDataObjectResult> AddDataObjectsToList(string contextId, uint listId,
 							List<ListInstanceId> dataObjectsToAdd);
 
@@ -453,7 +453,7 @@ namespace Xi.Contracts
 		/// ClientAlias in a returned AliasResult to allow the client to locate the 
 		/// entry in the submitted list of serverAliases.</para>
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<AliasResult> RemoveDataObjectsFromList(string contextId, uint listId,
 							List<uint> serverAliasesToDelete);
 
@@ -487,7 +487,7 @@ namespace Xi.Contracts
 		/// The revised update rate, buffering rate, and filter set.  Attributes 
 		/// that were not updated are set to null in this response.
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		ModifyListAttrsResult ModifyListAttributes(string contextId, uint listId,
 								Nullable<uint> updateRate, Nullable<uint> bufferingRate, FilterSet filterSet);
 
@@ -513,7 +513,7 @@ namespace Xi.Contracts
 		/// <returns>
 		/// The attributes of the list.
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		ListAttributes EnableListUpdating(string contextId, uint listId, bool enable);
 
 		/// <summary>
@@ -558,7 +558,7 @@ namespace Xi.Contracts
 		/// entry in the submitted list of serverAliases.</para>
 		/// <para>Throws an exception if the specified context or list could not be found.</para> 
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<AliasResult> EnableListElementUpdating(string contextId, uint listId,
 							bool enableUpdating, List<uint> serverAliases);
 
@@ -586,7 +586,7 @@ namespace Xi.Contracts
 		/// The ObjectTypeIds and result codes for the fields that could not be 
 		/// added to the event message. Returns null if all succeeded.  
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<TypeIdResult> AddEventMessageFields(string contextId, uint listId, uint categoryId, List<TypeId> fieldObjectTypeIds);
 
 		/// <summary>
@@ -624,7 +624,7 @@ namespace Xi.Contracts
 		/// entry in the submitted list of serverAliases.</para>
 		/// <para>Throws an exception if the specified context or list could not be found.</para> 
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<AliasResult> TouchDataObjects(string contextId, uint listId, List<uint> serverAliases);
 
 		/// <summary>
@@ -648,7 +648,7 @@ namespace Xi.Contracts
 		/// The result code for the operation.  See XiFaultCodes class for 
 		/// standardized result codes. 
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		uint TouchList(string contextId, uint listId);
 
 		#endregion
@@ -670,7 +670,7 @@ namespace Xi.Contracts
 		/// The summaries of the alarms that can be generated by the specified 
 		/// event source.  
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<AlarmSummary> GetAlarmSummary(string contextId, InstanceId eventSourceId);
 
 		/// <summary>
@@ -695,7 +695,7 @@ namespace Xi.Contracts
 		/// <returns>Null if all requested enable/disable operations succeeded. Otherwise, the list of result codes. The size and 
 		/// order of this list matches that of the eventContainerIds.  Standard result code values are defined by 
 		/// the Xi.Contracts.Constants.XiFaultCodes class. There is one result code for each eventContainerId.</returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<UInt32> EnableAlarms(string contextId, bool enableFlag, bool areaFlag, List<InstanceId> eventContainerIds);
 
 		/// <summary>
@@ -711,7 +711,7 @@ namespace Xi.Contracts
 		/// </param>
 		/// <returns>An object with the enabled state and result code for each requested InstanceId.
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<AlarmEnabledState> GetAlarmsEnabledState(string contextId, bool areaFlag, List<InstanceId> eventContainerIds);
 
 		#endregion

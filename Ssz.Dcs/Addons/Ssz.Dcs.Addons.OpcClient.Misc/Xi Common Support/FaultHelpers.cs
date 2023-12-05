@@ -34,11 +34,9 @@ namespace Xi.Common.Support
 		/// The message is from the exception passed into this method.
 		/// </summary>
 		/// <param name="ex"></param>
-		static public FaultException<XiFault> Create(Exception ex)
-		{
-			if (ex is FaultException<XiFault>)
-				return (FaultException<XiFault>)ex;
-			return new FaultException<XiFault>(new XiFault(ex.Message), ex.Message);
+		static public Exception Create(Exception ex)
+		{			
+			return ex;
 		}
 
 		/// <summary>
@@ -46,19 +44,19 @@ namespace Xi.Common.Support
 		/// where the ErrorCode will be E_XIFAULTMESSAGE.
 		/// </summary>
 		/// <param name="message">Error string</param>
-		static public FaultException<XiFault> Create(string message)
+		static public Exception Create(string message)
 		{
-			return new FaultException<XiFault>(new XiFault(message), message);
+			return new Exception(message);
 		}
 
 		/// <summary>
 		/// This throws a new FaultException with the XiFault detail
 		/// </summary>
 		/// <param name="errorCode">Error string</param>
-		static public FaultException<XiFault> Create(uint errorCode)
+		static public Exception Create(uint errorCode)
 		{
 			string text = FaultStrings.Get(errorCode);
-			return new FaultException<XiFault>(new XiFault(errorCode, text), text);
+			return new Exception(text);
 		}
 
 		/// <summary>
@@ -66,9 +64,9 @@ namespace Xi.Common.Support
 		/// </summary>
 		/// <param name="errorCode">Error code</param>
 		/// <param name="message">Error string</param>
-		static public FaultException<XiFault> Create(uint errorCode, string message)
+		static public Exception Create(uint errorCode, string message)
 		{
-			return new FaultException<XiFault>(new XiFault(errorCode, message), message);
+			return new Exception(message);
 		}
 
 		/// <summary>

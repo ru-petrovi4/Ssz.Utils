@@ -14,7 +14,7 @@
     <ProjectName>Xi.OPC.COM.Impl</ProjectName>
     <ProjectGuid>{DFFB40E3-BE18-4B82-99D3-2AA382EF418C}</ProjectGuid>
     <RootNamespace>OPCWrapper.Implementation</RootNamespace>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFramework>netcoreapp8.0</TargetFramework>
     <SccProjectName>
     </SccProjectName>
     <SccAuxPath>
@@ -31,14 +31,14 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>true</CLRSupport>
+    <CLRSupport>NetCore</CLRSupport>
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfAtl>Dynamic</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>true</CLRSupport>
+    <CLRSupport>NetCore</CLRSupport>
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -166,13 +166,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Reference Include="System.Core" />
-    <Reference Include="System.ServiceModel">
-      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="CreateInstance.cpp" />
     <ClCompile Include="dllmain.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -277,19 +270,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Xi Common Support\Xi.Common.Support.csproj">
       <Project>{55e828c6-d017-411b-8b0e-5ebb3030d79a}</Project>
-      <Private>false</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Xi Contracts Constants\Xi.Contract.Constants.csproj">
-      <Project>{49251555-aba5-4587-ba12-ff06a895a70f}</Project>
-      <Private>false</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Xi Contracts\Xi.Contracts.csproj">
-      <Project>{F92703BF-619B-4BC9-BAE0-1493160B89B9}</Project>
-      <Private>false</Private>
     </ProjectReference>
     <ProjectReference Include="..\API\Xi.OPC.COM.API.csproj">
       <Project>{339668e5-223e-485a-a026-74f3b92281a3}</Project>
-      <Private>false</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -16,7 +16,6 @@
 
 using System.Collections.Generic;
 using System.ServiceModel;
-using System.ServiceModel.Web;
 using System.IO;
 
 using Xi.Contracts.Data;
@@ -29,7 +28,7 @@ namespace Xi.Contracts
 	/// implement this interface may apply access controls to limit 
 	/// the servers a client may discover.  
 	/// </summary>
-	[ServiceContract(Namespace = "urn:xi/contracts")]
+	//[ServiceContract(Namespace = "urn:xi/contracts")]
 	public interface IServerDiscovery
 	{
 		/// <summary>
@@ -39,8 +38,8 @@ namespace Xi.Contracts
 		/// <returns>
 		/// List of server entries.
 		/// </returns>
-		//[OperationContract, WebGet]
-		[OperationContract, FaultContract(typeof(XiFault))]
+		////[OperationContract, WebGet]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<ServerEntry> DiscoverServers();
 
 		/// <summary>
@@ -52,7 +51,7 @@ namespace Xi.Contracts
 		/// <returns>
 		/// The description of the server. 
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		ServerEntry DiscoverServerInfo();				
 	}
 }

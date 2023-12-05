@@ -23,10 +23,10 @@ using Xi.Contracts.Data;
 // 1) In the App.config files for Xi ServiceHost OPCWrapper Console and Xi ServiceHost OPCWrapper WinService
 //    include the line or lines under <!--webHttpBinding Endpoints--> to enable the binding.
 // 2) In IServerDiscovery.cs include the "using System.ServiceModel.Web" and change the attributes of
-//    "List<ServerEntry> DiscoverServers()" to "[OperationContract, WebGet]"
+//    "List<ServerEntry> DiscoverServers()" to "//[OperationContract, WebGet]"
 // 3) In IRestRead.cs include the "using System.ServiceModel.Web" and change the attributes of 
 //    "DataValueArraysWithAlias RestReadData(string contextId, string listId)" to
-//    "[OperationContract, WebGet(UriTemplate = "/datalist/changes/{contextId}/{listId}")]"
+//    "//[OperationContract, WebGet(UriTemplate = "/datalist/changes/{contextId}/{listId}")]"
 // Note that all of the code to change has been commented out and simply changing the comment "//"
 // lines will allow for the uses of the web browser web get.
 
@@ -41,7 +41,7 @@ namespace Xi.Contracts
 	/// data, alarms, and events and their histories from the 
 	/// server using REST Web Services.</para>
 	/// </summary>
-	[ServiceContract(Namespace = "urn:xi/contracts")]
+	//[ServiceContract(Namespace = "urn:xi/contracts")]
 	public interface IRestRead
 	{
 		/// <summary>
@@ -58,15 +58,15 @@ namespace Xi.Contracts
 		/// The list of requested values. The size and order of this list 
 		/// matches the size and order of serverAliases parameter.
 		/// </returns>
-		//[OperationContract, WebGet(UriTemplate = "/datalist/changes/{contextId}/{listId}")]
-		[OperationContract, FaultContract(typeof(XiFault))]
+		////[OperationContract, WebGet(UriTemplate = "/datalist/changes/{contextId}/{listId}")]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		DataValueArraysWithAlias RestReadData(string contextId, string listId);
 
-		//[OperationContract, WebInvoke(UriTemplate = "/datalist/Journal/{contextId}/{listId}", Method = "POST")]
+		////[OperationContract, WebInvoke(UriTemplate = "/datalist/Journal/{contextId}/{listId}", Method = "POST")]
 		//List<HistoryReturnValues> GetJournalList(string contextId, string listId, List<Int64> timeRange,
 		//                                         List<FilterCriterion> filters, List<JournalDataId> HistoryDataToRead);
 
-		//[OperationContract, WebInvoke(UriTemplate = "/datalist/JournalEvents/{contextId}/{listId}", Method = "POST")]
+		////[OperationContract, WebInvoke(UriTemplate = "/datalist/JournalEvents/{contextId}/{listId}", Method = "POST")]
 		//List<EventMessage> GetJournalEventsList(string contextId, string listId, List<FilterCriterion> filters);
 	}
 }

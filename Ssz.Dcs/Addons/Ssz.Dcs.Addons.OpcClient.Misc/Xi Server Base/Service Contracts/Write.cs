@@ -63,11 +63,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnWriteValues(listId, writeValueArrays);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -87,11 +83,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnWriteVST(listId, writeValueArrays);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -134,11 +126,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnWriteJournalData(listId, modificationType, valuesToWrite);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -181,11 +169,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnWriteJournalEvents(listId, modificationType, eventsToWrite);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -231,11 +215,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnAcknowledgeAlarms(listId, operatorName, comment, alarmsToAck);
-				}
-                catch (FaultException<XiFault> fe)
-                {
-                    throw fe;
-                }
+				}                
                 catch (Exception ex)
                 {
                     throw FaultHelpers.Create(ex);
@@ -285,11 +265,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnPassthrough(recipientId, invokeId, passthroughName, DataToSend);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);

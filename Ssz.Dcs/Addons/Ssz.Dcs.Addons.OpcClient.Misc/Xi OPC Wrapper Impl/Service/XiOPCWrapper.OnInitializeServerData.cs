@@ -19,10 +19,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.Diagnostics;
-using System.ServiceModel;
-using System.ServiceModel.Description;
 using System.Linq;
-
 using Xi.Common.Support;
 using Xi.Contracts;
 using Xi.Contracts.Constants;
@@ -35,8 +32,8 @@ using Ssz.Utils;
 
 namespace Xi.OPC.Wrapper.Impl
 {
-	//[ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, InstanceContextMode = InstanceContextMode.PerCall)]
-	[ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.PerCall)]
+	////[ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, InstanceContextMode = InstanceContextMode.PerCall)]
+	//[ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.PerCall)]
 	public partial class XiOPCWrapper : ServerBase<ContextImpl, ListRoot>
 	{
         public static void Initialize(CaseInsensitiveDictionary<string> contextParams)

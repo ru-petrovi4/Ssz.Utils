@@ -145,16 +145,11 @@ namespace Xi.Server.Base
 			        try
 			        {
 			            InitializeServerData(tContext);
-			        }
-			        catch (FaultException<XiFault> fe)
-			        {			            
-			            _ServerDetails = null;
-			            throw fe;
-			        }
+			        }			        
 			        catch (Exception ex)
 			        {			            
 			            _ServerDetails = null;
-			            throw (ex);
+			            throw;
 			        }
 
 			        if (_ThisServerEntry.ServerDescription.SupportedLocaleIds != null)
@@ -171,13 +166,7 @@ namespace Xi.Server.Base
                         ServerState = ServerState.Operational;
 
 			        return tContext.Id;
-			    }
-			    catch (FaultException<XiFault> fe)
-			    {
-                    ServerInitializing = true;
-			        ServerState = ServerState.Operational;
-                    throw fe;
-			    }
+			    }			    
 			    catch (Exception ex)
 			    {
                     ServerInitializing = true;
@@ -252,11 +241,7 @@ namespace Xi.Server.Base
 					{
 						context.OnConclude();
 					}
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -351,11 +336,7 @@ namespace Xi.Server.Base
 					}
 					else
 						return context.OnStatus();
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -389,11 +370,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnLookupResultCodes(resultCodes);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -456,11 +433,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnFindObjects(findCriteria, numberToReturn);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -503,11 +476,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnFindRootPaths(objectPath);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -552,11 +521,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnFindTypes(findCriteria, numberToReturn);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -618,7 +583,7 @@ namespace Xi.Server.Base
 		/// The attributes created for the list.
 		/// </returns>
 		//TODO: Enable the attribute below to have the XiUser impersonated in the call to the OPC COM server 
-		[OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
+		//[OperationBehavior(Impersonation = ImpersonationOption.Allowed)]
 		ListAttributes IResourceManagement.DefineList(
 			string contextId, uint clientId, uint listType,
 			uint updateRate, uint bufferingRate, FilterSet filterSet)
@@ -644,11 +609,7 @@ namespace Xi.Server.Base
 
 						return context.OnDefineList(clientId, listType, updateRate, bufferingRate, filterSet);
 					}
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -683,11 +644,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnGetListAttributes(listIds);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -731,11 +688,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnRenewAliases(listId, newAliases);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -771,11 +724,7 @@ namespace Xi.Server.Base
 					List<AliasResult> listAliasResult = context.RemoveListsFromContext(listIds, out removedLists);
 					context.DisposeLists(removedLists);
 					return listAliasResult;
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -815,11 +764,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnAddDataObjectsToList(listId, dataObjectsToAdd);
-				}
-                catch (FaultException<XiFault> fe)
-                {
-                    throw fe;
-                }
+				}                
                 catch (Exception ex)
                 {
                     throw FaultHelpers.Create(ex);
@@ -870,11 +815,7 @@ namespace Xi.Server.Base
 					List<AliasResult> results = context.OnRemoveDataObjectsFromList(listId, serverAliasesToDelete);
 					// return null if there are no results
 					return ((results == null) || (results.Count == 0)) ? null : results;
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -924,11 +865,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnModifyListAttributes(listId, updateRate, bufferingRate, filterSet);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -963,11 +900,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnEnableListUpdating(listId, enableUpdating);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -1026,11 +959,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnEnableListElementUpdating(listId, enableUpdating, serverAliases);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -1073,11 +1002,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnAddEventMessageFields(listId, categoryId, fieldObjectTypeIds);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -1133,11 +1058,7 @@ namespace Xi.Server.Base
 					List<AliasResult> listAliasResult = null;
 					listAliasResult = context.OnTouchDataObjects(listId, serverAliases);
 					return listAliasResult;
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -1164,11 +1085,7 @@ namespace Xi.Server.Base
 
 					uint rtnValue = context.OnTouchList(listId);
 					return rtnValue;
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -1207,11 +1124,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnGetAlarmSummary(eventSourceId);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -1252,11 +1165,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnEnableAlarms(enableFlag, areaFlag, eventContainerIds);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -1288,11 +1197,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnGetAlarmsEnabledState(areaFlag, eventContainerIds);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);

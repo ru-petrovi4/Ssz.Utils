@@ -45,11 +45,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);					
 
 					return context.OnSetCallback(iCallBack, keepAliveSkipCount, callbackRate);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);

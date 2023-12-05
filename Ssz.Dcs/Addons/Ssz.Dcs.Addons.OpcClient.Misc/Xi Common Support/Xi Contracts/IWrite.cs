@@ -24,7 +24,7 @@ namespace Xi.Contracts
 	/// This interface is composed of methods used to write/update 
 	/// data, alarms, and events and their histories.
 	/// </summary>
-	[ServiceContract(Namespace = "urn:xi/contracts")]
+	//[ServiceContract(Namespace = "urn:xi/contracts")]
 	public interface IWrite
 	{
 		/// <summary>
@@ -48,7 +48,7 @@ namespace Xi.Contracts
 		/// write failed. Returns null if all writes succeeded or null if this 
 		/// is a keep-alive.  
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<AliasResult> WriteValues(string contextId, uint listId,
 									WriteValueArrays writeValueArrays);
 
@@ -72,7 +72,7 @@ namespace Xi.Contracts
 		/// The list of error results.  Only values that could not be written are 
 		/// included in this list.
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<AliasResult> WriteVST(string contextId, uint listId,
 									DataValueArraysWithAlias writeValueArrays);
 
@@ -99,7 +99,7 @@ namespace Xi.Contracts
 		/// The list of identifiers and error codes for each data object 
 		/// whose write failed. Returns null if all writes succeeded.  
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<DataJournalWriteResult> WriteJournalData(string contextId, uint listId,
 			ModificationType modificationType, WriteJournalValues[] valuesToWrite);
 
@@ -126,7 +126,7 @@ namespace Xi.Contracts
 		/// The list server aliases and result codes for the alarms and/or 
 		/// events whose write failed. Returns null if all writes succeeded.  
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<EventIdResult> WriteJournalEvents(string contextId, uint listId,
 			ModificationType modificationType, EventMessage[] eventsToWrite);
 
@@ -156,7 +156,7 @@ namespace Xi.Contracts
 		/// acknowledgement failed. Returns null if all acknowledgements 
 		/// succeeded.  
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<EventIdResult> AcknowledgeAlarms(string contextId, uint listId,
 			string operatorName, string comment, List<EventId> alarmsToAck);
 
@@ -193,7 +193,7 @@ namespace Xi.Contracts
 		/// the passthrough was invoked. The results of asynchronous passthroughs are 
 		/// returned via the callback or poll interface.
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		PassthroughResult Passthrough(string contextId, string recipientId, int invokeId,
 									  string passthroughName, byte[] DataToSend);
 

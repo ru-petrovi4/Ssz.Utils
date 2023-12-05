@@ -25,7 +25,7 @@ namespace Xi.Contracts
 	/// client and called by the server to send data, alarms, and 
 	/// events to the client.
 	/// </summary>
-	[ServiceContract(Namespace = "urn:xi/contracts")]
+	//[ServiceContract(Namespace = "urn:xi/contracts")]
 	public interface ICallback
 	{
 		/// <summary>
@@ -49,7 +49,7 @@ namespace Xi.Contracts
 		/// <param name="reason">
 		/// The reason the context is being closed.
 		/// </param>
-		[OperationContract(IsOneWay = true)]
+		//[OperationContract(IsOneWay = true)]
 		void Abort(string contextId, ServerStatus serverStatus, string reason);
 
 		/// <summary>
@@ -86,7 +86,7 @@ namespace Xi.Contracts
 		/// <param name="updatedValues">
 		/// The values being reported.
 		/// </param>
-		[OperationContract(IsOneWay = true)]
+		//[OperationContract(IsOneWay = true)]
 		void InformationReport(string contextId, uint listId, DataValueArraysWithAlias updatedValues);
 
 		/// <summary>
@@ -113,7 +113,7 @@ namespace Xi.Contracts
 		/// <param name="eventList">
 		/// The list of alarms/events are being reported, transferred as an array.
 		/// </param>
-		[OperationContract(IsOneWay = true)]
+		//[OperationContract(IsOneWay = true)]
 		void EventNotification(string contextId, uint listId, EventMessage[] eventList);
 
 		/// <summary>
@@ -131,7 +131,7 @@ namespace Xi.Contracts
 		/// supplied in the request, and a byte array.  It is up to the client application to 
 		/// interpret this byte array.  
 		/// </param>
-		[OperationContract(IsOneWay = true)]
+		//[OperationContract(IsOneWay = true)]
 		void PassthroughCallback(string contextId, int invokeId, PassthroughResult passthroughResult);
 
 	}
@@ -140,7 +140,7 @@ namespace Xi.Contracts
 	/// This interface is used to register for callbacks so that list updates are passed
 	/// back asynchronously.
 	/// </summary>
-	[ServiceContract(Namespace = "urn:xi/contracts", CallbackContract = typeof(ICallback))]
+	//[ServiceContract(Namespace = "urn:xi/contracts", CallbackContract = typeof(ICallback))]
 	public interface IRegisterForCallback
 	{
         /// <summary>
@@ -175,7 +175,7 @@ namespace Xi.Contracts
         /// <returns>
         /// The results of the operation, including the negotiated keep-alive skip count and callback rate.
         /// </returns>
-        [OperationContract]
+        //[OperationContract]
 		SetCallbackResult SetCallback(string contextId, uint keepAliveSkipCount, TimeSpan callbackRate, ICallback iCallBack);
 
 	}

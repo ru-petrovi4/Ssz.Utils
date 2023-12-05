@@ -38,7 +38,7 @@ namespace Xi.Contracts
 	/// entry that was discarded to make room for this status entry. See each 
 	/// Poll method below for the definition of this status entry.</para>
 	/// </summary>
-	[ServiceContract(Namespace = "urn:xi/contracts")]
+	//[ServiceContract(Namespace = "urn:xi/contracts")]
 	public interface IPoll
 	{
 		/// <summary>
@@ -77,7 +77,7 @@ namespace Xi.Contracts
 		/// When present, this will always be the first value in the returned 
 		/// UINT value array.</para>
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		DataValueArraysWithAlias PollDataChanges(string contextId, uint listId);
 
 		/// <summary>
@@ -121,7 +121,7 @@ namespace Xi.Contracts
 		///last poll response was returned.</para>
 		/// </para>
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		EventMessage[] PollEventChanges(string contextId, uint listId, FilterSet filterSet);
 
 		/// <summary>
@@ -136,7 +136,7 @@ namespace Xi.Contracts
 		/// result code, the invokeId supplied in the request, and a byte array.  It is up to the 
 		/// client application to interpret this byte array.  
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		List<PassthroughResult> PollPassthroughResponses(string contextId);
 
 	}

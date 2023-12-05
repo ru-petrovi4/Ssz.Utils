@@ -21,11 +21,6 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Collections.ObjectModel;
-using System.ServiceModel;
-using System.ServiceModel.Channels;
-using System.ServiceModel.Configuration;
-using System.ServiceModel.Description;
-using System.ServiceModel.Activation;
 using System.Threading;
 using System.Net.PeerToPeer;
 using System.Reflection;
@@ -159,15 +154,7 @@ namespace Xi.Server.Base
 				//}
 
 				// copy a selection of endpoint setting into the server info
-				//_ThisServerEntry.EndpointServerSettings = CopyEndpointSettings(ServerRoot.ServiceHost.Description);
-
-				// Start the Resolver Thread if this is a Discovery Server 
-				if ((_ThisServerEntry.ServerDescription.ServerTypes & ServerType.Xi_ServerDiscoveryServer) > 0)
-				{
-					_ServerEntriesLock = new Mutex();
-					_resolverThread = new Thread(ResolverThread) { Name = "Xi Discovery Resolver Thread", IsBackground = true };
-					_resolverThread.Start();
-				}				
+				//_ThisServerEntry.EndpointServerSettings = CopyEndpointSettings(ServerRoot.ServiceHost.Description);							
 			}
 
 			catch (Exception ex)

@@ -64,10 +64,6 @@ namespace Xi.Server.Base
 					DataValueArraysWithAlias readValueList = context.OnReadData(listId, serverAliases);
 					return readValueList;
 				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -124,11 +120,7 @@ namespace Xi.Server.Base
 
 					return context.OnReadJournalDataForTimeInterval(listId,
 						firstTimeStamp, secondTimeStamp, numValuesPerAlias, serverAliases);
-                }
-                catch (FaultException<XiFault> fe)
-                {
-                    throw fe;
-                }
+                }                
                 catch (Exception ex)
                 {
                     throw FaultHelpers.Create(ex);
@@ -180,11 +172,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnReadJournalDataNext(listId, numValuesPerAlias);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -231,11 +219,7 @@ namespace Xi.Server.Base
 
 					return context.OnReadJournalDataAtSpecificTimes(listId,
 						timestamps, serverAliases);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -288,11 +272,7 @@ namespace Xi.Server.Base
 
 					return context.OnReadJournalDataChanges(listId,
 						firstTimeStamp, secondTimeStamp, numValuesPerAlias, serverAliases);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -345,11 +325,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnReadJournalDataChangesNext(listId, numValuesPerAlias);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -371,11 +347,7 @@ namespace Xi.Server.Base
 
 					return context.OnReadCalculatedJournalData(listId, firstTimeStamp, secondTimeStamp,
 						calculationPeriod, serverAliasesAndCalculations);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -397,11 +369,7 @@ namespace Xi.Server.Base
 
 					return context.OnReadJournalDataProperties(listId, firstTimeStamp, secondTimeStamp,
 						serverAlias, propertiesToRead);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -438,11 +406,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnReadEvents(listId, filterSet);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -499,11 +463,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnReadJournalEvents(listId, firstTimeStamp, secondTimeStamp, numEventMessages, filterSet);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -548,10 +508,6 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnReadJournalEventsNext(listId, numEventMessages);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
 				}
 				catch (Exception ex)
 				{

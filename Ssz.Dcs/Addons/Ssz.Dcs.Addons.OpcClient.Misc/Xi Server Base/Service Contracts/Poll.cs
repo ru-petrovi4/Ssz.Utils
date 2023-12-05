@@ -68,11 +68,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnPollDataChanges(listId);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -120,11 +116,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnPollEventChanges(listId, filterSet);
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);
@@ -155,11 +147,7 @@ namespace Xi.Server.Base
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
 					return context.OnPollPassthroughResponses();
-				}
-				catch (FaultException<XiFault> fe)
-				{
-					throw fe;
-				}
+				}				
 				catch (Exception ex)
 				{
 					throw FaultHelpers.Create(ex);

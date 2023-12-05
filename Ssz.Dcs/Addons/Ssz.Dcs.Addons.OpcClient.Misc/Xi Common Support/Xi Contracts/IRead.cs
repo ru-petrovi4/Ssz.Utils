@@ -26,7 +26,7 @@ namespace Xi.Contracts
 	/// data, alarms, and events and their histories from the 
 	/// server.
 	/// </summary>
-	[ServiceContract(Namespace = "urn:xi/contracts")]
+	//[ServiceContract(Namespace = "urn:xi/contracts")]
 	public interface IRead
 	{
 		/// <summary>
@@ -53,7 +53,7 @@ namespace Xi.Contracts
 		/// the server alias instead of a value, status, and timestamp.  </para>
 		/// <para>Returns null if this is a keep-alive.</para>
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		DataValueArraysWithAlias ReadData(string contextId, uint listId, List<uint> serverAliases);
 
 		/// <summary>
@@ -96,7 +96,7 @@ namespace Xi.Contracts
 		/// The list of requested historical values, or the reason they could not 
 		/// be read.
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		JournalDataValues[] ReadJournalDataForTimeInterval(string contextId, uint listId,
 			FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp,
 			uint numValuesPerAlias, List<uint> serverAliases);
@@ -133,7 +133,7 @@ namespace Xi.Contracts
 		/// the number returned for any alias is equal to numValuesPerAlias, then the 
 		/// client should issue a ReadJournalDataNext() to retrieve any remaining values.
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		JournalDataValues[] ReadJournalDataNext(string contextId, uint listId, uint numValuesPerAlias);
 
 		/// <summary>
@@ -162,7 +162,7 @@ namespace Xi.Contracts
 		/// The list of requested historical values, or the reason they could not 
 		/// be read.
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		JournalDataValues[] ReadJournalDataAtSpecificTimes(string contextId, uint listId, 
 			List<DateTime> timestamps, List<uint> serverAliases);
 
@@ -203,7 +203,7 @@ namespace Xi.Contracts
 		/// numValuesPerAlias, then the client should issue a ReadJournalDataChangesNext() 
 		/// to retrieve any remaining values.
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		JournalDataChangedValues[] ReadJournalDataChanges(string contextId, uint listId,
 			FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp,
 			uint numValuesPerAlias, List<uint> serverAliases);
@@ -241,7 +241,7 @@ namespace Xi.Contracts
 		/// client should issue a ReadJournalDataChangesNext() to retrieve any remaining 
 		/// values.
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		JournalDataChangedValues[] ReadJournalDataChangesNext(string contextId, uint listId, 
 			uint numValuesPerAlias);
 
@@ -282,7 +282,7 @@ namespace Xi.Contracts
 		/// The set of calculated values. There is one value for each calculation period within 
 		/// the specified time range for each specific data object.
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		JournalDataValues[] ReadCalculatedJournalData(string contextId, uint listId,
 			FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp, TimeSpan calculationPeriod,
 			List<AliasAndCalculation> serverAliasesAndCalculations);
@@ -317,7 +317,7 @@ namespace Xi.Contracts
 		/// <returns>
 		/// The array of requested property values.
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		JournalDataPropertyValue[] ReadJournalDataProperties(string contextId, uint listId,
 			FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp, uint serverAlias,
 			List<TypeId> propertiesToRead);
@@ -341,7 +341,7 @@ namespace Xi.Contracts
 		/// The list of selected alarms and events.
 		/// Null if no alarms or events were selected.
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		EventMessage[] ReadEvents(string contextId, uint listId, FilterSet filterSet);
 
 		/// <summary>
@@ -382,7 +382,7 @@ namespace Xi.Contracts
 		/// The list of selected historical alarms and events.
 		/// Or null if no alarms or events were selected.
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		EventMessage[] ReadJournalEvents(string contextId, uint listId, 
 			FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp, uint numEventMessages,
 			FilterSet filterSet);
@@ -413,7 +413,7 @@ namespace Xi.Contracts
 		/// numEventMessages, then the client should issue a ReadJournalEventsNext() 
 		/// to retrieve any remaining EventMessages.
 		/// </returns>
-		[OperationContract, FaultContract(typeof(XiFault))]
+		//[OperationContract, FaultContract(typeof(XiFault))]
 		EventMessage[] ReadJournalEventsNext(string contextId, uint listId, uint numEventMessages);
 
 	}
