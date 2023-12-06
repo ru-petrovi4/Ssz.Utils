@@ -121,6 +121,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             string clientWorkstationName,
             string systemNameToConnect,
             CaseInsensitiveDictionary<string?> contextParams,
+            bool dangerousAcceptAnyServerCertificate,
             IDispatcher? callbackDispatcher)
         {
             if (_disposed) throw new ObjectDisposedException(@"Cannot access a disposed DataAccessGrpcServerProxy.");
@@ -135,14 +136,21 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             GrpcChannel? grpcChannel = null;            
             try
             {
-                var handler = new GrpcWebHandler(
+                var httpClientHandler = new HttpClientHandler();
+#if NET5_0_OR_GREATER                
+                if (dangerousAcceptAnyServerCertificate)
+                    httpClientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+#endif
+                var grpcWebHandler = new GrpcWebHandler(
                         GrpcWebMode.GrpcWeb,
-                        new HttpClientHandler());
-                handler.HttpVersion = HttpVersion.Version11;
+                        httpClientHandler)
+                {
+                    HttpVersion = HttpVersion.Version11
+                };                
                 grpcChannel = GrpcChannel.ForAddress(serverAddress,
                     new GrpcChannelOptions
                     {
-                        HttpClient = new HttpClient(handler)
+                        HttpClient = new HttpClient(grpcWebHandler)
                     });
 
                 var resourceManagementClient = new DataAccess.DataAccessClient(grpcChannel);

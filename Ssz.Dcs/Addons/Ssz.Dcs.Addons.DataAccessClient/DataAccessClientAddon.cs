@@ -76,7 +76,7 @@ namespace Ssz.Dcs.Addons.DataAccessClient
                 Environment.MachineName,
                 systemNameToConnect,
                 contextParams,
-                new DataAccessProviderOptions(),
+                new DataAccessProviderOptions { DangerousAcceptAnyServerCertificate = false },
                 callbackDispatcher);
 
             CsvDb.CsvFileChanged += (sender, args) =>

@@ -215,6 +215,8 @@ namespace Ssz.Utils.DataAccess
 
         public bool UnsubscribeValueListItemsFromServer { get; set; } = true;
 
-        public bool UnsubscribeValuesJournalListItemsFromServer { get; set; } = true;        
+        public bool UnsubscribeValuesJournalListItemsFromServer { get; set; } = true;
+
+        public bool DangerousAcceptAnyServerCertificate { get; set; } = true;
     }
 }

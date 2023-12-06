@@ -642,8 +642,13 @@ namespace Ssz.DataAccessGrpc.Client
                         //        //NameValueCollectionHelper.GetNameValueCollectionString(_dataGrpcContextParams.OfType<string?>()));
                         //}
 
-                        await _clientContextManager.InitiateConnectionAsync(ServerAddress, ClientApplicationName,
-                            ClientWorkstationName, SystemNameToConnect, ContextParams, CallbackDispatcher);
+                        await _clientContextManager.InitiateConnectionAsync(ServerAddress, 
+                            ClientApplicationName,
+                            ClientWorkstationName, 
+                            SystemNameToConnect, 
+                            ContextParams, 
+                            Options.DangerousAcceptAnyServerCertificate,
+                            CallbackDispatcher);
 
                         LoggersSet.Logger.LogDebug("End Connecting");
 
