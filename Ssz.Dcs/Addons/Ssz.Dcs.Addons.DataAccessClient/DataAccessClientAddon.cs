@@ -50,7 +50,7 @@ namespace Ssz.Dcs.Addons.DataAccessClient
             if (!IsInitialized)
                 throw new InvalidOperationException();
 
-            IsConfigurationPassthroughSupported = true;
+            IsAddonsPassthroughSupported = true;
 
             string serverAddress = OptionsSubstitutedThreadSafe.TryGetValue(DataAccessClient_ServerAddress_OptionName) ?? @"";
             string systemNameToConnect = OptionsSubstitutedThreadSafe.TryGetValue(DataAccessClient_SystemNameToConnect_OptionName) ?? @"";

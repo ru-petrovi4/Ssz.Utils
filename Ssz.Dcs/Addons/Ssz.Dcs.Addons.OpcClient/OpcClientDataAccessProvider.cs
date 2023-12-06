@@ -31,6 +31,10 @@ namespace Ssz.Dcs.Addons.OpcClient
 
         #region public functions
 
+        public override DateTime LastFailedConnectionDateTimeUtc => _lastFailedConnectionDateTimeUtc;
+
+        public override DateTime LastSuccessfulConnectionDateTimeUtc => _lastSuccessfulConnectionDateTimeUtc;
+
         /// <summary>
         ///     Is called using сallbackDoer, see Initialize(..).
         /// </summary>
@@ -626,7 +630,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                     {
                         //Logger?.LogDebug(ex);
 
-                        LastFailedConnectionDateTimeUtc = nowUtc;
+                        _lastFailedConnectionDateTimeUtc = nowUtc;
                     }
                 }
             }
@@ -644,7 +648,7 @@ namespace Ssz.Dcs.Addons.OpcClient
 
             if (_xiServerProxy.ContextExists)
             {
-                LastSuccessfulConnectionDateTimeUtc = nowUtc;
+                _lastSuccessfulConnectionDateTimeUtc = nowUtc;
                 try
                 {
                     if (cancellationToken.IsCancellationRequested) return;
@@ -938,6 +942,10 @@ namespace Ssz.Dcs.Addons.OpcClient
         #endregion
 
         #region private fields
+
+        private DateTime _lastFailedConnectionDateTimeUtc;
+
+        private DateTime _lastSuccessfulConnectionDateTimeUtc;
 
         private Task<Task>? _workingTask;
 

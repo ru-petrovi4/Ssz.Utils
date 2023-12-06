@@ -28,16 +28,20 @@ namespace Ssz.DataAccessGrpc.Client
         public GrpcDataAccessProvider(ILogger<GrpcDataAccessProvider> logger, IUserFriendlyLogger? userFriendlyLogger = null) :
             base(new LoggersSet(logger, userFriendlyLogger))
         {
-            _clientContextManager = new ClientContextManager(logger, WorkingThreadSafeDispatcher);
+            _clientContextManager = new ClientContextManager(logger, WorkingThreadSafeDispatcher);            
 
             _clientElementValueListManager = new ClientElementValueListManager(logger);
             _clientElementValuesJournalListManager = new ClientElementValuesJournalListManager(logger);
             _clientEventListManager = new ClientEventListManager(logger, this);
-        }              
-        
+        }
+
         #endregion
 
         #region public functions
+
+        public override DateTime LastFailedConnectionDateTimeUtc => _clientContextManager.LastFailedConnectionDateTimeUtc;
+
+        public override DateTime LastSuccessfulConnectionDateTimeUtc => _clientContextManager.LastSuccessfulConnectionDateTimeUtc;
 
         public GrpcChannel? GrpcChannel
         {
@@ -625,7 +629,7 @@ namespace Ssz.DataAccessGrpc.Client
                 }
 
                 if (IsInitialized && !String.IsNullOrWhiteSpace(ServerAddress) &&
-                    nowUtc > LastFailedConnectionDateTimeUtc + TimeSpan.FromSeconds(5))
+                    nowUtc > _clientContextManager.LastFailedConnectionDateTimeUtc + TimeSpan.FromSeconds(5))
                 {
                     try
                     {
@@ -663,9 +667,7 @@ namespace Ssz.DataAccessGrpc.Client
                     }
                     catch (Exception ex)
                     {
-                        LoggersSet.Logger.LogDebug(ex, "");
-
-                        LastFailedConnectionDateTimeUtc = nowUtc;
+                        LoggersSet.Logger.LogDebug(ex, "");                        
                     }
                 }
             }
@@ -681,8 +683,7 @@ namespace Ssz.DataAccessGrpc.Client
                 return;
 
             if (_clientContextManager.ConnectionExists)
-            {
-                LastSuccessfulConnectionDateTimeUtc = nowUtc;
+            {                
                 try
                 {
                     if (cancellationToken.IsCancellationRequested) return;
@@ -986,7 +987,7 @@ namespace Ssz.DataAccessGrpc.Client
             DataGuid = Guid.NewGuid();
 
             RaiseValueSubscriptionsUpdated();
-        }
+        }        
 
         #endregion
 

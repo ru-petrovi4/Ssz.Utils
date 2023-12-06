@@ -37,10 +37,10 @@ DcsCentralServerAddonDesc: "Центральный сервер SSZ.DCS"
 AllowedHosts: "*"
 # задается язык сообщений в журналах событий которые доступны через веб интерфейс ИТ-решения возможные значения RU EN
 UICulture: "RU"
-ProgramDataDirectory: "C:\\CDT.CentralServer"
+ProgramDataDirectory: "C:\\CDT.PazCheck.Adapter_ProgramData"
 DataAccessClientUserName: ""
 DataAccessClientPasswordHash: ""  
-DbType: "sqlite"
+# DbType: "sqlite"
 ConnectionStrings: 
   MainDbConnection: "Host=localhost;Username=postgres;Password=postgres;Database=deltasim1;CommandTimeout=3600"  
 ConfigurationCrypter: 

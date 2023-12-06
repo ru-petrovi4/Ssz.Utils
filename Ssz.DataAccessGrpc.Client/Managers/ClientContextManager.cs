@@ -110,6 +110,10 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             }
         }
 
+        public DateTime LastFailedConnectionDateTimeUtc { get; protected set; }
+
+        public DateTime LastSuccessfulConnectionDateTimeUtc { get; protected set; }
+
         public event EventHandler<ContextStatusChangedEventArgs> ServerContextStatusChanged = delegate { };
         
         public async Task InitiateConnectionAsync(string serverAddress,
@@ -161,7 +165,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 _clientContext = clientContext;
             }
             catch
-            {                
+            { 
+                LastFailedConnectionDateTimeUtc = DateTime.UtcNow;
                 if (grpcChannel is not null)
                 {                    
                     grpcChannel.Dispose();
@@ -324,8 +329,10 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
             if (_clientContext is null) throw new ConnectionDoesNotExistException();
 
+            LastSuccessfulConnectionDateTimeUtc = nowUtc;
+
             var t = _clientContext.KeepContextAliveIfNeededAsync(ct, nowUtc);
-            _clientContext.ProcessPendingClientContextNotification();
+            _clientContext.ProcessPendingClientContextNotification();            
         }
 
 #endregion
@@ -353,6 +360,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 case ClientContext.ClientContextNotificationType.ClientKeepAliveException:                
                 case ClientContext.ClientContextNotificationType.Shutdown:
                 case ClientContext.ClientContextNotificationType.ReadCallbackMessagesException:
+                    LastFailedConnectionDateTimeUtc = DateTime.UtcNow;
                     CloseConnectionInternal();
                     break;
             }

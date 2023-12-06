@@ -132,11 +132,10 @@ namespace Xi.OPC.Wrapper.Impl
 
 			XiOPCWrapper.Initialize();
             XiOPCWrapper.Initialize(contextParams);
-
-            ContextManager.StartContextMonitor();
-
-			XiOPCWrapper.Start();
+			
 			Server = new XiOPCWrapper();
+
+            ContextManager.OnStart();
 
             return true;
 		}        
@@ -152,8 +151,7 @@ namespace Xi.OPC.Wrapper.Impl
 			serverStatus.ServerName = XiOPCWrapper.ServerDescription.ServerName;
 			serverStatus.CurrentTime = DateTime.UtcNow;
 			// TODO: Replace "OPC .NET" with the name of the server in the server stopped message below 
-			ContextManager.OnShutdown(serverStatus, "OPC .NET Service Stopped");
-			ContextManager.StopContextMonitor();			
+			ContextManager.OnShutdown(serverStatus, "OPC .NET Service Stopped");				
 			// TODO: Replace "OPC .NET" with the name of the server in the server stopped message below 
 			WriteLine("OPC .NET Service Stopped");
 		}		

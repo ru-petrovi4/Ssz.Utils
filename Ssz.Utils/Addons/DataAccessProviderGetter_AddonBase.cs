@@ -34,7 +34,7 @@ namespace Ssz.Utils.Addons
 
         public IDataAccessProvider? DataAccessProvider { get; protected set; }
 
-        public bool IsConfigurationPassthroughSupported { get; protected set; }
+        public bool IsAddonsPassthroughSupported { get; protected set; }
 
         /// <summary>
         ///     Creates initialized IDataAccessProvider or throws. 
@@ -99,4 +99,9 @@ namespace Ssz.Utils.Addons
             };
         }        
     }
+
+    //public class DataAccessProviderGetter_Addon_Options
+    //{
+    //    public bool IsConfigurationPassthroughSupported { get; protected set; }        
+    //}
 }

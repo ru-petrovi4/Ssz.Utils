@@ -144,7 +144,7 @@ namespace Impl {
 		{
 			::IConnectionPoint * pIConnectionPoint = nullptr;
 			cliHRESULT HR1 = pICPC->FindConnectionPoint( IID_IOPCShutdown, &pIConnectionPoint );
-			_ASSERT(HR1.Succeeded && nullptr != pIConnectionPoint);
+			//_ASSERT(HR1.Succeeded && nullptr != pIConnectionPoint);
 			if (HR1.Succeeded && nullptr != pIConnectionPoint)
 			{
 				cliHRESULT HR2 = pIConnectionPoint->Unadvise(m_dwShutdownAdviseCookie);

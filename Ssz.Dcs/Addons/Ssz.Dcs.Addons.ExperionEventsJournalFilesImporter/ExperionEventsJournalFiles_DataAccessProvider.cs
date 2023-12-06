@@ -32,6 +32,10 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
 
         #region public functions
 
+        public override DateTime LastFailedConnectionDateTimeUtc => _lastFailedConnectionDateTimeUtc;
+
+        public override DateTime LastSuccessfulConnectionDateTimeUtc => _lastSuccessfulConnectionDateTimeUtc;
+
         public override event EventHandler<EventMessagesCallbackEventArgs> EventMessagesCallback = delegate { };
 
         public DateTime LastScanTimeUtc { get; protected set; }
@@ -483,11 +487,15 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
 
                 LastJournalFilesDeleteScanTimeUtc = nowUtc;
             }
-        }    
+        }
 
         #endregion
 
-        #region private fields        
+        #region private fields      
+
+        private DateTime _lastFailedConnectionDateTimeUtc;
+
+        private DateTime _lastSuccessfulConnectionDateTimeUtc;
 
         private Task<Task>? _workingTask;
 

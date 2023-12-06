@@ -161,13 +161,7 @@ namespace Xi.OPC.Wrapper.Impl
 		{
 			get { return _WrappedServerRoots; }
 			private set { }
-		}
-
-		public static bool Start()
-		{
-			// calling this Start() method causes the static XiOPCWrapper() constructor to run
-			return ServerBase<ContextImpl, ListRoot>.Start(PnrpMeshNames.XiServerMesh, false);
-		}
+		}		
 
 		/// <summary>
 		/// The static XiOPCWrapper Constructor reads the App.Config file to

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils.DataAccess
 {
-    public class DataAccessProviderBase : DisposableViewModelBase, IDataAccessProvider
+    public abstract class DataAccessProviderBase : DisposableViewModelBase, IDataAccessProvider
     {
         #region construction and destruction
 
@@ -118,9 +118,9 @@ namespace Ssz.Utils.DataAccess
 
         public DateTime InitializedDateTimeUtc { get; private set; }
 
-        public DateTime LastFailedConnectionDateTimeUtc { get; protected set; }
+        public abstract DateTime LastFailedConnectionDateTimeUtc { get; }
 
-        public DateTime LastSuccessfulConnectionDateTimeUtc { get; protected set; }
+        public abstract DateTime LastSuccessfulConnectionDateTimeUtc { get; }
 
         public Guid DataGuid { get; protected set; }
 

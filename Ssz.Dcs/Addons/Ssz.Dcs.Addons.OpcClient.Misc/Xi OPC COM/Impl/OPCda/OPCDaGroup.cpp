@@ -105,7 +105,7 @@ namespace Impl {
 				CComPtr<IConnectionPoint> pIConnectionPoint;
 
 				cliHRESULT HR1 = pICPC->FindConnectionPoint( IID_IOPCDataCallback, &pIConnectionPoint );
-				_ASSERTE(HR1.Succeeded && nullptr != pIConnectionPoint);
+				//_ASSERTE(HR1.Succeeded && nullptr != pIConnectionPoint);
 				if (HR1.Succeeded && nullptr != pIConnectionPoint)
 				{
 					cliHRESULT HR2 = pIConnectionPoint->Unadvise(m_dwAdviseCookie);
