@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Ssz.Utils\Ssz.Utils.csproj" />
+    <ProjectReference Include="..\..\ThirdParties\EPPlus\EPPlus.csproj" />
   </ItemGroup>
 
   <ItemGroup>
