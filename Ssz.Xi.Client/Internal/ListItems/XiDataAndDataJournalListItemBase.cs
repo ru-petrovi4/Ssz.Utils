@@ -125,96 +125,96 @@ namespace Ssz.Xi.Client.Internal.ListItems
                 _valueTypeId = value;
                 if (_valueTypeId is null)
                 {
-                    ValueTypeCode = TypeCode.Empty;
+                    ValueTypeCode = Ssz.Utils.Any.TypeCode.Empty;
                     return;
                 }
                 if (_valueTypeId.Namespace is not null)
                 {
-                    ValueTypeCode = TypeCode.Object;
+                    ValueTypeCode = Ssz.Utils.Any.TypeCode.Object;
                     return;
                 }
                 if (_valueTypeId.SchemaType is not null)
                 {
-                    ValueTypeCode = TypeCode.Object;
+                    ValueTypeCode = Ssz.Utils.Any.TypeCode.Object;
                     return;
                 }
 
                 if (0 == string.Compare(typeof (Object).ToString(), _valueTypeId.LocalId, true))
                 {
-                    ValueTypeCode = TypeCode.Object;
+                    ValueTypeCode = Ssz.Utils.Any.TypeCode.Object;
                     return;
                 }
                 if (0 == string.Compare(typeof (Single).ToString(), _valueTypeId.LocalId, true))
                 {
-                    ValueTypeCode = TypeCode.Single;
+                    ValueTypeCode = Ssz.Utils.Any.TypeCode.Single;
                     return;
                 }
                 if (0 == string.Compare(typeof (Int32).ToString(), _valueTypeId.LocalId, true))
                 {
-                    ValueTypeCode = TypeCode.Int32;
+                    ValueTypeCode = Ssz.Utils.Any.TypeCode.Int32;
                     return;
                 }
                 if (0 == string.Compare(typeof (String).ToString(), _valueTypeId.LocalId, true))
                 {
-                    ValueTypeCode = TypeCode.String;
+                    ValueTypeCode = Ssz.Utils.Any.TypeCode.String;
                     return;
                 }
                 if (0 == string.Compare(typeof (SByte).ToString(), _valueTypeId.LocalId, true))
                 {
-                    ValueTypeCode = TypeCode.SByte;
+                    ValueTypeCode = Ssz.Utils.Any.TypeCode.SByte;
                     return;
                 }
                 if (0 == string.Compare(typeof (Int16).ToString(), _valueTypeId.LocalId, true))
                 {
-                    ValueTypeCode = TypeCode.Int16;
+                    ValueTypeCode = Ssz.Utils.Any.TypeCode.Int16;
                     return;
                 }
                 if (0 == string.Compare(typeof (Int64).ToString(), _valueTypeId.LocalId, true))
                 {
-                    ValueTypeCode = TypeCode.Int64;
+                    ValueTypeCode = Ssz.Utils.Any.TypeCode.Int64;
                     return;
                 }
                 if (0 == string.Compare(typeof (Byte).ToString(), _valueTypeId.LocalId, true))
                 {
-                    ValueTypeCode = TypeCode.Byte;
+                    ValueTypeCode = Ssz.Utils.Any.TypeCode.Byte;
                     return;
                 }
                 if (0 == string.Compare(typeof (UInt16).ToString(), _valueTypeId.LocalId, true))
                 {
-                    ValueTypeCode = TypeCode.UInt16;
+                    ValueTypeCode = Ssz.Utils.Any.TypeCode.UInt16;
                     return;
                 }
                 if (0 == string.Compare(typeof (UInt32).ToString(), _valueTypeId.LocalId, true))
                 {
-                    ValueTypeCode = TypeCode.UInt32;
+                    ValueTypeCode = Ssz.Utils.Any.TypeCode.UInt32;
                     return;
                 }
                 if (0 == string.Compare(typeof (UInt64).ToString(), _valueTypeId.LocalId, true))
                 {
-                    ValueTypeCode = TypeCode.UInt64;
+                    ValueTypeCode = Ssz.Utils.Any.TypeCode.UInt64;
                     return;
                 }
                 if (0 == string.Compare(typeof (Double).ToString(), _valueTypeId.LocalId, true))
                 {
-                    ValueTypeCode = TypeCode.Double;
+                    ValueTypeCode = Ssz.Utils.Any.TypeCode.Double;
                     return;
                 }
                 if (0 == string.Compare(typeof (DateTime).ToString(), _valueTypeId.LocalId, true))
                 {
-                    ValueTypeCode = TypeCode.DateTime;
+                    ValueTypeCode = Ssz.Utils.Any.TypeCode.DateTime;
                     return;
                 }
                 if (0 == string.Compare(typeof (Boolean).ToString(), _valueTypeId.LocalId, true))
                 {
-                    ValueTypeCode = TypeCode.Boolean;
+                    ValueTypeCode = Ssz.Utils.Any.TypeCode.Boolean;
                     return;
                 }
 
-                ValueTypeCode = TypeCode.Object;
+                ValueTypeCode = Ssz.Utils.Any.TypeCode.Object;
             }
         }
 
-        public TypeCode ValueTypeCode { get; private set; }
+        public Ssz.Utils.Any.TypeCode ValueTypeCode { get; private set; }
 
         /// <summary>
         ///     This property indicates whether the value associated with the list element is readable.

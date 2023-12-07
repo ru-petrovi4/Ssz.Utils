@@ -218,118 +218,95 @@ namespace Ssz.Dcs.CentralServer
             if (processModelingSession.LaunchEnginesJobId is null) // Operation not started yet.
             {
                 jobId = Guid.NewGuid().ToString();
-                processModelingSession.LaunchEnginesJobId = jobId;
+                processModelingSession.LaunchEnginesJobId = jobId;                
 
-                string targetWorkstationName = processModelingSession.InitiatorClientWorkstationName;
+                DsFilesStoreDirectory processDsFilesStoreDirectory = DsFilesStoreHelper.CreateDsFilesStoreDirectoryObject(
+                        FilesStoreDirectoryInfo,
+                        processModelingSession.ProcessModelName, 2);
 
-                if (processModelingSession.ProcessModelName == @"")
+                // Launch Instructor
+
+                var jobProgress = new JobProgress(jobId)
                 {
-                    // Connect to PlatInstructor only                    
-                    var platInstructorEngineSession = new PlatInstructor_TrainingEngineSession(
-                        _serviceProvider,
-                        ThreadSafeDispatcher,
-                        "http://" + targetWorkstationName + ":60080/SimcodePlatServer/ServerDiscovery",
-                        @"",
-                        new CaseInsensitiveDictionary<string?>());                    
-                    processModelingSession.EngineSessions.Add(platInstructorEngineSession);
+                    ForTimeout_LastDateTimeUtc = DateTime.UtcNow,
+                    JobTimeout_ProgressLabel = Resources.ResourceManager.GetString(ResourceStrings.LaunchingInstructorProgressErrorMessage, serverContext.CultureInfo)
+                };
+                jobProgress.ProgressSubscribers.Add(serverContext);
+                _jobProgressesCollection.Add(jobId, jobProgress);
 
-                    serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
-                    {
-                        JobId = jobId,
-                        ProgressPercent = 100,
-                        ProgressLabel = Resources.ResourceManager.GetString(ResourceStrings.OperationCompleted_ProgressLabel, serverContext.CultureInfo),
-                        StatusCode = StatusCodes.Good
-                    });
+                //     Creates all directories and subdirectories in the specified path unless they
+                //     already exist.
+                Directory.CreateDirectory(Path.Combine(FilesStoreDirectoryInfo.FullName,
+                    processDsFilesStoreDirectory.PathRelativeToRootDirectory,
+                    DsFilesStoreConstants.InstructorDataDirectoryName));
+
+                if (processModelingSession.InitiatorClientApplicationName != DataAccessConstants.Instructor_ClientApplicationName)
+                {
+                    Generate_LaunchInstructor_SystemEvent(processModelingSession.InitiatorClientWorkstationName, processModelingSession);
                 }
                 else
                 {
-                    DsFilesStoreDirectory processDsFilesStoreDirectory = DsFilesStoreHelper.CreateDsFilesStoreDirectoryObject(
-                        FilesStoreDirectoryInfo,
-                        processModelingSession.ProcessModelName, 2);                    
+                    // Only update Instructor.Data directory.
+                    Generate_DownloadChangedFiles_SystemEvent(processModelingSession.InitiatorClientWorkstationName, jobId,
+                        Path.Combine(processDsFilesStoreDirectory.PathRelativeToRootDirectory, DsFilesStoreConstants.InstructorDataDirectoryName),
+                        true);
+                }
 
-                    // Launch Instructor
+                string engine_TargetWorkstationName = Environment.MachineName;
 
-                    var jobProgress = new JobProgress(jobId)
+                // Launch DscEngine 
+
+                //     Creates all directories and subdirectories in the specified path unless they
+                //     already exist.
+                Directory.CreateDirectory(Path.Combine(FilesStoreDirectoryInfo.FullName,
+                    processDsFilesStoreDirectory.PathRelativeToRootDirectory,
+                    DsFilesStoreConstants.ControlEngineDataDirectoryName));
+
+                string engineSessionId = Guid.NewGuid().ToString();
+                int portNumber;
+                var controlEngineSessions = GetEngineSessions().OfType<Control_TrainingEngineSession>().Where(s => String.Equals(s.WorkstationName, engine_TargetWorkstationName)).ToArray();
+                if (controlEngineSessions.Length > 0)
+                    portNumber = controlEngineSessions.Max(s => s.PortNumber) + 1;
+                else
+                    portNumber = 60061;                
+
+                Generate_LaunchEngine_SystemEvent(engine_TargetWorkstationName, processModelingSession, DsFilesStoreDirectoryType.ControlEngineBin, DsFilesStoreDirectoryType.ControlEngineData, @"", new Any(portNumber).ValueAsString(false));
+
+                var controlEngineSession = new Control_TrainingEngineSession(
+                    _serviceProvider,
+                    ThreadSafeDispatcher,
+                    @"http://" + engine_TargetWorkstationName + @":" + portNumber,
+                    @"PROCESS",
+                    new CaseInsensitiveDictionary<string?>())
+                {
+                    PortNumber = portNumber
+                };
+                processModelingSession.EngineSessions.Add(controlEngineSession);
+                processModelingSession.SubscribeToMainControlEngine((GrpcDataAccessProvider)controlEngineSession.DataAccessProvider);
+
+                // Launch PlatInstructor
+
+                var platInstructorEngineDataDsFilesStoreDirectory = DsFilesStoreHelper.FindDataDsFilesStoreDirectory(processDsFilesStoreDirectory, DsFilesStoreDirectoryType.PlatInstructorData);
+                if (platInstructorEngineDataDsFilesStoreDirectory is not null)
+                {
+                    DsFilesStoreFile? mvDsFileInfo = platInstructorEngineDataDsFilesStoreDirectory.DsFilesStoreFilesCollection
+                        .FirstOrDefault(fi => fi.Name.EndsWith(@".mv_", StringComparison.InvariantCultureIgnoreCase));
+                    if (mvDsFileInfo is not null)
                     {
-                        ForTimeout_LastDateTimeUtc = DateTime.UtcNow,
-                        JobTimeout_ProgressLabel = Resources.ResourceManager.GetString(ResourceStrings.LaunchingInstructorProgressErrorMessage, serverContext.CultureInfo)
-                    };
-                    jobProgress.ProgressSubscribers.Add(serverContext);
-                    _jobProgressesCollection.Add(jobId, jobProgress);
+                        var systemNameBase = Path.GetFileNameWithoutExtension(mvDsFileInfo.Name);
+                        engineSessionId = Guid.NewGuid().ToString();
+                        string systemName = systemNameBase + @"." + engineSessionId;
 
-                    //     Creates all directories and subdirectories in the specified path unless they
-                    //     already exist.
-                    Directory.CreateDirectory(Path.Combine(FilesStoreDirectoryInfo.FullName, 
-                        processDsFilesStoreDirectory.PathRelativeToRootDirectory,
-                        DsFilesStoreConstants.InstructorDataDirectoryName));
-
-                    if (processModelingSession.InitiatorClientApplicationName != DataAccessConstants.Instructor_ClientApplicationName)
-                    {
-                        Generate_LaunchInstructor_SystemEvent(targetWorkstationName, processModelingSession);
+                        Generate_LaunchEngine_SystemEvent(engine_TargetWorkstationName, processModelingSession, DsFilesStoreDirectoryType.PlatInstructorBin, DsFilesStoreDirectoryType.PlatInstructorData, mvDsFileInfo.Name, systemName);
+                        var platInstructorEngineSession = new PlatInstructor_TrainingEngineSession(
+                            _serviceProvider,
+                            ThreadSafeDispatcher,
+                            @"http://" + engine_TargetWorkstationName + @":60080/SimcodePlatServer/ServerDiscovery",
+                            systemName,
+                            new CaseInsensitiveDictionary<string?> { { @"XiSystem", systemName } });
+                        processModelingSession.EngineSessions.Add(platInstructorEngineSession);
                     }
-                    else
-                    {
-                        // Only update Instructor.Data directory.
-                        Generate_DownloadChangedFiles_SystemEvent(processModelingSession.InitiatorClientWorkstationName, jobId, 
-                            Path.Combine(processDsFilesStoreDirectory.PathRelativeToRootDirectory, DsFilesStoreConstants.InstructorDataDirectoryName),
-                            true);
-                    }
-
-                    // Launch DscEngine 
-
-                    //     Creates all directories and subdirectories in the specified path unless they
-                    //     already exist.
-                    Directory.CreateDirectory(Path.Combine(FilesStoreDirectoryInfo.FullName,
-                        processDsFilesStoreDirectory.PathRelativeToRootDirectory,
-                        DsFilesStoreConstants.ControlEngineDataDirectoryName));
-
-                    string engineSessionId = Guid.NewGuid().ToString();
-
-                    int portNumber;
-                    var controlEngineSessions = GetEngineSessions().OfType<Control_TrainingEngineSession>().Where(s => String.Equals(s.WorkstationName, targetWorkstationName)).ToArray();
-                    if (controlEngineSessions.Length > 0)
-                        portNumber = controlEngineSessions.Max(s => s.PortNumber) + 1;
-                    else
-                        portNumber = 60061;
-
-                    Generate_LaunchEngine_SystemEvent(targetWorkstationName, processModelingSession, DsFilesStoreDirectoryType.ControlEngineBin, DsFilesStoreDirectoryType.ControlEngineData, @"", new Any(portNumber).ValueAsString(false));
-                    
-                    var controlEngineSession = new Control_TrainingEngineSession(
-                        _serviceProvider,
-                        ThreadSafeDispatcher,
-                        @"http://" + targetWorkstationName + @":" + portNumber,
-                        @"PROCESS",
-                        new CaseInsensitiveDictionary<string?>())
-                    {
-                        PortNumber = portNumber
-                    };                    
-                    processModelingSession.EngineSessions.Add(controlEngineSession);
-                    processModelingSession.SubscribeToMainControlEngine((GrpcDataAccessProvider)controlEngineSession.DataAccessProvider);
-
-                    // Launch PlatInstructor
-
-                    var platInstructorEngineDataDsFilesStoreDirectory = DsFilesStoreHelper.FindDataDsFilesStoreDirectory(processDsFilesStoreDirectory, DsFilesStoreDirectoryType.PlatInstructorData);
-                    if (platInstructorEngineDataDsFilesStoreDirectory is not null)
-                    {
-                        DsFilesStoreFile? mvDsFileInfo = platInstructorEngineDataDsFilesStoreDirectory.DsFilesStoreFilesCollection
-                            .FirstOrDefault(fi => fi.Name.EndsWith(@".mv_", StringComparison.InvariantCultureIgnoreCase));
-                        if (mvDsFileInfo is not null)
-                        {
-                            var systemNameBase = Path.GetFileNameWithoutExtension(mvDsFileInfo.Name);
-                            engineSessionId = Guid.NewGuid().ToString();
-                            string systemName = systemNameBase + @"." + engineSessionId;
-
-                            Generate_LaunchEngine_SystemEvent(targetWorkstationName, processModelingSession, DsFilesStoreDirectoryType.PlatInstructorBin, DsFilesStoreDirectoryType.PlatInstructorData, mvDsFileInfo.Name, systemName);                            
-                            var platInstructorEngineSession = new PlatInstructor_TrainingEngineSession(
-                                _serviceProvider,
-                                ThreadSafeDispatcher,
-                                @"http://" + targetWorkstationName + @":60080/SimcodePlatServer/ServerDiscovery",
-                                systemName,
-                                new CaseInsensitiveDictionary<string?> { { @"XiSystem", systemName } });                            
-                            processModelingSession.EngineSessions.Add(platInstructorEngineSession);
-                        }
-                    }
-                }                
+                }
             }
             else
             {
@@ -511,3 +488,24 @@ namespace Ssz.Dcs.CentralServer
 /////     1 / 10 of Seconds
 ///// </summary>
 //public UInt64 ProcessModelingSessionModelTime { get; set; }
+
+
+//if (processModelingSession.ProcessModelName == @"")
+//{
+//    // Connect to PlatInstructor only                    
+//    var platInstructorEngineSession = new PlatInstructor_TrainingEngineSession(
+//        _serviceProvider,
+//        ThreadSafeDispatcher,
+//        "http://" + targetWorkstationName + ":60080/SimcodePlatServer/ServerDiscovery",
+//        @"",
+//        new CaseInsensitiveDictionary<string?>());
+//    processModelingSession.EngineSessions.Add(platInstructorEngineSession);
+
+//    serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+//    {
+//        JobId = jobId,
+//        ProgressPercent = 100,
+//        ProgressLabel = Resources.ResourceManager.GetString(ResourceStrings.OperationCompleted_ProgressLabel, serverContext.CultureInfo),
+//        StatusCode = StatusCodes.Good
+//    });
+//}
