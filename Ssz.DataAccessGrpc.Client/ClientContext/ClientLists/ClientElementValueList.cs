@@ -197,7 +197,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                     if (item is not null)
                     {
                         item.UpdateValue(elementValuesCollection.DoubleValues[index],
-                            (TypeCode)elementValuesCollection.DoubleValueTypeCodes[index],
+                            (Ssz.Utils.Any.TypeCode)elementValuesCollection.DoubleValueTypeCodes[index],
                             elementValuesCollection.DoubleStatusCodes[index],
                             elementValuesCollection.DoubleTimestamps[index].ToDateTime()
                             );
@@ -211,7 +211,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                     if (item is not null)
                     {
                         item.UpdateValue(elementValuesCollection.UintValues[index],
-                            (TypeCode)elementValuesCollection.UintValueTypeCodes[index],
+                            (Ssz.Utils.Any.TypeCode)elementValuesCollection.UintValueTypeCodes[index],
                             elementValuesCollection.UintStatusCodes[index],
                             elementValuesCollection.UintTimestamps[index].ToDateTime()
                             );

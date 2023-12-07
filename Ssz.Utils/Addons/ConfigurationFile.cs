@@ -28,6 +28,7 @@ namespace Ssz.Utils.Addons
             {
                 PathRelativeToRootDirectory = pathRelativeToRootDirectory,
                 LastWriteTimeUtc = fileInfo.LastWriteTimeUtc,
+                Length = fileInfo.Length,
             };            
 
             if (fileInfo.Name.EndsWith(@".csv", StringComparison.InvariantCultureIgnoreCase))
@@ -113,6 +114,11 @@ namespace Ssz.Utils.Addons
         public DateTime LastWriteTimeUtc { get; set; } = DateTime.MinValue;
 
         /// <summary>
+        ///     FileInfo.Length
+        /// </summary>  
+        public long Length { get; set; }
+
+        /// <summary>
         ///     File content. 
         ///     If .csv., UTF8-encoded with preamble and \n as new line char.
         /// </summary>        
@@ -135,6 +141,7 @@ namespace Ssz.Utils.Addons
             writer.Write(SourceIdToDisplay);
             writer.Write(PathRelativeToRootDirectory);            
             writer.Write(LastWriteTimeUtc);
+            writer.Write(Length);
             writer.WriteNullableByteArray(FileData);
             writer.Write(IsDeleted);
         }
@@ -151,6 +158,7 @@ namespace Ssz.Utils.Addons
             SourceIdToDisplay = reader.ReadString();
             PathRelativeToRootDirectory = reader.ReadString();            
             LastWriteTimeUtc = reader.ReadDateTime();
+            Length = reader.ReadInt64();
             FileData = reader.ReadNullableByteArray();
             IsDeleted = reader.ReadBoolean();
         }

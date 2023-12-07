@@ -210,7 +210,7 @@ namespace Ssz.Utils
             }
 
             var any = Any.ConvertToBestType(elementIdOrConst, false);
-            if (any.ValueTypeCode != TypeCode.String) return any;
+            if (any.ValueTypeCode != Any.TypeCode.String) return any;
 
             return null;
         }

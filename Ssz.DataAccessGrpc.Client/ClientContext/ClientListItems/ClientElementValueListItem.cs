@@ -36,7 +36,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientListItems
         /// <param name="statusCode"> The DataAccessGrpc StatusCode of the value. </param>
         /// <param name="timestampUtc"> The timestamp of the value. </param>
         /// <param name="valueUInt32"> The value </param>
-        public void UpdateValue(uint valueUInt32, TypeCode valueTypeCode, uint statusCode, DateTime timestampUtc)
+        public void UpdateValue(uint valueUInt32, Any.TypeCode valueTypeCode, uint statusCode, DateTime timestampUtc)
         {
             var any = new Any(valueUInt32, valueTypeCode, false);            
             _valueStatusTimestamp = new ValueStatusTimestamp(any, statusCode, timestampUtc);
@@ -52,7 +52,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientListItems
         /// <param name="statusCode"> The DataAccessGrpc StatusCode of the value. </param>
         /// <param name="timestampUtc"> The timestamp of the value. </param>
         /// <param name="valueDouble"> The value </param>
-        public void UpdateValue(double valueDouble, TypeCode valueTypeCode, uint statusCode, DateTime timestampUtc)
+        public void UpdateValue(double valueDouble, Any.TypeCode valueTypeCode, uint statusCode, DateTime timestampUtc)
         {
             var any = new Any(valueDouble, valueTypeCode, false);            
             _valueStatusTimestamp = new ValueStatusTimestamp(any, statusCode, timestampUtc);
