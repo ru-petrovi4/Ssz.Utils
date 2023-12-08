@@ -271,13 +271,13 @@ namespace Ssz.Dcs.CentralServer
                     portNumber = 60061;                
 
                 Generate_LaunchEngine_SystemEvent(engine_TargetWorkstationName, processModelingSession, DsFilesStoreDirectoryType.ControlEngineBin, DsFilesStoreDirectoryType.ControlEngineData, @"", new Any(portNumber).ValueAsString(false));
-
                 var controlEngineSession = new Control_TrainingEngineSession(
                     _serviceProvider,
                     ThreadSafeDispatcher,
-                    @"http://" + engine_TargetWorkstationName + @":" + portNumber,
+                    @"http://localhost:" + portNumber,
                     @"PROCESS",
-                    new CaseInsensitiveDictionary<string?>())
+                    new CaseInsensitiveDictionary<string?>(),
+                    engine_TargetWorkstationName)
                 {
                     PortNumber = portNumber
                 };
@@ -301,9 +301,10 @@ namespace Ssz.Dcs.CentralServer
                         var platInstructorEngineSession = new PlatInstructor_TrainingEngineSession(
                             _serviceProvider,
                             ThreadSafeDispatcher,
-                            @"http://" + engine_TargetWorkstationName + @":60080/SimcodePlatServer/ServerDiscovery",
+                            @"http://localhost:60080/SimcodePlatServer/ServerDiscovery",
                             systemName,
-                            new CaseInsensitiveDictionary<string?> { { @"XiSystem", systemName } });
+                            new CaseInsensitiveDictionary<string?> { { @"XiSystem", systemName } },
+                            engine_TargetWorkstationName);
                         processModelingSession.EngineSessions.Add(platInstructorEngineSession);
                     }
                 }

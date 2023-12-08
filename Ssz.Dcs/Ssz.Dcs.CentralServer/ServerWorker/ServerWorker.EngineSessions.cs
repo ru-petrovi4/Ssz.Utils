@@ -66,13 +66,13 @@ namespace Ssz.Dcs.CentralServer
         {
             #region construction and destruction
 
-            public TrainingEngineSessionBase(IServiceProvider serviceProvider, IDispatcher callbackDispatcher, string serverAddress, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams) :
+            public TrainingEngineSessionBase(IServiceProvider serviceProvider, IDispatcher callbackDispatcher, string serverAddress, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams, string workstationName) :
                 base(GetNewPreparedDataAccessProviderAddon(serviceProvider, serverAddress, systemNameToConnect, contextParams, callbackDispatcher))
             {
                 ServerAddress = serverAddress;
                 SystemNameToConnect = systemNameToConnect;
                 ContextParams = contextParams;
-                WorkstationName = new Uri(serverAddress).Host;
+                WorkstationName = workstationName;
             }
 
             public override void Dispose()
@@ -131,8 +131,8 @@ namespace Ssz.Dcs.CentralServer
         {
             #region construction and destruction
 
-            public Control_TrainingEngineSession(IServiceProvider serviceProvider, IDispatcher callbackDispatcher, string serverAddress, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams) :
-                base(serviceProvider, callbackDispatcher, serverAddress, systemNameToConnect, contextParams)
+            public Control_TrainingEngineSession(IServiceProvider serviceProvider, IDispatcher callbackDispatcher, string serverAddress, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams, string workstationName) :
+                base(serviceProvider, callbackDispatcher, serverAddress, systemNameToConnect, contextParams, workstationName)
             {
             }
 
@@ -149,8 +149,8 @@ namespace Ssz.Dcs.CentralServer
         {
             #region construction and destruction
 
-            public PlatInstructor_TrainingEngineSession(IServiceProvider serviceProvider, IDispatcher callbackDispatcher, string serverAddress, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams) :
-                base(serviceProvider, callbackDispatcher, serverAddress, systemNameToConnect, contextParams)
+            public PlatInstructor_TrainingEngineSession(IServiceProvider serviceProvider, IDispatcher callbackDispatcher, string serverAddress, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams, string workstationName) :
+                base(serviceProvider, callbackDispatcher, serverAddress, systemNameToConnect, contextParams, workstationName)
             {
             }
 
