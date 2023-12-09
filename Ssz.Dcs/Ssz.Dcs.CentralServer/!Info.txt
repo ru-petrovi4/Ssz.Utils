@@ -1,4 +1,4 @@
-﻿appsettings.json всегда ищется в Current Directory
+﻿appsettings.yml всегда ищется в ContentDirectory - Current Directory
 Если ProgramDataDirectory не задана, то это Current Directory
 
 
@@ -10,6 +10,7 @@ SystemName это либо:
 - "<Process modeling session ID>" - Pprocess modeling session with specific ID
 
 
-
+///     Startup project - Ssz.Dcs.CentralServer    
+///     Default project of Package Management Console (PMC) - Ssz.Dcs.CentralServer
 Add-Migration Initialization -Context SqliteDcsCentralServerDbContext -OutputDir Migrations\SqliteMigrations
 Add-Migration Initialization -Context NpgsqlDcsCentralServerDbContext -OutputDir Migrations\NpgsqlMigrations

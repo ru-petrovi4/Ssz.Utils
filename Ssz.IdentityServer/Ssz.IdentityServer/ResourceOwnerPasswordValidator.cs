@@ -40,17 +40,15 @@ namespace Ssz.IdentityServer
         public ResourceOwnerPasswordValidator(
             IHttpContextAccessor httpContextAccessor,
             ILogger<ResourceOwnerPasswordValidator> logger, 
-            IConfiguration configuration, 
-            ISystemClock clock, 
+            IConfiguration configuration,             
             IInformationSecurityEventsLogger informationSecurityEventsLogger, 
             IServiceProvider serviceProvider,
-            IConfigurationProcessor configurationProcessor,
-            IUsersAndRolesInfo? usersAndRolesInfo)
+            IConfigurationProcessor? configurationProcessor = null,
+            IUsersAndRolesInfo? usersAndRolesInfo = null)
         {
             _httpContextAccessor = httpContextAccessor;
             _logger = logger;
-            _configuration = configuration;
-            _clock = clock;
+            _configuration = configuration;            
             _informationSecurityEventsLogger = informationSecurityEventsLogger;
             _serviceProvider = serviceProvider;
             _configurationProcessor = configurationProcessor;
@@ -87,7 +85,7 @@ namespace Ssz.IdentityServer
                             if (!String.IsNullOrEmpty(user))
                                 context.Result = new GrantValidationResult(
                                     user,
-                                    OidcConstants.AuthenticationMethods.Password, _clock.UtcNow.UtcDateTime);
+                                    OidcConstants.AuthenticationMethods.Password, DateTime.UtcNow);
                         }
                     }
 
@@ -103,7 +101,7 @@ namespace Ssz.IdentityServer
                         {
                             context.Result = new GrantValidationResult(
                                 user,
-                                OidcConstants.AuthenticationMethods.Password, _clock.UtcNow.UtcDateTime);
+                                OidcConstants.AuthenticationMethods.Password, DateTime.UtcNow);
                         }
 
                         return;
@@ -132,7 +130,7 @@ namespace Ssz.IdentityServer
 
                     context.Result = new GrantValidationResult(
                         user,
-                        OidcConstants.AuthenticationMethods.Password, _clock.UtcNow.UtcDateTime);
+                        OidcConstants.AuthenticationMethods.Password, DateTime.UtcNow);
                 }
             }
             catch (LdapException ex)
@@ -248,11 +246,10 @@ namespace Ssz.IdentityServer
 
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger _logger;
-        private readonly IConfiguration _configuration;
-        private readonly ISystemClock _clock;
+        private readonly IConfiguration _configuration;        
         private readonly IInformationSecurityEventsLogger _informationSecurityEventsLogger;
         private readonly IServiceProvider _serviceProvider;
-        private readonly IConfigurationProcessor _configurationProcessor;
+        private readonly IConfigurationProcessor? _configurationProcessor;
         private readonly IUsersAndRolesInfo? _usersAndRolesInfo;
 
         #endregion

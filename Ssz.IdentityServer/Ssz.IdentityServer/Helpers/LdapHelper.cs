@@ -26,13 +26,19 @@ namespace Ssz.IdentityServer.Helpers
             return new LdapConnection(ldapConnectionOptions);
         }
 
-        public static async Task<LdapConnection?> CreatePreparedLdapConnectionAsync(IConfiguration configuration, IConfigurationProcessor configurationProcessor, ILogger logger)
+        public static async Task<LdapConnection?> CreatePreparedLdapConnectionAsync(IConfiguration configuration, IConfigurationProcessor? configurationProcessor, ILogger logger)
         {
-            string ldapHost = configurationProcessor.ProcessValue(ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:Server", @""));            
+            string ldapHost = ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:Server", @"");            
             int ldapPort = ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:LdapPort", LdapConnection.DefaultPort);
             int ldapVersion = ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:LdapVersion", LdapConnection.LdapV3);
-            string activeDirectory_ServiceAccount_DN = configurationProcessor.ProcessValue(ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:ServiceAccount:DN", @""));
-            string activeDirectory_ServiceAccount_Password = configurationProcessor.ProcessValue(ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:ServiceAccount:Password", @""));
+            string activeDirectory_ServiceAccount_DN = ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:ServiceAccount:DN", @"");
+            string activeDirectory_ServiceAccount_Password = ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:ServiceAccount:Password", @"");
+            if (configurationProcessor is not null)
+            {
+                ldapHost = configurationProcessor.ProcessValue(ldapHost);                
+                activeDirectory_ServiceAccount_DN = configurationProcessor.ProcessValue(activeDirectory_ServiceAccount_DN);
+                activeDirectory_ServiceAccount_Password = configurationProcessor.ProcessValue(activeDirectory_ServiceAccount_Password);
+            }
 
             var ldapConnection = CreateLdapConnection(configuration, logger);
             
@@ -77,9 +83,11 @@ namespace Ssz.IdentityServer.Helpers
             return null;
         }
 
-        public static async Task<List<Claim>> GetClaims(string user, IConfiguration configuration, IConfigurationProcessor configurationProcessor, ILogger logger)
+        public static async Task<List<Claim>> GetClaims(string user, IConfiguration configuration, IConfigurationProcessor? configurationProcessor, ILogger logger)
         {            
-            string activeDirectory_UsersDN = configurationProcessor.ProcessValue(ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:UsersDN", @""));            
+            string activeDirectory_UsersDN = ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:UsersDN", @"");
+            if (configurationProcessor is not null)
+                activeDirectory_UsersDN = configurationProcessor.ProcessValue(activeDirectory_UsersDN);
 
             using var preparedLdapConnection = await CreatePreparedLdapConnectionAsync(configuration, configurationProcessor, logger);
             if (preparedLdapConnection is null)
@@ -188,9 +196,11 @@ namespace Ssz.IdentityServer.Helpers
             return groups;
         }
 
-        public static async Task<string> GetDnForUser(string user, IConfiguration configuration, IConfigurationProcessor configurationProcessor, ILogger logger)
+        public static async Task<string> GetDnForUser(string user, IConfiguration configuration, IConfigurationProcessor? configurationProcessor, ILogger logger)
         {            
-            string activeDirectory_UsersDN = configurationProcessor.ProcessValue(ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:UsersDN", @""));            
+            string activeDirectory_UsersDN = ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:UsersDN", @"");
+            if (configurationProcessor is not null)
+                activeDirectory_UsersDN = configurationProcessor.ProcessValue(activeDirectory_UsersDN);
 
             using var preparedLdapConnection = await CreatePreparedLdapConnectionAsync(configuration, configurationProcessor, logger);
             if (preparedLdapConnection is null)

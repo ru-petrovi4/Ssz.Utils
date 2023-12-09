@@ -27,14 +27,12 @@ namespace Ssz.IdentityServer
         /// <param name="users">The users.</param>
         /// <param name="clock">The clock.</param>
         public ADProfileService(ILogger<ADProfileService> logger, 
-            IConfiguration configuration, 
-            ISystemClock clock,
-            IConfigurationProcessor configurationProcessor,
-            IUsersAndRolesInfo? usersAndRolesInfo)
+            IConfiguration configuration,             
+            IConfigurationProcessor? configurationProcessor = null,
+            IUsersAndRolesInfo? usersAndRolesInfo = null)
         {
             _logger = logger;
-            _configuration = configuration;
-            _clock = clock;
+            _configuration = configuration;            
             _configurationProcessor = configurationProcessor;
             _usersAndRolesInfo = usersAndRolesInfo;
         }
@@ -121,9 +119,8 @@ namespace Ssz.IdentityServer
         #region private fields
 
         private readonly ILogger _logger;
-        private readonly IConfiguration _configuration;
-        private readonly ISystemClock _clock;
-        private readonly IConfigurationProcessor _configurationProcessor;
+        private readonly IConfiguration _configuration;        
+        private readonly IConfigurationProcessor? _configurationProcessor;
         private readonly IUsersAndRolesInfo? _usersAndRolesInfo;
 
         #endregion
