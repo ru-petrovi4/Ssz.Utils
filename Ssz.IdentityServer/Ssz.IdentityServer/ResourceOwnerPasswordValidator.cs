@@ -118,7 +118,10 @@ namespace Ssz.IdentityServer
 
                 using (var ldapConnection = LdapHelper.CreateLdapConnection(_configuration, _logger))
                 {
-                    String ldapHost = _configurationProcessor.ProcessValue(ConfigurationHelper.GetValue<string>(_configuration, @"ActiveDirectory:Server", @""));                    
+                    String ldapHost = ConfigurationHelper.GetValue<string>(_configuration, @"ActiveDirectory:Server", @"");
+                    if (_configurationProcessor is not null)
+                        ldapHost = _configurationProcessor.ProcessValue(ldapHost);
+
                     int ldapPort = ConfigurationHelper.GetValue<int>(_configuration, @"ActiveDirectory:LdapPort", LdapConnection.DefaultPort);
                     int ldapVersion = ConfigurationHelper.GetValue<int>(_configuration, @"ActiveDirectory:LdapVersion", LdapConnection.LdapV3);                                       
 
