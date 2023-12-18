@@ -66,7 +66,9 @@ namespace Ssz.Utils.Logging
             if (!IsEnabled(logLevel))
                 return;
 
-            string header = $"{logLevel,-11} {DateTime.Now:O} ID:{eventId.Id}";
+            string header = $"{logLevel,-11} {DateTime.Now:O}";
+            if (eventId.Id != 0)
+                header += $" ID: {eventId.Id}";
             
             lock (SyncRoot)
             {

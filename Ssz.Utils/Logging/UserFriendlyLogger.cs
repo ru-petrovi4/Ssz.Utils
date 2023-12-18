@@ -41,7 +41,10 @@ namespace Ssz.Utils.Logging
             if (!IsEnabled(logLevel))
                 return;
 
-            string line = $"{logLevel,-11} {DateTime.Now:O} ID:{eventId.Id}  ";
+            string line = $"{logLevel,-11} {DateTime.Now:O}";
+            if (eventId.Id != 0) 
+                line += $" ID: {eventId.Id}";
+            line += " ";
             lock (SyncRoot)
             {
                 line += GetScopesString();
