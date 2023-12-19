@@ -114,17 +114,17 @@ namespace Ssz.Dcs.CentralServer
                                     switch (vst.Value.ValueStorageType)
                                     {
                                         case Ssz.Utils.Any.StorageType.Double:
-                                            elementValuesJournal.DoubleValues.Add(vst.Value.StorageDouble);
+                                            elementValuesJournal.DoubleValues.Add(vst.Value.ValueAsDouble(false));
                                             elementValuesJournal.DoubleStatusCodes.Add(vst.StatusCode);
                                             elementValuesJournal.DoubleTimestamps.Add(Ssz.DataAccessGrpc.ServerBase.DateTimeHelper.ConvertToTimestamp(vst.TimestampUtc));
                                             break;
                                         case Ssz.Utils.Any.StorageType.UInt32:
-                                            elementValuesJournal.UintValues.Add(vst.Value.StorageUInt32);
+                                            elementValuesJournal.UintValues.Add(vst.Value.ValueAsUInt32(false));
                                             elementValuesJournal.UintStatusCodes.Add(vst.StatusCode);
                                             elementValuesJournal.UintTimestamps.Add(Ssz.DataAccessGrpc.ServerBase.DateTimeHelper.ConvertToTimestamp(vst.TimestampUtc));
                                             break;
                                         case Ssz.Utils.Any.StorageType.Object:
-                                            writer.WriteObject(vst.Value.StorageObject);
+                                            writer.WriteObject(vst.Value.ValueAsObject());
                                             elementValuesJournal.ObjectStatusCodes.Add(vst.StatusCode);
                                             elementValuesJournal.ObjectTimestamps.Add(Ssz.DataAccessGrpc.ServerBase.DateTimeHelper.ConvertToTimestamp(vst.TimestampUtc));
                                             break;

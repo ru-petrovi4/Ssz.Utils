@@ -57,13 +57,15 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 Logger.LogDebug(ex, "Directory.GetFiles Exception. " + directoryInfo.FullName);
             }
 
+            var stopwatch = Stopwatch.StartNew();
             foreach (var serverDsFilesStoreFile in serverDsFilesStoreDirectory.DsFilesStoreFilesCollection)
             {
                 if (progressInfo is not null)
                 {
                     progressInfo.Index += 1;
-                    if (progressInfo.Index % 10 == 0)
+                    if (stopwatch.ElapsedMilliseconds > 300)
                     {
+                        stopwatch.Restart();
                         await SetJobProgressAsync(progressInfo.JobId, progressInfo.GetPercent(), progressInfo.ProgressLabelResourceName, null, StatusCodes.Good);
                     }
                 }                

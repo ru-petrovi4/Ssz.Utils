@@ -257,19 +257,19 @@ namespace Ssz.Xi.Client.Internal.Lists
                                 writeValueArrays.SetDouble(dblIdx++, item.ServerAlias,
                                     statusCode,
                                     item.PendingWriteValueStatusTimestamp.Value.TimestampUtc,
-                                    item.PendingWriteValueStatusTimestamp.Value.Value.StorageDouble);
+                                    item.PendingWriteValueStatusTimestamp.Value.Value.ValueAsDouble(false));
                                 break;
                             case Any.StorageType.UInt32:
                                 writeValueArrays.SetUint(intIdx++, item.ServerAlias,
                                     statusCode,
                                     item.PendingWriteValueStatusTimestamp.Value.TimestampUtc,
-                                    item.PendingWriteValueStatusTimestamp.Value.Value.StorageUInt32);
+                                    item.PendingWriteValueStatusTimestamp.Value.Value.ValueAsUInt32(false));
                                 break;
                             case Any.StorageType.Object:
                                 writeValueArrays.SetObject(objIdx++, item.ServerAlias,
                                     statusCode,
                                     item.PendingWriteValueStatusTimestamp.Value.TimestampUtc,
-                                    item.PendingWriteValueStatusTimestamp.Value.Value.StorageObject);
+                                    item.PendingWriteValueStatusTimestamp.Value.Value.ValueAsObject());
                                 break;
                         }
                     }

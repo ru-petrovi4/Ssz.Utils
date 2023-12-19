@@ -1277,6 +1277,24 @@ namespace Ssz.Utils.Serialization
             }            
         }
 
+        /// <summary>
+        ///     use ReadDictionaryOfOwnedDataSerializable(...) for reading.
+        ///     Writes Dictionary of same type not null objects.         
+        /// </summary>        
+        /// <param name="values"></param>
+        /// <param name="context"></param>
+        public void WriteDictionaryOfOwnedDataSerializable<T>(Dictionary<string, T> values,
+            object? context)
+            where T : IOwnedDataSerializable
+        {
+            Write(values.Count);
+            foreach (var kvp in values)
+            {
+                Write(kvp.Key);
+                kvp.Value.SerializeOwnedData(this, context);
+            }
+        }
+
         //public void WriteCaseInsensitiveDictionary<T>(CaseInsensitiveDictionary<T> value)
         //    where T : class?
         //{

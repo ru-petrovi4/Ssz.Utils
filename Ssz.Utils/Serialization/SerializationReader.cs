@@ -502,6 +502,30 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     Use WriteDictionaryOfOwnedDataSerializable(...) for writing.
+        ///     Reads Dictionary of same objects.
+        ///     func is constructor function.              
+        /// </summary>        
+        /// <param name="func"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public Dictionary<string, T> ReadDictionaryOfOwnedDataSerializable<T>(Func<T> func,
+            object? context)
+            where T : IOwnedDataSerializable
+        {
+            int count = ReadInt32();
+            var result = new Dictionary<string, T>(count);
+            for (int i = 0; i < count; i++)
+            {
+                string key = ReadString();
+                var v = func();
+                v.DeserializeOwnedData(this, context);
+                result.Add(key, v);
+            }
+            return result;
+        }
+
+        /// <summary>
         ///     Returns a BitArray or null from the stream.
         /// </summary>
         /// <returns> A BitArray instance. </returns>

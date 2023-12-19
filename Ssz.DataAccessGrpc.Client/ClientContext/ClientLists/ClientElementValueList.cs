@@ -107,21 +107,21 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                         {
                             case Ssz.Utils.Any.StorageType.Double:
                                 fullElementValuesCollection.DoubleAliases.Add(alias);
-                                fullElementValuesCollection.DoubleValues.Add(valueStatusTimestamp.Value.StorageDouble);
+                                fullElementValuesCollection.DoubleValues.Add(valueStatusTimestamp.Value.ValueAsDouble(false));
                                 fullElementValuesCollection.DoubleValueTypeCodes.Add((uint)valueStatusTimestamp.Value.ValueTypeCode);
                                 fullElementValuesCollection.DoubleStatusCodes.Add(valueStatusTimestamp.StatusCode);
                                 fullElementValuesCollection.DoubleTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                
                                 break;
                             case Ssz.Utils.Any.StorageType.UInt32:
                                 fullElementValuesCollection.UintAliases.Add(alias);
-                                fullElementValuesCollection.UintValues.Add(valueStatusTimestamp.Value.StorageUInt32);
+                                fullElementValuesCollection.UintValues.Add(valueStatusTimestamp.Value.ValueAsUInt32(false));
                                 fullElementValuesCollection.UintValueTypeCodes.Add((uint)valueStatusTimestamp.Value.ValueTypeCode);
                                 fullElementValuesCollection.UintStatusCodes.Add(valueStatusTimestamp.StatusCode);
                                 fullElementValuesCollection.UintTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                
                                 break;
                             case Ssz.Utils.Any.StorageType.Object:
                                 fullElementValuesCollection.ObjectAliases.Add(alias);
-                                writer.WriteObject(valueStatusTimestamp.Value.StorageObject);
+                                writer.WriteObject(valueStatusTimestamp.Value.ValueAsObject());
                                 fullElementValuesCollection.ObjectStatusCodes.Add(valueStatusTimestamp.StatusCode);
                                 fullElementValuesCollection.ObjectTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                
                                 break;
