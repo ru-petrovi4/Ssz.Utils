@@ -215,7 +215,7 @@ namespace Ssz.Xi.Client.Internal
                 for (int idx = 0; idx < journalDataValues.HistoricalValues.DoubleStatusCodes.Length; idx++)
                 {
                     var xiValueStatusTimestamp = new ValueStatusTimestamp();
-                    xiValueStatusTimestamp.Value.Set(journalDataValues.HistoricalValues.DoubleValues[idx],
+                    xiValueStatusTimestamp.Value = AnyHelper.GetAny(journalDataValues.HistoricalValues.DoubleValues[idx],
                         _owningXiDataJournalListItem.ValueTypeCode, false);
                     xiValueStatusTimestamp.StatusCode = XiServerProxy.NormalizeStatusCode(journalDataValues.HistoricalValues.DoubleStatusCodes[idx]);
                     xiValueStatusTimestamp.TimestampUtc = journalDataValues.HistoricalValues.DoubleTimeStamps[idx];
@@ -230,7 +230,7 @@ namespace Ssz.Xi.Client.Internal
                 for (int idx = 0; idx < journalDataValues.HistoricalValues.UintStatusCodes.Length; idx++)
                 {
                     var xiValueStatusTimestamp = new ValueStatusTimestamp();
-                    xiValueStatusTimestamp.Value.Set(journalDataValues.HistoricalValues.UintValues[idx],
+                    xiValueStatusTimestamp.Value = AnyHelper.GetAny(journalDataValues.HistoricalValues.UintValues[idx],
                         _owningXiDataJournalListItem.ValueTypeCode, false);
                     xiValueStatusTimestamp.StatusCode = XiServerProxy.NormalizeStatusCode(journalDataValues.HistoricalValues.UintStatusCodes[idx]);
                     xiValueStatusTimestamp.TimestampUtc = journalDataValues.HistoricalValues.UintTimeStamps[idx];

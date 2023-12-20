@@ -38,7 +38,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientListItems
         /// <param name="valueUInt32"> The value </param>
         public void UpdateValue(uint valueUInt32, Any.TypeCode valueTypeCode, uint statusCode, DateTime timestampUtc)
         {
-            var any = new Any(valueUInt32, valueTypeCode, false);            
+            var any = AnyHelper.GetAny(valueUInt32, valueTypeCode, false);            
             _valueStatusTimestamp = new ValueStatusTimestamp(any, statusCode, timestampUtc);
             IncrementUpdateCount();
         }
@@ -54,7 +54,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientListItems
         /// <param name="valueDouble"> The value </param>
         public void UpdateValue(double valueDouble, Any.TypeCode valueTypeCode, uint statusCode, DateTime timestampUtc)
         {
-            var any = new Any(valueDouble, valueTypeCode, false);            
+            var any = AnyHelper.GetAny(valueDouble, valueTypeCode, false);            
             _valueStatusTimestamp = new ValueStatusTimestamp(any, statusCode, timestampUtc);
             IncrementUpdateCount();
         }

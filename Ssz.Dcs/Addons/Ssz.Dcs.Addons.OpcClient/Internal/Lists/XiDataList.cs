@@ -218,15 +218,15 @@ namespace Ssz.Xi.Client.Internal.Lists
                 if (item.PendingWriteValueStatusTimestamp is not null &&
                     !StatusCodes.IsUncertain(item.PendingWriteValueStatusTimestamp.Value.StatusCode))
                 {
-                    switch (item.PendingWriteValueStatusTimestamp.Value.Value.ValueStorageType)
+                    switch (AnyHelper.GetTransportType(item.PendingWriteValueStatusTimestamp.Value.Value))
                     {
-                        case Any.StorageType.Double:
+                        case TransportType.Double:
                             dblCount += 1;
                             break;
-                        case Any.StorageType.UInt32:
+                        case TransportType.UInt32:
                             uintCount += 1;
                             break;
-                        case Any.StorageType.Object:
+                        case TransportType.Object:
                             objCount += 1;
                             break;
                     }
@@ -251,21 +251,21 @@ namespace Ssz.Xi.Client.Internal.Lists
                             XiStatusCode.MakeFlagsByte((byte)XiStatusCodeHistoricalValueType.NotUsed, false, false,
                                 XiStatusCodeAdditionalDetailType.NotUsed),
                             0);
-                        switch (item.PendingWriteValueStatusTimestamp.Value.Value.ValueStorageType)
+                        switch (AnyHelper.GetTransportType(item.PendingWriteValueStatusTimestamp.Value.Value))
                         {
-                            case Any.StorageType.Double:
+                            case TransportType.Double:
                                 writeValueArrays.SetDouble(dblIdx++, item.ServerAlias,
                                     statusCode,
                                     item.PendingWriteValueStatusTimestamp.Value.TimestampUtc,
                                     item.PendingWriteValueStatusTimestamp.Value.Value.ValueAsDouble(false));
                                 break;
-                            case Any.StorageType.UInt32:
+                            case TransportType.UInt32:
                                 writeValueArrays.SetUint(intIdx++, item.ServerAlias,
                                     statusCode,
                                     item.PendingWriteValueStatusTimestamp.Value.TimestampUtc,
                                     item.PendingWriteValueStatusTimestamp.Value.Value.ValueAsUInt32(false));
                                 break;
-                            case Any.StorageType.Object:
+                            case TransportType.Object:
                                 writeValueArrays.SetObject(objIdx++, item.ServerAlias,
                                     statusCode,
                                     item.PendingWriteValueStatusTimestamp.Value.TimestampUtc,

@@ -95,7 +95,7 @@ namespace Ssz.Utils.DataAccess
         }        
 
         /// <summary>
-        ///     Uses ValueAsDouble(false), ValueAsUInt32(false), ValueAsString(false) depending of ValueStorageType.
+        ///     Uses ValueAsDouble(false), ValueAsUInt32(false), ValueAsString(false) depending of ValueTransportType.
         ///     Returns true if diff is less than or equal deadband.
         ///     TimestampUtc is NOT compared.
         /// </summary>

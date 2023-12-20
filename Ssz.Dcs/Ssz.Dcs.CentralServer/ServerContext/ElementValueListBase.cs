@@ -115,7 +115,7 @@ namespace Ssz.Dcs.CentralServer
                     {
                         item.PendingWriteValueStatusTimestamp = new ValueStatusTimestamp
                             {
-                                Value = new Any(elementValuesCollection.DoubleValues[index], (Ssz.Utils.Any.TypeCode)elementValuesCollection.DoubleValueTypeCodes[index], false),
+                                Value = AnyHelper.GetAny(elementValuesCollection.DoubleValues[index], (Ssz.Utils.Any.TypeCode)elementValuesCollection.DoubleValueTypeCodes[index], false),
                                 StatusCode = elementValuesCollection.DoubleStatusCodes[index],
                                 TimestampUtc = elementValuesCollection.DoubleTimestamps[index].ToDateTime()
                             };
@@ -130,7 +130,7 @@ namespace Ssz.Dcs.CentralServer
                     {
                         item.PendingWriteValueStatusTimestamp = new ValueStatusTimestamp
                         {
-                            Value = new Any(elementValuesCollection.UintValues[index], (Ssz.Utils.Any.TypeCode)elementValuesCollection.UintValueTypeCodes[index], false),
+                            Value = AnyHelper.GetAny(elementValuesCollection.UintValues[index], (Ssz.Utils.Any.TypeCode)elementValuesCollection.UintValueTypeCodes[index], false),
                             StatusCode = elementValuesCollection.UintStatusCodes[index],
                             TimestampUtc = elementValuesCollection.UintTimestamps[index].ToDateTime()
                         };

@@ -42,8 +42,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         /// <param name="valueUInt32"> The value </param>
         public void UpdateValue(uint valueUInt32, uint statusCode, DateTime timestampUtc)
         {
-            var any = new Any();
-            any.Set(valueUInt32, ValueTypeCode, false);
+            var any = AnyHelper.GetAny(valueUInt32, ValueTypeCode, false);
             _valueStatusTimestamp = new ValueStatusTimestamp(any, XiServerInfo.NormalizeStatusCode(statusCode), timestampUtc);           
             IncrementUpdateCount();
         }        
@@ -59,8 +58,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
         /// <param name="valueDouble"> The value </param>
         public void UpdateValue(double valueDouble, uint statusCode, DateTime timestampUtc)
         {
-            var any = new Any();
-            any.Set(valueDouble, ValueTypeCode, false);
+            var any = AnyHelper.GetAny(valueDouble, ValueTypeCode, false);
             _valueStatusTimestamp = new ValueStatusTimestamp(any, XiServerInfo.NormalizeStatusCode(statusCode), timestampUtc);            
             IncrementUpdateCount();
         }
