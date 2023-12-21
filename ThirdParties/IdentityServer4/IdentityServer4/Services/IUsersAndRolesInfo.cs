@@ -12,13 +12,13 @@ namespace IdentityServer4.Services
         ///     Gets all user roles names.
         /// </summary>
         /// <returns></returns>
-        string[] GetRoles();
+        string[] GetAllRoles();
 
         /// <summary>
         ///     Gets all user roles names.
         /// </summary>
         /// <returns></returns>
-        Task<string[]> GetRolesAsync();
+        Task<string[]> GetAllRolesAsync();
 
         /// <summary>
         ///     SuperUser Is Enabled

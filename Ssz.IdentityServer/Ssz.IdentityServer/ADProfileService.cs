@@ -93,7 +93,7 @@ namespace Ssz.IdentityServer
 
             if (_usersAndRolesInfo is not null)
             {
-                var roles = new HashSet<string>(await _usersAndRolesInfo.GetRolesAsync(), StringComparer.InvariantCultureIgnoreCase);
+                var roles = new HashSet<string>(await _usersAndRolesInfo.GetAllRolesAsync(), StringComparer.InvariantCultureIgnoreCase);
                 claims = claims!.Where(c => c.Type != JwtClaimTypes.Role || roles.Contains(c.Value)).ToList();
             }
 

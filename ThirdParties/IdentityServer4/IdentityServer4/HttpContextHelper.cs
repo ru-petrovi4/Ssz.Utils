@@ -78,11 +78,11 @@ namespace IdentityServer4
         /// </summary>
         /// <param name="httpContext"></param>
         /// <returns></returns>
-        public static IEnumerable<string> GetRoles(HttpContext? httpContext)
+        public static string[] GetRoles(HttpContext? httpContext)
         {
             if (httpContext is null)
                 return new string[0];
-            return httpContext.User.Claims.Where(c => c.Type == "role").Select(c => c.Value);
+            return httpContext.User.Claims.Where(c => c.Type == "role").Select(c => c.Value).ToArray();
         }
 
         #endregion
