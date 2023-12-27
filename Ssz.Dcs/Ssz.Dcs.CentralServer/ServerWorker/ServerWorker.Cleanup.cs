@@ -68,7 +68,20 @@ namespace Ssz.Dcs.CentralServer
 
             if (utilityItemsDoWorkNeeded)
                 _utilityItemsDoWorkNeeded = true;
+
+            if (nowUtc - _last_GC_CleanUpDateTimeUtc > TimeSpan.FromMinutes(5))
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                _last_GC_CleanUpDateTimeUtc = DateTime.UtcNow; // Because long-running operation.
+            }
         }
+
+        #endregion
+
+        #region private fields
+
+        private DateTime _last_GC_CleanUpDateTimeUtc = DateTime.MinValue;
 
         #endregion
     }
