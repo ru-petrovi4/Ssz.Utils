@@ -661,21 +661,32 @@ namespace Ssz.Utils {
             catch
             {
             }             return Activator.CreateInstance(asType);         }          /// <summary>         ///     asType has System.TypeCode.Object, _typeCode != (byte)TypeCode.Object         /// </summary>         /// <param name="asType"></param>         /// <param name="stringIsLocalized"></param>         /// <returns></returns>         private object? ValueAsObject(Type asType, bool stringIsLocalized)         {             if (_typeCode == (byte)TypeCode.Empty)             {                 if (asType.IsClass)                 {                     return null;                 }                 else                 {                     try                     {                         return Activator.CreateInstance(asType);                     }                     catch (Exception)                     {                     }                     return null;                 }                             }              if (_typeCode == (byte)TypeCode.String)             {                                 if ((string)_storageObject! == @"")                 {                     try                     {                         return Activator.CreateInstance(asType);                     }                     catch (Exception)                     {                                             }                     return null;                 }             }              TypeConverter converter = TypeDescriptor.GetConverter(asType);             if (converter.CanConvertFrom(ValueType))             {                 try                 {                     return converter.ConvertFrom(null, GetCultureInfo(stringIsLocalized), ValueAsObject()!); // _typeCode == (byte)TypeCode.Empty handled earlier.
-                }                 catch (Exception)                 {                 }                             }              try             {                 return Activator.CreateInstance(asType);             }             catch (Exception)             {             }             return null;         }        
+                }                 catch (Exception)                 {                 }                             }              try             {                 return Activator.CreateInstance(asType);             }             catch (Exception)             {             }             return null;         }
 
-#endregion 
-        #region private fields 
-        [FieldOffset(0)]         private byte _typeCode;          [FieldOffset(2)]         private sbyte _storageSByte;          [FieldOffset(2)]         private byte _storageByte;          [FieldOffset(2)]         private short _storageInt16;          [FieldOffset(2)]         private ushort _storageUInt16;          [FieldOffset(2)]         private int _storageInt32;          [FieldOffset(2)]         private uint _storageUInt32;          [FieldOffset(2)]         private bool _storageBoolean;          [FieldOffset(2)]         private char _storageChar;                  [FieldOffset(2)]         private float _storageSingle;          [FieldOffset(2)]         private double _storageDouble;
+        #endregion 
+        #region private fields       
+        [FieldOffset(0)]         private object? _storageObject;          [FieldOffset(8)]         private sbyte _storageSByte;          [FieldOffset(8)]         private byte _storageByte;          [FieldOffset(8)]         private short _storageInt16;          [FieldOffset(8)]         private ushort _storageUInt16;          [FieldOffset(8)]         private int _storageInt32;          [FieldOffset(8)]         private uint _storageUInt32;          [FieldOffset(8)]         private bool _storageBoolean;          [FieldOffset(8)]         private char _storageChar;
 
-        [FieldOffset(2)]         private long _storageInt64;
+        /// <summary>
+        ///     4 bytes
+        /// </summary>         [FieldOffset(8)]         private float _storageSingle;
 
-        [FieldOffset(2)]         private ulong _storageUInt64;
+        /// <summary>
+        ///     8 bytes
+        /// </summary>         [FieldOffset(8)]         private double _storageDouble;
 
-        [FieldOffset(2)]         private decimal _storageDecimal;
+        [FieldOffset(8)]         private long _storageInt64;
 
-        [FieldOffset(2)]         private DateTime _storageDateTime;
+        [FieldOffset(8)]         private ulong _storageUInt64;
 
-        [FieldOffset(24)]         private object? _storageObject;
+        /// <summary>
+        ///     16 bytes
+        /// </summary>
+        [FieldOffset(8)]         private decimal _storageDecimal;
+
+        [FieldOffset(8)]         private DateTime _storageDateTime;        
+
+        [FieldOffset(24)]         private byte _typeCode;
 
         #endregion 
         //public class HashEqualityComparer : IEqualityComparer<Any>
