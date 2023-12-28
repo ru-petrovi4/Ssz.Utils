@@ -70,13 +70,18 @@ namespace Ssz.Dcs.Addons.DataAccessClient
             var elementIdsMap = ActivatorUtilities.CreateInstance<ElementIdsMap>(ServiceProvider);
             elementIdsMap.Initialize(CsvDb.GetData(ElementIdsMap.StandardMapFileName), CsvDb.GetData(ElementIdsMap.StandardTagsFileName), CsvDb);
 
+            var options = new DataAccessProviderOptions { DangerousAcceptAnyServerCertificate = false };
+#if DEBUG
+            options.DangerousAcceptAnyServerCertificate = true;
+#endif
+
             dataAccessProvider.Initialize(elementIdsMap,                
                 serverAddress,
                 @"Ssz.Dcs.Addons.DataAccessClient",
                 Environment.MachineName,
                 systemNameToConnect,
                 contextParams,
-                new DataAccessProviderOptions { DangerousAcceptAnyServerCertificate = false },
+                options,
                 callbackDispatcher);
 
             CsvDb.CsvFileChanged += (sender, args) =>

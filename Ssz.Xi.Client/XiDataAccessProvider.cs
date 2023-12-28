@@ -792,7 +792,7 @@ namespace Ssz.Xi.Client
                         else
                         {
                             var childValueSubscriptionsList = new List<ChildValueSubscription>();
-                            var converter = new SszConverter();
+                            SszConverter? converter = null;
 
                             for (var i = 1; i < valueSubscriptionObj.MapValues.Count; i++)
                             {
@@ -803,6 +803,9 @@ namespace Ssz.Xi.Client
                                      StringHelper.StartsWithIgnoreCase(v, @"WRITECONVERTER"))
                                     && (index = v.IndexOf('=')) > 0)
                                 {
+                                    if (converter is null)
+                                        converter = new SszConverter();
+
                                     var values = v.Substring(index + 1).Split(new[] { "->" }, StringSplitOptions.None);
                                     switch (v.Substring(0, index).Trim().ToUpperInvariant())
                                     {
@@ -829,13 +832,16 @@ namespace Ssz.Xi.Client
                                 }
                                 else
                                 {
+                                    if (converter is not null)
+                                        continue;
+
                                     var childValueSubscription = new ChildValueSubscription(valueSubscriptionObj, v);
                                     childValueSubscriptionsList.Add(childValueSubscription);
                                 }
                             }
 
-                            if (converter.Statements.Count == 0 && converter.BackStatements.Count == 0)
-                            {
+                            if (converter is not null && converter.Statements.Count == 0 && converter.BackStatements.Count == 0)
+                            {                                
                                 converter = null;
                             }
                             //else

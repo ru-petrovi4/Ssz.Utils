@@ -33,6 +33,8 @@ namespace Ssz.Utils
         /// </summary>
         public string GenericTag { get; private set; } = @"%(TAG)";
 
+        public string GenericTag_Number { get; private set; } = @"%(TAG_NUMBER)";
+
         /// <summary>
         ///     Can be configured in map, '%(GenericProp)' key
         /// </summary>
@@ -201,16 +203,18 @@ namespace Ssz.Utils
 
         public static Any? TryGetConstValue(string? elementIdOrConst)
         {
-            if (string.IsNullOrEmpty(elementIdOrConst)) return null;
+            if (String.IsNullOrEmpty(elementIdOrConst))
+                return null;
 
-            if (elementIdOrConst!.StartsWith("\"") && elementIdOrConst.EndsWith("\""))
+            if (elementIdOrConst!.StartsWith("\"") && elementIdOrConst.EndsWith("\"") && elementIdOrConst.Length >= 2)
             {
                 elementIdOrConst = elementIdOrConst.Substring(1, elementIdOrConst.Length - 2);
                 return new Any(elementIdOrConst);
             }
 
             var any = Any.ConvertToBestType(elementIdOrConst, false);
-            if (any.ValueTypeCode != Any.TypeCode.String) return any;
+            if (any.ValueTypeCode != Any.TypeCode.String)
+                return any;
 
             return null;
         }
@@ -281,6 +285,14 @@ namespace Ssz.Utils
                     {
                         if (String.Equals(constant, GenericTag, StringComparison.InvariantCultureIgnoreCase))
                             return tagName;
+                        if (String.Equals(constant, GenericTag_Number, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            int index = tagName.IndexOfAny(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']);
+                            if (index > 0)
+                                return tagName.Substring(i);
+                            else
+                                return @"";
+                        }
                         if (String.Equals(constant, GenericProp, StringComparison.InvariantCultureIgnoreCase))
                             return prop;
                         if (getConstantValue != null)

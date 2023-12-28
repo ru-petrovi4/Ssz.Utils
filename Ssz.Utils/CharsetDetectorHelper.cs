@@ -41,15 +41,17 @@ namespace Ssz.Utils
             MemoryStream memoryStream = new();
             stream.CopyTo(memoryStream);
             byte[] bytes = memoryStream.ToArray();
-            CharsetDetector charsetDetector = new();
-            charsetDetector.Feed(bytes, 0, bytes.Length);
-            charsetDetector.DataEnd();
-
-            var encoding = charsetDetector.Encoding ?? defaultEncoding;
-            if (charsetDetector.Confidence < 0.2)
-                encoding = defaultEncoding;
-            logger?.LogDebug(@"Detected Encoding: " + encoding.EncodingName);
-
+            var encoding = defaultEncoding;
+            if (bytes.Length > 0)
+            {
+                CharsetDetector charsetDetector = new();
+                charsetDetector.Feed(bytes, 0, bytes.Length);
+                charsetDetector.DataEnd();
+                var encoding2 = charsetDetector.Encoding;
+                if (encoding2 is not null && charsetDetector.Confidence > 0.2)
+                    encoding = encoding2;
+                logger?.LogDebug(@"Detected Encoding: " + encoding.EncodingName);
+            }
             memoryStream.Position = 0;
             return new StreamReader(memoryStream, encoding, false);
         }
