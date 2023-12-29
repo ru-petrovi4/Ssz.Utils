@@ -31,7 +31,7 @@ namespace Ssz.Utils
             CsvDbDirectoryInfo = csvDbDirectoryInfo;
             Dispatcher = dispatcher;
 
-            if (CsvDbDirectoryInfo is not null)
+            if (CsvDbDirectoryInfo is not null && CsvDbDirectoryInfo.Exists)
             {
                 try
                 {
@@ -46,7 +46,7 @@ namespace Ssz.Utils
                 }
             }
 
-            if (CsvDbDirectoryInfo is not null)
+            if (CsvDbDirectoryInfo is not null && CsvDbDirectoryInfo.Exists)
             {
                 try
                 {
@@ -143,7 +143,8 @@ namespace Ssz.Utils
         /// </summary>
         public void LoadData()
         {
-            if (CsvDbDirectoryInfo is null) return;
+            if (CsvDbDirectoryInfo is null || !CsvDbDirectoryInfo.Exists) 
+                return;
 
             List<CsvFileChangedEventArgs> eventArgsList = new();
 
@@ -259,7 +260,7 @@ namespace Ssz.Utils
                 _csvFilesCollection.Add(fileName!, csvFile);
             }
 
-            if (CsvDbDirectoryInfo is not null)
+            if (CsvDbDirectoryInfo is not null && CsvDbDirectoryInfo.Exists)
                 csvFile.FileName = fileName!;
             csvFile.IncludeFileNamesCollection.Clear();
             csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
@@ -316,7 +317,7 @@ namespace Ssz.Utils
 
         public IEnumerable<FileInfo> GetFileInfos()
         {
-            if (CsvDbDirectoryInfo is null)
+            if (CsvDbDirectoryInfo is null || !CsvDbDirectoryInfo.Exists)
                 return new FileInfo[0];
 
             return _csvFilesCollection.Values.Select(cf => cf.OnDiskFileInfo).Where(fi => fi is not null).OfType<FileInfo>();
@@ -501,17 +502,15 @@ namespace Ssz.Utils
                 return false;
 
             StringBuilder valuesString = new();
-            foreach (var values in data)
+            foreach (var values in valuesList)
             {
-                valuesString.Append(CsvHelper.FormatForCsv(",", values));
-                valuesString.Append("\n");
+                valuesString.Append(CsvHelper.FormatForCsv(",", values));                
             }
 
             StringBuilder fileDataString = new();
-            foreach (var values in csvFile.Data.Values)
+            foreach (var kvp in csvFile.Data.OrderBy(i => i.Key))
             {
-                fileDataString.Append(CsvHelper.FormatForCsv(",", values));
-                fileDataString.Append("\n");
+                fileDataString.Append(CsvHelper.FormatForCsv(",", kvp.Value));                
             }
 
             return valuesString.ToString() == fileDataString.ToString();
@@ -571,7 +570,8 @@ namespace Ssz.Utils
         /// </summary>
         public void SaveData()
         {
-            if (CsvDbDirectoryInfo is null) return;
+            if (CsvDbDirectoryInfo is null || !CsvDbDirectoryInfo.Exists) 
+                return;
 
             List<CsvFileChangedEventArgs> eventArgsList = new();
 
@@ -629,7 +629,8 @@ namespace Ssz.Utils
         /// </summary>
         public void SaveData(string? fileName)
         {
-            if (CsvDbDirectoryInfo is null) return;            
+            if (CsvDbDirectoryInfo is null || !CsvDbDirectoryInfo.Exists) 
+                return;            
 
             if (string.IsNullOrWhiteSpace(fileName)) return;
 
@@ -690,7 +691,7 @@ namespace Ssz.Utils
         {
             if (csvFile.Data is null)
             {
-                if (CsvDbDirectoryInfo is not null)
+                if (CsvDbDirectoryInfo is not null && CsvDbDirectoryInfo.Exists)
                 {
                     using var fileFullNameScope = LoggersSet.UserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, csvFile.FileName));
                     csvFile.IncludeFileNamesCollection.Clear();

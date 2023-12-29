@@ -28,7 +28,7 @@ namespace Ssz.Dcs.Addons.OpcClient
             {
                 _xiDataJournalListItemsManager.AddItem(elementId, valueSubscription);
                 if (_xiServerProxy is null) throw new InvalidOperationException();
-                _xiDataJournalListItemsManager.Subscribe(_xiServerProxy);
+                _xiDataJournalListItemsManager.Subscribe(_xiServerProxy, Options.UnsubscribeValuesJournalListItemsFromServer);
             });
         }
 

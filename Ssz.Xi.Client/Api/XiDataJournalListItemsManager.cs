@@ -17,7 +17,7 @@ namespace Ssz.Xi.Client.Api
         ///     Creates List, adds/removes items.
         ///     No throw.
         /// </summary>
-        public void Subscribe(XiServerProxy xiServerProxy)
+        public void Subscribe(XiServerProxy xiServerProxy, bool unsubscribeItemsFromServer)
         {
             try
             {                
@@ -39,7 +39,7 @@ namespace Ssz.Xi.Client.Api
 
                 if (XiList is null || XiList.Disposed) return;
 
-                bool connectionError = SubscribeInitial();
+                bool connectionError = SubscribeInitial(unsubscribeItemsFromServer);
 
                 try
                 {                    

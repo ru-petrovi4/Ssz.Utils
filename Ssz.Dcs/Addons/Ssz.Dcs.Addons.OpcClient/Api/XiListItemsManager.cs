@@ -105,7 +105,7 @@ namespace Ssz.Xi.Client.Api
         ///     Returns whether connection errors occur.
         /// </summary>
         /// <returns></returns>
-        protected bool SubscribeInitial()
+        protected bool SubscribeInitial(bool unsubscribeItemsFromServer)
         {
             bool connectionError = false;
             
@@ -243,29 +243,38 @@ namespace Ssz.Xi.Client.Api
                         var modelItems = xiListItemWrapper.ClientObjectInfosCollection;
                         modelItems.Remove(clientObjectInfo);
                         clientObjectInfo.XiListItemWrapper = null;
-                        /* // Remove Xi Item
-                        var xiListItem = xiListItemWrapper.XiListItem;
-                        if (modelItems.Count == 0 && xiListItem is not null)
+                        if (unsubscribeItemsFromServer)
                         {
-                            xiListItem.PrepareForRemove();
-                            xiListItem.Obj = null;                            
-                        }
-                        xiListItemWrapper.XiListItem = null;*/
+                            // Remove Xi Item                        
+                            if (modelItems.Count == 0)
+                            {
+                                _xiListItemWrappersDictionary.Remove(clientObjectInfo.ElementId);
+                                var xiListItem = xiListItemWrapper.XiListItem;
+                                if (xiListItem is not null)
+                                {
+                                    xiListItem.PrepareForRemove();
+                                    xiListItem.Obj = null;
+                                }
+                            }
+                            xiListItemWrapper.XiListItem = null;
+                        }                        
                     }
                 }
-                /*
-                if (!connectionError && XiList is not null && !XiList.Disposed)
+                if (unsubscribeItemsFromServer)
                 {
-                    try
+                    if (!connectionError && XiList is not null && !XiList.Disposed)
                     {
-                        XiList.CommitRemoveItems();
+                        try
+                        {
+                            XiList.CommitRemoveItems();
+                        }
+                        catch
+                        {
+                            connectionError = true;
+                        }
                     }
-                    catch
-                    {
-                        connectionError = true;
-                    }
-                }
-                else connectionError = true;*/
+                    else connectionError = true;
+                }                
             }
 
             return connectionError;

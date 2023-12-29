@@ -154,7 +154,7 @@ namespace Xi.Server.Base
 				}
 			}
 
-			if (0 < listTList.Count)
+			if (listTList is not null && 0 < listTList.Count)
 			{
 				foreach (var tList in listTList)
 				{

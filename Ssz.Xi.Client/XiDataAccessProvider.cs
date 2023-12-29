@@ -211,7 +211,7 @@ namespace Ssz.Xi.Client
             {
                 if (_xiServerProxy is null) throw new InvalidOperationException();
                 _xiDataListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher,
-                    XiDataListItemsManagerOnElementValuesCallback, true, ct);
+                    XiDataListItemsManagerOnElementValuesCallback, Options.ElementValueListCallbackIsEnabled, Options.UnsubscribeValueListItemsFromServer, ct);
                 object[]? changedValueSubscriptions = _xiDataListItemsManager.PollChanges();
                 taskCompletionSource.SetResult(changedValueSubscriptions is not null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null);
             });
@@ -317,7 +317,7 @@ namespace Ssz.Xi.Client
             WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 _xiDataListItemsManager.Subscribe(_xiServerProxy!, CallbackDispatcher,
-                    XiDataListItemsManagerOnElementValuesCallback, true, ct);
+                    XiDataListItemsManagerOnElementValuesCallback, Options.ElementValueListCallbackIsEnabled, Options.UnsubscribeValueListItemsFromServer, ct);
 
                 if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                 {
@@ -357,7 +357,7 @@ namespace Ssz.Xi.Client
             {
                 if (_xiServerProxy is null) throw new InvalidOperationException();
                 _xiDataListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher,
-                    XiDataListItemsManagerOnElementValuesCallback, true, ct);
+                    XiDataListItemsManagerOnElementValuesCallback, Options.ElementValueListCallbackIsEnabled, Options.UnsubscribeValueListItemsFromServer, ct);
                 object[] failedValueSubscriptions = _xiDataListItemsManager.Write(valueSubscriptions, valueStatusTimestamps);
                 
                 taskCompletionSource.SetResult((failedValueSubscriptions.OfType<IValueSubscription>().ToArray(), Enumerable.Repeat(ResultInfo.UncertainResultInfo, failedValueSubscriptions.Length).ToArray()));
@@ -657,7 +657,7 @@ namespace Ssz.Xi.Client
                 return;
             
             _xiDataListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher,
-                XiDataListItemsManagerOnElementValuesCallback, Options.ElementValueListCallbackIsEnabled, cancellationToken);
+                XiDataListItemsManagerOnElementValuesCallback, Options.ElementValueListCallbackIsEnabled, Options.UnsubscribeValueListItemsFromServer, cancellationToken);
             _xiEventListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher, true, cancellationToken);
 
             if (!IsInitialized || cancellationToken.IsCancellationRequested) 

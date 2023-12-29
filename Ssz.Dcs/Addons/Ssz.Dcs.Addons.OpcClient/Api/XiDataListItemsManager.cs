@@ -29,7 +29,7 @@ namespace Ssz.Xi.Client.Api
         /// <param name="callbackable"></param>
         /// <param name="ct"></param>
         public void Subscribe(XiServerProxy xiServerProxy, IDispatcher? сallbackDoer,
-            ElementValuesCallbackEventHandler elementValuesCallbackEventHandler, bool callbackable, CancellationToken ct)
+            ElementValuesCallbackEventHandler elementValuesCallbackEventHandler, bool callbackable, bool unsubscribeItemsFromServer, CancellationToken ct)
         {
             _callbackable = callbackable;
 
@@ -52,7 +52,7 @@ namespace Ssz.Xi.Client.Api
                     }
                 }
 
-                bool connectionError = SubscribeInitial();
+                bool connectionError = SubscribeInitial(unsubscribeItemsFromServer);
 
                 try
                 {
