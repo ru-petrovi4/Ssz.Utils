@@ -173,28 +173,86 @@ namespace Ssz.Utils.Serialization
         public IDisposable EnterBlock(int version = -1)
         {
             return new Block(this, version);
-        }        
+        }
 
         /// <summary>
-        ///     Writes a four-byte floating-point value to the current stream and advances the
-        ///     stream position by four bytes.
+        /// 
         /// </summary>
         /// <param name="value"></param>
-        public void Write(float value)
+        public void Write(bool value)
         {
             _binaryWriter.Write(value);
         }
         
         /// <summary>
-        ///     Writes an eight-byte unsigned integer to the current stream and advances the
-        ///     stream position by eight bytes.
+        /// 
         /// </summary>
-        /// <param name="value"></param>        
-        public void Write(ulong value)
+        /// <param name="value"></param>
+        public void Write(sbyte value)
         {
             _binaryWriter.Write(value);
         }
-        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        public void Write(byte value)
+        {
+            _binaryWriter.Write(value);
+        }
+
+        /// <summary>
+        ///     Writes a Unicode character to the current stream and advances the current position
+        ///     of the stream in accordance with the Encoding used and the specific characters
+        ///     being written to the stream.
+        /// </summary>
+        /// <param name="ch"></param>
+        public void Write(char ch)
+        {
+            _binaryWriter.Write(ch);
+        }
+
+        /// <summary>
+        ///     Writes a two-byte signed integer to the current stream and advances the stream
+        ///     position by two bytes.
+        /// </summary>
+        /// <param name="value"></param>
+        public void Write(short value)
+        {
+            _binaryWriter.Write(value);
+        }
+
+        /// <summary>
+        ///     Writes a two-byte unsigned integer to the current stream and advances the stream
+        ///     position by two bytes.
+        /// </summary>
+        /// <param name="value"></param>        
+        public void Write(ushort value)
+        {
+            _binaryWriter.Write(value);
+        }
+
+        /// <summary>
+        ///    Writes a four-byte signed integer to the current stream and advances the stream
+        ///     position by four bytes.
+        /// </summary>
+        /// <param name="value"></param>
+        public void Write(int value)
+        {
+            WriteOptimizedOrNot(value);
+        }
+
+        /// <summary>
+        ///     Writes a four-byte unsigned integer to the current stream and advances the stream
+        ///     position by four bytes.
+        /// </summary>
+        /// <param name="value"></param>        
+        public void Write(uint value)
+        {
+            WriteOptimizedOrNot(value);
+        }
+
         /// <summary>
         ///     Writes an eight-byte signed integer to the current stream and advances the stream
         ///     position by eight bytes.
@@ -206,33 +264,151 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Write a UInt64 value using the fewest number of bytes possible.
+        ///     Writes an eight-byte unsigned integer to the current stream and advances the
+        ///     stream position by eight bytes.
+        /// </summary>
+        /// <param name="value"></param>        
+        public void Write(ulong value)
+        {
+            _binaryWriter.Write(value);
+        }
+
+        /// <summary>
+        ///     Use ReadSingle() for reading.
+        ///     Writes a four-byte floating-point value to the current stream and advances the
+        ///     stream position by four bytes.
+        /// </summary>
+        /// <param name="value"></param>
+        public void Write(float value)
+        {
+            _binaryWriter.Write(value);
+        }
+
+        /// <summary>
+        ///     Use ReadDouble() for reading.
+        ///     Writes an eight-byte floating-point value to the current stream and advances
+        ///     the stream position by eight bytes.
+        /// </summary>
+        /// <param name="value"></param>
+        public void Write(double value)
+        {
+            _binaryWriter.Write(value);
+        }
+
+        /// <summary>
+        ///     Use ReadDecimal() for reading.
+        ///     Writes a decimal value to the current stream and advances the stream position
+        ///     by sixteen bytes.
+        /// </summary>
+        /// <param name="value"></param>
+        public void Write(decimal value)
+        {
+            _binaryWriter.Write(value);
+        }
+
+        /// <summary>
+        ///     Writes a DateTime value into the stream.
+        ///     Stored Size: 8 bytes
+        /// </summary>
+        /// <param name="value"> The DateTime value to store. </param>
+        public void Write(DateTime value)
+        {
+            _binaryWriter.Write(value.ToBinary());
+        }
+
+        /// <summary>
+        ///     Writes a TimeSpan value into the stream.
+        ///     Stored Size: 8 bytes
+        /// </summary>
+        /// <param name="value"> The TimeSpan value to store. </param>
+        public void Write(TimeSpan value)
+        {
+            _binaryWriter.Write(value.Ticks);
+        }
+
+        /// <summary>
+        ///     Writes a Guid into the stream.
+        ///     Stored Size: 16 bytes.
+        /// </summary>
+        /// <param name="value"> </param>
+        public void Write(Guid value)
+        {
+            _binaryWriter.Write(value.ToByteArray());
+        }
+
+        /// <summary>
+        ///     Use ReadString() for reading.
+        /// </summary>
+        /// <param name="value"> The string to store. </param>
+        public void Write(string value)
+        {
+            WriteOptimizedOrNot(value);
+        }
+
+        /// <summary>
+        ///     Use ReadNullableString() for reading.
+        /// </summary>
+        /// <param name="value"> The string to store. </param>
+        public void WriteNullableString(string? value)
+        {
+            WriteOptimizedOrNot(value);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        public void WriteOptimized(short value)
+        {
+            _binaryWriter.Write7BitEncodedInt(value);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        public void WriteOptimized(ushort value)
+        {
+            _binaryWriter.Write7BitEncodedInt(value);
+        }
+
+        /// <summary>
+        ///     Write an Int32 value using the fewest number of bytes possible.
         /// </summary>
         /// <remarks>
-        ///     0x0000000000000000 - 0x000000000000007f (0 to 127) takes 1 byte
-        ///     0x0000000000000080 - 0x00000000000003FF (128 to 16,383) takes 2 bytes
-        ///     0x0000000000000400 - 0x00000000001FFFFF (16,384 to 2,097,151) takes 3 bytes
-        ///     0x0000000000200000 - 0x000000000FFFFFFF (2,097,152 to 268,435,455) takes 4 bytes
-        ///     0x0000000010000000 - 0x00000007FFFFFFFF (268,435,456 to 34,359,738,367) takes 5 bytes
-        ///     0x0000000800000000 - 0x000003FFFFFFFFFF (34,359,738,368 to 4,398,046,511,103) takes 6 bytes
-        ///     0x0000040000000000 - 0x0001FFFFFFFFFFFF (4,398,046,511,104 to 562,949,953,421,311) takes 7 bytes
-        ///     0x0002000000000000 - 0x00FFFFFFFFFFFFFF (562,949,953,421,312 to 72,057,594,037,927,935) takes 8 bytes
-        ///     ------------------------------------------------------------------
-        ///     0x0100000000000000 - 0x7FFFFFFFFFFFFFFF (72,057,594,037,927,936 to 9,223,372,036,854,775,807) takes 9 bytes
-        ///     0x7FFFFFFFFFFFFFFF - 0xFFFFFFFFFFFFFFFF (9,223,372,036,854,775,807 and above) takes 10 bytes
+        ///     0x00000000 - 0x0000007f (0 to 127) takes 1 byte
+        ///     0x00000080 - 0x000003FF (128 to 16,383) takes 2 bytes
+        ///     0x00000400 - 0x001FFFFF (16,384 to 2,097,151) takes 3 bytes
+        ///     0x00200000 - 0x0FFFFFFF (2,097,152 to 268,435,455) takes 4 bytes
+        ///     ----------------------------------------------------------------
+        ///     0x10000000 - 0x07FFFFFF (268,435,456 and above) takes 5 bytes
+        ///     All negative numbers take 5 bytes
         ///     Only call this method if the value is known to be between 0 and
-        ///     72,057,594,037,927,935 otherwise use Write(UInt64 value)
+        ///     268,435,455 otherwise use Write(Int32 value)
         /// </remarks>
-        /// <param name="value"> The UInt64 to store. Must be between 0 and 72,057,594,037,927,935 inclusive. </param>
-        public void WriteOptimized(ulong value)
+        /// <param name="value"> The Int32 to store. Must be between 0 and 268,435,455 inclusive. </param>
+        public void WriteOptimized(int value)
         {
-            while (value >= 0x80)
-            {
-                _binaryWriter.Write((byte)(value | 0x80));
-                value >>= 7;
-            }
+            _binaryWriter.Write7BitEncodedInt(value);
+        }
 
-            _binaryWriter.Write((byte)value);
+        /// <summary>
+        ///     Write a UInt32 value using the fewest number of bytes possible.
+        /// </summary>
+        /// <remarks>
+        ///     0x00000000 - 0x0000007f (0 to 127) takes 1 byte
+        ///     0x00000080 - 0x000003FF (128 to 16,383) takes 2 bytes
+        ///     0x00000400 - 0x001FFFFF (16,384 to 2,097,151) takes 3 bytes
+        ///     0x00200000 - 0x0FFFFFFF (2,097,152 to 268,435,455) takes 4 bytes
+        ///     ----------------------------------------------------------------
+        ///     0x10000000 - 0xFFFFFFFF (268,435,456 and above) takes 5 bytes
+        ///     Only call this method if the value is known to  be between 0 and
+        ///     268,435,455 otherwise use Write(UInt32 value)
+        /// </remarks>
+        /// <param name="value"> The UInt32 to store. Must be between 0 and 268,435,455 inclusive. </param>
+        public void WriteOptimized(uint value)
+        {
+            _binaryWriter.Write7BitEncodedInt(unchecked((int)value));
         }
 
         /// <summary>
@@ -269,43 +445,33 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Writes a four-byte unsigned integer to the current stream and advances the stream
-        ///     position by four bytes.
+        ///     Write a UInt64 value using the fewest number of bytes possible.
         /// </summary>
-        /// <param name="value"></param>        
-        public void Write(uint value)
+        /// <remarks>
+        ///     0x0000000000000000 - 0x000000000000007f (0 to 127) takes 1 byte
+        ///     0x0000000000000080 - 0x00000000000003FF (128 to 16,383) takes 2 bytes
+        ///     0x0000000000000400 - 0x00000000001FFFFF (16,384 to 2,097,151) takes 3 bytes
+        ///     0x0000000000200000 - 0x000000000FFFFFFF (2,097,152 to 268,435,455) takes 4 bytes
+        ///     0x0000000010000000 - 0x00000007FFFFFFFF (268,435,456 to 34,359,738,367) takes 5 bytes
+        ///     0x0000000800000000 - 0x000003FFFFFFFFFF (34,359,738,368 to 4,398,046,511,103) takes 6 bytes
+        ///     0x0000040000000000 - 0x0001FFFFFFFFFFFF (4,398,046,511,104 to 562,949,953,421,311) takes 7 bytes
+        ///     0x0002000000000000 - 0x00FFFFFFFFFFFFFF (562,949,953,421,312 to 72,057,594,037,927,935) takes 8 bytes
+        ///     ------------------------------------------------------------------
+        ///     0x0100000000000000 - 0x7FFFFFFFFFFFFFFF (72,057,594,037,927,936 to 9,223,372,036,854,775,807) takes 9 bytes
+        ///     0x7FFFFFFFFFFFFFFF - 0xFFFFFFFFFFFFFFFF (9,223,372,036,854,775,807 and above) takes 10 bytes
+        ///     Only call this method if the value is known to be between 0 and
+        ///     72,057,594,037,927,935 otherwise use Write(UInt64 value)
+        /// </remarks>
+        /// <param name="value"> The UInt64 to store. Must be between 0 and 72,057,594,037,927,935 inclusive. </param>
+        public void WriteOptimized(ulong value)
         {
-            WriteOptimizedOrNot(value);
-        }
-        
-        /// <summary>
-        ///    Writes a four-byte signed integer to the current stream and advances the stream
-        ///     position by four bytes.
-        /// </summary>
-        /// <param name="value"></param>
-        public void Write(int value)
-        {
-            WriteOptimizedOrNot(value);
-        }
-         
-        /// <summary>
-        ///     Writes a two-byte unsigned integer to the current stream and advances the stream
-        ///     position by two bytes.
-        /// </summary>
-        /// <param name="value"></param>        
-        public void Write(ushort value)
-        {
-            _binaryWriter.Write(value);
-        }
-        
-        /// <summary>
-        ///     Writes a two-byte signed integer to the current stream and advances the stream
-        ///     position by two bytes.
-        /// </summary>
-        /// <param name="value"></param>
-        public void Write(short value)
-        {
-            _binaryWriter.Write(value);
+            while (value >= 0x80)
+            {
+                _binaryWriter.Write((byte)(value | 0x80));
+                value >>= 7;
+            }
+
+            _binaryWriter.Write((byte)value);
         }
 
         /// <summary>
@@ -363,129 +529,7 @@ namespace Ssz.Utils.Serialization
         public void Write(byte[] values)
         {
             WriteArrayInternal(values);
-        }
-
-        /// <summary>
-        ///     Writes an eight-byte floating-point value to the current stream and advances
-        ///     the stream position by eight bytes.
-        /// </summary>
-        /// <param name="value"></param>
-        public void Write(double value)
-        {
-            _binaryWriter.Write(value);
-        }
-        
-        /// <summary>
-        ///     Writes a Unicode character to the current stream and advances the current position
-        ///     of the stream in accordance with the Encoding used and the specific characters
-        ///     being written to the stream.
-        /// </summary>
-        /// <param name="ch"></param>
-        public void Write(char ch)
-        {
-            _binaryWriter.Write(ch);
-        }        
-
-        //
-        // Summary:
-        //     Writes a signed byte to the current stream and advances the stream position by
-        //     one byte.
-        //
-        // Parameters:
-        //   value:
-        //     The signed byte to write.
-        //
-        // Exceptions:
-        //   T:System.IO.IOException:
-        //     An I/O error occurs.
-        //
-        //   T:System.ObjectDisposedException:
-        //     The stream is closed.
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>       
-        public void Write(sbyte value)
-        {
-            _binaryWriter.Write(value);
-        }
-
-        //
-        // Summary:
-        //     Writes an unsigned byte to the current stream and advances the stream position
-        //     by one byte.
-        //
-        // Parameters:
-        //   value:
-        //     The unsigned byte to write.
-        //
-        // Exceptions:
-        //   T:System.IO.IOException:
-        //     An I/O error occurs.
-        //
-        //   T:System.ObjectDisposedException:
-        //     The stream is closed.        
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        public void Write(byte value)
-        {
-            _binaryWriter.Write(value);
-        }
-        //
-        // Summary:
-        //     Writes a one-byte Boolean value to the current stream, with 0 representing false
-        //     and 1 representing true.
-        //
-        // Parameters:
-        //   value:
-        //     The Boolean value to write (0 or 1).
-        //
-        // Exceptions:
-        //   T:System.IO.IOException:
-        //     An I/O error occurs.
-        //
-        //   T:System.ObjectDisposedException:
-        //     The stream is closed.
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        public void Write(bool value)
-        {
-            _binaryWriter.Write(value);
-        }
-        
-        /// <summary>
-        ///     Writes a decimal value to the current stream and advances the stream position
-        ///     by sixteen bytes.
-        /// </summary>
-        /// <param name="value"></param>
-        public void Write(decimal value)
-        {
-            _binaryWriter.Write(value);
-        }
-
-        /// <summary>
-        ///     Writes a DateTime value into the stream.
-        ///     Stored Size: 8 bytes
-        /// </summary>
-        /// <param name="value"> The DateTime value to store. </param>
-        public void Write(DateTime value)
-        {
-            _binaryWriter.Write(value.ToBinary());
-        }
-
-        /// <summary>
-        ///     Writes a Guid into the stream.
-        ///     Stored Size: 16 bytes.
-        /// </summary>
-        /// <param name="value"> </param>
-        public void Write(Guid value)
-        {
-            _binaryWriter.Write(value.ToByteArray());
-        }        
+        }             
 
         /// <summary>
         ///     Use ReadObject() or ReadObjectTyped() for read.
@@ -536,7 +580,7 @@ namespace Ssz.Utils.Serialization
             
             if (value is string valueString)
             {
-                WriteOptimized(valueString);
+                WriteOptimizedOrNot(valueString);
                 return;
             }
 
@@ -1026,7 +1070,7 @@ namespace Ssz.Utils.Serialization
             
             if (value is string valueString)
             {
-                WriteOptimized(valueString);
+                WriteOptimizedOrNot(valueString);
                 return;
             }
             
@@ -1091,25 +1135,7 @@ namespace Ssz.Utils.Serialization
 
             WriteSerializedType(SerializedType.OwnedDataSerializableType);
             value.SerializeOwnedData(this, context);
-        }
-
-        /// <summary>
-        ///     Use ReadString() for reading.
-        /// </summary>
-        /// <param name="value"> The string to store. </param>
-        public void Write(string value)
-        {
-            WriteOptimized(value);
-        }
-
-        /// <summary>
-        ///     Use ReadNullableString() for reading.
-        /// </summary>
-        /// <param name="value"> The string to store. </param>
-        public void WriteNullableString(string? value)
-        {
-            WriteOptimized(value);
-        }
+        }        
 
         /// <summary>
         ///     User ReadNullable<T>() for reading.
@@ -1127,17 +1153,7 @@ namespace Ssz.Utils.Serialization
             {
                 WriteObject((object)value.Value);
             }
-        }
-
-        /// <summary>
-        ///     Writes a TimeSpan value into the stream.
-        ///     Stored Size: 8 bytes
-        /// </summary>
-        /// <param name="value"> The TimeSpan value to store. </param>
-        public void Write(TimeSpan value)
-        {
-            _binaryWriter.Write(value.Ticks);
-        }
+        }        
 
         ///// <summary>
         /////     Writes a System.Windows.Point value into the stream.
@@ -1173,6 +1189,23 @@ namespace Ssz.Utils.Serialization
             else
             {
                 WriteArrayInternal(values, typeof (T));
+            }
+        }
+
+        /// <summary>
+        ///     use ReadArrayOfOwnedDataSerializable(...) for reading.
+        ///     Writes array of same type not null objects.         
+        /// </summary>        
+        /// <param name="values"></param>
+        /// <param name="context"></param>
+        public void WriteArrayOfOwnedDataSerializable<T>(T[] values,
+            object? context)
+            where T : IOwnedDataSerializable
+        {
+            Write(values.Length);
+            foreach (var v in values)
+            {
+                v.SerializeOwnedData(this, context);
             }
         }
 
@@ -1411,7 +1444,7 @@ namespace Ssz.Utils.Serialization
                 {
                     NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowNamedFloatingPointLiterals 
                 });
-            WriteOptimized(s);
+            WriteOptimizedOrNot(s);
         }
 
         /// <summary>
@@ -1432,64 +1465,7 @@ namespace Ssz.Utils.Serialization
                 value.CopyTo(data, 0);
                 _binaryWriter.Write(data, 0, data.Length);
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        private void WriteOptimized(ushort value)
-        {
-            _binaryWriter.Write7BitEncodedInt(value);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        private void WriteOptimized(short value)
-        {
-            _binaryWriter.Write7BitEncodedInt(value);
-        }
-
-        /// <summary>
-        ///     Write a UInt32 value using the fewest number of bytes possible.
-        /// </summary>
-        /// <remarks>
-        ///     0x00000000 - 0x0000007f (0 to 127) takes 1 byte
-        ///     0x00000080 - 0x000003FF (128 to 16,383) takes 2 bytes
-        ///     0x00000400 - 0x001FFFFF (16,384 to 2,097,151) takes 3 bytes
-        ///     0x00200000 - 0x0FFFFFFF (2,097,152 to 268,435,455) takes 4 bytes
-        ///     ----------------------------------------------------------------
-        ///     0x10000000 - 0xFFFFFFFF (268,435,456 and above) takes 5 bytes
-        ///     Only call this method if the value is known to  be between 0 and
-        ///     268,435,455 otherwise use Write(UInt32 value)
-        /// </remarks>
-        /// <param name="value"> The UInt32 to store. Must be between 0 and 268,435,455 inclusive. </param>
-        private void WriteOptimized(uint value)
-        {
-            _binaryWriter.Write7BitEncodedInt(unchecked((int)value));
-        }
-
-        /// <summary>
-        ///     Write an Int32 value using the fewest number of bytes possible.
-        /// </summary>
-        /// <remarks>
-        ///     0x00000000 - 0x0000007f (0 to 127) takes 1 byte
-        ///     0x00000080 - 0x000003FF (128 to 16,383) takes 2 bytes
-        ///     0x00000400 - 0x001FFFFF (16,384 to 2,097,151) takes 3 bytes
-        ///     0x00200000 - 0x0FFFFFFF (2,097,152 to 268,435,455) takes 4 bytes
-        ///     ----------------------------------------------------------------
-        ///     0x10000000 - 0x07FFFFFF (268,435,456 and above) takes 5 bytes
-        ///     All negative numbers take 5 bytes
-        ///     Only call this method if the value is known to be between 0 and
-        ///     268,435,455 otherwise use Write(Int32 value)
-        /// </remarks>
-        /// <param name="value"> The Int32 to store. Must be between 0 and 268,435,455 inclusive. </param>
-        private void WriteOptimized(int value)
-        {
-            _binaryWriter.Write7BitEncodedInt(value);
-        }                
+        }                                             
 
         private void WriteOptimizedOrNot(uint value)
         {
@@ -1703,7 +1679,7 @@ namespace Ssz.Utils.Serialization
         ///     The next 34,359,738,368 strings will use a 4 byte token. (only shown for completeness!!!)
         /// </summary>
         /// <param name="value"> The string to store. </param>
-        private void WriteOptimized(string? value)
+        private void WriteOptimizedOrNot(string? value)
         {
             if (value is null)
             {
@@ -1783,7 +1759,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="value"> The Type to store. Must not be null. </param>
         private void WriteOptimized(Type value)
         {
-            WriteOptimized(
+            WriteOptimizedOrNot(
                 (value.AssemblyQualifiedName ?? "").IndexOf(", mscorlib,", StringComparison.InvariantCultureIgnoreCase) == -1
                     ? value.AssemblyQualifiedName ?? ""
                     : value.FullName ?? "");
