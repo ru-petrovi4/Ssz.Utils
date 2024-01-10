@@ -153,17 +153,18 @@ namespace Ssz.Utils
         }
 
         /// <summary>
-        ///     Uses IsSecondaryProcess configuration key.
-        ///     Returns false if primary process, true if secondary.
+        ///     Uses IsMainProcess configuration key.
+        ///     Returns true if main process, false if additional.
+        ///     Default is true.
         /// </summary>
         /// <remarks>
-        ///     Secondary process is used in load balancing scenarios.
+        ///     Additional processes are used in load balancing scenarios.
         /// </remarks>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public static bool IsSecondaryProcess(IConfiguration? configuration)
+        public static bool IsMainProcess(IConfiguration? configuration)
         {
-            return GetValue(configuration, @"IsSecondaryProcess", false);
+            return GetValue(configuration, @"IsMainProcess", true);
         }
 
         /// <summary>
