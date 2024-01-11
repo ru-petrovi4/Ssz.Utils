@@ -126,6 +126,12 @@
   <data name="AddonNameIsEmpty" xml:space="preserve">
     <value>AddonNameIsEmpty</value>
   </data>
+  <data name="AddonTestIsNotSupported" xml:space="preserve">
+    <value>Для данного плагина тестирование не доступно.</value>
+  </data>
+  <data name="AddonTestNoData" xml:space="preserve">
+    <value>Нет данных.</value>
+  </data>
   <data name="Addon_STATE_INITIALIZING" xml:space="preserve">
     <value>Плагин не инициализирован</value>
   </data>

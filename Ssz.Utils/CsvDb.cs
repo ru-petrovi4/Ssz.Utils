@@ -11,6 +11,11 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils
 {
+    /// <summary>
+    ///     Only the thread that the Dispatcher was created on may access the CsvDb directly. 
+    ///     To access a CsvDb from a thread other than the thread the CsvDb was created on,
+    ///     call BeginInvoke or BeginInvokeEx on the Dispatcher the CsvDb is associated with.
+    /// </summary>
     public class CsvDb : IDispatcherObject
     {
         #region construction and destruction
@@ -19,12 +24,12 @@ namespace Ssz.Utils
         ///     userFriendlyLogger: Messages are localized. Priority is Information, Error, Warning.
         ///     If csvDbDirectoryInfo is null, directory is not used.
         ///     If !csvDbDirectoryInfo.Exists, directory is created.
-        ///     If callbackDispatcher is not null, monitors csvDbDirectoryInfo for changes.        
+        ///     If dispatcher is not null, monitors csvDbDirectoryInfo for changes.        
         /// </summary>
         /// <param name="logger"></param>
         /// <param name="userFriendlyLogger"></param>
         /// <param name="csvDbDirectoryInfo"></param>
-        /// <param name="dispatcher">Dispatcher for all callbacks</param>
+        /// <param name="dispatcher"></param>
         public CsvDb(ILogger<CsvDb> logger, IUserFriendlyLogger? userFriendlyLogger = null, DirectoryInfo? csvDbDirectoryInfo = null, IDispatcher? dispatcher = null)
         {
             LoggersSet = new LoggersSet<CsvDb>(logger, userFriendlyLogger);            
@@ -103,7 +108,8 @@ namespace Ssz.Utils
         public bool CsvDbDirectoryHasWriteAccess { get; }
 
         /// <summary>
-        ///     Dispatcher for all callbacks
+        ///     To access a CsvDb from a thread other than the thread the CsvDb was created on,
+        ///     call BeginInvoke or BeginInvokeEx on this Dispatcher.
         /// </summary>
         public IDispatcher? Dispatcher { get; }        
 
@@ -712,13 +718,10 @@ namespace Ssz.Utils
             await Task.Run(() => Thread.Sleep(1000)); // Working
             _fileSystemWatcherOnEventIsProcessing = false;
 
-            if (Dispatcher is not null)
+            Dispatcher!.BeginInvoke(ct =>
             {
-                Dispatcher.BeginInvoke(ct =>
-                {
-                    LoadData();                    
-                });
-            }            
+                LoadData();
+            });
         }
 
         private async Task FileSystemWatcherEnableRaisingEventsAsync()

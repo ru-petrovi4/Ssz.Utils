@@ -126,6 +126,12 @@
   <data name="AddonNameIsEmpty" xml:space="preserve">
     <value>AddonNameIsEmpty</value>
   </data>
+  <data name="AddonTestIsNotSupported" xml:space="preserve">
+    <value>Addon test is not supported for this addon.</value>
+  </data>
+  <data name="AddonTestNoData" xml:space="preserve">
+    <value>No Data</value>
+  </data>
   <data name="Addon_STATE_INITIALIZING" xml:space="preserve">
     <value>Addon is not initialized</value>
   </data>

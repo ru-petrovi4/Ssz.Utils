@@ -241,7 +241,11 @@ namespace Ssz.Dcs.CentralServer
                     configurationFiles.ConfigurationFilesCollection.AddRange(group);
                     if (String.IsNullOrEmpty(sourcePath))
                     {
-                        _addonsManager.WriteConfiguration(configurationFiles);
+                        tasks.Add(Task.Run(() =>
+                        {
+                            _addonsManager.WriteConfigurationThreadSafe(configurationFiles);
+                            return (IEnumerable<byte>)Array.Empty<byte>();
+                        }));
                     }
                     else
                     {

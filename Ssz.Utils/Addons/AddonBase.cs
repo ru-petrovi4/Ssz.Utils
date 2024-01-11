@@ -178,6 +178,16 @@ namespace Ssz.Utils.Addons
             Close();
         }
 
+        public virtual string GetAddonTestInfo()
+        {
+            return Properties.Resources.AddonTestIsNotSupported;
+        }
+
+        public virtual Task<string> AddonTestAsync(string options)
+        {
+            return Task.FromResult(Properties.Resources.AddonTestNoData);
+        }
+
         #endregion
     }
 }

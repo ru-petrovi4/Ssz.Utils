@@ -215,7 +215,7 @@ namespace Ssz.Dcs.CentralServer
             }
         }
 
-        private async Task<TReply> GetAsyncReplyAsync<TReply>(Func<Task<TReply>> func, ServerCallContext context)
+        private async Task<TReply> GetReplyExAsync<TReply>(Func<Task<TReply>> func, ServerCallContext context)
         {
             var taskCompletionSource = new TaskCompletionSource<TReply>();
             //context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);

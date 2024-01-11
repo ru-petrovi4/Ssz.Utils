@@ -53,43 +53,7 @@ namespace Ssz.Utils.Wpf
 
         #region public functions
 
-        public bool Disposed { get; private set; }
-
-        public async Task<T> InvokeAsync<T>(Func<CancellationToken, T> action)
-        {
-            var taskCompletionSource = new TaskCompletionSource<T>();
-            _ = _dispatcher.BeginInvoke(() =>
-            {
-                try
-                {
-                    var result = action(CancellationToken.None);
-                    taskCompletionSource.SetResult(result);
-                }
-                catch (Exception ex)
-                {
-                    taskCompletionSource.SetException(ex);
-                }
-            });
-            return await taskCompletionSource.Task;
-        }
-
-        public async Task<T> InvokeExAsync<T>(Func<CancellationToken, Task<T>> action)
-        {
-            var taskCompletionSource = new TaskCompletionSource<T>();
-            _ = _dispatcher.BeginInvoke(async () =>
-            {
-                try
-                {
-                    var result = await action(CancellationToken.None);
-                    taskCompletionSource.SetResult(result);
-                }
-                catch (Exception ex)
-                {
-                    taskCompletionSource.SetException(ex);
-                }
-            });
-            return await taskCompletionSource.Task;
-        }
+        public bool Disposed { get; private set; }        
 
         public void BeginInvoke(Action<CancellationToken> action)
         {

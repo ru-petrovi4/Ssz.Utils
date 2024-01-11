@@ -153,7 +153,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override async Task<AddItemsToListReply> AddItemsToList(AddItemsToListRequest request, ServerCallContext context)
         {
-            return await GetAsyncReplyAsync(async () =>
+            return await GetReplyExAsync(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
@@ -166,7 +166,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override async Task<RemoveItemsFromListReply> RemoveItemsFromList(RemoveItemsFromListRequest request, ServerCallContext context)
         {
-            return await GetAsyncReplyAsync(async () =>
+            return await GetReplyExAsync(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
@@ -233,7 +233,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override async Task<ReadElementValuesJournalsReply> ReadElementValuesJournals(ReadElementValuesJournalsRequest request, ServerCallContext context)
         {            
-            return await GetAsyncReplyAsync(async () =>
+            return await GetReplyExAsync(async () =>
             {
                 ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                 serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
@@ -254,7 +254,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override async Task<ReadEventMessagesJournalReply> ReadEventMessagesJournal(ReadEventMessagesJournalRequest request, ServerCallContext context)
         {
-            return await GetAsyncReplyAsync(async () =>
+            return await GetReplyExAsync(async () =>
             {
                 ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                 serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
@@ -272,7 +272,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override async Task<WriteElementValuesReply> WriteElementValues(WriteElementValuesRequest request, ServerCallContext context)
         {
-            return await GetAsyncReplyAsync(async () =>
+            return await await GetReplyAsync(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
@@ -299,7 +299,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override async Task<PassthroughReply> Passthrough(PassthroughRequest request, ServerCallContext context)
         {
-            return await GetAsyncReplyAsync(async () =>
+            return await await GetReplyAsync(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;                    
@@ -389,7 +389,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             }
         }
 
-        private async Task<TReply> GetAsyncReplyAsync<TReply>(Func<Task<TReply>> func, ServerCallContext context)
+        private async Task<TReply> GetReplyExAsync<TReply>(Func<Task<TReply>> func, ServerCallContext context)
         {
             string parentMethodName = "";
             if (_logger.IsEnabled(LogLevel.Trace))
