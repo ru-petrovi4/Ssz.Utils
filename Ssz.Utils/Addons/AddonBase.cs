@@ -180,12 +180,12 @@ namespace Ssz.Utils.Addons
 
         public virtual string GetAddonTestInfo()
         {
-            return Properties.Resources.AddonTestIsNotSupported;
+            return @"";
         }
 
-        public virtual Task<string> AddonTestAsync(string options)
+        public virtual Task AddonTestAsync(string options, ILoggersSet loggersSet)
         {
-            return Task.FromResult(Properties.Resources.AddonTestNoData);
+            return Task.CompletedTask;
         }
 
         #endregion

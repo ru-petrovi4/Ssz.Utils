@@ -142,24 +142,6 @@ namespace Ssz.Utils.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Addon test is not supported for this addon..
-        /// </summary>
-        public static string AddonTestIsNotSupported {
-            get {
-                return ResourceManager.GetString("AddonTestIsNotSupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No Data.
-        /// </summary>
-        public static string AddonTestNoData {
-            get {
-                return ResourceManager.GetString("AddonTestNoData", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Available Addon is not found: {0}.
         /// </summary>
         public static string AvailableAddonIsNotFound {
