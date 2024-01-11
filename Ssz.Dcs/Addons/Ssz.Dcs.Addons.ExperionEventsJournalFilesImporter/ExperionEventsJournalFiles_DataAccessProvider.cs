@@ -167,7 +167,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
             if (cancellationToken.IsCancellationRequested) 
                 return;
 
-            string? journalFilesPath = Addon.OptionsSubstitutedThreadSafe.TryGetValue(ExperionEventsJournalFilesImporterAddon.JournalFiles_Path_OptionName);
+            string? journalFilesPath = Addon.OptionsSubstituted.TryGetValue(ExperionEventsJournalFilesImporterAddon.JournalFiles_Path_OptionName);
             if (String.IsNullOrEmpty(journalFilesPath))
                 return;
 
@@ -199,7 +199,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
             else
                 maxProcessedTimeUtc = DateTimeHelper.GetDateTimeUtc(maxProcessedTimeUtcString);
 
-            string? rptFiles_EncodingString = Addon.OptionsSubstitutedThreadSafe.TryGetValue(ExperionEventsJournalFilesImporterAddon.RptFiles_Encoding_OptionName);
+            string? rptFiles_EncodingString = Addon.OptionsSubstituted.TryGetValue(ExperionEventsJournalFilesImporterAddon.RptFiles_Encoding_OptionName);
             Encoding defaultRptFiles_Encoding;
             try
             {
@@ -210,7 +210,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                 defaultRptFiles_Encoding = Encoding.UTF8;
             }            
 
-            string? scanPeriodSecondsString = Addon.OptionsSubstitutedThreadSafe.TryGetValue(ExperionEventsJournalFilesImporterAddon.ScanPeriodSeconds_OptionName);
+            string? scanPeriodSecondsString = Addon.OptionsSubstituted.TryGetValue(ExperionEventsJournalFilesImporterAddon.ScanPeriodSeconds_OptionName);
             if (String.IsNullOrEmpty(scanPeriodSecondsString))
                 return;
             double scanPeriodSeconds = new Any(scanPeriodSecondsString).ValueAsDouble(false);
@@ -218,7 +218,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
             {
                 var eventMessagesCollection = new EventMessagesCollection();
 
-                var journalFiles_Type = ((ExperionEventsJournalFilesImporterAddon)Addon).OptionsSubstitutedThreadSafe.TryGetValue(
+                var journalFiles_Type = ((ExperionEventsJournalFilesImporterAddon)Addon).OptionsSubstituted.TryGetValue(
                         ExperionEventsJournalFilesImporterAddon.JournalFiles_Type_OptionName) ?? @"";
                 switch (journalFiles_Type.ToUpperInvariant())
                 {
@@ -239,7 +239,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                                         await ExperionEventsJournalRptFileHelper.ProcessFileAsync(stream,
                                             defaultRptFiles_Encoding,
                                             maxProcessedTimeUtc,
-                                            Addon.OptionsSubstitutedThreadSafe,
+                                            Addon.OptionsSubstituted,
                                             eventMessagesCollection.EventMessages,
                                             LoggersSet,
                                             cancellationToken);
@@ -272,7 +272,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                                         await ExperionEventsJournalCsvFileHelper.ProcessFileAsync(stream,
                                             Encoding.UTF8,
                                             maxProcessedTimeUtc,
-                                            Addon.OptionsSubstitutedThreadSafe,
+                                            Addon.OptionsSubstituted,
                                             eventMessagesCollection.EventMessages,
                                             LoggersSet,
                                             cancellationToken);
@@ -305,7 +305,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                                         await ExperionEventsJournalHtmFileHelper.ProcessFileAsync(stream,
                                             Encoding.UTF8,
                                             maxProcessedTimeUtc,
-                                            Addon.OptionsSubstitutedThreadSafe,
+                                            Addon.OptionsSubstituted,
                                             eventMessagesCollection.EventMessages,
                                             LoggersSet,
                                             cancellationToken);
@@ -349,13 +349,13 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                 LastScanTimeUtc = nowUtc;
             }
 
-            string? journalFilesDeleteScanPeriodSecondsString = Addon.OptionsSubstitutedThreadSafe.TryGetValue(ExperionEventsJournalFilesImporterAddon.JournalFilesDeleteScanPeriodSeconds_OptionName);
+            string? journalFilesDeleteScanPeriodSecondsString = Addon.OptionsSubstituted.TryGetValue(ExperionEventsJournalFilesImporterAddon.JournalFilesDeleteScanPeriodSeconds_OptionName);
             if (String.IsNullOrEmpty(journalFilesDeleteScanPeriodSecondsString))
                 return;
             double journalFilesDeleteScanPeriodSeconds = new Any(journalFilesDeleteScanPeriodSecondsString).ValueAsDouble(false);
             if (journalFilesDeleteScanPeriodSeconds > 0.0 && nowUtc - LastJournalFilesDeleteScanTimeUtc >= TimeSpan.FromSeconds(journalFilesDeleteScanPeriodSeconds))
             {
-                var journalFiles_Type = ((ExperionEventsJournalFilesImporterAddon)Addon).OptionsSubstitutedThreadSafe.TryGetValue(
+                var journalFiles_Type = ((ExperionEventsJournalFilesImporterAddon)Addon).OptionsSubstituted.TryGetValue(
                         ExperionEventsJournalFilesImporterAddon.JournalFiles_Type_OptionName) ?? @"";
                 switch (journalFiles_Type.ToUpperInvariant())
                 {
@@ -378,7 +378,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                                         await ExperionEventsJournalRptFileHelper.ProcessFileAsync(stream,
                                             defaultRptFiles_Encoding,
                                             DateTime.MinValue,
-                                            Addon.OptionsSubstitutedThreadSafe,
+                                            Addon.OptionsSubstituted,
                                             eventMessagesCollection.EventMessages,
                                             LoggersSet,
                                             cancellationToken);
@@ -418,7 +418,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                                         await ExperionEventsJournalCsvFileHelper.ProcessFileAsync(stream,
                                             Encoding.UTF8,
                                             DateTime.MinValue,
-                                            Addon.OptionsSubstitutedThreadSafe,
+                                            Addon.OptionsSubstituted,
                                             eventMessagesCollection.EventMessages,
                                             LoggersSet,
                                             cancellationToken);
@@ -461,7 +461,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                                         await ExperionEventsJournalHtmFileHelper.ProcessFileAsync(stream,
                                             Encoding.UTF8,
                                             DateTime.MinValue,
-                                            Addon.OptionsSubstitutedThreadSafe,
+                                            Addon.OptionsSubstituted,
                                             eventMessagesCollection.EventMessages,
                                             LoggersSet,
                                             cancellationToken);

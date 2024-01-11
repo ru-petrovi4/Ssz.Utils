@@ -52,9 +52,9 @@ namespace Ssz.Dcs.Addons.DataAccessClient
 
             IsAddonsPassthroughSupported = true;
 
-            string serverAddress = OptionsSubstitutedThreadSafe.TryGetValue(DataAccessClient_ServerAddress_OptionName) ?? @"";
-            string systemNameToConnect = OptionsSubstitutedThreadSafe.TryGetValue(DataAccessClient_SystemNameToConnect_OptionName) ?? @"";
-            CaseInsensitiveDictionary<string?> contextParams = NameValueCollectionHelper.Parse(OptionsSubstitutedThreadSafe.TryGetValue(DataAccessClient_ContextParams_OptionName));
+            string serverAddress = OptionsSubstituted.TryGetValue(DataAccessClient_ServerAddress_OptionName) ?? @"";
+            string systemNameToConnect = OptionsSubstituted.TryGetValue(DataAccessClient_SystemNameToConnect_OptionName) ?? @"";
+            CaseInsensitiveDictionary<string?> contextParams = NameValueCollectionHelper.Parse(OptionsSubstituted.TryGetValue(DataAccessClient_ContextParams_OptionName));
 
             IDataAccessProvider dataAccessProvider;
             if (serverAddress.EndsWith("/ServerDiscovery", StringComparison.InvariantCultureIgnoreCase) ||

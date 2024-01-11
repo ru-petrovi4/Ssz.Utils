@@ -710,10 +710,10 @@ namespace Ssz.Utils.Addons
                 }
                 availableAddonClone.CsvDb.SaveData();
 
-                availableAddonClone.OptionsSubstitutedThreadSafe = new CaseInsensitiveDictionary<string?>(availableAddonClone.CsvDb.GetData(AddonBase.OptionsCsvFileName)
+                availableAddonClone.OptionsSubstituted = new CaseInsensitiveDictionary<string?>(availableAddonClone.CsvDb.GetData(AddonBase.OptionsCsvFileName)
                     .Where(kvp => kvp.Key != @"").Select(kvp => new KeyValuePair<string, string?>(kvp.Key, kvp.Value.Count > 1 ? SubstituteOption(kvp.Value[1]) : null)));                
 
-                var observableCollectionItemIds = new CaseInsensitiveDictionary<string?>(availableAddonClone.OptionsSubstitutedThreadSafe);                    
+                var observableCollectionItemIds = new CaseInsensitiveDictionary<string?>(availableAddonClone.OptionsSubstituted);                    
                 observableCollectionItemIds.Add(@"#addonIdentifier", availableAddonClone.Identifier);
                 observableCollectionItemIds.Add(@"#addonInstanceId", addonInstanceId);                
                 availableAddonClone.ObservableCollectionItemId = NameValueCollectionHelper.GetNameValueCollectionString(observableCollectionItemIds);

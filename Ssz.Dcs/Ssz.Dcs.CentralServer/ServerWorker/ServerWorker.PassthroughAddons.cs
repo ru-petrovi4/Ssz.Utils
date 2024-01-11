@@ -61,13 +61,13 @@ namespace Ssz.Dcs.CentralServer
                                     addonStatus.SourcePath = engineSession.DataAccessProviderGetter_Addon.InstanceId + "/" + addonStatus.SourcePath;
 
                                 if (String.IsNullOrEmpty(addonStatus.SourceId))
-                                    addonStatus.SourceId = engineSession.DataAccessProviderGetter_Addon.OptionsSubstitutedThreadSafe.TryGetValue(
+                                    addonStatus.SourceId = engineSession.DataAccessProviderGetter_Addon.OptionsSubstituted.TryGetValue(
                                                 DataAccessProviderGetter_AddonBase.DataAccessClient_SystemNameToConnect_ToDisplay_OptionName) ?? @"";
                                 if (String.IsNullOrEmpty(addonStatus.SourceId))
                                     addonStatus.SourceId = addonStatus.AddonInstanceId;
 
                                 if (String.IsNullOrEmpty(addonStatus.SourceIdToDisplay))
-                                    addonStatus.SourceIdToDisplay = engineSession.DataAccessProviderGetter_Addon.OptionsSubstitutedThreadSafe.TryGetValue(
+                                    addonStatus.SourceIdToDisplay = engineSession.DataAccessProviderGetter_Addon.OptionsSubstituted.TryGetValue(
                                                 DataAccessProviderGetter_AddonBase.DataAccessClient_SystemNameToConnect_ToDisplay_OptionName) ?? @"";
                                 if (String.IsNullOrEmpty(addonStatus.SourceIdToDisplay))
                                     addonStatus.SourceIdToDisplay = addonStatus.AddonInstanceId;
@@ -132,11 +132,11 @@ namespace Ssz.Dcs.CentralServer
                                         configurationFile.SourcePath = engineSession.DataAccessProviderGetter_Addon.InstanceId + "/" + configurationFile.SourcePath;
 
                                     if (String.IsNullOrEmpty(configurationFile.SourceId))
-                                        configurationFile.SourceId = engineSession.DataAccessProviderGetter_Addon.OptionsSubstitutedThreadSafe.TryGetValue(
+                                        configurationFile.SourceId = engineSession.DataAccessProviderGetter_Addon.OptionsSubstituted.TryGetValue(
                                                     DataAccessProviderGetter_AddonBase.DataAccessClient_SystemNameToConnect_ToDisplay_OptionName) ?? @"";
 
                                     if (String.IsNullOrEmpty(configurationFile.SourceIdToDisplay))
-                                        configurationFile.SourceIdToDisplay = engineSession.DataAccessProviderGetter_Addon.OptionsSubstitutedThreadSafe.TryGetValue(
+                                        configurationFile.SourceIdToDisplay = engineSession.DataAccessProviderGetter_Addon.OptionsSubstituted.TryGetValue(
                                                     DataAccessProviderGetter_AddonBase.DataAccessClient_SystemNameToConnect_ToDisplay_OptionName) ?? @"";
                                 }
 
@@ -203,11 +203,11 @@ namespace Ssz.Dcs.CentralServer
                                     configurationFile.SourcePath = engineSession.DataAccessProviderGetter_Addon.InstanceId + "/" + configurationFile.SourcePath;
 
                                 if (String.IsNullOrEmpty(configurationFile.SourceId))
-                                    configurationFile.SourceId = engineSession.DataAccessProviderGetter_Addon.OptionsSubstitutedThreadSafe.TryGetValue(
+                                    configurationFile.SourceId = engineSession.DataAccessProviderGetter_Addon.OptionsSubstituted.TryGetValue(
                                                 DataAccessProviderGetter_AddonBase.DataAccessClient_SystemNameToConnect_ToDisplay_OptionName) ?? @"";
 
                                 if (String.IsNullOrEmpty(configurationFile.SourceIdToDisplay))
-                                    configurationFile.SourceIdToDisplay = engineSession.DataAccessProviderGetter_Addon.OptionsSubstitutedThreadSafe.TryGetValue(
+                                    configurationFile.SourceIdToDisplay = engineSession.DataAccessProviderGetter_Addon.OptionsSubstituted.TryGetValue(
                                                 DataAccessProviderGetter_AddonBase.DataAccessClient_SystemNameToConnect_ToDisplay_OptionName) ?? @"";
                             }
 

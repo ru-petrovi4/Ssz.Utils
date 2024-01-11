@@ -67,7 +67,7 @@ namespace Ssz.Utils.Addons
         ///     Thread-safe. 
         /// </summary>
         /// <remarks>
-        ///     Use OptionsSubstitutedThreadSafe.TryGetValue(EventsToleranceSeconds_OptionName) to extract values.
+        ///     Use OptionsSubstituted.TryGetValue(EventsToleranceSeconds_OptionName) to extract values.
         /// </remarks>
         public abstract (string, string, string)[] OptionsInfo { get; }
 
@@ -85,11 +85,11 @@ namespace Ssz.Utils.Addons
         ///     Gets value from appsettings.json:AddonsOptions:_Addon_Identifier_:DataAccessClient_ContextParams
         ///     Thread-safe.
         /// </summary>
-        public CaseInsensitiveDictionary<string?> OptionsSubstitutedThreadSafe { get; internal set; } = null!;
+        public CaseInsensitiveDictionary<string?> OptionsSubstituted { get; internal set; } = null!;
 
         /// <summary>
         ///     Unique ID for addon type and options.
-        ///     Contains Addon.Identifier, Addon.InstanceId, Addon.OptionsThreadSafe.
+        ///     Contains Addon.Identifier, Addon.InstanceId, Addon.OptionsSubstituted.
         ///     Thread-safe.
         /// </summary>
         public string ObservableCollectionItemId { get; internal set; } = null!;

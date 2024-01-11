@@ -69,9 +69,9 @@ namespace Ssz.Dcs.Addons.OpcClient
             if (!IsInitialized)
                 throw new InvalidOperationException();
 
-            //string serverAddress = OptionsSubstitutedThreadSafe.TryGetValue(OpcClient_ServerAddress_OptionName) ?? @"";
-            //string systemNameToConnect = OptionsSubstitutedThreadSafe.TryGetValue(OpcClient_SystemNameToConnect_OptionName) ?? @"";
-            //CaseInsensitiveDictionary<string?> contextParams = NameValueCollectionHelper.Parse(OptionsSubstitutedThreadSafe.TryGetValue(OpcClient_ContextParams_OptionName));
+            //string serverAddress = OptionsSubstituted.TryGetValue(OpcClient_ServerAddress_OptionName) ?? @"";
+            //string systemNameToConnect = OptionsSubstituted.TryGetValue(OpcClient_SystemNameToConnect_OptionName) ?? @"";
+            //CaseInsensitiveDictionary<string?> contextParams = NameValueCollectionHelper.Parse(OptionsSubstituted.TryGetValue(OpcClient_ContextParams_OptionName));
 
             IDataAccessProvider dataAccessProvider = ActivatorUtilities.CreateInstance<OpcClientDataAccessProvider>(ServiceProvider);            
 
@@ -85,14 +85,14 @@ namespace Ssz.Dcs.Addons.OpcClient
                 @"",
                 new CaseInsensitiveDictionary<string?>
                 {
-                    { OpcDa_Host_OptionName, OptionsSubstitutedThreadSafe.TryGetValue(OpcDa_Host_OptionName) },
-                    { OpcAe_Host_OptionName, OptionsSubstitutedThreadSafe.TryGetValue(OpcAe_Host_OptionName) },
-                    { OpcHda_Host_OptionName, OptionsSubstitutedThreadSafe.TryGetValue(OpcHda_Host_OptionName) },
-                    { UsoHda_Host_OptionName, OptionsSubstitutedThreadSafe.TryGetValue(UsoHda_Host_OptionName) },
-                    { OpcDa_ProgId_OptionName, OptionsSubstitutedThreadSafe.TryGetValue(OpcDa_ProgId_OptionName) },
-                    { OpcAe_ProgId_OptionName, OptionsSubstitutedThreadSafe.TryGetValue(OpcAe_ProgId_OptionName) },
-                    { OpcHda_ProgId_OptionName, OptionsSubstitutedThreadSafe.TryGetValue(OpcHda_ProgId_OptionName) },
-                    { UsoHda_ProgId_OptionName, OptionsSubstitutedThreadSafe.TryGetValue(UsoHda_ProgId_OptionName) },
+                    { OpcDa_Host_OptionName, OptionsSubstituted.TryGetValue(OpcDa_Host_OptionName) },
+                    { OpcAe_Host_OptionName, OptionsSubstituted.TryGetValue(OpcAe_Host_OptionName) },
+                    { OpcHda_Host_OptionName, OptionsSubstituted.TryGetValue(OpcHda_Host_OptionName) },
+                    { UsoHda_Host_OptionName, OptionsSubstituted.TryGetValue(UsoHda_Host_OptionName) },
+                    { OpcDa_ProgId_OptionName, OptionsSubstituted.TryGetValue(OpcDa_ProgId_OptionName) },
+                    { OpcAe_ProgId_OptionName, OptionsSubstituted.TryGetValue(OpcAe_ProgId_OptionName) },
+                    { OpcHda_ProgId_OptionName, OptionsSubstituted.TryGetValue(OpcHda_ProgId_OptionName) },
+                    { UsoHda_ProgId_OptionName, OptionsSubstituted.TryGetValue(UsoHda_ProgId_OptionName) },
                 },
                 new DataAccessProviderOptions(),
                 callbackDispatcher);

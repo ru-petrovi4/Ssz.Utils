@@ -79,7 +79,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
             elementIdsMap.Initialize(CsvDb.GetData(ElementIdsMap.StandardMapFileName), CsvDb.GetData(ElementIdsMap.StandardTagsFileName), CsvDb);
             elementIdsMap.CommonEventMessageFieldsToAdd[@"EventsSource"] = ExperionEventsSource;
             elementIdsMap.CommonEventMessageFieldsToAdd[@"SourceAddonInstanceId"] = InstanceId;            
-            foreach (var kvp in NameValueCollectionHelper.Parse(OptionsSubstitutedThreadSafe.TryGetValue(DataAccessProviderGetter_CommonEventMessageFieldsToAdd_OptionName)))
+            foreach (var kvp in NameValueCollectionHelper.Parse(OptionsSubstituted.TryGetValue(DataAccessProviderGetter_CommonEventMessageFieldsToAdd_OptionName)))
             {
                 elementIdsMap.CommonEventMessageFieldsToAdd[kvp.Key] = kvp.Value;
             }
