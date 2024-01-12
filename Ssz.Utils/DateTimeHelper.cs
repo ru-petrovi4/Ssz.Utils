@@ -17,7 +17,7 @@ namespace Ssz.Utils
         public static DateTime GetDateTimeUtc(string? dateTimeString)
         {
             if (String.IsNullOrEmpty(dateTimeString))
-                return DateTime.MinValue;
+                return default;
             return new Any(dateTimeString).ValueAs<DateTime>(false).ToUniversalTime();
         }
 
