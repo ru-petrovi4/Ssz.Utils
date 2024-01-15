@@ -280,7 +280,7 @@ namespace Ssz.Utils.Addons
                             if (availableAddon.IsAlwaysSwitchedOn)
                                 isSwitchedOn = true;
                             else
-                                isSwitchedOn = new Any(availableAddonLine[2]).ValueAsBoolean(false);
+                                isSwitchedOn = new Any(availableAddonLine[2] ?? @"").ValueAsBoolean(false);
                             new_AddonsFileData[availableAddonLine[0]!] = new List<string?>()
                             {
                                 availableAddonLine[0]!,
@@ -601,7 +601,7 @@ namespace Ssz.Utils.Addons
                 string addonIdentifier = line[1] ?? @"";
                 bool switchedOn = true;
                 if (line.Count >= 3 && !String.IsNullOrEmpty(line[2]))
-                    switchedOn = new Any(line[2]).ValueAsBoolean(false);
+                    switchedOn = new Any(line[2] ?? @"").ValueAsBoolean(false);
 
                 var desiredAndAvailableAddon = CreateAvailableAddon(addonIdentifier, addonInstanceId, null);
 

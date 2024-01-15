@@ -2284,7 +2284,7 @@ namespace Ssz.Utils.Serialization
             for (int i = 0; i < values.Length; i++)
             {
                 if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                    ((!ReferenceEquals(optimizeFlags, AllTrueBitArray)) && !optimizeFlags[i]))
+                    (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
                 {
                     Write(values[i]);
                 }
@@ -2321,7 +2321,7 @@ namespace Ssz.Utils.Serialization
             for (int i = 0; i < values.Length; i++)
             {
                 if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                    ((!ReferenceEquals(optimizeFlags, AllTrueBitArray)) && !optimizeFlags[i]))
+                    (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
                 {
                     _binaryWriter.Write(values[i]);
                 }
@@ -2348,7 +2348,7 @@ namespace Ssz.Utils.Serialization
             for (int i = 0; i < values.Length; i++)
             {
                 if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                    ((!ReferenceEquals(optimizeFlags, AllTrueBitArray)) && !optimizeFlags[i]))
+                    (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
                 {
                     _binaryWriter.Write(values[i]);
                 }
@@ -2375,7 +2375,7 @@ namespace Ssz.Utils.Serialization
             for (int i = 0; i < values.Length; i++)
             {
                 if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                    ((!ReferenceEquals(optimizeFlags, AllTrueBitArray)) && !optimizeFlags[i]))
+                    (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
                 {
                     _binaryWriter.Write(values[i]);
                 }
@@ -2403,7 +2403,7 @@ namespace Ssz.Utils.Serialization
             for (int i = 0; i < values.Length; i++)
             {
                 if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                    ((!ReferenceEquals(optimizeFlags, AllTrueBitArray)) && !optimizeFlags[i]))
+                    (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
                 {
                     Write(values[i]);
                 }
@@ -2440,7 +2440,7 @@ namespace Ssz.Utils.Serialization
             for (int i = 0; i < values.Length; i++)
             {
                 if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                    ((!ReferenceEquals(optimizeFlags, AllTrueBitArray)) && !optimizeFlags[i]))
+                    (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
                 {
                     _binaryWriter.Write(values[i]);
                 }
@@ -2467,7 +2467,7 @@ namespace Ssz.Utils.Serialization
             for (int i = 0; i < values.Length; i++)
             {
                 if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                    ((!ReferenceEquals(optimizeFlags, AllTrueBitArray)) && !optimizeFlags[i]))
+                    (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
                 {
                     _binaryWriter.Write(values[i]);
                 }
@@ -2494,7 +2494,7 @@ namespace Ssz.Utils.Serialization
             for (int i = 0; i < values.Length; i++)
             {
                 if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                    ((!ReferenceEquals(optimizeFlags, AllTrueBitArray)) && !optimizeFlags[i]))
+                    (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
                 {
                     _binaryWriter.Write(values[i]);
                 }

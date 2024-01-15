@@ -18,7 +18,7 @@ namespace Ssz.Utils
         {
             if (String.IsNullOrEmpty(dateTimeString))
                 return default;
-            return new Any(dateTimeString).ValueAs<DateTime>(false).ToUniversalTime();
+            return new Any(dateTimeString!).ValueAs<DateTime>(false).ToUniversalTime();
         }
 
         public static string GetString(DateTime dateTime)

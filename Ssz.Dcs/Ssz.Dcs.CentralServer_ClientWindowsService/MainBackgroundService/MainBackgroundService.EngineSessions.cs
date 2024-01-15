@@ -34,9 +34,9 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 string processModelingSessionId = parts[1] ?? "";
                 string processModelName = parts[2] ?? "";
                 string instructorUserName = parts[3] ?? "";
-                InstructorAccessFlags instructorAccessFlags = new Any(new Any(parts[4]).ValueAsUInt32(false)).ValueAs<InstructorAccessFlags>(false);
-                DsFilesStoreDirectoryType binDsFilesStoreDirectoryType = new Any(parts[5]).ValueAs<DsFilesStoreDirectoryType>(false);
-                DsFilesStoreDirectoryType dataDsFilesStoreDirectoryType = new Any(parts[6]).ValueAs<DsFilesStoreDirectoryType>(false);
+                InstructorAccessFlags instructorAccessFlags = new Any(new Any(parts[4] ?? "").ValueAsUInt32(false)).ValueAs<InstructorAccessFlags>(false);
+                DsFilesStoreDirectoryType binDsFilesStoreDirectoryType = new Any(parts[5] ?? "").ValueAs<DsFilesStoreDirectoryType>(false);
+                DsFilesStoreDirectoryType dataDsFilesStoreDirectoryType = new Any(parts[6] ?? "").ValueAs<DsFilesStoreDirectoryType>(false);
                 string pathRelativeToDataDirectory = parts[7] ?? "";
                 string instanceInfo = parts[8] ?? "";
 
@@ -109,7 +109,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             try
             {
                 var directoryPathsRelativeToRootDirectory = CsvHelper.ParseCsvLine(@",", parts[1]);
-                bool includeSubdirectories = new Any(parts[2]).ValueAsBoolean(false);
+                bool includeSubdirectories = new Any(parts[2] ?? "").ValueAsBoolean(false);
 
                 var progressInfo = new ProgressInfo(jobId, 0, 95)
                 {

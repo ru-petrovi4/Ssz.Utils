@@ -34,7 +34,7 @@ namespace Ssz.Utils
             var valueString = configuration[key];
             if (String.IsNullOrEmpty(valueString))
                 return defaultValue;
-            var result = new Any(valueString).ValueAs<T>(false);
+            var result = new Any(valueString!).ValueAs<T>(false);
             if (result is null)
                 return defaultValue;
             return result;

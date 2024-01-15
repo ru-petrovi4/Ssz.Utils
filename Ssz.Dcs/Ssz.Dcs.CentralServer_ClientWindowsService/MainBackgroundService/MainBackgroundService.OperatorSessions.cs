@@ -33,7 +33,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 string processModelName = parts[2] ?? "";
                 string dsProjectPathRelativeToDataDirectory = parts[3] ?? "";                
                 string operatorSessionDescription = parts[4] ?? "";
-                bool runLauncherExe = new Any(parts[5]).ValueAsBoolean(false);
+                bool runLauncherExe = new Any(parts[5] ?? "").ValueAsBoolean(false);
 
                 string commandLine;
 
