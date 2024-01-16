@@ -53,14 +53,16 @@ namespace Ssz.Utils
         /// <returns></returns>
         public object? Evaluate(object?[]? dataSourceValues, object? userValue, ILogger? logger, ILogger? userFriendlyLogger)
         {
-            if (!IsValidInternal) return null;
+            if (!IsValidInternal)
+                return null;
 
-            if (_expressionType == ExpressinType.Const && _hasLastResult) return _lastResult;
+            if (_expressionType == ExpressinType.Const && _hasLastResult)
+                return _lastResult;
 
             if (_expressionType == ExpressinType.Function && _hasLastResult && dataSourceValues is not null &&
-                _lastDataSourceValues is not null &&
-                dataSourceValues.SequenceEqual(_lastDataSourceValues) &&
-                Equals(userValue, _lastUserValue))
+                    _lastDataSourceValues is not null &&
+                    dataSourceValues.SequenceEqual(_lastDataSourceValues) &&
+                    Equals(userValue, _lastUserValue))
                 return _lastResult;
 
             double[] dDataSourceValues;
@@ -85,14 +87,12 @@ namespace Ssz.Utils
                 dDataSourceValues = dataSourceValues.Select(
                         v => new Any(v).ValueAsDouble(false))
                     .ToArray();
-                iDataSourceValues =
-                    dataSourceValues.Select(
-                            v => new Any(v).ValueAsInt32(false))
-                        .ToArray();
-                uDataSourceValues =
-                    dataSourceValues.Select(
-                            v => new Any(v).ValueAsUInt32(false))
-                        .ToArray();
+                iDataSourceValues = dataSourceValues.Select(
+                        v => new Any(v).ValueAsInt32(false))
+                    .ToArray();
+                uDataSourceValues = dataSourceValues.Select(
+                        v => new Any(v).ValueAsUInt32(false))
+                    .ToArray();
                 bDataSourceValues = dataSourceValues.Select(
                         v => new Any(v).ValueAsBoolean(false))
                     .ToArray();
@@ -168,7 +168,8 @@ namespace Ssz.Utils
             get => _expressionString;
             set
             {                
-                if (!SetValue(ref _expressionString, value)) return;
+                if (!SetValue(ref _expressionString, value)) 
+                    return;
                 IsValidInternal = _expressionString != @"";
                 _lambdaExpression = null;
                 _delegate = null;
@@ -184,7 +185,7 @@ namespace Ssz.Utils
                     IsUiToDataSourceWarning = _expressionString.Contains('[') && _expressionString.Contains(']');
                 else
                     IsUiToDataSourceWarning = false;
-                OnPropertyChanged(@"IsValid");
+                OnPropertyChanged(nameof(IsValid));
             }
         }
         
