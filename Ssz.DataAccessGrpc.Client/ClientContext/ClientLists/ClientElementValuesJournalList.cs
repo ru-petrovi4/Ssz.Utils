@@ -8,6 +8,8 @@ using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.Utils.DataAccess;
 using Ssz.Utils;
 using System.Threading.Tasks;
+using System.IO;
+using Ssz.Utils.Serialization;
 
 namespace Ssz.DataAccessGrpc.Client.ClientLists
 {
@@ -143,23 +145,44 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                     for (int index = 0; index < elementValuesJournal.DoubleStatusCodes.Count; index++)
                     {
                         valuesList.Add(new ValueStatusTimestamp
-                        {
-                            Value = new Any(elementValuesJournal.DoubleValues[index]),
-                            StatusCode = elementValuesJournal.DoubleStatusCodes[index],
-                            TimestampUtc = elementValuesJournal.DoubleTimestamps[index].ToDateTime()
-                        }
+                            {
+                                Value = new Any(elementValuesJournal.DoubleValues[index]),
+                                StatusCode = elementValuesJournal.DoubleStatusCodes[index],
+                                TimestampUtc = elementValuesJournal.DoubleTimestamps[index].ToDateTime()
+                            }
                         );
                     }
                     for (int index = 0; index < elementValuesJournal.UintStatusCodes.Count; index++)
                     {
                         valuesList.Add(new ValueStatusTimestamp
-                        {
-                            Value = new Any(elementValuesJournal.UintValues[index]),
-                            StatusCode = elementValuesJournal.UintStatusCodes[index],
-                            TimestampUtc = elementValuesJournal.UintTimestamps[index].ToDateTime()
-                        }
+                            {
+                                Value = new Any(elementValuesJournal.UintValues[index]),
+                                StatusCode = elementValuesJournal.UintStatusCodes[index],
+                                TimestampUtc = elementValuesJournal.UintTimestamps[index].ToDateTime()
+                            }
                         );
                     }
+                    if (elementValuesJournal.ObjectStatusCodes.Count > 0)
+                    {
+                        using (var memoryStream = new MemoryStream(elementValuesJournal.ObjectValues.ToByteArray()))
+                        using (var reader = new SerializationReader(memoryStream))
+                        {
+                            for (int index = 0; index < elementValuesJournal.ObjectStatusCodes.Count; index++)
+                            {
+                                Utils.Any value = new();
+                                value.DeserializeOwnedData(reader, null);
+                                valuesList.Add(new ValueStatusTimestamp
+                                    {
+                                        Value = value,
+                                        StatusCode = elementValuesJournal.ObjectStatusCodes[index],
+                                        TimestampUtc = elementValuesJournal.ObjectTimestamps[index].ToDateTime()
+                                    }
+                                );
+                            }
+                        }
+
+                    }
+                    
 
                     list.Add(valuesList.ToArray());
                 }

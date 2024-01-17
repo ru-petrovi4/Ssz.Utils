@@ -121,7 +121,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                                 break;
                             case TransportType.Object:
                                 fullElementValuesCollection.ObjectAliases.Add(alias);
-                                writer.WriteObject(valueStatusTimestamp.Value.ValueAsObject());
+                                valueStatusTimestamp.Value.SerializeOwnedData(writer, null);
                                 fullElementValuesCollection.ObjectStatusCodes.Add(valueStatusTimestamp.StatusCode);
                                 fullElementValuesCollection.ObjectTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                
                                 break;
@@ -225,12 +225,13 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                     {
                         for (int index = 0; index < elementValuesCollection.ObjectAliases.Count; index++)
                         {
-                            object? objectValue = reader.ReadObject();
+                            Utils.Any value = new();
+                            value.DeserializeOwnedData(reader, null);                            
                             ClientElementValueListItem? item;
                             ListItemsManager.TryGetValue(elementValuesCollection.ObjectAliases[index], out item);
                             if (item is not null)
                             {
-                                item.UpdateValue(objectValue,
+                                item.UpdateValue(value,
                                     elementValuesCollection.ObjectStatusCodes[index],
                                     elementValuesCollection.ObjectTimestamps[index].ToDateTime()
                                     );

@@ -68,10 +68,9 @@ namespace Ssz.DataAccessGrpc.Client.ClientListItems
         /// <param name="statusCode"> The DataAccessGrpc StatusCode of the value. </param>
         /// <param name="timestampUtc"> The timestamp of the value. </param>
         /// <param name="valueObject"> The value </param>
-        public void UpdateValue(object? valueObject, uint statusCode, DateTime timestampUtc)
-        {
-            var any = new Any(valueObject);            
-            _valueStatusTimestamp = new ValueStatusTimestamp(any, statusCode, timestampUtc);
+        public void UpdateValue(Any value, uint statusCode, DateTime timestampUtc)
+        {                     
+            _valueStatusTimestamp = new ValueStatusTimestamp(value, statusCode, timestampUtc);
             IncrementUpdateCount();
         }
 

@@ -90,10 +90,11 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     if (elementValuesJournal.ObjectValues.Length > 0)
                     {
                         localIndex = index - elementValuesJournal.DoubleTimestamps.Count - elementValuesJournal.UintTimestamps.Count - elementValuesJournal.ObjectTimestamps.Count - finishedCount;
-                        int bytesCount = Constants.MaxReplyObjectSize - replyObjectSize;                        
-                        resultElementValuesJournal.ObjectValues = UnsafeByteOperations.UnsafeWrap(
-                                    elementValuesJournal.ObjectValues.Skip(localIndex).Take(bytesCount).ToArray()
-                                );
+                        int bytesCount = Constants.MaxReplyObjectSize - replyObjectSize;
+                        var span = elementValuesJournal.ObjectValues.Memory.Span;
+                        int length = Math.Min(span.Length - localIndex, bytesCount);
+                        resultElementValuesJournal.ObjectValues = Google.Protobuf.ByteString.CopyFrom(
+                            span.Slice(localIndex, length));
                         replyObjectSize += resultElementValuesJournal.ObjectValues.Length;
                         index += resultElementValuesJournal.ObjectValues.Length;
 

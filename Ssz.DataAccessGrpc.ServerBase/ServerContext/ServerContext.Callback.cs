@@ -349,7 +349,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                                     break;
                                 case TransportType.Object:
                                     fullElementValuesCollection.ObjectAliases.Add(alias);
-                                    writer.WriteObject(valueStatusTimestamp.Value.ValueAsObject());
+                                    valueStatusTimestamp.Value.SerializeOwnedData(writer, null);
                                     fullElementValuesCollection.ObjectStatusCodes.Add(valueStatusTimestamp.StatusCode);
                                     fullElementValuesCollection.ObjectTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                    
                                     break;

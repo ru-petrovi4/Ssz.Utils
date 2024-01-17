@@ -144,14 +144,15 @@ namespace Ssz.Dcs.CentralServer
                     {
                         for (int index = 0; index < elementValuesCollection.ObjectAliases.Count; index++)
                         {
-                            object? objectValue = reader.ReadObject();
+                            Any value = new();
+                            value.DeserializeOwnedData(reader, null);                            
                             TElementListItem? item;
                             ListItemsManager.TryGetValue(elementValuesCollection.ObjectAliases[index], out item);
                             if (item is not null)
                             {
                                 item.PendingWriteValueStatusTimestamp = new ValueStatusTimestamp
                                 {
-                                    Value = new Any(objectValue),
+                                    Value = value,
                                     StatusCode = elementValuesCollection.ObjectStatusCodes[index],
                                     TimestampUtc = elementValuesCollection.ObjectTimestamps[index].ToDateTime()
                                 };

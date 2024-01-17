@@ -30,14 +30,18 @@ namespace Ssz.DataAccessGrpc.ServerBase
             UintValues.Add(nextElementValuesCollection.UintValues);
             UintValueTypeCodes.Add(nextElementValuesCollection.UintValueTypeCodes);
             UintStatusCodes.Add(nextElementValuesCollection.UintStatusCodes);
-            UintTimestamps.Add(nextElementValuesCollection.UintTimestamps);            
+            UintTimestamps.Add(nextElementValuesCollection.UintTimestamps);
 
-            ObjectAliases.Add(nextElementValuesCollection.ObjectAliases);
-            ObjectValues = UnsafeByteOperations.UnsafeWrap(
-                ObjectValues.Concat(nextElementValuesCollection.ObjectValues).ToArray()
-                );
-            ObjectStatusCodes.Add(nextElementValuesCollection.ObjectStatusCodes);
-            ObjectTimestamps.Add(nextElementValuesCollection.ObjectTimestamps);            
+            if (nextElementValuesCollection.ObjectValues.Memory.Length > 0)
+            {
+                ObjectAliases.Add(nextElementValuesCollection.ObjectAliases);
+                var result = new Byte[ObjectValues.Memory.Length + nextElementValuesCollection.ObjectValues.Memory.Length];
+                ObjectValues.Memory.CopyTo(new Memory<byte>(result, 0, ObjectValues.Memory.Length));
+                nextElementValuesCollection.ObjectValues.Memory.CopyTo(new Memory<byte>(result, ObjectValues.Memory.Length, nextElementValuesCollection.ObjectValues.Memory.Length));
+                ObjectValues = UnsafeByteOperations.UnsafeWrap(result);
+                ObjectStatusCodes.Add(nextElementValuesCollection.ObjectStatusCodes);
+                ObjectTimestamps.Add(nextElementValuesCollection.ObjectTimestamps);
+            }
         }
 
         /// <summary>
@@ -106,13 +110,17 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         continue;
                     }
 
-                    localIndex = index - DoubleTimestamps.Count - UintTimestamps.Count - ObjectTimestamps.Count;
-                    int bytesCount = Constants.MaxReplyObjectSize - replyObjectSize;
-                    resultElementValuesCollection.ObjectValues = UnsafeByteOperations.UnsafeWrap(
-                                ObjectValues.Skip(localIndex).Take(bytesCount).ToArray()
-                            );
-                    replyObjectSize += resultElementValuesCollection.ObjectValues.Length;
-                    index += resultElementValuesCollection.ObjectValues.Length;
+                    if (ObjectValues.Length > 0)
+                    {
+                        localIndex = index - DoubleTimestamps.Count - UintTimestamps.Count - ObjectTimestamps.Count;
+                        int bytesCount = Constants.MaxReplyObjectSize - replyObjectSize;
+                        var span = ObjectValues.Memory.Span;
+                        int length = Math.Min(span.Length - localIndex, bytesCount);
+                        resultElementValuesCollection.ObjectValues = Google.Protobuf.ByteString.CopyFrom(
+                            span.Slice(localIndex, length));
+                        replyObjectSize += resultElementValuesCollection.ObjectValues.Length;
+                        index += resultElementValuesCollection.ObjectValues.Length;
+                    }                        
                 }
 
                 result.Add(resultElementValuesCollection);

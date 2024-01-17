@@ -1,3 +1,4 @@
+using Google.Protobuf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,73 +20,107 @@ namespace Ssz.DataAccessGrpc.ServerBase
             DoubleValues.Add(nextElementValuesCollection.DoubleValues);
             DoubleValueTypeCodes.Add(nextElementValuesCollection.DoubleValueTypeCodes);
             DoubleStatusCodes.Add(nextElementValuesCollection.DoubleStatusCodes);
-            DoubleTimestamps.Add(nextElementValuesCollection.DoubleTimestamps);            
+            DoubleTimestamps.Add(nextElementValuesCollection.DoubleTimestamps);
 
             UintAliases.Add(nextElementValuesCollection.UintAliases);
             UintValues.Add(nextElementValuesCollection.UintValues);
             UintValueTypeCodes.Add(nextElementValuesCollection.UintValueTypeCodes);
             UintStatusCodes.Add(nextElementValuesCollection.UintStatusCodes);
-            UintTimestamps.Add(nextElementValuesCollection.UintTimestamps);            
+            UintTimestamps.Add(nextElementValuesCollection.UintTimestamps);
 
-            ObjectAliases.Add(nextElementValuesCollection.ObjectAliases);
-            ObjectValues = Google.Protobuf.ByteString.CopyFrom(
-                ObjectValues.Concat(nextElementValuesCollection.ObjectValues).ToArray()
-                );
-            ObjectStatusCodes.Add(nextElementValuesCollection.ObjectStatusCodes);
-            ObjectTimestamps.Add(nextElementValuesCollection.ObjectTimestamps);            
+            if (nextElementValuesCollection.ObjectValues.Memory.Length > 0)
+            {
+                ObjectAliases.Add(nextElementValuesCollection.ObjectAliases);
+                var result = new Byte[ObjectValues.Memory.Length + nextElementValuesCollection.ObjectValues.Memory.Length];
+                ObjectValues.Memory.CopyTo(new Memory<byte>(result, 0, ObjectValues.Memory.Length));
+                nextElementValuesCollection.ObjectValues.Memory.CopyTo(new Memory<byte>(result, ObjectValues.Memory.Length, nextElementValuesCollection.ObjectValues.Memory.Length));
+                ObjectValues = UnsafeByteOperations.UnsafeWrap(result);
+                ObjectStatusCodes.Add(nextElementValuesCollection.ObjectStatusCodes);
+                ObjectTimestamps.Add(nextElementValuesCollection.ObjectTimestamps);
+            }
         }
 
+        /// <summary>
+        ///     Result count >= 1
+        /// </summary>
+        /// <returns></returns>
         public List<ElementValuesCollection> SplitForCorrectGrpcMessageSize()
         {
-            if (DoubleValues.Count < MaxArrayLength && UintValues.Count < MaxArrayLength && ObjectValues.Length < MaxByteStringLength)
+            if (GetSize() < Constants.MaxReplyObjectSize)
             {
                 return new List<ElementValuesCollection> { this };
             }
 
             var result = new List<ElementValuesCollection>();
 
-            int doubleIndex = 0;
-            int uintIndex = 0;
-            int objectIndex = 0;
-            int objectByteIndex = 0;
-            ElementValuesCollection? prevElementValuesCollection = null;
-            while (doubleIndex < DoubleAliases.Count ||
-                uintIndex < UintAliases.Count ||
-                objectIndex < ObjectAliases.Count ||
-                objectByteIndex < ObjectValues.Length)
+            ElementValuesCollection? prevResultElementValuesCollection = null;
+            int index = 0;
+            int count = GetCount();
+            while (index < count)
             {
-                var elementValuesCollection = new ElementValuesCollection();
-                if (prevElementValuesCollection is not null)
+                var resultElementValuesCollection = new ElementValuesCollection();
+                if (prevResultElementValuesCollection is not null)
                 {
                     string guid = System.Guid.NewGuid().ToString();
-                    prevElementValuesCollection.NextCollectionGuid = guid;
-                    elementValuesCollection.Guid = guid;
+                    prevResultElementValuesCollection.NextCollectionGuid = guid;
+                    resultElementValuesCollection.Guid = guid;
                 }
 
-                elementValuesCollection.DoubleAliases.AddRange(DoubleAliases.Skip(doubleIndex).Take(MaxArrayLength));
-                elementValuesCollection.DoubleValues.AddRange(DoubleValues.Skip(doubleIndex).Take(MaxArrayLength));
-                elementValuesCollection.DoubleValueTypeCodes.AddRange(DoubleValueTypeCodes.Skip(doubleIndex).Take(MaxArrayLength));
-                elementValuesCollection.DoubleStatusCodes.AddRange(DoubleStatusCodes.Skip(doubleIndex).Take(MaxArrayLength));
-                elementValuesCollection.DoubleTimestamps.AddRange(DoubleTimestamps.Skip(doubleIndex).Take(MaxArrayLength));                
+                int replyObjectSize = 0;
+                while (index < count && replyObjectSize < Constants.MaxReplyObjectSize)
+                {
+                    int localIndex = index;
+                    if (localIndex < DoubleTimestamps.Count)
+                    {
+                        resultElementValuesCollection.DoubleAliases.Add(DoubleAliases[localIndex]);
+                        resultElementValuesCollection.DoubleValues.Add(DoubleValues[localIndex]);
+                        resultElementValuesCollection.DoubleValueTypeCodes.Add(DoubleValueTypeCodes[localIndex]);
+                        resultElementValuesCollection.DoubleStatusCodes.Add(DoubleStatusCodes[localIndex]);
+                        resultElementValuesCollection.DoubleTimestamps.Add(DoubleTimestamps[localIndex]);
+                        replyObjectSize += sizeof(uint) + sizeof(double) + sizeof(uint) + 8;
+                        index += 1;
+                        continue;
+                    }
 
-                elementValuesCollection.UintAliases.AddRange(UintAliases.Skip(uintIndex).Take(MaxArrayLength));
-                elementValuesCollection.UintValues.AddRange(UintValues.Skip(uintIndex).Take(MaxArrayLength));
-                elementValuesCollection.UintValueTypeCodes.AddRange(UintValueTypeCodes.Skip(uintIndex).Take(MaxArrayLength));
-                elementValuesCollection.UintStatusCodes.AddRange(UintStatusCodes.Skip(uintIndex).Take(MaxArrayLength));
-                elementValuesCollection.UintTimestamps.AddRange(UintTimestamps.Skip(uintIndex).Take(MaxArrayLength));                
+                    localIndex = index - DoubleTimestamps.Count;
+                    if (localIndex < UintTimestamps.Count)
+                    {
+                        resultElementValuesCollection.UintAliases.Add(UintAliases[localIndex]);
+                        resultElementValuesCollection.UintValues.Add(UintValues[localIndex]);
+                        resultElementValuesCollection.UintValueTypeCodes.Add(UintValueTypeCodes[localIndex]);
+                        resultElementValuesCollection.UintStatusCodes.Add(UintStatusCodes[localIndex]);
+                        resultElementValuesCollection.UintTimestamps.Add(UintTimestamps[localIndex]);
+                        replyObjectSize += sizeof(uint) + sizeof(uint) + sizeof(uint) + 8;
+                        index += 1;
+                        continue;
+                    }
 
-                elementValuesCollection.ObjectAliases.AddRange(ObjectAliases.Skip(objectIndex).Take(MaxArrayLength));
-                elementValuesCollection.ObjectValues = Google.Protobuf.ByteString.CopyFrom(
-                    ObjectValues.Skip(objectByteIndex).Take(MaxByteStringLength).ToArray());
-                elementValuesCollection.ObjectStatusCodes.AddRange(ObjectStatusCodes.Skip(objectIndex).Take(MaxArrayLength));
-                elementValuesCollection.ObjectTimestamps.AddRange(ObjectTimestamps.Skip(objectIndex).Take(MaxArrayLength));                
+                    localIndex = index - DoubleTimestamps.Count - UintTimestamps.Count;
+                    if (localIndex < ObjectTimestamps.Count)
+                    {
+                        resultElementValuesCollection.ObjectAliases.Add(ObjectAliases[localIndex]);
+                        resultElementValuesCollection.ObjectStatusCodes.Add(ObjectStatusCodes[localIndex]);
+                        resultElementValuesCollection.ObjectTimestamps.Add(ObjectTimestamps[localIndex]);
+                        replyObjectSize += sizeof(uint) + sizeof(uint) + 8;
+                        index += 1;
+                        continue;
+                    }
 
-                result.Add(elementValuesCollection);
-                doubleIndex += MaxArrayLength;
-                uintIndex += MaxArrayLength;
-                objectIndex += MaxArrayLength;
-                objectByteIndex += MaxByteStringLength;
-                prevElementValuesCollection = elementValuesCollection;
+                    if (ObjectValues.Length > 0)
+                    {
+                        localIndex = index - DoubleTimestamps.Count - UintTimestamps.Count - ObjectTimestamps.Count;
+                        int bytesCount = Constants.MaxReplyObjectSize - replyObjectSize;
+                        var span = ObjectValues.Memory.Span;
+                        int length = Math.Min(span.Length - localIndex, bytesCount);
+                        resultElementValuesCollection.ObjectValues = Google.Protobuf.ByteString.CopyFrom(
+                            span.Slice(localIndex, length));
+                        replyObjectSize += resultElementValuesCollection.ObjectValues.Length;
+                        index += resultElementValuesCollection.ObjectValues.Length;
+                    }
+                }
+
+                result.Add(resultElementValuesCollection);
+                prevResultElementValuesCollection = resultElementValuesCollection;
             }
 
             return result;
@@ -93,12 +128,43 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         #endregion
 
-        #region private fields
+        #region private functions
 
-        private const int MaxArrayLength = 1024;
+        private int GetSize()
+        {
+            int size = 0;
 
-        private const int MaxByteStringLength = 1024 * 1024;
+            size += DoubleTimestamps.Count * (sizeof(uint) + sizeof(double) + sizeof(uint) + 8);
 
-        #endregion   
+            size += UintTimestamps.Count * (sizeof(uint) + sizeof(uint) + sizeof(uint) + 8);
+
+            size += ObjectTimestamps.Count * (sizeof(uint) + sizeof(uint) + 8);
+
+            size += ObjectValues.Length;
+
+            return size;
+        }
+
+        private int GetCount()
+        {
+            int count = 0;
+
+            count += DoubleTimestamps.Count;
+
+            count += UintTimestamps.Count;
+
+            count += ObjectTimestamps.Count;
+
+            count += ObjectValues.Length;
+
+            return count;
+        }
+
+        #endregion
+    }
+
+    public static class Constants
+    {
+        public const int MaxReplyObjectSize = 1024 * 1024;
     }
 }

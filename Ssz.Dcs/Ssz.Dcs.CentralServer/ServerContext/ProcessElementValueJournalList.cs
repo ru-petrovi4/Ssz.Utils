@@ -124,7 +124,7 @@ namespace Ssz.Dcs.CentralServer
                                             elementValuesJournal.UintTimestamps.Add(Ssz.DataAccessGrpc.ServerBase.DateTimeHelper.ConvertToTimestamp(vst.TimestampUtc));
                                             break;
                                         case TransportType.Object:
-                                            writer.WriteObject(vst.Value.ValueAsObject());
+                                            vst.Value.SerializeOwnedData(writer, null);                                            
                                             elementValuesJournal.ObjectStatusCodes.Add(vst.StatusCode);
                                             elementValuesJournal.ObjectTimestamps.Add(Ssz.DataAccessGrpc.ServerBase.DateTimeHelper.ConvertToTimestamp(vst.TimestampUtc));
                                             break;
