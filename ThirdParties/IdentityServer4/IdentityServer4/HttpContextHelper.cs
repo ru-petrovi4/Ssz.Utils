@@ -70,7 +70,7 @@ namespace IdentityServer4
         {
             if (httpContext is null)
                 return @"";
-            return httpContext.User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value ?? @"";
+            return (httpContext.User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value ?? @"").ToLowerInvariant();
         }
 
         /// <summary>
