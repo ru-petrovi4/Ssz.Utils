@@ -103,29 +103,11 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                         uint alias = item.ServerAlias;
                         ValueStatusTimestamp valueStatusTimestamp = item.PendingWriteValueStatusTimestamp.Value;
 
-                        switch (AnyHelper.GetTransportType(valueStatusTimestamp.Value))
-                        {
-                            case TransportType.Double:
-                                fullElementValuesCollection.DoubleAliases.Add(alias);
-                                fullElementValuesCollection.DoubleValues.Add(valueStatusTimestamp.Value.ValueAsDouble(false));
-                                fullElementValuesCollection.DoubleValueTypeCodes.Add((uint)valueStatusTimestamp.Value.ValueTypeCode);
-                                fullElementValuesCollection.DoubleStatusCodes.Add(valueStatusTimestamp.StatusCode);
-                                fullElementValuesCollection.DoubleTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                
-                                break;
-                            case TransportType.UInt32:
-                                fullElementValuesCollection.UintAliases.Add(alias);
-                                fullElementValuesCollection.UintValues.Add(valueStatusTimestamp.Value.ValueAsUInt32(false));
-                                fullElementValuesCollection.UintValueTypeCodes.Add((uint)valueStatusTimestamp.Value.ValueTypeCode);
-                                fullElementValuesCollection.UintStatusCodes.Add(valueStatusTimestamp.StatusCode);
-                                fullElementValuesCollection.UintTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                
-                                break;
-                            case TransportType.Object:
-                                fullElementValuesCollection.ObjectAliases.Add(alias);
-                                valueStatusTimestamp.Value.SerializeOwnedData(writer, null);
-                                fullElementValuesCollection.ObjectStatusCodes.Add(valueStatusTimestamp.StatusCode);
-                                fullElementValuesCollection.ObjectTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                
-                                break;
-                        }
+                        fullElementValuesCollection.ObjectAliases.Add(alias);
+                        valueStatusTimestamp.Value.SerializeOwnedData(writer, null);
+                        fullElementValuesCollection.ObjectStatusCodes.Add(valueStatusTimestamp.StatusCode);
+                        fullElementValuesCollection.ObjectTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));
+
                         item.HasWritten(ResultInfo.GoodResultInfo);
                     }
                 }
@@ -190,58 +172,27 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
             {
                 var changedListItems = new List<ClientElementValueListItem>();
 
-                for (int index = 0; index < elementValuesCollection.DoubleAliases.Count; index++)
+                using (var memoryStream = new MemoryStream(elementValuesCollection.ObjectValues.ToByteArray()))
+                using (var reader = new SerializationReader(memoryStream))
                 {
-                    ClientElementValueListItem? item;
-                    ListItemsManager.TryGetValue(elementValuesCollection.DoubleAliases[index], out item);
-                    if (item is not null)
+                    for (int index = 0; index < elementValuesCollection.ObjectAliases.Count; index++)
                     {
-                        item.UpdateValue(elementValuesCollection.DoubleValues[index],
-                            (Ssz.Utils.Any.TypeCode)elementValuesCollection.DoubleValueTypeCodes[index],
-                            elementValuesCollection.DoubleStatusCodes[index],
-                            elementValuesCollection.DoubleTimestamps[index].ToDateTime()
-                            );
-                        changedListItems.Add(item);
-                    }
-                }
-                for (int index = 0; index < elementValuesCollection.UintAliases.Count; index++)
-                {
-                    ClientElementValueListItem? item;
-                    ListItemsManager.TryGetValue(elementValuesCollection.UintAliases[index], out item);
-                    if (item is not null)
-                    {
-                        item.UpdateValue(elementValuesCollection.UintValues[index],
-                            (Ssz.Utils.Any.TypeCode)elementValuesCollection.UintValueTypeCodes[index],
-                            elementValuesCollection.UintStatusCodes[index],
-                            elementValuesCollection.UintTimestamps[index].ToDateTime()
-                            );
-                        changedListItems.Add(item);
-                    }
-                }
-                if (elementValuesCollection.ObjectAliases.Count > 0)
-                {
-                    using (var memoryStream = new MemoryStream(elementValuesCollection.ObjectValues.ToByteArray()))
-                    using (var reader = new SerializationReader(memoryStream))
-                    {
-                        for (int index = 0; index < elementValuesCollection.ObjectAliases.Count; index++)
+                        Utils.Any value = new();
+                        value.DeserializeOwnedData(reader, null);
+                        ClientElementValueListItem? item;
+                        ListItemsManager.TryGetValue(elementValuesCollection.ObjectAliases[index], out item);
+                        if (item is not null)
                         {
-                            Utils.Any value = new();
-                            value.DeserializeOwnedData(reader, null);                            
-                            ClientElementValueListItem? item;
-                            ListItemsManager.TryGetValue(elementValuesCollection.ObjectAliases[index], out item);
-                            if (item is not null)
-                            {
-                                item.UpdateValue(value,
-                                    elementValuesCollection.ObjectStatusCodes[index],
-                                    elementValuesCollection.ObjectTimestamps[index].ToDateTime()
-                                    );
-                                changedListItems.Add(item);
-                            }
+                            item.Update(new ValueStatusTimestamp(
+                                value,
+                                elementValuesCollection.ObjectStatusCodes[index],
+                                elementValuesCollection.ObjectTimestamps[index].ToDateTime()
+                                ));
+                            changedListItems.Add(item);
                         }
                     }
+                }
 
-                }  
-                
                 return changedListItems.ToArray();
             }
         }

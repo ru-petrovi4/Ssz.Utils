@@ -110,60 +110,25 @@ namespace Ssz.Dcs.ControlEngine
             {
                 var changedListItems = new List<TElementListItem>();
 
-                for (int index = 0; index < elementValuesCollection.DoubleAliases.Count; index++)
+                using (var memoryStream = new MemoryStream(elementValuesCollection.ObjectValues.ToByteArray()))
+                using (var reader = new SerializationReader(memoryStream))
                 {
-                    TElementListItem? item;
-                    ListItemsManager.TryGetValue(elementValuesCollection.DoubleAliases[index], out item);
-                    if (item is not null)
+                    for (int index = 0; index < elementValuesCollection.ObjectAliases.Count; index++)
                     {
-                        item.PendingWriteValueStatusTimestamp = new ValueStatusTimestamp
-                            {
-                                Value = AnyHelper.GetAny(elementValuesCollection.DoubleValues[index], (Ssz.Utils.Any.TypeCode)elementValuesCollection.DoubleValueTypeCodes[index], false),
-                                StatusCode = elementValuesCollection.DoubleStatusCodes[index],
-                                TimestampUtc = elementValuesCollection.DoubleTimestamps[index].ToDateTime()
-                            };
-                        changedListItems.Add(item);
-                    }
-                }
-                for (int index = 0; index < elementValuesCollection.UintAliases.Count; index++)
-                {
-                    TElementListItem? item;
-                    ListItemsManager.TryGetValue(elementValuesCollection.UintAliases[index], out item);
-                    if (item is not null)
-                    {
-                        item.PendingWriteValueStatusTimestamp = new ValueStatusTimestamp
+                        Any value = new();
+                        value.DeserializeOwnedData(reader, null);
+                        TElementListItem? item;
+                        ListItemsManager.TryGetValue(elementValuesCollection.ObjectAliases[index], out item);
+                        if (item is not null)
                         {
-                            Value = AnyHelper.GetAny(elementValuesCollection.UintValues[index], (Ssz.Utils.Any.TypeCode)elementValuesCollection.UintValueTypeCodes[index], false),
-                            StatusCode = elementValuesCollection.UintStatusCodes[index],
-                            TimestampUtc = elementValuesCollection.UintTimestamps[index].ToDateTime()
-                        };
-                        changedListItems.Add(item);
-                    }
-                }
-                if (elementValuesCollection.ObjectAliases.Count > 0)
-                {
-                    using (var memoryStream = new MemoryStream(elementValuesCollection.ObjectValues.ToByteArray()))
-                    using (var reader = new SerializationReader(memoryStream))
-                    {
-                        for (int index = 0; index < elementValuesCollection.ObjectAliases.Count; index++)
-                        {
-                            Any value = new();
-                            value.DeserializeOwnedData(reader, null);
-                            TElementListItem? item;
-                            ListItemsManager.TryGetValue(elementValuesCollection.ObjectAliases[index], out item);
-                            if (item is not null)
-                            {
-                                item.PendingWriteValueStatusTimestamp = new ValueStatusTimestamp
-                                {
-                                    Value = value,
-                                    StatusCode = elementValuesCollection.ObjectStatusCodes[index],
-                                    TimestampUtc = elementValuesCollection.ObjectTimestamps[index].ToDateTime()
-                                };
-                                changedListItems.Add(item);
-                            }
+                            item.PendingWriteValueStatusTimestamp = new ValueStatusTimestamp(                            
+                                value,
+                                elementValuesCollection.ObjectStatusCodes[index],
+                                elementValuesCollection.ObjectTimestamps[index].ToDateTime()
+                            );
+                            changedListItems.Add(item);
                         }
                     }
-
                 }
 
                 return await OnWriteValuesAsync(changedListItems);

@@ -331,29 +331,10 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             uint alias = kvp.Key;
                             ValueStatusTimestamp valueStatusTimestamp = kvp.Value;
 
-                            switch (AnyHelper.GetTransportType(valueStatusTimestamp.Value))
-                            {
-                                case TransportType.Double:
-                                    fullElementValuesCollection.DoubleAliases.Add(alias);
-                                    fullElementValuesCollection.DoubleValues.Add(valueStatusTimestamp.Value.ValueAsDouble(false));
-                                    fullElementValuesCollection.DoubleValueTypeCodes.Add((uint)valueStatusTimestamp.Value.ValueTypeCode);
-                                    fullElementValuesCollection.DoubleStatusCodes.Add(valueStatusTimestamp.StatusCode);
-                                    fullElementValuesCollection.DoubleTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                    
-                                    break;
-                                case TransportType.UInt32:
-                                    fullElementValuesCollection.UintAliases.Add(alias);
-                                    fullElementValuesCollection.UintValues.Add(valueStatusTimestamp.Value.ValueAsUInt32(false));
-                                    fullElementValuesCollection.UintValueTypeCodes.Add((uint)valueStatusTimestamp.Value.ValueTypeCode);
-                                    fullElementValuesCollection.UintStatusCodes.Add(valueStatusTimestamp.StatusCode);
-                                    fullElementValuesCollection.UintTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                    
-                                    break;
-                                case TransportType.Object:
-                                    fullElementValuesCollection.ObjectAliases.Add(alias);
-                                    valueStatusTimestamp.Value.SerializeOwnedData(writer, null);
-                                    fullElementValuesCollection.ObjectStatusCodes.Add(valueStatusTimestamp.StatusCode);
-                                    fullElementValuesCollection.ObjectTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));                                    
-                                    break;
-                            }
+                            fullElementValuesCollection.ObjectAliases.Add(alias);
+                            valueStatusTimestamp.Value.SerializeOwnedData(writer, null);
+                            fullElementValuesCollection.ObjectStatusCodes.Add(valueStatusTimestamp.StatusCode);
+                            fullElementValuesCollection.ObjectTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));
                         }
                     }
                     memoryStream.Position = 0;

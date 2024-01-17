@@ -25,52 +25,15 @@ namespace Ssz.DataAccessGrpc.Client.ClientListItems
 
         #endregion
 
-        #region public functions
+        #region public functions        
 
         /// <summary>
-        ///     This method is called by the ClientBase when a new value has been received for
-        ///     the data object from the ServerBase. It, in turn, calls the Update() method on the
-        ///     DataValue property to complete the update, and then increments the update count
-        ///     for the data object.
+        /// 
         /// </summary>
-        /// <param name="statusCode"> The DataAccessGrpc StatusCode of the value. </param>
-        /// <param name="timestampUtc"> The timestamp of the value. </param>
-        /// <param name="valueUInt32"> The value </param>
-        public void UpdateValue(uint valueUInt32, Any.TypeCode valueTypeCode, uint statusCode, DateTime timestampUtc)
-        {
-            var any = AnyHelper.GetAny(valueUInt32, valueTypeCode, false);            
-            _valueStatusTimestamp = new ValueStatusTimestamp(any, statusCode, timestampUtc);
-            IncrementUpdateCount();
-        }
-
-        /// <summary>
-        ///     This method is called by the ClientBase when a new value has been received for
-        ///     the data object from the ServerBase. It, in turn, calls the Update() method on the
-        ///     DataValue property to complete the update, and then increments the update count
-        ///     for the data object.
-        /// </summary>
-        /// <param name="statusCode"> The DataAccessGrpc StatusCode of the value. </param>
-        /// <param name="timestampUtc"> The timestamp of the value. </param>
-        /// <param name="valueDouble"> The value </param>
-        public void UpdateValue(double valueDouble, Any.TypeCode valueTypeCode, uint statusCode, DateTime timestampUtc)
-        {
-            var any = AnyHelper.GetAny(valueDouble, valueTypeCode, false);            
-            _valueStatusTimestamp = new ValueStatusTimestamp(any, statusCode, timestampUtc);
-            IncrementUpdateCount();
-        }
-
-        /// <summary>
-        ///     This method is called by the ClientBase when a new value has been received for
-        ///     the data object from the ServerBase. It, in turn, calls the Update() method on the
-        ///     DataValue property to complete the update, and then increments the update count
-        ///     for the data object.
-        /// </summary>
-        /// <param name="statusCode"> The DataAccessGrpc StatusCode of the value. </param>
-        /// <param name="timestampUtc"> The timestamp of the value. </param>
-        /// <param name="valueObject"> The value </param>
-        public void UpdateValue(Any value, uint statusCode, DateTime timestampUtc)
+        /// <param name="valueStatusTimestamp"></param>
+        public void Update(ValueStatusTimestamp valueStatusTimestamp)
         {                     
-            _valueStatusTimestamp = new ValueStatusTimestamp(value, statusCode, timestampUtc);
+            _valueStatusTimestamp = valueStatusTimestamp;
             IncrementUpdateCount();
         }
 
