@@ -33,7 +33,7 @@ namespace Ssz.Utils
         /// </summary>
         public string GenericTag { get; private set; } = @"%(TAG)";
 
-        public string GenericTag_Number { get; private set; } = @"%(TAG_NUMBER)";
+        public string GenericTagNum { get; private set; } = @"%(TAGNUM)";
 
         /// <summary>
         ///     Can be configured in map, '%(GenericPropMapOption)' key
@@ -285,7 +285,7 @@ namespace Ssz.Utils
                     {
                         if (String.Equals(constant, GenericTag, StringComparison.InvariantCultureIgnoreCase))
                             return tagName;
-                        if (String.Equals(constant, GenericTag_Number, StringComparison.InvariantCultureIgnoreCase))
+                        if (String.Equals(constant, GenericTagNum, StringComparison.InvariantCultureIgnoreCase))
                         {
                             int index = tagName.IndexOfAny(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']);
                             if (index > 0)
