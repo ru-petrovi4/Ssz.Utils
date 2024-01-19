@@ -18,13 +18,13 @@ namespace Ssz.Utils
 
         public const string StandardTagsFileName = @"tags.csv";
 
-        public const string GenericTagParamName = @"%(GenericTag)";
+        public const string GenericTagMapOptionParamName = @"%(GenericTagMapOption)";
 
-        public const string GenericPropParamName = @"%(GenericProp)";
+        public const string GenericPropMapOptionParamName = @"%(GenericPropMapOption)";
 
-        public const string TagTypeSeparatorParamName = @"%(TagTypeSeparator)";
+        public const string TagTypeSeparatorMapOptionParamName = @"%(TagTypeSeparatorMapOption)";
 
-        public const string TagAndPropSeparatorParamName = @"%(TagAndPropSeparator)";
+        public const string TagAndPropSeparatorMapOptionParamName = @"%(TagAndPropSeparatorMapOption)";
 
         public const string CommonEventMessageFieldsToAddParamName = @"%(CommonEventMessageFieldsToAdd)";
 
@@ -81,19 +81,19 @@ namespace Ssz.Utils
             Tags = tags;
             _csvDb = csvDb;
 
-            var values = Map.TryGetValue(GenericTagParamName);
+            var values = Map.TryGetValue(GenericTagMapOptionParamName);
             if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 GenericTag = values[1] ?? @"";
 
-            values = Map.TryGetValue(GenericPropParamName);
+            values = Map.TryGetValue(GenericPropMapOptionParamName);
             if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 GenericProp = values[1] ?? @"";
 
-            values = Map.TryGetValue(TagTypeSeparatorParamName);
+            values = Map.TryGetValue(TagTypeSeparatorMapOptionParamName);
             if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 TagTypeSeparator = values[1] ?? @"";
 
-            values = Map.TryGetValue(TagAndPropSeparatorParamName);
+            values = Map.TryGetValue(TagAndPropSeparatorMapOptionParamName);
             if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 TagAndPropSeparator = values[1] ?? @"";
 
