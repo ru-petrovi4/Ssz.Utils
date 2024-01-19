@@ -120,6 +120,9 @@
   <data name="CommonEventMessageFieldsToAdd_Option" xml:space="preserve">
     <value />
   </data>
+  <data name="EventTimeColumnNotfound" xml:space="preserve">
+    <value>Column with one of headers is not found: 'Event Time', 'EventTime', 'Alarm Time', 'AlarmTime'. Line: {0}</value>
+  </data>
   <data name="ExperionEventsJournalFilesImporterAddon_Desc" xml:space="preserve">
     <value>Experion PKS events journal files importer</value>
   </data>

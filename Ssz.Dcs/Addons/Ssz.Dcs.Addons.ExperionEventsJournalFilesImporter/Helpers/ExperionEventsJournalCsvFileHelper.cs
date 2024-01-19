@@ -61,9 +61,16 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                             isTable = true;
                             columns = CsvHelper.ParseCsvLine(separator, line);
                             eventTimeColumnIndex = columns.IndexOf(c => c == @"Event Time");
+                            if (eventTimeColumnIndex == -1)
+                                eventTimeColumnIndex = columns.IndexOf(c => c == @"EventTime");
                             alarmTimeColumnIndex = columns.IndexOf(c => c == @"Alarm Time");
+                            if (alarmTimeColumnIndex == -1)
+                                alarmTimeColumnIndex = columns.IndexOf(c => c == @"AlarmTime");
                             if (eventTimeColumnIndex == -1 && alarmTimeColumnIndex == -1)
+                            {
+                                loggersSet.UserFriendlyLogger.LogError(Properties.Resources.EventTimeColumnNotfound, line);
                                 break;
+                            }
                         }
                     }
                     else

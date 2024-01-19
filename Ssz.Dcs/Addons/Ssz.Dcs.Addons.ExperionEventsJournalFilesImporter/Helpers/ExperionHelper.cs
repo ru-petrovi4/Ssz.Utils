@@ -13,42 +13,27 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
         {
             if (String.IsNullOrEmpty(dateTimeString))
                 return (DateTime.MinValue, false);
+
+            var formats = new[] {
+                @"dd.MM.yyyy H:mm:ss.FFFFFF",                
+                @"dd.MM.yyyy HH:mm:ss.FFFFFF",
+                @"yyyy.MM.dd H:mm:ss.FFFFFF",
+                @"yyyy.MM.dd HH:mm:ss.FFFFFF",
+
+                @"dd.MM.yyyy H:mm",
+                @"dd.MM.yyyy HH:mm",
+                @"yyyy.MM.dd H:mm",
+                @"yyyy.MM.dd HH:mm",
+                dateTimeFormatOption
+            };
+                //.Union(CultureInfo.InvariantCulture.DateTimeFormat.GetAllDateTimePatterns()).ToArray();
+
             DateTime timeUtc;
-            bool succeeded = DateTime.TryParseExact(dateTimeString, @"dd.MM.yyyy H:mm:ss.FFFFF", CultureInfo.InvariantCulture,
+            bool succeeded = DateTime.TryParseExact(dateTimeString, formats, CultureInfo.InvariantCulture,
                                DateTimeStyles.AllowTrailingWhite | DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal, out timeUtc);
             if (succeeded)
-                return (timeUtc, succeeded);
-            succeeded = DateTime.TryParseExact(dateTimeString, @"dd.MM.yyyy HH:mm:ss.FFFFF", CultureInfo.InvariantCulture,
-                               DateTimeStyles.AllowTrailingWhite | DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal, out timeUtc);
-            if (succeeded)
-                return (timeUtc, succeeded);
-            succeeded = DateTime.TryParseExact(dateTimeString, @"yyyy.MM.dd H:mm:ss.FFFFF", CultureInfo.InvariantCulture,
-                               DateTimeStyles.AllowTrailingWhite | DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal, out timeUtc);
-            if (succeeded)
-                return (timeUtc, succeeded);
-            succeeded = DateTime.TryParseExact(dateTimeString, @"yyyy.MM.dd HH:mm:ss.FFFFF", CultureInfo.InvariantCulture,
-                               DateTimeStyles.AllowTrailingWhite | DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal, out timeUtc);
-            if (succeeded)
-                return (timeUtc, succeeded);
-
-
-            succeeded = DateTime.TryParseExact(dateTimeString, dateTimeFormatOption, CultureInfo.InvariantCulture,
-                               DateTimeStyles.AllowTrailingWhite | DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal, out timeUtc);
-            if (succeeded)
-                return (timeUtc, succeeded);
-            //var index = dateTimeFormatOption.IndexOf(".F");
-            //if (index != -1)
-            //{
-            //    dateTimeFormatOption = dateTimeFormatOption.Substring(0, index + 1);
-            //    foreach (int i in Enumerable.Range(0, 5))
-            //    {
-            //        dateTimeFormatOption += "F";
-            //        succeeded = DateTime.TryParseExact(dateTimeString, dateTimeFormatOption, CultureInfo.InvariantCulture,
-            //                        DateTimeStyles.AllowTrailingWhite | DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal, out timeUtc);
-            //        if (succeeded)
-            //            return (timeUtc, succeeded);
-            //    }
-            //}
+                return (timeUtc, succeeded);            
+            
             succeeded = DateTime.TryParse(dateTimeString, CultureInfo.InvariantCulture,
                                     DateTimeStyles.AllowTrailingWhite | DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal, out timeUtc);
             if (succeeded)
@@ -57,3 +42,17 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
         }
     }
 }
+
+//var index = dateTimeFormatOption.IndexOf(".F");
+//if (index != -1)
+//{
+//    dateTimeFormatOption = dateTimeFormatOption.Substring(0, index + 1);
+//    foreach (int i in Enumerable.Range(0, 5))
+//    {
+//        dateTimeFormatOption += "F";
+//        succeeded = DateTime.TryParseExact(dateTimeString, dateTimeFormatOption, CultureInfo.InvariantCulture,
+//                        DateTimeStyles.AllowTrailingWhite | DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal, out timeUtc);
+//        if (succeeded)
+//            return (timeUtc, succeeded);
+//    }
+//}

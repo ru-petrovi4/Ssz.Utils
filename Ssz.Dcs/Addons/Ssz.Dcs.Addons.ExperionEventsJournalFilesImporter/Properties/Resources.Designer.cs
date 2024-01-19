@@ -70,6 +70,15 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Column with one of headers is not found: &apos;Event Time&apos;, &apos;EventTime&apos;, &apos;Alarm Time&apos;, &apos;AlarmTime&apos;. Line: {0}.
+        /// </summary>
+        public static string EventTimeColumnNotfound {
+            get {
+                return ResourceManager.GetString("EventTimeColumnNotfound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Experion PKS events journal files importer.
         /// </summary>
         public static string ExperionEventsJournalFilesImporterAddon_Desc {
