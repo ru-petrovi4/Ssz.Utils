@@ -289,7 +289,7 @@ namespace Ssz.Utils
                         {
                             int index = tagName.IndexOfAny(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']);
                             if (index > 0)
-                                return tagName.Substring(i);
+                                return tagName.Substring(index);
                             else
                                 return @"";
                         }
