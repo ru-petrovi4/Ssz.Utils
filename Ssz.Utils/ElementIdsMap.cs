@@ -29,24 +29,24 @@ namespace Ssz.Utils
         public const string CommonEventMessageFieldsToAddParamName = @"%(CommonEventMessageFieldsToAdd)";
 
         /// <summary>
-        ///     Can be configured in map, '%(GenericTag)' key
+        ///     Can be configured in map, '%(GenericTagMapOption)' key
         /// </summary>
         public string GenericTag { get; private set; } = @"%(TAG)";
 
         public string GenericTag_Number { get; private set; } = @"%(TAG_NUMBER)";
 
         /// <summary>
-        ///     Can be configured in map, '%(GenericProp)' key
+        ///     Can be configured in map, '%(GenericPropMapOption)' key
         /// </summary>
         public string GenericProp { get; private set; } = @"%(PROP)";
 
         /// <summary>
-        ///     Can be configured in map, '%(TagTypeSeparator)' key
+        ///     Can be configured in map, '%(TagTypeSeparatorMapOption)' key
         /// </summary>
         public string TagTypeSeparator { get; private set; } = @":";
 
         /// <summary>
-        ///     Can be configured in map, '%(TagAndPropSeparator)' key
+        ///     Can be configured in map, '%(TagAndPropSeparatorMapOption)' key
         /// </summary>
         public string TagAndPropSeparator { get; private set; } = @".";
 
