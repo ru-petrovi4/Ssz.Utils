@@ -48,7 +48,7 @@ namespace Ssz.Utils
                 charsetDetector.Feed(bytes, 0, bytes.Length);
                 charsetDetector.DataEnd();
                 var encoding2 = charsetDetector.Encoding;
-                if (encoding2 is not null && charsetDetector.Confidence > 0.5)
+                if (encoding2 is not null && charsetDetector.Confidence > 0.9)
                     encoding = encoding2;
                 logger?.LogDebug(@"Detected Encoding: " + encoding.EncodingName);
             }

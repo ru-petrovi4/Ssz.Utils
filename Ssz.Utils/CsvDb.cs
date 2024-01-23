@@ -726,7 +726,7 @@ namespace Ssz.Utils
 
         private async Task FileSystemWatcherEnableRaisingEventsAsync()
         {
-            while (true)
+            for (int i = 0; i < 10; i += 1)
             {
                 try
                 {
