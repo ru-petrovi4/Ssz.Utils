@@ -139,7 +139,7 @@ namespace Ssz.Utils.Serialization
         public int GetBlockVersionWithoutChangingStreamPosition()
         {
             long originalPosition = _baseStream.Position;
-            SerializedType typeCode = ReadTypeCode();
+            SerializedType typeCode = ReadSerializedType();
             if (typeCode == SerializedType.BlockBeginWithVersion)
             {
                 // it will store either the block length or remain as 0 if allowUpdateHeader is false
@@ -164,7 +164,7 @@ namespace Ssz.Utils.Serialization
         /// <returns>Returns block Version.</returns>
         public int BeginBlock()
         {
-            SerializedType typeCode = ReadTypeCode();
+            SerializedType typeCode = ReadSerializedType();
             if (typeCode == SerializedType.BlockBeginWithVersion)
             {
                 // it will store either the block length or remain as 0 if allowUpdateHeader is false
@@ -193,7 +193,7 @@ namespace Ssz.Utils.Serialization
         public void EndBlock()
         {
             _blockEndingPositionsStack.Pop();
-            SerializedType typeCode = ReadTypeCode();
+            SerializedType typeCode = ReadSerializedType();
             if (typeCode != SerializedType.BlockEnd) throw new Exception("Stream block has more data than expected");
         }
 
@@ -566,7 +566,7 @@ namespace Ssz.Utils.Serialization
             if (IsBlockEnding()) 
                 throw new BlockEndingException();
 
-            SerializedType typeCode = ReadTypeCode();
+            SerializedType typeCode = ReadSerializedType();
 
             if (typeCode == SerializedType.NullType)
                 return null;
@@ -608,7 +608,7 @@ namespace Ssz.Utils.Serialization
         {
             if (IsBlockEnding()) throw new BlockEndingException();
 
-            SerializedType typeCode = ReadTypeCode();
+            SerializedType typeCode = ReadSerializedType();
 
             if (typeCode == SerializedType.NullType) 
                 return null;
@@ -627,7 +627,7 @@ namespace Ssz.Utils.Serialization
             if (IsBlockEnding()) 
                 throw new BlockEndingException();
 
-            SerializedType typeCode = ReadTypeCode();
+            SerializedType typeCode = ReadSerializedType();
 
             if (typeCode == SerializedType.NullType) 
                 return null;
@@ -693,13 +693,13 @@ namespace Ssz.Utils.Serialization
             if (IsBlockEnding()) 
                 throw new BlockEndingException();
 
-            SerializedType typeCode = ReadTypeCode();
+            SerializedType typeCode = ReadSerializedType();
 
             if (typeCode == SerializedType.NullType) 
                 return null;
 
             var keys = (TK[]?)ReadArrayInternal(typeCode, typeof(TK));
-            var values = (TV[]?)ReadArrayInternal(ReadTypeCode(), typeof(TV));
+            var values = (TV[]?)ReadArrayInternal(ReadSerializedType(), typeof(TV));
 
             if (keys is null || values is null) 
                 throw new InvalidOperationException();
@@ -744,7 +744,7 @@ namespace Ssz.Utils.Serialization
         {
             if (IsBlockEnding()) throw new BlockEndingException();
 
-            if (ReadTypeCode() == SerializedType.NullType) return null;
+            if (ReadSerializedType() == SerializedType.NullType) return null;
 
             return ReadOptimizedBitArray();
         }
@@ -799,7 +799,7 @@ namespace Ssz.Utils.Serialization
         {
             if (IsBlockEnding()) throw new BlockEndingException();
 
-            SerializedType typeCode = ReadTypeCode();
+            SerializedType typeCode = ReadSerializedType();
 
             switch (typeCode)
             {
@@ -978,7 +978,7 @@ namespace Ssz.Utils.Serialization
             }
             else
             {
-                SerializedType typeCode = ReadTypeCode();
+                SerializedType typeCode = ReadSerializedType();
                 switch (typeCode)
                 {
                     case SerializedType.ZeroDoubleType:
@@ -1054,7 +1054,7 @@ namespace Ssz.Utils.Serialization
         {
             if (IsBlockEnding()) throw new BlockEndingException();
 
-            SerializedType typeCode = ReadTypeCode();
+            SerializedType typeCode = ReadSerializedType();
 
             switch (typeCode)
             {
@@ -1420,7 +1420,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> An Int32[] instance; or null. </returns>
         private int[]? ReadInt32Array()
         {
-            SerializedType typeCode = ReadTypeCode();
+            SerializedType typeCode = ReadSerializedType();
 
             switch (typeCode)
             {
@@ -1455,7 +1455,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> An Int64[] instance; or null. </returns>
         private long[]? ReadInt64Array()
         {
-            SerializedType typeCode = ReadTypeCode();
+            SerializedType typeCode = ReadSerializedType();
 
             switch (typeCode)
             {
@@ -1490,7 +1490,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> A TimeSpan[] instance; or null. </returns>
         private TimeSpan[]? ReadTimeSpanArray()
         {
-            SerializedType typeCode = ReadTypeCode();
+            SerializedType typeCode = ReadSerializedType();
 
             switch (typeCode)
             {
@@ -1525,7 +1525,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> A UInt[] instance; or null. </returns>
         private uint[]? ReadUInt32Array()
         {
-            SerializedType typeCode = ReadTypeCode();
+            SerializedType typeCode = ReadSerializedType();
 
             switch (typeCode)
             {
@@ -1560,7 +1560,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> A UInt64[] instance; or null. </returns>
         private ulong[]? ReadUInt64Array()
         {
-            SerializedType typeCode = ReadTypeCode();
+            SerializedType typeCode = ReadSerializedType();
 
             switch (typeCode)
             {
@@ -1595,7 +1595,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> A DateTime[] instance; or null. </returns>
         private DateTime[]? ReadDateTimeArray()
         {
-            SerializedType typeCode = ReadTypeCode();
+            SerializedType typeCode = ReadSerializedType();
             switch (typeCode)
             {
                 case SerializedType.NullType:
@@ -1629,7 +1629,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> A UInt16[] instance; or null. </returns>
         private ushort[]? ReadUInt16Array()
         {
-            SerializedType typeCode = ReadTypeCode();
+            SerializedType typeCode = ReadSerializedType();
 
             switch (typeCode)
             {
@@ -1664,7 +1664,7 @@ namespace Ssz.Utils.Serialization
         /// <returns> An Int16[] instance; or null. </returns>
         private short[]? ReadInt16Array()
         {
-            SerializedType t = ReadTypeCode();
+            SerializedType t = ReadSerializedType();
 
             switch (t)
             {
@@ -1779,7 +1779,7 @@ namespace Ssz.Utils.Serialization
         ///     Returns the SerializedType read next from the stream.
         /// </summary>
         /// <returns> A SerializedType value. </returns>
-        private SerializedType ReadTypeCode()
+        private SerializedType ReadSerializedType()
         {
             return (SerializedType) ReadByte();
         }
