@@ -11,6 +11,7 @@ namespace Ssz.Utils
     {
         /// <summary>
         ///     Gets ZipArchive for reading with correct file names encoding.
+        ///     Leave stream open upon disposing.
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>

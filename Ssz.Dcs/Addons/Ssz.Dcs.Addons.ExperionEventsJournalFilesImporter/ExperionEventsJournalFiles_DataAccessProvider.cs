@@ -15,6 +15,8 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.IO.Compression;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
 {
@@ -220,109 +222,50 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
 
                 var journalFiles_Type = ((ExperionEventsJournalFilesImporterAddon)Addon).OptionsSubstituted.TryGetValue(
                         ExperionEventsJournalFilesImporterAddon.JournalFiles_Type_OptionName) ?? @"";
-                switch (journalFiles_Type.ToUpperInvariant())
+
+                try
                 {
-                    case @"RPT":
-                        try
+                    foreach (FileInfo fi in journalFilesDirectoryInfo.GetFiles())
+                    {
+                        if (fi.Name.EndsWith(@".zip", StringComparison.InvariantCultureIgnoreCase))
                         {
-                            foreach (FileInfo fi in journalFilesDirectoryInfo.GetFiles())
-                            {
-                                if (!fi.Name.StartsWith(@"rpt", StringComparison.InvariantCultureIgnoreCase) ||
-                                        fi.Name.EndsWith(@".htm", StringComparison.InvariantCultureIgnoreCase))
-                                    continue;
-                                try
+                            using (var stream = fi.OpenRead())
+                            using (var zipArchive = ZipArchiveHelper.GetZipArchiveForRead(stream))
+                            {                                
+                                foreach (var entry in zipArchive.Entries)
                                 {
-                                    using var fileNameScope = LoggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScope, fi.Name));
-
-                                    using (Stream stream = fi.OpenRead())
-                                    {
-                                        await ExperionEventsJournalRptFileHelper.ProcessFileAsync(stream,
-                                            defaultRptFiles_Encoding,
-                                            maxProcessedTimeUtc,
-                                            Addon.OptionsSubstituted,
-                                            eventMessagesCollection.EventMessages,
-                                            LoggersSet,
-                                            cancellationToken);
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    LoggersSet.Logger.LogError(ex, "File processing error: " + fi.FullName);
+                                    await ProcessFileAsync(entry,
+                                                null,
+                                                entry.Name,
+                                                journalFiles_Type,
+                                                defaultRptFiles_Encoding,
+                                                maxProcessedTimeUtc,
+                                                Addon.OptionsSubstituted,
+                                                eventMessagesCollection.EventMessages,
+                                                LoggersSet,
+                                                cancellationToken);                                    
                                 }
                             }
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            LoggersSet.Logger.LogError(ex, "Directory processing error: " + journalFilesDirectoryInfo.FullName);
-                        }
-                        break;
-                    case @"CSV":
-                        try
-                        {
-                            foreach (FileInfo fi in journalFilesDirectoryInfo.GetFiles())
-                            {
-                                if (!fi.Name.EndsWith(@".csv", StringComparison.InvariantCultureIgnoreCase))
-                                    continue;
-                                try
-                                {
-                                    using var fileNameScope = LoggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScope, fi.Name));
-
-                                    using (Stream stream = fi.OpenRead())
-                                    {
-                                        await ExperionEventsJournalCsvFileHelper.ProcessFileAsync(stream,
-                                            Encoding.UTF8,
-                                            maxProcessedTimeUtc,
-                                            Addon.OptionsSubstituted,
-                                            eventMessagesCollection.EventMessages,
-                                            LoggersSet,
-                                            cancellationToken);
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    LoggersSet.Logger.LogError(ex, "File processing error: " + fi.FullName);
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            LoggersSet.Logger.LogError(ex, "Directory processing error: " + journalFilesDirectoryInfo.FullName);
-                        }
-                        break;
-                    case @"HTM":
-                        try
-                        {   
-                            foreach (FileInfo fi in journalFilesDirectoryInfo.GetFiles())
-                            {
-                                if (!fi.Name.EndsWith(@".htm", StringComparison.InvariantCultureIgnoreCase))
-                                    continue;
-                                try
-                                {
-                                    using var fileNameScope = LoggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScope, fi.Name));
-
-                                    using (Stream stream = fi.OpenRead())
-                                    {
-                                        await ExperionEventsJournalHtmFileHelper.ProcessFileAsync(stream,
-                                            Encoding.UTF8,
-                                            maxProcessedTimeUtc,
-                                            Addon.OptionsSubstituted,
-                                            eventMessagesCollection.EventMessages,
-                                            LoggersSet,
-                                            cancellationToken);
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    LoggersSet.Logger.LogError(ex, "File processing error: " + fi.FullName);
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            LoggersSet.Logger.LogError(ex, "Directory processing error: " + journalFilesDirectoryInfo.FullName);
-                        }
-                        break;
-                }      
+                            await ProcessFileAsync(null,
+                                                fi,
+                                                fi.Name,
+                                                journalFiles_Type,
+                                                defaultRptFiles_Encoding,
+                                                maxProcessedTimeUtc,
+                                                Addon.OptionsSubstituted,
+                                                eventMessagesCollection.EventMessages,
+                                                LoggersSet,
+                                                cancellationToken);
+                        }                        
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LoggersSet.Logger.LogError(ex, "Directory processing error: " + journalFilesDirectoryInfo.FullName);
+                }                     
 
                 if (cancellationToken.IsCancellationRequested)
                     return;
@@ -487,6 +430,116 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
 
                 LastJournalFilesDeleteScanTimeUtc = nowUtc;
             }
+        }
+
+        #endregion
+
+        #region private functions
+
+        private static async Task ProcessFileAsync(ZipArchiveEntry? entry,
+            FileInfo? fi,
+            string fileName,
+            string journalFiles_Type,
+            Encoding defaultRptFiles_Encoding,
+            DateTime maxProcessedTimeUtc,
+            CaseInsensitiveDictionary<string?> options,
+            List<EventMessage> eventMessages,
+            ILoggersSet loggersSet,
+            CancellationToken cancellationToken)
+        {
+            switch (journalFiles_Type.ToUpperInvariant())
+            {
+                case @"RPT":
+                    if (!fileName.StartsWith(@"rpt", StringComparison.InvariantCultureIgnoreCase) ||
+                                    fileName.EndsWith(@".htm", StringComparison.InvariantCultureIgnoreCase))
+                        return;
+                    try
+                    {
+                        using var fileNameScope = loggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScope, fileName));
+
+                        using (Stream? stream = GetStream(entry, fi))
+                        {
+                            if (stream is not null)
+                            {
+                                await ExperionEventsJournalRptFileHelper.ProcessFileAsync(stream,
+                                    defaultRptFiles_Encoding,
+                                    maxProcessedTimeUtc,
+                                    options,
+                                    eventMessages,
+                                    loggersSet,
+                                    cancellationToken);
+                            }                            
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        loggersSet.Logger.LogError(ex, "File processing error: " + fi.FullName);
+                    }
+                    break;
+                case @"CSV":
+                    if (!fileName.EndsWith(@".csv", StringComparison.InvariantCultureIgnoreCase))
+                        return;
+                    try
+                    {
+                        using var fileNameScope = loggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScope, fileName));
+
+                        using (Stream? stream = GetStream(entry, fi))
+                        {
+                            if (stream is not null)
+                            {
+                                await ExperionEventsJournalCsvFileHelper.ProcessFileAsync(stream,
+                                    Encoding.UTF8,
+                                    maxProcessedTimeUtc,
+                                    options,
+                                    eventMessages,
+                                    loggersSet,
+                                    cancellationToken);
+                            }                            
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        loggersSet.Logger.LogError(ex, "File processing error: " + fi.FullName);
+                    }
+                    break;
+                case @"HTM":
+                    if (!fileName.EndsWith(@".htm", StringComparison.InvariantCultureIgnoreCase))
+                        return;
+                    try
+                    {
+                        using var fileNameScope = loggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScope, fileName));
+
+                        using (Stream? stream = GetStream(entry, fi))
+                        {
+                            if (stream is not null)
+                            {
+                                await ExperionEventsJournalHtmFileHelper.ProcessFileAsync(stream,
+                                    Encoding.UTF8,
+                                    maxProcessedTimeUtc,
+                                    options,
+                                    eventMessages,
+                                    loggersSet,
+                                    cancellationToken);
+                            }                            
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        loggersSet.Logger.LogError(ex, "File processing error: " + fi.FullName);
+                    }
+                    break;
+            }
+        }
+
+        private static Stream? GetStream(ZipArchiveEntry? entry, FileInfo? fi)
+        {
+            if (entry is not null)
+                return entry.Open();
+
+            if (fi is not null)
+                return fi.OpenRead();
+
+            throw new InvalidOperationException();
         }
 
         #endregion
