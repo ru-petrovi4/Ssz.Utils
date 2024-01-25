@@ -166,11 +166,12 @@ namespace Ssz.Utils
                 _csvFilesCollection.TryGetValue(fileInfo.Name, out CsvFile? csvFile);
                 if (csvFile is null)
                 {
-                    csvFile = new CsvFile { 
+                    csvFile = new CsvFile
+                    {
                         FileName = fileInfo.Name,
-                        OnDiskFileInfo = fileInfo,
+                        OnDiskFileInfo = fileInfo,                        
                         DataIsChangedOnDisk = true
-                    };                    
+                    };
 
                     foreach (CsvFile oldCsvFile in _csvFilesCollection.Values)
                     {
@@ -178,18 +179,21 @@ namespace Ssz.Utils
                             oldCsvFile.DataIsChangedOnDisk = true;
                     }
                 }
-                else if (Path.GetFileNameWithoutExtension(csvFile.FileName) != Path.GetFileNameWithoutExtension(fileInfo.Name) || // Strict compare
-                    csvFile.OnDiskFileInfo is null ||
-                    csvFile.OnDiskFileInfo.LastWriteTimeUtc != fileInfo.LastWriteTimeUtc)
+                else
                 {
-                    csvFile.FileName = fileInfo.Name;
-                    csvFile.OnDiskFileInfo = fileInfo;
-                    csvFile.DataIsChangedOnDisk = true;
-
-                    foreach (CsvFile oldCsvFile in _csvFilesCollection.Values)
+                    if (Path.GetFileNameWithoutExtension(csvFile.FileName) != Path.GetFileNameWithoutExtension(fileInfo.Name) || // Strict compare
+                        csvFile.Data_OnDiskFileInfo_LastWriteTimeUtc is null ||
+                        csvFile.Data_OnDiskFileInfo_LastWriteTimeUtc.Value != fileInfo.LastWriteTimeUtc)
                     {
-                        if (oldCsvFile.IncludeFileNamesCollection.Contains(fileInfo.Name))
-                            oldCsvFile.DataIsChangedOnDisk = true;
+                        csvFile.FileName = fileInfo.Name;
+                        csvFile.OnDiskFileInfo = fileInfo;                        
+                        csvFile.DataIsChangedOnDisk = true;
+
+                        foreach (CsvFile oldCsvFile in _csvFilesCollection.Values)
+                        {
+                            if (oldCsvFile.IncludeFileNamesCollection.Contains(fileInfo.Name))
+                                oldCsvFile.DataIsChangedOnDisk = true;
+                        }                        
                     }
 
                     csvFile.MovedToNewCollection = true;
@@ -224,6 +228,7 @@ namespace Ssz.Utils
                 {
                     csvFile.IncludeFileNamesCollection.Clear();
                     csvFile.Data = null;
+                    csvFile.Data_OnDiskFileInfo_LastWriteTimeUtc = null;
                     csvFile.DataIsChangedOnDisk = false;
                     csvFile.DataIsChangedByProgram = false;
 
@@ -270,6 +275,7 @@ namespace Ssz.Utils
                 csvFile.FileName = fileName!;
             csvFile.IncludeFileNamesCollection.Clear();
             csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
+            csvFile.Data_OnDiskFileInfo_LastWriteTimeUtc = null;                     
             csvFile.DataIsChangedByProgram = true;            
 
             return true;
@@ -294,6 +300,7 @@ namespace Ssz.Utils
             if (!_csvFilesCollection.TryGetValue(fileName!, out CsvFile? csvFile)) return false;
             csvFile.IncludeFileNamesCollection.Clear();
             csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
+            csvFile.Data_OnDiskFileInfo_LastWriteTimeUtc = null;            
             csvFile.DataIsChangedByProgram = true;
             return true;
         }
@@ -419,6 +426,7 @@ namespace Ssz.Utils
                 csvFile = new CsvFile();                
                 csvFile.FileName = fileName!;                
                 csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
+                csvFile.Data_OnDiskFileInfo_LastWriteTimeUtc = null;                              
                 _csvFilesCollection.Add(fileName!, csvFile);
             }
 
@@ -457,6 +465,7 @@ namespace Ssz.Utils
                 csvFile = new CsvFile();
                 csvFile.FileName = fileName!;
                 csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
+                csvFile.Data_OnDiskFileInfo_LastWriteTimeUtc = null;                             
                 _csvFilesCollection.Add(fileName!, csvFile);
             }
 
@@ -538,6 +547,7 @@ namespace Ssz.Utils
                 csvFile = new CsvFile();
                 csvFile.FileName = fileName!;
                 csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
+                csvFile.Data_OnDiskFileInfo_LastWriteTimeUtc = null;                           
                 _csvFilesCollection.Add(fileName!, csvFile);
             }
             else
@@ -599,8 +609,10 @@ namespace Ssz.Utils
                         {
                             foreach (var kvp2 in csvFile.Data!.OrderBy(i => i.Key))
                                 writer.WriteLine(CsvHelper.FormatForCsv(",", kvp2.Value));
-                        }                                                
-                        csvFile.OnDiskFileInfo = new FileInfo(fileFullName);
+                        }
+                        var fi = new FileInfo(fileFullName);
+                        csvFile.OnDiskFileInfo = fi;
+                        csvFile.Data_OnDiskFileInfo_LastWriteTimeUtc = fi.LastWriteTimeUtc;
 
                         if (isNewCsvFile)
                             eventArgsList.Add(new CsvFileChangedEventArgs
@@ -660,7 +672,9 @@ namespace Ssz.Utils
                         foreach (var values in csvFile.Data!.OrderBy(kvp => kvp.Key))
                             writer.WriteLine(CsvHelper.FormatForCsv(",", values.Value.ToArray()));
                     }
-                    csvFile.OnDiskFileInfo = new FileInfo(fileFullName);
+                    var fi = new FileInfo(fileFullName);
+                    csvFile.Data_OnDiskFileInfo_LastWriteTimeUtc = fi.LastWriteTimeUtc;
+                    csvFile.OnDiskFileInfo = fi;                    
                     
                     if (isNewCsvFile)
                         eventArgsList.Add(new CsvFileChangedEventArgs
@@ -701,11 +715,16 @@ namespace Ssz.Utils
                 {
                     using var fileFullNameScope = LoggersSet.UserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, csvFile.FileName));
                     csvFile.IncludeFileNamesCollection.Clear();
-                    csvFile.Data = CsvHelper.LoadCsvFile(Path.Combine(CsvDbDirectoryInfo.FullName, csvFile.FileName), true, null, LoggersSet.UserFriendlyLogger, csvFile.IncludeFileNamesCollection);                                      
+                    string fileFullName = Path.Combine(CsvDbDirectoryInfo.FullName, csvFile.FileName);
+                    csvFile.Data = CsvHelper.LoadCsvFile(fileFullName, true, null, LoggersSet.UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
+                    var fi = new FileInfo(fileFullName);
+                    csvFile.Data_OnDiskFileInfo_LastWriteTimeUtc = fi.LastWriteTimeUtc;
+                    csvFile.OnDiskFileInfo = fi;                    
                 }
                 else
                 {
                     csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
+                    csvFile.Data_OnDiskFileInfo_LastWriteTimeUtc = null;
                 }   
             }
         }
@@ -761,7 +780,9 @@ namespace Ssz.Utils
 
             public FileInfo? OnDiskFileInfo;
 
-            public CaseInsensitiveDictionary<List<string?>>? Data;
+            public DateTime? Data_OnDiskFileInfo_LastWriteTimeUtc;
+
+            public CaseInsensitiveDictionary<List<string?>>? Data;            
 
             /// <summary>            
             ///     File names
