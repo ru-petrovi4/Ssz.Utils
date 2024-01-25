@@ -71,7 +71,8 @@ namespace Ssz.Dcs.CentralServer
                     DcsCentralServerDbHelper.InitializeOrUpdateDb(Host.Services, configuration, loggersSet);
                 else
                 {
-                    DcsCentralServerDbHelper.InitializeOrUpdateDb(Host.Services, configuration, loggersSet);
+                    if (ConfigurationHelper.IsMainProcess(configuration))
+                        DcsCentralServerDbHelper.InitializeOrUpdateDb(Host.Services, configuration, loggersSet);
                     Host.Run();
                 }
             }
