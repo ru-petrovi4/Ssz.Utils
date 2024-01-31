@@ -16,11 +16,11 @@ namespace Ssz.Dcs.CentralServer.Common
 
             StreamWriter sw = new StreamWriter(memoryStream, new UTF8Encoding(true)); // Does not close stream
             List<object?> rowValues = new();
-            foreach (int row in Enumerable.Range(1, worksheet.Dimension.Rows))
+            foreach (int row in Enumerable.Range(worksheet.Dimension.Start.Row, worksheet.Dimension.Rows))
             {
                 rowValues.Clear();
 
-                foreach (int column in Enumerable.Range(1, worksheet.Dimension.Columns))
+                foreach (int column in Enumerable.Range(worksheet.Dimension.Start.Column, worksheet.Dimension.Columns))
                 {
                     var cell = worksheet.Cells[row, column];
                     rowValues.Add(cell.Value);
