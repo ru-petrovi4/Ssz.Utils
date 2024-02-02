@@ -66,7 +66,7 @@ namespace IdentityServer4
         /// </summary>
         /// <param name="httpContext"></param>
         /// <returns></returns>
-        public static string GetUser(HttpContext? httpContext)
+        public static string GetUserLowerInvariant(HttpContext? httpContext)
         {
             if (httpContext is null)
                 return @"";
