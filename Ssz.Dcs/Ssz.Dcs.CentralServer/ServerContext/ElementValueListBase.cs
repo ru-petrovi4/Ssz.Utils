@@ -79,62 +79,26 @@ namespace Ssz.Dcs.CentralServer
             return result;
         }
 
-        /// <summary>
-        ///     Returns failed AliasResults only.
-        /// </summary>
-        /// <param name="elementValuesCollection"></param>
-        /// <returns></returns>
-        public override async Task<List<AliasResult>> WriteElementValuesAsync(ElementValuesCollection elementValuesCollection)
-        {
-            if (elementValuesCollection.Guid != @"" && _incompleteElementValuesCollectionToWrite.Count > 0)
-            {
-                var beginElementValuesCollection = _incompleteElementValuesCollectionToWrite.TryGetValue(elementValuesCollection.Guid);
-                if (beginElementValuesCollection is not null)
-                {
-                    _incompleteElementValuesCollectionToWrite.Remove(elementValuesCollection.Guid);
-                    beginElementValuesCollection.CombineWith(elementValuesCollection);
-                    elementValuesCollection = beginElementValuesCollection;
-                }
-            }
-
-            if (elementValuesCollection.NextCollectionGuid != @"")
-            {
-                _incompleteElementValuesCollectionToWrite[elementValuesCollection.NextCollectionGuid] = elementValuesCollection;
-
-                return new List<AliasResult>();
-            }
-            else
-            {
-                var items = new List<TElementListItem>();
-
-                using (var memoryStream = new MemoryStream(elementValuesCollection.ObjectValues.ToByteArray()))
-                using (var reader = new SerializationReader(memoryStream))
-                {
-                    for (int index = 0; index < elementValuesCollection.ObjectAliases.Count; index++)
-                    {
-                        Any value = new();
-                        value.DeserializeOwnedData(reader, null);
-                        TElementListItem? item;
-                        ListItemsManager.TryGetValue(elementValuesCollection.ObjectAliases[index], out item);
-                        if (item is not null)
-                        {
-                            item.PendingWriteValueStatusTimestamp = new ValueStatusTimestamp(
-                                value,
-                                elementValuesCollection.ObjectStatusCodes[index],
-                                elementValuesCollection.ObjectTimestamps[index].ToDateTime()
-                            );
-                            items.Add(item);
-                        }
-                    }
-                }
-
-                return await OnWriteValuesAsync(items);
-            }
-        }
-
         #endregion
 
-        #region protected functions        
+        #region protected functions
+
+        protected override async Task<List<AliasResult>> WriteElementValuesAsync(List<(uint, ValueStatusTimestamp)> elementValuesCollection)
+        {
+            var items = new List<TElementListItem>();
+
+            foreach (var it in elementValuesCollection)
+            {
+                ListItemsManager.TryGetValue(it.Item1, out TElementListItem? item);
+                if (item is not null)
+                {
+                    item.PendingWriteValueStatusTimestamp = it.Item2;
+                    items.Add(item);
+                }
+            }
+
+            return await OnWriteValuesAsync(items);
+        }
 
         /// <summary>
         ///     Returns failed AliasResults only.
@@ -146,12 +110,6 @@ namespace Ssz.Dcs.CentralServer
             return Task.FromResult(new List<AliasResult>());
         }
 
-        #endregion
-
-        #region private fields
-
-        private CaseInsensitiveDictionary<ElementValuesCollection> _incompleteElementValuesCollectionToWrite = new CaseInsensitiveDictionary<ElementValuesCollection>();
-
-        #endregion
+        #endregion        
     }
 }

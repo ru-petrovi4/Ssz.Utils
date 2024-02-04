@@ -20,12 +20,12 @@ namespace Ssz.DataAccessGrpc.Client
         ///     values.
         /// </summary>
         /// <param name="listServerAlias"> The server identifier of the list containing the data objects to write. </param>
-        /// <param name="elementValuesCollection"> The data values to write. </param>
+        /// <param name="fullElementValuesCollection"> The data values to write. </param>
         /// <returns>
         ///     The list server aliases and result codes for the data objects whose write failed. Returns empty if all writes
         ///     succeeded.
         /// </returns>
-        public async Task<AliasResult[]> WriteElementValuesAsync(uint listServerAlias, ElementValuesCollection elementValuesCollection)
+        public async Task<AliasResult[]> WriteElementValuesAsync(uint listServerAlias, byte[] fullElementValuesCollection)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -33,13 +33,20 @@ namespace Ssz.DataAccessGrpc.Client
 
             try
             {
-                var request = new WriteElementValuesRequest
+                var call = _resourceManagementClient.WriteElementValues();
+
+                foreach (ByteString elementValuesCollection in ProtobufHelper.SplitForCorrectGrpcMessageSize(fullElementValuesCollection))
                 {
-                    ContextId = _serverContextId,
-                    ListServerAlias = listServerAlias,
-                    ElementValuesCollection = elementValuesCollection
-                };
-                WriteElementValuesReply reply = await _resourceManagementClient.WriteElementValuesAsync(request);
+                    await call.RequestStream.WriteAsync(new WriteElementValuesRequest
+                    {
+                        ContextId = _serverContextId,
+                        ListServerAlias = listServerAlias,
+                        ElementValuesCollection = elementValuesCollection
+                    });
+                }
+                await call.RequestStream.CompleteAsync();
+
+                WriteElementValuesReply reply = await call.ResponseAsync;
                 SetResourceManagementLastCallUtc();
                 return reply.Results.ToArray();                
             }
@@ -95,56 +102,41 @@ namespace Ssz.DataAccessGrpc.Client
 
             try
             {
-                var passthroughDataToSendFull = new PassthroughData();
-                passthroughDataToSendFull.Data = ByteString.CopyFrom(dataToSend);
-                IEnumerable<byte> returnData = new byte[0];                            
-                foreach (var passthroughDataToSend in passthroughDataToSendFull.SplitForCorrectGrpcMessageSize())
+                var call = _resourceManagementClient.Passthrough();
+                SetResourceManagementLastCallUtc();
+
+                foreach (var dataToSendByteString in ProtobufHelper.SplitForCorrectGrpcMessageSize(dataToSend))
                 {
-                    var request = new PassthroughRequest
+                    await call.RequestStream.WriteAsync(new PassthroughRequest
                     {
                         ContextId = _serverContextId,
                         RecipientPath = recipientPath,
                         PassthroughName = passthroughName,
-                        DataToSend = passthroughDataToSend
-                    };                    
-                    while (true)
+                        DataToSend = dataToSendByteString
+                    });                    
+                }
+                await call.RequestStream.CompleteAsync();                
+
+                DataChunk? dataChunk = null;
+                while (await call.ResponseStream.MoveNext())
+                {
+                    dataChunk = call.ResponseStream.Current;                    
+                    if (dataChunk.Guid != @"" && _incompletePassthroughRepliesCollection.Count > 0)
                     {
-                        PassthroughReply reply = await _resourceManagementClient.PassthroughAsync(request);
-                        request.DataToSend = new PassthroughData();
-                        SetResourceManagementLastCallUtc();
-                        IEnumerable<byte>? returnDataTemp = null;
-                        if (!String.IsNullOrEmpty(reply.ReturnData.Guid) && _incompletePassthroughRepliesCollection.Count > 0)
+                        var beginPassthroughReply = _incompletePassthroughRepliesCollection.TryGetValue(dataChunk.Guid);
+                        if (beginPassthroughReply is not null)
                         {
-                            var beginPassthroughReply = _incompletePassthroughRepliesCollection.TryGetValue(reply.ReturnData.Guid);
-                            if (beginPassthroughReply is not null)
-                            {
-                                _incompletePassthroughRepliesCollection.Remove(reply.ReturnData.Guid);
-                                returnDataTemp = beginPassthroughReply.Concat(reply.ReturnData.Data);
-                            }
+                            _incompletePassthroughRepliesCollection.Remove(dataChunk.Guid);
+                            beginPassthroughReply.CombineWith(dataChunk);
+                            dataChunk = beginPassthroughReply;
                         }
-                        if (returnDataTemp is null)
-                        {
-                            returnDataTemp = reply.ReturnData.Data;
-                        }
-
-                        if (!String.IsNullOrEmpty(reply.ReturnData.NextGuid))
-                        {
-                            _incompletePassthroughRepliesCollection[reply.ReturnData.NextGuid] = returnDataTemp;
-
-                            request = new PassthroughRequest
-                            {
-                                ContextId = _serverContextId
-                            };
-
-                            continue;
-                        }
-
-                        returnData = returnDataTemp;                                           
-                        break;
                     }
+
+                    if (dataChunk.NextDataChunkGuid != @"")
+                        _incompletePassthroughRepliesCollection[dataChunk.NextDataChunkGuid] = dataChunk;
                 }
 
-                return returnData;
+                return dataChunk!.Bytes;
             }
             catch (Exception ex)
             {
@@ -172,31 +164,28 @@ namespace Ssz.DataAccessGrpc.Client
             
             try
             {
+                var call = _resourceManagementClient.LongrunningPassthrough();
+                SetResourceManagementLastCallUtc();
+
+                foreach (var dataToSendByteString in ProtobufHelper.SplitForCorrectGrpcMessageSize(dataToSend))
+                {
+                    await call.RequestStream.WriteAsync(new ServerBase.LongrunningPassthroughRequest
+                    {
+                        ContextId = _serverContextId,
+                        RecipientPath = recipientPath,
+                        PassthroughName = passthroughName,
+                        DataToSend = dataToSendByteString
+                    });
+                }
+                await call.RequestStream.CompleteAsync();
+
+                LongrunningPassthroughReply reply = await call.ResponseAsync;
+                string jobId = reply.JobId;
+
                 var longrunningPassthroughRequest = new LongrunningPassthroughRequest
                 {
                     CallbackAction = callbackAction
                 };
-                
-                string jobId = @"";
-
-                var passthroughDataToSendFull = new PassthroughData();
-                if (dataToSend is not null)
-                    passthroughDataToSendFull.Data = ByteString.CopyFrom(dataToSend);                
-                foreach (var passthroughDataToSend in passthroughDataToSendFull.SplitForCorrectGrpcMessageSize())
-                {
-                    var request = new ServerBase.LongrunningPassthroughRequest
-                    {                        
-                        ContextId = _serverContextId,
-                        RecipientPath = recipientPath,
-                        PassthroughName = passthroughName,
-                        DataToSend = passthroughDataToSend
-                    };
-                    
-                    LongrunningPassthroughReply reply = await _resourceManagementClient.LongrunningPassthroughAsync(request);
-                    jobId = reply.JobId;
-                    SetResourceManagementLastCallUtc();
-                }
-
                 if (!_longrunningPassthroughRequestsCollection.TryGetValue(jobId, out List<LongrunningPassthroughRequest>? longrunningPassthroughRequestsList))
                 {
                     longrunningPassthroughRequestsList = new List<LongrunningPassthroughRequest>();
@@ -217,7 +206,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         #region private fields
 
-        private readonly CaseInsensitiveDictionary<IEnumerable<byte>> _incompletePassthroughRepliesCollection = new();
+        private readonly CaseInsensitiveDictionary<DataChunk> _incompletePassthroughRepliesCollection = new();
 
         /// <summary>
         ///     [JobId, IncompleteLongrunningPassthroughRequest]

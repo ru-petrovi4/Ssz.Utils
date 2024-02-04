@@ -109,14 +109,14 @@ namespace Ssz.Utils.DataAccess
 
         public void SerializeOwnedData(SerializationWriter writer, object? context)
         {
-            writer.WriteOwnedDataSerializable(Value, context);
+            Value.SerializeOwnedData(writer, null);
             writer.Write(StatusCode);
             writer.Write(TimestampUtc);
         }
 
         public void DeserializeOwnedData(SerializationReader reader, object? context)
         {
-            reader.ReadOwnedDataSerializable(Value, context);
+            Value.DeserializeOwnedData(reader, null);
             StatusCode = reader.ReadUInt32();
             TimestampUtc = reader.ReadDateTime();
         }

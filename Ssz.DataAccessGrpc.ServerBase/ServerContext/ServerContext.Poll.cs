@@ -1,6 +1,7 @@
 using Grpc.Core;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.ServerBase
 {    
@@ -8,7 +9,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
     {
         #region internal functions
         
-        internal ElementValuesCollection PollElementValuesChanges(uint listServerAlias)
+        internal async Task PollElementValuesChangesAsync(uint listServerAlias, IServerStreamWriter<ElementValuesCallback> responseStream)
         {
             ServerListRoot? serverList;
 
@@ -17,26 +18,16 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Incorrect listServerAlias."));
             }
 
-            if (_pollElementValuesCallbacksQueue.Count == 0)
-            {
-                ServerContext.ElementValuesCallbackMessage? elementValuesCallbackMessage = serverList.GetElementValuesCallbackMessage();
+            ServerContext.ElementValuesCallbackMessage? elementValuesCallbackMessage = serverList.GetElementValuesCallbackMessage();
 
-                if (elementValuesCallbackMessage is not null)
+            if (elementValuesCallbackMessage is not null)
+            {
+                foreach (var elementValuesCallback in elementValuesCallbackMessage.SplitForCorrectGrpcMessageSize())
                 {
-                    _pollElementValuesCallbacksQueue = elementValuesCallbackMessage.SplitForCorrectGrpcMessageSize();
-                }
-            }
-
-            if (_pollElementValuesCallbacksQueue.Count > 0)
-            {
-                return _pollElementValuesCallbacksQueue.Dequeue().ElementValuesCollection;
-            }
-            else
-            {
-                return new ElementValuesCollection();
+                    await responseStream.WriteAsync(elementValuesCallback);
+                };
             }
         }
-
         
         internal EventMessagesCollection PollEventsChanges(uint listServerAlias)
         {
@@ -75,9 +66,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         #endregion
 
-        #region private fields
-
-        private Queue<ElementValuesCallback> _pollElementValuesCallbacksQueue = new Queue<ElementValuesCallback>();
+        #region private fields        
 
         private Queue<EventMessagesCallback> _pollEventMessagesCallbacksQueue = new Queue<EventMessagesCallback>();
 

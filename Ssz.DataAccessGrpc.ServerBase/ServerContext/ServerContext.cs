@@ -266,7 +266,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         #region internal functions
 
-        internal async Task<List<AliasResult>> WriteElementValuesAsync(uint listServerAlias, ElementValuesCollection elementValuesCollection)
+        internal async Task<List<AliasResult>?> WriteElementValuesAsync(uint listServerAlias, byte[] elementValuesCollectionBytes)
         {
             ServerListRoot? serverList;
 
@@ -275,7 +275,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Incorrect listServerAlias."));
             }
 
-            return await serverList.WriteElementValuesAsync(elementValuesCollection);
+            return await serverList.WriteElementValuesAsync(elementValuesCollectionBytes);
         }
 
         internal List<EventIdResult> AckAlarms(uint listServerAlias, string operatorName, string comment,
@@ -308,96 +308,21 @@ namespace Ssz.DataAccessGrpc.ServerBase
             serverList.TouchList();
         }
 
-        internal async Task<PassthroughReply> PassthroughAsync(string recipientPath, string passthroughName, PassthroughData dataToSend)
+        internal async Task PassthroughAsync(string recipientPath, string passthroughName, byte[] dataToSend, IServerStreamWriter<DataChunk> responseStream)
         {
-            var reply = new PassthroughReply();
-            var returnData = new PassthroughData();
-            reply.ReturnData = returnData;
+            byte[] returnDataArray = await ServerWorker.PassthroughAsync(this, recipientPath, passthroughName, dataToSend);
 
-            if (_pendingPassthroughReplyData is not null)
-            {                
-                int length = Math.Min(_pendingPassthroughReplyData.Length - _pendingPassthroughReplyDataIndex, MaxLength);                
-                returnData.Data = UnsafeByteOperations.UnsafeWrap(new ReadOnlyMemory<byte>(_pendingPassthroughReplyData, _pendingPassthroughReplyDataIndex, length));
-                returnData.Guid = _pendingPassthroughReplyDataGuid;
-                _pendingPassthroughReplyDataIndex += length;
-                if (_pendingPassthroughReplyDataIndex >= _pendingPassthroughReplyData.Length)
-                {
-                    _pendingPassthroughReplyData = null;                    
-                }
-                else
-                {
-                    var nextGuid = Guid.NewGuid().ToString();
-                    returnData.NextGuid = nextGuid;
-                    _pendingPassthroughReplyDataGuid = nextGuid;
-                }                
-                return reply;
-            }
-
-            IEnumerable<byte>? dataToSendTemp = null;
-            if (!String.IsNullOrEmpty(dataToSend.Guid) && _incompletePassthroughRequestsCollection.Count > 0)
+            foreach (var dataChunk in ProtobufHelper.SplitForCorrectGrpcMessageSize(returnDataArray))
             {
-                var beginPassthroughRequest = _incompletePassthroughRequestsCollection.TryGetValue(dataToSend.Guid);
-                if (beginPassthroughRequest is not null)
-                {
-                    _incompletePassthroughRequestsCollection.Remove(dataToSend.Guid);
-                    dataToSendTemp = beginPassthroughRequest.Concat(dataToSend.Data);
-                }
-            }
-            if (dataToSendTemp is null)
-            {
-                dataToSendTemp = dataToSend.Data;
-            }
-
-            if (!String.IsNullOrEmpty(dataToSend.NextGuid))
-            {
-                _incompletePassthroughRequestsCollection[dataToSend.NextGuid] = dataToSendTemp;
-                return reply;
-            }
-
-            byte[] returnDataArray = await ServerWorker.PassthroughAsync(this, recipientPath, passthroughName, dataToSendTemp.ToArray());            
-            if (returnDataArray.Length > MaxLength)
-            {
-                _pendingPassthroughReplyData = returnDataArray;
-                _pendingPassthroughReplyDataIndex = MaxLength;                
-                returnData.Data = UnsafeByteOperations.UnsafeWrap(new ReadOnlyMemory<byte>(_pendingPassthroughReplyData, 0, MaxLength));
-                var nextGuid = Guid.NewGuid().ToString();
-                returnData.NextGuid = nextGuid;
-                _pendingPassthroughReplyDataGuid = nextGuid;                
-            }
-            else
-            {                
-                returnData.Data = UnsafeByteOperations.UnsafeWrap(returnDataArray);                
-            }
-            
-            return reply;
+                await responseStream.WriteAsync(dataChunk);
+            };
         }
 
-        internal LongrunningPassthroughReply LongrunningPassthrough(string recipientPath, string passthroughName, PassthroughData dataToSend)
+        internal LongrunningPassthroughReply? LongrunningPassthrough(string recipientPath, string passthroughName, byte[] dataToSend)
         {
             var reply = new LongrunningPassthroughReply();
 
-            IEnumerable<byte>? dataToSendTemp = null;
-            if (dataToSend.Guid != @"" && _incompletePassthroughRequestsCollection.Count > 0)
-            {
-                var beginPassthroughRequest = _incompletePassthroughRequestsCollection.TryGetValue(dataToSend.Guid);
-                if (beginPassthroughRequest is not null)
-                {
-                    _incompletePassthroughRequestsCollection.Remove(dataToSend.Guid);
-                    dataToSendTemp = beginPassthroughRequest.Concat(dataToSend.Data);
-                }
-            }
-            if (dataToSendTemp is null)
-            {
-                dataToSendTemp = dataToSend.Data;
-            }
-
-            if (dataToSend.NextGuid != @"")
-            {
-                _incompletePassthroughRequestsCollection[dataToSend.NextGuid] = dataToSendTemp;
-                return reply;
-            }            
-            
-            reply.JobId = ServerWorker.LongrunningPassthrough(this, recipientPath, passthroughName, dataToSendTemp.ToArray());            
+            reply.JobId = ServerWorker.LongrunningPassthrough(this, recipientPath, passthroughName, dataToSend);            
 
             return reply;
         }
@@ -447,17 +372,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <summary>
         ///   The collection of lists for this context.
         /// </summary>
-        private ObjectManager<ServerListRoot> _listsManager = new ObjectManager<ServerListRoot>(20);
-
-        private byte[]? _pendingPassthroughReplyData;
-
-        private int _pendingPassthroughReplyDataIndex;
-
-        private string _pendingPassthroughReplyDataGuid = @"";
-
-        private const int MaxLength = 1 * 1024 * 1024;
-
-        private CaseInsensitiveDictionary<IEnumerable<byte>> _incompletePassthroughRequestsCollection = new CaseInsensitiveDictionary<IEnumerable<byte>>();
+        private ObjectManager<ServerListRoot> _listsManager = new ObjectManager<ServerListRoot>(20);                
 
         #endregion
     }

@@ -16,7 +16,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             if (eventMessage.EventId is not null)
                 EventId = new EventId(eventMessage.EventId);
-            OccurrenceTime = DateTimeHelper.ConvertToTimestamp(eventMessage.OccurrenceTimeUtc);
+            OccurrenceTime = ProtobufHelper.ConvertToTimestamp(eventMessage.OccurrenceTimeUtc);
             EventType = (uint)eventMessage.EventType;
             TextMessage = eventMessage.TextMessage;
             CategoryId = eventMessage.CategoryId;

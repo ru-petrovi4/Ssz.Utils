@@ -24,7 +24,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             OccurrenceId = eventId.OccurrenceId;
             if (eventId.TimeLastActiveUtc is not null)
             {
-                TimeLastActive = Ssz.DataAccessGrpc.Client.DateTimeHelper.ConvertToTimestamp(eventId.TimeLastActiveUtc.Value);
+                TimeLastActive = Ssz.DataAccessGrpc.Client.ProtobufHelper.ConvertToTimestamp(eventId.TimeLastActiveUtc.Value);
             }
         }
 

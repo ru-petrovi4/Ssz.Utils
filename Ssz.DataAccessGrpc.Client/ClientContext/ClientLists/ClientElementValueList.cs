@@ -10,6 +10,7 @@ using Ssz.Utils.Serialization;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using System.Threading.Tasks;
+using Google.Protobuf;
 
 namespace Ssz.DataAccessGrpc.Client.ClientLists
 {
@@ -91,43 +92,42 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
 
-            var fullElementValuesCollection = new ElementValuesCollection();
+            byte[] fullElementValuesCollection;
             using (var memoryStream = new MemoryStream(1024))
             {
                 using (var writer = new SerializationWriter(memoryStream))
                 {
-                    foreach (ClientElementValueListItem item in ListItemsManager)
+                    using (writer.EnterBlock(1))
                     {
-                        if (item.PendingWriteValueStatusTimestamp is null) continue;
+                        writer.Write(
+                            ((IEnumerable<ClientElementValueListItem>)ListItemsManager).Count(item => item.PendingWriteValueStatusTimestamp is not null)
+                        );
+                        foreach (ClientElementValueListItem item in ListItemsManager)
+                        {
+                            if (item.PendingWriteValueStatusTimestamp is null)
+                                continue;
 
-                        uint alias = item.ServerAlias;
-                        ValueStatusTimestamp valueStatusTimestamp = item.PendingWriteValueStatusTimestamp.Value;
+                            writer.Write(item.ServerAlias);
+                            ValueStatusTimestamp valueStatusTimestamp = item.PendingWriteValueStatusTimestamp.Value;
+                            valueStatusTimestamp.SerializeOwnedData(writer, null);
 
-                        fullElementValuesCollection.ObjectAliases.Add(alias);
-                        valueStatusTimestamp.Value.SerializeOwnedData(writer, null);
-                        fullElementValuesCollection.ObjectStatusCodes.Add(valueStatusTimestamp.StatusCode);
-                        fullElementValuesCollection.ObjectTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));
-
-                        item.HasWritten(ResultInfo.GoodResultInfo);
+                            item.HasWritten(ResultInfo.GoodResultInfo);
+                        }
                     }
-                }
-                memoryStream.Position = 0;
-                fullElementValuesCollection.ObjectValues = Google.Protobuf.ByteString.FromStream(memoryStream);
+                }                
+                fullElementValuesCollection = memoryStream.ToArray();
             }
 
             var failedItems = new List<ClientElementValueListItem>();
-            foreach (ElementValuesCollection elementValuesCollection in fullElementValuesCollection.SplitForCorrectGrpcMessageSize())
+            AliasResult[] failedAliasResults = await Context.WriteElementValuesAsync(ListServerAlias, fullElementValuesCollection);
+            foreach (AliasResult failedAliasResult in failedAliasResults)
             {
-                AliasResult[] failedAliasResults = await Context.WriteElementValuesAsync(ListServerAlias, elementValuesCollection);
-                foreach (AliasResult failedAliasResult in failedAliasResults)
-                {                    
-                    if (ListItemsManager.TryGetValue(failedAliasResult.ClientAlias, out ClientElementValueListItem? item))
-                    {
-                        item.HasWritten(failedAliasResult.GetResultInfo());
-                        failedItems.Add(item);
-                    }
+                if (ListItemsManager.TryGetValue(failedAliasResult.ClientAlias, out ClientElementValueListItem? item))
+                {
+                    item.HasWritten(failedAliasResult.GetResultInfo());
+                    failedItems.Add(item);
                 }
-            }
+            }            
             return failedItems;
         }
 
@@ -145,26 +145,26 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// <summary>
         ///     Returns changed ClientElementValueListItems or null, if waiting next message.
         /// </summary>
-        /// <param name="elementValuesCollection"></param>
+        /// <param name="elementValuesCollectionk"></param>
         /// <returns></returns>
-        public ClientElementValueListItem[]? OnElementValuesCallback(ElementValuesCollection elementValuesCollection)
+        public ClientElementValueListItem[]? OnElementValuesCallback(DataChunk elementValuesCollection)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
 
-            if (elementValuesCollection.Guid != @"" && _incompleteElementValuesCollection.Count > 0)
+            if (elementValuesCollection.Guid != @"" && _incompleteElementValuesCollections.Count > 0)
             {
-                var beginElementValuesCollection = _incompleteElementValuesCollection.TryGetValue(elementValuesCollection.Guid);
+                var beginElementValuesCollection = _incompleteElementValuesCollections.TryGetValue(elementValuesCollection.Guid);
                 if (beginElementValuesCollection is not null)
                 {
-                    _incompleteElementValuesCollection.Remove(elementValuesCollection.Guid);
+                    _incompleteElementValuesCollections.Remove(elementValuesCollection.Guid);
                     beginElementValuesCollection.CombineWith(elementValuesCollection);
                     elementValuesCollection = beginElementValuesCollection;
                 }
             }
 
-            if (elementValuesCollection.NextCollectionGuid != @"")
+            if (elementValuesCollection.NextDataChunkGuid != @"")
             {
-                _incompleteElementValuesCollection[elementValuesCollection.NextCollectionGuid] = elementValuesCollection;
+                _incompleteElementValuesCollections[elementValuesCollection.NextDataChunkGuid] = elementValuesCollection;
 
                 return null;
             }
@@ -172,25 +172,34 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
             {
                 var changedListItems = new List<ClientElementValueListItem>();
 
-                using (var memoryStream = new MemoryStream(elementValuesCollection.ObjectValues.ToByteArray()))
+                using (var memoryStream = new MemoryStream(elementValuesCollection.Bytes.ToArray())) // TODO Optimization needed
                 using (var reader = new SerializationReader(memoryStream))
                 {
-                    for (int index = 0; index < elementValuesCollection.ObjectAliases.Count; index++)
+                    using (Block block = reader.EnterBlock())
                     {
-                        Utils.Any value = new();
-                        value.DeserializeOwnedData(reader, null);
-                        ClientElementValueListItem? item;
-                        ListItemsManager.TryGetValue(elementValuesCollection.ObjectAliases[index], out item);
-                        if (item is not null)
+                        switch (block.Version)
                         {
-                            item.Update(new ValueStatusTimestamp(
-                                value,
-                                elementValuesCollection.ObjectStatusCodes[index],
-                                elementValuesCollection.ObjectTimestamps[index].ToDateTime()
-                                ));
-                            changedListItems.Add(item);
+                            case 1:
+                                int count = reader.ReadInt32();
+                                for (int index = 0; index < count; index += 1)
+                                {
+                                    uint alias = reader.ReadUInt32();
+                                    ValueStatusTimestamp vst = new();
+                                    vst.DeserializeOwnedData(reader, null);
+
+                                    ClientElementValueListItem? item;
+                                    ListItemsManager.TryGetValue(alias, out item);
+                                    if (item is not null)
+                                    {
+                                        item.Update(vst);
+                                        changedListItems.Add(item);
+                                    }
+                                }
+                                break;
+                            default:
+                                throw new BlockUnsupportedVersionException();
                         }
-                    }
+                    }                    
                 }
 
                 return changedListItems.ToArray();
@@ -230,7 +239,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
 
         #region private fields
         
-        private CaseInsensitiveDictionary<ElementValuesCollection> _incompleteElementValuesCollection = new CaseInsensitiveDictionary<ElementValuesCollection>();
+        private CaseInsensitiveDictionary<DataChunk> _incompleteElementValuesCollections = new CaseInsensitiveDictionary<DataChunk>();
 
         #endregion
 

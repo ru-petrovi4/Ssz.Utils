@@ -116,17 +116,17 @@ namespace Ssz.Dcs.CentralServer
                                         case TransportType.Double:
                                             elementValuesJournal.DoubleValues.Add(vst.Value.ValueAsDouble(false));
                                             elementValuesJournal.DoubleStatusCodes.Add(vst.StatusCode);
-                                            elementValuesJournal.DoubleTimestamps.Add(Ssz.DataAccessGrpc.ServerBase.DateTimeHelper.ConvertToTimestamp(vst.TimestampUtc));
+                                            elementValuesJournal.DoubleTimestamps.Add(Ssz.DataAccessGrpc.ServerBase.ProtobufHelper.ConvertToTimestamp(vst.TimestampUtc));
                                             break;
                                         case TransportType.UInt32:
                                             elementValuesJournal.UintValues.Add(vst.Value.ValueAsUInt32(false));
                                             elementValuesJournal.UintStatusCodes.Add(vst.StatusCode);
-                                            elementValuesJournal.UintTimestamps.Add(Ssz.DataAccessGrpc.ServerBase.DateTimeHelper.ConvertToTimestamp(vst.TimestampUtc));
+                                            elementValuesJournal.UintTimestamps.Add(Ssz.DataAccessGrpc.ServerBase.ProtobufHelper.ConvertToTimestamp(vst.TimestampUtc));
                                             break;
                                         case TransportType.Object:
                                             vst.Value.SerializeOwnedData(writer, null);                                            
                                             elementValuesJournal.ObjectStatusCodes.Add(vst.StatusCode);
-                                            elementValuesJournal.ObjectTimestamps.Add(Ssz.DataAccessGrpc.ServerBase.DateTimeHelper.ConvertToTimestamp(vst.TimestampUtc));
+                                            elementValuesJournal.ObjectTimestamps.Add(Ssz.DataAccessGrpc.ServerBase.ProtobufHelper.ConvertToTimestamp(vst.TimestampUtc));
                                             break;
                                     }
                                 }

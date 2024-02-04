@@ -319,37 +319,38 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 }                
             }
 
-            public Queue<ElementValuesCallback> SplitForCorrectGrpcMessageSize()
+            public List<ElementValuesCallback> SplitForCorrectGrpcMessageSize()
             {
-                var fullElementValuesCollection = new ElementValuesCollection();
+                byte[] fullElementValuesCollection;
                 using (var memoryStream = new MemoryStream(1024))
                 { 
                     using (var writer = new SerializationWriter(memoryStream))
                     {
-                        foreach (var kvp in ElementValues)
+                        using (writer.EnterBlock(1))
                         {
-                            uint alias = kvp.Key;
-                            ValueStatusTimestamp valueStatusTimestamp = kvp.Value;
+                            writer.Write(ElementValues.Count);
+                            foreach (var kvp in ElementValues)
+                            {
+                                uint serverAlias = kvp.Key;
+                                ValueStatusTimestamp valueStatusTimestamp = kvp.Value;
 
-                            fullElementValuesCollection.ObjectAliases.Add(alias);
-                            valueStatusTimestamp.Value.SerializeOwnedData(writer, null);
-                            fullElementValuesCollection.ObjectStatusCodes.Add(valueStatusTimestamp.StatusCode);
-                            fullElementValuesCollection.ObjectTimestamps.Add(DateTimeHelper.ConvertToTimestamp(valueStatusTimestamp.TimestampUtc));
-                        }
-                    }
-                    memoryStream.Position = 0;
-                    fullElementValuesCollection.ObjectValues = Google.Protobuf.ByteString.FromStream(memoryStream);
+                                writer.Write(serverAlias);                                
+                                valueStatusTimestamp.SerializeOwnedData(writer, null);
+                            }
+                        }                        
+                    }                    
+                    fullElementValuesCollection = memoryStream.ToArray();
                 }
 
-                var queue = new Queue<ElementValuesCallback>();
-                foreach (ElementValuesCollection elementValuesCollection in fullElementValuesCollection.SplitForCorrectGrpcMessageSize())
+                List<ElementValuesCallback> list = new();
+                foreach (DataChunk elementValuesCollection in ProtobufHelper.SplitForCorrectGrpcMessageSize(fullElementValuesCollection))
                 {
                     var elementValuesCallback = new ElementValuesCallback();
                     elementValuesCallback.ListClientAlias = ListClientAlias;
                     elementValuesCallback.ElementValuesCollection = elementValuesCollection;
-                    queue.Enqueue(elementValuesCallback);
+                    list.Add(elementValuesCallback);
                 }
-                return queue;
+                return list;
             }
 
             #endregion

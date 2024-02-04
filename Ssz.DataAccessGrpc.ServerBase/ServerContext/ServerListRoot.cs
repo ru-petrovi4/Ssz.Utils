@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Ssz.Utils;
+using Ssz.Utils.DataAccess;
+using Ssz.Utils.Serialization;
 
 
 namespace Ssz.DataAccessGrpc.ServerBase
@@ -138,13 +141,38 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="elementValuesCollection"></param>
         /// <returns></returns>
         /// <exception cref="RpcException"></exception>
-        public virtual Task<List<AliasResult>> WriteElementValuesAsync(ElementValuesCollection elementValuesCollection)
+        public async Task<List<AliasResult>?> WriteElementValuesAsync(byte[] elementValuesCollectionBytes)
         {
-            throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid List Type for this Request."));
+            List<(uint, ValueStatusTimestamp)> elementValuesCollection = new();
+
+            using (var memoryStream = new MemoryStream(elementValuesCollectionBytes))
+            using (var reader = new SerializationReader(memoryStream))
+            {
+                using (Block block = reader.EnterBlock())
+                {
+                    switch (block.Version)
+                    {
+                        case 1:
+                            int count = reader.ReadInt32();
+                            for (int index = 0; index < count; index += 1)
+                            {
+                                uint alias = reader.ReadUInt32();
+                                ValueStatusTimestamp vst = new();
+                                vst.DeserializeOwnedData(reader, null);
+
+                                elementValuesCollection.Add((alias, vst));
+                            }
+                            break;
+                        default:
+                            throw new BlockUnsupportedVersionException();
+                    }
+                }
+            }
+
+            return await WriteElementValuesAsync(elementValuesCollection);
         }
 
-        public virtual List<EventIdResult> AckAlarms(string operatorName, string comment,
-                                                               IEnumerable<EventId> eventIdsToAck)
+        public virtual List<EventIdResult> AckAlarms(string operatorName, string comment, IEnumerable<EventId> eventIdsToAck)
         {
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid List Type for this Request."));
         }
@@ -165,6 +193,21 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// </summary>
         public DateTime LastCallbackTime { get; set; } = DateTime.MinValue;
 
-        #endregion        
+        #endregion
+
+        #region protected functions        
+
+        /// <summary>
+        ///     Returns failed AliasResults only.
+        /// </summary>
+        /// <param name="elementValuesCollection"></param>
+        /// <returns></returns>
+        /// <exception cref="RpcException"></exception>
+        protected virtual Task<List<AliasResult>> WriteElementValuesAsync(List<(uint, ValueStatusTimestamp)> elementValuesCollection)
+        {
+            return Task.FromResult(new List<AliasResult>());
+        }        
+
+        #endregion
     }
 }

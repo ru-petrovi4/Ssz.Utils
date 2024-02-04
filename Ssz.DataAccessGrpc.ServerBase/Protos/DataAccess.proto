@@ -26,7 +26,7 @@ service DataAccess {
 
   rpc TouchList (TouchListRequest) returns (TouchListReply);
 
-  rpc PollElementValuesChanges (PollElementValuesChangesRequest) returns (PollElementValuesChangesReply);
+  rpc PollElementValuesChanges (PollElementValuesChangesRequest) returns (stream ElementValuesCallback);
 
   rpc PollEventsChanges (PollEventsChangesRequest) returns (PollEventsChangesReply);
 
@@ -34,13 +34,13 @@ service DataAccess {
 
   rpc ReadEventMessagesJournal (ReadEventMessagesJournalRequest) returns (ReadEventMessagesJournalReply);
 
-  rpc WriteElementValues (WriteElementValuesRequest) returns (WriteElementValuesReply);
+  rpc WriteElementValues (stream WriteElementValuesRequest) returns (WriteElementValuesReply);
 
   rpc AckAlarms (AckAlarmsRequest) returns (AckAlarmsReply);
 
-  rpc Passthrough (PassthroughRequest) returns (PassthroughReply);
+  rpc Passthrough (stream PassthroughRequest) returns (stream DataChunk);
 
-  rpc LongrunningPassthrough (LongrunningPassthroughRequest) returns (LongrunningPassthroughReply);
+  rpc LongrunningPassthrough (stream LongrunningPassthroughRequest) returns (LongrunningPassthroughReply);
 
   rpc LongrunningPassthroughCancel (LongrunningPassthroughCancelRequest) returns (LongrunningPassthroughCancelReply);
 }
@@ -61,7 +61,7 @@ message ContextStatus {
 
 message ElementValuesCallback {    
   uint32 list_client_alias = 1;
-  ElementValuesCollection element_values_collection = 2;
+  DataChunk element_values_collection = 2;
 }
 
 message EventMessagesCallback {
@@ -191,14 +191,11 @@ message TouchListRequest {
 message TouchListReply {  
 }
 
-message ElementValuesCollection {
+message DataChunk {
   string guid = 1;
-  string next_collection_guid = 2;  
-
-  repeated fixed32 object_aliases = 3;
-  bytes object_values = 4;  
-  repeated uint32 object_status_codes = 5;
-  repeated google.protobuf.Timestamp object_timestamps = 6;    
+  string next_data_chunk_guid = 2;  
+  
+  bytes bytes = 3;
 }
 
 message EventMessagesCollection {
@@ -249,10 +246,6 @@ message AlarmMessageData {
 message PollElementValuesChangesRequest {
   string context_id = 1;
   uint32 list_server_alias = 2; 
-}
-
-message PollElementValuesChangesReply {  
-  ElementValuesCollection element_values_collection = 1;
 }
 
 message PollEventsChangesRequest {
@@ -315,7 +308,7 @@ message ReadEventMessagesJournalReply {
 message WriteElementValuesRequest {
   string context_id = 1;
   uint32 list_server_alias = 2; 
-  ElementValuesCollection element_values_collection = 3; 
+  bytes element_values_collection = 3; 
 }
 
 message WriteElementValuesReply {  
@@ -339,28 +332,18 @@ message EventIdResult {
   EventId event_id = 2;
 }
 
-message PassthroughData {  
-  string guid = 1;
-  string next_guid = 2;  
-  bytes data = 3;
-}
-
 message PassthroughRequest {
   string context_id = 1;
   string recipient_path = 2;
   string passthrough_name = 3;
-  PassthroughData data_to_send = 4;
-}
-
-message PassthroughReply {  
-  PassthroughData return_data = 1;
+  bytes data_to_send = 4;
 }
 
 message LongrunningPassthroughRequest {  
   string context_id = 1;  
   string recipient_path = 2;
   string passthrough_name = 3;
-  PassthroughData data_to_send = 4;
+  bytes data_to_send = 4;
 }
 
 message LongrunningPassthroughReply {    

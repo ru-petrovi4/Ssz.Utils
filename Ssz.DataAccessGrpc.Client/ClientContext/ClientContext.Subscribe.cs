@@ -34,19 +34,24 @@ namespace Ssz.DataAccessGrpc.Client
 
             try
             {
-                while (true)
+                var request = new PollElementValuesChangesRequest
                 {
-                    var request = new PollElementValuesChangesRequest
-                    {
-                        ContextId = _serverContextId,
-                        ListServerAlias = tagValueList.ListServerAlias
-                    };
-                    PollElementValuesChangesReply reply = await _resourceManagementClient.PollElementValuesChangesAsync(request);
-                    SetResourceManagementLastCallUtc();
+                    ContextId = _serverContextId,
+                    ListServerAlias = tagValueList.ListServerAlias
+                };
+                var reply = _resourceManagementClient.PollElementValuesChanges(request);
+                SetResourceManagementLastCallUtc();
 
-                    var changedItems = ElementValuesCallback(tagValueList, reply.ElementValuesCollection);
-                    if (changedItems is not null) return changedItems;
+                List<ClientElementValueListItem> result = new();
+
+                while (await reply.ResponseStream.MoveNext())
+                {
+                    var changedItems = ElementValuesCallback(tagValueList, reply.ResponseStream.Current.ElementValuesCollection);
+                    if (changedItems is not null)
+                        result.AddRange(changedItems);
                 }
+
+                return result.ToArray();
             }
             catch (Exception ex)
             {
@@ -181,11 +186,11 @@ namespace Ssz.DataAccessGrpc.Client
         ///     Returns null, if incomplete ElementValuesCollection.
         /// </summary>
         /// <param name="dataList"></param>
-        /// <param name="elementValuesCollections"></param>
+        /// <param name="dataChunk"></param>
         /// <returns></returns>
-        private ClientElementValueListItem[]? ElementValuesCallback(ClientElementValueList dataList, ElementValuesCollection elementValuesCollections)
+        private ClientElementValueListItem[]? ElementValuesCallback(ClientElementValueList dataList, DataChunk dataChunk)
         {
-            ClientElementValueListItem[]? changedListItems = dataList.OnElementValuesCallback(elementValuesCollections);
+            ClientElementValueListItem[]? changedListItems = dataList.OnElementValuesCallback(dataChunk);
             if (changedListItems is not null && changedListItems.Length > 0)
             {
                 List<ValueStatusTimestamp> changeValueStatusTimestampsList = new List<ValueStatusTimestamp>(changedListItems.Length);

@@ -46,8 +46,8 @@ namespace Ssz.DataAccessGrpc.Client
                     {
                         ContextId = _serverContextId,
                         ListServerAlias = clientElementValuesJournalList.ListServerAlias,
-                        FirstTimestamp = DateTimeHelper.ConvertToTimestamp(firstTimestampUtc),
-                        SecondTimestamp = DateTimeHelper.ConvertToTimestamp(secondTimestampUtc),
+                        FirstTimestamp = ProtobufHelper.ConvertToTimestamp(firstTimestampUtc),
+                        SecondTimestamp = ProtobufHelper.ConvertToTimestamp(secondTimestampUtc),
                         NumValuesPerAlias = numValuesPerAlias,
                         Calculation = new ServerBase.TypeId(calculation),                        
                     };
@@ -84,8 +84,8 @@ namespace Ssz.DataAccessGrpc.Client
                     {
                         ContextId = _serverContextId,
                         ListServerAlias = clientEventList.ListServerAlias,
-                        FirstTimestamp = DateTimeHelper.ConvertToTimestamp(firstTimestampUtc),
-                        SecondTimestamp = DateTimeHelper.ConvertToTimestamp(secondTimestampUtc),                        
+                        FirstTimestamp = ProtobufHelper.ConvertToTimestamp(firstTimestampUtc),
+                        SecondTimestamp = ProtobufHelper.ConvertToTimestamp(secondTimestampUtc),                        
                     };
                     if (params_ is not null)
                         foreach (var kvp in params_)

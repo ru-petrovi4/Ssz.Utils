@@ -12,8 +12,9 @@ namespace Ssz.Dcs.CentralServer.ServerListItems
         /// <summary>
         ///   Constructor that requires the clientAlias and serverAlias to be specified.
         /// </summary>
-        /// <param name = "clientAlias"></param>
-        /// <param name = "serverAlias"></param>
+        /// <param name="clientAlias"></param>
+        /// <param name="serverAlias"></param>
+        /// <param name="elementId"></param>
         public ElementListItemBase(uint clientAlias, uint serverAlias, string elementId)
         {
             ClientAlias = clientAlias;
@@ -97,7 +98,7 @@ namespace Ssz.Dcs.CentralServer.ServerListItems
 
         #region protected functions
 
-        protected bool Disposed { get; private set; }
+        protected bool Disposed { get; private set; }        
 
         #endregion
     }

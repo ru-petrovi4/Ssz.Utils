@@ -1,3 +1,4 @@
+using Google.Protobuf;
 using Grpc.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -205,15 +206,13 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 context);
         }
 
-        public override async Task<PollElementValuesChangesReply> PollElementValuesChanges(PollElementValuesChangesRequest request, ServerCallContext context)
+        public override async Task PollElementValuesChanges(PollElementValuesChangesRequest request, IServerStreamWriter<ElementValuesCallback> responseStream, ServerCallContext context)
         {
-            return await GetReplyAsync(() =>
+            await GetReply2Async(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
-                    var reply = new PollElementValuesChangesReply();
-                    reply.ElementValuesCollection  = serverContext.PollElementValuesChanges(request.ListServerAlias);
-                    return reply;
+                    await serverContext.PollElementValuesChangesAsync(request.ListServerAlias, responseStream);
                 },
                 context);
         }
@@ -234,53 +233,69 @@ namespace Ssz.DataAccessGrpc.ServerBase
         public override async Task<ReadElementValuesJournalsReply> ReadElementValuesJournals(ReadElementValuesJournalsRequest request, ServerCallContext context)
         {            
             return await GetReplyExAsync(async () =>
-            {
-                ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
-                serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
-                var reply = new ReadElementValuesJournalsReply();
-                reply.ElementValuesJournalsCollection = await serverContext.ReadElementValuesJournalsAsync(
-                        request.ListServerAlias,
-                        request.FirstTimestamp.ToDateTime(),
-                        request.SecondTimestamp.ToDateTime(),
-                        request.NumValuesPerAlias,
-                        request.Calculation,
-                        new CaseInsensitiveDictionary<string?>(request.Params
-                            .Select(cp => KeyValuePair.Create(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null))),                        
-                        request.ServerAliases.ToList()
-                    );
-                return reply;
-            }, context);
+                {
+                    ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
+                    serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
+                    var reply = new ReadElementValuesJournalsReply();
+                    reply.ElementValuesJournalsCollection = await serverContext.ReadElementValuesJournalsAsync(
+                            request.ListServerAlias,
+                            request.FirstTimestamp.ToDateTime(),
+                            request.SecondTimestamp.ToDateTime(),
+                            request.NumValuesPerAlias,
+                            request.Calculation,
+                            new CaseInsensitiveDictionary<string?>(request.Params
+                                .Select(cp => KeyValuePair.Create(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null))),                        
+                            request.ServerAliases.ToList()
+                        );
+                    return reply;
+                }, 
+                context);
         }
 
         public override async Task<ReadEventMessagesJournalReply> ReadEventMessagesJournal(ReadEventMessagesJournalRequest request, ServerCallContext context)
         {
             return await GetReplyExAsync(async () =>
-            {
-                ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
-                serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
-                var reply = new ReadEventMessagesJournalReply();
-                reply.EventMessagesCollection = await serverContext.ReadEventMessagesJournalAsync(
-                        request.ListServerAlias,
-                        request.FirstTimestamp.ToDateTime(),
-                        request.SecondTimestamp.ToDateTime(),
-                        new Utils.CaseInsensitiveDictionary<string?>(request.Params
-                            .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)))
-                    );
-                return reply;
-            }, context);
-        }
-
-        public override async Task<WriteElementValuesReply> WriteElementValues(WriteElementValuesRequest request, ServerCallContext context)
-        {
-            return await await GetReplyAsync(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
-                    var reply = new WriteElementValuesReply();
-                    reply.Results.Add(await serverContext.WriteElementValuesAsync(request.ListServerAlias, request.ElementValuesCollection));
+                    var reply = new ReadEventMessagesJournalReply();
+                    reply.EventMessagesCollection = await serverContext.ReadEventMessagesJournalAsync(
+                            request.ListServerAlias,
+                            request.FirstTimestamp.ToDateTime(),
+                            request.SecondTimestamp.ToDateTime(),
+                            new Utils.CaseInsensitiveDictionary<string?>(request.Params
+                                .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)))
+                        );
                     return reply;
+                }, 
+                context);
+        }
+
+        public override async Task<WriteElementValuesReply> WriteElementValues(IAsyncStreamReader<WriteElementValuesRequest> requestStream, ServerCallContext context)
+        {
+            List<ByteString> requestByteStrings = new();
+            WriteElementValuesRequest? request = null;
+            await foreach (WriteElementValuesRequest writeElementValuesRequest in requestStream.ReadAllAsync())
+            {
+                request = writeElementValuesRequest;
+                requestByteStrings.Add(writeElementValuesRequest.ElementValuesCollection);
+            }
+            if (request is null)
+                throw new RpcException(new Status(StatusCode.Internal, "Invalid request."));
+
+            byte[] elementValuesCollectionBytes = ProtobufHelper.Combine(requestByteStrings);
+
+            var reply = new WriteElementValuesReply();
+            await GetReply2Async(async () =>
+                {
+                    ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
+                    serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
+                    var aliasResults = await serverContext.WriteElementValuesAsync(request.ListServerAlias, elementValuesCollectionBytes);
+                    if (aliasResults is not null)
+                        reply.Results.Add(aliasResults);
                 },
                 context);
+            return reply;            
         }
 
         public override async Task<AckAlarmsReply> AckAlarms(AckAlarmsRequest request, ServerCallContext context)
@@ -297,36 +312,61 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 context);
         }
 
-        public override async Task<PassthroughReply> Passthrough(PassthroughRequest request, ServerCallContext context)
+        public override async Task Passthrough(IAsyncStreamReader<PassthroughRequest> requestStream, IServerStreamWriter<DataChunk> responseStream, ServerCallContext context)
         {
-            return await await GetReplyAsync(async () =>
+            List<ByteString> requestByteStrings = new();
+            PassthroughRequest? request = null;
+            await foreach (PassthroughRequest passthroughRequest in requestStream.ReadAllAsync())
+            {
+                request = passthroughRequest;
+                requestByteStrings.Add(passthroughRequest.DataToSend);
+            }
+            if (request is null)
+                throw new RpcException(new Status(StatusCode.Internal, "Invalid request."));
+
+            byte[] dataToSend = ProtobufHelper.Combine(requestByteStrings);
+
+            await GetReply2Async(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
-                    serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;                    
-                    return await serverContext.PassthroughAsync(request.RecipientPath ?? @"", request.PassthroughName ?? @"", request.DataToSend);
+                    serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
+                    await serverContext.PassthroughAsync(request.RecipientPath ?? @"", request.PassthroughName ?? @"", dataToSend, responseStream);
                 },
                 context);
         }
 
-        public override async Task<LongrunningPassthroughReply> LongrunningPassthrough(LongrunningPassthroughRequest request, ServerCallContext context)
+        public override async Task<LongrunningPassthroughReply> LongrunningPassthrough(IAsyncStreamReader<LongrunningPassthroughRequest> requestStream, ServerCallContext context)
         {
-            return await GetReplyAsync(() =>
+            List<ByteString> requestByteStrings = new();
+            LongrunningPassthroughRequest? request = null;
+            await foreach (LongrunningPassthroughRequest longrunningPassthroughRequest in requestStream.ReadAllAsync())
+            {
+                request = longrunningPassthroughRequest;
+                requestByteStrings.Add(longrunningPassthroughRequest.DataToSend);
+            }
+            if (request is null)
+                throw new RpcException(new Status(StatusCode.Internal, "Invalid request."));
+
+            byte[] dataToSend = ProtobufHelper.Combine(requestByteStrings);
+
+            var reply = await GetReplyAsync(() =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
-                    return serverContext.LongrunningPassthrough(request.RecipientPath ?? @"", request.PassthroughName ?? @"", request.DataToSend);
+                    return serverContext.LongrunningPassthrough(request.RecipientPath ?? @"", request.PassthroughName ?? @"", dataToSend);
                 },
                 context);
+            return reply!;
         }
 
         public override async Task<LongrunningPassthroughCancelReply> LongrunningPassthroughCancel(LongrunningPassthroughCancelRequest request, ServerCallContext context)
         {
             return await GetReplyAsync(() =>
-            {
-                ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
-                serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
-                return serverContext.LongrunningPassthroughCancel(request.JobId ?? @"");
-            },
+                {
+                    ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
+                    serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
+                    return serverContext.LongrunningPassthroughCancel(request.JobId ?? @"");
+                },
                 context);
         }
 
@@ -368,6 +408,62 @@ namespace Ssz.DataAccessGrpc.ServerBase
             try
             {
                 return await taskCompletionSource.Task;
+            }
+            catch (TaskCanceledException ex)
+            {
+                string message = @"Operation cancelled.";
+                _logger.LogDebug(ex, message);
+                throw new RpcException(new Status(StatusCode.Cancelled, message));
+            }
+            catch (RpcException ex)
+            {
+                string message = @"RPC Exception";
+                _logger.LogError(ex, message);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                string message = @"General Exception";
+                _logger.LogCritical(ex, message);
+                throw new RpcException(new Status(StatusCode.Internal, ex.Message));
+            }
+        }
+
+        private async Task GetReply2Async(Func<Task> func, ServerCallContext context)
+        {
+            string parentMethodName = "";
+            if (_logger.IsEnabled(LogLevel.Trace))
+            {
+                var st = new StackTrace();
+                //foreach (var f in st.GetFrames())
+                //{
+                //    parentMethodName += "->" + f.GetMethod()?.Name;
+                //}
+                var sf = st.GetFrame(7);
+                if (sf is not null)
+                {
+                    parentMethodName = sf.GetMethod()?.Name ?? "";
+                }
+            }
+
+            var taskCompletionSource = new TaskCompletionSource();
+            //context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
+            _serverWorker.ThreadSafeDispatcher.BeginInvoke(async ct =>
+            {
+                _logger.LogTrace("Processing client call in worker thread: " + parentMethodName);
+                try
+                {
+                    await func();
+                    taskCompletionSource.TrySetResult();
+                }
+                catch (Exception ex)
+                {
+                    taskCompletionSource.TrySetException(ex);
+                }
+            });
+            try
+            {
+                await taskCompletionSource.Task;
             }
             catch (TaskCanceledException ex)
             {
