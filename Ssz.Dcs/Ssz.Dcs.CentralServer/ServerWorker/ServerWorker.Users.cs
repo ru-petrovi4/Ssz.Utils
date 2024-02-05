@@ -144,7 +144,7 @@ namespace Ssz.Dcs.CentralServer
             }
         }
 
-        private async Task AddScenarioResultPassthrough(ServerContext serverContext, byte[] dataToSend)
+        private async Task AddScenarioResultPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
         {
             try
             {

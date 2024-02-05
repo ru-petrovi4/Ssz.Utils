@@ -10,11 +10,10 @@ namespace Ssz.DataAccessGrpc.ServerBase
 {
     public static class ProtobufHelper
     {
-        public static byte[] Combine(List<ByteString> requestByteStrings)
+        public static ReadOnlyMemory<byte> Combine(List<ByteString> requestByteStrings)
         {
-            // TODOP optimization needed.
-            //if (requestByteStrings.Count == 1)
-            //    return requestByteStrings[0].Memory;
+            if (requestByteStrings.Count == 1)
+                return requestByteStrings[0].Memory;
             var bytes = new byte[requestByteStrings.Sum(bs => bs.Length)];
             int position = 0;
             foreach (var byteString in requestByteStrings)
@@ -29,9 +28,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
         ///     Result list count >= 1
         /// </summary>
         /// <returns></returns>
-        public static List<DataChunk> SplitForCorrectGrpcMessageSize(byte[] bytes)
+        public static List<DataChunk> SplitForCorrectGrpcMessageSize(ReadOnlyMemory<byte> bytes)
         {
-            if (bytes is null || bytes.Length == 0)
+            if (bytes.Length == 0)
                 return new List<DataChunk> { new DataChunk { Bytes = ByteString.Empty } };
 
             var result = new List<DataChunk>();
@@ -45,7 +44,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     prevDataChunk.NextDataChunkGuid = dataChunk.Guid = System.Guid.NewGuid().ToString();
 
                 int length = Math.Min(bytes.Length - position, Constants.MaxReplyObjectSize);
-                dataChunk.Bytes = UnsafeByteOperations.UnsafeWrap(new ReadOnlyMemory<byte>(bytes, position, length));
+                dataChunk.Bytes = UnsafeByteOperations.UnsafeWrap(bytes.Slice(position, length));
                 position += length;
 
                 result.Add(dataChunk);

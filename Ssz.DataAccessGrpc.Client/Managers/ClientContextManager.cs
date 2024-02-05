@@ -257,8 +257,8 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             return list;
         }
 
-        public async Task<IEnumerable<byte>> PassthroughAsync(string recipientPath,
-                                      string passthroughName, byte[] dataToSend)
+        public async Task<ReadOnlyMemory<byte>> PassthroughAsync(string recipientPath,
+                                      string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
@@ -268,7 +268,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                                       passthroughName, dataToSend);
         }
 
-        public async Task<Task<uint>> LongrunningPassthroughAsync(string recipientPath, string passthroughName, byte[]? dataToSend,
+        public async Task<Task<uint>> LongrunningPassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend,
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackAction)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");

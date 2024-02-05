@@ -138,7 +138,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     };
                     var returnData = await UtilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
                         SerializationHelper.GetOwnedData(request));
-                    DsFilesStoreDirectory? serverDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData is not null ? returnData.ToArray() : null,
+                    DsFilesStoreDirectory? serverDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData,
                         () => new DsFilesStoreDirectory());
                     if (serverDsFilesStoreDirectory is not null)
                     {

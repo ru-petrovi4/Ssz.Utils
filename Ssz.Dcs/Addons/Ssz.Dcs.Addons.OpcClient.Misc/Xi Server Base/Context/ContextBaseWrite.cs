@@ -20,6 +20,7 @@ using Xi.Common.Support;
 using Xi.Contracts.Constants;
 using Xi.Contracts;
 using Xi.Contracts.Data;
+using System;
 
 namespace Xi.Server.Base
 {
@@ -220,7 +221,7 @@ namespace Xi.Server.Base
 		/// application to interpret this byte array.
 		/// </returns>
 		internal virtual PassthroughResult OnPassthrough(string recipientId, int invokeId,
-			string passthroughName, byte[] DataToSend)
+			string passthroughName, ReadOnlyMemory<byte> dataToSend)
 		{
 			// TODO:  Implement the PassthroughResult method if supported. 
 			// If this method is implemented, the corresponding bit in the StandardMib.MethodsSupported must be set.

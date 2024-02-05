@@ -23,7 +23,7 @@ namespace Ssz.Dcs.CentralServer
     {
         #region public functions
         
-        public override async Task<byte[]> PassthroughAsync(ServerContext serverContext, string recipientPath, string passthroughName, byte[] dataToSend)
+        public override async Task<ReadOnlyMemory<byte>> PassthroughAsync(ServerContext serverContext, string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
             try
             {                
@@ -37,7 +37,7 @@ namespace Ssz.Dcs.CentralServer
                             GetDirectoryInfoPassthrough(dataToSend, out returnData);
                             return returnData;
                         case PassthroughConstants.LoadFiles:
-                            LoadFilesPassthrough(Encoding.UTF8.GetString(dataToSend), out returnData);
+                            LoadFilesPassthrough(Encoding.UTF8.GetString(dataToSend.Span), out returnData);
                             return returnData;
                         case PassthroughConstants.GetUsers:
                             GetUsersPassthrough(out returnData);
@@ -59,10 +59,10 @@ namespace Ssz.Dcs.CentralServer
                             return await ReadConfigurationPassthroughAsync(serverContext, recipientPath, dataToSend);
                         case PassthroughConstants.WriteConfiguration:
                             await WriteConfigurationPassthroughAsync(serverContext, recipientPath, dataToSend);
-                            return new byte[0];
+                            return ReadOnlyMemory<byte>.Empty;
                         case PassthroughConstants.AddScenarioResult:
                             await AddScenarioResultPassthrough(serverContext, dataToSend);
-                            return new byte[0];
+                            return ReadOnlyMemory<byte>.Empty;
                     }
 
                     ObservableCollection<EngineSession> engineSessions = GetEngineSessions(serverContext);
@@ -88,10 +88,7 @@ namespace Ssz.Dcs.CentralServer
                                 beginRecipientId,
                                 StringComparison.InvariantCultureIgnoreCase));
                         if (engineSession is not null)
-                        {
-                            returnData = (await engineSession.DataAccessProvider.PassthroughAsync(remainingRecipientId, passthroughName, dataToSend)).ToArray();
-                            return returnData;
-                        }
+                            return await engineSession.DataAccessProvider.PassthroughAsync(remainingRecipientId, passthroughName, dataToSend);
                     }
 
                     foreach (EngineSession engineSession in engineSessions)
@@ -105,9 +102,8 @@ namespace Ssz.Dcs.CentralServer
                         {
                             Logger.LogError(ex, "dataAccessProvider.Passthrough passthroughName=" + passthroughName);
                         }
-                    }
-                    returnData = new byte[0];
-                    return returnData;
+                    }                    
+                    return ReadOnlyMemory<byte>.Empty;
                 }
             }
             catch (RpcException)
@@ -120,7 +116,7 @@ namespace Ssz.Dcs.CentralServer
             }
         }        
 
-        public override string LongrunningPassthrough(ServerContext serverContext, string recipientPath, string passthroughName, byte[] dataToSend)
+        public override string LongrunningPassthrough(ServerContext serverContext, string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
             string systemNameToConnect = serverContext.SystemNameToConnect;            
             if (systemNameToConnect == @"") // Utility context 
@@ -173,7 +169,7 @@ namespace Ssz.Dcs.CentralServer
 
         #region private functions    
 
-        private void LongrunningPassthrough_ProcessContext(ServerContext serverContext, string jobId, string recipientPath, string passthroughName, byte[] dataToSend)
+        private void LongrunningPassthrough_ProcessContext(ServerContext serverContext, string jobId, string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
             ObservableCollection<EngineSession> engineSessions = GetEngineSessions(serverContext);
 
@@ -267,7 +263,7 @@ namespace Ssz.Dcs.CentralServer
             }            
         }
         
-        private void GetDirectoryInfoPassthrough(byte[] dataToSend, out byte[] returnData)
+        private void GetDirectoryInfoPassthrough(ReadOnlyMemory<byte> dataToSend, out byte[] returnData)
         {
             try
             {
@@ -319,7 +315,7 @@ namespace Ssz.Dcs.CentralServer
             returnData = SerializationHelper.GetOwnedData(reply);
         }
 
-        private string SaveFiles_LongrunningPassthrough(ServerContext serverContext, byte[] dataToSend)
+        private string SaveFiles_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
         {
             string jobId = Guid.NewGuid().ToString();
 
@@ -328,7 +324,7 @@ namespace Ssz.Dcs.CentralServer
             return jobId;
         }
 
-        private async void SaveFiles_LongrunningPassthroughAsync(ServerContext serverContext, string jobId, byte[] dataToSend)
+        private async void SaveFiles_LongrunningPassthroughAsync(ServerContext serverContext, string jobId, ReadOnlyMemory<byte> dataToSend)
         {            
             try
             {
@@ -372,13 +368,13 @@ namespace Ssz.Dcs.CentralServer
             }
         }
 
-        private string DeleteFiles_LongrunningPassthrough(ServerContext serverContext, byte[] dataToSend)
+        private string DeleteFiles_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
         {
             string jobId = Guid.NewGuid().ToString();
 
             try
             {
-                var request = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend));
+                var request = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend.Span));
                 foreach (int index in Enumerable.Range(0, request.Length))
                 {
                     string fileFullName = Path.Combine(FilesStoreDirectoryInfo.FullName, request[index] ?? @"");
@@ -415,13 +411,13 @@ namespace Ssz.Dcs.CentralServer
             return jobId;
         }
 
-        private string MoveFiles_LongrunningPassthrough(ServerContext serverContext, byte[] dataToSend)
+        private string MoveFiles_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
         {
             string jobId = Guid.NewGuid().ToString();
 
             try
             {
-                var request = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend));                
+                var request = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend.Span));                
                 foreach (int index in Enumerable.Range(0, request.Length / 2))
                 {
                     string sourceFileFullName = Path.Combine(FilesStoreDirectoryInfo.FullName, request[2 * index] ?? @"");

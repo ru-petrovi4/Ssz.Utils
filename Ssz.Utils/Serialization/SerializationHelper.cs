@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using CommunityToolkit.HighPerformance;
 using Ssz.Utils.Serialization;
 
 namespace Ssz.Utils.Serialization
@@ -55,12 +56,13 @@ namespace Ssz.Utils.Serialization
             }
         }
 
-        public static void SetOwnedData(IOwnedDataSerializable ownedDataSerializable, byte[] ownedData)            
+        public static void SetOwnedData(IOwnedDataSerializable ownedDataSerializable, ReadOnlyMemory<byte> ownedData)            
         {
             if (ownedData.Length == 0)
                 return;
 
-            using (var reader = new SerializationReader(ownedData))
+            using (var stream = ownedData.AsStream())
+            using (var reader = new SerializationReader(stream))
             {
                 ownedDataSerializable.DeserializeOwnedData(reader, null);
             }
@@ -74,22 +76,22 @@ namespace Ssz.Utils.Serialization
         /// <param name="ownedData"></param>
         /// <param name="func"></param>
         /// <returns></returns>
-        public static T? CreateFromOwnedData<T>(byte[]? ownedData, Func<T>? func = null)
+        public static T CreateFromOwnedData<T>(ReadOnlyMemory<byte> ownedData, Func<T>? func = null)
             where T : class, IOwnedDataSerializable
-        {
-            if (ownedData is null) return null;
-
+        {            
             T? result;
             if (func is null)
             {
                 result = Activator.CreateInstance(typeof (T)) as T;
-                if (result is null) throw new InvalidOperationException();
+                if (result is null) 
+                    throw new InvalidOperationException();
             }
             else
             {
                 result = func();
             }
-            using (var reader = new SerializationReader(ownedData))
+            using (var stream = ownedData.AsStream())
+            using (var reader = new SerializationReader(stream))
             {
                 result.DeserializeOwnedData(reader, null);
             }

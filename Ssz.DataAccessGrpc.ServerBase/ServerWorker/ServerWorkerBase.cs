@@ -36,7 +36,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public abstract ServerListRoot NewServerList(ServerContext serverContext, uint listClientAlias, uint listType, CaseInsensitiveDictionary<string?> listParams);
 
-        public abstract Task<byte[]> PassthroughAsync(ServerContext serverContext, string recipientPath, string passthroughName, byte[] dataToSend);
+        public abstract Task<ReadOnlyMemory<byte>> PassthroughAsync(ServerContext serverContext, string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend);
 
         /// <summary>
         ///     Returns JobId
@@ -46,7 +46,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <returns></returns>
-        public abstract string LongrunningPassthrough(ServerContext serverContext, string recipientPath, string passthroughName, byte[] dataToSend);
+        public abstract string LongrunningPassthrough(ServerContext serverContext, string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend);
 
         public abstract void LongrunningPassthroughCancel(ServerContext serverContext, string jobId);
 

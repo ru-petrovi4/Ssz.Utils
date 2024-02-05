@@ -254,9 +254,9 @@ namespace Xi.Server.Base
 		/// application to interpret this byte array.
 		/// </returns>
 		PassthroughResult IWrite.Passthrough(string contextId, string recipientId, int invokeId,
-									  string passthroughName, byte[] DataToSend)
+									  string passthroughName, ReadOnlyMemory<byte> dataToSend)
 		{
-            using (Logger.EnterMethod(contextId, recipientId, passthroughName, DataToSend))
+            using (Logger.EnterMethod(contextId, recipientId, passthroughName))
 			{
 				try
 				{
@@ -264,7 +264,7 @@ namespace Xi.Server.Base
 					if (context == null)
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);
 
-					return context.OnPassthrough(recipientId, invokeId, passthroughName, DataToSend);
+					return context.OnPassthrough(recipientId, invokeId, passthroughName, dataToSend);
 				}				
 				catch (Exception ex)
 				{

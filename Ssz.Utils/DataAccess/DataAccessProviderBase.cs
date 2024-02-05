@@ -248,7 +248,7 @@ namespace Ssz.Utils.DataAccess
         /// <param name="dataToSend"></param>
         /// <param name="progressCallbackAction"></param>
         /// <returns></returns>
-        public virtual Task<Task<uint>> LongrunningPassthroughAsync(string recipientPath, string passthroughName, byte[] dataToSend, Action<LongrunningPassthroughCallback>? progressCallbackAction)
+        public virtual Task<Task<uint>> LongrunningPassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend, Action<LongrunningPassthroughCallback>? progressCallbackAction)
         {            
             return Task.FromResult(Task.FromResult(StatusCodes.Good));
         }
@@ -260,9 +260,9 @@ namespace Ssz.Utils.DataAccess
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <returns></returns>
-        public virtual Task<IEnumerable<byte>> PassthroughAsync(string recipientPath, string passthroughName, byte[] dataToSend)
+        public virtual Task<ReadOnlyMemory<byte>> PassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
-            return Task.FromResult<IEnumerable<byte>>(new byte[0]);
+            return Task.FromResult<ReadOnlyMemory<byte>>(ReadOnlyMemory<byte>.Empty);
         }
 
         public virtual Task<IValueSubscription[]?> PollElementValuesChangesAsync()

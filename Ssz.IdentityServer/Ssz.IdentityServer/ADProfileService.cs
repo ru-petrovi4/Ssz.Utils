@@ -43,7 +43,7 @@ namespace Ssz.IdentityServer
 
             //context.LogProfileRequest(_logger);
 
-            string user = context.Subject.GetSubjectId();
+            string user = context.Subject.GetSubjectId().ToLowerInvariant();
             bool isTestUser = false;
             List<Claim> claims = null!;
 

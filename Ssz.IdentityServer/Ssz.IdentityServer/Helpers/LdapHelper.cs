@@ -94,9 +94,7 @@ namespace Ssz.IdentityServer.Helpers
                 return new List<Claim>();
 
             var groups = await GetGroupsForUser(preparedLdapConnection, user, configuration);
-
-            // create a new unique subject id
-            string subjectId = user;
+            
             string name;
             string first = @"";
             string last = @"";

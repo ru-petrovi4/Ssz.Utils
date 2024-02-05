@@ -33,7 +33,7 @@ namespace Ssz.Dcs.CentralServer
 
                 if (engineSessions.Count > 0)
                 {
-                    var taskInfos = new List<(Task<IEnumerable<byte>>, EngineSession)>(engineSessions.Count);
+                    var taskInfos = new List<(Task<ReadOnlyMemory<byte>>, EngineSession)>(engineSessions.Count);
 
                     foreach (EngineSession engineSession in engineSessions)
                     {
@@ -51,7 +51,7 @@ namespace Ssz.Dcs.CentralServer
                         try
                         {
                             var replyAddonStatuses = new AddonStatuses();
-                            SerializationHelper.SetOwnedData(replyAddonStatuses, (await task).ToArray());
+                            SerializationHelper.SetOwnedData(replyAddonStatuses, await task);
 
                             foreach (var addonStatus in replyAddonStatuses.AddonStatusesCollection)
                             {
@@ -90,7 +90,7 @@ namespace Ssz.Dcs.CentralServer
             return SerializationHelper.GetOwnedData(addonStatuses);
         }
 
-        private async Task<byte[]> ReadConfigurationPassthroughAsync(ServerContext serverContext, string recipientPath, byte[] dataToSend)
+        private async Task<byte[]> ReadConfigurationPassthroughAsync(ServerContext serverContext, string recipientPath, ReadOnlyMemory<byte> dataToSend)
         {
             ObservableCollection<EngineSession> engineSessions = GetEngineSessions(serverContext);
             ConfigurationFiles configurationFiles;
@@ -103,7 +103,7 @@ namespace Ssz.Dcs.CentralServer
                 {
                     if (engineSessions.Count > 0)
                     {
-                        var taskInfos = new List<(Task<IEnumerable<byte>>, EngineSession)>(engineSessions.Count);
+                        var taskInfos = new List<(Task<ReadOnlyMemory<byte>>, EngineSession)>(engineSessions.Count);
 
                         foreach (EngineSession engineSession in engineSessions)
                         {
@@ -122,7 +122,7 @@ namespace Ssz.Dcs.CentralServer
                             try
                             {
                                 var replyConfigurationFiles = new ConfigurationFiles();
-                                SerializationHelper.SetOwnedData(replyConfigurationFiles, (await task).ToArray());
+                                SerializationHelper.SetOwnedData(replyConfigurationFiles, await task);
 
                                 foreach (var configurationFile in replyConfigurationFiles.ConfigurationFilesCollection)
                                 {
@@ -156,7 +156,7 @@ namespace Ssz.Dcs.CentralServer
             }
             else
             {                
-                string? pathRelativeToRootDirectory = Encoding.UTF8.GetString(dataToSend);
+                string? pathRelativeToRootDirectory = Encoding.UTF8.GetString(dataToSend.Span);
                           
                 if (String.IsNullOrEmpty(recipientPath))
                 {
@@ -193,7 +193,7 @@ namespace Ssz.Dcs.CentralServer
                         try
                         {
                             var replyConfigurationFiles = new ConfigurationFiles();
-                            SerializationHelper.SetOwnedData(replyConfigurationFiles, (await task).ToArray());
+                            SerializationHelper.SetOwnedData(replyConfigurationFiles, await task);
 
                             foreach (var configurationFile in replyConfigurationFiles.ConfigurationFilesCollection)
                             {
@@ -223,7 +223,7 @@ namespace Ssz.Dcs.CentralServer
             return SerializationHelper.GetOwnedData(configurationFiles);
         }
 
-        private async Task WriteConfigurationPassthroughAsync(ServerContext serverContext, string recipientPath, byte[] dataToSend)
+        private async Task WriteConfigurationPassthroughAsync(ServerContext serverContext, string recipientPath, ReadOnlyMemory<byte> dataToSend)
         {
             try
             {
@@ -232,7 +232,7 @@ namespace Ssz.Dcs.CentralServer
 
                 ObservableCollection<EngineSession> engineSessions = GetEngineSessions(serverContext);
 
-                var tasks = new List<Task<IEnumerable<byte>>>(engineSessions.Count);
+                var tasks = new List<Task<ReadOnlyMemory<byte>>>(engineSessions.Count);
 
                 foreach (var group in allConfigurationFiles.ConfigurationFilesCollection.GroupBy(ccf => ccf.SourcePath))
                 {
@@ -244,7 +244,7 @@ namespace Ssz.Dcs.CentralServer
                         tasks.Add(Task.Run(() =>
                         {
                             _addonsManager.WriteConfigurationThreadSafe(configurationFiles);
-                            return (IEnumerable<byte>)Array.Empty<byte>();
+                            return ReadOnlyMemory<byte>.Empty;
                         }));
                     }
                     else

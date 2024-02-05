@@ -209,9 +209,9 @@ namespace Ssz.Dcs.CentralServer
 
         #region private functions        
 
-        private string ProcessModelingSession_LaunchEngines_LongrunningPassthrough(ServerContext serverContext, byte[] dataToSend)
+        private string ProcessModelingSession_LaunchEngines_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
         {
-            string? processModelingSessionId = Encoding.UTF8.GetString(dataToSend);
+            string? processModelingSessionId = Encoding.UTF8.GetString(dataToSend.Span);
             ProcessModelingSession processModelingSession = GetProcessModelingSession(processModelingSessionId);
             string jobId;
 
@@ -341,9 +341,9 @@ namespace Ssz.Dcs.CentralServer
             });
         }
 
-        private string ProcessModelingSession_DownloadChangedFiles_LongrunningPassthrough(ServerContext serverContext, byte[] dataToSend)
+        private string ProcessModelingSession_DownloadChangedFiles_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
         {
-            string?[] csvLine = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend));
+            string?[] csvLine = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend.Span));
             string directoryPathsRelativeToRootDirectory = CsvHelper.FormatForCsv(@",", csvLine.Skip(1));            
             ProcessModelingSession processModelingSession = GetProcessModelingSession(csvLine[0]);
 
@@ -361,9 +361,9 @@ namespace Ssz.Dcs.CentralServer
             return jobId;
         }
 
-        private string ProcessModelingSession_UploadChangedFiles_LongrunningPassthrough(ServerContext serverContext, byte[] dataToSend)
+        private string ProcessModelingSession_UploadChangedFiles_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
         {
-            string?[] csvLine = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend));
+            string?[] csvLine = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend.Span));
             string directoryPathsRelativeToRootDirectory = CsvHelper.FormatForCsv(@",", csvLine.Skip(1));
             ProcessModelingSession processModelingSession = GetProcessModelingSession(csvLine[0]);
 

@@ -113,19 +113,19 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <returns></returns>
-        public override Task<IEnumerable<byte>> PassthroughAsync(string recipientPath, string passthroughName, byte[] dataToSend)
+        public override Task<ReadOnlyMemory<byte>> PassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
             switch (passthroughName)
             {
                 case PassthroughConstants.SetAddonVariables:
-                    var nameValuesCollectionString = Encoding.UTF8.GetString(dataToSend);
+                    var nameValuesCollectionString = Encoding.UTF8.GetString(dataToSend.Span);
                     var nameValuesCollection = NameValueCollectionHelper.Parse(nameValuesCollectionString);
                     Addon.CsvDb.SetData(AddonBase.VariablesCsvFileName, nameValuesCollection.Select(kvp => new string?[] { kvp.Key, kvp.Value }));
                     Addon.CsvDb.SaveData();
                     break;
             }
 
-            return Task.FromResult<IEnumerable<byte>>(new byte[0]);
+            return Task.FromResult<ReadOnlyMemory<byte>>(ReadOnlyMemory<byte>.Empty);
         }
 
         #endregion

@@ -266,7 +266,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         #region internal functions
 
-        internal async Task<List<AliasResult>?> WriteElementValuesAsync(uint listServerAlias, byte[] elementValuesCollectionBytes)
+        internal async Task<List<AliasResult>?> WriteElementValuesAsync(uint listServerAlias, ReadOnlyMemory<byte> elementValuesCollectionBytes)
         {
             ServerListRoot? serverList;
 
@@ -308,17 +308,17 @@ namespace Ssz.DataAccessGrpc.ServerBase
             serverList.TouchList();
         }
 
-        internal async Task PassthroughAsync(string recipientPath, string passthroughName, byte[] dataToSend, IServerStreamWriter<DataChunk> responseStream)
+        internal async Task PassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend, IServerStreamWriter<DataChunk> responseStream)
         {
-            byte[] returnDataArray = await ServerWorker.PassthroughAsync(this, recipientPath, passthroughName, dataToSend);
+            ReadOnlyMemory<byte> returnData = await ServerWorker.PassthroughAsync(this, recipientPath, passthroughName, dataToSend);
 
-            foreach (var dataChunk in ProtobufHelper.SplitForCorrectGrpcMessageSize(returnDataArray))
+            foreach (var dataChunk in ProtobufHelper.SplitForCorrectGrpcMessageSize(returnData))
             {
                 await responseStream.WriteAsync(dataChunk);
             };
         }
 
-        internal LongrunningPassthroughReply? LongrunningPassthrough(string recipientPath, string passthroughName, byte[] dataToSend)
+        internal LongrunningPassthroughReply? LongrunningPassthrough(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
             var reply = new LongrunningPassthroughReply();
 

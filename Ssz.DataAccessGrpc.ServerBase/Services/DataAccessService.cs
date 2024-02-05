@@ -283,7 +283,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             if (request is null)
                 throw new RpcException(new Status(StatusCode.Internal, "Invalid request."));
 
-            byte[] elementValuesCollectionBytes = ProtobufHelper.Combine(requestByteStrings);
+            ReadOnlyMemory<byte> elementValuesCollectionBytes = ProtobufHelper.Combine(requestByteStrings);
 
             var reply = new WriteElementValuesReply();
             await GetReply2Async(async () =>
@@ -324,7 +324,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             if (request is null)
                 throw new RpcException(new Status(StatusCode.Internal, "Invalid request."));
 
-            byte[] dataToSend = ProtobufHelper.Combine(requestByteStrings);
+            ReadOnlyMemory<byte> dataToSend = ProtobufHelper.Combine(requestByteStrings);
 
             await GetReply2Async(async () =>
                 {
@@ -347,7 +347,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             if (request is null)
                 throw new RpcException(new Status(StatusCode.Internal, "Invalid request."));
 
-            byte[] dataToSend = ProtobufHelper.Combine(requestByteStrings);
+            ReadOnlyMemory<byte> dataToSend = ProtobufHelper.Combine(requestByteStrings);
 
             var reply = await GetReplyAsync(() =>
                 {

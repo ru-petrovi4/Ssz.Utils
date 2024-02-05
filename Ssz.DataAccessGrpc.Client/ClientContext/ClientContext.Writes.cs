@@ -94,7 +94,7 @@ namespace Ssz.DataAccessGrpc.Client
             }
         }
 
-        public async Task<IEnumerable<byte>> PassthroughAsync(string recipientPath, string passthroughName, byte[] dataToSend)
+        public async Task<ReadOnlyMemory<byte>> PassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
 
@@ -115,28 +115,21 @@ namespace Ssz.DataAccessGrpc.Client
                         DataToSend = dataToSendByteString
                     });                    
                 }
-                await call.RequestStream.CompleteAsync();                
+                await call.RequestStream.CompleteAsync();
 
-                DataChunk? dataChunk = null;
+                List<ByteString> requestByteStrings = new();
+#if NET5_OR_GREATER                              
+                await foreach (DataChunk dataChunk in call.ResponseStream.ReadAllAsync())
+                {                    
+                    requestByteStrings.Add(dataChunk.Bytes);
+                }      
+#else
                 while (await call.ResponseStream.MoveNext())
                 {
-                    dataChunk = call.ResponseStream.Current;                    
-                    if (dataChunk.Guid != @"" && _incompletePassthroughRepliesCollection.Count > 0)
-                    {
-                        var beginPassthroughReply = _incompletePassthroughRepliesCollection.TryGetValue(dataChunk.Guid);
-                        if (beginPassthroughReply is not null)
-                        {
-                            _incompletePassthroughRepliesCollection.Remove(dataChunk.Guid);
-                            beginPassthroughReply.CombineWith(dataChunk);
-                            dataChunk = beginPassthroughReply;
-                        }
-                    }
-
-                    if (dataChunk.NextDataChunkGuid != @"")
-                        _incompletePassthroughRepliesCollection[dataChunk.NextDataChunkGuid] = dataChunk;
+                    requestByteStrings.Add(call.ResponseStream.Current.Bytes);
                 }
-
-                return dataChunk!.Bytes;
+#endif
+                return ProtobufHelper.Combine(requestByteStrings);
             }
             catch (Exception ex)
             {
@@ -155,7 +148,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public async Task<Task<uint>> LongrunningPassthroughAsync(string recipientPath, string passthroughName, byte[]? dataToSend,
+        public async Task<Task<uint>> LongrunningPassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend,
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackAction)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
@@ -202,7 +195,7 @@ namespace Ssz.DataAccessGrpc.Client
             }            
         }
 
-        #endregion
+#endregion
 
         #region private fields
 
@@ -213,7 +206,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// </summary>
         private readonly Dictionary<string, List<LongrunningPassthroughRequest>> _longrunningPassthroughRequestsCollection = new();
 
-        #endregion        
+        #endregion
 
         private class LongrunningPassthroughRequest
         {

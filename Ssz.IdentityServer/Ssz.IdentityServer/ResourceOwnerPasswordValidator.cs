@@ -62,7 +62,7 @@ namespace Ssz.IdentityServer
         /// <returns></returns>
         public async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
         {
-            string user = context.UserName;
+            string user = context.UserName.ToLowerInvariant();
             var httpContext = _httpContextAccessor.HttpContext;
 
             string errorReason = @"";
@@ -80,7 +80,7 @@ namespace Ssz.IdentityServer
                         {
                             _logger.LogDebug("Parser found secret: {type}", basicAuthenticationSecretParser.GetType().Name);
 
-                            user = parsedSecret.Id;
+                            user = parsedSecret.Id.ToLowerInvariant();
 
                             if (!String.IsNullOrEmpty(user))
                                 context.Result = new GrantValidationResult(

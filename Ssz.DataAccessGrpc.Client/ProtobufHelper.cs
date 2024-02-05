@@ -10,13 +10,27 @@ namespace Ssz.DataAccessGrpc.Client
 {
     public static class ProtobufHelper
     {
+        public static ReadOnlyMemory<byte> Combine(List<ByteString> requestByteStrings)
+        {
+            if (requestByteStrings.Count == 1)
+                return requestByteStrings[0].Memory;
+            var bytes = new byte[requestByteStrings.Sum(bs => bs.Length)];
+            int position = 0;
+            foreach (var byteString in requestByteStrings)
+            {
+                byteString.CopyTo(bytes, position);
+                position += byteString.Length;
+            }
+            return bytes;
+        }
+
         /// <summary>
         ///     Result list count >= 1
         /// </summary>
         /// <returns></returns>
-        public static List<ByteString> SplitForCorrectGrpcMessageSize(byte[]? bytes)
+        public static List<ByteString> SplitForCorrectGrpcMessageSize(ReadOnlyMemory<byte> bytes)
         {
-            if (bytes is null || bytes.Length == 0)
+            if (bytes.Length == 0)
                 return new List<ByteString> { ByteString.Empty };
 
             var result = new List<ByteString>();
@@ -25,7 +39,7 @@ namespace Ssz.DataAccessGrpc.Client
             while (position < bytes.Length)
             {
                 int length = Math.Min(bytes.Length - position, Constants.MaxReplyObjectSize);
-                ByteString byteString = UnsafeByteOperations.UnsafeWrap(new ReadOnlyMemory<byte>(bytes, position, length));
+                ByteString byteString = UnsafeByteOperations.UnsafeWrap(bytes.Slice(position, length));
                 position += length;
                 result.Add(byteString);                
             }

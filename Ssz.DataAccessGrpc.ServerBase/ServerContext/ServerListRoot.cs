@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using CommunityToolkit.HighPerformance;
 using Grpc.Core;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
@@ -141,12 +142,12 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="elementValuesCollection"></param>
         /// <returns></returns>
         /// <exception cref="RpcException"></exception>
-        public async Task<List<AliasResult>?> WriteElementValuesAsync(byte[] elementValuesCollectionBytes)
+        public async Task<List<AliasResult>?> WriteElementValuesAsync(ReadOnlyMemory<byte> elementValuesCollectionBytes)
         {
             List<(uint, ValueStatusTimestamp)> elementValuesCollection = new();
 
-            using (var memoryStream = new MemoryStream(elementValuesCollectionBytes))
-            using (var reader = new SerializationReader(memoryStream))
+            using (var stream = elementValuesCollectionBytes.AsStream())
+            using (var reader = new SerializationReader(stream))
             {
                 using (Block block = reader.EnterBlock())
                 {

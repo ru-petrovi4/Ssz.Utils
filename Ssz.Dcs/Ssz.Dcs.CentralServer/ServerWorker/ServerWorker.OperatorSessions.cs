@@ -55,9 +55,9 @@ namespace Ssz.Dcs.CentralServer
 
         #region private functions
 
-        private string ProcessModelingSession_LaunchOperator_LongrunningPassthrough(ServerContext serverContext, byte[] dataToSend)
+        private string ProcessModelingSession_LaunchOperator_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
         {
-            string?[] args = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend));
+            string?[] args = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend.Span));
             if (args.Length < 8)
                 throw new InvalidOperationException();
 
@@ -119,9 +119,9 @@ namespace Ssz.Dcs.CentralServer
             return jobId;
         }        
 
-        private string ProcessModelingSession_RunOperatorExe_LongrunningPassthrough(ServerContext serverContext, byte[] dataToSend)
+        private string ProcessModelingSession_RunOperatorExe_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
         {
-            string?[] parts = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend));
+            string?[] parts = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend.Span));
             if (parts.Length < 3)
                 throw new InvalidOperationException();
             
@@ -134,11 +134,11 @@ namespace Ssz.Dcs.CentralServer
             return operatorSession.LaunchOperatorJobId!;
         }
 
-        private void ProcessModelingSession_RunInstructorExe_Passthrough(ServerContext serverContext, byte[] dataToSend, out byte[] returnData)
+        private void ProcessModelingSession_RunInstructorExe_Passthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend, out byte[] returnData)
         {
             returnData = new byte[0];
 
-            string?[] parts = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend));
+            string?[] parts = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend.Span));
             if (parts.Length < 3)
                 throw new InvalidOperationException();
 
@@ -150,9 +150,9 @@ namespace Ssz.Dcs.CentralServer
             Generate_RunInstructorExe_UtilityEvent(processModelingSession.InitiatorClientWorkstationName, processModelingSession, parts[1]!, parts[2]!);
         }
 
-        private string ProcessModelingSession_SubscribeForLaunchOperatorProgress_LongrunningPassthrough(ServerContext serverContext, byte[] dataToSend)
+        private string ProcessModelingSession_SubscribeForLaunchOperatorProgress_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
         {
-            string operatorSessionId = Encoding.UTF8.GetString(dataToSend);            
+            string operatorSessionId = Encoding.UTF8.GetString(dataToSend.Span);            
             OperatorSession? operatorSession = OperatorSessionsCollection.TryGetValue(operatorSessionId);
             if (operatorSession is null)
                 return @"";

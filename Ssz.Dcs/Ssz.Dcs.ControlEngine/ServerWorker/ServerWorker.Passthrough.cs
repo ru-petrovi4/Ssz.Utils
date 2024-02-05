@@ -17,7 +17,7 @@ namespace Ssz.Dcs.ControlEngine
     {
         #region public functions
         
-        public override Task<byte[]> PassthroughAsync(ServerContext serverContext, string recipientPath, string passthroughName, byte[] dataToSend)
+        public override Task<ReadOnlyMemory<byte>> PassthroughAsync(ServerContext serverContext, string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
             try
             {
@@ -25,7 +25,7 @@ namespace Ssz.Dcs.ControlEngine
                 {
                     case PassthroughConstants.Shutdown:                        
                         OnShutdownRequested();
-                        return Task.FromResult(new byte[0]);
+                        return Task.FromResult(ReadOnlyMemory<byte>.Empty);
                     default:
                         throw new RpcException(new Status(StatusCode.InvalidArgument, "Unknown passthroughName."));
                 }
@@ -36,7 +36,7 @@ namespace Ssz.Dcs.ControlEngine
             }
         }
 
-        public override string LongrunningPassthrough(ServerContext serverContext, string recipientPath, string passthroughName, byte[] dataToSend)
+        public override string LongrunningPassthrough(ServerContext serverContext, string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
             string jobId = Guid.NewGuid().ToString();
             try
@@ -44,13 +44,13 @@ namespace Ssz.Dcs.ControlEngine
                 switch (passthroughName)
                 {
                     case LongrunningPassthroughConstants.SaveStateFile:
-                        OnSaveStateFile_LongrunningPassthrough(serverContext, jobId, Encoding.UTF8.GetString(dataToSend));
+                        OnSaveStateFile_LongrunningPassthrough(serverContext, jobId, Encoding.UTF8.GetString(dataToSend.Span));
                         return jobId;
                     case LongrunningPassthroughConstants.LoadStateFile:
-                        OnLoadStateFile_LongrunningPassthrough(serverContext, jobId, Encoding.UTF8.GetString(dataToSend));
+                        OnLoadStateFile_LongrunningPassthrough(serverContext, jobId, Encoding.UTF8.GetString(dataToSend.Span));
                         return jobId;
                     case LongrunningPassthroughConstants.Step:
-                        OnStep_LongrunningPassthrough(serverContext, jobId, Encoding.UTF8.GetString(dataToSend));
+                        OnStep_LongrunningPassthrough(serverContext, jobId, Encoding.UTF8.GetString(dataToSend.Span));
                         return jobId;
                     default:
                         throw new RpcException(new Status(StatusCode.InvalidArgument, "Unknown passthroughName."));

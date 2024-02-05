@@ -14,6 +14,7 @@
  *
  *********************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using Xi.Contracts.Data;
@@ -195,7 +196,7 @@ namespace Xi.Contracts
 		/// </returns>
 		//[OperationContract, FaultContract(typeof(XiFault))]
 		PassthroughResult Passthrough(string contextId, string recipientId, int invokeId,
-									  string passthroughName, byte[] DataToSend);
+									  string passthroughName, ReadOnlyMemory<byte> dataToSend);
 
 	}
 }

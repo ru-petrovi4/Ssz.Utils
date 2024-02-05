@@ -413,19 +413,19 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <returns></returns>
-        public override async Task<IEnumerable<byte>> PassthroughAsync(string recipientPath, string passthroughName, byte[] dataToSend)
+        public override async Task<ReadOnlyMemory<byte>> PassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
             // Early exception
             if (!_clientContextManager.ConnectionExists)
                 throw new ConnectionDoesNotExistException();
 
-            var taskCompletionSource = new TaskCompletionSource<IEnumerable<byte>>();
+            var taskCompletionSource = new TaskCompletionSource<ReadOnlyMemory<byte>>();
 
             WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
             {                
                 try
                 {
-                    IEnumerable<byte> returnData = await _clientContextManager.PassthroughAsync(recipientPath, passthroughName, dataToSend);
+                    ReadOnlyMemory<byte> returnData = await _clientContextManager.PassthroughAsync(recipientPath, passthroughName, dataToSend);
                     taskCompletionSource.SetResult(returnData);                    
                 }
                 catch (RpcException ex)
@@ -456,7 +456,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="dataToSend"></param>
         /// <param name="progressCallbackAction"></param>
         /// <returns></returns>
-        public override async Task<Task<uint>> LongrunningPassthroughAsync(string recipientPath, string passthroughName, byte[]? dataToSend,
+        public override async Task<Task<uint>> LongrunningPassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend,
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? progressCallbackAction)
         {
             // Early exception

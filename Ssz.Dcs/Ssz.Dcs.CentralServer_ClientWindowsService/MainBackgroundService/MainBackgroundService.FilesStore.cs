@@ -176,7 +176,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             };
             var returnData = await UtilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
                 SerializationHelper.GetOwnedData(request));
-            DsFilesStoreDirectory? serverDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData is not null ? returnData.ToArray() : null,
+            DsFilesStoreDirectory? serverDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData,
                 () => new DsFilesStoreDirectory());
             if (serverDsFilesStoreDirectory is null)
             {
@@ -266,7 +266,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
         private async Task DownloadFilesAsync(List<string> filePathRelativeToRootDirectoryCollection)
         {   
             var returnData = await UtilityDataAccessProvider.PassthroughAsync("", PassthroughConstants.LoadFiles, Encoding.UTF8.GetBytes(CsvHelper.FormatForCsv(@",", filePathRelativeToRootDirectoryCollection)));
-            var reply = SerializationHelper.CreateFromOwnedData(returnData is not null ? returnData.ToArray(): null, () => new LoadFilesReply());
+            var reply = SerializationHelper.CreateFromOwnedData(returnData, () => new LoadFilesReply());
             if (reply is not null)
             {
                 var t = SaveFilesAsync(reply); // No task wait for time optimization.
@@ -369,7 +369,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 };
                 var returnData = await UtilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
                     SerializationHelper.GetOwnedData(request));
-                DsFilesStoreDirectory? serverRootDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData.ToArray(),
+                DsFilesStoreDirectory? serverRootDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData,
                     () => new DsFilesStoreDirectory());
                 if (serverRootDsFilesStoreDirectory is null)
                 {
@@ -384,7 +384,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 };
                 returnData = await UtilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
                     SerializationHelper.GetOwnedData(request));
-                DsFilesStoreDirectory? serverPocessModelDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData.ToArray(),
+                DsFilesStoreDirectory? serverPocessModelDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData,
                     () => new DsFilesStoreDirectory());
                 if (serverPocessModelDsFilesStoreDirectory is null)
                 {
@@ -414,7 +414,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     };
                     returnData = await UtilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
                         SerializationHelper.GetOwnedData(request));
-                    serverBinDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData is not null ? returnData.ToArray() : null,
+                    serverBinDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData,
                         () => new DsFilesStoreDirectory());
                     if (serverBinDsFilesStoreDirectory is null)
                     {
@@ -531,7 +531,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 };
                 var returnData = await UtilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
                     SerializationHelper.GetOwnedData(request));
-                serverSavesDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData is not null ? returnData.ToArray() : null,
+                serverSavesDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData,
                     () => new DsFilesStoreDirectory());
                 if (serverSavesDsFilesStoreDirectory is null)
                 {
@@ -549,7 +549,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 };
                 var returnData = await UtilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
                     SerializationHelper.GetOwnedData(request));
-                serverSavesDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData is not null ? returnData.ToArray() : null,
+                serverSavesDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData,
                     () => new DsFilesStoreDirectory());
                 if (serverSavesDsFilesStoreDirectory is null)
                 {
@@ -564,7 +564,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 };
                 returnData = await UtilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
                     SerializationHelper.GetOwnedData(request));
-                serverSavesUserDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData is not null ? returnData.ToArray() : null,
+                serverSavesUserDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData,
                     () => new DsFilesStoreDirectory());
                 if (serverSavesUserDsFilesStoreDirectory is null)
                 {
