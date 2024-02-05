@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.Client
 {
-    public static class ProtobufHelper
+    internal static class ProtobufHelper
     {
         public static ReadOnlyMemory<byte> Combine(List<ByteString> requestByteStrings)
         {
+            if (requestByteStrings.Count == 0)
+                return ReadOnlyMemory<byte>.Empty;
             if (requestByteStrings.Count == 1)
                 return requestByteStrings[0].Memory;
             var bytes = new byte[requestByteStrings.Sum(bs => bs.Length)];

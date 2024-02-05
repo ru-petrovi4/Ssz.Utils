@@ -12,6 +12,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
     {
         public static ReadOnlyMemory<byte> Combine(List<ByteString> requestByteStrings)
         {
+            if (requestByteStrings.Count == 0)
+                return ReadOnlyMemory<byte>.Empty;
             if (requestByteStrings.Count == 1)
                 return requestByteStrings[0].Memory;
             var bytes = new byte[requestByteStrings.Sum(bs => bs.Length)];
@@ -34,21 +36,24 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 return new List<DataChunk> { new DataChunk { Bytes = ByteString.Empty } };
 
             var result = new List<DataChunk>();
-
-            DataChunk? prevDataChunk = null;
+            
             int position = 0;
             while (position < bytes.Length)
             {
                 DataChunk dataChunk = new();
-                if (prevDataChunk is not null)
-                    prevDataChunk.NextDataChunkGuid = dataChunk.Guid = System.Guid.NewGuid().ToString();
-
-                int length = Math.Min(bytes.Length - position, Constants.MaxReplyObjectSize);
+                int length;
+                if (bytes.Length - position <= Constants.MaxReplyObjectSize)
+                {
+                    length = bytes.Length - position;
+                }
+                else
+                {
+                    length = Constants.MaxReplyObjectSize;
+                    dataChunk.IsIncomplete = true;
+                }
                 dataChunk.Bytes = UnsafeByteOperations.UnsafeWrap(bytes.Slice(position, length));
                 position += length;
-
-                result.Add(dataChunk);
-                prevDataChunk = dataChunk;
+                result.Add(dataChunk);                
             }
 
             return result;

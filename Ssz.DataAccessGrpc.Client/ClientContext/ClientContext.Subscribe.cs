@@ -24,9 +24,9 @@ namespace Ssz.DataAccessGrpc.Client
 
         /// <summary>        
         /// </summary>
-        /// <param name="tagValueList"></param>
+        /// <param name="clientElementValueList"></param>
         /// <returns></returns>
-        public async Task<ClientElementValueListItem[]> PollElementValuesChangesAsync(ClientElementValueList tagValueList)
+        public async Task<ClientElementValueListItem[]> PollElementValuesChangesAsync(ClientElementValueList clientElementValueList)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -37,7 +37,7 @@ namespace Ssz.DataAccessGrpc.Client
                 var request = new PollElementValuesChangesRequest
                 {
                     ContextId = _serverContextId,
-                    ListServerAlias = tagValueList.ListServerAlias
+                    ListServerAlias = clientElementValueList.ListServerAlias
                 };
                 var reply = _resourceManagementClient.PollElementValuesChanges(request);
                 SetResourceManagementLastCallUtc();
@@ -46,7 +46,7 @@ namespace Ssz.DataAccessGrpc.Client
 
                 while (await reply.ResponseStream.MoveNext())
                 {
-                    var changedItems = ElementValuesCallback(tagValueList, reply.ResponseStream.Current.ElementValuesCollection);
+                    var changedItems = ElementValuesCallback(clientElementValueList, reply.ResponseStream.Current.ElementValuesCollection);
                     if (changedItems is not null)
                         result.AddRange(changedItems);
                 }

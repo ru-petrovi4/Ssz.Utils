@@ -11,6 +11,7 @@ using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using System.Threading.Tasks;
 using Google.Protobuf;
+using CommunityToolkit.HighPerformance;
 
 namespace Ssz.DataAccessGrpc.Client.ClientLists
 {
@@ -151,29 +152,21 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
 
-            if (elementValuesCollection.Guid != @"" && _incompleteElementValuesCollections.Count > 0)
-            {
-                var beginElementValuesCollection = _incompleteElementValuesCollections.TryGetValue(elementValuesCollection.Guid);
-                if (beginElementValuesCollection is not null)
-                {
-                    _incompleteElementValuesCollections.Remove(elementValuesCollection.Guid);
-                    beginElementValuesCollection.CombineWith(elementValuesCollection);
-                    elementValuesCollection = beginElementValuesCollection;
-                }
-            }
+            _incompleteElementValuesCollections.Add(elementValuesCollection.Bytes);
 
-            if (elementValuesCollection.NextDataChunkGuid != @"")
+            if (elementValuesCollection.IsIncomplete)
             {
-                _incompleteElementValuesCollections[elementValuesCollection.NextDataChunkGuid] = elementValuesCollection;
-
                 return null;
             }
             else
             {
+                var fullElementValuesCollection = ProtobufHelper.Combine(_incompleteElementValuesCollections);
+                _incompleteElementValuesCollections.Clear();
+
                 var changedListItems = new List<ClientElementValueListItem>();
 
-                using (var memoryStream = new MemoryStream(elementValuesCollection.Bytes.ToArray())) // TODO Optimization needed
-                using (var reader = new SerializationReader(memoryStream))
+                using (var stream = fullElementValuesCollection.AsStream())
+                using (var reader = new SerializationReader(stream))
                 {
                     using (Block block = reader.EnterBlock())
                     {
@@ -239,7 +232,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
 
         #region private fields
         
-        private CaseInsensitiveDictionary<DataChunk> _incompleteElementValuesCollections = new CaseInsensitiveDictionary<DataChunk>();
+        private List<ByteString> _incompleteElementValuesCollections = new();
 
         #endregion
 

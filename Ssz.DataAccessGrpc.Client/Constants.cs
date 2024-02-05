@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.Client
 {
-    public static class Constants
+    internal static class Constants
     {
         /// <summary>
         ///     Size in bytes.

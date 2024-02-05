@@ -192,10 +192,8 @@ message TouchListReply {
 }
 
 message DataChunk {
-  string guid = 1;
-  string next_data_chunk_guid = 2;  
-  
-  bytes bytes = 3;
+  bytes bytes = 1;
+  bool is_incomplete = 2;
 }
 
 message EventMessagesCollection {
