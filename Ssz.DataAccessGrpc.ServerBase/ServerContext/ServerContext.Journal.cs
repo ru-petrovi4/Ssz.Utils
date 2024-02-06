@@ -1,7 +1,10 @@
 using Grpc.Core;
 using Ssz.Utils;
+using Ssz.Utils.DataAccess;
+using Ssz.Utils.Serialization;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,14 +26,15 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="serverAliases"></param>
         /// <returns></returns>
         /// <exception cref="RpcException"></exception>
-        internal async Task<ElementValuesJournalsCollection> ReadElementValuesJournalsAsync(
+        internal async Task ReadElementValuesJournalsAsync(
             uint listServerAlias, 
             DateTime firstTimeStampUtc,
             DateTime secondTimeStampUtc,
             uint numValuesPerAlias,
             TypeId calculation,
             CaseInsensitiveDictionary<string?> params_,
-            List<uint> serverAliases)
+            List<uint> serverAliases,
+            IServerStreamWriter<DataChunk> responseStream)
         {
             ServerListRoot? serverList;
 
@@ -39,9 +43,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Incorrect listServerAlias."));
             }
 
-            if (_pendingReadElementValuesJournalsCollection.Count == 0)
-            {
-                var elementValuesJournalsCollection = await serverList.ReadElementValuesJournalsAsync(
+            var reply = await serverList.ReadElementValuesJournalsAsync(
                     firstTimeStampUtc,
                     secondTimeStampUtc,
                     numValuesPerAlias,
@@ -50,24 +52,31 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     serverAliases
                 );
 
-                _pendingReadElementValuesJournalsCollection = elementValuesJournalsCollection.SplitForCorrectGrpcMessageSize();
+            byte[] bytes;
+            using (var memoryStream = new MemoryStream(1024))
+            {
+                using (var writer = new SerializationWriter(memoryStream))
+                {
+                    using (writer.EnterBlock(1))
+                    {
+                        writer.WriteArrayOfOwnedDataSerializable(reply, null);                        
+                    }
+                }
+                bytes = memoryStream.ToArray();
             }
 
-            if (_pendingReadElementValuesJournalsCollection.Count > 0)
-            {                
-                return _pendingReadElementValuesJournalsCollection.Dequeue();
-            }
-            else
+            foreach (DataChunk dataChunk in ProtobufHelper.SplitForCorrectGrpcMessageSize(bytes))
             {
-                return new ElementValuesJournalsCollection();
-            }            
+                await responseStream.WriteAsync(dataChunk);
+            };
         }
 
-        internal async Task<EventMessagesCollection> ReadEventMessagesJournalAsync(
+        internal async Task ReadEventMessagesJournalAsync(
             uint listServerAlias,
             DateTime firstTimeStampUtc,
             DateTime secondTimeStampUtc,            
-            CaseInsensitiveDictionary<string?> params_)
+            CaseInsensitiveDictionary<string?> params_, 
+            IServerStreamWriter<EventMessagesCollection> responseStream)
         {
             ServerListRoot? serverList;
 
@@ -76,33 +85,18 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Incorrect listServerAlias."));
             }
 
-            if (_pendingReadEventMessagesCallbacksQueue.Count == 0)
-            {
-                ServerContext.EventMessagesCallbackMessage eventMessagesCallbackMessage = await serverList.ReadEventMessagesJournalAsync(
+            EventMessagesCallbackMessage? fullEventMessagesCallbackMessage = await serverList.ReadEventMessagesJournalAsync(
                     firstTimeStampUtc,
                     secondTimeStampUtc,
                     params_);
-
-                _pendingReadEventMessagesCallbacksQueue = eventMessagesCallbackMessage.SplitForCorrectGrpcMessageSize();
-            }        
-
-            if (_pendingReadEventMessagesCallbacksQueue.Count > 0)
+            if (fullEventMessagesCallbackMessage is not null)
             {
-                return _pendingReadEventMessagesCallbacksQueue.Dequeue().EventMessagesCollection;
-            }
-            else
-            {
-                return new EventMessagesCollection();
+                foreach (var eventMessagesCallbackMessage in fullEventMessagesCallbackMessage.SplitForCorrectGrpcMessageSize())
+                {
+                    await responseStream.WriteAsync(eventMessagesCallbackMessage.EventMessagesCollection);
+                };
             }
         }
-
-        #endregion
-
-        #region private fields
-
-        private Queue<ElementValuesJournalsCollection> _pendingReadElementValuesJournalsCollection = new();
-
-        private Queue<EventMessagesCallback> _pendingReadEventMessagesCallbacksQueue = new Queue<EventMessagesCallback>();
 
         #endregion
     }

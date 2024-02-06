@@ -217,27 +217,24 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 context);
         }
 
-        public override async Task<PollEventsChangesReply> PollEventsChanges(PollEventsChangesRequest request, ServerCallContext context)
+        public override async Task PollEventsChanges(PollEventsChangesRequest request, IServerStreamWriter<EventMessagesCollection> responseStream, ServerCallContext context)
         {
-            return await GetReplyAsync(() =>
+            await GetReply2Async(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
-                    serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
-                    var reply = new PollEventsChangesReply();
-                    reply.EventMessagesCollection = serverContext.PollEventsChanges(request.ListServerAlias);
-                    return reply;
+                    serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;                    
+                    await serverContext.PollEventsChangesAsync(request.ListServerAlias, responseStream);
                 },
                 context);
         }
 
-        public override async Task<ReadElementValuesJournalsReply> ReadElementValuesJournals(ReadElementValuesJournalsRequest request, ServerCallContext context)
+        public override async Task ReadElementValuesJournals(ReadElementValuesJournalsRequest request, IServerStreamWriter<DataChunk> responseStream, ServerCallContext context)
         {            
-            return await GetReplyExAsync(async () =>
+            await GetReply2Async(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
-                    serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
-                    var reply = new ReadElementValuesJournalsReply();
-                    reply.ElementValuesJournalsCollection = await serverContext.ReadElementValuesJournalsAsync(
+                    serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;                    
+                    await serverContext.ReadElementValuesJournalsAsync(
                             request.ListServerAlias,
                             request.FirstTimestamp.ToDateTime(),
                             request.SecondTimestamp.ToDateTime(),
@@ -245,28 +242,26 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             request.Calculation,
                             new CaseInsensitiveDictionary<string?>(request.Params
                                 .Select(cp => KeyValuePair.Create(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null))),                        
-                            request.ServerAliases.ToList()
+                            request.ServerAliases.ToList(),
+                            responseStream
                         );
-                    return reply;
                 }, 
                 context);
         }
 
-        public override async Task<ReadEventMessagesJournalReply> ReadEventMessagesJournal(ReadEventMessagesJournalRequest request, ServerCallContext context)
+        public override async Task ReadEventMessagesJournal(ReadEventMessagesJournalRequest request, IServerStreamWriter<EventMessagesCollection> responseStream, ServerCallContext context)
         {
-            return await GetReplyExAsync(async () =>
+            await GetReply2Async(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
-                    serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
-                    var reply = new ReadEventMessagesJournalReply();
-                    reply.EventMessagesCollection = await serverContext.ReadEventMessagesJournalAsync(
+                    serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;                    
+                    await serverContext.ReadEventMessagesJournalAsync(
                             request.ListServerAlias,
                             request.FirstTimestamp.ToDateTime(),
                             request.SecondTimestamp.ToDateTime(),
                             new Utils.CaseInsensitiveDictionary<string?>(request.Params
-                                .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)))
-                        );
-                    return reply;
+                                .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null))),
+                                responseStream);
                 }, 
                 context);
         }

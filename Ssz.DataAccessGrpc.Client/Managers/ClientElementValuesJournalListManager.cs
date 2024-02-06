@@ -74,11 +74,11 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <param name="params_"></param>
         /// <param name="valueSubscriptionsCollection"></param>
         /// <returns></returns>
-        public async Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation,
+        public async Task<ElementValuesJournal[]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation,
             CaseInsensitiveDictionary<string?>? params_,
             object[] valueSubscriptionsCollection)
         {
-            ValueStatusTimestamp[][]? result;
+            ElementValuesJournal[]? result;
 
             try
             {

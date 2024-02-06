@@ -65,14 +65,14 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task<Utils.DataAccess.EventMessagesCollection> PollEventsChangesAsync()
+        public async Task<List<Utils.DataAccess.EventMessagesCollection>> PollEventsChangesAsync()
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
             return await Context.PollEventsChangesAsync(this);
         }
 
-        public async Task<Utils.DataAccess.EventMessagesCollection> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
+        public async Task<List<Utils.DataAccess.EventMessagesCollection>> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
@@ -86,40 +86,34 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// <returns></returns>
         public Utils.DataAccess.EventMessagesCollection? GetEventMessagesCollection(ServerBase.EventMessagesCollection eventMessagesCollection)
         {
-            if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
+            if (Disposed) 
+                throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 
-            if (eventMessagesCollection.Guid != @"" && _incompleteEventMessagesCollectionCollection.Count > 0)
+            _incompleteEventMessagesCollections.Add(eventMessagesCollection);            
+
+            if (eventMessagesCollection.IsIncomplete)
             {
-                var beginEventMessagesCollection = _incompleteEventMessagesCollectionCollection.TryGetValue(eventMessagesCollection.Guid);
-                if (beginEventMessagesCollection is not null)
-                {
-                    _incompleteEventMessagesCollectionCollection.Remove(eventMessagesCollection.Guid);
-                    beginEventMessagesCollection.CombineWith(eventMessagesCollection);
-                    eventMessagesCollection = beginEventMessagesCollection;
-                }
-            }
-
-            if (eventMessagesCollection.NextCollectionGuid != @"")
-            {
-                _incompleteEventMessagesCollectionCollection[eventMessagesCollection.NextCollectionGuid] = eventMessagesCollection;
-
                 return null;
             }
             else
             {
                 Utils.DataAccess.EventMessagesCollection result = new();
 
-                foreach (var eventMessage in eventMessagesCollection.EventMessages)
+                foreach (var incompleteEventMessagesCollection in _incompleteEventMessagesCollections)
                 {
-                    result.EventMessages.Add(eventMessage.ToEventMessage());
-                }
+                    foreach (var eventMessage in incompleteEventMessagesCollection.EventMessages)
+                    {
+                        result.EventMessages.Add(eventMessage.ToEventMessage());
+                    }
 
-                if (eventMessagesCollection.CommonFields.Count > 0)
-                {
-                    result.CommonFields = new CaseInsensitiveDictionary<string?>(eventMessagesCollection.CommonFields
-                                .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));
+                    if (incompleteEventMessagesCollection.CommonFields.Count > 0)
+                    {
+                        result.CommonFields = new CaseInsensitiveDictionary<string?>(eventMessagesCollection.CommonFields
+                                    .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));
 
+                    }
                 }
+                _incompleteEventMessagesCollections.Clear();
 
                 return result;
             }
@@ -156,7 +150,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         ///     This data member holds the last exception message encountered by the
         ///     ElementValuesCallback callback when calling valuesUpdateEvent().
         /// </summary>
-        private CaseInsensitiveDictionary<ServerBase.EventMessagesCollection> _incompleteEventMessagesCollectionCollection = new();
+        private readonly List<ServerBase.EventMessagesCollection> _incompleteEventMessagesCollections = new();
 
         #endregion
     }

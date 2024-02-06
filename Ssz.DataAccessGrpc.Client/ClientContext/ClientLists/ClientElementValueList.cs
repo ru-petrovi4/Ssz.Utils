@@ -150,7 +150,8 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// <returns></returns>
         public ClientElementValueListItem[]? OnElementValuesCallback(DataChunk elementValuesCollection)
         {
-            if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
+            if (Disposed) 
+                throw new ObjectDisposedException("Cannot access a disposed ClientElementValueList.");
 
             _incompleteElementValuesCollections.Add(elementValuesCollection.Bytes);
 
@@ -232,7 +233,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
 
         #region private fields
         
-        private List<ByteString> _incompleteElementValuesCollections = new();
+        private readonly List<ByteString> _incompleteElementValuesCollections = new();
 
         #endregion
 

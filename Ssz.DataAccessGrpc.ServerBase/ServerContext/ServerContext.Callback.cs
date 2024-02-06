@@ -138,12 +138,15 @@ namespace Ssz.DataAccessGrpc.ServerBase
             lock (_messagesSyncRoot)
             {
                 contextStatusMessagesCollection = _contextStatusMessagesCollection;
-                elementValuesCallbackMessagesCollection = _elementValuesCallbackMessagesCollection;
-                eventMessagesCallbackMessagesCollection = _eventMessagesCallbackMessagesCollection;
-                longrunningPassthroughCallbackMessagesCollection = _longrunningPassthroughCallbackMessagesCollection;
                 _contextStatusMessagesCollection = new List<ContextStatusMessage>();
+
+                elementValuesCallbackMessagesCollection = _elementValuesCallbackMessagesCollection;
                 _elementValuesCallbackMessagesCollection = new List<ElementValuesCallbackMessage>();
+
+                eventMessagesCallbackMessagesCollection = _eventMessagesCallbackMessagesCollection;
                 _eventMessagesCallbackMessagesCollection = new List<EventMessagesCallbackMessage>();
+
+                longrunningPassthroughCallbackMessagesCollection = _longrunningPassthroughCallbackMessagesCollection;
                 _longrunningPassthroughCallbackMessagesCollection = new List<LongrunningPassthroughCallbackMessage>();
             }
 
@@ -159,6 +162,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     if (contextStatusMessagesCollection.Count > 0)
                     {
                         //Logger.LogDebug("ServerContext contextStatusMessagesCollection.Count=" + contextStatusMessagesCollection.Count);
+
                         foreach (ContextStatusMessage contextStatusMessage in contextStatusMessagesCollection)
                         {
                             if (cancellationToken.IsCancellationRequested)
@@ -182,15 +186,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         {
                             //Logger.LogDebug("ServerContext elementValuesCallbackMessagesCollection.Count=" + elementValuesCallbackMessagesCollection.Count);
 
-                            foreach (var g in elementValuesCallbackMessagesCollection.GroupBy(m => m.ListClientAlias))
+                            foreach (var elementValuesCallbackMessage in elementValuesCallbackMessagesCollection)
                             {
-                                var elementValuesCallbackMessagesForList = g.ToArray();
-                                if (elementValuesCallbackMessagesForList.Length == 0) continue;
-                                var elementValuesCallbackMessage = elementValuesCallbackMessagesForList[0];
-                                foreach (var m in elementValuesCallbackMessagesForList.Skip(1))
-                                {
-                                    elementValuesCallbackMessage.CombineWith(m);
-                                }
                                 foreach (ElementValuesCallback elementValuesCallback in elementValuesCallbackMessage.SplitForCorrectGrpcMessageSize())
                                 {
                                     if (cancellationToken.IsCancellationRequested)
@@ -210,17 +207,10 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
                         if (eventMessagesCallbackMessagesCollection.Count > 0)
                         {
-                            Logger.LogDebug("ServerContext eventMessagesCallbackMessagesCollection.Count=" + eventMessagesCallbackMessagesCollection.Count);
+                            //Logger.LogDebug("ServerContext eventMessagesCallbackMessagesCollection.Count=" + eventMessagesCallbackMessagesCollection.Count);
 
-                            foreach (var g in eventMessagesCallbackMessagesCollection.GroupBy(m => m.ListClientAlias))
+                            foreach (var eventMessagesCallbackMessage in eventMessagesCallbackMessagesCollection)
                             {
-                                var eventMessagesCallbackMessagesForList = g.ToArray();
-                                if (eventMessagesCallbackMessagesForList.Length == 0) continue;
-                                var eventMessagesCallbackMessage = eventMessagesCallbackMessagesForList[0];
-                                foreach (var m in eventMessagesCallbackMessagesForList.Skip(1))
-                                {
-                                    eventMessagesCallbackMessage.CombineWith(m);
-                                }
                                 foreach (EventMessagesCallback eventMessagesCallback in eventMessagesCallbackMessage.SplitForCorrectGrpcMessageSize())
                                 {
                                     if (cancellationToken.IsCancellationRequested)
@@ -311,14 +301,6 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
             public readonly Dictionary<uint, ValueStatusTimestamp> ElementValues = new Dictionary<uint, ValueStatusTimestamp>();
 
-            public void CombineWith(ElementValuesCallbackMessage nextElementValuesCallbackMessage)
-            {
-                foreach (var kvp in nextElementValuesCallbackMessage.ElementValues)
-                {
-                    ElementValues[kvp.Key] = kvp.Value;
-                }                
-            }
-
             public List<ElementValuesCallback> SplitForCorrectGrpcMessageSize()
             {
                 byte[] fullElementValuesCollection;
@@ -364,45 +346,19 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
             public List<EventMessage> EventMessages = new();
 
-            public CaseInsensitiveDictionary<string?>? CommonFields;
+            public CaseInsensitiveDictionary<string?>? CommonFields;            
 
-            public void CombineWith(EventMessagesCallbackMessage nextEventMessagesCallbackMessage)
+            public List<EventMessagesCallback> SplitForCorrectGrpcMessageSize()
             {
-                EventMessages.AddRange(nextEventMessagesCallbackMessage.EventMessages);
-                if (nextEventMessagesCallbackMessage.CommonFields is not null)
-                {
-                    if (CommonFields is null)
-                    {
-                        CommonFields = new CaseInsensitiveDictionary<string?>(nextEventMessagesCallbackMessage.CommonFields);
-                    }
-                    else
-                    {
-                        foreach (var kvp in nextEventMessagesCallbackMessage.CommonFields)
-                            CommonFields[kvp.Key] = kvp.Value;
-                    }                    
-                }
-            }
-
-            public Queue<EventMessagesCallback> SplitForCorrectGrpcMessageSize()
-            {
-                var fullEventMessagesCollection = new EventMessagesCollection();
-                fullEventMessagesCollection.EventMessages.AddRange(EventMessages);
-                if (CommonFields is not null)
-                {
-                    foreach (var kvp in CommonFields)
-                        fullEventMessagesCollection.CommonFields.Add(kvp.Key,
-                            kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
-                }
-
-                var queue = new Queue<EventMessagesCallback>();
-                foreach (EventMessagesCollection eventMessagesCollection in fullEventMessagesCollection.SplitForCorrectGrpcMessageSize())
+                List<EventMessagesCallback> result = new();
+                foreach (EventMessagesCollection eventMessagesCollection in ProtobufHelper.SplitForCorrectGrpcMessageSize(EventMessages, CommonFields))
                 {
                     var eventMessagesCallback = new EventMessagesCallback();
                     eventMessagesCallback.ListClientAlias = ListClientAlias;
-                    eventMessagesCallback.EventMessagesCollection = eventMessagesCollection;                                       
-                    queue.Enqueue(eventMessagesCallback);
+                    eventMessagesCallback.EventMessagesCollection = eventMessagesCollection;
+                    result.Add(eventMessagesCallback);
                 }
-                return queue;
+                return result;
             }
 
             #endregion

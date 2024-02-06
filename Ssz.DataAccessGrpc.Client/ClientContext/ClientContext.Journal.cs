@@ -7,6 +7,7 @@ using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.Utils;
 using Google.Protobuf.WellKnownTypes;
 using System.Threading.Tasks;
+using Grpc.Core;
 
 namespace Ssz.DataAccessGrpc.Client
 {
@@ -20,7 +21,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="clientElementValuesJournalList"></param>
+        /// <param name="elementValuesJournalList"></param>
         /// <param name="firstTimestampUtc"></param>
         /// <param name="secondTimestampUtc"></param>
         /// <param name="numValuesPerAlias"></param>
@@ -30,7 +31,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public async Task<ValueStatusTimestamp[][]> ReadElementValuesJournalsAsync(ClientElementValuesJournalList clientElementValuesJournalList, DateTime firstTimestampUtc,
+        public async Task<ElementValuesJournal[]> ReadElementValuesJournalsAsync(ClientElementValuesJournalList elementValuesJournalList, DateTime firstTimestampUtc,
             DateTime secondTimestampUtc,
             uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, uint[] serverAliases)
         {
@@ -40,28 +41,33 @@ namespace Ssz.DataAccessGrpc.Client
 
             try
             {
-                while (true)
+                var request = new ReadElementValuesJournalsRequest
                 {
-                    var request = new ReadElementValuesJournalsRequest
-                    {
-                        ContextId = _serverContextId,
-                        ListServerAlias = clientElementValuesJournalList.ListServerAlias,
-                        FirstTimestamp = ProtobufHelper.ConvertToTimestamp(firstTimestampUtc),
-                        SecondTimestamp = ProtobufHelper.ConvertToTimestamp(secondTimestampUtc),
-                        NumValuesPerAlias = numValuesPerAlias,
-                        Calculation = new ServerBase.TypeId(calculation),                        
-                    };
-                    if (params_ is not null)
-                        foreach (var kvp in params_)
-                            request.Params.Add(kvp.Key,
-                                kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
-                    request.ServerAliases.Add(serverAliases);
-                    ReadElementValuesJournalsReply reply = await _resourceManagementClient.ReadElementValuesJournalsAsync(request);
-                    SetResourceManagementLastCallUtc();
+                    ContextId = _serverContextId,
+                    ListServerAlias = elementValuesJournalList.ListServerAlias,
+                    FirstTimestamp = ProtobufHelper.ConvertToTimestamp(firstTimestampUtc),
+                    SecondTimestamp = ProtobufHelper.ConvertToTimestamp(secondTimestampUtc),
+                    NumValuesPerAlias = numValuesPerAlias,
+                    Calculation = new ServerBase.TypeId(calculation),
+                };
+                if (params_ is not null)
+                    foreach (var kvp in params_)
+                        request.Params.Add(kvp.Key,
+                            kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
+                request.ServerAliases.Add(serverAliases);
+                var reply = _resourceManagementClient.ReadElementValuesJournals(request);
+                SetResourceManagementLastCallUtc();
 
-                    var result = clientElementValuesJournalList.OnReadElementValuesJournals(reply.ElementValuesJournalsCollection);
-                    if (result is not null) return result;
+                ElementValuesJournal[]? result = null;
+
+                while (await reply.ResponseStream.MoveNext())
+                {
+                    var result2 = elementValuesJournalList.OnReadElementValuesJournals(reply.ResponseStream.Current);
+                    if (result2 is not null)
+                        result = result2;
                 }
+
+                return result!;
             }
             catch (Exception ex)
             {
@@ -70,7 +76,7 @@ namespace Ssz.DataAccessGrpc.Client
             }
         }
 
-        public async Task<Utils.DataAccess.EventMessagesCollection> ReadEventMessagesJournalAsync(ClientEventList clientEventList, DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
+        public async Task<List<Utils.DataAccess.EventMessagesCollection>> ReadEventMessagesJournalAsync(ClientEventList eventList, DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -78,26 +84,30 @@ namespace Ssz.DataAccessGrpc.Client
 
             try
             {
-                while (true)
+                var request = new ReadEventMessagesJournalRequest
                 {
-                    var request = new ReadEventMessagesJournalRequest
-                    {
-                        ContextId = _serverContextId,
-                        ListServerAlias = clientEventList.ListServerAlias,
-                        FirstTimestamp = ProtobufHelper.ConvertToTimestamp(firstTimestampUtc),
-                        SecondTimestamp = ProtobufHelper.ConvertToTimestamp(secondTimestampUtc),                        
-                    };
-                    if (params_ is not null)
-                        foreach (var kvp in params_)
-                            request.Params.Add(kvp.Key,
-                                kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
-                    ReadEventMessagesJournalReply reply = await _resourceManagementClient.ReadEventMessagesJournalAsync(request);
-                    SetResourceManagementLastCallUtc();
+                    ContextId = _serverContextId,
+                    ListServerAlias = eventList.ListServerAlias,
+                    FirstTimestamp = ProtobufHelper.ConvertToTimestamp(firstTimestampUtc),
+                    SecondTimestamp = ProtobufHelper.ConvertToTimestamp(secondTimestampUtc),
+                };
+                if (params_ is not null)
+                    foreach (var kvp in params_)
+                        request.Params.Add(kvp.Key,
+                            kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
+                var reply = _resourceManagementClient.ReadEventMessagesJournal(request);
+                SetResourceManagementLastCallUtc();
 
-                    var result = clientEventList.GetEventMessagesCollection(reply.EventMessagesCollection);
-                    if (result is not null) 
-                        return result;
+                List<Utils.DataAccess.EventMessagesCollection> result = new();
+
+                while (await reply.ResponseStream.MoveNext())
+                {
+                    var fullEventMessagesCollection = eventList.GetEventMessagesCollection(reply.ResponseStream.Current);
+                    if (fullEventMessagesCollection is not null)
+                        result.Add(fullEventMessagesCollection);
                 }
+
+                return result;
             }
             catch (Exception ex)
             {

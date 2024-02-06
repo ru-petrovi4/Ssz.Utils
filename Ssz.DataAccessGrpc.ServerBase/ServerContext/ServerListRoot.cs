@@ -112,12 +112,12 @@ namespace Ssz.DataAccessGrpc.ServerBase
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid List Type for this Request."));
         }
 
-        public virtual ServerContext.EventMessagesCallbackMessage? GetNextEventMessagesCallbackMessage()
+        public virtual List<ServerContext.EventMessagesCallbackMessage>? GetEventMessagesCallbackMessages()
         {
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid List Type for this Request."));
         }
         
-        public virtual Task<ElementValuesJournalsCollection> ReadElementValuesJournalsAsync(            
+        public virtual Task<ElementValuesJournal[]> ReadElementValuesJournalsAsync(            
             DateTime firstTimeStampUtc,
             DateTime secondTimeStampUtc,
             uint numValuesPerAlias,

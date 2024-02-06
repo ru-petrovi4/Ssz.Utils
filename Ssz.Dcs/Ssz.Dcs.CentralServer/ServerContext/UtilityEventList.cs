@@ -43,7 +43,7 @@ namespace Ssz.Dcs.CentralServer
                 !String.Equals(targetWorkstationName, ServerContext.ClientWorkstationName, StringComparison.InvariantCultureIgnoreCase)) 
                 return;
 
-            EventMessagesCollection.Enqueue(
+            EventMessagesCollections.Add(
                 new Ssz.Utils.DataAccess.EventMessagesCollection
                 {
                     EventMessages = new List<Ssz.Utils.DataAccess.EventMessage>() { eventMessage }

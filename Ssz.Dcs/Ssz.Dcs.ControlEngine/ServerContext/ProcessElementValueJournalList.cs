@@ -31,7 +31,7 @@ namespace Ssz.Dcs.ControlEngine
 
         #region public functions
 
-        public override Task<ElementValuesJournalsCollection> ReadElementValuesJournalsAsync(
+        public override Task<ElementValuesJournal[]> ReadElementValuesJournalsAsync(
             DateTime firstTimeStampUtc,
             DateTime secondTimeStampUtc,
             uint numValuesPerAlias,
@@ -39,14 +39,13 @@ namespace Ssz.Dcs.ControlEngine
             CaseInsensitiveDictionary<string?> params_,
             List<uint> serverAliases)
         {
-            var reply = new ElementValuesJournalsCollection();
-
+            var result = new ElementValuesJournal[serverAliases.Count];
             foreach (int index in Enumerable.Range(0, serverAliases.Count))
             {
-                reply.ElementValuesJournals.Add(new ElementValuesJournal());
+                result[index] = new ElementValuesJournal();
             }
 
-            return Task.FromResult(reply);
+            return Task.FromResult(result);
         }
 
         #endregion

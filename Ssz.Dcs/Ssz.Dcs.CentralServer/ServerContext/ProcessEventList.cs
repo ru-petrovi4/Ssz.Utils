@@ -104,7 +104,7 @@ namespace Ssz.Dcs.CentralServer
 
             _logger.LogDebug("ModelDataEventList::DataAccessProviderOnEventMessagesCallback eventMessages.Length=" + args.EventMessagesCollection.EventMessages.Count);
 
-            EventMessagesCollection.Enqueue(args.EventMessagesCollection);
+            EventMessagesCollections.Add(args.EventMessagesCollection);
         }
 
         private void OnProcessEventMessageNotification(string? targetWorkstationName, Ssz.Utils.DataAccess.EventMessage eventMessage)
@@ -114,7 +114,7 @@ namespace Ssz.Dcs.CentralServer
             if (!String.IsNullOrEmpty(targetWorkstationName) &&
                 !String.Equals(targetWorkstationName, ServerContext.ClientWorkstationName, StringComparison.InvariantCultureIgnoreCase)) return;
 
-            EventMessagesCollection.Enqueue(
+            EventMessagesCollections.Add(
                 new Ssz.Utils.DataAccess.EventMessagesCollection
                 {
                     EventMessages = new List<Ssz.Utils.DataAccess.EventMessage>() { eventMessage }

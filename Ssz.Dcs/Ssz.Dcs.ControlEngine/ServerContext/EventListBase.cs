@@ -31,45 +31,54 @@ namespace Ssz.Dcs.ControlEngine
 
         public override void EnableListCallback(bool enable)
         {
-            if (ListCallbackIsEnabled == enable) return;
+            if (ListCallbackIsEnabled == enable) 
+                return;
 
-            ListCallbackIsEnabled = enable;            
+            ListCallbackIsEnabled = enable;
         }
 
-        public override ServerContext.EventMessagesCallbackMessage? GetNextEventMessagesCallbackMessage()
+        public override List<ServerContext.EventMessagesCallbackMessage>? GetEventMessagesCallbackMessages()
         {
-            if (EventMessagesCollection.Count == 0)
+            if (EventMessagesCollections.Count == 0)
                 return null;
 
-            var emc = EventMessagesCollection.Dequeue();
+            List<ServerContext.EventMessagesCallbackMessage> result = new();
 
-            ServerContext.EventMessagesCallbackMessage result = new ServerContext.EventMessagesCallbackMessage();
+            foreach (var eventMessagesCollection in EventMessagesCollections)
+            {
+                result.Add(new ServerContext.EventMessagesCallbackMessage
+                {
+                    ListClientAlias = this.ListClientAlias,
+                    EventMessages = eventMessagesCollection.EventMessages.Select(em => new Ssz.DataAccessGrpc.ServerBase.EventMessage(em)).ToList(),
+                    CommonFields = eventMessagesCollection.CommonFields
+                });
+            }
 
-            result.ListClientAlias = ListClientAlias;
-            result.EventMessages = emc.EventMessages.Select(em => new Ssz.DataAccessGrpc.ServerBase.EventMessage(em)).ToList();
-            result.CommonFields = emc.CommonFields;
+            EventMessagesCollections.Clear();
 
             return result;
         }
 
         public override void DoWork(DateTime nowUtc, CancellationToken token)
         {
-            if (Disposed) return;
+            if (Disposed) 
+                return;
 
-            if (!ListCallbackIsEnabled) return; // Callback is not Enabled.            
+            if (!ListCallbackIsEnabled) 
+                return; // Callback is not Enabled.            
 
             if (nowUtc >= LastCallbackTime.AddMilliseconds(UpdateRateMs))
             {
                 LastCallbackTime = nowUtc;
 
-                while (true)
+                List<ServerContext.EventMessagesCallbackMessage>? eventMessagesCallbackMessages = GetEventMessagesCallbackMessages();
+                if (eventMessagesCallbackMessages is not null)
                 {
-                    ServerContext.EventMessagesCallbackMessage? eventMessagesCallbackMessage = GetNextEventMessagesCallbackMessage();
-                    if (eventMessagesCallbackMessage is null)
-                        break;
-                    
-                    ServerContext.AddCallbackMessage(eventMessagesCallbackMessage);                    
-                }                
+                    foreach (var eventMessagesCallbackMessage in eventMessagesCallbackMessages)
+                    {
+                        ServerContext.AddCallbackMessage(eventMessagesCallbackMessage);
+                    }
+                }
             }
         }
 
@@ -77,8 +86,8 @@ namespace Ssz.Dcs.ControlEngine
 
         #region protected functions
 
-        protected Queue<Ssz.Utils.DataAccess.EventMessagesCollection> EventMessagesCollection { get; set; } = new ();        
+        protected List<Ssz.Utils.DataAccess.EventMessagesCollection> EventMessagesCollections { get; } = new();
 
-        #endregion        
+        #endregion
     }
 }

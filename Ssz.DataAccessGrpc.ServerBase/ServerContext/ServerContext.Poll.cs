@@ -29,7 +29,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             }
         }
         
-        internal EventMessagesCollection PollEventsChanges(uint listServerAlias)
+        internal async Task PollEventsChangesAsync(uint listServerAlias, IServerStreamWriter<EventMessagesCollection> responseStream)
         {
             ServerListRoot? serverList;
 
@@ -38,38 +38,19 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Incorrect listServerAlias."));
             }
 
-            if (_pollEventMessagesCallbacksQueue.Count == 0)
+            List<EventMessagesCallbackMessage>? eventMessagesCallbackMessages = serverList.GetEventMessagesCallbackMessages();
+            if (eventMessagesCallbackMessages is not null)
             {
-                while (true)
+                foreach (var fullEventMessagesCallbackMessage in eventMessagesCallbackMessages)
                 {
-                    ServerContext.EventMessagesCallbackMessage? eventMessagesCallbackMessage = serverList.GetNextEventMessagesCallbackMessage();
-                    if (eventMessagesCallbackMessage is null)
-                        break;
-
-                    if (_pollEventMessagesCallbacksQueue.Count == 0)
-                        _pollEventMessagesCallbacksQueue = eventMessagesCallbackMessage.SplitForCorrectGrpcMessageSize();                    
-                    else
-                        foreach (var emc in eventMessagesCallbackMessage.SplitForCorrectGrpcMessageSize())
-                            _pollEventMessagesCallbacksQueue.Enqueue(emc);                    
+                    foreach (var eventMessagesCallbackMessage in fullEventMessagesCallbackMessage.SplitForCorrectGrpcMessageSize())
+                    {
+                        await responseStream.WriteAsync(eventMessagesCallbackMessage.EventMessagesCollection);
+                    };                    
                 }
-            }
-
-            if (_pollEventMessagesCallbacksQueue.Count > 0)
-            {
-                return _pollEventMessagesCallbacksQueue.Dequeue().EventMessagesCollection;
-            }
-            else
-            {
-                return new EventMessagesCollection();
-            }
+            }      
         }
 
-        #endregion
-
-        #region private fields        
-
-        private Queue<EventMessagesCallback> _pollEventMessagesCallbacksQueue = new Queue<EventMessagesCallback>();
-
-        #endregion
+        #endregion        
     }
 }

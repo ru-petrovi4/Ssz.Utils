@@ -153,9 +153,9 @@ namespace Ssz.Xi.Client.Api
             }            
         }
 
-        public Utils.DataAccess.EventMessagesCollection? ReadEventMessagesJournal(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
+        public List<Utils.DataAccess.EventMessagesCollection> ReadEventMessagesJournal(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
-            return null;
+            return new List<EventMessagesCollection>();
         }
 
         /// <summary>

@@ -44,9 +44,9 @@ namespace Ssz.Dcs.Addons.OpcClient
             });
         }
 
-        public override async Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, object[] valueSubscriptionsCollection)
+        public override async Task<ElementValuesJournal[]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, object[] valueSubscriptionsCollection)
         {
-            var taskCompletionSource = new TaskCompletionSource<ValueStatusTimestamp[][]?>();
+            var taskCompletionSource = new TaskCompletionSource<ElementValuesJournal[]?>();
             WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
                 var xiList = _xiDataJournalListItemsManager.XiList;
@@ -75,7 +75,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                     xiList.ReadJournalDataForTimeInterval(firstTimestamp, secondTimestamp,
                         numValuesPerSubscription, null);
 
-                    var result = new List<ValueStatusTimestamp[]>();
+                    var result = new List<ElementValuesJournal>();
                     foreach (var valueSubscription in valueSubscriptionsCollection)
                     {
                         var clientObjectInfo = _xiDataJournalListItemsManager.GetClientObjectInfo(valueSubscription);
@@ -83,11 +83,11 @@ namespace Ssz.Dcs.Addons.OpcClient
                         {
                             ValueStatusTimestamp[] valueStatusTimestampSet =
                                 clientObjectInfo.XiListItemWrapper.XiListItem.GetExistingOrNewValueStatusTimestampSet().ToArray();
-                            result.Add(valueStatusTimestampSet);
+                            result.Add(ElementValuesJournal.From(valueStatusTimestampSet));
                         }
                         else
                         {
-                            result.Add(new ValueStatusTimestamp[0]);
+                            result.Add(new ElementValuesJournal());
                         }
                     }
                     taskCompletionSource.SetResult(result.ToArray());
@@ -100,13 +100,16 @@ namespace Ssz.Dcs.Addons.OpcClient
             return await taskCompletionSource.Task;
         }
 
-        public override async Task<Utils.DataAccess.EventMessagesCollection?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
+        public override async Task<List<Utils.DataAccess.EventMessagesCollection>?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
-            var taskCompletionSource = new TaskCompletionSource<Utils.DataAccess.EventMessagesCollection?>();
+            var taskCompletionSource = new TaskCompletionSource<List<Utils.DataAccess.EventMessagesCollection>?>();
             WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
-                var result = _xiEventListItemsManager.ReadEventMessagesJournal(firstTimestampUtc, secondTimestampUtc, params_);
-                ElementIdsMap?.AddCommonFieldsToEventMessagesCollection(result);
+                var result = _xiEventListItemsManager.ReadEventMessagesJournal(firstTimestampUtc, secondTimestampUtc, params_);                
+                foreach (var eventMessagesCollection in result)
+                {
+                    ElementIdsMap?.AddCommonFieldsToEventMessagesCollection(eventMessagesCollection);
+                }
                 taskCompletionSource.SetResult(result);
             }
             );

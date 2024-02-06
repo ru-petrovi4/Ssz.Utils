@@ -47,7 +47,7 @@ namespace Ssz.Dcs.CentralServer
 
         #region public functions
 
-        public override async Task<ElementValuesJournalsCollection> ReadElementValuesJournalsAsync(
+        public override async Task<ElementValuesJournal[]> ReadElementValuesJournalsAsync(
             DateTime firstTimeStampUtc,
             DateTime secondTimeStampUtc,
             uint numValuesPerSubscription,
@@ -55,85 +55,60 @@ namespace Ssz.Dcs.CentralServer
             CaseInsensitiveDictionary<string?> params_,
             List<uint> serverAliases)
         {
-            var result = new ElementValuesJournalsCollection();            
-
-            var dataProviderRequests = new Dictionary<IDataAccessProvider, List<(ValuesJournalSubscription, ElementValuesJournal)>>(ReferenceEqualityComparer.Instance);
-
-            foreach (uint serverAlias in serverAliases)
+            var result = new ElementValuesJournal[serverAliases.Count];
+            foreach (int index in Enumerable.Range(0, serverAliases.Count))
             {
-                var elementValuesJournal = new ElementValuesJournal();
-                result.ElementValuesJournals.Add(elementValuesJournal);
+                result[index] = new ElementValuesJournal();
+            }
 
-                if (!ListItemsManager.TryGetValue(serverAlias, out var listItem))
+            var dataProviderRequests = new List<(IDataAccessProvider, List<(ValuesJournalSubscription, int)>)>();
+
+            foreach (int resultIndex in Enumerable.Range(0, serverAliases.Count))
+            {
+                if (!ListItemsManager.TryGetValue(serverAliases[resultIndex], out var listItem))
                     continue;        
                 
                 foreach (var valueJournalSubscription in listItem.ValuesJournalSubscriptionsCollection)
                 {
-                    if (!dataProviderRequests.TryGetValue(valueJournalSubscription.DataAccessProvider, out var list))
+                    List<(ValuesJournalSubscription, int)> list;
+                    int dataProviderRequestIndex = dataProviderRequests.IndexOf(it => ReferenceEquals(it.Item1, valueJournalSubscription.DataAccessProvider));
+                    if (dataProviderRequestIndex == -1)
                     {
                         list = new();
-                        dataProviderRequests.Add(valueJournalSubscription.DataAccessProvider, list);
+                        dataProviderRequests.Add((valueJournalSubscription.DataAccessProvider, list));
                     }
-                    list.Add((valueJournalSubscription, elementValuesJournal));                    
+                    else
+                    {
+                        list = dataProviderRequests[dataProviderRequestIndex].Item2;
+                    }
+                    list.Add((valueJournalSubscription, resultIndex));                    
                 }                
             }
 
-            var tasks = new List<Task<ValueStatusTimestamp[][]?>>(_engineSessions.Count);
-            var resultData = new List<ElementValuesJournal[]>();
+            var tasks = new List<Task<ElementValuesJournal[]?>>(_engineSessions.Count);            
 
             var calculation2 = calculation.ToTypeId();
-            foreach (var kvp in dataProviderRequests)
-            {
-                var valueJournalSubscriptions = kvp.Value.Select(t => t.Item1).ToArray();
-                resultData.Add(kvp.Value.Select(t => t.Item2).ToArray());
+            foreach (var dataProviderRequest in dataProviderRequests)
+            {        
                 tasks.Add(
-                    kvp.Key.ReadElementValuesJournalsAsync(firstTimeStampUtc, secondTimeStampUtc, numValuesPerSubscription, calculation2, params_, valueJournalSubscriptions)
+                    dataProviderRequest.Item1.ReadElementValuesJournalsAsync(firstTimeStampUtc, secondTimeStampUtc, numValuesPerSubscription, calculation2, params_, dataProviderRequest.Item2.Select(t => t.Item1).ToArray())
                     );                
             }
 
             var dataProvidersReplyData = await Task.WhenAll(tasks);
 
-            foreach (int index in Enumerable.Range(0, dataProvidersReplyData.Length))
-            {
-                ElementValuesJournal[] r = resultData[index];
-                ValueStatusTimestamp[][]? dataProviderData = dataProvidersReplyData[index];
+            foreach (int dataProviderRequestIndex in Enumerable.Range(0, dataProvidersReplyData.Length))
+            {   
+                ElementValuesJournal[]? dataProviderData = dataProvidersReplyData[dataProviderRequestIndex];
                 if (dataProviderData != null)
                 {
-                    foreach (int i in Enumerable.Range(0, dataProviderData.Length))
-                    {
-                        ElementValuesJournal elementValuesJournal = r[i];
-                        var vstCollection = dataProviderData[i];
-                        if (vstCollection.Length == 0)
+                    var dataProviderRequest = dataProviderRequests[dataProviderRequestIndex];
+                    foreach (int subscriptionIndex in Enumerable.Range(0, dataProviderData.Length))
+                    {                        
+                        var elementValuesJournal = dataProviderData[subscriptionIndex];
+                        if (elementValuesJournal.IsEmpty())
                             continue;
-                        using (var memoryStream = new MemoryStream(1024))
-                        {
-                            using (var writer = new SerializationWriter(memoryStream))
-                            {
-                                foreach (ValueStatusTimestamp vst in dataProviderData[i])
-                                {
-                                    switch (AnyHelper.GetTransportType(vst.Value))
-                                    {
-                                        case TransportType.Double:
-                                            elementValuesJournal.DoubleValues.Add(vst.Value.ValueAsDouble(false));
-                                            elementValuesJournal.DoubleStatusCodes.Add(vst.StatusCode);
-                                            elementValuesJournal.DoubleTimestamps.Add(Ssz.DataAccessGrpc.ServerBase.ProtobufHelper.ConvertToTimestamp(vst.TimestampUtc));
-                                            break;
-                                        case TransportType.UInt32:
-                                            elementValuesJournal.UintValues.Add(vst.Value.ValueAsUInt32(false));
-                                            elementValuesJournal.UintStatusCodes.Add(vst.StatusCode);
-                                            elementValuesJournal.UintTimestamps.Add(Ssz.DataAccessGrpc.ServerBase.ProtobufHelper.ConvertToTimestamp(vst.TimestampUtc));
-                                            break;
-                                        case TransportType.Object:
-                                            vst.Value.SerializeOwnedData(writer, null);                                            
-                                            elementValuesJournal.ObjectStatusCodes.Add(vst.StatusCode);
-                                            elementValuesJournal.ObjectTimestamps.Add(Ssz.DataAccessGrpc.ServerBase.ProtobufHelper.ConvertToTimestamp(vst.TimestampUtc));
-                                            break;
-                                    }
-                                }
-                            }
-                            memoryStream.Position = 0;
-                            elementValuesJournal.ObjectValues = Google.Protobuf.ByteString.FromStream(memoryStream);
-                        }
+                        result[dataProviderRequest.Item2[subscriptionIndex].Item2] = elementValuesJournal;
                     }
                 }
             }            

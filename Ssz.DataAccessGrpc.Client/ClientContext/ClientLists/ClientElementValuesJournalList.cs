@@ -10,6 +10,8 @@ using Ssz.Utils;
 using System.Threading.Tasks;
 using System.IO;
 using Ssz.Utils.Serialization;
+using Google.Protobuf;
+using CommunityToolkit.HighPerformance;
 
 namespace Ssz.DataAccessGrpc.Client.ClientLists
 {
@@ -94,7 +96,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// <param name="serverAliases"></param>
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
-        public async Task<ValueStatusTimestamp[][]> ReadElementValuesJournalsAsync(DateTime firstTimestamp, DateTime secondTimestamp,
+        public async Task<ElementValuesJournal[]> ReadElementValuesJournalsAsync(DateTime firstTimestamp, DateTime secondTimestamp,
             uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, uint[] serverAliases)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValuesJournalList.");
@@ -113,81 +115,41 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// </summary>
         /// <param name="elementValuesJournalsCollection"></param>
         /// <returns></returns>
-        public ValueStatusTimestamp[][]? OnReadElementValuesJournals(ElementValuesJournalsCollection elementValuesJournalsCollection)
+        public ElementValuesJournal[]? OnReadElementValuesJournals(DataChunk elementValuesJournalsCollection)
         {
-            if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientElementValuesJournalList.");
+            if (Disposed) 
+                throw new ObjectDisposedException("Cannot access a disposed ClientElementValuesJournalList.");
 
-            if (!String.IsNullOrEmpty(elementValuesJournalsCollection.Guid) && _incompleteElementValuesJournalsCollectionCollection.Count > 0)
+            _incompleteElementValuesJournalsCollections.Add(elementValuesJournalsCollection.Bytes);
+
+            if (elementValuesJournalsCollection.IsIncomplete)
             {
-                var beginElementValuesJournalsCollection = _incompleteElementValuesJournalsCollectionCollection.TryGetValue(elementValuesJournalsCollection.Guid);
-                if (beginElementValuesJournalsCollection is not null)
-                {
-                    _incompleteElementValuesJournalsCollectionCollection.Remove(elementValuesJournalsCollection.Guid);
-                    beginElementValuesJournalsCollection.CombineWith(elementValuesJournalsCollection);
-                    elementValuesJournalsCollection = beginElementValuesJournalsCollection;
-                }
-            }
-
-            if (!String.IsNullOrEmpty(elementValuesJournalsCollection.NextCollectionGuid))
-            {
-                _incompleteElementValuesJournalsCollectionCollection[elementValuesJournalsCollection.NextCollectionGuid] = elementValuesJournalsCollection;
-
                 return null;
             }
             else
             {
-                var list = new List<ValueStatusTimestamp[]>();
+                var fullElementValuesCollection = ProtobufHelper.Combine(_incompleteElementValuesJournalsCollections);
+                _incompleteElementValuesJournalsCollections.Clear();
 
-                foreach (ElementValuesJournal elementValuesJournal in elementValuesJournalsCollection.ElementValuesJournals)
+                ElementValuesJournal[]? result = null;
+
+                using (var stream = fullElementValuesCollection.AsStream())
+                using (var reader = new SerializationReader(stream))
                 {
-                    var valuesList = new List<ValueStatusTimestamp>();
-
-                    for (int index = 0; index < elementValuesJournal.DoubleStatusCodes.Count; index++)
+                    using (Block block = reader.EnterBlock())
                     {
-                        valuesList.Add(new ValueStatusTimestamp
-                            {
-                                Value = new Any(elementValuesJournal.DoubleValues[index]),
-                                StatusCode = elementValuesJournal.DoubleStatusCodes[index],
-                                TimestampUtc = elementValuesJournal.DoubleTimestamps[index].ToDateTime()
-                            }
-                        );
-                    }
-                    for (int index = 0; index < elementValuesJournal.UintStatusCodes.Count; index++)
-                    {
-                        valuesList.Add(new ValueStatusTimestamp
-                            {
-                                Value = new Any(elementValuesJournal.UintValues[index]),
-                                StatusCode = elementValuesJournal.UintStatusCodes[index],
-                                TimestampUtc = elementValuesJournal.UintTimestamps[index].ToDateTime()
-                            }
-                        );
-                    }
-                    if (elementValuesJournal.ObjectStatusCodes.Count > 0)
-                    {
-                        using (var memoryStream = new MemoryStream(elementValuesJournal.ObjectValues.ToByteArray()))
-                        using (var reader = new SerializationReader(memoryStream))
+                        switch (block.Version)
                         {
-                            for (int index = 0; index < elementValuesJournal.ObjectStatusCodes.Count; index++)
-                            {
-                                Utils.Any value = new();
-                                value.DeserializeOwnedData(reader, null);
-                                valuesList.Add(new ValueStatusTimestamp
-                                    {
-                                        Value = value,
-                                        StatusCode = elementValuesJournal.ObjectStatusCodes[index],
-                                        TimestampUtc = elementValuesJournal.ObjectTimestamps[index].ToDateTime()
-                                    }
-                                );
-                            }
+                            case 1:
+                                result = reader.ReadArrayOfOwnedDataSerializable<ElementValuesJournal>(() => new ElementValuesJournal(), null);                                
+                                break;
+                            default:
+                                throw new BlockUnsupportedVersionException();
                         }
-
                     }
-                    
-
-                    list.Add(valuesList.ToArray());
                 }
 
-                return list.ToArray();
+                return result;
             }
         }
 
@@ -204,7 +166,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         ///     This data member holds the last exception message encountered by the
         ///     ElementValuesCallback callback when calling valuesUpdateEvent().
         /// </summary>
-        private CaseInsensitiveDictionary<ElementValuesJournalsCollection> _incompleteElementValuesJournalsCollectionCollection = new();
+        private readonly List<ByteString> _incompleteElementValuesJournalsCollections = new();
 
         #endregion
     }

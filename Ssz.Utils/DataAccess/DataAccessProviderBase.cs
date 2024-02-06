@@ -270,14 +270,14 @@ namespace Ssz.Utils.DataAccess
             return Task.FromResult<IValueSubscription[]?>(null);
         }
 
-        public virtual Task<ValueStatusTimestamp[][]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, object[] valueJournalSubscriptions)
+        public virtual Task<ElementValuesJournal[]?> ReadElementValuesJournalsAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, uint numValuesPerSubscription, TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, object[] valueJournalSubscriptions)
         {
-            return Task.FromResult<ValueStatusTimestamp[][]?>(null);
+            return Task.FromResult<ElementValuesJournal[]?>(null);
         }
 
-        public virtual Task<EventMessagesCollection?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
+        public virtual Task<List<Utils.DataAccess.EventMessagesCollection>?> ReadEventMessagesJournalAsync(DateTime firstTimestampUtc, DateTime secondTimestampUtc, CaseInsensitiveDictionary<string?>? params_)
         {
-            return Task.FromResult<EventMessagesCollection?>(null);
+            return Task.FromResult<List<Utils.DataAccess.EventMessagesCollection>?>(null);
         }        
 
         public virtual void RemoveItem(IValueSubscription valueSubscription)

@@ -28,11 +28,11 @@ service DataAccess {
 
   rpc PollElementValuesChanges (PollElementValuesChangesRequest) returns (stream ElementValuesCallback);
 
-  rpc PollEventsChanges (PollEventsChangesRequest) returns (PollEventsChangesReply);
+  rpc PollEventsChanges (PollEventsChangesRequest) returns (stream EventMessagesCollection);
 
-  rpc ReadElementValuesJournals (ReadElementValuesJournalsRequest) returns (ReadElementValuesJournalsReply);
+  rpc ReadElementValuesJournals (ReadElementValuesJournalsRequest) returns (stream DataChunk);
 
-  rpc ReadEventMessagesJournal (ReadEventMessagesJournalRequest) returns (ReadEventMessagesJournalReply);
+  rpc ReadEventMessagesJournal (ReadEventMessagesJournalRequest) returns (stream EventMessagesCollection);
 
   rpc WriteElementValues (stream WriteElementValuesRequest) returns (WriteElementValuesReply);
 
@@ -197,12 +197,9 @@ message DataChunk {
 }
 
 message EventMessagesCollection {
-  string guid = 1;
-  string next_collection_guid = 2;
-
-  repeated EventMessage event_messages = 3;
-
-  map<string, NullableString> common_fields = 4;
+  repeated EventMessage event_messages = 1;
+  map<string, NullableString> common_fields = 2;
+  bool is_incomplete = 3;
 }
 
 message EventMessage {  
@@ -251,10 +248,6 @@ message PollEventsChangesRequest {
   uint32 list_server_alias = 2; 
 }
 
-message PollEventsChangesReply {  
-  EventMessagesCollection event_messages_collection = 1;  
-}
-
 message ReadElementValuesJournalsRequest {
   string context_id = 1;
   uint32 list_server_alias = 2; 
@@ -266,41 +259,12 @@ message ReadElementValuesJournalsRequest {
   repeated uint32 server_aliases = 8; 
 }
 
-message ReadElementValuesJournalsReply {  
-  ElementValuesJournalsCollection element_values_journals_collection = 1;  
-}
-
-message ElementValuesJournalsCollection {  
-  string guid = 1;
-  string next_collection_guid = 2;
-
-  repeated ElementValuesJournal element_values_journals = 3;  
-}
-
-message ElementValuesJournal {
-  repeated double double_values = 1;
-  repeated uint32 double_status_codes = 2;
-  repeated google.protobuf.Timestamp double_timestamps = 3;  
-  
-  repeated uint32 uint_values = 4;
-  repeated uint32 uint_status_codes = 5;
-  repeated google.protobuf.Timestamp uint_timestamps = 6;  
-
-  bytes object_values = 7;
-  repeated uint32 object_status_codes = 8;
-  repeated google.protobuf.Timestamp object_timestamps = 9;  
-}
-
 message ReadEventMessagesJournalRequest {
   string context_id = 1;
   uint32 list_server_alias = 2; 
   google.protobuf.Timestamp first_timestamp = 3;
   google.protobuf.Timestamp second_timestamp = 4;    
   map<string, NullableString> params = 5;  
-}
-
-message ReadEventMessagesJournalReply {  
-  EventMessagesCollection event_messages_collection = 1;
 }
 
 message WriteElementValuesRequest {

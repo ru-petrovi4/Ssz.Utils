@@ -24,9 +24,9 @@ namespace Ssz.DataAccessGrpc.Client
 
         /// <summary>        
         /// </summary>
-        /// <param name="clientElementValueList"></param>
+        /// <param name="elementValueList"></param>
         /// <returns></returns>
-        public async Task<ClientElementValueListItem[]> PollElementValuesChangesAsync(ClientElementValueList clientElementValueList)
+        public async Task<ClientElementValueListItem[]> PollElementValuesChangesAsync(ClientElementValueList elementValueList)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -37,7 +37,7 @@ namespace Ssz.DataAccessGrpc.Client
                 var request = new PollElementValuesChangesRequest
                 {
                     ContextId = _serverContextId,
-                    ListServerAlias = clientElementValueList.ListServerAlias
+                    ListServerAlias = elementValueList.ListServerAlias
                 };
                 var reply = _resourceManagementClient.PollElementValuesChanges(request);
                 SetResourceManagementLastCallUtc();
@@ -46,7 +46,7 @@ namespace Ssz.DataAccessGrpc.Client
 
                 while (await reply.ResponseStream.MoveNext())
                 {
-                    var changedItems = ElementValuesCallback(clientElementValueList, reply.ResponseStream.Current.ElementValuesCollection);
+                    var changedItems = ElementValuesCallback(elementValueList, reply.ResponseStream.Current.ElementValuesCollection);
                     if (changedItems is not null)
                         result.AddRange(changedItems);
                 }
@@ -65,7 +65,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// </summary>
         /// <param name="eventList"></param>
         /// <returns></returns>
-        public async Task<Utils.DataAccess.EventMessagesCollection> PollEventsChangesAsync(ClientEventList eventList)
+        public async Task<List<Utils.DataAccess.EventMessagesCollection>> PollEventsChangesAsync(ClientEventList eventList)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -73,20 +73,24 @@ namespace Ssz.DataAccessGrpc.Client
 
             try
             {
-                while (true)
+                var request = new PollEventsChangesRequest
                 {
-                    var request = new PollEventsChangesRequest
-                    {
-                        ContextId = _serverContextId,
-                        ListServerAlias = eventList.ListServerAlias
-                    };
-                    PollEventsChangesReply reply = await _resourceManagementClient.PollEventsChangesAsync(request);
-                    SetResourceManagementLastCallUtc();
+                    ContextId = _serverContextId,
+                    ListServerAlias = eventList.ListServerAlias
+                };
+                var reply = _resourceManagementClient.PollEventsChanges(request);
+                SetResourceManagementLastCallUtc();
 
-                    var eventMessagesCollection = EventMessagesCallback(eventList, reply.EventMessagesCollection);
+                List<Utils.DataAccess.EventMessagesCollection> result = new();
+
+                while (await reply.ResponseStream.MoveNext())
+                {
+                    var eventMessagesCollection = EventMessagesCallback(eventList, reply.ResponseStream.Current);
                     if (eventMessagesCollection is not null)
-                        return eventMessagesCollection;
+                        result.Add(eventMessagesCollection);
                 }
+
+                return result;                
             }
             catch (Exception ex)
             {
@@ -211,12 +215,12 @@ namespace Ssz.DataAccessGrpc.Client
         /// <returns></returns>
         private Utils.DataAccess.EventMessagesCollection? EventMessagesCallback(ClientEventList eventList, EventMessagesCollection eventMessagesCollection)
         {
-            Utils.DataAccess.EventMessagesCollection? eventMessagesCollection2 = eventList.GetEventMessagesCollection(eventMessagesCollection);
-            if (eventMessagesCollection2 is not null && eventMessagesCollection2.EventMessages.Count > 0)
+            Utils.DataAccess.EventMessagesCollection? fullEventMessagesCollection = eventList.GetEventMessagesCollection(eventMessagesCollection);
+            if (fullEventMessagesCollection is not null && fullEventMessagesCollection.EventMessages.Count > 0)
             {
-                eventList.RaiseEventMessagesCallbackEvent(eventMessagesCollection2);
+                eventList.RaiseEventMessagesCallbackEvent(fullEventMessagesCollection);
             }
-            return eventMessagesCollection2;
+            return fullEventMessagesCollection;
         }
 
         private void LongrunningPassthroughCallback(ServerBase.LongrunningPassthroughCallback longrunningPassthroughCallback)
