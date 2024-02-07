@@ -213,47 +213,7 @@ namespace Ssz.Dcs.CentralServer
                 _logger.LogWarning(ex, message);
                 throw;
             }
-        }
-
-        private async Task<TReply> GetReplyExAsync<TReply>(Func<Task<TReply>> func, ServerCallContext context)
-        {
-            var taskCompletionSource = new TaskCompletionSource<TReply>();
-            //context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
-            _serverWorker.ThreadSafeDispatcher.BeginInvokeEx(async ct =>
-            {                
-                try
-                {
-                    var resultTask = func();
-                    taskCompletionSource.TrySetResult(await resultTask);
-                }
-                catch (Exception ex)
-                {
-                    taskCompletionSource.TrySetException(ex);
-                }
-            });
-            try
-            {
-                return await taskCompletionSource.Task;
-            }
-            catch (TaskCanceledException ex)
-            {
-                string message = @"Operation cancelled.";
-                _logger.LogDebug(ex, message);
-                throw new RpcException(new Status(StatusCode.Cancelled, message));
-            }
-            catch (RpcException ex)
-            {
-                string message = @"RPC Exception";
-                _logger.LogDebug(ex, message);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                string message = @"General Exception";
-                _logger.LogDebug(ex, message);
-                throw new RpcException(new Status(StatusCode.Internal, ex.Message));
-            }
-        }
+        }        
 
         #endregion
 
