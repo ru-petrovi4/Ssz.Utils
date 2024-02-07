@@ -16,8 +16,8 @@ namespace Ssz.Dcs.CentralServer
     {
         #region construction and destruction
 
-        public UtilityElementValueList(ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
-            : base(serverContext, listClientAlias, listParams)
+        public UtilityElementValueList(ServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+            : base(serverWorker, serverContext, listClientAlias, listParams)
         {
         }
 
@@ -57,7 +57,7 @@ namespace Ssz.Dcs.CentralServer
             return new UtilityElementValueListItem(clientAlias, serverAlias, elementId);
         }
 
-        protected override Task<List<AliasResult>> OnAddElementListItemsToListAsync(List<UtilityElementValueListItem> elementListItems)
+        protected override List<AliasResult> OnAddElementListItemsToList(List<UtilityElementValueListItem> elementListItems)
         {
             var results = new List<AliasResult>();
 
@@ -73,7 +73,7 @@ namespace Ssz.Dcs.CentralServer
                 });
             }
 
-            return Task.FromResult(results);
+            return results;
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace Ssz.Dcs.CentralServer
         /// </summary>
         /// <param name="elementListItems"></param>
         /// <returns></returns>
-        protected override Task<List<AliasResult>> OnRemoveElementListItemsFromListAsync(List<UtilityElementValueListItem> elementListItems)
+        protected override List<AliasResult> OnRemoveElementListItemsFromList(List<UtilityElementValueListItem> elementListItems)
         {
             List<AliasResult> results = new List<AliasResult>();
 
@@ -90,7 +90,7 @@ namespace Ssz.Dcs.CentralServer
                 ((ServerWorker)ServerContext.ServerWorker).RemoveUtilityElementValueListItem(item);
             }
 
-            return Task.FromResult(results);
+            return results;
         }
 
         /// <summary>

@@ -32,11 +32,11 @@ namespace Ssz.Dcs.CentralServer
             string systemNameToConnect = serverContext.SystemNameToConnect;
             if (systemNameToConnect == @"")
             {
-                return new UtilityElementValueList(serverContext, listClientAlias, listParams);
+                return new UtilityElementValueList(this, serverContext, listClientAlias, listParams);
             }
             else
             {
-                return new ProcessElementValueList(serverContext, listClientAlias, listParams);
+                return new ProcessElementValueList(this, serverContext, listClientAlias, listParams);
             }
         }
         
@@ -49,7 +49,7 @@ namespace Ssz.Dcs.CentralServer
             }
             else
             {
-                return new ProcessElementValuesJournalList(serverContext, listClientAlias, listParams);
+                return new ProcessElementValuesJournalList(this, serverContext, listClientAlias, listParams);
             }
         }
         
@@ -58,11 +58,11 @@ namespace Ssz.Dcs.CentralServer
             string systemNameToConnect = serverContext.SystemNameToConnect;
             if (systemNameToConnect == @"")
             {
-                return new UtilityEventList(serverContext, listClientAlias, listParams);
+                return new UtilityEventList(this, serverContext, listClientAlias, listParams);
             }
             else
             {
-                return new ProcessEventList(Logger, serverContext, listClientAlias, listParams);
+                return new ProcessEventList(this, Logger, serverContext, listClientAlias, listParams);
             }
         }
         

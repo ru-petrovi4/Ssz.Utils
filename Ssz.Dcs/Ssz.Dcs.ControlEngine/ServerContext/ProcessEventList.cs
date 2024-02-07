@@ -15,8 +15,8 @@ namespace Ssz.Dcs.ControlEngine
     {
         #region construction and destruction
         
-        public ProcessEventList(ILogger logger, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
-            : base(serverContext, listClientAlias, listParams)
+        public ProcessEventList(ServerWorkerBase serverWorker, ILogger logger, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+            : base(serverWorker, serverContext, listClientAlias, listParams)
         {
             _logger = logger;            
         }

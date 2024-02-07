@@ -13,8 +13,8 @@ namespace Ssz.Dcs.ControlEngine
     {
         #region construction and destruction
 
-        public EventListBase(ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
-            : base(serverContext, listClientAlias, listParams)
+        public EventListBase(ServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+            : base(serverWorker, serverContext, listClientAlias, listParams)
         {
             string? updateRate = listParams.TryGetValue("UpdateRateMs");
             if (updateRate is not null)

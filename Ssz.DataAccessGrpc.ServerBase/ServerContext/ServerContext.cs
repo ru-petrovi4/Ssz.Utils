@@ -318,22 +318,14 @@ namespace Ssz.DataAccessGrpc.ServerBase
             };
         }
 
-        internal LongrunningPassthroughReply? LongrunningPassthrough(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
+        internal string LongrunningPassthrough(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
-            var reply = new LongrunningPassthroughReply();
-
-            reply.JobId = ServerWorker.LongrunningPassthrough(this, recipientPath, passthroughName, dataToSend);            
-
-            return reply;
+            return ServerWorker.LongrunningPassthrough(this, recipientPath, passthroughName, dataToSend);
         }
 
-        internal LongrunningPassthroughCancelReply LongrunningPassthroughCancel(string jobId)
+        internal void LongrunningPassthroughCancel(string jobId)
         {
-            var reply = new LongrunningPassthroughCancelReply();
-
             ServerWorker.LongrunningPassthroughCancel(this, jobId);
-
-            return reply;
         }
 
         #endregion

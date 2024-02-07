@@ -108,6 +108,11 @@ namespace Ssz.Dcs.ControlEngine
             return Task.FromResult(ParentModule.SetParamValue(this, value));
         }
 
+        public ResultInfo SetValue(Any value)
+        {
+            return ParentModule.SetParamValue(this, value);
+        }
+
         #endregion
     }
 }

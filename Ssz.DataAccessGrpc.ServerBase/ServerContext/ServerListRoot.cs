@@ -20,15 +20,10 @@ namespace Ssz.DataAccessGrpc.ServerBase
     public abstract class ServerListRoot
     {
         #region construction and destruction
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="serverContext"></param>
-        /// <param name="listClientAlias"></param>
-        /// <param name="listParams"></param>
-        public ServerListRoot(ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+        
+        public ServerListRoot(ServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
         {
+            ServerWorker = serverWorker;
             ServerContext = serverContext;
             ListClientAlias = listClientAlias;
             ListParams = listParams;
@@ -207,7 +202,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
         protected virtual Task<List<AliasResult>> WriteElementValuesAsync(List<(uint, ValueStatusTimestamp)> elementValuesCollection)
         {
             return Task.FromResult(new List<AliasResult>());
-        }        
+        }
+
+        protected ServerWorkerBase ServerWorker { get; }
 
         #endregion
     }

@@ -20,8 +20,8 @@ namespace Ssz.Dcs.ControlEngine
     {
         #region construction and destruction
 
-        public ProcessElementValueList(ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
-            : base(serverContext, listClientAlias, listParams)
+        public ProcessElementValueList(ServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+            : base(serverWorker, serverContext, listClientAlias, listParams)
         {            
         }
 
@@ -117,12 +117,12 @@ namespace Ssz.Dcs.ControlEngine
             return new ProcessElementValueListItem(clientAlias, serverAlias, elementId);
         }
 
-        protected override Task<List<AliasResult>> OnAddElementListItemsToListAsync(List<ProcessElementValueListItem> elementListItems)
+        protected override List<AliasResult> OnAddElementListItemsToList(List<ProcessElementValueListItem> elementListItems)
         {
             var results = new List<AliasResult>();
 
             if (elementListItems.Count == 0) 
-                return Task.FromResult(results);
+                return results;
 
             foreach (ProcessElementValueListItem item in elementListItems)
             {
@@ -136,7 +136,7 @@ namespace Ssz.Dcs.ControlEngine
 
             _dataGuid = null;
 
-            return Task.FromResult(results);
+            return results;
         }
 
         /// <summary>
@@ -144,12 +144,12 @@ namespace Ssz.Dcs.ControlEngine
         /// </summary>
         /// <param name="changedListItems"></param>
         /// <returns></returns>
-        protected override async Task<List<AliasResult>> OnWriteValuesAsync(List<ProcessElementValueListItem> changedListItems)
+        protected override Task<List<AliasResult>> OnWriteValuesAsync(List<ProcessElementValueListItem> changedListItems)
         {
             var resultsList = new List<AliasResult>();
 
             if (changedListItems.Count == 0)
-                return resultsList;
+                return Task.FromResult(resultsList);
 
             var device = ((ServerWorker)ServerContext.ServerWorker).Device;
 
@@ -165,7 +165,7 @@ namespace Ssz.Dcs.ControlEngine
                         });
                 }
 
-                return resultsList;
+                return Task.FromResult(resultsList);
             }
 
             DateTime nowUtc = DateTime.UtcNow;
@@ -183,7 +183,7 @@ namespace Ssz.Dcs.ControlEngine
                     ValueStatusTimestamp? valueStatusTimestamp = item.PendingWriteValueStatusTimestamp;
                     if (valueStatusTimestamp is not null)
                     {
-                        var resultInfo = await item.Connection.SetValueAsync(valueStatusTimestamp.Value.Value);
+                        var resultInfo = item.Connection.SetValue(valueStatusTimestamp.Value.Value);
                         if (!StatusCodes.IsGood(resultInfo.StatusCode))
                             resultsList.Add(new AliasResult
                                 {
@@ -202,7 +202,7 @@ namespace Ssz.Dcs.ControlEngine
             if (valueIsSet)
                 device.DataGuid = Guid.NewGuid();
 
-            return resultsList;
+            return Task.FromResult(resultsList);
         }
 
         #endregion

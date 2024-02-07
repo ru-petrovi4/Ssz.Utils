@@ -12,8 +12,8 @@ namespace Ssz.Dcs.ControlEngine
     {
         #region construction and destruction
         
-        public UtilityEventList(ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
-            : base(serverContext, listClientAlias, listParams)
+        public UtilityEventList(ServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+            : base(serverWorker, serverContext, listClientAlias, listParams)
         {
             //((ServerWorker)ServerContext.ServerWorker).UtilityEventMessageNotification += OnUtilityEventMessageNotification;
         }

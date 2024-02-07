@@ -6,6 +6,7 @@ using Ssz.Utils.DataAccess;
 using Ssz.Utils;
 using Grpc.Core;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Ssz.Dcs.ControlEngine
 {
@@ -20,8 +21,8 @@ namespace Ssz.Dcs.ControlEngine
         /// <summary>
         ///   Constructs a new instance of the <see cref = "ElementListBase" /> class.
         /// </summary>
-        public ElementListBase(ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
-            : base(serverContext, listClientAlias, listParams)
+        public ElementListBase(ServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+            : base(serverWorker, serverContext, listClientAlias, listParams)
         {            
         }
 
@@ -51,12 +52,13 @@ namespace Ssz.Dcs.ControlEngine
         /// </summary>
         /// <param name = "dataObjectsToAdd"></param>
         /// <returns></returns>
-        public override async Task<List<AliasResult>> AddItemsToListAsync(List<ListItemInfo> itemsToAdd)
+        public override Task<List<AliasResult>> AddItemsToListAsync(List<ListItemInfo> itemsToAdd)
         {
-            if (Disposed) throw new ObjectDisposedException("Cannot access a disposed DataListRoot.");
+            if (Disposed) 
+                throw new ObjectDisposedException("Cannot access a disposed DataListRoot.");
 
             if (itemsToAdd.Count == 0) 
-                return new List<AliasResult>();
+                return Task.FromResult(new List<AliasResult>());
 
             var results = new List<AliasResult>(itemsToAdd.Count);
 
@@ -80,7 +82,7 @@ namespace Ssz.Dcs.ControlEngine
                 elementListItems.Add(elementListItem);
             }
 
-            results.AddRange(await OnAddElementListItemsToListAsync(elementListItems));
+            results.AddRange(OnAddElementListItemsToList(elementListItems));
 
             foreach (AliasResult r in results)
             {
@@ -95,7 +97,7 @@ namespace Ssz.Dcs.ControlEngine
                 }
             }
 
-            return results;
+            return Task.FromResult(results);
         }
 
         /// <summary>
@@ -104,9 +106,10 @@ namespace Ssz.Dcs.ControlEngine
         /// <param name="serverAliasesToRemove"></param>
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
-        public override async Task<List<AliasResult>> RemoveItemsFromListAsync(List<uint> serverAliasesToRemove)
+        public override Task<List<AliasResult>> RemoveItemsFromListAsync(List<uint> serverAliasesToRemove)
         {
-            if (Disposed) throw new ObjectDisposedException("Cannot access a disposed DataListRoot.");
+            if (Disposed) 
+                throw new ObjectDisposedException("Cannot access a disposed DataListRoot.");
 
             List<AliasResult> resultsList;
 
@@ -135,7 +138,7 @@ namespace Ssz.Dcs.ControlEngine
 
             try
             {
-                resultsList.AddRange(await OnRemoveElementListItemsFromListAsync(elementListItems));
+                resultsList.AddRange(OnRemoveElementListItemsFromList(elementListItems));
             }
             catch
             {
@@ -147,7 +150,7 @@ namespace Ssz.Dcs.ControlEngine
                 elementListItem.Dispose();
             }
 
-            return resultsList;
+            return Task.FromResult(resultsList);
         }
 
         #endregion
@@ -163,10 +166,9 @@ namespace Ssz.Dcs.ControlEngine
         /// </summary>
         /// <param name="elementListItems"></param>
         /// <param name="resultsList"></param>
-        protected virtual Task<List<AliasResult>> OnAddElementListItemsToListAsync(List<TElementListItem> elementListItems)
-        {
-            var results = new List<AliasResult>();
-            return Task.FromResult(results);
+        protected virtual List<AliasResult> OnAddElementListItemsToList(List<TElementListItem> elementListItems)
+        {            
+            return new List<AliasResult>();
         }
 
         /// <summary>
@@ -174,10 +176,9 @@ namespace Ssz.Dcs.ControlEngine
         /// </summary>
         /// <param name="elementListItems"></param>
         /// <returns></returns>
-        protected virtual Task<List<AliasResult>> OnRemoveElementListItemsFromListAsync(List<TElementListItem> elementListItems)
-        {
-            var results = new List<AliasResult>();
-            return Task.FromResult(results);
+        protected virtual List<AliasResult> OnRemoveElementListItemsFromList(List<TElementListItem> elementListItems)
+        {            
+            return new List<AliasResult>();
         }
 
         #endregion

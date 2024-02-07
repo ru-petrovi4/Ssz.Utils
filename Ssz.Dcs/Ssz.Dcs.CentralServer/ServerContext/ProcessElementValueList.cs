@@ -24,8 +24,8 @@ namespace Ssz.Dcs.CentralServer
     {
         #region construction and destruction
 
-        public ProcessElementValueList(ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
-            : base(serverContext, listClientAlias, listParams)
+        public ProcessElementValueList(ServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+            : base(serverWorker, serverContext, listClientAlias, listParams)
         {
             _engineSessions = ((ServerWorker)ServerContext.ServerWorker).GetEngineSessions(ServerContext);
             _engineSessions.CollectionChanged += OnEngineSessions_CollectionChanged;
@@ -90,11 +90,11 @@ namespace Ssz.Dcs.CentralServer
             return new ProcessElementValueListItem(clientAlias, serverAlias, elementId);
         }
 
-        protected override Task<List<AliasResult>> OnAddElementListItemsToListAsync(List<ProcessElementValueListItem> items)
+        protected override List<AliasResult> OnAddElementListItemsToList(List<ProcessElementValueListItem> items)
         {
             var results = new List<AliasResult>();
             if (items.Count == 0) 
-                return Task.FromResult(results);            
+                return results;            
 
             foreach (ProcessElementValueListItem item in items)
             {
@@ -114,7 +114,7 @@ namespace Ssz.Dcs.CentralServer
 
             _dataGuids = null;
 
-            return Task.FromResult(results);
+            return results;
         }
 
         /// <summary>
@@ -215,10 +215,11 @@ namespace Ssz.Dcs.CentralServer
                 tasks.Add(t);
                 engineSession.DataAccessProvider.Obj = null;
             }
+
+            var dataProvidersReplyData = await Task.WhenAll(tasks);            
             
-            foreach (var task in tasks)
-            {
-                (var failedValueSubscriptions, var failedResultInfos) = await task;
+            foreach (var (failedValueSubscriptions, failedResultInfos) in dataProvidersReplyData)
+            {                
                 foreach (int i in Enumerable.Range(0, failedValueSubscriptions.Length))
                 {
                     var failedValueSubscription = failedValueSubscriptions[i];                    

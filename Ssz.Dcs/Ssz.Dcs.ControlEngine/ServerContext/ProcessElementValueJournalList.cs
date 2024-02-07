@@ -22,8 +22,8 @@ namespace Ssz.Dcs.ControlEngine
         /// <summary>
         ///     Constructs a new instance of the <see cref="WorkingDataJournalList" /> class.
         /// </summary>
-        public ProcessElementValuesJournalList(ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
-			: base(serverContext, listClientAlias, listParams)
+        public ProcessElementValuesJournalList(ServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+			: base(serverWorker, serverContext, listClientAlias, listParams)
 		{            
         }
 

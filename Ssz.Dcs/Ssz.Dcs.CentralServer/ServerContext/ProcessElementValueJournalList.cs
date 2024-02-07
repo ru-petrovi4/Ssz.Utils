@@ -24,8 +24,8 @@ namespace Ssz.Dcs.CentralServer
 	{
         #region construction and destruction
         
-        public ProcessElementValuesJournalList(ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
-			: base(serverContext, listClientAlias, listParams)
+        public ProcessElementValuesJournalList(ServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+			: base(serverWorker, serverContext, listClientAlias, listParams)
 		{
             _engineSessions = ((ServerWorker)ServerContext.ServerWorker).GetEngineSessions(ServerContext);
             _engineSessions.CollectionChanged += OnEngineSessions_CollectionChanged;
@@ -94,7 +94,7 @@ namespace Ssz.Dcs.CentralServer
                     dataProviderRequest.Item1.ReadElementValuesJournalsAsync(firstTimeStampUtc, secondTimeStampUtc, numValuesPerSubscription, calculation2, params_, dataProviderRequest.Item2.Select(t => t.Item1).ToArray())
                     );                
             }
-
+            
             var dataProvidersReplyData = await Task.WhenAll(tasks);
 
             foreach (int dataProviderRequestIndex in Enumerable.Range(0, dataProvidersReplyData.Length))
@@ -125,12 +125,12 @@ namespace Ssz.Dcs.CentralServer
             return new ProcessElementValuesJournalListItem(clientAlias, serverAlias, elementId);
         }
 
-        protected override Task<List<AliasResult>> OnAddElementListItemsToListAsync(List<ProcessElementValuesJournalListItem> elementListItems)
+        protected override List<AliasResult> OnAddElementListItemsToList(List<ProcessElementValuesJournalListItem> elementListItems)
         {
             var results = new List<AliasResult>();
 
             if (elementListItems.Count == 0) 
-                return Task.FromResult(results);            
+                return results;            
 
             foreach (ProcessElementValuesJournalListItem item in elementListItems)
             {
@@ -148,7 +148,7 @@ namespace Ssz.Dcs.CentralServer
                 });
             }
 
-            return Task.FromResult(results);
+            return results;
         }
 
         #endregion

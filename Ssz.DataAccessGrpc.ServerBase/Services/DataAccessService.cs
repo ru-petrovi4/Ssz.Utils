@@ -73,7 +73,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         ServerContextTimeoutMs = serverContext.ContextTimeoutMs,
                         ServerCultureName = serverContext.CultureInfo.Name
                     };
-                    return reply;
+                    return Task.FromResult(reply);
                 },
                 context);
         }
@@ -85,7 +85,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
                     serverContext.SetResponseStream(responseStream);
-                    return serverContext;
+                    return Task.FromResult(serverContext);
                 },
                 context);
 
@@ -105,7 +105,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         _serverWorker.RemoveServerContext(serverContext);
                         var t = serverContext.DisposeAsync();
                     }
-                    return new ConcludeReply();
+                    return Task.FromResult(new ConcludeReply());
                 },
                 context);
         }
@@ -119,7 +119,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     {
                         serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
                     }
-                    return new ClientKeepAliveReply();
+                    return Task.FromResult(new ClientKeepAliveReply());
                 },
                 context);
         }
@@ -134,7 +134,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     reply.Result = serverContext.DefineList(request.ListClientAlias, request.ListType,
                         new Utils.CaseInsensitiveDictionary<string?>(request.ListParams
                             .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null))));
-                    return reply;
+                    return Task.FromResult(reply);
                 },
                 context);
         }
@@ -147,14 +147,14 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
                     var reply = new DeleteListsReply();
                     reply.Results.Add(serverContext.DeleteLists(request.ListServerAliases.ToList()));
-                    return reply;
+                    return Task.FromResult(reply);
                 },
                 context);
         }
 
         public override async Task<AddItemsToListReply> AddItemsToList(AddItemsToListRequest request, ServerCallContext context)
         {
-            return await GetReplyExAsync(async () =>
+            return await GetReplyAsync(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
@@ -167,7 +167,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override async Task<RemoveItemsFromListReply> RemoveItemsFromList(RemoveItemsFromListRequest request, ServerCallContext context)
         {
-            return await GetReplyExAsync(async () =>
+            return await GetReplyAsync(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
@@ -188,7 +188,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     var reply = new EnableListCallbackReply();                    
                     serverContext.EnableListCallback(request.ListServerAlias, ref isEnabled);
                     reply.Enabled = isEnabled;
-                    return reply;
+                    return Task.FromResult(reply);
                 },
                 context);
         }
@@ -201,36 +201,38 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
                     var reply = new TouchListReply();
                     serverContext.TouchList(request.ListServerAlias);
-                    return reply;
+                    return Task.FromResult(reply);
                 },
                 context);
         }
 
         public override async Task PollElementValuesChanges(PollElementValuesChangesRequest request, IServerStreamWriter<ElementValuesCallback> responseStream, ServerCallContext context)
         {
-            await GetReply2Async(async () =>
+            await GetReplyAsync(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
                     await serverContext.PollElementValuesChangesAsync(request.ListServerAlias, responseStream);
+                    return 0;
                 },
                 context);
         }
 
         public override async Task PollEventsChanges(PollEventsChangesRequest request, IServerStreamWriter<EventMessagesCollection> responseStream, ServerCallContext context)
         {
-            await GetReply2Async(async () =>
+            await GetReplyAsync(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;                    
                     await serverContext.PollEventsChangesAsync(request.ListServerAlias, responseStream);
+                    return 0;
                 },
                 context);
         }
 
         public override async Task ReadElementValuesJournals(ReadElementValuesJournalsRequest request, IServerStreamWriter<DataChunk> responseStream, ServerCallContext context)
         {            
-            await GetReply2Async(async () =>
+            await GetReplyAsync(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;                    
@@ -245,13 +247,14 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             request.ServerAliases.ToList(),
                             responseStream
                         );
+                    return 0;
                 }, 
                 context);
         }
 
         public override async Task ReadEventMessagesJournal(ReadEventMessagesJournalRequest request, IServerStreamWriter<EventMessagesCollection> responseStream, ServerCallContext context)
         {
-            await GetReply2Async(async () =>
+            await GetReplyAsync(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;                    
@@ -262,6 +265,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             new Utils.CaseInsensitiveDictionary<string?>(request.Params
                                 .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null))),
                                 responseStream);
+                    return 0;
                 }, 
                 context);
         }
@@ -280,17 +284,17 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
             ReadOnlyMemory<byte> elementValuesCollectionBytes = ProtobufHelper.Combine(requestByteStrings);
 
-            var reply = new WriteElementValuesReply();
-            await GetReply2Async(async () =>
+            return await GetReplyAsync(async () =>
                 {
+                    var reply = new WriteElementValuesReply();
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
                     var aliasResults = await serverContext.WriteElementValuesAsync(request.ListServerAlias, elementValuesCollectionBytes);
                     if (aliasResults is not null)
                         reply.Results.Add(aliasResults);
+                    return reply;
                 },
-                context);
-            return reply;            
+                context);                        
         }
 
         public override async Task<AckAlarmsReply> AckAlarms(AckAlarmsRequest request, ServerCallContext context)
@@ -302,7 +306,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     var reply = new AckAlarmsReply();
                     reply.Results.Add(serverContext.AckAlarms(request.ListServerAlias, 
                         request.OperatorName ?? @"", request.Comment ?? @"", request.EventIdsToAck));
-                    return reply;
+                    return Task.FromResult(reply);
                 },
                 context);
         }
@@ -321,11 +325,12 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
             ReadOnlyMemory<byte> dataToSend = ProtobufHelper.Combine(requestByteStrings);
 
-            await GetReply2Async(async () =>
+            await GetReplyAsync(async () =>
                 {
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
                     await serverContext.PassthroughAsync(request.RecipientPath ?? @"", request.PassthroughName ?? @"", dataToSend, responseStream);
+                    return 0;
                 },
                 context);
         }
@@ -344,87 +349,35 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
             ReadOnlyMemory<byte> dataToSend = ProtobufHelper.Combine(requestByteStrings);
 
-            var reply = await GetReplyAsync(() =>
+            return await GetReplyAsync(() =>
                 {
+                    var reply = new LongrunningPassthroughReply();
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
-                    return serverContext.LongrunningPassthrough(request.RecipientPath ?? @"", request.PassthroughName ?? @"", dataToSend);
+                    reply.JobId = serverContext.LongrunningPassthrough(request.RecipientPath ?? @"", request.PassthroughName ?? @"", dataToSend);
+                    return Task.FromResult(reply);
                 },
                 context);
-            return reply!;
         }
 
         public override async Task<LongrunningPassthroughCancelReply> LongrunningPassthroughCancel(LongrunningPassthroughCancelRequest request, ServerCallContext context)
         {
             return await GetReplyAsync(() =>
                 {
+                    var reply = new LongrunningPassthroughCancelReply();
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
-                    return serverContext.LongrunningPassthroughCancel(request.JobId ?? @"");
+                    serverContext.LongrunningPassthroughCancel(request.JobId ?? @"");
+                    return Task.FromResult(reply);
                 },
                 context);
         }
 
         #endregion
 
-        #region private functions        
+        #region private functions
 
-        private async Task<TReply> GetReplyAsync<TReply>(Func<TReply> func, ServerCallContext context)
-        {
-            string parentMethodName = "";
-            if (_logger.IsEnabled(LogLevel.Trace))
-            {
-                var st = new StackTrace();
-                //foreach (var f in st.GetFrames())
-                //{
-                //    parentMethodName += "->" + f.GetMethod()?.Name;
-                //}
-                var sf = st.GetFrame(7);
-                if (sf is not null)
-                {
-                    parentMethodName = sf.GetMethod()?.Name ?? "";
-                }
-            }            
-
-            var taskCompletionSource = new TaskCompletionSource<TReply>();            
-            //context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
-            _serverWorker.ThreadSafeDispatcher.BeginInvoke(ct =>
-            {
-                _logger.LogTrace("Processing client call in worker thread: " + parentMethodName);
-                try
-                {
-                    taskCompletionSource.TrySetResult(func());
-                }
-                catch (Exception ex)
-                {
-                    taskCompletionSource.TrySetException(ex);
-                }
-            });
-            try
-            {
-                return await taskCompletionSource.Task;
-            }
-            catch (TaskCanceledException ex)
-            {
-                string message = @"Operation cancelled.";
-                _logger.LogDebug(ex, message);
-                throw new RpcException(new Status(StatusCode.Cancelled, message));
-            }
-            catch (RpcException ex)
-            {
-                string message = @"RPC Exception";
-                _logger.LogError(ex, message);
-                throw;
-            }
-            catch (Exception ex)
-            {
-                string message = @"General Exception";
-                _logger.LogCritical(ex, message);
-                throw new RpcException(new Status(StatusCode.Internal, ex.Message));
-            }
-        }
-
-        private async Task GetReply2Async(Func<Task> func, ServerCallContext context)
+        private Task<T> GetReplyAsync<T>(Func<Task<T>> func, ServerCallContext context)
         {
             string parentMethodName = "";
             if (_logger.IsEnabled(LogLevel.Trace))
@@ -441,24 +394,24 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 }
             }
 
-            var taskCompletionSource = new TaskCompletionSource();
+            var taskCompletionSource = new TaskCompletionSource<T>();
             //context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
             _serverWorker.ThreadSafeDispatcher.BeginInvoke(async ct =>
             {
                 _logger.LogTrace("Processing client call in worker thread: " + parentMethodName);
                 try
                 {
-                    await func();
-                    taskCompletionSource.TrySetResult();
+                    var result = await func();
+                    taskCompletionSource.TrySetResult(result);
                 }
                 catch (Exception ex)
                 {
                     taskCompletionSource.TrySetException(ex);
                 }
-            });
+            });            
             try
             {
-                await taskCompletionSource.Task;
+                return taskCompletionSource.Task;
             }
             catch (TaskCanceledException ex)
             {
@@ -478,63 +431,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 _logger.LogCritical(ex, message);
                 throw new RpcException(new Status(StatusCode.Internal, ex.Message));
             }
-        }
-
-        private async Task<TReply> GetReplyExAsync<TReply>(Func<Task<TReply>> func, ServerCallContext context)
-        {
-            string parentMethodName = "";
-            if (_logger.IsEnabled(LogLevel.Trace))
-            {
-                var st = new StackTrace();
-                //foreach (var f in st.GetFrames())
-                //{
-                //    parentMethodName += "->" + f.GetMethod()?.Name;
-                //}
-                var sf = st.GetFrame(7);
-                if (sf is not null)
-                {
-                    parentMethodName = sf.GetMethod()?.Name ?? "";
-                }
-            }
-
-            var taskCompletionSource = new TaskCompletionSource<TReply>();
-            //context.CancellationToken.Register(() => taskCompletionSource.TrySetCanceled(), useSynchronizationContext: false);
-            _serverWorker.ThreadSafeDispatcher.BeginInvokeEx(async ct =>
-            {
-                _logger.LogTrace("Processing client call in worker thread: " + parentMethodName);
-                try
-                {
-                    var resultTask = func();
-                    taskCompletionSource.TrySetResult(await resultTask);
-                }
-                catch (Exception ex)
-                {
-                    taskCompletionSource.TrySetException(ex);
-                }
-            });
-            try
-            {
-                return await taskCompletionSource.Task;
-            }
-            catch (TaskCanceledException ex)
-            {
-                string message = @"Operation cancelled.";
-                _logger.LogDebug(ex, message);
-                throw new RpcException(new Status(StatusCode.Cancelled, message));
-            }
-            catch (RpcException ex)
-            {
-                string message = @"RPC Exception";
-                _logger.LogDebug(ex, message);
-                throw;
-            }            
-            catch (Exception ex)
-            {
-                string message = @"General Exception";
-                _logger.LogDebug(ex, message);
-                throw new RpcException(new Status(StatusCode.Internal, ex.Message));
-            }
-        }
+        }        
 
         #endregion
 
