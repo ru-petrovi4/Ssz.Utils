@@ -38,6 +38,7 @@ namespace Ssz.Dcs.Addons.DataAccessClient
             (DataAccessClient_SystemNameToConnect_OptionName, Properties.Resources.SystemNameToConnect_Option, @""),
             (DataAccessClient_ContextParams_OptionName, Properties.Resources.ContextParams_Option, @""),
             (DataAccessClient_SystemNameToConnect_ToDisplay_OptionName, Properties.Resources.SystemNameToConnect_ToDisplay_Option, @"OPC NET Server"),
+            (DataAccessClient_DangerousAcceptAnyServerCertificate_OptionName, Properties.Resources.DangerousAcceptAnyServerCertificate_Option, @"true"),
         };
 
         /// <summary>
@@ -70,10 +71,7 @@ namespace Ssz.Dcs.Addons.DataAccessClient
             var elementIdsMap = ActivatorUtilities.CreateInstance<ElementIdsMap>(ServiceProvider);
             elementIdsMap.Initialize(CsvDb.GetData(ElementIdsMap.StandardMapFileName), CsvDb.GetData(ElementIdsMap.StandardTagsFileName), CsvDb);
 
-            var options = new DataAccessProviderOptions { DangerousAcceptAnyServerCertificate = false };
-#if DEBUG
-            options.DangerousAcceptAnyServerCertificate = true;
-#endif
+            bool dangerousAcceptAnyServerCertificatete = new Any(OptionsSubstituted.TryGetValue(DataAccessClient_DangerousAcceptAnyServerCertificate_OptionName)).ValueAsBoolean(false);            
 
             dataAccessProvider.Initialize(elementIdsMap,                
                 serverAddress,
@@ -81,7 +79,10 @@ namespace Ssz.Dcs.Addons.DataAccessClient
                 Environment.MachineName,
                 systemNameToConnect,
                 contextParams,
-                options,
+                new DataAccessProviderOptions
+                {
+                    DangerousAcceptAnyServerCertificate = dangerousAcceptAnyServerCertificatete
+                },
                 callbackDispatcher);
 
             CsvDb.CsvFileChanged += (sender, args) =>

@@ -70,6 +70,15 @@ namespace Ssz.Dcs.Addons.DataAccessClient.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Accept any server certificate (dangerous).
+        /// </summary>
+        public static string DangerousAcceptAnyServerCertificate_Option {
+            get {
+                return ResourceManager.GetString("DangerousAcceptAnyServerCertificate_Option", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Data access client.
         /// </summary>
         public static string DataAccessClientAddon_Desc {

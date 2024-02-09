@@ -32,6 +32,11 @@ namespace Ssz.Utils.Addons
         /// </summary>
         public static readonly string DataAccessClient_SystemNameToConnect_ToDisplay_OptionName = @"%(DataAccessClient_SystemNameToConnect_ToDisplay)";
 
+        /// <summary>
+        ///     Standard option name, that implementers can use
+        /// </summary>
+        public static readonly string DataAccessClient_DangerousAcceptAnyServerCertificate_OptionName = @"%(DataAccessClient_DangerousAcceptAnyServerCertificate)";
+
         public IDataAccessProvider? DataAccessProvider { get; protected set; }
 
         public bool IsAddonsPassthroughSupported { get; protected set; }

@@ -43,14 +43,14 @@ namespace Ssz.IdentityServer
 
             //context.LogProfileRequest(_logger);
 
-            string user = context.Subject.GetSubjectId().ToLowerInvariant();
+            string userLowerInvariant = context.Subject.GetSubjectId().ToLowerInvariant();
             bool isTestUser = false;
             List<Claim> claims = null!;
 
             if (_usersAndRolesInfo is not null && _usersAndRolesInfo.TestUsersIsEnabled)
             {
                 var testUsers = IdentityServerConfig.GetTestUsers(_configuration);
-                if (testUsers.TryGetValue(user, out var testUser))
+                if (testUsers.TryGetValue(userLowerInvariant, out var testUser))
                 {
                     isTestUser = true;
 
@@ -73,7 +73,7 @@ namespace Ssz.IdentityServer
 
             if (!isTestUser)
             {
-                claims = await LdapHelper.GetClaims(user, _configuration, _configurationProcessor, _logger);
+                claims = await LdapHelper.GetClaims(userLowerInvariant, _configuration, _configurationProcessor, _logger);
             }
 
             foreach (var claim in claims.Where(c => c.Type == JwtClaimTypes.Role && 
@@ -85,7 +85,7 @@ namespace Ssz.IdentityServer
             if (_usersAndRolesInfo is not null && _usersAndRolesInfo.SuperUserIsEnabled)
             {
                 string superUser = ConfigurationHelper.GetValue(_configuration, @"ActiveDirectory:SuperUser", @"");
-                if (superUser != @"" && String.Equals(user, superUser, StringComparison.InvariantCultureIgnoreCase))
+                if (superUser != @"" && String.Equals(userLowerInvariant, superUser, StringComparison.InvariantCultureIgnoreCase))
                 {
                     claims!.Add(new Claim(JwtClaimTypes.Role, @"SuperUser"));
                 }

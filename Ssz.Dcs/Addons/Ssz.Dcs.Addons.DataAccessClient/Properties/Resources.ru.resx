@@ -118,18 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ContextParams_Option" xml:space="preserve">
-    <value>Context params</value>
+    <value>Context Params</value>
+  </data>
+  <data name="DangerousAcceptAnyServerCertificate_Option" xml:space="preserve">
+    <value>Принимать любые сертификаты сервера (небезопасно)</value>
   </data>
   <data name="DataAccessClientAddon_Desc" xml:space="preserve">
-    <value>Data access клиент</value>
+    <value>Data Access клиент</value>
   </data>
   <data name="ServerAddress_Option" xml:space="preserve">
-    <value>Адрес data access сервера</value>
+    <value>Адрес Data Access сервера</value>
   </data>
   <data name="SystemNameToConnect_Option" xml:space="preserve">
-    <value>System name для подключения</value>
+    <value>System Name для подключения</value>
   </data>
   <data name="SystemNameToConnect_ToDisplay_Option" xml:space="preserve">
-    <value>System name для отображения пользователю</value>
+    <value>System Name для отображения пользователю</value>
   </data>
 </root>

@@ -120,6 +120,9 @@
   <data name="ContextParams_Option" xml:space="preserve">
     <value>Context params</value>
   </data>
+  <data name="DangerousAcceptAnyServerCertificate_Option" xml:space="preserve">
+    <value>Accept any server certificate (dangerous)</value>
+  </data>
   <data name="DataAccessClientAddon_Desc" xml:space="preserve">
     <value>Data access client</value>
   </data>
