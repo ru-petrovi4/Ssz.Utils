@@ -224,9 +224,12 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                         ExperionEventsJournalFilesImporterAddon.JournalFiles_Type_OptionName) ?? @"";
 
                 try
-                {
+                {                    
                     foreach (FileInfo fi in journalFilesDirectoryInfo.GetFiles())
                     {
+                        if (fi.LastWriteTimeUtc < maxProcessedTimeUtc)
+                            continue;
+
                         if (fi.Name.EndsWith(@".zip", StringComparison.InvariantCultureIgnoreCase))
                         {
                             using (var stream = fi.OpenRead())
@@ -234,6 +237,9 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                             {                                
                                 foreach (var entry in zipArchive.Entries)
                                 {
+                                    if (entry.LastWriteTime.UtcDateTime < maxProcessedTimeUtc)
+                                        continue;
+
                                     await ProcessFileAsync(entry,
                                                 null,
                                                 entry.Name,
@@ -265,7 +271,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                 catch (Exception ex)
                 {
                     LoggersSet.Logger.LogError(ex, "Directory processing error: " + journalFilesDirectoryInfo.FullName);
-                }                     
+                }
 
                 if (cancellationToken.IsCancellationRequested)
                     return;
@@ -298,135 +304,100 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
             double journalFilesDeleteScanPeriodSeconds = new Any(journalFilesDeleteScanPeriodSecondsString).ValueAsDouble(false);
             if (journalFilesDeleteScanPeriodSeconds > 0.0 && nowUtc - LastJournalFilesDeleteScanTimeUtc >= TimeSpan.FromSeconds(journalFilesDeleteScanPeriodSeconds))
             {
+                List<FileInfo> filesToDelete = new();
+
                 var journalFiles_Type = ((ExperionEventsJournalFilesImporterAddon)Addon).OptionsSubstituted.TryGetValue(
-                        ExperionEventsJournalFilesImporterAddon.JournalFiles_Type_OptionName) ?? @"";
-                switch (journalFiles_Type.ToUpperInvariant())
+                        ExperionEventsJournalFilesImporterAddon.JournalFiles_Type_OptionName) ?? @"";                
+
+                try
                 {
-                    case @"RPT":
-                        try
+                    foreach (FileInfo fi in journalFilesDirectoryInfo.GetFiles())
+                    {
+                        if (fi.LastWriteTimeUtc < maxProcessedTimeUtc)
                         {
-                            foreach (FileInfo fi in journalFilesDirectoryInfo.GetFiles())
+                            filesToDelete.Add(fi);
+                            continue;
+                        }
+
+                        var eventMessagesCollection = new EventMessagesCollection();
+
+                        if (fi.Name.EndsWith(@".zip", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            bool allOldFiles = true;
+
+                            using (var stream = fi.OpenRead())
+                            using (var zipArchive = ZipArchiveHelper.GetZipArchiveForRead(stream))
                             {
-                                if (!fi.Name.StartsWith(@"rpt", StringComparison.InvariantCultureIgnoreCase) ||
-                                        fi.Name.EndsWith(@".htm", StringComparison.InvariantCultureIgnoreCase))
-                                    continue;
-                                try
+                                foreach (var entry in zipArchive.Entries)
                                 {
-                                    using var fileNameScope = LoggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScope, fi.Name));
+                                    if (entry.LastWriteTime.UtcDateTime < maxProcessedTimeUtc)
+                                        continue;
 
-                                    var eventMessagesCollection = new EventMessagesCollection();
+                                    allOldFiles = false;
 
-                                    using (Stream stream = fi.OpenRead())
-                                    {
-                                        await ExperionEventsJournalRptFileHelper.ProcessFileAsync(stream,
-                                            defaultRptFiles_Encoding,
-                                            DateTime.MinValue,
-                                            Addon.OptionsSubstituted,
-                                            eventMessagesCollection.EventMessages,
-                                            LoggersSet,
-                                            cancellationToken);
-                                    }
-
-                                    var maxEventMessage = eventMessagesCollection.EventMessages.OrderByDescending(em => em.OccurrenceTimeUtc).FirstOrDefault();
-
-                                    if (maxEventMessage is not null && maxEventMessage.OccurrenceTimeUtc <= maxProcessedTimeUtc)
-                                        fi.Delete();
-                                }
-                                catch (Exception ex)
-                                {
-                                    LoggersSet.Logger.LogError(ex, "File processing error: " + fi.FullName);
+                                    await ProcessFileAsync(entry,
+                                                null,
+                                                entry.Name,
+                                                journalFiles_Type,
+                                                defaultRptFiles_Encoding,
+                                                maxProcessedTimeUtc,
+                                                Addon.OptionsSubstituted,
+                                                eventMessagesCollection.EventMessages,
+                                                LoggersSet,
+                                                cancellationToken);
                                 }
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            LoggersSet.Logger.LogError(ex, "Directory processing error: " + journalFilesDirectoryInfo.FullName);
-                        }
-                        break;
-                    case @"CSV":
-                        try
-                        {
-                            foreach (FileInfo fi in journalFilesDirectoryInfo.GetFiles())
+
+                            if (allOldFiles)
                             {
-                                if (!fi.Name.EndsWith(@".csv", StringComparison.InvariantCultureIgnoreCase))
-                                    continue;
-                                try
-                                {
-                                    using var fileNameScope = LoggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScope, fi.Name));
-
-                                    var eventMessagesCollection = new EventMessagesCollection();
-
-                                    using (Stream stream = fi.OpenRead())
-                                    {
-                                        await ExperionEventsJournalCsvFileHelper.ProcessFileAsync(stream,
-                                            Encoding.UTF8,
-                                            DateTime.MinValue,
-                                            Addon.OptionsSubstituted,
-                                            eventMessagesCollection.EventMessages,
-                                            LoggersSet,
-                                            cancellationToken);
-                                    }
-
-                                    var maxEventMessage = eventMessagesCollection.EventMessages.OrderByDescending(em => em.OccurrenceTimeUtc).FirstOrDefault();
-
-                                    if (maxEventMessage is not null && maxEventMessage.OccurrenceTimeUtc <= maxProcessedTimeUtc)
-                                        fi.Delete();
-                                }
-                                catch (Exception ex)
-                                {
-                                    LoggersSet.Logger.LogError(ex, "File processing error: " + fi.FullName);
-                                }
+                                filesToDelete.Add(fi);
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            LoggersSet.Logger.LogError(ex, "Directory processing error: " + journalFilesDirectoryInfo.FullName);
-                        }
-                        break;
-                    case @"HTM":
-                        try
-                        {
-                            Encoding defaultEncoding = Encoding.UTF8;
-                            LoggersSet.Logger.LogDebug("Default encoding for files: " + defaultEncoding.EncodingName);
-
-                            foreach (FileInfo fi in journalFilesDirectoryInfo.GetFiles())
+                            else
                             {
-                                if (!fi.Name.EndsWith(@".htm", StringComparison.InvariantCultureIgnoreCase))
-                                    continue;
-                                try
-                                {
-                                    using var fileNameScope = LoggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScope, fi.Name));
+                                var maxEventMessage = eventMessagesCollection.EventMessages.OrderByDescending(em => em.OccurrenceTimeUtc).FirstOrDefault();
 
-                                    var eventMessagesCollection = new EventMessagesCollection();
-
-                                    using (Stream stream = fi.OpenRead())
-                                    {
-                                        await ExperionEventsJournalHtmFileHelper.ProcessFileAsync(stream,
-                                            Encoding.UTF8,
-                                            DateTime.MinValue,
-                                            Addon.OptionsSubstituted,
-                                            eventMessagesCollection.EventMessages,
-                                            LoggersSet,
-                                            cancellationToken);
-                                    }
-
-                                    var maxEventMessage = eventMessagesCollection.EventMessages.OrderByDescending(em => em.OccurrenceTimeUtc).FirstOrDefault();
-
-                                    if (maxEventMessage is not null && maxEventMessage.OccurrenceTimeUtc <= maxProcessedTimeUtc)
-                                        fi.Delete();
-                                }
-                                catch (Exception ex)
-                                {
-                                    LoggersSet.Logger.LogError(ex, "File processing error: " + fi.FullName);
-                                }
-                            }
+                                if (maxEventMessage is not null && maxEventMessage.OccurrenceTimeUtc <= maxProcessedTimeUtc)
+                                    filesToDelete.Add(fi);
+                            }                           
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            LoggersSet.Logger.LogError(ex, "Directory processing error: " + journalFilesDirectoryInfo.FullName);
-                        }
-                        break;
-                }                
+                            await ProcessFileAsync(null,
+                                                fi,
+                                                fi.Name,
+                                                journalFiles_Type,
+                                                defaultRptFiles_Encoding,
+                                                maxProcessedTimeUtc,
+                                                Addon.OptionsSubstituted,
+                                                eventMessagesCollection.EventMessages,
+                                                LoggersSet,
+                                                cancellationToken);
+
+                            var maxEventMessage = eventMessagesCollection.EventMessages.OrderByDescending(em => em.OccurrenceTimeUtc).FirstOrDefault();
+
+                            if (maxEventMessage is not null && maxEventMessage.OccurrenceTimeUtc <= maxProcessedTimeUtc)
+                                filesToDelete.Add(fi);
+                        }                        
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LoggersSet.Logger.LogError(ex, "Directory processing error: " + journalFilesDirectoryInfo.FullName);
+                }
+
+                if (cancellationToken.IsCancellationRequested)
+                    return;
+
+                foreach (var fileToDelete in filesToDelete)
+                {
+                    try
+                    {
+                        fileToDelete.Delete();
+                    }
+                    catch
+                    {
+                    }
+                }          
 
                 LastJournalFilesDeleteScanTimeUtc = nowUtc;
             }
@@ -473,7 +444,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                     }
                     catch (Exception ex)
                     {
-                        loggersSet.Logger.LogError(ex, "File processing error: " + fi.FullName);
+                        loggersSet.Logger.LogError(ex, "File processing error: " + fileName);
                     }
                     break;
                 case @"CSV":
@@ -499,7 +470,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                     }
                     catch (Exception ex)
                     {
-                        loggersSet.Logger.LogError(ex, "File processing error: " + fi.FullName);
+                        loggersSet.Logger.LogError(ex, "File processing error: " + fileName);
                     }
                     break;
                 case @"HTM":
@@ -525,7 +496,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                     }
                     catch (Exception ex)
                     {
-                        loggersSet.Logger.LogError(ex, "File processing error: " + fi.FullName);
+                        loggersSet.Logger.LogError(ex, "File processing error: " + fileName);
                     }
                     break;
             }
@@ -552,7 +523,9 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
 
         private Task<Task>? _workingTask;
 
-        private CancellationTokenSource? _cancellationTokenSource;        
+        private CancellationTokenSource? _cancellationTokenSource;
+
+        //private HashSet<(string, DateTime)>? _processedFiles = new();
 
         #endregion
     }
