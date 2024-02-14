@@ -1,4 +1,4 @@
-﻿using Ssz.Utils.Serialization; using System; using System.Collections.Generic;
+﻿using Ssz.Utils.Serialization; using System; using System.Collections; using System.Collections.Generic;
 using System.ComponentModel; using System.Globalization;
 using System.IO;
 using System.Linq; using System.Runtime.CompilerServices; using System.Runtime.InteropServices;
@@ -463,11 +463,9 @@ namespace Ssz.Utils {
                 case TypeCode.Char:
                     return left.StorageChar == right.StorageChar;
                 case TypeCode.Single:
-                    {                         float leftF = left.StorageSingle;                         float rightF = right.StorageSingle;                         if (Single.IsNaN(rightF)) return Single.IsNaN(leftF);                         if (Single.IsPositiveInfinity(rightF)) return Single.IsPositiveInfinity(leftF);                         if (Single.IsNegativeInfinity(rightF)) return Single.IsNegativeInfinity(leftF);                         return Math.Abs(leftF - rightF) <= Single.Epsilon * 100;
-                    }
+                    return left.StorageSingle == right.StorageSingle;                    
                 case TypeCode.Double:
-                    {                         double leftD = left.StorageDouble;                         double rightD = right.StorageDouble;                         if (Double.IsNaN(rightD)) return Double.IsNaN(leftD);                         if (Double.IsPositiveInfinity(rightD)) return Double.IsPositiveInfinity(leftD);                         if (Double.IsNegativeInfinity(rightD)) return Double.IsNegativeInfinity(leftD);                         return Math.Abs(leftD - rightD) <= Double.Epsilon * 100;
-                    }
+                    return left.StorageDouble == right.StorageDouble;                    
                 case TypeCode.Empty:
                     return true;
                 case TypeCode.DBNull:
@@ -487,7 +485,11 @@ namespace Ssz.Utils {
                 case TypeCode.List:
                     return ((List<Any>)left.StorageObject!).SequenceEqual((List<Any>)right.StorageObject!);
                 case TypeCode.Object:
-                    return left.StorageObject == right.StorageObject;
+                    {                        
+                        if (left.StorageObject is IStructuralEquatable leftStructuralEquatable)
+                            return leftStructuralEquatable.Equals(right.StorageObject, StructuralComparisons.StructuralEqualityComparer);                        
+                        return left.StorageObject == right.StorageObject;
+                    }
                 default:
                     throw new InvalidOperationException();
             }         }          /// <summary>                 /// </summary>         /// <param name="left"></param>         /// <param name="right"></param>         /// <returns></returns>         public static bool operator !=(Any left, Any right)         {             return !(left == right);         }
@@ -512,36 +514,30 @@ namespace Ssz.Utils {
                 case TypeCode.Char:
                     return ValueAs<Char>(false).CompareTo(that.ValueAs<Char>(false));
                 case TypeCode.Single:
-                    {                         double d = ValueAsDouble(false);
-                        double thatD = that.ValueAsDouble(false);
-                        if (Double.IsNaN(thatD))
-                            return Double.IsNaN(d) ? 0 : 1;
-                        if (Double.IsPositiveInfinity(thatD))
-                            return Double.IsPositiveInfinity(d) ? 0 : -1;
-                        if (Double.IsNegativeInfinity(thatD))
-                            return Double.IsNegativeInfinity(d) ? 0 : 1;
-                        double diff = d - thatD;
-                        if (diff < -deadband - Double.Epsilon * 100)
+                    {                         float d = ValueAsSingle(false);
+                        float thatD = that.ValueAsSingle(false);
+                        float diff = d - thatD;
+                        if (diff > -deadband - Single.Epsilon * 100 &&
+                                diff < deadband + Single.Epsilon * 100)
+                            return 0;
+                        if (diff <= -deadband - Single.Epsilon * 100)
                             return -1;
-                        if (diff > deadband + Double.Epsilon * 100)
+                        if (diff >= deadband + Single.Epsilon * 100)
                             return 1;
-                        return 0;
+                        return -1;
                     }
                 case TypeCode.Double:
                     {                         double d = ValueAsDouble(false);
-                        double thatD = that.ValueAsDouble(false);
-                        if (Double.IsNaN(thatD))
-                            return Double.IsNaN(d) ? 0 : 1;
-                        if (Double.IsPositiveInfinity(thatD))
-                            return Double.IsPositiveInfinity(d) ? 0 : -1;
-                        if (Double.IsNegativeInfinity(thatD))
-                            return Double.IsNegativeInfinity(d) ? 0 : 1;
+                        double thatD = that.ValueAsDouble(false);                        
                         double diff = d - thatD;
+                        if (diff >= -deadband - Double.Epsilon * 100 &&
+                                diff <= deadband + Double.Epsilon * 100)
+                            return 0;
                         if (diff < -deadband - Double.Epsilon * 100)
                             return -1;
                         if (diff > deadband + Double.Epsilon * 100)
                             return 1;
-                        return 0;
+                        return -1;
                     }
                 case TypeCode.Empty:
                     return that.ValueTypeCode == TypeCode.Empty ? 0 : 1;
@@ -563,13 +559,18 @@ namespace Ssz.Utils {
                     return ValueAsList().SequenceEqual(that.ValueAsList()) ? 0 : 1;
                 case TypeCode.Object:
                     {
-                        if (StorageObject is IComparable comparable)
-                            return comparable.CompareTo(that.ValueAsObject());
+                        var thatObject = that.ValueAsObject();
+                        if (thatObject is null)
+                            return -1;
+                        if (StorageObject is IStructuralComparable thisStructuralComparable)
+                            return thisStructuralComparable.CompareTo(thatObject, StructuralComparisons.StructuralComparer);
+                        if (StorageObject is IComparable thisComparable)
+                            return thisComparable.CompareTo(thatObject);
                         return ValueAsString(false).CompareTo(that.ValueAsString(false));
-                    }
+                    }                 
                 default:
                     throw new InvalidOperationException();
-            }         }
+            }         }        
 
         /// <summary>         ///     Compares the current instance with another object of the same type and returns an integer that indicates          ///     whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.         ///     Uses ValueAsDouble(false), ValueAsUInt32(false), ValueAsString(false) depending of ValueTransportType.                 /// </summary>         /// <param name="that"></param>                 /// <returns></returns>         public int CompareTo(Any that)         {
             return CompareTo(that, 0.0);         }
