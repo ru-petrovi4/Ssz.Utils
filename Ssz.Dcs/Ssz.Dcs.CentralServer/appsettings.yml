@@ -44,5 +44,5 @@ DbType: "sqlite"
 ConnectionStrings: 
 #  MainDbConnection: "Host=localhost;Username=postgres;Password=postgres;Database=deltasim1;CommandTimeout=3600"  
 ConfigurationCrypter: 
-  adapterclient_password: "1234567890"
+  adapterclient_password: ""
 ---
