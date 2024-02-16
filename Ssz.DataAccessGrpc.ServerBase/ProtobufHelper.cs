@@ -81,7 +81,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 }
                 else
                 {
-                    length = Constants.MaxReplyObjectSize;
+                    length = Constants.MaxEventMessagesCount;
                     eventMessagesCollection.IsIncomplete = true;
                 }
                 eventMessagesCollection.EventMessages.AddRange(eventMessages.Skip(index).Take(length));
