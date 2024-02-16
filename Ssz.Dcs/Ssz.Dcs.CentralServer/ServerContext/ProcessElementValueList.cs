@@ -120,6 +120,27 @@ namespace Ssz.Dcs.CentralServer
         /// <summary>
         ///     Returns failed AliasResults only.
         /// </summary>
+        /// <param name="elementListItems"></param>
+        /// <returns></returns>
+        protected override List<AliasResult> OnRemoveElementListItemsFromList(List<ProcessElementValueListItem> elementListItems)
+        {
+            List<AliasResult> results = new List<AliasResult>();
+
+            foreach (ProcessElementValueListItem item in elementListItems)
+            {
+                foreach (ValueSubscription valueSubscription in item.ValueSubscriptionsCollection)
+                {
+                    valueSubscription.Dispose();
+                }
+                item.ValueSubscriptionsCollection.Clear();
+            }
+
+            return results;
+        }
+
+        /// <summary>
+        ///     Returns failed AliasResults only.
+        /// </summary>
         /// <param name="items"></param>
         /// <returns></returns>
         protected override async Task<List<AliasResult>> OnWriteValuesAsync(List<ProcessElementValueListItem> items)
