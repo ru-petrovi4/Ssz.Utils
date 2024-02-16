@@ -6,6 +6,7 @@
 **/Setup/Output/
 **/Debug/
 **/Release/
+**/Release_Prod/
 **/obj/
 **/lost+found/
 **/vcredist/
