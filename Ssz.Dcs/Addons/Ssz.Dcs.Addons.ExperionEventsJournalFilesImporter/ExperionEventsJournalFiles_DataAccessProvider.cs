@@ -218,14 +218,12 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
             double scanPeriodSeconds = new Any(scanPeriodSecondsString).ValueAsDouble(false);
             if (scanPeriodSeconds > 0.0 && nowUtc - LastScanTimeUtc >= TimeSpan.FromSeconds(scanPeriodSeconds))
             {
-                var eventMessagesCollection = new EventMessagesCollection();
-
                 var journalFiles_Type = ((ExperionEventsJournalFilesImporterAddon)Addon).OptionsSubstituted.TryGetValue(
                         ExperionEventsJournalFilesImporterAddon.JournalFiles_Type_OptionName) ?? @"";
 
                 try
                 {                    
-                    foreach (FileInfo fi in journalFilesDirectoryInfo.GetFiles())
+                    foreach (FileInfo fi in journalFilesDirectoryInfo.GetFiles().OrderBy(fi => fi.LastWriteTimeUtc))
                     {
                         if (fi.LastWriteTimeUtc < maxProcessedTimeUtc)
                             continue;
@@ -240,6 +238,8 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                                     if (entry.LastWriteTime.UtcDateTime < maxProcessedTimeUtc)
                                         continue;
 
+                                    var eventMessagesCollection = new EventMessagesCollection();
+
                                     await ProcessFileAsync(entry,
                                                 null,
                                                 entry.Name,
@@ -249,12 +249,36 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                                                 Addon.OptionsSubstituted,
                                                 eventMessagesCollection.EventMessages,
                                                 LoggersSet,
-                                                cancellationToken);                                    
+                                                cancellationToken);
+
+                                    if (cancellationToken.IsCancellationRequested)
+                                        return;
+
+                                    if (eventMessagesCollection.EventMessages.Count > 0)
+                                    {
+                                        var сallbackDispatcher = CallbackDispatcher;
+                                        if (сallbackDispatcher is not null)
+                                        {
+                                            ElementIdsMap?.AddCommonFieldsToEventMessagesCollection(eventMessagesCollection);
+                                            try
+                                            {
+                                                сallbackDispatcher.BeginInvoke(ct =>
+                                                {
+                                                    EventMessagesCallback(this, new EventMessagesCallbackEventArgs { EventMessagesCollection = eventMessagesCollection });
+                                                });
+                                            }
+                                            catch (Exception)
+                                            {
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
                         else
                         {
+                            var eventMessagesCollection = new EventMessagesCollection();
+
                             await ProcessFileAsync(null,
                                                 fi,
                                                 fi.Name,
@@ -265,35 +289,35 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                                                 eventMessagesCollection.EventMessages,
                                                 LoggersSet,
                                                 cancellationToken);
+
+                            if (cancellationToken.IsCancellationRequested)
+                                return;
+
+                            if (eventMessagesCollection.EventMessages.Count > 0)
+                            {
+                                var сallbackDispatcher = CallbackDispatcher;
+                                if (сallbackDispatcher is not null)
+                                {
+                                    ElementIdsMap?.AddCommonFieldsToEventMessagesCollection(eventMessagesCollection);
+                                    try
+                                    {
+                                        сallbackDispatcher.BeginInvoke(ct =>
+                                        {
+                                            EventMessagesCallback(this, new EventMessagesCallbackEventArgs { EventMessagesCollection = eventMessagesCollection });
+                                        });
+                                    }
+                                    catch (Exception)
+                                    {
+                                    }
+                                }
+                            }
                         }                        
                     }
                 }
                 catch (Exception ex)
                 {
                     LoggersSet.Logger.LogError(ex, "Directory processing error: " + journalFilesDirectoryInfo.FullName);
-                }
-
-                if (cancellationToken.IsCancellationRequested)
-                    return;
-
-                if (eventMessagesCollection.EventMessages.Count > 0)
-                {
-                    var сallbackDispatcher = CallbackDispatcher;
-                    if (сallbackDispatcher is not null)
-                    {
-                        ElementIdsMap?.AddCommonFieldsToEventMessagesCollection(eventMessagesCollection);
-                        try
-                        {
-                            сallbackDispatcher.BeginInvoke(ct =>
-                            {
-                                EventMessagesCallback(this, new EventMessagesCallbackEventArgs { EventMessagesCollection = eventMessagesCollection });
-                            });
-                        }
-                        catch (Exception)
-                        {
-                        }
-                    }
-                }
+                }                
 
                 LastScanTimeUtc = nowUtc;
             }
