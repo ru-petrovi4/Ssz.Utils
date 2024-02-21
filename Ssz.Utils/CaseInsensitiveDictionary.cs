@@ -66,6 +66,11 @@ namespace Ssz.Utils
             return result;
         }
 
+        public override string ToString()
+        {
+            return NameValueCollectionHelper.GetNameValueCollectionString(this.Select(kvp => (kvp.Key, (string?)(new Any(kvp.Value).ValueAsString(false)))));
+        }
+
         #endregion
     }
 }

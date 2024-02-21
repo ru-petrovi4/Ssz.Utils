@@ -222,7 +222,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                         ExperionEventsJournalFilesImporterAddon.JournalFiles_Type_OptionName) ?? @"";
 
                 try
-                {                    
+                { 
                     foreach (FileInfo fi in journalFilesDirectoryInfo.GetFiles().OrderBy(fi => fi.LastWriteTimeUtc))
                     {
                         if (fi.LastWriteTimeUtc < maxProcessedTimeUtc)
@@ -256,6 +256,9 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
 
                                     if (eventMessagesCollection.EventMessages.Count > 0)
                                     {
+                                        var lastOccurrenceTimeUtc = eventMessagesCollection.EventMessages.Last().OccurrenceTimeUtc;
+                                        if (lastOccurrenceTimeUtc > maxProcessedTimeUtc)
+                                            maxProcessedTimeUtc = lastOccurrenceTimeUtc;
                                         var сallbackDispatcher = CallbackDispatcher;
                                         if (сallbackDispatcher is not null)
                                         {
@@ -295,6 +298,9 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
 
                             if (eventMessagesCollection.EventMessages.Count > 0)
                             {
+                                var lastOccurrenceTimeUtc = eventMessagesCollection.EventMessages.Last().OccurrenceTimeUtc;
+                                if (lastOccurrenceTimeUtc > maxProcessedTimeUtc)
+                                    maxProcessedTimeUtc = lastOccurrenceTimeUtc;
                                 var сallbackDispatcher = CallbackDispatcher;
                                 if (сallbackDispatcher is not null)
                                 {
