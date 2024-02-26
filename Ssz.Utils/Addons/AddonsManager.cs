@@ -476,8 +476,8 @@ namespace Ssz.Utils.Addons
             if (String.IsNullOrEmpty(addonIdentifier))
                 return null;
 
-            var addonsCopy = _addonsThreadSafe;
-            TAddon? addon = addonsCopy.OfType<TAddon>()
+            var addonsThreadSafe = _addonsThreadSafe;
+            TAddon? addon = addonsThreadSafe.OfType<TAddon>()
                     .FirstOrDefault(a => String.Equals(a.Identifier, addonIdentifier, StringComparison.InvariantCultureIgnoreCase));
             if (addon is null)
                 return null;

@@ -750,7 +750,7 @@ namespace Ssz.Utils {
             }
 
             TypeCode asTypeCode;
-            if (asType.IsGenericType)             {                 return null;
+            if (asType.IsGenericType)             {                 return ValueAsObject(asType, stringIsLocalized);
             }
             
             switch (asType.Name)
