@@ -37,6 +37,9 @@ namespace Ssz.Utils.Addons
         /// </summary>
         public static readonly string DataAccessClient_DangerousAcceptAnyServerCertificate_OptionName = @"%(DataAccessClient_DangerousAcceptAnyServerCertificate)";
 
+        /// <summary>
+        ///     Not null after InitializeDataAccessProvider(...)
+        /// </summary>
         public IDataAccessProvider? DataAccessProvider { get; protected set; }
 
         public bool IsAddonsPassthroughSupported { get; protected set; }
