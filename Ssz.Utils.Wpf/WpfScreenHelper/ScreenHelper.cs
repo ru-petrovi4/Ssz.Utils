@@ -149,11 +149,10 @@ namespace Ssz.Utils.Wpf
         /// <param name="frameworkElement"></param>
         /// <returns></returns>
         public static Rect GetRect(FrameworkElement frameworkElement)
-        {
-            var window = Window.GetWindow(frameworkElement);            
-            Point p1 = frameworkElement.TranslatePoint(new Point(0, 0), window);
-            Point p2 = frameworkElement.TranslatePoint(new Point(frameworkElement.ActualWidth, frameworkElement.ActualHeight), window);
-            return new Rect(window.Left + p1.X, window.Top + p1.Y, p2.X - p1.X, p2.Y - p1.Y);
+        {            
+            Point p1 = frameworkElement.PointToScreen(new Point(0, 0));
+            Point p2 = frameworkElement.PointToScreen(new Point(frameworkElement.ActualWidth, frameworkElement.ActualHeight));
+            return new Rect(p1.X / PrimaryScreenScaleX, p1.Y / PrimaryScreenScaleY, (p2.X - p1.X) / PrimaryScreenScaleX, (p2.Y - p1.Y) / PrimaryScreenScaleY);
         }
 
         public static Rect GetRect(Window window, Rect rectInPixels)
