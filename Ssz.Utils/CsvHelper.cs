@@ -85,11 +85,11 @@ namespace Ssz.Utils
             if (separator.Length != 1) throw new InvalidOperationException();
             if (sourceString is null) return @"";
             if (sourceString == @"") return "\"\"";
-
-            sourceString = TextFileHelper.NormalizeNewLine(sourceString);
+            
             sourceString = sourceString.Replace("\"", "\"\"");
             return sourceString.Contains(separator) || sourceString.Contains('\"') 
-                || sourceString.Contains('\n')
+                || sourceString.Contains('\n')                
+                || sourceString.Contains('\r')
                 || sourceString.Contains('\\')
                 || sourceString.Trim() != sourceString
                 ? "\"" + sourceString + "\""

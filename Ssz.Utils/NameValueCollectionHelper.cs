@@ -187,6 +187,50 @@ namespace Ssz.Utils
 
         /// <summary>        
         /// </summary>
+        /// <param name="nameValueCollection"></param>
+        /// <returns></returns>
+        public static string GetNameValueCollectionStringToDisplay(Dictionary<string, string?> nameValueCollection)
+        {
+            if (nameValueCollection.Count == 0) return "";
+
+            var items = new List<string>();
+
+            foreach (var kvp in nameValueCollection.OrderBy(i => i.Key))
+            {
+                if (kvp.Value is null)
+                {
+                    items.Add(kvp.Key);
+                }
+                else
+                {
+                    items.Add(kvp.Key + @": " + kvp.Value);
+                }
+            }
+
+            return String.Join("; ", items);
+        }
+
+        public static string GetNameValueCollectionStringToDisplay(IEnumerable<(string, string?)> nameValueCollection)
+        {
+            var items = new List<string>();
+
+            foreach (var kvp in nameValueCollection)
+            {
+                if (kvp.Item2 is null)
+                {
+                    items.Add(kvp.Item1);
+                }
+                else
+                {
+                    items.Add(kvp.Item1 + @": " + kvp.Item2);
+                }
+            }
+
+            return String.Join("; ", items);
+        }        
+
+        /// <summary>        
+        /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
         public static bool CanGetNameValueCollection(object? obj)

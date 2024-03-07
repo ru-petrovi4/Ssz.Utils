@@ -396,6 +396,16 @@ namespace Ssz.Utils.Addons
                     if (configurationFile.FileData is null)
                         throw new InvalidOperationException("configurationFile.FileData is null");
 
+                    if (configurationFile.Name.EndsWith(@".csv", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        string fileDataString = Encoding.UTF8.GetString(configurationFile.FileData);
+                        fileDataString = fileDataString
+                            .Replace("\r\n", Environment.NewLine)
+                            .Replace("\n", Environment.NewLine)
+                            .Replace("\r", Environment.NewLine);
+                        configurationFile.FileData = StringHelper.GetUTF8BytesWithBomPreamble(fileDataString);
+                    }
+
                     var fileInfo = new FileInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, configurationFile.GetPathRelativeToRootDirectory_PlatformSpecific()));
                     if (fileInfo.Exists)
                     {

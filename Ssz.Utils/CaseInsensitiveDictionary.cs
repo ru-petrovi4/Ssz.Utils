@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 
 namespace Ssz.Utils
@@ -8,6 +10,7 @@ namespace Ssz.Utils
     ///     Case Insensitive Dictionary
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [TypeConverter(typeof(ToStringTypeConverter))]
     public class CaseInsensitiveDictionary<T> : Dictionary<string, T>        
     {
         #region construction and destruction
@@ -68,9 +71,9 @@ namespace Ssz.Utils
 
         public override string ToString()
         {
-            return NameValueCollectionHelper.GetNameValueCollectionString(this.Select(kvp => (kvp.Key, (string?)(new Any(kvp.Value).ValueAsString(false)))));
+            return NameValueCollectionHelper.GetNameValueCollectionStringToDisplay(this.Select(kvp => (kvp.Key, (string?)(new Any(kvp.Value).ValueAsString(false)))));
         }
 
         #endregion
-    }
+    }    
 }
