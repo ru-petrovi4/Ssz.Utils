@@ -399,10 +399,7 @@ namespace Ssz.Utils.Addons
                     if (configurationFile.Name.EndsWith(@".csv", StringComparison.InvariantCultureIgnoreCase))
                     {
                         string fileDataString = Encoding.UTF8.GetString(configurationFile.FileData);
-                        fileDataString = fileDataString
-                            .Replace("\r\n", Environment.NewLine)
-                            .Replace("\n", Environment.NewLine)
-                            .Replace("\r", Environment.NewLine);
+                        fileDataString = TextFileHelper.NormalizeNewLineForCurrentOs(fileDataString);
                         configurationFile.FileData = StringHelper.GetUTF8BytesWithBomPreamble(fileDataString);
                     }
 
