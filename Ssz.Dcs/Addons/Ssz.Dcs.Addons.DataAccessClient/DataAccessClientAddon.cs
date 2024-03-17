@@ -71,6 +71,17 @@ namespace Ssz.Dcs.Addons.DataAccessClient
             var elementIdsMap = ActivatorUtilities.CreateInstance<ElementIdsMap>(ServiceProvider);
             elementIdsMap.Initialize(CsvDb.GetData(ElementIdsMap.StandardMapFileName), CsvDb.GetData(ElementIdsMap.StandardTagsFileName), CsvDb);
 
+            dataAccessProvider.ValueSubscriptionsUpdated += (s, e) =>
+            {
+                if (dataAccessProvider.IsConnected)
+                    LastWorkTimeUtc = DateTime.UtcNow;
+            };
+            dataAccessProvider.EventMessagesCallback += (s, e) =>
+            {
+                if (dataAccessProvider.IsConnected)
+                    LastWorkTimeUtc = DateTime.UtcNow;
+            };
+
             bool dangerousAcceptAnyServerCertificatete = new Any(OptionsSubstituted.TryGetValue(DataAccessClient_DangerousAcceptAnyServerCertificate_OptionName)).ValueAsBoolean(false);            
 
             dataAccessProvider.Initialize(elementIdsMap,                

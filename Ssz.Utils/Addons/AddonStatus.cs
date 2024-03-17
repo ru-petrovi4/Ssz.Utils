@@ -7,6 +7,16 @@ namespace Ssz.Utils.Addons
 {
     public class AddonStatus : IOwnedDataSerializable
     {
+        /// <summary>
+        ///     CPU usage percent.
+        /// </summary>
+        public const string ParamName_Cpu = @"Cpu";
+
+        /// <summary>
+        ///     The amount of private memory, in bytes, allocated for the associated process.
+        /// </summary>
+        public const string ParamName_PrivateMemorySize64 = @"PrivateMemorySize64";
+
         #region public functions
 
         /// <summary>        
@@ -55,6 +65,8 @@ namespace Ssz.Utils.Addons
         /// </summary>
         public string Details { get; set; } = @"";
 
+        public CaseInsensitiveDictionary<Any> Params { get; set; } = new();
+
         public void SerializeOwnedData(SerializationWriter writer, object? context)
         {
             writer.Write(SourcePath);
@@ -64,25 +76,33 @@ namespace Ssz.Utils.Addons
             writer.Write(AddonIdentifier);
             writer.Write(AddonInstanceId);
             writer.WriteNullable(LastWorkTimeUtc);
-            writer.Write(StateCode);            
+            writer.Write(StateCode);
             writer.Write(Info);
             writer.Write(Label);
             writer.Write(Details);
+            writer.WriteDictionaryOfOwnedDataSerializable(Params, null);
         }
 
         public virtual void DeserializeOwnedData(SerializationReader reader, object? context)
         {
-            SourcePath = reader.ReadString();
-            SourceId = reader.ReadString();
-            SourceIdToDisplay = reader.ReadString();
-            AddonGuid = reader.ReadGuid();
-            AddonIdentifier = reader.ReadString();
-            AddonInstanceId = reader.ReadString();
-            LastWorkTimeUtc = reader.ReadNullable<DateTime>();
-            StateCode = reader.ReadUInt32();
-            Info = reader.ReadString();
-            Label = reader.ReadString();
-            Details = reader.ReadString();
+            try
+            {
+                SourcePath = reader.ReadString();
+                SourceId = reader.ReadString();
+                SourceIdToDisplay = reader.ReadString();
+                AddonGuid = reader.ReadGuid();
+                AddonIdentifier = reader.ReadString();
+                AddonInstanceId = reader.ReadString();
+                LastWorkTimeUtc = reader.ReadNullable<DateTime>();
+                StateCode = reader.ReadUInt32();
+                Info = reader.ReadString();
+                Label = reader.ReadString();
+                Details = reader.ReadString();
+                Params = new CaseInsensitiveDictionary<Any>(reader.ReadDictionaryOfOwnedDataSerializable<Any>(() => new Any(), null)!);
+            }
+            catch (BlockEndingException)
+            {
+            }
         }
 
         #endregion

@@ -15,12 +15,7 @@ namespace Ssz.Utils
         #region construction and destruction
 
         public SszExpression()
-        {            
-            IsValidInternal = false;
-            _isUiToDataSourceWarning = false;
-            _expressionType = ExpressinType.Const;
-            _lambdaExpression = null;
-            _delegate = null;
+        {   
         }
 
         public SszExpression(string expressionString)
@@ -31,8 +26,7 @@ namespace Ssz.Utils
         public SszExpression(SszExpression that)
         {
             _expressionString = that._expressionString;
-            IsValidInternal = that.IsValidInternal;
-            _isUiToDataSourceWarning = that._isUiToDataSourceWarning;
+            IsValidInternal = that.IsValidInternal;            
             _expressionType = that._expressionType;
             _lambdaExpression = that._lambdaExpression;
             _delegate = that._delegate;
@@ -59,7 +53,7 @@ namespace Ssz.Utils
             if (_expressionType == ExpressinType.Const && _hasLastResult)
                 return _lastResult;
 
-            if (_expressionType == ExpressinType.Function && _hasLastResult && dataSourceValues is not null &&
+            if (_expressionType == ExpressinType.PureFunction && _hasLastResult && dataSourceValues is not null &&
                     _lastDataSourceValues is not null &&
                     dataSourceValues.SequenceEqual(_lastDataSourceValues) &&
                     Equals(userValue, _lastUserValue))
@@ -163,7 +157,7 @@ namespace Ssz.Utils
             return 0;
         }
 
-        public string ExpressionString
+        public virtual string ExpressionString
         {
             get => _expressionString;
             set
@@ -175,16 +169,12 @@ namespace Ssz.Utils
                 _delegate = null;
                 if (_expressionString.Contains(@"Now") ||
                     _expressionString.Contains(@"Random"))
-                    _expressionType = ExpressinType.Dynamic;
+                    _expressionType = ExpressinType.Other;
                 else if (_expressionString.Contains(@"[") ||
                          _expressionString.Contains(@"user"))
-                    _expressionType = ExpressinType.Function;
+                    _expressionType = ExpressinType.PureFunction;
                 else
-                    _expressionType = ExpressinType.Const;
-                if (!string.IsNullOrEmpty(_expressionString))
-                    IsUiToDataSourceWarning = _expressionString.Contains('[') && _expressionString.Contains(']');
-                else
-                    IsUiToDataSourceWarning = false;
+                    _expressionType = ExpressinType.Const;                
                 OnPropertyChanged(nameof(IsValid));
             }
         }
@@ -197,13 +187,7 @@ namespace Ssz.Utils
 
                 return IsValidInternal;
             }            
-        }
-
-        public virtual bool IsUiToDataSourceWarning
-        {
-            get => _isUiToDataSourceWarning;
-            set => SetValue(ref _isUiToDataSourceWarning, value);
-        }
+        }        
 
         public int GetInputsCount()
         {
@@ -289,8 +273,7 @@ namespace Ssz.Utils
         private object[]? _lastDataSourceValues;
         private object? _lastUserValue;
 
-        private string _expressionString = @"";
-        private bool _isUiToDataSourceWarning;
+        private string _expressionString = @"";        
         private ExpressinType _expressionType;
         private LambdaExpression? _lambdaExpression;
         private Delegate? _delegate;
@@ -299,9 +282,9 @@ namespace Ssz.Utils
 
         private enum ExpressinType
         {
-            Dynamic, // DateTime.Now or Random
-            Function, // Function of inputs only
-            Const // Const value
+            Const = 0, // Const value
+            PureFunction, // Function of inputs only   
+            Other, // DateTime.Now or Random                     
         }
     }
 }

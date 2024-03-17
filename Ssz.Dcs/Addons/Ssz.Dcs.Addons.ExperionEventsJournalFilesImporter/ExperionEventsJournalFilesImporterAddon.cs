@@ -95,48 +95,5 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
 
             DataAccessProvider = dataAccessProvider;
         }
-
-        public override AddonStatus GetAddonStatus()
-        {
-            if (!IsInitialized)
-                return new AddonStatus
-                {
-                    AddonGuid = Guid,
-                    AddonIdentifier = Identifier,
-                    AddonInstanceId = InstanceId,
-                    StateCode = AddonStateCodes.STATE_INITIALIZING,
-                    Label = Ssz.Utils.Properties.Resources.Addon_STATE_INITIALIZING
-                };
-
-            if (DataAccessProvider is null)
-                return new AddonStatus
-                {
-                    AddonGuid = Guid,
-                    AddonIdentifier = Identifier,
-                    AddonInstanceId = InstanceId,
-                    StateCode = AddonStateCodes.STATE_NOT_OPERATIONAL,
-                    Label = Ssz.Utils.Properties.Resources.Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNull
-                };
-
-            if (!DataAccessProvider.IsConnected)
-                return new AddonStatus
-                {
-                    AddonGuid = Guid,
-                    AddonIdentifier = Identifier,
-                    AddonInstanceId = InstanceId,
-                    StateCode = AddonStateCodes.STATE_NOT_OPERATIONAL,
-                    Label = Ssz.Utils.Properties.Resources.Addon_STATE_NOT_OPERATIONAL_DataAccessProviderIsNotConnected
-                };
-
-            return new AddonStatus
-            {
-                AddonGuid = Guid,
-                AddonIdentifier = Identifier,
-                AddonInstanceId = InstanceId,
-                LastWorkTimeUtc = ((ExperionEventsJournalFiles_DataAccessProvider)DataAccessProvider).LastScanTimeUtc,
-                StateCode = AddonStateCodes.STATE_OPERATIONAL,
-                Label = Ssz.Utils.Properties.Resources.Addon_STATE_OPERATIONAL_DataAccessProviderIsConnected
-            };
-        }
     }
 }

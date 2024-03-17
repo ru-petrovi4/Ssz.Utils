@@ -326,6 +326,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                 }                
 
                 LastScanTimeUtc = nowUtc;
+                Addon.LastWorkTimeUtc = nowUtc;
             }
 
             string? journalFilesDeleteScanPeriodSecondsString = Addon.OptionsSubstituted.TryGetValue(ExperionEventsJournalFilesImporterAddon.JournalFilesDeleteScanPeriodSeconds_OptionName);

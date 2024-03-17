@@ -78,6 +78,17 @@ namespace Ssz.Dcs.Addons.OpcClient
             var elementIdsMap = ActivatorUtilities.CreateInstance<ElementIdsMap>(ServiceProvider);
             elementIdsMap.Initialize(CsvDb.GetData(ElementIdsMap.StandardMapFileName), CsvDb.GetData(ElementIdsMap.StandardTagsFileName), CsvDb);
 
+            dataAccessProvider.ValueSubscriptionsUpdated += (s, e) =>
+            {
+                if (dataAccessProvider.IsConnected)
+                    LastWorkTimeUtc = DateTime.UtcNow;
+            };
+            dataAccessProvider.EventMessagesCallback += (s, e) =>
+            {
+                if (dataAccessProvider.IsConnected)
+                    LastWorkTimeUtc = DateTime.UtcNow;
+            };
+
             dataAccessProvider.Initialize(elementIdsMap,
                 @"",
                 @"Ssz.Dcs.Addons.OpcClient",
