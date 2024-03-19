@@ -27,6 +27,15 @@ namespace Ssz.Dcs.CentralServer
         {
             AddonStatuses addonStatuses = _addonsManager.GetAddonStatuses();
 
+            var dcsCentralServerAddon = _addonsManager.Addons.OfType<DcsCentralServerAddon>().Single();
+
+            foreach (var addonStatus in addonStatuses.AddonStatusesCollection)
+            {
+                addonStatus.SourcePath = @"";
+                addonStatus.SourceId = dcsCentralServerAddon.ServiceId;
+                addonStatus.SourceIdToDisplay = dcsCentralServerAddon.Desc;
+            }
+
             try
             {
                 ObservableCollection<EngineSession> engineSessions = GetEngineSessions(serverContext);
@@ -58,19 +67,7 @@ namespace Ssz.Dcs.CentralServer
                                 if (String.IsNullOrEmpty(addonStatus.SourcePath))
                                     addonStatus.SourcePath = engineSession.DataAccessProviderGetter_Addon.InstanceId;
                                 else
-                                    addonStatus.SourcePath = engineSession.DataAccessProviderGetter_Addon.InstanceId + "/" + addonStatus.SourcePath;
-
-                                if (String.IsNullOrEmpty(addonStatus.SourceId))
-                                    addonStatus.SourceId = engineSession.DataAccessProviderGetter_Addon.OptionsSubstituted.TryGetValue(
-                                                DataAccessProviderGetter_AddonBase.DataAccessClient_SystemNameToConnect_ToDisplay_OptionName) ?? @"";
-                                if (String.IsNullOrEmpty(addonStatus.SourceId))
-                                    addonStatus.SourceId = addonStatus.AddonInstanceId;
-
-                                if (String.IsNullOrEmpty(addonStatus.SourceIdToDisplay))
-                                    addonStatus.SourceIdToDisplay = engineSession.DataAccessProviderGetter_Addon.OptionsSubstituted.TryGetValue(
-                                                DataAccessProviderGetter_AddonBase.DataAccessClient_SystemNameToConnect_ToDisplay_OptionName) ?? @"";
-                                if (String.IsNullOrEmpty(addonStatus.SourceIdToDisplay))
-                                    addonStatus.SourceIdToDisplay = addonStatus.AddonInstanceId;
+                                    addonStatus.SourcePath = engineSession.DataAccessProviderGetter_Addon.InstanceId + "/" + addonStatus.SourcePath;                                
                             }
 
                             addonStatuses.AddonStatusesCollection.AddRange(replyAddonStatuses.AddonStatusesCollection);
@@ -94,10 +91,18 @@ namespace Ssz.Dcs.CentralServer
         {
             ObservableCollection<EngineSession> engineSessions = GetEngineSessions(serverContext);
             ConfigurationFiles configurationFiles;
+            var dcsCentralServerAddon = _addonsManager.Addons.OfType<DcsCentralServerAddon>().Single();
 
             if (dataToSend.Length == 0)
             {
-                configurationFiles = _addonsManager.ReadConfiguration(null);
+                configurationFiles = _addonsManager.ReadConfiguration(null);                
+
+                foreach (var configurationFile in configurationFiles.ConfigurationFilesCollection)
+                {
+                    configurationFile.SourcePath = @"";
+                    configurationFile.SourceId = dcsCentralServerAddon.ServiceId;
+                    configurationFile.SourceIdToDisplay = dcsCentralServerAddon.Desc;
+                }
 
                 try
                 {
@@ -129,15 +134,7 @@ namespace Ssz.Dcs.CentralServer
                                     if (String.IsNullOrEmpty(configurationFile.SourcePath))
                                         configurationFile.SourcePath = engineSession.DataAccessProviderGetter_Addon.InstanceId;
                                     else
-                                        configurationFile.SourcePath = engineSession.DataAccessProviderGetter_Addon.InstanceId + "/" + configurationFile.SourcePath;
-
-                                    if (String.IsNullOrEmpty(configurationFile.SourceId))
-                                        configurationFile.SourceId = engineSession.DataAccessProviderGetter_Addon.OptionsSubstituted.TryGetValue(
-                                                    DataAccessProviderGetter_AddonBase.DataAccessClient_SystemNameToConnect_ToDisplay_OptionName) ?? @"";
-
-                                    if (String.IsNullOrEmpty(configurationFile.SourceIdToDisplay))
-                                        configurationFile.SourceIdToDisplay = engineSession.DataAccessProviderGetter_Addon.OptionsSubstituted.TryGetValue(
-                                                    DataAccessProviderGetter_AddonBase.DataAccessClient_SystemNameToConnect_ToDisplay_OptionName) ?? @"";
+                                        configurationFile.SourcePath = engineSession.DataAccessProviderGetter_Addon.InstanceId + "/" + configurationFile.SourcePath;                                    
                                 }
 
                                 configurationFiles.ConfigurationFilesCollection.AddRange(replyConfigurationFiles.ConfigurationFilesCollection);
@@ -161,6 +158,12 @@ namespace Ssz.Dcs.CentralServer
                 if (String.IsNullOrEmpty(recipientPath))
                 {
                     configurationFiles = _addonsManager.ReadConfiguration(pathRelativeToRootDirectory);
+                    foreach (var configurationFile in configurationFiles.ConfigurationFilesCollection)
+                    {
+                        configurationFile.SourcePath = @"";
+                        configurationFile.SourceId = dcsCentralServerAddon.ServiceId;
+                        configurationFile.SourceIdToDisplay = dcsCentralServerAddon.Desc;
+                    }
                 }
                 else
                 {
@@ -200,15 +203,7 @@ namespace Ssz.Dcs.CentralServer
                                 if (String.IsNullOrEmpty(configurationFile.SourcePath))
                                     configurationFile.SourcePath = engineSession.DataAccessProviderGetter_Addon.InstanceId;
                                 else
-                                    configurationFile.SourcePath = engineSession.DataAccessProviderGetter_Addon.InstanceId + "/" + configurationFile.SourcePath;
-
-                                if (String.IsNullOrEmpty(configurationFile.SourceId))
-                                    configurationFile.SourceId = engineSession.DataAccessProviderGetter_Addon.OptionsSubstituted.TryGetValue(
-                                                DataAccessProviderGetter_AddonBase.DataAccessClient_SystemNameToConnect_ToDisplay_OptionName) ?? @"";
-
-                                if (String.IsNullOrEmpty(configurationFile.SourceIdToDisplay))
-                                    configurationFile.SourceIdToDisplay = engineSession.DataAccessProviderGetter_Addon.OptionsSubstituted.TryGetValue(
-                                                DataAccessProviderGetter_AddonBase.DataAccessClient_SystemNameToConnect_ToDisplay_OptionName) ?? @"";
+                                    configurationFile.SourcePath = engineSession.DataAccessProviderGetter_Addon.InstanceId + "/" + configurationFile.SourcePath;                                
                             }
 
                             configurationFiles.ConfigurationFilesCollection.AddRange(replyConfigurationFiles.ConfigurationFilesCollection);

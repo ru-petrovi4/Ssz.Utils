@@ -104,14 +104,5 @@ namespace Ssz.Dcs.Addons.DataAccessClient.Properties {
                 return ResourceManager.GetString("SystemNameToConnect_Option", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to System name to display to user.
-        /// </summary>
-        public static string SystemNameToConnect_ToDisplay_Option {
-            get {
-                return ResourceManager.GetString("SystemNameToConnect_ToDisplay_Option", resourceCulture);
-            }
-        }
     }
 }

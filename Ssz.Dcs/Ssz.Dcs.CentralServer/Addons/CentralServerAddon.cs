@@ -29,9 +29,21 @@ namespace Ssz.Dcs.CentralServer
 
         public override bool IsAlwaysSwitchedOn => true;
 
+        /// <summary>
+        ///     Globally unique server service identifier.
+        /// </summary>
+        public string ServiceId { get; private set; } = @"";
+
         public override (string, string, string)[] OptionsInfo => new (string, string, string)[]
         {
         };
+
+        public override void Initialize()
+        {
+            base.Initialize();
+
+            ServiceId = Guid.NewGuid().ToString();
+        }
 
         #endregion
 

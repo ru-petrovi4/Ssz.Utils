@@ -25,12 +25,7 @@ namespace Ssz.Utils.Addons
         /// <summary>
         ///     Standard option name, that implementers can use
         /// </summary>
-        public static readonly string DataAccessClient_ContextParams_OptionName = @"%(DataAccessClient_ContextParams)";
-
-        /// <summary>
-        ///     Standard option name, that implementers can use
-        /// </summary>
-        public static readonly string DataAccessClient_SystemNameToConnect_ToDisplay_OptionName = @"%(DataAccessClient_SystemNameToConnect_ToDisplay)";
+        public static readonly string DataAccessClient_ContextParams_OptionName = @"%(DataAccessClient_ContextParams)";        
 
         /// <summary>
         ///     Standard option name, that implementers can use

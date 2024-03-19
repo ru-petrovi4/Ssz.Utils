@@ -69,40 +69,53 @@ namespace Ssz.Utils.Addons
 
         public void SerializeOwnedData(SerializationWriter writer, object? context)
         {
-            writer.Write(SourcePath);
-            writer.Write(SourceId);
-            writer.Write(SourceIdToDisplay);
-            writer.Write(AddonGuid);
-            writer.Write(AddonIdentifier);
-            writer.Write(AddonInstanceId);
-            writer.WriteNullable(LastWorkTimeUtc);
-            writer.Write(StateCode);
-            writer.Write(Info);
-            writer.Write(Label);
-            writer.Write(Details);
-            writer.WriteDictionaryOfOwnedDataSerializable(Params, null);
+            using (writer.EnterBlock(1))
+            {
+                writer.Write(SourcePath);
+                writer.Write(SourceId);
+                writer.Write(SourceIdToDisplay);
+                writer.Write(AddonGuid);
+                writer.Write(AddonIdentifier);
+                writer.Write(AddonInstanceId);
+                writer.WriteNullable(LastWorkTimeUtc);
+                writer.Write(StateCode);
+                writer.Write(Info);
+                writer.Write(Label);
+                writer.Write(Details);
+                writer.WriteDictionaryOfOwnedDataSerializable(Params, null);
+            }            
         }
 
         public virtual void DeserializeOwnedData(SerializationReader reader, object? context)
         {
-            try
+            using (Block block = reader.EnterBlock())
             {
-                SourcePath = reader.ReadString();
-                SourceId = reader.ReadString();
-                SourceIdToDisplay = reader.ReadString();
-                AddonGuid = reader.ReadGuid();
-                AddonIdentifier = reader.ReadString();
-                AddonInstanceId = reader.ReadString();
-                LastWorkTimeUtc = reader.ReadNullable<DateTime>();
-                StateCode = reader.ReadUInt32();
-                Info = reader.ReadString();
-                Label = reader.ReadString();
-                Details = reader.ReadString();
-                Params = new CaseInsensitiveDictionary<Any>(reader.ReadDictionaryOfOwnedDataSerializable<Any>(() => new Any(), null)!);
-            }
-            catch (BlockEndingException)
-            {
-            }
+                switch (block.Version)
+                {
+                    case 1:
+                        try
+                        {
+                            SourcePath = reader.ReadString();
+                            SourceId = reader.ReadString();
+                            SourceIdToDisplay = reader.ReadString();
+                            AddonGuid = reader.ReadGuid();
+                            AddonIdentifier = reader.ReadString();
+                            AddonInstanceId = reader.ReadString();
+                            LastWorkTimeUtc = reader.ReadNullable<DateTime>();
+                            StateCode = reader.ReadUInt32();
+                            Info = reader.ReadString();
+                            Label = reader.ReadString();
+                            Details = reader.ReadString();
+                            Params = new CaseInsensitiveDictionary<Any>(reader.ReadDictionaryOfOwnedDataSerializable<Any>(() => new Any(), null)!);
+                        }
+                        catch (BlockEndingException)
+                        {
+                        }
+                        break;
+                    default:
+                        throw new BlockUnsupportedVersionException();
+                }
+            }            
         }
 
         #endregion

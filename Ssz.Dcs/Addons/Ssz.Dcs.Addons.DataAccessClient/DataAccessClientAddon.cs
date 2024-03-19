@@ -36,8 +36,7 @@ namespace Ssz.Dcs.Addons.DataAccessClient
         {
             (DataAccessClient_ServerAddress_OptionName, Properties.Resources.ServerAddress_Option, @"https://localhost:60060"),
             (DataAccessClient_SystemNameToConnect_OptionName, Properties.Resources.SystemNameToConnect_Option, @"DCS"),
-            (DataAccessClient_ContextParams_OptionName, Properties.Resources.ContextParams_Option, @""),
-            (DataAccessClient_SystemNameToConnect_ToDisplay_OptionName, Properties.Resources.SystemNameToConnect_ToDisplay_Option, @"OPC Адаптер"),
+            (DataAccessClient_ContextParams_OptionName, Properties.Resources.ContextParams_Option, @""),            
             (DataAccessClient_DangerousAcceptAnyServerCertificate_OptionName, Properties.Resources.DangerousAcceptAnyServerCertificate_Option, @"true"),
         };
 

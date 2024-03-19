@@ -62,6 +62,13 @@ namespace Ssz.Utils.Addons
         public virtual bool IsAlwaysSwitchedOn => false;
 
         /// <summary>
+        ///     Is single main addon in addons collection.
+        ///     Must be IsMultiInstance = false, IsAlwaysSwitchedOn = true.
+        ///     Thread-safe.
+        /// </summary>
+        public virtual bool IsMainAddon => false;
+
+        /// <summary>
         ///     Option names cannot contain periods.
         ///     (Option Name, Option Description, Option Default Value)
         ///     Thread-safe. 

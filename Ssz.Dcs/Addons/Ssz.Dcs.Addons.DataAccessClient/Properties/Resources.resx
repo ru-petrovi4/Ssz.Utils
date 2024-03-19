@@ -132,7 +132,4 @@
   <data name="SystemNameToConnect_Option" xml:space="preserve">
     <value>System name to connect</value>
   </data>
-  <data name="SystemNameToConnect_ToDisplay_Option" xml:space="preserve">
-    <value>System name to display to user</value>
-  </data>
 </root>
