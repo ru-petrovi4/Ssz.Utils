@@ -18,6 +18,7 @@ using System.Linq;
 using Ssz.Dcs.CentralServer.Common.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Ssz.Dcs.CentralServer.Common.EntityFramework;
+using Microsoft.Extensions.Diagnostics.ResourceMonitoring;
 
 namespace Ssz.Dcs.CentralServer
 {
@@ -25,12 +26,14 @@ namespace Ssz.Dcs.CentralServer
     {
         #region construction and destruction
 
-        public ServerWorker(ILogger<ServerWorker> logger, 
+        public ServerWorker(
+            IResourceMonitor resourceMonitor,
+            ILogger<ServerWorker> logger, 
                 IConfiguration configuration, 
                 IServiceProvider serviceProvider, 
                 AddonsManager addonsManager,
                 IDbContextFactory<DcsCentralServerDbContext> dbContextFactory) :
-            base(logger)
+            base(resourceMonitor, logger)
         {
             _configuration = configuration;
             _serviceProvider = serviceProvider;

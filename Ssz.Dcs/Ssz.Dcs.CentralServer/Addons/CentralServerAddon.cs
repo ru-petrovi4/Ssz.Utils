@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.Utils;
 using Ssz.Utils.Addons;
 using System;
@@ -43,6 +45,24 @@ namespace Ssz.Dcs.CentralServer
             base.Initialize();
 
             ServiceId = Guid.NewGuid().ToString();
+
+            _serverWorker = ServiceProvider.GetRequiredService<ServerWorkerBase>();
+        }
+
+        public override void Close()
+        {            
+            _serverWorker = null;
+
+            base.Close();
+        }
+
+        public override Ssz.Utils.Addons.AddonStatus GetAddonStatus()
+        {
+            Ssz.Utils.Addons.AddonStatus addonStatus = base.GetAddonStatus();
+
+            _serverWorker?.GetAddonStatusParams(addonStatus.Params);
+
+            return addonStatus;
         }
 
         #endregion
@@ -50,6 +70,12 @@ namespace Ssz.Dcs.CentralServer
         #region internal functions
 
         internal static string DescStatic { get; set; } = Properties.Resources.DcsCentralServerAddon_Desc;
+
+        #endregion
+
+        #region private fields
+
+        private ServerWorkerBase? _serverWorker;
 
         #endregion
     }

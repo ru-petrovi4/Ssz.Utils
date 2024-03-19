@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using System.IO;
 using Ssz.Dcs.ControlEngine.ServerListItems;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.ResourceMonitoring;
 
 namespace Ssz.Dcs.ControlEngine
 {
@@ -18,8 +19,12 @@ namespace Ssz.Dcs.ControlEngine
     {
         #region construction and destruction
 
-        public ServerWorker(ILogger<ServerWorker> logger, IConfiguration configuration, IServiceProvider serviceProvider) :
-            base(logger)
+        public ServerWorker(
+            IResourceMonitor resourceMonitor,
+            ILogger<ServerWorker> logger, 
+            IConfiguration configuration, 
+            IServiceProvider serviceProvider) :
+            base(resourceMonitor, logger)
         {            
             _configuration = configuration;
             _serviceProvider = serviceProvider;
