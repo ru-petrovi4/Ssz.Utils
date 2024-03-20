@@ -8,5 +8,5 @@ Kestrel:
       Url: "https://*:60050"
 # путь до файла сертификата .pfx из которого используются закрытый и открытый ключи для шифрования и расшифровки секций конфигурационного файла, которые не должны храниться в открытом виде
 ConfigurationCrypterCertificateFileName: "appsettings.pfx"
-ProgramDataDirectory: "C:\\CDT.PazCheck.Adapter_ProgramData"
+ProgramDataDirectory: ""
 ---
