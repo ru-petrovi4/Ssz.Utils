@@ -21,6 +21,8 @@ namespace Ssz.Dcs.ControlEngine
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddResourceMonitoring();
+
             services.AddGrpc(options =>
             {
                 options.EnableDetailedErrors = true;

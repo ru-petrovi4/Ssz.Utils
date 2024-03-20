@@ -274,7 +274,7 @@ namespace Ssz.Dcs.CentralServer
                 var controlEngineSession = new Control_TrainingEngineSession(
                     _serviceProvider,
                     ThreadSafeDispatcher,
-                    @"http://localhost:" + portNumber,
+                    @"https://localhost:" + portNumber,
                     @"PROCESS",
                     new CaseInsensitiveDictionary<string?>(),
                     engine_TargetWorkstationName)

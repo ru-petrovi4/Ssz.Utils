@@ -16,10 +16,9 @@ namespace Ssz.Dcs.CentralServer
     {
         #region construction and destruction
 
-        public MainBackgroundService(ILogger<MainBackgroundService> logger, IConfiguration configuration, ServerWorkerBase serverWorker)
+        public MainBackgroundService(ILogger<MainBackgroundService> logger, ServerWorkerBase serverWorker)
         {
-            Logger = logger;
-            Configuration = configuration;
+            Logger = logger;            
             _serverWorker = serverWorker;
         }
 
@@ -29,15 +28,15 @@ namespace Ssz.Dcs.CentralServer
 
         public ILogger<MainBackgroundService> Logger { get; }
 
-        public IConfiguration Configuration { get; }
-
         #endregion
 
         #region protected functions
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            Logger.LogDebug("ExecuteAsync begin.");        
+            Logger.LogDebug("ExecuteAsync begin.");
+
+            await _serverWorker.InitializeAsync(cancellationToken);
 
             while (true)
             {
@@ -59,7 +58,7 @@ namespace Ssz.Dcs.CentralServer
                 }
             }
 
-            await _serverWorker.ShutdownAsync();
+            await _serverWorker.CloseAsync();
         }
 
         #endregion

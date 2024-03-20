@@ -54,6 +54,11 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public abstract void LongrunningPassthroughCancel(ServerContext serverContext, string jobId);
 
+        public virtual Task InitializeAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
+        }
+
         /// <summary>
         ///     
         /// </summary>
@@ -88,7 +93,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             }
         }
 
-        public virtual async Task ShutdownAsync()
+        public virtual async Task CloseAsync()
         {
             var serverContexts = _serverContextsDictionary.Values.ToArray();
             _serverContextsDictionary.Clear();

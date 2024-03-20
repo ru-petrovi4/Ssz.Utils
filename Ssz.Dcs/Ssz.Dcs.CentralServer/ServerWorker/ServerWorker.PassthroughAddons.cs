@@ -25,10 +25,9 @@ namespace Ssz.Dcs.CentralServer
 
         private async Task<byte[]> GetAddonStatusesPassthroughAsync(ServerContext serverContext)
         {
-            AddonStatuses addonStatuses = _addonsManager.GetAddonStatuses();
-
             var dcsCentralServerAddon = _addonsManager.Addons.OfType<DcsCentralServerAddon>().Single();
 
+            AddonStatuses addonStatuses = _addonsManager.GetAddonStatuses();
             foreach (var addonStatus in addonStatuses.AddonStatusesCollection)
             {
                 addonStatus.SourcePath = @"";
@@ -95,8 +94,7 @@ namespace Ssz.Dcs.CentralServer
 
             if (dataToSend.Length == 0)
             {
-                configurationFiles = _addonsManager.ReadConfiguration(null);                
-
+                configurationFiles = _addonsManager.ReadConfiguration(null);
                 foreach (var configurationFile in configurationFiles.ConfigurationFilesCollection)
                 {
                     configurationFile.SourcePath = @"";

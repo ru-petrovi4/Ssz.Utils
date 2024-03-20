@@ -32,7 +32,7 @@
   </ItemGroup>
   
   <ItemGroup>    
-    <None Update="Ssz_Dcs_ControlEngineServer.cer">
+    <None Update="DefaultCertificate.pfx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -53,6 +53,10 @@
     <EmbeddedResource Update="Properties\Resources.ru.resx">
       <Generator></Generator>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="MainBackgroundService\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

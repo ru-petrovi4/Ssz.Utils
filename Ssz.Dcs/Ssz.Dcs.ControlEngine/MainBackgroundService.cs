@@ -128,7 +128,7 @@ namespace Ssz.Dcs.ControlEngine
             ((ServerWorker)_serverWorker).Device = null;
             device.Dispose();            
 
-            await _serverWorker.ShutdownAsync();
+            await _serverWorker.CloseAsync();
             
             await _utilityDataAccessProvider.DisposeAsync();
 

@@ -51,19 +51,7 @@ namespace Ssz.Dcs.CentralServer
                         
             string dcsCentralServerAddonDesc = ConfigurationHelper.GetValue(_configuration, @"DcsCentralServerAddonDesc", @"");
             if (dcsCentralServerAddonDesc != @"")
-                DcsCentralServerAddon.DescStatic = dcsCentralServerAddonDesc;
-
-            _addonsManager.Addons.CollectionChanged += OnAddons_CollectionChanged;
-            _addonsManager.Initialize(null, 
-                new AddonBase[] { new DcsCentralServerAddon() },                 
-                _csvDb, 
-                ThreadSafeDispatcher, 
-                SubstituteOption,
-                new AddonsManagerOptions
-                {
-                    AddonsSearchPattern = @"Ssz.Dcs.Addons.*.dll",
-                    CanModifyAddonsCsvFiles = true
-                });            
+                DcsCentralServerAddon.DescStatic = dcsCentralServerAddonDesc;            
         }        
 
         #endregion
@@ -74,10 +62,32 @@ namespace Ssz.Dcs.CentralServer
 
         public DirectoryInfo FilesStoreDirectoryInfo { get; private set; }
 
+        public override Task InitializeAsync(CancellationToken cancellationToken)
+        {
+            _addonsManager.Addons.CollectionChanged += OnAddons_CollectionChanged;
+            _addonsManager.Initialize(null,
+                new AddonBase[] { new DcsCentralServerAddon() },
+                _csvDb,
+                ThreadSafeDispatcher,
+                SubstituteOption,
+                new AddonsManagerOptions
+                {
+                    AddonsSearchPattern = @"Ssz.Dcs.Addons.*.dll",
+                    CanModifyAddonsCsvFiles = true
+                });
+
+            return Task.CompletedTask;
+        }
+
         public override async Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) 
-                return;            
+                return;
+
+            foreach (IWorkDoer workDoer in _addonsManager.AddonsThreadSafe.OfType<IWorkDoer>().ToArray())
+            {
+                await workDoer.DoWorkAsync(nowUtc, cancellationToken);
+            }
 
             Cleanup(nowUtc, cancellationToken);
 
