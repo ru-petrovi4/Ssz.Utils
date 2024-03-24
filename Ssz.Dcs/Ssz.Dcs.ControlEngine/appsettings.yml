@@ -1,0 +1,40 @@
+Logging: 
+  LogLevel: 
+    # задается уровень логирования событий в файлы журналов
+    Default: "Warning"
+    Grpc: "Warning"
+    Microsoft: "Warning"
+    Microsoft.Hosting.Lifetime: "Warning"    
+  SszLogger:     
+    # путь до директории где будут храниться файлы журналов событий
+    LogsDirectory: "%ProgramData%\\Ssz\\Logs"
+    # базовое имя файлов журналов
+    LogFileName: "Ssz.Dcs.ControlEngine.log"
+    # Флаг указывающий на необходимость дублирования события в стандартный поток вывода приложения
+    DuplicateInConsole: "true"
+    # количество дней которое должны храниться файлы журналов
+    DaysCountToStoreFiles: "7"
+    # максимальный размер одного файла журнала
+    LogFileMaxSizeInBytes: "10000000"
+    # размер всех файлов журналов при котором пользователям с ролью администратор дается предупреждение в виде сообщения которое появляется в веб-интерфейсе ИТ-решения
+    LogFilesWarningSizeInBytes: "150000000"
+    # максимальный размер всех фалов журналов. Если размер превышает этот предел самые старые лог-файлы автоматически удаляются      
+    LogFilesMaxSizeInBytes: "200000000"
+Kestrel: 
+  EndpointDefaults: 
+    Protocols: Http1    
+  Endpoints: 
+    HttpsDefaultCert: 
+      Url: "https://*:60060"
+  Certificates: 
+    Default: 
+      # имя файла сертификата. Должен быть расположен в папке данных центрального сервера ПАЗ-Чек
+      Path: "DefaultCertificate.pfx"
+      # пароль от файла сертификата
+      Password: "identityserver"
+      AllowInvalid: true
+AllowedHosts: "*"
+# задается язык сообщений в журналах событий которые доступны через веб интерфейс ИТ-решения возможные значения RU EN
+UICulture: "RU"
+CentralServerAddress: "https://localhost:60060"
+---

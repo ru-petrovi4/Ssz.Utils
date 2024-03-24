@@ -8,9 +8,12 @@ using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.DataAccessGrpc.Client;
 using Ssz.Utils;
 using Ssz.Utils.Logging;
+using Ssz.Utils.ConfigurationCrypter.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using Ssz.Dcs.CentralServer.Common.Helpers;
+using System.Linq;
 
 namespace Ssz.Dcs.ControlEngine
 {
@@ -49,10 +52,13 @@ namespace Ssz.Dcs.ControlEngine
                 {
                     config.Sources.Clear();
 
-                    IHostEnvironment env = hostingContext.HostingEnvironment;
-                    config
-                        .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true, true);
+                    string cryptoCertificateValidFileName = ConfigurationCrypterHelper.GetConfigurationCrypterCertificateFileName(LoggersSet<Program>.Empty);
+                    if (!String.IsNullOrEmpty(cryptoCertificateValidFileName))
+                        config.AddEncryptedAppSettings(hostingContext.HostingEnvironment, crypter =>
+                        {
+                            crypter.CertificatePath = cryptoCertificateValidFileName;
+                            crypter.KeysToDecrypt = GetKeysToEncrypt().ToList();
+                        });
 
                     config.AddCommandLine(args, switchMappings);
                 })
@@ -87,6 +93,17 @@ namespace Ssz.Dcs.ControlEngine
             configuration.GetSection(@"Kestrel:Endpoints:HttpsDefaultCert:Url").Value += new Any(Options.LocalServerPortNumber).ValueAsString(false);
 
             Host.Run();
+        }
+
+        /// <summary>
+        ///     Separator ':'
+        /// </summary>
+        /// <returns></returns>
+        private static HashSet<string> GetKeysToEncrypt()
+        {   
+            return new()
+            {
+            };
         }
 
         #endregion        
@@ -133,6 +150,6 @@ namespace Ssz.Dcs.ControlEngine
             }
         }
 
-        #endregion
+        #endregion        
     }
 }

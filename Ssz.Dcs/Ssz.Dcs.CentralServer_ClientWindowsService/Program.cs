@@ -7,8 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ssz.Utils.Logging;
+using Ssz.Utils.ConfigurationCrypter.Extensions;
 using Microsoft.Extensions.Configuration;
 using Ssz.Utils;
+using Ssz.Dcs.CentralServer.Common.Helpers;
 
 namespace Ssz.Dcs.CentralServer_ClientWindowsService
 {
@@ -31,6 +33,20 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    config.Sources.Clear();
+
+                    string cryptoCertificateValidFileName = ConfigurationCrypterHelper.GetConfigurationCrypterCertificateFileName(LoggersSet<Program>.Empty);
+                    if (!String.IsNullOrEmpty(cryptoCertificateValidFileName))
+                        config.AddEncryptedAppSettings(hostingContext.HostingEnvironment, crypter =>
+                        {
+                            crypter.CertificatePath = cryptoCertificateValidFileName;
+                            crypter.KeysToDecrypt = GetKeysToEncrypt().ToList();
+                        });
+
+                    config.AddCommandLine(args);
+                })
                 .ConfigureLogging(
                     builder =>
                         builder.ClearProviders()
@@ -41,6 +57,17 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                         services.AddHostedService<MainBackgroundService>();                        
                     })
                 .UseWindowsService();
+
+        /// <summary>
+        ///     Separator ':'
+        /// </summary>
+        /// <returns></returns>
+        private static HashSet<string> GetKeysToEncrypt()
+        {
+            return new()
+            {
+            };
+        }
 
         #endregion
     }

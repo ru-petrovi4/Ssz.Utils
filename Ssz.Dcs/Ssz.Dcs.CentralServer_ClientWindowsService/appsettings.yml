@@ -1,0 +1,28 @@
+Logging: 
+  LogLevel: 
+    # задается уровень логирования событий в файлы журналов
+    Default: "Warning"    
+    Microsoft: "Warning"
+    Microsoft.Hosting.Lifetime: "Warning"    
+  SszLogger:     
+    # путь до директории где будут храниться файлы журналов событий
+    LogsDirectory: "%ProgramData%\\Ssz\\Logs"
+    # базовое имя файлов журналов
+    LogFileName: "Ssz.Dcs.CentralServer_Client.log"
+    # Флаг указывающий на необходимость дублирования события в стандартный поток вывода приложения
+    DuplicateInConsole: "true"
+    # количество дней которое должны храниться файлы журналов
+    DaysCountToStoreFiles: "7"
+    # максимальный размер одного файла журнала
+    LogFileMaxSizeInBytes: "10000000"
+    # размер всех файлов журналов при котором пользователям с ролью администратор дается предупреждение в виде сообщения которое появляется в веб-интерфейсе ИТ-решения
+    LogFilesWarningSizeInBytes: "150000000"
+    # максимальный размер всех фалов журналов. Если размер превышает этот предел самые старые лог-файлы автоматически удаляются      
+    LogFilesMaxSizeInBytes: "200000000"
+# задается язык сообщений в журналах событий которые доступны через веб интерфейс ИТ-решения возможные значения RU EN
+UICulture: "RU"
+ProgramDataDirectory: "%ProgramData%\\Ssz\\Dcs.CentralServer_Client"
+CentralServerAddress: "https://localhost:60060"
+FilesStoreSyncWithCentralServer: "true"
+ShowPlatInstructor: "false"
+---
