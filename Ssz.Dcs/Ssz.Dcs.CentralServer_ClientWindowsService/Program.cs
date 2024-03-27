@@ -11,6 +11,7 @@ using Ssz.Utils.ConfigurationCrypter.Extensions;
 using Microsoft.Extensions.Configuration;
 using Ssz.Utils;
 using Ssz.Dcs.CentralServer.Common.Helpers;
+using System.IO;
 
 namespace Ssz.Dcs.CentralServer_ClientWindowsService
 {
@@ -20,6 +21,8 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
         private static void Main(string[] args)
         {
+            Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+
             var host = CreateHostBuilder(args).Build();
 
             var logger = host.Services.GetRequiredService<ILogger<Program>>();
