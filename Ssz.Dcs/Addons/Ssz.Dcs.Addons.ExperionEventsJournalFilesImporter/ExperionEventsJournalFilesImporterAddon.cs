@@ -62,17 +62,9 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
             (DataAccessProviderGetter_CommonEventMessageFieldsToAdd_OptionName, Properties.Resources.CommonEventMessageFieldsToAdd_Option, @"UnitIdentifier=MLSP"),
             (JournalFilesDeleteScanPeriodSeconds_OptionName, Properties.Resources.JournalFilesDeleteScanPeriodSeconds_Option, @"3600")
         };
-
-        /// <summary>
-        ///     Creates initialized IDataAccessProvider or throws. 
-        ///     Addon must be initialized.
-        /// </summary>
-        /// <returns></returns>
-        public override void InitializeDataAccessProvider(IDispatcher callbackDispatcher)
+        
+        public override async Task InitializeAsync(CancellationToken cancellationToken)
         {
-            if (!IsInitialized)
-                throw new InvalidOperationException();            
-
             var dataAccessProvider = ActivatorUtilities.CreateInstance<ExperionEventsJournalFiles_DataAccessProvider>(ServiceProvider, this, LoggersSet.UserFriendlyLogger);
 
             var elementIdsMap = ActivatorUtilities.CreateInstance<ElementIdsMap>(ServiceProvider);
@@ -91,9 +83,22 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                 @"",
                 new CaseInsensitiveDictionary<string?>(),
                 new DataAccessProviderOptions(),
-                callbackDispatcher);
+                Dispatcher);
 
             DataAccessProvider = dataAccessProvider;
+
+            await base.InitializeAsync(cancellationToken);
+        }
+
+        public override async Task CloseAsync()
+        {
+            if (DataAccessProvider is not null)
+            {
+                await DataAccessProvider.CloseAsync();
+                DataAccessProvider = null;
+            }
+
+            await base.CloseAsync();
         }
     }
 }

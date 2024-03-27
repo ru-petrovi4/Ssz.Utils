@@ -3,6 +3,7 @@
   <PropertyGroup>
 	<TargetFrameworks>net462;net8.0-windows</TargetFrameworks>
 	<LangVersion>Latest</LangVersion>
+	<Nullable>Enable</Nullable>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

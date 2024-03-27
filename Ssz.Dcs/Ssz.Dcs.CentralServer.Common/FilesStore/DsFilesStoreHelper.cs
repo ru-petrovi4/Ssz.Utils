@@ -146,6 +146,7 @@ namespace Ssz.Dcs.CentralServer.Common
         /// </summary>
         /// <param name="rootDsFilesStoreDirectory"></param>
         /// <param name="pocessModelDsFilesStoreDirectory"></param>
+        /// <param name="dsFilesStoreDirectoryType"></param>
         /// <returns></returns>
         public static DsFilesStoreDirectory? FindBinDsFilesStoreDirectory(DsFilesStoreDirectory rootDsFilesStoreDirectory, DsFilesStoreDirectory pocessModelDsFilesStoreDirectory, DsFilesStoreDirectoryType dsFilesStoreDirectoryType)
         {            

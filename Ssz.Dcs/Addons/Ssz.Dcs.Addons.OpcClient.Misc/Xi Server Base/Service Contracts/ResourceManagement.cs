@@ -146,7 +146,7 @@ namespace Xi.Server.Base
 			        {
 			            InitializeServerData(tContext);
 			        }			        
-			        catch (Exception ex)
+			        catch (Exception)
 			        {			            
 			            _ServerDetails = null;
 			            throw;

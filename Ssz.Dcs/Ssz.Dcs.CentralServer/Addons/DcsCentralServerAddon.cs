@@ -40,20 +40,20 @@ namespace Ssz.Dcs.CentralServer
         {
         };
 
-        public override void Initialize()
+        public override async Task InitializeAsync(CancellationToken cancellationToken)
         {
-            base.Initialize();
-
             ServiceId = Guid.NewGuid().ToString();
 
             _serverWorker = ServiceProvider.GetRequiredService<ServerWorkerBase>();
+
+            await base.InitializeAsync(cancellationToken);
         }
 
-        public override void Close()
+        public override async Task CloseAsync()
         {            
             _serverWorker = null;
 
-            base.Close();
+            await base.CloseAsync();
         }
 
         public override Ssz.Utils.Addons.AddonStatus GetAddonStatus()

@@ -9,6 +9,8 @@ using Ssz.Utils.Logging;
 using Ssz.Xi.Client;
 using System;
 using System.ComponentModel.Composition;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Ssz.Dcs.Addons.OpcClient
 {
@@ -58,17 +60,9 @@ namespace Ssz.Dcs.Addons.OpcClient
             (OpcHda_ProgId_OptionName, Properties.Resources.OpcHda_ProgId_Option, @"Uso.OpcHdaServer"),
             (UsoHda_ProgId_OptionName, Properties.Resources.UsoHda_ProgId_Option, @"Uso.OpcHdaServer"),
         };
-
-        /// <summary>
-        ///     Creates initialized IDataAccessProvider or throws. 
-        ///     Addon must be initialized.
-        /// </summary>
-        /// <returns></returns>
-        public override void InitializeDataAccessProvider(IDispatcher callbackDispatcher)
+        
+        public override async Task InitializeAsync(CancellationToken cancellationToken)
         {
-            if (!IsInitialized)
-                throw new InvalidOperationException();
-
             //string serverAddress = OptionsSubstituted.TryGetValue(OpcClient_ServerAddress_OptionName) ?? @"";
             //string systemNameToConnect = OptionsSubstituted.TryGetValue(OpcClient_SystemNameToConnect_OptionName) ?? @"";
             //CaseInsensitiveDictionary<string?> contextParams = NameValueCollectionHelper.Parse(OptionsSubstituted.TryGetValue(OpcClient_ContextParams_OptionName));
@@ -106,7 +100,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                     { UsoHda_ProgId_OptionName, OptionsSubstituted.TryGetValue(UsoHda_ProgId_OptionName) },
                 },
                 new DataAccessProviderOptions(),
-                callbackDispatcher);
+                Dispatcher);
 
             CsvDb.CsvFileChanged += (sender, args) =>
             {
@@ -114,7 +108,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                         String.Equals(args.CsvFileName, ElementIdsMap.StandardMapFileName, StringComparison.InvariantCultureIgnoreCase) ||
                         String.Equals(args.CsvFileName, ElementIdsMap.StandardTagsFileName, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    callbackDispatcher.BeginInvokeEx(async ct =>
+                    Dispatcher.BeginInvokeEx(async ct =>
                     {
                         if (dataAccessProvider.IsInitialized)
                         {
@@ -127,7 +121,20 @@ namespace Ssz.Dcs.Addons.OpcClient
             };
 
             DataAccessProvider = dataAccessProvider;
-        }        
+
+            await base.InitializeAsync(cancellationToken);
+        }
+
+        public override async Task CloseAsync()
+        {
+            if (DataAccessProvider is not null)
+            {
+                await DataAccessProvider.CloseAsync();
+                DataAccessProvider = null;
+            }
+
+            await base.CloseAsync();
+        }
 
         #endregion
     }

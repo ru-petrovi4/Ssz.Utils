@@ -349,13 +349,13 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
             ReadOnlyMemory<byte> dataToSend = ProtobufHelper.Combine(requestByteStrings);
 
-            return await GetReplyAsync(() =>
+            return await GetReplyAsync(async () =>
                 {
                     var reply = new LongrunningPassthroughReply();
                     ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
                     serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
-                    reply.JobId = serverContext.LongrunningPassthrough(request.RecipientPath ?? @"", request.PassthroughName ?? @"", dataToSend);
-                    return Task.FromResult(reply);
+                    reply.JobId = await serverContext.LongrunningPassthroughAsync(request.RecipientPath ?? @"", request.PassthroughName ?? @"", dataToSend);
+                    return reply;
                 },
                 context);
         }

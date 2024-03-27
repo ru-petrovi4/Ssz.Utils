@@ -21,11 +21,7 @@ namespace Ssz.Dcs.CentralServer.Common
 
         public NotifyProgressException(string? message, Exception? innerException) : base(message, innerException)
         {
-        }
-
-        protected NotifyProgressException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
+        }        
 
         #endregion
 

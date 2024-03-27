@@ -9,11 +9,12 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Ssz.Utils.Addons
 {
-    public abstract class AddonBase : IObservableCollectionItem
+    public abstract class AddonBase : IObservableCollectionItem, IWorkDoer
     {
         #region public functions
 
@@ -86,6 +87,11 @@ namespace Ssz.Utils.Addons
         public CsvDb CsvDb { get; internal set; } = null!;
 
         /// <summary>
+        ///     Dispatcher associated with this addon if any.
+        /// </summary>
+        public IDispatcher Dispatcher => CsvDb.Dispatcher!;
+
+        /// <summary>
         ///     Do not changes after addon creation.
         ///     All values substituted. 
         ///     E.g value 'appsettings.json:DataAccessClient_ContextParams'.
@@ -154,35 +160,44 @@ namespace Ssz.Utils.Addons
         /// <summary>
         ///     When overridden call this base class method after your code.
         /// </summary>
-        public virtual void Initialize()
+        public virtual Task InitializeAsync(CancellationToken cancellationToken)
         {
             IsInitialized = true;
 
             Initialized?.Invoke(this, EventArgs.Empty);
+
+            return Task.CompletedTask;
+        }
+
+        public virtual Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
         }
 
         /// <summary>
         ///     When overridden call this base class method before your code.
         /// </summary>
-        public virtual void Close()
+        public virtual Task CloseAsync()
         {
             Closed?.Invoke(this, EventArgs.Empty);
 
             IsInitialized = false;
+
+            return Task.CompletedTask;
         }
 
-        void IObservableCollectionItem.ObservableCollectionItemInitialize()
+        async Task IObservableCollectionItem.ObservableCollectionItemInitializeAsync(CancellationToken cancellationToken)
         {
-            Initialize();
+            await InitializeAsync(cancellationToken);
         }
 
         void IObservableCollectionItem.ObservableCollectionItemUpdate(IObservableCollectionItem item)
         {
         }
 
-        void IObservableCollectionItem.ObservableCollectionItemClose()
+        async Task IObservableCollectionItem.ObservableCollectionItemCloseAsync()
         {
-            Close();
+            await CloseAsync();
         }
 
         public virtual string GetAddonTestInfo()

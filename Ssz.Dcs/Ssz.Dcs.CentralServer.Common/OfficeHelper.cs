@@ -16,19 +16,20 @@ namespace Ssz.Dcs.CentralServer.Common
 
             StreamWriter sw = new StreamWriter(memoryStream, new UTF8Encoding(true)); // Does not close stream
             List<object?> rowValues = new();
-            foreach (int row in Enumerable.Range(worksheet.Dimension.Start.Row, worksheet.Dimension.Rows))
-            {
-                rowValues.Clear();
-
-                foreach (int column in Enumerable.Range(worksheet.Dimension.Start.Column, worksheet.Dimension.Columns))
+            if (worksheet.Dimension is not null)
+                foreach (int row in Enumerable.Range(worksheet.Dimension.Start.Row, worksheet.Dimension.Rows))
                 {
-                    var cell = worksheet.Cells[row, column];
-                    rowValues.Add(cell.Value);
-                }
+                    rowValues.Clear();
+                
+                    foreach (int column in Enumerable.Range(worksheet.Dimension.Start.Column, worksheet.Dimension.Columns))
+                    {
+                        var cell = worksheet.Cells[row, column];
+                        rowValues.Add(cell.Value);
+                    }
 
-                string line = Ssz.Utils.CsvHelper.FormatForCsv(@",", rowValues);
-                sw.WriteLine(line);
-            }
+                    string line = Ssz.Utils.CsvHelper.FormatForCsv(@",", rowValues);
+                    sw.WriteLine(line);
+                }
             sw.Flush();
 
             memoryStream.Position = 0;

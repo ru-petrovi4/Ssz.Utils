@@ -62,10 +62,12 @@ namespace Ssz.Dcs.CentralServer
 
         public DirectoryInfo FilesStoreDirectoryInfo { get; private set; }
 
-        public override Task InitializeAsync(CancellationToken cancellationToken)
+        public override async Task InitializeAsync(CancellationToken cancellationToken)
         {
+            await base.InitializeAsync(cancellationToken);
+
             _addonsManager.Addons.CollectionChanged += OnAddons_CollectionChanged;
-            _addonsManager.Initialize(null,
+            await _addonsManager.InitializeAsync(null,
                 new AddonBase[] { new DcsCentralServerAddon() },
                 _csvDb,
                 ThreadSafeDispatcher,
@@ -75,8 +77,6 @@ namespace Ssz.Dcs.CentralServer
                     AddonsSearchPattern = @"Ssz.Dcs.Addons.*.dll",
                     CanModifyAddonsCsvFiles = true
                 });
-
-            return Task.CompletedTask;
         }
 
         public override async Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
@@ -97,6 +97,13 @@ namespace Ssz.Dcs.CentralServer
             DoWorkUtilityItems(nowUtc, cancellationToken);
 
             await base.DoWorkAsync(nowUtc, cancellationToken);
+        }
+
+        public override async Task CloseAsync()
+        {
+            await _addonsManager.CloseAsync();
+
+            await base.CloseAsync();
         }
 
         #endregion

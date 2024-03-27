@@ -36,7 +36,7 @@ namespace Ssz.Dcs.ControlEngine
             }
         }
 
-        public override string LongrunningPassthrough(ServerContext serverContext, string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
+        public override Task<string> LongrunningPassthroughAsync(ServerContext serverContext, string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
             string jobId = Guid.NewGuid().ToString();
             try
@@ -45,16 +45,18 @@ namespace Ssz.Dcs.ControlEngine
                 {
                     case LongrunningPassthroughConstants.SaveStateFile:
                         OnSaveStateFile_LongrunningPassthrough(serverContext, jobId, Encoding.UTF8.GetString(dataToSend.Span));
-                        return jobId;
+                        break;
                     case LongrunningPassthroughConstants.LoadStateFile:
                         OnLoadStateFile_LongrunningPassthrough(serverContext, jobId, Encoding.UTF8.GetString(dataToSend.Span));
-                        return jobId;
+                        break;
                     case LongrunningPassthroughConstants.Step:
                         OnStep_LongrunningPassthrough(serverContext, jobId, Encoding.UTF8.GetString(dataToSend.Span));
-                        return jobId;
+                        break;
                     default:
                         throw new RpcException(new Status(StatusCode.InvalidArgument, "Unknown passthroughName."));
                 }
+
+                return Task.FromResult(jobId);
             }
             catch (Exception ex)
             {

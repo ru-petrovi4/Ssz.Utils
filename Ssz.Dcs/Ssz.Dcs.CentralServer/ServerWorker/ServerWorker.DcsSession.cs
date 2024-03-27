@@ -54,8 +54,6 @@ namespace Ssz.Dcs.CentralServer
         {
             foreach (var addedDataAccessProviderGetter_Addon in addedDataAccessProviderGetter_Addons)
             {
-                addedDataAccessProviderGetter_Addon.InitializeDataAccessProvider(ThreadSafeDispatcher);
-
                 var egineSession = new EngineSession(addedDataAccessProviderGetter_Addon);
                 Dcs_EngineSessions.Add(egineSession);
             }
@@ -71,8 +69,6 @@ namespace Ssz.Dcs.CentralServer
                     if (ReferenceEquals(egineSession.DataAccessProviderGetter_Addon, removedDataAccessProviderGetter_Addon))
                     {
                         Dcs_EngineSessions.RemoveAt(collectionIndex);
-
-                        egineSession.DataAccessProviderGetter_Addon.CloseDataAccessProvider();
                         egineSession.Dispose();
                         break;
                     }

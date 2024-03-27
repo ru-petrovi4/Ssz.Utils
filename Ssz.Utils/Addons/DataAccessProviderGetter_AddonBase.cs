@@ -33,31 +33,11 @@ namespace Ssz.Utils.Addons
         public static readonly string DataAccessClient_DangerousAcceptAnyServerCertificate_OptionName = @"%(DataAccessClient_DangerousAcceptAnyServerCertificate)";
 
         /// <summary>
-        ///     Not null after InitializeDataAccessProvider(...)
+        ///     Not null after InitializeAsync(...)
         /// </summary>
         public IDataAccessProvider? DataAccessProvider { get; protected set; }
 
-        public bool IsAddonsPassthroughSupported { get; protected set; }
-
-        /// <summary>
-        ///     Creates initialized IDataAccessProvider or throws. 
-        ///     Addon must be initialized.
-        /// </summary>
-        /// <returns></returns>
-        public abstract void InitializeDataAccessProvider(IDispatcher callbackDispatcher);
-
-        /// <summary>
-        ///     Closes DataAccessProvider.
-        ///     Addon must be initialized.
-        /// </summary>
-        public virtual void CloseDataAccessProvider()
-        {
-            if (DataAccessProvider is not null)
-            {
-                var t = DataAccessProvider.CloseAsync();
-                DataAccessProvider = null;
-            }
-        }
+        public bool IsAddonsPassthroughSupported { get; protected set; }        
 
         public override AddonStatus GetAddonStatus()
         {
@@ -102,9 +82,4 @@ namespace Ssz.Utils.Addons
             };
         }        
     }
-
-    //public class DataAccessProviderGetter_Addon_Options
-    //{
-    //    public bool IsConfigurationPassthroughSupported { get; protected set; }        
-    //}
 }

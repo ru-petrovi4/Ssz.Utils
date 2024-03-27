@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Security.Cryptography;
+using Ssz.Utils.Addons;
 
 namespace Ssz.Dcs.CentralServer
 {
@@ -209,11 +210,11 @@ namespace Ssz.Dcs.CentralServer
 
         #region private functions        
 
-        private string ProcessModelingSession_LaunchEngines_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
+        private async Task<string> ProcessModelingSession_LaunchEngines_LongrunningPassthroughAsync(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
         {
             string? processModelingSessionId = Encoding.UTF8.GetString(dataToSend.Span);
             ProcessModelingSession processModelingSession = GetProcessModelingSession(processModelingSessionId);
-            string jobId;
+            string jobId;            
 
             if (processModelingSession.LaunchEnginesJobId is null) // Operation not started yet.
             {
@@ -264,20 +265,21 @@ namespace Ssz.Dcs.CentralServer
 
                 string engineSessionId = Guid.NewGuid().ToString();
                 int portNumber;
-                var controlEngineSessions = GetEngineSessions().OfType<Control_TrainingEngineSession>().Where(s => String.Equals(s.WorkstationName, engine_TargetWorkstationName)).ToArray();
+                var controlEngineSessions = GetEngineSessions().OfType<Control_TrainingEngineSession>().Where(s => String.Equals(s.Engine_TargetWorkstationName, engine_TargetWorkstationName)).ToArray();
                 if (controlEngineSessions.Length > 0)
                     portNumber = controlEngineSessions.Max(s => s.PortNumber) + 1;
                 else
                     portNumber = 60061;                
 
                 Generate_LaunchEngine_SystemEvent(engine_TargetWorkstationName, processModelingSession, DsFilesStoreDirectoryType.ControlEngineBin, DsFilesStoreDirectoryType.ControlEngineData, @"", new Any(portNumber).ValueAsString(false));
-                var controlEngineSession = new Control_TrainingEngineSession(
-                    _serviceProvider,
-                    ThreadSafeDispatcher,
-                    @"https://localhost:" + portNumber,
+                
+                DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = await GetNewPreparedDataAccessProviderAddonAsync(
+                    _serviceProvider, 
+                    @"https://localhost:" + portNumber, 
                     @"PROCESS",
-                    new CaseInsensitiveDictionary<string?>(),
-                    engine_TargetWorkstationName)
+                    new CaseInsensitiveDictionary<string?>(), 
+                    ThreadSafeDispatcher);
+                var controlEngineSession = new Control_TrainingEngineSession(dataAccessProviderGetter_Addon, engine_TargetWorkstationName)                   
                 {
                     PortNumber = portNumber
                 };
@@ -298,13 +300,18 @@ namespace Ssz.Dcs.CentralServer
                         string systemName = systemNameBase + @"." + engineSessionId;
 
                         Generate_LaunchEngine_SystemEvent(engine_TargetWorkstationName, processModelingSession, DsFilesStoreDirectoryType.PlatInstructorBin, DsFilesStoreDirectoryType.PlatInstructorData, mvDsFileInfo.Name, systemName);
-                        var platInstructorEngineSession = new PlatInstructor_TrainingEngineSession(
+
+                        DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon2 = await GetNewPreparedDataAccessProviderAddonAsync(
                             _serviceProvider,
-                            ThreadSafeDispatcher,
                             @"http://localhost:60080/SimcodePlatServer/ServerDiscovery",
                             systemName,
                             new CaseInsensitiveDictionary<string?> { { @"XiSystem", systemName } },
-                            engine_TargetWorkstationName);
+                            ThreadSafeDispatcher);
+                        var platInstructorEngineSession = new PlatInstructor_TrainingEngineSession(dataAccessProviderGetter_Addon2, engine_TargetWorkstationName)
+                        {
+                            SystemNameBase = systemNameBase,
+                            SystemNameInstance = engineSessionId,
+                        };
                         processModelingSession.EngineSessions.Add(platInstructorEngineSession);
                     }
                 }

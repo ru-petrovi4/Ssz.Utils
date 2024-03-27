@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace Ssz.Dcs.CentralServer
 {
@@ -60,25 +61,49 @@ namespace Ssz.Dcs.CentralServer
             return result.ToArray();
         }
 
+        /// <summary>
+        ///     Gets new instance of DataAccessProviderGetter Addon, not listed in Addons.csv
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <param name="serverAddress"></param>
+        /// <param name="systemNameToConnect"></param>
+        /// <param name="contextParams"></param>
+        /// <param name="addonDispatcher"></param>
+        /// <returns></returns>
+        private static async Task<DataAccessProviderGetter_AddonBase> GetNewPreparedDataAccessProviderAddonAsync(IServiceProvider serviceProvider, string serverAddress, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams, IDispatcher addonDispatcher)
+        {
+            var addonsManager = serviceProvider.GetRequiredService<AddonsManager>();
+
+            var dataAccessClient_Addon = (DataAccessProviderGetter_AddonBase)addonsManager.CreateAvailableAddon(@"DataAccessClient", @"",
+                new[]
+                {
+                        new [] { DataAccessProviderGetter_AddonBase.DataAccessClient_ServerAddress_OptionName, serverAddress },
+                        new [] { DataAccessProviderGetter_AddonBase.DataAccessClient_SystemNameToConnect_OptionName, systemNameToConnect },
+                        new [] { DataAccessProviderGetter_AddonBase.DataAccessClient_ContextParams_OptionName, NameValueCollectionHelper.GetNameValueCollectionString(contextParams) }
+                },
+                addonDispatcher)!;
+
+            await dataAccessClient_Addon.InitializeAsync(CancellationToken.None);            
+
+            return dataAccessClient_Addon;
+        }
+
+
         #endregion
 
         private class TrainingEngineSessionBase : EngineSession
         {
             #region construction and destruction
 
-            public TrainingEngineSessionBase(IServiceProvider serviceProvider, IDispatcher callbackDispatcher, string serverAddress, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams, string workstationName) :
-                base(GetNewPreparedDataAccessProviderAddon(serviceProvider, serverAddress, systemNameToConnect, contextParams, callbackDispatcher))
+            public TrainingEngineSessionBase(DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon, string engine_TargetWorkstationName) :
+                base(dataAccessProviderGetter_Addon)
             {
-                ServerAddress = serverAddress;
-                SystemNameToConnect = systemNameToConnect;
-                ContextParams = contextParams;
-                WorkstationName = workstationName;
+                Engine_TargetWorkstationName = engine_TargetWorkstationName;
             }
 
             public override void Dispose()
-            {
-                DataAccessProviderGetter_Addon.CloseDataAccessProvider();
-                DataAccessProviderGetter_Addon.Close();
+            {                
+                var t = DataAccessProviderGetter_Addon.CloseAsync();
 
                 base.Dispose();
             }
@@ -87,52 +112,23 @@ namespace Ssz.Dcs.CentralServer
 
             #region public functions
 
-            public string ServerAddress { get; }
+            public string ServerAddress => DataAccessProvider.ServerAddress;
 
-            public string SystemNameToConnect { get; }
+            public string SystemNameToConnect => DataAccessProvider.SystemNameToConnect;
 
-            public CaseInsensitiveDictionary<string?> ContextParams { get; }
+            public CaseInsensitiveDictionary<string?> ContextParams => DataAccessProvider.ContextParams;
 
-            public string WorkstationName { get; }
+            public string Engine_TargetWorkstationName { get; }
 
-            #endregion
-
-            #region private functions
-
-            /// <summary>
-            ///     Gets new instance of DataAccessProviderGetter Addon, not listed in Addons.csv
-            /// </summary>
-            /// <param name="serviceProvider"></param>
-            /// <param name="serverAddress"></param>
-            /// <param name="systemNameToConnect"></param>
-            /// <param name="contextParams"></param>
-            /// <returns></returns>
-            private static DataAccessProviderGetter_AddonBase GetNewPreparedDataAccessProviderAddon(IServiceProvider serviceProvider, string serverAddress, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams, IDispatcher callbackDispatcher)
-            {
-                var addonsManager = serviceProvider.GetRequiredService<AddonsManager>();
-                var dataAccessClient_Addon = (DataAccessProviderGetter_AddonBase)addonsManager.CreateAvailableAddon(@"DataAccessClient", @"",
-                    new[]
-                    {
-                        new [] { DataAccessProviderGetter_AddonBase.DataAccessClient_ServerAddress_OptionName, serverAddress },
-                        new [] { DataAccessProviderGetter_AddonBase.DataAccessClient_SystemNameToConnect_OptionName, systemNameToConnect },
-                        new [] { DataAccessProviderGetter_AddonBase.DataAccessClient_ContextParams_OptionName, NameValueCollectionHelper.GetNameValueCollectionString(contextParams) }
-                    })!;
-
-                dataAccessClient_Addon.Initialize();
-                dataAccessClient_Addon.InitializeDataAccessProvider(callbackDispatcher);
-
-                return dataAccessClient_Addon;
-            }
-
-            #endregion
+            #endregion            
         }
 
         private class Control_TrainingEngineSession : TrainingEngineSessionBase
         {
             #region construction and destruction
 
-            public Control_TrainingEngineSession(IServiceProvider serviceProvider, IDispatcher callbackDispatcher, string serverAddress, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams, string workstationName) :
-                base(serviceProvider, callbackDispatcher, serverAddress, systemNameToConnect, contextParams, workstationName)
+            public Control_TrainingEngineSession(DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon, string engine_TargetWorkstationName) :
+                base(dataAccessProviderGetter_Addon, engine_TargetWorkstationName)
             {
             }
 
@@ -149,8 +145,8 @@ namespace Ssz.Dcs.CentralServer
         {
             #region construction and destruction
 
-            public PlatInstructor_TrainingEngineSession(IServiceProvider serviceProvider, IDispatcher callbackDispatcher, string serverAddress, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams, string workstationName) :
-                base(serviceProvider, callbackDispatcher, serverAddress, systemNameToConnect, contextParams, workstationName)
+            public PlatInstructor_TrainingEngineSession(DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon, string engine_TargetWorkstationName) :
+                base(dataAccessProviderGetter_Addon, engine_TargetWorkstationName)
             {
             }
 

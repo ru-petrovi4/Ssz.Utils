@@ -14,6 +14,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Ssz.Utils.Addons
 {
@@ -48,7 +49,7 @@ namespace Ssz.Utils.Addons
         public const string AddonsAvailableCsvFileName = @"addons_available.csv";
 
         /// <summary>
-        ///     May have value only after Initialize(...)
+        ///     Have value only after Initialize(...)
         ///     To access a AddonsManager from a thread other than the thread the AddonsManager was created on,
         ///     call BeginInvoke or BeginInvokeEx on this Dispatcher.
         /// </summary>
@@ -73,7 +74,7 @@ namespace Ssz.Utils.Addons
         /// <param name="standardAddons"></param>
         /// <param name="addonsSearchPattern"></param>
         /// <param name="csvDb"></param>
-        public void Initialize(IUserFriendlyLogger? userFriendlyLogger, AddonBase[]? standardAddons, CsvDb csvDb, IDispatcher? dispatcher, Func<string?, string?>? substituteOptionFunc, AddonsManagerOptions addonsManagerOptions)
+        public async Task InitializeAsync(IUserFriendlyLogger? userFriendlyLogger, AddonBase[]? standardAddons, CsvDb csvDb, IDispatcher dispatcher, Func<string?, string?>? substituteOptionFunc, AddonsManagerOptions addonsManagerOptions)
         {
             LoggersSet.SetUserFriendlyLogger(userFriendlyLogger);
             StandardAddons = standardAddons;
@@ -86,7 +87,8 @@ namespace Ssz.Utils.Addons
             _substituteOptionFunc = substituteOptionFunc;
 
             RefreshAvailableAddons();
-            RefreshAddons();
+
+            await RefreshAddonsAsync();
 
             IsInitialized = true;
         }
@@ -94,12 +96,13 @@ namespace Ssz.Utils.Addons
         /// <summary>
         ///     
         /// </summary>
-        public void Close()
-        {
-            Addons.SafeClear();
+        public async Task CloseAsync()
+        {            
             _addonsThreadSafe = new AddonBase[0];
 
-            CsvDb.CsvFileChanged -= OnCsvDb_CsvFileChanged;            
+            CsvDb.CsvFileChanged -= OnCsvDb_CsvFileChanged;
+
+            await Addons.SafeClearAsync(Dispatcher!);
 
             _container = null;
         }
@@ -453,7 +456,7 @@ namespace Ssz.Utils.Addons
         /// <typeparam name="TAddon"></typeparam>
         /// <param name="dispatcher"></param>
         /// <returns></returns>
-        public TAddon? CreateInitializedAddonThreadSafe<TAddon>(IDispatcher? dispatcher)
+        public async Task<TAddon?> CreateInitializedAddonThreadSafeAsync<TAddon>(IDispatcher dispatcher, CancellationToken cancellationToken)
             where TAddon : AddonBase
         {
             var addons = _addonsThreadSafe;
@@ -465,7 +468,7 @@ namespace Ssz.Utils.Addons
             if (newAddon is null)
                 return null;
 
-            newAddon.Initialize();
+            await newAddon.InitializeAsync(cancellationToken);
 
             return newAddon;
         }
@@ -477,7 +480,7 @@ namespace Ssz.Utils.Addons
         /// <param name="addonIdentifier"></param>
         /// <param name="dispatcher"></param>
         /// <returns></returns>
-        public TAddon? CreateInitializedAddonThreadSafe<TAddon>(string addonIdentifier, IDispatcher? dispatcher)
+        public async Task<TAddon?> CreateInitializedAddonThreadSafeAsync<TAddon>(string addonIdentifier, IDispatcher dispatcher, CancellationToken cancellationToken)
             where TAddon : AddonBase
         {
             if (String.IsNullOrEmpty(addonIdentifier))
@@ -493,10 +496,10 @@ namespace Ssz.Utils.Addons
             if (newAddon is null)
                 return null;
 
-            newAddon.Initialize();
+            await newAddon.InitializeAsync(cancellationToken);
 
             return newAddon;
-        }        
+        }
 
         /// <summary>
         ///     Create available but not necesary switched ON adddon. 
@@ -505,8 +508,9 @@ namespace Ssz.Utils.Addons
         /// <param name="addonIdentifier"></param>
         /// <param name="addonInstanceId"></param>
         /// <param name="addonOptions"></param>
+        /// <param name="addonDispatcher"></param>
         /// <returns></returns>
-        public AddonBase? CreateAvailableAddon(string addonIdentifier, string addonInstanceId, IEnumerable<IEnumerable<string?>>? addonOptions)
+        public AddonBase? CreateAvailableAddon(string addonIdentifier, string addonInstanceId, IEnumerable<IEnumerable<string?>>? addonOptions, IDispatcher addonDispatcher)
         {
             if (!String.IsNullOrEmpty(addonInstanceId) && addonOptions is not null)
                 throw new InvalidOperationException("You must specify addonInstanceId or addonOptions");
@@ -525,7 +529,7 @@ namespace Ssz.Utils.Addons
                 return null;
             }
 
-            return CreateAvailableAddonInternal(availableAddon, addonInstanceId, addonOptions, Dispatcher);
+            return CreateAvailableAddonInternal(availableAddon, addonInstanceId, addonOptions, addonDispatcher);
         }
 
         /// <summary>
@@ -583,7 +587,9 @@ namespace Ssz.Utils.Addons
                 return;
 
             if (String.Equals(args.CsvFileName, AddonsCsvFileName, StringComparison.InvariantCultureIgnoreCase))
-                RefreshAddons();
+            {
+                var t = RefreshAddonsAsync();
+            }
         }
 
         private void OnAddonCsvDb_CsvFileChanged(object? sender, CsvFileChangedEventArgs args)
@@ -592,11 +598,16 @@ namespace Ssz.Utils.Addons
                 return;
 
             if (String.Equals(args.CsvFileName, AddonBase.OptionsCsvFileName, StringComparison.InvariantCultureIgnoreCase))
-                RefreshAddons();
+            {
+                var t = RefreshAddonsAsync();
+            }
         }
 
-        private void RefreshAddons()
+        private async Task RefreshAddonsAsync()
         {
+            if (Dispatcher is null)
+                return;
+
             List<AddonBase> newAddons = new();
             
             foreach (var line in CsvDb.GetData(AddonsCsvFileName).Values)
@@ -610,7 +621,7 @@ namespace Ssz.Utils.Addons
                 if (line.Count >= 3 && !String.IsNullOrEmpty(line[2]))
                     switchedOn = new Any(line[2] ?? @"").ValueAsBoolean(false);
 
-                var desiredAndAvailableAddon = CreateAvailableAddon(addonIdentifier, addonInstanceId, null);
+                var desiredAndAvailableAddon = CreateAvailableAddon(addonIdentifier, addonInstanceId, null, Dispatcher);
 
                 if (desiredAndAvailableAddon is not null && (desiredAndAvailableAddon.IsAlwaysSwitchedOn || switchedOn))
                     newAddons.Add(desiredAndAvailableAddon);
@@ -642,8 +653,14 @@ namespace Ssz.Utils.Addons
 
             _container = new CompositionContainer(catalog);
 
-            Addons.Update(newAddons.OrderBy(a => ((IObservableCollectionItem)a).ObservableCollectionItemId).ToArray());
-            _addonsThreadSafe = Addons.ToArray();
+            await Addons.UpdateAsync(newAddons.OrderBy(a => ((IObservableCollectionItem)a).ObservableCollectionItemId).ToArray(), Dispatcher, CancellationToken.None);
+
+            await Dispatcher.InvokeAsync(ct =>
+            {
+                _addonsThreadSafe = Addons.ToArray();
+
+                return 0;
+            });            
         }
 
         /// <summary>
@@ -657,7 +674,7 @@ namespace Ssz.Utils.Addons
         private AddonBase? CreateAvailableAddonInternal(AddonBase availableAddon, 
             string addonInstanceId, 
             IEnumerable<IEnumerable<string?>>? addonOptionsData,
-            IDispatcher? dispatcher)
+            IDispatcher addonDispatcher)
         {
             if (!String.IsNullOrEmpty(addonInstanceId) && addonOptionsData is not null)
                 throw new InvalidOperationException("You must specify addonInstanceId or addonOptions");
@@ -696,8 +713,7 @@ namespace Ssz.Utils.Addons
                 parameters.Add(LoggersSet.UserFriendlyLogger);
                 if (addonConfigDirectoryInfo is not null)
                     parameters.Add(addonConfigDirectoryInfo);
-                if (dispatcher is not null)
-                    parameters.Add(dispatcher);
+                parameters.Add(addonDispatcher);
 
                 availableAddonClone.CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, parameters.ToArray());                
                 if (addonOptionsData is not null)

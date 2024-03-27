@@ -10,6 +10,8 @@ using Ssz.Utils.Logging;
 using Ssz.Xi.Client;
 using System;
 using System.ComponentModel.Composition;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Ssz.Dcs.Addons.DataAccessClient
 {
@@ -39,17 +41,9 @@ namespace Ssz.Dcs.Addons.DataAccessClient
             (DataAccessClient_ContextParams_OptionName, Properties.Resources.ContextParams_Option, @""),            
             (DataAccessClient_DangerousAcceptAnyServerCertificate_OptionName, Properties.Resources.DangerousAcceptAnyServerCertificate_Option, @"true"),
         };
-
-        /// <summary>
-        ///     Creates initialized IDataAccessProvider or throws. 
-        ///     Addon must be initialized.
-        /// </summary>
-        /// <returns></returns>
-        public override void InitializeDataAccessProvider(IDispatcher callbackDispatcher)
+        
+        public override async Task InitializeAsync(CancellationToken cancellationToken)
         {
-            if (!IsInitialized)
-                throw new InvalidOperationException();
-
             IsAddonsPassthroughSupported = true;
 
             string serverAddress = OptionsSubstituted.TryGetValue(DataAccessClient_ServerAddress_OptionName) ?? @"";
@@ -93,7 +87,7 @@ namespace Ssz.Dcs.Addons.DataAccessClient
                 {
                     DangerousAcceptAnyServerCertificate = dangerousAcceptAnyServerCertificatete
                 },
-                callbackDispatcher);
+                Dispatcher);
 
             CsvDb.CsvFileChanged += (sender, args) =>
             {
@@ -101,7 +95,7 @@ namespace Ssz.Dcs.Addons.DataAccessClient
                         String.Equals(args.CsvFileName, ElementIdsMap.StandardMapFileName, StringComparison.InvariantCultureIgnoreCase) ||
                         String.Equals(args.CsvFileName, ElementIdsMap.StandardTagsFileName, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    callbackDispatcher.BeginInvokeEx(async ct =>
+                    Dispatcher.BeginInvokeEx(async ct =>
                     {
                         if (dataAccessProvider.IsInitialized)
                         {
@@ -114,7 +108,20 @@ namespace Ssz.Dcs.Addons.DataAccessClient
             };            
 
             DataAccessProvider = dataAccessProvider;
-        }        
+
+            await base.InitializeAsync(cancellationToken);
+        }
+
+        public override async Task CloseAsync()
+        {
+            if (DataAccessProvider is not null)
+            {
+                await DataAccessProvider.CloseAsync();
+                DataAccessProvider = null;
+            }
+
+            await base.CloseAsync();
+        }
 
         #endregion
     }
