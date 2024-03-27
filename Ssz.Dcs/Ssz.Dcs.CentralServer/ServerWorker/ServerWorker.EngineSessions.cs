@@ -70,7 +70,7 @@ namespace Ssz.Dcs.CentralServer
         /// <param name="contextParams"></param>
         /// <param name="addonDispatcher"></param>
         /// <returns></returns>
-        private static async Task<DataAccessProviderGetter_AddonBase> GetNewPreparedDataAccessProviderAddonAsync(IServiceProvider serviceProvider, string serverAddress, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams, IDispatcher addonDispatcher)
+        private static DataAccessProviderGetter_AddonBase GetNewPreparedDataAccessProviderAddon(IServiceProvider serviceProvider, string serverAddress, string systemNameToConnect, CaseInsensitiveDictionary<string?> contextParams, IDispatcher addonDispatcher)
         {
             var addonsManager = serviceProvider.GetRequiredService<AddonsManager>();
 
@@ -83,7 +83,7 @@ namespace Ssz.Dcs.CentralServer
                 },
                 addonDispatcher)!;
 
-            await dataAccessClient_Addon.InitializeAsync(CancellationToken.None);            
+            dataAccessClient_Addon.Initialize(CancellationToken.None);            
 
             return dataAccessClient_Addon;
         }
@@ -103,7 +103,7 @@ namespace Ssz.Dcs.CentralServer
 
             public override void Dispose()
             {                
-                var t = DataAccessProviderGetter_Addon.CloseAsync();
+                DataAccessProviderGetter_Addon.Close();
 
                 base.Dispose();
             }

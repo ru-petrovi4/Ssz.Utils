@@ -61,7 +61,7 @@ namespace Ssz.Dcs.Addons.OpcClient
             (UsoHda_ProgId_OptionName, Properties.Resources.UsoHda_ProgId_Option, @"Uso.OpcHdaServer"),
         };
         
-        public override async Task InitializeAsync(CancellationToken cancellationToken)
+        public override void Initialize(CancellationToken cancellationToken)
         {
             //string serverAddress = OptionsSubstituted.TryGetValue(OpcClient_ServerAddress_OptionName) ?? @"";
             //string systemNameToConnect = OptionsSubstituted.TryGetValue(OpcClient_SystemNameToConnect_OptionName) ?? @"";
@@ -122,18 +122,18 @@ namespace Ssz.Dcs.Addons.OpcClient
 
             DataAccessProvider = dataAccessProvider;
 
-            await base.InitializeAsync(cancellationToken);
+            base.Initialize(cancellationToken);
         }
 
-        public override async Task CloseAsync()
+        public override void Close()
         {
             if (DataAccessProvider is not null)
             {
-                await DataAccessProvider.CloseAsync();
+                var t = DataAccessProvider.CloseAsync();
                 DataAccessProvider = null;
             }
 
-            await base.CloseAsync();
+            base.Close();
         }
 
         #endregion

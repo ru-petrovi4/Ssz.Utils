@@ -273,7 +273,7 @@ namespace Ssz.Dcs.CentralServer
 
                 Generate_LaunchEngine_SystemEvent(engine_TargetWorkstationName, processModelingSession, DsFilesStoreDirectoryType.ControlEngineBin, DsFilesStoreDirectoryType.ControlEngineData, @"", new Any(portNumber).ValueAsString(false));
                 
-                DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = await GetNewPreparedDataAccessProviderAddonAsync(
+                DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewPreparedDataAccessProviderAddon(
                     _serviceProvider, 
                     @"https://localhost:" + portNumber, 
                     @"PROCESS",
@@ -301,7 +301,7 @@ namespace Ssz.Dcs.CentralServer
 
                         Generate_LaunchEngine_SystemEvent(engine_TargetWorkstationName, processModelingSession, DsFilesStoreDirectoryType.PlatInstructorBin, DsFilesStoreDirectoryType.PlatInstructorData, mvDsFileInfo.Name, systemName);
 
-                        DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon2 = await GetNewPreparedDataAccessProviderAddonAsync(
+                        DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon2 = GetNewPreparedDataAccessProviderAddon(
                             _serviceProvider,
                             @"http://localhost:60080/SimcodePlatServer/ServerDiscovery",
                             systemName,

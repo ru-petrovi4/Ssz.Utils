@@ -67,7 +67,7 @@ namespace Ssz.Dcs.CentralServer
             await base.InitializeAsync(cancellationToken);
 
             _addonsManager.Addons.CollectionChanged += OnAddons_CollectionChanged;
-            await _addonsManager.InitializeAsync(null,
+            _addonsManager.Initialize(null,
                 new AddonBase[] { new DcsCentralServerAddon() },
                 _csvDb,
                 ThreadSafeDispatcher,
@@ -101,7 +101,7 @@ namespace Ssz.Dcs.CentralServer
 
         public override async Task CloseAsync()
         {
-            await _addonsManager.CloseAsync();
+            _addonsManager.Close();
 
             await base.CloseAsync();
         }

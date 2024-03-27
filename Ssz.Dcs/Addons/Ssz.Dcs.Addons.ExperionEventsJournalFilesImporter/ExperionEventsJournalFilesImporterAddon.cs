@@ -63,7 +63,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
             (JournalFilesDeleteScanPeriodSeconds_OptionName, Properties.Resources.JournalFilesDeleteScanPeriodSeconds_Option, @"3600")
         };
         
-        public override async Task InitializeAsync(CancellationToken cancellationToken)
+        public override void Initialize(CancellationToken cancellationToken)
         {
             var dataAccessProvider = ActivatorUtilities.CreateInstance<ExperionEventsJournalFiles_DataAccessProvider>(ServiceProvider, this, LoggersSet.UserFriendlyLogger);
 
@@ -87,18 +87,18 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
 
             DataAccessProvider = dataAccessProvider;
 
-            await base.InitializeAsync(cancellationToken);
+            base.Initialize(cancellationToken);
         }
 
-        public override async Task CloseAsync()
+        public override void Close()
         {
             if (DataAccessProvider is not null)
             {
-                await DataAccessProvider.CloseAsync();
+                var t = DataAccessProvider.CloseAsync();
                 DataAccessProvider = null;
             }
 
-            await base.CloseAsync();
+            base.Close();
         }
     }
 }

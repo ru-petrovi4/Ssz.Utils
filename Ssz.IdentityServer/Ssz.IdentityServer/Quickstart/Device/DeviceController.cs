@@ -143,7 +143,7 @@ namespace IdentityServerHost.Quickstart.UI
             return result;
         }
 
-        private async Task<DeviceAuthorizationViewModel> BuildViewModelAsync(string userCode, DeviceAuthorizationInputModel model = null)
+        private async Task<DeviceAuthorizationViewModel?> BuildViewModelAsync(string userCode, DeviceAuthorizationInputModel? model = null)
         {
             var request = await _interaction.GetAuthorizationContextAsync(userCode);
             if (request != null)
@@ -154,12 +154,12 @@ namespace IdentityServerHost.Quickstart.UI
             return null;
         }
 
-        private DeviceAuthorizationViewModel CreateConsentViewModel(string userCode, DeviceAuthorizationInputModel model, DeviceFlowAuthorizationRequest request)
+        private DeviceAuthorizationViewModel CreateConsentViewModel(string userCode, DeviceAuthorizationInputModel? model, DeviceFlowAuthorizationRequest request)
         {
             var vm = new DeviceAuthorizationViewModel
             {
                 UserCode = userCode,
-                Description = model?.Description,
+                Description = model?.Description ?? @"",
 
                 RememberConsent = model?.RememberConsent ?? true,
                 ScopesConsented = model?.ScopesConsented ?? Enumerable.Empty<string>(),

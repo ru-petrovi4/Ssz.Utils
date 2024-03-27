@@ -161,7 +161,7 @@ namespace IdentityServerHost.Quickstart.UI
             return result;
         }
 
-        private async Task<ConsentViewModel> BuildViewModelAsync(string returnUrl, ConsentInputModel model = null)
+        private async Task<ConsentViewModel> BuildViewModelAsync(string returnUrl, ConsentInputModel? model = null)
         {
             var request = await _interaction.GetAuthorizationContextAsync(returnUrl);
             if (request != null)

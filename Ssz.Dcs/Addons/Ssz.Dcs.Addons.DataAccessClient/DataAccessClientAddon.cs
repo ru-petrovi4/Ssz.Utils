@@ -42,7 +42,7 @@ namespace Ssz.Dcs.Addons.DataAccessClient
             (DataAccessClient_DangerousAcceptAnyServerCertificate_OptionName, Properties.Resources.DangerousAcceptAnyServerCertificate_Option, @"true"),
         };
         
-        public override async Task InitializeAsync(CancellationToken cancellationToken)
+        public override void Initialize(CancellationToken cancellationToken)
         {
             IsAddonsPassthroughSupported = true;
 
@@ -109,18 +109,18 @@ namespace Ssz.Dcs.Addons.DataAccessClient
 
             DataAccessProvider = dataAccessProvider;
 
-            await base.InitializeAsync(cancellationToken);
+            base.Initialize(cancellationToken);
         }
 
-        public override async Task CloseAsync()
+        public override void Close()
         {
             if (DataAccessProvider is not null)
             {
-                await DataAccessProvider.CloseAsync();
+                var t = DataAccessProvider.CloseAsync();
                 DataAccessProvider = null;
             }
 
-            await base.CloseAsync();
+            base.Close();
         }
 
         #endregion

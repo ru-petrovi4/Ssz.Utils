@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils.Addons
 {
-    public abstract class AddonBase : IObservableCollectionItem, IWorkDoer
+    public abstract class AddonBase : IObservableCollectionItem
     {
         #region public functions
 
@@ -160,45 +160,26 @@ namespace Ssz.Utils.Addons
         /// <summary>
         ///     When overridden call this base class method after your code.
         /// </summary>
-        public virtual Task InitializeAsync(CancellationToken cancellationToken)
+        public virtual void Initialize(CancellationToken cancellationToken)
         {
             IsInitialized = true;
 
             Initialized?.Invoke(this, EventArgs.Empty);
-
-            return Task.CompletedTask;
-        }
-
-        public virtual Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
+        }        
 
         /// <summary>
         ///     When overridden call this base class method before your code.
         /// </summary>
-        public virtual Task CloseAsync()
+        public virtual void Close()
         {
             Closed?.Invoke(this, EventArgs.Empty);
 
             IsInitialized = false;
-
-            return Task.CompletedTask;
-        }
-
-        async Task IObservableCollectionItem.ObservableCollectionItemInitializeAsync(CancellationToken cancellationToken)
-        {
-            await InitializeAsync(cancellationToken);
         }
 
         void IObservableCollectionItem.ObservableCollectionItemUpdate(IObservableCollectionItem item)
         {
-        }
-
-        async Task IObservableCollectionItem.ObservableCollectionItemCloseAsync()
-        {
-            await CloseAsync();
-        }
+        }        
 
         public virtual string GetAddonTestInfo()
         {

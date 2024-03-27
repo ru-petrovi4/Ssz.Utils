@@ -32,6 +32,9 @@
   </ItemGroup>
   
   <ItemGroup>    
+    <None Update="appsettings.pfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>    
     <None Update="appsettings.yml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>    

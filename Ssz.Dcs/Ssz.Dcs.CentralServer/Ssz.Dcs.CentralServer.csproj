@@ -62,9 +62,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="appsettings.pfx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="DcsCentralServer.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

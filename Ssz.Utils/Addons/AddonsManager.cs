@@ -53,7 +53,7 @@ namespace Ssz.Utils.Addons
         ///     To access a AddonsManager from a thread other than the thread the AddonsManager was created on,
         ///     call BeginInvoke or BeginInvokeEx on this Dispatcher.
         /// </summary>
-        public IDispatcher? Dispatcher { get; private set; }
+        public IDispatcher Dispatcher { get; private set; } = null!;
 
         public bool IsInitialized { get; private set; }
 
@@ -74,7 +74,7 @@ namespace Ssz.Utils.Addons
         /// <param name="standardAddons"></param>
         /// <param name="addonsSearchPattern"></param>
         /// <param name="csvDb"></param>
-        public async Task InitializeAsync(IUserFriendlyLogger? userFriendlyLogger, AddonBase[]? standardAddons, CsvDb csvDb, IDispatcher dispatcher, Func<string?, string?>? substituteOptionFunc, AddonsManagerOptions addonsManagerOptions)
+        public void Initialize(IUserFriendlyLogger? userFriendlyLogger, AddonBase[]? standardAddons, CsvDb csvDb, IDispatcher dispatcher, Func<string?, string?>? substituteOptionFunc, AddonsManagerOptions addonsManagerOptions)
         {
             LoggersSet.SetUserFriendlyLogger(userFriendlyLogger);
             StandardAddons = standardAddons;
@@ -88,7 +88,7 @@ namespace Ssz.Utils.Addons
 
             RefreshAvailableAddons();
 
-            await RefreshAddonsAsync();
+            RefreshAddons();
 
             IsInitialized = true;
         }
@@ -96,13 +96,13 @@ namespace Ssz.Utils.Addons
         /// <summary>
         ///     
         /// </summary>
-        public async Task CloseAsync()
+        public void Close()
         {            
             _addonsThreadSafe = new AddonBase[0];
 
             CsvDb.CsvFileChanged -= OnCsvDb_CsvFileChanged;
 
-            await Addons.SafeClearAsync(Dispatcher!);
+            Addons.SafeClear();
 
             _container = null;
         }
@@ -456,7 +456,7 @@ namespace Ssz.Utils.Addons
         /// <typeparam name="TAddon"></typeparam>
         /// <param name="dispatcher"></param>
         /// <returns></returns>
-        public async Task<TAddon?> CreateInitializedAddonThreadSafeAsync<TAddon>(IDispatcher dispatcher, CancellationToken cancellationToken)
+        public TAddon? CreateInitializedAddonThreadSafe<TAddon>(IDispatcher dispatcher, CancellationToken cancellationToken)
             where TAddon : AddonBase
         {
             var addons = _addonsThreadSafe;
@@ -468,7 +468,7 @@ namespace Ssz.Utils.Addons
             if (newAddon is null)
                 return null;
 
-            await newAddon.InitializeAsync(cancellationToken);
+            newAddon.Initialize(cancellationToken);
 
             return newAddon;
         }
@@ -480,7 +480,7 @@ namespace Ssz.Utils.Addons
         /// <param name="addonIdentifier"></param>
         /// <param name="dispatcher"></param>
         /// <returns></returns>
-        public async Task<TAddon?> CreateInitializedAddonThreadSafeAsync<TAddon>(string addonIdentifier, IDispatcher dispatcher, CancellationToken cancellationToken)
+        public TAddon? CreateInitializedAddonThreadSafe<TAddon>(string addonIdentifier, IDispatcher dispatcher, CancellationToken cancellationToken)
             where TAddon : AddonBase
         {
             if (String.IsNullOrEmpty(addonIdentifier))
@@ -496,7 +496,7 @@ namespace Ssz.Utils.Addons
             if (newAddon is null)
                 return null;
 
-            await newAddon.InitializeAsync(cancellationToken);
+            newAddon.Initialize(cancellationToken);
 
             return newAddon;
         }
@@ -587,9 +587,7 @@ namespace Ssz.Utils.Addons
                 return;
 
             if (String.Equals(args.CsvFileName, AddonsCsvFileName, StringComparison.InvariantCultureIgnoreCase))
-            {
-                var t = RefreshAddonsAsync();
-            }
+                RefreshAddons();
         }
 
         private void OnAddonCsvDb_CsvFileChanged(object? sender, CsvFileChangedEventArgs args)
@@ -598,12 +596,10 @@ namespace Ssz.Utils.Addons
                 return;
 
             if (String.Equals(args.CsvFileName, AddonBase.OptionsCsvFileName, StringComparison.InvariantCultureIgnoreCase))
-            {
-                var t = RefreshAddonsAsync();
-            }
+                RefreshAddons();
         }
 
-        private async Task RefreshAddonsAsync()
+        private void RefreshAddons()
         {
             if (Dispatcher is null)
                 return;
@@ -653,14 +649,9 @@ namespace Ssz.Utils.Addons
 
             _container = new CompositionContainer(catalog);
 
-            await Addons.UpdateAsync(newAddons.OrderBy(a => ((IObservableCollectionItem)a).ObservableCollectionItemId).ToArray(), Dispatcher, CancellationToken.None);
+            Addons.Update(newAddons.OrderBy(a => ((IObservableCollectionItem)a).ObservableCollectionItemId).ToArray(), CancellationToken.None);
 
-            await Dispatcher.InvokeAsync(ct =>
-            {
-                _addonsThreadSafe = Addons.ToArray();
-
-                return 0;
-            });            
+            _addonsThreadSafe = Addons.ToArray();
         }
 
         /// <summary>

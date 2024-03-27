@@ -1,5 +1,5 @@
 <Project>
 	<PropertyGroup>
-		<WarningsAsErrors>4014</WarningsAsErrors>
+		<WarningsAsErrors>4014,8625</WarningsAsErrors>
 	</PropertyGroup>
 </Project>

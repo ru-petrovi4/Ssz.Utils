@@ -20,7 +20,7 @@ namespace Ssz.Utils
         /// <param name="oldCollection"></param>
         /// <param name="newCollection"></param>
         /// <param name="cancellationToken"></param>
-        public static async Task UpdateAsync<T>(this ObservableCollection<T> oldCollection, T[] newCollection, IDispatcher? dispatcher, CancellationToken cancellationToken)
+        public static void Update<T>(this ObservableCollection<T> oldCollection, T[] newCollection, CancellationToken cancellationToken)
             where T : IObservableCollectionItem
         {
             foreach (T o in oldCollection)
@@ -73,38 +73,30 @@ namespace Ssz.Utils
                 }                    
             }
 
-            if (dispatcher is null)
+            foreach (var it in collectionToClose)
             {
-                foreach (var it in collectionToClose)
+                try
                 {
-                    await it.ObservableCollectionItemCloseAsync();
+                    it.Close();
                 }
-
-                foreach (var it in collectionToInitialize)
+                catch
                 {
-                    await it.ObservableCollectionItemInitializeAsync(cancellationToken);
-                }
+                }                
             }
-            else
+
+            foreach (var it in collectionToInitialize)
             {
-                await dispatcher.InvokeExAsync(async ct =>
+                try
                 {
-                    foreach (var it in collectionToClose)
-                    {
-                        await it.ObservableCollectionItemCloseAsync();
-                    }
-
-                    foreach (var it in collectionToInitialize)
-                    {
-                        await it.ObservableCollectionItemInitializeAsync(cancellationToken);
-                    }
-
-                    return 0;
-                });
-            }                
+                    it.Initialize(cancellationToken);
+                }
+                catch
+                {
+                }                
+            }
         }
 
-        public static async Task SafeClearAsync<T>(this ObservableCollection<T> collection, IDispatcher? dispatcher)
+        public static void SafeClear<T>(this ObservableCollection<T> collection)
             where T : IObservableCollectionItem
         {
             List<T> collectionToClose = new (collection);
@@ -114,25 +106,16 @@ namespace Ssz.Utils
                 collection.RemoveAt(collectionIndex);                
             }
 
-            if (dispatcher is null)
+            foreach (var it in collectionToClose)
             {
-                foreach (var it in collectionToClose)
+                try
                 {
-                    await it.ObservableCollectionItemCloseAsync();
+                    it.Close();
                 }
-            }
-            else
-            {
-                await dispatcher.InvokeExAsync(async ct =>
+                catch
                 {
-                    foreach (var it in collectionToClose)
-                    {
-                        await it.ObservableCollectionItemCloseAsync();
-                    }
-
-                    return 0;
-                });
-            }            
+                }                
+            }
         }
 
         #endregion
@@ -155,7 +138,7 @@ namespace Ssz.Utils
         /// </summary>
         bool ObservableCollectionItemIsAdded { get; set; }
 
-        Task ObservableCollectionItemInitializeAsync(CancellationToken cancellationToken);
+        void Initialize(CancellationToken cancellationToken);
 
         /// <summary>
         ///     Need implementation for updating.
@@ -163,6 +146,6 @@ namespace Ssz.Utils
         /// <param name="item"></param>
         void ObservableCollectionItemUpdate(IObservableCollectionItem item);
 
-        Task ObservableCollectionItemCloseAsync();
+        void Close();
     }
 }
