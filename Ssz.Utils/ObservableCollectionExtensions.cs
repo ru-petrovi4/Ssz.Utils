@@ -42,19 +42,23 @@ namespace Ssz.Utils
                     o.ObservableCollectionItemUpdate(n);
                 }
             }
-
-            List<T> collectionToClose = new(oldCollection.Count);
+            
             for (int oldCollectionIndex = oldCollection.Count - 1; oldCollectionIndex >= 0; oldCollectionIndex -= 1)
             {
                 var o = oldCollection[oldCollectionIndex];
                 if (o.ObservableCollectionItemIsDeleted)
-                {
-                    collectionToClose.Add(o);
+                {                    
                     oldCollection.RemoveAt(oldCollectionIndex);
+                    try
+                    {
+                        o.Close();
+                    }
+                    catch
+                    {
+                    }
                 }
             }
-
-            List<T> collectionToInitialize = new(newCollection.Length);
+            
             for (int newCollectionIndex = 0; newCollectionIndex < newCollection.Length; newCollectionIndex++)
             {
                 var n = newCollection[newCollectionIndex];
@@ -68,32 +72,16 @@ namespace Ssz.Utils
                         oldCollectionIndex -= 1;
                     }
                     oldCollectionIndex += 1;
-                    collectionToInitialize.Add(n);                    
+                    try
+                    {
+                        n.Initialize(cancellationToken);
+                    }
+                    catch
+                    {
+                    }                                   
                     oldCollection.Insert(oldCollectionIndex, n);                    
                 }                    
-            }
-
-            foreach (var it in collectionToClose)
-            {
-                try
-                {
-                    it.Close();
-                }
-                catch
-                {
-                }                
-            }
-
-            foreach (var it in collectionToInitialize)
-            {
-                try
-                {
-                    it.Initialize(cancellationToken);
-                }
-                catch
-                {
-                }                
-            }
+            }            
         }
 
         public static void SafeClear<T>(this ObservableCollection<T> collection)

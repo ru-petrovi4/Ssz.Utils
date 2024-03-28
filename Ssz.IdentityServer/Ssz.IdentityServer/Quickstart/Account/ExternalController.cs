@@ -82,7 +82,7 @@ namespace IdentityServerHost.Quickstart.UI
         {
             // read external identity from the temporary cookie
             var result = await HttpContext.AuthenticateAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
-            if (result?.Succeeded != true)
+            if (result.Succeeded != true)
             {
                 throw new Exception("External authentication error");
             }
@@ -145,7 +145,7 @@ namespace IdentityServerHost.Quickstart.UI
 
         private (TestUser user, string provider, string providerUserId, IEnumerable<Claim> claims) FindUserFromExternalProvider(AuthenticateResult result)
         {
-            var externalUser = result.Principal;
+            var externalUser = result.Principal!;
 
             // try to determine the unique id of the external user (issued by the provider)
             // the most common claim type for that are the sub claim and the NameIdentifier
@@ -158,13 +158,13 @@ namespace IdentityServerHost.Quickstart.UI
             var claims = externalUser.Claims.ToList();
             claims.Remove(userIdClaim);
 
-            var provider = result.Properties.Items["scheme"];
+            var provider = result.Properties?.Items["scheme"];
             var providerUserId = userIdClaim.Value;
 
             // find external user
             var user = _users.FindByExternalProvider(provider, providerUserId);
 
-            return (user, provider, providerUserId, claims);
+            return (user, provider!, providerUserId, claims);
         }
 
         private TestUser AutoProvisionUser(string provider, string providerUserId, IEnumerable<Claim> claims)
@@ -179,14 +179,14 @@ namespace IdentityServerHost.Quickstart.UI
         {
             // if the external system sent a session id claim, copy it over
             // so we can use it for single sign-out
-            var sid = externalResult.Principal.Claims.FirstOrDefault(x => x.Type == JwtClaimTypes.SessionId);
+            var sid = externalResult.Principal!.Claims.FirstOrDefault(x => x.Type == JwtClaimTypes.SessionId);
             if (sid != null)
             {
                 localClaims.Add(new Claim(JwtClaimTypes.SessionId, sid.Value));
             }
 
             // if the external provider issued an id_token, we'll keep it for signout
-            var idToken = externalResult.Properties.GetTokenValue("id_token");
+            var idToken = externalResult.Properties!.GetTokenValue("id_token");
             if (idToken != null)
             {
                 localSignInProps.StoreTokens(new[] { new AuthenticationToken { Name = "id_token", Value = idToken } });
