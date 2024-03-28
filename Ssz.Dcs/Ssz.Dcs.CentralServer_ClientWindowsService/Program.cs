@@ -57,7 +57,8 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     )
                 .ConfigureServices((hostContext, services) =>
                     {
-                        services.AddHostedService<MainBackgroundService>();                        
+                        services.AddTransient<Worker>();
+                        services.AddHostedService<MainBackgroundService>();
                     })
                 .UseWindowsService();
 

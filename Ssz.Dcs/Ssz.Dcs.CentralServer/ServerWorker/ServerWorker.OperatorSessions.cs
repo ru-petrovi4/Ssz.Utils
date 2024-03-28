@@ -122,14 +122,14 @@ namespace Ssz.Dcs.CentralServer
         private string ProcessModelingSession_RunOperatorExe_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
         {
             string?[] parts = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend.Span));
-            if (parts.Length < 3)
+            if (parts.Length < 4)
                 throw new InvalidOperationException();
             
             OperatorSession? operatorSession = OperatorSessionsCollection.TryGetValue(parts[0]);
             if (operatorSession is null) 
                 return @"";
 
-            Generate_RunOperatorExe_UtilityEvent(operatorSession.OperatorWorkstationName, operatorSession, parts[1]!, parts[2]!);
+            Generate_RunOperatorExe_UtilityEvent(operatorSession.OperatorWorkstationName, operatorSession, parts[1]!, parts[2]!, parts[3]!);
 
             return operatorSession.LaunchOperatorJobId!;
         }

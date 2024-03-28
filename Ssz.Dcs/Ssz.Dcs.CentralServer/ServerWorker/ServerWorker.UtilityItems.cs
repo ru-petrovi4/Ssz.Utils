@@ -22,18 +22,13 @@ namespace Ssz.Dcs.CentralServer
         
         public Guid UtilityDataGuid { get; set; } = Guid.Empty;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="listItem"></param>
-        public void AddUtilityElementValueListItem(UtilityElementValueListItem listItem)
+        public void AddUtilityElementValueListItem(UtilityElementValueListItem listItem, string clientWorkstationName)
         {
-            string elementId = listItem.ElementId;
-            
-            if (!_utilityItems.TryGetValue(elementId, out UtilityItem? utilityItem))
+            string id = listItem.ElementId + @"@" + clientWorkstationName;            
+            if (!_utilityItems.TryGetValue(id, out UtilityItem? utilityItem))
             {
-                utilityItem = new UtilityItem(elementId);
-                _utilityItems.Add(elementId, utilityItem);                
+                utilityItem = new UtilityItem(listItem.ElementId);
+                _utilityItems.Add(id, utilityItem);                
 
                 _utilityItemsDoWorkNeeded = true;
             }
@@ -42,23 +37,18 @@ namespace Ssz.Dcs.CentralServer
             listItem.IsWritable = false;
             listItem.UpdateValueStatusTimestamp(utilityItem.ValueStatusTimestamp);
         }
-
-        /// <summary>
-        ///     valueSubscription is not null.
-        ///     If valueSubscription is not subscribed - does nothing.
-        /// </summary>
-        /// <param name="listItem"></param>
-        public void RemoveUtilityElementValueListItem(UtilityElementValueListItem listItem)
+        
+        public void RemoveUtilityElementValueListItem(UtilityElementValueListItem listItem, string clientWorkstationName)
         {
-            string elementId = listItem.ElementId;
-            if (!_utilityItems.TryGetValue(elementId, out UtilityItem? utilityItem))
+            string id = listItem.ElementId + @"@" + clientWorkstationName;
+            if (!_utilityItems.TryGetValue(id, out UtilityItem? utilityItem))
             {
                 return;
             }
             utilityItem.UtilityElementValueListItemsCollection.Remove(listItem);
             if (utilityItem.UtilityElementValueListItemsCollection.Count == 0)
             {
-                _utilityItems.Remove(elementId);
+                _utilityItems.Remove(id);
             }
         }
 
@@ -69,16 +59,16 @@ namespace Ssz.Dcs.CentralServer
         /// <param name="value"></param>
         public uint WriteUtilityElementValueListItem(UtilityElementValueListItem listItem, Any value)
         {
-            string elementId = listItem.ElementId;
+            //string elementId = listItem.ElementId;
 
-            if (!_utilityItems.TryGetValue(elementId, out UtilityItem? utilityItem))
-            {
-                utilityItem = new UtilityItem(elementId);
-                _utilityItems.Add(elementId, utilityItem);                
-            }
-            utilityItem.UpdateValue(value.ValueAsString(false), DateTime.UtcNow);
+            //if (!_utilityItems.TryGetValue(elementId, out UtilityItem? utilityItem))
+            //{
+            //    utilityItem = new UtilityItem(elementId);
+            //    _utilityItems.Add(elementId, utilityItem);                
+            //}
+            //utilityItem.UpdateValue(value.ValueAsString(false), DateTime.UtcNow);
 
-            _utilityItemsDoWorkNeeded = true;
+            //_utilityItemsDoWorkNeeded = true;
 
             return StatusCodes.Good;
         }
@@ -100,7 +90,7 @@ namespace Ssz.Dcs.CentralServer
 
                 DoWorkOperatorsUtilityItems(nowUtc, cancellationToken);
 
-                //CalculateFilesStoreUtilityItem(nowUtc, cancellationToken);
+                DoWorkCentralServersUtilityItems(nowUtc, cancellationToken);
 
                 UtilityDataGuid = Guid.NewGuid();
             }
@@ -109,16 +99,16 @@ namespace Ssz.Dcs.CentralServer
         private void DoWorkOperatorsUtilityItems(DateTime nowUtc, CancellationToken cancellationToken)
         {
             UtilityItem[] processModelingSessionOperatorsUtilityItems = _utilityItems.Values
-                    .Where(mi => mi.Id.StartsWith(DataAccessConstants.Operators_UtilityItem + @"[", StringComparison.InvariantCultureIgnoreCase) && mi.Id.EndsWith("]")).ToArray();
+                    .Where(mi => mi.ElementId.StartsWith(DataAccessConstants.Operators_UtilityItem + @"[", StringComparison.InvariantCultureIgnoreCase) && mi.ElementId.EndsWith("]")).ToArray();
 
-            foreach (UtilityItem processModelingSessionOperatorsUtilityItem in processModelingSessionOperatorsUtilityItems)
+            foreach (var g in processModelingSessionOperatorsUtilityItems.GroupBy(i => i.ElementId))
             {
                 string utilityItemValue = @"";
                 
-                string id = processModelingSessionOperatorsUtilityItem.Id;
-                int i1 = id.IndexOf('[');
-                int i2 = id.IndexOf(']', i1);
-                string processModelingSessionId = id.Substring(i1 + 1, i2 - i1 - 1);
+                string elementId = g.Key;
+                int i1 = elementId.IndexOf('[');
+                int i2 = elementId.IndexOf(']', i1);
+                string processModelingSessionId = elementId.Substring(i1 + 1, i2 - i1 - 1);
                 ProcessModelingSession? processModelingSession = _processModelingSessionsCollection.TryGetValue(processModelingSessionId);
                 if (processModelingSession is not null)
                 {                    
@@ -154,45 +144,42 @@ namespace Ssz.Dcs.CentralServer
                                 if (String.IsNullOrEmpty(operatorSession.OperatorUserName))
                                     continue;
 
-                                var operatorValues = new List<object?>();
-                                operatorValues.Add(operatorWorkstationName);
-                                operatorValues.Add(operatorWorkstationNameToDisplay);
-                                operatorValues.Add(operatorSession.WindowsUserName);
-                                operatorValues.Add(operatorSession.WindowsUserNameToDisplay);
-                                operatorValues.Add(operatorSession.OperatorSessionId);
-                                operatorValues.Add(operatorSession.OperatorUserName);
-                                operatorValues.Add(operatorSession.DsProject_PathRelativeToDataDirectory);
-                                operatorValues.Add(operatorSession.OperatorPlay_AdditionalCommandLine == @"" ? null : operatorSession.OperatorPlay_AdditionalCommandLine);
-                                operatorValues.Add(operatorSession.OperatorRoleId);
-                                operatorValues.Add(operatorSession.OperatorRoleName);
-                                operatorValues.Add(operatorSession.OperatorSessionStatus);
+                                var operatorValues = new List<object?>
+                                {
+                                    operatorWorkstationName,
+                                    operatorWorkstationNameToDisplay,
+                                    operatorSession.WindowsUserName,
+                                    operatorSession.WindowsUserNameToDisplay,
+                                    operatorSession.OperatorSessionId,
+                                    operatorSession.OperatorUserName,
+                                    operatorSession.DsProject_PathRelativeToDataDirectory,
+                                    operatorSession.OperatorPlay_AdditionalCommandLine == @"" ? null : operatorSession.OperatorPlay_AdditionalCommandLine,
+                                    operatorSession.OperatorRoleId,
+                                    operatorSession.OperatorRoleName,
+                                    operatorSession.OperatorSessionStatus
+                                };
                                 utilityItemValue += CsvHelper.FormatForCsv(",", operatorValues) + Environment.NewLine;
-                            }
-                            //if (operatorSessions.Length > 0)
-                            //{
-                                
-                            //}
-                            //else
-                            //{
-                            //    var operatorValues = new List<object?>();
-                            //    operatorValues.Add(operatorWorkstationName);
-                            //    operatorValues.Add(operatorWorkstationNameToDisplay);
-                            //    operatorValues.Add(null);
-                            //    operatorValues.Add(null);
-                            //    operatorValues.Add(null);
-                            //    operatorValues.Add(null);
-                            //    operatorValues.Add(null);
-                            //    operatorValues.Add(null);
-                            //    operatorValues.Add(null);
-                            //    operatorValues.Add(null);
-                            //    operatorValues.Add(OperatorSessionConstants.OperatorReadyToInitiateSession);
-                            //    utilityItemValue += CsvHelper.FormatForCsv(",", operatorValues) + Environment.NewLine;
-                            //}
+                            }                            
                         }
                     }
                 }
 
-                processModelingSessionOperatorsUtilityItem.UpdateValue(utilityItemValue, nowUtc);
+                foreach (UtilityItem processModelingSessionOperatorsUtilityItem in g)
+                {
+                    processModelingSessionOperatorsUtilityItem.UpdateValue(utilityItemValue, nowUtc);
+                }
+            }
+        }
+
+        private void DoWorkCentralServersUtilityItems(DateTime nowUtc, CancellationToken cancellationToken)
+        {
+            UtilityItem[] centralServersUtilityItems = _utilityItems.Values
+                    .Where(mi => String.Equals(mi.ElementId, DataAccessConstants.CentralServers_UtilityItem, StringComparison.InvariantCultureIgnoreCase)).ToArray();
+            
+            string utilityItemValue = @"*";
+            foreach (var centralServersUtilityItem in centralServersUtilityItems)
+            {
+                centralServersUtilityItem.UpdateValue(utilityItemValue, nowUtc);                
             }
         }
 
@@ -202,6 +189,9 @@ namespace Ssz.Dcs.CentralServer
 
         private volatile bool _utilityItemsDoWorkNeeded;
 
+        /// <summary>
+        ///     [elementId@clientWorkstationName, UtilityItem]
+        /// </summary>
         private readonly CaseInsensitiveDictionary<UtilityItem> _utilityItems = new(256);        
 
         #endregion
@@ -210,16 +200,16 @@ namespace Ssz.Dcs.CentralServer
         {
             #region construction and destruction
 
-            public UtilityItem(string id)
+            public UtilityItem(string elementId)
             {
-                Id = id;
+                ElementId = elementId;
             }
 
             #endregion
 
             #region public functions
 
-            public string Id { get; }
+            public string ElementId { get; }
 
             public List<UtilityElementValueListItem> UtilityElementValueListItemsCollection { get; } = new();
 
@@ -266,3 +256,5 @@ namespace Ssz.Dcs.CentralServer
         }
     }
 }
+
+// string utilityItemValue = ConfigurationHelper.GetValue<string>(_configuration, @"Kestrel:Endpoints:HttpsDefaultCert:Url", @"");

@@ -246,7 +246,6 @@ namespace Ssz.Utils.Addons
                 CsvDb.SetData(AddonsAvailableCsvFileName, addonsAvailableFileData);
                 CsvDb.SaveData(AddonsAvailableCsvFileName);
 
-
                 var addonsFileData = CsvDb.GetData(AddonsCsvFileName);
                 CaseInsensitiveDictionary<List<string?>> new_AddonsFileData = new();
                 new_AddonsFileData[@"!AddonInstanceId"] = new List<string?>()

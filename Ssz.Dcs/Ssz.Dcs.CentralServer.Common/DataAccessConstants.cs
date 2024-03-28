@@ -20,7 +20,9 @@ namespace Ssz.Dcs.CentralServer.Common
 
         public const string CentralServer_ClientApplicationName = @"Ssz.Dcs.CentralServer";
 
-        public const string Operators_UtilityItem = @"Operators";        
+        public const string Operators_UtilityItem = @"Operators";
+
+        public const string CentralServers_UtilityItem = @"CentralServers";
 
         public static readonly TimeSpan UnrecoverableTimeout = TimeSpan.FromSeconds(180);
 

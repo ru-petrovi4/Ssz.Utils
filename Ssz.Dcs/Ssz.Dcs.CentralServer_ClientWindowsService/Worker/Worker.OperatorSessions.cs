@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using Ssz.Dcs.CentralServer.Common;
 using Ssz.Utils;
+using Ssz.Utils.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,11 +14,11 @@ using System.Threading.Tasks;
 
 namespace Ssz.Dcs.CentralServer_ClientWindowsService
 {
-    public partial class MainBackgroundService
+    public partial class Worker
     {
         #region private functions
 
-        private async Task LaunchOperatorAsync(string textMessage)
+        private async Task LaunchOperatorAsync(string textMessage, IDataAccessProvider utilityDataAccessProvider)
         {
             var parts = CsvHelper.ParseCsvLine(",", textMessage);
             if (parts.Length < 6)
@@ -59,7 +60,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 };
 
                 var workingDirectoriesOptional = await PrepareWorkingDirectoriesAsync(progressInfo, processModelName,
-                    DsFilesStoreDirectoryType.OperatorBin, DsFilesStoreDirectoryType.OperatorData, dsProjectPathRelativeToDataDirectory);
+                    DsFilesStoreDirectoryType.OperatorBin, DsFilesStoreDirectoryType.OperatorData, utilityDataAccessProvider, dsProjectPathRelativeToDataDirectory);
                 if (workingDirectoriesOptional is null)
                 {
                     throw new NotifyProgressException(@"Invalid textMessage = " + textMessage)
@@ -68,29 +69,30 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     };
                 }
 
-                var t = UtilityDataAccessProvider.LongrunningPassthroughAsync(@"", LongrunningPassthroughConstants.ProcessModelingSession_RunOperatorExe,
+                var t = utilityDataAccessProvider.LongrunningPassthroughAsync(@"", LongrunningPassthroughConstants.ProcessModelingSession_RunOperatorExe,
                     Encoding.UTF8.GetBytes(CsvHelper.FormatForCsv(operatorSessionId, 
                     workingDirectoriesOptional.Value.BinDirectoryInfo.FullName, 
-                    workingDirectoriesOptional.Value.DataDirectoryInfo.FullName)), null);
+                    workingDirectoriesOptional.Value.DataDirectoryInfo.FullName,
+                    utilityDataAccessProvider.ServerAddress)), null);
                       
             }
             catch (NotifyProgressException ex)
             {
                 Logger.LogError(ex, "LaunchOperator Failed.");
 
-                await SetJobProgressAsync(jobId, 100, ex.PprogressLabelResourceName, ex.ProgressDetails, StatusCodes.BadInvalidState);
+                await SetJobProgressAsync(jobId, 100, ex.PprogressLabelResourceName, ex.ProgressDetails, StatusCodes.BadInvalidState, utilityDataAccessProvider);
             }
             catch (RpcException ex)
             {
                 Logger.LogError(ex, "LaunchOperator Failed.");
 
-                await SetJobProgressAsync(jobId, 100, Ssz.Dcs.CentralServer.Properties.ResourceStrings.LaunchedOperatorProgressLabel, ex.Status.Detail, StatusCodes.BadInvalidState);
+                await SetJobProgressAsync(jobId, 100, Ssz.Dcs.CentralServer.Properties.ResourceStrings.LaunchedOperatorProgressLabel, ex.Status.Detail, StatusCodes.BadInvalidState, utilityDataAccessProvider);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "LaunchOperator Failed.");
 
-                await SetJobProgressAsync(jobId, 100, Ssz.Dcs.CentralServer.Properties.ResourceStrings.LaunchedOperatorProgressLabel, ex.Message, StatusCodes.BadInvalidState);
+                await SetJobProgressAsync(jobId, 100, Ssz.Dcs.CentralServer.Properties.ResourceStrings.LaunchedOperatorProgressLabel, ex.Message, StatusCodes.BadInvalidState, utilityDataAccessProvider);
             }            
         }
 

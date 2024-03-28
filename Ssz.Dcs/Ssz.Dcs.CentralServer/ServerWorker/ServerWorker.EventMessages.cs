@@ -119,7 +119,10 @@ namespace Ssz.Dcs.CentralServer
 
         private void Generate_RunOperatorExe_UtilityEvent(
             string targetWorkstationName,
-            OperatorSession operatorSession, string binDirectoryFullName, string dataDirectoryFullName)
+            OperatorSession operatorSession, 
+            string binDirectoryFullName, 
+            string dataDirectoryFullName,
+            string centralServerAddress)
         {
             if (operatorSession.ProcessModelingSession is null)
                 return;
@@ -145,6 +148,7 @@ namespace Ssz.Dcs.CentralServer
                 operatorSession.OperatorSessionId,
                 binDirectoryFullName,
                 dataDirectoryFullName,
+                centralServerAddress,
                 operatorSession.DsProject_PathRelativeToDataDirectory,
                 StringHelper.GetNullForEmptyString(operatorSession.OperatorPlay_AdditionalCommandLine),
                 operatorSessionDescription

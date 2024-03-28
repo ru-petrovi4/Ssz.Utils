@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.Dcs.CentralServer_ClientWindowsService
 {
-    public partial class MainBackgroundService
+    public partial class Worker
     {
         #region private functions        
 

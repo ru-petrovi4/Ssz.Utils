@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using Ssz.Dcs.CentralServer.Common;
 using Ssz.Utils;
+using Ssz.Utils.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,15 +13,15 @@ using System.Threading.Tasks;
 
 namespace Ssz.Dcs.CentralServer_ClientWindowsService
 {
-    public partial class MainBackgroundService
+    public partial class Worker
     {
         #region private functions
 
-        private void LaunchControlEngine(string processModelingSessionId, DirectoryInfo processDirectoryInfo, DirectoryInfo binDirectoryInfo, string instanceInfo)
+        private void LaunchControlEngine(string processModelingSessionId, DirectoryInfo processDirectoryInfo, DirectoryInfo binDirectoryInfo, string instanceInfo, IDataAccessProvider utilityDataAccessProvider)
         {
             string exeFileFullName = Path.Combine(binDirectoryInfo.FullName, DataAccessConstants.ControlEngine_ClientApplicationName + @".exe");
             string arguments = "-d \"" + processDirectoryInfo.FullName +
-                "\" --CentralServerAddress=" + ConfigurationHelper.GetValue<string>(Configuration, @"CentralServerAddress", @"") +
+                "\" --CentralServerAddress=" + utilityDataAccessProvider.ServerAddress +
                 " -s \"" + processModelingSessionId + "\"" +
                 " --LocalServerPortNumber=" + instanceInfo;
 

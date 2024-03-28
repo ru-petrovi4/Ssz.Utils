@@ -10,12 +10,14 @@ using System.Threading.Tasks;
 
 namespace Ssz.Dcs.CentralServer_ClientWindowsService
 {
-    public partial class MainBackgroundService : BackgroundService
+    public partial class Worker
     {
         #region private functions               
 
         private void OnUtilityDataAccessProvider_EventMessagesCallback(object? sender, EventMessagesCallbackEventArgs args)
         {
+            IDataAccessProvider utilityDataAccessProvider = (sender as IDataAccessProvider)!;
+
             foreach (var eventMessage in args.EventMessagesCollection.EventMessages)
             {
                 Logger.LogDebug("eventMessage: " + eventMessage.TextMessage);
@@ -35,7 +37,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
                     _threadSafeDispatcher.BeginInvokeEx(async ct =>
                     {
-                        await LaunchInstructorAsync(eventMessage.TextMessage);
+                        await LaunchInstructorAsync(eventMessage.TextMessage, utilityDataAccessProvider);
                     });
                 }
                 else if (condition.Compare(EventMessageConstants.LaunchEngine_TypeId))
@@ -44,7 +46,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
                     _threadSafeDispatcher.BeginInvokeEx(async ct =>
                     {
-                        await LaunchEnineAsync(eventMessage.TextMessage);
+                        await LaunchEnineAsync(eventMessage.TextMessage, utilityDataAccessProvider);
                     });
                 }
                 else if (condition.Compare(EventMessageConstants.LaunchOperator_TypeId))
@@ -53,7 +55,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
                     _threadSafeDispatcher.BeginInvokeEx(async ct =>
                     {
-                        await LaunchOperatorAsync(eventMessage.TextMessage);
+                        await LaunchOperatorAsync(eventMessage.TextMessage, utilityDataAccessProvider);
                     });
                 }
                 else if (condition.Compare(EventMessageConstants.DownloadChangedFiles_TypeId))
@@ -62,7 +64,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
                     _threadSafeDispatcher.BeginInvokeEx(async ct =>
                     {
-                        await DownloadChangedFilesAsync(eventMessage.TextMessage);
+                        await DownloadChangedFilesAsync(eventMessage.TextMessage, utilityDataAccessProvider);
                     });
                 }
                 else if (condition.Compare(EventMessageConstants.UploadChangedFiles_TypeId))
@@ -71,7 +73,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
                     _threadSafeDispatcher.BeginInvokeEx(async ct =>
                     {
-                        await UploadChangedFilesAsync(eventMessage.TextMessage);
+                        await UploadChangedFilesAsync(eventMessage.TextMessage, utilityDataAccessProvider);
                     });
                 }
             }

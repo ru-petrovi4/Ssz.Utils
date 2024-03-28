@@ -42,7 +42,7 @@ DataAccessClientUserName: ""
 DataAccessClientPasswordHash: ""  
 DbType: "sqlite"
 ConnectionStrings: 
-#  MainDbConnection: "Host=localhost;Username=postgres;Password=postgres;Database=deltasim1;CommandTimeout=3600"  
+  # MainDbConnection: "Host=localhost;Username=postgres;Password=postgres;Database=deltasim1;CommandTimeout=3600"  
 ConfigurationCrypter: 
   adapterclient_password: ""
 ---

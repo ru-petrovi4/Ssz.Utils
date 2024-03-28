@@ -4,6 +4,7 @@ using Microsoft.Win32;
 using Ssz.Dcs.CentralServer.Common;
 using Ssz.Dcs.CentralServer.Common.Passthrough;
 using Ssz.Utils;
+using Ssz.Utils.DataAccess;
 using Ssz.Utils.Serialization;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,11 @@ using System.Threading.Tasks;
 
 namespace Ssz.Dcs.CentralServer_ClientWindowsService
 {
-    public partial class MainBackgroundService
+    public partial class Worker
     {
         #region private functions
 
-        private async Task LaunchEnineAsync(string textMessage)
+        private async Task LaunchEnineAsync(string textMessage, IDataAccessProvider utilityDataAccessProvider)
         {            
             var parts = CsvHelper.ParseCsvLine(",", textMessage);
             if (parts.Length < 9)
@@ -46,7 +47,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 };
 
                 var workingDirectoriesOptional = await PrepareWorkingDirectoriesAsync(progressInfo, processModelName,
-                    binDsFilesStoreDirectoryType, dataDsFilesStoreDirectoryType, pathRelativeToDataDirectory);
+                    binDsFilesStoreDirectoryType, dataDsFilesStoreDirectoryType, utilityDataAccessProvider, pathRelativeToDataDirectory);
                 if (workingDirectoriesOptional is null)
                 {
                     throw new Exception(@"Invalid textMessage = " + textMessage);                    
@@ -58,12 +59,12 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     ProgressLabelResourceName = @""
                 };
 
-                await PrepareSavesDirectoryAsync(progressInfo, processModelName, instructorUserName, instructorAccessFlags);
+                await PrepareSavesDirectoryAsync(progressInfo, processModelName, instructorUserName, instructorAccessFlags, utilityDataAccessProvider);
 
                 switch (binDsFilesStoreDirectoryType)
                 {
                     case DsFilesStoreDirectoryType.ControlEngineBin:
-                        LaunchControlEngine(processModelingSessionId, workingDirectories.ProcessDirectoryInfo, workingDirectories.BinDirectoryInfo, instanceInfo);
+                        LaunchControlEngine(processModelingSessionId, workingDirectories.ProcessDirectoryInfo, workingDirectories.BinDirectoryInfo, instanceInfo, utilityDataAccessProvider);
                         break;
                     case DsFilesStoreDirectoryType.PlatInstructorBin:
                         LaunchPlatInstructor(workingDirectories.ProcessDirectoryInfo, workingDirectories.BinDirectoryInfo, workingDirectories.DataDirectoryInfo, pathRelativeToDataDirectory, instanceInfo);
@@ -73,23 +74,23 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                         break;
                 }
 
-                await SetJobProgressAsync(jobId, 100, null, null, StatusCodes.Good);
+                await SetJobProgressAsync(jobId, 100, null, null, StatusCodes.Good, utilityDataAccessProvider);
             }
             catch (RpcException ex)
             {
                 Logger.LogError(ex, "Launch Engine Failed.");
 
-                await SetJobProgressAsync(jobId, 100, null, ex.Status.Detail, StatusCodes.BadInvalidState);
+                await SetJobProgressAsync(jobId, 100, null, ex.Status.Detail, StatusCodes.BadInvalidState, utilityDataAccessProvider);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Launch Engine Failed.");
 
-                await SetJobProgressAsync(jobId, 100, null, ex.Message, StatusCodes.BadInvalidState);
+                await SetJobProgressAsync(jobId, 100, null, ex.Message, StatusCodes.BadInvalidState, utilityDataAccessProvider);
             }            
         }
 
-        private async Task DownloadChangedFilesAsync(string textMessage)
+        private async Task DownloadChangedFilesAsync(string textMessage, IDataAccessProvider utilityDataAccessProvider)
         {
             var parts = CsvHelper.ParseCsvLine(",", textMessage);
             if (parts.Length < 3)
@@ -102,7 +103,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
             if (!ConfigurationHelper.GetValue<bool>(Configuration, @"FilesStoreSyncWithCentralServer", false))
             {
-                await SetJobProgressAsync(jobId, 100, null, null, StatusCodes.Good);
+                await SetJobProgressAsync(jobId, 100, null, null, StatusCodes.Good, utilityDataAccessProvider);
                 return;
             }            
 
@@ -127,7 +128,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                         progressInfo.Index += 1;
                         if (progressInfo.Index % 10 == 0)
                         {
-                            await SetJobProgressAsync(progressInfo.JobId, progressInfo.GetPercent(), progressInfo.ProgressLabelResourceName, null, StatusCodes.Good);
+                            await SetJobProgressAsync(progressInfo.JobId, progressInfo.GetPercent(), progressInfo.ProgressLabelResourceName, null, StatusCodes.Good, utilityDataAccessProvider);
                         }
                     }
                     
@@ -136,33 +137,33 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                         PathRelativeToRootDirectory = directoryPathRelativeToRootDirectory,
                         FilesAndDirectoriesIncludeLevel = includeSubdirectories ? Int32.MaxValue : 1,
                     };
-                    var returnData = await UtilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
+                    var returnData = await utilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
                         SerializationHelper.GetOwnedData(request));
                     DsFilesStoreDirectory? serverDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData,
                         () => new DsFilesStoreDirectory());
                     if (serverDsFilesStoreDirectory is not null)
                     {
-                        await DownloadFilesStoreDirectoryAsync(serverDsFilesStoreDirectory, null, includeSubdirectories);
+                        await DownloadFilesStoreDirectoryAsync(serverDsFilesStoreDirectory, null, utilityDataAccessProvider, includeSubdirectories);
                     }
                 }
 
-                await SetJobProgressAsync(jobId, 100, null, null, StatusCodes.Good);
+                await SetJobProgressAsync(jobId, 100, null, null, StatusCodes.Good, utilityDataAccessProvider);
             }
             catch (RpcException ex)
             {
                 Logger.LogError(ex, "Launch Engine Failed.");
 
-                await SetJobProgressAsync(jobId, 100, null, ex.Status.Detail, StatusCodes.BadInvalidState);
+                await SetJobProgressAsync(jobId, 100, null, ex.Status.Detail, StatusCodes.BadInvalidState, utilityDataAccessProvider);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Launch Engine Failed.");
 
-                await SetJobProgressAsync(jobId, 100, null, ex.Message, StatusCodes.BadInvalidState);
+                await SetJobProgressAsync(jobId, 100, null, ex.Message, StatusCodes.BadInvalidState, utilityDataAccessProvider);
             }
         }
 
-        private async Task UploadChangedFilesAsync(string textMessage)
+        private async Task UploadChangedFilesAsync(string textMessage, IDataAccessProvider utilityDataAccessProvider)
         {
             var parts = CsvHelper.ParseCsvLine(",", textMessage);
             if (parts.Length < 2)
@@ -175,7 +176,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
             if (!ConfigurationHelper.GetValue<bool>(Configuration, @"FilesStoreSyncWithCentralServer", false))
             {
-                await SetJobProgressAsync(jobId, 100, null, null, StatusCodes.Good);
+                await SetJobProgressAsync(jobId, 100, null, null, StatusCodes.Good, utilityDataAccessProvider);
                 return;
             }            
 
@@ -199,7 +200,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                         progressInfo.Index += 1;
                         if (progressInfo.Index % 10 == 0)
                         {
-                            await SetJobProgressAsync(progressInfo.JobId, progressInfo.GetPercent(), progressInfo.ProgressLabelResourceName, null, StatusCodes.Good);
+                            await SetJobProgressAsync(progressInfo.JobId, progressInfo.GetPercent(), progressInfo.ProgressLabelResourceName, null, StatusCodes.Good, utilityDataAccessProvider);
                         }
                     }
 
@@ -207,7 +208,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     {
                         var dsFilesStoreDirectory = DsFilesStoreHelper.CreateDsFilesStoreDirectoryObject(FilesStoreDirectoryInfo, directoryPathRelativeToRootDirectory, 1);
 
-                        await UploadFilesStoreDirectoryAsync(dsFilesStoreDirectory);
+                        await UploadFilesStoreDirectoryAsync(dsFilesStoreDirectory, utilityDataAccessProvider);
                     }
                     catch(Exception ex)
                     {
@@ -215,19 +216,19 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     }
                 }                
 
-                await SetJobProgressAsync(jobId, 100, null, null, StatusCodes.Good);
+                await SetJobProgressAsync(jobId, 100, null, null, StatusCodes.Good, utilityDataAccessProvider);
             }
             catch (RpcException ex)
             {
                 Logger.LogError(ex, "Launch Engine Failed.");
 
-                await SetJobProgressAsync(jobId, 100, null, ex.Status.Detail, StatusCodes.BadInvalidState);
+                await SetJobProgressAsync(jobId, 100, null, ex.Status.Detail, StatusCodes.BadInvalidState, utilityDataAccessProvider);
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "Launch Engine Failed.");
 
-                await SetJobProgressAsync(jobId, 100, null, ex.Message, StatusCodes.BadInvalidState);
+                await SetJobProgressAsync(jobId, 100, null, ex.Message, StatusCodes.BadInvalidState, utilityDataAccessProvider);
             }            
         }
 

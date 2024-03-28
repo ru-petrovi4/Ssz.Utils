@@ -22,7 +22,7 @@ Logging:
 # задается язык сообщений в журналах событий которые доступны через веб интерфейс ИТ-решения возможные значения RU EN
 UICulture: "RU"
 ProgramDataDirectory: "%ProgramData%\\Ssz\\Dcs.CentralServer_Client"
-CentralServerAddress: "https://localhost:60060"
+MainCentralServerAddress: "https://localhost:60060"
 FilesStoreSyncWithCentralServer: "true"
 ShowPlatInstructor: "false"
 ---

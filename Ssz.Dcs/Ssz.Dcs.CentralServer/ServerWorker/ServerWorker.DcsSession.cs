@@ -28,23 +28,14 @@ namespace Ssz.Dcs.CentralServer
         {
             switch (e.Action)
             {
-                case NotifyCollectionChangedAction.Add:
-                    //foreach (var engineSession in e.NewItems!.OfType<AddonBase>())
-                    //{   
-                    //}
+                case NotifyCollectionChangedAction.Add:                    
                     OnDataAccessProviderGetter_Addons_Added(e.NewItems!.OfType<DataAccessProviderGetter_AddonBase>());
                     break;
-
-                case NotifyCollectionChangedAction.Remove:
-                    //foreach (var engineSession in e.OldItems!.OfType<AddonBase>())
-                    //{                        
-                    //}
+                case NotifyCollectionChangedAction.Remove:                    
                     OnDataAccessProviderGetter_Addons_Removed(e.OldItems!.OfType<DataAccessProviderGetter_AddonBase>());
                     break;
-
                 case NotifyCollectionChangedAction.Replace:
                     break;
-
                 case NotifyCollectionChangedAction.Reset:
                     break;
             }

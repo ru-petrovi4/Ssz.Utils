@@ -2,10 +2,12 @@ using Grpc.Core;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
+using Ssz.DataAccessGrpc.Client;
 using Ssz.Dcs.CentralServer;
 using Ssz.Dcs.CentralServer.Common;
 using Ssz.Dcs.CentralServer.Common.Passthrough;
 using Ssz.Utils;
+using Ssz.Utils.DataAccess;
 using Ssz.Utils.Serialization;
 using System;
 using System.Collections.Generic;
@@ -17,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.Dcs.CentralServer_ClientWindowsService
 {
-    public partial class MainBackgroundService
+    public partial class Worker
     {
         #region private functions
 
@@ -26,12 +28,16 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
         /// </summary>
         /// <param name="serverDsFilesStoreDirectory"></param>
         /// <param name="progressInfo"></param>
+        /// <param name="utilityDataAccessProvider"></param>
         /// <param name="includeSubdirectories"></param>
         /// <returns></returns>
-        private async Task DownloadFilesStoreDirectoryAsync(DsFilesStoreDirectory serverDsFilesStoreDirectory, ProgressInfo? progressInfo,
+        private async Task DownloadFilesStoreDirectoryAsync(
+            DsFilesStoreDirectory serverDsFilesStoreDirectory, 
+            ProgressInfo? progressInfo,
+            IDataAccessProvider utilityDataAccessProvider,
             bool includeSubdirectories = true)
         {
-            if (!UtilityDataAccessProvider.IsConnected) throw new InvalidOperationException();
+            if (!utilityDataAccessProvider.IsConnected) throw new InvalidOperationException();
 
             var directoryInfo = new DirectoryInfo(Path.Combine(FilesStoreDirectoryInfo.FullName, serverDsFilesStoreDirectory.PathRelativeToRootDirectory));
             // Creates all directories and subdirectories in the specified path unless they already exist.
@@ -66,7 +72,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     if (stopwatch.ElapsedMilliseconds > 300)
                     {
                         stopwatch.Restart();
-                        await SetJobProgressAsync(progressInfo.JobId, progressInfo.GetPercent(), progressInfo.ProgressLabelResourceName, null, StatusCodes.Good);
+                        await SetJobProgressAsync(progressInfo.JobId, progressInfo.GetPercent(), progressInfo.ProgressLabelResourceName, null, StatusCodes.Good, utilityDataAccessProvider);
                     }
                 }                
 
@@ -96,7 +102,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 
                 if (dowload)
                 {
-                    await DownloadFilesAsync(new List<string> { Path.Combine(serverDsFilesStoreDirectory.PathRelativeToRootDirectory, serverDsFilesStoreFile.Name) });
+                    await DownloadFilesAsync(new List<string> { Path.Combine(serverDsFilesStoreDirectory.PathRelativeToRootDirectory, serverDsFilesStoreFile.Name) }, utilityDataAccessProvider);
                 }
             }
             foreach (var fileInfo in fileInfosDictionary.Values)
@@ -129,7 +135,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
                 foreach (var childServerDsFilesStoreDirectory in serverDsFilesStoreDirectory.ChildDsFilesStoreDirectoriesCollection)
                 {
-                    await DownloadFilesStoreDirectoryAsync(childServerDsFilesStoreDirectory, progressInfo);
+                    await DownloadFilesStoreDirectoryAsync(childServerDsFilesStoreDirectory, progressInfo, utilityDataAccessProvider);
                     childDirectoryInfosDictionary.Remove(childServerDsFilesStoreDirectory.Name);
                 }
                 foreach (var childDirectoryInfo in childDirectoryInfosDictionary.Values)
@@ -150,11 +156,12 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
         ///     Uploads changed and new files to server.        
         /// </summary>
         /// <param name="dsFilesStoreDirectory"></param>
+        /// <param name="utilityDataAccessProvider"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        private async Task UploadFilesStoreDirectoryAsync(DsFilesStoreDirectory dsFilesStoreDirectory)
+        private async Task UploadFilesStoreDirectoryAsync(DsFilesStoreDirectory dsFilesStoreDirectory, IDataAccessProvider utilityDataAccessProvider)
         {
-            if (!UtilityDataAccessProvider.IsConnected) throw new InvalidOperationException();
+            if (!utilityDataAccessProvider.IsConnected) throw new InvalidOperationException();
 
             DirectoryInfo directoryInfo;
             try
@@ -174,7 +181,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 PathRelativeToRootDirectory = dsFilesStoreDirectory.PathRelativeToRootDirectory,
                 FilesAndDirectoriesIncludeLevel = 1
             };
-            var returnData = await UtilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
+            var returnData = await utilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
                 SerializationHelper.GetOwnedData(request));
             DsFilesStoreDirectory? serverDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData,
                 () => new DsFilesStoreDirectory());
@@ -236,7 +243,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                             FileData = bytes
                         };
 
-                        await UploadFilesAsync(new List<DsFilesStoreFileData> { dsFilesStoreFileData });
+                        await UploadFilesAsync(new List<DsFilesStoreFileData> { dsFilesStoreFileData }, utilityDataAccessProvider);
                     }
                 }                
             }            
@@ -263,9 +270,9 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             //}            
         }
 
-        private async Task DownloadFilesAsync(List<string> filePathRelativeToRootDirectoryCollection)
+        private async Task DownloadFilesAsync(List<string> filePathRelativeToRootDirectoryCollection, IDataAccessProvider utilityDataAccessProvider)
         {   
-            var returnData = await UtilityDataAccessProvider.PassthroughAsync("", PassthroughConstants.LoadFiles, Encoding.UTF8.GetBytes(CsvHelper.FormatForCsv(@",", filePathRelativeToRootDirectoryCollection)));
+            var returnData = await utilityDataAccessProvider.PassthroughAsync("", PassthroughConstants.LoadFiles, Encoding.UTF8.GetBytes(CsvHelper.FormatForCsv(@",", filePathRelativeToRootDirectoryCollection)));
             var reply = SerializationHelper.CreateFromOwnedData(returnData, () => new LoadFilesReply());
             if (reply is not null)
             {
@@ -292,25 +299,25 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             }
         }
 
-        private async Task<uint> UploadFilesAsync(List<DsFilesStoreFileData> dsFilesStoreFileDatasCollection)
+        private async Task<uint> UploadFilesAsync(List<DsFilesStoreFileData> dsFilesStoreFileDatasCollection, IDataAccessProvider utilityDataAccessProvider)
         {
             var request = new SaveFilesRequest
             {
                 DatasCollection = dsFilesStoreFileDatasCollection
             };
 
-            uint statusCode = await await UtilityDataAccessProvider.LongrunningPassthroughAsync("", LongrunningPassthroughConstants.SaveFiles,
+            uint statusCode = await await utilityDataAccessProvider.LongrunningPassthroughAsync("", LongrunningPassthroughConstants.SaveFiles,
                 SerializationHelper.GetOwnedData(request), null);
 
             return statusCode;
         }
 
-        private async Task SetJobProgressAsync(string jobId, uint progressPercent, string? progressLabelResourceName, string? progressDetails, uint statusCode)
+        private async Task SetJobProgressAsync(string jobId, uint progressPercent, string? progressLabelResourceName, string? progressDetails, uint statusCode, IDataAccessProvider utilityDataAccessProvider)
         {
             if (jobId == @"") return;
             try
             {
-                GrpcChannel? grpcChannel = UtilityDataAccessProvider.GrpcChannel;
+                GrpcChannel? grpcChannel = ((GrpcDataAccessProvider)utilityDataAccessProvider).GrpcChannel;
                 if (grpcChannel is null) throw new Exception(@"grpcChannel is null");
 
                 var sessionsManagementClient = new ProcessModelingSessionsManagement.ProcessModelingSessionsManagementClient(grpcChannel);
@@ -344,7 +351,8 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             ProgressInfo progressInfo, 
             string processModelName,
             DsFilesStoreDirectoryType binDsFilesStoreDirectoryType, 
-            DsFilesStoreDirectoryType dataDsFilesStoreDirectoryType, 
+            DsFilesStoreDirectoryType dataDsFilesStoreDirectoryType,
+            IDataAccessProvider utilityDataAccessProvider,
             string pathRelativeToDataDirectory = @"")
         {
             DirectoryInfo processDirectoryInfo;
@@ -367,7 +375,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     PathRelativeToRootDirectory = @"",
                     FilesAndDirectoriesIncludeLevel = 1
                 };
-                var returnData = await UtilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
+                var returnData = await utilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
                     SerializationHelper.GetOwnedData(request));
                 DsFilesStoreDirectory? serverRootDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData,
                     () => new DsFilesStoreDirectory());
@@ -382,7 +390,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     PathRelativeToRootDirectory = processModelName,
                     FilesAndDirectoriesIncludeLevel = Int32.MaxValue
                 };
-                returnData = await UtilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
+                returnData = await utilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
                     SerializationHelper.GetOwnedData(request));
                 DsFilesStoreDirectory? serverPocessModelDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData,
                     () => new DsFilesStoreDirectory());
@@ -412,7 +420,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                         PathRelativeToRootDirectory = serverBinDsFilesStoreDirectory.PathRelativeToRootDirectory,
                         FilesAndDirectoriesIncludeLevel = Int32.MaxValue
                     };
-                    returnData = await UtilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
+                    returnData = await utilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
                         SerializationHelper.GetOwnedData(request));
                     serverBinDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData,
                         () => new DsFilesStoreDirectory());
@@ -477,8 +485,8 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 progressInfo.Count = DsFilesStoreHelper.GetDsFilesStoreDirectoryFilesCount(serverDataOrChildDsFilesStoreDirectory) +
                         DsFilesStoreHelper.GetDsFilesStoreDirectoryFilesCount(serverBinDsFilesStoreDirectory);
 
-                await DownloadFilesStoreDirectoryAsync(serverDataOrChildDsFilesStoreDirectory, progressInfo);
-                await DownloadFilesStoreDirectoryAsync(serverBinDsFilesStoreDirectory, progressInfo);
+                await DownloadFilesStoreDirectoryAsync(serverDataOrChildDsFilesStoreDirectory, progressInfo, utilityDataAccessProvider);
+                await DownloadFilesStoreDirectoryAsync(serverBinDsFilesStoreDirectory, progressInfo, utilityDataAccessProvider);
 
                 processDirectoryInfo = new DirectoryInfo(Path.Combine(FilesStoreDirectoryInfo.FullName, serverPocessModelDsFilesStoreDirectory.PathRelativeToRootDirectory));
                 binDirectoryInfo = new DirectoryInfo(Path.Combine(FilesStoreDirectoryInfo.FullName, serverBinDsFilesStoreDirectory.PathRelativeToRootDirectory));
@@ -518,7 +526,8 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             ProgressInfo progressInfo,
             string processModelName,            
             string userName,
-            InstructorAccessFlags instructorAccessFlags)
+            InstructorAccessFlags instructorAccessFlags,
+            IDataAccessProvider utilityDataAccessProvider)
         {
             DsFilesStoreDirectory? serverSavesDsFilesStoreDirectory;
             DsFilesStoreDirectory? serverSavesUserDsFilesStoreDirectory;
@@ -529,7 +538,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     PathRelativeToRootDirectory = Path.Combine(processModelName, DsFilesStoreConstants.SavesDirectoryNameUpper),
                     FilesAndDirectoriesIncludeLevel = Int32.MaxValue
                 };
-                var returnData = await UtilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
+                var returnData = await utilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
                     SerializationHelper.GetOwnedData(request));
                 serverSavesDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData,
                     () => new DsFilesStoreDirectory());
@@ -547,7 +556,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     PathRelativeToRootDirectory = Path.Combine(processModelName, DsFilesStoreConstants.SavesDirectoryNameUpper),
                     FilesAndDirectoriesIncludeLevel = 1
                 };
-                var returnData = await UtilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
+                var returnData = await utilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
                     SerializationHelper.GetOwnedData(request));
                 serverSavesDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData,
                     () => new DsFilesStoreDirectory());
@@ -562,7 +571,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                         DsFilesStoreHelper.GetDsFilesStoreDirectoryName(userName)),
                     FilesAndDirectoriesIncludeLevel = Int32.MaxValue
                 };
-                returnData = await UtilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
+                returnData = await utilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
                     SerializationHelper.GetOwnedData(request));
                 serverSavesUserDsFilesStoreDirectory = SerializationHelper.CreateFromOwnedData(returnData,
                     () => new DsFilesStoreDirectory());
@@ -576,9 +585,9 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             progressInfo.Count = DsFilesStoreHelper.GetDsFilesStoreDirectoryFilesCount(serverSavesDsFilesStoreDirectory) +
                 DsFilesStoreHelper.GetDsFilesStoreDirectoryFilesCount(serverSavesUserDsFilesStoreDirectory);
 
-            await DownloadFilesStoreDirectoryAsync(serverSavesDsFilesStoreDirectory, progressInfo);
+            await DownloadFilesStoreDirectoryAsync(serverSavesDsFilesStoreDirectory, progressInfo, utilityDataAccessProvider);
             if (serverSavesUserDsFilesStoreDirectory is not null)
-                await DownloadFilesStoreDirectoryAsync(serverSavesUserDsFilesStoreDirectory, progressInfo);
+                await DownloadFilesStoreDirectoryAsync(serverSavesUserDsFilesStoreDirectory, progressInfo, utilityDataAccessProvider);
         }
 
         #endregion

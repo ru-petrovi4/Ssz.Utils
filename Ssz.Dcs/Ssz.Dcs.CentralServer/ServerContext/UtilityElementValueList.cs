@@ -63,7 +63,7 @@ namespace Ssz.Dcs.CentralServer
 
             foreach (UtilityElementValueListItem item in elementListItems)
             {
-                ((ServerWorker)ServerContext.ServerWorker).AddUtilityElementValueListItem(item);
+                ((ServerWorker)ServerContext.ServerWorker).AddUtilityElementValueListItem(item, ServerContext.ClientWorkstationName);
 
                 results.Add(new AliasResult
                 {
@@ -87,7 +87,7 @@ namespace Ssz.Dcs.CentralServer
 
             foreach (UtilityElementValueListItem item in elementListItems)
             {
-                ((ServerWorker)ServerContext.ServerWorker).RemoveUtilityElementValueListItem(item);
+                ((ServerWorker)ServerContext.ServerWorker).RemoveUtilityElementValueListItem(item, ServerContext.ClientWorkstationName);
             }
 
             return results;
