@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Ssz.Utils;
+using Ssz.Utils.Dispatcher;
 using Ssz.Utils.Logging;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils.Addons
 {
-    public abstract class AddonBase : IObservableCollectionItem
+    public abstract class AddonBase : IObservableCollectionItem, IDispatcherObject
     {
         #region public functions
 
@@ -87,9 +88,10 @@ namespace Ssz.Utils.Addons
         public CsvDb CsvDb { get; internal set; } = null!;
 
         /// <summary>
-        ///     Dispatcher associated with this addon if any.
+        ///     Dispatcher associated with this addon.
+        ///     != null
         /// </summary>
-        public IDispatcher Dispatcher => CsvDb.Dispatcher!;
+        public IDispatcher? Dispatcher => CsvDb.Dispatcher;
 
         /// <summary>
         ///     Do not changes after addon creation.

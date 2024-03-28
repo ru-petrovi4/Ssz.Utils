@@ -49,11 +49,11 @@ namespace Ssz.Utils.Addons
         public const string AddonsAvailableCsvFileName = @"addons_available.csv";
 
         /// <summary>
-        ///     Have value only after Initialize(...)
+        ///     != null only after Initialize(...)
         ///     To access a AddonsManager from a thread other than the thread the AddonsManager was created on,
         ///     call BeginInvoke or BeginInvokeEx on this Dispatcher.
         /// </summary>
-        public IDispatcher Dispatcher { get; private set; } = null!;
+        public IDispatcher? Dispatcher { get; private set; }
 
         public bool IsInitialized { get; private set; }
 
@@ -454,9 +454,9 @@ namespace Ssz.Utils.Addons
         ///     Returns new instance of switched ON addon.        
         /// </summary>
         /// <typeparam name="TAddon"></typeparam>
-        /// <param name="dispatcher"></param>
+        /// <param name="addonDispatcher"></param>
         /// <returns></returns>
-        public TAddon? CreateInitializedAddonThreadSafe<TAddon>(IDispatcher dispatcher, CancellationToken cancellationToken)
+        public TAddon? CreateInitializedAddonThreadSafe<TAddon>(IDispatcher addonDispatcher, CancellationToken cancellationToken)
             where TAddon : AddonBase
         {
             var addons = _addonsThreadSafe;
@@ -464,7 +464,7 @@ namespace Ssz.Utils.Addons
             if (addon is null)
                 return null;
 
-            TAddon? newAddon = CreateAvailableAddonInternal(addon, addon.InstanceId, null, dispatcher) as TAddon;
+            TAddon? newAddon = CreateAvailableAddonInternal(addon, addon.InstanceId, null, addonDispatcher) as TAddon;
             if (newAddon is null)
                 return null;
 
@@ -478,9 +478,9 @@ namespace Ssz.Utils.Addons
         /// </summary>
         /// <typeparam name="TAddon"></typeparam>
         /// <param name="addonIdentifier"></param>
-        /// <param name="dispatcher"></param>
+        /// <param name="addonDispatcher"></param>
         /// <returns></returns>
-        public TAddon? CreateInitializedAddonThreadSafe<TAddon>(string addonIdentifier, IDispatcher dispatcher, CancellationToken cancellationToken)
+        public TAddon? CreateInitializedAddonThreadSafe<TAddon>(string addonIdentifier, IDispatcher addonDispatcher, CancellationToken cancellationToken)
             where TAddon : AddonBase
         {
             if (String.IsNullOrEmpty(addonIdentifier))
@@ -492,7 +492,7 @@ namespace Ssz.Utils.Addons
             if (addon is null)
                 return null;
 
-            TAddon? newAddon = CreateAvailableAddonInternal(addon, addon.InstanceId, null, dispatcher) as TAddon;
+            TAddon? newAddon = CreateAvailableAddonInternal(addon, addon.InstanceId, null, addonDispatcher) as TAddon;
             if (newAddon is null)
                 return null;
 
@@ -662,7 +662,8 @@ namespace Ssz.Utils.Addons
         /// <param name="addonInstanceId"></param>
         /// <param name="addonOptionsData"></param>
         /// <returns></returns>
-        private AddonBase? CreateAvailableAddonInternal(AddonBase availableAddon, 
+        private AddonBase? CreateAvailableAddonInternal(
+            AddonBase availableAddon, 
             string addonInstanceId, 
             IEnumerable<IEnumerable<string?>>? addonOptionsData,
             IDispatcher addonDispatcher)

@@ -50,7 +50,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <returns></returns>
-        public abstract Task<string> LongrunningPassthroughAsync(ServerContext serverContext, string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend);
+        public abstract string LongrunningPassthrough(ServerContext serverContext, string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend);
 
         public abstract void LongrunningPassthroughCancel(ServerContext serverContext, string jobId);
 

@@ -13,7 +13,7 @@ namespace Ssz.Utils.Dispatcher
     {
         /// <summary>
         ///     To access a IDispatcherObject from a thread other than the thread the IDispatcherObject was created on,
-        ///     call BeginInvoke or BeginInvokeEx on this Dispatcher.
+        ///     call InvokeAsync or InvokeExAsync or BeginInvoke or BeginInvokeEx on this Dispatcher.
         /// </summary>
         IDispatcher? Dispatcher { get; }
     }

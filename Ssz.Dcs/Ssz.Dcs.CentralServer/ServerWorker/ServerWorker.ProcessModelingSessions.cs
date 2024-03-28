@@ -210,7 +210,7 @@ namespace Ssz.Dcs.CentralServer
 
         #region private functions        
 
-        private async Task<string> ProcessModelingSession_LaunchEngines_LongrunningPassthroughAsync(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
+        private string ProcessModelingSession_LaunchEngines_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
         {
             string? processModelingSessionId = Encoding.UTF8.GetString(dataToSend.Span);
             ProcessModelingSession processModelingSession = GetProcessModelingSession(processModelingSessionId);

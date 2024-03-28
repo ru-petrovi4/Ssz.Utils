@@ -116,7 +116,7 @@ namespace Ssz.Dcs.CentralServer
             }
         }        
 
-        public override async Task<string> LongrunningPassthroughAsync(ServerContext serverContext, string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
+        public override string LongrunningPassthrough(ServerContext serverContext, string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
             string systemNameToConnect = serverContext.SystemNameToConnect;            
             if (systemNameToConnect == @"") // Utility context 
@@ -126,7 +126,7 @@ namespace Ssz.Dcs.CentralServer
                     switch (passthroughName)
                     {
                         case LongrunningPassthroughConstants.ProcessModelingSession_LaunchEngines:
-                            return await ProcessModelingSession_LaunchEngines_LongrunningPassthroughAsync(serverContext, dataToSend);                                                 
+                            return ProcessModelingSession_LaunchEngines_LongrunningPassthrough(serverContext, dataToSend);                                                 
                         case LongrunningPassthroughConstants.ProcessModelingSession_LaunchOperator:
                             return ProcessModelingSession_LaunchOperator_LongrunningPassthrough(serverContext, dataToSend);
                         case LongrunningPassthroughConstants.ProcessModelingSession_RunOperatorExe:

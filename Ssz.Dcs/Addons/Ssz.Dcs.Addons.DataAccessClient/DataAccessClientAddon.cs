@@ -87,7 +87,7 @@ namespace Ssz.Dcs.Addons.DataAccessClient
                 {
                     DangerousAcceptAnyServerCertificate = dangerousAcceptAnyServerCertificatete
                 },
-                Dispatcher);
+                Dispatcher!);
 
             CsvDb.CsvFileChanged += (sender, args) =>
             {
@@ -95,7 +95,7 @@ namespace Ssz.Dcs.Addons.DataAccessClient
                         String.Equals(args.CsvFileName, ElementIdsMap.StandardMapFileName, StringComparison.InvariantCultureIgnoreCase) ||
                         String.Equals(args.CsvFileName, ElementIdsMap.StandardTagsFileName, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    Dispatcher.BeginInvokeEx(async ct =>
+                    Dispatcher!.BeginInvokeEx(async ct =>
                     {
                         if (dataAccessProvider.IsInitialized)
                         {

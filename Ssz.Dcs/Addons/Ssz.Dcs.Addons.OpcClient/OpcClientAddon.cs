@@ -100,7 +100,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                     { UsoHda_ProgId_OptionName, OptionsSubstituted.TryGetValue(UsoHda_ProgId_OptionName) },
                 },
                 new DataAccessProviderOptions(),
-                Dispatcher);
+                Dispatcher!);
 
             CsvDb.CsvFileChanged += (sender, args) =>
             {
@@ -108,7 +108,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                         String.Equals(args.CsvFileName, ElementIdsMap.StandardMapFileName, StringComparison.InvariantCultureIgnoreCase) ||
                         String.Equals(args.CsvFileName, ElementIdsMap.StandardTagsFileName, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    Dispatcher.BeginInvokeEx(async ct =>
+                    Dispatcher!.BeginInvokeEx(async ct =>
                     {
                         if (dataAccessProvider.IsInitialized)
                         {

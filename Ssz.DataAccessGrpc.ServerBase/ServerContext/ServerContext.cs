@@ -318,9 +318,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
             };
         }
 
-        internal async Task<string> LongrunningPassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
+        internal string LongrunningPassthrough(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
-            return await ServerWorker.LongrunningPassthroughAsync(this, recipientPath, passthroughName, dataToSend);
+            return ServerWorker.LongrunningPassthrough(this, recipientPath, passthroughName, dataToSend);
         }
 
         internal void LongrunningPassthroughCancel(string jobId)

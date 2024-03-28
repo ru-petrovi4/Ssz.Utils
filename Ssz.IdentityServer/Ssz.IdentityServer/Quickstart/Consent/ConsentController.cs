@@ -101,7 +101,7 @@ namespace IdentityServerHost.Quickstart.UI
             var request = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
             if (request == null) return result;
 
-            ConsentResponse grantedConsent = null;
+            ConsentResponse? grantedConsent = null;
 
             // user clicked 'no' - send back the standard 'access_denied' response
             if (model?.Button == "no")
@@ -184,7 +184,7 @@ namespace IdentityServerHost.Quickstart.UI
             {
                 RememberConsent = model?.RememberConsent ?? true,
                 ScopesConsented = model?.ScopesConsented ?? Enumerable.Empty<string>(),
-                Description = model?.Description,
+                Description = model?.Description ?? @"",
 
                 ReturnUrl = returnUrl,
 

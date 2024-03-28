@@ -44,7 +44,7 @@ namespace IdentityServerHost.Quickstart.UI
         public async Task<IActionResult> Index()
         {
             string userCodeParamName = _options.Value.UserInteraction.DeviceVerificationUserCodeParameter;
-            string userCode = Request.Query[userCodeParamName];
+            string? userCode = Request.Query[userCodeParamName];
             if (string.IsNullOrWhiteSpace(userCode)) return View("UserCodeCapture");
 
             var vm = await BuildViewModelAsync(userCode);
@@ -83,7 +83,7 @@ namespace IdentityServerHost.Quickstart.UI
             var request = await _interaction.GetAuthorizationContextAsync(model.UserCode);
             if (request == null) return result;
 
-            ConsentResponse grantedConsent = null;
+            ConsentResponse? grantedConsent = null;
 
             // user clicked 'no' - send back the standard 'access_denied' response
             if (model.Button == "no")

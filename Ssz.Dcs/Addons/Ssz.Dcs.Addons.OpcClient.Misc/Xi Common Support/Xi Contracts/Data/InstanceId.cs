@@ -187,7 +187,7 @@ namespace Xi.Contracts.Data
 		/// the InstanceId being created.</param>
 		public InstanceId(InstanceId instanceId)
 		{
-			FullyQualifiedId = string.Copy(instanceId.FullyQualifiedId);
+			FullyQualifiedId = instanceId.FullyQualifiedId;
 		}
 
 		#endregion
