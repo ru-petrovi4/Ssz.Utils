@@ -22,13 +22,16 @@ namespace Ssz.Dcs.CentralServer
             string systemNameToConnect = serverContext.SystemNameToConnect;
             if (systemNameToConnect == @"") // Utility context            
             {
-                if (serverContext.ClientApplicationName == DataAccessConstants.CentralServer_ClientWindowsService_ClientApplicationName)
+                if (!serverContext.ContextParams.ContainsKey(DataAccessConstants.ParamName_HostType))
                 {
-                    On_CentralServer_ClientWindowsService_UtilityServerContext_AddedOrRemoved(serverContext, args.Added);
-                } 
-                else if (serverContext.ClientApplicationName == DataAccessConstants.Launcher_ClientApplicationName)
-                {
-                    On_Launcher_UtilityServerContext_AddedOrRemoved(serverContext, args.Added);
+                    if (serverContext.ClientApplicationName == DataAccessConstants.CentralServer_ClientWindowsService_ClientApplicationName)
+                    {
+                        On_CentralServer_ClientWindowsService_UtilityServerContext_AddedOrRemoved(serverContext, args.Added);
+                    }
+                    else if (serverContext.ClientApplicationName == DataAccessConstants.Launcher_ClientApplicationName)
+                    {
+                        On_Launcher_UtilityServerContext_AddedOrRemoved(serverContext, args.Added);
+                    }
                 }
             }
             else // Process context  
