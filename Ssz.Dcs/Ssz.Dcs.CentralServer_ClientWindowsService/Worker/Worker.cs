@@ -70,7 +70,10 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 DataAccessConstants.CentralServer_ClientWindowsService_ClientApplicationName,
                 System.Environment.MachineName,
                 @"",
-                new CaseInsensitiveDictionary<string?>(),
+                new CaseInsensitiveDictionary<string?>()
+                {
+                    { DataAccessConstants.ParamName_HostType, ConfigurationHelper.GetValue<string>(Configuration, @"HostType", @"") }
+                },
                 new DataAccessProviderOptions(),
                 _threadSafeDispatcher);
 
@@ -88,7 +91,12 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
         {
             _centralServersValueSubscription?.Dispose();
 
-            await MainUtilityDataAccessProvider.CloseAsync();            
+            await MainUtilityDataAccessProvider.CloseAsync();   
+            
+            foreach (var h in UtilityDataAccessProviderHolders)
+            {
+                await h.DataAccessProvider.CloseAsync();
+            }
         }
 
         #endregion
@@ -137,7 +145,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             {
                 var utilityDataAccessProvider = ActivatorUtilities.CreateInstance<GrpcDataAccessProvider>(ServiceProvider);
 
-                utilityDataAccessProvider.EventMessagesCallback += OnUtilityDataAccessProvider_EventMessagesCallback;
+                utilityDataAccessProvider.EventMessagesCallback += UtilityDataAccessProvider_OnEventMessagesCallback;
 
                 var centralServerAddress = addedDataAccessProviderHolder.CentralServerAddress;
                 if (centralServerAddress == @"*")
@@ -162,7 +170,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             {
                 var utilityDataAccessProvider = removedDataAccessProviderHolder.DataAccessProvider;
 
-                utilityDataAccessProvider.EventMessagesCallback -= OnUtilityDataAccessProvider_EventMessagesCallback;
+                utilityDataAccessProvider.EventMessagesCallback -= UtilityDataAccessProvider_OnEventMessagesCallback;
 
                 var t = utilityDataAccessProvider.CloseAsync();
             }

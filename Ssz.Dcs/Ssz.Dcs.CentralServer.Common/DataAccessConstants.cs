@@ -24,6 +24,10 @@ namespace Ssz.Dcs.CentralServer.Common
 
         public const string CentralServers_UtilityItem = @"CentralServers";
 
+        public const string ParamName_HostType = @"HostType";
+
+        public const string HostType_EnginesHost = @"EnginesHost";
+
         public static readonly TimeSpan UnrecoverableTimeout = TimeSpan.FromSeconds(180);
 
         public static readonly TimeSpan OperationCleanupTimeout = TimeSpan.FromDays(1);
