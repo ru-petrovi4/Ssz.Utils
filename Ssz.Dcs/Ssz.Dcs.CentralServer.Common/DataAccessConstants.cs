@@ -22,6 +22,8 @@ namespace Ssz.Dcs.CentralServer.Common
 
         public const string Operators_UtilityItem = @"Operators";
 
+        public const string CentralServer_UtilityItem = @"CentralServer";
+
         public const string CentralServers_UtilityItem = @"CentralServers";
 
         public const string ParamName_ConnectionToMain = @"ConnectionToMain";
@@ -34,9 +36,7 @@ namespace Ssz.Dcs.CentralServer.Common
 
         public const string ParamName_Engine_ProcessModelNames = @"Engine_ProcessModelNames";
 
-        public const string ParamName_AdditionalCentralServer_ProcessModelNames = @"AdditionalCentralServer_ProcessModelNames";
-
-        public const string HostType_EnginesHost = @"EnginesHost";
+        public const string ParamName_AllCentralServers = @"AllCentralServers";
 
         public static readonly TimeSpan UnrecoverableTimeout = TimeSpan.FromSeconds(180);
 

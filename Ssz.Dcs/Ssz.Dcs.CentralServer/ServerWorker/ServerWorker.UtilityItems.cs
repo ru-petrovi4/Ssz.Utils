@@ -27,7 +27,7 @@ namespace Ssz.Dcs.CentralServer
             string id = listItem.ElementId + @"@" + clientWorkstationName;            
             if (!_utilityItems.TryGetValue(id, out UtilityItem? utilityItem))
             {
-                utilityItem = new UtilityItem(listItem.ElementId);
+                utilityItem = new UtilityItem(listItem.ElementId, clientWorkstationName);
                 _utilityItems.Add(id, utilityItem);                
 
                 _utilityItemsDoWorkNeeded = true;
@@ -90,6 +90,8 @@ namespace Ssz.Dcs.CentralServer
 
                 DoWorkOperatorsUtilityItems(nowUtc, cancellationToken);
 
+                DoWorkCentralServerUtilityItems(nowUtc, cancellationToken);
+
                 DoWorkCentralServersUtilityItems(nowUtc, cancellationToken);
 
                 UtilityDataGuid = Guid.NewGuid();
@@ -112,8 +114,7 @@ namespace Ssz.Dcs.CentralServer
                 ProcessModelingSession? processModelingSession = _processModelingSessionsCollection.TryGetValue(processModelingSessionId);
                 if (processModelingSession is not null)
                 {
-                    foreach (var operatorSession in OperatorSessionsCollection.Values
-                                .Where(ts => ts.ProcessModelingSession is null))
+                    foreach (var operatorSession in OperatorSessionsCollection.Values)
                     {
                         if (String.IsNullOrEmpty(operatorSession.OperatorUserName))
                             continue;
@@ -155,22 +156,50 @@ namespace Ssz.Dcs.CentralServer
             }
         }
 
-        private void DoWorkCentralServersUtilityItems(DateTime nowUtc, CancellationToken cancellationToken)
+        private void DoWorkCentralServerUtilityItems(DateTime nowUtc, CancellationToken cancellationToken)
         {
-            UtilityItem[] centralServersUtilityItems = _utilityItems.Values
-                    .Where(mi => String.Equals(mi.ElementId, DataAccessConstants.CentralServers_UtilityItem, StringComparison.InvariantCultureIgnoreCase)).ToArray();
+            UtilityItem[] centralServerUtilityItems = _utilityItems.Values
+                    .Where(mi => String.Equals(mi.ElementId, DataAccessConstants.CentralServer_UtilityItem, StringComparison.InvariantCultureIgnoreCase)).ToArray();
 
             if (_additionalCentralServerInfosCollection.Count == 0)
             {
-                string utilityItemValue = @"*";
-                foreach (var centralServersUtilityItem in centralServersUtilityItems)
+                string utilityItemValue = @"*"; // Single this server
+                foreach (var centralServersUtilityItem in centralServerUtilityItems)
                 {
                     centralServersUtilityItem.UpdateValue(utilityItemValue, nowUtc);
                 }
             }
             else
             {
+                //foreach (var g in processModelingSessionOperatorsUtilityItems.GroupBy(i => i.ElementId))
+                //    string utilityItemValue;
 
+                //AdditionalCentralServerInfo? additionalCentralServerInfo = null;
+                //int minProcessModelingSessionsCount = Int32.MaxValue;
+                //foreach (var i in _additionalCentralServerInfosCollection.Values)
+                //{
+                //    if (i.ProcessModelingSessionsCount < minProcessModelingSessionsCount)
+                //    {
+                //        additionalCentralServerInfo = i;
+                //        minProcessModelingSessionsCount = i.ProcessModelingSessionsCount;
+                //    }
+                //}
+            }
+        }
+
+        private void DoWorkCentralServersUtilityItems(DateTime nowUtc, CancellationToken cancellationToken)
+        {
+            UtilityItem[] centralServersUtilityItems = _utilityItems.Values
+                    .Where(mi => String.Equals(mi.ElementId, DataAccessConstants.CentralServers_UtilityItem, StringComparison.InvariantCultureIgnoreCase)).ToArray();
+
+            string utilityItemValue;
+            if (_additionalCentralServerInfosCollection.Count == 0)
+                utilityItemValue = @"*"; // Single this server  
+            else
+                utilityItemValue = CsvHelper.FormatForCsv(@",", _additionalCentralServerInfosCollection.Select(kvp => kvp.Value.ServerAddress));
+            foreach (var centralServersUtilityItem in centralServersUtilityItems)
+            {
+                centralServersUtilityItem.UpdateValue(utilityItemValue, nowUtc);
             }
         }
 
@@ -191,9 +220,10 @@ namespace Ssz.Dcs.CentralServer
         {
             #region construction and destruction
 
-            public UtilityItem(string elementId)
+            public UtilityItem(string elementId, string clientWorkstationName)
             {
                 ElementId = elementId;
+                ClientWorkstationName = clientWorkstationName;
             }
 
             #endregion
@@ -201,6 +231,8 @@ namespace Ssz.Dcs.CentralServer
             #region public functions
 
             public string ElementId { get; }
+
+            public string ClientWorkstationName { get; }
 
             public List<UtilityElementValueListItem> UtilityElementValueListItemsCollection { get; } = new();
 

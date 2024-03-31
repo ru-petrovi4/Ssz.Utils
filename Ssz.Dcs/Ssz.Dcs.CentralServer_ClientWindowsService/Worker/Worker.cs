@@ -77,7 +77,10 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 new DataAccessProviderOptions(),
                 _threadSafeDispatcher);
 
-            _centralServersValueSubscription = new ValueSubscription(MainUtilityDataAccessProvider, DataAccessConstants.CentralServers_UtilityItem, CentralServersValueSubscription_OnUpdated);
+            if (ConfigurationHelper.GetValue<bool>(Configuration, DataAccessConstants.ParamName_AllCentralServers, false))            
+                _centralServersValueSubscription = new ValueSubscription(MainUtilityDataAccessProvider, DataAccessConstants.CentralServers_UtilityItem, CentralServersValueSubscription_OnUpdated);
+            else
+                _centralServersValueSubscription = new ValueSubscription(MainUtilityDataAccessProvider, DataAccessConstants.CentralServer_UtilityItem, CentralServersValueSubscription_OnUpdated);
 
             return Task.CompletedTask;
         }        

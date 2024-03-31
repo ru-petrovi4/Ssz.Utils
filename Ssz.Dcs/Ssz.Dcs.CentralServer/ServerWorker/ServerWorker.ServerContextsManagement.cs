@@ -24,8 +24,7 @@ namespace Ssz.Dcs.CentralServer
             {
                 if (new Any(serverContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_ConnectionToMain)).ValueAsBoolean(false))
                 {
-                    if (!String.IsNullOrEmpty(serverContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_AdditionalCentralServer_ProcessModelNames)) &&
-                            !String.IsNullOrEmpty(serverContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_AdditionalCentralServerAddress)))
+                    if (!String.IsNullOrEmpty(serverContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_AdditionalCentralServerAddress)))
                         On_AdditionalCentralServer_AddedOrRemoved(serverContext, args.Added);
                 }
                 else
@@ -62,8 +61,7 @@ namespace Ssz.Dcs.CentralServer
                         ServerAddress = additionalCentralServerAddress
                     };
                     _additionalCentralServerInfosCollection.Add(additionalCentralServerAddress, additionalCentralServerInfo);
-                }
-                additionalCentralServerInfo.ProcessModelNames = CsvHelper.ParseCsvLine(@",", utilityServerContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_Engine_ProcessModelNames));
+                }                
                 additionalCentralServerInfo.UtilityServerContexts.Add(utilityServerContext);
             }
             else
@@ -130,10 +128,11 @@ namespace Ssz.Dcs.CentralServer
             else
             {
                 OperatorSession? operatorSession = OperatorSessionsCollection.TryGetValue(operatorSessionId);
-                if (operatorSession is not null && operatorSession.OperatorSessionStatus == OperatorSessionConstants.ReadyToLaunchOperator)
+                if (operatorSession is not null)
                 {
                     operatorSession.UtilityServerContexts.Remove(utilityServerContext);
-                    if (operatorSession.UtilityServerContexts.Count == 0)
+                    if (operatorSession.UtilityServerContexts.Count == 0 &&
+                            operatorSession.OperatorSessionStatus == OperatorSessionConstants.ReadyToLaunchOperator)
                         OperatorSessionsCollection.Remove(operatorSession.OperatorSessionId);
                 }
             }
@@ -165,8 +164,6 @@ namespace Ssz.Dcs.CentralServer
             public string ServerAddress { get; set; } = null!;
 
             public int ProcessModelingSessionsCount { get; set; }
-
-            public string?[] ProcessModelNames { get; set; } = null!;
 
             public List<ServerContext> UtilityServerContexts { get; } = new();
         }
