@@ -164,26 +164,42 @@ namespace Ssz.Dcs.CentralServer
             if (_additionalCentralServerInfosCollection.Count == 0)
             {
                 string utilityItemValue = @"*"; // Single this server
-                foreach (var centralServersUtilityItem in centralServerUtilityItems)
+                foreach (var centralServerUtilityItem in centralServerUtilityItems)
                 {
-                    centralServersUtilityItem.UpdateValue(utilityItemValue, nowUtc);
+                    centralServerUtilityItem.UpdateValue(utilityItemValue, nowUtc);
                 }
             }
             else
             {
-                //foreach (var g in processModelingSessionOperatorsUtilityItems.GroupBy(i => i.ElementId))
-                //    string utilityItemValue;
+                foreach (var i in _additionalCentralServerInfosCollection.Values)
+                {
+                    i.ClientWorkstationNames.Clear();
+                }
 
-                //AdditionalCentralServerInfo? additionalCentralServerInfo = null;
-                //int minProcessModelingSessionsCount = Int32.MaxValue;
-                //foreach (var i in _additionalCentralServerInfosCollection.Values)
-                //{
-                //    if (i.ProcessModelingSessionsCount < minProcessModelingSessionsCount)
-                //    {
-                //        additionalCentralServerInfo = i;
-                //        minProcessModelingSessionsCount = i.ProcessModelingSessionsCount;
-                //    }
-                //}
+                foreach (var centralServerUtilityItem in centralServerUtilityItems)
+                {
+                    string currentCentralServerAddress = centralServerUtilityItem.ValueStatusTimestamp.Value.ValueAsString(false);
+                    AdditionalCentralServerInfo? additionalCentralServerInfo = _additionalCentralServerInfosCollection.Values
+                            .FirstOrDefault(i => String.Equals(i.ServerAddress, currentCentralServerAddress, StringComparison.InvariantCultureIgnoreCase));
+                    if (additionalCentralServerInfo is not null)
+                    {
+                        additionalCentralServerInfo!.ClientWorkstationNames.Add(centralServerUtilityItem.ClientWorkstationName);
+                        continue;
+                    }
+
+                    // Find best additionalCentralServerInfo
+                    int minProcessModelingSessionsCount = Int32.MaxValue;
+                    foreach (var i in _additionalCentralServerInfosCollection.Values)
+                    {
+                        if (i.ClientWorkstationNames.Count < minProcessModelingSessionsCount)
+                        {
+                            additionalCentralServerInfo = i;
+                            minProcessModelingSessionsCount = i.ClientWorkstationNames.Count;
+                        }
+                    }
+                    additionalCentralServerInfo!.ClientWorkstationNames.Add(centralServerUtilityItem.ClientWorkstationName);
+                    centralServerUtilityItem.UpdateValue(additionalCentralServerInfo.ServerAddress, nowUtc);
+                }                    
             }
         }
 

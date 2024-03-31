@@ -163,7 +163,7 @@ namespace Ssz.Dcs.CentralServer
             /// </summary>
             public string ServerAddress { get; set; } = null!;
 
-            public int ProcessModelingSessionsCount { get; set; }
+            public HashSet<string> ClientWorkstationNames { get; } = new(StringComparer.InvariantCultureIgnoreCase);
 
             public List<ServerContext> UtilityServerContexts { get; } = new();
         }
