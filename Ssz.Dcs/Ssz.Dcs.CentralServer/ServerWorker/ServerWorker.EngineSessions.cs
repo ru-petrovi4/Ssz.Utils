@@ -123,11 +123,11 @@ namespace Ssz.Dcs.CentralServer
             #endregion            
         }
 
-        private class Control_TrainingEngineSession : TrainingEngineSessionBase
+        private class ControlEngine_TrainingEngineSession : TrainingEngineSessionBase
         {
             #region construction and destruction
 
-            public Control_TrainingEngineSession(DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon, string engine_TargetWorkstationName) :
+            public ControlEngine_TrainingEngineSession(DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon, string engine_TargetWorkstationName) :
                 base(dataAccessProviderGetter_Addon, engine_TargetWorkstationName)
             {
             }

@@ -31,31 +31,31 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 if (condition is null) 
                     continue;
 
-                if (condition.Compare(EventMessageConstants.LaunchInstructor_TypeId))
+                if (condition.Compare(EventMessageConstants.PrepareAndRunInstructorExe_TypeId))
                 {
                     Logger.LogDebug("eventMessage, LaunchInstructor_TypeId: " + eventMessage.TextMessage);
 
                     _threadSafeDispatcher.BeginInvokeEx(async ct =>
                     {
-                        await LaunchInstructorAsync(eventMessage.TextMessage, utilityDataAccessProvider);
+                        await PrepareAndRunInstructorExeAsync(eventMessage.TextMessage, utilityDataAccessProvider);
                     });
                 }
-                else if (condition.Compare(EventMessageConstants.LaunchEngine_TypeId))
+                else if (condition.Compare(EventMessageConstants.PrepareAndRunEngineExe_TypeId))
                 {
                     Logger.LogDebug("eventMessage, LaunchEngine_TypeId: " + eventMessage.TextMessage);
 
                     _threadSafeDispatcher.BeginInvokeEx(async ct =>
                     {
-                        await LaunchEnineAsync(eventMessage.TextMessage, utilityDataAccessProvider);
+                        await PrepareAndRunEngineExeAsync(eventMessage.TextMessage, utilityDataAccessProvider);
                     });
                 }
-                else if (condition.Compare(EventMessageConstants.LaunchOperator_TypeId))
+                else if (condition.Compare(EventMessageConstants.PrepareAndRunOperatorExe_TypeId))
                 {
                     Logger.LogDebug("eventMessage, PrepareLaunchOperator_TypeId: " + eventMessage.TextMessage);
 
                     _threadSafeDispatcher.BeginInvokeEx(async ct =>
                     {
-                        await LaunchOperatorAsync(eventMessage.TextMessage, utilityDataAccessProvider);
+                        await PrepareAndRunOperatorExeAsync(eventMessage.TextMessage, utilityDataAccessProvider);
                     });
                 }
                 else if (condition.Compare(EventMessageConstants.DownloadChangedFiles_TypeId))

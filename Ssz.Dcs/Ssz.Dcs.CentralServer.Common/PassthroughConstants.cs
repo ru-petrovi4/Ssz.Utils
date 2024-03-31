@@ -103,13 +103,13 @@ namespace Ssz.Dcs.CentralServer.Common
         ///     Utility DataAccessProvider (systemNameToConnect is String.Empty).        
         ///     Request: UTF8 string with ProcessModelingSessionId. 
         /// </summary>
-        public const string ProcessModelingSession_LaunchEngines = @"ProcessModelingSession.LaunchEngines";        
+        public const string ProcessModelingSession_PrepareAndRunInstructorAndEngines = @"ProcessModelingSession.PrepareAndRunInstructorAndEngines";        
 
         /// <summary>
         ///     Utility DataAccessProvider (systemNameToConnect is String.Empty).        
         ///     Request: UTF8 string with OperatorSessionId. 
         /// </summary>
-        public const string ProcessModelingSession_LaunchOperator = @"ProcessModelingSession.LaunchOperator";
+        public const string ProcessModelingSession_PrepareAndRunOperatorExe = @"ProcessModelingSession.PrepareAndRunOperatorExe";
 
         /// <summary>
         ///     Utility DataAccessProvider (systemNameToConnect is String.Empty).        

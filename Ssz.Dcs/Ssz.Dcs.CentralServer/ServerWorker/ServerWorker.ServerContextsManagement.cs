@@ -22,15 +22,24 @@ namespace Ssz.Dcs.CentralServer
             string systemNameToConnect = serverContext.SystemNameToConnect;
             if (systemNameToConnect == @"") // Utility context            
             {
-                if (!serverContext.ContextParams.ContainsKey(DataAccessConstants.ParamName_HostType))
+                if (new Any(serverContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_ConnectionToMain)).ValueAsBoolean(false))
+                {
+                    if (!String.IsNullOrEmpty(serverContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_AdditionalCentralServer_ProcessModelNames)) &&
+                            !String.IsNullOrEmpty(serverContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_AdditionalCentralServerAddress)))
+                        On_AdditionalCentralServer_AddedOrRemoved(serverContext, args.Added);
+                }
+                else
                 {
                     if (serverContext.ClientApplicationName == DataAccessConstants.CentralServer_ClientWindowsService_ClientApplicationName)
                     {
-                        On_CentralServer_ClientWindowsService_UtilityServerContext_AddedOrRemoved(serverContext, args.Added);
-                    }
+                        if (!String.IsNullOrEmpty(serverContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_Engine_ProcessModelNames)))
+                            On_EnginesHost_AddedOrRemoved(serverContext, args.Added);
+                    }                    
                     else if (serverContext.ClientApplicationName == DataAccessConstants.Launcher_ClientApplicationName)
                     {
-                        On_Launcher_UtilityServerContext_AddedOrRemoved(serverContext, args.Added);
+                        if (!String.IsNullOrEmpty(serverContext.ContextParams.TryGetValue(@"OperatorSessionId")) &&
+                                !String.IsNullOrEmpty(serverContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_Operator_ProcessModelNames)))
+                            On_Operator_AddedOrRemoved(serverContext, args.Added);
                     }
                 }
             }
@@ -40,44 +49,92 @@ namespace Ssz.Dcs.CentralServer
             }
         }
 
-        private void On_CentralServer_ClientWindowsService_UtilityServerContext_AddedOrRemoved(ServerContext utilityServerContext, bool added)
+        private void On_AdditionalCentralServer_AddedOrRemoved(ServerContext utilityServerContext, bool added)
         {
+            var additionalCentralServerAddress = utilityServerContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_AdditionalCentralServerAddress)!;
+            var additionalCentralServerInfo = _additionalCentralServerInfosCollection.TryGetValue(additionalCentralServerAddress);
             if (added)
             {
-                _operatorWorkstationNamesCollection.Add(utilityServerContext.ClientWorkstationName);
+                if (additionalCentralServerInfo is null)
+                {
+                    additionalCentralServerInfo = new AdditionalCentralServerInfo
+                    {
+                        ServerAddress = additionalCentralServerAddress
+                    };
+                    _additionalCentralServerInfosCollection.Add(additionalCentralServerAddress, additionalCentralServerInfo);
+                }
+                additionalCentralServerInfo.ProcessModelNames = CsvHelper.ParseCsvLine(@",", utilityServerContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_Engine_ProcessModelNames));
+                additionalCentralServerInfo.UtilityServerContexts.Add(utilityServerContext);
             }
             else
             {
-                _operatorWorkstationNamesCollection.Remove(utilityServerContext.ClientWorkstationName);
+                if (additionalCentralServerInfo is not null)
+                {
+                    additionalCentralServerInfo.UtilityServerContexts.Remove(utilityServerContext);
+                    if (additionalCentralServerInfo.UtilityServerContexts.Count == 0)
+                        _additionalCentralServerInfosCollection.Remove(additionalCentralServerAddress);
+                }
             }
 
             _utilityItemsDoWorkNeeded = true;
         }
 
-        private void On_Launcher_UtilityServerContext_AddedOrRemoved(ServerContext utilityServerContext, bool added)
+        private void On_EnginesHost_AddedOrRemoved(ServerContext utilityServerContext, bool added)
         {
-            string? operatorSessionId = utilityServerContext.ContextParams.TryGetValue(@"OperatorSessionId");
-            if (String.IsNullOrEmpty(operatorSessionId))
-                return;
+            var enginesHostInfo = _enginesHostInfosCollection.TryGetValue(utilityServerContext.ClientWorkstationName);
+            if (added)
+            {
+                if (enginesHostInfo is null)
+                {
+                    enginesHostInfo = new EnginesHostInfo
+                    {
+                        WorkstationName = utilityServerContext.ClientWorkstationName
+                    };
+                    _enginesHostInfosCollection.Add(utilityServerContext.ClientWorkstationName, enginesHostInfo);
+                }
+                enginesHostInfo.ProcessModelNames = CsvHelper.ParseCsvLine(@",", utilityServerContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_Engine_ProcessModelNames));
+                enginesHostInfo.UtilityServerContexts.Add(utilityServerContext);                
+            }
+            else
+            {
+                if (enginesHostInfo is not null)
+                {
+                    enginesHostInfo.UtilityServerContexts.Remove(utilityServerContext);
+                    if (enginesHostInfo.UtilityServerContexts.Count == 0)
+                        _enginesHostInfosCollection.Remove(utilityServerContext.ClientWorkstationName);
+                }
+            }
 
+            _utilityItemsDoWorkNeeded = true;
+        }        
+
+        private void On_Operator_AddedOrRemoved(ServerContext utilityServerContext, bool added)
+        {
+            string operatorSessionId = utilityServerContext.ContextParams.TryGetValue(@"OperatorSessionId")!;            
             if (added)
             {
                 OperatorSession? operatorSession = OperatorSessionsCollection.TryGetValue(operatorSessionId);
                 if (operatorSession is null)
                 {
-                    operatorSession = new OperatorSession(operatorSessionId, utilityServerContext.ClientWorkstationName);
+                    operatorSession = new OperatorSession(
+                        operatorSessionId, 
+                        utilityServerContext.ClientWorkstationName);
 
                     SetOperatorSessionStatus(operatorSession, OperatorSessionConstants.ReadyToLaunchOperator);
 
                     OperatorSessionsCollection.Add(operatorSession.OperatorSessionId, operatorSession);
                 }
+                operatorSession.ProcessModelNames = CsvHelper.ParseCsvLine(@",", utilityServerContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_Operator_ProcessModelNames));
+                operatorSession.UtilityServerContexts.Add(utilityServerContext);
             }
             else
             {
                 OperatorSession? operatorSession = OperatorSessionsCollection.TryGetValue(operatorSessionId);
                 if (operatorSession is not null && operatorSession.OperatorSessionStatus == OperatorSessionConstants.ReadyToLaunchOperator)
                 {
-                    OperatorSessionsCollection.Remove(operatorSession.OperatorSessionId);
+                    operatorSession.UtilityServerContexts.Remove(utilityServerContext);
+                    if (operatorSession.UtilityServerContexts.Count == 0)
+                        OperatorSessionsCollection.Remove(operatorSession.OperatorSessionId);
                 }
             }
 
@@ -85,5 +142,47 @@ namespace Ssz.Dcs.CentralServer
         }
 
         #endregion
+
+        #region private fields
+
+        /// <summary>
+        ///     [AdditionalCentralServerAddress, AdditionalCentralServerInfo]
+        /// </summary>
+        private readonly CaseInsensitiveDictionary<AdditionalCentralServerInfo> _additionalCentralServerInfosCollection = new();
+
+        /// <summary>
+        ///     [ClientWorkstationName, EnginesHostInfo]
+        /// </summary>
+        private readonly CaseInsensitiveDictionary<EnginesHostInfo> _enginesHostInfosCollection = new();        
+
+        #endregion
+
+        public class AdditionalCentralServerInfo
+        {
+            /// <summary>
+            ///     Obtained from AdditionalCentralServerAddress context param
+            /// </summary>
+            public string ServerAddress { get; set; } = null!;
+
+            public int ProcessModelingSessionsCount { get; set; }
+
+            public string?[] ProcessModelNames { get; set; } = null!;
+
+            public List<ServerContext> UtilityServerContexts { get; } = new();
+        }
+
+        public class EnginesHostInfo
+        {
+            /// <summary>
+            ///     Obtained from ClientWorkstationName
+            /// </summary>
+            public string WorkstationName { get; set; } = null!;            
+            
+            public int EnginesCount { get; set; }
+
+            public string?[] ProcessModelNames { get; set; } = null!;
+
+            public List<ServerContext> UtilityServerContexts { get; } = new();
+        }        
     }
 }

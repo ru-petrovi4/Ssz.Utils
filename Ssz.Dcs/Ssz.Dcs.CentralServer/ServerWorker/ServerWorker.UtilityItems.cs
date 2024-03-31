@@ -104,63 +104,47 @@ namespace Ssz.Dcs.CentralServer
             foreach (var g in processModelingSessionOperatorsUtilityItems.GroupBy(i => i.ElementId))
             {
                 string utilityItemValue = @"";
-                
+
                 string elementId = g.Key;
                 int i1 = elementId.IndexOf('[');
                 int i2 = elementId.IndexOf(']', i1);
                 string processModelingSessionId = elementId.Substring(i1 + 1, i2 - i1 - 1);
                 ProcessModelingSession? processModelingSession = _processModelingSessionsCollection.TryGetValue(processModelingSessionId);
                 if (processModelingSession is not null)
-                {                    
-                    foreach (var operatorWorkstationName in _operatorWorkstationNamesCollection)
+                {
+                    foreach (var operatorSession in OperatorSessionsCollection.Values
+                                .Where(ts => ts.ProcessModelingSession is null))
                     {
-                        bool isWorkstationForProcess = false;
-                        string operatorWorkstationNameToDisplay = @"";
-                        var values = _csvDb.GetValues(WorkstationsCsvFileName, operatorWorkstationName);
-                        if (values is null || values.Count < 3 || values.Skip(2).All(v => String.IsNullOrEmpty(v)))
+                        if (String.IsNullOrEmpty(operatorSession.OperatorUserName))
+                            continue;
+
+                        if (operatorSession.ProcessModelingSession is null)
                         {
-                            isWorkstationForProcess = true;
-                            if (values is not null && values.Count >= 2)
-                                operatorWorkstationNameToDisplay = values[1] ?? @"";                         
+                            if (!operatorSession.ProcessModelNames.Contains(@"*", StringComparer.InvariantCultureIgnoreCase) &&
+                                    !operatorSession.ProcessModelNames.Contains(processModelingSession.ProcessModelName, StringComparer.InvariantCultureIgnoreCase))
+                                continue;
                         }
                         else
                         {
-                            var processModelName = processModelingSession.ProcessModelName;
-                            if (values.Skip(2).Any(v => String.Equals(v, processModelName, StringComparison.InvariantCultureIgnoreCase)))
-                            {
-                                isWorkstationForProcess = true;
-                                operatorWorkstationNameToDisplay = values[1] ?? @"";
-                            }
+                            if (!String.Equals(operatorSession.ProcessModelingSession.ProcessModelingSessionId, processModelingSessionId, StringComparison.InvariantCultureIgnoreCase))
+                                continue;
                         }
 
-                        if (isWorkstationForProcess)
-                        {
-                            var operatorSessions = OperatorSessionsCollection.Values.Where(ts => 
-                                (ts.ProcessModelingSession is null || String.Equals(ts.ProcessModelingSession.ProcessModelingSessionId, processModelingSessionId, StringComparison.InvariantCultureIgnoreCase)) &&
-                                String.Equals(ts.OperatorWorkstationName, operatorWorkstationName, StringComparison.InvariantCultureIgnoreCase)).ToArray();
-
-                            foreach (var operatorSession in operatorSessions)
+                        var operatorValues = new List<object?>
                             {
-                                if (String.IsNullOrEmpty(operatorSession.OperatorUserName))
-                                    continue;
-
-                                var operatorValues = new List<object?>
-                                {
-                                    operatorWorkstationName,
-                                    operatorWorkstationNameToDisplay,
-                                    operatorSession.WindowsUserName,
-                                    operatorSession.WindowsUserNameToDisplay,
-                                    operatorSession.OperatorSessionId,
-                                    operatorSession.OperatorUserName,
-                                    operatorSession.DsProject_PathRelativeToDataDirectory,
-                                    operatorSession.OperatorPlay_AdditionalCommandLine == @"" ? null : operatorSession.OperatorPlay_AdditionalCommandLine,
-                                    operatorSession.OperatorRoleId,
-                                    operatorSession.OperatorRoleName,
-                                    operatorSession.OperatorSessionStatus
-                                };
-                                utilityItemValue += CsvHelper.FormatForCsv(",", operatorValues) + Environment.NewLine;
-                            }                            
-                        }
+                                operatorSession.OperatorWorkstationName,
+                                operatorSession.OperatorWorkstationName,
+                                operatorSession.WindowsUserName,
+                                operatorSession.WindowsUserNameToDisplay,
+                                operatorSession.OperatorSessionId,
+                                operatorSession.OperatorUserName,
+                                operatorSession.DsProject_PathRelativeToDataDirectory,
+                                operatorSession.OperatorPlay_AdditionalCommandLine == @"" ? null : operatorSession.OperatorPlay_AdditionalCommandLine,
+                                operatorSession.OperatorRoleId,
+                                operatorSession.OperatorRoleName,
+                                operatorSession.OperatorSessionStatus
+                            };
+                        utilityItemValue += CsvHelper.FormatForCsv(",", operatorValues) + Environment.NewLine;
                     }
                 }
 
@@ -175,11 +159,18 @@ namespace Ssz.Dcs.CentralServer
         {
             UtilityItem[] centralServersUtilityItems = _utilityItems.Values
                     .Where(mi => String.Equals(mi.ElementId, DataAccessConstants.CentralServers_UtilityItem, StringComparison.InvariantCultureIgnoreCase)).ToArray();
-            
-            string utilityItemValue = @"*";
-            foreach (var centralServersUtilityItem in centralServersUtilityItems)
+
+            if (_additionalCentralServerInfosCollection.Count == 0)
             {
-                centralServersUtilityItem.UpdateValue(utilityItemValue, nowUtc);                
+                string utilityItemValue = @"*";
+                foreach (var centralServersUtilityItem in centralServersUtilityItems)
+                {
+                    centralServersUtilityItem.UpdateValue(utilityItemValue, nowUtc);
+                }
+            }
+            else
+            {
+
             }
         }
 

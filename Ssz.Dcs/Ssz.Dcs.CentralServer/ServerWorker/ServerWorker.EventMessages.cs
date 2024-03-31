@@ -24,7 +24,7 @@ namespace Ssz.Dcs.CentralServer
 
         #region private functions
 
-        private void Generate_LaunchInstructor_SystemEvent(            
+        private void Generate_PrepareAndRunInstructorExe_SystemEvent(            
             string targetWorkstationName,
             ProcessModelingSession processModelingSession)
         {
@@ -33,7 +33,7 @@ namespace Ssz.Dcs.CentralServer
 
             var eventMessage = new Ssz.Utils.DataAccess.EventMessage(new Ssz.Utils.DataAccess.EventId
             {
-                Conditions = new List<Ssz.Utils.DataAccess.TypeId> { EventMessageConstants.LaunchInstructor_TypeId }
+                Conditions = new List<Ssz.Utils.DataAccess.TypeId> { EventMessageConstants.PrepareAndRunInstructorExe_TypeId }
             });
 
             eventMessage.EventType = EventType.SystemEvent;
@@ -69,7 +69,7 @@ namespace Ssz.Dcs.CentralServer
 
             var eventMessage = new Ssz.Utils.DataAccess.EventMessage(new Ssz.Utils.DataAccess.EventId
             {
-                Conditions = new List<Ssz.Utils.DataAccess.TypeId> { EventMessageConstants.LaunchEngine_TypeId }
+                Conditions = new List<Ssz.Utils.DataAccess.TypeId> { EventMessageConstants.PrepareAndRunEngineExe_TypeId }
             });
 
             eventMessage.EventType = EventType.SystemEvent;
@@ -83,7 +83,7 @@ namespace Ssz.Dcs.CentralServer
             utilityEventMessageNotification(targetWorkstationName, eventMessage);
         }        
 
-        private void Generate_LaunchOperator_UtilityEvent(            
+        private void Generate_PrepareAndRunOperatorExe_UtilityEvent(            
             string targetWorkstationName, 
             OperatorSession operatorSession)
         {
@@ -96,7 +96,7 @@ namespace Ssz.Dcs.CentralServer
             var eventMessage = new Ssz.Utils.DataAccess.EventMessage(
                 new Ssz.Utils.DataAccess.EventId
                 {
-                    Conditions = new List<Ssz.Utils.DataAccess.TypeId> { EventMessageConstants.LaunchOperator_TypeId }
+                    Conditions = new List<Ssz.Utils.DataAccess.TypeId> { EventMessageConstants.PrepareAndRunOperatorExe_TypeId }
                 }
                 );
 
@@ -110,8 +110,7 @@ namespace Ssz.Dcs.CentralServer
                 operatorSession.OperatorSessionId,
                 operatorSession.ProcessModelingSession.ProcessModelName, 
                 operatorSession.DsProject_PathRelativeToDataDirectory,                
-                operatorSessionDescription,
-                new Any(operatorSession.RunLauncherExe).ValueAsString(false)
+                operatorSessionDescription
             });
 
             utilityEventMessageNotification(targetWorkstationName, eventMessage);

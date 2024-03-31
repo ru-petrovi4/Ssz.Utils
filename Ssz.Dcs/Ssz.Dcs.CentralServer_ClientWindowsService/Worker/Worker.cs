@@ -72,7 +72,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 @"",
                 new CaseInsensitiveDictionary<string?>()
                 {
-                    { DataAccessConstants.ParamName_HostType, ConfigurationHelper.GetValue<string>(Configuration, @"HostType", @"") }
+                    { DataAccessConstants.ParamName_ConnectionToMain, @"true" }
                 },
                 new DataAccessProviderOptions(),
                 _threadSafeDispatcher);
@@ -156,7 +156,10 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     DataAccessConstants.CentralServer_ClientWindowsService_ClientApplicationName,
                     System.Environment.MachineName,
                     @"",
-                    new CaseInsensitiveDictionary<string?>(),
+                    new CaseInsensitiveDictionary<string?>()
+                    {
+                        { DataAccessConstants.ParamName_Engine_ProcessModelNames, ConfigurationHelper.GetValue<string>(Configuration, DataAccessConstants.ParamName_Engine_ProcessModelNames, @"") }
+                    },
                     new DataAccessProviderOptions(),
                     _threadSafeDispatcher);                
 

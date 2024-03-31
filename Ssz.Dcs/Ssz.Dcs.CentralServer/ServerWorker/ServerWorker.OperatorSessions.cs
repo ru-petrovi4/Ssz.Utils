@@ -55,7 +55,7 @@ namespace Ssz.Dcs.CentralServer
 
         #region private functions
 
-        private string ProcessModelingSession_LaunchOperator_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
+        private string ProcessModelingSession_PrepareAndRunOperatorExe_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
         {
             string?[] args = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend.Span));
             if (args.Length < 8)
@@ -76,11 +76,7 @@ namespace Ssz.Dcs.CentralServer
 
             OperatorSession? operatorSession = OperatorSessionsCollection.TryGetValue(operatorSessionId);
             if (operatorSession is null)
-            {
-                operatorSession = new OperatorSession(operatorSessionId, operatorWorkstationName);
-                operatorSession.RunLauncherExe = true;
-                OperatorSessionsCollection.Add(operatorSession.OperatorSessionId, operatorSession);
-            }
+                throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid operatorSessionId: " + operatorSessionId));
 
             operatorSession.ProcessModelingSession = processModelingSession;
             operatorSession.OperatorRoleId = operatorRoleId;
@@ -114,7 +110,7 @@ namespace Ssz.Dcs.CentralServer
                 jobProgress.JobTimeout_ProgressLabel = Resources.ResourceManager.GetString(ResourceStrings.LaunchingOperatorProgressErrorMessage, serverContext.CultureInfo);
             }
 
-            Generate_LaunchOperator_UtilityEvent(operatorSession.OperatorWorkstationName, operatorSession);
+            Generate_PrepareAndRunOperatorExe_UtilityEvent(operatorSession.OperatorWorkstationName, operatorSession);
 
             return jobId;
         }        
@@ -341,9 +337,11 @@ namespace Ssz.Dcs.CentralServer
 
             public string OperatorWorkstationName { get; }
 
-            public ProcessModelingSession? ProcessModelingSession { get; set; }
+            public string?[] ProcessModelNames { get; set; } = null!;
 
-            public bool RunLauncherExe { get; set; }
+            public List<ServerContext> UtilityServerContexts { get; } = new();
+
+            public ProcessModelingSession? ProcessModelingSession { get; set; }
 
             /// <summary>
             ///     'UserDomainName\UserName'

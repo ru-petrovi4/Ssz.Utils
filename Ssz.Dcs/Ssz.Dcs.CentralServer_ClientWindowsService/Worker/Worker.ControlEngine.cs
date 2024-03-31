@@ -17,7 +17,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
     {
         #region private functions
 
-        private void LaunchControlEngine(string processModelingSessionId, DirectoryInfo processDirectoryInfo, DirectoryInfo binDirectoryInfo, string instanceInfo, IDataAccessProvider utilityDataAccessProvider)
+        private void RunControlEngineExe(string processModelingSessionId, DirectoryInfo processDirectoryInfo, DirectoryInfo binDirectoryInfo, string instanceInfo, IDataAccessProvider utilityDataAccessProvider)
         {
             string exeFileFullName = Path.Combine(binDirectoryInfo.FullName, DataAccessConstants.ControlEngine_ClientApplicationName + @".exe");
             string arguments = "-d \"" + processDirectoryInfo.FullName +

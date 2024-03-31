@@ -125,10 +125,10 @@ namespace Ssz.Dcs.CentralServer
                 {
                     switch (passthroughName)
                     {
-                        case LongrunningPassthroughConstants.ProcessModelingSession_LaunchEngines:
-                            return ProcessModelingSession_LaunchEngines_LongrunningPassthrough(serverContext, dataToSend);                                                 
-                        case LongrunningPassthroughConstants.ProcessModelingSession_LaunchOperator:
-                            return ProcessModelingSession_LaunchOperator_LongrunningPassthrough(serverContext, dataToSend);
+                        case LongrunningPassthroughConstants.ProcessModelingSession_PrepareAndRunInstructorAndEngines:
+                            return ProcessModelingSession_PrepareAndRunInstructorAndEngines_LongrunningPassthrough(serverContext, dataToSend);                                                 
+                        case LongrunningPassthroughConstants.ProcessModelingSession_PrepareAndRunOperatorExe:
+                            return ProcessModelingSession_PrepareAndRunOperatorExe_LongrunningPassthrough(serverContext, dataToSend);
                         case LongrunningPassthroughConstants.ProcessModelingSession_RunOperatorExe:
                             return ProcessModelingSession_RunOperatorExe_LongrunningPassthrough(serverContext, dataToSend);                        
                         case LongrunningPassthroughConstants.ProcessModelingSession_SubscribeForLaunchOperatorProgress:

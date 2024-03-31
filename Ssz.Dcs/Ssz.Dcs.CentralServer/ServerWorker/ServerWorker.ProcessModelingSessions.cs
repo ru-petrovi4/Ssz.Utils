@@ -210,7 +210,7 @@ namespace Ssz.Dcs.CentralServer
 
         #region private functions        
 
-        private string ProcessModelingSession_LaunchEngines_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
+        private string ProcessModelingSession_PrepareAndRunInstructorAndEngines_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
         {
             string? processModelingSessionId = Encoding.UTF8.GetString(dataToSend.Span);
             ProcessModelingSession processModelingSession = GetProcessModelingSession(processModelingSessionId);
@@ -243,7 +243,7 @@ namespace Ssz.Dcs.CentralServer
 
                 if (processModelingSession.InitiatorClientApplicationName != DataAccessConstants.Instructor_ClientApplicationName)
                 {
-                    Generate_LaunchInstructor_SystemEvent(processModelingSession.InitiatorClientWorkstationName, processModelingSession);
+                    Generate_PrepareAndRunInstructorExe_SystemEvent(processModelingSession.InitiatorClientWorkstationName, processModelingSession);
                 }
                 else
                 {
@@ -253,7 +253,26 @@ namespace Ssz.Dcs.CentralServer
                         true);
                 }
 
-                string engine_TargetWorkstationName = Environment.MachineName;
+                var enginesHostInfosCollection = _enginesHostInfosCollection.Values.Where(ehi =>                
+                    ehi.ProcessModelNames.Contains(@"*", StringComparer.InvariantCultureIgnoreCase) ||
+                    ehi.ProcessModelNames.Contains(processModelingSession.ProcessModelName, StringComparer.InvariantCultureIgnoreCase)
+                );
+                EnginesHostInfo? enginesHostInfo = enginesHostInfosCollection
+                    .FirstOrDefault(ehi => String.Equals(ehi.WorkstationName, processModelingSession.InitiatorClientWorkstationName, StringComparison.InvariantCultureIgnoreCase));
+                if (enginesHostInfo is null)
+                {
+                    int minEnginesCount = Int32.MaxValue;
+                    foreach (var ehi in enginesHostInfosCollection)
+                    {
+                        if (ehi.EnginesCount < minEnginesCount)
+                        {
+                            enginesHostInfo = ehi;
+                            minEnginesCount = ehi.EnginesCount;
+                        }
+                    }
+                }
+                if (enginesHostInfo is null)
+                    throw new RpcException(new Status(StatusCode.InvalidArgument, "Cannot find Engines Host"));
 
                 // Launch DscEngine 
 
@@ -265,21 +284,22 @@ namespace Ssz.Dcs.CentralServer
 
                 string engineSessionId = Guid.NewGuid().ToString();
                 int portNumber;
-                var controlEngineSessions = GetEngineSessions().OfType<Control_TrainingEngineSession>().Where(s => String.Equals(s.Engine_TargetWorkstationName, engine_TargetWorkstationName)).ToArray();
+                var controlEngineSessions = GetEngineSessions().OfType<ControlEngine_TrainingEngineSession>().Where(s => String.Equals(s.Engine_TargetWorkstationName, enginesHostInfo.WorkstationName)).ToArray();
                 if (controlEngineSessions.Length > 0)
                     portNumber = controlEngineSessions.Max(s => s.PortNumber) + 1;
                 else
                     portNumber = 60061;                
 
-                Generate_LaunchEngine_SystemEvent(engine_TargetWorkstationName, processModelingSession, DsFilesStoreDirectoryType.ControlEngineBin, DsFilesStoreDirectoryType.ControlEngineData, @"", new Any(portNumber).ValueAsString(false));
-                
+                Generate_LaunchEngine_SystemEvent(enginesHostInfo.WorkstationName, processModelingSession, DsFilesStoreDirectoryType.ControlEngineBin, DsFilesStoreDirectoryType.ControlEngineData, @"", new Any(portNumber).ValueAsString(false));
+                enginesHostInfo.EnginesCount += 1;
+
                 DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewPreparedDataAccessProviderAddon(
                     _serviceProvider, 
                     @"https://localhost:" + portNumber, 
                     @"PROCESS",
                     new CaseInsensitiveDictionary<string?>(), 
                     ThreadSafeDispatcher);
-                var controlEngineSession = new Control_TrainingEngineSession(dataAccessProviderGetter_Addon, engine_TargetWorkstationName)                   
+                var controlEngineSession = new ControlEngine_TrainingEngineSession(dataAccessProviderGetter_Addon, enginesHostInfo.WorkstationName)                   
                 {
                     PortNumber = portNumber
                 };
@@ -299,7 +319,8 @@ namespace Ssz.Dcs.CentralServer
                         engineSessionId = Guid.NewGuid().ToString();
                         string systemName = systemNameBase + @"." + engineSessionId;
 
-                        Generate_LaunchEngine_SystemEvent(engine_TargetWorkstationName, processModelingSession, DsFilesStoreDirectoryType.PlatInstructorBin, DsFilesStoreDirectoryType.PlatInstructorData, mvDsFileInfo.Name, systemName);
+                        Generate_LaunchEngine_SystemEvent(enginesHostInfo.WorkstationName, processModelingSession, DsFilesStoreDirectoryType.PlatInstructorBin, DsFilesStoreDirectoryType.PlatInstructorData, mvDsFileInfo.Name, systemName);
+                        enginesHostInfo.EnginesCount += 1;
 
                         DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon2 = GetNewPreparedDataAccessProviderAddon(
                             _serviceProvider,
@@ -307,7 +328,7 @@ namespace Ssz.Dcs.CentralServer
                             systemName,
                             new CaseInsensitiveDictionary<string?> { { @"XiSystem", systemName } },
                             ThreadSafeDispatcher);
-                        var platInstructorEngineSession = new PlatInstructor_TrainingEngineSession(dataAccessProviderGetter_Addon2, engine_TargetWorkstationName)
+                        var platInstructorEngineSession = new PlatInstructor_TrainingEngineSession(dataAccessProviderGetter_Addon2, enginesHostInfo.WorkstationName)
                         {
                             SystemNameBase = systemNameBase,
                             SystemNameInstance = engineSessionId,
@@ -322,31 +343,29 @@ namespace Ssz.Dcs.CentralServer
                 SubscribeForExistingJobProgress(jobId, serverContext);
             }
 
-            ProcessModelingSession_LaunchEngines_LongrunningPassthroughAsync(serverContext,  processModelingSession, jobId);
+            Task.Run(async () =>
+            {
+                var isConnectedEventWaitHandles = new List<EventWaitHandle>();
+                foreach (EngineSession engineSession in processModelingSession.EngineSessions)
+                {
+                    isConnectedEventWaitHandles.Add(engineSession.DataAccessProvider.IsConnectedEventWaitHandle);
+                }
+                await Task.Run(() =>
+                {
+                    WaitHandle.WaitAll(isConnectedEventWaitHandles.ToArray());
+                });
+
+                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                {
+                    JobId = jobId,
+                    ProgressPercent = 100,
+                    ProgressLabel = Resources.ResourceManager.GetString(ResourceStrings.OperationCompleted_ProgressLabel, serverContext.CultureInfo),
+                    StatusCode = StatusCodes.Good
+                });
+            });
 
             return jobId;
-        }
-
-        private async void ProcessModelingSession_LaunchEngines_LongrunningPassthroughAsync(ServerContext serverContext, ProcessModelingSession processModelingSession, string jobId)
-        {
-            var isConnectedEventWaitHandles = new List<EventWaitHandle>();
-            foreach (EngineSession engineSession in processModelingSession.EngineSessions)
-            {
-                isConnectedEventWaitHandles.Add(engineSession.DataAccessProvider.IsConnectedEventWaitHandle);
-            }
-            await Task.Run(() =>
-            {
-                WaitHandle.WaitAll(isConnectedEventWaitHandles.ToArray());
-            });
-
-            serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
-            {
-                JobId = jobId,
-                ProgressPercent = 100,
-                ProgressLabel = Resources.ResourceManager.GetString(ResourceStrings.OperationCompleted_ProgressLabel, serverContext.CultureInfo),
-                StatusCode = StatusCodes.Good
-            });
-        }
+        }        
 
         private string ProcessModelingSession_DownloadChangedFiles_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
         {

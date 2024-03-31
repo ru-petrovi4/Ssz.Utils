@@ -58,8 +58,6 @@ namespace Ssz.Dcs.CentralServer
 
         #region public functions  
 
-        public const string WorkstationsCsvFileName = @"Workstations.csv";
-
         public DirectoryInfo FilesStoreDirectoryInfo { get; private set; }
 
         public override async Task InitializeAsync(CancellationToken cancellationToken)
@@ -71,7 +69,7 @@ namespace Ssz.Dcs.CentralServer
                 new AddonBase[] { new DcsCentralServerAddon() },
                 _csvDb,
                 ThreadSafeDispatcher,
-                SubstituteOption,
+                SubstituteAddonOption,
                 new AddonsManagerOptions
                 {
                     AddonsSearchPattern = @"Ssz.Dcs.Addons.*.dll",
@@ -110,7 +108,7 @@ namespace Ssz.Dcs.CentralServer
 
         #region private functions
 
-        private string? SubstituteOption(string? optionValue)
+        private string? SubstituteAddonOption(string? optionValue)
         {
             return SszQueryHelper.ComputeValueOfSszQueries(optionValue, GetConstantValue);            
         }
@@ -120,7 +118,13 @@ namespace Ssz.Dcs.CentralServer
             if (constant.StartsWith(@"%(ConfigurationCrypter:", StringComparison.InvariantCultureIgnoreCase))
             {
                 return ConfigurationHelper.GetValue<string>(_configuration, constant.Substring(2, constant.Length - 3), @"");
-            }            
+            }
+            else if (String.Equals(constant, @"%(Port)", StringComparison.InvariantCultureIgnoreCase))
+            {
+                var url = ConfigurationHelper.GetValue<string>(_configuration, @"Kestrel:Endpoints:HttpsDefaultCert:Url", @"");
+                if (!String.IsNullOrEmpty(url))
+                    return new Uri(url).Port.ToString();
+            }
             return constant;
         }
 
@@ -141,9 +145,7 @@ namespace Ssz.Dcs.CentralServer
         /// <summary>
         ///     [ProcessModelingSessionId, ProcessModelingSession]
         /// </summary>
-        private readonly CaseInsensitiveDictionary<ProcessModelingSession> _processModelingSessionsCollection = new();
-
-        private readonly HashSet<string> _operatorWorkstationNamesCollection = new();        
+        private readonly CaseInsensitiveDictionary<ProcessModelingSession> _processModelingSessionsCollection = new();               
 
         #endregion
     }

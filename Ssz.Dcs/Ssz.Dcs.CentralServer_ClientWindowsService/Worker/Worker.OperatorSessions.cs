@@ -18,10 +18,10 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
     {
         #region private functions
 
-        private async Task LaunchOperatorAsync(string textMessage, IDataAccessProvider utilityDataAccessProvider)
+        private async Task PrepareAndRunOperatorExeAsync(string textMessage, IDataAccessProvider utilityDataAccessProvider)
         {
             var parts = CsvHelper.ParseCsvLine(",", textMessage);
-            if (parts.Length < 6)
+            if (parts.Length < 5)
             {
                 Logger.LogError("Invalid textMessage = " + textMessage);
                 return;
@@ -33,26 +33,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 string operatorSessionId = parts[1] ?? "";
                 string processModelName = parts[2] ?? "";
                 string dsProjectPathRelativeToDataDirectory = parts[3] ?? "";                
-                string operatorSessionDescription = parts[4] ?? "";
-                bool runLauncherExe = new Any(parts[5] ?? "").ValueAsBoolean(false);
-
-                string commandLine;
-
-                if (runLauncherExe) 
-                {
-                    string launcherExeDirectoryFullName = Path.Combine(AppContext.BaseDirectory, @"..\DeltaSim.Launcher");
-                    string launcherExeFileFullName = Path.Combine(launcherExeDirectoryFullName, DataAccessConstants.Launcher_ClientApplicationName + @".exe");
-                    var launcherExeFileInfo = new FileInfo(launcherExeFileFullName);
-                    
-                    if (launcherExeFileInfo.Exists)
-                    {
-                        commandLine = "-m Operator --OperatorSessionId=" + operatorSessionId;
-                        if (operatorSessionDescription != @"")
-                            commandLine += " -md \"" + operatorSessionDescription + "\"";
-                        Logger.LogDebug("DeltaSim.Launcher is starting.. " + launcherExeFileInfo.FullName + commandLine);
-                        ProcessHelper.StartProcessAsCurrentUser(launcherExeFileInfo.FullName, @" " + commandLine, launcherExeDirectoryFullName, true);
-                    }
-                }                
+                string operatorSessionDescription = parts[4] ?? "";                                               
 
                 var progressInfo = new ProgressInfo(jobId, 0, 95)
                 {
@@ -99,6 +80,24 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
         #endregion
     }
 }
+
+
+//string commandLine;
+//if (runLauncherExe)
+//{
+//    string launcherExeDirectoryFullName = Path.Combine(AppContext.BaseDirectory, @"..\DeltaSim.Launcher");
+//    string launcherExeFileFullName = Path.Combine(launcherExeDirectoryFullName, DataAccessConstants.Launcher_ClientApplicationName + @".exe");
+//    var launcherExeFileInfo = new FileInfo(launcherExeFileFullName);
+
+//    if (launcherExeFileInfo.Exists)
+//    {
+//        commandLine = "-m Operator --OperatorSessionId=" + operatorSessionId;
+//        if (operatorSessionDescription != @"")
+//            commandLine += " -md \"" + operatorSessionDescription + "\"";
+//        Logger.LogDebug("DeltaSim.Launcher is starting.. " + launcherExeFileInfo.FullName + commandLine);
+//        ProcessHelper.StartProcessAsCurrentUser(launcherExeFileInfo.FullName, @" " + commandLine, launcherExeDirectoryFullName, true);
+//    }
+//}
 
 /*
                 if (!string.IsNullOrEmpty(localModel.User))

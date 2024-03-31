@@ -10,20 +10,20 @@ namespace Ssz.Dcs.CentralServer.Common
 {
     public static class EventMessageConstants
     {
-        public static readonly TypeId LaunchInstructor_TypeId = new("", "Ssz.Dcs", "LaunchInstructor");
-
-        public static readonly TypeId LaunchOperator_TypeId = new("", "Ssz.Dcs", "LaunchOperator");
+        public static readonly TypeId PrepareAndRunInstructorExe_TypeId = new("", "Ssz.Dcs", "PrepareAndRunInstructorExe");
 
         public static readonly TypeId RunInstructorExe_TypeId = new("", "Ssz.Dcs", "RunInstructorExe");
 
+        public static readonly TypeId PrepareAndRunOperatorExe_TypeId = new("", "Ssz.Dcs", "LaunchOperator");
+
         public static readonly TypeId RunOperatorExe_TypeId = new("", "Ssz.Dcs", "RunOperatorExe");        
 
-        public static readonly TypeId LaunchEngine_TypeId = new("", "Ssz.Dcs", "LaunchEngine");
+        public static readonly TypeId PrepareAndRunEngineExe_TypeId = new("", "Ssz.Dcs", "LaunchEngine");
 
         public static readonly TypeId DownloadChangedFiles_TypeId = new("", "Ssz.Dcs", "DownloadChangedFiles");
 
         /// <summary>
-        ///     !!!Warning!!! Not Uploads child directories!!!
+        ///     !!!Warning!!! Does not upload child directories!!!
         /// </summary>
         public static readonly TypeId UploadChangedFiles_TypeId = new("", "Ssz.Dcs", "UploadChangedFiles");
 

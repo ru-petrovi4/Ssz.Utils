@@ -20,7 +20,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
     {
         #region private functions
 
-        private async Task LaunchEnineAsync(string textMessage, IDataAccessProvider utilityDataAccessProvider)
+        private async Task PrepareAndRunEngineExeAsync(string textMessage, IDataAccessProvider utilityDataAccessProvider)
         {            
             var parts = CsvHelper.ParseCsvLine(",", textMessage);
             if (parts.Length < 9)
@@ -64,10 +64,10 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 switch (binDsFilesStoreDirectoryType)
                 {
                     case DsFilesStoreDirectoryType.ControlEngineBin:
-                        LaunchControlEngine(processModelingSessionId, workingDirectories.ProcessDirectoryInfo, workingDirectories.BinDirectoryInfo, instanceInfo, utilityDataAccessProvider);
+                        RunControlEngineExe(processModelingSessionId, workingDirectories.ProcessDirectoryInfo, workingDirectories.BinDirectoryInfo, instanceInfo, utilityDataAccessProvider);
                         break;
                     case DsFilesStoreDirectoryType.PlatInstructorBin:
-                        LaunchPlatInstructor(workingDirectories.ProcessDirectoryInfo, workingDirectories.BinDirectoryInfo, workingDirectories.DataDirectoryInfo, pathRelativeToDataDirectory, instanceInfo);
+                        RunPlatInstructorExe(workingDirectories.ProcessDirectoryInfo, workingDirectories.BinDirectoryInfo, workingDirectories.DataDirectoryInfo, pathRelativeToDataDirectory, instanceInfo);
                         break;
                     default:
                         Logger.LogError("Unknown Modeling Engine.");

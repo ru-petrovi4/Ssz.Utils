@@ -20,7 +20,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
         private const uint InstructorLaunchingMaxPercent = 85; // 100% when all DataProviders connected to Engines
 
-        private async Task LaunchInstructorAsync(string textMessage, IDataAccessProvider utilityDataAccessProvider)
+        private async Task PrepareAndRunInstructorExeAsync(string textMessage, IDataAccessProvider utilityDataAccessProvider)
         {
             var parts = CsvHelper.ParseCsvLine(",", textMessage);
             if (parts.Length < 4)
@@ -55,7 +55,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 }
                 var workingDirectories = workingDirectoriesOptional.Value;
 
-                LaunchInstructor(processModelingSessionId, workingDirectories.ProcessDirectoryInfo, workingDirectories.BinDirectoryInfo, utilityDataAccessProvider);
+                RunInstructorExe(processModelingSessionId, workingDirectories.ProcessDirectoryInfo, workingDirectories.BinDirectoryInfo, utilityDataAccessProvider);
 
                 await SetJobProgressAsync(jobId, InstructorLaunchingMaxPercent, Ssz.Dcs.CentralServer.Properties.ResourceStrings.LaunchedInstructorProgressLabel, null, StatusCodes.Good, utilityDataAccessProvider);
             }
@@ -73,7 +73,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             }            
         }
 
-        private void LaunchInstructor(string processModelingSessionId, DirectoryInfo processDirectoryInfo, DirectoryInfo binDirectoryInfo, IDataAccessProvider utilityDataAccessProvider)
+        private void RunInstructorExe(string processModelingSessionId, DirectoryInfo processDirectoryInfo, DirectoryInfo binDirectoryInfo, IDataAccessProvider utilityDataAccessProvider)
         {
             string binDirectoryFullName = binDirectoryInfo.FullName;
             string arguments = "-d \"" + processDirectoryInfo.FullName +

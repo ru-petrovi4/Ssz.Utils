@@ -25,4 +25,5 @@ ProgramDataDirectory: "%ProgramData%\\Ssz\\Dcs.CentralServer_Client"
 MainCentralServerAddress: "https://localhost:60060"
 FilesStoreSyncWithCentralServer: "true"
 ShowPlatInstructor: "false"
+Engine_ProcessModelNames: "*"
 ---
