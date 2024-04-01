@@ -47,6 +47,10 @@ namespace Ssz.IdentityServer
             bool isTestUser = false;
             List<Claim> claims = null!;
 
+            Dictionary<string, string>? allRoles = null;
+            if (_usersAndRolesInfo is not null)
+                allRoles = (await _usersAndRolesInfo.GetAllRolesAsync()).ToDictionary(r => r, r => r, StringComparer.InvariantCultureIgnoreCase);
+
             if (_usersAndRolesInfo is not null && _usersAndRolesInfo.TestUsersIsEnabled)
             {
                 var testUsers = IdentityServerConfig.GetTestUsers(_configuration);
@@ -66,14 +70,19 @@ namespace Ssz.IdentityServer
                     foreach (var role in CsvHelper.ParseCsvLine(@",", testUser.Role))
                     {
                         if (!String.IsNullOrEmpty(role))
-                            claims.Add(new Claim(JwtClaimTypes.Role, role));
+                        {
+                            string? normalizedRole = null;
+                            allRoles?.TryGetValue(role, out normalizedRole);
+                            if (!String.IsNullOrEmpty(normalizedRole))
+                                claims.Add(new Claim(JwtClaimTypes.Role, normalizedRole));
+                        }
                     }
                 }
             }            
 
             if (!isTestUser)
             {
-                claims = await LdapHelper.GetClaims(userLowerInvariant, _configuration, _configurationProcessor, _logger);
+                claims = await LdapHelper.GetClaims(userLowerInvariant, allRoles, _configuration, _configurationProcessor, _logger);
             }
 
             foreach (var claim in claims.Where(c => c.Type == JwtClaimTypes.Role && 
@@ -90,12 +99,6 @@ namespace Ssz.IdentityServer
                     claims!.Add(new Claim(JwtClaimTypes.Role, @"SuperUser"));
                 }
             }            
-
-            if (_usersAndRolesInfo is not null)
-            {
-                var roles = new HashSet<string>(await _usersAndRolesInfo.GetAllRolesAsync(), StringComparer.InvariantCultureIgnoreCase);
-                claims = claims!.Where(c => c.Type != JwtClaimTypes.Role || roles.Contains(c.Value)).ToList();
-            }
 
             context.IssuedClaims.AddRange(claims!);
 

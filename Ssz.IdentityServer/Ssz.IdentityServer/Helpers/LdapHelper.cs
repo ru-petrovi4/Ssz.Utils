@@ -14,7 +14,7 @@ namespace Ssz.IdentityServer.Helpers
 {
     public static class LdapHelper
     {
-        #region public functions
+        #region public functions        
 
         public static LdapConnection CreateLdapConnection(IConfiguration configuration, ILogger logger)
         {
@@ -83,7 +83,7 @@ namespace Ssz.IdentityServer.Helpers
             return null;
         }
 
-        public static async Task<List<Claim>> GetClaims(string user, IConfiguration configuration, IConfigurationProcessor? configurationProcessor, ILogger logger)
+        public static async Task<List<Claim>> GetClaims(string user, Dictionary<string, string>? allRoles, IConfiguration configuration, IConfigurationProcessor? configurationProcessor, ILogger logger)
         {            
             string activeDirectory_UsersDN = ConfigurationHelper.GetValue(configuration, @"ActiveDirectory:UsersDN", @"");
             if (configurationProcessor is not null)
@@ -170,9 +170,12 @@ namespace Ssz.IdentityServer.Helpers
                         new Claim(JwtClaimTypes.Email, ""),
                         //new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean)
                     };
-            foreach (string group in groups)
+            foreach (string role in groups)
             {
-                claims.Add(new Claim(JwtClaimTypes.Role, group));
+                string? normalizedRole = null;
+                allRoles?.TryGetValue(role, out normalizedRole);
+                if (!String.IsNullOrEmpty(normalizedRole))
+                    claims.Add(new Claim(JwtClaimTypes.Role, role));
             }
 
             return claims;            
@@ -293,7 +296,7 @@ namespace Ssz.IdentityServer.Helpers
             if (!match.Success) return null;
 
             return match.Groups[1].Value;
-        }
+        }        
 
         #endregion
     }
