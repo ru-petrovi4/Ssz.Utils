@@ -30,7 +30,7 @@ namespace Ssz.Dcs.CentralServer
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddResourceMonitoring();
+            //services.AddResourceMonitoring();
 
             services.AddGrpc(options =>
             {

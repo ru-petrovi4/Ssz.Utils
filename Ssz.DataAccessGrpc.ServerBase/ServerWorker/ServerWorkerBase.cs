@@ -16,9 +16,11 @@ namespace Ssz.DataAccessGrpc.ServerBase
     {
         #region construction and destruction
 
-        protected ServerWorkerBase(IResourceMonitor resourceMonitor, ILogger logger)
+        protected ServerWorkerBase(
+            //IResourceMonitor resourceMonitor, 
+            ILogger logger)
         {
-            ResourceMonitor = resourceMonitor;
+            //ResourceMonitor = resourceMonitor;
             Logger = logger;           
         }
 
@@ -103,10 +105,12 @@ namespace Ssz.DataAccessGrpc.ServerBase
         public virtual void GetAddonStatusParams(CaseInsensitiveDictionary<Any> addonStatusParams)
         {
             addonStatusParams[Constants.ParamName_IsResourceMonitorAddon] = new Any(true);
-            ResourceUtilization resourceUtilization = ResourceMonitor.GetUtilization(TimeSpan.FromSeconds(1));
-            addonStatusParams[Constants.ParamName_CpuUsedPercentage] = new Any(resourceUtilization.CpuUsedPercentage);
-            addonStatusParams[Constants.ParamName_MemoryUsedPercentage] = new Any(resourceUtilization.MemoryUsedPercentage);
-            addonStatusParams[Constants.ParamName_MemoryUsedInBytes] = new Any(resourceUtilization.MemoryUsedInBytes);
+
+            //ResourceUtilization resourceUtilization = ResourceMonitor.GetUtilization(TimeSpan.FromSeconds(1));
+            //addonStatusParams[Constants.ParamName_CpuUsedPercentage] = new Any(resourceUtilization.CpuUsedPercentage);
+            //addonStatusParams[Constants.ParamName_MemoryUsedPercentage] = new Any(resourceUtilization.MemoryUsedPercentage);
+            //addonStatusParams[Constants.ParamName_MemoryUsedInBytes] = new Any(resourceUtilization.MemoryUsedInBytes);
+
             ComputerInfo computerInfo = new();
             //addonStatusParams[Constants.ParamName_OSPlatform] = new Any(computerInfo.OSPlatform);
             //addonStatusParams[Constants.ParamName_OSVersion] = new Any(computerInfo.OSVersion);
@@ -114,6 +118,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             addonStatusParams[Constants.ParamName_AvailablePhysicalMemory] = new Any(computerInfo.AvailablePhysicalMemory);
             addonStatusParams[Constants.ParamName_TotalVirtualMemory] = new Any(computerInfo.TotalVirtualMemory);
             addonStatusParams[Constants.ParamName_AvailableVirtualMemory] = new Any(computerInfo.AvailableVirtualMemory);
+
             Dictionary<string, Any> drivesInfo = new();
             foreach (DriveInfo di in DriveInfo.GetDrives())
             {
@@ -137,7 +142,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         #region protected functions
 
-        protected IResourceMonitor ResourceMonitor { get; }
+        //protected IResourceMonitor ResourceMonitor { get; }
 
         protected ILogger Logger { get; }        
 

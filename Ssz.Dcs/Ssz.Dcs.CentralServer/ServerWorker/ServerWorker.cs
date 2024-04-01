@@ -27,13 +27,15 @@ namespace Ssz.Dcs.CentralServer
         #region construction and destruction
 
         public ServerWorker(
-            IResourceMonitor resourceMonitor,
+            //IResourceMonitor resourceMonitor,
             ILogger<ServerWorker> logger, 
                 IConfiguration configuration, 
                 IServiceProvider serviceProvider, 
                 AddonsManager addonsManager,
                 IDbContextFactory<DcsCentralServerDbContext> dbContextFactory) :
-            base(resourceMonitor, logger)
+            base(
+                //resourceMonitor, 
+                logger)
         {
             _configuration = configuration;
             _serviceProvider = serviceProvider;

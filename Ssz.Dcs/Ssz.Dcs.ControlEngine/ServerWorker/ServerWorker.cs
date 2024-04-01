@@ -20,11 +20,13 @@ namespace Ssz.Dcs.ControlEngine
         #region construction and destruction
 
         public ServerWorker(
-            IResourceMonitor resourceMonitor,
+            //IResourceMonitor resourceMonitor,
             ILogger<ServerWorker> logger, 
             IConfiguration configuration, 
             IServiceProvider serviceProvider) :
-            base(resourceMonitor, logger)
+            base(
+                //resourceMonitor, 
+                logger)
         {            
             _configuration = configuration;
             _serviceProvider = serviceProvider;

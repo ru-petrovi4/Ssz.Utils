@@ -136,7 +136,7 @@
     <value>Файлы оператора обновлены</value>
   </data>
   <data name="LaunchingInstructorProgressErrorMessage" xml:space="preserve">
-    <value>Не удалсоь запустить интерфейс инструктора</value>
+    <value>Не удалось запустить интерфейс инструктора</value>
   </data>
   <data name="LaunchingInstructorProgressLabel" xml:space="preserve">
     <value>Обновление файлов инструктора</value>
