@@ -65,7 +65,7 @@ namespace Ssz.Dcs.CentralServer
                             return ReadOnlyMemory<byte>.Empty;
                     }
 
-                    ObservableCollection<EngineSession> engineSessions = GetEngineSessions(serverContext);
+                    ObservableCollection<CentralServer.EngineSession> engineSessions = GetEngineSessions(serverContext);
                     //var tasks = new List<Task<IEnumerable<byte>?>>(dataAccessProviders.Count);
                     if (!String.IsNullOrEmpty(recipientPath))
                     {
@@ -82,8 +82,8 @@ namespace Ssz.Dcs.CentralServer
                             beginRecipientId = recipientPath;
                             remainingRecipientId = @"";
                         }
-                        EngineSession? engineSession = engineSessions.FirstOrDefault(es =>
-                            String.Equals(
+                        CentralServer.EngineSession? engineSession = engineSessions.FirstOrDefault(es =>
+                            string.Equals(
                                 es.DataAccessProviderGetter_Addon.InstanceId,
                                 beginRecipientId,
                                 StringComparison.InvariantCultureIgnoreCase));
@@ -91,7 +91,7 @@ namespace Ssz.Dcs.CentralServer
                             return await engineSession.DataAccessProvider.PassthroughAsync(remainingRecipientId, passthroughName, dataToSend);
                     }
 
-                    foreach (EngineSession engineSession in engineSessions)
+                    foreach (CentralServer.EngineSession engineSession in engineSessions)
                     {
                         Logger.LogDebug("dataAccessProvider.Passthrough passthroughName=" + passthroughName);
                         try
@@ -171,7 +171,7 @@ namespace Ssz.Dcs.CentralServer
 
         private void LongrunningPassthrough_ProcessContext(ServerContext serverContext, string jobId, string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
-            ObservableCollection<EngineSession> engineSessions = GetEngineSessions(serverContext);
+            ObservableCollection<CentralServer.EngineSession> engineSessions = GetEngineSessions(serverContext);
 
             var tasks = new List<Task<Task<uint>>>();
 
@@ -190,8 +190,8 @@ namespace Ssz.Dcs.CentralServer
                     beginRecipientPath = recipientPath;
                     remainingRecipientPath = @"";
                 }
-                EngineSession? engineSession = engineSessions.FirstOrDefault(es =>
-                    String.Equals(
+                CentralServer.EngineSession? engineSession = engineSessions.FirstOrDefault(es =>
+                    string.Equals(
                         es.DataAccessProviderGetter_Addon.InstanceId,
                         beginRecipientPath,
                         StringComparison.InvariantCultureIgnoreCase));
@@ -202,7 +202,7 @@ namespace Ssz.Dcs.CentralServer
                 }
             }
             if (tasks.Count == 0)
-                foreach (EngineSession engineSession in engineSessions)
+                foreach (CentralServer.EngineSession engineSession in engineSessions)
                 {
                     Logger.LogDebug("dataAccessProvider.LongrunningPassthrough passthroughName=" + passthroughName);
                     tasks.Add(engineSession.DataAccessProvider.LongrunningPassthroughAsync(recipientPath, passthroughName, dataToSend, null));

@@ -63,12 +63,13 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             {
                 Logger.LogCritical("MainCentralServerAddress is not specified in config.");
                 return Task.CompletedTask;
-            }            
+            }
+            string clientWorkstationName = ConfigurationHelper.GetValue<string>(Configuration, @"ClientWorkstationName", System.Environment.MachineName);            
 
             MainUtilityDataAccessProvider.Initialize(null,
                 mainCentralServerAddress,
                 DataAccessConstants.CentralServer_ClientWindowsService_ClientApplicationName,
-                System.Environment.MachineName,
+                clientWorkstationName,
                 @"",
                 new CaseInsensitiveDictionary<string?>()
                 {

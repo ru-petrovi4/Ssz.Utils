@@ -131,7 +131,7 @@ namespace Ssz.Dcs.CentralServer
             }
 
             var tasks = new List<Task>();
-            foreach (EngineSession engineSession in processModelingSession.EngineSessions)
+            foreach (CentralServer.EngineSession engineSession in processModelingSession.EngineSessions)
             {
                 try
                 {
@@ -158,6 +158,9 @@ namespace Ssz.Dcs.CentralServer
                 {
                     var o = processModelingSession.EngineSessions[collectionIndex];
                     processModelingSession.EngineSessions.RemoveAt(collectionIndex);
+                    var enginesHostInfo = _enginesHostInfosCollection.TryGetValue(o.ServerHost);
+                    if (enginesHostInfo is not null)
+                        enginesHostInfo.EnginesCount -= 1;
                     o.Dispose();
                 }
 
@@ -272,7 +275,7 @@ namespace Ssz.Dcs.CentralServer
                     }
                 }
                 if (enginesHostInfo is null)
-                    throw new RpcException(new Status(StatusCode.InvalidArgument, "Cannot find Engines Host"));
+                    enginesHostInfo = _localEnginesHostInfo;
 
                 // Launch DscEngine 
 
@@ -284,7 +287,7 @@ namespace Ssz.Dcs.CentralServer
 
                 string engineSessionId = Guid.NewGuid().ToString();
                 int portNumber;
-                var controlEngineSessions = GetEngineSessions().OfType<ControlEngine_TrainingEngineSession>().Where(s => String.Equals(s.Engine_TargetWorkstationName, enginesHostInfo.WorkstationName)).ToArray();
+                var controlEngineSessions = GetEngineSessions().OfType<ControlEngine_TrainingEngineSession>().Where(s => String.Equals(s.ServerHost, enginesHostInfo.WorkstationName)).ToArray();
                 if (controlEngineSessions.Length > 0)
                     portNumber = controlEngineSessions.Max(s => s.PortNumber) + 1;
                 else
@@ -295,11 +298,11 @@ namespace Ssz.Dcs.CentralServer
 
                 DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewPreparedDataAccessProviderAddon(
                     _serviceProvider, 
-                    @"https://localhost:" + portNumber, 
+                    $"https://{enginesHostInfo.WorkstationName}:{portNumber}", 
                     @"PROCESS",
                     new CaseInsensitiveDictionary<string?>(), 
                     ThreadSafeDispatcher);
-                var controlEngineSession = new ControlEngine_TrainingEngineSession(dataAccessProviderGetter_Addon, enginesHostInfo.WorkstationName)                   
+                var controlEngineSession = new ControlEngine_TrainingEngineSession(dataAccessProviderGetter_Addon)                   
                 {
                     PortNumber = portNumber
                 };
@@ -324,11 +327,11 @@ namespace Ssz.Dcs.CentralServer
 
                         DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon2 = GetNewPreparedDataAccessProviderAddon(
                             _serviceProvider,
-                            @"http://localhost:60080/SimcodePlatServer/ServerDiscovery",
+                            $"http://{enginesHostInfo.WorkstationName}:60080/SimcodePlatServer/ServerDiscovery",
                             systemName,
                             new CaseInsensitiveDictionary<string?> { { @"XiSystem", systemName } },
                             ThreadSafeDispatcher);
-                        var platInstructorEngineSession = new PlatInstructor_TrainingEngineSession(dataAccessProviderGetter_Addon2, enginesHostInfo.WorkstationName)
+                        var platInstructorEngineSession = new PlatInstructor_TrainingEngineSession(dataAccessProviderGetter_Addon2)
                         {
                             SystemNameBase = systemNameBase,
                             SystemNameInstance = engineSessionId,
@@ -346,7 +349,7 @@ namespace Ssz.Dcs.CentralServer
             Task.Run(async () =>
             {
                 var isConnectedEventWaitHandles = new List<EventWaitHandle>();
-                foreach (EngineSession engineSession in processModelingSession.EngineSessions)
+                foreach (CentralServer.EngineSession engineSession in processModelingSession.EngineSessions)
                 {
                     isConnectedEventWaitHandles.Add(engineSession.DataAccessProvider.IsConnectedEventWaitHandle);
                 }
@@ -454,7 +457,7 @@ namespace Ssz.Dcs.CentralServer
 
             public long? DbEnity_ProcessModelingSessionId { get; set; }
 
-            public ObservableCollection<EngineSession> EngineSessions { get; } = new();
+            public ObservableCollection<CentralServer.EngineSession> EngineSessions { get; } = new();
 
             /// <summary>
             ///     See ProcessModelingSessionConstants

@@ -18,7 +18,7 @@ namespace Ssz.Dcs.CentralServer
     {
         #region public functions
 
-        public ObservableCollection<EngineSession> Dcs_EngineSessions { get; } = new();
+        public ObservableCollection<CentralServer.EngineSession> Dcs_EngineSessions { get; } = new();
 
         #endregion
 

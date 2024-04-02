@@ -23,11 +23,11 @@ namespace Ssz.Dcs.CentralServer
         /// </summary>
         /// <param name="serverContext"></param>
         /// <returns></returns>
-        public ObservableCollection<EngineSession> GetEngineSessions(ServerContext serverContext)
+        public ObservableCollection<CentralServer.EngineSession> GetEngineSessions(ServerContext serverContext)
         {
             string systemNameToConnect = serverContext.SystemNameToConnect;
             if (systemNameToConnect == @"")
-                return new ObservableCollection<EngineSession>(); // Utility context                                                           
+                return new ObservableCollection<CentralServer.EngineSession>(); // Utility context                                                           
 
             if (String.Equals(systemNameToConnect, DataAccessConstants.Dcs_SystemName, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -37,7 +37,7 @@ namespace Ssz.Dcs.CentralServer
             {
                 ProcessModelingSession? processModelingSession = GetProcessModelingSessionOrNull(systemNameToConnect);
                 if (processModelingSession is null)
-                    return new ObservableCollection<EngineSession>(); // Unknown systemNameToConnect
+                    return new ObservableCollection<CentralServer.EngineSession>(); // Unknown systemNameToConnect
 
                 return processModelingSession.EngineSessions;
             }
@@ -47,9 +47,9 @@ namespace Ssz.Dcs.CentralServer
 
         #region private functions
 
-        private EngineSession[] GetEngineSessions()
+        private CentralServer.EngineSession[] GetEngineSessions()
         {
-            var result = new List<EngineSession>();
+            var result = new List<CentralServer.EngineSession>();
 
             result.AddRange(Dcs_EngineSessions);
 
@@ -89,46 +89,14 @@ namespace Ssz.Dcs.CentralServer
         }
 
 
-        #endregion
+        #endregion        
 
-        private class TrainingEngineSessionBase : EngineSession
+        private class ControlEngine_TrainingEngineSession : EngineSession
         {
             #region construction and destruction
 
-            public TrainingEngineSessionBase(DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon, string engine_TargetWorkstationName) :
+            public ControlEngine_TrainingEngineSession(DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon) :
                 base(dataAccessProviderGetter_Addon)
-            {
-                Engine_TargetWorkstationName = engine_TargetWorkstationName;
-            }
-
-            public override void Dispose()
-            {                
-                DataAccessProviderGetter_Addon.Close();
-
-                base.Dispose();
-            }
-
-            #endregion
-
-            #region public functions
-
-            public string ServerAddress => DataAccessProvider.ServerAddress;
-
-            public string SystemNameToConnect => DataAccessProvider.SystemNameToConnect;
-
-            public CaseInsensitiveDictionary<string?> ContextParams => DataAccessProvider.ContextParams;
-
-            public string Engine_TargetWorkstationName { get; }
-
-            #endregion            
-        }
-
-        private class ControlEngine_TrainingEngineSession : TrainingEngineSessionBase
-        {
-            #region construction and destruction
-
-            public ControlEngine_TrainingEngineSession(DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon, string engine_TargetWorkstationName) :
-                base(dataAccessProviderGetter_Addon, engine_TargetWorkstationName)
             {
             }
 
@@ -141,12 +109,12 @@ namespace Ssz.Dcs.CentralServer
             #endregion            
         }
 
-        private class PlatInstructor_TrainingEngineSession : TrainingEngineSessionBase
+        private class PlatInstructor_TrainingEngineSession : EngineSession
         {
             #region construction and destruction
 
-            public PlatInstructor_TrainingEngineSession(DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon, string engine_TargetWorkstationName) :
-                base(dataAccessProviderGetter_Addon, engine_TargetWorkstationName)
+            public PlatInstructor_TrainingEngineSession(DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon) :
+                base(dataAccessProviderGetter_Addon)
             {
             }
 

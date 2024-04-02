@@ -19,6 +19,8 @@ namespace Ssz.Utils.DataAccess
 
         string ServerAddress { get; }
 
+        string ServerHost { get; }
+
         string SystemNameToConnect { get; }
 
         string ClientApplicationName { get; }

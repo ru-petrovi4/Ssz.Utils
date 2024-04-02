@@ -64,6 +64,23 @@ namespace Ssz.Utils.DataAccess
         /// </summary>
         public string ServerAddress { get; private set; } = @"";
 
+        public string ServerHost
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(ServerAddress))
+                    return @"";
+                try
+                {
+                    return new Uri(ServerAddress).Host;
+                }
+                catch
+                {
+                    return @"";
+                }
+            }
+        }
+
         /// <summary>
         ///     DataAccessGrpc Systems Names.
         /// </summary>

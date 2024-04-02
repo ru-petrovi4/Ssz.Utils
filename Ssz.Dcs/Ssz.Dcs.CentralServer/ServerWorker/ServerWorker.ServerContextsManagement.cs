@@ -152,7 +152,13 @@ namespace Ssz.Dcs.CentralServer
         /// <summary>
         ///     [ClientWorkstationName, EnginesHostInfo]
         /// </summary>
-        private readonly CaseInsensitiveDictionary<EnginesHostInfo> _enginesHostInfosCollection = new();        
+        private readonly CaseInsensitiveDictionary<EnginesHostInfo> _enginesHostInfosCollection = new();
+
+        private readonly EnginesHostInfo _localEnginesHostInfo = new()
+        {
+            WorkstationName = @"localhost",
+            ProcessModelNames = [@"*"]
+        };
 
         #endregion
 

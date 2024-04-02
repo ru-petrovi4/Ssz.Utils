@@ -23,9 +23,10 @@ Logging:
 UICulture: "RU"
 ProgramDataDirectory: "%ProgramData%\\Ssz\\Dcs.CentralServer_Client"
 MainCentralServerAddress: "https://localhost:60060"
+ClientWorkstationName: ""
 FilesStoreSyncWithCentralServer: "true"
 ShowPlatInstructor: "false"
-Engine_ProcessModelNames: "*"
+Engine_ProcessModelNames: ""
 # Connect to all available central servers
 AllCentralServers: "false"
 ---

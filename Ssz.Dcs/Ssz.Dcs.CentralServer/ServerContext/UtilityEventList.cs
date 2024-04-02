@@ -39,15 +39,27 @@ namespace Ssz.Dcs.CentralServer
         {
             if (Disposed) return;
 
-            if (!String.IsNullOrEmpty(targetWorkstationName) && 
-                !String.Equals(targetWorkstationName, ServerContext.ClientWorkstationName, StringComparison.InvariantCultureIgnoreCase)) 
-                return;
+            bool send = false;
+            if (String.IsNullOrEmpty(targetWorkstationName))
+            {
+                send = true;
+            }
+            else if (String.Equals(targetWorkstationName, ServerContext.ClientWorkstationName, StringComparison.InvariantCultureIgnoreCase))
+            {
+                send = true;
+            }
+            else if (String.Equals(targetWorkstationName, @"localhost", StringComparison.InvariantCultureIgnoreCase) &&
+                        String.Equals(ServerContext.ClientWorkstationName, Environment.MachineName, StringComparison.InvariantCultureIgnoreCase))                
+            {
+                send = true;
+            }
 
-            EventMessagesCollections.Add(
-                new Ssz.Utils.DataAccess.EventMessagesCollection
-                {
-                    EventMessages = new List<Ssz.Utils.DataAccess.EventMessage>() { eventMessage }
-                });
+            if (send)
+                EventMessagesCollections.Add(
+                    new Ssz.Utils.DataAccess.EventMessagesCollection
+                    {
+                        EventMessages = new List<Ssz.Utils.DataAccess.EventMessage>() { eventMessage }
+                    });
         }
 
         #endregion
