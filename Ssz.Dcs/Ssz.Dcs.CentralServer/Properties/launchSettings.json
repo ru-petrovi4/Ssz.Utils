@@ -2,6 +2,7 @@
   "profiles": {
     "Ssz.Dcs.CentralServer": {
       "commandName": "Project",
+      "commandLineArgs": "-e",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

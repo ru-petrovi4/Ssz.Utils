@@ -656,7 +656,7 @@ namespace YamlDotNet.Core
 
             if (comment.IsInline)
             {
-                Write(" # ");
+                Write(" #");
                 Write(string.Join(" ", lines));
             }
             else
@@ -672,7 +672,7 @@ namespace YamlDotNet.Core
                 foreach (var line in lines)
                 {
                     WriteIndent();
-                    Write("# ");
+                    Write("#");
                     Write(line);
                     WriteBreak();
                 }

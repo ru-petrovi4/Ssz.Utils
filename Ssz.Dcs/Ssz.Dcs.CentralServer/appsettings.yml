@@ -31,7 +31,7 @@ Kestrel:
       # имя файла сертификата. Должен быть расположен в папке данных центрального сервера ПАЗ-Чек
       Path: "DefaultCertificate.pfx"
       # пароль от файла сертификата
-      Password: "dyTLPB4EpLl5bcvsiGovWRhI6jJExKfm1zxwjOD+zwqQn7kW2HBPBkJALi7vD89g+1df3Srw8l+U69sPPwq2xenpefTTJ8GJY4lmzDwnc+o4Db3LkIoF0dyJ9F7zHm85P0HMCtibhBTVVfap6oCtfnOvKoPvYfaHnd4l5J9GM5q2Yk6jAniLMeh5gqclFZojq19qi3ghQGBwqCLA99tHsjZrMYsEmez49wBLhRDGlUAWZQbc9LOFtchsXJ6GW/+cYrMYPm9udId6+7xhczwnzDfPqBNyQ4AvzDCx1sghr1zocxPuDB63foa5eOAT8G+HSxntpyV/k5W7HleNCTQUBjGw6L1vedFmgXj10hPO70/SvfIN7Ybr2tS5ZU4NNsD4/i9pK7P9XWmUxxCwo6sskdY3jiCy3eM/oeNaLmSvamj0jdALSLY7vBqwni3Q4Wr5ksPccgdRZm+WIkbzgudtFE6U+VVUnyZiHX5uZwWuUxJhjNpqDJ3JJZCSWEKssZ+TGRfFojEmqEugYhmEKDwdXuIbXaXn9pgD0WyWeiuGNNxoirxg0URoHGqdD071gQRDyaAsQt3Joo1jqfqMQOMLvSXHe+UjtV/VYiWaJIDIJelbS45DGXKdalMgTavRjRR7I2Z4zxMlLm60q8pvVmFfnGTtSfkMA2AonrcXozbGbUk="
+      Password: "identityserver"
       AllowInvalid: "true"
 DcsCentralServerAddonDesc: "Центральный сервер SSZ.DCS"
 AllowedHosts: "*"
@@ -41,8 +41,8 @@ ProgramDataDirectory: "C:\\CDT.CentralServer"
 DataAccessClientUserName: ""
 DataAccessClientPasswordHash: ""
 DbType: "sqlite"
-ConnectionStrings: 
-  # MainDbConnection: "Host=localhost;Username=postgres;Password=postgres;Database=deltasim1;CommandTimeout=3600"  
+#ConnectionStrings:
+#  MainDbConnection: "Host=localhost;Username=postgres;Password=postgres;Database=deltasim1;CommandTimeout=3600"  
 # путь до файла сертификата .pfx из которого используются закрытый и открытый ключи для шифрования и расшифровки секций конфигурационного файла, которые не должны храниться в открытом виде
 ConfigurationCrypterCertificateFileName: "appsettings.pfx"
 ConfigurationCrypter: 

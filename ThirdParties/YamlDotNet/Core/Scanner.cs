@@ -646,10 +646,10 @@ namespace YamlDotNet.Core
                 Skip();
 
                 // Eat leading whitespace
-                while (analyzer.IsSpace())
-                {
-                    Skip();
-                }
+                //while (analyzer.IsSpace())
+                //{
+                //    Skip();
+                //}
 
                 using var textBuilder = StringBuilderPool.Rent();
                 var text = textBuilder.Builder;
