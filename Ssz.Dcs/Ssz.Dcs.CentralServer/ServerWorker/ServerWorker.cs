@@ -27,14 +27,14 @@ namespace Ssz.Dcs.CentralServer
         #region construction and destruction
 
         public ServerWorker(
-            //IResourceMonitor resourceMonitor,
-            ILogger<ServerWorker> logger, 
+                IResourceMonitor resourceMonitor,
+                ILogger<ServerWorker> logger, 
                 IConfiguration configuration, 
                 IServiceProvider serviceProvider, 
                 AddonsManager addonsManager,
                 IDbContextFactory<DcsCentralServerDbContext> dbContextFactory) :
             base(
-                //resourceMonitor, 
+                resourceMonitor, 
                 logger)
         {
             _configuration = configuration;
@@ -124,8 +124,9 @@ namespace Ssz.Dcs.CentralServer
             else if (String.Equals(constant, @"%(Port)", StringComparison.InvariantCultureIgnoreCase))
             {
                 var url = ConfigurationHelper.GetValue<string>(_configuration, @"Kestrel:Endpoints:HttpsDefaultCert:Url", @"");
-                if (!String.IsNullOrEmpty(url))
-                    return new Uri(url).Port.ToString();
+                int i = url.LastIndexOf(':');
+                if (i > 0)
+                    return url.Substring(i + 1);
             }
             return constant;
         }

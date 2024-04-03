@@ -17,10 +17,10 @@ namespace Ssz.DataAccessGrpc.ServerBase
         #region construction and destruction
 
         protected ServerWorkerBase(
-            //IResourceMonitor resourceMonitor, 
+            IResourceMonitor resourceMonitor, 
             ILogger logger)
         {
-            //ResourceMonitor = resourceMonitor;
+            ResourceMonitor = resourceMonitor;
             Logger = logger;           
         }
 
@@ -106,10 +106,10 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             addonStatusParams[Constants.ParamName_IsResourceMonitorAddon] = new Any(true);
 
-            //ResourceUtilization resourceUtilization = ResourceMonitor.GetUtilization(TimeSpan.FromSeconds(1));
-            //addonStatusParams[Constants.ParamName_CpuUsedPercentage] = new Any(resourceUtilization.CpuUsedPercentage);
-            //addonStatusParams[Constants.ParamName_MemoryUsedPercentage] = new Any(resourceUtilization.MemoryUsedPercentage);
-            //addonStatusParams[Constants.ParamName_MemoryUsedInBytes] = new Any(resourceUtilization.MemoryUsedInBytes);
+            ResourceUtilization resourceUtilization = ResourceMonitor.GetUtilization(TimeSpan.FromSeconds(1));
+            addonStatusParams[Constants.ParamName_CpuUsedPercentage] = new Any(resourceUtilization.CpuUsedPercentage);
+            addonStatusParams[Constants.ParamName_MemoryUsedPercentage] = new Any(resourceUtilization.MemoryUsedPercentage);
+            addonStatusParams[Constants.ParamName_MemoryUsedInBytes] = new Any(resourceUtilization.MemoryUsedInBytes);
 
             ComputerInfo computerInfo = new();
             //addonStatusParams[Constants.ParamName_OSPlatform] = new Any(computerInfo.OSPlatform);
@@ -142,7 +142,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         #region protected functions
 
-        //protected IResourceMonitor ResourceMonitor { get; }
+        protected IResourceMonitor ResourceMonitor { get; }
 
         protected ILogger Logger { get; }        
 

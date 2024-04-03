@@ -12,6 +12,7 @@ using System;
 using System.ComponentModel.Composition;
 using System.Threading;
 using System.Threading.Tasks;
+using JsonApiDotNetCore.Services;
 
 namespace Ssz.Dcs.Addons.DataAccessClient
 {
@@ -75,7 +76,12 @@ namespace Ssz.Dcs.Addons.DataAccessClient
                     LastWorkTimeUtc = DateTime.UtcNow;
             };
 
-            bool dangerousAcceptAnyServerCertificatete = new Any(OptionsSubstituted.TryGetValue(DataAccessClient_DangerousAcceptAnyServerCertificate_OptionName)).ValueAsBoolean(false);            
+            bool dangerousAcceptAnyServerCertificatete = new Any(OptionsSubstituted.TryGetValue(DataAccessClient_DangerousAcceptAnyServerCertificate_OptionName)).ValueAsBoolean(false);
+            
+            var currentServerAddress = ConfigurationHelper.GetValue<string>(Configuration, @"Kestrel:Endpoints:HttpsDefaultCert:Url", @"")
+                .Replace(@"*", @"localhost");
+            if (String.Equals(serverAddress, currentServerAddress, StringComparison.InvariantCultureIgnoreCase))
+                serverAddress = @"";
 
             dataAccessProvider.Initialize(elementIdsMap,                
                 serverAddress,
