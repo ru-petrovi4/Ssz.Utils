@@ -40,10 +40,11 @@ namespace Ssz.Utils.DataAccess
         /// <param name="valueStatusTimestamp"></param>
         void IValueSubscription.Update(ValueStatusTimestamp valueStatusTimestamp)
         {
-            if (StatusCodes.IsUncertain(valueStatusTimestamp.StatusCode))
+            if (StatusCodes.IsUncertain(valueStatusTimestamp.StatusCode) || _dataProvider is null)
                 return;
 
-            _dataProvider.RemoveItem(this);            
+            _dataProvider.RemoveItem(this);
+            _dataProvider = null;
 
             if (_setValueAction is not null)
             {
@@ -58,7 +59,7 @@ namespace Ssz.Utils.DataAccess
 
         #region private fields
 
-        private IDataAccessProvider _dataProvider;
+        private IDataAccessProvider? _dataProvider;
 
         private Action<ValueStatusTimestamp>? _setValueAction;
 
