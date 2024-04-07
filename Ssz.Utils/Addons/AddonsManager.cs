@@ -380,6 +380,9 @@ namespace Ssz.Utils.Addons
 
             foreach (ConfigurationFile configurationFile in configurationFiles.ConfigurationFilesCollection)
             {
+                if (String.IsNullOrEmpty(configurationFile.Name))
+                    continue;
+
                 configurationFile.PathRelativeToRootDirectory = configurationFile.PathRelativeToRootDirectory!.Replace(Path.DirectorySeparatorChar, '/'); // Normalize
 
                 int slashCount = configurationFile.PathRelativeToRootDirectory.Count(f => f == '/');

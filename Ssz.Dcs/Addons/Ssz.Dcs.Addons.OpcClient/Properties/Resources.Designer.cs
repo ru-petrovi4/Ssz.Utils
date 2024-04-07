@@ -88,7 +88,7 @@ namespace Ssz.Dcs.Addons.OpcClient.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Data access client.
+        ///   Looks up a localized string similar to OPC Client.
         /// </summary>
         public static string OpcClientAddon_Desc {
             get {

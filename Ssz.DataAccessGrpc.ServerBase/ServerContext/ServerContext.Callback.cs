@@ -150,10 +150,10 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 _longrunningPassthroughCallbackMessagesCollection = new List<LongrunningPassthroughCallbackMessage>();
             }
 
-            bool hasAbortingMessage = contextStatusMessagesCollection.Any(cim => cim.StateCode == ContextStateCodes.STATE_ABORTING);
-
             try
             {
+                bool hasAbortingMessage = contextStatusMessagesCollection.Any(cim => cim.StateCode == ContextStateCodes.STATE_ABORTING);
+
                 if (_responseStream is not null)
                 {
                     if (cancellationToken.IsCancellationRequested)
@@ -173,9 +173,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             {
                                 StateCode = contextStatusMessage.StateCode
                             };
-                            await _responseStream.WriteAsync(callbackMessage);
+                            await _responseStream.WriteAsync(callbackMessage);                            
                         }
-                    }                    
+                    }
 
                     if (!hasAbortingMessage)
                     {
@@ -253,14 +253,16 @@ namespace Ssz.DataAccessGrpc.ServerBase
                                 await _responseStream.WriteAsync(callbackMessage);
                             }
                         }
-                    }                    
+                    }
                 }
             }
             finally
             {
-                if (hasAbortingMessage)
-                    CallbackWorkingTask_CancellationTokenSource.Cancel();
-            }
+                foreach (ContextStatusMessage contextStatusMessage in contextStatusMessagesCollection)
+                {                    
+                    contextStatusMessage.TaskCompletionSource.SetResult();
+                }
+            }                    
 
             return false;
         }
@@ -291,6 +293,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
             /// 
             /// </summary>
             public uint StateCode;
+
+            public TaskCompletionSource TaskCompletionSource = new();
         }
 
         public class ElementValuesCallbackMessage

@@ -58,8 +58,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         }
 
         /// <summary>
-        ///   This is the implementation of the IDisposable.Dispose method.  The client 
-        ///   application should invoke this method when this instance is no longer needed.
+        ///   Should not be called. Use DisposeAsync() when possible.
         /// </summary>
         public void Dispose()
         {
@@ -86,8 +85,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         }
 
         /// <summary>
-        ///   This method is invoked when the IDisposable.Dispose or Finalize actions are 
-        ///   requested.
+        ///     Should not be called. Use DisposeAsync() when possible.
         /// </summary>
         protected virtual void Dispose(bool disposing)
         {
@@ -101,10 +99,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             StateCode = ContextStateCodes.STATE_ABORTING
                         });                    
                 }
-                else
-                {
-                    CallbackWorkingTask_CancellationTokenSource.Cancel();
-                }
+
+                CallbackWorkingTask_CancellationTokenSource.Cancel();
 
                 // Dispose of the lists.
                 foreach (ServerListRoot list in _listsManager)
@@ -120,16 +116,15 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             if (!IsConcludeCalled)
             {
-                AddCallbackMessage(
-                    new ContextStatusMessage
-                    {
-                        StateCode = ContextStateCodes.STATE_ABORTING
-                    });
+                var contextStatusMessage = new ContextStatusMessage
+                {
+                    StateCode = ContextStateCodes.STATE_ABORTING
+                };
+                AddCallbackMessage(contextStatusMessage);
+                await Task.WhenAny(contextStatusMessage.TaskCompletionSource.Task, Task.Delay(30000));
             }
-            else
-            {
-                CallbackWorkingTask_CancellationTokenSource.Cancel();
-            }         
+
+            CallbackWorkingTask_CancellationTokenSource.Cancel();
 
             // Dispose of the lists.
             foreach (ServerListRoot list in _listsManager)

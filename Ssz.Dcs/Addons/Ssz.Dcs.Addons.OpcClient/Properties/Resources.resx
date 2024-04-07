@@ -127,7 +127,7 @@
     <value>OPC AE Server ProgID</value>
   </data>
   <data name="OpcClientAddon_Desc" xml:space="preserve">
-    <value>Data access client</value>
+    <value>OPC Client</value>
   </data>
   <data name="OpcDa_Host_Option" xml:space="preserve">
     <value>OPC DA Server Host</value>
