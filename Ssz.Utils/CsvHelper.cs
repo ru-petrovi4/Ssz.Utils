@@ -140,7 +140,7 @@ namespace Ssz.Utils
 
                     line += l;
 
-                    if (line == @"")
+                    if (line == @"" || line.All(ch => Char.IsControl(ch)))
                     {
                         result.Add(new List<string?> { @"" });
                     }
@@ -256,7 +256,8 @@ namespace Ssz.Utils
 
                         line += l;
 
-                        if (line == "") continue;
+                        if (line == "" || line.All(ch => Char.IsControl(ch))) 
+                            continue;
 
                         List<string?> fields;
 

@@ -102,22 +102,27 @@ namespace Ssz.Utils
             string sUserValue = new Any(userValue).ValueAsString(false);
 
             if (_delegate is null)
-                if (!_delegates.TryGetValue(_expressionString, out _delegate))
+            {
+                lock (_delegates)
                 {
-                    PrepareLambdaExpression(logger, userFriendlyLogger);
-                    if (_lambdaExpression is not null)
-                        try
-                        {
-                            _delegate = _lambdaExpression.Compile();
-                        }
-                        catch (Exception ex)
-                        {
-                            logger?.LogDebug(ex, @"PrepareLambdaExpression error");
-                            userFriendlyLogger?.LogError(Properties.Resources.PrepareLambdaExpressionError + ": " + _expressionString);
-                        }
+                    if (!_delegates.TryGetValue(_expressionString, out _delegate))
+                    {
+                        PrepareLambdaExpression(logger, userFriendlyLogger);
+                        if (_lambdaExpression is not null)
+                            try
+                            {
+                                _delegate = _lambdaExpression.Compile();
+                            }
+                            catch (Exception ex)
+                            {
+                                logger?.LogDebug(ex, @"PrepareLambdaExpression error");
+                                userFriendlyLogger?.LogError(Properties.Resources.PrepareLambdaExpressionError + ": " + _expressionString);
+                            }
 
-                    _delegates.Add(_expressionString, _delegate);
+                        _delegates.Add(_expressionString, _delegate);
+                    }
                 }
+            }
 
             if (_delegate is not null)
             {
