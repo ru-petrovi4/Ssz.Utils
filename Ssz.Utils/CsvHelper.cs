@@ -218,13 +218,13 @@ namespace Ssz.Utils
         ///     includeFileNames: returns all include file names.
         ///     Result: List.Count >= 1, List[0] is not null
         /// </summary>
-        /// <param name="stream"></param>
+        /// <param name="csvStream"></param>
         /// <param name="includeFilesDirectory"></param>
         /// <param name="defines"></param>
         /// <param name="userFriendlyLogger"></param>
         /// <param name="includeFileNames"></param>
         /// <returns></returns>
-        public static CaseInsensitiveDictionary<List<string?>> LoadCsvFile(Stream stream, string? includeFilesDirectory, Dictionary<Regex, string>? defines = null,
+        public static CaseInsensitiveDictionary<List<string?>> LoadCsvFile(Stream csvStream, string? includeFilesDirectory, Dictionary<Regex, string>? defines = null,
             IUserFriendlyLogger? userFriendlyLogger = null, List<string>? includeFileNames = null)
         {
             var fileData = new CaseInsensitiveDictionary<List<string?>>();
@@ -234,7 +234,7 @@ namespace Ssz.Utils
                 if (defines is null) 
                     defines = new Dictionary<Regex, string>();                
 
-                using (var reader = CharsetDetectorHelper.GetStreamReader(stream, Encoding.UTF8))
+                using (var reader = CharsetDetectorHelper.GetStreamReader(csvStream, Encoding.UTF8))
                 {
                     string line = "";
                     string? l;

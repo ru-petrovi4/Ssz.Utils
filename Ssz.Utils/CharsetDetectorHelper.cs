@@ -12,13 +12,13 @@ namespace Ssz.Utils
         /// <summary>
         ///     Returns StreamReader with correct encoding.
         /// </summary>
-        /// <param name="csvFileFullName"></param>
+        /// <param name="textFileFullName"></param>
         /// <returns></returns>
-        public static StreamReader GetStreamReader(string csvFileFullName, Encoding defaultEncoding, ILogger? logger = null)
+        public static StreamReader GetStreamReader(string textFileFullName, Encoding defaultEncoding, ILogger? logger = null)
         {
-            int bytesCount = (int)(new FileInfo(csvFileFullName).Length);
+            int bytesCount = (int)(new FileInfo(textFileFullName).Length);
             byte[] bytes = new byte[bytesCount];
-            using (FileStream fileStream = File.Open(csvFileFullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (FileStream fileStream = File.Open(textFileFullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 fileStream.Read(bytes, 0, bytesCount);
             }
@@ -36,10 +36,10 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="csvFileFullName"></param>
         /// <returns></returns>
-        public static StreamReader GetStreamReader(Stream stream, Encoding defaultEncoding, ILogger? logger = null)
+        public static StreamReader GetStreamReader(Stream textStream, Encoding defaultEncoding, ILogger? logger = null)
         {
             MemoryStream memoryStream = new();
-            stream.CopyTo(memoryStream);
+            textStream.CopyTo(memoryStream);
             byte[] bytes = memoryStream.ToArray();
             var encoding = defaultEncoding;
             if (bytes.Length > 0)
