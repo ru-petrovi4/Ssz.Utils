@@ -61,32 +61,49 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
         [Attr]
         public string Status { get; set; } = @"";
 
+        public string Details { get; set; } = @"";
+
         public void SerializeOwnedData(SerializationWriter writer, object? context)
         {
-            writer.Write(StartDateTimeUtc);
-            writer.WriteNullable(FinishDateTimeUtc);
-            writer.Write(StartProcessModelTimeSeconds);
-            writer.Write(FinishProcessModelTimeSeconds);
-            writer.Write(ScenarioName);
-            writer.Write(InitialConditionName);
-            writer.Write(Penalty);
-            writer.Write(MaxPenalty);
-            writer.Write(ScenarioMaxProcessModelTimeSeconds);
-            writer.Write(Status);
+            using (writer.EnterBlock(1))
+            {
+                writer.Write(StartDateTimeUtc);
+                writer.WriteNullable(FinishDateTimeUtc);
+                writer.Write(StartProcessModelTimeSeconds);
+                writer.Write(FinishProcessModelTimeSeconds);
+                writer.Write(ScenarioName);
+                writer.Write(InitialConditionName);
+                writer.Write(Penalty);
+                writer.Write(MaxPenalty);
+                writer.Write(ScenarioMaxProcessModelTimeSeconds);
+                writer.Write(Status);
+                writer.Write(Details);
+            }            
         }
 
         public void DeserializeOwnedData(SerializationReader reader, object? context)
         {
-            StartDateTimeUtc = reader.ReadDateTime();            
-            FinishDateTimeUtc = reader.ReadNullable<DateTime>();            
-            StartProcessModelTimeSeconds = reader.ReadUInt64();
-            FinishProcessModelTimeSeconds = reader.ReadUInt64();
-            ScenarioName = reader.ReadString();
-            InitialConditionName = reader.ReadString();
-            Penalty = reader.ReadInt32();
-            MaxPenalty = reader.ReadInt32();
-            ScenarioMaxProcessModelTimeSeconds = reader.ReadUInt64();
-            Status = reader.ReadString();
+            using (Block block = reader.EnterBlock())
+            {
+                switch (block.Version)
+                {
+                    case 1:
+                        StartDateTimeUtc = reader.ReadDateTime();
+                        FinishDateTimeUtc = reader.ReadNullable<DateTime>();
+                        StartProcessModelTimeSeconds = reader.ReadUInt64();
+                        FinishProcessModelTimeSeconds = reader.ReadUInt64();
+                        ScenarioName = reader.ReadString();
+                        InitialConditionName = reader.ReadString();
+                        Penalty = reader.ReadInt32();
+                        MaxPenalty = reader.ReadInt32();
+                        ScenarioMaxProcessModelTimeSeconds = reader.ReadUInt64();
+                        Status = reader.ReadString();
+                        Details = reader.ReadString();
+                        break;
+                    default:
+                        throw new BlockUnsupportedVersionException();
+                }
+            }            
         }
 
         #endregion

@@ -41,8 +41,8 @@ ProgramDataDirectory: "C:\\CDT.CentralServer"
 DataAccessClientUserName: ""
 DataAccessClientPasswordHash: ""
 DbType: "sqlite"
-#ConnectionStrings:
-#  MainDbConnection: "Host=localhost;Username=postgres;Password=postgres;Database=deltasim1;CommandTimeout=3600"  
+ConnectionStrings:
+  MainDbConnection: "Host=localhost;Username=postgres;Password=postgres;Database=deltasim1;CommandTimeout=3600"  
 # путь до файла сертификата .pfx из которого используются закрытый и открытый ключи для шифрования и расшифровки секций конфигурационного файла, которые не должны храниться в открытом виде
 ConfigurationCrypterCertificateFileName: "appsettings.pfx"
 ConfigurationCrypter: 
