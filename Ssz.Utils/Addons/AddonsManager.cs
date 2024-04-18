@@ -806,6 +806,9 @@ namespace Ssz.Utils.Addons
         /// </summary>
         private AddonBase[]? _availableAddons;
 
+        /// <summary>
+        ///     Thread-safe Switched ON addons
+        /// </summary>
         private AddonBase[] _addonsThreadSafe = new AddonBase[0];
 
         private Func<string?, string?>? _substituteOptionFunc;
