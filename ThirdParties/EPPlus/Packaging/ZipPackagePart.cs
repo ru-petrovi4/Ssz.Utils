@@ -164,7 +164,7 @@ namespace OfficeOpenXml.Packaging
         public void Dispose()
         {
             _stream.Close();
-            _stream.Dispose();
+            _stream.Dispose();            
         }
     }
 }
