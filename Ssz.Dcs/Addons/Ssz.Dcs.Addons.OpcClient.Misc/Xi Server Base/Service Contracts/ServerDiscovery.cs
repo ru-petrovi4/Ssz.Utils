@@ -17,11 +17,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Extensions.Logging;
 using Ssz.Utils;
 using Xi.Common.Support;
 using Xi.Contracts;
 using Xi.Contracts.Data;
-using Ssz.Utils.Net4;
+
 
 namespace Xi.Server.Base
 {
@@ -74,7 +75,7 @@ namespace Xi.Server.Base
 			string serverCount = null;
 			if ((_ServerEntries != null) && (_ServerEntries.Count > -1))
 				serverCount = "Server Count = " + _ServerEntries.Count.ToString();
-            using (Logger.EnterMethod(serverCount))
+            //using (StaticLogger.Logger.EnterMethod(serverCount))
 			{
 				try
 				{
@@ -118,7 +119,7 @@ namespace Xi.Server.Base
 		/// </returns>
 		ServerEntry IServerDiscovery.DiscoverServerInfo()
 		{
-            using (Logger.EnterMethod())
+            //using (StaticLogger.Logger.EnterMethod())
 			{
 				if (null == _ThisServerEntry
 					|| null == _ThisServerEntry.ServerDescription
@@ -128,7 +129,7 @@ namespace Xi.Server.Base
 					|| (ServerState & ServerState.Aborting) != 0
 				   )
 				{
-					Logger.Info("DiscoverServerInfo() failed, ServerState=" + ServerState.ToString("G"));
+					StaticLogger.Logger.LogInformation("DiscoverServerInfo() failed, ServerState=" + ServerState.ToString("G"));
 					throw FaultHelpers.Create("Server is initializing");
 				}
 

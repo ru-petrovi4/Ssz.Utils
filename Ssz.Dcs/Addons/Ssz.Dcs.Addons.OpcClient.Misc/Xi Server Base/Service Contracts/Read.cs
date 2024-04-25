@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using Ssz.Utils;
-using Ssz.Utils.Net4;
+
 using Xi.Common.Support;
 using Xi.Contracts;
 using Xi.Contracts.Constants;
@@ -53,7 +53,7 @@ namespace Xi.Server.Base
 		/// </returns>
 		DataValueArraysWithAlias IRead.ReadData(string contextId, uint listId, List<uint> serverAliases)
 		{
-            using (Logger.EnterMethod(contextId, listId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId))
 			{
 				try
 				{
@@ -110,7 +110,7 @@ namespace Xi.Server.Base
 			FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp,
 			uint numValuesPerAlias, List<uint> serverAliases)
 		{
-            using (Logger.EnterMethod(contextId, listId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId))
 			{
                 try
 				{
@@ -163,7 +163,7 @@ namespace Xi.Server.Base
 		JournalDataValues[] IRead.ReadJournalDataNext(string contextId, uint listId,
 			uint numValuesPerAlias)
 		{
-            using (Logger.EnterMethod(contextId, listId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId))
 			{
 				try
 				{
@@ -209,7 +209,7 @@ namespace Xi.Server.Base
 		JournalDataValues[] IRead.ReadJournalDataAtSpecificTimes(string contextId, uint listId,
 									  List<DateTime> timestamps, List<uint> serverAliases)
 		{
-            using (Logger.EnterMethod(contextId, listId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId))
 			{
 				try
 				{
@@ -262,7 +262,7 @@ namespace Xi.Server.Base
 			FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp,
 			uint numValuesPerAlias, List<uint> serverAliases)
 		{
-            using (Logger.EnterMethod(contextId, listId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId))
 			{
 				try
 				{
@@ -316,7 +316,7 @@ namespace Xi.Server.Base
 		JournalDataChangedValues[] IRead.ReadJournalDataChangesNext(string contextId, uint listId,
 			uint numValuesPerAlias)
 		{
-            using (Logger.EnterMethod(contextId, listId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId))
 			{
 				try
 				{
@@ -337,7 +337,7 @@ namespace Xi.Server.Base
 			FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp, TimeSpan calculationPeriod,
 			List<AliasAndCalculation> serverAliasesAndCalculations)
 		{
-            using (Logger.EnterMethod(contextId, listId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId))
 			{
 				try
 				{
@@ -359,7 +359,7 @@ namespace Xi.Server.Base
 			FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp, uint serverAlias,
 			List<TypeId> propertiesToRead)
 		{
-            using (Logger.EnterMethod(contextId, listId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId))
 			{
 				try
 				{
@@ -397,7 +397,7 @@ namespace Xi.Server.Base
 		/// </returns>
 		EventMessage[] IRead.ReadEvents(string contextId, uint listId, FilterSet filterSet)
 		{
-            using (Logger.EnterMethod(contextId, listId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId))
 			{
 				try
 				{
@@ -454,7 +454,7 @@ namespace Xi.Server.Base
 		EventMessage[] IRead.ReadJournalEvents(string contextId, uint listId,
 			FilterCriterion firstTimeStamp, FilterCriterion secondTimeStamp, uint numEventMessages, FilterSet filterSet)
 		{
-            using (Logger.EnterMethod(contextId, listId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId))
 			{
 				try
 				{
@@ -499,7 +499,7 @@ namespace Xi.Server.Base
 		/// </returns>
 		EventMessage[] IRead.ReadJournalEventsNext(string contextId, uint listId, uint numEventMessages)
 		{
-            using (Logger.EnterMethod(contextId, listId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId))
 			{
 				try
 				{

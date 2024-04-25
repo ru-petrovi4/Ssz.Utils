@@ -398,27 +398,27 @@ namespace Xi.OPC.Wrapper.Impl
 			// If there is only one server type supported, then use the server type to determine which one to call.
 			// Otherwise, use the first element of the starting path (the wrapped server root) to determine which one to call
 			uint serverTypeOfThisBrowse = 0;
-			if (XiOPCWrapper.OpcWrappedServers.Count == 1)
+			if (XiOPCWrapperServer.OpcWrappedServers.Count == 1)
 			{
 				// TODO: Add code here for alternate wrapped server types
-				if ((XiOPCWrapper.ThisServerEntry.ServerDescription.ServerTypes & ServerType.OPC_DA205_Wrapper) > 0)
+				if ((XiOPCWrapperServer.ThisServerEntry.ServerDescription.ServerTypes & ServerType.OPC_DA205_Wrapper) > 0)
 					serverTypeOfThisBrowse = ServerType.OPC_DA205_Wrapper;
-				else if ((XiOPCWrapper.ThisServerEntry.ServerDescription.ServerTypes & ServerType.OPC_AE11_Wrapper) > 0)
+				else if ((XiOPCWrapperServer.ThisServerEntry.ServerDescription.ServerTypes & ServerType.OPC_AE11_Wrapper) > 0)
 					serverTypeOfThisBrowse = ServerType.OPC_AE11_Wrapper;
-				else if ((XiOPCWrapper.ThisServerEntry.ServerDescription.ServerTypes & ServerType.OPC_HDA12_Wrapper) > 0)
+				else if ((XiOPCWrapperServer.ThisServerEntry.ServerDescription.ServerTypes & ServerType.OPC_HDA12_Wrapper) > 0)
 					serverTypeOfThisBrowse = ServerType.OPC_HDA12_Wrapper;
 			}
 			else // (XiOPCWrapper.OpcWrappedServers.Count > 1)
 			{
 				if (rootPath)
 				{
-					if (findCriteria.StartingPath.Elements[1] == XiOPCWrapper.DA205_RootName)
+					if (findCriteria.StartingPath.Elements[1] == XiOPCWrapperServer.DA205_RootName)
 						serverTypeOfThisBrowse = ServerType.OPC_DA205_Wrapper;
 
-					else if (findCriteria.StartingPath.Elements[1] == XiOPCWrapper.AE_RootName)
+					else if (findCriteria.StartingPath.Elements[1] == XiOPCWrapperServer.AE_RootName)
 						serverTypeOfThisBrowse = ServerType.OPC_AE11_Wrapper;
 
-					else if (findCriteria.StartingPath.Elements[1] == XiOPCWrapper.HDA_RootName)
+					else if (findCriteria.StartingPath.Elements[1] == XiOPCWrapperServer.HDA_RootName)
 						serverTypeOfThisBrowse = ServerType.OPC_HDA12_Wrapper;
 
 					else
@@ -471,7 +471,7 @@ namespace Xi.OPC.Wrapper.Impl
 
 			if (isServerTypeAccessible == false)
 			{
-				OpcServerInfo server = XiOPCWrapper.OpcWrappedServers.Find(ws => (ws.ServerType & serverTypeOfThisBrowse) > 0);
+				OpcServerInfo server = XiOPCWrapperServer.OpcWrappedServers.Find(ws => (ws.ServerType & serverTypeOfThisBrowse) > 0);
 				if (server != null)
 					throw FaultHelpers.Create(XiFaultCodes.E_WRAPPEDSERVER_NOT_ACCESSIBLE,
 									"The " + server.ProgId + " wrapped server is not currently accessible.");

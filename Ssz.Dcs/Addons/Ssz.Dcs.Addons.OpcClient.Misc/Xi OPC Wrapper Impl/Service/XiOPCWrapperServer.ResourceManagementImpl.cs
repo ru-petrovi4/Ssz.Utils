@@ -27,7 +27,7 @@ using Xi.Server.Base;
 
 namespace Xi.OPC.Wrapper.Impl
 {
-	public partial class XiOPCWrapper : ServerBase<ContextImpl, ListRoot>
+	public partial class XiOPCWrapperServer : ServerBase<ContextImpl, ListRoot>
 	{
 		/// <summary>
 		/// The server implementation override used to support the 
@@ -67,7 +67,7 @@ namespace Xi.OPC.Wrapper.Impl
 			{
 				string msg = "The OPC .NET Server was unable to connect to the following OPC COM Servers: \n";
 				int count = 0;
-				foreach (var server in XiOPCWrapper.OpcWrappedServers)
+				foreach (var server in XiOPCWrapperServer.OpcWrappedServers)
 				{
 					switch (server.ServerType)
 					{

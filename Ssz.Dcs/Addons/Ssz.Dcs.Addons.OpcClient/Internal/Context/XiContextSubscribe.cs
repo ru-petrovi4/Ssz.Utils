@@ -60,12 +60,12 @@ namespace Ssz.Xi.Client.Internal.Context
 
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_xiServerInfo is null) throw new Exception("No Poll Endpoint.");
+            if (_xiServer is null) throw new Exception("No Poll Endpoint.");
 
             DataValueArraysWithAlias? readValueList = null;
             try
             {
-                readValueList = ((IPoll)_xiServerInfo.Server).PollDataChanges(ContextId, dataList.ServerListId);
+                readValueList = ((IPoll)_xiServer).PollDataChanges(ContextId, dataList.ServerListId);
             }
             catch (Exception ex)
             {
@@ -120,14 +120,14 @@ namespace Ssz.Xi.Client.Internal.Context
 
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_xiServerInfo is null) throw new Exception("No Poll Endpoint");            
+            if (_xiServer is null) throw new Exception("No Poll Endpoint");            
 
             EventMessage[]? eventMessages = null;
             if (eventList.ServerListId != 0)
             {
                 try
                 {
-                    eventMessages = ((IPoll)_xiServerInfo.Server).PollEventChanges(ContextId,
+                    eventMessages = ((IPoll)_xiServer).PollEventChanges(ContextId,
                         eventList.ServerListId,
                         filterSet);
                 }

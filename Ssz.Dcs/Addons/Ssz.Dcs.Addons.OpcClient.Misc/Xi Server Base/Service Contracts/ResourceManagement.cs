@@ -20,13 +20,15 @@ using System.Diagnostics;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
+using Microsoft.Extensions.Logging;
+
 //TODO: Enable the three using statements below to support Impersonation of the connected Xi user to the wrapped OPC COM servers
 //      Also note that the DefineList method in this file provides an example of how to implement impersonation
 //using System.Security.Principal;
 //using System.Security.Permissions;
 //using System.Runtime.InteropServices;
 using Ssz.Utils;
-using Ssz.Utils.Net4;
+
 using Xi.Common.Support;
 using Xi.Contracts;
 using Xi.Contracts.Constants;
@@ -102,14 +104,14 @@ namespace Xi.Server.Base
 			string applicationName, string workstationName, ref uint localeId, ref uint contextTimeout, 
 			ref uint contextOptions, out string reInitiateKey)
 		{
-            using (Logger.EnterMethod(applicationName, workstationName, localeId))
+            //using (StaticLogger.Logger.EnterMethod(applicationName, workstationName, localeId))
 			{
 				StringBuilder sb = new StringBuilder("Initiate From Application [");
 				sb.Append(applicationName);
 				sb.Append("] WorkStation [");
 				sb.Append(workstationName);
 				sb.Append("].");
-				Logger.Info(sb.ToString());
+				StaticLogger.Logger.LogInformation(sb.ToString());
 
 				if (ServerInitializing)
 				{
@@ -137,7 +139,7 @@ namespace Xi.Server.Base
 			            ref localeId1, ref contextTimeout, negotiatedContextOptions,
 			            null, out reInitiateKey);
 
-			        //Logger.Verbose("Context being created for {0}", tContext.Identity.Name);
+			        //StaticLogger.Logger.LogDebug("Context being created for {0}", tContext.Identity.Name);
 			        ContextManager<TContext, TList>.AddContext(tContext);
 
 			        // The StandardMib, VendorMib, and ServerDescription are initialized when the wrapper initiates its first context for a client.
@@ -231,9 +233,9 @@ namespace Xi.Server.Base
 		void IResourceManagement.Conclude(
 			string contextId)
 		{
-            using (Logger.EnterMethod(contextId))
+            //using (StaticLogger.Logger.EnterMethod(contextId))
 			{
-				Logger.Info("Conclude requested.");
+				StaticLogger.Logger.LogInformation("Conclude requested.");
 				try
 				{
 					TContext context = ContextManager<TContext, TList>.CloseContext(contextId);
@@ -270,7 +272,7 @@ namespace Xi.Server.Base
 		ServerDescription IResourceManagement.Identify(
 			string contextId)
 		{
-            using (Logger.EnterMethod())
+            //using (StaticLogger.Logger.EnterMethod())
 			{
 				ServerDescription serverDescription        = new ServerDescription();
 				serverDescription.ServerDiscoveryUrl       = _ThisServerEntry.ServerDescription.ServerDiscoveryUrl;
@@ -293,7 +295,7 @@ namespace Xi.Server.Base
 				}
 		        catch (Exception e)
 		        {
-		            Logger.Verbose(e);
+		            StaticLogger.Logger.LogDebug(e, @"Exception");
 					serverDescription.ServerDetails = null;
 				}
 				return serverDescription;
@@ -313,7 +315,7 @@ namespace Xi.Server.Base
 		List<ServerStatus> IResourceManagement.Status(
 			string contextId)
 		{
-            using (Logger.EnterMethod(contextId))
+            //using (StaticLogger.Logger.EnterMethod(contextId))
 			{
 				try
 				{
@@ -361,7 +363,7 @@ namespace Xi.Server.Base
 		List<RequestedString> IResourceManagement.LookupResultCodes(
 			string contextId, List<uint> resultCodes)
 		{
-            using (Logger.EnterMethod(contextId))
+            //using (StaticLogger.Logger.EnterMethod(contextId))
 			{
 				try
 				{
@@ -424,7 +426,7 @@ namespace Xi.Server.Base
 		List<ObjectAttributes> IResourceManagement.FindObjects(
 			string contextId, FindCriteria findCriteria, uint numberToReturn)
 		{
-            using (Logger.EnterMethod(contextId))
+            //using (StaticLogger.Logger.EnterMethod(contextId))
 			{
 				try
 				{
@@ -467,7 +469,7 @@ namespace Xi.Server.Base
 		List<ObjectPath> IResourceManagement.FindRootPaths(
 			string contextId, ObjectPath objectPath)
 		{
-            using (Logger.EnterMethod(contextId))
+            //using (StaticLogger.Logger.EnterMethod(contextId))
 			{
 				try
 				{
@@ -512,7 +514,7 @@ namespace Xi.Server.Base
 		List<TypeAttributes> IResourceManagement.FindTypes(
 			string contextId, FindCriteria findCriteria, uint numberToReturn)
 		{
-            using (Logger.EnterMethod(contextId))
+            //using (StaticLogger.Logger.EnterMethod(contextId))
 			{
 				try
 				{
@@ -588,7 +590,7 @@ namespace Xi.Server.Base
 			string contextId, uint clientId, uint listType,
 			uint updateRate, uint bufferingRate, FilterSet filterSet)
 		{
-            using (Logger.EnterMethod(contextId, clientId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, clientId))
 			{
 				try
 				{
@@ -635,7 +637,7 @@ namespace Xi.Server.Base
 		List<ListAttributes> IResourceManagement.GetListAttributes(
 			string contextId, List<uint> listIds)
 		{
-            using (Logger.EnterMethod(contextId))
+            //using (StaticLogger.Logger.EnterMethod(contextId))
 			{
 				try
 				{
@@ -679,7 +681,7 @@ namespace Xi.Server.Base
 		/// </returns>
 		List<AliasResult> IResourceManagement.RenewAliases(string contextId, uint listId, List<AliasUpdate> newAliases)
 		{
-            using (Logger.EnterMethod(contextId, listId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId))
 			{
 				try
 				{
@@ -712,7 +714,7 @@ namespace Xi.Server.Base
 		/// </returns>
 		List<AliasResult> IResourceManagement.DeleteLists(string contextId, List<uint> listIds)
 		{
-            using (Logger.EnterMethod(contextId))
+            //using (StaticLogger.Logger.EnterMethod(contextId))
 			{
 				try
 				{
@@ -755,7 +757,7 @@ namespace Xi.Server.Base
 		List<AddDataObjectResult> IResourceManagement.AddDataObjectsToList(
 			string contextId, uint listId, List<ListInstanceId> dataObjectsToAdd)
 		{
-            using (Logger.EnterMethod(contextId, listId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId))
 			{
 				try
 				{
@@ -804,7 +806,7 @@ namespace Xi.Server.Base
 		List<AliasResult> IResourceManagement.RemoveDataObjectsFromList(
 			string contextId, uint listId, List<uint> serverAliasesToDelete)
 		{
-            using (Logger.EnterMethod(contextId, listId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId))
 			{
 				try
 				{
@@ -856,7 +858,7 @@ namespace Xi.Server.Base
 		ModifyListAttrsResult IResourceManagement.ModifyListAttributes(
 			string contextId, uint listId, Nullable<uint> updateRate, Nullable<uint> bufferingRate, FilterSet filterSet)
 		{
-            using (Logger.EnterMethod(contextId, listId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId))
 			{
 				try
 				{
@@ -891,7 +893,7 @@ namespace Xi.Server.Base
 		/// </param>
 		ListAttributes IResourceManagement.EnableListUpdating(string contextId, uint listId, bool enableUpdating)
 		{
-            using (Logger.EnterMethod(contextId, listId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId))
 			{
 				try
 				{
@@ -950,7 +952,7 @@ namespace Xi.Server.Base
 		List<AliasResult> IResourceManagement.EnableListElementUpdating(
 			string contextId, uint listId, bool enableUpdating, List<uint> serverAliases)
 		{
-            using (Logger.EnterMethod(contextId, listId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId))
 			{
 				try
 				{
@@ -993,7 +995,7 @@ namespace Xi.Server.Base
 		/// </returns>
 		List<TypeIdResult> IResourceManagement.AddEventMessageFields(string contextId, uint listId, uint categoryId, List<TypeId> fieldObjectTypeIds)
 		{
-            using (Logger.EnterMethod(contextId))
+            //using (StaticLogger.Logger.EnterMethod(contextId))
 			{
 				try
 				{
@@ -1047,7 +1049,7 @@ namespace Xi.Server.Base
 		/// </returns>
 		List<AliasResult> IResourceManagement.TouchDataObjects(string contextId, uint listId, List<uint> serverAliases)
 		{
-            using (Logger.EnterMethod(contextId, listId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId))
 			{
 				try
 				{
@@ -1075,7 +1077,7 @@ namespace Xi.Server.Base
 		/// <returns></returns>
 		uint IResourceManagement.TouchList(string contextId, uint listId)
 		{
-            using (Logger.EnterMethod(contextId, listId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId))
 			{
 				try
 				{
@@ -1115,7 +1117,7 @@ namespace Xi.Server.Base
 		List<AlarmSummary> IResourceManagement.GetAlarmSummary(
 			string contextId, InstanceId eventSourceId)
 		{
-            using (Logger.EnterMethod(contextId))
+            //using (StaticLogger.Logger.EnterMethod(contextId))
 			{
 				try
 				{
@@ -1156,7 +1158,7 @@ namespace Xi.Server.Base
 		/// the Xi.Contracts.Constants.XiFaultCodes class. There is one result code for each eventContainerId.</returns>
 		List<UInt32> IResourceManagement.EnableAlarms(string contextId, bool enableFlag, bool areaFlag, List<InstanceId> eventContainerIds)
 		{
-            using (Logger.EnterMethod(contextId))
+            //using (StaticLogger.Logger.EnterMethod(contextId))
 			{
 				try
 				{
@@ -1188,7 +1190,7 @@ namespace Xi.Server.Base
 		/// </returns>
 		List<AlarmEnabledState> IResourceManagement.GetAlarmsEnabledState(string contextId, bool areaFlag, List<InstanceId> eventContainerIds)
 		{
-            using (Logger.EnterMethod(contextId))
+            //using (StaticLogger.Logger.EnterMethod(contextId))
 			{
 				try
 				{

@@ -48,13 +48,13 @@ namespace Xi.OPC.Wrapper.Impl
 			{
 				// Add the base server status (the .NET server, not the wrapped servers)
 				ServerStatus serverStatus = new ServerStatus();
-				serverStatus.ServerType = XiOPCWrapper.BaseXiServerType;
-				serverStatus.ServerState = XiOPCWrapper.ServerState;
-				serverStatus.ServerName = XiOPCWrapper.ServerDescription.ServerName;
+				serverStatus.ServerType = XiOPCWrapperServer.BaseXiServerType;
+				serverStatus.ServerState = XiOPCWrapperServer.ServerState;
+				serverStatus.ServerName = XiOPCWrapperServer.ServerDescription.ServerName;
 				serverStatus.CurrentTime = DateTime.UtcNow;
 				serverStatusList.Add(serverStatus);
 
-				foreach (OpcServerInfo wrappedServer in XiOPCWrapper.OpcWrappedServers)
+				foreach (OpcServerInfo wrappedServer in XiOPCWrapperServer.OpcWrappedServers)
 				{
 					serverStatus = new ServerStatus();
 					serverStatus.ServerType = wrappedServer.ServerType;
@@ -289,7 +289,7 @@ namespace Xi.OPC.Wrapper.Impl
 				{
 					RequestedString requestedString = new RequestedString();
 					requestedString.ResultCode = XiFaultCodes.OPC_E_NOTFOUND;
-					foreach (var wrappedServer in XiOPCWrapper.OpcWrappedServers)
+					foreach (var wrappedServer in XiOPCWrapperServer.OpcWrappedServers)
 					{
 						cliHRESULT HR = new cliHRESULT();
 						switch (wrappedServer.ServerType)
@@ -382,14 +382,14 @@ namespace Xi.OPC.Wrapper.Impl
 					// => each will have its own root below the top-level root, so  
 					// Return the wrapped server roots.
 					if ((IsStartingPathTheRoot(findCriteria.StartingPath))
-						&& (XiOPCWrapper.OpcWrappedServers.Count > 1)
+						&& (XiOPCWrapperServer.OpcWrappedServers.Count > 1)
 					   )
 					{
 						OpcBrowser = new OpcBrowser();
 						OpcBrowser.CurrentBrowseContext.ListOfObjectAttributes = new List<ObjectAttributes>();
-						foreach (var root in XiOPCWrapper.WrappedServerRoots)
+						foreach (var root in XiOPCWrapperServer.WrappedServerRoots)
 						{
-							if (root.Name == XiOPCWrapper.DA205_RootName)
+							if (root.Name == XiOPCWrapperServer.DA205_RootName)
 							{
 								if (IsAccessibleDataAccess)
 									root.ObjectFlags &= ~(uint)ObjectAttributeFlags.NotAccessible;
@@ -397,7 +397,7 @@ namespace Xi.OPC.Wrapper.Impl
 									root.ObjectFlags |= (uint)ObjectAttributeFlags.NotAccessible;
 								OpcBrowser.CurrentBrowseContext.ListOfObjectAttributes.Add(root);
 							}
-							else if (root.Name == XiOPCWrapper.AE_RootName)
+							else if (root.Name == XiOPCWrapperServer.AE_RootName)
 							{
 								if (IsAccessibleAlarmsAndEvents)
 									root.ObjectFlags &= ~(uint)ObjectAttributeFlags.NotAccessible;
@@ -405,7 +405,7 @@ namespace Xi.OPC.Wrapper.Impl
 									root.ObjectFlags |= (uint)ObjectAttributeFlags.NotAccessible;
 								OpcBrowser.CurrentBrowseContext.ListOfObjectAttributes.Add(root);
 							}
-							else if (root.Name == XiOPCWrapper.HDA_RootName)
+							else if (root.Name == XiOPCWrapperServer.HDA_RootName)
 							{
 								if (IsAccessibleJournalDataAccess)
 									root.ObjectFlags &= ~(uint)ObjectAttributeFlags.NotAccessible;

@@ -34,10 +34,12 @@ namespace Xi.OPC.Wrapper.Impl
 {
 	////[ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, InstanceContextMode = InstanceContextMode.PerCall)]
 	//[ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant, InstanceContextMode = InstanceContextMode.PerCall)]
-	public partial class XiOPCWrapper : ServerBase<ContextImpl, ListRoot>
+	public partial class XiOPCWrapperServer : ServerBase<ContextImpl, ListRoot>
 	{
         public static void Initialize(CaseInsensitiveDictionary<string> contextParams)
         {
+			Initialize();
+
             // Check the App.Config file for the server type.
             // By changing the App.Config file it is possible to connect 
             // to different OPC COM Servers.  The servers supported by this 
@@ -167,7 +169,7 @@ namespace Xi.OPC.Wrapper.Impl
 		/// The static XiOPCWrapper Constructor reads the App.Config file to
 		/// determine the types of OPC Servers being wrapped.
 		/// </summary>
-		static XiOPCWrapper()
+		static XiOPCWrapperServer()
 		{
 			// It is necessary to initialize COM early to make sure it is ready 
 			// prior to the first CoCreateInstance.
@@ -587,7 +589,7 @@ namespace Xi.OPC.Wrapper.Impl
 									ParameterDefinition field = new ParameterDefinition();
 									field.ObjectTypeId = new TypeId(
 												XiSchemaType.OPC,
-												XiOPCWrapper._ThisServerEntry.ServerDescription.VendorNamespace,
+												XiOPCWrapperServer._ThisServerEntry.ServerDescription.VendorNamespace,
 												opcAttr.dwAttrID.ToString());
 									field.Name = opcAttr.sAttrDesc;
 									field.DataTypeId = CreateTypeId(opcAttr.vtAttrType);
@@ -643,7 +645,7 @@ namespace Xi.OPC.Wrapper.Impl
 												alarmDesc.MultiplexedAlarmContainer = new TypeId()
 												{
 													SchemaType = XiSchemaType.OPC,
-													Namespace = XiOPCWrapper.ServerDescription.VendorNamespace,
+													Namespace = XiOPCWrapperServer.ServerDescription.VendorNamespace,
 													LocalId = condName
 												};
 											}
@@ -652,7 +654,7 @@ namespace Xi.OPC.Wrapper.Impl
 												alarmDesc.AlarmConditionNames.Add(new TypeId()
 												{
 													SchemaType = XiSchemaType.OPC,
-													Namespace = XiOPCWrapper.ServerDescription.VendorNamespace,
+													Namespace = XiOPCWrapperServer.ServerDescription.VendorNamespace,
 													LocalId = subCondName
 												});
 											}
@@ -665,7 +667,7 @@ namespace Xi.OPC.Wrapper.Impl
 											alarmDesc.AlarmConditionNames.Add(new TypeId()
 											{
 												SchemaType = XiSchemaType.OPC,
-												Namespace = XiOPCWrapper.ServerDescription.VendorName,
+												Namespace = XiOPCWrapperServer.ServerDescription.VendorName,
 												LocalId = condName
 											});
 										}
@@ -749,7 +751,7 @@ namespace Xi.OPC.Wrapper.Impl
 					property.ObjectTypeId = (opcItemAttr.dwAttrID < 0x80000000)
 										  ? new TypeId(XiSchemaType.OPC, XiNamespace.OPCHDA, opcItemAttr.dwAttrID.ToString())
 										  : new TypeId(XiSchemaType.OPC,
-											  XiOPCWrapper._ThisServerEntry.ServerDescription.VendorNamespace, opcItemAttr.dwAttrID.ToString());
+											  XiOPCWrapperServer._ThisServerEntry.ServerDescription.VendorNamespace, opcItemAttr.dwAttrID.ToString());
 					property.Name         = opcItemAttr.sAttrName;
 					property.Description  = opcItemAttr.sAttrDesc;
 					property.DataTypeId   = CreateTypeId(opcItemAttr.vtAttrDataType);

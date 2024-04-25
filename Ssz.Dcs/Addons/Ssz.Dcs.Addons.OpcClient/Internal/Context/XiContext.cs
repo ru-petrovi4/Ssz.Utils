@@ -68,8 +68,10 @@ namespace Ssz.Xi.Client.Internal.Context
 
             try
             {
-                _xiServerInfo = new XiServiceMain(XiServiceMain.MainProgramType.ServiceModeDataServer);
-                _xiServerInfo.OnStartDataServer(_contextParams);
+                XiOPCWrapperServer.Initialize(contextParams);
+
+                _xiServer = new XiOPCWrapperServer();
+                
                 _serverKeepAliveSkipCount = keepAliveSkipCount;
                 _serverCallbackRate = callbackRate;
 
@@ -95,13 +97,13 @@ namespace Ssz.Xi.Client.Internal.Context
                 
                 //if (localeId != 0)
                 //{
-                //    if (_xiServerInfo.ServerEntry.ServerDescription?.SupportedLocaleIds is not null &&
-                //        _xiServerInfo.ServerEntry.ServerDescription.SupportedLocaleIds.Count > 0)
+                //    if (_xiServerEntry.ServerDescription?.SupportedLocaleIds is not null &&
+                //        _xiServerEntry.ServerDescription.SupportedLocaleIds.Count > 0)
                 //    {
                 //        _localeId = 0;
 
                 //        foreach (
-                //            uint supportedLocaleId in _xiServerInfo.ServerEntry.ServerDescription.SupportedLocaleIds)
+                //            uint supportedLocaleId in _xiServerEntry.ServerDescription.SupportedLocaleIds)
                 //        {
                 //            if (localeId == supportedLocaleId)
                 //            {
@@ -111,7 +113,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 //        }
 
                 //        if (_localeId == 0)
-                //            _localeId = _xiServerInfo.ServerEntry.ServerDescription.SupportedLocaleIds[0];
+                //            _localeId = _xiServerEntry.ServerDescription.SupportedLocaleIds[0];
                 //    }
                 //    else
                 //    {
@@ -120,11 +122,11 @@ namespace Ssz.Xi.Client.Internal.Context
                 //}
                 _localeId = localeId;       
 
-                _iResourceManagement = _xiServerInfo.Server as IResourceManagement;
+                _iResourceManagement = _xiServer as IResourceManagement;
                 if (_iResourceManagement is null)
                     throw new Exception("Failed to create the IResourceManagement WCF Channel");
 
-                _callbackEndpoint = new XiCallbackEndpoint(_xiServerInfo.Server as IRegisterForCallback,                    
+                _callbackEndpoint = new XiCallbackEndpoint(_xiServer as IRegisterForCallback,                    
                     _xiCallbackDoer);
 
                 try
@@ -151,13 +153,13 @@ namespace Ssz.Xi.Client.Internal.Context
                 }
             }            
             catch
-            {
-                _contextId = null;
-                if (_xiServerInfo is not null)
+            {                
+                if (_xiServer is not null)
                 {
-                    _xiServerInfo.OnStopDataServer();
-                    _xiServerInfo = null;
+                    ((IResourceManagement)_xiServer).Conclude(_contextId ?? @"");
+                    _xiServer = null;
                 }
+                _contextId = null;
                 throw;
             }
         }        
@@ -227,12 +229,7 @@ namespace Ssz.Xi.Client.Internal.Context
                     lock (StaticActiveContextsSyncRoot)
                     {
                         StaticActiveContexts.Remove(ContextId);
-                    }
-
-                if (_xiServerInfo is not null)
-                {
-                    _xiServerInfo.OnStopDataServer();                    
-                }
+                    }                
             }
 
             _iResourceManagement = null;            
@@ -761,7 +758,7 @@ namespace Ssz.Xi.Client.Internal.Context
         ///     them into the preferred order of use. For example, if the client and server are on the
         ///     same machine, the netPipe endpoints will sort to the top.
         /// </summary>
-        private XiServiceMain? _xiServerInfo;
+        private XiOPCWrapperServer? _xiServer;
 
         /// <summary>
         ///     This property contains the client-requested keepAliveSkipCount for the subscription.

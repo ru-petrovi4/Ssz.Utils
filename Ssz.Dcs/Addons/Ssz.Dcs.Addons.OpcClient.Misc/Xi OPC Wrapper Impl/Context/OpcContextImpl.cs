@@ -155,7 +155,7 @@ namespace Xi.OPC.Wrapper.Impl
 			if (   ((uint)hr.hResult == 0x800706ba) // "The RPC server is unavailable"
 				|| ((uint)hr.hResult == 0x800706bf)) // The remote procedure called failed and did not execute
 			{
-				OpcServerInfo server = XiOPCWrapper.OpcWrappedServers.Find(ws => string.Compare(ws.ProgId, progId) == 0);
+				OpcServerInfo server = XiOPCWrapperServer.OpcWrappedServers.Find(ws => string.Compare(ws.ProgId, progId) == 0);
 				switch (server.ServerType)
 				{
 					case ServerType.OPC_DA205_Wrapper:
@@ -216,7 +216,7 @@ namespace Xi.OPC.Wrapper.Impl
 			uint aeConnectRC = 0;
 			uint aeShutdownRC = 0;
 
-			foreach (var server in XiOPCWrapper.OpcWrappedServers)
+			foreach (var server in XiOPCWrapperServer.OpcWrappedServers)
 			{
 				switch (server.ServerType)
 				{

@@ -23,7 +23,8 @@ using Xi.Common.Support;
 using Xi.Contracts;
 using Xi.Contracts.Constants;
 using Xi.Contracts.Data;
-using Ssz.Utils.Net4;
+using Microsoft.Extensions.Logging;
+
 
 namespace Xi.Server.Base
 {
@@ -78,7 +79,7 @@ namespace Xi.Server.Base
 			}
 			catch(Exception e)
 			{
-			    Logger.Verbose(e);
+			    StaticLogger.Logger.LogDebug(e, @"Exception");
 			}
 		}
 
@@ -107,7 +108,7 @@ namespace Xi.Server.Base
 		    }		    
 		    catch (Exception ex)
 		    {
-		        Logger.Verbose(ex);
+		        StaticLogger.Logger.LogDebug(ex, @"Exception");
 		        exMsg1 = ex.Message;
 		    }
 		}
@@ -138,7 +139,7 @@ namespace Xi.Server.Base
 			}            
             catch (Exception ex)
 			{
-                Logger.Verbose(ex);
+                StaticLogger.Logger.LogDebug(ex, @"Exception");
                 exMsg2 = ex.Message;
 
 			    _iCallback = null;

@@ -68,7 +68,7 @@ namespace Xi.OPC.Wrapper.Impl
 			}
 			catch //(Exception e)
 			{
-			    //Logger.Verbose(e);
+			    //StaticLogger.Logger.LogDebug(e);
 			    // for debugging purposes
 			}
 		}
@@ -114,7 +114,7 @@ namespace Xi.OPC.Wrapper.Impl
 			}
 			catch //(Exception e)
 			{
-			    //Logger.Verbose(e);
+			    //StaticLogger.Logger.LogDebug(e);
 			}
 		}
 

@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using Ssz.Utils;
-using Ssz.Utils.Net4;
+
 using Xi.Common.Support;
 using Xi.Contracts;
 using Xi.Contracts.Constants;
@@ -59,7 +59,7 @@ namespace Xi.Server.Base
 		/// </returns>
 		DataValueArraysWithAlias IPoll.PollDataChanges(string contextId, uint listId)
 		{
-            using (Logger.EnterMethod(contextId, listId))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId))
 			{
 				try
 				{
@@ -107,7 +107,7 @@ namespace Xi.Server.Base
 		/// </returns>
 		EventMessage[] IPoll.PollEventChanges(string contextId, uint listId, FilterSet filterSet)
 		{
-            using (Logger.EnterMethod(contextId))
+            //using (StaticLogger.Logger.EnterMethod(contextId))
 			{
 				try
 				{
@@ -138,7 +138,7 @@ namespace Xi.Server.Base
 		/// </returns>
 		List<PassthroughResult> IPoll.PollPassthroughResponses(string contextId)
 		{
-            using (Logger.EnterMethod(contextId))
+            //using (StaticLogger.Logger.EnterMethod(contextId))
 			{
 				try
 				{

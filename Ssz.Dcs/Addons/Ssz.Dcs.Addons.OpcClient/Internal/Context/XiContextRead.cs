@@ -40,12 +40,12 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_xiServerInfo is null) throw new Exception("No Read Endpoint");
+            if (_xiServer is null) throw new Exception("No Read Endpoint");
 
             DataValueArraysWithAlias? readValueList = null;
             try
             {
-                readValueList = ((IRead)_xiServerInfo.Server).ReadData(ContextId, serverListId,
+                readValueList = ((IRead)_xiServer).ReadData(ContextId, serverListId,
                     serverAliases);
             }
             catch (Exception ex)
@@ -87,13 +87,13 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_xiServerInfo is null) throw new Exception("No Read Endpoint");
+            if (_xiServer is null) throw new Exception("No Read Endpoint");
             
 
             JournalDataValues[]? listJDRV = null;
             try
             {
-                listJDRV = ((IRead)_xiServerInfo.Server).ReadJournalDataForTimeInterval(ContextId,
+                listJDRV = ((IRead)_xiServer).ReadJournalDataForTimeInterval(ContextId,
                     serverListId,
                     firstTimestamp,
                     secondTimestamp,
@@ -130,12 +130,12 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_xiServerInfo is null) throw new Exception("No Read Endpoint");
+            if (_xiServer is null) throw new Exception("No Read Endpoint");
 
             JournalDataValues[]? listJDRV = null;
             try
             {
-                listJDRV = ((IRead)_xiServerInfo.Server).ReadJournalDataAtSpecificTimes(ContextId,
+                listJDRV = ((IRead)_xiServer).ReadJournalDataAtSpecificTimes(ContextId,
                     serverListId,
                     timestamps,
                     serverAliases);
@@ -179,12 +179,12 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_xiServerInfo is null) throw new Exception("No Read Endpoint");
+            if (_xiServer is null) throw new Exception("No Read Endpoint");
 
             JournalDataChangedValues[]? listJDCV = null;
             try
             {
-                listJDCV = ((IRead)_xiServerInfo.Server).ReadJournalDataChanges(ContextId, serverListId,
+                listJDCV = ((IRead)_xiServer).ReadJournalDataChanges(ContextId, serverListId,
                     firstTimestamp,
                     secondTimestamp,
                     numValuesPerAlias,
@@ -237,14 +237,14 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_xiServerInfo is null) throw new Exception("No Read Endpoint");
+            if (_xiServer is null) throw new Exception("No Read Endpoint");
 
             JournalDataValues[]? listJDRV = null;
             if ( serverListId != 0)
             {
                 try
                 {
-                    listJDRV = ((IRead)_xiServerInfo.Server).ReadCalculatedJournalData(ContextId,
+                    listJDRV = ((IRead)_xiServer).ReadCalculatedJournalData(ContextId,
                         serverListId,
                         firstTimestamp,
                         secondTimestamp,
@@ -286,12 +286,12 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
 
-            if (_xiServerInfo is null) throw new Exception("No Read Endpoint");
+            if (_xiServer is null) throw new Exception("No Read Endpoint");
 
             JournalDataPropertyValue[]? JDPVarray = null;
             try
             {
-                JDPVarray = ((IRead)_xiServerInfo.Server).ReadJournalDataProperties(ContextId,
+                JDPVarray = ((IRead)_xiServer).ReadJournalDataProperties(ContextId,
                     serverListId,
                     firstTimestamp,
                     secondTimestamp,

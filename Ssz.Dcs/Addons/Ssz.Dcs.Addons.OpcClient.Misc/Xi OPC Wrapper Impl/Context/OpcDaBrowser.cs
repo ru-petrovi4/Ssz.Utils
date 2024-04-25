@@ -793,7 +793,7 @@ namespace Xi.OPC.Wrapper.Impl
 								if (prop.PropertyID < 5000)
 									nameSpace = XiNamespace.OPCDA205;
 								else
-									nameSpace = XiOPCWrapper.ServerDescription.VendorNamespace;
+									nameSpace = XiOPCWrapperServer.ServerDescription.VendorNamespace;
 
 								oa.ObjectTypeId = new TypeId(XiSchemaType.OPC, nameSpace, prop.PropertyID.ToString());
 

@@ -113,7 +113,7 @@ namespace Xi.OPC.Wrapper.Impl
 								AlarmCondition cond = new AlarmCondition();
 								cond.TypeId = new TypeId();
 								cond.TypeId.SchemaType = XiSchemaType.OPC;
-								cond.TypeId.Namespace = XiOPCWrapper.ServerDescription.VendorName;
+								cond.TypeId.Namespace = XiOPCWrapperServer.ServerDescription.VendorName;
 								cond.TypeId.LocalId = conditionState.sSCNames.ElementAt(i);
 								cond.Priority = conditionState.dwSCSeverities.ElementAt(i);
 								cond.TextMessage = conditionState.sSCDescriptions.ElementAt(i);

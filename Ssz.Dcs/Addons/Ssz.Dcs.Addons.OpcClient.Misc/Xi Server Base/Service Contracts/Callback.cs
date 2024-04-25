@@ -17,7 +17,7 @@
 using System;
 using System.ServiceModel;
 using Ssz.Utils;
-using Ssz.Utils.Net4;
+
 using Xi.Common.Support;
 using Xi.Contracts;
 using Xi.Contracts.Constants;
@@ -36,7 +36,7 @@ namespace Xi.Server.Base
 		SetCallbackResult IRegisterForCallback.SetCallback(string contextId,
 			uint keepAliveSkipCount, TimeSpan callbackRate, ICallback iCallBack)
 		{
-			using (Logger.EnterMethod(contextId))
+			//using (StaticLogger.Logger.EnterMethod(contextId))
 			{
 				try
 				{

@@ -24,7 +24,7 @@ using Ssz.Utils;
 using Xi.Contracts.Data;
 using Xi.Contracts.Constants;
 using Xi.Common.Support;
-using Ssz.Utils.Net4;
+
 
 namespace Xi.Server.Base
 {
@@ -43,36 +43,36 @@ namespace Xi.Server.Base
 		public static bool IsServerShutdown = false;
 		public static string ShutdownReason = null;
 
-        public static void OnStart()
-        {
-            IsServerShutdown = false;            
-        }
+  //      public static void OnStart()
+  //      {
+  //          IsServerShutdown = false;            
+  //      }
 
-        /// <summary>
-        /// This method is called by the server when it is being shutdown.
-        /// </summary>
-        /// <param name="reason">The reason for shutting down.</param>
-        public static void OnShutdown(ServerStatus serverStatus, string reason)
-		{			
-			IsServerShutdown = true;
-			ShutdownReason = reason;
-			TContext[] activeContexts;
-            lock (_activeContexts)
-			{
-                activeContexts = _activeContexts.Values.ToArray();
-            }
-            foreach (var ctx in activeContexts)
-            {
-                if (ctx.CallbackEndpointOpen)
-                {
-                    ctx.OnAbort(serverStatus, reason);
-                }
-                if (ctx.Concluded == false)
-                {
-                    ctx.OnConclude();
-                }
-            }
-        }
+  //      /// <summary>
+  //      /// This method is called by the server when it is being shutdown.
+  //      /// </summary>
+  //      /// <param name="reason">The reason for shutting down.</param>
+  //      public static void OnShutdown(ServerStatus serverStatus, string reason)
+		//{			
+		//	IsServerShutdown = true;
+		//	ShutdownReason = reason;
+		//	TContext[] activeContexts;
+  //          lock (_activeContexts)
+		//	{
+  //              activeContexts = _activeContexts.Values.ToArray();
+  //          }
+  //          foreach (var ctx in activeContexts)
+  //          {
+  //              if (ctx.CallbackEndpointOpen)
+  //              {
+  //                  ctx.OnAbort(serverStatus, reason);
+  //              }
+  //              if (ctx.Concluded == false)
+  //              {
+  //                  ctx.OnConclude();
+  //              }
+  //          }
+  //      }
 
 		private static readonly Dictionary<string, TContext> _activeContexts = new Dictionary<string, TContext>();
 

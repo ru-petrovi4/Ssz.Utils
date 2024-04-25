@@ -32,11 +32,11 @@ namespace Xi.OPC.Wrapper.Impl
 	/// </summary>
 	public partial class ContextImpl : ContextBase<ListRoot>
 	{
-		internal ContextImpl(XiOPCWrapper server)
+		internal ContextImpl(XiOPCWrapperServer server)
 		{
 		}
 
-		internal ContextImpl(XiOPCWrapper server, string transportSessionId, string applicationName,
+		internal ContextImpl(XiOPCWrapperServer server, string transportSessionId, string applicationName,
             string encriptedWorkstationName, ref uint localeId, ref uint contextTimeout, uint contextOptions,
 			System.Security.Principal.IIdentity userIdentity)
 		{

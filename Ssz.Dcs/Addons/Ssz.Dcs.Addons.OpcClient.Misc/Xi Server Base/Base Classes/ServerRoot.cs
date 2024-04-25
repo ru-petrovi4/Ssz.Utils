@@ -30,7 +30,7 @@ using Xi.Contracts.Data;
 using Xi.Contracts.Constants;
 using Xi.Common.Support;
 using Xi.Common.Support.Extensions;
-using Ssz.Utils.Net4;
+
 
 namespace Xi.Server.Base
 {
@@ -79,11 +79,7 @@ namespace Xi.Server.Base
 		{
 			get { return _ServerState; }
 			protected set { _ServerState = value; }
-		}
-
-		static ServerRoot()
-		{
-		}		
+		}			
 
 		/// <summary>
 		/// This is used to create the service host object

@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using Ssz.Utils;
-using Ssz.Utils.Net4;
+
 using Xi.Common.Support;
 using Xi.Contracts;
 using Xi.Contracts.Constants;
@@ -54,7 +54,7 @@ namespace Xi.Server.Base
 		List<AliasResult> IWrite.WriteValues(string contextId, uint listId,
 									 WriteValueArrays writeValueArrays)
 		{
-            using (Logger.EnterMethod(contextId, listId, writeValueArrays))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId, writeValueArrays))
 			{
 				try
 				{
@@ -74,7 +74,7 @@ namespace Xi.Server.Base
 		List<AliasResult> IWrite.WriteVST(string contextId, uint listId,
 							 DataValueArraysWithAlias writeValueArrays)
 		{
-            using (Logger.EnterMethod(contextId, listId, writeValueArrays))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId, writeValueArrays))
 			{
 				try
 				{
@@ -117,7 +117,7 @@ namespace Xi.Server.Base
 		List<DataJournalWriteResult> IWrite.WriteJournalData(string contextId, uint listId,
 			ModificationType modificationType, WriteJournalValues[] valuesToWrite)
 		{
-            using (Logger.EnterMethod(contextId, listId, modificationType, valuesToWrite))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId, modificationType, valuesToWrite))
 			{
 				try
 				{
@@ -160,7 +160,7 @@ namespace Xi.Server.Base
 		List<EventIdResult> IWrite.WriteJournalEvents(string contextId, uint listId,
 			ModificationType modificationType, EventMessage[] eventsToWrite)
 		{
-            using (Logger.EnterMethod(contextId, listId, modificationType, eventsToWrite))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId, modificationType, eventsToWrite))
 			{
 				try
 				{
@@ -206,7 +206,7 @@ namespace Xi.Server.Base
 		List<EventIdResult> IWrite.AcknowledgeAlarms(string contextId, uint listId,
 			string operatorName, string comment, List<EventId> alarmsToAck)
 		{
-            using (Logger.EnterMethod(contextId, listId, operatorName, comment, alarmsToAck))
+            //using (StaticLogger.Logger.EnterMethod(contextId, listId, operatorName, comment, alarmsToAck))
 			{
 				try
 				{
@@ -256,7 +256,7 @@ namespace Xi.Server.Base
 		PassthroughResult IWrite.Passthrough(string contextId, string recipientId, int invokeId,
 									  string passthroughName, ReadOnlyMemory<byte> dataToSend)
 		{
-            using (Logger.EnterMethod(contextId, recipientId, passthroughName))
+            //using (StaticLogger.Logger.EnterMethod(contextId, recipientId, passthroughName))
 			{
 				try
 				{
