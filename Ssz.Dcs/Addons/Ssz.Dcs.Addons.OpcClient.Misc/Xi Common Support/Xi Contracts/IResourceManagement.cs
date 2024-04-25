@@ -89,7 +89,7 @@ namespace Xi.Contracts
 		/// </returns>
 		//[OperationContract, FaultContract(typeof(XiFault))]
 		string Initiate(string applicationName, string workstationName, 
-			ref uint localeId, ref uint contextTimeout, ref uint contextOptions, 
+			ref uint localeId, ref uint contextTimeout, uint contextOptions, 
 			out string reInitiateKey);
 
 		/// <summary>

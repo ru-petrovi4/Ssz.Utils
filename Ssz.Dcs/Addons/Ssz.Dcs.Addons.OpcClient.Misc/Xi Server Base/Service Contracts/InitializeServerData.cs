@@ -44,15 +44,7 @@ namespace Xi.Server.Base
 									ServerType.OPC_DA205_Wrapper, 
 									ServerType.OPC_AE11_Wrapper,
 									ServerType.OPC_HDA12_Wrapper,
-									ServerType.OPC_DA30_Wrapper,
-									ServerType.OPC_XMLDA_Wrapper,
-									ServerType.OPC_UA_DA_Wrapper,
-									ServerType.OPC_UA_AC_Wrapper,
-									ServerType.OPC_UA_HDA_Wrapper,
-									ServerType.Xi_DataServer,
-									ServerType.Xi_EventServer,
-									ServerType.Xi_DataJournalServer,
-									ServerType.Xi_EventJournalServer
+									ServerType.OPC_DA30_Wrapper,									
 								};
 
 		/// <summary>
@@ -195,30 +187,18 @@ namespace Xi.Server.Base
 					switch (serverType)
 					{
 						case (uint)ServerType.OPC_DA205_Wrapper:
-						case (uint)ServerType.OPC_DA30_Wrapper:
-						case (uint)ServerType.OPC_UA_DA_Wrapper:
-						case (uint)ServerType.OPC_XMLDA_Wrapper:
-						case (uint)ServerType.Xi_DataServer:
-							if ((context.NegotiatedContextOptions & (uint)ContextOptions.EnableDataAccess) == 0)
+						case (uint)ServerType.OPC_DA30_Wrapper:						
+							if ((context.ContextOptions & (uint)ContextOptions.EnableDataAccess) == 0)
 								serverTypeSupported = false;
 							break;
 
-						case (uint)ServerType.OPC_AE11_Wrapper:
-						case (uint)ServerType.OPC_UA_AC_Wrapper:
-						case (uint)ServerType.Xi_EventServer:
-							if ((context.NegotiatedContextOptions & (uint)ContextOptions.EnableAlarmsAndEventsAccess) == 0)
+						case (uint)ServerType.OPC_AE11_Wrapper:						
+							if ((context.ContextOptions & (uint)ContextOptions.EnableAlarmsAndEventsAccess) == 0)
 								serverTypeSupported = false;
 							break;
 
-						case (uint)ServerType.OPC_HDA12_Wrapper:
-						case (uint)ServerType.OPC_UA_HDA_Wrapper:
-						case (uint)ServerType.Xi_DataJournalServer:
-							if ((context.NegotiatedContextOptions & (uint)ContextOptions.EnableJournalDataAccess) == 0)
-								serverTypeSupported = false;
-							break;
-
-						case (uint)ServerType.Xi_EventJournalServer:
-							if ((context.NegotiatedContextOptions & (uint)ContextOptions.EnableJournalAlarmsAndEventsAccess) == 0)
+						case (uint)ServerType.OPC_HDA12_Wrapper:						
+							if ((context.ContextOptions & (uint)ContextOptions.EnableJournalDataAccess) == 0)
 								serverTypeSupported = false;
 							break;
 

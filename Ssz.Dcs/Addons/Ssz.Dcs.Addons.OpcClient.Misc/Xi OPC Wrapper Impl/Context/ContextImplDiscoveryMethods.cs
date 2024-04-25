@@ -46,17 +46,9 @@ namespace Xi.OPC.Wrapper.Impl
 			List<ServerStatus> serverStatusList = new List<ServerStatus>();
 			lock (ContextServerInfoLock)
 			{
-				// Add the base server status (the .NET server, not the wrapped servers)
-				ServerStatus serverStatus = new ServerStatus();
-				serverStatus.ServerType = XiOPCWrapperServer.BaseXiServerType;
-				serverStatus.ServerState = XiOPCWrapperServer.ServerState;
-				serverStatus.ServerName = XiOPCWrapperServer.ServerDescription.ServerName;
-				serverStatus.CurrentTime = DateTime.UtcNow;
-				serverStatusList.Add(serverStatus);
-
 				foreach (OpcServerInfo wrappedServer in XiOPCWrapperServer.OpcWrappedServers)
 				{
-					serverStatus = new ServerStatus();
+					var serverStatus = new ServerStatus();
 					serverStatus.ServerType = wrappedServer.ServerType;
 					serverStatus.ServerName = wrappedServer.ProgId;
 					switch (wrappedServer.ServerType)
@@ -97,7 +89,7 @@ namespace Xi.OPC.Wrapper.Impl
 									}
 									else
 									{
-										ClearAccessibleServer(ContextOptions.EnableDataAccess);
+                                        ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableDataAccess);
 										serverStatus.ServerState = ServerState.NotConnected;
 										serverStatus.CurrentTime = DateTime.UtcNow;
 									}
@@ -109,13 +101,7 @@ namespace Xi.OPC.Wrapper.Impl
 							{
 								// TODO: Fill this in for DA 3.0 wrappers
 							}
-							break;
-
-						case ServerType.OPC_XMLDA_Wrapper:
-							{
-								// TODO: Fill this in for XMLDA wrappers
-							}
-							break;
+							break;						
 
 						case ServerType.OPC_AE11_Wrapper:
 							{
@@ -153,7 +139,7 @@ namespace Xi.OPC.Wrapper.Impl
 									}
 									else
 									{
-										ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);
+                                        ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableAlarmsAndEventsAccess);
 										serverStatus.ServerState = ServerState.NotConnected;
 										serverStatus.CurrentTime = DateTime.UtcNow;
 									}
@@ -208,55 +194,13 @@ namespace Xi.OPC.Wrapper.Impl
 									}
 									else
 									{
-										ClearAccessibleServer(ContextOptions.EnableJournalDataAccess);
+                                        ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableJournalDataAccess);
 										serverStatus.ServerState = ServerState.NotConnected;
 										serverStatus.CurrentTime = DateTime.UtcNow;
 									}
 								}
 							}
-							break;
-
-						case ServerType.OPC_UA_DA_Wrapper:
-							{
-								// TODO: Fill this in for UA-DA wrappers
-							}
-							break;
-
-						case ServerType.OPC_UA_AC_Wrapper:
-							{
-								// TODO: Fill this in for UA-AC wrappers
-							}
-							break;
-
-						case ServerType.OPC_UA_HDA_Wrapper:
-							{
-								// TODO: Fill this in for UA-HDA wrappers
-							}
-							break;
-
-						case ServerType.Xi_DataServer:
-							{
-								// TODO: Fill this in for native Xi data servers
-							}
-							break;
-
-						case ServerType.Xi_EventServer:
-							{
-								// TODO: Fill this in for native Xi event servers
-							}
-							break;
-
-						case ServerType.Xi_DataJournalServer:
-							{
-								// TODO: Fill this in for native Xi data journal servers
-							}
-							break;
-
-						case ServerType.Xi_EventJournalServer:
-							{
-								// TODO: Fill this in for native Xi event journal servers
-							}
-							break;
+							break;						
 
 						default:
 							break;
@@ -299,7 +243,7 @@ namespace Xi.OPC.Wrapper.Impl
 								{
 									HR = IOPCCommonDA.GetErrorString(resultCode, out requestedString.String);
 									if (HR.Succeeded == false)
-										ClearAccessibleServer(ContextOptions.EnableDataAccess);
+                                        ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableDataAccess);
 								}
 								break;
 							case ServerType.OPC_AE11_Wrapper:
@@ -307,7 +251,7 @@ namespace Xi.OPC.Wrapper.Impl
 								{
 									HR = IOPCCommonAE.GetErrorString(resultCode, out requestedString.String);
 									if (HR.Succeeded == false)
-										ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);
+                                        ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableAlarmsAndEventsAccess);
 								}
 								break;
 							case ServerType.OPC_HDA12_Wrapper:
@@ -315,27 +259,11 @@ namespace Xi.OPC.Wrapper.Impl
 								{
 									HR = IOPCCommonHDA.GetErrorString(resultCode, out requestedString.String);
 									if (HR.Succeeded == false)
-										ClearAccessibleServer(ContextOptions.EnableJournalDataAccess);
+                                        ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableJournalDataAccess);
 								}
 								break;
 							case ServerType.OPC_DA30_Wrapper:
-								break;
-							case ServerType.OPC_XMLDA_Wrapper:
-								break;
-							case ServerType.OPC_UA_DA_Wrapper:
-								break;
-							case ServerType.OPC_UA_AC_Wrapper:
-								break;
-							case ServerType.OPC_UA_HDA_Wrapper:
-								break;
-							case ServerType.Xi_DataServer:
-								break;
-							case ServerType.Xi_EventServer:
-								break;
-							case ServerType.Xi_DataJournalServer:
-								break;
-							case ServerType.Xi_EventJournalServer:
-								break;
+								break;							
 							default:
 								break;
 						}

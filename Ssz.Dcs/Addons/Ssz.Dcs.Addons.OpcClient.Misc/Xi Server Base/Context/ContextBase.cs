@@ -228,21 +228,12 @@ namespace Xi.Server.Base
 		/// <summary>
 		/// The context options set for the context by the Initiate() method.
 		/// </summary>
-		public uint NegotiatedContextOptions
-		{
-			get { return _NegotiatedContextOptions; }
-		}
-		protected uint _NegotiatedContextOptions = 0;
+		public uint ContextOptions { get; set; }		
 
 		/// <summary>
 		/// The number of accessible wrapped servers as defined by the context options .
 		/// </summary>
-		public uint NumberOfWrappedServersForThisContext
-		{
-			get { return _NumberOfWrappedServersForThisContext; }
-			set { _NumberOfWrappedServersForThisContext = value; }
-		}
-		private uint _NumberOfWrappedServersForThisContext = 0;
+		public uint NumberOfWrappedServersForThisContext { get; set; }		
 
 		/// <summary>
 		/// Indicates when TRUE that the Data Access capabilities of the server are enabled

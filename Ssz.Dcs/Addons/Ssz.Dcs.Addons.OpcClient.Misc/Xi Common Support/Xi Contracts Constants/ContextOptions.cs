@@ -35,58 +35,7 @@ namespace Xi.Contracts.Constants
 		/// <summary>
 		/// No options are set for the Context.  
 		/// </summary>
-		NoOptions		                     = 0x00000000,
-
-		/// <summary>
-		/// ErrorInfo objects with non-empty ErrorMessages are enabled 
-		/// for the Context.
-		/// </summary>
-		EnableEnhancedErrorInfo              = 0x00000001,
-
-		/// <summary>
-		/// Enable tracing of Xi Server method invocations for 
-		/// this context.  When enabled, all calls to Xi Contract
-		/// methods are logged by the server.
-		/// </summary>
-		EnableMethodTrace	                 = 0x00000002,
-
-		/// <summary>
-		/// Enable tracing of internal method invocations. 
-		/// Implementation is server dependent.  It is 
-		/// intended to provide additional details to the
-		/// method invocations logged by EnableMethodTrace.
-		/// </summary>
-		EnableDetailTrace	                 = 0x00000004,
-
-		/// <summary>
-		/// Enable the logging of error conditions that occur while
-		/// the server is running.
-		/// </summary>
-		EnableErrorLogging                   = 0x00000008,
-
-		/// <summary>
-		/// Performance counters are enabled for the Context.
-		/// </summary>
-		EnablePerfCounters                   = 0x00000010,
-
-		/// <summary>
-		/// Allows a ReInitiate() request to be issued from a 
-		/// different IpAddress than that used by the previously 
-		/// connected WCF client connection.
-		/// </summary>
-		AllowDifferentClientIpAddress        = 0x00000020,
-
-		/// <summary>
-		/// <para>Requests the server to use context options selected or 
-		/// configured for the server.  How these options are selected by or 
-		/// configured is server-specific.</para>
-		/// <para>These options may include any of the defined context options 
-		/// whose values are less than this option and may also include additional 
-		/// server-specific options.  Selection of this option causes all of the 
-		/// included context options to be used, even if they were not individually
-		/// selected.</para>
-		/// </summary>
-		UseServerOptions                     = 0x00080000,
+		NoOptions		                     = 0x00000000,		
 
 		/// <summary>
 		/// Selectively enable access to the server for data.
@@ -115,6 +64,5 @@ namespace Xi.Contracts.Constants
 		/// then all types of access are enabled. 
 		/// </summary>
 		EnableJournalAlarmsAndEventsAccess   = 0x00800000,
-
 	}
 }

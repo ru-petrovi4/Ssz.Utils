@@ -99,14 +99,14 @@ namespace Xi.OPC.Wrapper.Impl
             {
                 var hdaOpcServerInfo = new OpcServerInfo
                 {
-                    ServerType = ServerType.Xi_EventJournalServer,
+                    ServerType = ServerType.USO_HDA_Wrapper,
                     HostName = contextParams.TryGetValue(@"%(UsoHda_Host)"),
                     ProgId = usoServerProgId
                 };
 
                 _OpcWrappedServers.Add(hdaOpcServerInfo);
 
-                _ThisServerEntry.ServerDescription.ServerTypes |= ServerType.Xi_EventJournalServer;
+                _ThisServerEntry.ServerDescription.ServerTypes |= ServerType.USO_HDA_Wrapper;
                 _NumServerTypes++;
                 _WrappedServerRoots.Add(new ObjectAttributes
                 {
@@ -152,10 +152,7 @@ namespace Xi.OPC.Wrapper.Impl
 		// TODO:  Expand this list of wrapped server names as necessary
 		public const string DA205_RootName = InstanceIds.ResourceType_DA;
 		public const string AE_RootName    = InstanceIds.ResourceType_AE;
-		public const string HDA_RootName   = InstanceIds.ResourceType_HDA;
-
-		// TODO: Set this appropriately
-		public const uint BaseXiServerType = ServerType.Xi_BaseServer;
+		public const string HDA_RootName   = InstanceIds.ResourceType_HDA;		
 
 		// The static XiOPCWrapper() method below sets this list according to the app.config file contents
 		private static List<ObjectAttributes> _WrappedServerRoots = new List<ObjectAttributes>();
@@ -223,8 +220,7 @@ namespace Xi.OPC.Wrapper.Impl
 					}
 					else
 					{
-						context.ClearAccessibleServer(ContextOptions.EnableJournalDataAccess);
-						context.ClearNegotiatedServer(ContextOptions.EnableJournalDataAccess);
+						context.ClearAccessibleServer(ContextOptions.EnableJournalDataAccess);						
 					}
 
 				}
@@ -232,22 +228,7 @@ namespace Xi.OPC.Wrapper.Impl
 				if ((SupportedServerTypes & ServerType.OPC_DA30_Wrapper) != 0)
 				{
 					// TODO:  if this server supports this server type
-				}
-
-				if ((SupportedServerTypes & ServerType.OPC_XMLDA_Wrapper) != 0)
-				{
-					// TODO:  if this server supports this server type
-				}
-
-				if ((SupportedServerTypes & ServerType.OPC_UA_DA_Wrapper) != 0)
-				{
-					// TODO:  if this server supports this server type
-				}
-
-				if ((SupportedServerTypes & ServerType.Xi_DataServer) != 0)
-				{
-					// TODO:  if this server supports this server type
-				}
+				}				
 			}
 
 			if (context.IsAccessibleAlarmsAndEvents)
@@ -277,20 +258,9 @@ namespace Xi.OPC.Wrapper.Impl
 					}
 					else
 					{
-						context.ClearAccessibleServer(ContextOptions.EnableJournalDataAccess);
-						context.ClearNegotiatedServer(ContextOptions.EnableJournalDataAccess);
+						context.ClearAccessibleServer(ContextOptions.EnableJournalDataAccess);						
 					}
-				}
-
-				if ((SupportedServerTypes & ServerType.OPC_UA_AC_Wrapper) != 0)
-				{
-					// TODO:  if this server supports this server type
-				}
-
-				if ((SupportedServerTypes & ServerType.Xi_EventServer) != 0)
-				{
-					// TODO:  if this server supports this server type
-				}
+				}				
 			}
 
 			if (context.IsAccessibleJournalDataAccess)
@@ -337,28 +307,10 @@ namespace Xi.OPC.Wrapper.Impl
 					}
 					else
 					{
-						context.ClearAccessibleServer(ContextOptions.EnableJournalDataAccess);
-						context.ClearNegotiatedServer(ContextOptions.EnableJournalDataAccess);
+						context.ClearAccessibleServer(ContextOptions.EnableJournalDataAccess);						
 					}
-				}
-
-				if ((SupportedServerTypes & ServerType.OPC_UA_HDA_Wrapper) != 0)
-				{
-					// TODO:  if this server supports this server type
-				}
-				if ((SupportedServerTypes & ServerType.Xi_DataJournalServer) != 0)
-				{
-					// TODO:  if this server supports this server type
-				}
-			}
-
-			if (context.IsAccessibleJournalAlarmsAndEvents)
-			{
-				if ((SupportedServerTypes & ServerType.Xi_EventJournalServer) != 0)
-				{
-					// TODO:  if this server supports this server type
-				}
-			}
+				}				
+			}			
 
 			return serverDetails;
 		}
@@ -433,8 +385,7 @@ namespace Xi.OPC.Wrapper.Impl
 							DaLocaleIdSet = true;
 						else
 						{
-							context.ClearAccessibleServer(ContextOptions.EnableDataAccess);
-							context.ClearNegotiatedServer(ContextOptions.EnableDataAccess);
+							context.ClearAccessibleServer(ContextOptions.EnableDataAccess);							
 						}
 					}
 					break;
@@ -446,8 +397,7 @@ namespace Xi.OPC.Wrapper.Impl
 							AeLocaleIdSet = true;
 						else
 						{
-							context.ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);
-							context.ClearNegotiatedServer(ContextOptions.EnableAlarmsAndEventsAccess);
+							context.ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);							
 						}
 					}
 					break;
@@ -459,29 +409,12 @@ namespace Xi.OPC.Wrapper.Impl
 							HdaLocaleIdSet = true;
 						else
 						{
-							context.ClearAccessibleServer(ContextOptions.EnableJournalDataAccess);
-							context.ClearNegotiatedServer(ContextOptions.EnableJournalDataAccess);
+							context.ClearAccessibleServer(ContextOptions.EnableJournalDataAccess);							
 						}
 					}
 					break;
 				case ServerType.OPC_DA30_Wrapper:
-					break;
-				case ServerType.OPC_XMLDA_Wrapper:
-					break;
-				case ServerType.OPC_UA_DA_Wrapper:
-					break;
-				case ServerType.OPC_UA_AC_Wrapper:
-					break;
-				case ServerType.OPC_UA_HDA_Wrapper:
-					break;
-				case ServerType.Xi_DataServer:
-					break;
-				case ServerType.Xi_EventServer:
-					break;
-				case ServerType.Xi_DataJournalServer:
-					break;
-				case ServerType.Xi_EventJournalServer:
-					break;
+					break;				
 				default:
 					break;
 			}
@@ -506,8 +439,7 @@ namespace Xi.OPC.Wrapper.Impl
 				cliHRESULT HR = context.IOPCEventServer.QueryAvailableFilters(out opcEventFilters);
 				if (HR.Succeeded == false)
 				{
-					context.ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);
-					context.ClearNegotiatedServer(ContextOptions.EnableAlarmsAndEventsAccess);
+					context.ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);					
 				}
 				if (opcEventFilters != 0)
 				{
@@ -551,8 +483,7 @@ namespace Xi.OPC.Wrapper.Impl
 					cliHRESULT HR = context.IOPCEventServer.QueryEventCategories(eventType, out eventCategories);
 					if (false == HR.Succeeded)
 					{
-						context.ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);
-						context.ClearNegotiatedServer(ContextOptions.EnableAlarmsAndEventsAccess);
+						context.ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);						
 					}
 
 					if (eventCategories != null)
@@ -577,8 +508,7 @@ namespace Xi.OPC.Wrapper.Impl
 							HR = context.IOPCEventServer.QueryEventAttributes(category.dwEventCategory, out opcEventAttrs);
 							if (HR.Failed)
 							{
-								context.ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);
-								context.ClearNegotiatedServer(ContextOptions.EnableAlarmsAndEventsAccess);
+								context.ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);								
 							}
 							if (opcEventAttrs != null)
 							{
@@ -607,8 +537,7 @@ namespace Xi.OPC.Wrapper.Impl
 								HR = context.IOPCEventServer.QueryConditionNames(category.dwEventCategory, out condNames);
 								if (false == HR.Succeeded)
 								{
-									context.ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);
-									context.ClearNegotiatedServer(ContextOptions.EnableAlarmsAndEventsAccess);
+									context.ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);									
 								}
 								// Get the subcondition names for each condition
 								if (condNames != null)
@@ -627,8 +556,7 @@ namespace Xi.OPC.Wrapper.Impl
 										HR = context.IOPCEventServer.QuerySubConditionNames(condName, out subCondNames);
 										if (false == HR.Succeeded)
 										{
-											context.ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);
-											context.ClearNegotiatedServer(ContextOptions.EnableAlarmsAndEventsAccess);
+											context.ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);											
 										}
 										if (subCondNames != null)
 										{

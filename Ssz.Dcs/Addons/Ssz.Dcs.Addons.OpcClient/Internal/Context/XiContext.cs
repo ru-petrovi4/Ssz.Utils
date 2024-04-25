@@ -66,6 +66,14 @@ namespace Ssz.Xi.Client.Internal.Context
             _callbackEndpointLastCallUtc = DateTime.UtcNow;
             _xiCallbackDoer = xiCallbackDoer;
 
+            _contextOptions = 0;
+            if (!String.IsNullOrEmpty(contextParams.TryGetValue(OpcClientAddon.OpcDa_ProgId_OptionName)))
+                _contextOptions |= (uint)ContextOptions.EnableDataAccess;
+            if (!String.IsNullOrEmpty(contextParams.TryGetValue(OpcClientAddon.OpcAe_ProgId_OptionName)))
+                _contextOptions |= (uint)ContextOptions.EnableAlarmsAndEventsAccess;
+            if (!String.IsNullOrEmpty(contextParams.TryGetValue(OpcClientAddon.OpcHda_ProgId_OptionName)))
+                _contextOptions |= (uint)ContextOptions.EnableJournalDataAccess;
+
             try
             {
                 XiOPCWrapperServer.Initialize(contextParams);
@@ -85,15 +93,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 if (workstationName is not null) _workstationName = workstationName;
                 else _workstationName = Dns.GetHostName();
 
-                _serverContextTimeoutInMs = ValidateServerContextTimeout(contextTimeout);
-
-                _contextOptions = 0;
-                if (!String.IsNullOrEmpty(contextParams.TryGetValue(OpcClientAddon.OpcDa_ProgId_OptionName)))
-                    _contextOptions |= (uint)ContextOptions.EnableDataAccess;
-                if (!String.IsNullOrEmpty(contextParams.TryGetValue(OpcClientAddon.OpcAe_ProgId_OptionName)))
-                    _contextOptions |= (uint)ContextOptions.EnableAlarmsAndEventsAccess;
-                if (!String.IsNullOrEmpty(contextParams.TryGetValue(OpcClientAddon.OpcHda_ProgId_OptionName)))
-                    _contextOptions |= (uint)ContextOptions.EnableJournalDataAccess;
+                _serverContextTimeoutInMs = ValidateServerContextTimeout(contextTimeout);                
                 
                 //if (localeId != 0)
                 //{
@@ -132,7 +132,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 try
                 {
                     _contextId = _iResourceManagement.Initiate(_applicationName, _workstationName, ref _localeId,
-                        ref _serverContextTimeoutInMs, ref _contextOptions, out _reInitiateKey);
+                        ref _serverContextTimeoutInMs, _contextOptions, out _reInitiateKey);
                 }
                 catch (Exception ex)
                 {

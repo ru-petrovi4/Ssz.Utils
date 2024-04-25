@@ -55,7 +55,7 @@ namespace Xi.OPC.Wrapper.Impl
 			LocaleId = localeId;
 			Identity = userIdentity;
 			ContextTimeout = new TimeSpan(0, 0, 0, 0, (int)contextTimeout);
-			_NegotiatedContextOptions = contextOptions;
+			ContextOptions = contextOptions;
             SessionId = extractParameter(encriptedWorkstationName, "SessionId");
 
 #if USO

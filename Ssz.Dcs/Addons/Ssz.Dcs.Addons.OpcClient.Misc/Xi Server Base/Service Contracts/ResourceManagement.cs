@@ -102,7 +102,7 @@ namespace Xi.Server.Base
 		/// </returns>
 		string IResourceManagement.Initiate(
 			string applicationName, string workstationName, ref uint localeId, ref uint contextTimeout, 
-			ref uint contextOptions, out string reInitiateKey)
+			uint contextOptions, out string reInitiateKey)
 		{
             //using (StaticLogger.Logger.EnterMethod(applicationName, workstationName, localeId))
 			{
@@ -129,14 +129,11 @@ namespace Xi.Server.Base
 				}
 
 			    try
-			    {			        
-			        // negotiate the context options for this context
-			        uint negotiatedContextOptions = NegotiateContextOptions(contextOptions);
-
+			    {			        			        
 			        // Create the context for the client
 			        uint localeId1 = localeId;
 			        TContext tContext = OnInitiate(applicationName, workstationName,
-			            ref localeId1, ref contextTimeout, negotiatedContextOptions,
+			            ref localeId1, ref contextTimeout, contextOptions,
 			            null, out reInitiateKey);
 
 			        //StaticLogger.Logger.LogDebug("Context being created for {0}", tContext.Identity.Name);
@@ -161,8 +158,7 @@ namespace Xi.Server.Base
 			            if (localeId2 == 0 && 0 < _ThisServerEntry.ServerDescription.SupportedLocaleIds.Count)
 			                localeId2 = _ThisServerEntry.ServerDescription.SupportedLocaleIds.First();
 			            localeId = (0 != localeId2) ? localeId2 : localeId1;
-			        }
-			        contextOptions = tContext.NegotiatedContextOptions;
+			        }			        
 
                     if (ServerState == ServerState.Initializing)
                         ServerState = ServerState.Operational;
@@ -176,32 +172,6 @@ namespace Xi.Server.Base
                     throw FaultHelpers.Create(ex);
 			    }
 			}
-		}
-
-		/// <summary>
-		/// This method is called prior to calling OnInitiate to set the context options for the 
-		/// context being opened.  This method is defined for the ServerBase class instead of the 
-		/// ContextBase class to ensure that it is called. The ContextBase construction is done by 
-		/// the implementation class.
-		/// </summary>
-		/// <param name="requestedContextOptions">The requested context options</param>
-		/// <returns>The context options negotiated for this context</returns>
-		public uint NegotiateContextOptions(uint requestedContextOptions)
-		{
-			// convert all "0s" in the access bits to the appropriate bits
-			if (   ((requestedContextOptions & (uint)ContextOptions.EnableDataAccess) == 0)
-				&& ((requestedContextOptions & (uint)ContextOptions.EnableAlarmsAndEventsAccess) == 0)
-				&& ((requestedContextOptions & (uint)ContextOptions.EnableJournalDataAccess) == 0)
-				&& ((requestedContextOptions & (uint)ContextOptions.EnableJournalAlarmsAndEventsAccess) == 0)
-			   )
-			{
-				requestedContextOptions |= (uint)ContextOptions.EnableDataAccess;
-				requestedContextOptions |= (uint)ContextOptions.EnableAlarmsAndEventsAccess;
-				requestedContextOptions |= (uint)ContextOptions.EnableJournalDataAccess;
-				requestedContextOptions |= (uint)ContextOptions.EnableJournalAlarmsAndEventsAccess;
-			}
-			// call the override for the implementation-specific support for the requested options
-			return requestedContextOptions;
 		}		
 
 		/// to validate the passed context information.  If any problems are found, a XiFault 

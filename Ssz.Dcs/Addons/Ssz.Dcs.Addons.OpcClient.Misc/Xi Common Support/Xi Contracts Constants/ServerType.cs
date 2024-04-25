@@ -27,32 +27,7 @@ namespace Xi.Contracts.Constants
 	/// </summary>
 	public class ServerType
 	{
-		#region Standard Server Type Ids
-
-		/// <summary>
-		/// The server is a server discovery server.
-		/// </summary>
-		public const uint Xi_ServerDiscoveryServer = 0x0001;
-
-		/// <summary>
-		/// The server is a native Xi data server.
-		/// </summary>
-		public const uint Xi_DataServer            = 0x0002;
-
-		/// <summary>
-		/// The server is a native Xi event server.
-		/// </summary>
-		public const uint Xi_EventServer           = 0x0004;
-
-		/// <summary>
-		/// The server is a native Xi data journal server.
-		/// </summary>
-		public const uint Xi_DataJournalServer     = 0x0008;
-
-		/// <summary>
-		/// The server is a native Xi event journal server.
-		/// </summary>
-		public const uint Xi_EventJournalServer    = 0x0010;
+		#region Standard Server Type Ids		
 
 		/// <summary>
 		/// The server wraps an OPC DA 2.05 server.
@@ -74,93 +49,28 @@ namespace Xi.Contracts.Constants
 		/// </summary>
 		public const uint OPC_DA30_Wrapper         = 0x0100;
 
-		/// <summary>
-		/// The server wraps an OPC XMLDA server.
-		/// </summary>
-		public const uint OPC_XMLDA_Wrapper        = 0x0200;
+        /// <summary>
+        /// The server wraps an USO HDA.
+        /// </summary>
+        public const uint USO_HDA_Wrapper          = 0x0200;
 
-		/// <summary>
-		/// The server wraps an OPC UA Data Access server.
-		/// </summary>
-		public const uint OPC_UA_DA_Wrapper        = 0x0400;
+        #endregion
 
-		/// <summary>
-		/// The server wraps an OPC UA Alarms and Conditions server.
-		/// </summary>
-		public const uint OPC_UA_AC_Wrapper        = 0x0800;
+        #region ToString() Method for Server Types
 
-		/// <summary>
-		/// The server wraps an OPC UA Historical Data Access server.
-		/// </summary>
-		public const uint OPC_UA_HDA_Wrapper       = 0x1000;
-
-		/// <summary>
-		/// The base Xi server that wraps one or more OPC servers.
-		/// </summary>
-		public const uint Xi_BaseServer            = 0x2000;
-
-		#endregion
-
-		#region ToString() Method for Server Types
-
-		/// <summary>
-		/// This method constructs a string that contains each of the server 
-		/// types specified by the serverTypes parameter.
-		/// </summary>
-		/// <param name="serverTypes">
-		/// A bit-mask that identifies each of the server types.
-		/// </param>
-		/// <returns>
-		/// The string representation of the server types.
-		/// </returns>
-		public static string ToString(uint serverTypes)
+        /// <summary>
+        /// This method constructs a string that contains each of the server 
+        /// types specified by the serverTypes parameter.
+        /// </summary>
+        /// <param name="serverTypes">
+        /// A bit-mask that identifies each of the server types.
+        /// </param>
+        /// <returns>
+        /// The string representation of the server types.
+        /// </returns>
+        public static string ToString(uint serverTypes)
 		{
-			string returnString = "";
-			if ((serverTypes & ServerType.Xi_ServerDiscoveryServer) > 0)
-			{
-				returnString = "ServerDiscoveryServer";
-				serverTypes ^= ServerType.Xi_ServerDiscoveryServer; // mask off this type
-			}
-
-			if ((serverTypes & ServerType.Xi_BaseServer) > 0)
-			{
-				if (returnString.Length > 0)
-					returnString += ", ";
-				returnString += "Xi_BaseServer";
-				serverTypes ^= ServerType.Xi_BaseServer; // mask off this type
-			}
-
-			if ((serverTypes & ServerType.Xi_DataServer) > 0)
-			{
-				if (returnString.Length > 0)
-					returnString += ", ";
-				returnString += "Xi_DataServer";
-				serverTypes ^= ServerType.Xi_DataServer; // mask off this type
-			}
-
-			if ((serverTypes & ServerType.Xi_EventServer) > 0)
-			{
-				if (returnString.Length > 0)
-					returnString += ", ";
-				returnString += "Xi_EventServer";
-				serverTypes ^= ServerType.Xi_EventServer; // mask off this type
-			}
-
-			if ((serverTypes & ServerType.Xi_DataJournalServer) > 0)
-			{
-				if (returnString.Length > 0)
-					returnString += ", ";
-				returnString += "Xi_DataJournalServer";
-				serverTypes ^= ServerType.Xi_DataJournalServer; // mask off this type
-			}
-
-			if ((serverTypes & ServerType.Xi_EventJournalServer) > 0)
-			{
-				if (returnString.Length > 0)
-					returnString += ", ";
-				returnString += "Xi_EventJournalServer";
-				serverTypes ^= ServerType.Xi_EventJournalServer; // mask off this type
-			}
+			string returnString = "";		
 
 			if ((serverTypes & ServerType.OPC_DA205_Wrapper) > 0)
 			{
@@ -192,39 +102,7 @@ namespace Xi.Contracts.Constants
 					returnString += ", ";
 				returnString += "OPC_DA30_Wrapper";
 				serverTypes ^= ServerType.OPC_DA30_Wrapper; // mask off this type
-			}
-
-			if ((serverTypes & ServerType.OPC_XMLDA_Wrapper) > 0)
-			{
-				if (returnString.Length > 0)
-					returnString += ", ";
-				returnString += "OPC_XMLDA_Wrapper";
-				serverTypes ^= ServerType.OPC_XMLDA_Wrapper; // mask off this type
-			}
-
-			if ((serverTypes & ServerType.OPC_UA_DA_Wrapper) > 0)
-			{
-				if (returnString.Length > 0)
-					returnString += ", ";
-				returnString += "OPC_UA_DA_Wrapper";
-				serverTypes ^= ServerType.OPC_UA_DA_Wrapper; // mask off this type
-			}
-
-			if ((serverTypes & ServerType.OPC_UA_AC_Wrapper) > 0)
-			{
-				if (returnString.Length > 0)
-					returnString += ", ";
-				returnString += "OPC_UA_AC_Wrapper";
-				serverTypes ^= ServerType.OPC_UA_AC_Wrapper; // mask off this type
-			}
-
-			if ((serverTypes & ServerType.OPC_UA_HDA_Wrapper) > 0)
-			{
-				if (returnString.Length > 0)
-					returnString += ", ";
-				returnString += "OPC_UA_HDA_Wrapper";
-				serverTypes ^= ServerType.OPC_UA_HDA_Wrapper; // mask off this type
-			}
+			}			
 
 			if (serverTypes > 0)
 			{
@@ -236,35 +114,7 @@ namespace Xi.Contracts.Constants
 			return returnString;
 		}
 
-		#endregion
-
-		#region ConvertToContextOptions() Method for Server Types
-		/// <summary>
-		/// This method returns the context options for the Server Type.
-		/// </summary>
-		/// <param name="serverType">The server type to be converted to the corresponding ContextOptions</param>
-		/// <returns></returns>
-		public static ContextOptions ConvertToContextOptions(uint serverType)
-		{
-			ContextOptions contextOptions = 0;
-			if ((0 != (serverType & ServerType.OPC_DA205_Wrapper))
-				|| (0 != (serverType & ServerType.OPC_UA_DA_Wrapper))
-				|| (0 != (serverType & ServerType.Xi_DataServer))
-				|| (0 != (serverType & ServerType.OPC_XMLDA_Wrapper)))
-				contextOptions |= (Xi.Contracts.Constants.ContextOptions.EnableDataAccess);
-			if ((0 != (serverType & ServerType.OPC_AE11_Wrapper))
-				|| (0 != (serverType & ServerType.OPC_UA_AC_Wrapper))
-				|| (0 != (serverType & ServerType.Xi_EventServer)))
-				contextOptions |= (Xi.Contracts.Constants.ContextOptions.EnableAlarmsAndEventsAccess);
-			if ((0 != (serverType & ServerType.OPC_HDA12_Wrapper))
-				|| (0 != (serverType & ServerType.OPC_UA_HDA_Wrapper))
-				|| (0 != (serverType & ServerType.Xi_EventServer)))
-				contextOptions |= (Xi.Contracts.Constants.ContextOptions.EnableJournalDataAccess);
-			if (0 != (serverType & ServerType.Xi_EventJournalServer))
-				contextOptions |= (Xi.Contracts.Constants.ContextOptions.EnableJournalAlarmsAndEventsAccess);
-			return contextOptions;
-		}
-		#endregion // GetContextOptionsForServerType() Method for Server Types
+		#endregion		
 
 	}
 }

@@ -117,38 +117,33 @@ namespace Xi.OPC.Wrapper.Impl
 		/// </summary>
 		private uint AccessibleWrappedServers
 		{
-			get { return _AccessibleWrappedServers; }
+			get { return _accessibleWrappedServers; }
 		}
-		private uint _AccessibleWrappedServers = 0;
+		private uint _accessibleWrappedServers = 0;
 
 		public override bool IsAccessibleDataAccess
 		{
-			get { return ((_AccessibleWrappedServers & (uint)ContextOptions.EnableDataAccess) > 0); }
+			get { return ((_accessibleWrappedServers & (uint)Contracts.Constants.ContextOptions.EnableDataAccess) > 0); }
 		}
 		public override bool IsAccessibleAlarmsAndEvents
 		{
-			get { return ((_AccessibleWrappedServers & (uint)ContextOptions.EnableAlarmsAndEventsAccess) > 0); }
+			get { return ((_accessibleWrappedServers & (uint)Contracts.Constants.ContextOptions.EnableAlarmsAndEventsAccess) > 0); }
 		}
 		public override bool IsAccessibleJournalDataAccess
 		{
-			get { return ((_AccessibleWrappedServers & (uint)ContextOptions.EnableJournalDataAccess) > 0); }
+			get { return ((_accessibleWrappedServers & (uint)Contracts.Constants.ContextOptions.EnableJournalDataAccess) > 0); }
 		}
 		public override bool IsAccessibleJournalAlarmsAndEvents
 		{
-			get { return ((_AccessibleWrappedServers & (uint)ContextOptions.EnableJournalAlarmsAndEventsAccess) > 0); }
+			get { return ((_accessibleWrappedServers & (uint)Contracts.Constants.ContextOptions.EnableJournalAlarmsAndEventsAccess) > 0); }
 		}
 
 	    public string SessionId { get; private set; }
         
 	    internal void ClearAccessibleServer(ContextOptions server)
 		{
-			_AccessibleWrappedServers &= ~(uint)server;
-		}
-
-		internal void ClearNegotiatedServer(ContextOptions server)
-		{
-			_NegotiatedContextOptions &= ~(uint)server;
-		}
+			_accessibleWrappedServers &= ~(uint)server;
+		}		
 
 		public void ThrowOnDisconnectedServer(cliHRESULT hr, string progId)
 		{
@@ -159,13 +154,13 @@ namespace Xi.OPC.Wrapper.Impl
 				switch (server.ServerType)
 				{
 					case ServerType.OPC_DA205_Wrapper:
-						ClearAccessibleServer(ContextOptions.EnableDataAccess);
+                        ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableDataAccess);
 						break;
 					case ServerType.OPC_AE11_Wrapper:
-						ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);
+                        ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableAlarmsAndEventsAccess);
 						break;
 					case ServerType.OPC_HDA12_Wrapper:
-						ClearAccessibleServer(ContextOptions.EnableJournalDataAccess);
+                        ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableJournalDataAccess);
 						break;
 					default:
 						break;
@@ -191,18 +186,7 @@ namespace Xi.OPC.Wrapper.Impl
 			uint daLCID = 0;
 			uint hdaLCID = 0;
 			uint aeLCID = 0;
-			uint rc = XiFaultCodes.S_OK;
-
-			// Set the requested servers and then clear them from NegotiatedContextOptions
-			// Add them back after a connection is made to the corresponding wrapped OPC server
-			uint requestedServers = NegotiatedContextOptions & (uint)ContextOptions.EnableDataAccess;
-			_NegotiatedContextOptions &= ~(uint)ContextOptions.EnableDataAccess;
-
-			requestedServers |= NegotiatedContextOptions & (uint)ContextOptions.EnableJournalDataAccess;
-			_NegotiatedContextOptions &= ~(uint)ContextOptions.EnableJournalDataAccess;
-
-			requestedServers |= NegotiatedContextOptions & (uint)ContextOptions.EnableAlarmsAndEventsAccess;
-			_NegotiatedContextOptions &= ~(uint)ContextOptions.EnableAlarmsAndEventsAccess;
+			uint rc = XiFaultCodes.S_OK;            
 
 			uint numNegotiatedServers = 0;
 
@@ -221,9 +205,9 @@ namespace Xi.OPC.Wrapper.Impl
 				switch (server.ServerType)
 				{
 					case ServerType.OPC_DA205_Wrapper:
-						if ((requestedServers & (uint)ContextOptions.EnableDataAccess) > 0)
+						if ((ContextOptions & (uint)Contracts.Constants.ContextOptions.EnableDataAccess) > 0)
 						{
-						    IOPCServerCli iOPCServer = null;
+                            IOPCServerCli iOPCServer = null;
 #if USO
 						    cliHRESULT hr1 = SimExec != null
 						        ? CCreateInstance.CreateInstanceDA_Clsid(server.HostName, SimExec.OpcDAClsId, ref iOPCServer,
@@ -231,7 +215,7 @@ namespace Xi.OPC.Wrapper.Impl
 						        : CCreateInstance.CreateInstanceDA(server.HostName,
 						            makeUnisimServerProgIdWithModelName(server.ProgId), ref iOPCServer, serverDescription);
 #else
-							cliHRESULT hr1 = CCreateInstance.CreateInstanceDA(server.HostName,
+                            cliHRESULT hr1 = CCreateInstance.CreateInstanceDA(server.HostName,
 									server.ProgId, ref iOPCServer, serverDescription);
 #endif
 							if (hr1.Succeeded == false)
@@ -240,22 +224,22 @@ namespace Xi.OPC.Wrapper.Impl
 							}
 							else
 							{
-								// Set the on data change callback 
-								IAdviseOPCDataCallbackCli iRegOPCDataCallbacks = iOPCServer as IAdviseOPCDataCallbackCli;
+                                // Set the on data change callback 
+                                IAdviseOPCDataCallbackCli iRegOPCDataCallbacks = iOPCServer as IAdviseOPCDataCallbackCli;
 								if (null != iRegOPCDataCallbacks)
 								{
-									cliHRESULT hr1A = iRegOPCDataCallbacks.AdviseOnDataChange(OnDataChange);
+                                    cliHRESULT hr1A = iRegOPCDataCallbacks.AdviseOnDataChange(OnDataChange);
 									if (hr1A.Succeeded == false)
 									{
 										rc = daCallbackRC = (uint)hr1A.hResult;
 									}
 									else
 									{
-										// Set the DA Server Shutdown callback
-										IAdviseOPCShutdownCli iRegOPCShutdownCallback = iOPCServer as IAdviseOPCShutdownCli;
+                                        // Set the DA Server Shutdown callback
+                                        IAdviseOPCShutdownCli iRegOPCShutdownCallback = iOPCServer as IAdviseOPCShutdownCli;
 										if (null != iRegOPCShutdownCallback)
 										{
-											cliHRESULT hr1B = iRegOPCShutdownCallback.AdviseShutdownRequest(OnDAShutdown);
+                                            cliHRESULT hr1B = iRegOPCShutdownCallback.AdviseShutdownRequest(OnDAShutdown);
 											if (hr1B.Succeeded == false)
 											{
 												rc = daShutdownRC = (uint)hr1B.hResult;
@@ -264,10 +248,10 @@ namespace Xi.OPC.Wrapper.Impl
 											{
 												iOPCServer.SetLocaleID(lcid);
 												iOPCServer.GetLocaleID(out daLCID);
-												_AccessibleWrappedServers |= (uint)ContextOptions.EnableDataAccess;
+                                                _accessibleWrappedServers |= (uint)Contracts.Constants.ContextOptions.EnableDataAccess;
 												numNegotiatedServers++;
-												IOPCServer = iOPCServer;
-												IOPCServer_ProgId = server.ProgId;
+                                                IOPCServer = iOPCServer;
+                                                IOPCServer_ProgId = server.ProgId;
 											}
 										}
 									}
@@ -277,7 +261,7 @@ namespace Xi.OPC.Wrapper.Impl
 						break;
 
 					case ServerType.OPC_HDA12_Wrapper:
-						if ((requestedServers & (uint)ContextOptions.EnableJournalDataAccess) > 0)
+						if ((ContextOptions & (uint)Contracts.Constants.ContextOptions.EnableJournalDataAccess) > 0)
 						{
                             IOPCHDA_ServerCli iOPCHDA_Server = null;
 #if USO
@@ -287,7 +271,7 @@ namespace Xi.OPC.Wrapper.Impl
 						        : CCreateInstance.CreateInstanceHDA(server.HostName, makeUnisimServerProgIdWithModelName(server.ProgId),
 						            ref iOPCHDA_Server, serverDescription);
 #else
-							cliHRESULT hr2 = CCreateInstance.CreateInstanceHDA(server.HostName, 
+                            cliHRESULT hr2 = CCreateInstance.CreateInstanceHDA(server.HostName, 
 								server.ProgId,
 									ref iOPCHDA_Server, serverDescription);
 #endif
@@ -297,11 +281,11 @@ namespace Xi.OPC.Wrapper.Impl
 							}
 							else
 							{
-								// Set the HDA Server Shutdown callback
-								IAdviseOPCShutdownCli iRegOPCShutdownCallback = iOPCHDA_Server as IAdviseOPCShutdownCli;
+                                // Set the HDA Server Shutdown callback
+                                IAdviseOPCShutdownCli iRegOPCShutdownCallback = iOPCHDA_Server as IAdviseOPCShutdownCli;
 								if (null != iRegOPCShutdownCallback)
 								{
-									cliHRESULT hr2A = iRegOPCShutdownCallback.AdviseShutdownRequest(OnHDAShutdown);
+                                    cliHRESULT hr2A = iRegOPCShutdownCallback.AdviseShutdownRequest(OnHDAShutdown);
 									if (hr2A.Succeeded == false)
 									{
 										rc = hdaShutdownRC = (uint)hr2A.hResult;
@@ -310,10 +294,10 @@ namespace Xi.OPC.Wrapper.Impl
 									{
 										iOPCHDA_Server.SetLocaleID(lcid);
 										iOPCHDA_Server.GetLocaleID(out hdaLCID);
-										_AccessibleWrappedServers |= (uint)ContextOptions.EnableJournalDataAccess;
+                                        _accessibleWrappedServers |= (uint)Contracts.Constants.ContextOptions.EnableJournalDataAccess;
 										numNegotiatedServers++;
-										IOPCHDA_Server = iOPCHDA_Server;
-										IOPCHDAServer_ProgId = server.ProgId;
+                                        IOPCHDA_Server = iOPCHDA_Server;
+                                        IOPCHDAServer_ProgId = server.ProgId;
 									}
 								}
 							}
@@ -321,16 +305,16 @@ namespace Xi.OPC.Wrapper.Impl
 						break;
 
 					case ServerType.OPC_AE11_Wrapper:
-						if ((requestedServers & (uint)ContextOptions.EnableAlarmsAndEventsAccess) > 0)
+						if ((ContextOptions & (uint)Contracts.Constants.ContextOptions.EnableAlarmsAndEventsAccess) > 0)
 						{
-							IOPCEventServerCli iOPCEventServer = null;
+                            IOPCEventServerCli iOPCEventServer = null;
 #if USO
 						    cliHRESULT hr3 = CCreateInstance.CreateInstanceAE(
 						        server.HostName,
 						        SimExec != null ? SimExec.OpcAEProgId : makeUnisimServerProgIdWithModelName(server.ProgId),
 						        ref iOPCEventServer, serverDescription);
 #else
-							cliHRESULT hr3 = CCreateInstance.CreateInstanceAE(
+                            cliHRESULT hr3 = CCreateInstance.CreateInstanceAE(
 								server.HostName,
 								server.ProgId,
 								ref iOPCEventServer, serverDescription);
@@ -342,11 +326,11 @@ namespace Xi.OPC.Wrapper.Impl
 							}
 							else
 							{
-								// Set the A&E Server Shutdown callback
-								IAdviseOPCShutdownCli iRegOPCShutdownCallback = iOPCEventServer as IAdviseOPCShutdownCli;
+                                // Set the A&E Server Shutdown callback
+                                IAdviseOPCShutdownCli iRegOPCShutdownCallback = iOPCEventServer as IAdviseOPCShutdownCli;
 								if (null != iRegOPCShutdownCallback)
 								{
-									cliHRESULT hr3A = iRegOPCShutdownCallback.AdviseShutdownRequest(OnAEShutdown);
+                                    cliHRESULT hr3A = iRegOPCShutdownCallback.AdviseShutdownRequest(OnAEShutdown);
 									if (hr3A.Succeeded == false)
 									{
 										rc = aeShutdownRC = (uint)hr3A.hResult;
@@ -355,77 +339,25 @@ namespace Xi.OPC.Wrapper.Impl
 									{
 										iOPCEventServer.SetLocaleID(lcid);
 										iOPCEventServer.GetLocaleID(out aeLCID);
-										_AccessibleWrappedServers |= (uint)ContextOptions.EnableAlarmsAndEventsAccess;
+                                        _accessibleWrappedServers |= (uint)Contracts.Constants.ContextOptions.EnableAlarmsAndEventsAccess;
 										numNegotiatedServers++;
-										IOPCEventServer = iOPCEventServer;
-										IOPCEventServer_ProgId = server.ProgId;
+                                        IOPCEventServer = iOPCEventServer;
+                                        IOPCEventServer_ProgId = server.ProgId;
 									}
 								}
 							}
 						}
-						break;
-
-                    case ServerType.Xi_EventJournalServer:
-						if ((requestedServers & (uint)ContextOptions.EnableJournalDataAccess) > 0)
-						{
-							IOPCHDA_ServerCli iOPCHDA_Server = null;
-
-						    if (IOPCServer == null)
-						        continue;
-
-#if USO
-						    cliHRESULT hr2 = SimExec != null
-						        ? CCreateInstance.CreateInstanceUsoHDA_Clsid(server.HostName, SimExec.OpcHDAClsId, IOPCServer,
-						            ref iOPCHDA_Server, serverDescription)
-						        : CCreateInstance.CreateInstanceUsoHDA(server.HostName,
-						            makeUnisimServerProgIdWithModelName(server.ProgId), IOPCServer, ref iOPCHDA_Server,
-						            serverDescription);
-#else
-							//cliHRESULT hr2 = cliHR.E_FAIL;
-							cliHRESULT hr2 = CCreateInstance.CreateInstanceHDA(server.HostName,
-									server.ProgId, ref iOPCHDA_Server,
-									serverDescription);
-#endif
-							if (hr2.Succeeded == false)
-							{
-								rc = hdaConnectRC = (uint)hr2.hResult;
-							}
-							else
-							{
-								// Set the HDA Server Shutdown callback
-								IAdviseOPCShutdownCli iRegOPCShutdownCallback = iOPCHDA_Server as IAdviseOPCShutdownCli;
-								if (null != iRegOPCShutdownCallback)
-								{
-									cliHRESULT hr2A = iRegOPCShutdownCallback.AdviseShutdownRequest(OnHDAShutdown);
-									if (hr2A.Succeeded == false)
-									{
-										rc = hdaShutdownRC = (uint)hr2A.hResult;
-									}
-									else
-									{
-										iOPCHDA_Server.SetLocaleID(lcid);
-										iOPCHDA_Server.GetLocaleID(out hdaLCID);
-										_AccessibleWrappedServers |= (uint)ContextOptions.EnableJournalDataAccess;
-										numNegotiatedServers++;
-										IOPCHDA_Server = iOPCHDA_Server;
-										IOPCHDAServer_ProgId = server.ProgId;
-									}
-								}
-							}
-						}
-						break;
+						break;                    
 
 					default:
 						rc = XiFaultCodes.E_FAIL;
 						Debug.Assert(server.ServerType == ServerType.OPC_DA205_Wrapper ||
 									 server.ServerType == ServerType.OPC_HDA12_Wrapper ||
-									 server.ServerType == ServerType.OPC_AE11_Wrapper ||
-                                     server.ServerType == ServerType.Xi_EventJournalServer);
+									 server.ServerType == ServerType.OPC_AE11_Wrapper);
 						break;
 				}
 			}
-			// add the opened servers back in and set the number of wrapped servers that were negotiated 
-			_NegotiatedContextOptions += AccessibleWrappedServers;
+			// set the number of wrapped servers that were negotiated 			
 			NumberOfWrappedServersForThisContext = numNegotiatedServers;
 
 			if (numNegotiatedServers == 0)
@@ -565,7 +497,7 @@ namespace Xi.OPC.Wrapper.Impl
 			{
 				rc = XiFaultCodes.E_WRAPPEDSERVER_EXCEPTION;
 			}
-			ClearAccessibleServer(ContextOptions.EnableDataAccess);
+            ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableDataAccess);
 			return rc;
 		}
 
@@ -610,7 +542,7 @@ namespace Xi.OPC.Wrapper.Impl
 			{
 				rc = XiFaultCodes.E_WRAPPEDSERVER_EXCEPTION;
 			}
-			ClearAccessibleServer(ContextOptions.EnableJournalDataAccess);
+            ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableJournalDataAccess);
 			return rc;
 		}
 
@@ -656,7 +588,7 @@ namespace Xi.OPC.Wrapper.Impl
 			{
 				rc = XiFaultCodes.E_WRAPPEDSERVER_EXCEPTION;
 			}
-			ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);
+            ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableAlarmsAndEventsAccess);
 			return rc;
 		}
 

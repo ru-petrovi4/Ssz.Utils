@@ -61,7 +61,7 @@ namespace Xi.OPC.Wrapper.Impl
 			//	restRead.Url = string.Format("{0}/changes/{1}/{2}", restRead.Url, contextImpl.Id, typeof(IRestRead).Name);
 
 			// Connect to the requested OPC COM Servers.
-			uint requestedServers = contextImpl.NegotiatedContextOptions;
+			uint requestedServers = contextImpl.ContextOptions;
 			uint rc = contextImpl.OpcCreateInstance(ref localeId, _ThisServerEntry.ServerDescription);
 			if (XiFaultCodes.S_OK != rc)
 			{
