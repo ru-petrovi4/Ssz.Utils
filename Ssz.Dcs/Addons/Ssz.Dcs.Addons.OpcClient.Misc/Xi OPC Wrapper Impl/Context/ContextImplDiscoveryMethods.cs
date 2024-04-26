@@ -46,7 +46,7 @@ namespace Xi.OPC.Wrapper.Impl
 			List<ServerStatus> serverStatusList = new List<ServerStatus>();
 			lock (ContextServerInfoLock)
 			{
-				foreach (OpcServerInfo wrappedServer in XiOPCWrapperServer.OpcWrappedServers)
+				foreach (OpcServerInfo wrappedServer in XiOPCWrapperServer.ConfiguredOpcServerInfos)
 				{
 					var serverStatus = new ServerStatus();
 					serverStatus.ServerType = wrappedServer.ServerType;
@@ -89,7 +89,7 @@ namespace Xi.OPC.Wrapper.Impl
 									}
 									else
 									{
-                                        ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableDataAccess);
+                                        ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.DataAccess);
 										serverStatus.ServerState = ServerState.NotConnected;
 										serverStatus.CurrentTime = DateTime.UtcNow;
 									}
@@ -139,7 +139,7 @@ namespace Xi.OPC.Wrapper.Impl
 									}
 									else
 									{
-                                        ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableAlarmsAndEventsAccess);
+                                        ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.AlarmsAndEventsAccess);
 										serverStatus.ServerState = ServerState.NotConnected;
 										serverStatus.CurrentTime = DateTime.UtcNow;
 									}
@@ -194,7 +194,7 @@ namespace Xi.OPC.Wrapper.Impl
 									}
 									else
 									{
-                                        ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableJournalDataAccess);
+                                        ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.JournalDataAccess);
 										serverStatus.ServerState = ServerState.NotConnected;
 										serverStatus.CurrentTime = DateTime.UtcNow;
 									}
@@ -233,7 +233,7 @@ namespace Xi.OPC.Wrapper.Impl
 				{
 					RequestedString requestedString = new RequestedString();
 					requestedString.ResultCode = XiFaultCodes.OPC_E_NOTFOUND;
-					foreach (var wrappedServer in XiOPCWrapperServer.OpcWrappedServers)
+					foreach (var wrappedServer in XiOPCWrapperServer.ConfiguredOpcServerInfos)
 					{
 						cliHRESULT HR = new cliHRESULT();
 						switch (wrappedServer.ServerType)
@@ -243,7 +243,7 @@ namespace Xi.OPC.Wrapper.Impl
 								{
 									HR = IOPCCommonDA.GetErrorString(resultCode, out requestedString.String);
 									if (HR.Succeeded == false)
-                                        ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableDataAccess);
+                                        ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.DataAccess);
 								}
 								break;
 							case ServerType.OPC_AE11_Wrapper:
@@ -251,7 +251,7 @@ namespace Xi.OPC.Wrapper.Impl
 								{
 									HR = IOPCCommonAE.GetErrorString(resultCode, out requestedString.String);
 									if (HR.Succeeded == false)
-                                        ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableAlarmsAndEventsAccess);
+                                        ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.AlarmsAndEventsAccess);
 								}
 								break;
 							case ServerType.OPC_HDA12_Wrapper:
@@ -259,7 +259,7 @@ namespace Xi.OPC.Wrapper.Impl
 								{
 									HR = IOPCCommonHDA.GetErrorString(resultCode, out requestedString.String);
 									if (HR.Succeeded == false)
-                                        ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableJournalDataAccess);
+                                        ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.JournalDataAccess);
 								}
 								break;
 							case ServerType.OPC_DA30_Wrapper:
@@ -310,7 +310,7 @@ namespace Xi.OPC.Wrapper.Impl
 					// => each will have its own root below the top-level root, so  
 					// Return the wrapped server roots.
 					if ((IsStartingPathTheRoot(findCriteria.StartingPath))
-						&& (XiOPCWrapperServer.OpcWrappedServers.Count > 1)
+						&& (XiOPCWrapperServer.ConfiguredOpcServerInfos.Count > 1)
 					   )
 					{
 						OpcBrowser = new OpcBrowser();

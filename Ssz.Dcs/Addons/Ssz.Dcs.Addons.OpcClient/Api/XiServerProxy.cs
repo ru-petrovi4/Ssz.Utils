@@ -192,23 +192,7 @@ namespace Ssz.Xi.Client.Api
         /// <returns>Returns the new data list.</returns>
         public IXiEventJournalList NewEventJournalList(uint updateRate, uint bufferingRate, FilterSet filterSet)
         {
-        }*/
-
-        /// <summary>
-        ///     This method returns the ServerDescription retrieved from the server.
-        /// </summary>
-        /// <returns>
-        ///     Returns the ServerDescription retrieved from the server. An Exception is thrown if there is no open context
-        ///     with the server.
-        /// </returns>
-        public ServerDescription? Identify()
-        {
-            if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
-
-            if (_context is null) throw new XiServerNotExistException();
-
-            return _context.Identify();
-        }
+        }*/        
 
         /// <summary>
         ///     This method is used to get the state of the server, and

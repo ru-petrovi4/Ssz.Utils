@@ -60,7 +60,7 @@ namespace Xi.OPC.Wrapper.Impl
                 daOpcServerInfo.ServerType = ServerType.OPC_DA205_Wrapper;
                 daOpcServerInfo.HostName = contextParams.TryGetValue(@"%(OpcDa_Host)");
                 daOpcServerInfo.ProgId = daServerProgId;
-                _OpcWrappedServers.Add(daOpcServerInfo);
+                ConfiguredOpcServerInfos.Add(daOpcServerInfo);
 
                 _ThisServerEntry.ServerDescription.ServerTypes |= ServerType.OPC_DA205_Wrapper;
                 _NumServerTypes++;
@@ -80,7 +80,7 @@ namespace Xi.OPC.Wrapper.Impl
                 hdaOpcServerInfo.ServerType = ServerType.OPC_HDA12_Wrapper;
                 hdaOpcServerInfo.HostName = contextParams.TryGetValue(@"%(OpcHda_Host)");
                 hdaOpcServerInfo.ProgId = hdaServerProgId;
-                _OpcWrappedServers.Add(hdaOpcServerInfo);
+                ConfiguredOpcServerInfos.Add(hdaOpcServerInfo);
 
                 _ThisServerEntry.ServerDescription.ServerTypes |= ServerType.OPC_HDA12_Wrapper;
                 _NumServerTypes++;
@@ -104,7 +104,7 @@ namespace Xi.OPC.Wrapper.Impl
                     ProgId = usoServerProgId
                 };
 
-                _OpcWrappedServers.Add(hdaOpcServerInfo);
+                ConfiguredOpcServerInfos.Add(hdaOpcServerInfo);
 
                 _ThisServerEntry.ServerDescription.ServerTypes |= ServerType.USO_HDA_Wrapper;
                 _NumServerTypes++;
@@ -125,7 +125,7 @@ namespace Xi.OPC.Wrapper.Impl
                 aeOpcServerInfo.ServerType = ServerType.OPC_AE11_Wrapper;
                 aeOpcServerInfo.HostName = contextParams.TryGetValue(@"%(OpcAe_Host)");
                 aeOpcServerInfo.ProgId = aeServerProgId;
-                _OpcWrappedServers.Add(aeOpcServerInfo);
+                ConfiguredOpcServerInfos.Add(aeOpcServerInfo);
 
                 _ThisServerEntry.ServerDescription.ServerTypes |= ServerType.OPC_AE11_Wrapper;
                 _NumServerTypes++;
@@ -142,13 +142,9 @@ namespace Xi.OPC.Wrapper.Impl
             //Set the ServerNamespace to null - there are no server specific types
             _ThisServerEntry.ServerDescription.ServerNamespace = null;
         }
-
-        private static List<OpcServerInfo> _OpcWrappedServers = new List<OpcServerInfo>();
-		public static List<OpcServerInfo> OpcWrappedServers
-		{
-			get { return _OpcWrappedServers; }
-		}
-
+        
+		public static List<OpcServerInfo> ConfiguredOpcServerInfos { get; } = new List<OpcServerInfo>();
+		
 		// TODO:  Expand this list of wrapped server names as necessary
 		public const string DA205_RootName = InstanceIds.ResourceType_DA;
 		public const string AE_RootName    = InstanceIds.ResourceType_AE;
@@ -220,7 +216,7 @@ namespace Xi.OPC.Wrapper.Impl
 					}
 					else
 					{
-						context.ClearAccessibleServer(ContextOptions.EnableJournalDataAccess);						
+						context.ClearAccessibleServerTypes(AccessibleServerTypes.JournalDataAccess);						
 					}
 
 				}
@@ -258,7 +254,7 @@ namespace Xi.OPC.Wrapper.Impl
 					}
 					else
 					{
-						context.ClearAccessibleServer(ContextOptions.EnableJournalDataAccess);						
+						context.ClearAccessibleServerTypes(AccessibleServerTypes.JournalDataAccess);						
 					}
 				}				
 			}
@@ -307,7 +303,7 @@ namespace Xi.OPC.Wrapper.Impl
 					}
 					else
 					{
-						context.ClearAccessibleServer(ContextOptions.EnableJournalDataAccess);						
+						context.ClearAccessibleServerTypes(AccessibleServerTypes.JournalDataAccess);						
 					}
 				}				
 			}			
@@ -385,7 +381,7 @@ namespace Xi.OPC.Wrapper.Impl
 							DaLocaleIdSet = true;
 						else
 						{
-							context.ClearAccessibleServer(ContextOptions.EnableDataAccess);							
+							context.ClearAccessibleServerTypes(AccessibleServerTypes.DataAccess);							
 						}
 					}
 					break;
@@ -397,7 +393,7 @@ namespace Xi.OPC.Wrapper.Impl
 							AeLocaleIdSet = true;
 						else
 						{
-							context.ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);							
+							context.ClearAccessibleServerTypes(AccessibleServerTypes.AlarmsAndEventsAccess);							
 						}
 					}
 					break;
@@ -409,7 +405,7 @@ namespace Xi.OPC.Wrapper.Impl
 							HdaLocaleIdSet = true;
 						else
 						{
-							context.ClearAccessibleServer(ContextOptions.EnableJournalDataAccess);							
+							context.ClearAccessibleServerTypes(AccessibleServerTypes.JournalDataAccess);							
 						}
 					}
 					break;
@@ -439,7 +435,7 @@ namespace Xi.OPC.Wrapper.Impl
 				cliHRESULT HR = context.IOPCEventServer.QueryAvailableFilters(out opcEventFilters);
 				if (HR.Succeeded == false)
 				{
-					context.ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);					
+					context.ClearAccessibleServerTypes(AccessibleServerTypes.AlarmsAndEventsAccess);					
 				}
 				if (opcEventFilters != 0)
 				{
@@ -483,7 +479,7 @@ namespace Xi.OPC.Wrapper.Impl
 					cliHRESULT HR = context.IOPCEventServer.QueryEventCategories(eventType, out eventCategories);
 					if (false == HR.Succeeded)
 					{
-						context.ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);						
+						context.ClearAccessibleServerTypes(AccessibleServerTypes.AlarmsAndEventsAccess);						
 					}
 
 					if (eventCategories != null)
@@ -508,7 +504,7 @@ namespace Xi.OPC.Wrapper.Impl
 							HR = context.IOPCEventServer.QueryEventAttributes(category.dwEventCategory, out opcEventAttrs);
 							if (HR.Failed)
 							{
-								context.ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);								
+								context.ClearAccessibleServerTypes(AccessibleServerTypes.AlarmsAndEventsAccess);								
 							}
 							if (opcEventAttrs != null)
 							{
@@ -537,7 +533,7 @@ namespace Xi.OPC.Wrapper.Impl
 								HR = context.IOPCEventServer.QueryConditionNames(category.dwEventCategory, out condNames);
 								if (false == HR.Succeeded)
 								{
-									context.ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);									
+									context.ClearAccessibleServerTypes(AccessibleServerTypes.AlarmsAndEventsAccess);									
 								}
 								// Get the subcondition names for each condition
 								if (condNames != null)
@@ -556,7 +552,7 @@ namespace Xi.OPC.Wrapper.Impl
 										HR = context.IOPCEventServer.QuerySubConditionNames(condName, out subCondNames);
 										if (false == HR.Succeeded)
 										{
-											context.ClearAccessibleServer(ContextOptions.EnableAlarmsAndEventsAccess);											
+											context.ClearAccessibleServerTypes(AccessibleServerTypes.AlarmsAndEventsAccess);											
 										}
 										if (subCondNames != null)
 										{

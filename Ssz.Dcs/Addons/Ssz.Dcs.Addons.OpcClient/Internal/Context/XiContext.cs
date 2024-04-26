@@ -64,15 +64,7 @@ namespace Ssz.Xi.Client.Internal.Context
         {
             _contextParams = contextParams;
             _callbackEndpointLastCallUtc = DateTime.UtcNow;
-            _xiCallbackDoer = xiCallbackDoer;
-
-            _contextOptions = 0;
-            if (!String.IsNullOrEmpty(contextParams.TryGetValue(OpcClientAddon.OpcDa_ProgId_OptionName)))
-                _contextOptions |= (uint)ContextOptions.EnableDataAccess;
-            if (!String.IsNullOrEmpty(contextParams.TryGetValue(OpcClientAddon.OpcAe_ProgId_OptionName)))
-                _contextOptions |= (uint)ContextOptions.EnableAlarmsAndEventsAccess;
-            if (!String.IsNullOrEmpty(contextParams.TryGetValue(OpcClientAddon.OpcHda_ProgId_OptionName)))
-                _contextOptions |= (uint)ContextOptions.EnableJournalDataAccess;
+            _xiCallbackDoer = xiCallbackDoer;            
 
             try
             {
@@ -289,31 +281,7 @@ namespace Ssz.Xi.Client.Internal.Context
         public void RaiseContextNotifyEvent(object sender, XiContextNotificationData contextNotificationData)
         {
             ContextNotifyEvent(sender, contextNotificationData);
-        }
-
-        /// <summary>
-        ///     <para>
-        ///         This method is used to get the description of the server. This method can be called before a context has
-        ///         been established with the server.
-        ///     </para>
-        /// </summary>
-        /// <returns> The description of the server. </returns>
-        public ServerDescription? Identify()
-        {
-            if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiContext.");
-
-            if (_iResourceManagement is null) throw new InvalidOperationException();
-            try
-            {
-                _serverDescription = _iResourceManagement.Identify(ContextId);
-            }
-            catch (Exception ex)
-            {
-                ProcessRemoteMethodCallException(ex);
-            }
-            SetResourceManagementLastCallUtc();
-            return _serverDescription;
-        }
+        }        
 
         /// <summary>
         ///     This method is used to get the state of the server, and
@@ -808,7 +776,7 @@ namespace Ssz.Xi.Client.Internal.Context
         /// <summary>
         ///     This data member represents the ContextOptions public property
         /// </summary>
-        private readonly uint _contextOptions = (uint) global::Xi.Contracts.Constants.ContextOptions.NoOptions;
+        private readonly uint _contextOptions = 0;
 
         /// <summary>
         ///     The private representation of the IResourceManagement public property

@@ -285,20 +285,22 @@ namespace Impl {
 
             if (HR.Succeeded)
             {
-                // Try secondary to Add Items (USO OPC server bug, failed to add exsisting items if some errors were before)
-                for (size_t i = 0; i < dwCount; ++i)
-                    if (pErrors[i] != S_OK)
-                    {
-                        CComHeapPtr<tagOPCITEMRESULT> pAddResult2;
-                        CComHeapPtr<HRESULT> pErrors2;
+#if USO
+				// Try secondary to Add Items (USO OPC server bug, failed to add exsisting items if some errors were before)
+				for (size_t i = 0; i < dwCount; ++i)
+					if (pErrors[i] != S_OK)
+					{
+						CComHeapPtr<tagOPCITEMRESULT> pAddResult2;
+						CComHeapPtr<HRESULT> pErrors2;
 
-                        HR = IOPCItemMgt->AddItems(1, pItemArray.data() + i, &pAddResult2, &pErrors2);
-                        if (HR.Succeeded)
-                        {
-                            pAddResult[i] = pAddResult2[0];
-                            pErrors[i] = pErrors2[0];
-                        }
-                    }                
+						HR = IOPCItemMgt->AddItems(1, pItemArray.data() + i, &pAddResult2, &pErrors2);
+						if (HR.Succeeded)
+						{
+							pAddResult[i] = pAddResult2[0];
+							pErrors[i] = pErrors2[0];
+						}
+					}
+#endif // USO                                
 			
 				lstAddResults = gcnew List<OPCITEMRESULT^>(ItemList->Count);
 				for (idx = 0; idx < dwCount; idx++)

@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Ssz.Dcs.CentralServer.Common\Ssz.Dcs.CentralServer.Common.csproj" />
+    <ProjectReference Include="..\Ssz.Dcs.Addons.OpcClient.Misc\Xi Common Support\Xi.Common.Support.csproj" />
     <ProjectReference Include="..\Ssz.Dcs.Addons.OpcClient.Misc\Xi OPC Wrapper Impl\Xi.OPC.Wrapper.Impl.csproj" />
   </ItemGroup>
 

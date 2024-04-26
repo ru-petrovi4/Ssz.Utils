@@ -105,24 +105,7 @@ namespace Xi.Contracts
 
 		#endregion
 
-		#region Info Discovery Methods
-
-		/// <summary>
-		/// <para>This method is used to get the description of the 
-		/// server.  This method can be called before a context has 
-		/// been established with the server.</para>
-		/// </summary>
-		/// <param name="contextId">
-		/// The optional context identifier. This call can be issued 
-		/// without first having established a client context.  
-		/// However, the ServerDetails element of the ServerDescription 
-		/// is not returned unless this parameter is present.
-		/// </param>
-		/// <returns>
-		/// The description of the server. 
-		/// </returns>
-		//[OperationContract, FaultContract(typeof(XiFault))]
-		ServerDescription Identify(string contextId);
+		#region Info Discovery Methods		
 
 		/// <summary>
 		/// This method is used to get the state of the server, and 

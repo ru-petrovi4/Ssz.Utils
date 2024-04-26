@@ -14,9 +14,10 @@
  *
  *********************************************************************/
 
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Xi.Common.Support;
 using Xi.Contracts.Constants;
 using Xi.Contracts.Data;
@@ -80,12 +81,14 @@ namespace Xi.Server.Base
 			if (listDataListEntry.Count > 0)
 			{
 				List<AddDataObjectResult> comResultsList = OnAddDataObjectsToList(listDataListEntry);
-				foreach (var ir in comResultsList)
+				foreach (int i in Enumerable.Range(0, comResultsList.Count))
 				{
-					if (FaultHelpers.Failed(ir.Result))
+                    var ir = comResultsList[i];
+                    if (FaultHelpers.Failed(ir.Result))
 					{
 						RemoveAValue(FindEntryRoot(ir.ServerAlias)); // This method locks the dictionary
 						ir.ServerAlias = 0;
+						StaticLogger.Logger.LogWarning($"Invalid OPC ItemId={listDataListEntry[i].InstanceId.LocalId}");
 					}
 				}
 

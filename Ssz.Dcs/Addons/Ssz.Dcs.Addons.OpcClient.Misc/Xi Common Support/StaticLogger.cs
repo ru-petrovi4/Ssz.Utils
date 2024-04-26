@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Xi.Common.Support
 {
-    public class StaticLogger
+    public static class StaticLogger
     {
         public static void Initialize(ILogger logger)
         {

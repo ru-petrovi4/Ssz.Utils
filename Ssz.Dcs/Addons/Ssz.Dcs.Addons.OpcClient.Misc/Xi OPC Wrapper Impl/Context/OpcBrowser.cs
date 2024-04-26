@@ -398,7 +398,7 @@ namespace Xi.OPC.Wrapper.Impl
 			// If there is only one server type supported, then use the server type to determine which one to call.
 			// Otherwise, use the first element of the starting path (the wrapped server root) to determine which one to call
 			uint serverTypeOfThisBrowse = 0;
-			if (XiOPCWrapperServer.OpcWrappedServers.Count == 1)
+			if (XiOPCWrapperServer.ConfiguredOpcServerInfos.Count == 1)
 			{
 				// TODO: Add code here for alternate wrapped server types
 				if ((XiOPCWrapperServer.ThisServerEntry.ServerDescription.ServerTypes & ServerType.OPC_DA205_Wrapper) > 0)
@@ -471,7 +471,7 @@ namespace Xi.OPC.Wrapper.Impl
 
 			if (isServerTypeAccessible == false)
 			{
-				OpcServerInfo server = XiOPCWrapperServer.OpcWrappedServers.Find(ws => (ws.ServerType & serverTypeOfThisBrowse) > 0);
+				OpcServerInfo server = XiOPCWrapperServer.ConfiguredOpcServerInfos.Find(ws => (ws.ServerType & serverTypeOfThisBrowse) > 0);
 				if (server != null)
 					throw FaultHelpers.Create(XiFaultCodes.E_WRAPPEDSERVER_NOT_ACCESSIBLE,
 									"The " + server.ProgId + " wrapped server is not currently accessible.");

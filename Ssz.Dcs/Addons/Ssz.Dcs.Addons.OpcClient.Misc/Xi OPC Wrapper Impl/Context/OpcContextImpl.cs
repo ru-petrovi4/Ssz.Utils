@@ -24,6 +24,8 @@ using Xi.OPC.COM.Impl;
 
 using Xi.Server.Base;
 using Xi.Common.Support;
+using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace Xi.OPC.Wrapper.Impl
 {
@@ -115,34 +117,34 @@ namespace Xi.OPC.Wrapper.Impl
 		/// then the values for this data member will have to be changed, along with 
 		/// its associated comparisons.
 		/// </summary>
-		private uint AccessibleWrappedServers
-		{
-			get { return _accessibleWrappedServers; }
+		private uint AccessibleServerTypes
+        {
+			get { return _accessibleServerTypes; }
 		}
-		private uint _accessibleWrappedServers = 0;
+		private uint _accessibleServerTypes = 0;
 
 		public override bool IsAccessibleDataAccess
 		{
-			get { return ((_accessibleWrappedServers & (uint)Contracts.Constants.ContextOptions.EnableDataAccess) > 0); }
+			get { return ((_accessibleServerTypes & (uint)Contracts.Constants.AccessibleServerTypes.DataAccess) > 0); }
 		}
 		public override bool IsAccessibleAlarmsAndEvents
 		{
-			get { return ((_accessibleWrappedServers & (uint)Contracts.Constants.ContextOptions.EnableAlarmsAndEventsAccess) > 0); }
+			get { return ((_accessibleServerTypes & (uint)Contracts.Constants.AccessibleServerTypes.AlarmsAndEventsAccess) > 0); }
 		}
 		public override bool IsAccessibleJournalDataAccess
 		{
-			get { return ((_accessibleWrappedServers & (uint)Contracts.Constants.ContextOptions.EnableJournalDataAccess) > 0); }
+			get { return ((_accessibleServerTypes & (uint)Contracts.Constants.AccessibleServerTypes.JournalDataAccess) > 0); }
 		}
 		public override bool IsAccessibleJournalAlarmsAndEvents
 		{
-			get { return ((_accessibleWrappedServers & (uint)Contracts.Constants.ContextOptions.EnableJournalAlarmsAndEventsAccess) > 0); }
+			get { return ((_accessibleServerTypes & (uint)Contracts.Constants.AccessibleServerTypes.JournalAlarmsAndEventsAccess) > 0); }
 		}
 
 	    public string SessionId { get; private set; }
         
-	    internal void ClearAccessibleServer(ContextOptions server)
+	    internal void ClearAccessibleServerTypes(AccessibleServerTypes accessibleServerTypes)
 		{
-			_accessibleWrappedServers &= ~(uint)server;
+			_accessibleServerTypes &= ~(uint)accessibleServerTypes;
 		}		
 
 		public void ThrowOnDisconnectedServer(cliHRESULT hr, string progId)
@@ -150,17 +152,17 @@ namespace Xi.OPC.Wrapper.Impl
 			if (   ((uint)hr.hResult == 0x800706ba) // "The RPC server is unavailable"
 				|| ((uint)hr.hResult == 0x800706bf)) // The remote procedure called failed and did not execute
 			{
-				OpcServerInfo server = XiOPCWrapperServer.OpcWrappedServers.Find(ws => string.Compare(ws.ProgId, progId) == 0);
+				OpcServerInfo server = XiOPCWrapperServer.ConfiguredOpcServerInfos.Find(ws => string.Compare(ws.ProgId, progId) == 0);
 				switch (server.ServerType)
 				{
 					case ServerType.OPC_DA205_Wrapper:
-                        ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableDataAccess);
+                        ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.DataAccess);
 						break;
 					case ServerType.OPC_AE11_Wrapper:
-                        ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableAlarmsAndEventsAccess);
+                        ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.AlarmsAndEventsAccess);
 						break;
 					case ServerType.OPC_HDA12_Wrapper:
-                        ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableJournalDataAccess);
+                        ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.JournalDataAccess);
 						break;
 					default:
 						break;
@@ -181,12 +183,11 @@ namespace Xi.OPC.Wrapper.Impl
 		/// defined in XiOPCWrapper.Interfaces.
 		/// </summary>
 		/// <returns></returns>
-		public uint OpcCreateInstance(ref uint lcid, ServerDescription serverDescription)
+		public void OpcCreateInstance(ref uint lcid, ServerDescription serverDescription)
 		{
 			uint daLCID = 0;
 			uint hdaLCID = 0;
-			uint aeLCID = 0;
-			uint rc = XiFaultCodes.S_OK;            
+			uint aeLCID = 0;			    
 
 			uint numNegotiatedServers = 0;
 
@@ -200,12 +201,13 @@ namespace Xi.OPC.Wrapper.Impl
 			uint aeConnectRC = 0;
 			uint aeShutdownRC = 0;
 
-			foreach (var server in XiOPCWrapperServer.OpcWrappedServers)
+            _accessibleServerTypes = 0;
+
+            foreach (var server in XiOPCWrapperServer.ConfiguredOpcServerInfos)
 			{
 				switch (server.ServerType)
 				{
-					case ServerType.OPC_DA205_Wrapper:
-						if ((ContextOptions & (uint)Contracts.Constants.ContextOptions.EnableDataAccess) > 0)
+					case ServerType.OPC_DA205_Wrapper:						
 						{
                             IOPCServerCli iOPCServer = null;
 #if USO
@@ -220,7 +222,7 @@ namespace Xi.OPC.Wrapper.Impl
 #endif
 							if (hr1.Succeeded == false)
 							{
-								rc = daConnectRC = (uint)hr1.hResult;
+								daConnectRC = (uint)hr1.hResult;
 							}
 							else
 							{
@@ -231,7 +233,7 @@ namespace Xi.OPC.Wrapper.Impl
                                     cliHRESULT hr1A = iRegOPCDataCallbacks.AdviseOnDataChange(OnDataChange);
 									if (hr1A.Succeeded == false)
 									{
-										rc = daCallbackRC = (uint)hr1A.hResult;
+										daCallbackRC = (uint)hr1A.hResult;
 									}
 									else
 									{
@@ -242,13 +244,13 @@ namespace Xi.OPC.Wrapper.Impl
                                             cliHRESULT hr1B = iRegOPCShutdownCallback.AdviseShutdownRequest(OnDAShutdown);
 											if (hr1B.Succeeded == false)
 											{
-												rc = daShutdownRC = (uint)hr1B.hResult;
+												daShutdownRC = (uint)hr1B.hResult;
 											}
 											else
 											{
 												iOPCServer.SetLocaleID(lcid);
 												iOPCServer.GetLocaleID(out daLCID);
-                                                _accessibleWrappedServers |= (uint)Contracts.Constants.ContextOptions.EnableDataAccess;
+                                                _accessibleServerTypes |= (uint)Contracts.Constants.AccessibleServerTypes.DataAccess;
 												numNegotiatedServers++;
                                                 IOPCServer = iOPCServer;
                                                 IOPCServer_ProgId = server.ProgId;
@@ -260,8 +262,7 @@ namespace Xi.OPC.Wrapper.Impl
 						}
 						break;
 
-					case ServerType.OPC_HDA12_Wrapper:
-						if ((ContextOptions & (uint)Contracts.Constants.ContextOptions.EnableJournalDataAccess) > 0)
+					case ServerType.OPC_HDA12_Wrapper:						
 						{
                             IOPCHDA_ServerCli iOPCHDA_Server = null;
 #if USO
@@ -277,7 +278,7 @@ namespace Xi.OPC.Wrapper.Impl
 #endif
 							if (hr2.Succeeded == false)
 							{
-								rc = hdaConnectRC = (uint)hr2.hResult;
+								hdaConnectRC = (uint)hr2.hResult;
 							}
 							else
 							{
@@ -288,13 +289,13 @@ namespace Xi.OPC.Wrapper.Impl
                                     cliHRESULT hr2A = iRegOPCShutdownCallback.AdviseShutdownRequest(OnHDAShutdown);
 									if (hr2A.Succeeded == false)
 									{
-										rc = hdaShutdownRC = (uint)hr2A.hResult;
+										hdaShutdownRC = (uint)hr2A.hResult;
 									}
 									else
 									{
 										iOPCHDA_Server.SetLocaleID(lcid);
 										iOPCHDA_Server.GetLocaleID(out hdaLCID);
-                                        _accessibleWrappedServers |= (uint)Contracts.Constants.ContextOptions.EnableJournalDataAccess;
+                                        _accessibleServerTypes |= (uint)Contracts.Constants.AccessibleServerTypes.JournalDataAccess;
 										numNegotiatedServers++;
                                         IOPCHDA_Server = iOPCHDA_Server;
                                         IOPCHDAServer_ProgId = server.ProgId;
@@ -304,8 +305,7 @@ namespace Xi.OPC.Wrapper.Impl
 						}
 						break;
 
-					case ServerType.OPC_AE11_Wrapper:
-						if ((ContextOptions & (uint)Contracts.Constants.ContextOptions.EnableAlarmsAndEventsAccess) > 0)
+					case ServerType.OPC_AE11_Wrapper:						
 						{
                             IOPCEventServerCli iOPCEventServer = null;
 #if USO
@@ -322,7 +322,7 @@ namespace Xi.OPC.Wrapper.Impl
 
 							if (hr3.Succeeded == false)
 							{
-								rc = aeConnectRC = (uint)hr3.hResult;
+								aeConnectRC = (uint)hr3.hResult;
 							}
 							else
 							{
@@ -333,13 +333,13 @@ namespace Xi.OPC.Wrapper.Impl
                                     cliHRESULT hr3A = iRegOPCShutdownCallback.AdviseShutdownRequest(OnAEShutdown);
 									if (hr3A.Succeeded == false)
 									{
-										rc = aeShutdownRC = (uint)hr3A.hResult;
+										aeShutdownRC = (uint)hr3A.hResult;
 									}
 									else
 									{
 										iOPCEventServer.SetLocaleID(lcid);
 										iOPCEventServer.GetLocaleID(out aeLCID);
-                                        _accessibleWrappedServers |= (uint)Contracts.Constants.ContextOptions.EnableAlarmsAndEventsAccess;
+                                        _accessibleServerTypes |= (uint)Contracts.Constants.AccessibleServerTypes.AlarmsAndEventsAccess;
 										numNegotiatedServers++;
                                         IOPCEventServer = iOPCEventServer;
                                         IOPCEventServer_ProgId = server.ProgId;
@@ -349,8 +349,7 @@ namespace Xi.OPC.Wrapper.Impl
 						}
 						break;                    
 
-					default:
-						rc = XiFaultCodes.E_FAIL;
+					default:						
 						Debug.Assert(server.ServerType == ServerType.OPC_DA205_Wrapper ||
 									 server.ServerType == ServerType.OPC_HDA12_Wrapper ||
 									 server.ServerType == ServerType.OPC_AE11_Wrapper);
@@ -360,45 +359,49 @@ namespace Xi.OPC.Wrapper.Impl
 			// set the number of wrapped servers that were negotiated 			
 			NumberOfWrappedServersForThisContext = numNegotiatedServers;
 
-			if (numNegotiatedServers == 0)
+            List<string> msg = new();
+
+            if (daConnectRC != XiFaultCodes.S_OK)
+            {
+                msg.Add("Main Connection to DA server failed, HResult=" + daConnectRC.ToString("X"));
+            }
+            if (daCallbackRC != XiFaultCodes.S_OK)
+            {
+                msg.Add("Data Callback connection to DA server failed, HResult=" + daCallbackRC.ToString("X"));
+            }
+            if (daShutdownRC != XiFaultCodes.S_OK)
+            {
+                msg.Add("Shutdown Callback Connection to DA server failed, HResult=" + daShutdownRC.ToString("X"));
+            }
+
+            if (hdaConnectRC != XiFaultCodes.S_OK)
+            {
+                msg.Add("Main Connection to HDA server failed, HResult=" + hdaConnectRC.ToString("X"));
+            }
+            if (hdaShutdownRC != XiFaultCodes.S_OK)
+            {
+                msg.Add("Shutdown Callback Connection to HDA server failed, HResult=" + hdaShutdownRC.ToString("X"));
+            }
+
+            if (aeConnectRC != XiFaultCodes.S_OK)
+            {
+                msg.Add("Main Connection to A&E server failed, HResult=" + aeConnectRC.ToString("X"));
+            }
+            if (aeShutdownRC != XiFaultCodes.S_OK)
+            {
+                msg.Add("Shutdown Callback Connection to A&E server failed, HResult=" + aeShutdownRC.ToString("X"));
+            }
+            
+			if (msg.Count > 0)
 			{
-				string msg = "";
-
-				if (daConnectRC != XiFaultCodes.S_OK)
-				{
-					msg += "Main Connection to DA server failed, HResult=" + daConnectRC.ToString("X") + "; ";
-				}
-				if (daCallbackRC != XiFaultCodes.S_OK)
-				{
-					msg += "Data Callback connection to DA server failed, HResult=" + daCallbackRC.ToString("X") + "; ";
-				}
-				if (daShutdownRC != XiFaultCodes.S_OK)
-				{
-					msg += "Shutdown Callback Connection to DA server failed, HResult=" + daShutdownRC.ToString("X") + "; ";
-				}
-
-				if (hdaConnectRC != XiFaultCodes.S_OK)
-				{
-					msg += "Main Connection to HDA server failed, HResult=" + hdaConnectRC.ToString("X") + "; ";
-				}
-				if (hdaShutdownRC != XiFaultCodes.S_OK)
-				{
-					msg += "Shutdown Callback Connection to HDA server failed, HResult=" + hdaShutdownRC.ToString("X") + "; ";
-				}
-
-				if (aeConnectRC != XiFaultCodes.S_OK)
-				{
-					msg += "Main Connection to A&E server failed, HResult=" + aeConnectRC.ToString("X") + "; ";
-				}
-				if (aeShutdownRC != XiFaultCodes.S_OK)
-				{
-					msg += "Shutdown Callback Connection to A&E server failed, HResult=" + aeShutdownRC.ToString("X") + "; ";
-				}
-
-				throw FaultHelpers.Create(msg);
-			}
-			else
-				rc = XiFaultCodes.S_OK; // if at least one wrapped server opened, then set the result code to success
+                string message = String.Join("\n", msg.ToArray());
+                StaticLogger.Logger.LogError(message);
+                if (numNegotiatedServers == 0)
+                {
+                    throw FaultHelpers.Create(message);
+                }
+            }			
+			
 			if ((lcid == daLCID) || (lcid == hdaLCID) || (lcid == aeLCID))
 			{
 				// do nothing - the requested lcid was set
@@ -417,7 +420,6 @@ namespace Xi.OPC.Wrapper.Impl
 					throw FaultHelpers.Create("No LocaleIDs were available for any wrapped server");
 				}
 			}
-			return rc;
 		}
 
 	    private string makeUnisimServerProgIdWithModelName(string progId)
@@ -497,7 +499,7 @@ namespace Xi.OPC.Wrapper.Impl
 			{
 				rc = XiFaultCodes.E_WRAPPEDSERVER_EXCEPTION;
 			}
-            ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableDataAccess);
+            ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.DataAccess);
 			return rc;
 		}
 
@@ -542,7 +544,7 @@ namespace Xi.OPC.Wrapper.Impl
 			{
 				rc = XiFaultCodes.E_WRAPPEDSERVER_EXCEPTION;
 			}
-            ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableJournalDataAccess);
+            ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.JournalDataAccess);
 			return rc;
 		}
 
@@ -588,7 +590,7 @@ namespace Xi.OPC.Wrapper.Impl
 			{
 				rc = XiFaultCodes.E_WRAPPEDSERVER_EXCEPTION;
 			}
-            ClearAccessibleServer(Contracts.Constants.ContextOptions.EnableAlarmsAndEventsAccess);
+            ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.AlarmsAndEventsAccess);
 			return rc;
 		}
 

@@ -36,34 +36,6 @@ namespace Xi.Server.Base
 		where TList : ListRoot
 	{
 		/// <summary>
-		/// The list of all server types to be matched against this 
-		/// server's type defined by SupportedServerTypes.
-		/// </summary>
-		protected static List<uint> _ServerTypeList = new List<uint> 
-								{ 
-									ServerType.OPC_DA205_Wrapper, 
-									ServerType.OPC_AE11_Wrapper,
-									ServerType.OPC_HDA12_Wrapper,
-									ServerType.OPC_DA30_Wrapper,									
-								};
-
-		/// <summary>
-		/// This property is used to obtain the complete list of valid server types.
-		/// </summary>
-		public static List<uint> ServerTypeList
-		{
-			get { return _ServerTypeList; }
-			private set { }
-		}
-
-		/// <summary>
-		/// The details of the server description. This information is not 
-		/// returned in the ServerDescription if the Identify() method is 
-		/// called without a context id.
-		/// </summary>
-		protected static ServerDetails _ServerDetails;
-
-		/// <summary>
 		/// This flag indicates, when TRUE, that the server has a callback endpoint.
 		/// It is set by the implementation subclass.
 		/// </summary>
@@ -73,23 +45,7 @@ namespace Xi.Server.Base
 		/// This flag indicates, when TRUE, that the server has a poll endpoint.
 		/// It is set by the implementation subclass.
 		/// </summary>
-		protected static bool _PollingSupported = true;
-
-		/// <summary>
-		/// This method initializes the server data.
-		/// </summary>
-		/// <param name="context">
-		/// The context for this method invocation
-		/// </param>
-		/// <returns>
-		/// The result code that indicates the success or failure of this method.
-		/// </returns>
-		protected void InitializeServerData(TContext context)
-		{			
-			InitializeServerDescription(context);
-			ServerDescription.XiContractsVersionNumber =
-				Assembly.GetAssembly(typeof(IResourceManagement)).GetName().Version.ToString();
-		}
+		protected static bool _PollingSupported = true;		
 
 		/// <summary>
 		/// This flag indicates, when TRUE, that the roles, methods, and features have been set in 
@@ -161,77 +117,7 @@ namespace Xi.Server.Base
 		/// DA server shuts down, this flag should be cleared, causing the locale ids to be reloaded 
 		/// the next time a context is opened for Historical Alarms and Events.
 		/// </summary>
-		public static bool HAeLocaleIdSet = false;
-
-		/// <summary>
-		/// This method initializes the Server Description.
-		/// </summary>
-		/// <param name="context">
-		/// The context for this method invocation
-		/// </param>
-		/// <returns>
-		/// The result code that indicates the success or failure of this method.
-		/// </returns>
-		protected void InitializeServerDescription(TContext context)
-		{
-			List<uint> localeIds = null;
-			// collect all the locale ids into one list for the supported server types
-			foreach (var serverType in _ServerTypeList)
-			{
-				// Server type supported is set here and then below to ensure the server type is accessible
-				// This first test below checks to see if it is configured for this server, and the test 
-				// below determines if that server is accessible
-				bool serverTypeSupported = ((ServerDescription.ServerTypes & serverType) > 0);
-				if (serverTypeSupported)
-				{
-					switch (serverType)
-					{
-						case (uint)ServerType.OPC_DA205_Wrapper:
-						case (uint)ServerType.OPC_DA30_Wrapper:						
-							if ((context.ContextOptions & (uint)ContextOptions.EnableDataAccess) == 0)
-								serverTypeSupported = false;
-							break;
-
-						case (uint)ServerType.OPC_AE11_Wrapper:						
-							if ((context.ContextOptions & (uint)ContextOptions.EnableAlarmsAndEventsAccess) == 0)
-								serverTypeSupported = false;
-							break;
-
-						case (uint)ServerType.OPC_HDA12_Wrapper:						
-							if ((context.ContextOptions & (uint)ContextOptions.EnableJournalDataAccess) == 0)
-								serverTypeSupported = false;
-							break;
-
-						default:
-							break;
-					}
-					if (serverTypeSupported) // both configured and accessible
-					{
-						localeIds = OnGetLocaleIds(context, serverType);
-						if (localeIds != null)
-						{
-							if (_ThisServerEntry.ServerDescription.SupportedLocaleIds == null)
-								_ThisServerEntry.ServerDescription.SupportedLocaleIds = localeIds;
-							else
-							{
-								foreach (var lcid in localeIds)
-									_ThisServerEntry.ServerDescription.SupportedLocaleIds.Add(lcid);
-							}
-						}
-					}
-				}
-			}
-			// remove the duplicates from the locale id list
-			if (   (_ThisServerEntry.ServerDescription.SupportedLocaleIds != null)
-				&& (_ThisServerEntry.ServerDescription.SupportedLocaleIds.Count > 1))
-			{
-				IEnumerable<uint> distinctIds = _ThisServerEntry.ServerDescription.SupportedLocaleIds.Distinct();
-				_ThisServerEntry.ServerDescription.SupportedLocaleIds = distinctIds.ToList();
-			}
-			context.SetSupportedLocaleIds(_ThisServerEntry.ServerDescription.SupportedLocaleIds);
-
-			_ServerDetails = OnGetServerDetails(context);
-		}
+		public static bool HAeLocaleIdSet = false;		
 
 		/// <summary>
 		/// Override this method in a server specific subclass of ServerBase

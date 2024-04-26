@@ -59,69 +59,9 @@ namespace Xi.OPC.Wrapper.Impl
 			//	ep => ep.BindingName == "WebHttpBinding" && ep.ContractType == typeof(IRestRead).Name);
 			//if (restRead != null)
 			//	restRead.Url = string.Format("{0}/changes/{1}/{2}", restRead.Url, contextImpl.Id, typeof(IRestRead).Name);
-
-			// Connect to the requested OPC COM Servers.
-			uint requestedServers = contextImpl.ContextOptions;
-			uint rc = contextImpl.OpcCreateInstance(ref localeId, _ThisServerEntry.ServerDescription);
-			if (XiFaultCodes.S_OK != rc)
-			{
-				string msg = "The OPC .NET Server was unable to connect to the following OPC COM Servers: \n";
-				int count = 0;
-				foreach (var server in XiOPCWrapperServer.OpcWrappedServers)
-				{
-					switch (server.ServerType)
-					{
-						case ServerType.OPC_DA205_Wrapper:
-							if ((requestedServers & (uint)ContextOptions.EnableDataAccess) > 0)
-							{
-								if (count > 0)
-									msg += "\n";
-								count++;
-								msg += "  ";
-								if (string.IsNullOrEmpty(server.HostName) == false)
-								{
-									msg += server.HostName;
-									msg += "/";
-								}
-								msg += server.ProgId;
-							}
-							break;
-						case ServerType.OPC_HDA12_Wrapper:
-							if ((requestedServers & (uint)ContextOptions.EnableJournalDataAccess) > 0)
-							{
-								if (count > 0)
-									msg += "\n";
-								count++;
-								msg += "  ";
-								if (string.IsNullOrEmpty(server.HostName) == false)
-								{
-									msg += server.HostName;
-									msg += "/";
-								}
-								msg += server.ProgId;
-							}
-							break;
-						case ServerType.OPC_AE11_Wrapper:
-							if ((requestedServers & (uint)ContextOptions.EnableAlarmsAndEventsAccess) > 0)
-							{
-								if (count > 0)
-									msg += "\n";
-								count++;
-								msg += "  ";
-								if (string.IsNullOrEmpty(server.HostName) == false)
-								{
-									msg += server.HostName;
-									msg += "/";
-								}
-								msg += server.ProgId;
-							}
-							break;
-						default:
-							break;
-					}
-				}
-				throw FaultHelpers.Create(rc, msg);
-			}
+			
+			contextImpl.OpcCreateInstance(ref localeId, _ThisServerEntry.ServerDescription);
+			
 			return contextImpl;
 		}
 

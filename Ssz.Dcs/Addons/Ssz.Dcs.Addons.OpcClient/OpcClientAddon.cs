@@ -11,6 +11,7 @@ using System;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 using System.Threading;
+using Xi.Common.Support;
 
 namespace Ssz.Dcs.Addons.OpcClient
 {
@@ -63,6 +64,7 @@ namespace Ssz.Dcs.Addons.OpcClient
         
         public override void Initialize(CancellationToken cancellationToken)
         {
+            StaticLogger.Initialize(LoggersSet.Logger);
             //string serverAddress = OptionsSubstituted.TryGetValue(OpcClient_ServerAddress_OptionName) ?? @"";
             //string systemNameToConnect = OptionsSubstituted.TryGetValue(OpcClient_SystemNameToConnect_OptionName) ?? @"";
             //CaseInsensitiveDictionary<string?> contextParams = NameValueCollectionHelper.Parse(OptionsSubstituted.TryGetValue(OpcClient_ContextParams_OptionName));

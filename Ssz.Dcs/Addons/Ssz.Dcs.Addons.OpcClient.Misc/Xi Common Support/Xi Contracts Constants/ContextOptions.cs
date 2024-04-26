@@ -30,39 +30,16 @@ namespace Xi.Contracts.Constants
 	/// Vendors may use the high order 8 bits.</para>
 	/// </summary>
 	[Flags]
-	public enum ContextOptions : uint
-	{
-		/// <summary>
-		/// No options are set for the Context.  
-		/// </summary>
-		NoOptions		                     = 0x00000000,		
-
-		/// <summary>
-		/// Selectively enable access to the server for data.
-		/// If one of the EnableAccessTo bits is not set,
-		/// then all types of access are enabled. 
-		/// </summary>
-		EnableDataAccess                     = 0x00100000,
-
-		/// <summary>
-		/// Connect to the server for Alarms and Events Access.
-		/// If one of the EnableAccessTo bits is not set,
-		/// then all types of access are enabled. 
-		/// </summary>
-		EnableAlarmsAndEventsAccess          = 0x00200000,
-
-		/// <summary>
-		/// Connect to the server for Historical Data Access.
-		/// If one of the EnableAccessTo bits is not set,
-		/// then all types of access are enabled. 
-		/// </summary>
-		EnableJournalDataAccess              = 0x00400000,
-
-		/// <summary>
-		/// Connect to the server for Historical Alarms and Events Access.
-		/// If one of the EnableAccessTo bits is not set,
-		/// then all types of access are enabled. 
-		/// </summary>
-		EnableJournalAlarmsAndEventsAccess   = 0x00800000,
+	public enum AccessibleServerTypes : uint
+	{		
+		None		                     = 0x00000000,
+		
+		DataAccess                     = 0x00100000,
+		
+		AlarmsAndEventsAccess          = 0x00200000,
+		
+		JournalDataAccess              = 0x00400000,
+		
+		JournalAlarmsAndEventsAccess   = 0x00800000,
 	}
 }

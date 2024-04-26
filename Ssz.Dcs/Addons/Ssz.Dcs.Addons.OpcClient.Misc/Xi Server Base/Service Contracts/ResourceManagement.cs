@@ -137,19 +137,7 @@ namespace Xi.Server.Base
 			            null, out reInitiateKey);
 
 			        //StaticLogger.Logger.LogDebug("Context being created for {0}", tContext.Identity.Name);
-			        ContextManager<TContext, TList>.AddContext(tContext);
-
-			        // The StandardMib, VendorMib, and ServerDescription are initialized when the wrapper initiates its first context for a client.
-			        // It is reinitialized for each subsequent context of previously inaccessible supported wrappers become accessible.
-			        try
-			        {
-			            InitializeServerData(tContext);
-			        }			        
-			        catch (Exception)
-			        {			            
-			            _ServerDetails = null;
-			            throw;
-			        }
+			        ContextManager<TContext, TList>.AddContext(tContext);			        
 
 			        if (_ThisServerEntry.ServerDescription.SupportedLocaleIds != null)
 			        {
@@ -223,54 +211,7 @@ namespace Xi.Server.Base
 
 		#endregion
 
-		#region Discovery Methods
-
-		/// <summary>
-		/// <para>This method is used to get the description of the 
-		/// server.  This method can be called before a context has 
-		/// been established with the server.</para>
-		/// </summary>
-		/// <param name="contextId">
-		/// The optional context identifier. This call can be issued 
-		/// without first having established a client context.  
-		/// However, the ServerDetails element of the ServerDescription 
-		/// is not returned unless this parameter is present.
-		/// </param>
-		/// <returns>
-		/// The description of the server. 
-		/// </returns>
-		ServerDescription IResourceManagement.Identify(
-			string contextId)
-		{
-            //using (StaticLogger.Logger.EnterMethod())
-			{
-				ServerDescription serverDescription        = new ServerDescription();
-				serverDescription.ServerDiscoveryUrl       = _ThisServerEntry.ServerDescription.ServerDiscoveryUrl;
-				serverDescription.XiContractsVersionNumber = _ThisServerEntry.ServerDescription.XiContractsVersionNumber;
-				serverDescription.SecurityTokenServiceUrl  = _ThisServerEntry.ServerDescription.SecurityTokenServiceUrl;
-				serverDescription.HostName                 = _ThisServerEntry.ServerDescription.HostName;
-				serverDescription.ServerName               = _ThisServerEntry.ServerDescription.ServerName;
-				serverDescription.SystemName               = _ThisServerEntry.ServerDescription.SystemName;
-				serverDescription.ServerTypes              = _ThisServerEntry.ServerDescription.ServerTypes;
-				serverDescription.SupportedLocaleIds       = _ThisServerEntry.ServerDescription.SupportedLocaleIds;
-				serverDescription.VendorName               = _ThisServerEntry.ServerDescription.VendorName;
-				serverDescription.UserInfo                 = _ThisServerEntry.ServerDescription.UserInfo;
-
-				// if a context was supplied, set the server details, otherwise, don't return them
-				try
-				{
-					TContext context = ContextManager<TContext, TList>.LookupContext(contextId);
-					if (context != null)
-						serverDescription.ServerDetails = _ServerDetails;
-				}
-		        catch (Exception e)
-		        {
-		            StaticLogger.Logger.LogDebug(e, @"Exception");
-					serverDescription.ServerDetails = null;
-				}
-				return serverDescription;
-			}
-		}
+		#region Discovery Methods		
 
 		/// <summary>
 		/// This method is used to get the state of the server, and 
