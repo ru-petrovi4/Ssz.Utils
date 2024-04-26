@@ -223,12 +223,7 @@ namespace Xi.Server.Base
 				}
 			}
 		}
-		private List<uint> _LocaleIds = new List<uint>() { 0x0409u };
-
-		/// <summary>
-		/// The context options set for the context by the Initiate() method.
-		/// </summary>
-		public uint ContextOptions { get; set; }		
+		private List<uint> _LocaleIds = new List<uint>() { 0x0409u };		
 
 		/// <summary>
 		/// The number of accessible wrapped servers as defined by the context options .
@@ -253,31 +248,7 @@ namespace Xi.Server.Base
 		/// <summary>
 		/// Indicates when TRUE that the Journal Alarms and Events capabilities of the server are enabled
 		/// </summary>
-		abstract public bool IsAccessibleJournalAlarmsAndEvents { get; }
-
-		/// <summary>
-		/// The negotiated timeout in milliseconds from the Resource Discover Initiate
-		/// </summary>
-		public TimeSpan ContextTimeout
-		{
-			get { return _ContextTimeout; }
-			set { _ContextTimeout = ValidateContextTimeout(value); }
-		}
-		private TimeSpan _ContextTimeout = new TimeSpan(0, 10, 0);
-
-		/// <summary>
-		/// The implementation class may override this method to 
-		/// validate an acceptable timeout for the server instance.
-		/// </summary>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		protected virtual TimeSpan ValidateContextTimeout(TimeSpan value)
-		{
-			if (TimeSpan.Zero == value) return new TimeSpan(0, 10, 0);			// Default is 10 Minutes (a long time)
-			if (new TimeSpan(0, 0, 9) > value) return new TimeSpan(0, 0, 9);	// The minimum timeout is nine seconds.
-			if (new TimeSpan(0, 30, 0) < value) return new TimeSpan(0, 30, 0);	// The maximum timeout is 30 minutes.
-			return value;
-		}
+		abstract public bool IsAccessibleJournalAlarmsAndEvents { get; }				
 
 		/// <summary>
 		/// The last time the context was accessed.
@@ -286,17 +257,6 @@ namespace Xi.Server.Base
 		{
 			get { return _lastAccess; }
 			set { _lastAccess = value; }
-		}
-
-		/// <summary>
-		/// This method is invoked to determine if this context 
-		/// instance has timed out.  And thus should be disposed.
-		/// </summary>
-		/// <param name="timeNow"></param>
-		/// <returns></returns>
-		internal bool CheckTimeout(DateTime timeNow)
-		{
-			return (timeNow - LastAccess) > ContextTimeout;
 		}		
 
 		/// <summary>

@@ -88,10 +88,10 @@ namespace Xi.OPC.Wrapper.Impl
 										}
 									}
 									else
-									{
-                                        ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.DataAccess);
+									{                                        
 										serverStatus.ServerState = ServerState.NotConnected;
 										serverStatus.CurrentTime = DateTime.UtcNow;
+										ThrowOnDisconnectedServer(HR, wrappedServer.ProgId);
 									}
 								}
 							}
@@ -138,11 +138,11 @@ namespace Xi.OPC.Wrapper.Impl
 										}
 									}
 									else
-									{
-                                        ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.AlarmsAndEventsAccess);
+									{                                        
 										serverStatus.ServerState = ServerState.NotConnected;
 										serverStatus.CurrentTime = DateTime.UtcNow;
-									}
+                                        ThrowOnDisconnectedServer(HR, wrappedServer.ProgId);
+                                    }
 								}
 							}
 							break;
@@ -193,11 +193,11 @@ namespace Xi.OPC.Wrapper.Impl
 										}
 									}
 									else
-									{
-                                        ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.JournalDataAccess);
+									{                                        
 										serverStatus.ServerState = ServerState.NotConnected;
 										serverStatus.CurrentTime = DateTime.UtcNow;
-									}
+                                        ThrowOnDisconnectedServer(HR, wrappedServer.ProgId);
+                                    }
 								}
 							}
 							break;						

@@ -101,8 +101,7 @@ namespace Xi.Server.Base
 		/// The server generated context id.
 		/// </returns>
 		string IResourceManagement.Initiate(
-			string applicationName, string workstationName, ref uint localeId, ref uint contextTimeout, 
-			uint contextOptions, out string reInitiateKey)
+			string applicationName, string workstationName, ref uint localeId)
 		{
             //using (StaticLogger.Logger.EnterMethod(applicationName, workstationName, localeId))
 			{
@@ -132,9 +131,7 @@ namespace Xi.Server.Base
 			    {			        			        
 			        // Create the context for the client
 			        uint localeId1 = localeId;
-			        TContext tContext = OnInitiate(applicationName, workstationName,
-			            ref localeId1, ref contextTimeout, contextOptions,
-			            null, out reInitiateKey);
+			        TContext tContext = OnInitiate(applicationName, workstationName, ref localeId1);
 
 			        //StaticLogger.Logger.LogDebug("Context being created for {0}", tContext.Identity.Name);
 			        ContextManager<TContext, TList>.AddContext(tContext);			        
@@ -167,18 +164,9 @@ namespace Xi.Server.Base
 		/// </summary>
 		/// <param name="applicationName"></param>
 		/// <param name="workstationName"></param>
-		/// <param name="localeId"></param>
-		/// <param name="contextTimeout"></param>
-		/// <param name="contextOptions"></param>
-		/// <param name="ctx"></param>
-		/// <param name="userIdentity"></param>
-		/// <param name="listEndpointDefinitions"></param>
-		/// <param name="reInitiateKey"></param>
+		/// <param name="localeId"></param>		
 		/// <returns>An instance of a Context Implementation</returns>
-		protected abstract TContext OnInitiate(string applicationName, string workstationName,
-			ref uint localeId, ref uint contextTimeout, uint contextOptions, 
-			System.Security.Principal.IIdentity userIdentity, 
-			out string reInitiateKey);
+		protected abstract TContext OnInitiate(string applicationName, string workstationName, ref uint localeId);
 
 		/// <summary>
 		/// This method is used to close a context. When the context 

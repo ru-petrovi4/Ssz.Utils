@@ -89,8 +89,7 @@ namespace Xi.Contracts
 		/// </returns>
 		//[OperationContract, FaultContract(typeof(XiFault))]
 		string Initiate(string applicationName, string workstationName, 
-			ref uint localeId, ref uint contextTimeout, uint contextOptions, 
-			out string reInitiateKey);
+			ref uint localeId);
 
 		/// <summary>
 		/// This method is used to close a context. When the context 

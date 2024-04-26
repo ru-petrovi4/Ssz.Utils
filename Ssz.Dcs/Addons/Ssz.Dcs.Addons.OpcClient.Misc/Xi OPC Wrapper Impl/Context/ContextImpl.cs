@@ -31,14 +31,8 @@ namespace Xi.OPC.Wrapper.Impl
 	/// Each client is represented by an instance of a this class.
 	/// </summary>
 	public partial class ContextImpl : ContextBase<ListRoot>
-	{
-		internal ContextImpl(XiOPCWrapperServer server)
-		{
-		}
-
-		internal ContextImpl(XiOPCWrapperServer server, string transportSessionId, string applicationName,
-            string encriptedWorkstationName, ref uint localeId, ref uint contextTimeout, uint contextOptions,
-			System.Security.Principal.IIdentity userIdentity)
+	{		
+		internal ContextImpl(XiOPCWrapperServer server, string transportSessionId, string applicationName, string encriptedWorkstationName, ref uint localeId)
 		{
             // We have two sources of information about UserId
             // 1. From encripted workstation name (it looks like: WorkstatinName?UserName=UserId&UserRole=SomeRole&SessionId=TrainingSample"
@@ -52,10 +46,8 @@ namespace Xi.OPC.Wrapper.Impl
 			TransportSessionId = transportSessionId;
 			ApplicationName = applicationName;
 			WorkstationName = extractWorkstationName(encriptedWorkstationName);
-			LocaleId = localeId;
-			Identity = userIdentity;
-			ContextTimeout = new TimeSpan(0, 0, 0, 0, (int)contextTimeout);
-			ContextOptions = contextOptions;
+			LocaleId = localeId;						
+			
             SessionId = extractParameter(encriptedWorkstationName, "SessionId");
 
 #if USO

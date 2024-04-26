@@ -27,7 +27,8 @@ namespace Ssz.Dcs.CentralServer.ServerListItems
                 {
                     valueSubscription.Dispose();
                 }
-			}
+                ValueSubscriptionsCollection.Clear();
+            }
 
             base.Dispose(disposing);
         }

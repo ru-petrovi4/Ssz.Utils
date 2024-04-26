@@ -595,7 +595,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                 }                
 
                 if (IsInitialized && ContextParams.Count > 0 &&
-                    nowUtc > LastFailedConnectionDateTimeUtc + TimeSpan.FromSeconds(5))
+                    nowUtc > LastFailedConnectionDateTimeUtc + TimeSpan.FromSeconds(60))
                 {
                     try
                     {

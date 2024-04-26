@@ -85,8 +85,6 @@ namespace Ssz.Xi.Client.Internal.Context
                 if (workstationName is not null) _workstationName = workstationName;
                 else _workstationName = Dns.GetHostName();
 
-                _serverContextTimeoutInMs = ValidateServerContextTimeout(contextTimeout);                
-                
                 //if (localeId != 0)
                 //{
                 //    if (_xiServerEntry.ServerDescription?.SupportedLocaleIds is not null &&
@@ -123,8 +121,7 @@ namespace Ssz.Xi.Client.Internal.Context
 
                 try
                 {
-                    _contextId = _iResourceManagement.Initiate(_applicationName, _workstationName, ref _localeId,
-                        ref _serverContextTimeoutInMs, _contextOptions, out _reInitiateKey);
+                    _contextId = _iResourceManagement.Initiate(_applicationName, _workstationName, ref _localeId);
                 }
                 catch (Exception ex)
                 {
@@ -391,6 +388,12 @@ namespace Ssz.Xi.Client.Internal.Context
         /// </summary>
         public void KeepContextAlive(DateTime nowUtc)
         {   
+            if (_lastKeepAliveIntervalUtc is null || (uint)(nowUtc - _lastKeepAliveIntervalUtc.Value).TotalMilliseconds > KeepAliveIntervalMs)
+            {
+                _lastKeepAliveIntervalUtc = nowUtc;
+                Status();
+            }
+
             if (_pendingContextNotificationData is not null)
             {
                 RaiseContextNotifyEvent(this, _pendingContextNotificationData);
@@ -462,18 +465,7 @@ namespace Ssz.Xi.Client.Internal.Context
         public string ReInitiateKey
         {
             get { return _reInitiateKey; }
-        }
-
-        /// <summary>
-        ///     The publically visible context timeout provided to the server (in msecs). If the server fails to
-        ///     receive a call from the client for this period, it will close the context.
-        ///     Within this time period, if there was a communications failure, the client can
-        ///     attempt to ReInitiate the connection with the server for this context.
-        /// </summary>
-        public uint ContextTimeout
-        {
-            get { return _serverContextTimeoutInMs; }
-        }
+        }        
 
         /// <summary>
         ///     Inidicates, when TRUE, that the context is closing or has completed closing
@@ -490,8 +482,7 @@ namespace Ssz.Xi.Client.Internal.Context
         #region private functions
 
         private void SetResourceManagementLastCallUtc()
-        {
-            _resourceManagementLastCallUtc = DateTime.UtcNow;
+        {            
         }        
 
         /// <summary>
@@ -788,17 +779,7 @@ namespace Ssz.Xi.Client.Internal.Context
         /// <summary>
         ///     This data member is the private representation of the LocaleId interface property.
         /// </summary>
-        private readonly uint _localeId = (uint) Thread.CurrentThread.CurrentCulture.LCID;        
-
-        /// <summary>
-        ///     This data member is the private representation of the public ContextIimeout property
-        /// </summary>
-        private readonly uint _serverContextTimeoutInMs; // Context timeout provided to Server
-
-        /// <summary>
-        ///     The time of receipt of the response to the last successful IResourceManagement call.
-        /// </summary>
-        private DateTime _resourceManagementLastCallUtc;
+        private readonly uint _localeId = (uint) Thread.CurrentThread.CurrentCulture.LCID;                
 
         /// <summary>
         ///     This data member is the private representation of the public ReInitateKey property
@@ -829,12 +810,11 @@ namespace Ssz.Xi.Client.Internal.Context
 
         /// <summary>
         ///     The time interval that controls when ClientKeepAlive messages are
-        ///     sent to the server.  If no IResourceManagement messages are sent to
-        ///     the server for this period of time, a ClientKeepAlive message is
-        ///     sent.  The value is expressed in milliseconds.  This value is the
-        ///     same for all contexts.
+        ///     sent to the server.
         /// </summary>
         private const uint KeepAliveIntervalMs = 10000;
+        
+        private DateTime? _lastKeepAliveIntervalUtc;
 
         /// <summary>
         ///     The frequency, in milliseconds, for firing the _keepAliveTimer

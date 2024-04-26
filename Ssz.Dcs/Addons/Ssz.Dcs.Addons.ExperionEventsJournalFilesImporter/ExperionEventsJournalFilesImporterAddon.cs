@@ -51,7 +51,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
         
         public override (string, string, string)[] OptionsInfo => new (string, string, string)[]
         {
-            (JournalFiles_Path_OptionName, Properties.Resources.JournalFiles_Path_Option, @"\\SRVEPKS01B\Report"),
+            (JournalFiles_Path_OptionName, Properties.Resources.JournalFiles_Path_Option, @""),
             (JournalFiles_Type_OptionName, Properties.Resources.JournalFiles_Type_Option, @"RPT"),
             (JournalFiles_DateTimeFormat_OptionName, Properties.Resources.JournalFiles_DateTimeFormat_Option, 
                 JournalFiles_DateTimeFormat_OptionDefaultValue),

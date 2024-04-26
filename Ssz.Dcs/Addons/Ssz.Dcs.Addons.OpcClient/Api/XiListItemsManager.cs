@@ -26,11 +26,11 @@ namespace Ssz.Xi.Client.Api
         /// <param name="clientObj"></param>
         public void AddItem(string id, object clientObj)
         {
-            Logger?.LogDebug("XiListItemsManager.AddItem() " + id); 
+            Logger?.LogDebug("XiListItemsManager.AddItem() " + id);
 
             ClientObjectInfo? modelItem;
             if (!_clientObjectInfosDictionary.TryGetValue(clientObj, out modelItem))
-            {                
+            {
                 modelItem = new ClientObjectInfo(id);
                 _clientObjectInfosDictionary.Add(clientObj, modelItem);
                 modelItem.ClientObj = clientObj;
@@ -76,7 +76,7 @@ namespace Ssz.Xi.Client.Api
             _xiItemsMustBeAddedOrRemoved = true;
         }
 
-        public abstract InstanceId GetInstanceId(string id);        
+        public abstract InstanceId GetInstanceId(string id);
 
         public ClientObjectInfo? GetClientObjectInfo(object clientObj)
         {
@@ -108,7 +108,7 @@ namespace Ssz.Xi.Client.Api
         protected bool SubscribeInitial(bool unsubscribeItemsFromServer)
         {
             bool connectionError = false;
-            
+
             foreach (ClientObjectInfo modelItem in _clientObjectInfosDictionary.Values)
             {
                 if (modelItem.XiListItemWrapper is null)
@@ -123,7 +123,7 @@ namespace Ssz.Xi.Client.Api
                     modelItem.ForceNotifyClientObj = true;
                     modelItem.XiListItemWrapper = xiListItemWrapper;
                     xiListItemWrapper.ClientObjectInfosCollection.Add(modelItem);
-                }                
+                }
             }
 
             var xiListItemWrappersToAdd = new List<XiListItemWrapper>();
@@ -150,8 +150,8 @@ namespace Ssz.Xi.Client.Api
                     {
                         xiListItem.Obj = xiListItemWrapper;
                         xiListItemWrapper.XiListItem = xiListItem;
-                    }                    
-                }                
+                    }
+                }
             }
 
             if (xiListItemWrappersToAdd.Count > 0)
@@ -175,7 +175,7 @@ namespace Ssz.Xi.Client.Api
                     connectionError = true;
 
                     foreach (var xiListItemWrapper in xiListItemWrappersToAdd)
-                    {                        
+                    {
                         if (!xiListItemWrapper.ConnectionError)
                         {
                             xiListItemWrapper.ConnectionError = true;
@@ -183,7 +183,7 @@ namespace Ssz.Xi.Client.Api
                             {
                                 modelItem.ForceNotifyClientObj = true;
                             }
-                        }                        
+                        }
                         xiListItemWrapper.ItemDoesNotExist = false;
                         xiListItemWrapper.XiListItem = null;
                     }
@@ -202,7 +202,7 @@ namespace Ssz.Xi.Client.Api
                             {
                                 modelItem.ForceNotifyClientObj = true;
                             }
-                        }                        
+                        }
                         xiListItemWrapper.ConnectionError = false;
                         xiListItemWrapper.XiListItem = null;
                     }
@@ -228,7 +228,7 @@ namespace Ssz.Xi.Client.Api
                             {
                                 modelItem.ForceNotifyClientObj = false;
                             }
-                        }                        
+                        }
                     }
                 }
             }
@@ -257,7 +257,7 @@ namespace Ssz.Xi.Client.Api
                                 }
                             }
                             xiListItemWrapper.XiListItem = null;
-                        }                        
+                        }
                     }
                 }
                 if (unsubscribeItemsFromServer)
@@ -274,11 +274,11 @@ namespace Ssz.Xi.Client.Api
                         }
                     }
                     else connectionError = true;
-                }                
+                }
             }
 
             return connectionError;
-        }        
+        }
 
         protected void SubscribeFinal()
         {
@@ -314,12 +314,12 @@ namespace Ssz.Xi.Client.Api
             new CaseInsensitiveDictionary<XiListItemWrapper>(256);
 
         private volatile bool _xiItemsMustBeAddedOrRemoved;
-        private readonly List<ClientObjectInfo> _clientObjectInfosToRemove = new List<ClientObjectInfo>(256);        
+        private readonly List<ClientObjectInfo> _clientObjectInfosToRemove = new List<ClientObjectInfo>(256);
 
-        #endregion
+        #endregion        
 
         public class XiListItemWrapper
-        {            
+        {
             public readonly List<ClientObjectInfo> ClientObjectInfosCollection = new List<ClientObjectInfo>();
 
             public TXiListItem? XiListItem { get; set; }
@@ -332,21 +332,21 @@ namespace Ssz.Xi.Client.Api
         public class ClientObjectInfo
         {
             #region construction and destruction
-            
+
             /// <summary>            
             /// </summary>
             /// <param name="elementId"></param>
             public ClientObjectInfo(string elementId)
             {
-                ElementId = elementId;                
+                ElementId = elementId;
             }
 
             #endregion
 
             #region public functions
-            
+
             public string ElementId { get; private set; }
-            
+
             public XiListItemWrapper? XiListItemWrapper { get; set; }
 
             public object? ClientObj { get; set; }
