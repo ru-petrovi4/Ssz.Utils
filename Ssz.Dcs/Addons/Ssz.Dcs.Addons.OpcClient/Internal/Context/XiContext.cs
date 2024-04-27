@@ -388,7 +388,7 @@ namespace Ssz.Xi.Client.Internal.Context
         /// </summary>
         public void KeepContextAlive(DateTime nowUtc)
         {   
-            if (_lastKeepAliveIntervalUtc is null || (uint)(nowUtc - _lastKeepAliveIntervalUtc.Value).TotalMilliseconds > KeepAliveIntervalMs)
+            if ((uint)(nowUtc - _lastKeepAliveIntervalUtc).TotalMilliseconds > KeepAliveIntervalMs)
             {
                 _lastKeepAliveIntervalUtc = nowUtc;
                 Status();
@@ -814,24 +814,7 @@ namespace Ssz.Xi.Client.Internal.Context
         /// </summary>
         private const uint KeepAliveIntervalMs = 10000;
         
-        private DateTime? _lastKeepAliveIntervalUtc;
-
-        /// <summary>
-        ///     The frequency, in milliseconds, for firing the _keepAliveTimer
-        /// </summary>
-        private const uint KeepAliveTimerPeriodInMs = 5000;
-
-        /// <summary>
-        ///     The estimated time for the underlying communications problem to recover.
-        /// </summary>
-        private const uint TimeToRecoverCommunicationsInMs = 60000;
-
-        /// <summary>
-        ///     The estimated time for WCF to detect and call the Exception for failed
-        ///     communications with the server. This time should be set to a time period
-        ///     to cover worst case detection time.
-        /// </summary>
-        private const uint WcfFailedCommsExceptionTimeInMs = 60000;
+        private DateTime _lastKeepAliveIntervalUtc = DateTime.UtcNow;        
 
         #endregion        
     }

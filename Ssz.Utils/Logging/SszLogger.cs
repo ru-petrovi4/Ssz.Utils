@@ -20,25 +20,18 @@ namespace Ssz.Utils.Logging
         {
             (_name, Options) = (name, options);
 
-            _logFileTextWriter = new LogFileTextWriter(options);
-
-            _timer = new Timer(OnTimerCallback, null, 5000, 5000);
-        }        
-        
-        protected override void Dispose(bool disposing)
-        {
-            if (Disposed) return;
-
-            if (disposing)
+            lock (LogFileTextWriterSyncRoot)
             {
-                _timer.Dispose();
-                lock (SyncRoot)
+                if (LogFileTextWriter is null)
                 {
-                    _logFileTextWriter.Dispose();
+                    LogFileTextWriter = new LogFileTextWriter(options);
                 }
-            }
-
-            base.Dispose(disposing);
+                else if (LogFileTextWriter.Options != options)
+                {
+                    LogFileTextWriter.Dispose();
+                    LogFileTextWriter = new LogFileTextWriter(options);
+                }
+            }                
         }
 
         #endregion
@@ -69,10 +62,10 @@ namespace Ssz.Utils.Logging
             string header = $"{logLevel,-11} {DateTime.Now:O}";
             if (eventId.Id != 0)
                 header += $" ID: {eventId.Id}";
-            
+            string content = "\t";
+
             lock (SyncRoot)
-            {
-                string content = "\t";
+            {                
                 content += GetScopesString();
                 try
                 {
@@ -111,36 +104,25 @@ namespace Ssz.Utils.Logging
                 }
                 Console.WriteLine(header);
                 Console.ForegroundColor = originalColor;
-                Console.WriteLine(content);
+                Console.WriteLine(content);                            
+            }
 
-                _logFileTextWriter.WriteLine(header);
-                _logFileTextWriter.WriteLine(content);            
-            }                        
-        }
-
-        #endregion        
-
-        #region private functions
-
-        private void OnTimerCallback(object? state)
-        {
-            if (Disposed) return;
-
-            lock (SyncRoot)
+            lock (LogFileTextWriterSyncRoot)
             {
-                _logFileTextWriter.Flush();
+                LogFileTextWriter!.WriteLine(header);
+                LogFileTextWriter!.WriteLine(content);
             }            
         }
 
-        #endregion
+        #endregion                
 
-        #region private fields
+        #region private fields        
 
-        private Timer _timer;
+        private readonly string _name;
 
-        private readonly string _name;        
+        private static readonly object LogFileTextWriterSyncRoot = new();
 
-        private readonly LogFileTextWriter _logFileTextWriter;
+        private static LogFileTextWriter? LogFileTextWriter;
 
         #endregion
     }

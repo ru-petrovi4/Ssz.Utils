@@ -14,6 +14,7 @@
  *
  *********************************************************************/
 
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -262,7 +263,8 @@ namespace Xi.OPC.Wrapper.Impl
 					{
 						DataListValue dlv = dle as DataListValue;
 						listHServer.Add(dlv.hServer);
-					}
+                        StaticLogger.Logger.LogInformation($"OPC Item Removed. ItemID: {dlv.InstanceId.LocalId}");
+                    }
 					else
 					{
 						listAliasResult.Add(new AliasResult(
@@ -272,8 +274,8 @@ namespace Xi.OPC.Wrapper.Impl
 				List<HandleAndHRESULT> errList = null;
 				cliHRESULT HR = IOPCItemMgt.RemoveItems(listHServer, out errList);
 				if (HR.Succeeded)
-				{
-					if ((HR.IsS_FALSE) && (errList != null))
+				{                    
+                    if ((HR.IsS_FALSE) && (errList != null))
 					{
 						foreach (HandleAndHRESULT hhr in errList)
 						{

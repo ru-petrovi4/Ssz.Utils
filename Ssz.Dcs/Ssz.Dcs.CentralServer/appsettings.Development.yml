@@ -2,6 +2,9 @@
   LogLevel: 
     # задается уровень логирования событий в файлы журналов
     Default: "Debug"
+  SszLogger:
+    # путь до директории где будут храниться файлы журналов событий
+    LogsDirectory: "%ProgramData%\\Ssz\\Logs_Debug"
 Kestrel:   
   Endpoints: 
     HttpsDefaultCert: 

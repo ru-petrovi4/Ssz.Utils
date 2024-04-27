@@ -88,8 +88,12 @@ namespace Xi.Server.Base
 					{
 						RemoveAValue(FindEntryRoot(ir.ServerAlias)); // This method locks the dictionary
 						ir.ServerAlias = 0;
-						StaticLogger.Logger.LogWarning($"Invalid OPC ItemId={listDataListEntry[i].InstanceId.LocalId}");
+						StaticLogger.Logger.LogWarning($"OPC Item Invalid. ItemID: {listDataListEntry[i].InstanceId.LocalId}");
 					}
+					else
+					{
+                        StaticLogger.Logger.LogInformation($"OPC Item Added. ItemID: {listDataListEntry[i].InstanceId.LocalId}");
+                    }
 				}
 
 				if ((resultsList == null) || (resultsList.Count == 0))

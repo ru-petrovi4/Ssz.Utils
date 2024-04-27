@@ -167,7 +167,8 @@ namespace Xi.OPC.Wrapper.Impl
 					default:
 						break;
 				}
-				ThrowDisconnectedServerException(progId);
+                StaticLogger.Logger.LogError($"OPC Server Error. ProgId: {progId}; HR: {hr.hResult:X}");
+                ThrowDisconnectedServerException(progId);
 			}
 		}
 

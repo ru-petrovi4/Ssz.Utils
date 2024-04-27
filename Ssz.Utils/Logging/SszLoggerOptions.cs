@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils.Logging
 {
-    public class SszLoggerOptions
+    public record class SszLoggerOptions
     {
         #region public functions
         

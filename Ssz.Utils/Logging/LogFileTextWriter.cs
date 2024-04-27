@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace Ssz.Utils.Logging
 {
@@ -23,9 +24,9 @@ namespace Ssz.Utils.Logging
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
             : base(null)
         {
-            _options = options;
+            Options = options;
 
-            _logsDirectoryFullName = Environment.ExpandEnvironmentVariables(_options.LogsDirectory);
+            _logsDirectoryFullName = Environment.ExpandEnvironmentVariables(Options.LogsDirectory);
             
             if (String.IsNullOrEmpty(_logsDirectoryFullName))
             {
@@ -36,9 +37,9 @@ namespace Ssz.Utils.Logging
             // already exist.
             Directory.CreateDirectory(_logsDirectoryFullName);            
 
-            if (!String.IsNullOrEmpty(_options.LogFileName))
+            if (!String.IsNullOrEmpty(Options.LogFileName))
             {
-                SetLogFileFullName(_options.LogFileName);
+                SetLogFileFullName(Options.LogFileName);
             }
             else
             {
@@ -51,7 +52,7 @@ namespace Ssz.Utils.Logging
                 SetLogFileFullName(exeFileName + @".log");                
             }
 
-            if (_options.DeleteOldFilesAtStart)
+            if (Options.DeleteOldFilesAtStart)
             {
                 var fileInfos = Directory.GetFiles(_logsDirectoryFullName, _suggestedLogFileNameWithoutExtension + @".*" + _suggestedLogFileNameExtension)
                     .Select(n => new FileInfo(n))
@@ -68,6 +69,8 @@ namespace Ssz.Utils.Logging
                     }
                 }
             }
+
+            _timer = new Timer(s => Flush(), null, 5000, 5000);
         }
 
         /// <summary>
@@ -78,9 +81,13 @@ namespace Ssz.Utils.Logging
         {
             if (disposing)
             {
+                _timer.Dispose();
                 Flush();
             }
+
             base.Dispose(disposing);
+
+            _disposed = true;
         }
 
         #endregion
@@ -90,84 +97,94 @@ namespace Ssz.Utils.Logging
         /// <summary>
         /// 
         /// </summary>
-        public string LogFileFullName { get; private set; }
+        public SszLoggerOptions Options { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string LogFileFullName { get; private set; }        
 
         /// <summary>
         /// 
         /// </summary>
         public override void Flush()
         {
-            if (_buffer.Length > 0)
+            if (_disposed) return;
+
+            lock (_syncRoot)
             {
-                try
+                if (_buffer.Length > 0)
                 {
-                    if (_options.LogFileMaxSizeInBytes > 0 && _options.LogFileMaxSizeInBytes < Int64.MaxValue)
+                    try
                     {
-                        var fi = new FileInfo(LogFileFullName);
-                        if (fi.Exists && fi.Length > _options.LogFileMaxSizeInBytes)
+                        if (Options.LogFileMaxSizeInBytes > 0 && Options.LogFileMaxSizeInBytes < Int64.MaxValue)
                         {
-                            SetLogFileFullName(_suggestedLogFileNameWithoutExtension + _suggestedLogFileNameExtension);
+                            var fi = new FileInfo(LogFileFullName);
+                            if (fi.Exists && fi.Length > Options.LogFileMaxSizeInBytes)
+                            {
+                                SetLogFileFullName(_suggestedLogFileNameWithoutExtension + _suggestedLogFileNameExtension);
+                            }
+                        }
+                        File.AppendAllText(LogFileFullName, _buffer.ToString(), new UTF8Encoding(true));
+                        _buffer.Clear();
+                    }
+                    catch
+                    {
+                    }
+                }
+
+                #region DeleteOldFiles
+
+                var nowUtc = DateTime.UtcNow;
+                if (nowUtc - _oldFilesClearingDateTimeUtc > TimeSpan.FromMinutes(5))
+                {
+                    _oldFilesClearingDateTimeUtc = nowUtc;
+
+                    var fileInfos = Directory.GetFiles(_logsDirectoryFullName, _suggestedLogFileNameWithoutExtension + @".*" + _suggestedLogFileNameExtension)
+                        .Select(n => new FileInfo(n))
+                        .OrderByDescending(f => f.LastWriteTime)
+                        .ToList();
+
+                    if (Options.DaysCountToStoreFiles > 0 && Options.DaysCountToStoreFiles < UInt32.MaxValue)
+                    {
+                        foreach (FileInfo fi in fileInfos.ToArray())
+                        {
+                            if (fi.LastWriteTime < DateTime.Now.AddDays(-Options.DaysCountToStoreFiles))
+                            {
+                                try
+                                {
+                                    fi.Delete();
+                                    fileInfos.Remove(fi);
+                                }
+                                catch
+                                {
+                                }
+                            }
                         }
                     }
-                    File.AppendAllText(LogFileFullName, _buffer.ToString(), new UTF8Encoding(true));
-                    _buffer.Clear();
+
+                    if (Options.LogFilesMaxSizeInBytes > 0 && Options.LogFilesMaxSizeInBytes < Int64.MaxValue)
+                    {
+                        long bytesTotal = 0;
+                        foreach (FileInfo fi in fileInfos)
+                        {
+                            bytesTotal += fi.Length;
+                            if (bytesTotal > Options.LogFilesMaxSizeInBytes)
+                            {
+                                try
+                                {
+                                    fi.Delete();
+                                }
+                                catch
+                                {
+                                }
+                            }
+                        }
+                    }
                 }
-                catch
-                {
-                }
+
+                #endregion
             }
-
-            #region DeleteOldFiles
-
-            var nowUtc = DateTime.UtcNow;
-            if (nowUtc - _oldFilesClearingDateTimeUtc > TimeSpan.FromMinutes(5))
-            {
-                _oldFilesClearingDateTimeUtc = nowUtc;
-
-                var fileInfos = Directory.GetFiles(_logsDirectoryFullName, _suggestedLogFileNameWithoutExtension + @".*" + _suggestedLogFileNameExtension)
-                    .Select(n => new FileInfo(n))
-                    .OrderByDescending(f => f.LastWriteTime)
-                    .ToList();
-
-                if (_options.DaysCountToStoreFiles > 0 && _options.DaysCountToStoreFiles < UInt32.MaxValue)
-                {
-                    foreach (FileInfo fi in fileInfos.ToArray())
-                    {
-                        if (fi.LastWriteTime < DateTime.Now.AddDays(-_options.DaysCountToStoreFiles))
-                        {
-                            try
-                            {
-                                fi.Delete();
-                                fileInfos.Remove(fi);
-                            }
-                            catch
-                            {
-                            }
-                        }
-                    }
-                }
-
-                if (_options.LogFilesMaxSizeInBytes > 0 && _options.LogFilesMaxSizeInBytes < Int64.MaxValue)
-                {
-                    long bytesTotal = 0;
-                    foreach (FileInfo fi in fileInfos)
-                    {
-                        bytesTotal += fi.Length;
-                        if (bytesTotal > _options.LogFilesMaxSizeInBytes)
-                        {
-                            try
-                            {
-                                fi.Delete();
-                            }
-                            catch
-                            {
-                            }
-                        }
-                    }
-                }                    
-            }            
-
-            #endregion
         }
 
         /// <summary>
@@ -176,7 +193,10 @@ namespace Ssz.Utils.Logging
         /// <param name="value"></param>
         public override void Write(bool value)
         {
-            _buffer.Append(value);
+            lock (_syncRoot)
+            {
+                _buffer.Append(value);
+            }            
         }
 
         /// <summary>
@@ -185,7 +205,10 @@ namespace Ssz.Utils.Logging
         /// <param name="value"></param>
         public override void Write(char value)
         {
-            _buffer.Append(value);
+            lock (_syncRoot)
+            {
+                _buffer.Append(value);
+            }            
         }
 
         /// <summary>
@@ -194,7 +217,10 @@ namespace Ssz.Utils.Logging
         /// <param name="buffer"></param>
         public override void Write(char[]? buffer)
         {
-            _buffer.Append(buffer);
+            lock (_syncRoot)
+            {
+                _buffer.Append(buffer);
+            }            
         }
 
         /// <summary>
@@ -205,7 +231,10 @@ namespace Ssz.Utils.Logging
         /// <param name="count"></param>
         public override void Write(char[] buffer, int index, int count)
         {
-            _buffer.Append(buffer, index, count);
+            lock (_syncRoot)
+            {
+                _buffer.Append(buffer, index, count);
+            }            
         }
 
         /// <summary>
@@ -214,7 +243,10 @@ namespace Ssz.Utils.Logging
         /// <param name="value"></param>
         public override void Write(decimal value)
         {
-            _buffer.Append(value);
+            lock (_syncRoot)
+            {
+                _buffer.Append(value);
+            }            
         }
 
         /// <summary>
@@ -223,7 +255,10 @@ namespace Ssz.Utils.Logging
         /// <param name="value"></param>
         public override void Write(double value)
         {
-            _buffer.Append(value);
+            lock (_syncRoot)
+            {
+                _buffer.Append(value);
+            }            
         }
 
         /// <summary>
@@ -232,7 +267,10 @@ namespace Ssz.Utils.Logging
         /// <param name="value"></param>
         public override void Write(float value)
         {
-            _buffer.Append(value);
+            lock (_syncRoot)
+            {
+                _buffer.Append(value);
+            }            
         }
 
         /// <summary>
@@ -241,7 +279,10 @@ namespace Ssz.Utils.Logging
         /// <param name="value"></param>
         public override void Write(int value)
         {
-            _buffer.Append(value);
+            lock (_syncRoot)
+            {
+                _buffer.Append(value);
+            }            
         }
 
         /// <summary>
@@ -250,7 +291,10 @@ namespace Ssz.Utils.Logging
         /// <param name="value"></param>
         public override void Write(long value)
         {
-            _buffer.Append(value);
+            lock (_syncRoot)
+            {
+                _buffer.Append(value);
+            }            
         }
 
         /// <summary>
@@ -259,7 +303,10 @@ namespace Ssz.Utils.Logging
         /// <param name="value"></param>
         public override void Write(object? value)
         {
-            _buffer.Append(value);
+            lock (_syncRoot)
+            {
+                _buffer.Append(value);
+            }            
         }
 
         /// <summary>
@@ -269,7 +316,10 @@ namespace Ssz.Utils.Logging
         /// <param name="arg0"></param>
         public override void Write(string format, object? arg0)
         {
-            _buffer.AppendFormat(FormatProvider, format, arg0);
+            lock (_syncRoot)
+            {
+                _buffer.AppendFormat(FormatProvider, format, arg0);
+            }            
         }
 
         /// <summary>
@@ -280,7 +330,10 @@ namespace Ssz.Utils.Logging
         /// <param name="arg1"></param>
         public override void Write(string format, object? arg0, object? arg1)
         {
-            _buffer.AppendFormat(FormatProvider, format, arg0, arg1);
+            lock (_syncRoot)
+            {
+                _buffer.AppendFormat(FormatProvider, format, arg0, arg1);
+            }            
         }
 
         /// <summary>
@@ -292,7 +345,10 @@ namespace Ssz.Utils.Logging
         /// <param name="arg2"></param>
         public override void Write(string format, object? arg0, object? arg1, object? arg2)
         {
-            _buffer.AppendFormat(FormatProvider, format, arg0, arg1, arg2);
+            lock (_syncRoot)
+            {
+                _buffer.AppendFormat(FormatProvider, format, arg0, arg1, arg2);
+            }            
         }
 
         /// <summary>
@@ -302,7 +358,10 @@ namespace Ssz.Utils.Logging
         /// <param name="arg"></param>
         public override void Write(string format, params object?[] arg)
         {
-            _buffer.AppendFormat(FormatProvider, format, arg);
+            lock (_syncRoot)
+            {
+                _buffer.AppendFormat(FormatProvider, format, arg);
+            }            
         }
 
         /// <summary>
@@ -311,7 +370,10 @@ namespace Ssz.Utils.Logging
         /// <param name="value"></param>
         public override void Write(string? value)
         {
-            _buffer.Append(value);
+            lock (_syncRoot)
+            {
+                _buffer.Append(value);
+            }            
         }
 
         /// <summary>
@@ -319,7 +381,10 @@ namespace Ssz.Utils.Logging
         /// </summary>
         public override void WriteLine()
         {
-            _buffer.AppendLine();
+            lock (_syncRoot)
+            {
+                _buffer.AppendLine();
+            }                
         }
 
         /// <summary>
@@ -489,7 +554,7 @@ namespace Ssz.Utils.Logging
             get { throw new NotImplementedException(); }
         }
 
-        #endregion
+        #endregion        
 
         #region private functions
 
@@ -508,13 +573,15 @@ namespace Ssz.Utils.Logging
             }
 
             LogFileFullName = fi.FullName;
-        }
+        }        
 
         #endregion        
 
         #region private fields
 
-        private readonly SszLoggerOptions _options;
+        private volatile bool _disposed;
+
+        private readonly object _syncRoot = new();
 
         private readonly string _logsDirectoryFullName;
 
@@ -525,6 +592,8 @@ namespace Ssz.Utils.Logging
         private readonly StringBuilder _buffer = new();
 
         private DateTime _oldFilesClearingDateTimeUtc = DateTime.MinValue;
+
+        private Timer _timer;
 
         #endregion
     }

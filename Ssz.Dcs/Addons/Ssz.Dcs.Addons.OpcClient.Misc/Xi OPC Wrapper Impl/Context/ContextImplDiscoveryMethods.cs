@@ -55,7 +55,7 @@ namespace Xi.OPC.Wrapper.Impl
 					{
 						case ServerType.OPC_DA205_Wrapper:
 							{
-								if (IsAccessibleDataAccess == false)
+								if ((ServerRoot.ThisServerEntry.ServerDescription.ServerTypes & wrappedServer.ServerType) == 0)
 								{
 									serverStatus.ServerState = ServerState.NotOperational;
 								}
@@ -105,7 +105,7 @@ namespace Xi.OPC.Wrapper.Impl
 
 						case ServerType.OPC_AE11_Wrapper:
 							{
-								if (IsAccessibleAlarmsAndEvents == false)
+								if ((ServerRoot.ThisServerEntry.ServerDescription.ServerTypes & wrappedServer.ServerType) == 0)
 								{
 									serverStatus.ServerState = ServerState.NotOperational;
 								}
@@ -149,7 +149,7 @@ namespace Xi.OPC.Wrapper.Impl
 
 						case ServerType.OPC_HDA12_Wrapper:
 							{
-								if (IsAccessibleJournalDataAccess == false)
+								if ((ServerRoot.ThisServerEntry.ServerDescription.ServerTypes & wrappedServer.ServerType) == 0)
 								{
 									serverStatus.ServerState = ServerState.NotOperational;
 								}
