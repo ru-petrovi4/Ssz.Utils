@@ -138,7 +138,17 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
         /// <summary>
         /// 
         /// </summary>
-        public DbSet<ScenarioResult> ScenarioResults { get; set; } = null!;
+        public DbSet<ScenarioResult> ScenarioResults { get; set; } = null!;        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public DbSet<ProcessModel> ProcessModels { get; set; } = null!;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public DbSet<Scenario> Scenarios { get; set; } = null!;
 
         #endregion
 

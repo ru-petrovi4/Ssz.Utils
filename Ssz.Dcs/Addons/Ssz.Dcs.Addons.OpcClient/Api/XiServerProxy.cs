@@ -91,6 +91,8 @@ namespace Ssz.Xi.Client.Api
 
         #region public functions
 
+        public DateTime LastFailedConnectionDateTimeUtc { get; private set; }
+
         /// <summary>
         ///     This method is used to connect to the server and establish a context with it.
         /// </summary>
@@ -112,6 +114,8 @@ namespace Ssz.Xi.Client.Api
             }
             catch
             {
+                LastFailedConnectionDateTimeUtc = DateTime.UtcNow;
+
                 if (_context is not null)
                 {
                     _context.ContextNotifyEvent -= XiContext_ContextNotifyEvent;
@@ -387,13 +391,13 @@ namespace Ssz.Xi.Client.Api
             }
         }
 
-        public void KeepContextAlive(DateTime nowUtc)
+        public void DoWork(DateTime nowUtc)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed XiServerProxy.");
 
             if (_context is null) throw new XiServerNotExistException();
 
-            _context.KeepContextAlive(nowUtc);
+            _context.DoWork(nowUtc);
         }
 
         public static uint NormalizeStatusCode(uint statusCode)
@@ -450,6 +454,7 @@ namespace Ssz.Xi.Client.Api
                 case XiContextNotificationType.ResourceManagementDisconnected:
                 case XiContextNotificationType.ResourceManagementFail:
                 case XiContextNotificationType.Shutdown:
+                    LastFailedConnectionDateTimeUtc = DateTime.UtcNow;
                     ConcludeXiContext();
                     break;
             }

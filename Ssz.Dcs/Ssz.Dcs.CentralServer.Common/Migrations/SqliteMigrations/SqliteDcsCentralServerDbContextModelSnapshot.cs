@@ -107,6 +107,33 @@ namespace Ssz.Dcs.CentralServer.Common.Migrations.SqliteMigrations
                     b.ToTable("OperatorSessions");
                 });
 
+            modelBuilder.Entity("Ssz.Dcs.CentralServer.Common.EntityFramework.ProcessModel", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Enterprise")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Plant")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProcessModelName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProcessModels");
+                });
+
             modelBuilder.Entity("Ssz.Dcs.CentralServer.Common.EntityFramework.ProcessModelingSession", b =>
                 {
                     b.Property<long>("Id")
@@ -146,6 +173,36 @@ namespace Ssz.Dcs.CentralServer.Common.Migrations.SqliteMigrations
                     b.HasIndex("InstructorUserId");
 
                     b.ToTable("ProcessModelingSessions");
+                });
+
+            modelBuilder.Entity("Ssz.Dcs.CentralServer.Common.EntityFramework.Scenario", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("InitialConditionName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("MaxPenalty")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("ProcessModelId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("ScenarioMaxProcessModelTimeSeconds")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ScenarioName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProcessModelId");
+
+                    b.ToTable("Scenarios");
                 });
 
             modelBuilder.Entity("Ssz.Dcs.CentralServer.Common.EntityFramework.ScenarioResult", b =>
@@ -278,6 +335,17 @@ namespace Ssz.Dcs.CentralServer.Common.Migrations.SqliteMigrations
                     b.Navigation("InstructorUser");
                 });
 
+            modelBuilder.Entity("Ssz.Dcs.CentralServer.Common.EntityFramework.Scenario", b =>
+                {
+                    b.HasOne("Ssz.Dcs.CentralServer.Common.EntityFramework.ProcessModel", "ProcessModel")
+                        .WithMany("Scenarios")
+                        .HasForeignKey("ProcessModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProcessModel");
+                });
+
             modelBuilder.Entity("Ssz.Dcs.CentralServer.Common.EntityFramework.ScenarioResult", b =>
                 {
                     b.HasOne("Ssz.Dcs.CentralServer.Common.EntityFramework.ProcessModelingSession", "ProcessModelingSession")
@@ -287,6 +355,11 @@ namespace Ssz.Dcs.CentralServer.Common.Migrations.SqliteMigrations
                         .IsRequired();
 
                     b.Navigation("ProcessModelingSession");
+                });
+
+            modelBuilder.Entity("Ssz.Dcs.CentralServer.Common.EntityFramework.ProcessModel", b =>
+                {
+                    b.Navigation("Scenarios");
                 });
 #pragma warning restore 612, 618
         }

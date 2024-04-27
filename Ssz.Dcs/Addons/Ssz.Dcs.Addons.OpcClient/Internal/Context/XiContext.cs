@@ -386,11 +386,11 @@ namespace Ssz.Xi.Client.Internal.Context
         ///     This method is used to
         ///     keep the context alive.
         /// </summary>
-        public void KeepContextAlive(DateTime nowUtc)
+        public void DoWork(DateTime nowUtc)
         {   
-            if ((uint)(nowUtc - _lastKeepAliveIntervalUtc).TotalMilliseconds > KeepAliveIntervalMs)
+            if ((uint)(nowUtc - _lastStatusDateTimeUtc).TotalMilliseconds > StatusIntervalMs)
             {
-                _lastKeepAliveIntervalUtc = nowUtc;
+                _lastStatusDateTimeUtc = nowUtc;
                 Status();
             }
 
@@ -812,9 +812,9 @@ namespace Ssz.Xi.Client.Internal.Context
         ///     The time interval that controls when ClientKeepAlive messages are
         ///     sent to the server.
         /// </summary>
-        private const uint KeepAliveIntervalMs = 10000;
+        private const uint StatusIntervalMs = 10000;
         
-        private DateTime _lastKeepAliveIntervalUtc = DateTime.UtcNow;        
+        private DateTime _lastStatusDateTimeUtc = DateTime.UtcNow;        
 
         #endregion        
     }

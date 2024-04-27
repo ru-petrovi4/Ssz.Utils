@@ -8,6 +8,6 @@
 Kestrel:   
   Endpoints: 
     HttpsDefaultCert: 
-      Url: "https://*:60030"
-ProgramDataDirectory: "C:\\CDT.PazCheck.Adapter_ProgramData"
+      Url: "https://*:60060"
+ProgramDataDirectory: "C:\\CDT.CentralServer"
 ---

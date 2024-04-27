@@ -43,25 +43,27 @@ namespace Ssz.Dcs.CentralServer
 
             var dsFileStoreDescriptors = DsFilesStoreHelper.GetDsFilesStoreDescriptors(rootDsFilesStoreDirectory);
             DsFilesStoreDescriptor? dsFilesStoreDescriptor = dsFileStoreDescriptors.FirstOrDefault(i => String.Equals(Path.GetFileName(i.RelativeToDescriptorFileOrDirectoryPath), processModelName, StringComparison.InvariantCultureIgnoreCase));
+            DsFilesStoreItem? dsFilesStoreItem = null;
             if (dsFilesStoreDescriptor is not null)
             {
-                var dsFilesStoreItem = DsFilesStoreHelper.FindDsFilesStoreItem(rootDsFilesStoreDirectory, dsFilesStoreDescriptor.RelativeToDescriptorFileOrDirectoryPath);
+                dsFilesStoreItem = DsFilesStoreHelper.FindDsFilesStoreItem(rootDsFilesStoreDirectory, dsFilesStoreDescriptor.RelativeToDescriptorFileOrDirectoryPath);
                 if (dsFilesStoreItem is null)
-                {
                     dsFilesStoreDescriptor = null;
-                }                
             }            
             if (dsFilesStoreDescriptor is null)
-            {
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid processModelName: " + processModelName));
-            }
+                throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid processModelName: " + processModelName));            
 
             CaseInsensitiveDictionary<List<string?>> data = CsvHelper.LoadCsvFile(Path.Combine(FilesStoreDirectoryInfo.FullName, dsFilesStoreDescriptor.DescriptorDsFileInfo.Name), true);
 
-            var processModelingSession = new ProcessModelingSession(processModelingSessionId,
+            var processModelingSession = new ProcessModelingSession(
+                processModelingSessionId,
                 clientApplicationName,
                 clientWorkstationName,
-                processModelName, dsFilesStoreDescriptor.Title, instructorUserName, instructorAccessFlags, mode)
+                processModelName, 
+                dsFilesStoreDescriptor.Title, 
+                instructorUserName, 
+                instructorAccessFlags, 
+                mode)
             {
                 ProcessModelingSessionStatus = ProcessModelingSessionConstants.Initiated,  
                 ForTimeout_LastDateTimeUtc = DateTime.UtcNow,
@@ -74,6 +76,51 @@ namespace Ssz.Dcs.CentralServer
                 {
                     if (dbContext.IsConfigured)
                     {
+                        string enterprise = CsvDb.GetValue(data, "Enterprise", 1) ?? @"";
+                        string plant = CsvDb.GetValue(data, "Plant", 1) ?? @"";
+                        string unit = processModelingSession.ProcessModelNameToDisplay;
+
+                        var processModel = dbContext.ProcessModels.AsEnumerable().FirstOrDefault(pm => String.Equals(pm.ProcessModelName, processModelName, StringComparison.InvariantCultureIgnoreCase));
+                        if (processModel is null)
+                        {
+                            processModel = new Common.EntityFramework.ProcessModel();
+                            dbContext.ProcessModels.Add(processModel);
+                        }
+                        processModel.ProcessModelName = processModelName; // For case-sensivity issues
+                        processModel.Enterprise = enterprise;
+                        processModel.Plant = plant;
+                        processModel.Unit = unit;
+
+                        var originalScenarios = dbContext.Scenarios.Where(s => s.ProcessModel == processModel).ToList();
+                        foreach (string fullFileName in Directory.EnumerateFiles(Path.Combine(FilesStoreDirectoryInfo.FullName, dsFilesStoreItem!.DsFilesStoreDirectory.Name, DsFilesStoreConstants.InstructorDataDirectoryName))
+                            .Where(ffn => ffn.EndsWith(@".scenario.csv", StringComparison.InvariantCultureIgnoreCase)))
+                        {
+                            CaseInsensitiveDictionary<List<string?>> scenarioData = CsvHelper.LoadCsvFile(fullFileName, true);
+                            string fileName = Path.GetFileName(fullFileName);
+                            string scenarioName = fileName.Substring(0, fileName.Length - @".scenario.csv".Length);
+                            var scenario = originalScenarios.FirstOrDefault(s => String.Equals(s.ScenarioName, scenarioName, StringComparison.InvariantCultureIgnoreCase));
+                            if (scenario is null)
+                            {
+                                scenario = new Common.EntityFramework.Scenario()
+                                {
+                                    ProcessModel = processModel
+                                };
+                                dbContext.Scenarios.Add(scenario);
+                            }
+                            else
+                            {
+                                originalScenarios.Remove(scenario);
+                            }
+                            scenario.ScenarioName = scenarioName; // For case-sensivity issues
+                            scenario.InitialConditionName = CsvDb.GetValue(scenarioData, "%(State)", 1) ?? @"";
+                            scenario.MaxPenalty = new Any(CsvDb.GetValue(scenarioData, "%(MaxPenalty)", 1) ?? @"").ValueAsInt32(false);
+                            scenario.ScenarioMaxProcessModelTimeSeconds = new Any(CsvDb.GetValue(scenarioData, "%(ScenarioMaxTimeSeconds)", 1) ?? @"").ValueAsUInt64(false);
+                        }
+                        foreach (var originalScenario in originalScenarios)
+                        {
+                            dbContext.Remove(originalScenario);
+                        }
+
                         var instructorUser = dbContext.Users.FirstOrDefault(u => u.UserName == instructorUserName);
                         if (instructorUser is not null)
                         {
@@ -82,14 +129,15 @@ namespace Ssz.Dcs.CentralServer
                                 InstructorUser = instructorUser,
                                 StartDateTimeUtc = DateTime.UtcNow,
                                 ProcessModelName = processModelName,
-                                Enterprise = data.TryGetValue(@"Enterprise")?.Skip(1)?.FirstOrDefault() ?? @"",
-                                Plant = data.TryGetValue(@"Plant")?.Skip(1)?.FirstOrDefault() ?? @"",
-                                Unit = processModelingSession.ProcessModelNameToDisplay
+                                Enterprise = enterprise,
+                                Plant = plant,
+                                Unit = unit
                             };
-                            dbContext.ProcessModelingSessions.Add(dbEnity_ProcessModelingSession);
-                            dbContext.SaveChanges();
+                            dbContext.ProcessModelingSessions.Add(dbEnity_ProcessModelingSession);                            
                             processModelingSession.DbEnity_ProcessModelingSessionId = dbEnity_ProcessModelingSession.Id;
                         }
+
+                        dbContext.SaveChanges();
                     }                    
                 }
             }

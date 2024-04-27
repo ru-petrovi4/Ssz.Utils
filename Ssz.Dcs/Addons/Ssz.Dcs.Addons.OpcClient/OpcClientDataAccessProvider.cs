@@ -31,7 +31,7 @@ namespace Ssz.Dcs.Addons.OpcClient
 
         #region public functions
 
-        public override DateTime LastFailedConnectionDateTimeUtc => _lastFailedConnectionDateTimeUtc;
+        public override DateTime LastFailedConnectionDateTimeUtc => _xiServerProxy?.LastFailedConnectionDateTimeUtc ?? DateTime.MinValue;
 
         public override DateTime LastSuccessfulConnectionDateTimeUtc => _lastSuccessfulConnectionDateTimeUtc;
 
@@ -595,7 +595,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                 }                
 
                 if (IsInitialized && ContextParams.Count > 0 &&
-                    nowUtc > LastFailedConnectionDateTimeUtc + TimeSpan.FromSeconds(60))
+                    nowUtc > LastFailedConnectionDateTimeUtc + TimeSpan.FromSeconds(30))
                 {
                     try
                     {
@@ -629,8 +629,6 @@ namespace Ssz.Dcs.Addons.OpcClient
                     catch
                     {
                         //Logger?.LogDebug(ex);
-
-                        _lastFailedConnectionDateTimeUtc = nowUtc;
                     }
                 }
             }
@@ -652,7 +650,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                 try
                 {
                     if (cancellationToken.IsCancellationRequested) return;
-                    _xiServerProxy.KeepContextAlive(nowUtc);
+                    _xiServerProxy.DoWork(nowUtc);
                     
                     var timeDiffInMs = (uint) (nowUtc - _pollLastCallUtc).TotalMilliseconds;
                     bool pollExpired = timeDiffInMs >= _pollIntervalMs;
@@ -948,8 +946,6 @@ namespace Ssz.Dcs.Addons.OpcClient
         #endregion
 
         #region private fields
-
-        private DateTime _lastFailedConnectionDateTimeUtc;
 
         private DateTime _lastSuccessfulConnectionDateTimeUtc;
 
