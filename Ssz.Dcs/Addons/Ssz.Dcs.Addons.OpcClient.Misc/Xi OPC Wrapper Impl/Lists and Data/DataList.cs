@@ -566,7 +566,7 @@ namespace Xi.OPC.Wrapper.Impl
 					dwTransactionID, out dwCancelID_Refresh);
 				if (HR.Succeeded == false)
 				{
-					(OwnerContext as ContextImpl).ThrowOnDisconnectedServer(HR.hResult, (OwnerContext as ContextImpl).IOPCServer_ProgId);
+					context.ThrowOnDisconnectedServer(HR.hResult, context.IOPCServer_ProgId);
 				}
 				return (uint)HR.hResult;
 			}

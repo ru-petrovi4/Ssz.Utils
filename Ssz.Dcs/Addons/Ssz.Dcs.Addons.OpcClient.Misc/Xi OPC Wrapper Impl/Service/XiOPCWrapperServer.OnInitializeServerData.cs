@@ -49,7 +49,7 @@ namespace Xi.OPC.Wrapper.Impl
             // 3) OPC A&E 1.1
 
             // Start with the base server type and then add the wrapped servers
-            _ThisServerEntry.ServerDescription.ServerTypes = 0;//|= BaseXiServerType;
+            _ThisServerEntry.ServerDescription.ConfiguredServerTypes = 0;//|= BaseXiServerType;
 
             // TODO:  Add support for additional server types as necessary
 
@@ -62,7 +62,7 @@ namespace Xi.OPC.Wrapper.Impl
                 daOpcServerInfo.ProgId = daServerProgId;
                 ConfiguredOpcServerInfos.Add(daOpcServerInfo);
 
-                _ThisServerEntry.ServerDescription.ServerTypes |= ServerType.OPC_DA205_Wrapper;
+                _ThisServerEntry.ServerDescription.ConfiguredServerTypes |= ServerType.OPC_DA205_Wrapper;
                 _NumServerTypes++;
                 _WrappedServerRoots.Add(new ObjectAttributes
                 {
@@ -82,7 +82,7 @@ namespace Xi.OPC.Wrapper.Impl
                 hdaOpcServerInfo.ProgId = hdaServerProgId;
                 ConfiguredOpcServerInfos.Add(hdaOpcServerInfo);
 
-                _ThisServerEntry.ServerDescription.ServerTypes |= ServerType.OPC_HDA12_Wrapper;
+                _ThisServerEntry.ServerDescription.ConfiguredServerTypes |= ServerType.OPC_HDA12_Wrapper;
                 _NumServerTypes++;
                 _WrappedServerRoots.Add(new ObjectAttributes
                 {
@@ -106,7 +106,7 @@ namespace Xi.OPC.Wrapper.Impl
 
                 ConfiguredOpcServerInfos.Add(hdaOpcServerInfo);
 
-                _ThisServerEntry.ServerDescription.ServerTypes |= ServerType.USO_HDA_Wrapper;
+                _ThisServerEntry.ServerDescription.ConfiguredServerTypes |= ServerType.USO_HDA_Wrapper;
                 _NumServerTypes++;
                 _WrappedServerRoots.Add(new ObjectAttributes
                 {
@@ -127,7 +127,7 @@ namespace Xi.OPC.Wrapper.Impl
                 aeOpcServerInfo.ProgId = aeServerProgId;
                 ConfiguredOpcServerInfos.Add(aeOpcServerInfo);
 
-                _ThisServerEntry.ServerDescription.ServerTypes |= ServerType.OPC_AE11_Wrapper;
+                _ThisServerEntry.ServerDescription.ConfiguredServerTypes |= ServerType.OPC_AE11_Wrapper;
                 _NumServerTypes++;
                 _WrappedServerRoots.Add(new ObjectAttributes
                 {
@@ -197,10 +197,10 @@ namespace Xi.OPC.Wrapper.Impl
 		protected override ServerDetails OnGetServerDetails(ContextImpl context)
 		{
 			ServerDetails serverDetails = null;
-			uint SupportedServerTypes = _ThisServerEntry.ServerDescription.ServerTypes;
+			uint configuredServerTypes = _ThisServerEntry.ServerDescription.ConfiguredServerTypes;
 			if (context.IsAccessibleDataAccess)
 			{
-				if ((SupportedServerTypes & ServerType.OPC_DA205_Wrapper) != 0)
+				if ((configuredServerTypes & ServerType.OPC_DA205_Wrapper) != 0)
 				{
 					OPCSERVERSTATUS opcServerStatus = null;
 					cliHRESULT HR = context.IOPCServer.GetStatus(out opcServerStatus);
@@ -216,12 +216,12 @@ namespace Xi.OPC.Wrapper.Impl
 					}
 					else
 					{
-						context.ClearAccessibleServerTypes(AccessibleServerTypes.JournalDataAccess);						
+						context.ClearAccessibleServerTypes(AccessibleServerTypes.DataAccess);						
 					}
 
 				}
 
-				if ((SupportedServerTypes & ServerType.OPC_DA30_Wrapper) != 0)
+				if ((configuredServerTypes & ServerType.OPC_DA30_Wrapper) != 0)
 				{
 					// TODO:  if this server supports this server type
 				}				
@@ -229,7 +229,7 @@ namespace Xi.OPC.Wrapper.Impl
 
 			if (context.IsAccessibleAlarmsAndEvents)
 			{
-				if ((SupportedServerTypes & ServerType.OPC_AE11_Wrapper) != 0)
+				if ((configuredServerTypes & ServerType.OPC_AE11_Wrapper) != 0)
 				{
 					cliOPCEVENTSERVERSTATUS opcEventServerStatus = null;
 					cliHRESULT HR = context.IOPCEventServer.GetStatus(out opcEventServerStatus);
@@ -254,14 +254,14 @@ namespace Xi.OPC.Wrapper.Impl
 					}
 					else
 					{
-						context.ClearAccessibleServerTypes(AccessibleServerTypes.JournalDataAccess);						
+						context.ClearAccessibleServerTypes(AccessibleServerTypes.AlarmsAndEventsAccess);						
 					}
 				}				
 			}
 
 			if (context.IsAccessibleJournalDataAccess)
 			{
-				if ((SupportedServerTypes & ServerType.OPC_HDA12_Wrapper) != 0)
+				if ((configuredServerTypes & ServerType.OPC_HDA12_Wrapper) != 0)
 				{
 					OPCHDA_SERVERSTATUS opcHdaServerStatus;
 					DateTime dtCurrentTime;

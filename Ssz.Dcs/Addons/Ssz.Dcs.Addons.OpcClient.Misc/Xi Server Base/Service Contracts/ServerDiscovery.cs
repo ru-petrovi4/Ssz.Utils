@@ -144,7 +144,7 @@ namespace Xi.Server.Base
 					serverEntry.ServerDescription.ServiceName              = _ThisServerEntry.ServerDescription.ServiceName;
 					serverEntry.ServerDescription.SecurityTokenServiceUrl  = _ThisServerEntry.ServerDescription.SecurityTokenServiceUrl;
 					serverEntry.ServerDescription.ServerName               = _ThisServerEntry.ServerDescription.ServerName;
-					serverEntry.ServerDescription.ServerTypes              = _ThisServerEntry.ServerDescription.ServerTypes;
+					serverEntry.ServerDescription.ConfiguredServerTypes    = _ThisServerEntry.ServerDescription.ConfiguredServerTypes;
 					serverEntry.ServerDescription.SupportedLocaleIds       = _ThisServerEntry.ServerDescription.SupportedLocaleIds;
 					serverEntry.ServerDescription.VendorName               = _ThisServerEntry.ServerDescription.VendorName;
 					serverEntry.ServerDescription.UserInfo                 = _ThisServerEntry.ServerDescription.UserInfo;

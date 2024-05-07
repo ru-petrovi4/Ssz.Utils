@@ -40,11 +40,12 @@ namespace Xi.Contracts.Data
 		/// </summary>
 		[DataMember] public string XiContractsVersionNumber { get; set; }
 
-		/// <summary>
-		/// The server types supported by this server. Standard types are defined 
-		/// by the ServerType class.
-		/// </summary>
-		[DataMember] public uint ServerTypes;
+        /// <summary>
+        /// The server types supported by this server. Standard types are defined 
+        /// by the ServerType class.
+        /// <see cref="Xi.Contracts.Constants.ServerType" />
+        /// </summary>
+        [DataMember] public uint ConfiguredServerTypes;
 
 		/// <summary>
 		/// <para>Name of the server software vendor.  </para> 

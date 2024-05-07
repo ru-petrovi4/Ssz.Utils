@@ -19,12 +19,15 @@ using System;
 
 namespace Xi.OPC.Wrapper.Impl
 {
-	/// <summary>
-	/// This class contains the type and progid of an underlying OPC COM server.
-	/// </summary>
-	public class OpcServerInfo
+    /// <summary>
+    /// This class contains the type and progid of an underlying OPC COM server.    
+    /// </summary>
+    public class OpcServerInfo
 	{
-		public uint ServerType { get; set; }
+        /// <summary>
+        ///     <see cref="Xi.Contracts.Constants.ServerType" />
+        /// </summary>
+        public uint ServerType { get; set; }
 		public string HostName { get; set; }
 		public string ProgId { get; set; }
 	}

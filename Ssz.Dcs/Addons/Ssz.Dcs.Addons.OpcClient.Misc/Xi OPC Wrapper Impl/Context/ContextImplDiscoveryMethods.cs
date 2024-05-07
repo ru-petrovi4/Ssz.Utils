@@ -55,46 +55,39 @@ namespace Xi.OPC.Wrapper.Impl
 					{
 						case ServerType.OPC_DA205_Wrapper:
 							{
-								if ((ServerRoot.ThisServerEntry.ServerDescription.ServerTypes & wrappedServer.ServerType) == 0)
-								{
-									serverStatus.ServerState = ServerState.NotOperational;
-								}
-								else
-								{
-									OPCSERVERSTATUS opcServerStatus = null;
-									cliHRESULT HR = IOPCServer.GetStatus(out opcServerStatus);
-									if (HR.Succeeded)
-									{
-										serverStatus.CurrentTime = opcServerStatus.dtCurrentTime;
-										switch (opcServerStatus.dwServerState)
-										{
-											case OPCSERVERSTATE.OPC_STATUS_FAILED:
-												serverStatus.ServerState = ServerState.Faulted;
-												break;
-											case OPCSERVERSTATE.OPC_STATUS_NOCONFIG:
-												serverStatus.ServerState = ServerState.NeedsConfiguration;
-												break;
-											case OPCSERVERSTATE.OPC_STATUS_RUNNING:
-												serverStatus.ServerState = ServerState.Operational;
-												break;
-											case OPCSERVERSTATE.OPC_STATUS_SUSPENDED:
-												serverStatus.ServerState = ServerState.OutOfService;
-												break;
-											case OPCSERVERSTATE.OPC_STATUS_TEST:
-												serverStatus.ServerState = ServerState.Diagnostics;
-												break;
-											default:
-												break;
-										}
-									}
-									else
-									{                                        
-										serverStatus.ServerState = ServerState.NotConnected;
-										serverStatus.CurrentTime = DateTime.UtcNow;
-										ThrowOnDisconnectedServer(HR, wrappedServer.ProgId);
-									}
-								}
-							}
+                                OPCSERVERSTATUS opcServerStatus;
+                                cliHRESULT HR = IOPCServer.GetStatus(out opcServerStatus);
+                                if (HR.Succeeded)
+                                {
+                                    serverStatus.CurrentTime = opcServerStatus.dtCurrentTime;
+                                    switch (opcServerStatus.dwServerState)
+                                    {
+                                        case OPCSERVERSTATE.OPC_STATUS_FAILED:
+                                            serverStatus.ServerState = ServerState.Faulted;
+                                            break;
+                                        case OPCSERVERSTATE.OPC_STATUS_NOCONFIG:
+                                            serverStatus.ServerState = ServerState.NeedsConfiguration;
+                                            break;
+                                        case OPCSERVERSTATE.OPC_STATUS_RUNNING:
+                                            serverStatus.ServerState = ServerState.Operational;
+                                            break;
+                                        case OPCSERVERSTATE.OPC_STATUS_SUSPENDED:
+                                            serverStatus.ServerState = ServerState.OutOfService;
+                                            break;
+                                        case OPCSERVERSTATE.OPC_STATUS_TEST:
+                                            serverStatus.ServerState = ServerState.Diagnostics;
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }
+                                else
+                                {
+                                    serverStatus.ServerState = ServerState.NotConnected;
+                                    serverStatus.CurrentTime = DateTime.UtcNow;
+                                    ThrowOnDisconnectedServer(HR, wrappedServer.ProgId);
+                                }
+                            }
 							break;
 
 						case ServerType.OPC_DA30_Wrapper:
@@ -105,101 +98,87 @@ namespace Xi.OPC.Wrapper.Impl
 
 						case ServerType.OPC_AE11_Wrapper:
 							{
-								if ((ServerRoot.ThisServerEntry.ServerDescription.ServerTypes & wrappedServer.ServerType) == 0)
-								{
-									serverStatus.ServerState = ServerState.NotOperational;
-								}
-								else
-								{
-									cliOPCEVENTSERVERSTATUS opcEventServerStatus = null;
-									cliHRESULT HR = IOPCEventServer.GetStatus(out opcEventServerStatus);
-									if (HR.Succeeded)
-									{
-										serverStatus.CurrentTime = opcEventServerStatus.dtCurrentTime;
-										switch (opcEventServerStatus.dwServerState)
-										{
-											case OPCEVENTSERVERSTATE.OPCAE_STATUS_FAILED:
-												serverStatus.ServerState = ServerState.Faulted;
-												break;
-											case OPCEVENTSERVERSTATE.OPCAE_STATUS_NOCONFIG:
-												serverStatus.ServerState = ServerState.NeedsConfiguration;
-												break;
-											case OPCEVENTSERVERSTATE.OPCAE_STATUS_RUNNING:
-												serverStatus.ServerState = ServerState.Operational;
-												break;
-											case OPCEVENTSERVERSTATE.OPCAE_STATUS_SUSPENDED:
-												serverStatus.ServerState = ServerState.OutOfService;
-												break;
-											case OPCEVENTSERVERSTATE.OPCAE_STATUS_TEST:
-												serverStatus.ServerState = ServerState.Diagnostics;
-												break;
-											default:
-												break;
-										}
-									}
-									else
-									{                                        
-										serverStatus.ServerState = ServerState.NotConnected;
-										serverStatus.CurrentTime = DateTime.UtcNow;
-                                        ThrowOnDisconnectedServer(HR, wrappedServer.ProgId);
+                                cliOPCEVENTSERVERSTATUS opcEventServerStatus;
+                                cliHRESULT HR = IOPCEventServer.GetStatus(out opcEventServerStatus);
+                                if (HR.Succeeded)
+                                {
+                                    serverStatus.CurrentTime = opcEventServerStatus.dtCurrentTime;
+                                    switch (opcEventServerStatus.dwServerState)
+                                    {
+                                        case OPCEVENTSERVERSTATE.OPCAE_STATUS_FAILED:
+                                            serverStatus.ServerState = ServerState.Faulted;
+                                            break;
+                                        case OPCEVENTSERVERSTATE.OPCAE_STATUS_NOCONFIG:
+                                            serverStatus.ServerState = ServerState.NeedsConfiguration;
+                                            break;
+                                        case OPCEVENTSERVERSTATE.OPCAE_STATUS_RUNNING:
+                                            serverStatus.ServerState = ServerState.Operational;
+                                            break;
+                                        case OPCEVENTSERVERSTATE.OPCAE_STATUS_SUSPENDED:
+                                            serverStatus.ServerState = ServerState.OutOfService;
+                                            break;
+                                        case OPCEVENTSERVERSTATE.OPCAE_STATUS_TEST:
+                                            serverStatus.ServerState = ServerState.Diagnostics;
+                                            break;
+                                        default:
+                                            break;
                                     }
-								}
-							}
+                                }
+                                else
+                                {
+                                    serverStatus.ServerState = ServerState.NotConnected;
+                                    serverStatus.CurrentTime = DateTime.UtcNow;
+                                    ThrowOnDisconnectedServer(HR, wrappedServer.ProgId);
+                                }
+                            }
 							break;
 
 						case ServerType.OPC_HDA12_Wrapper:
 							{
-								if ((ServerRoot.ThisServerEntry.ServerDescription.ServerTypes & wrappedServer.ServerType) == 0)
-								{
-									serverStatus.ServerState = ServerState.NotOperational;
-								}
-								else
-								{
-									OPCHDA_SERVERSTATUS opcHdaServerStatus;
-									DateTime dtCurrentTime;
-									DateTime dtStartTime;
-									ushort wMajorVersion;
-									ushort wMinorVersion;
-									ushort wBuildNumber;
-									uint dwMaxReturnValues;
-									string sStatusString;
-									string sVendorInfo;
+                                OPCHDA_SERVERSTATUS opcHdaServerStatus;
+                                DateTime dtCurrentTime;
+                                DateTime dtStartTime;
+                                ushort wMajorVersion;
+                                ushort wMinorVersion;
+                                ushort wBuildNumber;
+                                uint dwMaxReturnValues;
+                                string sStatusString;
+                                string sVendorInfo;
 
-									cliHRESULT HR = IOPCHDA_Server.GetHistorianStatus(out opcHdaServerStatus,
-																					  out dtCurrentTime,
-																					  out dtStartTime,
-																					  out wMajorVersion,
-																					  out wMinorVersion,
-																					  out wBuildNumber,
-																					  out dwMaxReturnValues,
-																					  out sStatusString,
-																					  out sVendorInfo);
-									if (HR.Succeeded)
-									{
-										serverStatus.CurrentTime = dtCurrentTime;
-										switch (opcHdaServerStatus)
-										{
-											case OPCHDA_SERVERSTATUS.OPCHDA_DOWN:
-												serverStatus.ServerState = ServerState.Faulted;
-												break;
-											case OPCHDA_SERVERSTATUS.OPCHDA_UP:
-												serverStatus.ServerState = ServerState.Operational;
-												break;
-											case OPCHDA_SERVERSTATUS.OPCHDA_INDETERMINATE:
-												serverStatus.ServerState = ServerState.NotOperational;
-												break;
-											default:
-												break;
-										}
-									}
-									else
-									{                                        
-										serverStatus.ServerState = ServerState.NotConnected;
-										serverStatus.CurrentTime = DateTime.UtcNow;
-                                        ThrowOnDisconnectedServer(HR, wrappedServer.ProgId);
+                                cliHRESULT HR = IOPCHDA_Server.GetHistorianStatus(out opcHdaServerStatus,
+                                                                                  out dtCurrentTime,
+                                                                                  out dtStartTime,
+                                                                                  out wMajorVersion,
+                                                                                  out wMinorVersion,
+                                                                                  out wBuildNumber,
+                                                                                  out dwMaxReturnValues,
+                                                                                  out sStatusString,
+                                                                                  out sVendorInfo);
+                                if (HR.Succeeded)
+                                {
+                                    serverStatus.CurrentTime = dtCurrentTime;
+                                    switch (opcHdaServerStatus)
+                                    {
+                                        case OPCHDA_SERVERSTATUS.OPCHDA_DOWN:
+                                            serverStatus.ServerState = ServerState.Faulted;
+                                            break;
+                                        case OPCHDA_SERVERSTATUS.OPCHDA_UP:
+                                            serverStatus.ServerState = ServerState.Operational;
+                                            break;
+                                        case OPCHDA_SERVERSTATUS.OPCHDA_INDETERMINATE:
+                                            serverStatus.ServerState = ServerState.NotOperational;
+                                            break;
+                                        default:
+                                            break;
                                     }
-								}
-							}
+                                }
+                                else
+                                {
+                                    serverStatus.ServerState = ServerState.NotConnected;
+                                    serverStatus.CurrentTime = DateTime.UtcNow;
+                                    ThrowOnDisconnectedServer(HR, wrappedServer.ProgId);
+                                }
+                            }
 							break;						
 
 						default:

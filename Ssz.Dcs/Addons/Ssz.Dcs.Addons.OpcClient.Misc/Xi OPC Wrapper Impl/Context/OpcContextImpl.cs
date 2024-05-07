@@ -26,6 +26,7 @@ using Xi.Server.Base;
 using Xi.Common.Support;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
 
 namespace Xi.OPC.Wrapper.Impl
 {
@@ -110,18 +111,15 @@ namespace Xi.OPC.Wrapper.Impl
 			get { return IOPCHDA_Server as IOPCHDA_SyncReadCli; }
 		}
 
-		/// <summary>
-		/// The wrapped servers that are currently accessible.
-		/// The server bits in ContextOptions are used as its values.
-		/// TODO: if the wrapper wraps more than one server of a given type (e.g. DA)
-		/// then the values for this data member will have to be changed, along with 
-		/// its associated comparisons.
-		/// </summary>
-		private uint AccessibleServerTypes
-        {
-			get { return _accessibleServerTypes; }
-		}
-		private uint _accessibleServerTypes = 0;
+        /// <summary>
+        /// The wrapped servers that are currently accessible.
+        /// The server bits in ContextOptions are used as its values.
+        /// TODO: if the wrapper wraps more than one server of a given type (e.g. DA)
+        /// then the values for this data member will have to be changed, along with 
+        /// its associated comparisons.
+		/// <see cref="Xi.Contracts.Constants.AccessibleServerTypes" />
+        /// </summary>
+        private uint _accessibleServerTypes = 0;
 
 		public override bool IsAccessibleDataAccess
 		{
@@ -144,32 +142,41 @@ namespace Xi.OPC.Wrapper.Impl
         
 	    internal void ClearAccessibleServerTypes(AccessibleServerTypes accessibleServerTypes)
 		{
+            MethodBase caller = new StackTrace().GetFrame(1).GetMethod();            
+            StaticLogger.Logger.LogWarning($"ClearAccessibleServerTypes: 0x{accessibleServerTypes:X}; Func: {caller.Name}");
+            
 			_accessibleServerTypes &= ~(uint)accessibleServerTypes;
-		}		
+		}
 
 		public void ThrowOnDisconnectedServer(cliHRESULT hr, string progId)
 		{
-			if (   ((uint)hr.hResult == 0x800706ba) // "The RPC server is unavailable"
-				|| ((uint)hr.hResult == 0x800706bf)) // The remote procedure called failed and did not execute
+            MethodBase caller = new StackTrace().GetFrame(1).GetMethod();            
+            
+			if (((uint)hr.hResult == 0x800706ba) // "The RPC server is unavailable"
+				|| ((uint)hr.hResult == 0x800706bf)) // The remote procedure called failed and did not execute                
 			{
 				OpcServerInfo server = XiOPCWrapperServer.ConfiguredOpcServerInfos.Find(ws => string.Compare(ws.ProgId, progId) == 0);
 				switch (server.ServerType)
 				{
 					case ServerType.OPC_DA205_Wrapper:
-                        ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.DataAccess);
+						ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.DataAccess);
 						break;
 					case ServerType.OPC_AE11_Wrapper:
-                        ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.AlarmsAndEventsAccess);
+						ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.AlarmsAndEventsAccess);
 						break;
 					case ServerType.OPC_HDA12_Wrapper:
-                        ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.JournalDataAccess);
+						ClearAccessibleServerTypes(Contracts.Constants.AccessibleServerTypes.JournalDataAccess);
 						break;
 					default:
 						break;
 				}
-                StaticLogger.Logger.LogError($"OPC Server Error. ProgId: {progId}; HR: {hr.hResult:X}");
-                ThrowDisconnectedServerException(progId);
-			}
+				StaticLogger.Logger.LogError($"OPC Server Error. ProgId: {progId}; HR: 0x{hr.hResult:X}; Func: {caller.Name}");
+				ThrowDisconnectedServerException(progId);
+			}            
+            else if ((uint)hr.hResult > 0)
+			{
+                StaticLogger.Logger.LogWarning($"OPC Server Error. ProgId: {progId}; HR: 0x{hr.hResult:X}; Func: {caller.Name}");
+            }
 		}
 
 		public void ThrowDisconnectedServerException(string progId)

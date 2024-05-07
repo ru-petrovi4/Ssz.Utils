@@ -229,7 +229,7 @@ namespace Xi.Server.Base
 					{
 						List<ServerStatus> serverStatusList = new List<ServerStatus>();
 						ServerStatus serverStatus = new ServerStatus();
-						serverStatus.ServerType = _ThisServerEntry.ServerDescription.ServerTypes; 
+						serverStatus.ServerType = _ThisServerEntry.ServerDescription.ConfiguredServerTypes; 
 						serverStatus.CurrentTime = DateTime.UtcNow;
 						serverStatus.ServerState = _ServerState;
 						serverStatusList.Add(serverStatus);

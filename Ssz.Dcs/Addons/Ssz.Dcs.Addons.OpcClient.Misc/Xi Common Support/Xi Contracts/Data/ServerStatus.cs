@@ -32,12 +32,13 @@ namespace Xi.Contracts.Data
 		/// </summary>
 		[DataMember] public string ServerName;
 
-		/// <summary>
-		/// The type of the server for which the status is being reported.
-		/// The Xi.Contracts.Constants.ServerType enumeration is used to 
-		/// identify the type of the server. 
-		/// </summary>
-		[DataMember] public uint ServerType;
+        /// <summary>
+        /// The type of the server for which the status is being reported.
+        /// The Xi.Contracts.Constants.ServerType enumeration is used to 
+        /// identify the type of the server. 
+        /// <see cref="Xi.Contracts.Constants.ServerType" />
+        /// </summary>		
+        [DataMember] public uint ServerType;
 
 		/// <summary>
 		/// The current time in the server.

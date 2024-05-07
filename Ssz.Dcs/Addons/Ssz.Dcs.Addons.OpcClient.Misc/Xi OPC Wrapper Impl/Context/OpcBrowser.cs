@@ -401,11 +401,11 @@ namespace Xi.OPC.Wrapper.Impl
 			if (XiOPCWrapperServer.ConfiguredOpcServerInfos.Count == 1)
 			{
 				// TODO: Add code here for alternate wrapped server types
-				if ((XiOPCWrapperServer.ThisServerEntry.ServerDescription.ServerTypes & ServerType.OPC_DA205_Wrapper) > 0)
+				if ((XiOPCWrapperServer.ThisServerEntry.ServerDescription.ConfiguredServerTypes & ServerType.OPC_DA205_Wrapper) > 0)
 					serverTypeOfThisBrowse = ServerType.OPC_DA205_Wrapper;
-				else if ((XiOPCWrapperServer.ThisServerEntry.ServerDescription.ServerTypes & ServerType.OPC_AE11_Wrapper) > 0)
+				else if ((XiOPCWrapperServer.ThisServerEntry.ServerDescription.ConfiguredServerTypes & ServerType.OPC_AE11_Wrapper) > 0)
 					serverTypeOfThisBrowse = ServerType.OPC_AE11_Wrapper;
-				else if ((XiOPCWrapperServer.ThisServerEntry.ServerDescription.ServerTypes & ServerType.OPC_HDA12_Wrapper) > 0)
+				else if ((XiOPCWrapperServer.ThisServerEntry.ServerDescription.ConfiguredServerTypes & ServerType.OPC_HDA12_Wrapper) > 0)
 					serverTypeOfThisBrowse = ServerType.OPC_HDA12_Wrapper;
 			}
 			else // (XiOPCWrapper.OpcWrappedServers.Count > 1)

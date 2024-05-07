@@ -427,11 +427,12 @@ namespace Xi.Server.Base
 			if (null != tList)
 			{
 				ListAttributes listAttrs = tList.OnEnableListUpdating(enableUpdating);
-				if (tList.BeingDeleted == false) // could have changed since the call was made
-				{
-					if (enableUpdating)
-						tList.OnTouchList();
-				}
+				// VALFIX
+				//if (tList.BeingDeleted == false) // could have changed since the call was made
+				//{
+				//	if (enableUpdating)
+				//		tList.OnTouchList();
+				//}
 				if (tList.BeingDeleted == false) // could have changed since the last tList call was made
 					return listAttrs;
 				else
@@ -488,6 +489,7 @@ namespace Xi.Server.Base
 
 				List<AliasResult> listAliasResult
 					= tList.OnEnableListElementUpdating(enableUpdating, serverAliases);
+				// VALFIX
 				if (tList.BeingDeleted == false) // could have changed since the call was made
 				{
 					if (enableUpdating)

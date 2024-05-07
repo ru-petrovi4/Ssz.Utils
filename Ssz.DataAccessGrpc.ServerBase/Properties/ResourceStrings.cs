@@ -15,7 +15,7 @@
 using System;
 using System.ComponentModel;
 
-namespace Ssz.DataAccessGrpc.ServerBase.Properties
+namespace Ssz.DataGrpc.ServerBase.Properties
 { 
     public class ResourceStrings
     {
