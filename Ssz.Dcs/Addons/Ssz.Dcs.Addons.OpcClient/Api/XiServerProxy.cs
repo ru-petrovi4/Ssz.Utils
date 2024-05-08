@@ -9,6 +9,7 @@ using Ssz.Xi.Client.Api.Lists;
 using Ssz.Xi.Client.Internal;
 using Ssz.Xi.Client.Internal.Context;
 using Ssz.Xi.Client.Internal.Lists;
+using Xi.Common.Support;
 using Xi.Contracts;
 using Xi.Contracts.Constants;
 using Xi.Contracts.Data;
@@ -105,9 +106,9 @@ namespace Ssz.Xi.Client.Api
 
             try
             {
-                _context = new XiContext(contextParams,
-                            (uint)_contextTimeout.TotalMilliseconds,
-                            _localeId, applicationName, workstationName, _keepAliveSkipCount,
+                _context = new XiContext(
+                            contextParams,                            
+                            _localeId, applicationName, workstationName,
                             _callbackRate, xiCallbackDoer);
 
                 _context.ContextNotifyEvent += XiContext_ContextNotifyEvent;
@@ -325,17 +326,7 @@ namespace Ssz.Xi.Client.Api
         {
             get { return _localeId; }
             set { if (_context is null) _localeId = value; }
-        }
-
-        /// <summary>
-        ///     This property specifies how long the context will stay alive in the server after a WCF
-        ///     connection failure. The ClientBase will attempt reconnection during this period.
-        /// </summary>
-        public TimeSpan ContextTimeout
-        {
-            get { return _contextTimeout; }
-            set { if (_context is null) _contextTimeout = value; }
-        }
+        }        
 
         /// <summary>
         ///     This property indicates, when TRUE, that the client has an open context (session) with
@@ -344,22 +335,6 @@ namespace Ssz.Xi.Client.Api
         public bool ContextExists
         {
             get { return _context is not null; }
-        }        
-
-        /// <summary>
-        ///     This property contains the client-requested keepAliveSkipCount for the subscription.
-        ///     The server may negotiate this value up or down. The keepAliveSkipCount indicates
-        ///     the number of consecutive UpdateRate cycles for a list that occur with nothing to
-        ///     send before an empty callback is sent to indicate a keep-alive message. For example,
-        ///     if the value of this parameter is 1, then a keep-alive callback will be sent each
-        ///     UpdateRate cycle for each list assigned to the callback for which there is nothing
-        ///     to send.  A value of 0 indicates that keep-alives are not to be sent for any list
-        ///     assigned to the callback.
-        /// </summary>
-        public uint KeepAliveSkipCount
-        {
-            get { return _keepAliveSkipCount; }
-            set { if (_context is null) _keepAliveSkipCount = value; }
         }
 
         /// <summary>
@@ -402,11 +377,12 @@ namespace Ssz.Xi.Client.Api
 
         public static uint NormalizeStatusCode(uint statusCode)
         {
-            return StatusCodes.Good;
-            //if ((XiStatusCode.StatusBits(statusCode) & (byte)XiStatusCodeStatusBits.GoodNonSpecific) != 0)
-            //    return StatusCodes.Good;
-            //else
-            //    return StatusCodes.Bad;
+            var d = new XiStatusCodeDecoder(statusCode);
+            if (d.IsGood)
+                return StatusCodes.Good;
+            if (d.IsUncertain)
+                return StatusCodes.Uncertain;
+            return StatusCodes.Bad;
         }
 
         #endregion
@@ -467,18 +443,6 @@ namespace Ssz.Xi.Client.Api
         #region private fields
 
         private bool _disposed;
-        
-        /// <summary>
-        ///     This property contains the client-requested keepAliveSkipCount for the subscription.
-        ///     The server may negotiate this value up or down. The keepAliveSkipCount indicates
-        ///     the number of consecutive UpdateRate cycles for a list that occur with nothing to
-        ///     send before an empty callback is sent to indicate a keep-alive message. For example,
-        ///     if the value of this parameter is 1, then a keep-alive callback will be sent each
-        ///     UpdateRate cycle for each list assigned to the callback for which there is nothing
-        ///     to send.  A value of 0 indicates that keep-alives are not to be sent for any list
-        ///     assigned to the callback.
-        /// </summary>
-        private uint _keepAliveSkipCount;
 
 #if DEBUG
         /// <summary>
@@ -491,18 +455,6 @@ namespace Ssz.Xi.Client.Api
     /// </summary>
         private TimeSpan _callbackRate = new TimeSpan(0, 0, 10);
 #endif        
-
-#if DEBUG
-        /// <summary>
-        ///     This data member is the private representation of the ContextTimeout public property.
-        /// </summary>
-        private TimeSpan _contextTimeout = new TimeSpan(0, 30, 0);
-#else
-    /// <summary>
-    ///   This data member is the private representation of the ContextTimeout public property.
-    /// </summary>
-        private TimeSpan _contextTimeout = new TimeSpan(0, 0, 30);
-#endif
 
         /// <summary>
         ///     This data member is the private representation of the LocaleId public property. It defaults

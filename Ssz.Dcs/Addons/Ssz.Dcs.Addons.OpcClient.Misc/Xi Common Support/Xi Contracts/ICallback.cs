@@ -176,7 +176,7 @@ namespace Xi.Contracts
         /// The results of the operation, including the negotiated keep-alive skip count and callback rate.
         /// </returns>
         //[OperationContract]
-		SetCallbackResult SetCallback(string contextId, uint keepAliveSkipCount, TimeSpan callbackRate, ICallback iCallBack);
+		SetCallbackResult SetCallback(string contextId, TimeSpan callbackRate, ICallback iCallBack);
 
 	}
 

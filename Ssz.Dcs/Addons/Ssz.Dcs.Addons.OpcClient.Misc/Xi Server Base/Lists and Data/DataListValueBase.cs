@@ -68,33 +68,7 @@ namespace Xi.Server.Base
 
 		private double _doubleValue;
 		private uint _uintValue;
-		private object _objectValue;
-		/// <summary>
-		/// The actual Data Value is simply stored as a .NET object.  Thus
-		/// it may represent any data value from a simple intrisic data type, 
-		/// an array of intrisic data types or an instance of a class.  
-		/// Note that if a class is to be represented it must be defined 
-		/// with a Data Contract and Data Memebers.
-		/// </summary>
-		public object Value
-		{
-			get
-			{
-				switch (_valueTransportTypeKey)
-				{
-					case TransportDataType.Double:
-						return _doubleValue;
-					case TransportDataType.Uint:
-						return _uintValue;
-					case TransportDataType.Object:
-						return _objectValue;
-					default:
-						break;
-				}
-				return null;
-			}
-			//set { _value = value; }
-		}
+		private object _objectValue;	
 
 		/// <summary>
 		/// Used to set the value when transproted as a double.
@@ -134,23 +108,21 @@ namespace Xi.Server.Base
 		{
 			StatusCode = statusCode;
 			TimeStamp = timeStamp;
-			DoubleValue = value;
-			EntryQueued = true;
+			DoubleValue = value;			
 		}
+
 		public virtual void UintValueUpdate(uint statusCode, DateTime timeStamp, uint value)
 		{
 			StatusCode = statusCode;
 			TimeStamp = timeStamp;
-			UintValue = value;
-			EntryQueued = true;
+			UintValue = value;			
 		}
+
 		public virtual void ObjectValueUpdate(uint statusCode, DateTime timeStamp, object value)
 		{
 			StatusCode = statusCode;
 			TimeStamp = timeStamp;
-			ObjectValue = value;
-			EntryQueued = true;
+			ObjectValue = value;			
 		}
-
 	}
 }

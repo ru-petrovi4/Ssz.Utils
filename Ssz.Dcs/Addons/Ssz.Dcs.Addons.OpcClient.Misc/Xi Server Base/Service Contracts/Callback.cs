@@ -34,7 +34,7 @@ namespace Xi.Server.Base
 									where TList : ListRoot
 	{
 		SetCallbackResult IRegisterForCallback.SetCallback(string contextId,
-			uint keepAliveSkipCount, TimeSpan callbackRate, ICallback iCallBack)
+			TimeSpan callbackRate, ICallback iCallBack)
 		{
 			//using (StaticLogger.Logger.EnterMethod(contextId))
 			{
@@ -44,7 +44,7 @@ namespace Xi.Server.Base
 					if (context == null)
 						throw FaultHelpers.Create(XiFaultCodes.E_NOCONTEXT);					
 
-					return context.OnSetCallback(iCallBack, keepAliveSkipCount, callbackRate);
+					return context.OnSetCallback(iCallBack, callbackRate);
 				}				
 				catch (Exception ex)
 				{

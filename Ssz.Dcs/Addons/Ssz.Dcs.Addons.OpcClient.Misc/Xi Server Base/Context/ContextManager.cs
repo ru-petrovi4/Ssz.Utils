@@ -144,8 +144,7 @@ namespace Xi.Server.Base
                 else
                 {
                     if (concluding)
-                        context.Concluding = concluding;
-                    context.LastAccess = DateTime.UtcNow;
+                        context.Concluding = concluding;                    
                 }
             }
             return context;

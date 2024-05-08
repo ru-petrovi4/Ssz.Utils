@@ -36,43 +36,28 @@ namespace Ssz.Xi.Client.Internal.Context
         ///     </para>
         ///     <para> This constructor should only be called by the static Initiate() methods. </para>
         /// </summary>
-        /// <param name="resourceManagementServiceEndpoint"></param>
-        /// <param name="contextTimeout">
-        ///     This parameter supplies an Xi Server context timeout in milliseconds. The Xi ClientBase
-        ///     limits this to be not less than seven seconds or greater than thirty minutes.
-        /// </param>
-        /// <param name="contextOptions">
-        ///     This parameter enables various debug and tracing options used to aide in diagnosing
-        ///     issues. See ContextOptions enum for the valid values.
-        /// </param>
-        /// <param name="localeId"> The localed id requested to be used for the context. </param>
-        /// <param name="callbackRate"></param>
+        /// <param name="contextParams"></param>
+        /// <param name="localeId"></param>
         /// <param name="applicationName"></param>
         /// <param name="workstationName"></param>
-        /// <param name="xiServerInfo"></param>
         /// <param name="keepAliveSkipCount"></param>
+        /// <param name="callbackRate"></param>
         /// <param name="xiCallbackDoer"></param>
-        /// <returns>
-        ///     An instance of the XiContext class is returned to the client. The client then uses this instance for further
-        ///     interactions with the Xi Server.
-        /// </returns>
-        public XiContext(CaseInsensitiveDictionary<string?> contextParams,
-            uint contextTimeout,
+        public XiContext(
+            CaseInsensitiveDictionary<string?> contextParams,            
             uint localeId, string applicationName,
-            string workstationName, uint keepAliveSkipCount,
+            string workstationName,
             TimeSpan callbackRate, IDispatcher xiCallbackDoer)
         {
-            _contextParams = contextParams;
-            _callbackEndpointLastCallUtc = DateTime.UtcNow;
+            _contextParams = contextParams;            
             _xiCallbackDoer = xiCallbackDoer;            
 
             try
             {
                 XiOPCWrapperServer.Initialize(contextParams);
 
-                _xiServer = new XiOPCWrapperServer();
+                _xiServer = new XiOPCWrapperServer();               
                 
-                _serverKeepAliveSkipCount = keepAliveSkipCount;
                 _serverCallbackRate = callbackRate;
 
                 if (applicationName is not null) _applicationName = applicationName;
@@ -132,9 +117,7 @@ namespace Ssz.Xi.Client.Internal.Context
 
                 if (_contextId is null) throw new Exception("Server returns null contextId.");
 
-                _callbackEndpoint.SetCallback(ContextId, _serverKeepAliveSkipCount, _serverCallbackRate);
-
-                SetResourceManagementLastCallUtc();
+                _callbackEndpoint.SetCallback(ContextId, _serverCallbackRate);
 
                 lock (StaticActiveContextsSyncRoot)
                 {
@@ -260,15 +243,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 return null;
             }
             return context;
-        }
-
-        public void NotifyCallbackRecieved()
-        {
-            lock (_callbackEndpointLastCallUtcSyncRoot)
-            {
-                _callbackEndpointLastCallUtc = DateTime.UtcNow;
-            }
-        }
+        }        
 
         /// <summary>
         ///     This method is called by the ClientBase to notify the client application of context events.
@@ -298,7 +273,6 @@ namespace Ssz.Xi.Client.Internal.Context
             {
                 ProcessRemoteMethodCallException(ex);
             }
-            SetResourceManagementLastCallUtc();
             return _serverStatusList;
         }
 
@@ -325,7 +299,7 @@ namespace Ssz.Xi.Client.Internal.Context
             {
                 ProcessRemoteMethodCallException(ex);
             }
-            SetResourceManagementLastCallUtc();
+            
             return requestedStrings;
         }
 
@@ -378,7 +352,7 @@ namespace Ssz.Xi.Client.Internal.Context
             {
                 ProcessRemoteMethodCallException(ex);
             }
-            SetResourceManagementLastCallUtc();
+            
             return objectAttributes;
         }        
 
@@ -423,15 +397,7 @@ namespace Ssz.Xi.Client.Internal.Context
         public uint LocaleId
         {
             get { return _localeId; }
-        }        
-
-        /// <summary>
-        ///     The ContextOptions for this context. See Contracts.Constants.ContextOptions for standard values.
-        /// </summary>
-        public uint ContextOptions_
-        {
-            get { return _contextOptions; }
-        }
+        }                
 
         /// <summary>
         ///     The name of the client application exe.
@@ -455,17 +421,7 @@ namespace Ssz.Xi.Client.Internal.Context
         public IResourceManagement? ResourceManagement
         {
             get { return _iResourceManagement; }
-        }
-
-        /// <summary>
-        ///     A unique clientListId used to identify a client context when re-initiating a context.
-        ///     This clientListId is provided to prevent interlopers from using a ContextId that they
-        ///     obtain by watching watching unencrypted Xi Endpoint traffic.
-        /// </summary>
-        public string ReInitiateKey
-        {
-            get { return _reInitiateKey; }
-        }        
+        }             
 
         /// <summary>
         ///     Inidicates, when TRUE, that the context is closing or has completed closing
@@ -479,174 +435,7 @@ namespace Ssz.Xi.Client.Internal.Context
 
         #endregion
 
-        #region private functions
-
-        private void SetResourceManagementLastCallUtc()
-        {            
-        }        
-
-        /// <summary>
-        ///     <para>
-        ///         This method is invoked to ensure that the inactivity timeout to be used for the context falls within
-        ///         prescribed limits (is not too short or too long). If the timeout period supplied in the call is outside one of
-        ///         these limits, this method returns the limit that was exceeded as timeout to use.
-        ///     </para>
-        ///     <para> The maximum value for the context timeout is 30 minutes. </para>
-        ///     <para>
-        ///         The minimum value for the context timeout is 2 times the keep-alive timer period plus the time it takes WCF
-        ///         to detect and report a communications failure. This should allow the client base to detect a failure and
-        ///         respond to it before the context times out in the server
-        ///     </para>
-        ///     <para> Note that the keep-alive logic will send a keep alive one keep-alive timer period prior to this timeout. </para>
-        /// </summary>
-        /// <param name="serverContextTimeoutInMs">
-        ///     The inactivity timeout period of the context. This is the same value used by
-        ///     the server to time out and close the context for inactivity.
-        /// </param>
-        /// <returns> The context timeout to use. </returns>
-        private uint ValidateServerContextTimeout(uint serverContextTimeoutInMs)
-        {            
-            if (serverContextTimeoutInMs < 9000) return 9000; // The minimum timeout is nine seconds.
-            if (serverContextTimeoutInMs > 30 * 60 * 1000) return 30 * 60 * 1000; // The maximum timeout is 30 minutes.
-            return serverContextTimeoutInMs;
-            /*
-            uint validatedTimeoutInMs;
-
-            uint minTimeInMs = KeepAliveTimerPeriodInMs + KeepAliveTimerPeriodInMs + WcfFailedCommsExceptionTimeInMs +
-                               TimeToRecoverCommunicationsInMs;
-            const uint maxTimeInMs = 30*60*1000; // 30 min
-
-            if (serverContextTimeoutInMs < minTimeInMs) validatedTimeoutInMs = minTimeInMs;
-            else if (serverContextTimeoutInMs > maxTimeInMs) validatedTimeoutInMs = maxTimeInMs;
-            else validatedTimeoutInMs = serverContextTimeoutInMs;
-
-            return validatedTimeoutInMs;*/
-        }
-
-        /*
-        /// <summary>
-        ///   This method is invoked to issue a ReInitiate message to the Xi Server.
-        /// </summary>
-        private void ReInitiateContext()
-        {
-            try
-            {
-                if (_iResourceManagement is not null)
-                {
-                    // close the existing channel
-                    ChannelCloser.Close(_iResourceManagement);
-                    _iResourceManagement = null;
-                }
-
-                // Reopen the IResourceManagement channel
-                var cfIResourceManagement = new ChannelFactory<IResourceManagement>(_connectedResourceManagementServiceEndpoint.Binding,
-                                                                                    _connectedResourceManagementServiceEndpoint.Address);
-
-                cfIResourceManagement.Credentials.Windows.AllowedImpersonationLevel =
-                    TokenImpersonationLevel.Delegation;
-                XiEndpointRoot.SetMaxItemsInObjectGraph(cfIResourceManagement.Endpoint.Contract.Operations,
-                                            _resourceManagementEndpointConfig.MaxItemsInObjectGraph);
-                    
-
-                _iResourceManagement = cfIResourceManagement.CreateChannel();
-
-                _iResourceManagement.ReInitiate(ContextId, ref _contextOptions, ref _reInitiateKey);
-                SetResourceManagementLastCallUtc();
-                   
-                // if the callback endpoint is being used, reestablish it if a callback has not been received
-                // since the resource management EP failure was detected (if the callback was received after the 
-                // resource management EP failure was detected, then the callback EP should be working
-                // only do this if the context has been re-initiated
-                if (_callbackEndpoint is not null)
-                {
-                    using (_callbackEndpoint.SyncRoot.Enter())
-                    {
-                        if (!_callbackEndpoint.Disposed) ReEstablishCallbackEp();
-                    }
-                }
-            }
-            catch (FaultException<XiFault> fex)
-            {
-                // if not a server shutdown exception, notify the client of this server error
-                if (!IsServerShutdownOrNoContext(fex))
-                    _pendingContextNotificationData =
-                                    new XiContextNotificationData(XiContextNotificationType.ReInitiateException, fex);
-            }
-            catch
-            {
-                _pendingContextNotificationData =
-                                    new XiContextNotificationData(
-                                        XiContextNotificationType.ResourceManagementDisconnected,
-                                        null);
-            }
-        }
-
-        /// <summary>
-        ///   This method is invoked to close the callback endpoint, reopen it, and send a SetCallback 
-        ///   message to the server.
-        ///   Preconditions _callbackEndpoint must be locked.
-        /// </summary>
-        private void ReEstablishCallbackEp()
-        {
-            try
-            {
-                ChannelCloser.Close(_callbackEndpoint.Channel);
-                _callbackEndpoint.CreateChannel();
-                
-                _callbackEndpoint.SetCallback(ContextId, _callbackEndpoint.KeepAliveSkipCount, _callbackEndpoint.CallbackRate);
-                
-                _callbackEndpoint.LastCallUtc = DateTime.UtcNow;
-            }
-            catch
-            {
-                _pendingContextNotificationData =
-                                    new XiContextNotificationData(XiContextNotificationType.EndpointDisconnected,
-                                                                _callbackEndpoint);
-            }
-        }*/
-
-        /// <summary>
-        ///     This method checks the exception and notifies the client application using the Abort
-        ///     callback if the server has shutdown or if the context is not open in the server.
-        /// </summary>
-        /// <param name="fe"> The exception to check </param>
-        /// <returns> Returns TRUE if the server has shutdown or the context is not open in the server. Otherwise FALSE. </returns>
-        private bool IsServerShutdownOrNoContextServerFault(FaultException<XiFault> fe)
-        {
-            //if (fe.Detail.ErrorCode == XiFaultCodes.E_SERVER_SHUTDOWN)
-            //{
-            //    var serverStatus = new ServerStatus();
-            //    if (_serverDescription is not null)
-            //    {
-            //        serverStatus.ServerName = _serverDescription.ServerName;
-            //        serverStatus.ServerType = _serverDescription.ServerTypes;
-            //    }
-            //    serverStatus.ServerState = ServerState.Aborting;
-            //    serverStatus.CurrentTime = DateTime.UtcNow;
-            //    serverStatus.Info = fe.Message;
-            //    ServerContextIsClosing = true;
-            //    _pendingContextNotificationData = new XiContextNotificationData(XiContextNotificationType.Shutdown,
-            //        serverStatus);
-            //    return true;
-            //}
-            //if (fe.Detail.ErrorCode == XiFaultCodes.E_NOCONTEXT)
-            //{
-            //    var serverStatus = new ServerStatus();
-            //    if (_serverDescription is not null)
-            //    {
-            //        serverStatus.ServerName = _serverDescription.ServerName;
-            //        serverStatus.ServerType = _serverDescription.ServerTypes;
-            //    }
-            //    serverStatus.ServerState = ServerState.Aborting;
-            //    serverStatus.CurrentTime = DateTime.UtcNow;
-            //    serverStatus.Info = "The context with the server is not open";
-            //    ServerContextIsClosing = true;
-            //    _pendingContextNotificationData = new XiContextNotificationData(XiContextNotificationType.Shutdown,
-            //        serverStatus);
-            //    return true;
-            //}
-            return false;
-        }
+        #region private functions 
 
         /// <summary>
         ///     <para> Re throws. </para>
@@ -678,13 +467,7 @@ namespace Ssz.Xi.Client.Internal.Context
                         ex);
 
                 //Logger?.LogDebug(ex);
-            }
-            //else if (ex is CommunicationException)
-            //{
-            //    _pendingContextNotificationData =
-            //        new XiContextNotificationData(XiContextNotificationType.EndpointDisconnected,
-            //            ex);
-            //}
+            }            
             else
             {
                 _pendingContextNotificationData = new XiContextNotificationData(XiContextNotificationType.EndpointFail,
@@ -717,19 +500,7 @@ namespace Ssz.Xi.Client.Internal.Context
         ///     them into the preferred order of use. For example, if the client and server are on the
         ///     same machine, the netPipe endpoints will sort to the top.
         /// </summary>
-        private XiOPCWrapperServer? _xiServer;
-
-        /// <summary>
-        ///     This property contains the client-requested keepAliveSkipCount for the subscription.
-        ///     The server may negotiate this value up or down. The keepAliveSkipCount indicates
-        ///     the number of consecutive UpdateRate cycles for a list that occur with nothing to
-        ///     send before an empty callback is sent to indicate a keep-alive message. For example,
-        ///     if the value of this parameter is 1, then a keep-alive callback will be sent each
-        ///     UpdateRate cycle for each list assigned to the callback for which there is nothing
-        ///     to send.  A value of 0 indicates that keep-alives are not to be sent for any list
-        ///     assigned to the callback.
-        /// </summary>
-        private readonly uint _serverKeepAliveSkipCount;
+        private XiOPCWrapperServer? _xiServer;        
 
         /// <summary>
         ///     <para>
@@ -762,12 +533,7 @@ namespace Ssz.Xi.Client.Internal.Context
         /// <summary>
         ///     This data member represents the WorkstationName public property
         /// </summary>
-        private readonly string _workstationName;
-
-        /// <summary>
-        ///     This data member represents the ContextOptions public property
-        /// </summary>
-        private readonly uint _contextOptions = 0;
+        private readonly string _workstationName;        
 
         /// <summary>
         ///     The private representation of the IResourceManagement public property
@@ -779,18 +545,7 @@ namespace Ssz.Xi.Client.Internal.Context
         /// <summary>
         ///     This data member is the private representation of the LocaleId interface property.
         /// </summary>
-        private readonly uint _localeId = (uint) Thread.CurrentThread.CurrentCulture.LCID;                
-
-        /// <summary>
-        ///     This data member is the private representation of the public ReInitateKey property
-        /// </summary>
-        private readonly string _reInitiateKey;
-
-        /// <summary>
-        ///     This data member contains the Server Description for this Xi Context.  Is set by
-        ///     the Identify() method during context establishment.
-        /// </summary>
-        private ServerDescription? _serverDescription;
+        private readonly uint _localeId = (uint) Thread.CurrentThread.CurrentCulture.LCID;                        
 
         /// <summary>
         ///     The status of the server
@@ -801,10 +556,7 @@ namespace Ssz.Xi.Client.Internal.Context
         ///     Inidicates, when TRUE, that the context is closing or has completed closing
         ///     and will not accept any more requests on the context.
         /// </summary>
-        private volatile bool _serverContextIsClosing;        
-
-        private DateTime _callbackEndpointLastCallUtc;
-        private readonly object _callbackEndpointLastCallUtcSyncRoot = new object();
+        private volatile bool _serverContextIsClosing;                
 
         private readonly IDispatcher _xiCallbackDoer;
 

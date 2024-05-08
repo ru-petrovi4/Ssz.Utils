@@ -762,7 +762,7 @@ namespace Xi.Server.Base
 		/// back to the Xi client for data changes.
 		/// </summary>
 		/// <param name="updatedValues"></param>
-		public virtual void OnInformationReport(DataValueArraysWithAlias readValueList)
+		public void OnInformationReport(DataValueArraysWithAlias readValueList)
 		{
 			OwnerContext.OnInformationReport(ClientId, readValueList);
 		}
@@ -772,7 +772,7 @@ namespace Xi.Server.Base
 		/// client when an event needs to be reported.
 		/// </summary>
 		/// <param name="eventList"></param>
-		public virtual void OnEventNotification(EventMessage[] eventsArray)
+		public void OnEventNotification(EventMessage[] eventsArray)
 		{
 			OwnerContext.OnEventNotification(ClientId, eventsArray);
 		}

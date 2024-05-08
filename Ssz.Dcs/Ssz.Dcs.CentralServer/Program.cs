@@ -60,6 +60,9 @@ namespace Ssz.Dcs.CentralServer
             IConfiguration configuration = Host.Services.GetRequiredService<IConfiguration>();
             CultureHelper.InitializeUICulture(configuration, logger);
 
+            IHostEnvironment hostEnvironment = Host.Services.GetRequiredService<IHostEnvironment>();
+            logger.LogDebug($"hostEnvironment.EnvironmentName: {hostEnvironment.EnvironmentName}");
+
             try
             {
                 ILoggersSet loggersSet = new LoggersSet(new UserFriendlyLogger(s => Console.WriteLine(s)), null);

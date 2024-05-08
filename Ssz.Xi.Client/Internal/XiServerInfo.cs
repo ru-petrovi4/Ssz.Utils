@@ -10,6 +10,7 @@ using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using Ssz.Utils;
 using Xi.Contracts;
+using Xi.Contracts.Constants;
 using Xi.Contracts.Data;
 
 namespace Ssz.Xi.Client.Internal
@@ -513,12 +514,14 @@ namespace Ssz.Xi.Client.Internal
         }
 
         public static uint NormalizeStatusCode(uint statusCode)
-        {
-            return StatusCodes.Good;
-            //if ((XiStatusCode.StatusBits(statusCode) & (byte)XiStatusCodeStatusBits.GoodNonSpecific) != 0)
-            //    return StatusCodes.Good;
-            //else
-            //    return StatusCodes.Bad;
+        {            
+            if (XiStatusCodeStatusBits.StatusCodeStatusGroupGoodBits
+                            == (XiStatusCodeStatusBits)(statusCode & (uint)XiStatusCodeStatusBits.StatusCodeStatusGroupMask))
+                return StatusCodes.Good;
+            if (XiStatusCodeStatusBits.StatusCodeStatusGroupUncertainBits
+                            == (XiStatusCodeStatusBits)(statusCode & (uint)XiStatusCodeStatusBits.StatusCodeStatusGroupMask))
+                return StatusCodes.Uncertain;
+            return StatusCodes.Bad;
         }
 
         #endregion

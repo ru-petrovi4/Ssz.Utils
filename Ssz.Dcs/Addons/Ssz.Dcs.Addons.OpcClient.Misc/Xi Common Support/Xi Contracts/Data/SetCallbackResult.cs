@@ -33,11 +33,6 @@ namespace Xi.Contracts.Data
 		[DataMember] public uint Result { get; set; }
 
 		/// <summary>
-		/// The server-negotiated KeepAliveSkipCount.
-		/// </summary>
-		[DataMember] public uint KeepAliveSkipCount { get; set; }
-
-		/// <summary>
 		/// The server-negotiated callback rate.
 		/// </summary>
 		[DataMember] public TimeSpan CallbackRate { get; set; }
@@ -59,10 +54,9 @@ namespace Xi.Contracts.Data
 		/// <param name="callbackRate">
 		/// The callback rate.
 		/// </param>
-		public SetCallbackResult(uint result, uint keepAliveSkipCount, TimeSpan callbackRate)
+		public SetCallbackResult(uint result,TimeSpan callbackRate)
 		{
 			Result = result;
-			KeepAliveSkipCount = keepAliveSkipCount;
 			CallbackRate = callbackRate;
 		}
 

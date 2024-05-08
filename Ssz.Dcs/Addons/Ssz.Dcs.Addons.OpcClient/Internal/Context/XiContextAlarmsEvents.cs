@@ -28,7 +28,7 @@ namespace Ssz.Xi.Client.Internal.Context
             try
             {
                 alarmSummaries = _iResourceManagement.GetAlarmSummary(ContextId, eventSourceId);
-                SetResourceManagementLastCallUtc();
+                
             }
             catch (Exception ex)
             {

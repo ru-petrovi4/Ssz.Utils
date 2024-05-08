@@ -207,8 +207,8 @@ namespace Xi.Common.Support
 		{
 			get
 			{
-				return (XiStatusCodeStatusBits.StatusCodeStatusGroupGoodBits
-							== (XiStatusCodeStatusBits)(_statusCode & (uint)XiStatusCodeStatusBits.StatusCodeStatusGroupMask));
+				return XiStatusCodeStatusBits.StatusCodeStatusGroupGoodBits
+							== (XiStatusCodeStatusBits)(_statusCode & (uint)XiStatusCodeStatusBits.StatusCodeStatusGroupMask);
 			}
 		}
 
@@ -219,8 +219,8 @@ namespace Xi.Common.Support
 		{
 			get
 			{
-				return (XiStatusCodeStatusBits.StatusCodeStatusGroupUncertainBits
-							== (XiStatusCodeStatusBits)(_statusCode & (uint)XiStatusCodeStatusBits.StatusCodeStatusGroupMask));
+				return XiStatusCodeStatusBits.StatusCodeStatusGroupUncertainBits
+							== (XiStatusCodeStatusBits)(_statusCode & (uint)XiStatusCodeStatusBits.StatusCodeStatusGroupMask);
 			}
 		}
 
@@ -231,10 +231,10 @@ namespace Xi.Common.Support
 		{
 			get
 			{
-				return (   (XiStatusCodeStatusBits.StatusCodeStatusGroupGoodBits
+				return (XiStatusCodeStatusBits.StatusCodeStatusGroupGoodBits
 							== (XiStatusCodeStatusBits)(_statusCode & (uint)XiStatusCodeStatusBits.StatusCodeStatusGroupMask))
 						|| (XiStatusCodeStatusBits.StatusCodeStatusGroupUncertainBits
-							== (XiStatusCodeStatusBits)(_statusCode & (uint)XiStatusCodeStatusBits.StatusCodeStatusGroupMask)));
+							== (XiStatusCodeStatusBits)(_statusCode & (uint)XiStatusCodeStatusBits.StatusCodeStatusGroupMask));
 			}
 		}
 

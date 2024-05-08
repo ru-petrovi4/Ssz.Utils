@@ -67,15 +67,7 @@ namespace Ssz.Xi.Client.Internal.Endpoints
         ///     Therefore, this method must be called at least once for each
         ///     callback endpoint to enable the server to make the callbacks.
         /// </summary>
-        /// <param name="contextId"> The context to which this endpoint belongs. </param>
-        /// <param name="keepAliveSkipCount">
-        ///     The client-requested keepAliveSkipCount for lists that the server may negotiate up or
-        ///     down. The keepAliveSkipCount indicates the number of consecutive UpdateRate cycles for a list that occur with
-        ///     nothing to send before an empty callback is sent to indicate a keep-alive message. For example, if the value of
-        ///     this parameter is 1, then a keep-alive callback will be sent each UpdateRate cycle for each list assigned to the
-        ///     callback for which there is nothing to send. A value of 0 indicates that keep-alives are not to be sent for any
-        ///     list assigned to the callback.
-        /// </param>
+        /// <param name="contextId"> The context to which this endpoint belongs. </param>        
         /// <param name="callbackRate">
         ///     <para>
         ///         The callback rate indicates the maximum time between callbacks that are sent to the client. The server may
@@ -88,30 +80,17 @@ namespace Ssz.Xi.Client.Internal.Endpoints
         ///     </para>
         /// </param>
         /// <returns> The results of the operation, including the negotiated keep-alive skip count and callback rate. </returns>
-        public void SetCallback(string contextId, uint keepAliveSkipCount, TimeSpan callbackRate)
+        public void SetCallback(string contextId, TimeSpan callbackRate)
         {
             if (_iRegisterForCallback is null) throw new Exception("No IRegisterForCallback Endpoint");
-
-            _keepAliveSkipCount = keepAliveSkipCount;
+           
             _callbackRate = callbackRate;
 
-            SetCallbackResult scr = _iRegisterForCallback.SetCallback(contextId, keepAliveSkipCount,
-                callbackRate, _xiCallback);
-        }
-
-        /// <summary>
-        ///     The Keep Alive Skip Count for the callback endpoint. The keepAliveSkipCount
-        ///     indicates the number of consecutive UpdateRate cycles for a list that occur
-        ///     with nothing to send before an empty callback is sent to indicate a keep-alive
-        ///     message. For example, if the value of this parameter is 1, then a keep-alive
-        ///     callback will be sent each UpdateRate cycle for each list assigned to the callback
-        ///     for which there is nothing to send.  A value of 0 indicates that keep-alives are
-        ///     not to be sent for any list assigned to the callback.
-        /// </summary>
-        public uint KeepAliveSkipCount
-        {
-            get { return _keepAliveSkipCount; }
-        }
+            SetCallbackResult scr = _iRegisterForCallback.SetCallback(
+                contextId,
+                callbackRate, 
+                _xiCallback);
+        }        
 
         /// <summary>
         ///     <para>
@@ -149,12 +128,7 @@ namespace Ssz.Xi.Client.Internal.Endpoints
         /// <summary>
         ///     This data member is the private representation of the Proxy property.
         /// </summary>
-        private IRegisterForCallback? _iRegisterForCallback;
-
-        /// <summary>
-        ///     This data member is the private representation of the KeepAliveSkipCount property.
-        /// </summary>
-        private uint _keepAliveSkipCount;
+        private IRegisterForCallback? _iRegisterForCallback;        
 
         /// <summary>
         ///     This data member is used to make calls on the Xi ICallback interface.

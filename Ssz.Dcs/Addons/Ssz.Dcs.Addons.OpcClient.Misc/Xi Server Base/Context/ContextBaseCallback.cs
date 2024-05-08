@@ -39,9 +39,7 @@ namespace Xi.Server.Base
 		/// Indicates, when TRUE, that the Callback endpoint is open
 		/// </summary>
 		public bool CallbackEndpointOpen { get { return (null != _iCallback); } }
-		private ICallback _iCallback = null;			
-
-		protected uint _keepAliveSkipCount;
+		private ICallback _iCallback = null;
 
 		/// <summary>
 		/// The time of the completion of the last callback sent on this context. 
@@ -88,7 +86,7 @@ namespace Xi.Server.Base
 		/// </summary>
 		/// <param name="listId"></param>
 		/// <param name="updatedValues"></param>
-		public virtual void OnInformationReport(uint listId, DataValueArraysWithAlias readValueList)
+		public void OnInformationReport(uint listId, DataValueArraysWithAlias readValueList)
 		{
 			ICallback iCallback = null;
 			lock (ContextLock)
@@ -119,7 +117,7 @@ namespace Xi.Server.Base
 		/// </summary>
 		/// <param name="listId"></param>
 		/// <param name="eventList"></param>
-		public virtual void OnEventNotification(uint listId, EventMessage[] eventsArray)
+		public void OnEventNotification(uint listId, EventMessage[] eventsArray)
 		{
 			ICallback iCallback = null;
 			lock (ContextLock)
@@ -152,14 +150,7 @@ namespace Xi.Server.Base
 		/// </summary>
 		/// <param name="iCallBack">
 		/// The reference to the callback to set.
-		/// </param>
-		/// <param name="keepAliveSkipCount">
-		/// The number of consecutive UpdateRate cycles that occur with nothing to send before 
-		/// an empty callback is sent to indicate a keep-alive message. For example, if the value 
-		/// of this parameter is 1, then a keep-alive callback will be sent each UpdateRate cycle 
-		/// for which there is nothing to send. A value of 0 indicates that keep-alives are not 
-		/// to be sent.
-		/// </param>
+		/// </param>		
 		/// <param name="callbackRate">
 		/// <para>Optional rate that specifies how often callbacks are to be sent to the client. </para> 
 		/// </para>TimeSpan.Zero if not used. When not used, the UpdateRate of the lists assigned to this 
@@ -171,7 +162,7 @@ namespace Xi.Server.Base
 		/// The results of the operation, including the negotiated keep-alive skip count and callback rate.
 		/// </returns>
 		public SetCallbackResult OnSetCallback(ICallback iCallBack,
-			uint keepAliveSkipCount, TimeSpan callbackRate)
+			TimeSpan callbackRate)
 		{
 			lock (ContextLock)
 			{
@@ -179,7 +170,7 @@ namespace Xi.Server.Base
 			}
 			// do not lock the context for this call. Let the called method lock it instead
 			// to allow for overrides that may have the potential for deadlocks
-			return OnNegotiateCallbackParams(keepAliveSkipCount, callbackRate);
+			return OnNegotiateCallbackParams(callbackRate);
 		}
 
 		/// <summary>
@@ -196,12 +187,10 @@ namespace Xi.Server.Base
 		/// <returns>
 		/// The results of the operation, including the negotiated keep-alive skip count and callback rate.
 		/// </returns>
-		public virtual SetCallbackResult OnNegotiateCallbackParams(uint keepAliveSkipCount, TimeSpan callbackRate)
+		public virtual SetCallbackResult OnNegotiateCallbackParams(TimeSpan callbackRate)
 		{
 			lock (ContextLock)
 			{
-				_keepAliveSkipCount = 0; // Per-list keep-alives are not supported
-
 				// Set the callback rate (the keep-alive rate) to between 5 seconds and one minute
 				if (callbackRate.TotalMilliseconds < 5000)
 					_callbackRate = new TimeSpan(0, 0, 0, 0, 5000);
@@ -210,7 +199,7 @@ namespace Xi.Server.Base
 				else
 					_callbackRate = callbackRate;
 				return new SetCallbackResult(XiFaultCodes.S_OK,
-					_keepAliveSkipCount, _callbackRate);
+					_callbackRate);
 			}
 		}
 

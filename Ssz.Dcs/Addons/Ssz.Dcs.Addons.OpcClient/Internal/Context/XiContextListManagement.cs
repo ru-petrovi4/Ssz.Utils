@@ -63,7 +63,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 listAttrs = _iResourceManagement.DefineList(ContextId, clientListId,
                     (uint) xiList.StandardListType,
                     updateRate, bufferingRate, filterSet);
-                SetResourceManagementLastCallUtc();
+                
             }
             catch (Exception)
             {
@@ -100,7 +100,7 @@ namespace Ssz.Xi.Client.Internal.Context
                     try
                     {
                         listAliasResult = _iResourceManagement.DeleteLists(ContextId, listIds);
-                        SetResourceManagementLastCallUtc();
+                        
                     }
                     catch (Exception ex)
                     {
@@ -134,7 +134,7 @@ namespace Ssz.Xi.Client.Internal.Context
             try
             {
                 listListAttrs = _iResourceManagement.GetListAttributes(ContextId, listIds);
-                SetResourceManagementLastCallUtc();
+                
             }
             catch (Exception ex)
             {
@@ -171,7 +171,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 try
                 {
                     results = _iResourceManagement.AddDataObjectsToList(ContextId, serverListId, dataObjectsToAdd);
-                    SetResourceManagementLastCallUtc();
+                    
                 }
                 catch (Exception ex)
                 {
@@ -205,7 +205,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 {
                     results = _iResourceManagement.RemoveDataObjectsFromList(ContextId, serverListId,
                         serverAliasesToRemove);
-                    SetResourceManagementLastCallUtc();
+                    
                 }
                 catch (Exception ex)
                 {
@@ -251,7 +251,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 result = _iResourceManagement.ModifyListAttributes(ContextId, serverListId, updateRate,
                     bufferingRate,
                     filterSet);
-                SetResourceManagementLastCallUtc();
+                
             }
             catch (Exception ex)
             {
@@ -287,7 +287,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 try
                 {
                     listAttrs = _iResourceManagement.EnableListUpdating(ContextId, serverListId, enableUpdating);
-                    SetResourceManagementLastCallUtc();
+                    
                 }
                 catch //(CommunicationException)
                 {
@@ -341,7 +341,7 @@ namespace Ssz.Xi.Client.Internal.Context
                     listAliasResult = _iResourceManagement.EnableListElementUpdating(ContextId, serverListId,
                         enableUpdating,
                         serverAliases);
-                    SetResourceManagementLastCallUtc();
+                    
                 }
                 catch (Exception ex)
                 {
@@ -379,7 +379,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 List<TypeId> listFieldObjectTypeIds = fieldObjectTypeIds.ToList();
                 typeIdResults = _iResourceManagement.AddEventMessageFields(ContextId, serverListId, categoryId,
                     listFieldObjectTypeIds);
-                SetResourceManagementLastCallUtc();
+                
             }
             catch (Exception ex)
             {
@@ -414,7 +414,7 @@ namespace Ssz.Xi.Client.Internal.Context
             try
             {
                 listAliasResult = _iResourceManagement.TouchDataObjects(ContextId, serverListId, serverAliases);
-                SetResourceManagementLastCallUtc();
+                
             }
             catch (Exception ex)
             {
@@ -448,7 +448,7 @@ namespace Ssz.Xi.Client.Internal.Context
                 try
                 {
                     uintResult = _iResourceManagement.TouchList(ContextId, serverListId);
-                    SetResourceManagementLastCallUtc();
+                    
                 }
                 catch (Exception ex)
                 {

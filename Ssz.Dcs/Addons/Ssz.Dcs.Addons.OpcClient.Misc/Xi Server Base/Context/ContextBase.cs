@@ -57,15 +57,7 @@ namespace Xi.Server.Base
 		/// LookupResultCodes()) within a context.
 		/// It is initialized to a value to provide a unique object that can be locked.
 		/// </summary>
-		protected object ContextServerInfoLock = new Nullable<long>(System.Environment.TickCount);
-
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		protected ContextBase()
-		{
-			LastAccess = DateTime.UtcNow;
-		}
+		protected object ContextServerInfoLock = new Nullable<long>(System.Environment.TickCount);		
 
 		/// <summary>
 		/// "finalizer" This method is invoked by the garbage collector when all 
@@ -115,8 +107,7 @@ namespace Xi.Server.Base
 		public bool HasBeenDisposed { get { return _hasBeenDisposed; } }
 		protected bool _hasBeenDisposed = false;
 
-		private IIdentity _identity;
-		private DateTime _lastAccess;
+		private IIdentity _identity;		
 
 		/// <summary>
 		/// The collection of lists for this context.
@@ -248,16 +239,7 @@ namespace Xi.Server.Base
 		/// <summary>
 		/// Indicates when TRUE that the Journal Alarms and Events capabilities of the server are enabled
 		/// </summary>
-		abstract public bool IsAccessibleJournalAlarmsAndEvents { get; }				
-
-		/// <summary>
-		/// The last time the context was accessed.
-		/// </summary>
-		internal DateTime LastAccess
-		{
-			get { return _lastAccess; }
-			set { _lastAccess = value; }
-		}		
+		abstract public bool IsAccessibleJournalAlarmsAndEvents { get; }							
 
 		/// <summary>
 		/// Indicates, when TRUE, that OnConclude has been completed on this context

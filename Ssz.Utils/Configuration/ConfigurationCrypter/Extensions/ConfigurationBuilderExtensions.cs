@@ -44,8 +44,12 @@ namespace Ssz.Utils.ConfigurationCrypter.Extensions
                 throw new ArgumentNullException(nameof(builder));
             }
 
+            string environmentName = hostEnvironment.EnvironmentName;
+            if (String.IsNullOrEmpty(environmentName))
+                environmentName = @"Production";
+
             var configurationSource = new EncryptedYamlConfigurationSource { Path = "appsettings.yml", ReloadOnChange = true };
-            var environmentConfigurationSource = new EncryptedYamlConfigurationSource { Path = $"appsettings.{hostEnvironment.EnvironmentName}.yml", Optional = true, ReloadOnChange = true };
+            var environmentConfigurationSource = new EncryptedYamlConfigurationSource { Path = $"appsettings.{environmentName}.yml", Optional = true, ReloadOnChange = true };
             configAction?.Invoke(configurationSource);
             configAction?.Invoke(environmentConfigurationSource);
 
