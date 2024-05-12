@@ -134,6 +134,7 @@ namespace Ssz.Dcs.CentralServer
             ICertificateLoader certificateLoader = new FilesystemCertificateLoader(cryptoCertificateValidFileName);
             IConfigurationCrypter ConfigurationCrypter = new YamlConfigurationCrypter(new RSACrypter(certificateLoader));
             ConfigurationCrypter.EncryptKeys(@"appsettings.yml", GetKeysToEncrypt());
+            ConfigurationCrypter.EncryptKeys(@"appsettings.Production.yml", GetKeysToEncrypt());
         }
 
         private static void DecryptAppsettings(ILoggersSet loggersSet)
@@ -145,15 +146,15 @@ namespace Ssz.Dcs.CentralServer
             ICertificateLoader certificateLoader = new FilesystemCertificateLoader(cryptoCertificateValidFileName);
             IConfigurationCrypter ConfigurationCrypter = new YamlConfigurationCrypter(new RSACrypter(certificateLoader));
             ConfigurationCrypter.DecryptKeys(@"appsettings.yml", GetKeysToEncrypt());
+            ConfigurationCrypter.DecryptKeys(@"appsettings.Production.yml", GetKeysToEncrypt());
         }
 
         private static HashSet<string> GetKeysToEncrypt()
-        {
-            string separator = @":";            
+        {                 
             HashSet<string> keysToEncrypt = new()
             {
-                $"Kestrel{separator}Certificates{separator}Default{separator}Password",
-                $"ConnectionStrings{separator}MainDbConnection",
+                $"Kestrel:Certificates:Default:Password",
+                $"ConnectionStrings:MainDbConnection",
             };            
             return keysToEncrypt;
         }

@@ -54,6 +54,9 @@ namespace Ssz.Utils.ConfigurationCrypter.ConfigurationCrypters.Yaml
         /// <returns>The content of the config file where the key has been encrypted.</returns>
         public void EncryptKeys(string fileFullName, HashSet<string> configKeys)
         {
+            if (!File.Exists(fileFullName))
+                return;
+
             YamlStream yaml = new();
             using (var reader = new StreamReader(fileFullName, detectEncodingFromByteOrderMarks: true))
             {
@@ -84,6 +87,9 @@ namespace Ssz.Utils.ConfigurationCrypter.ConfigurationCrypters.Yaml
         /// <returns>The content of the config file where the key has been decrypted.</returns>
         public void DecryptKeys(string fileFullName, HashSet<string> configKeys)
         {
+            if (!File.Exists(fileFullName))
+                return;
+
             YamlStream yaml = new();
             using (var reader = new StreamReader(fileFullName, detectEncodingFromByteOrderMarks: true))
             {
