@@ -10,8 +10,14 @@ namespace Ssz.Dcs.CentralServer.Common
     {
         //public const string DefaultWindowsUserName = @"localhost\User";
 
-        public const string DefaultInstructorUserName = @"Иванов И.И.";
+        public const string UserName_DefaultInstructor = @"Иванов И.И.";
 
-        public const string DefaultTraineeUserName = @"Петров П.П.";
+        public const string UserName_DefaultTrainee = @"Петров П.П.";
+
+        public const string ConfigurationKey_DbType = @"DbType";
+
+        public const string ConfigurationValue_DbType_Postgres = @"postgres";
+
+        public const string ConfigurationValue_DbType_Sqlite = @"sqlite";
     }
 }

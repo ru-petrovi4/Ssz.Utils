@@ -268,7 +268,7 @@ namespace Ssz.Utils.Addons
                             {
                                 addonInstanceId,
                                 availableAddon.Identifier,
-                                @"true"
+                                availableAddon.IsSwitchedOnByDefault ? @"true" : @"false"
                             };
                     }
                     else
@@ -606,8 +606,9 @@ namespace Ssz.Utils.Addons
             if (Dispatcher is null)
                 return;
 
-            List<AddonBase> newAddons = new();
-            
+            List<AddonBase> switchedOnAddons = new();
+            List<AddonBase> switchedOffAddons = new();            
+
             foreach (var line in CsvDb.GetData(AddonsCsvFileName).Values)
             {
                 if (line.Count < 2 || String.IsNullOrEmpty(line[0]) || line[0]!.StartsWith("!"))
@@ -615,30 +616,39 @@ namespace Ssz.Utils.Addons
 
                 string addonInstanceId = line[0]!;
                 string addonIdentifier = line[1] ?? @"";
-                bool switchedOn = true;
+                bool isSwitchedOn = true;
                 if (line.Count >= 3 && !String.IsNullOrEmpty(line[2]))
-                    switchedOn = new Any(line[2] ?? @"").ValueAsBoolean(false);
+                    isSwitchedOn = new Any(line[2] ?? @"").ValueAsBoolean(false);
 
-                var desiredAndAvailableAddon = CreateAvailableAddon(addonIdentifier, addonInstanceId, null, Dispatcher);
+                var availableAddon = CreateAvailableAddon(addonIdentifier, addonInstanceId, null, Dispatcher);
 
-                if (desiredAndAvailableAddon is not null && (desiredAndAvailableAddon.IsAlwaysSwitchedOn || switchedOn))
-                    newAddons.Add(desiredAndAvailableAddon);
+                if (availableAddon is not null)
+                {
+                    if (availableAddon.IsAlwaysSwitchedOn || isSwitchedOn)
+                        switchedOnAddons.Add(availableAddon);
+                    else
+                        switchedOffAddons.Add(availableAddon);
+                }                
             }
 
             foreach (var availableAddon in _availableAddons!)
-            {                
-                if (availableAddon.IsAlwaysSwitchedOn && !newAddons.Any(a => a.Guid == availableAddon.Guid))
-                {
-                    var desiredAndAvailableAddon = CreateAvailableAddonInternal(availableAddon, availableAddon.Identifier, null, Dispatcher);
+            {
+                if (switchedOnAddons.Any(a => a.Guid == availableAddon.Guid))
+                    continue;
 
-                    if (desiredAndAvailableAddon is not null)
-                        newAddons.Add(desiredAndAvailableAddon);
+                if (availableAddon.IsAlwaysSwitchedOn ||
+                    (availableAddon.IsSwitchedOnByDefault && !switchedOffAddons.Any(a => a.Guid == availableAddon.Guid)))
+                {
+                    var availableAddonClone = CreateAvailableAddonInternal(availableAddon, availableAddon.Identifier, null, Dispatcher);
+
+                    if (availableAddonClone is not null)
+                        switchedOnAddons.Add(availableAddonClone);
                 }
             }
 
             var catalog = new AggregateCatalog();
 
-            foreach (var newAddon in newAddons)
+            foreach (var newAddon in switchedOnAddons)
             {
                 newAddon.Initialized += (s, a) => { ((AddonBase)s!).CsvDb.CsvFileChanged += OnAddonCsvDb_CsvFileChanged; };
                 newAddon.Closed += (s, a) => { ((AddonBase)s!).CsvDb.CsvFileChanged -= OnAddonCsvDb_CsvFileChanged; };                
@@ -651,7 +661,7 @@ namespace Ssz.Utils.Addons
 
             _container = new CompositionContainer(catalog);
 
-            Addons.Update(newAddons.OrderBy(a => ((IObservableCollectionItem)a).ObservableCollectionItemId).ToArray(), CancellationToken.None);
+            Addons.Update(switchedOnAddons.OrderBy(a => ((IObservableCollectionItem)a).ObservableCollectionItemId).ToArray(), CancellationToken.None);
 
             _addonsThreadSafe = Addons.ToArray();
         }

@@ -27,6 +27,7 @@ namespace Ssz.Dcs.ControlEngine
                 new DsParamInfo { Name = @"MODEL_TIME_MS", Desc = @"Currently calculating Model Time (milliseconds)" },
                 new DsParamInfo { Name = @"SCENARIO_NAME", Desc = @"Currently running scenario name" },
                 new DsParamInfo { Name = @"SCENARIO_STEP_DONE", Desc = @"Currently completed scenario step" },
+                new DsParamInfo { Name = @"MODEL_IS_RUNNING", Desc = @"Model is running now" },
             };
             _paramInfosVersion = 1;
         }
@@ -79,6 +80,8 @@ namespace Ssz.Dcs.ControlEngine
         public ref DsParam SCENARIO_NAME => ref Params[6];
 
         public ref DsParam SCENARIO_STEP_DONE => ref Params[7];
+
+        public ref DsParam MODEL_IS_RUNNING => ref Params[8];
 
         //public override void Compute(int dtMs)
         //{

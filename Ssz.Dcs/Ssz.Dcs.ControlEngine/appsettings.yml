@@ -9,7 +9,7 @@ Logging:
     # путь до директории где будут храниться файлы журналов событий
     LogsDirectory: "%ProgramData%\\Ssz\\Logs"
     # базовое имя файлов журналов
-    LogFileName: "Ssz.Dcs.ControlEngine.log"
+    LogFileName: "Dcs.ControlEngine.log"
     # Флаг указывающий на необходимость дублирования события в стандартный поток вывода приложения
     DuplicateInConsole: "true"
     # количество дней которое должны храниться файлы журналов

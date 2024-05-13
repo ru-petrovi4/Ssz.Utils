@@ -1,31 +1,34 @@
 Logging: 
   LogLevel: 
-    # задается уровень логирования событий в файлы журналов
+    # Задается уровень логирования событий в файлы журналов
     Default: "Warning"    
     Microsoft: "Warning"
     Microsoft.Hosting.Lifetime: "Warning"    
   SszLogger:     
-    # путь до директории где будут храниться файлы журналов событий
+    # Путь до директории где будут храниться файлы журналов событий
     LogsDirectory: "%ProgramData%\\Ssz\\Logs"
-    # базовое имя файлов журналов
-    LogFileName: "Ssz.Dcs.CentralServer_Client.log"
+    # Базовое имя файлов журналов
+    LogFileName: "Dcs.CentralServer_Client.log"
     # Флаг указывающий на необходимость дублирования события в стандартный поток вывода приложения
     DuplicateInConsole: "true"
-    # количество дней которое должны храниться файлы журналов
+    # Количество дней которое должны храниться файлы журналов
     DaysCountToStoreFiles: "7"
-    # максимальный размер одного файла журнала
+    # Максимальный размер одного файла журнала
     LogFileMaxSizeInBytes: "10000000"
-    # размер всех файлов журналов при котором пользователям с ролью администратор дается предупреждение в виде сообщения которое появляется в веб-интерфейсе ИТ-решения
+    # Размер всех файлов журналов при котором пользователям с ролью администратор дается предупреждение в виде сообщения которое появляется в веб-интерфейсе ИТ-решения
     LogFilesWarningSizeInBytes: "150000000"
-    # максимальный размер всех фалов журналов. Если размер превышает этот предел самые старые лог-файлы автоматически удаляются      
+    # Максимальный размер всех фалов журналов. Если размер превышает этот предел самые старые лог-файлы автоматически удаляются      
     LogFilesMaxSizeInBytes: "200000000"
-# задается язык сообщений в журналах событий которые доступны через веб интерфейс ИТ-решения возможные значения RU EN
+# Задается язык сообщений в журналах событий которые доступны через веб интерфейс ИТ-решения возможные значения RU EN
 UICulture: "RU"
+# Directory for cache files
 ProgramDataDirectory: "%ProgramData%\\Ssz\\Dcs.CentralServer_Client"
 MainCentralServerAddress: "https://localhost:60060"
+# Name to use to connect to engines
 ClientWorkstationName: ""
 FilesStoreSyncWithCentralServer: "true"
 ShowPlatInstructor: "false"
+# Comma-separated process model names to host engines. '*' for all, '' for none.
 Engine_ProcessModelNames: ""
 # Connect to all available central servers
 AllCentralServers: "false"

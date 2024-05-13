@@ -26,8 +26,8 @@ namespace Ssz.Dcs.CentralServer.Common.Helpers
 
         public static void InitializeOrUpdateDb(IServiceProvider serviceProvider, IConfiguration configuration, ILoggersSet loggersSet)
         {
-            string dbType = ConfigurationHelper.GetValue(configuration, @"DbType", @"");
-            if (String.Equals(dbType, @"postgres", StringComparison.InvariantCultureIgnoreCase))
+            string dbType = ConfigurationHelper.GetValue(configuration, DbConstants.ConfigurationKey_DbType, @"");
+            if (String.Equals(dbType, DbConstants.ConfigurationValue_DbType_Postgres, StringComparison.InvariantCultureIgnoreCase))
             {   
                 using var dbContext = serviceProvider.GetRequiredService<IDbContextFactory<NpgsqlDcsCentralServerDbContext>>()
                     .CreateDbContext();
@@ -44,7 +44,7 @@ namespace Ssz.Dcs.CentralServer.Common.Helpers
 
                 InitializePostgresCrypto(dbContext);
             }
-            else if (String.Equals(dbType, @"sqlite", StringComparison.InvariantCultureIgnoreCase))
+            else if (String.Equals(dbType, DbConstants.ConfigurationValue_DbType_Sqlite, StringComparison.InvariantCultureIgnoreCase))
             {
                 using var dbContext = serviceProvider.GetRequiredService<IDbContextFactory<SqliteDcsCentralServerDbContext>>()
                     .CreateDbContext();
@@ -88,13 +88,13 @@ namespace Ssz.Dcs.CentralServer.Common.Helpers
                 {
                     var user = new User
                     {
-                        UserName = DbConstants.DefaultInstructorUserName,
+                        UserName = DbConstants.UserName_DefaultInstructor,
                     };
                     dbContext2.Users.Add(user);
 
                     user = new User
                     {
-                        UserName = DbConstants.DefaultTraineeUserName,
+                        UserName = DbConstants.UserName_DefaultTrainee,
                     };
                     dbContext2.Users.Add(user);
                 }

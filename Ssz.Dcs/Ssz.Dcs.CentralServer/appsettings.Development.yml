@@ -10,4 +10,5 @@ Kestrel:
     HttpsDefaultCert: 
       Url: "https://*:60030"
 ProgramDataDirectory: "C:\\CDT.PazCheck.Adapter_ProgramData"
+DbType: ""
 ---

@@ -494,8 +494,7 @@ namespace Ssz.Utils
             csvFile.DataIsChangedByProgram = true;
         }
 
-        /// <summary>
-        ///     Pecondition: keys must be unique in values
+        /// <summary>        
         /// </summary>
         /// <param name="fileName"></param>
         /// <param name="data"></param>

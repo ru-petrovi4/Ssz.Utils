@@ -105,10 +105,10 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
             {
                 if (_configuration is not null)
                 {
-                    string dbType = ConfigurationHelper.GetValue(_configuration, @"DbType", @"");
-                    if (String.Equals(dbType, @"postgres", StringComparison.InvariantCultureIgnoreCase))
+                    string dbType = ConfigurationHelper.GetValue(_configuration, DbConstants.ConfigurationKey_DbType, @"");
+                    if (String.Equals(dbType, DbConstants.ConfigurationValue_DbType_Postgres, StringComparison.InvariantCultureIgnoreCase))
                         return true;
-                    else if (String.Equals(dbType, @"sqlite", StringComparison.InvariantCultureIgnoreCase))
+                    else if (String.Equals(dbType, DbConstants.ConfigurationValue_DbType_Sqlite, StringComparison.InvariantCultureIgnoreCase))
                         return true;
                 }
                 return false;
@@ -162,14 +162,14 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
         {
             if (_configuration is not null)
             {
-                string dbType = ConfigurationHelper.GetValue(_configuration, @"DbType", @"");
-                if (String.Equals(dbType, @"postgres", StringComparison.InvariantCultureIgnoreCase))
+                string dbType = ConfigurationHelper.GetValue(_configuration, DbConstants.ConfigurationKey_DbType, @"");
+                if (String.Equals(dbType, DbConstants.ConfigurationValue_DbType_Postgres, StringComparison.InvariantCultureIgnoreCase))
                 {
                     optionsBuilder.UseNpgsql(_configuration.GetConnectionString("MainDbConnection"),
                             o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
                         .EnableThreadSafetyChecks(false);
                 }
-                else if (String.Equals(dbType, @"sqlite", StringComparison.InvariantCultureIgnoreCase))
+                else if (String.Equals(dbType, DbConstants.ConfigurationValue_DbType_Sqlite, StringComparison.InvariantCultureIgnoreCase))
                 {
                     string programDataDirectoryFullName = ConfigurationHelper.GetProgramDataDirectoryFullName(_configuration);
 

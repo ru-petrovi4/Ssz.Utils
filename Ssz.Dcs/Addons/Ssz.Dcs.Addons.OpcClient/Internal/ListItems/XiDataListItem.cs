@@ -1,8 +1,10 @@
 ﻿using System;
+using Microsoft.Extensions.Logging;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using Ssz.Xi.Client.Api;
 using Ssz.Xi.Client.Api.ListItems;
+using Xi.Common.Support;
 using Xi.Contracts.Constants;
 using Xi.Contracts.Data;
 
@@ -45,6 +47,8 @@ namespace Ssz.Xi.Client.Internal.ListItems
             var any = AnyHelper.GetAny(valueUInt32, ValueTypeCode, false);
             _valueStatusTimestamp = new ValueStatusTimestamp(any, XiServerProxy.NormalizeStatusCode(statusCode), timestampUtc);           
             IncrementUpdateCount();
+
+            StaticLogger.Logger.LogDebug($"UpdateValue(uint {valueUInt32}); InstanceId: {InstanceId.ToString()}");
         }        
 
         /// <summary>
@@ -61,6 +65,8 @@ namespace Ssz.Xi.Client.Internal.ListItems
             var any = AnyHelper.GetAny(valueDouble, ValueTypeCode, false);
             _valueStatusTimestamp = new ValueStatusTimestamp(any, XiServerProxy.NormalizeStatusCode(statusCode), timestampUtc);            
             IncrementUpdateCount();
+
+            StaticLogger.Logger.LogDebug($"UpdateValue(double {valueDouble}); InstanceId: {InstanceId.ToString()}");
         }
 
         /// <summary>
@@ -77,6 +83,8 @@ namespace Ssz.Xi.Client.Internal.ListItems
             var any = new Any(valueObject);            
             _valueStatusTimestamp = new ValueStatusTimestamp(any, XiServerProxy.NormalizeStatusCode(statusCode), timestampUtc);            
             IncrementUpdateCount();
+
+            StaticLogger.Logger.LogDebug($"UpdateValue(object? {valueObject?.ToString()}); InstanceId: {InstanceId.ToString()}");
         }
 
         /// <summary>
