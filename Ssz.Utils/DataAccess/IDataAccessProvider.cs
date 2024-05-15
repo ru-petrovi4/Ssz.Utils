@@ -17,7 +17,7 @@ namespace Ssz.Utils.DataAccess
     {
         ElementIdsMap? ElementIdsMap { get; }
 
-        string ServerAddress { get; }
+        string ServerAddress { get; set; }
 
         string ServerHost { get; }
 
@@ -82,6 +82,8 @@ namespace Ssz.Utils.DataAccess
             CaseInsensitiveDictionary<string?> contextParams,
             DataAccessProviderOptions options,
             IDispatcher? callbackDispatcher);
+
+        Task UpdateContextParamsAsync(CaseInsensitiveDictionary<string?> contextParams);
 
         /// <summary>
         ///     Re-initializes this object with same settings.

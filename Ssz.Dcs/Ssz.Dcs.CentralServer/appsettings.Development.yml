@@ -8,7 +8,7 @@
 Kestrel:   
   Endpoints: 
     HttpsDefaultCert: 
-      Url: "https://*:60030"
-ProgramDataDirectory: "C:\\CDT.PazCheck.Adapter_ProgramData"
-DbType: ""
+      Url: "https://*:60060"
+ProgramDataDirectory: "C:\\CDT.CentralServer"
+DbType: "sqlite"
 ---

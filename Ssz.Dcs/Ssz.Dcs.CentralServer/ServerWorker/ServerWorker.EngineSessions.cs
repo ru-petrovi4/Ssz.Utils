@@ -95,16 +95,14 @@ namespace Ssz.Dcs.CentralServer
         {
             #region construction and destruction
 
-            public ControlEngine_TrainingEngineSession(DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon) :
-                base(dataAccessProviderGetter_Addon)
+            public ControlEngine_TrainingEngineSession(string engineSessionId, DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon) :
+                base(engineSessionId, dataAccessProviderGetter_Addon)
             {
             }
 
             #endregion
 
             #region public functions            
-
-            public int PortNumber { get; set; }
 
             #endregion            
         }
@@ -113,8 +111,8 @@ namespace Ssz.Dcs.CentralServer
         {
             #region construction and destruction
 
-            public PlatInstructor_TrainingEngineSession(DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon) :
-                base(dataAccessProviderGetter_Addon)
+            public PlatInstructor_TrainingEngineSession(string engineSessionId, DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon) :
+                base(engineSessionId, dataAccessProviderGetter_Addon)
             {
             }
 

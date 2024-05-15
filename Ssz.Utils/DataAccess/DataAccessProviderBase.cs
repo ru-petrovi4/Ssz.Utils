@@ -62,7 +62,7 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         ///     DataAccessGrpc Server connection string.
         /// </summary>
-        public string ServerAddress { get; private set; } = @"";
+        public string ServerAddress { get; set; } = @"";
 
         public string ServerHost
         {
@@ -189,6 +189,12 @@ namespace Ssz.Utils.DataAccess
             InitializedDateTimeUtc = DateTime.UtcNow;
 
             IsInitialized = true;
+        }
+
+        public virtual Task UpdateContextParamsAsync(CaseInsensitiveDictionary<string?> contextParams)
+        {
+            ContextParams = contextParams;
+            return Task.CompletedTask;
         }
 
         public virtual async Task ReInitializeAsync()

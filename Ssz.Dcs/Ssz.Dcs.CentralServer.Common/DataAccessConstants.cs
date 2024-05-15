@@ -20,15 +20,17 @@ namespace Ssz.Dcs.CentralServer.Common
 
         public const string CentralServer_ClientApplicationName = @"Ssz.Dcs.CentralServer";
 
-        public const string Operators_UtilityItem = @"Operators";
+        public const string UtilityItem_Operators = @"Operators";
 
-        public const string CentralServer_UtilityItem = @"CentralServer";
+        public const string UtilityItem_CentralServer = @"CentralServer";
 
-        public const string CentralServers_UtilityItem = @"CentralServers";
+        public const string UtilityItem_CentralServers = @"CentralServers";
 
         public const string ParamName_ConnectionToMain = @"ConnectionToMain";
 
-        public const string ParamName_AdditionalCentralServerAddress = @"AdditionalCentralServerAddress";        
+        public const string ParamName_AdditionalCentralServerAddress = @"AdditionalCentralServerAddress";
+
+        public const string ParamName_ControlEngineServerAddress = @"ControlEngineServerAddress";
 
         public const string ParamName_Instructor_ProcessModelNames = @"Instructor_ProcessModelNames";
 
@@ -36,7 +38,11 @@ namespace Ssz.Dcs.CentralServer.Common
 
         public const string ParamName_Engine_ProcessModelNames = @"Engine_ProcessModelNames";
 
-        public const string ParamName_AllCentralServers = @"AllCentralServers";
+        public const string ParamName_RunningControlEnginesCount = @"RunningControlEnginesCount";
+
+        public const string ParamName_AllCentralServers = @"AllCentralServers";        
+
+        public const string ParamName_EngineSessionId = @"EngineSessionId";
 
         public static readonly TimeSpan UnrecoverableTimeout = TimeSpan.FromSeconds(180);
 

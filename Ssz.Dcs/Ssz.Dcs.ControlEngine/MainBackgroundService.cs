@@ -59,7 +59,11 @@ namespace Ssz.Dcs.ControlEngine
                 DataAccessConstants.ControlEngine_ClientApplicationName,
                 Environment.MachineName,
                 @"", // Utility context
-                new CaseInsensitiveDictionary<string?>(),
+                new CaseInsensitiveDictionary<string?>
+                {
+                    { DataAccessConstants.ParamName_EngineSessionId, Program.Options.EngineSessionId },
+                    { DataAccessConstants.ParamName_ControlEngineServerAddress, Configuration.GetSection(@"Kestrel:Endpoints:HttpsDefaultCert:Url").Value }
+                },
                 new DataAccessProviderOptions(),
                 _serverWorker.ThreadSafeDispatcher);            
 

@@ -90,7 +90,9 @@ namespace Ssz.Dcs.ControlEngine
             CultureHelper.InitializeUICulture(configuration, logger);
             Options = new Options(configuration);
 
-            configuration.GetSection(@"Kestrel:Endpoints:HttpsDefaultCert:Url").Value += new Any(Options.LocalServerPortNumber).ValueAsString(false);
+            var urlSection = configuration.GetSection(@"Kestrel:Endpoints:HttpsDefaultCert:Url");
+            if (urlSection.Value == @"*")
+                urlSection.Value = Options.ControlEngineServerAddress;
 
             Host.Run();
         }
@@ -119,7 +121,8 @@ namespace Ssz.Dcs.ControlEngine
             CentralServerAddress = ConfigurationHelper.GetValue<string>(configuration, @"CentralServerAddress", @"");
             CentralServerHost = ConfigurationHelper.GetValue<string>(configuration, @"CentralServerHost", @"");
             CentralServerSystemName = ConfigurationHelper.GetValue<string>(configuration, @"CentralServerSystemName", Guid.Empty.ToString());
-            LocalServerPortNumber = ConfigurationHelper.GetValue<int>(configuration, @"LocalServerPortNumber", 60061);            
+            ControlEngineServerAddress = ConfigurationHelper.GetValue<string>(configuration, @"ControlEngineServerAddress", @"");
+            EngineSessionId = ConfigurationHelper.GetValue<string>(configuration, @"EngineSessionId", @"");
         }
 
         #endregion
@@ -134,7 +137,9 @@ namespace Ssz.Dcs.ControlEngine
 
         public string CentralServerSystemName { get; set; }
 
-        public int LocalServerPortNumber { get; set; }
+        public string ControlEngineServerAddress { get; set; }
+
+        public string EngineSessionId { get; set; }
 
         public string GetCentralServerAddress()
         {

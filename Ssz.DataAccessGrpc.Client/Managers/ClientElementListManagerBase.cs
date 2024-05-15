@@ -177,8 +177,10 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                             connectionError = true;
                         }
                     }
-                    else 
+                    else
+                    {
                         connectionError = true;
+                    }
                     if (dataAccessGrpcListItem is not null)
                     {
                         dataAccessGrpcListItem.Obj = dataAccessGrpcListItemWrapper;
@@ -201,8 +203,10 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                         connectionError = true;
                     }
                 }
-                else 
+                else
+                {
                     connectionError = true;
+                }
 
                 if (failedItems is null) // List doesn't exist or exception when calling to server
                 {
@@ -305,8 +309,10 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                             connectionError = true;
                         }
                     }
-                    else 
+                    else
+                    {
                         connectionError = true;
+                    }
                 }
             }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.Utils;
@@ -94,6 +95,31 @@ namespace Ssz.DataAccessGrpc.Client
             }
         }
 
+        public async Task UpdateContextParamsAsync(CaseInsensitiveDictionary<string?> contextParams)
+        {
+            if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
+
+            if (!ServerContextIsOperational) throw new InvalidOperationException();
+
+            try
+            {
+                var request = new UpdateContextParamsRequest
+                {
+                    ContextId = _serverContextId                    
+                };
+                foreach (var kvp in contextParams)
+                    request.ContextParams.Add(kvp.Key,
+                        kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
+                await _resourceManagementClient.UpdateContextParamsAsync(request);
+                SetResourceManagementLastCallUtc();
+            }
+            catch (Exception ex)
+            {
+                ProcessRemoteMethodCallException(ex);
+                throw;
+            }
+        }
+
         public async Task<ReadOnlyMemory<byte>> PassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
@@ -118,7 +144,7 @@ namespace Ssz.DataAccessGrpc.Client
                 await call.RequestStream.CompleteAsync();
 
                 List<ByteString> requestByteStrings = new();
-#if NET5_OR_GREATER                              
+#if NET5_0_OR_GREATER                              
                 await foreach (DataChunk dataChunk in call.ResponseStream.ReadAllAsync())
                 {                    
                     requestByteStrings.Add(dataChunk.Bytes);

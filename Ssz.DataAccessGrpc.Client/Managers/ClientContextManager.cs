@@ -257,6 +257,15 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             return list;
         }
 
+        public async Task UpdateContextParamsAsync(CaseInsensitiveDictionary<string?> contextParams)
+        {
+            if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
+
+            if (_clientContext is null) throw new ConnectionDoesNotExistException();
+
+            await _clientContext.UpdateContextParamsAsync(contextParams);
+        }
+
         public async Task<ReadOnlyMemory<byte>> PassthroughAsync(string recipientPath,
                                       string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {

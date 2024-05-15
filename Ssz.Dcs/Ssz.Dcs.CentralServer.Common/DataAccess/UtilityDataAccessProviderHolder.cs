@@ -11,6 +11,9 @@ namespace Ssz.Dcs.CentralServer.Common
 {
     public class DataAccessProviderHolder : IObservableCollectionItem
     {
+        /// <summary>
+        ///     Substituted CentralServerAddress
+        /// </summary>
         public string CentralServerAddress { get; set; } = null!;
 
         public string ObservableCollectionItemId => CentralServerAddress;

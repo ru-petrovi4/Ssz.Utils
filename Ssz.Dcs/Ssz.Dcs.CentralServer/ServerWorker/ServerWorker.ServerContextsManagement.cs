@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Ssz.Utils.Addons;
+using Ssz.DataAccessGrpc.Client;
 
 namespace Ssz.Dcs.CentralServer
 {
@@ -39,6 +41,12 @@ namespace Ssz.Dcs.CentralServer
                         if (!String.IsNullOrEmpty(serverContext.ContextParams.TryGetValue(@"OperatorSessionId")) &&
                                 !String.IsNullOrEmpty(serverContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_Operator_ProcessModelNames)))
                             On_Operator_AddedOrRemoved(serverContext, args.Added);
+                    }
+                    else if (serverContext.ClientApplicationName == DataAccessConstants.ControlEngine_ClientApplicationName)
+                    {
+                        if (!String.IsNullOrEmpty(serverContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_EngineSessionId)) &&
+                                !String.IsNullOrEmpty(serverContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_ControlEngineServerAddress)))
+                            On_ControlEngine_AddedOrRemoved(serverContext, args.Added);
                     }
                 }
             }
@@ -140,6 +148,27 @@ namespace Ssz.Dcs.CentralServer
             _utilityItemsDoWorkNeeded = true;
         }
 
+        private void On_ControlEngine_AddedOrRemoved(ServerContext utilityServerContext, bool added)
+        {
+            string engineSessionId = utilityServerContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_EngineSessionId)!;
+            try
+            {                
+                if (added)
+                {
+                    EngineSession? engineSession = ProcessModeling_EngineSessions.TryGetValue(engineSessionId);
+                    if (engineSession is not null)
+                        engineSession.ServerAddress = utilityServerContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_ControlEngineServerAddress)!;
+                }     
+                else
+                {
+                    ProcessModeling_EngineSessions.Remove(engineSessionId);
+                }
+            }
+            catch
+            {
+            }
+        }
+
         #endregion
 
         #region private fields
@@ -169,7 +198,7 @@ namespace Ssz.Dcs.CentralServer
             /// </summary>
             public string ServerAddress { get; set; } = null!;
 
-            public HashSet<string> ClientWorkstationNames { get; } = new(StringComparer.InvariantCultureIgnoreCase);
+            public HashSet<string> ClientWorkstationNames { get; } = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
 
             public List<ServerContext> UtilityServerContexts { get; } = new();
         }
@@ -181,10 +210,22 @@ namespace Ssz.Dcs.CentralServer
             /// </summary>
             public string WorkstationName { get; set; } = null!;            
             
-            public int EnginesCount { get; set; }
+            public int EnginesCount
+            { 
+                get
+                {
+                    if (UtilityServerContexts.Count == 0)
+                        return 0;
+
+                    return new Any(UtilityServerContexts[0].ContextParams.TryGetValue(DataAccessConstants.ParamName_RunningControlEnginesCount)).ValueAsInt32(false);
+                }                 
+            }
 
             public string?[] ProcessModelNames { get; set; } = null!;
 
+            /// <summary>
+            ///     DataAccessConstants.CentralServer_ClientWindowsService_ClientApplicationName only
+            /// </summary>
             public List<ServerContext> UtilityServerContexts { get; } = new();
         }        
     }

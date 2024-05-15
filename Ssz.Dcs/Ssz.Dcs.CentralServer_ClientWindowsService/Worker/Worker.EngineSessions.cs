@@ -64,7 +64,19 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 switch (binDsFilesStoreDirectoryType)
                 {
                     case DsFilesStoreDirectoryType.ControlEngineBin:
-                        RunControlEngineExe(processModelingSessionId, workingDirectories.ProcessDirectoryInfo, workingDirectories.BinDirectoryInfo, instanceInfo, utilityDataAccessProvider);
+                        {
+                            string controlEngineServerAddress = ConfigurationHelper.GetValue<string>(Configuration, @"ControlEngineServerAddress", @"");
+                            controlEngineServerAddress = controlEngineServerAddress.Replace(@"*", System.Environment.MachineName);                                                    
+                            
+                            if (_runningControlEngineServerAddresses.Count > 0)
+                            {                                                                 
+                                UriBuilder uriBuilder = new(controlEngineServerAddress);
+                                uriBuilder.Port = _runningControlEngineServerAddresses.Max(s => new Uri(s).Port) + 1;
+                                controlEngineServerAddress = uriBuilder.ToString();
+                            }
+
+                            RunControlEngineExe(processModelingSessionId, workingDirectories.ProcessDirectoryInfo, workingDirectories.BinDirectoryInfo, controlEngineServerAddress, utilityDataAccessProvider, instanceInfo);
+                        }
                         break;
                     case DsFilesStoreDirectoryType.PlatInstructorBin:
                         RunPlatInstructorExe(workingDirectories.ProcessDirectoryInfo, workingDirectories.BinDirectoryInfo, workingDirectories.DataDirectoryInfo, pathRelativeToDataDirectory, instanceInfo);

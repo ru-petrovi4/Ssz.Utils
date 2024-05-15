@@ -20,6 +20,11 @@ namespace Ssz.Dcs.CentralServer
 
         public ObservableCollection<CentralServer.EngineSession> Dcs_EngineSessions { get; } = new();
 
+        /// <summary>
+        ///     [EngineSessionId, EngineSession]
+        /// </summary>
+        public CaseInsensitiveDictionary<CentralServer.EngineSession> ProcessModeling_EngineSessions { get; } = new();
+
         #endregion
 
         #region private functions
@@ -45,7 +50,7 @@ namespace Ssz.Dcs.CentralServer
         {
             foreach (var addedDataAccessProviderGetter_Addon in addedDataAccessProviderGetter_Addons)
             {
-                var egineSession = new EngineSession(addedDataAccessProviderGetter_Addon);
+                var egineSession = new EngineSession(Guid.NewGuid().ToString(), addedDataAccessProviderGetter_Addon);
                 Dcs_EngineSessions.Add(egineSession);
             }
         }

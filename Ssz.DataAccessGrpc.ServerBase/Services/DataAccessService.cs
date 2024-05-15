@@ -94,6 +94,23 @@ namespace Ssz.DataAccessGrpc.ServerBase
             await taskCompletionSource.Task;
         }
 
+        public override async Task<UpdateContextParamsReply> UpdateContextParams(UpdateContextParamsRequest request, ServerCallContext context)
+        {
+            return await GetReplyAsync(() =>
+            {
+                CaseInsensitiveDictionary<string?> contextParams = new CaseInsensitiveDictionary<string?>(request.ContextParams
+                        .Select(cp => KeyValuePair.Create(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));
+
+                ServerContext serverContext = _serverWorker.LookupServerContext(request.ContextId ?? @"");
+                serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
+                serverContext.UpdateContextParams(contextParams);                
+
+                var reply = new UpdateContextParamsReply();
+                return Task.FromResult(reply);
+            },
+                context);
+        }
+
         public override async Task<ConcludeReply> Conclude(ConcludeRequest request, ServerCallContext context)
         {
             return await GetReplyAsync(() =>

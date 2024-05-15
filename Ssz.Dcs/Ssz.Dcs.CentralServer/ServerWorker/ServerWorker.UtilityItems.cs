@@ -101,7 +101,7 @@ namespace Ssz.Dcs.CentralServer
         private void DoWorkOperatorsUtilityItems(DateTime nowUtc, CancellationToken cancellationToken)
         {
             UtilityItem[] processModelingSessionOperatorsUtilityItems = _utilityItems.Values
-                    .Where(mi => mi.ElementId.StartsWith(DataAccessConstants.Operators_UtilityItem + @"[", StringComparison.InvariantCultureIgnoreCase) && mi.ElementId.EndsWith("]")).ToArray();
+                    .Where(mi => mi.ElementId.StartsWith(DataAccessConstants.UtilityItem_Operators + @"[", StringComparison.InvariantCultureIgnoreCase) && mi.ElementId.EndsWith("]")).ToArray();
 
             foreach (var g in processModelingSessionOperatorsUtilityItems.GroupBy(i => i.ElementId))
             {
@@ -159,7 +159,7 @@ namespace Ssz.Dcs.CentralServer
         private void DoWorkCentralServerUtilityItems(DateTime nowUtc, CancellationToken cancellationToken)
         {
             UtilityItem[] centralServerUtilityItems = _utilityItems.Values
-                    .Where(mi => String.Equals(mi.ElementId, DataAccessConstants.CentralServer_UtilityItem, StringComparison.InvariantCultureIgnoreCase)).ToArray();
+                    .Where(mi => String.Equals(mi.ElementId, DataAccessConstants.UtilityItem_CentralServer, StringComparison.InvariantCultureIgnoreCase)).ToArray();
 
             if (_additionalCentralServerInfosCollection.Count == 0)
             {
@@ -182,31 +182,37 @@ namespace Ssz.Dcs.CentralServer
                     AdditionalCentralServerInfo? additionalCentralServerInfo = _additionalCentralServerInfosCollection.Values
                             .FirstOrDefault(i => String.Equals(i.ServerAddress, currentCentralServerAddress, StringComparison.InvariantCultureIgnoreCase));
                     if (additionalCentralServerInfo is not null)
-                    {
                         additionalCentralServerInfo!.ClientWorkstationNames.Add(centralServerUtilityItem.ClientWorkstationName);
-                        continue;
-                    }
+                }
 
-                    // Find best additionalCentralServerInfo
-                    int minProcessModelingSessionsCount = Int32.MaxValue;
-                    foreach (var i in _additionalCentralServerInfosCollection.Values)
+                foreach (var centralServerUtilityItem in centralServerUtilityItems)
+                {
+                    string currentCentralServerAddress = centralServerUtilityItem.ValueStatusTimestamp.Value.ValueAsString(false);
+                    AdditionalCentralServerInfo? additionalCentralServerInfo = _additionalCentralServerInfosCollection.Values
+                            .FirstOrDefault(i => String.Equals(i.ServerAddress, currentCentralServerAddress, StringComparison.InvariantCultureIgnoreCase));
+                    if (additionalCentralServerInfo is null)
                     {
-                        if (i.ClientWorkstationNames.Count < minProcessModelingSessionsCount)
+                        // Find best additionalCentralServerInfo
+                        int minClientWorkstationsCount = Int32.MaxValue;
+                        foreach (var i in _additionalCentralServerInfosCollection.Values)
                         {
-                            additionalCentralServerInfo = i;
-                            minProcessModelingSessionsCount = i.ClientWorkstationNames.Count;
+                            if (i.ClientWorkstationNames.Count < minClientWorkstationsCount)
+                            {
+                                additionalCentralServerInfo = i;
+                                minClientWorkstationsCount = i.ClientWorkstationNames.Count;
+                            }
                         }
+                        additionalCentralServerInfo!.ClientWorkstationNames.Add(centralServerUtilityItem.ClientWorkstationName);
+                        centralServerUtilityItem.UpdateValue(additionalCentralServerInfo.ServerAddress, nowUtc);
                     }
-                    additionalCentralServerInfo!.ClientWorkstationNames.Add(centralServerUtilityItem.ClientWorkstationName);
-                    centralServerUtilityItem.UpdateValue(additionalCentralServerInfo.ServerAddress, nowUtc);
-                }                    
+                }
             }
         }
 
         private void DoWorkCentralServersUtilityItems(DateTime nowUtc, CancellationToken cancellationToken)
         {
             UtilityItem[] centralServersUtilityItems = _utilityItems.Values
-                    .Where(mi => String.Equals(mi.ElementId, DataAccessConstants.CentralServers_UtilityItem, StringComparison.InvariantCultureIgnoreCase)).ToArray();
+                    .Where(mi => String.Equals(mi.ElementId, DataAccessConstants.UtilityItem_CentralServers, StringComparison.InvariantCultureIgnoreCase)).ToArray();
 
             string utilityItemValue;
             if (_additionalCentralServerInfosCollection.Count == 0)

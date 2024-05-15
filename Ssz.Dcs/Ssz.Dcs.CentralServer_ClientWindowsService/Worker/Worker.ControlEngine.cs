@@ -17,13 +17,14 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
     {
         #region private functions
 
-        private void RunControlEngineExe(string processModelingSessionId, DirectoryInfo processDirectoryInfo, DirectoryInfo binDirectoryInfo, string instanceInfo, IDataAccessProvider utilityDataAccessProvider)
+        private void RunControlEngineExe(string processModelingSessionId, DirectoryInfo processDirectoryInfo, DirectoryInfo binDirectoryInfo, string controlEngineServerAddress, IDataAccessProvider utilityDataAccessProvider, string instanceInfo)
         {
             string exeFileFullName = Path.Combine(binDirectoryInfo.FullName, DataAccessConstants.ControlEngine_ClientApplicationName + @".exe");
             string arguments = "-d \"" + processDirectoryInfo.FullName +
                 "\" --CentralServerAddress=" + utilityDataAccessProvider.ServerAddress +
-                " -s \"" + processModelingSessionId + "\"" +
-                " --LocalServerPortNumber=" + instanceInfo;
+                " --CentralServerSystemName=\"" + processModelingSessionId + "\"" +
+                " --ControlEngineServerAddress=" + controlEngineServerAddress +
+                " --EngineSessionId=" + instanceInfo;
 
             Logger.LogDebug("Dcs.ControlEngine is starting.. " + exeFileFullName + @" " + arguments);
 
@@ -32,7 +33,27 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 WorkingDirectory = binDirectoryInfo.FullName,
                 WindowStyle = ProcessWindowStyle.Hidden,
             };
-            Process.Start(processStartInfo);
+            var controlEngineProcess = Process.Start(processStartInfo);
+
+            if (controlEngineProcess is not null) 
+            {
+                Task.Run(() =>
+                {
+                    _threadSafeDispatcher.BeginInvokeEx(async ct =>
+                    {
+                        _runningControlEngineServerAddresses.Add(controlEngineServerAddress);
+                        await UtilityDataAccessProviderHolders_UpdateContextParams();
+                    });
+
+                    controlEngineProcess.WaitForExit();
+
+                    _threadSafeDispatcher.BeginInvokeEx(async ct =>
+                    {
+                        _runningControlEngineServerAddresses.Remove(controlEngineServerAddress);
+                        await UtilityDataAccessProviderHolders_UpdateContextParams();
+                    });
+                });
+            }            
         }
 
         #endregion

@@ -9,8 +9,9 @@ namespace Ssz.Dcs.CentralServer
     {
         #region construction and destruction
 
-        public EngineSession(DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon)
+        public EngineSession(string engineSessionId, DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon)
         {
+            EngineSessionId = engineSessionId;
             DataAccessProviderGetter_Addon = dataAccessProviderGetter_Addon;
         }
 
@@ -23,11 +24,17 @@ namespace Ssz.Dcs.CentralServer
 
         #region public functions
 
+        public string EngineSessionId { get; }
+
         public DataAccessProviderGetter_AddonBase DataAccessProviderGetter_Addon { get; }
 
         public IDataAccessProvider DataAccessProvider => DataAccessProviderGetter_Addon.DataAccessProvider!;
 
-        public string ServerAddress => DataAccessProvider.ServerAddress;
+        public string ServerAddress
+        {
+            get => DataAccessProvider.ServerAddress;
+            set => DataAccessProvider.ServerAddress = value;
+        }
 
         public string ServerHost => DataAccessProvider.ServerHost;
 

@@ -184,7 +184,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public string SystemNameToConnect { get; }
 
-        public CaseInsensitiveDictionary<string?> ContextParams { get; }
+        public CaseInsensitiveDictionary<string?> ContextParams { get; private set; }
+
+        public event EventHandler ContextParamsChanged = delegate { };
 
         /// <summary>
         ///    Context identifier != ""
@@ -212,7 +214,13 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <summary>
         ///     Did the client call Conclude(...)
         /// </summary>
-        public bool IsConcludeCalled { get; set; }
+        public bool IsConcludeCalled { get; set; }        
+
+        public void UpdateContextParams(CaseInsensitiveDictionary<string?> contextParams)
+        {
+            ContextParams = contextParams;
+            ContextParamsChanged(this, EventArgs.Empty);
+        }
 
         public void DoWork(DateTime nowUtc, CancellationToken token)
         {

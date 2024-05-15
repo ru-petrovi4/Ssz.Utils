@@ -131,7 +131,43 @@ namespace Ssz.DataAccessGrpc.Client
                 valueSubscriptionObj.ValueSubscription.Update(
                     AddItem(valueSubscriptionObj));
             }
-        }        
+        }
+
+        public override async Task UpdateContextParamsAsync(CaseInsensitiveDictionary<string?> contextParams)
+        {
+            await base.UpdateContextParamsAsync(contextParams);
+
+            // Early return
+            if (!_clientContextManager.ConnectionExists)
+                return;
+
+            var taskCompletionSource = new TaskCompletionSource<object?>();
+
+            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
+            {
+                try
+                {
+                    await _clientContextManager.UpdateContextParamsAsync(contextParams);
+                    taskCompletionSource.SetResult(null);
+                }
+                catch (RpcException ex)
+                {
+                    LoggersSet.Logger.LogError(ex, ex.Status.Detail);
+                    taskCompletionSource.SetResult(null);
+                }
+                catch (ConnectionDoesNotExistException ex)
+                {
+                    taskCompletionSource.SetResult(null);
+                }
+                catch (Exception ex)
+                {
+                    LoggersSet.Logger.LogError(ex, "UpdateContextParamsAsync exception.");
+                    taskCompletionSource.SetResult(null);
+                }
+            });
+
+            await taskCompletionSource.Task;
+        }
 
         /// <summary>
         ///     Tou can call DisposeAsync() instead of this method.
@@ -587,7 +623,8 @@ namespace Ssz.DataAccessGrpc.Client
         {
             await WorkingThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
 
-            if (cancellationToken.IsCancellationRequested) return;
+            if (cancellationToken.IsCancellationRequested) 
+                return;
 
             if (!_clientContextManager.ConnectionExists)
             {
@@ -606,7 +643,8 @@ namespace Ssz.DataAccessGrpc.Client
                     сallbackDispatcher = CallbackDispatcher;
                     if (сallbackDispatcher is not null)
                     {
-                        if (cancellationToken.IsCancellationRequested) return;
+                        if (cancellationToken.IsCancellationRequested) 
+                            return;
                         try
                         {
                             сallbackDispatcher.BeginInvoke(ct =>
@@ -627,7 +665,7 @@ namespace Ssz.DataAccessGrpc.Client
 #endregion
                 }
 
-                if (IsInitialized && !String.IsNullOrWhiteSpace(ServerAddress) &&
+                if (IsInitialized && !String.IsNullOrEmpty(ServerAddress) &&
                     nowUtc > _clientContextManager.LastFailedConnectionDateTimeUtc + TimeSpan.FromSeconds(5))
                 {
                     try
@@ -656,7 +694,8 @@ namespace Ssz.DataAccessGrpc.Client
                         сallbackDispatcher = CallbackDispatcher;
                         if (сallbackDispatcher is not null)
                         {
-                            if (cancellationToken.IsCancellationRequested) return;
+                            if (cancellationToken.IsCancellationRequested) 
+                                return;
                             try
                             {
                                 сallbackDispatcher.BeginInvoke(ct =>
@@ -674,23 +713,22 @@ namespace Ssz.DataAccessGrpc.Client
                         LoggersSet.Logger.LogDebug(ex, "");                        
                     }
                 }
-            }
+            }            
 
-            if (!IsInitialized || cancellationToken.IsCancellationRequested) 
-                return;            
+            if (IsInitialized && _clientContextManager.ConnectionExists)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                    return;
 
-            await _clientElementValueListManager.SubscribeAsync(_clientContextManager, CallbackDispatcher,
-                OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, cancellationToken);
-            await _clientEventListManager.SubscribeAsync(_clientContextManager, CallbackDispatcher, Options.EventListCallbackIsEnabled, cancellationToken);
+                await _clientElementValueListManager.SubscribeAsync(_clientContextManager, CallbackDispatcher,
+                    OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, cancellationToken);
+                await _clientEventListManager.SubscribeAsync(_clientContextManager, CallbackDispatcher, Options.EventListCallbackIsEnabled, cancellationToken);
 
-            if (cancellationToken.IsCancellationRequested) 
-                return;
+                if (cancellationToken.IsCancellationRequested)
+                    return;
 
-            if (_clientContextManager.ConnectionExists)
-            {                
                 try
                 {
-                    if (cancellationToken.IsCancellationRequested) return;
                     _clientContextManager.DoWork(cancellationToken, nowUtc);
                 }
                 catch

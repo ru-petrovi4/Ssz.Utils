@@ -35,7 +35,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
             MainUtilityDataAccessProvider = ActivatorUtilities.CreateInstance<GrpcDataAccessProvider>(ServiceProvider);
 
-            UtilityDataAccessProviderHolders.CollectionChanged += DataAccessProviderHolders_OnCollectionChanged;
+            UtilityDataAccessProviderHolders.CollectionChanged += UtilityDataAccessProviderHolders_OnCollectionChanged;
         }        
 
         #endregion
@@ -64,7 +64,10 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 Logger.LogCritical("MainCentralServerAddress is not specified in config.");
                 return Task.CompletedTask;
             }
-            string clientWorkstationName = ConfigurationHelper.GetValue<string>(Configuration, @"ClientWorkstationName", System.Environment.MachineName);            
+
+            string controlEngineServerAddress = ConfigurationHelper.GetValue<string>(Configuration, @"ControlEngineServerAddress", @"");
+            controlEngineServerAddress = controlEngineServerAddress.Replace(@"*", System.Environment.MachineName);
+            string clientWorkstationName = new Uri(controlEngineServerAddress).Host;
 
             MainUtilityDataAccessProvider.Initialize(null,
                 mainCentralServerAddress,
@@ -79,9 +82,9 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 _threadSafeDispatcher);
 
             if (ConfigurationHelper.GetValue<bool>(Configuration, DataAccessConstants.ParamName_AllCentralServers, false))            
-                _centralServersValueSubscription = new ValueSubscription(MainUtilityDataAccessProvider, DataAccessConstants.CentralServers_UtilityItem, CentralServersValueSubscription_OnUpdated);
+                _centralServersValueSubscription = new ValueSubscription(MainUtilityDataAccessProvider, DataAccessConstants.UtilityItem_CentralServers, CentralServersValueSubscription_OnUpdated);
             else
-                _centralServersValueSubscription = new ValueSubscription(MainUtilityDataAccessProvider, DataAccessConstants.CentralServer_UtilityItem, CentralServersValueSubscription_OnUpdated);
+                _centralServersValueSubscription = new ValueSubscription(MainUtilityDataAccessProvider, DataAccessConstants.UtilityItem_CentralServer, CentralServersValueSubscription_OnUpdated);
 
             return Task.CompletedTask;
         }        
@@ -111,10 +114,14 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
         {
             List<DataAccessProviderHolder> newUtilityDataAccessProviderHolders = new();
 
-            foreach (var centralServerAddress in CsvHelper.ParseCsvLine(@",", e.NewValueStatusTimestamp.Value.ValueAsString(false)))
+            foreach (var it in CsvHelper.ParseCsvLine(@",", e.NewValueStatusTimestamp.Value.ValueAsString(false)))
             {
+                string? centralServerAddress = it;
                 if (String.IsNullOrEmpty(centralServerAddress))
                     continue;
+                
+                if (centralServerAddress == @"*")
+                    centralServerAddress = MainUtilityDataAccessProvider.ServerAddress;
 
                 DataAccessProviderHolder newDataAccessProviderHolder = new()
                 {
@@ -126,15 +133,15 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             UtilityDataAccessProviderHolders.Update(newUtilityDataAccessProviderHolders.OrderBy(a => ((IObservableCollectionItem)a).ObservableCollectionItemId).ToArray(), CancellationToken.None);
         }
 
-        private void DataAccessProviderHolders_OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        private void UtilityDataAccessProviderHolders_OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:                    
-                    DataAccessProviderHolders_Added(e.NewItems!.OfType<DataAccessProviderHolder>());
+                    UtilityDataAccessProviderHolders_Added(e.NewItems!.OfType<DataAccessProviderHolder>());
                     break;
                 case NotifyCollectionChangedAction.Remove:                    
-                    DataAccessProviderHolders_Removed(e.OldItems!.OfType<DataAccessProviderHolder>());
+                    UtilityDataAccessProviderHolders_Removed(e.OldItems!.OfType<DataAccessProviderHolder>());
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     break;
@@ -143,43 +150,56 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             }
         }
 
-        private void DataAccessProviderHolders_Added(IEnumerable<DataAccessProviderHolder> addedDataAccessProviderHolders)
+        private void UtilityDataAccessProviderHolders_Added(IEnumerable<DataAccessProviderHolder> addedUtilityDataAccessProviderHolders)
         {
-            foreach (var addedDataAccessProviderHolder in addedDataAccessProviderHolders)
+            foreach (var addedUtilityDataAccessProviderHolder in addedUtilityDataAccessProviderHolders)
             {
                 var utilityDataAccessProvider = ActivatorUtilities.CreateInstance<GrpcDataAccessProvider>(ServiceProvider);
 
                 utilityDataAccessProvider.EventMessagesCallback += UtilityDataAccessProvider_OnEventMessagesCallback;
 
-                var centralServerAddress = addedDataAccessProviderHolder.CentralServerAddress;
-                if (centralServerAddress == @"*")
-                    centralServerAddress = MainUtilityDataAccessProvider.ServerAddress;
+                string clientServerAddress = ConfigurationHelper.GetValue<string>(Configuration, @"ControlEngineServerAddress", @"");
+                clientServerAddress = clientServerAddress.Replace(@"*", System.Environment.MachineName);
+                string clientWorkstationName = new Uri(clientServerAddress).Host;
 
                 utilityDataAccessProvider.Initialize(null,
-                    centralServerAddress,
+                    addedUtilityDataAccessProviderHolder.CentralServerAddress,
                     DataAccessConstants.CentralServer_ClientWindowsService_ClientApplicationName,
-                    System.Environment.MachineName,
+                    clientWorkstationName,
                     @"",
                     new CaseInsensitiveDictionary<string?>()
                     {
-                        { DataAccessConstants.ParamName_Engine_ProcessModelNames, ConfigurationHelper.GetValue<string>(Configuration, DataAccessConstants.ParamName_Engine_ProcessModelNames, @"") }
+                        { DataAccessConstants.ParamName_Engine_ProcessModelNames, ConfigurationHelper.GetValue<string>(Configuration, DataAccessConstants.ParamName_Engine_ProcessModelNames, @"") },
+                        { DataAccessConstants.ParamName_RunningControlEnginesCount, new Any(_runningControlEngineServerAddresses.Count).ValueAsString(false) }
                     },
                     new DataAccessProviderOptions(),
                     _threadSafeDispatcher);                
 
-                addedDataAccessProviderHolder.DataAccessProvider = utilityDataAccessProvider;
+                addedUtilityDataAccessProviderHolder.DataAccessProvider = utilityDataAccessProvider;
             }
         }
 
-        private void DataAccessProviderHolders_Removed(IEnumerable<DataAccessProviderHolder> removedDataAccessProviderHolders)
+        private void UtilityDataAccessProviderHolders_Removed(IEnumerable<DataAccessProviderHolder> removedUtilityDataAccessProviderHolders)
         {
-            foreach (var removedDataAccessProviderHolder in removedDataAccessProviderHolders)
+            foreach (var removedUtilityDataAccessProviderHolder in removedUtilityDataAccessProviderHolders)
             {
-                var utilityDataAccessProvider = removedDataAccessProviderHolder.DataAccessProvider;
+                var utilityDataAccessProvider = removedUtilityDataAccessProviderHolder.DataAccessProvider;
 
                 utilityDataAccessProvider.EventMessagesCallback -= UtilityDataAccessProvider_OnEventMessagesCallback;
 
                 var t = utilityDataAccessProvider.CloseAsync();
+            }
+        }
+
+        private async Task UtilityDataAccessProviderHolders_UpdateContextParams()
+        {            
+            foreach (var utilityDataAccessProviderHolder in UtilityDataAccessProviderHolders)
+            {
+                await utilityDataAccessProviderHolder.DataAccessProvider.UpdateContextParamsAsync(new CaseInsensitiveDictionary<string?>()
+                    {
+                        { DataAccessConstants.ParamName_Engine_ProcessModelNames, ConfigurationHelper.GetValue<string>(Configuration, DataAccessConstants.ParamName_Engine_ProcessModelNames, @"") },
+                        { DataAccessConstants.ParamName_RunningControlEnginesCount, new Any(_runningControlEngineServerAddresses.Count).ValueAsString(false) }
+                    });
             }
         }
 
@@ -190,6 +210,8 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
         private readonly ThreadSafeDispatcher _threadSafeDispatcher = new();
 
         private ValueSubscription? _centralServersValueSubscription;
+
+        private List<string> _runningControlEngineServerAddresses = new();
 
         #endregion
     }

@@ -10,6 +10,8 @@ service DataAccess {
 
   rpc SubscribeForCallback(SubscribeForCallbackRequest) returns (stream CallbackMessage);
 
+  rpc UpdateContextParams (UpdateContextParamsRequest) returns (UpdateContextParamsReply);
+
   rpc Conclude (ConcludeRequest) returns (ConcludeReply);
 
   rpc ClientKeepAlive (ClientKeepAliveRequest) returns (ClientKeepAliveReply);
@@ -103,6 +105,14 @@ message InitiateReply {
   string context_id = 1;
   uint32 server_context_timeout_ms = 2;
   string server_culture_name = 3;
+}
+
+message UpdateContextParamsRequest {
+  string context_id = 1;
+  map<string, NullableString> context_params = 2;
+}
+
+message UpdateContextParamsReply {  
 }
 
 message ConcludeRequest {

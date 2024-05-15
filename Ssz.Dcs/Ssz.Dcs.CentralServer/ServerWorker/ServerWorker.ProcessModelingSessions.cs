@@ -205,10 +205,7 @@ namespace Ssz.Dcs.CentralServer
                 for (int collectionIndex = processModelingSession.EngineSessions.Count - 1; collectionIndex >= 0; collectionIndex -= 1)
                 {
                     var o = processModelingSession.EngineSessions[collectionIndex];
-                    processModelingSession.EngineSessions.RemoveAt(collectionIndex);
-                    var enginesHostInfo = _enginesHostInfosCollection.TryGetValue(o.ServerHost);
-                    if (enginesHostInfo is not null)
-                        enginesHostInfo.EnginesCount -= 1;
+                    processModelingSession.EngineSessions.RemoveAt(collectionIndex);                    
                     o.Dispose();
                 }
 
@@ -272,7 +269,7 @@ namespace Ssz.Dcs.CentralServer
                 jobId = Guid.NewGuid().ToString();
                 processModelingSession.LaunchEnginesJobId = jobId;                
 
-                DsFilesStoreDirectory processDsFilesStoreDirectory = DsFilesStoreHelper.CreateDsFilesStoreDirectoryObject(
+                DsFilesStoreDirectory processModelDsFilesStoreDirectory = DsFilesStoreHelper.CreateDsFilesStoreDirectoryObject(
                         FilesStoreDirectoryInfo,
                         processModelingSession.ProcessModelName, 2);
 
@@ -289,7 +286,7 @@ namespace Ssz.Dcs.CentralServer
                 //     Creates all directories and subdirectories in the specified path unless they
                 //     already exist.
                 Directory.CreateDirectory(Path.Combine(FilesStoreDirectoryInfo.FullName,
-                    processDsFilesStoreDirectory.PathRelativeToRootDirectory,
+                    processModelDsFilesStoreDirectory.PathRelativeToRootDirectory,
                     DsFilesStoreConstants.InstructorDataDirectoryName));
 
                 if (processModelingSession.InitiatorClientApplicationName != DataAccessConstants.Instructor_ClientApplicationName)
@@ -300,7 +297,7 @@ namespace Ssz.Dcs.CentralServer
                 {
                     // Only update Instructor.Data directory.
                     Generate_DownloadChangedFiles_SystemEvent(processModelingSession.InitiatorClientWorkstationName, jobId,
-                        Path.Combine(processDsFilesStoreDirectory.PathRelativeToRootDirectory, DsFilesStoreConstants.InstructorDataDirectoryName),
+                        Path.Combine(processModelDsFilesStoreDirectory.PathRelativeToRootDirectory, DsFilesStoreConstants.InstructorDataDirectoryName),
                         true);
                 }
 
@@ -330,48 +327,38 @@ namespace Ssz.Dcs.CentralServer
                 //     Creates all directories and subdirectories in the specified path unless they
                 //     already exist.
                 Directory.CreateDirectory(Path.Combine(FilesStoreDirectoryInfo.FullName,
-                    processDsFilesStoreDirectory.PathRelativeToRootDirectory,
+                    processModelDsFilesStoreDirectory.PathRelativeToRootDirectory,
                     DsFilesStoreConstants.ControlEngineDataDirectoryName));
 
                 string engineSessionId = Guid.NewGuid().ToString();
-                int portNumber;
-                var controlEngineSessions = GetEngineSessions().OfType<ControlEngine_TrainingEngineSession>().Where(s => String.Equals(s.ServerHost, enginesHostInfo.WorkstationName)).ToArray();
-                if (controlEngineSessions.Length > 0)
-                    portNumber = controlEngineSessions.Max(s => s.PortNumber) + 1;
-                else
-                    portNumber = 60061;                
 
-                Generate_LaunchEngine_SystemEvent(enginesHostInfo.WorkstationName, processModelingSession, DsFilesStoreDirectoryType.ControlEngineBin, DsFilesStoreDirectoryType.ControlEngineData, @"", new Any(portNumber).ValueAsString(false));
-                enginesHostInfo.EnginesCount += 1;
+                Generate_LaunchEngine_SystemEvent(enginesHostInfo.WorkstationName, processModelingSession, DsFilesStoreDirectoryType.ControlEngineBin, DsFilesStoreDirectoryType.ControlEngineData, @"", engineSessionId);
 
                 DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewPreparedDataAccessProviderAddon(
-                    _serviceProvider, 
-                    $"https://{enginesHostInfo.WorkstationName}:{portNumber}", 
-                    @"PROCESS",
-                    new CaseInsensitiveDictionary<string?>(), 
-                    ThreadSafeDispatcher);
-                var controlEngineSession = new ControlEngine_TrainingEngineSession(dataAccessProviderGetter_Addon)                   
-                {
-                    PortNumber = portNumber
-                };
-                processModelingSession.EngineSessions.Add(controlEngineSession);
+                        _serviceProvider,
+                        @"",
+                        @"PROCESS",
+                        new CaseInsensitiveDictionary<string?>(),
+                        ThreadSafeDispatcher);
+                var controlEngineSession = new ControlEngine_TrainingEngineSession(engineSessionId, dataAccessProviderGetter_Addon);
+                processModelingSession.EngineSessions.Add(controlEngineSession);                
+                ProcessModeling_EngineSessions.Add(engineSessionId, controlEngineSession);
                 processModelingSession.SubscribeToMainControlEngine((GrpcDataAccessProvider)controlEngineSession.DataAccessProvider);
 
                 // Launch PlatInstructor
 
-                var platInstructorEngineDataDsFilesStoreDirectory = DsFilesStoreHelper.FindDataDsFilesStoreDirectory(processDsFilesStoreDirectory, DsFilesStoreDirectoryType.PlatInstructorData);
+                var platInstructorEngineDataDsFilesStoreDirectory = DsFilesStoreHelper.FindDataDsFilesStoreDirectory(processModelDsFilesStoreDirectory, DsFilesStoreDirectoryType.PlatInstructorData);
                 if (platInstructorEngineDataDsFilesStoreDirectory is not null)
                 {
                     DsFilesStoreFile? mvDsFileInfo = platInstructorEngineDataDsFilesStoreDirectory.DsFilesStoreFilesCollection
                         .FirstOrDefault(fi => fi.Name.EndsWith(@".mv_", StringComparison.InvariantCultureIgnoreCase));
                     if (mvDsFileInfo is not null)
                     {
-                        var systemNameBase = Path.GetFileNameWithoutExtension(mvDsFileInfo.Name);
                         engineSessionId = Guid.NewGuid().ToString();
+                        var systemNameBase = Path.GetFileNameWithoutExtension(mvDsFileInfo.Name);                        
                         string systemName = systemNameBase + @"." + engineSessionId;
 
-                        Generate_LaunchEngine_SystemEvent(enginesHostInfo.WorkstationName, processModelingSession, DsFilesStoreDirectoryType.PlatInstructorBin, DsFilesStoreDirectoryType.PlatInstructorData, mvDsFileInfo.Name, systemName);
-                        enginesHostInfo.EnginesCount += 1;
+                        Generate_LaunchEngine_SystemEvent(enginesHostInfo.WorkstationName, processModelingSession, DsFilesStoreDirectoryType.PlatInstructorBin, DsFilesStoreDirectoryType.PlatInstructorData, mvDsFileInfo.Name, systemName);                        
 
                         DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon2 = GetNewPreparedDataAccessProviderAddon(
                             _serviceProvider,
@@ -379,12 +366,13 @@ namespace Ssz.Dcs.CentralServer
                             systemName,
                             new CaseInsensitiveDictionary<string?> { { @"XiSystem", systemName } },
                             ThreadSafeDispatcher);
-                        var platInstructorEngineSession = new PlatInstructor_TrainingEngineSession(dataAccessProviderGetter_Addon2)
+                        var platInstructorEngineSession = new PlatInstructor_TrainingEngineSession(engineSessionId,dataAccessProviderGetter_Addon2)
                         {
                             SystemNameBase = systemNameBase,
                             SystemNameInstance = engineSessionId,
                         };
                         processModelingSession.EngineSessions.Add(platInstructorEngineSession);
+                        ProcessModeling_EngineSessions.Add(engineSessionId, controlEngineSession);
                     }
                 }
             }

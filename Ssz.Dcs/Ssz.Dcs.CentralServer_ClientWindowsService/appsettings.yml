@@ -24,8 +24,8 @@ UICulture: "RU"
 # Directory for cache files
 ProgramDataDirectory: "%ProgramData%\\Ssz\\Dcs.CentralServer_Client"
 MainCentralServerAddress: "https://localhost:60060"
-# Name to use to connect to engines
-ClientWorkstationName: ""
+# Address to connect to engines. * to use System.Environment.MachineName
+ControlEngineServerAddress: "https://*:60061"
 FilesStoreSyncWithCentralServer: "true"
 ShowPlatInstructor: "false"
 # Comma-separated process model names to host engines. '*' for all, '' for none.

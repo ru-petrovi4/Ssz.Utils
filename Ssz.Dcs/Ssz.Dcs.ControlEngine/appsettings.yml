@@ -25,8 +25,8 @@ Kestrel:
     Protocols: Http1    
   Endpoints: 
     HttpsDefaultCert: 
-      # do not specify port number
-      Url: "https://*:"
+      # * to use ControlEngineServerAddress option.
+      Url: "*"
   Certificates: 
     Default: 
       # имя файла сертификата. Должен быть расположен в папке данных центрального сервера ПАЗ-Чек
