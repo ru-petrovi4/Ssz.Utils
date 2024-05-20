@@ -115,7 +115,7 @@ namespace Ssz.Dcs.CentralServer
             return SszQueryHelper.ComputeValueOfSszQueries(optionValue, GetConstantValue);            
         }
 
-        private string GetConstantValue(string constant)
+        private string GetConstantValue(string constant, IterationInfo iterationInfo)
         {
             if (constant.StartsWith(@"%(ConfigurationCrypter:", StringComparison.InvariantCultureIgnoreCase))
             {

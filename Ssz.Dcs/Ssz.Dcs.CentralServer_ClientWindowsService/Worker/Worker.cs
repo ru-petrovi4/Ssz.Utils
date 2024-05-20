@@ -63,16 +63,12 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             {
                 Logger.LogCritical("MainCentralServerAddress is not specified in config.");
                 return Task.CompletedTask;
-            }
-
-            string controlEngineServerAddress = ConfigurationHelper.GetValue<string>(Configuration, @"ControlEngineServerAddress", @"");
-            controlEngineServerAddress = controlEngineServerAddress.Replace(@"*", System.Environment.MachineName);
-            string clientWorkstationName = new Uri(controlEngineServerAddress).Host;
+            }            
 
             MainUtilityDataAccessProvider.Initialize(null,
                 mainCentralServerAddress,
                 DataAccessConstants.CentralServer_ClientWindowsService_ClientApplicationName,
-                clientWorkstationName,
+                System.Environment.MachineName,
                 @"",
                 new CaseInsensitiveDictionary<string?>()
                 {
@@ -156,16 +152,12 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             {
                 var utilityDataAccessProvider = ActivatorUtilities.CreateInstance<GrpcDataAccessProvider>(ServiceProvider);
 
-                utilityDataAccessProvider.EventMessagesCallback += UtilityDataAccessProvider_OnEventMessagesCallback;
-
-                string clientServerAddress = ConfigurationHelper.GetValue<string>(Configuration, @"ControlEngineServerAddress", @"");
-                clientServerAddress = clientServerAddress.Replace(@"*", System.Environment.MachineName);
-                string clientWorkstationName = new Uri(clientServerAddress).Host;
+                utilityDataAccessProvider.EventMessagesCallback += UtilityDataAccessProvider_OnEventMessagesCallback;                
 
                 utilityDataAccessProvider.Initialize(null,
                     addedUtilityDataAccessProviderHolder.CentralServerAddress,
                     DataAccessConstants.CentralServer_ClientWindowsService_ClientApplicationName,
-                    clientWorkstationName,
+                    System.Environment.MachineName,
                     @"",
                     new CaseInsensitiveDictionary<string?>()
                     {

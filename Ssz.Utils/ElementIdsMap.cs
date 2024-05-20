@@ -108,7 +108,7 @@ namespace Ssz.Utils
         /// <param name="elementId"></param>
         /// <param name="getConstantValue"></param>
         /// <returns></returns>
-        public List<string?>? GetFromMap(string elementId, Func<string, string>? getConstantValue = null)
+        public List<string?>? GetFromMap(string elementId, Func<string, IterationInfo, string>? getConstantValue = null)
         {
             if (elementId == @"" || Map.Count == 0) 
                 return null;
@@ -140,7 +140,7 @@ namespace Ssz.Utils
         /// <param name="tagType"></param>
         /// <param name="getConstantValue"></param>
         /// <returns></returns>
-        public List<string?>? GetFromMap(string? tagName, string? prop, Func<string, string>? getConstantValue = null)
+        public List<string?>? GetFromMap(string? tagName, string? prop, Func<string, IterationInfo, string>? getConstantValue = null)
         {
             string elementId = tagName + TagAndPropSeparator + prop;
             if (elementId == @"" || Map.Count == 0)
@@ -171,7 +171,7 @@ namespace Ssz.Utils
         /// <param name="tagType"></param>
         /// <param name="getConstantValue"></param>
         /// <returns></returns>
-        public List<string?>? GetFromMap(string? tagName, string? prop, string? tagType, Func<string, string>? getConstantValue = null)
+        public List<string?>? GetFromMap(string? tagName, string? prop, string? tagType, Func<string, IterationInfo, string>? getConstantValue = null)
         {
             string elementId = tagName + TagAndPropSeparator + prop;
             if (elementId == @"" || Map.Count == 0) 
@@ -259,7 +259,7 @@ namespace Ssz.Utils
         /// <param name="tagType"></param>
         /// <param name="getConstantValue"></param>
         /// <returns></returns>
-        private List<string?>? GetFromMapInternal(string elementId, string tagName, string prop, string? tagType, Func<string, string>? getConstantValue)
+        private List<string?>? GetFromMapInternal(string elementId, string tagName, string prop, string? tagType, Func<string, IterationInfo, string>? getConstantValue)
         {
             List<string?>? values = null;
             if (!String.IsNullOrEmpty(tagType))
@@ -281,7 +281,7 @@ namespace Ssz.Utils
             {
                 for (var i = 1; i < values.Count; i++)
                 {
-                    string? v = SszQueryHelper.ComputeValueOfSszQueries(values[i], constant =>
+                    string? v = SszQueryHelper.ComputeValueOfSszQueries(values[i], (constant, iterationInfo) =>
                     {
                         if (String.Equals(constant, GenericTag, StringComparison.InvariantCultureIgnoreCase))
                             return tagName;
@@ -296,7 +296,7 @@ namespace Ssz.Utils
                         if (String.Equals(constant, GenericProp, StringComparison.InvariantCultureIgnoreCase))
                             return prop;
                         if (getConstantValue != null)
-                            return getConstantValue(constant);
+                            return getConstantValue(constant, iterationInfo);
                         return @"";
                     }, _csvDb);
                     result.Add(v ?? @"");

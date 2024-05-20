@@ -268,7 +268,7 @@ namespace Ssz.Utils.Addons
                             {
                                 addonInstanceId,
                                 availableAddon.Identifier,
-                                availableAddon.IsSwitchedOnByDefault ? @"true" : @"false"
+                                (availableAddon.IsAlwaysSwitchedOn || availableAddon.IsSwitchedOnByDefault) ? @"true" : @"false"
                             };
                     }
                     else
@@ -620,14 +620,22 @@ namespace Ssz.Utils.Addons
                 if (line.Count >= 3 && !String.IsNullOrEmpty(line[2]))
                     isSwitchedOn = new Any(line[2] ?? @"").ValueAsBoolean(false);
 
-                var availableAddon = CreateAvailableAddon(addonIdentifier, addonInstanceId, null, Dispatcher);
-
+                var availableAddon = _availableAddons!.FirstOrDefault(
+                    p => String.Equals(p.Identifier, addonIdentifier, StringComparison.InvariantCultureIgnoreCase));
+                
                 if (availableAddon is not null)
                 {
                     if (availableAddon.IsAlwaysSwitchedOn || isSwitchedOn)
-                        switchedOnAddons.Add(availableAddon);
+                    {
+                        var availableAddonClone = CreateAvailableAddonInternal(availableAddon, addonInstanceId, null, Dispatcher);
+
+                        if (availableAddonClone is not null)
+                            switchedOnAddons.Add(availableAddonClone);
+                    }
                     else
+                    {
                         switchedOffAddons.Add(availableAddon);
+                    }
                 }                
             }
 
@@ -639,7 +647,7 @@ namespace Ssz.Utils.Addons
                 if (availableAddon.IsAlwaysSwitchedOn ||
                     (availableAddon.IsSwitchedOnByDefault && !switchedOffAddons.Any(a => a.Guid == availableAddon.Guid)))
                 {
-                    var availableAddonClone = CreateAvailableAddonInternal(availableAddon, availableAddon.Identifier, null, Dispatcher);
+                    var availableAddonClone = CreateAvailableAddonInternal(availableAddon, availableAddon.Identifier + @".1", null, Dispatcher);
 
                     if (availableAddonClone is not null)
                         switchedOnAddons.Add(availableAddonClone);

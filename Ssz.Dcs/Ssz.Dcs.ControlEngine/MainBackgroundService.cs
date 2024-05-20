@@ -51,7 +51,10 @@ namespace Ssz.Dcs.ControlEngine
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            Logger.LogDebug("ExecuteAsync begin.");            
+            Logger.LogDebug("ExecuteAsync begin.");
+
+            string controlEngineServerAddress = ConfigurationHelper.GetValue<string>(Configuration, @"Kestrel:Endpoints:HttpsDefaultCert:Url", @"");
+            controlEngineServerAddress = controlEngineServerAddress.Replace(@"*", System.Environment.MachineName);
 
             //_utilityDataAccessProvider.EventMessagesCallback += UtilityDataAccessProviderOnEventMessagesCallback;
             _utilityDataAccessProvider.Initialize(null,                
@@ -62,7 +65,7 @@ namespace Ssz.Dcs.ControlEngine
                 new CaseInsensitiveDictionary<string?>
                 {
                     { DataAccessConstants.ParamName_EngineSessionId, Program.Options.EngineSessionId },
-                    { DataAccessConstants.ParamName_ControlEngineServerAddress, Configuration.GetSection(@"Kestrel:Endpoints:HttpsDefaultCert:Url").Value }
+                    { DataAccessConstants.ParamName_ControlEngineServerAddress, controlEngineServerAddress }
                 },
                 new DataAccessProviderOptions(),
                 _serverWorker.ThreadSafeDispatcher);            

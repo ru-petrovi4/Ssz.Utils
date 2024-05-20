@@ -68,17 +68,17 @@ namespace Ssz.Utils
         ///     E.g. %(TAG), %(TAG => s[0].Substring(1)), %(tags.csv,%(TAG),1)
         /// </summary>
         /// <param name="originalString"></param>
-        /// <param name="getConstantValue"></param>
+        /// <param name="getConstantValue"></param>        
         /// <param name="csvDb"></param>
+        /// <param name="iterationInfo"></param>
         /// <returns></returns>
         [return: NotNullIfNotNull("originalString")]
-        public static string? ComputeValueOfSszQueries(string? originalString, Func<string, string>? getConstantValue, CsvDb? csvDb = null)
+        public static string? ComputeValueOfSszQueries(string? originalString, Func<string, IterationInfo, string>? getConstantValue, CsvDb? csvDb = null, IterationInfo? iterationInfo = null)
         {
             if (string.IsNullOrWhiteSpace(originalString) || getConstantValue is null) 
                 return originalString;
-
-            var iterationN = 0;
-            originalString = ComputeValueOfSszQueries(originalString!, getConstantValue, csvDb, ref iterationN);
+            
+            originalString = ComputeValueOfSszQueriesInternal(originalString!, getConstantValue, csvDb, iterationInfo ?? new IterationInfo());
 
             return originalString;
         }
@@ -101,32 +101,39 @@ namespace Ssz.Utils
             return value.Replace(@"###Comma###", @",").Replace(@"###Lambda###", @"=>");
         }
 
-        private static string ComputeValueOfSszQueries(string originalString,
-            Func<string, string> getConstantValue, CsvDb? csvDb,            
-            ref int iterationN)
+        private static string ComputeValueOfSszQueriesInternal(
+            string originalString,
+            Func<string, IterationInfo, string> getConstantValue, CsvDb? csvDb,
+            IterationInfo iterationInfo)
         {
             var firstLevelSszQueries = FindFirstLevelSpecialText(originalString, '%', false);
             foreach (string firstLevelSszQuery in firstLevelSszQueries)
             {
                 string valueOfQuery =
-                    ComputeValueOfSszQuery(firstLevelSszQuery, getConstantValue, csvDb, ref iterationN);
+                    ComputeValueOfSszQuery(firstLevelSszQuery, getConstantValue, csvDb, iterationInfo);
                 originalString = originalString.Replace(firstLevelSszQuery, valueOfQuery);
             }
 
             return originalString;
         }
 
-        private static string ComputeValueOfSszQuery(string sszQuery, 
-            Func<string, string> getConstantValue, CsvDb? csvDb, 
-            ref int iterationN)
+        private static string ComputeValueOfSszQuery(
+            string sszQuery, 
+            Func<string, IterationInfo, string> getConstantValue,
+            CsvDb? csvDb,
+            IterationInfo iterationInfo)
         {
+            iterationInfo.IterationN += 1;
+            if (iterationInfo.IterationN > 64)
+                return sszQuery;
+
             string q = sszQuery.Substring(2, sszQuery.Length - 3);
 
             var firstLevelSszQueries = FindFirstLevelSpecialText(q, '%', false);
             foreach (string firstLevelSszQuery in firstLevelSszQueries)
             {
                 string valueOfQuery =
-                    ComputeValueOfSszQuery(firstLevelSszQuery, getConstantValue, csvDb, ref iterationN);
+                    ComputeValueOfSszQuery(firstLevelSszQuery, getConstantValue, csvDb, iterationInfo);
                 q = q.Replace(firstLevelSszQuery, EscapeForSszQuery(valueOfQuery));
             }
 
@@ -141,7 +148,7 @@ namespace Ssz.Utils
                     string constant = a.Trim();
                     if (constant == @"") return @""; // Query is not resolved
                     constant = @"%(" + constant + @")";
-                    string valueOfQuery = getConstantValue(constant) ?? @""; // For safe getConstantValue call
+                    string valueOfQuery = getConstantValue(constant, iterationInfo) ?? @""; // For safe getConstantValue call
                     dataSourceValues.Add(valueOfQuery);
                 }
 
@@ -155,7 +162,7 @@ namespace Ssz.Utils
                 string constant = UnescapeForSszQuery(parts[0].Trim());
                 if (constant == @"") return @""; // Query is not resolved
                 constant = @"%(" + constant + @")";
-                string valueOfSszQuery = getConstantValue(constant) ?? @"";
+                string valueOfSszQuery = getConstantValue(constant, iterationInfo) ?? @"";
                 if (valueOfSszQuery == @"" && parts.Length == 2)
                     valueOfSszQuery = UnescapeForSszQuery(parts[1].Trim());
                 return valueOfSszQuery;
@@ -174,7 +181,7 @@ namespace Ssz.Utils
                 return valueOfSszQuery;
             }
 
-            return @""; // Query is not resolved
+            return sszQuery; // Query is not resolved
         }        
 
         #endregion
