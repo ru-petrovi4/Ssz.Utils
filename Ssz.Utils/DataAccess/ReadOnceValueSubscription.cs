@@ -16,6 +16,7 @@ namespace Ssz.Utils.DataAccess
         public ReadOnceValueSubscription(IDataAccessProvider dataProvider, string elementId, Action<ValueStatusTimestamp>? setValueAction)
         {
             _dataProvider = dataProvider;
+            ElementId = elementId;
             _setValueAction = setValueAction;
 
             _dataProvider.AddItem(elementId, this);
@@ -24,6 +25,8 @@ namespace Ssz.Utils.DataAccess
         #endregion
 
         #region public functions
+
+        public string ElementId { get; }
 
         public string MappedElementIdOrConst { get; private set; } = @"";
 

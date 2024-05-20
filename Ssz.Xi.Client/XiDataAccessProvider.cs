@@ -300,7 +300,7 @@ namespace Ssz.Xi.Client
                         if (resultValue != SszConverter.DoNothing)
                             userFriendlyLogger.LogInformation("Model TAG: \"" +
                                                          valueSubscriptionObj.ChildValueSubscriptionsList[i]
-                                                             .MappedElementIdOrConst + "\"; Write Value to Model: \"" +
+                                                             .ElementId + "\"; Write Value to Model: \"" +
                                                          new Any(resultValue) + "\"");
                     }
                 }
@@ -881,7 +881,7 @@ namespace Ssz.Xi.Client
                     {
                         foreach (var childValueSubscription in valueSubscriptionObj.ChildValueSubscriptionsList)
                             if (!childValueSubscription.IsConst)
-                                _xiDataListItemsManager.AddItem(childValueSubscription.MappedElementIdOrConst,
+                                _xiDataListItemsManager.AddItem(childValueSubscription.ElementId,
                                     childValueSubscription);
                     }
                     else
@@ -1036,12 +1036,12 @@ namespace Ssz.Xi.Client
 
         private class ChildValueSubscription : IValueSubscription
         {
-            public ChildValueSubscription(ValueSubscriptionObj parentValueSubscriptionObj, string mappedElementIdOrConst)
+            public ChildValueSubscription(ValueSubscriptionObj parentValueSubscriptionObj, string elementId)
             {
                 ParentValueSubscriptionObj = parentValueSubscriptionObj;
-                MappedElementIdOrConst = mappedElementIdOrConst;
+                ElementId = elementId;
 
-                var constAny = ElementIdsMap.TryGetConstValue(mappedElementIdOrConst);
+                var constAny = ElementIdsMap.TryGetConstValue(elementId);
                 if (constAny.HasValue)
                 {
                     ValueStatusTimestamp = new ValueStatusTimestamp(constAny.Value);
@@ -1051,7 +1051,7 @@ namespace Ssz.Xi.Client
 
             public ValueSubscriptionObj? ParentValueSubscriptionObj;
 
-            public string MappedElementIdOrConst { get; private set; }
+            public string ElementId { get; }
 
             public void Update(string mappedElementIdOrConst)
             {

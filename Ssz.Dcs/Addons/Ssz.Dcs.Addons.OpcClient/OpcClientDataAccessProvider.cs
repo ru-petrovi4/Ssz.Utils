@@ -10,6 +10,7 @@ using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using Ssz.Utils.Logging;
 using Ssz.Xi.Client.Api;
+using Xi.Common.Support;
 using Xi.Contracts.Constants;
 using Xi.Contracts.Data;
 
@@ -158,8 +159,10 @@ namespace Ssz.Dcs.Addons.OpcClient
                     try
                     {
                         callbackDispatcher.BeginInvoke(ct =>
-                        {                            
-                            valueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.BadNodeIdUnknown });
+                        {
+                            var vst = new ValueStatusTimestamp { StatusCode = StatusCodes.BadNodeIdUnknown };
+                            StaticLogger.Logger.LogDebug($"AddItem valueSubscription.Update({vst.ToString()}); InstanceId: {valueSubscription.ElementId}");
+                            valueSubscription.Update(vst);
                         });
                     }
                     catch (Exception)
@@ -267,7 +270,10 @@ namespace Ssz.Dcs.Addons.OpcClient
                     callbackDispatcher.BeginInvoke(ct =>
                     {
                         foreach (var constItemValueSubscription in constItemValueSubscriptionsArray)
+                        {
+                            StaticLogger.Logger.LogDebug($"WriteAsync constItemValueSubscription.Update({valueStatusTimestamp.ToString()}); InstanceId: {constItemValueSubscription.ElementId}");
                             constItemValueSubscription.Update(valueStatusTimestamp);
+                        }
                     });
                 }
                 catch (Exception)
@@ -301,7 +307,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                         if (resultValue != SszConverter.DoNothing)
                             userFriendlyLogger.LogInformation("Model TAG: \"" +
                                                          valueSubscriptionObj.ChildValueSubscriptionsList[i]
-                                                             .MappedElementIdOrConst + "\"; Write Value to Model: \"" +
+                                                             .ElementId + "\"; Write Value to Model: \"" +
                                                          new Any(resultValue) + "\"");
                     }
                 }
@@ -578,8 +584,10 @@ namespace Ssz.Dcs.Addons.OpcClient
                             сallbackDispatcher.BeginInvoke(ct =>
                             {
                                 foreach (IValueSubscription valueSubscription in valueSubscriptions)
-                                {                                    
-                                    valueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain });
+                                {
+                                    var vst = new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain };
+                                    StaticLogger.Logger.LogDebug($"DoWorkAsync valueSubscription.Update({vst.ToString()}); InstanceId: {valueSubscription.ElementId}");
+                                    valueSubscription.Update(vst);
                                 }
                                 DataGuid = Guid.NewGuid();
 
@@ -713,7 +721,8 @@ namespace Ssz.Dcs.Addons.OpcClient
             {
                 for (int i = 0; i < changedClientObjs.Length; i++)
                 {
-                    var changedValueSubscription = (IValueSubscription) changedClientObjs[i];                    
+                    var changedValueSubscription = (IValueSubscription) changedClientObjs[i];
+                    StaticLogger.Logger.LogDebug($"XiDataListItemsManagerOnElementValuesCallback changedValueSubscription.Update({changedValues[i].ToString()}); InstanceId: {changedValueSubscription.ElementId}");
                     changedValueSubscription.Update(changedValues[i]);                    
                 }
                 DataGuid = Guid.NewGuid();
@@ -852,9 +861,11 @@ namespace Ssz.Dcs.Addons.OpcClient
                     try
                     {
                         callbackDispatcher.BeginInvoke(ct =>
-                        {                            
-                            valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, StatusCodes.Good,
-                                DateTime.UtcNow));
+                        {
+                            var vst = new ValueStatusTimestamp(constAny.Value, StatusCodes.Good,
+                                DateTime.UtcNow);
+                            StaticLogger.Logger.LogDebug($"DoWorkAsync valueSubscription.Update({vst.ToString()}); InstanceId: {valueSubscription.ElementId}");
+                            valueSubscription.Update(vst);
                         });
                     }
                     catch (Exception)
@@ -873,7 +884,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                     {
                         foreach (var childValueSubscription in valueSubscriptionObj.ChildValueSubscriptionsList)
                             if (!childValueSubscription.IsConst)
-                                _xiDataListItemsManager.AddItem(childValueSubscription.MappedElementIdOrConst,
+                                _xiDataListItemsManager.AddItem(childValueSubscription.ElementId,
                                     childValueSubscription);
                     }
                     else
@@ -1004,12 +1015,16 @@ namespace Ssz.Dcs.Addons.OpcClient
 
                 if (ChildValueSubscriptionsList.Any(vs => StatusCodes.IsBad(vs.ValueStatusTimestamp.StatusCode)))
                 {
-                    ValueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.Bad });
+                    var vst = new ValueStatusTimestamp { StatusCode = StatusCodes.Bad };
+                    StaticLogger.Logger.LogDebug($"ChildValueSubscriptionUpdated ValueSubscription.Update({vst.ToString()}); InstanceId: {ValueSubscription.ElementId}");
+                    ValueSubscription.Update(vst);
                     return;
                 }
                 if (ChildValueSubscriptionsList.Any(vs => StatusCodes.IsUncertain(vs.ValueStatusTimestamp.StatusCode)))
                 {
-                    ValueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain });
+                    var vst = new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain };
+                    StaticLogger.Logger.LogDebug($"ChildValueSubscriptionUpdated ValueSubscription.Update({vst.ToString()}); InstanceId: {ValueSubscription.ElementId}");
+                    ValueSubscription.Update(vst);
                     return;
                 }
 
@@ -1018,20 +1033,23 @@ namespace Ssz.Dcs.Addons.OpcClient
                     values.Add(childValueSubscription.ValueStatusTimestamp.Value.ValueAsObject());
                 SszConverter converter = Converter ?? SszConverter.Empty;
                 var convertedValue = converter.Convert(values.ToArray(), null, null);
-                if (convertedValue == SszConverter.DoNothing) return;
-                ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), StatusCodes.Good,
-                    DateTime.UtcNow));
+                if (convertedValue == SszConverter.DoNothing) 
+                    return;
+                var vst2 = new ValueStatusTimestamp(new Any(convertedValue), StatusCodes.Good,
+                    DateTime.UtcNow);
+                StaticLogger.Logger.LogDebug($"ChildValueSubscriptionUpdated ValueSubscription.Update({vst2.ToString()}); InstanceId: {ValueSubscription.ElementId}");
+                ValueSubscription.Update(vst2);
             }
         }
 
         private class ChildValueSubscription : IValueSubscription
         {
-            public ChildValueSubscription(ValueSubscriptionObj valueSubscriptionObj, string mappedElementIdOrConst)
+            public ChildValueSubscription(ValueSubscriptionObj valueSubscriptionObj, string elementId)
             {
                 ValueSubscriptionObj = valueSubscriptionObj;
-                MappedElementIdOrConst = mappedElementIdOrConst;
+                ElementId = elementId;
 
-                var constAny = ElementIdsMap.TryGetConstValue(mappedElementIdOrConst);
+                var constAny = ElementIdsMap.TryGetConstValue(elementId);
                 if (constAny.HasValue)
                 {
                     ValueStatusTimestamp = new ValueStatusTimestamp(constAny.Value);
@@ -1041,7 +1059,7 @@ namespace Ssz.Dcs.Addons.OpcClient
 
             public ValueSubscriptionObj? ValueSubscriptionObj;
 
-            public string MappedElementIdOrConst { get; private set; }
+            public string ElementId { get; }
 
             public void Update(string mappedElementIdOrConst)
             {

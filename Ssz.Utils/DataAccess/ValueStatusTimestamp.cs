@@ -58,7 +58,7 @@ namespace Ssz.Utils.DataAccess
             sb.Append(", TS = ");
             sb.Append(TimestampUtc.ToString("u"));
             sb.Append(", SC = 0x");
-            sb.Append(StatusCode.ToString("X4"));
+            sb.Append(StatusCode.ToString("X8"));
             return sb.ToString();
         }
 

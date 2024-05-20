@@ -357,7 +357,7 @@ namespace Ssz.DataAccessGrpc.Client
                         if (resultValue != SszConverter.DoNothing)
                             userFriendlyLogger.LogInformation("Model TAG: \"" +
                                                          valueSubscriptionObj.ChildValueSubscriptionsList[i]
-                                                             .MappedElementIdOrConst + "\"; Write Value to Model: \"" +
+                                                             .ElementId + "\"; Write Value to Model: \"" +
                                                          new Any(resultValue) + "\"");
                     }
                 }
@@ -940,7 +940,7 @@ namespace Ssz.DataAccessGrpc.Client
                     {
                         foreach (var childValueSubscription in valueSubscriptionObj.ChildValueSubscriptionsList)
                             if (!childValueSubscription.IsConst)
-                                _clientElementValueListManager.AddItem(childValueSubscription.MappedElementIdOrConst,
+                                _clientElementValueListManager.AddItem(childValueSubscription.ElementId,
                                     childValueSubscription);
                     }
                     else
@@ -1105,12 +1105,12 @@ namespace Ssz.DataAccessGrpc.Client
 
         private class ChildValueSubscription : IValueSubscription
         {
-            public ChildValueSubscription(ValueSubscriptionObj parentValueSubscriptionObj, string mappedElementIdOrConst)
+            public ChildValueSubscription(ValueSubscriptionObj parentValueSubscriptionObj, string elementId)
             {
                 ParentValueSubscriptionObj = parentValueSubscriptionObj;
-                MappedElementIdOrConst = mappedElementIdOrConst;
+                ElementId = elementId;
 
-                var constAny = ElementIdsMap.TryGetConstValue(mappedElementIdOrConst);
+                var constAny = ElementIdsMap.TryGetConstValue(elementId);
                 if (constAny.HasValue)
                 {
                     ValueStatusTimestamp = new ValueStatusTimestamp(constAny.Value);
@@ -1120,7 +1120,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             public ValueSubscriptionObj? ParentValueSubscriptionObj;
 
-            public string MappedElementIdOrConst { get; private set; }
+            public string ElementId { get; private set; }
 
             public void Update(string mappedElementIdOrConst)
             {
