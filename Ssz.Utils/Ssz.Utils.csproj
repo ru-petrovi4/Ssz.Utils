@@ -6,7 +6,7 @@
 	<Nullable>Enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>    
     <Company>SSZ</Company>
-    <Version>1.0.71</Version>
+    <Version>1.0.72</Version>
     <Platforms>AnyCPU;x86</Platforms>  
   </PropertyGroup>
 
@@ -46,7 +46,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ThirdParties\YamlDotNet\YamlDotNet.csproj" />
+    <ProjectReference Include="..\ThirdParties\YamlDotNet\YamlDotNet.csproj" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
