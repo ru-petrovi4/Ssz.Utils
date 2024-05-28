@@ -137,9 +137,12 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             try
             {
                 var httpClientHandler = new HttpClientHandler();
-#if NET5_0_OR_GREATER                
+#if NET5_0_OR_GREATER
                 if (dangerousAcceptAnyServerCertificate)
                     httpClientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+#else
+                if (dangerousAcceptAnyServerCertificate)
+                    httpClientHandler.ServerCertificateCustomValidationCallback = (httpRequestMessage, x509Certificate2, x509Chain, sslPolicyErrors) => true; ;
 #endif
                 var grpcWebHandler = new GrpcWebHandler(
                         GrpcWebMode.GrpcWeb,

@@ -1059,7 +1059,7 @@ namespace Ssz.Xi.Client
 
             public ValueStatusTimestamp ValueStatusTimestamp = new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain };
 
-        public readonly bool IsConst;            
+            public readonly bool IsConst;            
 
             public void Update(ValueStatusTimestamp valueStatusTimestamp)
             {
