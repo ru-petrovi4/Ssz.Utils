@@ -16,6 +16,7 @@ namespace Ssz.Utils.DataAccess
             Value = value;
             StatusCode = statusCode;
             TimestampUtc = timestampUtc;
+            AccessToken = @"";
         }
 
         /// <summary>
@@ -28,6 +29,7 @@ namespace Ssz.Utils.DataAccess
             Value = value;
             StatusCode = StatusCodes.Good;
             TimestampUtc = timestampUtc;
+            AccessToken = @"";
         }
 
         /// <summary>
@@ -39,6 +41,7 @@ namespace Ssz.Utils.DataAccess
             Value = value;
             StatusCode = StatusCodes.Good;
             TimestampUtc = DateTime.UtcNow;
+            AccessToken = @"";
         }
 
         #endregion
@@ -59,6 +62,11 @@ namespace Ssz.Utils.DataAccess
             sb.Append(TimestampUtc.ToString("u"));
             sb.Append(", SC = 0x");
             sb.Append(StatusCode.ToString("X8"));
+            if (!String.IsNullOrEmpty(AccessToken))
+            {
+                sb.Append(", AccessToken = ");
+                sb.Append(AccessToken);
+            }
             return sb.ToString();
         }
 
@@ -112,6 +120,7 @@ namespace Ssz.Utils.DataAccess
             Value.SerializeOwnedData(writer, null);
             writer.Write(StatusCode);
             writer.Write(TimestampUtc);
+            writer.Write(AccessToken);
         }
 
         public void DeserializeOwnedData(SerializationReader reader, object? context)
@@ -119,6 +128,7 @@ namespace Ssz.Utils.DataAccess
             Value.DeserializeOwnedData(reader, null);
             StatusCode = reader.ReadUInt32();
             TimestampUtc = reader.ReadDateTime();
+            AccessToken = reader.ReadString();
         }
 
         public Any Value;
@@ -128,7 +138,9 @@ namespace Ssz.Utils.DataAccess
         /// </summary>
         public uint StatusCode;
         
-        public DateTime TimestampUtc;        
+        public DateTime TimestampUtc;
+
+        public string AccessToken;
 
         #endregion
     }

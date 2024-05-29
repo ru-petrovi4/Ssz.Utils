@@ -293,9 +293,7 @@ namespace Ssz.DataAccessGrpc.Client
             var callbackDispatcher = CallbackDispatcher;
             if (!IsInitialized || callbackDispatcher is null) 
                 return new ResultInfo { StatusCode = StatusCodes.BadInvalidState };
-
-            if (!StatusCodes.IsGood(valueStatusTimestamp.StatusCode)) 
-                return new ResultInfo { StatusCode = StatusCodes.BadInvalidArgument };
+            
             var value = valueStatusTimestamp.Value;
 
             if (!_valueSubscriptionsCollection.TryGetValue(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj))
@@ -387,7 +385,8 @@ namespace Ssz.DataAccessGrpc.Client
 
                 if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                 {
-                    if (resultValues is null) throw new InvalidOperationException();
+                    if (resultValues is null) 
+                        throw new InvalidOperationException();
                     for (var i = 0; i < resultValues.Length; i++)
                     {
                         var resultValue = resultValues[i];
@@ -398,9 +397,7 @@ namespace Ssz.DataAccessGrpc.Client
                 }
                 else
                 {
-                    if (value.ValueAsObject() != SszConverter.DoNothing)
-                        resultInfo = await _clientElementValueListManager.WriteAsync(valueSubscription,
-                            new ValueStatusTimestamp(value, StatusCodes.Good, DateTime.UtcNow));
+                    resultInfo = await _clientElementValueListManager.WriteAsync(valueSubscription, valueStatusTimestamp);
                 }
 
                 taskCompletionSource.SetResult(resultInfo);
