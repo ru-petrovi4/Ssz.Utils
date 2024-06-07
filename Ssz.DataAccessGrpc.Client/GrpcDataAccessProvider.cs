@@ -772,9 +772,9 @@ namespace Ssz.DataAccessGrpc.Client
             ValueSubscriptionsUpdated(this, EventArgs.Empty);
         }
 
-#endregion
+        #endregion
 
-#region private functions
+        #region private functions
 
         private async Task WorkingTaskMainAsync(CancellationToken cancellationToken)
         {
@@ -819,38 +819,38 @@ namespace Ssz.DataAccessGrpc.Client
             
             IValueSubscription valueSubscription = valueSubscriptionObj.ValueSubscription;
 
+            var constAny = ElementIdsMap.TryGetConstValue(elementId);
+            if (!constAny.HasValue)
+            {
+                lock (ConstItemsDictionary)
+                {
+                    var constItem = ConstItemsDictionary.TryGetValue(elementId);
+                    if (constItem is not null)
+                    {
+                        constItem.Subscribers.Add(valueSubscription);
+                        constAny = constItem.Value;
+                    }
+                }
+            }
+            if (constAny.HasValue)
+            {
+                try
+                {
+                    callbackDispatcher.BeginInvoke(ct =>
+                    {
+                        valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, StatusCodes.Good,
+                            DateTime.UtcNow));
+                    });
+                }
+                catch (Exception)
+                {
+                }
+
+                return constAny.Value.ValueAsString(false);
+            }
+
             if (ElementIdsMap is not null)
-            {   
-                var constAny = ElementIdsMap.TryGetConstValue(elementId);
-                if (!constAny.HasValue)
-                {
-                    lock (ConstItemsDictionary)
-                    {
-                        var constItem = ConstItemsDictionary.TryGetValue(elementId);                        
-                        if (constItem is not null)
-                        {
-                            constItem.Subscribers.Add(valueSubscription);
-                            constAny = constItem.Value;
-                        }
-                    }
-                }
-                if (constAny.HasValue)
-                {
-                    try
-                    {
-                        callbackDispatcher.BeginInvoke(ct =>
-                        {
-                            valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, StatusCodes.Good,
-                                DateTime.UtcNow));
-                        });
-                    }
-                    catch (Exception)
-                    {
-                    }
-
-                    return constAny.Value.ValueAsString(false);
-                }
-
+            {
                 valueSubscriptionObj.MapValues = ElementIdsMap.GetFromMap(elementId);
 
                 if (valueSubscriptionObj.MapValues is not null)
@@ -1063,6 +1063,9 @@ namespace Ssz.DataAccessGrpc.Client
 
             public readonly string ElementId;
 
+            /// <summary>
+            ///     Original ValueSubscription
+            /// </summary>
             public readonly IValueSubscription ValueSubscription;
 
             public List<ChildValueSubscription>? ChildValueSubscriptionsList;

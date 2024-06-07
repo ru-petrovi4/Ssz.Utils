@@ -161,7 +161,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                         callbackDispatcher.BeginInvoke(ct =>
                         {
                             var vst = new ValueStatusTimestamp { StatusCode = StatusCodes.BadNodeIdUnknown };
-                            StaticLogger.Logger.LogDebug($"AddItem valueSubscription.Update({vst.ToString()}); InstanceId: {valueSubscription.ElementId}");
+                            StaticLogger.Logger.LogDebug($"AddItem valueSubscription.Update({vst.ToString()}); InstanceId: {elementId}");
                             valueSubscription.Update(vst);
                         });
                     }
@@ -271,7 +271,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                     {
                         foreach (var constItemValueSubscription in constItemValueSubscriptionsArray)
                         {
-                            StaticLogger.Logger.LogDebug($"WriteAsync constItemValueSubscription.Update({valueStatusTimestamp.ToString()}); InstanceId: {constItemValueSubscription.ElementId}");
+                            StaticLogger.Logger.LogDebug($"WriteAsync constItemValueSubscription.Update({valueStatusTimestamp.ToString()}); InstanceId: {valueSubscriptionObj.ElementId}");
                             constItemValueSubscription.Update(valueStatusTimestamp);
                         }
                     });
@@ -586,7 +586,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                                 foreach (IValueSubscription valueSubscription in valueSubscriptions)
                                 {
                                     var vst = new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain };
-                                    StaticLogger.Logger.LogDebug($"DoWorkAsync valueSubscription.Update({vst.ToString()}); InstanceId: {valueSubscription.ElementId}");
+                                    //StaticLogger.Logger.LogDebug($"DoWorkAsync valueSubscription.Update({vst.ToString()}); InstanceId: {valueSubscription.ElementId}");
                                     valueSubscription.Update(vst);
                                 }
                                 DataGuid = Guid.NewGuid();
@@ -722,7 +722,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                 for (int i = 0; i < changedClientObjs.Length; i++)
                 {
                     var changedValueSubscription = (IValueSubscription) changedClientObjs[i];
-                    StaticLogger.Logger.LogDebug($"XiDataListItemsManagerOnElementValuesCallback changedValueSubscription.Update({changedValues[i].ToString()}); InstanceId: {changedValueSubscription.ElementId}");
+                    //StaticLogger.Logger.LogDebug($"XiDataListItemsManagerOnElementValuesCallback changedValueSubscription.Update({changedValues[i].ToString()}); InstanceId: {changedValueSubscription.ElementId}");
                     changedValueSubscription.Update(changedValues[i]);                    
                 }
                 DataGuid = Guid.NewGuid();
@@ -864,7 +864,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                         {
                             var vst = new ValueStatusTimestamp(constAny.Value, StatusCodes.Good,
                                 DateTime.UtcNow);
-                            StaticLogger.Logger.LogDebug($"DoWorkAsync valueSubscription.Update({vst.ToString()}); InstanceId: {valueSubscription.ElementId}");
+                            //StaticLogger.Logger.LogDebug($"DoWorkAsync valueSubscription.Update({vst.ToString()}); InstanceId: {valueSubscription.ElementId}");
                             valueSubscription.Update(vst);
                         });
                     }
@@ -1016,14 +1016,14 @@ namespace Ssz.Dcs.Addons.OpcClient
                 if (ChildValueSubscriptionsList.Any(vs => StatusCodes.IsBad(vs.ValueStatusTimestamp.StatusCode)))
                 {
                     var vst = new ValueStatusTimestamp { StatusCode = StatusCodes.Bad };
-                    StaticLogger.Logger.LogDebug($"ChildValueSubscriptionUpdated ValueSubscription.Update({vst.ToString()}); InstanceId: {ValueSubscription.ElementId}");
+                    StaticLogger.Logger.LogDebug($"ChildValueSubscriptionUpdated ValueSubscription.Update({vst.ToString()}); InstanceId: {ElementId}");
                     ValueSubscription.Update(vst);
                     return;
                 }
                 if (ChildValueSubscriptionsList.Any(vs => StatusCodes.IsUncertain(vs.ValueStatusTimestamp.StatusCode)))
                 {
                     var vst = new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain };
-                    StaticLogger.Logger.LogDebug($"ChildValueSubscriptionUpdated ValueSubscription.Update({vst.ToString()}); InstanceId: {ValueSubscription.ElementId}");
+                    StaticLogger.Logger.LogDebug($"ChildValueSubscriptionUpdated ValueSubscription.Update({vst.ToString()}); InstanceId: {ElementId}");
                     ValueSubscription.Update(vst);
                     return;
                 }
@@ -1037,7 +1037,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                     return;
                 var vst2 = new ValueStatusTimestamp(new Any(convertedValue), StatusCodes.Good,
                     DateTime.UtcNow);
-                StaticLogger.Logger.LogDebug($"ChildValueSubscriptionUpdated ValueSubscription.Update({vst2.ToString()}); InstanceId: {ValueSubscription.ElementId}");
+                StaticLogger.Logger.LogDebug($"ChildValueSubscriptionUpdated ValueSubscription.Update({vst2.ToString()}); InstanceId: {ElementId}");
                 ValueSubscription.Update(vst2);
             }
         }
