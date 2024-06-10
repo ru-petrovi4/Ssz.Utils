@@ -223,7 +223,7 @@ namespace Ssz.Xi.Client
         /// <param name="valueSubscription"></param>
         /// <param name="valueStatusTimestamp"></param>
         /// <param name="userFriendlyLogger"></param>
-        public override Task<ResultInfo> WriteAsync(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
+        public override Task<ResultInfo> WriteAsync(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp)
         {
             //BeginInvoke(ct =>
             //{
@@ -244,8 +244,8 @@ namespace Ssz.Xi.Client
             if (!_valueSubscriptionsCollection.TryGetValue(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj))
                 return Task.FromResult(ResultInfo.UncertainResultInfo);
 
-            if (userFriendlyLogger is not null && userFriendlyLogger.IsEnabled(LogLevel.Information))
-                userFriendlyLogger.LogInformation("UI TAG: \"" + valueSubscriptionObj.ElementId + "\"; Value from UI: \"" +
+            if (LoggersSet.UserFriendlyLogger.IsEnabled(LogLevel.Information))
+                LoggersSet.UserFriendlyLogger.LogInformation("UI TAG: \"" + valueSubscriptionObj.ElementId + "\"; Value from UI: \"" +
                                              value + "\"");
 
             IValueSubscription[]? constItemValueSubscriptionsArray = null;
@@ -282,14 +282,14 @@ namespace Ssz.Xi.Client
                 SszConverter converter = valueSubscriptionObj.Converter ?? SszConverter.Empty;
                 resultValues =
                     converter.ConvertBack(value.ValueAsObject(),
-                        valueSubscriptionObj.ChildValueSubscriptionsList.Count, null, userFriendlyLogger);
+                        valueSubscriptionObj.ChildValueSubscriptionsList.Count, LoggersSet);
                 if (resultValues.Length == 0)
                     return Task.FromResult(ResultInfo.GoodResultInfo);
             }
 
             var utcNow = DateTime.UtcNow;
 
-            if (userFriendlyLogger is not null && userFriendlyLogger.IsEnabled(LogLevel.Information))
+            if (LoggersSet.UserFriendlyLogger.IsEnabled(LogLevel.Information))
             {
                 if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                 {
@@ -298,7 +298,7 @@ namespace Ssz.Xi.Client
                     {
                         var resultValue = resultValues[i];
                         if (resultValue != SszConverter.DoNothing)
-                            userFriendlyLogger.LogInformation("Model TAG: \"" +
+                            LoggersSet.UserFriendlyLogger.LogInformation("Model TAG: \"" +
                                                          valueSubscriptionObj.ChildValueSubscriptionsList[i]
                                                              .ElementId + "\"; Write Value to Model: \"" +
                                                          new Any(resultValue) + "\"");
@@ -307,7 +307,7 @@ namespace Ssz.Xi.Client
                 else
                 {
                     if (value.ValueAsObject() != SszConverter.DoNothing)
-                        userFriendlyLogger.LogInformation("Model TAG: \"" +
+                        LoggersSet.UserFriendlyLogger.LogInformation("Model TAG: \"" +
                             (valueSubscriptionObj.MapValues is not null ? valueSubscriptionObj.MapValues[1] : valueSubscriptionObj.ElementId) +
                                                      "\"; Write Value to Model: \"" + value + "\"");
                 }
@@ -1027,7 +1027,7 @@ namespace Ssz.Xi.Client
                 foreach (var childValueSubscription in ChildValueSubscriptionsList)
                     values.Add(childValueSubscription.ValueStatusTimestamp.Value.ValueAsObject());
                 SszConverter converter = Converter ?? SszConverter.Empty;
-                var convertedValue = converter.Convert(values.ToArray(), null, null);
+                var convertedValue = converter.Convert(values.ToArray(), Ssz.Utils.Logging.LoggersSet.Empty);
                 if (convertedValue == SszConverter.DoNothing) return;
                 ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), StatusCodes.Good,
                     DateTime.UtcNow));

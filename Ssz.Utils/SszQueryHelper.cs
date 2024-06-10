@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ssz.Utils.Logging;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -152,7 +153,7 @@ namespace Ssz.Utils
                     dataSourceValues.Add(valueOfQuery);
                 }
 
-                var evaluated = new SszExpression(lambda).Evaluate(dataSourceValues.ToArray(), null, null, null);
+                var evaluated = new SszExpression(lambda).Evaluate(dataSourceValues.ToArray(), null, LoggersSet.Empty);
                 return new Any(evaluated).ValueAsString(false);
             }
 

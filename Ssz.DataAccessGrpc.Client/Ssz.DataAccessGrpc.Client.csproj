@@ -6,7 +6,7 @@
 	<Nullable>Enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Company>SSZ</Company>
-    <Version>1.0.73</Version>
+    <Version>1.0.74</Version>
     <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
 
@@ -68,7 +68,7 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.2.2" />
-    <PackageReference Include="Google.Protobuf" Version="3.27.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.27.1" />
     <PackageReference Include="Grpc.Net.Client.Web" Version="2.63.0" />
     <PackageReference Include="Grpc.Net.ClientFactory" Version="2.63.0" />
     <PackageReference Include="Grpc.Tools" Version="2.64.0">

@@ -288,7 +288,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="valueStatusTimestamp"></param>
         /// <param name="userFriendlyLogger"></param>
         /// <exception cref="InvalidOperationException"></exception>
-        public override async Task<ResultInfo> WriteAsync(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
+        public override async Task<ResultInfo> WriteAsync(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp)
         {
             var callbackDispatcher = CallbackDispatcher;
             if (!IsInitialized || callbackDispatcher is null) 
@@ -298,9 +298,9 @@ namespace Ssz.DataAccessGrpc.Client
 
             if (!_valueSubscriptionsCollection.TryGetValue(valueSubscription, out ValueSubscriptionObj? valueSubscriptionObj))
                 return new ResultInfo { StatusCode = StatusCodes.BadInvalidArgument };
-
-            if (userFriendlyLogger is not null && userFriendlyLogger.IsEnabled(LogLevel.Information))
-                userFriendlyLogger.LogInformation("UI TAG: \"" + valueSubscriptionObj.ElementId + "\"; Value from UI: \"" +
+            
+            if (LoggersSet.UserFriendlyLogger.IsEnabled(LogLevel.Information))
+                LoggersSet.UserFriendlyLogger.LogInformation("UI TAG: \"" + valueSubscriptionObj.ElementId + "\"; Value from UI: \"" +
                                              value + "\"");
 
             IValueSubscription[]? constItemValueSubscriptionsArray = null;
@@ -336,15 +336,17 @@ namespace Ssz.DataAccessGrpc.Client
             {
                 SszConverter converter = valueSubscriptionObj.Converter ?? SszConverter.Empty;                
                 resultValues =
-                    converter.ConvertBack(value.ValueAsObject(),
-                        valueSubscriptionObj.ChildValueSubscriptionsList.Count, null, userFriendlyLogger);
+                    converter.ConvertBack(
+                        value.ValueAsObject(),
+                        valueSubscriptionObj.ChildValueSubscriptionsList.Count,
+                        LoggersSet);
                 if (resultValues.Length == 0)
                     return ResultInfo.GoodResultInfo;
             }
 
             var utcNow = DateTime.UtcNow;
 
-            if (userFriendlyLogger is not null && userFriendlyLogger.IsEnabled(LogLevel.Information))
+            if (LoggersSet.UserFriendlyLogger.IsEnabled(LogLevel.Information))
             {
                 if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                 {
@@ -353,7 +355,7 @@ namespace Ssz.DataAccessGrpc.Client
                     {
                         var resultValue = resultValues[i];
                         if (resultValue != SszConverter.DoNothing)
-                            userFriendlyLogger.LogInformation("Model TAG: \"" +
+                            LoggersSet.UserFriendlyLogger.LogInformation("Model TAG: \"" +
                                                          valueSubscriptionObj.ChildValueSubscriptionsList[i]
                                                              .ElementId + "\"; Write Value to Model: \"" +
                                                          new Any(resultValue) + "\"");
@@ -362,7 +364,7 @@ namespace Ssz.DataAccessGrpc.Client
                 else
                 {
                     if (value.ValueAsObject() != SszConverter.DoNothing)
-                        userFriendlyLogger.LogInformation("Model TAG: \"" + 
+                        LoggersSet.UserFriendlyLogger.LogInformation("Model TAG: \"" + 
                             (valueSubscriptionObj.MapValues is not null ? valueSubscriptionObj.MapValues[1] : valueSubscriptionObj.ElementId) +
                                                      "\"; Write Value to Model: \"" + value + "\"");
                 }
@@ -804,7 +806,7 @@ namespace Ssz.DataAccessGrpc.Client
         }
 
         /// <summary>
-        ///     Preconditions: must be Initialized.
+        ///     Preconditions: must be Initialized, valueSubscriptionObj.ElementId is not null or empty.
         ///     Returns MappedElementIdOrConst
         /// </summary>
         /// <param name="valueSubscriptionObj"></param>
@@ -1053,6 +1055,11 @@ namespace Ssz.DataAccessGrpc.Client
         {
             #region construction and destruction
 
+            /// <summary>
+            ///     Prconditions: elementId is not empty.
+            /// </summary>
+            /// <param name="elementId"></param>
+            /// <param name="valueSubscription"></param>
             public ValueSubscriptionObj(string elementId, IValueSubscription valueSubscription)
             {
                 ElementId = elementId;
@@ -1061,6 +1068,9 @@ namespace Ssz.DataAccessGrpc.Client
 
             #endregion
 
+            /// <summary>
+            ///     Is not empty
+            /// </summary>
             public readonly string ElementId;
 
             /// <summary>
@@ -1096,7 +1106,7 @@ namespace Ssz.DataAccessGrpc.Client
                 foreach (var childValueSubscription in ChildValueSubscriptionsList)
                     values.Add(childValueSubscription.ValueStatusTimestamp.Value.ValueAsObject());
                 SszConverter converter = Converter ?? SszConverter.Empty;                
-                var convertedValue = converter.Convert(values.ToArray(), null, null);
+                var convertedValue = converter.Convert(values.ToArray(), Ssz.Utils.Logging.LoggersSet.Empty);
                 if (convertedValue == SszConverter.DoNothing) return;
                 ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), StatusCodes.Good,
                     DateTime.UtcNow));

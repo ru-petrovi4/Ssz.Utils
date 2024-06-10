@@ -23,6 +23,8 @@ namespace Ssz.Utils.Logging
 
         #region public functions
 
+        public static IUserFriendlyLogger Empty { get; } = new UserFriendlyLogger(s => { });
+
         public LogLevel LogLevel { get; set; } = LogLevel.Trace;
 
         public override bool IsEnabled(LogLevel logLevel)

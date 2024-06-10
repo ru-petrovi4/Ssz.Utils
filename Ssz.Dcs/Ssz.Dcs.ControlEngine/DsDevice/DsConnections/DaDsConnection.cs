@@ -132,7 +132,7 @@ namespace Ssz.Dcs.ControlEngine
             if (!Subscribe())
                 return new ResultInfo { StatusCode = StatusCodes.BadInvalidState };
 
-            return await ParentModule.Device.ProcessDataAccessProvider.WriteAsync(this, new ValueStatusTimestamp(value, StatusCodes.Good, DateTime.UtcNow), null);                       
+            return await ParentModule.Device.ProcessDataAccessProvider.WriteAsync(this, new ValueStatusTimestamp(value, StatusCodes.Good, DateTime.UtcNow));                       
         }
 
         #endregion

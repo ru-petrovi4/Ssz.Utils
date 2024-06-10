@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Ssz.Utils.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,13 @@ namespace Ssz.Utils
 
         public static object DoNothing { get; } = new();
 
-        public object? Convert(object?[]? values, ILogger? logger, ILogger? userFriendlyLogger)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="loggersSet"></param>
+        /// <returns></returns>
+        public object? Convert(object?[]? values, ILoggersSet loggersSet)
         {
             if (values is null || values.Length == 0)
                 return DoNothing;
@@ -27,9 +34,9 @@ namespace Ssz.Utils
 
             var firstTrue =
                 Statements.FirstOrDefault(
-                    s => new Any(s.Condition.Evaluate(values, null, logger, userFriendlyLogger)).ValueAsBoolean(false));
+                    s => new Any(s.Condition.Evaluate(values, null, loggersSet)).ValueAsBoolean(false));
             if (firstTrue is not null)
-                resultValue = firstTrue.Value.Evaluate(values, null, logger, userFriendlyLogger);
+                resultValue = firstTrue.Value.Evaluate(values, null, loggersSet);
             else
                 resultValue = values[0];
             
@@ -41,10 +48,9 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="value"></param>
         /// <param name="resultCount"></param>
-        /// <param name="logger"></param>
-        /// <param name="userFriendlyLogger"></param>
+        /// <param name="loggersSet"></param>        
         /// <returns></returns>
-        public object?[] ConvertBack(object? value, int resultCount, ILogger? logger, ILogger? userFriendlyLogger)
+        public object?[] ConvertBack(object? value, int resultCount, ILoggersSet loggersSet)
         {
             if (resultCount <= 0 || resultCount > 0xFFFF) return new object[0];
 
@@ -59,9 +65,9 @@ namespace Ssz.Utils
                     if (paramNum >= 0 && paramNum < resultCount)
                     {                        
                         if (!conditionResults[paramNum] &&
-                            new Any(statement.Condition.Evaluate(_values, value, logger, userFriendlyLogger)).ValueAsBoolean(false))
+                            new Any(statement.Condition.Evaluate(_values, value, loggersSet)).ValueAsBoolean(false))
                         {
-                            resultValues[paramNum] = statement.Value.Evaluate(_values, value, logger, userFriendlyLogger);
+                            resultValues[paramNum] = statement.Value.Evaluate(_values, value, loggersSet);
                             conditionResults[paramNum] = true;
                         }
                     }                        

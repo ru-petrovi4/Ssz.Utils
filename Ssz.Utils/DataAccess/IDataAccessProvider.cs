@@ -110,10 +110,9 @@ namespace Ssz.Utils.DataAccess
         ///     Returns ResultInfo.
         /// </summary>
         /// <param name="valueSubscription"></param>
-        /// <param name="valueStatusTimestamp"></param>
-        /// <param name="userFriendlyLogger"></param>
+        /// <param name="valueStatusTimestamp"></param>        
         /// <returns></returns>
-        Task<ResultInfo> WriteAsync(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger);
+        Task<ResultInfo> WriteAsync(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp);
 
         /// <summary>     
         ///     No values mapping and conversion.       

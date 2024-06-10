@@ -90,7 +90,7 @@ namespace Ssz.Utils.DataAccess
         /// <param name="valueStatusTimestamp"></param>
         public async Task<ResultInfo> WriteAsync(ValueStatusTimestamp valueStatusTimestamp)
         {
-            return await DataAccessProvider.WriteAsync(this, valueStatusTimestamp, null);
+            return await DataAccessProvider.WriteAsync(this, valueStatusTimestamp);
         }
 
         #endregion

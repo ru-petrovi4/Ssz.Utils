@@ -140,7 +140,7 @@ namespace Ssz.Xi.Client.Api
                 }
                 catch
                 {
-                    //Logger?.LogWarning(ex);
+                    //Logger?.LogWarning(ex, @"");
                 }
 
                 kvp.Value.P = xiEventList;
@@ -247,7 +247,7 @@ namespace Ssz.Xi.Client.Api
                     }
                     catch
                     {
-                        //Logger?.LogWarning(ex);
+                        //Logger?.LogWarning(ex, @"");
                     }
                 }
             }

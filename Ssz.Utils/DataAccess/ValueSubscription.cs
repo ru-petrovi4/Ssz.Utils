@@ -73,14 +73,14 @@ namespace Ssz.Utils.DataAccess
         /// 
         /// </summary>
         /// <param name="valueStatusTimestamp"></param>
-        public async Task<ResultInfo> WriteAsync(ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger = null)
+        public async Task<ResultInfo> WriteAsync(ValueStatusTimestamp valueStatusTimestamp)
         {
-            return await DataAccessProvider.WriteAsync(this, valueStatusTimestamp, userFriendlyLogger);
+            return await DataAccessProvider.WriteAsync(this, valueStatusTimestamp);
         }
 
         public void Write(ValueStatusTimestamp valueStatusTimestamp)
         {
-            var t = DataAccessProvider.WriteAsync(this, valueStatusTimestamp, null);
+            var t = DataAccessProvider.WriteAsync(this, valueStatusTimestamp);
         }
 
         #endregion

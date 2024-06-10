@@ -311,10 +311,9 @@ namespace Ssz.Utils.DataAccess
         ///     Returns ResultInfo.
         /// </summary>
         /// <param name="valueSubscription"></param>
-        /// <param name="valueStatusTimestamp"></param>
-        /// <param name="userFriendlyLogger"></param>
+        /// <param name="valueStatusTimestamp"></param>        
         /// <returns></returns>
-        public virtual Task<ResultInfo> WriteAsync(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp, ILogger? userFriendlyLogger)
+        public virtual Task<ResultInfo> WriteAsync(IValueSubscription valueSubscription, ValueStatusTimestamp valueStatusTimestamp)
         {
             return Task.FromResult(new ResultInfo { StatusCode = StatusCodes.BadInvalidArgument });
         }
