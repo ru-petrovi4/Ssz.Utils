@@ -163,6 +163,8 @@ namespace Ssz.Dcs.Addons.OpcClient
                             var vst = new ValueStatusTimestamp { StatusCode = StatusCodes.BadNodeIdUnknown };
                             StaticLogger.Logger.LogDebug($"AddItem valueSubscription.Update({vst.ToString()}); InstanceId: {elementId}");
                             valueSubscription.Update(vst);
+
+                            RaiseValueSubscriptionsUpdated();
                         });
                     }
                     catch (Exception)
@@ -515,6 +517,13 @@ namespace Ssz.Dcs.Addons.OpcClient
 
         protected CaseInsensitiveDictionary<ConstItem> ConstItemsDictionary { get; } = new();
 
+        protected void RaiseValueSubscriptionsUpdated()
+        {
+            DataGuid = Guid.NewGuid();
+
+            ValueSubscriptionsUpdated(this, EventArgs.Empty);
+        }
+
         #endregion
 
         #region private functions
@@ -589,9 +598,8 @@ namespace Ssz.Dcs.Addons.OpcClient
                                     //StaticLogger.Logger.LogDebug($"DoWorkAsync valueSubscription.Update({vst.ToString()}); InstanceId: {valueSubscription.ElementId}");
                                     valueSubscription.Update(vst);
                                 }
-                                DataGuid = Guid.NewGuid();
 
-                                ValueSubscriptionsUpdated(this, EventArgs.Empty);
+                                RaiseValueSubscriptionsUpdated();
                             });
                         }
                         catch (Exception)
@@ -724,11 +732,10 @@ namespace Ssz.Dcs.Addons.OpcClient
                     var changedValueSubscription = (IValueSubscription) changedClientObjs[i];
                     //StaticLogger.Logger.LogDebug($"XiDataListItemsManagerOnElementValuesCallback changedValueSubscription.Update({changedValues[i].ToString()}); InstanceId: {changedValueSubscription.ElementId}");
                     changedValueSubscription.Update(changedValues[i]);                    
-                }
-                DataGuid = Guid.NewGuid();
+                }                
             }
 
-            ValueSubscriptionsUpdated(this, EventArgs.Empty);
+            RaiseValueSubscriptionsUpdated();
         }
 
         /// <summary>
@@ -769,93 +776,6 @@ namespace Ssz.Dcs.Addons.OpcClient
                         }
                     }
                 }
-                if (!constAny.HasValue)
-                {
-                    valueSubscriptionObj.MapValues = ElementIdsMap.GetFromMap(elementId);
-
-                    if (valueSubscriptionObj.MapValues is not null)
-                    {
-                        if (valueSubscriptionObj.MapValues.Skip(2).All(v => String.IsNullOrEmpty(v)))
-                        {
-                            constAny = ElementIdsMap.TryGetConstValue(valueSubscriptionObj.MapValues[1]);
-                        }
-                        else
-                        {
-                            var childValueSubscriptionsList = new List<ChildValueSubscription>();
-                            SszConverter? converter = null;
-
-                            for (var i = 1; i < valueSubscriptionObj.MapValues.Count; i++)
-                            {
-                                string v = valueSubscriptionObj.MapValues[i] ?? "";
-
-                                int index;
-                                if ((StringHelper.StartsWithIgnoreCase(v, @"READCONVERTER") ||
-                                     StringHelper.StartsWithIgnoreCase(v, @"WRITECONVERTER"))
-                                    && (index = v.IndexOf('=')) > 0)
-                                {
-                                    if (converter is null)
-                                        converter = new SszConverter();
-
-                                    var values = v.Substring(index + 1).Split(new[] { "->" }, StringSplitOptions.None);
-                                    switch (v.Substring(0, index).Trim().ToUpperInvariant())
-                                    {
-                                        case @"READCONVERTER":
-                                            if (values.Length == 1)
-                                                converter.Statements.Add(new SszStatement(@"true", values[0].Trim(), 0));
-                                            else // values.Length > 1
-                                                converter.Statements.Add(new SszStatement(values[0].Trim(),
-                                                    values[1].Trim(), 0));
-                                            break;
-                                        case @"WRITECONVERTER":
-                                            if (values.Length == 1)
-                                                converter.BackStatements.Add(new SszStatement(@"true", values[0].Trim(), 0));
-                                            else if (values.Length == 2)
-                                                converter.BackStatements.Add(new SszStatement(values[0].Trim(),
-                                                    values[1].Trim(), 0));
-                                            else // values.Length > 2
-                                                converter.BackStatements.Add(new SszStatement(
-                                                    values[0].Trim(),
-                                                    values[1].Trim(),
-                                                    new Any(values[2].Trim()).ValueAsInt32(false)));
-                                            break;
-                                    }
-                                }
-                                else
-                                {
-                                    if (converter is not null)
-                                        continue;
-
-                                    var childValueSubscription = new ChildValueSubscription(valueSubscriptionObj, v);
-                                    childValueSubscriptionsList.Add(childValueSubscription);
-                                }
-                            }
-
-                            if (converter is not null && converter.Statements.Count == 0 && converter.BackStatements.Count == 0)
-                            {
-                                converter = null;
-                            }
-                            //else
-                            //{
-                            //    converter.ParentItem = DsProject.Instance;
-                            //    converter.ReplaceConstants(DsProject.Instance);
-                            //}
-
-                            if (childValueSubscriptionsList.Count > 1 || converter is not null)
-                            {
-                                valueSubscriptionObj.ChildValueSubscriptionsList = childValueSubscriptionsList;
-                                valueSubscriptionObj.Converter = converter;
-                                try
-                                {
-                                    callbackDispatcher.BeginInvoke(ct => valueSubscriptionObj.ChildValueSubscriptionUpdated());
-                                }
-                                catch (Exception)
-                                {
-                                }
-                            }
-                        }
-                    }
-                }
-
                 if (constAny.HasValue)
                 {
                     try
@@ -866,6 +786,8 @@ namespace Ssz.Dcs.Addons.OpcClient
                                 DateTime.UtcNow);
                             //StaticLogger.Logger.LogDebug($"DoWorkAsync valueSubscription.Update({vst.ToString()}); InstanceId: {valueSubscription.ElementId}");
                             valueSubscription.Update(vst);
+
+                            RaiseValueSubscriptionsUpdated();
                         });
                     }
                     catch (Exception)
@@ -873,6 +795,90 @@ namespace Ssz.Dcs.Addons.OpcClient
                     }
 
                     return constAny.Value.ValueAsString(false);
+                }
+
+                valueSubscriptionObj.MapValues = ElementIdsMap.GetFromMap(elementId);
+
+                if (valueSubscriptionObj.MapValues is not null)
+                {
+                    if (valueSubscriptionObj.MapValues.Skip(2).All(v => String.IsNullOrEmpty(v)))
+                    {
+                        constAny = ElementIdsMap.TryGetConstValue(valueSubscriptionObj.MapValues[1]);
+                    }
+                    else
+                    {
+                        var childValueSubscriptionsList = new List<ChildValueSubscription>();
+                        SszConverter? converter = null;
+
+                        for (var i = 1; i < valueSubscriptionObj.MapValues.Count; i++)
+                        {
+                            string v = valueSubscriptionObj.MapValues[i] ?? "";
+
+                            int index;
+                            if ((StringHelper.StartsWithIgnoreCase(v, @"READCONVERTER") ||
+                                 StringHelper.StartsWithIgnoreCase(v, @"WRITECONVERTER"))
+                                && (index = v.IndexOf('=')) > 0)
+                            {
+                                if (converter is null)
+                                    converter = new SszConverter();
+
+                                var values = v.Substring(index + 1).Split(new[] { "->" }, StringSplitOptions.None);
+                                switch (v.Substring(0, index).Trim().ToUpperInvariant())
+                                {
+                                    case @"READCONVERTER":
+                                        if (values.Length == 1)
+                                            converter.Statements.Add(new SszStatement(@"true", values[0].Trim(), 0));
+                                        else // values.Length > 1
+                                            converter.Statements.Add(new SszStatement(values[0].Trim(),
+                                                values[1].Trim(), 0));
+                                        break;
+                                    case @"WRITECONVERTER":
+                                        if (values.Length == 1)
+                                            converter.BackStatements.Add(new SszStatement(@"true", values[0].Trim(), 0));
+                                        else if (values.Length == 2)
+                                            converter.BackStatements.Add(new SszStatement(values[0].Trim(),
+                                                values[1].Trim(), 0));
+                                        else // values.Length > 2
+                                            converter.BackStatements.Add(new SszStatement(
+                                                values[0].Trim(),
+                                                values[1].Trim(),
+                                                new Any(values[2].Trim()).ValueAsInt32(false)));
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                if (converter is not null)
+                                    continue;
+
+                                var childValueSubscription = new ChildValueSubscription(valueSubscriptionObj, v);
+                                childValueSubscriptionsList.Add(childValueSubscription);
+                            }
+                        }
+
+                        if (converter is not null && converter.Statements.Count == 0 && converter.BackStatements.Count == 0)
+                        {
+                            converter = null;
+                        }
+                        //else
+                        //{
+                        //    converter.ParentItem = DsProject.Instance;
+                        //    converter.ReplaceConstants(DsProject.Instance);
+                        //}
+
+                        if (childValueSubscriptionsList.Count > 1 || converter is not null)
+                        {
+                            valueSubscriptionObj.ChildValueSubscriptionsList = childValueSubscriptionsList;
+                            valueSubscriptionObj.Converter = converter;
+                            try
+                            {
+                                callbackDispatcher.BeginInvoke(ct => valueSubscriptionObj.ChildValueSubscriptionUpdated());
+                            }
+                            catch (Exception)
+                            {
+                            }
+                        }
+                    }
                 }
             }
 

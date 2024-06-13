@@ -130,7 +130,7 @@ namespace Ssz.DataAccessGrpc.Client
             {
                 valueSubscriptionObj.ValueSubscription.Update(
                     AddItem(valueSubscriptionObj));
-            }
+            }            
         }
 
         public override async Task UpdateContextParamsAsync(CaseInsensitiveDictionary<string?> contextParams)
@@ -216,22 +216,24 @@ namespace Ssz.DataAccessGrpc.Client
                         callbackDispatcher.BeginInvoke(ct =>
                         {                            
                             valueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.BadNodeIdUnknown });
+
+                            RaiseValueSubscriptionsUpdated();
                         });
                     }
                     catch (Exception)
                     {
                     }
-
-                return;
             }
-
-            var valueSubscriptionObj = new ValueSubscriptionObj(elementId, valueSubscription);           
-            _valueSubscriptionsCollection.Add(valueSubscription, valueSubscriptionObj);
-
-            if (IsInitialized)
+            else
             {
-                valueSubscription.Update(
-                    AddItem(valueSubscriptionObj));                
+                var valueSubscriptionObj = new ValueSubscriptionObj(elementId, valueSubscription);
+                _valueSubscriptionsCollection.Add(valueSubscription, valueSubscriptionObj);
+
+                if (IsInitialized)
+                {
+                    valueSubscription.Update(
+                        AddItem(valueSubscriptionObj));
+                }                
             }
         }
 
@@ -651,8 +653,7 @@ namespace Ssz.DataAccessGrpc.Client
                                 foreach (IValueSubscription valueSubscription in valueSubscriptions)
                                 {                                    
                                     valueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain });
-                                }
-                                DataGuid = Guid.NewGuid();
+                                }                                
 
                                 RaiseValueSubscriptionsUpdated();
                             });
@@ -771,6 +772,8 @@ namespace Ssz.DataAccessGrpc.Client
         {
             LastValueSubscriptionsUpdatedDateTimeUtc = DateTime.UtcNow;
 
+            DataGuid = Guid.NewGuid();
+
             ValueSubscriptionsUpdated(this, EventArgs.Empty);
         }
 
@@ -842,6 +845,8 @@ namespace Ssz.DataAccessGrpc.Client
                     {
                         valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, StatusCodes.Good,
                             DateTime.UtcNow));
+
+                        RaiseValueSubscriptionsUpdated();
                     });
                 }
                 catch (Exception)
@@ -1021,8 +1026,7 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                     changedValueSubscription.Update(elementValuesCallbackChange.ValueStatusTimestamp.Value);
                 }                
-            }
-            DataGuid = Guid.NewGuid();
+            }            
 
             RaiseValueSubscriptionsUpdated();
         }        

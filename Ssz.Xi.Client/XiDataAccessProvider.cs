@@ -109,7 +109,7 @@ namespace Ssz.Xi.Client
             {
                 valueSubscriptionObj.ValueSubscription.Update(
                     AddItem(valueSubscriptionObj));
-            }
+            }            
         }        
 
         /// <summary>
@@ -159,6 +159,8 @@ namespace Ssz.Xi.Client
                         callbackDispatcher.BeginInvoke(ct =>
                         {                            
                             valueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.BadNodeIdUnknown });
+
+                            RaiseValueSubscriptionsUpdated();
                         });
                     }
                     catch (Exception)
@@ -167,15 +169,17 @@ namespace Ssz.Xi.Client
 
                 return;
             }
-
-            var valueSubscriptionObj = new ValueSubscriptionObj(elementId, valueSubscription);
-            _valueSubscriptionsCollection.Add(valueSubscription, valueSubscriptionObj);
-
-            if (IsInitialized)
+            else
             {
-                valueSubscription.Update(
-                    AddItem(valueSubscriptionObj));
-            }
+                var valueSubscriptionObj = new ValueSubscriptionObj(elementId, valueSubscription);
+                _valueSubscriptionsCollection.Add(valueSubscription, valueSubscriptionObj);
+
+                if (IsInitialized)
+                {
+                    valueSubscription.Update(
+                        AddItem(valueSubscriptionObj));
+                }
+            }            
         }
 
         /// <summary>        
@@ -508,6 +512,13 @@ namespace Ssz.Xi.Client
 
         protected CaseInsensitiveDictionary<ConstItem> ConstItemsDictionary { get; } = new();
 
+        protected void RaiseValueSubscriptionsUpdated()
+        {            
+            DataGuid = Guid.NewGuid();
+
+            ValueSubscriptionsUpdated(this, EventArgs.Empty);
+        }
+
         #endregion
 
         #region private functions
@@ -580,9 +591,8 @@ namespace Ssz.Xi.Client
                                 {                                    
                                     valueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain });
                                 }
-                                DataGuid = Guid.NewGuid();
 
-                                ValueSubscriptionsUpdated(this, EventArgs.Empty);
+                                RaiseValueSubscriptionsUpdated();
                             });
                         }
                         catch (Exception)
@@ -733,11 +743,10 @@ namespace Ssz.Xi.Client
                 {
                     var changedValueSubscription = (IValueSubscription) changedClientObjs[i];                    
                     changedValueSubscription.Update(changedValues[i]);                    
-                }
-                DataGuid = Guid.NewGuid();
+                }                
             }
 
-            ValueSubscriptionsUpdated(this, EventArgs.Empty);
+            RaiseValueSubscriptionsUpdated();
         }
 
         /// <summary>
@@ -786,6 +795,8 @@ namespace Ssz.Xi.Client
                         {
                             valueSubscription.Update(new ValueStatusTimestamp(constAny.Value, StatusCodes.Good,
                                 DateTime.UtcNow));
+
+                            RaiseValueSubscriptionsUpdated();
                         });
                     }
                     catch (Exception)
