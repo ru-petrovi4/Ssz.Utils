@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Ssz.Utils;
+using Microsoft.Extensions.Diagnostics.ResourceMonitoring;
 
 namespace Ssz.Dcs.CentralServer
 {
@@ -71,9 +72,13 @@ namespace Ssz.Dcs.CentralServer
 
             if (nowUtc - _last_GC_CleanUpDateTimeUtc > TimeSpan.FromMinutes(5))
             {
+                ResourceUtilization resourceUtilization = ResourceMonitor.GetUtilization(TimeSpan.FromSeconds(1));
+                if (resourceUtilization.MemoryUsedPercentage > 90)
+                    throw new ProcessShutdownRequestException();
+
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
-                _last_GC_CleanUpDateTimeUtc = DateTime.UtcNow; // Because long-running operation.
+                _last_GC_CleanUpDateTimeUtc = nowUtc; // Because long-running operation.                
             }
         }
 
@@ -81,7 +86,7 @@ namespace Ssz.Dcs.CentralServer
 
         #region private fields
 
-        private DateTime _last_GC_CleanUpDateTimeUtc = DateTime.MinValue;
+        private DateTime _last_GC_CleanUpDateTimeUtc = DateTime.UtcNow;
 
         #endregion
     }

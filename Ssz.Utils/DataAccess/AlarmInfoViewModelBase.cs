@@ -53,19 +53,13 @@ namespace Ssz.Utils.DataAccess
         public virtual bool AlarmIsActive
         {
             get { return _alarmIsActive; }
-            set
-            {
-                SetValue(ref _alarmIsActive, value);                
-            }
+            set { SetValue(ref _alarmIsActive, value); }
         }        
         
         public virtual bool AlarmIsUnacked
         {
             get { return _alarmIsUnacked; }
-            set
-            {
-                SetValue(ref _alarmIsUnacked, value);                
-            }
+            set { SetValue(ref _alarmIsUnacked, value); }
         }        
         
         public virtual DateTime OccurrenceTime
@@ -177,8 +171,8 @@ namespace Ssz.Utils.DataAccess
         }
 
         /// <summary>
-        /// An integer value representing the severity, or priority, of the alarm
-        /// 0 - No Action, 1 - Low, 2 - High, 3 - Emergency
+        ///     An integer value representing the severity, or priority, of the alarm
+        ///     0 - No Action, 1 - Low, 2 - High, 3 - Emergency
         /// </summary>
         public virtual uint Priority
         {

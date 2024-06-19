@@ -44,14 +44,14 @@ namespace Ssz.Dcs.CentralServer
         {
             ServiceId = Guid.NewGuid().ToString();
 
-            _serverWorker = ServiceProvider.GetRequiredService<ServerWorkerBase>();
+            _dcsCentralServer = ServiceProvider.GetRequiredService<DcsCentralServer>();
 
             base.Initialize(cancellationToken);
         }
 
         public override void Close()
-        {            
-            _serverWorker = null;
+        {
+            _dcsCentralServer = null;
 
             base.Close();
         }
@@ -60,7 +60,7 @@ namespace Ssz.Dcs.CentralServer
         {
             Ssz.Utils.Addons.AddonStatus addonStatus = base.GetAddonStatus();
 
-            _serverWorker?.GetAddonStatusParams(addonStatus.Params);
+            _dcsCentralServer?.GetSystemParams(addonStatus.Params);
 
             return addonStatus;
         }
@@ -75,7 +75,7 @@ namespace Ssz.Dcs.CentralServer
 
         #region private fields
 
-        private ServerWorkerBase? _serverWorker;
+        private DcsCentralServer? _dcsCentralServer;
 
         #endregion
     }

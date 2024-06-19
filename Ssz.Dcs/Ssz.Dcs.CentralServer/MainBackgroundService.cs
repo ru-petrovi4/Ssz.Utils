@@ -18,7 +18,7 @@ namespace Ssz.Dcs.CentralServer
 
         public MainBackgroundService(ILogger<MainBackgroundService> logger, ServerWorkerBase serverWorker)
         {
-            Logger = logger;            
+            Logger = logger;
             _serverWorker = serverWorker;
         }
 
@@ -40,10 +40,10 @@ namespace Ssz.Dcs.CentralServer
 
             while (true)
             {
-                if (cancellationToken.IsCancellationRequested) 
+                if (cancellationToken.IsCancellationRequested)
                     break;
                 await Task.Delay(3);
-                if (cancellationToken.IsCancellationRequested) 
+                if (cancellationToken.IsCancellationRequested)
                     break;
 
                 DateTime nowUtc = DateTime.UtcNow;
@@ -52,7 +52,11 @@ namespace Ssz.Dcs.CentralServer
                 {
                     await _serverWorker.DoWorkAsync(nowUtc, cancellationToken);
                 }
-                catch (Exception ex) 
+                catch (ServerWorkerBase.ProcessShutdownRequestException)
+                {
+                    break;
+                }
+                catch (Exception ex)
                 {
                     Logger.LogError(ex, @"_serverWorker.DoWorkAsync(...) Exception");
                 }
@@ -67,6 +71,6 @@ namespace Ssz.Dcs.CentralServer
 
         private readonly ServerWorkerBase _serverWorker;
 
-        #endregion
+        #endregion        
     }
 }

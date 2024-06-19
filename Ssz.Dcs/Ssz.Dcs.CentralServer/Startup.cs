@@ -73,7 +73,9 @@ namespace Ssz.Dcs.CentralServer
             });
 
             services.AddSingleton<ServerWorkerBase, ServerWorker>();
-            services.AddSingleton<AddonsManager>();            
+            services.AddSingleton<AddonsManager>();
+
+            services.AddTransient<DcsCentralServer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -100,43 +100,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             var serverContexts = _serverContextsDictionary.Values.ToArray();
             _serverContextsDictionary.Clear();
             await ServerContextsAbortAsync(serverContexts);
-        }
-
-        public virtual void GetAddonStatusParams(CaseInsensitiveDictionary<Any> addonStatusParams)
-        {
-            addonStatusParams[Constants.ParamName_IsResourceMonitorAddon] = new Any(true);
-
-            ResourceUtilization resourceUtilization = ResourceMonitor.GetUtilization(TimeSpan.FromSeconds(1));
-            addonStatusParams[Constants.ParamName_CpuUsedPercentage] = new Any(resourceUtilization.CpuUsedPercentage);
-            addonStatusParams[Constants.ParamName_MemoryUsedPercentage] = new Any(resourceUtilization.MemoryUsedPercentage);
-            addonStatusParams[Constants.ParamName_MemoryUsedInBytes] = new Any(resourceUtilization.MemoryUsedInBytes);
-
-            ComputerInfo computerInfo = new();
-            //addonStatusParams[Constants.ParamName_OSPlatform] = new Any(computerInfo.OSPlatform);
-            //addonStatusParams[Constants.ParamName_OSVersion] = new Any(computerInfo.OSVersion);
-            addonStatusParams[Constants.ParamName_TotalPhysicalMemory] = new Any(computerInfo.TotalPhysicalMemory);
-            addonStatusParams[Constants.ParamName_AvailablePhysicalMemory] = new Any(computerInfo.AvailablePhysicalMemory);
-            addonStatusParams[Constants.ParamName_TotalVirtualMemory] = new Any(computerInfo.TotalVirtualMemory);
-            addonStatusParams[Constants.ParamName_AvailableVirtualMemory] = new Any(computerInfo.AvailableVirtualMemory);
-
-            Dictionary<string, Any> drivesInfo = new();
-            foreach (DriveInfo di in DriveInfo.GetDrives())
-            {
-                if (di.IsReady == true && di.DriveType == DriveType.Fixed)
-                {
-                    Dictionary<string, Any> driveInfo = new();
-
-                    driveInfo[Constants.ParamName_VolumeLabel] = new Any(di.VolumeLabel);
-                    driveInfo[Constants.ParamName_DriveFormat] = new Any(di.DriveFormat);
-                    driveInfo[Constants.ParamName_AvailableFreeSpace] = new Any(di.AvailableFreeSpace);
-                    driveInfo[Constants.ParamName_TotalFreeSpace] = new Any(di.TotalFreeSpace);
-                    driveInfo[Constants.ParamName_TotalSize] = new Any(di.TotalSize);
-
-                    drivesInfo[di.Name] = new Any(driveInfo);
-                }
-            }
-            addonStatusParams[Constants.ParamName_DrivesInfo] = new Any(drivesInfo);
-        }
+        }        
 
         #endregion        
 
@@ -172,6 +136,10 @@ namespace Ssz.DataAccessGrpc.ServerBase
             public ServerContext ServerContext { get; set; } = null!;
 
             public bool Added { get; set; }
+        }
+
+        public class ProcessShutdownRequestException : Exception
+        {
         }
     }
 }
