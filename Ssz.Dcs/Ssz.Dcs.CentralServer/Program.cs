@@ -65,7 +65,7 @@ namespace Ssz.Dcs.CentralServer
 
             try
             {
-                ILoggersSet loggersSet = new LoggersSet(new UserFriendlyLogger(s => Console.WriteLine(s)), null);
+                ILoggersSet loggersSet = new LoggersSet(new UserFriendlyLogger((logLevel, eventId, line) => Console.WriteLine(line)), null);
                 if (args.Any(a => a == @"-e"))
                     EncryptAppsettings(loggersSet);
                 else if (args.Any(a => a == @"-d"))

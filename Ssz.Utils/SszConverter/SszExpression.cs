@@ -117,7 +117,7 @@ namespace Ssz.Utils
                             catch (Exception ex)
                             {
                                 loggersSet.Logger.LogDebug(ex, @"PrepareLambdaExpression error");
-                                loggersSet.UserFriendlyLogger.LogError(Properties.Resources.PrepareLambdaExpressionError + ": " + _expressionString);
+                                loggersSet.UserFriendlyLogger.LogWarning(Properties.Resources.PrepareLambdaExpressionError + ": " + _expressionString);
                             }
 
                         _delegates.Add(_expressionString, _delegate);
@@ -137,7 +137,7 @@ namespace Ssz.Utils
                 {
                     _lastResult = null;
                     loggersSet.Logger.LogDebug(ex, @"");
-                    loggersSet.UserFriendlyLogger.LogError(Properties.Resources.CalculationLambdaExpressionError + ": " + _expressionString);
+                    loggersSet.UserFriendlyLogger.LogWarning(Properties.Resources.CalculationLambdaExpressionError + ": " + _expressionString);
                 }
 
                 _hasLastResult = true;
@@ -255,7 +255,7 @@ namespace Ssz.Utils
             catch (Exception ex)
             {
                 loggersSet.Logger.LogDebug(ex, "");
-                loggersSet.UserFriendlyLogger.LogError(Properties.Resources.PrepareLambdaExpressionError + ": " + expressionString);
+                loggersSet.UserFriendlyLogger.LogWarning(Properties.Resources.PrepareLambdaExpressionError + ": " + expressionString);
                 return null;
             }
         }

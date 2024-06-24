@@ -14,7 +14,7 @@ namespace Ssz.Utils.Logging
     {
         #region construction and destruction
 
-        public UserFriendlyLogger(Action<string> writeLineAction)
+        public UserFriendlyLogger(Action<LogLevel, EventId, string> writeLineAction)
         {
             _writeLineAction = writeLineAction;
         }
@@ -23,7 +23,7 @@ namespace Ssz.Utils.Logging
 
         #region public functions
 
-        public static IUserFriendlyLogger Empty { get; } = new UserFriendlyLogger(s => { });
+        public static IUserFriendlyLogger Empty { get; } = new UserFriendlyLogger((logLevel, eventId, line) => { });
 
         public LogLevel LogLevel { get; set; } = LogLevel.Trace;
 
@@ -65,14 +65,14 @@ namespace Ssz.Utils.Logging
                 line += "  Exception: " + ex.Message;
             }
 
-            _writeLineAction(line);
+            _writeLineAction(logLevel, eventId, line);
         }
 
         #endregion
 
         #region private fields
 
-        private readonly Action<string> _writeLineAction;
+        private readonly Action<LogLevel, EventId, string> _writeLineAction;
 
         #endregion
     }
