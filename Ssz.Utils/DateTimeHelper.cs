@@ -22,11 +22,24 @@ namespace Ssz.Utils
             return new Any(dateTimeString!).ValueAs<DateTime>(false).ToUniversalTime();
         }
 
+        /// <summary>
+        ///     2009-06-15T13:45:30 (DateTimeKind.Local) --> 2009-06-15T13:45:30.0000000-07:00
+        ///     2009-06-15T13:45:30 (DateTimeKind.Utc) --> 2009-06-15T13:45:30.0000000Z
+        ///     2009-06-15T13:45:30 (DateTimeKind.Unspecified) --> 2009-06-15T13:45:30.0000000
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <returns></returns>
         public static string GetString(DateTime dateTime)
         {
             return new Any(dateTime).ValueAsString(false, @"O");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="timeSpanString"></param>
+        /// <param name="defaultUnits"></param>
+        /// <returns></returns>
         public static TimeSpan GetTimeSpan(string? timeSpanString, string? defaultUnits = null)
         {
             if (String.IsNullOrWhiteSpace(timeSpanString))

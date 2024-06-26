@@ -22,10 +22,8 @@ namespace Ssz.Utils
                 (@"==", SszOperator.Equal),
                 (@"!=", SszOperator.NotEqual),
                 (@"<>", SszOperator.NotEqual),
-                (@"<=", SszOperator.LessThanOrEqual),
-                (@"=<", SszOperator.LessThanOrEqual),
-                (@">=", SszOperator.GreaterThanOrEqual),
-                (@"=>", SszOperator.GreaterThanOrEqual),
+                (@"<=", SszOperator.LessThanOrEqual),                
+                (@">=", SszOperator.GreaterThanOrEqual),                
                 (@"=", SszOperator.Equal),
                 (@"<", SszOperator.LessThan),
                 (@">", SszOperator.GreaterThan)
@@ -42,7 +40,7 @@ namespace Ssz.Utils
                 case SszOperator.LessThan:
                     return @"<";
                 case SszOperator.LessThanOrEqual:
-                    return @"<="; ;
+                    return @"<=";
                 case SszOperator.GreaterThan:
                     return @">";
                 case SszOperator.GreaterThanOrEqual:
