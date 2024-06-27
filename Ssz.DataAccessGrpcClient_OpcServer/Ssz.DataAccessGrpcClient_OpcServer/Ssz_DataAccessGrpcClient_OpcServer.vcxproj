@@ -1,0 +1,262 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{0F320866-D46E-4275-9032-4D682C2D9F60}</ProjectGuid>
+    <Keyword>AtlProj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <UseOfAtl>Static</UseOfAtl>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <UseOfAtl>Static</UseOfAtl>
+    <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>true</CLRSupport>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+    <IntDir>obj\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+    <IntDir>obj\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>OpcInclude\;UtilityClasses\;</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <HeaderFileName>Ssz_DataAccessGrpcClient_OpcServer_i.h</HeaderFileName>
+      <InterfaceIdentifierFileName>Ssz_DataAccessGrpcClient_OpcServer_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>Ssz_DataAccessGrpcClient_OpcServer_p.c</ProxyFileName>
+      <GenerateStublessProxies>true</GenerateStublessProxies>
+      <TypeLibraryName>$(IntDir)Ssz_DataAccessGrpcClient_OpcServer.tlb</TypeLibraryName>
+      <DllDataFileName>
+      </DllDataFileName>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <AdditionalIncludeDirectories>OpcInclude\;</AdditionalIncludeDirectories>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>Version.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+      <Command>copy app.config "$(TargetPath).config"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>OpcInclude\;UtilityClasses\;</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <HeaderFileName>Ssz_DataAccessGrpcClient_OpcServer_i.h</HeaderFileName>
+      <InterfaceIdentifierFileName>Ssz_DataAccessGrpcClient_OpcServer_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>Ssz_DataAccessGrpcClient_OpcServer_p.c</ProxyFileName>
+      <GenerateStublessProxies>true</GenerateStublessProxies>
+      <TypeLibraryName>$(IntDir)Ssz_DataAccessGrpcClient_OpcServer.tlb</TypeLibraryName>
+      <DllDataFileName>
+      </DllDataFileName>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <AdditionalIncludeDirectories>OpcInclude\;</AdditionalIncludeDirectories>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>Version.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+      <Command>copy app.config "$(TargetPath).config"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="COpcBinary.cpp" />
+    <ClCompile Include="COpcBinaryReader.cpp" />
+    <ClCompile Include="COpcBinaryStream.cpp" />
+    <ClCompile Include="COpcBinaryWriter.cpp" />
+    <ClCompile Include="COpcDaBrowseElement.cpp" />
+    <ClCompile Include="COpcDaCache.cpp" />
+    <ClCompile Include="COpcDaCacheItem.cpp" />
+    <ClCompile Include="COpcDaDevice.cpp" />
+    <ClCompile Include="COpcDaDeviceItem.cpp" />
+    <ClCompile Include="COpcDaEnumItem.cpp" />
+    <ClCompile Include="COpcDaGroup.cpp" />
+    <ClCompile Include="COpcDaGroupItem.cpp" />
+    <ClCompile Include="COpcDaProperty.cpp" />
+    <ClCompile Include="COpcDaTransaction.cpp" />
+    <ClCompile Include="COpcDaTypeDictionary.cpp" />
+    <ClCompile Include="COpcDaWriteThread.cpp" />
+    <ClCompile Include="Ssz_DataAccessGrpcClient_OpcServer.cpp" />
+    <ClCompile Include="Ssz_DataAccessGrpcClient_OpcServer_i.c">
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="OpcDaHelpers.cpp" />
+    <ClCompile Include="COpcDaServer.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\COpcBrowseElement.cpp" />
+    <ClCompile Include="UtilityClasses\COpcCommon.cpp" />
+    <ClCompile Include="UtilityClasses\COpcConnectionPoint.cpp" />
+    <ClCompile Include="UtilityClasses\COpcCPContainer.cpp" />
+    <ClCompile Include="UtilityClasses\COpcEnumCPs.cpp" />
+    <ClCompile Include="UtilityClasses\COpcEnumString.cpp" />
+    <ClCompile Include="UtilityClasses\COpcEnumUnknown.cpp" />
+    <ClCompile Include="UtilityClasses\COpcFile.cpp" />
+    <ClCompile Include="UtilityClasses\COpcSecurity.cpp" />
+    <ClCompile Include="UtilityClasses\COpcString.cpp" />
+    <ClCompile Include="UtilityClasses\COpcText.cpp" />
+    <ClCompile Include="UtilityClasses\COpcTextReader.cpp" />
+    <ClCompile Include="UtilityClasses\COpcThread.cpp" />
+    <ClCompile Include="UtilityClasses\COpcThreadPool.cpp" />
+    <ClCompile Include="UtilityClasses\COpcVariant.cpp" />
+    <ClCompile Include="UtilityClasses\COpcXmlAnyType.cpp" />
+    <ClCompile Include="UtilityClasses\COpcXmlAttribute.cpp" />
+    <ClCompile Include="UtilityClasses\COpcXmlDocument.cpp" />
+    <ClCompile Include="UtilityClasses\COpcXmlElement.cpp" />
+    <ClCompile Include="UtilityClasses\OpcCategory.cpp" />
+    <ClCompile Include="UtilityClasses\OpcMatch.cpp" />
+    <ClCompile Include="UtilityClasses\OpcRegistry.cpp" />
+    <ClCompile Include="UtilityClasses\OpcUtils.cpp" />
+    <ClCompile Include="UtilityClasses\OpcXmlType.cpp" />
+    <ClCompile Include="WorkingThread.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="COpcBinary.h" />
+    <ClInclude Include="COpcBinaryReader.h" />
+    <ClInclude Include="COpcBinaryStream.h" />
+    <ClInclude Include="COpcBinaryWriter.h" />
+    <ClInclude Include="COpcDaBrowseElement.h" />
+    <ClInclude Include="COpcDaBuffer.h" />
+    <ClInclude Include="COpcDaCache.h" />
+    <ClInclude Include="COpcDaCacheItem.h" />
+    <ClInclude Include="COpcDaDevice.h" />
+    <ClInclude Include="COpcDaDeviceItem.h" />
+    <ClInclude Include="COpcDaEnumGroup.h" />
+    <ClInclude Include="COpcDaEnumItem.h" />
+    <ClInclude Include="COpcDaGroup.h" />
+    <ClInclude Include="COpcDaGroupItem.h" />
+    <ClInclude Include="COpcDaProperty.h" />
+    <ClInclude Include="COpcDaTransaction.h" />
+    <ClInclude Include="COpcDaTypeDictionary.h" />
+    <ClInclude Include="COpcDaWriteThread.h" />
+    <ClInclude Include="Ssz_DataAccessGrpcClient_OpcServer_i.h" />
+    <ClInclude Include="IOpcDaCache.h" />
+    <ClInclude Include="IOpcDaDevice.h" />
+    <ClInclude Include="OpcDaHelpers.h" />
+    <ClInclude Include="COpcDaServer.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="WorkingThread.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Ssz_DataAccessGrpcClient_OpcServer.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Additional Files\Ssz_DataAccessGrpcClient_OpcServerRegister.bat">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">copy ".\Additional Files\%(Filename)%(Extension)" "$(OutDir)%(Filename)%(Extension)"
+attrib -R  "$(OutDir)%(Filename)%(Extension)"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OutDir)%(Filename)%(Extension);%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">copy ".\Additional Files\%(Filename)%(Extension)" "$(OutDir)%(Filename)%(Extension)"
+attrib -R  "$(OutDir)%(Filename)%(Extension)"
+</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)%(Filename)%(Extension);%(Outputs)</Outputs>
+    </CustomBuild>
+    <None Include="app.config" />
+    <None Include="Ssz_DataAccessGrpcClient_OpcServer.rgs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="Ssz_DataAccessGrpcClient_OpcServer.idl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="Additional Files\OpcServer.binary.xml" />
+    <Xml Include="Additional Files\OpcServer.config.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Ssz.Utils\Ssz.Utils.csproj">
+      <Project>{a86c5a82-ee13-4080-b61a-7748321da0b0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Ssz.DataAccessGrpcClient_OpcServer.Common\Ssz.DataAccessGrpcClient_OpcServer.Common.csproj">
+      <Project>{9acc4e31-9346-4458-9332-2f06f290c855}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

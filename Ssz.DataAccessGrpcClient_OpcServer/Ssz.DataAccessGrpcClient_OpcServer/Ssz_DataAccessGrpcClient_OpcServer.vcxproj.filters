@@ -1,0 +1,279 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{fa3de9f2-89f1-4d07-83e6-c2051f33c49b}</UniqueIdentifier>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Additional Files">
+      <UniqueIdentifier>{9d6fb9df-e17c-4b02-bdce-284556752951}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UtilityClasses">
+      <UniqueIdentifier>{afa35f15-63f1-4a12-9f08-51f93d9d01eb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ssz_DataAccessGrpcClient_OpcServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ssz_DataAccessGrpcClient_OpcServer_i.c">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COpcDaServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COpcBinary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COpcBinaryReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COpcBinaryStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COpcBinaryWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COpcDaBrowseElement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COpcDaCache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COpcDaCacheItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COpcDaEnumItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COpcDaGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COpcDaGroupItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COpcDaProperty.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COpcDaTransaction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COpcDaTypeDictionary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COpcDaWriteThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OpcDaHelpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COpcDaDevice.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="COpcDaDeviceItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\COpcBrowseElement.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\COpcCommon.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\COpcConnectionPoint.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\COpcCPContainer.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\COpcEnumCPs.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\COpcEnumString.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\COpcEnumUnknown.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\COpcFile.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\COpcSecurity.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\COpcString.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\COpcText.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\COpcTextReader.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\COpcThread.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\COpcThreadPool.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\COpcVariant.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\COpcXmlAnyType.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\COpcXmlAttribute.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\COpcXmlDocument.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\COpcXmlElement.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\OpcCategory.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\OpcMatch.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\OpcRegistry.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\OpcUtils.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="UtilityClasses\OpcXmlType.cpp">
+      <Filter>Source Files\UtilityClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="WorkingThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ssz_DataAccessGrpcClient_OpcServer_i.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COpcDaServer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COpcBinary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COpcBinaryReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COpcBinaryStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COpcBinaryWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COpcDaBrowseElement.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COpcDaBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COpcDaCache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COpcDaCacheItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COpcDaEnumGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COpcDaEnumItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COpcDaGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COpcDaGroupItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COpcDaProperty.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COpcDaTransaction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COpcDaTypeDictionary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COpcDaWriteThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IOpcDaDevice.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OpcDaHelpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IOpcDaCache.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COpcDaDevice.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COpcDaDeviceItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WorkingThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Ssz_DataAccessGrpcClient_OpcServer.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Ssz_DataAccessGrpcClient_OpcServer.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="Ssz_DataAccessGrpcClient_OpcServer.idl">
+      <Filter>Source Files</Filter>
+    </Midl>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Additional Files\Ssz_DataAccessGrpcClient_OpcServerRegister.bat">
+      <Filter>Additional Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="Additional Files\OpcServer.binary.xml">
+      <Filter>Additional Files</Filter>
+    </Xml>
+    <Xml Include="Additional Files\OpcServer.config.xml">
+      <Filter>Additional Files</Filter>
+    </Xml>
+  </ItemGroup>
+</Project>

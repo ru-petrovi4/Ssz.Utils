@@ -1,0 +1,31 @@
+// Ssz_DataAccessGrpcClient_OpcServer.idl : IDL source for Ssz_DataAccessGrpcClient_OpcServer
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (Ssz_DataAccessGrpcClient_OpcServer.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+import "opccomn.idl";
+import "opcda.idl";
+
+[
+	uuid(C4A45C50-996C-49F3-B914-02C2B8A069CB),
+	version(1.0),
+]
+library Ssz_DataAccessGrpcClient_OpcServerLib
+{    
+	importlib("stdole2.tlb");
+
+	[
+		uuid(EA59CE39-B02E-4775-9168-E30E2DD306B6),
+		helpstring("Ssz Data Access 3.00 Server")
+	]
+	coclass OpcDaServer
+	{
+		[default] interface IOPCServer;
+        [source]  interface IOPCShutdown;        
+	};
+};
+

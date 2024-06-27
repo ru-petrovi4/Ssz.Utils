@@ -1,0 +1,1 @@
+"%~dp0\Ssz_DataAccessGrpcClient_OpcServer.exe" /RegServer

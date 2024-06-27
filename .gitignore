@@ -10,6 +10,7 @@
 **/obj/
 **/lost+found/
 **/vcredist/
+**/Ssz.DataAccessGrpcClient_OpcServer/packages
 
 *.sdf
 *.suo

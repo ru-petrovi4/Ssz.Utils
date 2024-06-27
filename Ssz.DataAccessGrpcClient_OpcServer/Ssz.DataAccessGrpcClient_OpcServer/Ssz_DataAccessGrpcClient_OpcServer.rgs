@@ -1,0 +1,26 @@
+HKCR
+{
+    Ssz.gRPCDataAccesClient_OpcDaServer.1 = s 'OpcDaServer Class'
+	{
+		CLSID = s '{EA59CE39-B02E-4775-9168-E30E2DD306B6}'
+	}
+	Ssz.gRPCDataAccesClient_OpcDaServer = s 'OpcDaServer Class'
+	{
+        CLSID = s '{EA59CE39-B02E-4775-9168-E30E2DD306B6}'        
+		CurVer = s 'Ssz.gRPCDataAccesClient_OpcDaServer.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {EA59CE39-B02E-4775-9168-E30E2DD306B6} = s 'OpcDaServer Class'
+		{
+			ProgID = s 'Ssz.gRPCDataAccesClient_OpcDaServer.1'
+			VersionIndependentProgID = s 'Ssz.gRPCDataAccesClient_OpcDaServer'
+			LocalServer32 = s '%MODULE%'
+			{
+				val ServerExecutable = s '%MODULE_RAW%'
+			}
+			TypeLib = s '{C4A45C50-996C-49F3-B914-02C2B8A069CB}'
+			Version = s '1.0'
+		}
+	}
+}
