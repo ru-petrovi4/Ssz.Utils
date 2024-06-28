@@ -63,9 +63,7 @@ COpcDaGroup::COpcDaGroup(
 
 // Init
 void COpcDaGroup::Init()
-{
-    auto_handle<IDisposable> cLock = _syncRoot->Enter();
-
+{    
     m_hServer      = (OPCHANDLE)(COpcDaGroup*)this;
 
     m_bActive      = FALSE;
@@ -83,9 +81,7 @@ void COpcDaGroup::Init()
 
 // Clear
 void COpcDaGroup::Clear()
-{
-    auto_handle<IDisposable> cLock = _syncRoot->Enter();
-
+{   
     // release callback interface.
     UnregisterInterface(IID_IOPCDataCallback);    
 
@@ -96,17 +92,19 @@ void COpcDaGroup::Clear()
 
 // Delete
 bool COpcDaGroup::Delete()
-{    
-    auto_handle<IDisposable> cLock = _syncRoot->Enter();
+{   
+    {
+        auto_handle<IDisposable> cLock = _syncRoot->Enter();
 
-    // release all resources.
-    Clear();
+        // release all resources.
+        Clear();
 
-    // flag as deleted.
-    m_bDeleted = TRUE;        
+        // flag as deleted.
+        m_bDeleted = TRUE;
 
-    // unregister for updates.
-    COpcDaServer::UnregisterForUpdates(this);
+        // unregister for updates.
+        COpcDaServer::UnregisterForUpdates(this);
+    }
 
     // return false if references still exist.
     return (((IOPCItemMgt*)this)->Release() == 0);

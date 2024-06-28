@@ -951,7 +951,14 @@ HRESULT COpcDaDeviceItem::Write(
         
         m_cValue.Set((VARIANT&)newValue);
         
-        if (pftTimestamp != NULL) m_ftTimestamp = *pftTimestamp;
+        if (pftTimestamp != NULL)
+        {
+            m_ftTimestamp = *pftTimestamp;
+        }
+        else
+        {
+            m_ftTimestamp = OpcUtcNow();
+        }
         if (pwQuality != NULL)    m_wQuality    = *pwQuality;
         
         return S_OK;

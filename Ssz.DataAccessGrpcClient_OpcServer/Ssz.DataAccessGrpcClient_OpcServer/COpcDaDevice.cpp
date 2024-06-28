@@ -131,8 +131,6 @@ void COpcDaDevice::Loop(CancellationToken ct, LONGLONG uTicks, UINT uInterval, F
 // BuildAddressSpace
 bool COpcDaDevice::BuildAddressSpace(IOpcDaCache* pCache)
 {
-    auto_handle<IDisposable> cLock = _syncRoot->Enter();
-
     // items to address space.
     OPC_POS pos = m_cItemList.GetHeadPosition();
 
@@ -156,9 +154,7 @@ bool COpcDaDevice::BuildAddressSpace(IOpcDaCache* pCache)
 
 // ClearAddressSpace
 void COpcDaDevice::ClearAddressSpace(IOpcDaCache* pCache)
-{
-    auto_handle<IDisposable> cLock = _syncRoot->Enter();
-
+{    
     // items to address space.
     OPC_POS pos = m_cItemList.GetHeadPosition();
 
@@ -430,8 +426,6 @@ void COpcDaDevice::Clear()
 // Read
 bool COpcDaDevice::Read(IOpcDaCache* pCache, COpcXmlElement& cElement)
 {
-    auto_handle<IDisposable> cLock = _syncRoot->Enter();
-
     // read top level items.
     COpcXmlElementList cItems;
 

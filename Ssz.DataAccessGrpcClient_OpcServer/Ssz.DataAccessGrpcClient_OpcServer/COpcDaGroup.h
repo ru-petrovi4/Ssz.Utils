@@ -83,7 +83,13 @@ public:
     COpcDaGroup(COpcDaServer& cServer, const COpcString& cName);
 
     // Destructor 
-    ~COpcDaGroup() { Clear(); }
+    ~COpcDaGroup()
+    {
+        if (m_bDeleted != TRUE)
+        {
+            Clear();
+        }
+    }
 
     //=========================================================================
     // Public Methods
