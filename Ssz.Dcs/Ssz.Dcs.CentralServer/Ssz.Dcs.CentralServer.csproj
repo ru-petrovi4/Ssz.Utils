@@ -10,10 +10,10 @@
 	<Platforms>AnyCPU;x86</Platforms>	
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="appsettings.Development.yml" />
-    <None Remove="appsettings.yml" />
-  </ItemGroup>
+  <PropertyGroup>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <GarbageCollectionAdaptationMode>1</GarbageCollectionAdaptationMode>
+  </PropertyGroup>
 
   <ItemGroup>
     <Content Include="appsettings.Development.yml">
