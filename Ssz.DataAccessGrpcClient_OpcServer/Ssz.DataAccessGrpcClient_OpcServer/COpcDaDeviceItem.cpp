@@ -975,7 +975,7 @@ HRESULT COpcDaDeviceItem::Write(
 
     if (pDictionary == NULL)
     {
-        return false;
+        return S_OK;
     }
         
     if (pItem->TypeSystemID == OPC_TYPE_SYSTEM_XMLSCHEMA)
