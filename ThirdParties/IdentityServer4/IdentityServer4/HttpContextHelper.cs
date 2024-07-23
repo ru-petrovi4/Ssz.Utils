@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 
 namespace IdentityServer4
 {
@@ -82,7 +83,19 @@ namespace IdentityServer4
         {
             if (httpContext is null)
                 return new string[0];
-            return httpContext.User.Claims.Where(c => c.Type == "role").Select(c => c.Value).ToArray();
+            return GetRoles(httpContext.User.Claims);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="claims"></param>
+        /// <returns></returns>
+        public static string[] GetRoles(IEnumerable<Claim>? claims)
+        {
+            if (claims is null)
+                return new string[0];
+            return claims.Where(c => c.Type == "role").Select(c => c.Value).ToArray();
         }
 
         #endregion
