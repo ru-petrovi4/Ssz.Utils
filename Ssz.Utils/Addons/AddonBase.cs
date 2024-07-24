@@ -86,8 +86,7 @@ namespace Ssz.Utils.Addons
         public CsvDb CsvDb { get; internal set; } = null!;
 
         /// <summary>
-        ///     Dispatcher associated with this addon.
-        ///     != null
+        ///     Dispatcher associated with this addon.        
         /// </summary>
         public IDispatcher? Dispatcher => CsvDb.Dispatcher;
 

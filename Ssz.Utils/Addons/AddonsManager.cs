@@ -458,7 +458,7 @@ namespace Ssz.Utils.Addons
         /// <typeparam name="TAddon"></typeparam>
         /// <param name="addonDispatcher"></param>
         /// <returns></returns>
-        public TAddon? CreateInitializedAddonThreadSafe<TAddon>(IDispatcher addonDispatcher, CancellationToken cancellationToken)
+        public TAddon? CreateInitializedAddonThreadSafe<TAddon>(IDispatcher? addonDispatcher, CancellationToken cancellationToken)
             where TAddon : AddonBase
         {
             var addons = _addonsThreadSafe;
@@ -686,7 +686,7 @@ namespace Ssz.Utils.Addons
             AddonBase availableAddon, 
             string addonInstanceId, 
             IEnumerable<IEnumerable<string?>>? addonOptionsData,
-            IDispatcher addonDispatcher)
+            IDispatcher? addonDispatcher)
         {
             if (!String.IsNullOrEmpty(addonInstanceId) && addonOptionsData is not null)
                 throw new InvalidOperationException("You must specify addonInstanceId or addonOptions");
@@ -725,7 +725,8 @@ namespace Ssz.Utils.Addons
                 parameters.Add(LoggersSet.UserFriendlyLogger);
                 if (addonConfigDirectoryInfo is not null)
                     parameters.Add(addonConfigDirectoryInfo);
-                parameters.Add(addonDispatcher);
+                if (addonDispatcher is not null)
+                    parameters.Add(addonDispatcher);
 
                 availableAddonClone.CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, parameters.ToArray());                
                 if (addonOptionsData is not null)

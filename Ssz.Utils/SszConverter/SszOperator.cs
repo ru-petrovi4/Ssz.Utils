@@ -34,7 +34,7 @@ namespace Ssz.Utils
             switch (sszOperator)
             {
                 case SszOperator.Equal:
-                    return @"=";
+                    return @"==";
                 case SszOperator.NotEqual:
                     return @"!=";
                 case SszOperator.LessThan:

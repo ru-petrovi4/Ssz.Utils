@@ -69,6 +69,7 @@ namespace Ssz.Utils
                 if (Dispatcher is not null)
                     try
                     {
+                        _fileSystemWatcher = new();
                         _fileSystemWatcher.Created += FileSystemWatcherOnEventAsync;
                         _fileSystemWatcher.Changed += FileSystemWatcherOnEventAsync;
                         _fileSystemWatcher.Deleted += FileSystemWatcherOnEventAsync;
@@ -122,13 +123,14 @@ namespace Ssz.Utils
         {
             get
             {
-                return _fileSystemWatcher.EnableRaisingEvents;
+                return _fileSystemWatcher?.EnableRaisingEvents ?? false;
             }
             set
             {
                 if (!value)
                 {
-                    _fileSystemWatcher.EnableRaisingEvents = false;
+                    if (_fileSystemWatcher is not null)
+                        _fileSystemWatcher.EnableRaisingEvents = false;
                 }
                 else
                 {
@@ -590,7 +592,8 @@ namespace Ssz.Utils
 
             List<CsvFileChangedEventArgs> eventArgsList = new();
 
-            _fileSystemWatcher.EnableRaisingEvents = false;
+            if (_fileSystemWatcher is not null)
+                _fileSystemWatcher.EnableRaisingEvents = false;
 
             foreach (var kvp in _csvFilesCollection)
             {
@@ -657,7 +660,8 @@ namespace Ssz.Utils
 
             if (csvFile.DataIsChangedByProgram)
             {
-                _fileSystemWatcher.EnableRaisingEvents = false;
+                if (_fileSystemWatcher is not null)
+                    _fileSystemWatcher.EnableRaisingEvents = false;
 
                 string fileFullName = Path.Combine(CsvDbDirectoryInfo.FullName, csvFile.FileName);
                 try
@@ -744,6 +748,9 @@ namespace Ssz.Utils
 
         private async Task FileSystemWatcherEnableRaisingEventsAsync()
         {
+            if (_fileSystemWatcher is null)
+                return;
+
             for (int i = 0; i < 10; i += 1)
             {
                 try
@@ -767,7 +774,7 @@ namespace Ssz.Utils
         /// </summary>
         private Dictionary<string, CsvFile> _csvFilesCollection;        
 
-        private readonly FileSystemWatcher _fileSystemWatcher = new();
+        private readonly FileSystemWatcher? _fileSystemWatcher;
 
         private volatile bool _fileSystemWatcherOnEventIsProcessing;
 
