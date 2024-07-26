@@ -257,6 +257,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="app.config" />
+    <None Include="Ssz_DataAccessGrpcClient_Opc.rgs">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="Ssz_DataAccessGrpcClient_OpcServer.idl">

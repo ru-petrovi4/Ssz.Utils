@@ -235,6 +235,7 @@ attrib -R  "$(OutDir)%(Filename)%(Extension)"
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OutDir)%(Filename)%(Extension);%(Outputs)</Outputs>
     </CustomBuild>
     <None Include="app.config" />
+    <None Include="Ssz_DataAccessGrpcClient_Opc.rgs" />
     <None Include="Ssz_DataAccessGrpcClient_OpcServer.rgs" />
   </ItemGroup>
   <ItemGroup>
