@@ -125,17 +125,21 @@ namespace Ssz.Dcs.CentralServer
         private static void EncryptAppsettings(ILoggersSet loggersSet)
         {            
             ICertificateLoader certificateLoader = new FilesystemCertificateLoader(ConfigurationCrypterCertificateFileName);
-            IConfigurationCrypter ConfigurationCrypter = new YamlConfigurationCrypter(new RSACrypter(certificateLoader));
-            ConfigurationCrypter.EncryptKeys(@"appsettings.yml", GetKeysToEncrypt().ToHashSet());
-            ConfigurationCrypter.EncryptKeys(@"appsettings.Production.yml", GetKeysToEncrypt().ToHashSet());
+            IConfigurationCrypter configurationCrypter = new YamlConfigurationCrypter(new RSACrypter(certificateLoader));
+            foreach (var yamlConfigurationFilePath in ConfigurationHelper.GetYamlConfigurationFilePaths(null))
+            {
+                configurationCrypter.EncryptKeys(yamlConfigurationFilePath, GetKeysToEncrypt().ToHashSet());
+            }
         }
 
         private static void DecryptAppsettings(ILoggersSet loggersSet)
         {            
             ICertificateLoader certificateLoader = new FilesystemCertificateLoader(ConfigurationCrypterCertificateFileName);
-            IConfigurationCrypter ConfigurationCrypter = new YamlConfigurationCrypter(new RSACrypter(certificateLoader));
-            ConfigurationCrypter.DecryptKeys(@"appsettings.yml", GetKeysToEncrypt().ToHashSet());
-            ConfigurationCrypter.DecryptKeys(@"appsettings.Production.yml", GetKeysToEncrypt().ToHashSet());
+            IConfigurationCrypter configurationCrypter = new YamlConfigurationCrypter(new RSACrypter(certificateLoader));
+            foreach (var yamlConfigurationFilePath in ConfigurationHelper.GetYamlConfigurationFilePaths(null))
+            {
+                configurationCrypter.DecryptKeys(yamlConfigurationFilePath, GetKeysToEncrypt().ToHashSet());
+            }
         }
 
         private static List<string> GetKeysToEncrypt()

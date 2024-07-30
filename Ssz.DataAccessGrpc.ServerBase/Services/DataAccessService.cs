@@ -89,9 +89,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 },
                 context);
 
-            var taskCompletionSource = new TaskCompletionSource<object?>();
-            serverContext.CallbackWorkingTask_CancellationTokenSource.Token.Register(() => taskCompletionSource.SetResult(null));
-            await taskCompletionSource.Task;
+            var token = serverContext.CallbackWorkingTask_CancellationTokenSource.Token;
+            await Task.Run(() => { token.WaitHandle.WaitOne(); });
         }
 
         public override async Task<UpdateContextParamsReply> UpdateContextParams(UpdateContextParamsRequest request, ServerCallContext context)

@@ -100,9 +100,9 @@ namespace Ssz.Xi.Client
             _cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = _cancellationTokenSource.Token;
             
-            _workingTask = Task.Factory.StartNew(async () =>
+            _workingTask = Task.Factory.StartNew(() =>
             { 
-                await WorkingTaskMainAsync(cancellationToken);
+                WorkingTaskMainAsync(cancellationToken).Wait();
             }, TaskCreationOptions.LongRunning);            
 
             foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
@@ -135,7 +135,7 @@ namespace Ssz.Xi.Client
             }
 
             if (_workingTask is not null)
-                await await _workingTask;
+                await _workingTask;
 
             await base.CloseAsync();
         }        
@@ -970,7 +970,7 @@ namespace Ssz.Xi.Client
 
         private DateTime _lastSuccessfulConnectionDateTimeUtc;
 
-        private Task<Task>? _workingTask;
+        private Task? _workingTask;
 
         private CancellationTokenSource? _cancellationTokenSource;
 

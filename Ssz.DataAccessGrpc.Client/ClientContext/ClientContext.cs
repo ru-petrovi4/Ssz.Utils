@@ -185,9 +185,9 @@ namespace Ssz.DataAccessGrpc.Client
 
             _serverContextIsOperational = true;
 
-            var t = Task.Factory.StartNew(async () =>
+            _workingTask = Task.Factory.StartNew(() =>
             {
-                await ReadCallbackMessagesAsync(_callbackMessageStream.ResponseStream, _cancellationTokenSource.Token);
+                ReadCallbackMessagesAsync(_callbackMessageStream.ResponseStream, _cancellationTokenSource.Token).Wait();
             }, TaskCreationOptions.LongRunning);
         }
 
@@ -276,6 +276,8 @@ namespace Ssz.DataAccessGrpc.Client
         #region private fields
 
         private bool _disposed;
+
+        private Task? _workingTask;
 
         private ILogger<GrpcDataAccessProvider> _logger;
 

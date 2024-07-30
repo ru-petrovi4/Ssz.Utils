@@ -79,9 +79,9 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
             _cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = _cancellationTokenSource.Token;
             
-            _workingTask = Task.Factory.StartNew(async ct =>
+            _workingTask = Task.Factory.StartNew(() =>
             {                
-                await WorkingTaskMainAsync(cancellationToken);
+                WorkingTaskMainAsync(cancellationToken).Wait();
             }, TaskCreationOptions.LongRunning);
         }        
 
@@ -552,7 +552,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
 
         private DateTime _lastSuccessfulConnectionDateTimeUtc;
 
-        private Task<Task>? _workingTask;
+        private Task? _workingTask;
 
         private CancellationTokenSource? _cancellationTokenSource;
 

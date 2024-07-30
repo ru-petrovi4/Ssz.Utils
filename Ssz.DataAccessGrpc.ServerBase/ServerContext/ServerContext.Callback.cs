@@ -108,15 +108,19 @@ namespace Ssz.DataAccessGrpc.ServerBase
             {
                 if (cancellationToken.IsCancellationRequested) 
                     break;
-                await Task.Delay(10);
+                await Task.Delay(20, cancellationToken);
                 if (cancellationToken.IsCancellationRequested) 
                     break;
 
                 try
                 {
-                    bool exitTask = await OnLoopInWorkingThreadAsync(cancellationToken);
-                    if (exitTask)
-                        break;
+                    await OnLoopInWorkingThreadAsync(cancellationToken);                    
+                }
+                catch (OperationCanceledException)
+                {
+                }
+                catch when (cancellationToken.IsCancellationRequested)
+                {
                 }
                 catch (Exception ex)
                 {
@@ -129,7 +133,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             Logger.LogDebug(@"ServerContext Callback Thread Exit");
         }
 
-        private async Task<bool> OnLoopInWorkingThreadAsync(CancellationToken cancellationToken)
+        private async Task OnLoopInWorkingThreadAsync(CancellationToken cancellationToken)
         {
             List<ContextStatusMessage> contextStatusMessagesCollection;
             List<ElementValuesCallbackMessage> elementValuesCallbackMessagesCollection;
@@ -156,8 +160,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
                 if (_responseStream is not null)
                 {
-                    if (cancellationToken.IsCancellationRequested)
-                        return true;
+                    cancellationToken.ThrowIfCancellationRequested();
 
                     if (contextStatusMessagesCollection.Count > 0)
                     {
@@ -165,8 +168,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
                         foreach (ContextStatusMessage contextStatusMessage in contextStatusMessagesCollection)
                         {
-                            if (cancellationToken.IsCancellationRequested)
-                                return true;
+                            cancellationToken.ThrowIfCancellationRequested();
 
                             var callbackMessage = new CallbackMessage();
                             callbackMessage.ContextStatus = new ContextStatus
@@ -179,8 +181,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
                     if (!hasAbortingMessage)
                     {
-                        if (cancellationToken.IsCancellationRequested)
-                            return true;
+                        cancellationToken.ThrowIfCancellationRequested();
 
                         if (elementValuesCallbackMessagesCollection.Count > 0)
                         {
@@ -190,8 +191,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             {
                                 foreach (ElementValuesCallback elementValuesCallback in elementValuesCallbackMessage.SplitForCorrectGrpcMessageSize())
                                 {
-                                    if (cancellationToken.IsCancellationRequested)
-                                        return true;
+                                    cancellationToken.ThrowIfCancellationRequested();
 
                                     var callbackMessage = new CallbackMessage
                                     {
@@ -202,8 +202,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             }
                         }
 
-                        if (cancellationToken.IsCancellationRequested)
-                            return true;
+                        cancellationToken.ThrowIfCancellationRequested();
 
                         if (eventMessagesCallbackMessagesCollection.Count > 0)
                         {
@@ -213,8 +212,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             {
                                 foreach (EventMessagesCallback eventMessagesCallback in eventMessagesCallbackMessage.SplitForCorrectGrpcMessageSize())
                                 {
-                                    if (cancellationToken.IsCancellationRequested)
-                                        return true;
+                                    cancellationToken.ThrowIfCancellationRequested();
 
                                     Logger.LogDebug("_responseStream.WriteAsync(callbackMessage)");
                                     var callbackMessage = new CallbackMessage
@@ -226,8 +224,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                             }
                         }
 
-                        if (cancellationToken.IsCancellationRequested)
-                            return true;
+                        cancellationToken.ThrowIfCancellationRequested();
 
                         if (longrunningPassthroughCallbackMessagesCollection.Count > 0)
                         {
@@ -235,8 +232,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
                             foreach (var longrunningPassthroughCallbackMessage in longrunningPassthroughCallbackMessagesCollection)
                             {
-                                if (cancellationToken.IsCancellationRequested)
-                                    return true;
+                                cancellationToken.ThrowIfCancellationRequested();
 
                                 Logger.LogDebug("_responseStream.WriteAsync(callbackMessage)");
                                 var callbackMessage = new CallbackMessage
@@ -262,9 +258,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 {                    
                     contextStatusMessage.TaskCompletionSource.SetResult();
                 }
-            }                    
-
-            return false;
+            }
         }
 
         #endregion
