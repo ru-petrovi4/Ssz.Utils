@@ -108,12 +108,12 @@ namespace Ssz.DataAccessGrpc.Client
             while (true)
             {
                 if (!_serverContextIsOperational || cancellationToken.IsCancellationRequested) 
-                    return;
+                    break;
 
                 try
                 {
-                    if (!await reader.MoveNext(cancellationToken)) 
-                        return;
+                    if (!await reader.MoveNext(cancellationToken))
+                        break;
                 }
                 //catch (RpcException e) when (e.StatusCode == StatusCode.NotFound)
                 //{
@@ -127,16 +127,17 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                     _serverContextIsOperational = false;
                     _pendingClientContextNotificationEventArgs = new ClientContextNotificationEventArgs(ClientContextNotificationType.ReadCallbackMessagesException, null);
-                    return;
+                    break;
                 }
 
-                if (!_serverContextIsOperational || cancellationToken.IsCancellationRequested) 
-                    return;
+                if (!_serverContextIsOperational || cancellationToken.IsCancellationRequested)
+                    break;
 
                 CallbackMessage current = reader.Current;
                 _workingDispatcher.BeginInvoke(ct =>
                 {
-                    if (ct.IsCancellationRequested) return;
+                    if (ct.IsCancellationRequested) 
+                        return;
                     try
                     {
                         switch (current.OptionalMessageCase)

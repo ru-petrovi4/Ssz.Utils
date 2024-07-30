@@ -59,6 +59,14 @@ namespace Ssz.Dcs.CentralServer
 
             IConfiguration configuration = Host.Services.GetRequiredService<IConfiguration>();
             CultureHelper.InitializeUICulture(configuration, logger);
+            
+            string currentDirectory = ConfigurationHelper.GetValue<string>(configuration, ConfigurationConstants.ConfigurationKey_CurrentDirectory, @"");
+            if (currentDirectory != @"")
+            {
+                // Creates all directories and subdirectories in the specified path unless they already exist.
+                Directory.CreateDirectory(currentDirectory);
+                Directory.SetCurrentDirectory(currentDirectory);
+            }
 
             IHostEnvironment hostEnvironment = Host.Services.GetRequiredService<IHostEnvironment>();
             logger.LogDebug($"hostEnvironment.EnvironmentName: {hostEnvironment.EnvironmentName}");
@@ -87,6 +95,11 @@ namespace Ssz.Dcs.CentralServer
 
         private static IHostBuilder CreateHostBuilder(string[] args)
         {
+            var switchMappings = new Dictionary<string, string>()
+            {
+                { @"-cd", ConfigurationConstants.ConfigurationKey_CurrentDirectory }                
+            };
+
             return Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
@@ -98,7 +111,7 @@ namespace Ssz.Dcs.CentralServer
                         crypter.KeysToDecrypt = GetKeysToEncrypt();
                     });
 
-                    config.AddCommandLine(args);
+                    config.AddCommandLine(args, switchMappings);
                 })
                 .ConfigureLogging(
                     builder =>

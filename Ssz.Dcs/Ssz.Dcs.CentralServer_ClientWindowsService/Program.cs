@@ -21,8 +21,6 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
         private static void Main(string[] args)
         {
-            Directory.SetCurrentDirectory(AppContext.BaseDirectory);
-
             var host = CreateHostBuilder(args).Build();
 
             var logger = host.Services.GetRequiredService<ILogger<Program>>();
@@ -31,11 +29,25 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             IConfiguration configuration = host.Services.GetRequiredService<IConfiguration>();
             CultureHelper.InitializeUICulture(configuration, logger);
 
+            string currentDirectory = ConfigurationHelper.GetValue<string>(configuration, ConfigurationConstants.ConfigurationKey_CurrentDirectory, @"");
+            if (currentDirectory != @"")
+            {
+                // Creates all directories and subdirectories in the specified path unless they already exist.
+                Directory.CreateDirectory(currentDirectory);
+                Directory.SetCurrentDirectory(currentDirectory);
+            }
+
             host.Run();
         }
 
-        private static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        private static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            var switchMappings = new Dictionary<string, string>()
+            {
+                { @"-cd", ConfigurationConstants.ConfigurationKey_CurrentDirectory }
+            };
+
+            return Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
                     config.Sources.Clear();
@@ -46,7 +58,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                         crypter.KeysToDecrypt = GetKeysToEncrypt().ToList();
                     });
 
-                    config.AddCommandLine(args);
+                    config.AddCommandLine(args, switchMappings);
                 })
                 .ConfigureLogging(
                     builder =>
@@ -59,6 +71,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                         services.AddHostedService<MainBackgroundService>();
                     })
                 .UseWindowsService();
+        }
 
         /// <summary>
         ///     Separator ':'

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
 using Ssz.Utils.Logging;
 using System;
 using System.Collections.Generic;
@@ -165,7 +166,7 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static bool IsMainProcess(IConfiguration? configuration)
         {
-            return GetValue(configuration, @"IsMainProcess", true);
+            return GetValue(configuration, ConfigurationConstants.ConfigurationKey_IsMainProcess, true);
         }
         
         /// <summary>
