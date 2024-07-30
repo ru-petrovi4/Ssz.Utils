@@ -26,8 +26,8 @@ namespace Ssz.Utils.ConfigurationCrypter.Crypters
 
             using (var certificate = _certificateLoader.LoadCertificate())
             {
-                _privateKey = certificate!.GetRSAPrivateKey();
-                _publicKey = certificate!.GetRSAPublicKey();
+                _privateKey = certificate?.GetRSAPrivateKey();
+                _publicKey = certificate?.GetRSAPublicKey();
             }
         }
 
@@ -39,14 +39,14 @@ namespace Ssz.Utils.ConfigurationCrypter.Crypters
         [return: NotNullIfNotNull(nameof(value))]
         public string? DecryptString(string? value)
         {
-            if (String.IsNullOrEmpty(value))
+            if (String.IsNullOrEmpty(value) || _privateKey is null)
                 return value;
 
 #if NET7_0_OR_GREATER
             Span<byte> buffer = new Span<byte>(new byte[value.Length]);
             if (!Convert.TryFromBase64String(value, buffer, out int bytesParsed))
                 return value;
-            var decryptedBytes = _privateKey!.Decrypt(buffer.Slice(0, bytesParsed), RSAEncryptionPadding.OaepSHA512);
+            var decryptedBytes = _privateKey.Decrypt(buffer.Slice(0, bytesParsed), RSAEncryptionPadding.OaepSHA512);
 #else       
             var encryptedBytes = Convert.FromBase64String(value);
             var decryptedBytes = _privateKey!.Decrypt(encryptedBytes, RSAEncryptionPadding.OaepSHA512);            
@@ -72,10 +72,10 @@ namespace Ssz.Utils.ConfigurationCrypter.Crypters
         [return: NotNullIfNotNull(nameof(value))]
         public string? EncryptString(string? value)
         {
-            if (String.IsNullOrEmpty(value)) 
+            if (String.IsNullOrEmpty(value) || _publicKey is null) 
                 return value;
 
-            var encryptedBytes = _publicKey!.Encrypt(Encoding.UTF8.GetBytes(value), RSAEncryptionPadding.OaepSHA512);
+            var encryptedBytes = _publicKey.Encrypt(Encoding.UTF8.GetBytes(value), RSAEncryptionPadding.OaepSHA512);
 
             return Convert.ToBase64String(encryptedBytes);
         }

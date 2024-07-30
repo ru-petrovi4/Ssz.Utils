@@ -285,7 +285,7 @@ namespace Ssz.Dcs.CentralServer
                         }
                         catch (Exception ex)
                         {
-                            Logger.LogError(ex, @"dbContext error.");
+                            Logger.LogError(ex, @"LaunchedOperator dbContext error.");
                         }
                     }
                     break;
@@ -310,7 +310,7 @@ namespace Ssz.Dcs.CentralServer
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogError(ex, @"dbContext error.");
+                        Logger.LogError(ex, @"ShutdownedOperator dbContext error.");
                     }
                     break;
             }

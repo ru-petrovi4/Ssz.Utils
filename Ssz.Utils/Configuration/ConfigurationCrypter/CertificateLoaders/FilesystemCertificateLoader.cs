@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System.IO;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Ssz.Utils.ConfigurationCrypter.CertificateLoaders
 {
@@ -27,6 +28,8 @@ namespace Ssz.Utils.ConfigurationCrypter.CertificateLoaders
         /// <returns>A X509Certificate2 instance.</returns>
         public X509Certificate2? LoadCertificate()
         {
+            if (!File.Exists(_certificatePath))
+                return null;
             return string.IsNullOrEmpty(_certificatePassword) ?
                 new X509Certificate2(_certificatePath) :
                 new X509Certificate2(_certificatePath, _certificatePassword);

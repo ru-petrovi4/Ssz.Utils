@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Ssz.Utils.Logging;
 using System;
@@ -166,37 +167,21 @@ namespace Ssz.Utils
         {
             return GetValue(configuration, @"IsMainProcess", true);
         }
-
+        
         /// <summary>
-        ///     Uses ProgramDataDirectory configuration key.
-        ///     Returns ProgramDataDirectory full path.
-        ///     Expands environmental variables, if any. 
-        ///     if ProgramDataDirectory is relative path, AppContext.BaseDirectory is used for relation.
-        ///     if ProgramDataDirectory is not configured, returns app current directory.
+        ///     Default is 'Production' environment.
         /// </summary>
-        /// <param name="configuration"></param>
+        /// <param name="hostEnvironment"></param>
         /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        public static string GetProgramDataDirectoryFullName(IConfiguration? configuration)
-        {            
-            string programDataDirectoryFullName = GetValue<string>(configuration, @"ProgramDataDirectory", @"");
-            if (programDataDirectoryFullName != @"")
-            {
-                programDataDirectoryFullName = Environment.ExpandEnvironmentVariables(programDataDirectoryFullName);
+        public static IEnumerable<string> GetYamlConfigurationFilePaths(IHostEnvironment? hostEnvironment)
+        {
+            string? environmentName = hostEnvironment?.EnvironmentName;
+            if (String.IsNullOrEmpty(environmentName))
+                environmentName = @"Production";
 
-                if (!Path.IsPathRooted(programDataDirectoryFullName))
-                    programDataDirectoryFullName = Path.Combine(AppContext.BaseDirectory, programDataDirectoryFullName);
-
-                // Creates all directories and subdirectories in the specified path unless they already exist.
-                Directory.CreateDirectory(programDataDirectoryFullName);
-            }
-            else
-            {
-                programDataDirectoryFullName = Directory.GetCurrentDirectory();
-            }   
-
-            return programDataDirectoryFullName;
-        }
+            yield return $"appsettings.yml";
+            yield return $"appsettings.{environmentName}.yml";            
+        }        
 
         #endregion
     }

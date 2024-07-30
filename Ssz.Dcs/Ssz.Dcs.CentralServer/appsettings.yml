@@ -37,15 +37,12 @@ DcsCentralServerAddonDesc: "Центральный сервер SSZ.DCS"
 AllowedHosts: "*"
 # задается язык сообщений в журналах событий которые доступны через веб интерфейс ИТ-решения возможные значения RU EN
 UICulture: "RU"
-ProgramDataDirectory: "C:\\CDT.CentralServer"
 DataAccessClientUserName: ""
 DataAccessClientPasswordHash: ""
 # sqlite или postgres
 DbType: "sqlite"
 # ConnectionStrings:
-#  MainDbConnection: "Host=localhost;Username=postgres;Password=postgres;Database=dcs;CommandTimeout=3600"  
-# путь до файла сертификата .pfx из которого используются закрытый и открытый ключи для шифрования и расшифровки секций конфигурационного файла, которые не должны храниться в открытом виде
-ConfigurationCrypterCertificateFileName: "appsettings.pfx"
+#  MainDbConnection: "Host=localhost;Username=postgres;Password=postgres;Database=dcs;CommandTimeout=3600"
 ConfigurationCrypter: 
   adapterclient_password: ""
 ---

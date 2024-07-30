@@ -2,27 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>   
-    <OutputType>Exe</OutputType>	
-	<Nullable>enable</Nullable>
-	<LangVersion>Latest</LangVersion>
-	<GenerateDocumentationFile>True</GenerateDocumentationFile>
-	<NoWarn>$(NoWarn);1591</NoWarn>	
-	<Platforms>AnyCPU;x86</Platforms>	
+    <OutputType>Exe</OutputType>  
+  <Nullable>enable</Nullable>
+  <LangVersion>Latest</LangVersion>
+  <GenerateDocumentationFile>True</GenerateDocumentationFile>
+  <NoWarn>$(NoWarn);1591</NoWarn>  
+  <Platforms>AnyCPU;x86</Platforms>  
   </PropertyGroup>
 
   <PropertyGroup>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <GarbageCollectionAdaptationMode>1</GarbageCollectionAdaptationMode>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Content Include="appsettings.Development.yml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="appsettings.yml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup> 
+  </PropertyGroup> 
   
   <ItemGroup>
     <Protobuf Include="Protos\ProcessModelingSessionsManagement.proto" GrpcServices="Server" />
@@ -39,9 +30,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="8.0.0" />
-	<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.0" />
-	<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
-	<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.6.2" />
+  <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.0" />
+  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.6.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -63,24 +54,24 @@
 
   <ItemGroup>
     <None Update="appsettings.pfx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+    <None Update="appsettings.yml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
     <None Update="DcsCentralServer.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
     <None Update="DefaultCertificate.pfx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
-    <None Update="Generate Sertificate.ps1">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>        
+  </ItemGroup>
+
+  <ItemGroup>           
     <None Update="Properties\ResourceStrings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ResourceStrings.cs</LastGenOutput>
-    </None>        
-    <None Update="Simcode_IdentityServer.pfx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>    
+    </None>
   </ItemGroup>  
 
   <ItemGroup>

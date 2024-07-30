@@ -52,13 +52,11 @@ namespace Ssz.Dcs.ControlEngine
                 {
                     config.Sources.Clear();
 
-                    string cryptoCertificateValidFileName = ConfigurationCrypterHelper.GetConfigurationCrypterCertificateFileName(LoggersSet<Program>.Empty);
-                    if (!String.IsNullOrEmpty(cryptoCertificateValidFileName))
-                        config.AddEncryptedAppSettings(hostingContext.HostingEnvironment, crypter =>
-                        {
-                            crypter.CertificatePath = cryptoCertificateValidFileName;
-                            crypter.KeysToDecrypt = GetKeysToEncrypt().ToList();
-                        });
+                    config.AddEncryptedAppSettings(hostingContext.HostingEnvironment, crypter =>
+                    {
+                        crypter.CertificatePath = @"appsettings.pfx";
+                        crypter.KeysToDecrypt = GetKeysToEncrypt().ToList();
+                    });
 
                     config.AddCommandLine(args, switchMappings);
                 })

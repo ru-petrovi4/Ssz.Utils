@@ -38,23 +38,13 @@ namespace Ssz.Utils.ConfigurationCrypter.Extensions
         /// <returns>The current ConfigurationBuilder instance.</returns>
         public static IConfigurationBuilder AddEncryptedAppSettings(
             this IConfigurationBuilder builder, IHostEnvironment hostEnvironment, Action<EncryptedYamlConfigurationSource> configAction)
-        {
-            if (builder is null)
+        {            
+            foreach (var yamlConfigurationFilePath in ConfigurationHelper.GetYamlConfigurationFilePaths(hostEnvironment))
             {
-                throw new ArgumentNullException(nameof(builder));
-            }
-
-            string environmentName = hostEnvironment.EnvironmentName;
-            if (String.IsNullOrEmpty(environmentName))
-                environmentName = @"Production";
-
-            var configurationSource = new EncryptedYamlConfigurationSource { Path = "appsettings.yml", ReloadOnChange = true };
-            var environmentConfigurationSource = new EncryptedYamlConfigurationSource { Path = $"appsettings.{environmentName}.yml", Optional = true, ReloadOnChange = true };
-            configAction?.Invoke(configurationSource);
-            configAction?.Invoke(environmentConfigurationSource);
-
-            AddEncryptedYamlConfig(builder, configurationSource);
-            AddEncryptedYamlConfig(builder, environmentConfigurationSource);
+                var configurationSource = new EncryptedYamlConfigurationSource { Path = yamlConfigurationFilePath, Optional = true, ReloadOnChange = true };                
+                configAction?.Invoke(configurationSource);
+                AddEncryptedYamlConfig(builder, configurationSource);
+            }            
 
             return builder;
         }

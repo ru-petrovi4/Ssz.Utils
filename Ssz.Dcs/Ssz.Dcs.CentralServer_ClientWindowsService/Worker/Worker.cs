@@ -31,7 +31,9 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             Environment = environment;
             ServiceProvider = serviceProvider;
 
-            FilesStoreDirectoryInfo = ProgramDataDirectoryHelper.GetFilesStoreDirectoryInfo(Configuration);
+            // Creates all directories and subdirectories in the specified path unless they already exist.
+            Directory.CreateDirectory(@"FilesStore");
+            FilesStoreDirectoryInfo = new DirectoryInfo(@"FilesStore");            
 
             MainUtilityDataAccessProvider = ActivatorUtilities.CreateInstance<GrpcDataAccessProvider>(ServiceProvider);
 

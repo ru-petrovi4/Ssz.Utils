@@ -121,10 +121,11 @@ namespace Ssz.Dcs.CentralServer
                             dbContext.Remove(originalScenario);
                         }
 
+                        Common.EntityFramework.ProcessModelingSession? dbEnity_ProcessModelingSession = null;
                         var instructorUser = dbContext.Users.FirstOrDefault(u => u.UserName == instructorUserName);
                         if (instructorUser is not null)
                         {
-                            var dbEnity_ProcessModelingSession = new Common.EntityFramework.ProcessModelingSession
+                            dbEnity_ProcessModelingSession = new Common.EntityFramework.ProcessModelingSession
                             {
                                 InstructorUser = instructorUser,
                                 StartDateTimeUtc = DateTime.UtcNow,
@@ -133,11 +134,13 @@ namespace Ssz.Dcs.CentralServer
                                 Plant = plant,
                                 Unit = unit
                             };
-                            dbContext.ProcessModelingSessions.Add(dbEnity_ProcessModelingSession);                            
-                            processModelingSession.DbEnity_ProcessModelingSessionId = dbEnity_ProcessModelingSession.Id;
+                            dbContext.ProcessModelingSessions.Add(dbEnity_ProcessModelingSession);
                         }
 
                         dbContext.SaveChanges();
+
+                        if (dbEnity_ProcessModelingSession is not null)
+                            processModelingSession.DbEnity_ProcessModelingSessionId = dbEnity_ProcessModelingSession.Id;
                     }                    
                 }
             }

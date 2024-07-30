@@ -28,6 +28,11 @@ namespace Ssz.Dcs.CentralServer
     {
         #region public functions 
 
+        /// <summary>
+        ///     Имя файла сертификата .pfx из которого используются закрытый и открытый ключи для шифрования и расшифровки секций конфигурационного файла, которые не должны храниться в открытом виде
+        /// </summary>
+        public const string ConfigurationCrypterCertificateFileName = @"appsettings.pfx";
+
         public static IHost Host { get; private set; } = null!;
 
         #endregion
@@ -44,12 +49,7 @@ namespace Ssz.Dcs.CentralServer
         #region private functions
 
         private static void Main(string[] args)
-        {
-            if (WindowsServiceHelpers.IsWindowsService())
-            {
-                Directory.SetCurrentDirectory(AppContext.BaseDirectory);
-            }
-
+        {            
             Host = CreateHostBuilder(args).Build();
 
             var logger = Host.Services.GetRequiredService<ILogger<Program>>();
@@ -90,15 +90,13 @@ namespace Ssz.Dcs.CentralServer
             return Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
-                    config.Sources.Clear();                                        
+                    config.Sources.Clear();
 
-                    string cryptoCertificateValidFileName = ConfigurationCrypterHelper.GetConfigurationCrypterCertificateFileName(LoggersSet<Program>.Empty);
-                    if (!String.IsNullOrEmpty(cryptoCertificateValidFileName))
-                        config.AddEncryptedAppSettings(hostingContext.HostingEnvironment, crypter =>
-                        {
-                            crypter.CertificatePath = cryptoCertificateValidFileName;
-                            crypter.KeysToDecrypt = GetKeysToEncrypt().ToList();
-                        });
+                    config.AddEncryptedAppSettings(hostingContext.HostingEnvironment, crypter =>
+                    {
+                        crypter.CertificatePath = ConfigurationCrypterCertificateFileName;
+                        crypter.KeysToDecrypt = GetKeysToEncrypt();
+                    });
 
                     config.AddCommandLine(args);
                 })
@@ -125,38 +123,29 @@ namespace Ssz.Dcs.CentralServer
         }
 
         private static void EncryptAppsettings(ILoggersSet loggersSet)
-        {
-            string cryptoCertificateValidFileName = ConfigurationCrypterHelper.GetConfigurationCrypterCertificateFileName(loggersSet);
-            if (String.IsNullOrEmpty(cryptoCertificateValidFileName))
-                return;
-
-            //ICertificateLoader certificateLoader = new FilesystemCertificateLoader(Path.Combine(Directory.GetCurrentDirectory(), AppsettingsCertificateFileName));
-            ICertificateLoader certificateLoader = new FilesystemCertificateLoader(cryptoCertificateValidFileName);
+        {            
+            ICertificateLoader certificateLoader = new FilesystemCertificateLoader(ConfigurationCrypterCertificateFileName);
             IConfigurationCrypter ConfigurationCrypter = new YamlConfigurationCrypter(new RSACrypter(certificateLoader));
-            ConfigurationCrypter.EncryptKeys(@"appsettings.yml", GetKeysToEncrypt());
-            ConfigurationCrypter.EncryptKeys(@"appsettings.Production.yml", GetKeysToEncrypt());
+            ConfigurationCrypter.EncryptKeys(@"appsettings.yml", GetKeysToEncrypt().ToHashSet());
+            ConfigurationCrypter.EncryptKeys(@"appsettings.Production.yml", GetKeysToEncrypt().ToHashSet());
         }
 
         private static void DecryptAppsettings(ILoggersSet loggersSet)
-        {
-            string cryptoCertificateValidFileName = ConfigurationCrypterHelper.GetConfigurationCrypterCertificateFileName(loggersSet);
-            if (String.IsNullOrEmpty(cryptoCertificateValidFileName))
-                return;
-
-            ICertificateLoader certificateLoader = new FilesystemCertificateLoader(cryptoCertificateValidFileName);
+        {            
+            ICertificateLoader certificateLoader = new FilesystemCertificateLoader(ConfigurationCrypterCertificateFileName);
             IConfigurationCrypter ConfigurationCrypter = new YamlConfigurationCrypter(new RSACrypter(certificateLoader));
-            ConfigurationCrypter.DecryptKeys(@"appsettings.yml", GetKeysToEncrypt());
-            ConfigurationCrypter.DecryptKeys(@"appsettings.Production.yml", GetKeysToEncrypt());
+            ConfigurationCrypter.DecryptKeys(@"appsettings.yml", GetKeysToEncrypt().ToHashSet());
+            ConfigurationCrypter.DecryptKeys(@"appsettings.Production.yml", GetKeysToEncrypt().ToHashSet());
         }
 
-        private static HashSet<string> GetKeysToEncrypt()
-        {                 
-            HashSet<string> keysToEncrypt = new()
+        private static List<string> GetKeysToEncrypt()
+        {
+            return new()
             {
                 $"Kestrel:Certificates:Default:Password",
                 $"ConnectionStrings:MainDbConnection",
-            };            
-            return keysToEncrypt;
+                $"ConfigurationCrypter"
+            };
         }
 
         #endregion

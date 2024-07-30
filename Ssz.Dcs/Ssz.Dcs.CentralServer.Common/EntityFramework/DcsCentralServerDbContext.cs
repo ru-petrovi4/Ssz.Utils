@@ -6,6 +6,9 @@ using System.IO;
 
 namespace Ssz.Dcs.CentralServer.Common.EntityFramework
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class SqliteDcsCentralServerDbContext : DcsCentralServerDbContext
     {
         #region construction and destruction
@@ -25,9 +28,7 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string programDataDirectoryFullName = ConfigurationHelper.GetProgramDataDirectoryFullName(_configuration);
-
-            optionsBuilder.UseSqlite("Data Source=" + Path.Combine(programDataDirectoryFullName, @"DcsCentralServer.db"),
+            optionsBuilder.UseSqlite(@"Data Source=DcsCentralServer.db",
                     o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
                 .EnableThreadSafetyChecks(false);
         }
@@ -41,6 +42,9 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
         #endregion
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class NpgsqlDcsCentralServerDbContext : DcsCentralServerDbContext
     {
         #region construction and destruction
@@ -75,12 +79,7 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
     }
 
     /// <summary>
-    ///     To add migration: 
-    ///     Startup project - Ssz.Dcs.CentralServer    
-    ///     Default project of Package Management Console (PMC) - Ssz.Dcs.CentralServer
-    ///     In PMC - 'add-migration name_of_migration'
-    ///     To update the DB:
-    ///     In PMC - 'update-database'
+    /// 
     /// </summary>
     public class DcsCentralServerDbContext : DbContext
     {
@@ -171,9 +170,7 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
                 }
                 else if (String.Equals(dbType, DbConstants.ConfigurationValue_DbType_Sqlite, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    string programDataDirectoryFullName = ConfigurationHelper.GetProgramDataDirectoryFullName(_configuration);
-
-                    optionsBuilder.UseSqlite("Data Source=" + Path.Combine(programDataDirectoryFullName, @"DcsCentralServer.db"),
+                    optionsBuilder.UseSqlite(@"Data Source=DcsCentralServer.db",
                             o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
                         .EnableThreadSafetyChecks(false);                    
                 }

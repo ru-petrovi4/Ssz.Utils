@@ -1,8 +1,4 @@
-﻿appsettings.yml всегда ищется в ContentDirectory - Current Directory
-Если ProgramDataDirectory не задана, то это Current Directory
-
-
-Константы для SystemName см. в Ssz.Dcs.CentralServer.Common/DataAccessConstants.cs
+﻿Константы для SystemName см. в Ssz.Dcs.CentralServer.Common/DataAccessConstants.cs
 SystemName это либо: 
 - "" - Utility Context
 - "DCS" - DCS Mode

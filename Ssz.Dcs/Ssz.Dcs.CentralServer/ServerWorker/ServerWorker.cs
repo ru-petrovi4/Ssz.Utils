@@ -42,12 +42,16 @@ namespace Ssz.Dcs.CentralServer
             _addonsManager = addonsManager;
             _dbContextFactory = dbContextFactory;
 
-            FilesStoreDirectoryInfo = ProgramDataDirectoryHelper.GetFilesStoreDirectoryInfo(_configuration);
+            // Creates all directories and subdirectories in the specified path unless they already exist.
+            Directory.CreateDirectory(@"FilesStore");
+            FilesStoreDirectoryInfo = new DirectoryInfo(@"FilesStore");
 
             ServerContextAddedOrRemoved += On_ServerContextAddedOrRemoved;
-
+            
+            // Creates all directories and subdirectories in the specified path unless they already exist.
+            Directory.CreateDirectory(@"CsvDb");
             _csvDb = ActivatorUtilities.CreateInstance<CsvDb>(
-                _serviceProvider, ProgramDataDirectoryHelper.GetCsvDbDirectoryInfo(_configuration), ThreadSafeDispatcher);
+                _serviceProvider, new DirectoryInfo(@"CsvDb"), ThreadSafeDispatcher);
             //_csvDb.CsvFileChanged += CsvDbOnCsvFileChanged;
             //CsvDbOnCsvFileChanged(CsvFileChangeAction.Added, null);
                         

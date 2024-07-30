@@ -9,6 +9,5 @@ Kestrel:
   Endpoints: 
     HttpsDefaultCert: 
       Url: "https://*:60060"
-ProgramDataDirectory: "C:\\CDT.CentralServer"
 DbType: "sqlite"
 ---
