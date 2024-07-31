@@ -1,0 +1,4 @@
+﻿!AddonInstanceId,!AddonIdentifier,!IsSwitchedOn
+DataAccessClient.1,DataAccessClient,false
+DcsCentralServer.1,DcsCentralServer,true
+ExperionEventsJournalFilesImporter.1,ExperionEventsJournalFilesImporter,false

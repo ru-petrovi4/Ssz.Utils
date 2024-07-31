@@ -45,21 +45,7 @@ namespace Ssz.Dcs.CentralServer
 
         #endregion
 
-        #region private functions
-
-        private CentralServer.EngineSession[] GetEngineSessions()
-        {
-            var result = new List<CentralServer.EngineSession>();
-
-            result.AddRange(Dcs_EngineSessions);
-
-            foreach (var processModelingSession in _processModelingSessionsCollection.Values)
-            {
-                result.AddRange(processModelingSession.EngineSessions);
-            }
-
-            return result.ToArray();
-        }
+        #region private functions        
 
         /// <summary>
         ///     Gets new instance of DataAccessProviderGetter Addon, not listed in Addons.csv
@@ -105,27 +91,7 @@ namespace Ssz.Dcs.CentralServer
             #region public functions            
 
             #endregion            
-        }
-
-        private class PlatInstructor_TrainingEngineSession : EngineSession
-        {
-            #region construction and destruction
-
-            public PlatInstructor_TrainingEngineSession(string engineSessionId, DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon) :
-                base(engineSessionId, dataAccessProviderGetter_Addon)
-            {
-            }
-
-            #endregion
-
-            #region public functions
-
-            public string SystemNameBase { get; set; } = @"";
-
-            public string SystemNameInstance { get; set; } = @"";
-
-            #endregion
-        }        
+        }  
     }
 }
 

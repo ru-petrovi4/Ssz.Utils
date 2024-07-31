@@ -1,0 +1,16 @@
+﻿!Identifier,!Desc,!IsMultiInstance,!IsAlwaysSwitchedOn
+DataAccessClient,Data Access клиент,True,False
+DataAccessClient.%(DataAccessClient_ContextParams),Context Params,""
+DataAccessClient.%(DataAccessClient_DangerousAcceptAnyServerCertificate),Принимать любые сертификаты сервера (небезопасно),true
+DataAccessClient.%(DataAccessClient_ServerAddress),Адрес Data Access сервера,""
+DataAccessClient.%(DataAccessClient_SystemNameToConnect),System Name для подключения,DCS
+DcsCentralServer,Центральный сервер SSZ.DCS,False,True
+ExperionEventsJournalFilesImporter,Автоматический импорт файлов журналов событий - Experion,False,False
+ExperionEventsJournalFilesImporter.%(CommonEventMessageFieldsToAdd),"",UnitIdentifier=MLSP
+ExperionEventsJournalFilesImporter.%(JournalFiles_DateTimeFormat),Формат времени в файлах журналов,dd.MM.yyyy H:mm:ss.FFFFF
+ExperionEventsJournalFilesImporter.%(JournalFiles_Path),Путь до файлов журналов,""
+ExperionEventsJournalFilesImporter.%(JournalFiles_SourceTimeZone),"Часовой пояс, в котором сохранены файлы журналов",3
+ExperionEventsJournalFilesImporter.%(JournalFiles_Type),"Тип файлов журналов (RPT, CSV, HTM)",RPT
+ExperionEventsJournalFilesImporter.%(JournalFilesDeleteScanPeriodSeconds),Период сканирования для удаления ненужных файлов журналов (секунды),3600
+ExperionEventsJournalFilesImporter.%(RptFiles_Encoding),Кодировка RPT файлов журналов,windows-1251
+ExperionEventsJournalFilesImporter.%(ScanPeriodSeconds),Период сканирования файлов журналов (секунды),3600
