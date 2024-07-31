@@ -254,9 +254,9 @@ namespace Ssz.Dcs.CentralServer
                 {
                     processModelingSession = _processModelingSessionsCollection.TryGetValue(processModelingSessionId);
 
-                    if (processModelingSession is null && processModelingSessionId.StartsWith(DataAccessConstants.XiProcessModelingSessionId, StringComparison.InvariantCultureIgnoreCase))
+                    if (processModelingSession is null && processModelingSessionId.StartsWith(DataAccessConstants.PlatformXiProcessModelingSessionId, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        string systemName = processModelingSessionId.Substring(DataAccessConstants.XiProcessModelingSessionId.Length);
+                        string systemName = processModelingSessionId.Substring(DataAccessConstants.PlatformXiProcessModelingSessionId.Length);
 
                         processModelingSession = new ProcessModelingSession(
                             processModelingSessionId,
@@ -275,6 +275,35 @@ namespace Ssz.Dcs.CentralServer
                         DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewPreparedDataAccessProviderAddon(
                             _serviceProvider,
                             $"http://localhost:60080/SimcodePlatServer/ServerDiscovery",
+                            systemName,
+                            new CaseInsensitiveDictionary<string?> { { @"XiSystem", systemName } },
+                            ThreadSafeDispatcher);
+                        var platInstructorEngineSession = new EngineSession(Guid.NewGuid().ToString(), dataAccessProviderGetter_Addon);
+                        processModelingSession.EngineSessions.Add(platInstructorEngineSession);
+
+                        _processModelingSessionsCollection.Add(processModelingSession.ProcessModelingSessionId, processModelingSession);
+                    }
+                    else if (processModelingSession is null && processModelingSessionId.StartsWith(DataAccessConstants.UsoXiProcessModelingSessionId, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        string systemName = processModelingSessionId.Substring(DataAccessConstants.UsoXiProcessModelingSessionId.Length);
+
+                        processModelingSession = new ProcessModelingSession(
+                            processModelingSessionId,
+                            @"",
+                            @"",
+                            @"",
+                            @"",
+                            @"",
+                            0,
+                            @"")
+                        {
+                            ProcessModelingSessionStatus = ProcessModelingSessionConstants.Initiated,
+                            ForTimeout_LastDateTimeUtc = DateTime.UtcNow,
+                        };
+
+                        DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewPreparedDataAccessProviderAddon(
+                            _serviceProvider,
+                            $"http://localhost:60080/HoneywellUsoXiServer/ServerDiscovery",
                             systemName,
                             new CaseInsensitiveDictionary<string?> { { @"XiSystem", systemName } },
                             ThreadSafeDispatcher);
@@ -391,16 +420,29 @@ namespace Ssz.Dcs.CentralServer
                     {
                         engineSessionId = Guid.NewGuid().ToString();
                         var systemNameBase = Path.GetFileNameWithoutExtension(mvDsFileInfo.Name);                        
-                        string systemName = systemNameBase + @"." + engineSessionId;
+                        string xiSystemName = systemNameBase + @"." + engineSessionId;
 
-                        Generate_LaunchEngine_SystemEvent(enginesHostInfo.WorkstationName, processModelingSession, DsFilesStoreDirectoryType.PlatInstructorBin, DsFilesStoreDirectoryType.PlatInstructorData, mvDsFileInfo.Name, systemName);                        
+                        Generate_LaunchEngine_SystemEvent(enginesHostInfo.WorkstationName, processModelingSession, DsFilesStoreDirectoryType.PlatInstructorBin, DsFilesStoreDirectoryType.PlatInstructorData, mvDsFileInfo.Name, xiSystemName);
 
-                        DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon2 = GetNewPreparedDataAccessProviderAddon(
-                            _serviceProvider,
-                            $"http://{enginesHostInfo.WorkstationName}:60080/SimcodePlatServer/ServerDiscovery",
-                            systemName,
-                            new CaseInsensitiveDictionary<string?> { { @"XiSystem", systemName } },
-                            ThreadSafeDispatcher);
+                        DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon2;
+                        if (String.Equals(enginesHostInfo.WorkstationName, @"localhost", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            dataAccessProviderGetter_Addon2 = GetNewPreparedDataAccessProviderAddon(
+                                _serviceProvider,
+                                $"http://localhost:60080/SimcodePlatServer/ServerDiscovery",
+                                xiSystemName,
+                                new CaseInsensitiveDictionary<string?> { { @"XiSystem", xiSystemName } },
+                                ThreadSafeDispatcher);
+                        }
+                        else
+                        {
+                            dataAccessProviderGetter_Addon2 = GetNewPreparedDataAccessProviderAddon(
+                                _serviceProvider,
+                                $"https://{enginesHostInfo.WorkstationName}:60060",
+                                "PLATFORM" + xiSystemName,
+                                new CaseInsensitiveDictionary<string?>(),
+                                ThreadSafeDispatcher);
+                        }
                         var platInstructorEngineSession = new EngineSession(engineSessionId, dataAccessProviderGetter_Addon2);
                         processModelingSession.EngineSessions.Add(platInstructorEngineSession);
                         ProcessModeling_EngineSessions.Add(engineSessionId, controlEngineSession);

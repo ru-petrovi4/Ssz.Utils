@@ -2,8 +2,10 @@
 SystemName это либо: 
 - "" - Utility Context
 - "DCS" - DCS Mode
-- "MODEL" - Default process modeling session
-- "<Process modeling session ID>" - Pprocess modeling session with specific ID
+- "DEFAULT" - Default process modeling session
+- "PLATFORM<XiSystem>" - Platform Xi process modeling session with SystemName=<XiSystem>
+- "USO<XiSystem>" - USO Xi process modeling session with SystemName=<XiSystem>
+- "<ID>" - Pprocess modeling session with specific <ID>
 
 
 ///     Startup project - Ssz.Dcs.CentralServer    
