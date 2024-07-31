@@ -162,14 +162,13 @@ namespace Ssz.Dcs.CentralServer
 
         public override void LongrunningPassthroughCancel(ServerContext serverContext, string jobId)
         {
-
         }
 
         #endregion
 
         #region private functions    
 
-        private void LongrunningPassthrough_ProcessContext(ServerContext serverContext, string jobId, string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
+        private async void LongrunningPassthrough_ProcessContext(ServerContext serverContext, string jobId, string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
             ObservableCollection<CentralServer.EngineSession> engineSessions = GetEngineSessions(serverContext);
 
@@ -208,42 +207,39 @@ namespace Ssz.Dcs.CentralServer
                     tasks.Add(engineSession.DataAccessProvider.LongrunningPassthroughAsync(recipientPath, passthroughName, dataToSend, null));
                 }
 
-            Task.Factory.StartNew(async () =>
+            bool allSucceeded = true;
+            foreach (var task in tasks)
             {
-                bool allSucceeded = true;
-                foreach (var task in tasks)
+                try
                 {
-                    try
-                    {
-                        if (!StatusCodes.IsGood(await await task))
-                            allSucceeded = false;
-                    }
-                    catch
-                    {
+                    if (!StatusCodes.IsGood(await await task))
                         allSucceeded = false;
-                    }
                 }
-                if (!allSucceeded)
+                catch
                 {
-                    serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
-                    {
-                        JobId = jobId,
-                        ProgressPercent = 100,
-                        ProgressLabel = Resources.ResourceManager.GetString(Properties.ResourceStrings.OperationError_ProgressLabel, serverContext.CultureInfo),
-                        StatusCode = StatusCodes.BadInvalidArgument
-                    });
+                    allSucceeded = false;
                 }
-                else
+            }
+            if (!allSucceeded)
+            {
+                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
                 {
-                    serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
-                    {
-                        JobId = jobId,
-                        ProgressPercent = 100,
-                        ProgressLabel = Resources.ResourceManager.GetString(Properties.ResourceStrings.OperationCompleted_ProgressLabel, serverContext.CultureInfo),
-                        StatusCode = StatusCodes.Good
-                    });
-                }
-            }, TaskCreationOptions.LongRunning);            
+                    JobId = jobId,
+                    ProgressPercent = 100,
+                    ProgressLabel = Resources.ResourceManager.GetString(Properties.ResourceStrings.OperationError_ProgressLabel, serverContext.CultureInfo),
+                    StatusCode = StatusCodes.BadInvalidArgument
+                });
+            }
+            else
+            {
+                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                {
+                    JobId = jobId,
+                    ProgressPercent = 100,
+                    ProgressLabel = Resources.ResourceManager.GetString(Properties.ResourceStrings.OperationCompleted_ProgressLabel, serverContext.CultureInfo),
+                    StatusCode = StatusCodes.Good
+                });
+            }
         }
 
         /// <summary>

@@ -50,12 +50,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
             ContextParams = contextParams;
 
             ContextId = Guid.NewGuid().ToString();
-
-            var token = CallbackWorkingTask_CancellationTokenSource.Token;
-            _callbackWorkingTask = Task.Factory.StartNew(() =>
-            {
-                CallbackWorkingTaskMainAsync(token).Wait();
-            }, TaskCreationOptions.LongRunning);
+            
+            _callbackWorkingTask = CallbackWorkingTaskMainAsync(CallbackWorkingTask_CancellationTokenSource.Token);
         }
 
         /// <summary>

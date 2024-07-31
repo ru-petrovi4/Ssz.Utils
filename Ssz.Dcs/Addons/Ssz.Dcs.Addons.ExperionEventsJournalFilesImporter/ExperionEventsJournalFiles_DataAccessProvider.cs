@@ -79,10 +79,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
             _cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = _cancellationTokenSource.Token;
             
-            _workingTask = Task.Factory.StartNew(() =>
-            {                
-                WorkingTaskMainAsync(cancellationToken).Wait();
-            }, TaskCreationOptions.LongRunning);
+            _workingTask = WorkingTaskMainAsync(cancellationToken);
         }        
 
         /// <summary>
@@ -136,12 +133,16 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
 
         private async Task WorkingTaskMainAsync(CancellationToken cancellationToken)
         {
+            await Task.Delay(0);
+
             Stopwatch stopwatch = new();
             while (true)
             {
-                if (cancellationToken.IsCancellationRequested) break;
+                if (cancellationToken.IsCancellationRequested) 
+                    break;
                 await Task.Delay(1000);
-                if (cancellationToken.IsCancellationRequested) break;
+                if (cancellationToken.IsCancellationRequested) 
+                    break;
 
                 var nowUtc = DateTime.UtcNow;
                 

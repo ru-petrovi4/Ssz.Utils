@@ -343,7 +343,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             }
         }
         
-        public void DoWork(CancellationToken ct, DateTime nowUtc)
+        public async Task DoWorkAsync(CancellationToken ct, DateTime nowUtc)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
@@ -351,7 +351,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
             LastSuccessfulConnectionDateTimeUtc = nowUtc;
 
-            var t = _clientContext.KeepContextAliveIfNeededAsync(ct, nowUtc);
+            await _clientContext.KeepContextAliveIfNeededAsync(ct, nowUtc);
             _clientContext.ProcessPendingClientContextNotification();            
         }
 

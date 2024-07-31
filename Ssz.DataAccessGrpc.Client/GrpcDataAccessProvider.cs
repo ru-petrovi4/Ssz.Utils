@@ -121,10 +121,7 @@ namespace Ssz.DataAccessGrpc.Client
             _cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = _cancellationTokenSource.Token;
             
-            _workingTask = Task.Factory.StartNew(() =>
-            {                
-                WorkingTaskMainAsync(cancellationToken).Wait();
-            }, TaskCreationOptions.LongRunning);
+            _workingTask = WorkingTaskMainAsync(cancellationToken);
 
             foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
             {
@@ -624,8 +621,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             await WorkingThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
 
-            if (cancellationToken.IsCancellationRequested) 
-                return;
+            cancellationToken.ThrowIfCancellationRequested();
 
             if (!_clientContextManager.ConnectionExists)
             {
@@ -644,8 +640,8 @@ namespace Ssz.DataAccessGrpc.Client
                     сallbackDispatcher = CallbackDispatcher;
                     if (сallbackDispatcher is not null)
                     {
-                        if (cancellationToken.IsCancellationRequested) 
-                            return;
+                        cancellationToken.ThrowIfCancellationRequested();
+
                         try
                         {
                             сallbackDispatcher.BeginInvoke(ct =>
@@ -694,8 +690,8 @@ namespace Ssz.DataAccessGrpc.Client
                         сallbackDispatcher = CallbackDispatcher;
                         if (сallbackDispatcher is not null)
                         {
-                            if (cancellationToken.IsCancellationRequested) 
-                                return;
+                            cancellationToken.ThrowIfCancellationRequested();
+
                             try
                             {
                                 сallbackDispatcher.BeginInvoke(ct =>
@@ -717,23 +713,15 @@ namespace Ssz.DataAccessGrpc.Client
 
             if (IsInitialized && _clientContextManager.ConnectionExists)
             {
-                if (cancellationToken.IsCancellationRequested)
-                    return;
+                cancellationToken.ThrowIfCancellationRequested();
 
                 await _clientElementValueListManager.SubscribeAsync(_clientContextManager, CallbackDispatcher,
                     OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, cancellationToken);
                 await _clientEventListManager.SubscribeAsync(_clientContextManager, CallbackDispatcher, Options.EventListCallbackIsEnabled, cancellationToken);
 
-                if (cancellationToken.IsCancellationRequested)
-                    return;
+                cancellationToken.ThrowIfCancellationRequested();
 
-                try
-                {
-                    _clientContextManager.DoWork(cancellationToken, nowUtc);
-                }
-                catch
-                {
-                }
+                await _clientContextManager.DoWorkAsync(cancellationToken, nowUtc);
             }
         }
 
@@ -785,7 +773,9 @@ namespace Ssz.DataAccessGrpc.Client
         {
             if (!IsInitialized)
                 return;
-            
+
+            await Task.Delay(0).ConfigureAwait(false);
+
             bool eventListCallbackIsEnabled = Options.ElementValueListCallbackIsEnabled;            
 
             if (eventListCallbackIsEnabled) 
@@ -793,13 +783,28 @@ namespace Ssz.DataAccessGrpc.Client
 
             while (true)
             {
-                if (cancellationToken.IsCancellationRequested) break;
-                await Task.Delay(10);
-                if (cancellationToken.IsCancellationRequested) break;                
+                if (cancellationToken.IsCancellationRequested) 
+                    break;
+                await Task.Delay(20);
+                if (cancellationToken.IsCancellationRequested) 
+                    break;                
 
-                var nowUtc = DateTime.UtcNow;                
+                var nowUtc = DateTime.UtcNow;
 
-                await DoWorkAsync(nowUtc, cancellationToken);
+                try
+                {
+                    await DoWorkAsync(nowUtc, cancellationToken);
+                }
+                catch (OperationCanceledException)
+                {
+                }
+                catch when (cancellationToken.IsCancellationRequested)
+                {
+                }
+                catch (Exception ex)
+                {
+                    LoggersSet.Logger.LogWarning(ex, @"ServerContext Callback Thread Exception");
+                }                
             }
 
             Unsubscribe(true);

@@ -100,10 +100,7 @@ namespace Ssz.Xi.Client
             _cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = _cancellationTokenSource.Token;
             
-            _workingTask = Task.Factory.StartNew(() =>
-            { 
-                WorkingTaskMainAsync(cancellationToken).Wait();
-            }, TaskCreationOptions.LongRunning);            
+            _workingTask = WorkingTaskMainAsync(cancellationToken);            
 
             foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
             {
@@ -525,6 +522,8 @@ namespace Ssz.Xi.Client
 
         private async Task WorkingTaskMainAsync(CancellationToken cancellationToken)
         {
+            await Task.Delay(0).ConfigureAwait(false);
+
             _xiServerProxy = new XiServerProxy();
             
             bool eventListCallbackIsEnabled = Options.EventListCallbackIsEnabled;            
@@ -535,7 +534,7 @@ namespace Ssz.Xi.Client
             while (true)
             {
                 if (cancellationToken.IsCancellationRequested) break;
-                await Task.Delay(10);
+                await Task.Delay(20);
                 if (cancellationToken.IsCancellationRequested) break;                                
 
                 var nowUtc = DateTime.UtcNow;

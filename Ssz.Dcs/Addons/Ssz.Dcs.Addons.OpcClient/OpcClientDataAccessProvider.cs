@@ -102,10 +102,7 @@ namespace Ssz.Dcs.Addons.OpcClient
             _cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = _cancellationTokenSource.Token;
             
-            _workingTask = Task.Factory.StartNew(() =>
-            { 
-                WorkingTaskMainAsync(cancellationToken).Wait();
-            }, TaskCreationOptions.LongRunning);            
+            _workingTask = WorkingTaskMainAsync(cancellationToken);            
 
             foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
             {
@@ -530,6 +527,8 @@ namespace Ssz.Dcs.Addons.OpcClient
 
         private async Task WorkingTaskMainAsync(CancellationToken cancellationToken)
         {
+            await Task.Delay(0);
+
             _xiServerProxy = new XiServerProxy();
             
             bool eventListCallbackIsEnabled = Options.EventListCallbackIsEnabled;            
@@ -540,7 +539,7 @@ namespace Ssz.Dcs.Addons.OpcClient
             while (true)
             {
                 if (cancellationToken.IsCancellationRequested) break;
-                await Task.Delay(10);
+                await Task.Delay(20);
                 if (cancellationToken.IsCancellationRequested) break;                                
 
                 var nowUtc = DateTime.UtcNow;

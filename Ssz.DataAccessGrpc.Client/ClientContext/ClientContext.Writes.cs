@@ -225,8 +225,6 @@ namespace Ssz.DataAccessGrpc.Client
 
         #region private fields
 
-        private readonly CaseInsensitiveDictionary<DataChunk> _incompletePassthroughRepliesCollection = new();
-
         /// <summary>
         ///     [JobId, IncompleteLongrunningPassthroughRequest]
         /// </summary>

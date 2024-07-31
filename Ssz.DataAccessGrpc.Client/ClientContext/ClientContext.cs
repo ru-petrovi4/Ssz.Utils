@@ -185,10 +185,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             _serverContextIsOperational = true;
 
-            _workingTask = Task.Factory.StartNew(() =>
-            {
-                ReadCallbackMessagesAsync(_callbackMessageStream.ResponseStream, _cancellationTokenSource.Token).Wait();
-            }, TaskCreationOptions.LongRunning);
+            _workingTask = ReadCallbackMessagesAsync(_callbackMessageStream.ResponseStream, _cancellationTokenSource.Token);
         }
 
         public async Task KeepContextAliveIfNeededAsync(CancellationToken ct, DateTime nowUtc)

@@ -79,7 +79,7 @@ namespace Ssz.Dcs.CentralServer
                 new AddonsManagerOptions
                 {
                     AddonsSearchPattern = @"Ssz.Dcs.Addons.*.dll",
-                    CanModifyAddonsCsvFiles = true
+                    CanModifyAddonsCsvFiles = ConfigurationHelper.IsMainProcess(_configuration)
                 });
         }
 

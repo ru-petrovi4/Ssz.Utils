@@ -105,6 +105,8 @@ namespace Ssz.DataAccessGrpc.Client
 
         private async Task ReadCallbackMessagesAsync(IAsyncStreamReader<CallbackMessage> reader, CancellationToken cancellationToken)
         {
+            await Task.Delay(0);
+
             while (true)
             {
                 if (!_serverContextIsOperational || cancellationToken.IsCancellationRequested) 
