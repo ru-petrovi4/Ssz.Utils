@@ -189,7 +189,10 @@ namespace Ssz.DataAccessGrpc.Client
             }
 
             if (_workingTask is not null)
+            {
                 await _workingTask;
+                _workingTask = null;
+            }
 
             await base.CloseAsync();
         }
@@ -794,10 +797,7 @@ namespace Ssz.DataAccessGrpc.Client
                 try
                 {
                     await DoWorkAsync(nowUtc, cancellationToken);
-                }
-                catch (OperationCanceledException)
-                {
-                }
+                }                
                 catch when (cancellationToken.IsCancellationRequested)
                 {
                 }

@@ -31,7 +31,7 @@ Kestrel:
       # имя файла сертификата. Должен быть расположен в папке данных центрального сервера ПАЗ-Чек
       Path: "DefaultCertificate.pfx"
       # пароль от файла сертификата
-      Password: "identityserver"
+      Password: "pLBr8qM/UTmUD0TTRv2zrMYRurkDONoMb73zNHAXBfBQI4F9EmTKt+QYaajfN/2vvNwsdRGnGVImtprKzK70aMPe2QFGivF3X3jH1j2dxvo8fJyxQBYjm5qAi8HZiHK5hDNsq0wjERAoKoDuHafd8dQ0JeSH0XKLZi1bCX1kpZxXNJ/doWPsgRe1PouZnATS6NHGGhwHtozAsS/pxTuUcpBq6/IqP+PkV4K+JtsDMZuHNqLpH0nyxMRoefDhSwTflCdbKyfSp0f+XDt14D1e0cX8SU1frowMB9VddSJpHsrCXPaG2z0Beja2V6ivqm8y0QtJ3j6r8IOr0rLZzmb20S/XizGFhtmIqZwQ0W/Z3Y+t/nP3BPmvKh0hDTrUC8BC7l05S+ryHnpJO1jTYhkJw3YFUx0zBoePUAyQxDuEoTEodJ+0ItjB7oeqoVdriWBngMLJatxZ469PSRp5mSp1tR9RVa14atLUfKy11yB2SwoSyGsafE2cbXXdLHWtUxBJdgXuOfyoj0hWG/NWTmlJB5q5gIIET5QhlK37TOIQ3AJOXfN0Ox6Je7apDCY1IPFxozUKX2cC8gKMPZw7EdH0FrQ02gnjYqdpOStg9razvEYHsQwuPHLYg3bKv0sKTpk1Q4jTAcBAQ6YWVJsLyHuR0QDUuGt7cS0hwBoUtTEDEj0="
       AllowInvalid: "true"
 DcsCentralServerAddonDesc: "Центральный сервер SSZ.DCS"
 AllowedHosts: "*"
@@ -43,6 +43,8 @@ DataAccessClientPasswordHash: ""
 DbType: "sqlite"
 # ConnectionStrings:
 #  MainDbConnection: "Host=localhost;Username=postgres;Password=postgres;Database=dcs;CommandTimeout=3600"
-ConfigurationCrypter: 
+ConfigurationCrypter:
   adapterclient_password: ""
----
+...
+--- 
+...

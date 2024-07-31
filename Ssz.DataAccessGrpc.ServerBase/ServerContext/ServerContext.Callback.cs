@@ -115,10 +115,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 try
                 {
                     await OnLoopInWorkingThreadAsync(cancellationToken);                    
-                }
-                catch (OperationCanceledException)
-                {                    
-                }
+                }                
                 catch when (cancellationToken.IsCancellationRequested)
                 {
                 }

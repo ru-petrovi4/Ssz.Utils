@@ -132,7 +132,10 @@ namespace Ssz.Xi.Client
             }
 
             if (_workingTask is not null)
+            {
                 await _workingTask;
+                _workingTask = null;
+            }
 
             await base.CloseAsync();
         }        
