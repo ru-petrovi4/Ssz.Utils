@@ -52,7 +52,7 @@ namespace Ssz.Dcs.CentralServer
                 {
                     await _serverWorker.DoWorkAsync(nowUtc, cancellationToken);
                 }
-                catch (ServerWorkerBase.ProcessShutdownRequestException)
+                catch (OperationCanceledException)
                 {
                     break;
                 }

@@ -104,12 +104,7 @@ namespace IdentityServer4.Models
 
         internal static ICollection<string> FindMatchingSigningAlgorithms(this IEnumerable<ApiResource> apiResources)
         {
-            var apis = apiResources.ToList();
-
-            if (apis.IsNullOrEmpty())
-            {
-                return new List<string>();
-            }
+            var apis = apiResources.ToList();            
 
             // only one API resource request, forward the allowed signing algorithms (if any)
             if (apis.Count == 1)

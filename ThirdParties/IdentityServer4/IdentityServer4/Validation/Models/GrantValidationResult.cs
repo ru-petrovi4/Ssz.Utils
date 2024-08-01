@@ -119,7 +119,7 @@ namespace IdentityServer4.Validation
                 new Claim(JwtClaimTypes.AuthenticationTime, new DateTimeOffset(authTime).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64)
             };
 
-            if (!claims.IsNullOrEmpty())
+            if (claims is not null)
             {
                 resultClaims.AddRange(claims);
             }

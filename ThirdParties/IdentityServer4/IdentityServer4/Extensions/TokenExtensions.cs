@@ -64,7 +64,7 @@ namespace IdentityServer4.Extensions
             payload.AddClaims(normalClaims);
 
             // scope claims
-            if (!scopeClaims.IsNullOrEmpty())
+            if (scopeClaims.Length > 0)
             {
                 var scopeValues = scopeClaims.Select(x => x.Value).ToArray();
 
@@ -79,7 +79,7 @@ namespace IdentityServer4.Extensions
             }
 
             // amr claims
-            if (!amrClaims.IsNullOrEmpty())
+            if (amrClaims.Length > 0)
             {
                 var amrValues = amrClaims.Select(x => x.Value).Distinct().ToArray();
                 payload.Add(JwtClaimTypes.AuthenticationMethod, amrValues);

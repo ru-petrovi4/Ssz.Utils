@@ -34,11 +34,11 @@ namespace IdentityServer4.Services
         }
 
         /// <inheritdoc/>
-        public async Task<SigningCredentials> GetSigningCredentialsAsync(IEnumerable<string> allowedAlgorithms = null)
+        public async Task<SigningCredentials> GetSigningCredentialsAsync(ICollection<string> allowedAlgorithms = null)
         {
             if (_signingCredentialStores.Any())
             {
-                if (allowedAlgorithms.IsNullOrEmpty())
+                if (allowedAlgorithms is null || allowedAlgorithms.Count == 0)
                 {
                     return await _signingCredentialStores.First().GetSigningCredentialsAsync();
                 }

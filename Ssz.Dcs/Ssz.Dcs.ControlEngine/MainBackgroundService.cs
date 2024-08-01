@@ -124,7 +124,7 @@ namespace Ssz.Dcs.ControlEngine
                 {
                     await _serverWorker.DoWorkAsync(nowUtc, cancellationToken);
                 }
-                catch (ServerWorkerBase.ProcessShutdownRequestException)
+                catch (OperationCanceledException)
                 {
                     break;
                 }

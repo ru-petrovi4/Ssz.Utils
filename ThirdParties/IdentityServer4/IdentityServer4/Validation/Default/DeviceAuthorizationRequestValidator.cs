@@ -120,7 +120,7 @@ namespace IdentityServer4.Validation
             {
                 _logger.LogTrace("Client provided no scopes - checking allowed scopes list");
 
-                if (!request.Client.AllowedScopes.IsNullOrEmpty())
+                if (request.Client.AllowedScopes.Count > 0)
                 {
                     var clientAllowedScopes = new List<string>(request.Client.AllowedScopes);
                     if (request.Client.AllowOfflineAccess)

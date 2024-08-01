@@ -74,7 +74,7 @@ namespace Ssz.Dcs.CentralServer
             {
                 ResourceUtilization resourceUtilization = ResourceMonitor.GetUtilization(TimeSpan.FromSeconds(1));
                 if (resourceUtilization.MemoryUsedPercentage > 90)
-                    throw new ProcessShutdownRequestException();
+                    throw new OperationCanceledException();
                 
                 _last_GC_CleanUpDateTimeUtc = nowUtc; // Because long-running operation.                
             }

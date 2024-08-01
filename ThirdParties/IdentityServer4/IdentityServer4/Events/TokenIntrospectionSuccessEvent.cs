@@ -34,7 +34,7 @@ namespace IdentityServer4.Events
                 Token = Obfuscate(result.Token);
             }
             
-            if (!result.Claims.IsNullOrEmpty())
+            if (result.Claims is not null)
             {
                 ClaimTypes = result.Claims.Select(c => c.Type).Distinct();
                 TokenScopes = result.Claims.Where(c => c.Type == "scope").Select(c => c.Value);
