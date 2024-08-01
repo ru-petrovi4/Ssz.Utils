@@ -30,7 +30,7 @@ namespace Ssz.Utils.Logging
             
             if (String.IsNullOrEmpty(_logsDirectoryFullName))
             {
-                _logsDirectoryFullName = Directory.GetCurrentDirectory();
+                _logsDirectoryFullName = AppContext.BaseDirectory;
             }
 
             // Creates all directories and subdirectories in the specified path unless they

@@ -49,27 +49,18 @@ namespace Ssz.Dcs.CentralServer
         #region private functions
 
         private static void Main(string[] args)
-        {            
+        {
+            ConfigurationHelper.SetCurrentDirectory(args);
+
             Host = CreateHostBuilder(args).Build();
 
             var logger = Host.Services.GetRequiredService<ILogger<Program>>();
-            logger.LogDebug("App starting with args: " + String.Join(" ", args));
+            logger.LogInformation("App starting with args: " + String.Join(" ", args));
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             IConfiguration configuration = Host.Services.GetRequiredService<IConfiguration>();
             CultureHelper.InitializeUICulture(configuration, logger);
-            
-            string currentDirectory = ConfigurationHelper.GetValue<string>(configuration, ConfigurationConstants.ConfigurationKey_CurrentDirectory, @"");
-            if (currentDirectory != @"")
-            {
-                // Creates all directories and subdirectories in the specified path unless they already exist.
-                Directory.CreateDirectory(currentDirectory);
-                Directory.SetCurrentDirectory(currentDirectory);
-            }
-
-            IHostEnvironment hostEnvironment = Host.Services.GetRequiredService<IHostEnvironment>();
-            logger.LogDebug($"hostEnvironment.EnvironmentName: {hostEnvironment.EnvironmentName}");
 
             try
             {
@@ -97,7 +88,7 @@ namespace Ssz.Dcs.CentralServer
         {
             var switchMappings = new Dictionary<string, string>()
             {
-                { @"-cd", ConfigurationConstants.ConfigurationKey_CurrentDirectory }                
+                { ConfigurationConstants.ConfigurationKeyMapping_CurrentDirectory, ConfigurationConstants.ConfigurationKey_CurrentDirectory }                
             };
 
             return Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)

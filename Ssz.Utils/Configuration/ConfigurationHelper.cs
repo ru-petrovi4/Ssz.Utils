@@ -182,7 +182,23 @@ namespace Ssz.Utils
 
             yield return $"appsettings.yml";
             yield return $"appsettings.{environmentName}.yml";            
-        }        
+        }
+
+        public static void SetCurrentDirectory(string[] args)
+        {
+            int i = Array.FindIndex(args, a => a == "--" + ConfigurationConstants.ConfigurationKey_CurrentDirectory ||
+                a == ConfigurationConstants.ConfigurationKeyMapping_CurrentDirectory);
+            if (i == -1 || i + 1 >= args.Length)
+                return;
+
+            string currentDirectory = args[i + 1];
+            if (!String.IsNullOrEmpty(currentDirectory))
+            {
+                // Creates all directories and subdirectories in the specified path unless they already exist.
+                Directory.CreateDirectory(currentDirectory);
+                Directory.SetCurrentDirectory(currentDirectory);
+            }
+        }
 
         #endregion
     }

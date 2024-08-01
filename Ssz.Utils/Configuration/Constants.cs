@@ -8,6 +8,8 @@ namespace Ssz.Utils
     {
         public const string ConfigurationKey_CurrentDirectory = @"CurrentDirectory";
 
+        public const string ConfigurationKeyMapping_CurrentDirectory = @"-cd";
+
         public const string ConfigurationKey_IsMainProcess = @"IsMainProcess";
     }
 }

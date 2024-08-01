@@ -71,7 +71,7 @@ namespace Ssz.Dcs.CentralServer
                 foreach (var valueJournalSubscription in listItem.ValuesJournalSubscriptionsCollection)
                 {
                     List<(ValuesJournalSubscription, int)> list;
-                    int dataProviderRequestIndex = dataProviderRequests.IndexOf(it => ReferenceEquals(it.Item1, valueJournalSubscription.DataAccessProvider));
+                    int dataProviderRequestIndex = dataProviderRequests.FindIndex(it => ReferenceEquals(it.Item1, valueJournalSubscription.DataAccessProvider));
                     if (dataProviderRequestIndex == -1)
                     {
                         list = new();

@@ -21,21 +21,15 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
         private static void Main(string[] args)
         {
+            ConfigurationHelper.SetCurrentDirectory(args);
+
             var host = CreateHostBuilder(args).Build();
 
             var logger = host.Services.GetRequiredService<ILogger<Program>>();
-            logger.LogDebug("App starting with args: " + String.Join(" ", args));
+            logger.LogInformation("App starting with args: " + String.Join(" ", args));
 
             IConfiguration configuration = host.Services.GetRequiredService<IConfiguration>();
-            CultureHelper.InitializeUICulture(configuration, logger);
-
-            string currentDirectory = ConfigurationHelper.GetValue<string>(configuration, ConfigurationConstants.ConfigurationKey_CurrentDirectory, @"");
-            if (currentDirectory != @"")
-            {
-                // Creates all directories and subdirectories in the specified path unless they already exist.
-                Directory.CreateDirectory(currentDirectory);
-                Directory.SetCurrentDirectory(currentDirectory);
-            }
+            CultureHelper.InitializeUICulture(configuration, logger);            
 
             host.Run();
         }
@@ -44,7 +38,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
         {
             var switchMappings = new Dictionary<string, string>()
             {
-                { @"-cd", ConfigurationConstants.ConfigurationKey_CurrentDirectory }
+                { ConfigurationConstants.ConfigurationKeyMapping_CurrentDirectory, ConfigurationConstants.ConfigurationKey_CurrentDirectory }
             };
 
             return Host.CreateDefaultBuilder(args)

@@ -2,6 +2,7 @@
   "profiles": {
     "Ssz.Dcs.CentralServer": {
       "commandName": "Project",
+      "commandLineArgs": "-cd \"C:\\CDT.CentralServer\"",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
