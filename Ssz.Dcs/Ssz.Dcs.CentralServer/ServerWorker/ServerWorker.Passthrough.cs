@@ -296,16 +296,16 @@ namespace Ssz.Dcs.CentralServer
                 try
                 {
                     reply.DsFilesStoreFileDatasCollection.Add(
-                    new DsFilesStoreFileData
-                    {
-                        PathRelativeToRootDirectory = pathRelativeToRootDirectory,
-                        LastWriteTimeUtc = fileInfo.LastWriteTimeUtc,
-                        FileData = File.ReadAllBytes(fileInfo.FullName)
-                    });
+                        new DsFilesStoreFileData
+                        {
+                            PathRelativeToRootDirectory = pathRelativeToRootDirectory,
+                            LastWriteTimeUtc = fileInfo.LastWriteTimeUtc,
+                            FileData = File.ReadAllBytes(fileInfo.FullName)
+                        });
                 }
                 catch (Exception ex)
                 {
-                    throw new RpcException(new Status(StatusCode.FailedPrecondition, Properties.Resources.FileReadingError + ": " + fileInfo.Name), ex.Message);
+                    Logger.LogError(ex, Properties.Resources.FileReadingError + ": " + fileInfo.Name);                    
                 }
             }
             returnData = SerializationHelper.GetOwnedData(reply);
