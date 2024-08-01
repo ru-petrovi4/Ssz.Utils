@@ -81,7 +81,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 if (existingFileInfo is not null)
                 {
                     if (serverDsFilesStoreFile.Name != existingFileInfo.Name || // Strict comparison
-                        FileSystemHelper.FileSystemTimeIsLess(existingFileInfo.LastWriteTimeUtc, serverDsFilesStoreFile.LastWriteTimeUtc))
+                        !FileSystemHelper.FileSystemTimeIsEquals(existingFileInfo.LastWriteTimeUtc, serverDsFilesStoreFile.LastWriteTimeUtc))
                     {
                         try
                         {
