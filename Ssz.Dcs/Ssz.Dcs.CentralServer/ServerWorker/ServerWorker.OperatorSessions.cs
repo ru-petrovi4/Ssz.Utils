@@ -194,7 +194,7 @@ namespace Ssz.Dcs.CentralServer
                             String.Equals(sc.ClientApplicationName, DataAccessConstants.Instructor_ClientApplicationName, StringComparison.InvariantCultureIgnoreCase) 
                             ) == 0)
                     {
-                        processModelingSession.ForTimeout_LastDateTimeUtc = null;
+                        processModelingSession.ForTimeout_LastDateTimeUtc = null; // Reset timeout, instruxtor connected.
                         processModelingSession.ProcessModelingSessionStatus = ProcessModelingSessionConstants.InstructorConnected;
                     }
                     processModelingSession.ProcessServerContextsCollection.Add(processServerContext);
@@ -209,7 +209,7 @@ namespace Ssz.Dcs.CentralServer
                                 String.Equals(sc.ClientApplicationName, DataAccessConstants.Instructor_ClientApplicationName, StringComparison.InvariantCultureIgnoreCase)
                                 ) == 0)
                         {
-                            processModelingSession.ForTimeout_LastDateTimeUtc = DateTime.UtcNow;
+                            processModelingSession.ForTimeout_LastDateTimeUtc = DateTime.UtcNow; // Set timeout, last instruxtor disconnected.
                             processModelingSession.ProcessModelingSessionStatus = ProcessModelingSessionConstants.InstructorDisconnected;
                         }
                     }

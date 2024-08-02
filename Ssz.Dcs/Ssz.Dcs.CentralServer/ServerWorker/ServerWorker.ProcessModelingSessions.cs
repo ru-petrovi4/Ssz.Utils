@@ -268,8 +268,7 @@ namespace Ssz.Dcs.CentralServer
                             0,
                             @"")
                         {
-                            ProcessModelingSessionStatus = ProcessModelingSessionConstants.Initiated,
-                            ForTimeout_LastDateTimeUtc = DateTime.UtcNow,
+                            ProcessModelingSessionStatus = ProcessModelingSessionConstants.Initiated                            
                         };
 
                         DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewPreparedDataAccessProviderAddon(
@@ -297,8 +296,7 @@ namespace Ssz.Dcs.CentralServer
                             0,
                             @"")
                         {
-                            ProcessModelingSessionStatus = ProcessModelingSessionConstants.Initiated,
-                            ForTimeout_LastDateTimeUtc = DateTime.UtcNow,
+                            ProcessModelingSessionStatus = ProcessModelingSessionConstants.Initiated,                            
                         };
 
                         DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewPreparedDataAccessProviderAddon(

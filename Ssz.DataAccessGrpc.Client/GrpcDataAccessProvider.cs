@@ -120,14 +120,22 @@ namespace Ssz.DataAccessGrpc.Client
 
             _cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = _cancellationTokenSource.Token;
-            
-            _workingTask = WorkingTaskMainAsync(cancellationToken);
+
+            var taskCompletionSource = new TaskCompletionSource<int>();
+            var workingThread = new Thread(async () => 
+            { 
+                await WorkingTaskMainAsync(cancellationToken);
+                taskCompletionSource.SetResult(0);
+            });
+            _workingTask = taskCompletionSource.Task;            
 
             foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
             {
                 valueSubscriptionObj.ValueSubscription.Update(
                     AddItem(valueSubscriptionObj));
-            }            
+            }
+
+            workingThread.Start();
         }
 
         public override async Task UpdateContextParamsAsync(CaseInsensitiveDictionary<string?> contextParams)
@@ -777,8 +785,6 @@ namespace Ssz.DataAccessGrpc.Client
             if (!IsInitialized)
                 return;
 
-            await Task.Delay(0).ConfigureAwait(false);
-
             bool eventListCallbackIsEnabled = Options.ElementValueListCallbackIsEnabled;            
 
             if (eventListCallbackIsEnabled) 
@@ -1040,7 +1046,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         #region private fields        
 
-        private Task? _workingTask;
+        private Task<int>? _workingTask;
 
         private CancellationTokenSource? _cancellationTokenSource;        
 
