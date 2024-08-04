@@ -542,13 +542,23 @@ namespace Ssz.Xi.Client
 
             while (true)
             {
-                if (cancellationToken.IsCancellationRequested) break;
-                await Task.Delay(20);
-                if (cancellationToken.IsCancellationRequested) break;                                
+                try
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await Task.Delay(20, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                var nowUtc = DateTime.UtcNow;
-
-                await DoWorkAsync(nowUtc, cancellationToken);
+                    await DoWorkAsync(DateTime.UtcNow, cancellationToken);
+                }
+                catch when (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    LoggersSet.Logger.LogWarning(ex, @"ServerContext Callback Thread Exception");
+                    break;
+                }
             }            
 
             Unsubscribe(true);
@@ -571,7 +581,7 @@ namespace Ssz.Xi.Client
 
             await WorkingThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
 
-            if (cancellationToken.IsCancellationRequested) return;
+            cancellationToken.ThrowIfCancellationRequested();
 
             if (!_xiServerProxy.ContextExists)
             {
@@ -590,7 +600,8 @@ namespace Ssz.Xi.Client
                     сallbackDispatcher = CallbackDispatcher;
                     if (сallbackDispatcher is not null)
                     {
-                        if (cancellationToken.IsCancellationRequested) return;
+                        cancellationToken.ThrowIfCancellationRequested();
+
                         try
                         {
                             сallbackDispatcher.BeginInvoke(ct =>
@@ -648,7 +659,7 @@ namespace Ssz.Xi.Client
                         сallbackDispatcher = CallbackDispatcher;
                         if (сallbackDispatcher is not null)
                         {
-                            if (cancellationToken.IsCancellationRequested) return;
+                            cancellationToken.ThrowIfCancellationRequested();
                             try
                             {
                                 сallbackDispatcher.BeginInvoke(ct =>
@@ -670,22 +681,26 @@ namespace Ssz.Xi.Client
                 }
             }
 
-            if (!IsInitialized || cancellationToken.IsCancellationRequested) 
+            if (!IsInitialized) 
                 return;
-            
+
+            cancellationToken.ThrowIfCancellationRequested();
+
             _xiDataListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher,
                 XiDataListItemsManagerOnElementValuesCallback, Options.ElementValueListCallbackIsEnabled, Options.UnsubscribeValueListItemsFromServer, cancellationToken);
             _xiEventListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher, true, cancellationToken);
 
-            if (!IsInitialized || cancellationToken.IsCancellationRequested) 
+            if (!IsInitialized) 
                 return;
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             if (_xiServerProxy.ContextExists)
             {
                 _lastSuccessfulConnectionDateTimeUtc = nowUtc;
                 try
                 {
-                    if (cancellationToken.IsCancellationRequested) return;
+                    cancellationToken.ThrowIfCancellationRequested();
                     _xiServerProxy.KeepContextAlive(nowUtc);
                     
                     var timeDiffInMs = (uint) (nowUtc - _pollLastCallUtc).TotalMilliseconds;
@@ -693,7 +708,7 @@ namespace Ssz.Xi.Client
 
                     if (pollExpired)
                     {
-                        if (cancellationToken.IsCancellationRequested) return;
+                        cancellationToken.ThrowIfCancellationRequested();
 
                         if (Options.ElementValueListCallbackIsEnabled)
                             _xiDataListItemsManager.PollChangesIfNotCallbackable();

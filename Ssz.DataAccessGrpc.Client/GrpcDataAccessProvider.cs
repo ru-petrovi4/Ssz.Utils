@@ -143,7 +143,7 @@ namespace Ssz.DataAccessGrpc.Client
             await base.UpdateContextParamsAsync(contextParams);
 
             // Early return
-            if (!_clientContextManager.ConnectionExists)
+            if (!_clientContextManager.ContextIsOperational)
                 return;
 
             var taskCompletionSource = new TaskCompletionSource<object?>();
@@ -152,23 +152,20 @@ namespace Ssz.DataAccessGrpc.Client
             {
                 try
                 {
-                    await _clientContextManager.UpdateContextParamsAsync(contextParams);
-                    taskCompletionSource.SetResult(null);
+                    await _clientContextManager.UpdateContextParamsAsync(contextParams);                    
                 }
                 catch (RpcException ex)
                 {
-                    LoggersSet.Logger.LogError(ex, ex.Status.Detail);
-                    taskCompletionSource.SetResult(null);
+                    LoggersSet.Logger.LogError(ex, ex.Status.Detail);                    
                 }
                 catch (ConnectionDoesNotExistException ex)
-                {
-                    taskCompletionSource.SetResult(null);
+                {                    
                 }
                 catch (Exception ex)
                 {
-                    LoggersSet.Logger.LogError(ex, "UpdateContextParamsAsync exception.");
-                    taskCompletionSource.SetResult(null);
+                    LoggersSet.Logger.LogError(ex, "UpdateContextParamsAsync exception.");                    
                 }
+                taskCompletionSource.SetResult(null);
             });
 
             await taskCompletionSource.Task;
@@ -281,10 +278,17 @@ namespace Ssz.DataAccessGrpc.Client
                     taskCompletionSource.SetResult(null);
                     return;
                 }
-                await _clientElementValueListManager.SubscribeAsync(_clientContextManager, CallbackDispatcher,
+                try
+                {
+                    await _clientElementValueListManager.SubscribeAsync(_clientContextManager, CallbackDispatcher,
                     OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, ct);
-                object[]? changedValueSubscriptions = await _clientElementValueListManager.PollChangesAsync();
-                taskCompletionSource.SetResult(changedValueSubscriptions is not null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null);                
+                    object[]? changedValueSubscriptions = await _clientElementValueListManager.PollChangesAsync();
+                    taskCompletionSource.SetResult(changedValueSubscriptions is not null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null);
+                }
+                catch (Exception ex)
+                {
+                    taskCompletionSource.SetException(ex);
+                }                
             }
             );
 
@@ -392,27 +396,34 @@ namespace Ssz.DataAccessGrpc.Client
                     return;
                 }
 
-                await _clientElementValueListManager.SubscribeAsync(_clientContextManager, CallbackDispatcher,
-                    OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, ct);                
-
-                if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
+                try
                 {
-                    if (resultValues is null) 
-                        throw new InvalidOperationException();
-                    for (var i = 0; i < resultValues.Length; i++)
+                    await _clientElementValueListManager.SubscribeAsync(_clientContextManager, CallbackDispatcher,
+                    OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, ct);
+
+                    if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                     {
-                        var resultValue = resultValues[i];
-                        if (resultValue != SszConverter.DoNothing)
-                            resultInfo = await _clientElementValueListManager.WriteAsync(valueSubscriptionObj.ChildValueSubscriptionsList[i],
-                                new ValueStatusTimestamp(new Any(resultValue), StatusCodes.Good, DateTime.UtcNow));
+                        if (resultValues is null)
+                            throw new InvalidOperationException();
+                        for (var i = 0; i < resultValues.Length; i++)
+                        {
+                            var resultValue = resultValues[i];
+                            if (resultValue != SszConverter.DoNothing)
+                                resultInfo = await _clientElementValueListManager.WriteAsync(valueSubscriptionObj.ChildValueSubscriptionsList[i],
+                                    new ValueStatusTimestamp(new Any(resultValue), StatusCodes.Good, DateTime.UtcNow));
+                        }
                     }
-                }
-                else
-                {
-                    resultInfo = await _clientElementValueListManager.WriteAsync(valueSubscription, valueStatusTimestamp);
-                }
+                    else
+                    {
+                        resultInfo = await _clientElementValueListManager.WriteAsync(valueSubscription, valueStatusTimestamp);
+                    }
 
-                taskCompletionSource.SetResult(resultInfo);
+                    taskCompletionSource.SetResult(resultInfo);
+                }
+                catch (Exception ex)
+                {
+                    taskCompletionSource.SetException(ex);
+                }
             });
 
             return await taskCompletionSource.Task;
@@ -439,13 +450,19 @@ namespace Ssz.DataAccessGrpc.Client
                     return;
                 }
 
-                await _clientElementValueListManager.SubscribeAsync(_clientContextManager, CallbackDispatcher,
-                    OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, ct);
-                (object[] failedValueSubscriptions, ResultInfo[] failedResultInfos) = await _clientElementValueListManager.WriteAsync(valueSubscriptions, valueStatusTimestamps);
+                try
+                {
+                    await _clientElementValueListManager.SubscribeAsync(_clientContextManager, CallbackDispatcher,
+                        OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, ct);
+                    (object[] failedValueSubscriptions, ResultInfo[] failedResultInfos) = await _clientElementValueListManager.WriteAsync(valueSubscriptions, valueStatusTimestamps);
 
-                taskCompletionSource.SetResult((failedValueSubscriptions.OfType<IValueSubscription>().ToArray(), failedResultInfos));
-            }
-            );
+                    taskCompletionSource.SetResult((failedValueSubscriptions.OfType<IValueSubscription>().ToArray(), failedResultInfos));
+                }
+                catch (Exception ex)
+                {
+                    taskCompletionSource.SetException(ex);
+                }
+            });
 
             return await taskCompletionSource.Task;
         }
@@ -460,7 +477,7 @@ namespace Ssz.DataAccessGrpc.Client
         public override async Task<ReadOnlyMemory<byte>> PassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
             // Early exception
-            if (!_clientContextManager.ConnectionExists)
+            if (!_clientContextManager.ContextIsOperational)
                 throw new ConnectionDoesNotExistException();
 
             var taskCompletionSource = new TaskCompletionSource<ReadOnlyMemory<byte>>();
@@ -504,7 +521,7 @@ namespace Ssz.DataAccessGrpc.Client
             Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? progressCallbackAction)
         {
             // Early exception
-            if (!_clientContextManager.ConnectionExists)
+            if (!_clientContextManager.ContextIsOperational)
             {
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
                 Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;
@@ -634,12 +651,12 @@ namespace Ssz.DataAccessGrpc.Client
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            if (!_clientContextManager.ConnectionExists)
+            if (!_clientContextManager.ContextIsOperational)
             {
                 IDispatcher? сallbackDispatcher;
                 if (IsConnectedEventWaitHandle.WaitOne(0))
                 {
-                    Unsubscribe(false);
+                    await UnsubscribeAsync(false);
 
 #region notify subscribers disconnected
 
@@ -722,7 +739,7 @@ namespace Ssz.DataAccessGrpc.Client
                 }
             }            
 
-            if (IsInitialized && _clientContextManager.ConnectionExists)
+            if (IsInitialized && _clientContextManager.ContextIsOperational)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -743,7 +760,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// <summary>
         ///     Working thread.
         /// </summary>
-        protected virtual void Unsubscribe(bool clearClientSubscriptions)
+        protected virtual async Task UnsubscribeAsync(bool clearClientSubscriptions)
         {
             var сallbackDispatcher = CallbackDispatcher;
             if (сallbackDispatcher is not null)
@@ -760,7 +777,7 @@ namespace Ssz.DataAccessGrpc.Client
                 }
             }
 
-            _clientContextManager.CloseConnection();
+            await _clientContextManager.CloseConnectionAsync();
 
             _clientElementValueListManager.Unsubscribe(clearClientSubscriptions);
             _clientEventListManager.Unsubscribe();
@@ -791,29 +808,27 @@ namespace Ssz.DataAccessGrpc.Client
                 _clientEventListManager.EventMessagesCallback += OnClientEventListManager_EventMessagesCallbackInternal;
 
             while (true)
-            {
-                if (cancellationToken.IsCancellationRequested) 
-                    break;
-                await Task.Delay(20);
-                if (cancellationToken.IsCancellationRequested) 
-                    break;                
-
-                var nowUtc = DateTime.UtcNow;
-
+            {                
                 try
                 {
-                    await DoWorkAsync(nowUtc, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await Task.Delay(20, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    await DoWorkAsync(DateTime.UtcNow, cancellationToken);
                 }                
                 catch when (cancellationToken.IsCancellationRequested)
                 {
+                    break;
                 }
                 catch (Exception ex)
                 {
                     LoggersSet.Logger.LogWarning(ex, @"ServerContext Callback Thread Exception");
+                    break;
                 }                
             }
 
-            Unsubscribe(true);
+            await UnsubscribeAsync(true);
 
             if (eventListCallbackIsEnabled)
                 _clientEventListManager.EventMessagesCallback -= OnClientEventListManager_EventMessagesCallbackInternal;

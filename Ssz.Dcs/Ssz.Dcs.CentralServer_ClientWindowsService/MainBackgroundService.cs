@@ -40,22 +40,23 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
             while (true)
             {
-                if (cancellationToken.IsCancellationRequested) 
-                    break;
-                await Task.Delay(10);
-                if (cancellationToken.IsCancellationRequested) 
-                    break;
-
-                DateTime nowUtc = DateTime.UtcNow;
-
                 try
                 {
-                    await _worker.DoWorkAsync(nowUtc, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await Task.Delay(20, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    await _worker.DoWorkAsync(DateTime.UtcNow, cancellationToken);
                 }
-                catch (Exception ex) 
+                catch when (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+                catch (Exception ex)
                 {
                     Logger.LogError(ex, @"_worker.DoWorkAsync(...) Exception");
-                }
+                    break;
+                }                
             }
 
             await _worker.CloseAsync();

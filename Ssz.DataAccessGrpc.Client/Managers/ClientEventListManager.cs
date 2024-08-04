@@ -33,19 +33,20 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <param name="clientContextManager"></param>
         /// <param name="сallbackDispatcher"></param>        
         /// <param name="callbackIsEnabled"></param>
-        /// <param name="ct"></param>
-        public async Task SubscribeAsync(ClientContextManager clientContextManager, IDispatcher? сallbackDispatcher, bool callbackIsEnabled, CancellationToken ct)
+        /// <param name="cancellationToken"></param>
+        public async Task SubscribeAsync(ClientContextManager clientContextManager, IDispatcher? сallbackDispatcher, bool callbackIsEnabled, CancellationToken cancellationToken)
         {
-            if (ct.IsCancellationRequested) return;
-            if (!clientContextManager.ConnectionExists) return;
-            if (!_dataGrpcEventItemsMustBeAdded) return;
+            cancellationToken.ThrowIfCancellationRequested();
+            if (!clientContextManager.ContextIsOperational) 
+                return;
+            if (!_dataGrpcEventItemsMustBeAdded) 
+                return;
 
             bool allOk = true;
 
-            foreach (
-                var kvp in _eventMessagesCallbackEventHandlers)
+            foreach (var kvp in _eventMessagesCallbackEventHandlers)
             {
-                if (ct.IsCancellationRequested) return;
+                cancellationToken.ThrowIfCancellationRequested();
                 if (kvp.Value.P is not null) continue;
 
                 ClientEventList dataGrpcEventList;
@@ -53,6 +54,10 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 try
                 {
                     dataGrpcEventList = await clientContextManager.NewEventListAsync(null);
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
                 }
                 catch (Exception)
                 {
@@ -72,8 +77,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
                         dataGrpcEventList.EventMessagesCallback +=
                             (sender, args) =>
-                            {
-                                if (ct.IsCancellationRequested) return;
+                            {                                
                                 if (сallbackDispatcher is not null)
                                 {
                                     try
@@ -95,10 +99,18 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                             await dataGrpcEventList.EnableListCallbackAsync(true);
                         }
                     }
+                    catch (OperationCanceledException)
+                    {
+                        throw;
+                    }
                     catch (Exception)
                     {
                         allOk = false;
                     }
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
                 }
                 catch (Exception ex)
                 {

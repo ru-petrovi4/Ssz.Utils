@@ -192,7 +192,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                     // Remove the items from the list in the server
                     List<AliasResult>? aliasResultList = null;
                     // a null list means all were successfully removed or are no longer defined in the server
-                    if (Context.ServerContextIsOperational) // if still connected to the server
+                    if (Context.ContextIsOperational) // if still connected to the server
                         aliasResultList = await Context.RemoveItemsFromListAsync(ListServerAlias, serverAliasesToRemove);
 
                     // Remove each value from the client list unless there was an error and it could not be removed

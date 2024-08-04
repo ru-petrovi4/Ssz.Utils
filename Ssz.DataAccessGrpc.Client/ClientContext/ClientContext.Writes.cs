@@ -30,7 +30,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
-            if (!ServerContextIsOperational) throw new InvalidOperationException();            
+            if (!ContextIsOperational) throw new InvalidOperationException();            
 
             try
             {
@@ -72,7 +72,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
-            if (!ServerContextIsOperational) throw new InvalidOperationException();
+            if (!ContextIsOperational) throw new InvalidOperationException();
 
             try
             {
@@ -99,7 +99,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
 
-            if (!ServerContextIsOperational) throw new InvalidOperationException();
+            if (!ContextIsOperational) throw new InvalidOperationException();
 
             try
             {
@@ -124,7 +124,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
 
-            if (!ServerContextIsOperational) throw new InvalidOperationException();
+            if (!ContextIsOperational) throw new InvalidOperationException();
 
             try
             {
@@ -179,7 +179,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed Context.");
 
-            if (!ServerContextIsOperational) throw new InvalidOperationException();
+            if (!ContextIsOperational) throw new InvalidOperationException();
             
             try
             {

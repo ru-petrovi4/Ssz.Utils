@@ -41,7 +41,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 {
                     try
                     {
-                        if (clientContextManager.ConnectionExists)
+                        if (clientContextManager.ContextIsOperational)
                         {
                             DataAccessGrpcList = await clientContextManager.NewElementValuesJournalListAsync(null);
                         }                            

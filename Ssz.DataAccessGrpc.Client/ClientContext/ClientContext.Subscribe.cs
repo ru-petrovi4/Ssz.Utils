@@ -30,7 +30,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
-            if (!ServerContextIsOperational) throw new InvalidOperationException();
+            if (!ContextIsOperational) throw new InvalidOperationException();
 
             try
             {
@@ -69,7 +69,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
-            if (!ServerContextIsOperational) throw new InvalidOperationException();
+            if (!ContextIsOperational) throw new InvalidOperationException();
 
             try
             {
@@ -109,7 +109,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             while (true)
             {
-                if (!_serverContextIsOperational || cancellationToken.IsCancellationRequested) 
+                if (!_contextIsOperational || cancellationToken.IsCancellationRequested) 
                     break;
 
                 try
@@ -127,12 +127,11 @@ namespace Ssz.DataAccessGrpc.Client
                 //}
                 catch
                 {
-                    _serverContextIsOperational = false;
-                    _pendingClientContextNotificationEventArgs = new ClientContextNotificationEventArgs(ClientContextNotificationType.ReadCallbackMessagesException, null);
+                    _contextIsOperational = false;                    
                     break;
                 }
 
-                if (!_serverContextIsOperational || cancellationToken.IsCancellationRequested)
+                if (!_contextIsOperational || cancellationToken.IsCancellationRequested)
                     break;
 
                 CallbackMessage current = reader.Current;
@@ -175,9 +174,7 @@ namespace Ssz.DataAccessGrpc.Client
             ServerContextStatus = contextStatus;
             if (ServerContextStatus is not null && ServerContextStatus.StateCode == ContextStateCodes.STATE_ABORTING)
             {
-                _serverContextIsOperational = false;
-                _pendingClientContextNotificationEventArgs = new ClientContextNotificationEventArgs(ClientContextNotificationType.Shutdown,
-                    null);
+                _contextIsOperational = false;                
             }
             if (ServerContextStatus is not null)
                 ServerContextNotification(this, new ContextStatusChangedEventArgs

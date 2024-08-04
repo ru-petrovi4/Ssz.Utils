@@ -195,7 +195,7 @@ namespace Ssz.Dcs.CentralServer
             {
                 return await taskCompletionSource.Task;
             }
-            catch (TaskCanceledException ex)
+            catch (OperationCanceledException ex)
             {
                 string message = @"Operation cancelled.";
                 _logger.LogWarning(ex, message);

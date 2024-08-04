@@ -106,22 +106,22 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             while (true)
             {
-                if (cancellationToken.IsCancellationRequested) 
-                    break;
-                await Task.Delay(20, cancellationToken);
-                if (cancellationToken.IsCancellationRequested) 
-                    break;
-
                 try
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await Task.Delay(20, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     await OnLoopInWorkingThreadAsync(cancellationToken);                    
                 }                
                 catch when (cancellationToken.IsCancellationRequested)
                 {
+                    break;
                 }
                 catch (Exception ex)
                 {
                     Logger.LogWarning(ex, @"ServerContext Callback Thread Exception");
+                    break;
                 }                
             }
 

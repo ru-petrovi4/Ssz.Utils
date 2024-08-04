@@ -538,13 +538,23 @@ namespace Ssz.Dcs.Addons.OpcClient
 
             while (true)
             {
-                if (cancellationToken.IsCancellationRequested) break;
-                await Task.Delay(20);
-                if (cancellationToken.IsCancellationRequested) break;                                
+                try
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await Task.Delay(20, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                var nowUtc = DateTime.UtcNow;
-
-                await DoWorkAsync(nowUtc, cancellationToken);
+                    await DoWorkAsync(DateTime.UtcNow, cancellationToken);
+                }
+                catch when (cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    LoggersSet.Logger.LogWarning(ex, @"OPC Client WorkingTaskMain Exception");
+                    break;
+                }
             }            
 
             Unsubscribe(true);
@@ -567,7 +577,7 @@ namespace Ssz.Dcs.Addons.OpcClient
 
             await WorkingThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
 
-            if (cancellationToken.IsCancellationRequested) return;
+            cancellationToken.ThrowIfCancellationRequested();
 
             if (!_xiServerProxy.ContextExists)
             {
@@ -586,7 +596,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                     сallbackDispatcher = CallbackDispatcher;
                     if (сallbackDispatcher is not null)
                     {
-                        if (cancellationToken.IsCancellationRequested) return;
+                        cancellationToken.ThrowIfCancellationRequested();
                         try
                         {
                             сallbackDispatcher.BeginInvoke(ct =>
@@ -628,7 +638,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                         сallbackDispatcher = CallbackDispatcher;
                         if (сallbackDispatcher is not null)
                         {
-                            if (cancellationToken.IsCancellationRequested) return;
+                            cancellationToken.ThrowIfCancellationRequested();
                             try
                             {
                                 сallbackDispatcher.BeginInvoke(ct =>
@@ -648,23 +658,28 @@ namespace Ssz.Dcs.Addons.OpcClient
                 }
             }
 
-            if (!IsInitialized || cancellationToken.IsCancellationRequested) 
+            if (!IsInitialized) 
                 return;
-            
+
+            cancellationToken.ThrowIfCancellationRequested();
+
             _xiDataListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher,
                 XiDataListItemsManagerOnElementValuesCallback, Options.ElementValueListCallbackIsEnabled, Options.UnsubscribeValueListItemsFromServer, cancellationToken);
             if (!String.IsNullOrEmpty(ContextParams.TryGetValue(OpcClientAddon.OpcAe_ProgId_OptionName)))
                 _xiEventListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher, true, cancellationToken);
 
-            if (!IsInitialized || cancellationToken.IsCancellationRequested) 
+            if (!IsInitialized) 
                 return;
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             if (_xiServerProxy.ContextExists)
             {
                 _lastSuccessfulConnectionDateTimeUtc = nowUtc;
                 try
                 {
-                    if (cancellationToken.IsCancellationRequested) return;
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     _xiServerProxy.DoWork(nowUtc);
                     
                     var timeDiffInMs = (uint) (nowUtc - _pollLastCallUtc).TotalMilliseconds;
@@ -672,7 +687,7 @@ namespace Ssz.Dcs.Addons.OpcClient
 
                     if (pollExpired)
                     {
-                        if (cancellationToken.IsCancellationRequested) return;
+                        cancellationToken.ThrowIfCancellationRequested();
 
                         if (Options.ElementValueListCallbackIsEnabled)
                             _xiDataListItemsManager.PollChangesIfNotCallbackable();

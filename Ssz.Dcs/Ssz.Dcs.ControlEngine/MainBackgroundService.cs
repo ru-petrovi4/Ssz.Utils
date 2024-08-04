@@ -101,37 +101,29 @@ namespace Ssz.Dcs.ControlEngine
 
             while (true)
             {
-                if (cancellationToken.IsCancellationRequested || _shutdownRequested) 
-                    break;
-                await Task.Delay(3);
-                if (cancellationToken.IsCancellationRequested || _shutdownRequested) 
-                    break;
-
-                DateTime nowUtc = DateTime.UtcNow;
-                
-                if (nowUtc - _processDataAccessProvider.InitializedDateTimeUtc > DataAccessConstants.UnrecoverableTimeout &&
-                    nowUtc - _processDataAccessProvider.LastSuccessfulConnectionDateTimeUtc > DataAccessConstants.UnrecoverableTimeout)
-                    break;
-
-                //if (modelTimeValueSubscription.ValueStatusTimestamp.StatusCode == StatusCode.Good)
-                //{
-                //    int modelTimeSeconds = modelTimeValueSubscription.ValueStatusTimestamp.Value.ValueAsInt32(false);
-                //    if (modelTimeSeconds > 0)
-                //        device.DoWork((UInt64)modelTimeSeconds * 1000, nowUtc, cancellationToken);
-                //}               
-
                 try
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
+                    await Task.Delay(20, cancellationToken);
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    DateTime nowUtc = DateTime.UtcNow;
+
+                    if (nowUtc - _processDataAccessProvider.InitializedDateTimeUtc > DataAccessConstants.UnrecoverableTimeout &&
+                            nowUtc - _processDataAccessProvider.LastSuccessfulConnectionDateTimeUtc > DataAccessConstants.UnrecoverableTimeout)
+                        break;
+
                     await _serverWorker.DoWorkAsync(nowUtc, cancellationToken);
                 }
-                catch (OperationCanceledException)
+                catch when (cancellationToken.IsCancellationRequested)
                 {
                     break;
                 }
                 catch (Exception ex)
                 {
                     Logger.LogError(ex, @"_serverWorker.DoWorkAsync(...) Exception");
-                }                
+                    break;
+                }
             }
 
             await _processDataAccessProvider.CloseAsync();

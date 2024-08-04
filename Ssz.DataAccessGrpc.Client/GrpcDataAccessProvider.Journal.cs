@@ -60,9 +60,16 @@ namespace Ssz.DataAccessGrpc.Client
             var taskCompletionSource = new TaskCompletionSource<ElementValuesJournal[]?>();
             WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
             {
-                var result = await _clientElementValuesJournalListManager.ReadElementValuesJournalsAsync(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, params_, valueSubscriptionsCollection);
+                try
+                {
+                    var result = await _clientElementValuesJournalListManager.ReadElementValuesJournalsAsync(firstTimestampUtc, secondTimestampUtc, numValuesPerSubscription, calculation, params_, valueSubscriptionsCollection);
 
-                taskCompletionSource.SetResult(result);
+                    taskCompletionSource.SetResult(result);
+                }
+                catch (Exception ex)
+                {
+                    taskCompletionSource.SetException(ex);
+                }
             }
             );
             return await taskCompletionSource.Task;

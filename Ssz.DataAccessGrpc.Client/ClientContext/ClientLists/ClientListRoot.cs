@@ -44,7 +44,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
 
             if (disposing)
             {                
-                if (_clientContext.ServerContextIsOperational)
+                if (_clientContext.ContextIsOperational)
                 {
                     try
                     {

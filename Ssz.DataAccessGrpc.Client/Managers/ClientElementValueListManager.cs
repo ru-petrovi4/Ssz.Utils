@@ -35,17 +35,18 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <param name="elementValuesCallbackEventHandler"></param>
         /// <param name="unsubscribeItemsFromServer"></param>
         /// <param name="callbackIsEnabled"></param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         public async Task SubscribeAsync(ClientContextManager clientContextManager, 
             IDispatcher? сallbackDispatcher,
             EventHandler<ElementValuesCallbackEventArgs> elementValuesCallbackEventHandler,
             bool unsubscribeItemsFromServer,
             bool callbackIsEnabled, 
-            CancellationToken ct)
+            CancellationToken cancellationToken)
         {
             try
             {
-                if (ct.IsCancellationRequested) return;                
+                cancellationToken.ThrowIfCancellationRequested();
+
                 if (!DataAccessGrpcItemsMustBeAddedOrRemoved) return;               
 
                 bool firstTimeDataConnection = (DataAccessGrpcList is null);
@@ -54,7 +55,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 {
                     try
                     {
-                        if (clientContextManager.ConnectionExists)
+                        if (clientContextManager.ContextIsOperational)
                         {
                             DataAccessGrpcList = await clientContextManager.NewElementValueListAsync(null);
                         }                            
@@ -99,7 +100,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                                         }
                                         i++;
                                     }
-                                    if (ct.IsCancellationRequested) return;
+                                    cancellationToken.ThrowIfCancellationRequested();
                                     Logger.LogDebug("DataAccessGrpcList.ElementValuesCallback");
                                     if (сallbackDispatcher is not null)
                                     {
@@ -122,6 +123,10 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                             }
                         }
                     }
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -176,7 +181,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                     }                    
                     if (elementValuesCallbackEventArgs.ElementValuesCallbackChanges.Count > 0)
                     {
-                        if (ct.IsCancellationRequested) return;
+                        cancellationToken.ThrowIfCancellationRequested();
                         if (сallbackDispatcher is not null)
                         {
                             try

@@ -35,7 +35,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
     ///     Each DataAccessGrpcServer in the list represents an DataAccessGrpc server for which the client application
     ///     can create an DataAccessGrpcSubscription.
     /// </summary>
-    internal class ClientContextManager : IDisposable
+    internal class ClientContextManager
     {
         #region construction and destruction
 
@@ -43,57 +43,6 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         {
             _logger = logger;
             _workingDispatcher = workingDispatcher;
-        }
-
-        /// <summary>
-        ///     This method disposes of the object.  It is invoked by the client application, client base, or
-        ///     the destructor of this object.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        ///     This method disposes of the object.  It is invoked by the parameterless Dispose()
-        ///     method of this object.  It is expected that the DataAccessGrpc client application
-        ///     will perform a Dispose() on each active context to close the connection with the
-        ///     DataAccessGrpc Server.  Failure to perform the close will result in the DataAccessGrpc Context remaining
-        ///     active until the application edataGrpcts.
-        /// </summary>
-        /// <summary>
-        /// </summary>
-        /// <param name="disposing">
-        ///     <para>
-        ///         This parameter indicates, when TRUE, this Dispose() method was called directly or indirectly by a user's
-        ///         code. When FALSE, this method was called by the runtime from inside the finalizer.
-        ///     </para>
-        ///     <para>
-        ///         When called by user code, references within the class should be valid and should be disposed of properly.
-        ///         When called by the finalizer, references within the class are not guaranteed to be valid and attempts to
-        ///         dispose of them should not be made.
-        ///     </para>
-        /// </param>
-        /// <returns> Returns TRUE to indicate that the object has been disposed. </returns>
-        private void Dispose(bool disposing)
-        {
-            if (_disposed) return;
-
-            if (disposing)
-            {
-                CloseConnectionInternal();
-            }
-
-            _disposed = true;
-        }
-
-        /// <summary>
-        ///     The standard destructor invoked by the .NET garbage collector during Finalize.
-        /// </summary>
-        ~ClientContextManager()
-        {
-            Dispose(false);
         }
 
         #endregion
@@ -184,8 +133,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                 }
                 throw;
             }
-
-            _clientContext.ClientContextNotification += ClientContext_OnClientContextNotification;
+            
             if (callbackDispatcher is not null)
                 _clientContext.ServerContextNotification += (s, a) =>
                 {                    
@@ -199,11 +147,15 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         /// <summary>
         ///     This method is used to close a context with the server and disconnect the WCF connection.
         /// </summary>
-        public void CloseConnection()
+        public async Task CloseConnectionAsync()
         {
             if (_disposed) return;
 
-            CloseConnectionInternal();
+            if (_clientContext is not null)
+            {
+                await _clientContext.DisposeAsync();
+                _clientContext = null;
+            }
         }
 
         /// <summary>
@@ -326,9 +278,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         ///     This property indicates, when TRUE, that the client has an open context (session) with
         ///     the server.
         /// </summary>
-        public bool ConnectionExists
+        public bool ContextIsOperational
         {
-            get { return _clientContext is not null; }
+            get { return _clientContext is not null && _clientContext.ContextIsOperational; }
         }
 
         public string ServerContextId
@@ -345,50 +297,20 @@ namespace Ssz.DataAccessGrpc.Client.Managers
         
         public async Task DoWorkAsync(CancellationToken ct, DateTime nowUtc)
         {
-            if (_disposed) throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
+            if (_disposed) 
+                throw new ObjectDisposedException("Cannot access a disposed DataAccessGrpcServerProxy.");
 
-            if (_clientContext is null) throw new ConnectionDoesNotExistException();
+            if (_clientContext is null) 
+                throw new ConnectionDoesNotExistException();
 
             LastSuccessfulConnectionDateTimeUtc = nowUtc;
 
-            await _clientContext.KeepContextAliveIfNeededAsync(ct, nowUtc);
-            _clientContext.ProcessPendingClientContextNotification();            
+            await _clientContext.KeepContextAliveIfNeededAsync(ct, nowUtc);                      
         }
 
-#endregion
+        #endregion
 
-#region private functions
-
-        /// <summary>
-        ///     This method is used to close a context with the server and disconnect the WCF connection.
-        /// </summary>
-        private void CloseConnectionInternal()
-        {
-            if (_clientContext is null) return;
-            
-            _clientContext.Dispose();
-            _clientContext = null;
-        }
-
-        private void ClientContext_OnClientContextNotification(object? sender, ClientContext.ClientContextNotificationEventArgs args)
-        { 
-            if (_disposed) return;
-
-            switch (args.ReasonForNotification)
-            {
-                case ClientContext.ClientContextNotificationType.RemoteMethodCallException:
-                case ClientContext.ClientContextNotificationType.ClientKeepAliveException:                
-                case ClientContext.ClientContextNotificationType.Shutdown:
-                case ClientContext.ClientContextNotificationType.ReadCallbackMessagesException:
-                    LastFailedConnectionDateTimeUtc = DateTime.UtcNow;
-                    CloseConnectionInternal();
-                    break;
-            }
-        }
-
-#endregion
-
-#region private fields
+        #region private fields
 
         private bool _disposed;
 
@@ -398,6 +320,6 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
         private ClientContext? _clientContext;
 
-#endregion  
+        #endregion  
     }
 }

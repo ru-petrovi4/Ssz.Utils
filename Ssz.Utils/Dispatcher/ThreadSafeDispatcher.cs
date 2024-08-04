@@ -76,6 +76,9 @@ namespace Ssz.Utils
                     {
                         action.Invoke(cancellationToken);
                     }
+                    catch (OperationCanceledException)
+                    {                        
+                    }
                     catch (Exception ex)
                     {
                         _logger?.LogError(ex, @"action.Invoke(cancellationToken) Error.");

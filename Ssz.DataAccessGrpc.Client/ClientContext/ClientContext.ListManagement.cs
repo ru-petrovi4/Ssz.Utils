@@ -35,7 +35,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
-            if (!ServerContextIsOperational) throw new InvalidOperationException();
+            if (!ContextIsOperational) throw new InvalidOperationException();
 
             uint listClientAlias = _lists.Add(dataAccessGrpcList);
             
@@ -77,7 +77,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
-            if (!ServerContextIsOperational) throw new InvalidOperationException();
+            if (!ContextIsOperational) throw new InvalidOperationException();
 
             // Only do the delete of this list from the server 
             // if the context dispose is not running and the
@@ -126,7 +126,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
-            if (!ServerContextIsOperational) throw new InvalidOperationException();
+            if (!ContextIsOperational) throw new InvalidOperationException();
             
             try
             {
@@ -163,7 +163,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
-            if (!ServerContextIsOperational) throw new InvalidOperationException();
+            if (!ContextIsOperational) throw new InvalidOperationException();
 
             try
             {
@@ -204,7 +204,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
-            if (!ServerContextIsOperational) throw new InvalidOperationException();
+            if (!ContextIsOperational) throw new InvalidOperationException();
 
             try
             {
@@ -243,7 +243,7 @@ namespace Ssz.DataAccessGrpc.Client
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
-            if (!ServerContextIsOperational) throw new InvalidOperationException();
+            if (!ContextIsOperational) throw new InvalidOperationException();
 
             try
             {

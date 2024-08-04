@@ -24,7 +24,7 @@ namespace Ssz.DataAccessGrpc.Client
     ///     one that in which the calling client application supplies the user credentials, and one in which
     ///     the ClientBase calls into the DataAccessGrpc Client Credentials Project.Current for the user credentials when necessary.
     /// </summary>
-    internal partial class ClientContext
+    internal partial class ClientContext: IAsyncDisposable
     {
         #region construction and destruction
         
@@ -43,76 +43,37 @@ namespace Ssz.DataAccessGrpc.Client
             _workstationName = clientWorkstationName;
         }
 
-        /// <summary>
-        ///     This method disposes of the object.  It is invoked by the client application, client base, or
-        ///     the destructor of this object.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        ///     This method disposes of the object.  It is invoked by the parameterless Dispose()
-        ///     method of this object.  It is expected that the DataAccessGrpc client application
-        ///     will perform a Dispose() on each active context to close the connection with the
-        ///     DataAccessGrpc ServerBase.  Failure to perform the close will result in the DataAccessGrpc Context remaining
-        ///     active until the application edataGrpcts.
-        /// </summary>
-        /// <summary>
-        /// </summary>
-        /// <param name="disposing">
-        ///     <para>
-        ///         This parameter indicates, when TRUE, this Dispose() method was called directly or indirectly by a user's
-        ///         code. When FALSE, this method was called by the runtime from inside the finalizer.
-        ///     </para>
-        ///     <para>
-        ///         When called by user code, references within the class should be valid and should be disposed of properly.
-        ///         When called by the finalizer, references within the class are not guaranteed to be valid and attempts to
-        ///         dispose of them should not be made.
-        ///     </para>
-        /// </param>
-        /// <returns> Returns TRUE to indicate that the object has been disposed. </returns>
-        private void Dispose(bool disposing)
+        public async ValueTask DisposeAsync()
         {
             if (_disposed) return;
 
-            if (disposing)
+            _cancellationTokenSource.Cancel();
+
+            if (_contextIsOperational)
             {
-                _cancellationTokenSource.Cancel();
+                _contextIsOperational = false;
 
-                if (_serverContextIsOperational)
+                try
                 {
-                    _serverContextIsOperational = false;
-
-                    try
+                    await _resourceManagementClient.ConcludeAsync(new ConcludeRequest
                     {
-                        var t = _resourceManagementClient.ConcludeAsync(new ConcludeRequest
-                        {
-                            ContextId = _serverContextId
-                        });
-                    }
-                    catch
-                    {
-                    }
+                        ContextId = _serverContextId
+                    });
                 }
-
-                ClientContextNotification = delegate { };
-                ServerContextNotification = delegate { };
-
-                GrpcChannel.Dispose();
+                catch
+                {
+                }
             }
+            
+            ServerContextNotification = delegate { };
+
+            GrpcChannel.Dispose();
 
             _disposed = true;
-        }
 
-        /// <summary>
-        ///     The standard destructor invoked by the .NET garbage collector during Finalize.
-        /// </summary>
-        ~ClientContext()
-        {
-            Dispose(false);
+#pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
+            GC.SuppressFinalize(this);
+#pragma warning restore CA1816 // Dispose methods should call SuppressFinalize
         }
 
         #endregion
@@ -124,8 +85,6 @@ namespace Ssz.DataAccessGrpc.Client
         public ContextStatus? ServerContextStatus { get; private set; }        
 
         public event EventHandler<ContextStatusChangedEventArgs> ServerContextNotification = delegate { };
-
-        public event EventHandler<ClientContextNotificationEventArgs> ClientContextNotification = delegate { };
         
         public string ServerContextId
         {
@@ -146,9 +105,9 @@ namespace Ssz.DataAccessGrpc.Client
             get { return _serverCultureName; }
         }
         
-        public bool ServerContextIsOperational
+        public bool ContextIsOperational
         {
-            get { return _serverContextIsOperational; }            
+            get { return _contextIsOperational; }            
         }
 
         public async Task InitiateAsync(uint requestedServerContextTimeoutMs,
@@ -183,14 +142,15 @@ namespace Ssz.DataAccessGrpc.Client
                 ContextId = _serverContextId
             }, new CallOptions());
 
-            _serverContextIsOperational = true;
+            _contextIsOperational = true;
 
             _workingTask = ReadCallbackMessagesAsync(_callbackMessageStream.ResponseStream, _cancellationTokenSource.Token);
         }
 
         public async Task KeepContextAliveIfNeededAsync(CancellationToken ct, DateTime nowUtc)
         {
-            if (!_serverContextIsOperational) return;
+            if (!_contextIsOperational) 
+                return;
 
             uint timeDiffInMs = (uint)(nowUtc - _resourceManagementLastCallUtc).TotalMilliseconds + 500;
 
@@ -207,19 +167,11 @@ namespace Ssz.DataAccessGrpc.Client
                 }
                 catch
                 {
-                    _serverContextIsOperational = false;
-                    _pendingClientContextNotificationEventArgs = new ClientContextNotificationEventArgs(ClientContextNotificationType.ClientKeepAliveException, null);
+                    _contextIsOperational = false;                    
                 }
             }
-        }
+        }       
         
-        public void ProcessPendingClientContextNotification()
-        {
-            var pendingClientContextNotificationEventArgs = _pendingClientContextNotificationEventArgs;
-            _pendingClientContextNotificationEventArgs = null;
-            if (pendingClientContextNotificationEventArgs is not null)
-                ClientContextNotification(this, pendingClientContextNotificationEventArgs);
-        }
 
         #endregion
 
@@ -253,14 +205,10 @@ namespace Ssz.DataAccessGrpc.Client
         {   
             if (ex is RpcException)
             {
-                if (!_serverContextIsOperational) return;
+                if (!_contextIsOperational) 
+                    return;
 
-                _serverContextIsOperational = false;
-
-                // if not a server shutdown, then throw the error message from the server
-                //if (IsServerShutdownOrNoContextServerFault(ex as FaultException<DataAccessGrpcFault>)) return;
-                _pendingClientContextNotificationEventArgs = new ClientContextNotificationEventArgs(ClientContextNotificationType.RemoteMethodCallException,
-                        ex);
+                _contextIsOperational = false;                
 
                 _logger.LogDebug(ex, "RpcException when server method call. Client reconnecting..");
             }
@@ -298,9 +246,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         private AsyncServerStreamingCall<CallbackMessage>? _callbackMessageStream;
         
-        private volatile bool _serverContextIsOperational;
-
-        private ClientContextNotificationEventArgs? _pendingClientContextNotificationEventArgs;
+        private volatile bool _contextIsOperational;
 
         /// <summary>
         ///     The time interval that controls when ClientKeepAlive messages are
@@ -312,49 +258,6 @@ namespace Ssz.DataAccessGrpc.Client
         private const uint KeepAliveIntervalMs = 10000;
 
         #endregion
-
-        public class ClientContextNotificationEventArgs : EventArgs
-        {
-            public ClientContextNotificationEventArgs(ClientContextNotificationType reasonForNotification, object? data)
-            {
-                ReasonForNotification = reasonForNotification;
-                Data = data;
-            }
-
-            /// <summary>
-            ///     This property specifies the reason for the notification.
-            /// </summary>
-            public ClientContextNotificationType ReasonForNotification { get; }
-
-            /// <summary>
-            ///     This property contains the details about the notification.
-            /// </summary>
-            public object? Data { get; }
-        }
-
-        /// <summary>
-        ///     This enumeration indicates why the notification is being sent.
-        /// </summary>
-        public enum ClientContextNotificationType
-        {
-            /// <summary>
-            ///     The server shutting down.            
-            /// </summary>
-            Shutdown,
-
-            /// <summary>
-            ///     Remote Method Call Exception.            
-            /// </summary>
-            RemoteMethodCallException,
-
-            /// <summary>            
-            /// </summary>
-            ClientKeepAliveException,
-
-            /// <summary>            
-            /// </summary>
-            ReadCallbackMessagesException
-        }
     }
 
     #endregion // Context Management
