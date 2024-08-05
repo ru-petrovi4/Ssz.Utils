@@ -124,13 +124,13 @@ namespace Ssz.Dcs.CentralServer
         public override async Task<NotifyJournalEventReply> NotifyJournalEvent(NotifyJournalEventRequest request, ServerCallContext context)
         {
             return await GetReplyAsync(() =>
-            {
-                _serverWorker.NotifyJournalEvent(request.ProcessModelingSessionId ?? @"", (EventType)request.EventType, request.OccurrenceTime.ToDateTime(), request.TextMessage ?? @"");
-                var reply = new NotifyJournalEventReply
                 {
-                };
-                return reply;
-            },
+                    _serverWorker.NotifyJournalEvent(request.ProcessModelingSessionId ?? @"", (EventType)request.EventType, request.OccurrenceTime.ToDateTime(), request.TextMessage ?? @"");
+                    var reply = new NotifyJournalEventReply
+                    {
+                    };
+                    return reply;
+                },
                 context);
         }
 

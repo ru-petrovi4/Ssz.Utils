@@ -932,8 +932,11 @@ namespace Ssz.DataAccessGrpc.Client
                             if (converter is not null)
                                 continue;
 
-                            var childValueSubscription = new ChildValueSubscription(valueSubscriptionObj, v);
-                            childValueSubscriptionsList.Add(childValueSubscription);
+                            if (!String.IsNullOrEmpty(v))
+                            {
+                                var childValueSubscription = new ChildValueSubscription(valueSubscriptionObj, v);
+                                childValueSubscriptionsList.Add(childValueSubscription);
+                            }
                         }
                     }
 
