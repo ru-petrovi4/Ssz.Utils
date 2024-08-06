@@ -287,7 +287,7 @@ namespace Ssz.DataAccessGrpc.Client
                 }
                 catch (Exception ex)
                 {
-                    taskCompletionSource.SetException(ex);
+                    taskCompletionSource.TrySetException(ex);
                 }                
             }
             );
@@ -422,7 +422,7 @@ namespace Ssz.DataAccessGrpc.Client
                 }
                 catch (Exception ex)
                 {
-                    taskCompletionSource.SetException(ex);
+                    taskCompletionSource.TrySetException(ex);
                 }
             });
 
@@ -460,7 +460,7 @@ namespace Ssz.DataAccessGrpc.Client
                 }
                 catch (Exception ex)
                 {
-                    taskCompletionSource.SetException(ex);
+                    taskCompletionSource.TrySetException(ex);
                 }
             });
 

@@ -31,12 +31,12 @@ namespace Ssz.Xi.Client.Api
         /// <param name="xiServerProxy"></param>
         /// <param name="сallbackDoer"></param>        
         /// <param name="callbackable"></param>
-        /// <param name="ct"></param>
-        public void Subscribe(XiServerProxy xiServerProxy, IDispatcher? сallbackDoer, bool callbackable, CancellationToken ct)
+        /// <param name="cancellationToken"></param>
+        public void Subscribe(XiServerProxy xiServerProxy, IDispatcher? сallbackDoer, bool callbackable, CancellationToken cancellationToken)
         {
             _callbackable = callbackable;
 
-            if (ct.IsCancellationRequested) return;
+            cancellationToken.ThrowIfCancellationRequested();
             if (!xiServerProxy.ContextExists) return;
             if (!_xiEventItemsMustBeAdded) return;
 
@@ -45,7 +45,7 @@ namespace Ssz.Xi.Client.Api
             foreach (
                 var kvp in _eventMessagesCallbackEventHandlers)
             {
-                if (ct.IsCancellationRequested) return;
+                cancellationToken.ThrowIfCancellationRequested();
                 if (kvp.Value.P is not null) continue;
 
                 var f = new List<ORedFilters>();
@@ -91,7 +91,7 @@ namespace Ssz.Xi.Client.Api
                         xiEventList.EventMessagesCallbackEvent +=
                             (IXiEventListProxy eventList, IEnumerable<IXiEventListItem> newListItems) =>
                             {
-                                if (ct.IsCancellationRequested) return;
+                                cancellationToken.ThrowIfCancellationRequested();
                                 if (сallbackDoer is not null)
                                 {
                                     try
@@ -112,10 +112,18 @@ namespace Ssz.Xi.Client.Api
 
                         xiEventList.EnableListUpdating(true);
                     }
+                    catch (OperationCanceledException) 
+                    {
+                        throw;
+                    }
                     catch (Exception)
                     {
                         allOk = false;
                     }
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
                 }
                 catch
                 {

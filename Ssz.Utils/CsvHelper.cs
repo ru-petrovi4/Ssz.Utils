@@ -243,6 +243,7 @@ namespace Ssz.Utils
                     while ((l = reader.ReadLine()) is not null)
                     {
                         l = l.Trim();
+                        l = l.TrimEnd(',');
 
                         if (l.Length > 0 && l[l.Length - 1] == '\\')
                         {
@@ -263,8 +264,14 @@ namespace Ssz.Utils
 
                         if (beginFields is null)
                         {
-                            if (includeFilesDirectory is not null && StringHelper.StartsWithIgnoreCase(line, @"#include") && line.Length > 8)
+                            var fieldsLocal = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), ref inQuotes);
+
+                            if (includeFilesDirectory is not null &&
+                                fieldsLocal.Count == 1 &&
+                                StringHelper.StartsWithIgnoreCase(fieldsLocal[0], @"#include"))
                             {
+                                line = fieldsLocal[0]!;
+
                                 var q1 = line.IndexOf('"', 8);
                                 if (q1 != -1 && q1 + 1 < line.Length)
                                 {
@@ -311,7 +318,7 @@ namespace Ssz.Utils
                                     string subst = @"";
                                     if (q2 < line.Length - 1)
                                     {
-                                        subst = ReplaceDefines(line.Substring(q2 + 1).Trim(), defines);
+                                        subst = line.Substring(q2 + 1).Trim();
                                     }
                                     defines[new Regex(@"\b" + define + @"\b", RegexOptions.IgnoreCase)] = subst;
                                 }
@@ -327,7 +334,7 @@ namespace Ssz.Utils
                                 continue;
                             }
 
-                            fields = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), ref inQuotes);
+                            fields = fieldsLocal;
                             if (inQuotes)
                             {
                                 beginFields = fields;

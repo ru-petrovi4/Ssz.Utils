@@ -27,15 +27,15 @@ namespace Ssz.Xi.Client.Api
         /// <param name="сallbackDoer"></param>
         /// <param name="elementValuesCallbackEventHandler"></param>
         /// <param name="callbackable"></param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         public void Subscribe(XiServerProxy xiServerProxy, IDispatcher? сallbackDoer,
-            ElementValuesCallbackEventHandler elementValuesCallbackEventHandler, bool callbackable, bool unsubscribeItemsFromServer, CancellationToken ct)
+            ElementValuesCallbackEventHandler elementValuesCallbackEventHandler, bool callbackable, bool unsubscribeItemsFromServer, CancellationToken cancellationToken)
         {
             _callbackable = callbackable;
 
             try
             {
-                if (ct.IsCancellationRequested) return;                
+                cancellationToken.ThrowIfCancellationRequested();
                 if (!XiItemsMustBeAddedOrRemoved) return;               
 
                 bool firstTimeDataConnection = (XiList is null);
@@ -82,7 +82,7 @@ namespace Ssz.Xi.Client.Api
                                         }
                                         i++;
                                     }
-                                    if (ct.IsCancellationRequested) return;
+                                    cancellationToken.ThrowIfCancellationRequested();
                                     Logger?.LogDebug("XiList.ElementValuesCallback");
                                     if (сallbackDoer is not null)
                                     {
@@ -105,6 +105,10 @@ namespace Ssz.Xi.Client.Api
 
                         XiList.EnableListElementUpdating(true, null);
                     }
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
                 }
                 catch (Exception ex)
                 {
@@ -146,7 +150,7 @@ namespace Ssz.Xi.Client.Api
                     }                    
                     if (changedClientObjs.Count > 0)
                     {
-                        if (ct.IsCancellationRequested) return;
+                        cancellationToken.ThrowIfCancellationRequested();
                         if (сallbackDoer is not null)
                         {
                             try

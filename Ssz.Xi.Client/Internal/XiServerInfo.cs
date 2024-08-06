@@ -514,14 +514,16 @@ namespace Ssz.Xi.Client.Internal
         }
 
         public static uint NormalizeStatusCode(uint statusCode)
-        {            
-            if (XiStatusCodeStatusBits.StatusCodeStatusGroupGoodBits
-                            == (XiStatusCodeStatusBits)(statusCode & (uint)XiStatusCodeStatusBits.StatusCodeStatusGroupMask))
-                return StatusCodes.Good;
-            if (XiStatusCodeStatusBits.StatusCodeStatusGroupUncertainBits
-                            == (XiStatusCodeStatusBits)(statusCode & (uint)XiStatusCodeStatusBits.StatusCodeStatusGroupMask))
-                return StatusCodes.Uncertain;
-            return StatusCodes.Bad;
+        {
+            return StatusCodes.Good;
+
+            //if (XiStatusCodeStatusBits.StatusCodeStatusGroupGoodBits
+            //                == (XiStatusCodeStatusBits)(statusCode & (uint)XiStatusCodeStatusBits.StatusCodeStatusGroupMask))
+            //    return StatusCodes.Good;
+            //if (XiStatusCodeStatusBits.StatusCodeStatusGroupUncertainBits
+            //                == (XiStatusCodeStatusBits)(statusCode & (uint)XiStatusCodeStatusBits.StatusCodeStatusGroupMask))
+            //    return StatusCodes.Uncertain;
+            //return StatusCodes.Bad;
         }
 
         #endregion

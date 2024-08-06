@@ -231,31 +231,41 @@ namespace Ssz.Dcs.CentralServer
             foreach (EngineSession engineSession in _engineSessions)
             {
                 var pendingWrite = engineSession.DataAccessProvider.Obj as PendingWrite;
-                if (pendingWrite is null || pendingWrite.ValueSubscriptions.Count == 0) continue;
+                if (pendingWrite is null || pendingWrite.ValueSubscriptions.Count == 0) 
+                    continue;
                 var t = engineSession.DataAccessProvider.WriteAsync(pendingWrite.ValueSubscriptions.ToArray(), pendingWrite.ValueStatusTimestamps.ToArray());
                 tasks.Add(t);
                 engineSession.DataAccessProvider.Obj = null;
-            }
-
-            var dataProvidersReplyData = await Task.WhenAll(tasks);            
+            }  
             
-            foreach (var (failedValueSubscriptions, failedResultInfos) in dataProvidersReplyData)
-            {                
-                foreach (int i in Enumerable.Range(0, failedValueSubscriptions.Length))
+            foreach (var task in tasks)
+            {
+                try
                 {
-                    var failedValueSubscription = failedValueSubscriptions[i];                    
-                    AliasResult? aliasResult;
-                    if (!aliasResultsDicitionary.TryGetValue(failedValueSubscription, out aliasResult))
-                        continue;                    
-                    var resultInfo = failedResultInfos[i];
-                    aliasResult.StatusCode = resultInfo.StatusCode;
-                    aliasResult.Info = resultInfo.Info;
-                    aliasResult.Label = resultInfo.Label;
-                    aliasResult.Details = resultInfo.Details;
+                    var (failedValueSubscriptions, failedResultInfos) = await task;
+                    foreach (int i in Enumerable.Range(0, failedValueSubscriptions.Length))
+                    {
+                        var failedValueSubscription = failedValueSubscriptions[i];
+                        AliasResult? aliasResult;
+                        if (!aliasResultsDicitionary.TryGetValue(failedValueSubscription, out aliasResult))
+                            continue;
+                        var resultInfo = failedResultInfos[i];
+                        aliasResult.StatusCode = resultInfo.StatusCode;
+                        aliasResult.Info = resultInfo.Info;
+                        aliasResult.Label = resultInfo.Label;
+                        aliasResult.Details = resultInfo.Details;
+                    }
                 }
+                catch (Exception) 
+                {
+                }                
             }
 
-            return aliasResultsDicitionary.Values.Where(r => !StatusCodes.IsGood(r.StatusCode)).ToList();
+            return aliasResultsDicitionary.Values
+                .GroupBy(r => r.ServerAlias)
+                .Where(g => g.Any(r => !StatusCodes.IsGood(r.StatusCode)))
+                .Select(g => g.First(r => !StatusCodes.IsGood(r.StatusCode)))
+                .ToList();
         }
 
         #endregion

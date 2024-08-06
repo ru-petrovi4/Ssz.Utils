@@ -1447,9 +1447,8 @@ namespace Ssz.Xi.Client.Internal.Lists
             {
                 EventMessagesCallbackEvent(this, newEventListItems);
             }
-            catch (Exception ex)
+            catch
             {
-                _lastEventMessagesCallbackExceptionMessage = ex.Message;
             }
         }
 
@@ -1872,13 +1871,7 @@ namespace Ssz.Xi.Client.Internal.Lists
 
         #endregion
 
-        #region private fields
-
-        /// <summary>
-        ///     This data member holds the last exception message encountered by the
-        ///     ElementValuesCallback callback when calling valuesUpdateEvent().
-        /// </summary>
-        private static string? _lastEventMessagesCallbackExceptionMessage;
+        #region private fields        
 
         // TODO: Update the methods in this region if the ordering of the Event List is to be changed        
 

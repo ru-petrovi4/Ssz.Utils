@@ -154,7 +154,8 @@ namespace Ssz.Utils.Addons
                 foreach (FileInfo addonFileInfo in addonsFileInfos)
                 {
                     var availableAddon = TryGetAddon(addonFileInfo);
-                    if (availableAddon is not null) availableAddonsList.Add(availableAddon);
+                    if (availableAddon is not null) 
+                        availableAddonsList.Add(availableAddon);
                 }
             }
 
@@ -270,6 +271,7 @@ namespace Ssz.Utils.Addons
                                 availableAddon.Identifier,
                                 (availableAddon.IsAlwaysSwitchedOn || availableAddon.IsSwitchedOnByDefault) ? @"true" : @"false"
                             };
+                        ProcessOptionsCsvFile(availableAddon, addonInstanceId);
                     }
                     else
                     {                        
@@ -278,6 +280,7 @@ namespace Ssz.Utils.Addons
                             if (i > 0 && !availableAddon.IsMultiInstance)
                                 break;
                             var availableAddonLine = availableAddonLines[i];
+                            string addonInstanceId = availableAddonLine[0]!;
                             bool isSwitchedOn;
                             if (availableAddon.IsAlwaysSwitchedOn)
                                 isSwitchedOn = true;
@@ -285,10 +288,11 @@ namespace Ssz.Utils.Addons
                                 isSwitchedOn = new Any(availableAddonLine[2] ?? @"").ValueAsBoolean(false);
                             new_AddonsFileData[availableAddonLine[0]!] = new List<string?>()
                             {
-                                availableAddonLine[0]!,
+                                addonInstanceId,
                                 availableAddon.Identifier,
                                 isSwitchedOn ? @"true" : @"false"
                             };
+                            ProcessOptionsCsvFile(availableAddon, addonInstanceId);
                         }
                     }
                 }
@@ -299,7 +303,7 @@ namespace Ssz.Utils.Addons
                     CsvDb.FileClear(AddonsCsvFileName);
                     CsvDb.SetData(AddonsCsvFileName, new_AddonsFileData_Values);
                     CsvDb.SaveData(AddonsCsvFileName);
-                }
+                }                
             }
 
             _availableAddons = availableAddons;
@@ -556,6 +560,39 @@ namespace Ssz.Utils.Addons
 
         #endregion
 
+        #region private functions
+
+        private void ProcessOptionsCsvFile(AddonBase availableAddon, string addonInstanceId)
+        {
+            var addonConfigDirectoryInfo = new DirectoryInfo(Path.Combine(CsvDb.CsvDbDirectoryInfo!.FullName, addonInstanceId));
+            try
+            {
+                // Creates all directories and subdirectories in the specified path unless they already exist.
+                Directory.CreateDirectory(addonConfigDirectoryInfo.FullName);
+                if (!addonConfigDirectoryInfo.Exists)
+                    addonConfigDirectoryInfo = null;
+            }
+            catch
+            {
+                addonConfigDirectoryInfo = null;
+            }
+            if (addonConfigDirectoryInfo is not null)
+            {
+                var csvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, addonConfigDirectoryInfo);
+                var existingOptionsData = csvDb.GetData(AddonBase.OptionsCsvFileName);
+                foreach (var optionInfo in availableAddon.OptionsInfo)
+                {
+                    if (!existingOptionsData.ContainsKey(optionInfo.Item1))
+                    {
+                        csvDb.SetValues(AddonBase.OptionsCsvFileName, new string?[] { optionInfo.Item1, optionInfo.Item3 });
+                    }
+                }
+                csvDb.SaveData();
+            }
+        }
+
+        #endregion        
+
         #region protected functions
 
         /// <summary>
@@ -744,7 +781,8 @@ namespace Ssz.Utils.Addons
                         availableAddonClone.CsvDb.SetValues(AddonBase.OptionsCsvFileName, new string?[] { optionInfo.Item1, optionInfo.Item3 });                        
                     }
                 }
-                availableAddonClone.CsvDb.SaveData();
+                if (AddonsManagerOptions!.CanModifyAddonsCsvFiles)
+                    availableAddonClone.CsvDb.SaveData();
 
                 availableAddonClone.OptionsSubstituted = new CaseInsensitiveDictionary<string?>(availableAddonClone.CsvDb.GetData(AddonBase.OptionsCsvFileName)
                     .Where(kvp => kvp.Key != @"").Select(kvp => new KeyValuePair<string, string?>(kvp.Key, kvp.Value.Count > 1 ? SubstituteOption(kvp.Value[1]) : null)));                

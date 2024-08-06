@@ -68,7 +68,7 @@ namespace Ssz.DataAccessGrpc.Client
                 }
                 catch (Exception ex)
                 {
-                    taskCompletionSource.SetException(ex);
+                    taskCompletionSource.TrySetException(ex);
                 }
             }
             );

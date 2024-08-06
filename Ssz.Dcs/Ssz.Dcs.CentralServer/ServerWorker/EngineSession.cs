@@ -28,19 +28,7 @@ namespace Ssz.Dcs.CentralServer
 
         public DataAccessProviderGetter_AddonBase DataAccessProviderGetter_Addon { get; }
 
-        public IDataAccessProvider DataAccessProvider => DataAccessProviderGetter_Addon.DataAccessProvider!;
-
-        public string ServerAddress
-        {
-            get => DataAccessProvider.ServerAddress;
-            set => DataAccessProvider.ServerAddress = value;
-        }
-
-        public string ServerHost => DataAccessProvider.ServerHost;
-
-        public string SystemNameToConnect => DataAccessProvider.SystemNameToConnect;
-
-        public CaseInsensitiveDictionary<string?> ContextParams => DataAccessProvider.ContextParams;
+        public IDataAccessProvider DataAccessProvider => DataAccessProviderGetter_Addon.DataAccessProvider!;        
 
         #endregion
     }

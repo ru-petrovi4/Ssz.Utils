@@ -157,7 +157,7 @@ namespace Ssz.Dcs.CentralServer
                 {
                     EngineSession? engineSession = ProcessModeling_EngineSessions.TryGetValue(engineSessionId);
                     if (engineSession is not null)
-                        engineSession.ServerAddress = utilityServerContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_ControlEngineServerAddress)!;
+                        engineSession.DataAccessProvider.ServerAddress = utilityServerContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_ControlEngineServerAddress)!;
                 }     
                 else
                 {

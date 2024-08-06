@@ -105,12 +105,19 @@ namespace Ssz.Xi.Client
             var taskCompletionSource = new TaskCompletionSource<List<Utils.DataAccess.EventMessagesCollection>?>();
             WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
-                var result = _xiEventListItemsManager.ReadEventMessagesJournal(firstTimestampUtc, secondTimestampUtc, params_);
-                foreach (var eventMessagesCollection in result)
+                try
                 {
-                    ElementIdsMap?.AddCommonFieldsToEventMessagesCollection(eventMessagesCollection);
+                    var result = _xiEventListItemsManager.ReadEventMessagesJournal(firstTimestampUtc, secondTimestampUtc, params_);
+                    foreach (var eventMessagesCollection in result)
+                    {
+                        ElementIdsMap?.AddCommonFieldsToEventMessagesCollection(eventMessagesCollection);
+                    }
+                    taskCompletionSource.SetResult(result);
                 }
-                taskCompletionSource.SetResult(result);
+                catch (Exception ex)
+                {
+                    taskCompletionSource.TrySetException(ex);
+                }                
             }
             );
             return await taskCompletionSource.Task;

@@ -211,11 +211,18 @@ namespace Ssz.Dcs.Addons.OpcClient
             var taskCompletionSource = new TaskCompletionSource<IValueSubscription[]?>();
             WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
-                if (_xiServerProxy is null) throw new InvalidOperationException();
-                _xiDataListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher,
-                    XiDataListItemsManagerOnElementValuesCallback, Options.ElementValueListCallbackIsEnabled, Options.UnsubscribeValueListItemsFromServer, ct);
-                object[]? changedValueSubscriptions = _xiDataListItemsManager.PollChanges();
-                taskCompletionSource.SetResult(changedValueSubscriptions is not null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null);
+                try
+                {
+                    if (_xiServerProxy is null) throw new InvalidOperationException();
+                    _xiDataListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher,
+                        XiDataListItemsManagerOnElementValuesCallback, Options.ElementValueListCallbackIsEnabled, Options.UnsubscribeValueListItemsFromServer, ct);
+                    object[]? changedValueSubscriptions = _xiDataListItemsManager.PollChanges();
+                    taskCompletionSource.SetResult(changedValueSubscriptions is not null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null);
+                }
+                catch (Exception ex)
+                {
+                    taskCompletionSource.TrySetException(ex);
+                }                
             });
             return await taskCompletionSource.Task;
         }
@@ -360,12 +367,19 @@ namespace Ssz.Dcs.Addons.OpcClient
 
             WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
-                if (_xiServerProxy is null) throw new InvalidOperationException();
-                _xiDataListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher,
-                    XiDataListItemsManagerOnElementValuesCallback, Options.ElementValueListCallbackIsEnabled, Options.UnsubscribeValueListItemsFromServer, ct);
-                object[] failedValueSubscriptions = _xiDataListItemsManager.Write(valueSubscriptions, valueStatusTimestamps);
-                
-                taskCompletionSource.SetResult((failedValueSubscriptions.OfType<IValueSubscription>().ToArray(), Enumerable.Repeat(ResultInfo.UncertainResultInfo, failedValueSubscriptions.Length).ToArray()));
+                try
+                {
+                    if (_xiServerProxy is null) throw new InvalidOperationException();
+                    _xiDataListItemsManager.Subscribe(_xiServerProxy, CallbackDispatcher,
+                        XiDataListItemsManagerOnElementValuesCallback, Options.ElementValueListCallbackIsEnabled, Options.UnsubscribeValueListItemsFromServer, ct);
+                    object[] failedValueSubscriptions = _xiDataListItemsManager.Write(valueSubscriptions, valueStatusTimestamps);
+
+                    taskCompletionSource.SetResult((failedValueSubscriptions.OfType<IValueSubscription>().ToArray(), Enumerable.Repeat(ResultInfo.UncertainResultInfo, failedValueSubscriptions.Length).ToArray()));
+                }
+                catch (Exception ex)
+                {
+                    taskCompletionSource.TrySetException(ex);
+                }                
             });
 
             return await taskCompletionSource.Task;

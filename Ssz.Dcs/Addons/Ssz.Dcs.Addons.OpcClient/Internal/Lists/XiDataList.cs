@@ -350,9 +350,8 @@ namespace Ssz.Xi.Client.Internal.Lists
                 if (elementValuesCallback is not null)
                     elementValuesCallback(this, changedListItems.ToArray(), changedValues.ToArray());
             }
-            catch (Exception ex)
+            catch
             {
-                _lastElementValuesCallbackExceptionMessage = ex.Message;
             }
         }
 
@@ -457,16 +456,6 @@ namespace Ssz.Xi.Client.Internal.Lists
 
             return changedListItems;
         }
-
-        #endregion
-
-        #region private fields
-
-        /// <summary>
-        ///     This data member holds the last exception message encountered by the
-        ///     ElementValuesCallback callback when calling valuesUpdateEvent().
-        /// </summary>
-        private static string? _lastElementValuesCallbackExceptionMessage;
 
         #endregion
     }

@@ -83,6 +83,11 @@ namespace Ssz.Utils.DataAccess
             var t = DataAccessProvider.WriteAsync(this, valueStatusTimestamp);
         }
 
+        public override string ToString()
+        {
+            return ElementId;
+        }
+
         #endregion
 
         #region private fields

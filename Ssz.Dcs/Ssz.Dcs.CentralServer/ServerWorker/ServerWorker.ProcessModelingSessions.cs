@@ -437,7 +437,7 @@ namespace Ssz.Dcs.CentralServer
                             dataAccessProviderGetter_Addon2 = GetNewPreparedDataAccessProviderAddon(
                                 _serviceProvider,
                                 $"https://{enginesHostInfo.WorkstationName}:60060",
-                                "PLATFORM" + xiSystemName,
+                                DataAccessConstants.PlatformXiProcessModelingSessionId + xiSystemName,
                                 new CaseInsensitiveDictionary<string?>(),
                                 ThreadSafeDispatcher);
                         }

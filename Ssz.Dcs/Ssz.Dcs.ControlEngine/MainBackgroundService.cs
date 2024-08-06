@@ -99,7 +99,7 @@ namespace Ssz.Dcs.ControlEngine
                 new DataAccessProviderOptions(),
                 _serverWorker.ThreadSafeDispatcher);
 
-            while (true)
+            while (!_shutdownRequested)
             {
                 try
                 {

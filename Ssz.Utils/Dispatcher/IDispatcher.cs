@@ -42,7 +42,7 @@ namespace Ssz.Utils
                 }
                 catch (Exception ex)
                 {
-                    taskCompletionSource.SetException(ex);
+                    taskCompletionSource.TrySetException(ex);
                 }
             });
             return taskCompletionSource.Task;
@@ -64,7 +64,7 @@ namespace Ssz.Utils
                 }
                 catch (Exception ex)
                 {
-                    taskCompletionSource.SetException(ex);
+                    taskCompletionSource.TrySetException(ex);
                 }
             });
             return taskCompletionSource.Task;
