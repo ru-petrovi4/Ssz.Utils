@@ -34,7 +34,7 @@ namespace Ssz.Utils.Logging
         #region public functions
 
         public ILogger CreateLogger(string categoryName) =>
-            _loggers.GetOrAdd(categoryName, name => new SszLogger(name, _options));
+            _loggers.GetOrAdd(categoryName, name => new SszLogger(categoryName, name, _options));
 
         public void Dispose()
         {

@@ -15,10 +15,13 @@ namespace Ssz.Utils.Logging
         #region construction and destruction
 
         public SszLogger(
+            string categoryName,
             string name,
             SszLoggerOptions options)
         {
-            (_name, Options) = (name, options);
+            _categoryName = categoryName;
+            _name = name;
+            Options = options;
 
             lock (LogFileTextWriterSyncRoot)
             {
@@ -59,9 +62,9 @@ namespace Ssz.Utils.Logging
             if (!IsEnabled(logLevel))
                 return;
 
-            string header = $"{logLevel,-11} {DateTime.Now:O}";
+            string header = $"{logLevel,-11} {DateTime.Now:O} [{_categoryName}]";
             if (eventId.Id != 0)
-                header += $" ID: {eventId.Id}";
+                header += $" Event ID: {eventId.Id}";            
             string content = "\t";
 
             lock (SyncRoot)
@@ -114,9 +117,11 @@ namespace Ssz.Utils.Logging
             }            
         }
 
-        #endregion                
+        #endregion
 
         #region private fields        
+
+        private readonly string _categoryName;
 
         private readonly string _name;
 
