@@ -351,8 +351,7 @@ namespace Ssz.Xi.Client
                 else
                 {
                     if (value.ValueAsObject() != SszConverter.DoNothing)
-                        _xiDataListItemsManager.Write(valueSubscription,
-                            new ValueStatusTimestamp(value, StatusCodes.Good, DateTime.UtcNow));
+                        _xiDataListItemsManager.Write(valueSubscription, valueStatusTimestamp);
                 }
             });
 
