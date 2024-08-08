@@ -111,7 +111,10 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     if (!await reader.MoveNext(cancellationToken))
+                    {
+                        _contextIsOperational = false;
                         break;
+                    }
                     cancellationToken.ThrowIfCancellationRequested();
 
                     CallbackMessage current = reader.Current;
@@ -153,14 +156,12 @@ namespace Ssz.DataAccessGrpc.Client
                 }
                 catch when (cancellationToken.IsCancellationRequested)
                 {
-                    _contextIsOperational = false;
-                    break;
+                    _contextIsOperational = false;                    
                 }
                 catch (Exception ex)
                 {
                     _contextIsOperational = false;
-                    //LoggersSet.Logger.LogWarning(ex, @"ServerContext Callback Thread Exception");
-                    break;
+                    //LoggersSet.Logger.LogWarning(ex, @"ServerContext Callback Thread Exception");                    
                 } 
             }
         }
