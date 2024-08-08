@@ -104,7 +104,7 @@ namespace Ssz.Dcs.ControlEngine
                 try
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    await Task.Delay(20, cancellationToken);
+                    await Task.Delay(3, cancellationToken);
                     cancellationToken.ThrowIfCancellationRequested();
 
                     DateTime nowUtc = DateTime.UtcNow;

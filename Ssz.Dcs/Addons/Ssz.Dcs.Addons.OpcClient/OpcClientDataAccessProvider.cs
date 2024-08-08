@@ -555,7 +555,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                 try
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    await Task.Delay(20, cancellationToken);
+                    await Task.Delay(3, cancellationToken);
                     cancellationToken.ThrowIfCancellationRequested();
 
                     await DoWorkAsync(DateTime.UtcNow, cancellationToken);

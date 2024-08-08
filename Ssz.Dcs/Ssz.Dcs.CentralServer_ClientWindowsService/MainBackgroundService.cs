@@ -43,7 +43,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 try
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    await Task.Delay(20, cancellationToken);
+                    await Task.Delay(3, cancellationToken);
                     cancellationToken.ThrowIfCancellationRequested();
 
                     await _worker.DoWorkAsync(DateTime.UtcNow, cancellationToken);

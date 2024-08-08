@@ -44,7 +44,7 @@ namespace Ssz.Dcs.ControlEngine
 
             if (_dataDirectoryInfo is not null)
             {
-                UserFriendlyLogger = new SszLogger(@"LoadLogger", new SszLoggerOptions
+                UserFriendlyLogger = new SszLogger(@"", @"LoadLogger", new SszLoggerOptions
                 {
                     LogLevel = LogLevel.Warning,
                     LogsDirectory = _dataDirectoryInfo.FullName,
