@@ -144,7 +144,14 @@ namespace Ssz.DataAccessGrpc.Client
 
             _contextIsOperational = true;
 
-            _workingTask = ReadCallbackMessagesAsync(_callbackMessageStream.ResponseStream, _cancellationTokenSource.Token);
+            var cancellationToken = _cancellationTokenSource.Token;
+            var taskCompletionSource = new TaskCompletionSource<int>();
+            var workingThread = new Thread(async () =>
+            {
+                await ReadCallbackMessagesAsync(_callbackMessageStream.ResponseStream, cancellationToken);
+                taskCompletionSource.SetResult(0);
+            });
+            _workingTask = taskCompletionSource.Task;            
         }
 
         public async Task KeepContextAliveIfNeededAsync(CancellationToken ct, DateTime nowUtc)

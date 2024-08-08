@@ -105,67 +105,63 @@ namespace Ssz.DataAccessGrpc.Client
 
         private async Task ReadCallbackMessagesAsync(IAsyncStreamReader<CallbackMessage> reader, CancellationToken cancellationToken)
         {
-            await Task.Delay(0);
-
-            while (true)
+            while (_contextIsOperational)
             {
-                if (!_contextIsOperational || cancellationToken.IsCancellationRequested) 
-                    break;
-
                 try
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
                     if (!await reader.MoveNext(cancellationToken))
                         break;
-                }
-                //catch (RpcException e) when (e.StatusCode == StatusCode.NotFound)
-                //{
-                //    break;
-                //}
-                //catch (OperationCanceledException)
-                //{
-                //    break;
-                //}
-                catch
-                {
-                    _contextIsOperational = false;                    
-                    break;
-                }
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                if (!_contextIsOperational || cancellationToken.IsCancellationRequested)
-                    break;
-
-                CallbackMessage current = reader.Current;
-                _workingDispatcher.BeginInvoke(ct =>
-                {
-                    if (ct.IsCancellationRequested) 
-                        return;
-                    try
-                    {
-                        switch (current.OptionalMessageCase)
+                    CallbackMessage current = reader.Current;
+                    _workingDispatcher.BeginInvoke(ct =>
+                    {    
+                        var ct2 = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, ct).Token;
+                        try
                         {
-                            case CallbackMessage.OptionalMessageOneofCase.ContextStatus:
-                                ServerContextStatusCallback(current.ContextStatus);
-                                break;
-                            case CallbackMessage.OptionalMessageOneofCase.ElementValuesCallback:
-                                ElementValuesCallback elementValuesCallback = current.ElementValuesCallback;
-                                ClientElementValueList valueList = GetElementValueList(elementValuesCallback.ListClientAlias);
-                                ElementValuesCallback(valueList, elementValuesCallback.ElementValuesCollection);
-                                break;
-                            case CallbackMessage.OptionalMessageOneofCase.EventMessagesCallback:
-                                EventMessagesCallback eventMessagesCallback = current.EventMessagesCallback;
-                                ClientEventList eventList = GetEventList(eventMessagesCallback.ListClientAlias);
-                                EventMessagesCallback(eventList, eventMessagesCallback.EventMessagesCollection);
-                                break;
-                            case CallbackMessage.OptionalMessageOneofCase.LongrunningPassthroughCallback:
-                                LongrunningPassthroughCallback(current.LongrunningPassthroughCallback);
-                                break;
+                            ct2.ThrowIfCancellationRequested();                            
+
+                            switch (current.OptionalMessageCase)
+                            {
+                                case CallbackMessage.OptionalMessageOneofCase.ContextStatus:
+                                    ServerContextStatusCallback(current.ContextStatus);
+                                    break;
+                                case CallbackMessage.OptionalMessageOneofCase.ElementValuesCallback:
+                                    ElementValuesCallback elementValuesCallback = current.ElementValuesCallback;
+                                    ClientElementValueList valueList = GetElementValueList(elementValuesCallback.ListClientAlias);
+                                    ElementValuesCallback(valueList, elementValuesCallback.ElementValuesCollection);
+                                    break;
+                                case CallbackMessage.OptionalMessageOneofCase.EventMessagesCallback:
+                                    EventMessagesCallback eventMessagesCallback = current.EventMessagesCallback;
+                                    ClientEventList eventList = GetEventList(eventMessagesCallback.ListClientAlias);
+                                    EventMessagesCallback(eventList, eventMessagesCallback.EventMessagesCollection);
+                                    break;
+                                case CallbackMessage.OptionalMessageOneofCase.LongrunningPassthroughCallback:
+                                    LongrunningPassthroughCallback(current.LongrunningPassthroughCallback);
+                                    break;
+                            }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "Callback message exception.");
-                    }
-                });
+                        catch when (ct2.IsCancellationRequested)
+                        {                            
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, "Callback message exception.");
+                        }
+                    });
+                }
+                catch when (cancellationToken.IsCancellationRequested)
+                {
+                    _contextIsOperational = false;
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    _contextIsOperational = false;
+                    //LoggersSet.Logger.LogWarning(ex, @"ServerContext Callback Thread Exception");
+                    break;
+                } 
             }
         }
 
