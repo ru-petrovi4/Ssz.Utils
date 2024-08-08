@@ -96,11 +96,11 @@ namespace Ssz.DataAccessGrpc.ServerBase
             }
         }
 
-        public virtual void Close()
+        public virtual async Task CloseAsync()
         {
             var serverContexts = _serverContextsDictionary.Values.ToArray();
             _serverContextsDictionary.Clear();
-            ServerContextsAbort(serverContexts);
+            await ServerContextsAbortAsync(serverContexts);
         }        
 
         #endregion        

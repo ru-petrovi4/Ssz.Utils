@@ -59,7 +59,7 @@ namespace Ssz.Dcs.CentralServer
                 }
             }
 
-            _serverWorker.Close();
+            await _serverWorker.CloseAsync();
         }
 
         #endregion
