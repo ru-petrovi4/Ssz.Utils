@@ -112,16 +112,16 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public override async Task<ConcludeReply> Conclude(ConcludeRequest request, ServerCallContext context)
         {
-            return await GetReplyAsync(async () =>
+            return await GetReplyAsync(() =>
                 {
                     ServerContext? serverContext = _serverWorker.TryLookupServerContext(request.ContextId ?? @"");
                     if (serverContext is not null)
                     {
                         serverContext.IsConcludeCalled = true;
                         _serverWorker.RemoveServerContext(serverContext);
-                        await serverContext.DisposeAsync();
+                        serverContext.Dispose();
                     }
-                    return new ConcludeReply();
+                    return Task.FromResult(new ConcludeReply());
                 },
                 context);
         }

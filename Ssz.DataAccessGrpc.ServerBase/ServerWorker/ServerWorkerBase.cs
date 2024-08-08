@@ -84,8 +84,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 if (nowUtc - serverContext.LastAccessDateTimeUtc > TimeSpan.FromMilliseconds(serverContext.ContextTimeoutMs))
                 {
                     // Expired
+                    serverContext.IsConcludeCalled = true; // Context is not operational
                     RemoveServerContext(serverContext);
-                    await serverContext.DisposeAsync();
+                    serverContext.Dispose();
                     Logger.LogWarning("Timeout out Context {0}", serverContext.ContextId);
                 }
                 else
@@ -95,11 +96,11 @@ namespace Ssz.DataAccessGrpc.ServerBase
             }
         }
 
-        public virtual async Task CloseAsync()
+        public virtual void Close()
         {
             var serverContexts = _serverContextsDictionary.Values.ToArray();
             _serverContextsDictionary.Clear();
-            await ServerContextsAbortAsync(serverContexts);
+            ServerContextsAbort(serverContexts);
         }        
 
         #endregion        

@@ -50,7 +50,7 @@ namespace Ssz.Dcs.CentralServer.Common
 
         public const string Dcs_SystemName = "DCS";
 
-        public const string DefaultProcessModelingSessionId = @"DEFAULT";
+        public const string DefaultProcessModelingSessionId = @"MODEL";
 
         public const string PlatformXiProcessModelingSessionId = @"PLATFORM";
 

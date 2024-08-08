@@ -2,7 +2,7 @@
 SystemName это либо: 
 - "" - Utility Context
 - "DCS" - DCS Mode
-- "DEFAULT" - Default process modeling session
+- "MODEL" - Default process modeling session
 - "PLATFORM<XiSystem>" - Platform Xi process modeling session with SystemName=<XiSystem>
 - "USO<XiSystem>" - USO Xi process modeling session with SystemName=<XiSystem>
 - "<ID>" - Pprocess modeling session with specific <ID>

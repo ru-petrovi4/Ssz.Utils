@@ -92,17 +92,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 
                 serverContext.Dispose();
             }
-        }
-
-        protected async Task ServerContextsAbortAsync(ServerContext[] serverContexts)
-        {
-            foreach (ServerContext serverContext in serverContexts)
-            {
-                ServerContextAddedOrRemoved(this, new ServerContextAddedOrRemovedEventArgs { ServerContext = serverContext, Added = false });
-                
-                await serverContext.DisposeAsync();
-            }
-        }        
+        }             
 
         #endregion
 

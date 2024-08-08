@@ -15,7 +15,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
     /// <summary>
     /// 
     /// </summary>
-    public partial class ServerContext : IDisposable, IAsyncDisposable
+    public partial class ServerContext : IDisposable
     {
         #region construction and destruction
         
@@ -66,20 +66,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 #pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
             GC.SuppressFinalize(this);
 #pragma warning restore CA1816 // Dispose methods should call SuppressFinalize
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            if (Disposed) return;
-            Disposed = true;
-
-            await DisposeAsyncCore();
-
-            Dispose(disposing: false);
-#pragma warning disable CA1816 // Dispose methods should call SuppressFinalize
-            GC.SuppressFinalize(this);
-#pragma warning restore CA1816 // Dispose methods should call SuppressFinalize
-        }
+        }        
 
         /// <summary>
         ///     Should not be called. Use DisposeAsync() when possible.
@@ -94,10 +81,12 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         new ContextStatusMessage
                         {
                             StateCode = ContextStateCodes.STATE_ABORTING
-                        });                    
+                        });
                 }
-
-                CallbackWorkingTask_CancellationTokenSource.Cancel();
+                else
+                {
+                    CallbackWorkingTask_CancellationTokenSource.Cancel();
+                }                
 
                 // Dispose of the lists.
                 foreach (ServerListRoot list in _listsManager)
@@ -107,32 +96,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
                 _listsManager.Clear();
             }
-        }
-
-        protected virtual async ValueTask DisposeAsyncCore()
-        {
-            if (!IsConcludeCalled)
-            {
-                var contextStatusMessage = new ContextStatusMessage
-                {
-                    StateCode = ContextStateCodes.STATE_ABORTING
-                };
-                AddCallbackMessage(contextStatusMessage);
-                await Task.WhenAny(contextStatusMessage.TaskCompletionSource.Task, Task.Delay(30000));
-            }
-
-            CallbackWorkingTask_CancellationTokenSource.Cancel();
-
-            // Dispose of the lists.
-            foreach (ServerListRoot list in _listsManager)
-            {
-                list.Dispose();
-            }                        
-
-            _listsManager.Clear();
-
-            await _callbackWorkingTask;
-        }
+        }        
 
         /// <summary>
         ///   Invoked by the .NET Framework while doing heap managment (Finalize).

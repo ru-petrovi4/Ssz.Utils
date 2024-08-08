@@ -151,109 +151,97 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 _longrunningPassthroughCallbackMessagesCollection = new List<LongrunningPassthroughCallbackMessage>();
             }
 
-            try
+            if (_responseStream is not null)
             {
-                bool hasAbortingMessage = contextStatusMessagesCollection.Any(cim => cim.StateCode == ContextStateCodes.STATE_ABORTING);
+                cancellationToken.ThrowIfCancellationRequested();
 
-                if (_responseStream is not null)
+                if (contextStatusMessagesCollection.Count > 0)
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
+                    //Logger.LogDebug("ServerContext contextStatusMessagesCollection.Count=" + contextStatusMessagesCollection.Count);
 
-                    if (contextStatusMessagesCollection.Count > 0)
+                    foreach (ContextStatusMessage contextStatusMessage in contextStatusMessagesCollection)
                     {
-                        //Logger.LogDebug("ServerContext contextStatusMessagesCollection.Count=" + contextStatusMessagesCollection.Count);
+                        cancellationToken.ThrowIfCancellationRequested();
 
-                        foreach (ContextStatusMessage contextStatusMessage in contextStatusMessagesCollection)
+                        var callbackMessage = new CallbackMessage();
+                        callbackMessage.ContextStatus = new ContextStatus
+                        {
+                            StateCode = contextStatusMessage.StateCode
+                        };
+                        await _responseStream.WriteAsync(callbackMessage);
+
+                        if (contextStatusMessage.StateCode == ContextStateCodes.STATE_ABORTING)
+                            CallbackWorkingTask_CancellationTokenSource.Cancel();
+                    }
+                }
+
+                cancellationToken.ThrowIfCancellationRequested();
+
+                if (elementValuesCallbackMessagesCollection.Count > 0)
+                {
+                    //Logger.LogDebug("ServerContext elementValuesCallbackMessagesCollection.Count=" + elementValuesCallbackMessagesCollection.Count);
+
+                    foreach (var elementValuesCallbackMessage in elementValuesCallbackMessagesCollection)
+                    {
+                        foreach (ElementValuesCallback elementValuesCallback in elementValuesCallbackMessage.SplitForCorrectGrpcMessageSize())
                         {
                             cancellationToken.ThrowIfCancellationRequested();
 
-                            var callbackMessage = new CallbackMessage();
-                            callbackMessage.ContextStatus = new ContextStatus
+                            var callbackMessage = new CallbackMessage
                             {
-                                StateCode = contextStatusMessage.StateCode
+                                ElementValuesCallback = elementValuesCallback
                             };
-                            await _responseStream.WriteAsync(callbackMessage);                            
-                        }
-                    }
-
-                    if (!hasAbortingMessage)
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
-
-                        if (elementValuesCallbackMessagesCollection.Count > 0)
-                        {
-                            //Logger.LogDebug("ServerContext elementValuesCallbackMessagesCollection.Count=" + elementValuesCallbackMessagesCollection.Count);
-
-                            foreach (var elementValuesCallbackMessage in elementValuesCallbackMessagesCollection)
-                            {
-                                foreach (ElementValuesCallback elementValuesCallback in elementValuesCallbackMessage.SplitForCorrectGrpcMessageSize())
-                                {
-                                    cancellationToken.ThrowIfCancellationRequested();
-
-                                    var callbackMessage = new CallbackMessage
-                                    {
-                                        ElementValuesCallback = elementValuesCallback
-                                    };
-                                    await _responseStream.WriteAsync(callbackMessage);
-                                }
-                            }
-                        }
-
-                        cancellationToken.ThrowIfCancellationRequested();
-
-                        if (eventMessagesCallbackMessagesCollection.Count > 0)
-                        {
-                            //Logger.LogDebug("ServerContext eventMessagesCallbackMessagesCollection.Count=" + eventMessagesCallbackMessagesCollection.Count);
-
-                            foreach (var eventMessagesCallbackMessage in eventMessagesCallbackMessagesCollection)
-                            {
-                                foreach (EventMessagesCallback eventMessagesCallback in eventMessagesCallbackMessage.SplitForCorrectGrpcMessageSize())
-                                {
-                                    cancellationToken.ThrowIfCancellationRequested();
-
-                                    Logger.LogDebug("_responseStream.WriteAsync(callbackMessage)");
-                                    var callbackMessage = new CallbackMessage
-                                    {
-                                        EventMessagesCallback = eventMessagesCallback
-                                    };
-                                    await _responseStream.WriteAsync(callbackMessage);
-                                }
-                            }
-                        }
-
-                        cancellationToken.ThrowIfCancellationRequested();
-
-                        if (longrunningPassthroughCallbackMessagesCollection.Count > 0)
-                        {
-                            Logger.LogDebug("ServerContext longrunningPassthroughCallbackMessagesCollection.Count=" + longrunningPassthroughCallbackMessagesCollection.Count);
-
-                            foreach (var longrunningPassthroughCallbackMessage in longrunningPassthroughCallbackMessagesCollection)
-                            {
-                                cancellationToken.ThrowIfCancellationRequested();
-
-                                Logger.LogDebug("_responseStream.WriteAsync(callbackMessage)");
-                                var callbackMessage = new CallbackMessage
-                                {
-                                    LongrunningPassthroughCallback = new LongrunningPassthroughCallback
-                                    {
-                                        JobId = longrunningPassthroughCallbackMessage.JobId,
-                                        ProgressPercent = longrunningPassthroughCallbackMessage.ProgressPercent,
-                                        ProgressLabel = longrunningPassthroughCallbackMessage.ProgressLabel ?? @"",
-                                        ProgressDetails = longrunningPassthroughCallbackMessage.ProgressDetails ?? @"",
-                                        StatusCode = longrunningPassthroughCallbackMessage.StatusCode,
-                                    }
-                                };
-                                await _responseStream.WriteAsync(callbackMessage);
-                            }
+                            await _responseStream.WriteAsync(callbackMessage);
                         }
                     }
                 }
-            }
-            finally
-            {
-                foreach (ContextStatusMessage contextStatusMessage in contextStatusMessagesCollection)
-                {                    
-                    contextStatusMessage.TaskCompletionSource.SetResult();
+
+                cancellationToken.ThrowIfCancellationRequested();
+
+                if (eventMessagesCallbackMessagesCollection.Count > 0)
+                {
+                    //Logger.LogDebug("ServerContext eventMessagesCallbackMessagesCollection.Count=" + eventMessagesCallbackMessagesCollection.Count);
+
+                    foreach (var eventMessagesCallbackMessage in eventMessagesCallbackMessagesCollection)
+                    {
+                        foreach (EventMessagesCallback eventMessagesCallback in eventMessagesCallbackMessage.SplitForCorrectGrpcMessageSize())
+                        {
+                            cancellationToken.ThrowIfCancellationRequested();
+
+                            Logger.LogDebug("_responseStream.WriteAsync(callbackMessage)");
+                            var callbackMessage = new CallbackMessage
+                            {
+                                EventMessagesCallback = eventMessagesCallback
+                            };
+                            await _responseStream.WriteAsync(callbackMessage);
+                        }
+                    }
+                }
+
+                cancellationToken.ThrowIfCancellationRequested();
+
+                if (longrunningPassthroughCallbackMessagesCollection.Count > 0)
+                {
+                    Logger.LogDebug("ServerContext longrunningPassthroughCallbackMessagesCollection.Count=" + longrunningPassthroughCallbackMessagesCollection.Count);
+
+                    foreach (var longrunningPassthroughCallbackMessage in longrunningPassthroughCallbackMessagesCollection)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        Logger.LogDebug("_responseStream.WriteAsync(callbackMessage)");
+                        var callbackMessage = new CallbackMessage
+                        {
+                            LongrunningPassthroughCallback = new LongrunningPassthroughCallback
+                            {
+                                JobId = longrunningPassthroughCallbackMessage.JobId,
+                                ProgressPercent = longrunningPassthroughCallbackMessage.ProgressPercent,
+                                ProgressLabel = longrunningPassthroughCallbackMessage.ProgressLabel ?? @"",
+                                ProgressDetails = longrunningPassthroughCallbackMessage.ProgressDetails ?? @"",
+                                StatusCode = longrunningPassthroughCallbackMessage.StatusCode,
+                            }
+                        };
+                        await _responseStream.WriteAsync(callbackMessage);
+                    }
                 }
             }
         }
@@ -284,8 +272,6 @@ namespace Ssz.DataAccessGrpc.ServerBase
             /// 
             /// </summary>
             public uint StateCode;
-
-            public TaskCompletionSource TaskCompletionSource = new();
         }
 
         public class ElementValuesCallbackMessage

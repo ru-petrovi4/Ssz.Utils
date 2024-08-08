@@ -103,11 +103,9 @@ namespace Ssz.Dcs.CentralServer
             await base.DoWorkAsync(nowUtc, cancellationToken);
         }
 
-        public override async Task CloseAsync()
+        public override void Close()
         {
             _addonsManager.Close();
-
-            await base.CloseAsync();
         }
 
         #endregion
