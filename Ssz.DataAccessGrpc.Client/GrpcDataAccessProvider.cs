@@ -127,15 +127,14 @@ namespace Ssz.DataAccessGrpc.Client
                 await WorkingTaskMainAsync(cancellationToken);
                 taskCompletionSource.SetResult(0);
             });
-            _workingTask = taskCompletionSource.Task;            
+            _workingTask = taskCompletionSource.Task;
+            workingThread.Start();
 
             foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
             {
                 valueSubscriptionObj.ValueSubscription.Update(
                     AddItem(valueSubscriptionObj));
-            }
-
-            workingThread.Start();
+            }            
         }
 
         public override async Task UpdateContextParamsAsync(CaseInsensitiveDictionary<string?> contextParams)

@@ -107,14 +107,13 @@ namespace Ssz.Xi.Client
                 taskCompletionSource.SetResult(0);
             });
             _workingTask = taskCompletionSource.Task;
+            workingThread.Start();
 
             foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
             {
                 valueSubscriptionObj.ValueSubscription.Update(
                     AddItem(valueSubscriptionObj));
-            }
-
-            workingThread.Start();
+            }            
         }        
 
         /// <summary>

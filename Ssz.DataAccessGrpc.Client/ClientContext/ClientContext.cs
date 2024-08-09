@@ -151,7 +151,8 @@ namespace Ssz.DataAccessGrpc.Client
                 await ReadCallbackMessagesAsync(_callbackMessageStream.ResponseStream, cancellationToken);
                 taskCompletionSource.SetResult(0);
             });
-            _workingTask = taskCompletionSource.Task;            
+            _workingTask = taskCompletionSource.Task;
+            workingThread.Start();
         }
 
         public async Task KeepContextAliveIfNeededAsync(CancellationToken ct, DateTime nowUtc)
