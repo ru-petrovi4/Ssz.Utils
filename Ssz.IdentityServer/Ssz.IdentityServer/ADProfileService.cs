@@ -137,14 +137,14 @@ namespace Ssz.IdentityServer
 //{
 //    private readonly ILogger _logger;
 //    private readonly IConfiguration _configuration;
-//    private readonly ISystemClock _clock;
+//    private readonly TimeProvider _clock;
 
 //    /// <summary>
 //    /// Initializes a new instance of the <see cref="TestUserResourceOwnerPasswordValidator"/> class.
 //    /// </summary>
 //    /// <param name="users">The users.</param>
 //    /// <param name="clock">The clock.</param>
-//    public ADProfileService(ILogger<ADProfileService> logger, IConfiguration configuration, ISystemClock clock)
+//    public ADProfileService(ILogger<ADProfileService> logger, IConfiguration configuration, TimeProvider clock)
 //    {
 //        _logger = logger;
 //        _configuration = configuration;

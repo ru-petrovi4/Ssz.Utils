@@ -266,14 +266,14 @@ namespace Ssz.IdentityServer
 //{
 //    private readonly ILogger _logger;
 //    private readonly IConfiguration _configuration;
-//    private readonly ISystemClock _clock;
+//    private readonly TimeProvider _clock;
 
 //    /// <summary>
 //    /// Initializes a new instance of the <see cref="TestUserResourceOwnerPasswordValidator"/> class.
 //    /// </summary>
 //    /// <param name="users">The users.</param>
 //    /// <param name="clock">The clock.</param>
-//    public ResourceOwnerPasswordValidator(ILogger<ResourceOwnerPasswordValidator> logger, IConfiguration configuration, ISystemClock clock)
+//    public ResourceOwnerPasswordValidator(ILogger<ResourceOwnerPasswordValidator> logger, IConfiguration configuration, TimeProvider clock)
 //    {
 //        _logger = logger;
 //        _configuration = configuration;
@@ -321,7 +321,7 @@ namespace Ssz.IdentityServer
 
 //                context.Result = new GrantValidationResult(
 //                    subjectId,
-//                    OidcConstants.AuthenticationMethods.Password, _clock.UtcNow.UtcDateTime,
+//                    OidcConstants.AuthenticationMethods.Password, _clock.GetUtcNow().UtcDateTime,
 //                    claims);
 //            }
 //        }
