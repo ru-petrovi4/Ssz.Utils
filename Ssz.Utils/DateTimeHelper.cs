@@ -52,10 +52,10 @@ namespace Ssz.Utils
                 return TimeSpan.Zero;
 
             double number = new Any(timeSpanString.Substring(0, i + 1)).ValueAsDouble(false);
-            string? units;
+            string? units = null;
             if (i < timeSpanString.Length - 1)
                 units = timeSpanString.Substring(i + 1).Trim();
-            else
+            if (String.IsNullOrEmpty(units))
                 units = defaultUnits;
 
             switch (units)

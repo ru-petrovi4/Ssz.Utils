@@ -39,8 +39,8 @@ namespace Ssz.IdentityServer
 
         public static IEnumerable<Client> GetClients(IConfiguration configuration)
         {
-            int accessTokenLifetimeSeconds = ConfigurationHelper.GetValue<int>(configuration, @"OIDC:AccessTokenLifetimeSeconds", 600);
-            int refreshTokenLifetimeSeconds = ConfigurationHelper.GetValue<int>(configuration, @"OIDC:RefreshTokenLifetimeSeconds", 24 * 3600);
+            int accessTokenLifetimeSeconds = (int)DateTimeHelper.GetTimeSpan(ConfigurationHelper.GetValue<string>(configuration, @"OIDC:AccessTokenLifetime", @"10m")).TotalSeconds;
+            int refreshTokenLifetimeSeconds = (int)DateTimeHelper.GetTimeSpan(ConfigurationHelper.GetValue<string>(configuration, @"OIDC:RefreshTokenLifetime", @"24h")).TotalSeconds;
             return new Client[]
             {
                 new Client
@@ -56,6 +56,7 @@ namespace Ssz.IdentityServer
                         "userapi"
                     },
                     AccessTokenLifetime = accessTokenLifetimeSeconds,
+                    UpdateAccessTokenClaimsOnRefresh = true,
                     AllowOfflineAccess = true, // Allow Refresh Token
                     RefreshTokenUsage = TokenUsage.ReUse,
                     RefreshTokenExpiration = TokenExpiration.Sliding,
