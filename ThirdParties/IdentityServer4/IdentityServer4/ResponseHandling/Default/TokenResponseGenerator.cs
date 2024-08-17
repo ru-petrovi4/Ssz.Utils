@@ -223,6 +223,9 @@ namespace IdentityServer4.ResponseHandling
                 };
 
                 var newAccessToken = await TokenService.CreateAccessTokenAsync(creationRequest);
+                // VALFIX
+                request.ValidatedRequest.RefreshToken.AccessToken = newAccessToken;
+
                 accessTokenString = await TokenService.CreateSecurityTokenAsync(newAccessToken);
             }
             else

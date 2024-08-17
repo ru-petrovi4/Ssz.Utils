@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,14 +14,7 @@ namespace Ssz.Utils
     /// </summary>
     public static class DateTimeHelper
     {
-        #region public functions        
-
-        public static DateTime GetDateTimeUtc(string? dateTimeString)
-        {
-            if (String.IsNullOrEmpty(dateTimeString))
-                return default;
-            return new Any(dateTimeString!).ValueAs<DateTime>(false).ToUniversalTime();
-        }
+        #region public functions                
 
         /// <summary>
         ///     2009-06-15T13:45:30 (DateTimeKind.Local) --> 2009-06-15T13:45:30.0000000-07:00
@@ -35,6 +29,23 @@ namespace Ssz.Utils
         }
 
         /// <summary>
+        ///     [-][d':']h':'mm':'ss[.FFFFFFF].
+        /// </summary>
+        /// <param name="timeSpan"></param>
+        /// <returns></returns>
+        public static string GetString(TimeSpan timeSpan)
+        {
+            return new Any(timeSpan).ValueAsString(false, @"g");
+        }        
+
+        public static DateTime GetDateTimeUtc(string? dateTimeString)
+        {
+            if (String.IsNullOrEmpty(dateTimeString))
+                return default;
+            return new Any(dateTimeString!).ValueAs<DateTime>(false).ToUniversalTime();
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="timeSpanString"></param>
@@ -45,16 +56,58 @@ namespace Ssz.Utils
             if (String.IsNullOrWhiteSpace(timeSpanString))
                 return TimeSpan.Zero;
 
+            if (timeSpanString.Count(f => f == ':') >= 2)
+                return new Any(timeSpanString).ValueAs<TimeSpan>(false);
+
             timeSpanString = timeSpanString!.Trim();
 
-            int i = timeSpanString.LastIndexOfAny("0123456789".ToCharArray());
-            if (i == -1)
-                return TimeSpan.Zero;
+            TimeSpan result = TimeSpan.Zero;
 
-            double number = new Any(timeSpanString.Substring(0, i + 1)).ValueAsDouble(false);
+            string? numberString = null;
+            double? number = null;
             string? units = null;
-            if (i < timeSpanString.Length - 1)
-                units = timeSpanString.Substring(i + 1).Trim();
+            foreach (Char ch in timeSpanString)
+            {
+                if (Char.IsDigit(ch) || ch == '.')
+                {
+                    if (numberString is null && number is not null)
+                    {
+                        result += GetTimeSpan(number.Value, units, defaultUnits);
+                        number = null;
+                        units = null;
+                    }
+
+                    numberString += ch;                    
+                }
+                else
+                {
+                    if (numberString is not null)
+                    {
+                        Double.TryParse(numberString, out double number2);
+                        number = number2;
+                        numberString = null;                        
+                    }
+                    
+                    units += ch;
+                }
+                
+            }
+
+            if (number is not null)
+                result += GetTimeSpan(number.Value, units, defaultUnits);
+
+            return result;
+        }
+
+        public static DateTime SafeMinDateTimeUtc = DateTimeOffset.FromUnixTimeSeconds(0).UtcDateTime;
+
+        #endregion
+
+        #region private functions
+
+        private static TimeSpan GetTimeSpan(double number, string? units, string? defaultUnits)
+        {
+            units = units?.Trim();
             if (String.IsNullOrEmpty(units))
                 units = defaultUnits;
 
@@ -83,10 +136,9 @@ namespace Ssz.Utils
             }
         }
 
-        public static DateTime SafeMinDateTimeUtc = new DateTime(1900, 1, 1).ToUniversalTime();
-
-        public static DateTime SafeMaxDateTimeUtc = new DateTime(3000, 1, 1).ToUniversalTime();
-
         #endregion
     }
 }
+
+
+//public static char[] NumberCharArray = "0123456789.".ToCharArray();
