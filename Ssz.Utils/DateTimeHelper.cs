@@ -42,7 +42,7 @@ namespace Ssz.Utils
         {
             if (String.IsNullOrEmpty(dateTimeString))
                 return default;
-            return new Any(dateTimeString!).ValueAs<DateTime>(false).ToUniversalTime();
+            return new Any(dateTimeString!).ValueAs<DateTime>(false);
         }
 
         /// <summary>
@@ -89,8 +89,13 @@ namespace Ssz.Utils
                     }
                     
                     units += ch;
-                }
-                
+                }                
+            }
+
+            if (numberString is not null)
+            {
+                Double.TryParse(numberString, out double number2);
+                number = number2;                
             }
 
             if (number is not null)
