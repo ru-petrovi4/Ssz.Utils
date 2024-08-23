@@ -65,7 +65,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
         
         public override void Initialize(CancellationToken cancellationToken)
         {
-            var dataAccessProvider = ActivatorUtilities.CreateInstance<ExperionEventsJournalFiles_DataAccessProvider>(ServiceProvider, this, LoggersSet.UserFriendlyLogger);
+            var dataAccessProvider = ActivatorUtilities.CreateInstance<ExperionEventsJournalFiles_DataAccessProvider>(ServiceProvider, this);
 
             var elementIdsMap = ActivatorUtilities.CreateInstance<ElementIdsMap>(ServiceProvider);
             elementIdsMap.Initialize(CsvDb.GetData(ElementIdsMap.StandardMapFileName), CsvDb.GetData(ElementIdsMap.StandardTagsFileName), CsvDb);

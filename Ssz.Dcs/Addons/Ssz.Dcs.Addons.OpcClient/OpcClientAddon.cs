@@ -64,7 +64,7 @@ namespace Ssz.Dcs.Addons.OpcClient
         
         public override void Initialize(CancellationToken cancellationToken)
         {
-            StaticLogger.Initialize(LoggersSet.Logger);
+            StaticLogger.Initialize(ServiceProvider.GetService<ILogger<OpcClientAddon>>()!);
             //string serverAddress = OptionsSubstituted.TryGetValue(OpcClient_ServerAddress_OptionName) ?? @"";
             //string systemNameToConnect = OptionsSubstituted.TryGetValue(OpcClient_SystemNameToConnect_OptionName) ?? @"";
             //CaseInsensitiveDictionary<string?> contextParams = NameValueCollectionHelper.Parse(OptionsSubstituted.TryGetValue(OpcClient_ContextParams_OptionName));

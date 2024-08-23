@@ -112,12 +112,7 @@ namespace Ssz.Utils.Addons
         ///     If empty, config directory is not used.
         ///     Thread-safe.
         /// </summary>
-        public string InstanceId { get; internal set; } = null!;
-
-        /// <summary>
-        ///     Thread-safe.
-        /// </summary>
-        public ILoggersSet LoggersSet { get; internal set; } = null!;
+        public string InstanceId { get; internal set; } = null!;        
 
         /// <summary>
         ///     Thread-safe.

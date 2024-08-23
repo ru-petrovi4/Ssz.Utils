@@ -792,7 +792,7 @@ namespace Ssz.Utils.Addons
                 observableCollectionItemIds.Add(@"!addonInstanceId", addonInstanceId);                
                 availableAddonClone.ObservableCollectionItemId = NameValueCollectionHelper.GetNameValueCollectionString(observableCollectionItemIds);
                 availableAddonClone.InstanceId = addonInstanceId;                
-                availableAddonClone.LoggersSet = new LoggersSet(ServiceProvider.GetService<ILogger<AddonBase>>()!, LoggersSet.UserFriendlyLogger);                
+                //availableAddonClone.Logger = ServiceProvider.GetService<ILogger<AddonBase>>()!;                
                 availableAddonClone.Configuration = Configuration;
                 availableAddonClone.ServiceProvider = ServiceProvider;                
                 return availableAddonClone;
