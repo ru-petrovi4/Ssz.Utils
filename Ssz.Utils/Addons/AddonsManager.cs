@@ -209,7 +209,7 @@ namespace Ssz.Utils.Addons
                         message.AppendLine(ignored);
                     }
                 }
-                LoggersSet.WrapperUserFriendlyLogger.LogWarning(message.ToString());
+                LoggersSet.LoggerAndUserFriendlyLogger.LogWarning(message.ToString());
             }
 #endif
 
