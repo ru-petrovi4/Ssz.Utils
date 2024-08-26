@@ -18,7 +18,7 @@ namespace Ssz.Utils.Logging
         /// <summary>
         ///     Writes to Logger and UserFriendlyLogger
         /// </summary>
-        IUserFriendlyLogger WrapperUserFriendlyLogger { get; }
+        IUserFriendlyLogger LoggerAndUserFriendlyLogger { get; }
 
         void SetUserFriendlyLogger(IUserFriendlyLogger? userFriendlyLogger);
     }

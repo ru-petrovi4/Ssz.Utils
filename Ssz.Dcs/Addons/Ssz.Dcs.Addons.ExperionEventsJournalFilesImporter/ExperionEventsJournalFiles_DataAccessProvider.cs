@@ -146,15 +146,15 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
 
                 var nowUtc = DateTime.UtcNow;
                 
-                if (LoggersSet.WrapperUserFriendlyLogger.IsEnabled(LogLevel.Trace))
+                if (LoggersSet.LoggerAndUserFriendlyLogger.IsEnabled(LogLevel.Trace))
                     stopwatch.Restart();
 
                 await DoWorkAsync(nowUtc, cancellationToken);
 
-                if (LoggersSet.WrapperUserFriendlyLogger.IsEnabled(LogLevel.Trace))
+                if (LoggersSet.LoggerAndUserFriendlyLogger.IsEnabled(LogLevel.Trace))
                 {
                     stopwatch.Stop();
-                    LoggersSet.WrapperUserFriendlyLogger.LogTrace("DoWorkAsync, ElapsedMilliseconds: " + stopwatch.ElapsedMilliseconds);                    
+                    LoggersSet.LoggerAndUserFriendlyLogger.LogTrace("DoWorkAsync, ElapsedMilliseconds: " + stopwatch.ElapsedMilliseconds);                    
                 }
             }
         }
@@ -458,7 +458,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                         return;
                     try
                     {
-                        using var fileNameScope = loggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScope, fileName));
+                        using var fileNameScope = loggersSet.LoggerAndUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScope, fileName));
 
                         using (Stream? stream = GetStream(entry, fi))
                         {
@@ -484,7 +484,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                         return;
                     try
                     {
-                        using var fileNameScope = loggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScope, fileName));
+                        using var fileNameScope = loggersSet.LoggerAndUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScope, fileName));
 
                         using (Stream? stream = GetStream(entry, fi))
                         {
@@ -510,7 +510,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
                         return;
                     try
                     {
-                        using var fileNameScope = loggersSet.WrapperUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScope, fileName));
+                        using var fileNameScope = loggersSet.LoggerAndUserFriendlyLogger.BeginScope((Properties.Resources.FileNameScope, fileName));
 
                         using (Stream? stream = GetStream(entry, fi))
                         {

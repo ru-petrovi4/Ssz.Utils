@@ -356,7 +356,7 @@ namespace Ssz.Utils.Addons
             }
             catch (Exception ex)
             {
-                LoggersSet.WrapperUserFriendlyLogger.LogError(ex, @"Cannot read configuration files.");
+                LoggersSet.LoggerAndUserFriendlyLogger.LogError(ex, @"Cannot read configuration files.");
             }            
 
             return result;
@@ -523,7 +523,7 @@ namespace Ssz.Utils.Addons
 
             if (String.IsNullOrEmpty(addonIdentifier))
             {
-                LoggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonNameIsEmpty);
+                LoggersSet.LoggerAndUserFriendlyLogger.LogError(Properties.Resources.AddonNameIsEmpty);
                 return null;
             }
 
@@ -531,7 +531,7 @@ namespace Ssz.Utils.Addons
                 p => String.Equals(p.Identifier, addonIdentifier, StringComparison.InvariantCultureIgnoreCase));
             if (availableAddon is null)
             {
-                LoggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.AvailableAddonIsNotFound, addonIdentifier);
+                LoggersSet.LoggerAndUserFriendlyLogger.LogError(Properties.Resources.AvailableAddonIsNotFound, addonIdentifier);
                 return null;
             }
 
@@ -738,7 +738,7 @@ namespace Ssz.Utils.Addons
                 {
                     if (addonInstanceId.Contains(Path.DirectorySeparatorChar))
                     {
-                        LoggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonConfigDirectoryError_CannotContainPath, addonInstanceId);
+                        LoggersSet.LoggerAndUserFriendlyLogger.LogError(Properties.Resources.AddonConfigDirectoryError_CannotContainPath, addonInstanceId);
                         return null;
                     }
 
@@ -755,7 +755,7 @@ namespace Ssz.Utils.Addons
                         addonConfigDirectoryInfo = null;
                     }
                     if (addonConfigDirectoryInfo is null)
-                        LoggersSet.WrapperUserFriendlyLogger.LogError(Properties.Resources.AddonConfigDirectoryError, addonInstanceId);
+                        LoggersSet.LoggerAndUserFriendlyLogger.LogError(Properties.Resources.AddonConfigDirectoryError, addonInstanceId);
                 }
 
                 var parameters = new List<object>();
@@ -799,7 +799,7 @@ namespace Ssz.Utils.Addons
             }
             catch (Exception ex)
             {
-                LoggersSet.WrapperUserFriendlyLogger.LogError(ex, Properties.Resources.DesiredAddonFailed, availableAddon.Identifier);
+                LoggersSet.LoggerAndUserFriendlyLogger.LogError(ex, Properties.Resources.DesiredAddonFailed, availableAddon.Identifier);
                 return null;
             }
         }

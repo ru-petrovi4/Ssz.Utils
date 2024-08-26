@@ -24,12 +24,12 @@ namespace Ssz.Utils.Logging
             if (userFriendlyLogger is null)
             {
                 UserFriendlyLogger = new WrapperUserFriendlyLogger(new ILogger[0]);
-                WrapperUserFriendlyLogger = new WrapperUserFriendlyLogger(logger);
+                LoggerAndUserFriendlyLogger = new WrapperUserFriendlyLogger(logger);
             }
             else
             {
                 UserFriendlyLogger = userFriendlyLogger;
-                WrapperUserFriendlyLogger = new WrapperUserFriendlyLogger(logger, userFriendlyLogger);
+                LoggerAndUserFriendlyLogger = new WrapperUserFriendlyLogger(logger, userFriendlyLogger);
             }
         }
 
@@ -52,19 +52,19 @@ namespace Ssz.Utils.Logging
         /// <summary>
         ///     Writes to Logger and UserFriendlyLogger
         /// </summary>
-        public IUserFriendlyLogger WrapperUserFriendlyLogger { get; private set; }
+        public IUserFriendlyLogger LoggerAndUserFriendlyLogger { get; private set; }
 
         public void SetUserFriendlyLogger(IUserFriendlyLogger? userFriendlyLogger)
         {
             if (userFriendlyLogger is null)
             {
                 UserFriendlyLogger = new WrapperUserFriendlyLogger(NullLogger.Instance);
-                WrapperUserFriendlyLogger = new WrapperUserFriendlyLogger(Logger);
+                LoggerAndUserFriendlyLogger = new WrapperUserFriendlyLogger(Logger);
             }
             else
             {
                 UserFriendlyLogger = userFriendlyLogger;
-                WrapperUserFriendlyLogger = new WrapperUserFriendlyLogger(Logger, userFriendlyLogger);
+                LoggerAndUserFriendlyLogger = new WrapperUserFriendlyLogger(Logger, userFriendlyLogger);
             }
         }
 
@@ -87,12 +87,12 @@ namespace Ssz.Utils.Logging
             if (userFriendlyLogger is null)
             {
                 UserFriendlyLogger = new WrapperUserFriendlyLogger(NullLogger.Instance);
-                WrapperUserFriendlyLogger = new WrapperUserFriendlyLogger(logger);
+                LoggerAndUserFriendlyLogger = new WrapperUserFriendlyLogger(logger);
             }
             else
             {
                 UserFriendlyLogger = userFriendlyLogger;
-                WrapperUserFriendlyLogger = new WrapperUserFriendlyLogger(logger, userFriendlyLogger);
+                LoggerAndUserFriendlyLogger = new WrapperUserFriendlyLogger(logger, userFriendlyLogger);
             }
         }
 
@@ -115,19 +115,19 @@ namespace Ssz.Utils.Logging
         /// <summary>
         ///     Writes to Logger and UserFriendlyLogger
         /// </summary>
-        public IUserFriendlyLogger WrapperUserFriendlyLogger { get; private set; }
+        public IUserFriendlyLogger LoggerAndUserFriendlyLogger { get; private set; }
 
         public void SetUserFriendlyLogger(IUserFriendlyLogger? userFriendlyLogger)
         {
             if (userFriendlyLogger is null)
             {
                 UserFriendlyLogger = new WrapperUserFriendlyLogger(NullLogger.Instance);
-                WrapperUserFriendlyLogger = new WrapperUserFriendlyLogger(Logger);
+                LoggerAndUserFriendlyLogger = new WrapperUserFriendlyLogger(Logger);
             }
             else
             {
                 UserFriendlyLogger = userFriendlyLogger;
-                WrapperUserFriendlyLogger = new WrapperUserFriendlyLogger(Logger, userFriendlyLogger);
+                LoggerAndUserFriendlyLogger = new WrapperUserFriendlyLogger(Logger, userFriendlyLogger);
             }
         }
 

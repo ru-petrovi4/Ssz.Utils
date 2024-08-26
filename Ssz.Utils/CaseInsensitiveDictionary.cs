@@ -10,7 +10,7 @@ namespace Ssz.Utils
     ///     Case Insensitive Dictionary
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    [TypeConverter(typeof(ToStringTypeConverter))]
+    [TypeConverter(typeof(CaseInsensitiveDictionary_TypeConverter))]
     public class CaseInsensitiveDictionary<T> : Dictionary<string, T>        
     {
         #region construction and destruction
@@ -75,5 +75,50 @@ namespace Ssz.Utils
         }
 
         #endregion
-    }    
+    }
+
+    public class CaseInsensitiveDictionary_TypeConverter : TypeConverter
+    {
+        #region public functions
+
+        public override bool CanConvertTo(ITypeDescriptorContext? context, Type? destinationType)
+        {
+            if (destinationType == typeof(string))
+                return true;
+
+            return base.CanConvertTo(context, destinationType);
+        }
+
+        public override object? ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value,
+            Type destinationType)
+        {
+            if (destinationType == typeof(string))
+            {
+                if (value is null) 
+                    return @"";
+                else
+                    return NameValueCollectionHelper.GetNameValueCollectionString((Dictionary<string, string?>)value);
+            }
+
+            return base.ConvertTo(context, culture, value, destinationType);
+        }
+
+        public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
+        {
+            if (sourceType == typeof(string))
+                return true;
+
+            return base.CanConvertTo(context, sourceType);
+        }
+
+        public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
+        {
+            if (value is null || value.GetType() == typeof(string))
+                return NameValueCollectionHelper.Parse((string?)value);
+
+            return base.ConvertFrom(context, culture, value);
+        }
+
+        #endregion
+    }
 }
