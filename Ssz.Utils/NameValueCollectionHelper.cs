@@ -154,8 +154,11 @@ namespace Ssz.Utils
             foreach (var kvp in nameValueCollection.OrderBy(i => i.Key))
             {
                 if (kvp.Value is null)
+                    continue;
+
+                if (kvp.Key == @"")
                 {
-                    items.Add(UrlEncode(kvp.Key));
+                    items.Add(UrlEncode(kvp.Value));
                 }
                 else
                 {
@@ -173,8 +176,11 @@ namespace Ssz.Utils
             foreach (var kvp in nameValueCollection)
             {
                 if (kvp.Item2 is null)
+                    continue;
+
+                if (kvp.Item1 == @"")
                 {
-                    items.Add(UrlEncode(kvp.Item1));
+                    items.Add(UrlEncode(kvp.Item2));
                 }
                 else
                 {
@@ -197,13 +203,13 @@ namespace Ssz.Utils
 
             foreach (var kvp in nameValueCollection.OrderBy(i => i.Key))
             {
-                if (kvp.Value is null)
+                if (kvp.Key == @"")
                 {
-                    items.Add(kvp.Key);
+                    items.Add(kvp.Value ?? @"<null>");
                 }
                 else
                 {
-                    items.Add(kvp.Key + @": " + kvp.Value);
+                    items.Add(kvp.Key + @": " + (kvp.Value ?? @"<null>"));
                 }
             }
 
@@ -216,13 +222,13 @@ namespace Ssz.Utils
 
             foreach (var kvp in nameValueCollection)
             {
-                if (kvp.Item2 is null)
+                if (kvp.Item2 == @"")
                 {
-                    items.Add(kvp.Item1);
+                    items.Add(kvp.Item1 ?? @"<null>");
                 }
                 else
                 {
-                    items.Add(kvp.Item1 + @": " + kvp.Item2);
+                    items.Add(kvp.Item1 + @": " + (kvp.Item2 ?? @"<null>"));
                 }
             }
 
@@ -235,7 +241,9 @@ namespace Ssz.Utils
         /// <returns></returns>
         public static bool CanGetNameValueCollection(object? obj)
         {
-            if (obj is null) return true;
+            /*
+            if (obj is null) 
+                return true;
 
             PropertyInfo[] props = obj.GetType().GetProperties();
             foreach (PropertyInfo prop in props)
@@ -272,13 +280,14 @@ namespace Ssz.Utils
                 //        return true;
                 //    }
                 //}
-            }
+            }*/
 
             return true;
         }
 
         /// <summary>   
-        ///     Returns immutable dictionary.
+        ///     Returns dictionary. Values != null
+        ///     Checks DefaultPropertyAttribute, DesignerSerializationVisibilityAttribute, DefaultValueAttribute, 
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
@@ -287,37 +296,46 @@ namespace Ssz.Utils
             var result = new CaseInsensitiveDictionary<string?>();
 
             if (obj is null) 
-                return result;            
+                return result;
 
-            PropertyInfo[] props = obj.GetType().GetProperties();
+            var t = obj.GetType();
+
+            PropertyInfo[] props = t.GetProperties();
             foreach (PropertyInfo prop in props)
             {
-                if (!prop.CanRead || !prop.CanWrite) continue;
+                if (!prop.CanRead || !prop.CanWrite) 
+                    continue;
 
                 var designerSerializationVisibilityAttribute =
-                    prop.GetCustomAttributes(typeof(DesignerSerializationVisibilityAttribute), true)
-                        .OfType<DesignerSerializationVisibilityAttribute>().FirstOrDefault();
+                    prop.GetCustomAttribute<DesignerSerializationVisibilityAttribute>(true);
                 if (designerSerializationVisibilityAttribute is not null &&
-                    designerSerializationVisibilityAttribute.Visibility == DesignerSerializationVisibility.Hidden)
+                        designerSerializationVisibilityAttribute.Visibility == DesignerSerializationVisibility.Hidden)
                     continue;
 
                 object? propValue = prop.GetValue(obj, null);
 
-                var defaultValueAttribute = prop.GetCustomAttributes(typeof(DefaultValueAttribute), true)
-                    .OfType<DefaultValueAttribute>().FirstOrDefault();
+                var defaultValueAttribute = prop.GetCustomAttribute<DefaultValueAttribute>(true);
                 if (defaultValueAttribute is not null)
                 {
                     if (Equals(defaultValueAttribute.Value, propValue))
                         continue;
                 }
 
+                string propName;
+
+                DefaultPropertyAttribute? defaultPropertyAttribute = t.GetCustomAttribute<DefaultPropertyAttribute>();
+                if (defaultPropertyAttribute?.Name == prop.Name)
+                    propName = @"";
+                else
+                    propName = prop.Name;                
+
                 if (propValue is null)
                 {
-                    result[prop.Name] = null;
+                    result[propName] = null;
                 }
                 else
                 {
-                    result[prop.Name] = new Any(propValue).ValueAsString(false);
+                    result[propName] = new Any(propValue).ValueAsString(false);
                 }
             }
 
@@ -328,9 +346,10 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="nameValueCollection"></param>
-        public static void SetNameValueCollection(ref object obj, CaseInsensitiveDictionary<string?>? nameValueCollection)
+        public static void SetNameValueCollection(object obj, CaseInsensitiveDictionary<string?>? nameValueCollection)
         {
-            if (nameValueCollection is null) return;
+            if (nameValueCollection is null) 
+                return;
             foreach (var kvp in nameValueCollection)
             {
                 ObjectHelper.SetPropertyValue(obj, kvp.Key, kvp.Value);
@@ -350,7 +369,7 @@ namespace Ssz.Utils
             value = value!.Replace(@"%", @"%25");
             value = value.Replace(@"&", @"%26");
             value = value.Replace(@"=", @"%3D");
-            value = value.Replace(@"+", @"%2B");
+            value = value.Replace(@"+", @"%2B");            
             return value;
         }
 

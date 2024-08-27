@@ -63,9 +63,26 @@ namespace Ssz.Utils
         /// <returns></returns>
         public T? TryGetValue(string? key)
         {
-            if (key is null) return default;
+            if (key is null) 
+                return default;
             T? result;
             TryGetValue(key, out result);
+            return result;
+        }
+
+        /// <summary>
+        ///     Does not return defaultValue, if object exists in dictionary.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public T GetValue(string? key, T defaultValue)
+        {
+            if (key is null) 
+                return defaultValue;
+            T? result;
+            if (!TryGetValue(key, out result))
+                return defaultValue;
             return result;
         }
 
@@ -113,7 +130,7 @@ namespace Ssz.Utils
 
         public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
         {
-            if (value is null || value.GetType() == typeof(string))
+            if (value.GetType() == typeof(string))
                 return NameValueCollectionHelper.Parse((string?)value);
 
             return base.ConvertFrom(context, culture, value);
