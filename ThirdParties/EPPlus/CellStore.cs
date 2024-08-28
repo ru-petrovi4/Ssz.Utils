@@ -424,13 +424,14 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
                 var col = ColumnCount - 1;
                 while (col > 0)
                 {
-                    if (_columnIndex[col].PageCount == 0 || _columnIndex[col]._pages[0].RowCount > 1 || _columnIndex[col]._pages[0].Rows[0].Index > 0)
+                    // VALFIX if (_columnIndex[col].PageCount == 0 || _columnIndex[col]._pages[0].RowCount > 1 || _columnIndex[col]._pages[0].Rows[0].Index > 0)
+                    if (_columnIndex[col].PageCount == 0 || _columnIndex[col]._pages.Any(p => p != null && p.RowCount > 1) || _columnIndex[col]._pages.Any(p => p != null && p.Rows[0].Index > 0))
                     {
                         break;
                     }
                     col--;
-                }
-                toCol=_columnIndex[col].Index;
+                }                
+                toCol = _columnIndex[col].Index;
                 if (toCol == 0)
                 {
                     fromRow = fromCol = toRow = toCol = 0;
