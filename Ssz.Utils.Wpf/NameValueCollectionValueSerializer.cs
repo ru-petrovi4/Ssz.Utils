@@ -41,7 +41,7 @@ namespace Ssz.Utils.Wpf
         public object ConvertFromString(string? value)
         {
             object result = Activator.CreateInstance<T>();
-            NameValueCollectionHelper.SetNameValueCollection(ref result, NameValueCollectionHelper.Parse(value));
+            NameValueCollectionHelper.SetNameValueCollection(result, NameValueCollectionHelper.Parse(value));
             return result;
         }
 
