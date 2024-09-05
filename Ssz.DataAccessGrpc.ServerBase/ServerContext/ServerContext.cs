@@ -59,7 +59,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// </summary>
         public void Dispose()
         {
-            if (Disposed) return;
+            if (Disposed) 
+                return;
             Disposed = true;
 
             Dispose(disposing: true);
@@ -70,7 +71,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public async ValueTask DisposeAsync()
         {
-            if (Disposed) return;
+            if (Disposed) 
+                return;
             Disposed = true;
 
             await DisposeAsyncCore();
@@ -90,11 +92,13 @@ namespace Ssz.DataAccessGrpc.ServerBase
             {
                 if (!IsConcludeCalled)
                 {
-                    AddCallbackMessage(
-                        new ContextStatusMessage
+                    lock (_messagesSyncRoot)
+                    {
+                        _contextStatusMessagesCollection.Add(new ContextStatusMessage
                         {
                             StateCode = ContextStateCodes.STATE_ABORTING
                         });
+                    }
                 }
                 else
                 {
@@ -115,11 +119,13 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             if (!IsConcludeCalled)
             {
-                AddCallbackMessage(
-                    new ContextStatusMessage
+                lock (_messagesSyncRoot)
+                {
+                    _contextStatusMessagesCollection.Add(new ContextStatusMessage
                     {
                         StateCode = ContextStateCodes.STATE_ABORTING
                     });
+                }
             }
             else
             {
