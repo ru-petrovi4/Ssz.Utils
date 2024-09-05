@@ -127,10 +127,7 @@ namespace Ssz.Dcs.CentralServer
                             {
                                 InstructorUser = instructorUser,
                                 StartDateTimeUtc = DateTime.UtcNow,
-                                ProcessModelName = processModelName,
-                                Enterprise = enterprise,
-                                Plant = plant,
-                                Unit = unit
+                                ProcessModel = processModel,                                
                             };
                             dbContext.ProcessModelingSessions.Add(dbEnity_ProcessModelingSession);
                         }

@@ -31,26 +31,11 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
         [Attr]
         public byte Type { get; set; }
 
-        [Attr]
-        public string ProcessModelName { get; set; } = @"";
+        [HasOne]
+        [ForeignKey(nameof(ProcessModelId))]
+        public ProcessModel ProcessModel { get; set; } = null!;
 
-        /// <summary>
-        ///     Предприятие
-        /// </summary>
-        [Attr]
-        public string Enterprise { get; set; } = @"";
-
-        /// <summary>
-        ///     Производство
-        /// </summary>
-        [Attr]
-        public string Plant { get; set; } = @"";
-
-        /// <summary>
-        ///     Установка
-        /// </summary>
-        [Attr]
-        public string Unit { get; set; } = @"";
+        public Int64 ProcessModelId { get; set; }        
 
         #endregion
     }
