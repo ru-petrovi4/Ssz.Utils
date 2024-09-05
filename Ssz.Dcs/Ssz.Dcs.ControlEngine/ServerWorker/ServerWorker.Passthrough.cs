@@ -10,6 +10,7 @@ using System.IO;
 using Ssz.Dcs.CentralServer.Common;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Ssz.Dcs.ControlEngine
 {
@@ -104,9 +105,14 @@ namespace Ssz.Dcs.ControlEngine
             if (Device is null) throw new RpcException(new Status(StatusCode.InvalidArgument, "Device is not created yet."));
 
             try
-            {
-                // Force to send all data.
-                Reset();
+            {                
+                foreach (ServerContext sc in ServerContextsDictionary.Values.ToArray())
+                {
+                    foreach (var list in sc.Lists)
+                    {
+                        list.ResetList();
+                    }                   
+                }
 
                 await Device.LoadStateAsync(arg + DsFilesStoreConstants.ControlEngineStateFileExtension);                
 

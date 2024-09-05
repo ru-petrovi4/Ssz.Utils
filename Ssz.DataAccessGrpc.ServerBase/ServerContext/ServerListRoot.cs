@@ -178,9 +178,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
         }
 
         /// <summary>
-        ///     Force to send all data.
+        ///     Reset list to initial state.
         /// </summary>
-        public virtual void Reset()
+        public virtual void ResetList()
         {
         }
 

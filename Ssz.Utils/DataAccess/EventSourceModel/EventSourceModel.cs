@@ -110,6 +110,7 @@ namespace Ssz.Utils.DataAccess
         /// <param name="eventSourceObject"></param>
         /// <param name="alarmConditionType"></param>
         /// <param name="categoryId"></param>
+        /// <param name="priority"></param>
         /// <param name="active"></param>
         /// <param name="unacked"></param>
         /// <param name="occurrenceTimeUtc"></param>
@@ -120,7 +121,7 @@ namespace Ssz.Utils.DataAccess
         ///     false if the alarm state remains the same
         /// </returns>
         public virtual bool ProcessEventSourceObject(EventSourceObject eventSourceObject, AlarmConditionType alarmConditionType,
-            uint categoryId, bool active, bool unacked, DateTime occurrenceTimeUtc, out bool alarmConditionTypeChanged,
+            uint categoryId, uint priority, bool active, bool unacked, DateTime occurrenceTimeUtc, out bool alarmConditionTypeChanged,
             out bool unackedChanged)
         {
             alarmConditionTypeChanged = false;
@@ -161,7 +162,7 @@ namespace Ssz.Utils.DataAccess
                 if (unacked)
                     unackedChanged = true;
                 
-                var newConditionState = new AlarmConditionState(alarmConditionType) { Active = active, Unacked = unacked, CategoryId = categoryId };
+                var newConditionState = new AlarmConditionState(alarmConditionType) { Active = active, Unacked = unacked, CategoryId = categoryId, Priority = priority };
                 if (active)
                     newConditionState.ActiveOccurrenceTimeUtc = occurrenceTimeUtc;
                 alarmConditions.Add(alarmConditionType, newConditionState);
@@ -193,7 +194,7 @@ namespace Ssz.Utils.DataAccess
 
             foreach (EventSourceObject eventSourceObject in EventSourceObjects.Values)
             {
-                var maxCategoryId = eventSourceObject.GetAlarmMaxCategoryId(EventSourceModelSubscriptionScope.Active);
+                var maxCategoryId = eventSourceObject.GetAlarmMaxCategoryId(EventSourceModelSubscriptionScope.Active).Item1;
                 if (maxCategoryId > 0)
                     foreach (EventSourceArea eventSourceArea in eventSourceObject.EventSourceAreas.Values)
                     {
@@ -207,7 +208,7 @@ namespace Ssz.Utils.DataAccess
                         alarmCategoryInfo.ActiveCount += 1;
                     }
 
-                maxCategoryId = eventSourceObject.GetAlarmMaxCategoryId(EventSourceModelSubscriptionScope.Unacked);
+                maxCategoryId = eventSourceObject.GetAlarmMaxCategoryId(EventSourceModelSubscriptionScope.Unacked).Item1;
                 if (maxCategoryId > 0)
                     foreach (EventSourceArea eventSourceArea in eventSourceObject.EventSourceAreas.Values)
                     {
@@ -221,7 +222,7 @@ namespace Ssz.Utils.DataAccess
                         alarmCategoryInfo.UnackedCount += 1;
                     }
 
-                maxCategoryId = eventSourceObject.GetAlarmMaxCategoryId(EventSourceModelSubscriptionScope.ActiveOrUnacked);
+                maxCategoryId = eventSourceObject.GetAlarmMaxCategoryId(EventSourceModelSubscriptionScope.ActiveOrUnacked).Item1;
                 if (maxCategoryId > 0)
                     foreach (EventSourceArea eventSourceArea in eventSourceObject.EventSourceAreas.Values)
                     {
@@ -235,7 +236,7 @@ namespace Ssz.Utils.DataAccess
                         alarmCategoryInfo.ActiveOrUnackedCount += 1;
                     }
 
-                maxCategoryId = eventSourceObject.GetAlarmMaxCategoryId(EventSourceModelSubscriptionScope.ActiveAndUnacked);
+                maxCategoryId = eventSourceObject.GetAlarmMaxCategoryId(EventSourceModelSubscriptionScope.ActiveAndUnacked).Item1;
                 if (maxCategoryId > 0)
                     foreach (EventSourceArea eventSourceArea in eventSourceObject.EventSourceAreas.Values)
                     {

@@ -38,8 +38,14 @@ namespace Ssz.Dcs.CentralServer
             jobProgress.ProgressLabelResourceName = progressLabelResourceName;
             jobProgress.StatusCode = statusCode;
 
-            foreach (ServerContext serverContext in jobProgress.ProgressSubscribers)
-            {   
+            foreach (ServerContext serverContext in jobProgress.ProgressSubscribers.ToArray())
+            {
+                if (serverContext.Disposed)
+                {
+                    jobProgress.ProgressSubscribers.Remove(serverContext);
+                    continue;
+                }
+
                 string? progressLabel = null;
                 if (progressLabelResourceName != @"")
                 {

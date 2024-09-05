@@ -26,6 +26,7 @@ namespace Ssz.Utils.DataAccess
         /// <param name="eventSourceObject"></param>
         /// <param name="alarmCondition"></param>
         /// <param name="categoryId"></param>
+        /// <param name="priority"></param>
         /// <param name="active"></param>
         /// <param name="unacked"></param>
         /// <param name="occurrenceTimeUtc"></param>
@@ -36,7 +37,7 @@ namespace Ssz.Utils.DataAccess
         ///     false if the alarm state remains the same
         /// </returns>
         bool ProcessEventSourceObject(EventSourceObject eventSourceObject, AlarmConditionType alarmCondition,
-            uint categoryId, bool active, bool unacked, DateTime occurrenceTimeUtc, out bool alarmConditionTypeChanged,
+            uint categoryId, uint priority, bool active, bool unacked, DateTime occurrenceTimeUtc, out bool alarmConditionTypeChanged,
             out bool unackedChanged);
 
         void Clear();

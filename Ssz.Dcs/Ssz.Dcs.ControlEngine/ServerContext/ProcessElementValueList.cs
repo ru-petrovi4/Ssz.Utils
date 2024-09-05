@@ -94,9 +94,9 @@ namespace Ssz.Dcs.ControlEngine
         }
 
         /// <summary>
-        ///     Force to send all data.
+        ///     Reset list to initial state.
         /// </summary>
-        public override void Reset()
+        public override void ResetList()
         {
             _dataGuid = null;
 
@@ -105,7 +105,7 @@ namespace Ssz.Dcs.ControlEngine
                 item.Reset();
             }
 
-            base.Reset();
+            base.ResetList();
         }
 
         #endregion

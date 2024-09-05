@@ -252,18 +252,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     LastContextStatusCallbackDateTimeUtc = nowUtc;
                 }
             }
-        }
-
-        /// <summary>
-        ///     Force to send all data.
-        /// </summary>
-        public void Reset()
-        {
-            foreach (var list in _listsManager)
-            {
-                list.Reset();
-            }
-        }
+        }        
 
         #endregion
 

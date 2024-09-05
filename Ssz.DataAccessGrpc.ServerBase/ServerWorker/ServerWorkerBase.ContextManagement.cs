@@ -84,6 +84,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         #region protected functions  
 
+        protected IReadOnlyDictionary<string, ServerContext> ServerContextsDictionary => _serverContextsDictionary;
+
         protected void ServerContextsAbort(ServerContext[] serverContexts)
         {
             foreach (ServerContext serverContext in serverContexts)
@@ -102,7 +104,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
                 await serverContext.DisposeAsync();
             }
-        }
+        }        
 
         #endregion
 

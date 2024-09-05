@@ -117,18 +117,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         protected virtual void OnShutdownRequested()
         {
             ShutdownRequested(this, EventArgs.Empty);
-        }
-
-        /// <summary>
-        ///     Force to send all data.
-        /// </summary>
-        protected void Reset()
-        {
-            foreach (ServerContext serverContext in _serverContextsDictionary.Values.ToArray())
-            {
-                serverContext.Reset();
-            }
-        }
+        }        
 
         #endregion
 

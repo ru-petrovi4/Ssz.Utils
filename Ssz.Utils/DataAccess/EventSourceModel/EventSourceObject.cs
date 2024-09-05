@@ -36,14 +36,25 @@ namespace Ssz.Utils.DataAccess
 
         public CaseInsensitiveDictionary<EventSourceArea> EventSourceAreas { get; } = new();
 
-        public uint GetAlarmMaxCategoryId(EventSourceModelSubscriptionScope subscriptionScope)
+        /// <summary>
+        ///     (CategoryId, Priority)
+        /// </summary>
+        /// <param name="subscriptionScope"></param>
+        /// <returns></returns>
+        public (uint, uint) GetAlarmMaxCategoryId(EventSourceModelSubscriptionScope subscriptionScope)
         {
             var predicate = EventSourceModelHelper.GetPredicate(subscriptionScope);
             uint maxCategoryId = 0;
+            uint priority = 0;
             foreach (var kvp in AlarmConditions)
+            {
                 if (predicate(kvp.Value) && kvp.Value.CategoryId > maxCategoryId)
+                {
                     maxCategoryId = kvp.Value.CategoryId;
-            return maxCategoryId;
+                    priority = kvp.Value.Priority;
+                }                    
+            }                
+            return (maxCategoryId, priority);
         }
 
         public AlarmConditionType GetAlarmConditionType(EventSourceModelSubscriptionScope subscriptionScope)
@@ -112,7 +123,7 @@ namespace Ssz.Utils.DataAccess
                     subscription.Update(new ValueStatusTimestamp(new Any(alarmAny)));
                     break;
                 case EventSourceModel.AlarmMaxCategoryId_SubscriptionType:
-                    uint alarmMaxCategoryId = GetAlarmMaxCategoryId(eventSourceModelSubscriptionInfo.EventSourceModelSubscriptionScope);
+                    uint alarmMaxCategoryId = GetAlarmMaxCategoryId(eventSourceModelSubscriptionInfo.EventSourceModelSubscriptionScope).Item1;
                     subscription.Update(new ValueStatusTimestamp(new Any(alarmMaxCategoryId)));
                     break;
                 case EventSourceModel.AlarmConditionType_SubscriptionType:

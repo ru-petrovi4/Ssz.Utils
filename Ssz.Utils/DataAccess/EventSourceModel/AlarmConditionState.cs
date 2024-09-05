@@ -21,6 +21,7 @@ namespace Ssz.Utils.DataAccess
         public bool Active;
         public bool Unacked;
         public uint CategoryId;
+        public uint Priority;
         public DateTime ActiveOccurrenceTimeUtc;
         public AlarmInfoViewModelBase? LastAlarmInfoViewModel;
 

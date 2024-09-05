@@ -33,6 +33,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="contextStatusMessage"></param>
         public void AddCallbackMessage(ContextStatusMessage contextStatusMessage)
         {
+            if (Disposed || _responseStream is null)
+                return;
+
             lock (_messagesSyncRoot)
             {
                 _contextStatusMessagesCollection.Add(contextStatusMessage);
@@ -45,6 +48,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="elementValuesCallbackMessage"></param>
         public void AddCallbackMessage(ElementValuesCallbackMessage elementValuesCallbackMessage)
         {
+            if (Disposed || _responseStream is null)
+                return;
+
             lock (_messagesSyncRoot)
             {
                 _elementValuesCallbackMessagesCollection.Add(elementValuesCallbackMessage);
@@ -57,6 +63,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="eventMessagesCallbackMessage"></param>
         public void AddCallbackMessage(EventMessagesCallbackMessage eventMessagesCallbackMessage)
         {
+            if (Disposed || _responseStream is null)
+                return;
+
             lock (_messagesSyncRoot)
             {
                 _eventMessagesCallbackMessagesCollection.Add(eventMessagesCallbackMessage);
@@ -69,6 +78,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="longrunningPassthroughCallbackMessage"></param>
         public void AddCallbackMessage(LongrunningPassthroughCallbackMessage longrunningPassthroughCallbackMessage)
         {
+            if (Disposed || _responseStream is null)
+                return;
+
             lock (_messagesSyncRoot)
             {
                 _longrunningPassthroughCallbackMessagesCollection.Add(longrunningPassthroughCallbackMessage);

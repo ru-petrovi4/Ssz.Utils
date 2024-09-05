@@ -50,8 +50,14 @@ namespace Ssz.Dcs.CentralServer
                 if (jobProgress.ForTimeout_LastDateTimeUtc.HasValue && jobProgress.ForTimeout_LastDateTimeUtc.Value < unrecoverableDateTimeUtc)
                 {
                     jobProgress.JobCompletedDateTimeUtc = nowUtc;
-                    foreach (ServerContext serverContext in jobProgress.ProgressSubscribers)
-                    {                        
+                    foreach (ServerContext serverContext in jobProgress.ProgressSubscribers.ToArray())
+                    {
+                        if (serverContext.Disposed)
+                        {
+                            jobProgress.ProgressSubscribers.Remove(serverContext);
+                            continue;
+                        }
+
                         serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
                         {
                             JobId = jobProgress.JobId,

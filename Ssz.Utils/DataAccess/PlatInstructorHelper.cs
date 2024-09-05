@@ -165,10 +165,10 @@ namespace Ssz.Utils.DataAccess
 
                 if (condition != AlarmConditionType.None)
                 {
-                    bool changed = eventSourceModel.ProcessEventSourceObject(eventSourceObject, condition, categoryId,
+                    bool changed = eventSourceModel.ProcessEventSourceObject(eventSourceObject, condition, categoryId, priority,
                             active, unacked, eventMessage.OccurrenceTimeUtc, out alarmConditionChanged, out unackedChanged);
                     if (eventSourceObjectVarName != null)
-                        eventSourceModel.ProcessEventSourceObject(eventSourceObjectVarName, condition, categoryId,
+                        eventSourceModel.ProcessEventSourceObject(eventSourceObjectVarName, condition, categoryId, priority,
                             active, unacked, eventMessage.OccurrenceTimeUtc, out bool alarmConditionChangedVarName, out bool unackedChangedVarName);
 
                     if (!changed) return Task.FromResult((IEnumerable<AlarmInfoViewModelBase>?)null);
