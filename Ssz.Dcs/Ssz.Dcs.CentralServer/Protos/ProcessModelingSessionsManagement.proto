@@ -108,30 +108,29 @@ message NotifyJournalEventRequest {
 message NotifyJournalEventReply {  
 }
 
-message InsertUserRequest {  
-  string data_access_utility_context_id = 1;  
-  string user_name = 2;
-  string personnel_number = 3;
-  string windows_user_name = 4;  
+message InsertUserRequest {    
+  string user_name = 1;
+  string personnel_number = 2;
+  string domain_user_name = 3;  
+  string process_model_names = 4;
 }
 
 message InsertUserReply {   
 }
 
-message UpdateUserRequest {  
-  string data_access_utility_context_id = 1;
-  string user_name = 2;
-  string new_user_name = 3;
-  string new_personnel_number = 4;
-  string new_windows_user_name = 5;  
+message UpdateUserRequest {    
+  string user_name = 1;
+  string new_user_name = 2;
+  string new_personnel_number = 3;
+  string new_domain_user_name = 4;  
+  string new_process_model_names = 5;
 }
 
 message UpdateUserReply {   
 }
 
-message DeleteUserRequest { 
-  string data_access_utility_context_id = 1;
-  string user_name = 2;  
+message DeleteUserRequest {   
+  string user_name = 1;  
 }
 
 message DeleteUserReply {   

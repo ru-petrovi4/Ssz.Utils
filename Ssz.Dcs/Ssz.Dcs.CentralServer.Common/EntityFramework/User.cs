@@ -10,9 +10,10 @@ using System.Runtime.InteropServices;
 namespace Ssz.Dcs.CentralServer.Common.EntityFramework
 {
     /// <summary>
-    ///    Operator
+    ///    Instructor or Operator
     /// </summary>   
     [Resource]
+    [Index(nameof(UserName))]
     public class User : Identifiable<Int64>, IOwnedDataSerializable
     {
         #region public functions                
@@ -33,7 +34,10 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
         ///     Domain\Username
         /// </summary>
         [Attr]
-        public string WindowsUserName { get; set; } = @"";
+        public string DomainUserName { get; set; } = @"";
+
+        [Attr]
+        public string ProcessModelNames { get; set; } = @"";
 
         public bool IsEmpty
         {
@@ -44,14 +48,16 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
         {
             writer.Write(UserName);
             writer.Write(PersonnelNumber);
-            writer.Write(WindowsUserName);
+            writer.Write(DomainUserName);
+            writer.Write(ProcessModelNames);
         }
 
         public void DeserializeOwnedData(SerializationReader reader, object? context)
         {
             UserName = reader.ReadString();
             PersonnelNumber = reader.ReadString();
-            WindowsUserName = reader.ReadString();
+            DomainUserName = reader.ReadString();
+            ProcessModelNames = reader.ReadString();
         }
 
         #endregion

@@ -39,9 +39,8 @@ namespace Ssz.Dcs.CentralServer
                         case PassthroughConstants.LoadFiles:
                             LoadFilesPassthrough(Encoding.UTF8.GetString(dataToSend.Span), out returnData);
                             return returnData;
-                        case PassthroughConstants.GetUsers:
-                            GetUsersPassthrough(out returnData);
-                            return returnData;
+                        case PassthroughConstants.GetUsers:                            
+                            return await GetUsersPassthroughAsync(dataToSend);
                         case PassthroughConstants.ProcessModelingSession_RunInstructorExe:
                             ProcessModelingSession_RunInstructorExe_Passthrough(serverContext, dataToSend, out returnData);
                             return returnData;

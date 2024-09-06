@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Ssz.Dcs.CentralServer.Common.EntityFramework;
@@ -11,9 +12,11 @@ using Ssz.Dcs.CentralServer.Common.EntityFramework;
 namespace Ssz.Dcs.CentralServer.Common.Migrations.NpgsqlMigrations
 {
     [DbContext(typeof(NpgsqlDcsCentralServerDbContext))]
-    partial class NpgsqlDcsCentralServerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240906115859_ProcessModelNameRef")]
+    partial class ProcessModelNameRef
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

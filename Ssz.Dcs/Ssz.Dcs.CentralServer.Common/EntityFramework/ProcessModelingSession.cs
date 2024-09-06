@@ -33,9 +33,9 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
 
         [HasOne]
         [ForeignKey(nameof(ProcessModelId))]
-        public ProcessModel ProcessModel { get; set; } = null!;
+        public ProcessModel? ProcessModel { get; set; } = null!;
 
-        public Int64 ProcessModelId { get; set; }        
+        public Int64? ProcessModelId { get; set; }        
 
         #endregion
     }

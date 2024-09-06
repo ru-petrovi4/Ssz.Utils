@@ -15,7 +15,7 @@ namespace Ssz.Dcs.CentralServer.Common.Migrations.SqliteMigrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.7");
 
             modelBuilder.Entity("OperatorSessionScenarioResult", b =>
                 {
@@ -140,23 +140,14 @@ namespace Ssz.Dcs.CentralServer.Common.Migrations.SqliteMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Enterprise")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime?>("FinishDateTimeUtc")
                         .HasColumnType("TEXT");
 
                     b.Property<long>("InstructorUserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Plant")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ProcessModelName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<long?>("ProcessModelId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("StartDateTimeUtc")
                         .HasColumnType("TEXT");
@@ -164,13 +155,11 @@ namespace Ssz.Dcs.CentralServer.Common.Migrations.SqliteMigrations
                     b.Property<byte>("Type")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Unit")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
                     b.HasIndex("InstructorUserId");
+
+                    b.HasIndex("ProcessModelId");
 
                     b.ToTable("ProcessModelingSessions");
                 });
@@ -264,7 +253,15 @@ namespace Ssz.Dcs.CentralServer.Common.Migrations.SqliteMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("DomainUserName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("PersonnelNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ProcessModelNames")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -272,11 +269,9 @@ namespace Ssz.Dcs.CentralServer.Common.Migrations.SqliteMigrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("WindowsUserName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("UserName");
 
                     b.ToTable("Users");
                 });
@@ -332,7 +327,13 @@ namespace Ssz.Dcs.CentralServer.Common.Migrations.SqliteMigrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Ssz.Dcs.CentralServer.Common.EntityFramework.ProcessModel", "ProcessModel")
+                        .WithMany()
+                        .HasForeignKey("ProcessModelId");
+
                     b.Navigation("InstructorUser");
+
+                    b.Navigation("ProcessModel");
                 });
 
             modelBuilder.Entity("Ssz.Dcs.CentralServer.Common.EntityFramework.Scenario", b =>

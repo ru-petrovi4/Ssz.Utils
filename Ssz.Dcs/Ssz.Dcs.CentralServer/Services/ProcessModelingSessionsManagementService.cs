@@ -138,10 +138,11 @@ namespace Ssz.Dcs.CentralServer
         {
             return await GetReplyAsync(() =>
                 {
-                    _serverWorker.InsertUser(request.DataAccessUtilityContextId ?? @"",
+                    _serverWorker.InsertUser(
                         request.UserName ?? @"",
                         request.PersonnelNumber ?? @"",
-                        request.WindowsUserName ?? @"");
+                        request.DomainUserName ?? @"",
+                        request.ProcessModelNames ?? @"");
                     var reply = new InsertUserReply();
                     return reply;
                 },
@@ -152,8 +153,12 @@ namespace Ssz.Dcs.CentralServer
         {
             return await GetReplyAsync(() =>
                 {
-                    _serverWorker.UpdateUser(request.DataAccessUtilityContextId ?? @"",
-                        request.UserName ?? @"", request.NewUserName ?? @"", request.NewPersonnelNumber ?? @"", request.NewWindowsUserName ?? @"");
+                    _serverWorker.UpdateUser(
+                        request.UserName ?? @"", 
+                        request.NewUserName ?? @"", 
+                        request.NewPersonnelNumber ?? @"", 
+                        request.NewDomainUserName ?? @"",
+                        request.NewProcessModelNames ?? @"");
                     var reply = new UpdateUserReply();
                     return reply;
                 },
@@ -164,8 +169,7 @@ namespace Ssz.Dcs.CentralServer
         {
             return await GetReplyAsync(() =>
                 {
-                    _serverWorker.DeleteUser(request.DataAccessUtilityContextId ?? @"",
-                        request.UserName ?? @"");
+                    _serverWorker.DeleteUser(request.UserName ?? @"");
                     var reply = new DeleteUserReply();
                     return reply;
                 },

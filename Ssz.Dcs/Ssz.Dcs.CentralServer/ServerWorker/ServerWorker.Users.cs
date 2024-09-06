@@ -16,6 +16,7 @@ using System.Text;
 using Ssz.Dcs.CentralServer.Common.EntityFramework;
 using Ssz.Dcs.CentralServer.Common.Passthrough;
 using Ssz.Utils.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ssz.Dcs.CentralServer
 {
@@ -23,7 +24,7 @@ namespace Ssz.Dcs.CentralServer
     {
         #region public functions      
 
-        public void InsertUser(string dataAccessUtilityContextId, string userName, string personnelNumber, string windowsUserName)
+        public void InsertUser(string userName, string personnelNumber, string domainUserName, string processModelNames)
         {
             try
             {
@@ -35,7 +36,8 @@ namespace Ssz.Dcs.CentralServer
                         {
                             UserName = userName,
                             PersonnelNumber = personnelNumber,
-                            WindowsUserName = windowsUserName,
+                            DomainUserName = domainUserName,
+                            ProcessModelNames = processModelNames
                         });
                         dbContext.SaveChanges();
                     }  
@@ -48,7 +50,7 @@ namespace Ssz.Dcs.CentralServer
             }
         }
 
-        public void UpdateUser(string dataAccessUtilityContextId, string userName, string newUserName, string newPersonnelNumber, string newWindowsUserName)
+        public void UpdateUser(string userName, string newUserName, string newPersonnelNumber, string newDomainUserName, string newProcessModelNames)
         {
             try
             {
@@ -64,7 +66,8 @@ namespace Ssz.Dcs.CentralServer
                         }
                         user.UserName = newUserName;
                         user.PersonnelNumber = newPersonnelNumber;
-                        user.WindowsUserName = newWindowsUserName;
+                        user.DomainUserName = newDomainUserName;
+                        user.ProcessModelNames = newProcessModelNames;                        
                         dbContext.SaveChanges();
                     }                    
                 }
@@ -93,7 +96,7 @@ namespace Ssz.Dcs.CentralServer
             });                       
         }
 
-        public void DeleteUser(string dataAccessUtilityContextId, string userName)
+        public void DeleteUser(string userName)
         {
             try
             {
@@ -123,17 +126,28 @@ namespace Ssz.Dcs.CentralServer
 
         #region private function
 
-        private void GetUsersPassthrough(out byte[] returnData)
+        private async Task<byte[]> GetUsersPassthroughAsync(ReadOnlyMemory<byte> dataToSend)
         {
-            returnData = new byte[0];
+            var returnData = new byte[0];
             try
             {
+                var request = new GetUsersRequest();
+                SerializationHelper.SetOwnedData(request, dataToSend);
                 using (var dbContext = _dbContextFactory.CreateDbContext())
                 {
                     var reply = new GetUsersReply();
                     if (dbContext.IsConfigured)
                     {
-                        reply.UsersCollection = dbContext.Users.ToList();                        
+                        reply.UsersCollection = await dbContext.Users.ToListAsync();
+                        if (!String.IsNullOrEmpty(request.ProcessModelNames) && request.ProcessModelNames != @"*")
+                        {
+                            var requestProcessModelNames = CsvHelper.ParseCsvLine(@",", request.ProcessModelNames);
+                            reply.UsersCollection = reply.UsersCollection
+                                .Where(u => String.IsNullOrEmpty(u.ProcessModelNames) ||
+                                    u.ProcessModelNames == @"*" ||
+                                    CsvHelper.ParseCsvLine(@",", u.ProcessModelNames).Intersect(requestProcessModelNames, StringComparer.InvariantCultureIgnoreCase).Any())
+                                .ToList();
+                        }                           
                     }
                     returnData = SerializationHelper.GetOwnedData(reply);
                 }
@@ -142,6 +156,7 @@ namespace Ssz.Dcs.CentralServer
             {                
                 ThrowRpcException(ex);
             }
+            return returnData;
         }
 
         private async Task AddScenarioResultPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
