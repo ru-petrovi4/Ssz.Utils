@@ -1102,7 +1102,9 @@ namespace Ssz.Utils {
         /// <summary>
         ///     Unsafe.
         /// </summary>
-        [FieldOffset(8)]         public DateTime StorageDateTime;        
+        [FieldOffset(8)]         public DateTime StorageDateTime;   
+        
+        public static readonly Any[] EmptyArray = new Any[0];
 
         #endregion 
         #region private fields
