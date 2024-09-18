@@ -24,10 +24,10 @@ namespace Ssz.Dcs.CentralServer.Common
 
         public const string Instructor_RoleId = @"-1";
 
-        public const string DefaultTrainee_RoleId = @"0";
+        public const string DefaultTrainee_RoleId = @"0";        
 
-        public const int ChangeProcessModelingSession_EventSubType = 0;
+        public const int EventSubType_ChangeElementValue = 1;
 
-        public const int ChangeElementValue_EventSubType = 1;        
+        public const int EventSubType_LoadStateFile = 2;
     }
 }

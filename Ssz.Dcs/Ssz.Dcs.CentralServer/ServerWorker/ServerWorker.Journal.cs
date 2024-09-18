@@ -34,14 +34,15 @@ namespace Ssz.Dcs.CentralServer
             //StreamWriter(string path, bool append)            
 
             Action<string?, Ssz.Utils.DataAccess.EventMessage>? processEventMessageNotification = ProcessEventMessageNotification;
-            if (processEventMessageNotification is null) return;
+            if (processEventMessageNotification is null) 
+                return;
 
             var eventMessage = new Ssz.Utils.DataAccess.EventMessage(null);
 
             eventMessage.EventType = EventType.OperatorActionEvent;
             eventMessage.OccurrenceTimeUtc = newValueStatusTimestamp.TimestampUtc;
             eventMessage.TextMessage = CsvHelper.FormatForCsv(",", new object?[] {
-                ProcessModelingSessionConstants.ChangeElementValue_EventSubType,
+                ProcessModelingSessionConstants.EventSubType_ChangeElementValue,
                 processModelingSession.ProcessTimeSeconds,
                 operatorRoleId,
                 operatorRoleName,
@@ -50,7 +51,10 @@ namespace Ssz.Dcs.CentralServer
                 oldValueStatusTimestamp.Value,
                 newValueStatusTimestamp.Value });
 
-            processEventMessageNotification(null, eventMessage);
+            foreach (var processServerContext in processModelingSession.ProcessServerContextsCollection)
+            {
+                processEventMessageNotification(processServerContext.ClientWorkstationName, eventMessage);
+            }
         }
 
         internal void NotifyJournalEvent(string processModelingSessionId, EventType eventType, DateTime occurrenceTimeUtc, string textMessage)
@@ -58,7 +62,8 @@ namespace Ssz.Dcs.CentralServer
             ProcessModelingSession processModelingSession = GetProcessModelingSession(processModelingSessionId);
 
             Action<string?, Ssz.Utils.DataAccess.EventMessage>? processEventMessageNotification = ProcessEventMessageNotification;
-            if (processEventMessageNotification is null) return;
+            if (processEventMessageNotification is null) 
+                return;
 
             var eventMessage = new Ssz.Utils.DataAccess.EventMessage(null);
 
@@ -66,7 +71,10 @@ namespace Ssz.Dcs.CentralServer
             eventMessage.OccurrenceTimeUtc = occurrenceTimeUtc;
             eventMessage.TextMessage = textMessage;
 
-            processEventMessageNotification(null, eventMessage);
+            foreach (var processServerContext in processModelingSession.ProcessServerContextsCollection)
+            {
+                processEventMessageNotification(processServerContext.ClientWorkstationName, eventMessage);
+            }            
         }
 
         #endregion        

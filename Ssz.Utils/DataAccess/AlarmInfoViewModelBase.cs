@@ -241,7 +241,7 @@ namespace Ssz.Utils.DataAccess
         /// <summary>
         /// The EventMessage object that was used to generate this AlarmInfoViewModelBase
         /// </summary>
-        public virtual EventMessage? OriginalEventMessage { get; set; }
+        public virtual EventMessage? OriginalEventMessage { get; set; }        
 
         /// <summary>
         /// The engineering units for the current alarm
@@ -294,7 +294,7 @@ namespace Ssz.Utils.DataAccess
         protected double _currentValue;
         protected string _currentValueText = @"";
         protected double _tripValue;
-        protected string _tripValueText = @"";
+        protected string _tripValueText = @"";        
         protected string _eu = @"";        
         protected bool _isDigital;
 

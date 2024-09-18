@@ -3,8 +3,8 @@ SystemName это либо:
 - "" - Utility Context
 - "DCS" - DCS Mode
 - "MODEL" - Default process modeling session
-- "PLATFORM<XiSystem>" - Platform Xi process modeling session with SystemName=<XiSystem>
-- "USO<XiSystem>" - USO Xi process modeling session with SystemName=<XiSystem>
+- "PLATFORM<XiSystem>" - Platform Xi process modeling session with SystemName=<XiSystem>, XiSystem can be empry
+- "USO<XiSystem>" - USO Xi process modeling session with SystemName=<XiSystem>, XiSystem can be empry
 - "<ID>" - Pprocess modeling session with specific <ID>
 
 
