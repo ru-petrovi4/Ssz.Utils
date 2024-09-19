@@ -107,13 +107,12 @@ namespace Ssz.Dcs.CentralServer
             EventMessagesCollections.Add(args.EventMessagesCollection);
         }
 
-        private void OnProcessEventMessageNotification(string? targetWorkstationName, Ssz.Utils.DataAccess.EventMessage eventMessage)
+        private void OnProcessEventMessageNotification(ServerContext targetServerContext, Ssz.Utils.DataAccess.EventMessage eventMessage)
         {
             if (Disposed) 
                 return;
 
-            if (!String.IsNullOrEmpty(targetWorkstationName) &&
-                    !String.Equals(targetWorkstationName, ServerContext.ClientWorkstationName, StringComparison.InvariantCultureIgnoreCase)) 
+            if (!ReferenceEquals(targetServerContext, ServerContext)) 
                 return;
 
             EventMessagesCollections.Add(

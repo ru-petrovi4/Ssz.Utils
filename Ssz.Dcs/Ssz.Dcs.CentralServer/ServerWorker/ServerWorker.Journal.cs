@@ -33,7 +33,7 @@ namespace Ssz.Dcs.CentralServer
 
             //StreamWriter(string path, bool append)            
 
-            Action<string?, Ssz.Utils.DataAccess.EventMessage>? processEventMessageNotification = ProcessEventMessageNotification;
+            Action<ServerContext, Ssz.Utils.DataAccess.EventMessage>? processEventMessageNotification = ProcessEventMessageNotification;
             if (processEventMessageNotification is null) 
                 return;
 
@@ -53,7 +53,7 @@ namespace Ssz.Dcs.CentralServer
 
             foreach (var processServerContext in processModelingSession.ProcessServerContextsCollection)
             {
-                processEventMessageNotification(processServerContext.ClientWorkstationName, eventMessage);
+                processEventMessageNotification(processServerContext, eventMessage);
             }
         }
 
@@ -61,7 +61,7 @@ namespace Ssz.Dcs.CentralServer
         {
             ProcessModelingSession processModelingSession = GetProcessModelingSession(processModelingSessionId);
 
-            Action<string?, Ssz.Utils.DataAccess.EventMessage>? processEventMessageNotification = ProcessEventMessageNotification;
+            Action<ServerContext, Ssz.Utils.DataAccess.EventMessage>? processEventMessageNotification = ProcessEventMessageNotification;
             if (processEventMessageNotification is null) 
                 return;
 
@@ -73,7 +73,7 @@ namespace Ssz.Dcs.CentralServer
 
             foreach (var processServerContext in processModelingSession.ProcessServerContextsCollection)
             {
-                processEventMessageNotification(processServerContext.ClientWorkstationName, eventMessage);
+                processEventMessageNotification(processServerContext, eventMessage);
             }            
         }
 

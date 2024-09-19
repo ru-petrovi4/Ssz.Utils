@@ -18,7 +18,7 @@ namespace Ssz.Dcs.CentralServer
 
         public event Action<string?, Ssz.Utils.DataAccess.EventMessage>? UtilityEventMessageNotification;
 
-        public event Action<string?, Ssz.Utils.DataAccess.EventMessage>? ProcessEventMessageNotification;
+        public event Action<ServerContext, Ssz.Utils.DataAccess.EventMessage>? ProcessEventMessageNotification;
 
         #endregion
 

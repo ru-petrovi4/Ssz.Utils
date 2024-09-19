@@ -62,6 +62,9 @@
     <None Update="DcsCentralServer.db">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
+	<None Update="DcsCentralServer.db-wal">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
     <None Update="DefaultCertificate.pfx">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
