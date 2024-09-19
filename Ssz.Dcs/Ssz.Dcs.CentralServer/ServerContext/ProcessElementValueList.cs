@@ -207,22 +207,22 @@ namespace Ssz.Dcs.CentralServer
                             valueStatusTimestamp.Value);
 
                     }
-                    //else // TODO Instructor actions, consider secondary server
-                    //{                        
-                    //    ProcessModelingSession? processModelingSession = ((ServerWorker)ServerContext.ServerWorker).GetProcessModelingSessionOrNull(ServerContext.SystemNameToConnect);
-                    //    if (processModelingSession is not null) // Process context with no operatorSessionId.
-                    //    {
-                    //        ((ServerWorker)ServerContext.ServerWorker).OnChangeElementValueAction(
-                    //            processModelingSession,
-                    //            ProcessModelingSessionConstants.Instructor_RoleId,
-                    //            Common.Properties.Resources.Instructor_RoleName,
-                    //            processModelingSession.InstructorUserName,
-                    //            item.ElementId,
-                    //            item.ValueStatusTimestamp,
-                    //            valueStatusTimestamp.Value);
+                    else // TODO Instructor actions, consider secondary server
+                    {
+                        ProcessModelingSession? processModelingSession = ((ServerWorker)ServerContext.ServerWorker).GetProcessModelingSessionOrNull(ServerContext.SystemNameToConnect);
+                        if (processModelingSession is not null) // Process context with no operatorSessionId.
+                        {
+                            ((ServerWorker)ServerContext.ServerWorker).OnChangeElementValueAction(
+                                processModelingSession,
+                                ProcessModelingSessionConstants.Instructor_RoleId,
+                                Common.Properties.Resources.Instructor_RoleName,
+                                processModelingSession.InstructorUserName,
+                                item.ElementId,
+                                item.ValueStatusTimestamp,
+                                valueStatusTimestamp.Value);
 
-                    //    }
-                    //}
+                        }
+                    }
                 }
             }
 
