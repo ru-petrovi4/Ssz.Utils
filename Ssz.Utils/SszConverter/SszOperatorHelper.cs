@@ -203,13 +203,13 @@ namespace Ssz.Utils
                         return false;
                     return rightValues.Select(GetFloatOperand).Any(rv =>
                         (rv.LowerInclusive ? left >= rv.Lower - FloatTolerance : left > rv.Lower + FloatTolerance) &&
-                        rv.UpperInclusive ? left <= rv.Upper + FloatTolerance : left < rv.Upper - FloatTolerance);
+                        (rv.UpperInclusive ? left <= rv.Upper + FloatTolerance : left < rv.Upper - FloatTolerance));
                 case SszOperator.NotEqual:
                     if (rightValues is null)
                         return true;
                     return rightValues.Select(GetFloatOperand).All(rv =>
                         (rv.LowerInclusive ? left < rv.Lower - FloatTolerance : left <= rv.Lower + FloatTolerance) &&
-                        rv.UpperInclusive ? left > rv.Upper + FloatTolerance : left >= rv.Upper - FloatTolerance);
+                        (rv.UpperInclusive ? left > rv.Upper + FloatTolerance : left >= rv.Upper - FloatTolerance));
                 case SszOperator.LessThan:
                     if (rightValues is null || rightValues.Length == 0)
                         return false;
@@ -240,13 +240,13 @@ namespace Ssz.Utils
                         return false;
                     return rightValues.Select(GetDateTimeOperand).Any(rv =>
                         (rv.LowerInclusive ? left >= rv.Lower - TimeSpanTolerance : left > rv.Lower + TimeSpanTolerance) &&
-                        rv.UpperInclusive ? left <= rv.Upper + TimeSpanTolerance : left < rv.Upper - TimeSpanTolerance);
+                        (rv.UpperInclusive ? left <= rv.Upper + TimeSpanTolerance : left < rv.Upper - TimeSpanTolerance));
                 case SszOperator.NotEqual:
                     if (rightValues is null)
                         return true;
                     return rightValues.Select(GetDateTimeOperand).All(rv =>
                         (rv.LowerInclusive ? left < rv.Lower - TimeSpanTolerance : left <= rv.Lower + TimeSpanTolerance) &&
-                        rv.UpperInclusive ? left > rv.Upper + TimeSpanTolerance : left >= rv.Upper - TimeSpanTolerance);
+                        (rv.UpperInclusive ? left > rv.Upper + TimeSpanTolerance : left >= rv.Upper - TimeSpanTolerance));
                 case SszOperator.LessThan:
                     if (rightValues is null || rightValues.Length == 0)
                         return false;
@@ -277,13 +277,13 @@ namespace Ssz.Utils
                         return false;
                     return rightValues.Select(GetTimeSpanOperand).Any(rv =>
                         (rv.LowerInclusive ? left >= rv.Lower - TimeSpanTolerance : left > rv.Lower + TimeSpanTolerance) &&
-                        rv.UpperInclusive ? left <= rv.Upper + TimeSpanTolerance : left < rv.Upper - TimeSpanTolerance);
+                        (rv.UpperInclusive ? left <= rv.Upper + TimeSpanTolerance : left < rv.Upper - TimeSpanTolerance));
                 case SszOperator.NotEqual:
                     if (rightValues is null)
                         return true;
                     return rightValues.Select(GetTimeSpanOperand).All(rv =>
                         (rv.LowerInclusive ? left < rv.Lower - TimeSpanTolerance : left <= rv.Lower + TimeSpanTolerance) &&
-                        rv.UpperInclusive ? left > rv.Upper + TimeSpanTolerance : left >= rv.Upper - TimeSpanTolerance);
+                        (rv.UpperInclusive ? left > rv.Upper + TimeSpanTolerance : left >= rv.Upper - TimeSpanTolerance));
                 case SszOperator.LessThan:
                     if (rightValues is null || rightValues.Length == 0)
                         return false;
@@ -386,88 +386,6 @@ namespace Ssz.Utils
                     return new Any(left).ValueAsBoolean(false);
             }
         }
-#else
-        public static bool Compare(string? left, SszOperator sszOperator, SszOperatorOptions sszOperatorOptions, string[]? rightValues)
-        {
-            switch (sszOperator)
-            {
-                case SszOperator.Equal:
-                    if (rightValues is null)
-                        return false;
-                    if (sszOperatorOptions == SszOperatorOptions.CaseSensitive)
-                        return rightValues.Any(rv => left == rv);
-                    else
-                        return rightValues.Any(rv => String.Equals(left, rv, StringComparison.InvariantCultureIgnoreCase));                            
-                case SszOperator.NotEqual:
-                    if (rightValues is null)
-                        return true;
-                    if (sszOperatorOptions == SszOperatorOptions.CaseSensitive)
-                        return rightValues.All(rv => left != rv);
-                    else
-                        return rightValues.All(rv => !String.Equals(left, rv, StringComparison.InvariantCultureIgnoreCase));
-                case SszOperator.LessThan:
-                    if (rightValues is null || rightValues.Length == 0)
-                        return false;
-                    return new Any(left).ValueAsSingle(false) < new Any(rightValues[0]).ValueAsSingle(false) - FloatTolerance;
-                case SszOperator.LessThanOrEqual:
-                    if (rightValues is null || rightValues.Length == 0)
-                        return false;
-                    return new Any(left).ValueAsSingle(false) <= new Any(rightValues[0]).ValueAsSingle(false) + FloatTolerance;
-                case SszOperator.GreaterThan:
-                    if (rightValues is null || rightValues.Length == 0)
-                        return false;
-                    return new Any(left).ValueAsSingle(false) > new Any(rightValues[0]).ValueAsSingle(false) + FloatTolerance;
-                case SszOperator.GreaterThanOrEqual:
-                    if (rightValues is null || rightValues.Length == 0)
-                        return false;
-                    return new Any(left).ValueAsSingle(false) >= new Any(rightValues[0]).ValueAsSingle(false) - FloatTolerance;
-                case SszOperator.Contains:
-                    if (rightValues is null)
-                        return false;
-                    if (sszOperatorOptions == SszOperatorOptions.CaseSensitive)
-                        return rightValues.Any(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? left!.Contains(rv) : false);
-                    else
-                        return rightValues.Any(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? StringHelper.ContainsIgnoreCase(left!, rv) : false);
-                case SszOperator.NotContains:
-                    if (rightValues is null)
-                        return false;
-                    if (sszOperatorOptions == SszOperatorOptions.CaseSensitive)
-                        return rightValues.All(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? !left!.Contains(rv) : true);
-                    else
-                        return rightValues.All(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? !StringHelper.ContainsIgnoreCase(left!, rv) : true);
-                case SszOperator.StartsWith:
-                    if (rightValues is null)
-                        return false;
-                    if (sszOperatorOptions == SszOperatorOptions.CaseSensitive)
-                        return rightValues.Any(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? left!.StartsWith(rv) : false);
-                    else
-                        return rightValues.Any(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? left!.StartsWith(rv, StringComparison.InvariantCultureIgnoreCase) : false);
-                case SszOperator.NotStartsWith:
-                    if (rightValues is null)
-                        return false;
-                    if (sszOperatorOptions == SszOperatorOptions.CaseSensitive)
-                        return rightValues.All(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? !left!.StartsWith(rv) : true);
-                    else
-                        return rightValues.All(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? !left!.StartsWith(rv, StringComparison.InvariantCultureIgnoreCase) : true);
-                case SszOperator.EndsWith:
-                    if (rightValues is null)
-                        return false;
-                    if (sszOperatorOptions == SszOperatorOptions.CaseSensitive)
-                        return rightValues.Any(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? left!.EndsWith(rv) : false);
-                    else
-                        return rightValues.Any(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? left!.EndsWith(rv, StringComparison.InvariantCultureIgnoreCase) : false);
-                case SszOperator.NotEndsWith:
-                    if (rightValues is null)
-                        return false;
-                    if (sszOperatorOptions == SszOperatorOptions.CaseSensitive)
-                        return rightValues.All(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? !left!.EndsWith(rv) : true);
-                    else
-                        return rightValues.All(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? !left!.EndsWith(rv, StringComparison.InvariantCultureIgnoreCase) : true);
-                default:
-                    return new Any(left).ValueAsBoolean(false);
-            }
-        }
-#endif
 
         public static bool Compare(string? left, SszOperator sszOperator, SszOperatorOptions sszOperatorOptions, string[]? rightValues, string paramDataType)
         {
@@ -483,7 +401,7 @@ namespace Ssz.Utils
                 case nameof(UInt64):
                 case nameof(Double):
                 case nameof(Single):
-                case nameof(Decimal):                
+                case nameof(Decimal):
                     return Compare(new Any(left).ValueAsSingle(false), sszOperator, sszOperatorOptions, rightValues);
                 case nameof(DateTime):
                     return Compare(DateTimeHelper.GetDateTimeUtc(left), sszOperator, sszOperatorOptions, rightValues);
@@ -493,6 +411,88 @@ namespace Ssz.Utils
                     return Compare(left, sszOperator, sszOperatorOptions, rightValues);
             }
         }
+#else
+        //public static bool Compare(string? left, SszOperator sszOperator, SszOperatorOptions sszOperatorOptions, string[]? rightValues)
+        //{
+        //    switch (sszOperator)
+        //    {
+        //        case SszOperator.Equal:
+        //            if (rightValues is null)
+        //                return false;
+        //            if (sszOperatorOptions == SszOperatorOptions.CaseSensitive)
+        //                return rightValues.Any(rv => left == rv);
+        //            else
+        //                return rightValues.Any(rv => String.Equals(left, rv, StringComparison.InvariantCultureIgnoreCase));                            
+        //        case SszOperator.NotEqual:
+        //            if (rightValues is null)
+        //                return true;
+        //            if (sszOperatorOptions == SszOperatorOptions.CaseSensitive)
+        //                return rightValues.All(rv => left != rv);
+        //            else
+        //                return rightValues.All(rv => !String.Equals(left, rv, StringComparison.InvariantCultureIgnoreCase));
+        //        case SszOperator.LessThan:
+        //            if (rightValues is null || rightValues.Length == 0)
+        //                return false;
+        //            return new Any(left).ValueAsSingle(false) < new Any(rightValues[0]).ValueAsSingle(false) - FloatTolerance;
+        //        case SszOperator.LessThanOrEqual:
+        //            if (rightValues is null || rightValues.Length == 0)
+        //                return false;
+        //            return new Any(left).ValueAsSingle(false) <= new Any(rightValues[0]).ValueAsSingle(false) + FloatTolerance;
+        //        case SszOperator.GreaterThan:
+        //            if (rightValues is null || rightValues.Length == 0)
+        //                return false;
+        //            return new Any(left).ValueAsSingle(false) > new Any(rightValues[0]).ValueAsSingle(false) + FloatTolerance;
+        //        case SszOperator.GreaterThanOrEqual:
+        //            if (rightValues is null || rightValues.Length == 0)
+        //                return false;
+        //            return new Any(left).ValueAsSingle(false) >= new Any(rightValues[0]).ValueAsSingle(false) - FloatTolerance;
+        //        case SszOperator.Contains:
+        //            if (rightValues is null)
+        //                return false;
+        //            if (sszOperatorOptions == SszOperatorOptions.CaseSensitive)
+        //                return rightValues.Any(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? left!.Contains(rv) : false);
+        //            else
+        //                return rightValues.Any(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? StringHelper.ContainsIgnoreCase(left!, rv) : false);
+        //        case SszOperator.NotContains:
+        //            if (rightValues is null)
+        //                return false;
+        //            if (sszOperatorOptions == SszOperatorOptions.CaseSensitive)
+        //                return rightValues.All(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? !left!.Contains(rv) : true);
+        //            else
+        //                return rightValues.All(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? !StringHelper.ContainsIgnoreCase(left!, rv) : true);
+        //        case SszOperator.StartsWith:
+        //            if (rightValues is null)
+        //                return false;
+        //            if (sszOperatorOptions == SszOperatorOptions.CaseSensitive)
+        //                return rightValues.Any(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? left!.StartsWith(rv) : false);
+        //            else
+        //                return rightValues.Any(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? left!.StartsWith(rv, StringComparison.InvariantCultureIgnoreCase) : false);
+        //        case SszOperator.NotStartsWith:
+        //            if (rightValues is null)
+        //                return false;
+        //            if (sszOperatorOptions == SszOperatorOptions.CaseSensitive)
+        //                return rightValues.All(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? !left!.StartsWith(rv) : true);
+        //            else
+        //                return rightValues.All(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? !left!.StartsWith(rv, StringComparison.InvariantCultureIgnoreCase) : true);
+        //        case SszOperator.EndsWith:
+        //            if (rightValues is null)
+        //                return false;
+        //            if (sszOperatorOptions == SszOperatorOptions.CaseSensitive)
+        //                return rightValues.Any(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? left!.EndsWith(rv) : false);
+        //            else
+        //                return rightValues.Any(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? left!.EndsWith(rv, StringComparison.InvariantCultureIgnoreCase) : false);
+        //        case SszOperator.NotEndsWith:
+        //            if (rightValues is null)
+        //                return false;
+        //            if (sszOperatorOptions == SszOperatorOptions.CaseSensitive)
+        //                return rightValues.All(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? !left!.EndsWith(rv) : true);
+        //            else
+        //                return rightValues.All(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? !left!.EndsWith(rv, StringComparison.InvariantCultureIgnoreCase) : true);
+        //        default:
+        //            return new Any(left).ValueAsBoolean(false);
+        //    }
+        //}
+#endif  
 
         #region private functions
 
@@ -658,6 +658,41 @@ namespace Ssz.Utils
             }
         }
 
+        public static SszConverter? GetConverter(SszOperator sszOperator, SszOperatorOptions sszOperatorOptions, string[] values)
+        {
+            if (values.Length == 0 || sszOperator == SszOperator.None)
+                return null;
+
+            var sszConverter = new SszConverter();            
+            
+            //switch (sszOperator)
+            //{
+            //    case SszOperator.Equal:
+            //        {                        
+            //        }
+            //        break;
+            //}
+
+            var operand = Any.ConvertToBestType(values[0].Trim(), false);
+            switch (AnyHelper.GetTransportType(operand))
+            {
+                case TransportType.Double:
+                    sszConverter.Statements.Add(new SszStatement(@"true", "d[0]" + ToString(sszOperator) + operand.ValueAsString(false), 0));
+                    break;
+                case TransportType.UInt32:
+                    sszConverter.Statements.Add(new SszStatement(@"true", "i[0]" + ToString(sszOperator) + operand.ValueAsString(false), 0));
+                    break;
+                case TransportType.Object:
+                    sszConverter.Statements.Add(new SszStatement(@"true", "s[0]" + ToString(sszOperator) + "\"" + operand.ValueAsString(false) + "\"", 0));
+                    break;
+            }
+
+            if (sszConverter is not null && sszConverter.Statements.Count == 0)
+                return null;
+            else
+                return sszConverter;
+        }
+
         #endregion
 
         private static readonly string[] ValuesSeparator = ["||"];
@@ -706,26 +741,7 @@ namespace Ssz.Utils
 //    }
 //    else
 //    {
-//        var sszConverter = new SszConverter();
 
-//        var elementId = element_Operator_Value.Substring(0, r.Item3).Trim();
-//        var operator_ = r.Item2;
-//        var operand = Any.ConvertToBestType(element_Operator_Value.Substring(r.Item3 + r.Item1.Length).Trim(), false);
-//        switch (AnyHelper.GetTransportType(operand))
-//        {
-//            case TransportType.Double:
-//                sszConverter.Statements.Add(new SszStatement(@"true", "d[0]" + ToString(operator_) + operand.ValueAsString(false), 0));
-//                break;
-//            case TransportType.UInt32:
-//                sszConverter.Statements.Add(new SszStatement(@"true", "i[0]" + ToString(operator_) + operand.ValueAsString(false), 0));
-//                break;
-//            case TransportType.Object:
-//                sszConverter.Statements.Add(new SszStatement(@"true", "s[0]" + ToString(operator_) + "\"" + operand.ValueAsString(false) + "\"", 0));
-//                break;
-//        }
-
-//        if (sszConverter is not null && sszConverter.Statements.Count == 0)
-//            sszConverter = null;
 
 //        return (elementId, sszConverter);
 //    }
