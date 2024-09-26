@@ -258,16 +258,16 @@ namespace Ssz.Utils.Net4
                 switch (valueTypeCode)
                 {
                     case TypeCode.SByte:
-                        Set((SByte)storageUInt32);
+                        Set((SByte)(Int32)storageUInt32);
                         return true;
                     case TypeCode.Byte:
-                        Set((Byte)storageUInt32);
+                        Set((Byte)(Int32)storageUInt32);
                         return true;
                     case TypeCode.Int16:
-                        Set((Int16)storageUInt32);
+                        Set((Int16)(Int32)storageUInt32);
                         return true;
                     case TypeCode.UInt16:
-                        Set((UInt16)storageUInt32);
+                        Set((UInt16)(Int32)storageUInt32);
                         return true;
                     case TypeCode.Int32:
                         Set((Int32)storageUInt32);
@@ -279,19 +279,19 @@ namespace Ssz.Utils.Net4
                         Set(storageUInt32 != 0u);
                         return true;
                     case TypeCode.Single:
-                        Set((Single)storageUInt32);
+                        Set((Single)(Int32)storageUInt32);
                         return true;
                     case TypeCode.Double:
-                        Set((Double)storageUInt32);
+                        Set((Double)(Int32)storageUInt32);
                         return true;
                     case TypeCode.Int64:
-                        Set((Int64)storageUInt32);
+                        Set((Int64)(Int32)storageUInt32);
                         return true;
                     case TypeCode.UInt64:
-                        Set((UInt64)storageUInt32);
+                        Set((UInt64)(Int32)storageUInt32);
                         return true;
                     case TypeCode.Decimal:
-                        Set((Decimal)storageUInt32);
+                        Set((Decimal)(Int32)storageUInt32);
                         return true;
                     case TypeCode.DateTime:
                         return false;
@@ -299,10 +299,10 @@ namespace Ssz.Utils.Net4
                         Set((Char)storageUInt32);
                         return true;
                     case TypeCode.String:
-                        Set(storageUInt32.ToString(GetCultureInfo(stringIsLocalized)));
+                        Set(((Int32)storageUInt32).ToString(GetCultureInfo(stringIsLocalized)));
                         return true;
                     default:
-                        Set(storageUInt32);
+                        Set((Int32)storageUInt32);
                         return true;
                 }
             }

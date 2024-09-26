@@ -71,16 +71,16 @@ namespace Ssz.Utils
             switch (typeCode)
             {
                 case Any.TypeCode.SByte:
-                    any.Set((SByte)transportUInt32);
+                    any.Set((SByte)(Int32)transportUInt32);
                     return any;
                 case Any.TypeCode.Byte:
-                    any.Set((Byte)transportUInt32);
+                    any.Set((Byte)(Int32)transportUInt32);
                     return any;
                 case Any.TypeCode.Int16:
-                    any.Set((Int16)transportUInt32);
+                    any.Set((Int16)(Int32)transportUInt32);
                     return any;
                 case Any.TypeCode.UInt16:
-                    any.Set((UInt16)transportUInt32);
+                    any.Set((UInt16)(Int32)transportUInt32);
                     return any;
                 case Any.TypeCode.Int32:
                     any.Set((Int32)transportUInt32);
@@ -94,8 +94,26 @@ namespace Ssz.Utils
                 case Any.TypeCode.Char:
                     any.Set((Char)transportUInt32);
                     return any;
+                case Any.TypeCode.Single:
+                    any.Set((Single)(Int32)transportUInt32);
+                    return any;
+                case Any.TypeCode.Double:
+                    any.Set((Double)(Int32)transportUInt32);
+                    return any;
+                case Any.TypeCode.Int64:
+                    any.Set((Int64)(Int32)transportUInt32);
+                    return any;
+                case Any.TypeCode.UInt64:
+                    any.Set((UInt64)(Int32)transportUInt32);
+                    return any;
+                case Any.TypeCode.Decimal:
+                    any.Set((Decimal)(Int32)transportUInt32);
+                    return any;
+                case Any.TypeCode.String:
+                    any.Set(((Int32)transportUInt32).ToString(Any.GetCultureInfo(stringIsLocalized)));
+                    return any;
                 default:
-                    any.Set(transportUInt32);
+                    any.Set((Int32)transportUInt32);
                     return any;
             }
         }
