@@ -24,6 +24,8 @@ namespace Ssz.Utils
                         (@"!StartsWith|", SszOperator.NotStartsWith),
                         (@"EndsWith|", SszOperator.EndsWith),
                         (@"!EndsWith|", SszOperator.NotEndsWith),
+                        (@"IsEmpty|", SszOperator.IsEmpty),
+                        (@"!IsEmpty|", SszOperator.NotIsEmpty),
                     };
 
 #if NET5_0_OR_GREATER
@@ -382,6 +384,10 @@ namespace Ssz.Utils
                         return rightValues.All(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? !left.EndsWith(rv) : true);
                     else
                         return rightValues.All(rv => (!String.IsNullOrEmpty(left) && !String.IsNullOrEmpty(rv)) ? !left.EndsWith(rv, StringComparison.InvariantCultureIgnoreCase) : true);
+                case SszOperator.IsEmpty:                    
+                    return String.IsNullOrEmpty(left);
+                case SszOperator.NotIsEmpty:
+                    return !String.IsNullOrEmpty(left);
                 default:
                     return new Any(left).ValueAsBoolean(false);
             }

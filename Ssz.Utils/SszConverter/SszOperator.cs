@@ -19,6 +19,8 @@ namespace Ssz.Utils
         NotStartsWith,
         EndsWith,
         NotEndsWith,
+        IsEmpty,
+        NotIsEmpty
     }
 
     [Flags]
