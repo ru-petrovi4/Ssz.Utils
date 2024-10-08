@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Ssz.Utils
 {
@@ -93,6 +95,39 @@ namespace Ssz.Utils
 
         #endregion
     }
+    
+    public static class DictionaryExtensions
+    {
+        /// <summary>
+        ///     Returns null, if not found.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static T? TryGetValue<T>(this IDictionary<string, T> dictionary, string? key)
+        {
+            if (key is null)
+                return default;
+            T? result;
+            dictionary.TryGetValue(key, out result);
+            return result;
+        }
+
+        /// <summary>
+        ///     Does not return defaultValue, if object exists in dictionary.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        public static T GetValue<T>(this IDictionary<string, T> dictionary, string? key, T defaultValue)
+        {
+            if (key is null)
+                return defaultValue;
+            T? result;
+            if (!dictionary.TryGetValue(key, out result))
+                return defaultValue;
+            return result;
+        }
+    }
 
     public class CaseInsensitiveDictionary_TypeConverter : TypeConverter
     {
@@ -137,5 +172,53 @@ namespace Ssz.Utils
         }
 
         #endregion
+    }
+
+    public class CaseInsensitiveDictionaryJsonConverter : JsonConverter<CaseInsensitiveDictionary<string?>>
+    {
+        public override CaseInsensitiveDictionary<string?> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            if (reader.TokenType != JsonTokenType.StartObject)
+            {
+                throw new JsonException("Expected StartObject token");
+            }
+
+            CaseInsensitiveDictionary<string?> dictionary = new();
+
+            while (reader.Read())
+            {
+                if (reader.TokenType == JsonTokenType.EndObject)
+                {
+                    return dictionary;
+                }
+
+                if (reader.TokenType != JsonTokenType.PropertyName)
+                {
+                    throw new JsonException("Expected PropertyName token");
+                }
+
+                string? key = reader.GetString();
+
+                reader.Read();
+                string? value = JsonSerializer.Deserialize<string>(ref reader, options);
+
+                dictionary.Add(key ?? "", value);
+            }
+
+            throw new JsonException("Expected EndObject token");
+        }
+
+        public override void Write(Utf8JsonWriter writer, CaseInsensitiveDictionary<string?> value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+
+            foreach (var kvp in value)
+            {
+                writer.WritePropertyName(kvp.Key);
+                JsonSerializer.Serialize(writer, kvp.Value, options);
+            }
+
+            writer.WriteEndObject();
+        }
     }
 }
