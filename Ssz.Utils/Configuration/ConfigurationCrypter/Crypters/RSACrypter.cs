@@ -65,7 +65,7 @@ namespace Ssz.Utils.ConfigurationCrypter.Crypters
         }
 
         /// <summary>
-        /// Decrypts the given string with the public key of the loaded certificate.
+        /// Encrypts the given string with the public key of the loaded certificate.
         /// </summary>
         /// <param name="value">String to encrypt.</param>
         /// <returns>Encrypted string.</returns>
@@ -75,7 +75,14 @@ namespace Ssz.Utils.ConfigurationCrypter.Crypters
             if (String.IsNullOrEmpty(value) || _publicKey is null) 
                 return value;
 
+#if NET7_0_OR_GREATER
+            Span<byte> buffer = new Span<byte>(new byte[value.Length]);
+            if (Convert.TryFromBase64String(value, buffer, out int bytesParsed))
+                return value;
             var encryptedBytes = _publicKey.Encrypt(Encoding.UTF8.GetBytes(value), RSAEncryptionPadding.OaepSHA512);
+#else
+            var encryptedBytes = _publicKey.Encrypt(Encoding.UTF8.GetBytes(value), RSAEncryptionPadding.OaepSHA512);   
+#endif
 
             return Convert.ToBase64String(encryptedBytes);
         }

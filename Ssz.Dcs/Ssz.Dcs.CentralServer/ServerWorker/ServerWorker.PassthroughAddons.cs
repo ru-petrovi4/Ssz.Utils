@@ -290,7 +290,31 @@ namespace Ssz.Dcs.CentralServer
             {                
                 ThrowRpcException(ex);
             }
-        }        
+        }
+
+        private Task<ReadOnlyMemory<byte>> GetOperatorUserNameAsync(ServerContext serverContext)
+        {
+            string? operatorSessionId = serverContext.ContextParams.TryGetValue(@"OperatorSessionId");
+            if (String.IsNullOrEmpty(operatorSessionId)) // Context with no operatorSessionId.
+                return Task.FromResult(ReadOnlyMemory<byte>.Empty);
+            OperatorSession? operatorSession = OperatorSessionsCollection.TryGetValue(operatorSessionId);
+            if (operatorSession is null)
+                throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid operatorSession: " + operatorSessionId));
+
+            return Task.FromResult<ReadOnlyMemory<byte>>(Encoding.UTF8.GetBytes(operatorSession.OperatorUserName));
+        }
+
+        private Task<ReadOnlyMemory<byte>> GetOperatorRoleNameAsync(ServerContext serverContext)
+        {
+            string? operatorSessionId = serverContext.ContextParams.TryGetValue(@"OperatorSessionId");
+            if (String.IsNullOrEmpty(operatorSessionId)) // Context with no operatorSessionId.
+                return Task.FromResult(ReadOnlyMemory<byte>.Empty);
+            OperatorSession? operatorSession = OperatorSessionsCollection.TryGetValue(operatorSessionId);
+            if (operatorSession is null)
+                throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid operatorSession: " + operatorSessionId));
+
+            return Task.FromResult<ReadOnlyMemory<byte>>(Encoding.UTF8.GetBytes(operatorSession.OperatorRoleName));
+        }
 
         #endregion
     }

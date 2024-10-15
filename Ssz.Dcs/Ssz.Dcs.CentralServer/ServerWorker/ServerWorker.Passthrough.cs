@@ -59,6 +59,10 @@ namespace Ssz.Dcs.CentralServer
                         case PassthroughConstants.WriteConfiguration:
                             await WriteConfigurationPassthroughAsync(serverContext, recipientPath, dataToSend);
                             return ReadOnlyMemory<byte>.Empty;
+                        case PassthroughConstants.GetOperatorUserName:
+                            return await GetOperatorUserNameAsync(serverContext);
+                        case PassthroughConstants.GetOperatorRoleName:
+                            return await GetOperatorRoleNameAsync(serverContext);
                         case PassthroughConstants.AddScenarioResult:
                             await AddScenarioResultPassthrough(serverContext, dataToSend);
                             return ReadOnlyMemory<byte>.Empty;

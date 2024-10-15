@@ -217,7 +217,7 @@ namespace Ssz.Dcs.CentralServer
             }
 
             string? operatorSessionId = processServerContext.ContextParams.TryGetValue(@"OperatorSessionId");
-            if (operatorSessionId == null || operatorSessionId == @"") // Context with operatorSessionId.
+            if (String.IsNullOrEmpty(operatorSessionId)) // Context with no operatorSessionId.
                 return;
             OperatorSession? operatorSession = OperatorSessionsCollection.TryGetValue(operatorSessionId);
             if (operatorSession is null)

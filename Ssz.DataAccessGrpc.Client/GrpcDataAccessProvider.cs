@@ -473,6 +473,43 @@ namespace Ssz.DataAccessGrpc.Client
         /// <param name="passthroughName"></param>
         /// <param name="dataToSend"></param>
         /// <returns></returns>
+        public void Passthrough(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend, Action<ReadOnlyMemory<byte>> callbackAction)
+        {
+            // Early exception
+            if (!_clientContextManager.ContextIsOperational)
+                throw new ConnectionDoesNotExistException();            
+
+            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
+            {
+                try
+                {
+                    ReadOnlyMemory<byte> returnData = await _clientContextManager.PassthroughAsync(recipientPath, passthroughName, dataToSend);
+                    callbackAction(returnData);
+                }
+                catch (RpcException ex)
+                {
+                    LoggersSet.Logger.LogError(ex, ex.Status.Detail);
+                    callbackAction(ReadOnlyMemory<byte>.Empty);
+                }
+                catch (ConnectionDoesNotExistException ex)
+                {
+                    callbackAction(ReadOnlyMemory<byte>.Empty);
+                }
+                catch (Exception ex)
+                {
+                    LoggersSet.Logger.LogError(ex, "Passthrough exception.");
+                    callbackAction(ReadOnlyMemory<byte>.Empty);
+                }
+            });
+        }
+
+        /// <summary>
+        ///     Throws if any errors.
+        /// </summary>
+        /// <param name="recipientPath"></param>
+        /// <param name="passthroughName"></param>
+        /// <param name="dataToSend"></param>
+        /// <returns></returns>
         public override async Task<ReadOnlyMemory<byte>> PassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
             // Early exception

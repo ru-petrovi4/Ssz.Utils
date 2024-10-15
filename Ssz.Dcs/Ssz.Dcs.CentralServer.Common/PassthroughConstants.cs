@@ -59,6 +59,20 @@ namespace Ssz.Dcs.CentralServer.Common
         /// <summary>
         ///     Process Context (systemNameToConnect is not String.Empty).
         ///     Request: empty
+        ///     Reply: UTF8 String
+        /// </summary>
+        public const string GetOperatorUserName = @"GetOperatorUserName";
+
+        /// <summary>
+        ///     Process Context (systemNameToConnect is not String.Empty).
+        ///     Request: empty
+        ///     Reply: UTF8 String
+        /// </summary>
+        public const string GetOperatorRoleName = @"GetOperatorRoleName";
+
+        /// <summary>
+        ///     Process Context (systemNameToConnect is not String.Empty).
+        ///     Request: empty
         ///     Reply: ConfigurationCsvFiles
         /// </summary>
         public const string ReadConfiguration = @"ReadConfiguration";
