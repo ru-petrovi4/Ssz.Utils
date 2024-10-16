@@ -17,10 +17,10 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
     {
         #region private functions
 
-        private void RunControlEngineExe(string processModelingSessionId, DirectoryInfo processDirectoryInfo, DirectoryInfo binDirectoryInfo, string controlEngineServerAddress, IDataAccessProvider utilityDataAccessProvider, string instanceInfo)
+        private void RunControlEngineExe(string processModelingSessionId, DirectoryInfo processModelDirectoryInfo, DirectoryInfo binDirectoryInfo, string controlEngineServerAddress, IDataAccessProvider utilityDataAccessProvider, string instanceInfo)
         {
             string exeFileFullName = Path.Combine(binDirectoryInfo.FullName, DataAccessConstants.ControlEngine_ClientApplicationName + @".exe");
-            string arguments = "-d \"" + processDirectoryInfo.FullName +
+            string arguments = "-d \"" + processModelDirectoryInfo.FullName +
                 "\" --CentralServerAddress=" + utilityDataAccessProvider.ServerAddress +
                 " --CentralServerSystemName=\"" + processModelingSessionId + "\"" +
                 " --ControlEngineServerAddress=" + controlEngineServerAddress +

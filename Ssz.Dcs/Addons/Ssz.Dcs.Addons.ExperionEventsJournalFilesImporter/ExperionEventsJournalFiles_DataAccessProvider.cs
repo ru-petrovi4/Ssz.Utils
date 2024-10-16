@@ -200,7 +200,7 @@ namespace Ssz.Dcs.Addons.ExperionEventsJournalFilesImporter
             if (String.IsNullOrEmpty(maxProcessedTimeUtcString))
                 maxProcessedTimeUtc = DateTime.MinValue;
             else
-                maxProcessedTimeUtc = DateTimeHelper.GetDateTimeUtc(maxProcessedTimeUtcString);
+                maxProcessedTimeUtc = new Any(maxProcessedTimeUtcString).ValueAs<DateTime>(false);
 
             string? rptFiles_EncodingString = Addon.OptionsSubstituted.TryGetValue(ExperionEventsJournalFilesImporterAddon.RptFiles_Encoding_OptionName);
             Encoding defaultRptFiles_Encoding;

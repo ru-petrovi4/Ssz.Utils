@@ -35,7 +35,8 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             DsFilesStoreDirectory serverDsFilesStoreDirectory, 
             ProgressInfo? progressInfo,
             IDataAccessProvider utilityDataAccessProvider,
-            bool includeSubdirectories = true)
+            bool includeSubdirectories,
+            bool overwriteNewerFiles)
         {
             if (!utilityDataAccessProvider.IsConnected) throw new InvalidOperationException();
 
@@ -80,19 +81,38 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 var existingFileInfo = fileInfosDictionary.TryGetValue(serverDsFilesStoreFile.Name);
                 if (existingFileInfo is not null)
                 {
-                    if (serverDsFilesStoreFile.Name != existingFileInfo.Name || // Strict comparison
-                        !FileSystemHelper.FileSystemTimeIsEquals(existingFileInfo.LastWriteTimeUtc, serverDsFilesStoreFile.LastWriteTimeUtc))
+                    if (overwriteNewerFiles)
                     {
-                        try
+                        if (serverDsFilesStoreFile.Name != existingFileInfo.Name || // Strict comparison
+                            !FileSystemHelper.FileSystemTimeIsEquals(existingFileInfo.LastWriteTimeUtc, serverDsFilesStoreFile.LastWriteTimeUtc))
                         {
-                            existingFileInfo.Delete();
-                            dowload = true;
+                            try
+                            {
+                                existingFileInfo.Delete();
+                                dowload = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.LogError(ex, "Delete file error: " + existingFileInfo.FullName);
+                            }
                         }
-                        catch (Exception ex)
+                    }
+                    else
+                    {
+                        if (serverDsFilesStoreFile.Name != existingFileInfo.Name || // Strict comparison
+                            FileSystemHelper.FileSystemTimeIsLess(existingFileInfo.LastWriteTimeUtc, serverDsFilesStoreFile.LastWriteTimeUtc))
                         {
-                            Logger.LogError(ex, "Delete file error: " + existingFileInfo.FullName);
-                        }                        
-                    }                    
+                            try
+                            {
+                                existingFileInfo.Delete();
+                                dowload = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.LogError(ex, "Delete file error: " + existingFileInfo.FullName);
+                            }
+                        }
+                    }                                       
                     fileInfosDictionary.Remove(existingFileInfo.Name);
                 }
                 else
@@ -135,7 +155,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
                 foreach (var childServerDsFilesStoreDirectory in serverDsFilesStoreDirectory.ChildDsFilesStoreDirectoriesCollection)
                 {
-                    await DownloadFilesStoreDirectoryAsync(childServerDsFilesStoreDirectory, progressInfo, utilityDataAccessProvider);
+                    await DownloadFilesStoreDirectoryAsync(childServerDsFilesStoreDirectory, progressInfo, utilityDataAccessProvider, includeSubdirectories, overwriteNewerFiles);
                     childDirectoryInfosDictionary.Remove(childServerDsFilesStoreDirectory.Name);
                 }
                 foreach (var childDirectoryInfo in childDirectoryInfosDictionary.Values)
@@ -347,7 +367,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
         /// <param name="dataDsFilesStoreDirectoryType"></param>
         /// <param name="pathRelativeToDataDirectory"></param>
         /// <returns></returns>
-        private async Task<(DirectoryInfo ProcessDirectoryInfo, DirectoryInfo BinDirectoryInfo, DirectoryInfo DataDirectoryInfo)?> PrepareWorkingDirectoriesAsync(
+        private async Task<(DirectoryInfo ProcessModelDirectoryInfo, DirectoryInfo BinDirectoryInfo, DirectoryInfo DataDirectoryInfo)?> PrepareWorkingDirectoriesAsync(
             ProgressInfo progressInfo, 
             string processModelName,
             DsFilesStoreDirectoryType binDsFilesStoreDirectoryType, 
@@ -355,7 +375,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             IDataAccessProvider utilityDataAccessProvider,
             string pathRelativeToDataDirectory = @"")
         {
-            DirectoryInfo processDirectoryInfo;
+            DirectoryInfo processModelDirectoryInfo;
             DirectoryInfo binDirectoryInfo;
             DirectoryInfo dataDirectoryInfo;
 
@@ -364,9 +384,9 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             Directory.CreateDirectory(Path.Combine(FilesStoreDirectoryInfo.FullName, processModelName, DsFilesStoreHelper.GetDsFilesStoreDirectoryName(dataDsFilesStoreDirectoryType)));
 
             DsFilesStoreDirectory rootDsFilesStoreDirectory = DsFilesStoreHelper.CreateDsFilesStoreDirectoryObject(FilesStoreDirectoryInfo, @"", 1);
-            DsFilesStoreDirectory? existingProcessDsFilesStoreDirectory = DsFilesStoreHelper.CreateDsFilesStoreDirectoryObject(FilesStoreDirectoryInfo, processModelName);
-            DsFilesStoreDirectory? existingBinDsFilesStoreDirectory = DsFilesStoreHelper.FindBinDsFilesStoreDirectory(rootDsFilesStoreDirectory, existingProcessDsFilesStoreDirectory, binDsFilesStoreDirectoryType);
-            DsFilesStoreDirectory? existingDataDsFilesStoreDirectory = DsFilesStoreHelper.FindDataDsFilesStoreDirectory(existingProcessDsFilesStoreDirectory, dataDsFilesStoreDirectoryType);
+            DsFilesStoreDirectory? existingProcessModelDsFilesStoreDirectory = DsFilesStoreHelper.CreateDsFilesStoreDirectoryObject(FilesStoreDirectoryInfo, processModelName);
+            DsFilesStoreDirectory? existingBinDsFilesStoreDirectory = DsFilesStoreHelper.FindBinDsFilesStoreDirectory(rootDsFilesStoreDirectory, existingProcessModelDsFilesStoreDirectory, binDsFilesStoreDirectoryType);
+            DsFilesStoreDirectory? existingDataDsFilesStoreDirectory = DsFilesStoreHelper.FindDataDsFilesStoreDirectory(existingProcessModelDsFilesStoreDirectory, dataDsFilesStoreDirectoryType);
 
             if (ConfigurationHelper.GetValue<bool>(Configuration, @"FilesStoreSyncWithCentralServer", false))
             {
@@ -485,16 +505,16 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 progressInfo.Count = DsFilesStoreHelper.GetDsFilesStoreDirectoryFilesCount(serverDataOrChildDsFilesStoreDirectory) +
                         DsFilesStoreHelper.GetDsFilesStoreDirectoryFilesCount(serverBinDsFilesStoreDirectory);
 
-                await DownloadFilesStoreDirectoryAsync(serverDataOrChildDsFilesStoreDirectory, progressInfo, utilityDataAccessProvider);
-                await DownloadFilesStoreDirectoryAsync(serverBinDsFilesStoreDirectory, progressInfo, utilityDataAccessProvider);
+                await DownloadFilesStoreDirectoryAsync(serverDataOrChildDsFilesStoreDirectory, progressInfo, utilityDataAccessProvider, includeSubdirectories: true, overwriteNewerFiles: false);
+                await DownloadFilesStoreDirectoryAsync(serverBinDsFilesStoreDirectory, progressInfo, utilityDataAccessProvider, includeSubdirectories: true, overwriteNewerFiles: true);
 
-                processDirectoryInfo = new DirectoryInfo(Path.Combine(FilesStoreDirectoryInfo.FullName, serverPocessModelDsFilesStoreDirectory.PathRelativeToRootDirectory));
+                processModelDirectoryInfo = new DirectoryInfo(Path.Combine(FilesStoreDirectoryInfo.FullName, serverPocessModelDsFilesStoreDirectory.PathRelativeToRootDirectory));
                 binDirectoryInfo = new DirectoryInfo(Path.Combine(FilesStoreDirectoryInfo.FullName, serverBinDsFilesStoreDirectory.PathRelativeToRootDirectory));
                 dataDirectoryInfo = new DirectoryInfo(Path.Combine(FilesStoreDirectoryInfo.FullName, serverDataDsFilesStoreDirectory.PathRelativeToRootDirectory));
             }
             else
             {
-                if (existingProcessDsFilesStoreDirectory is null)
+                if (existingProcessModelDsFilesStoreDirectory is null)
                 {
                     Logger.LogError("No Process Model Directory; ProcessModelName=" + processModelName);
                     return null;
@@ -510,13 +530,13 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     return null;
                 }
 
-                processDirectoryInfo = new DirectoryInfo(Path.Combine(FilesStoreDirectoryInfo.FullName, existingProcessDsFilesStoreDirectory.PathRelativeToRootDirectory));
+                processModelDirectoryInfo = new DirectoryInfo(Path.Combine(FilesStoreDirectoryInfo.FullName, existingProcessModelDsFilesStoreDirectory.PathRelativeToRootDirectory));
                 binDirectoryInfo = new DirectoryInfo(Path.Combine(FilesStoreDirectoryInfo.FullName, existingBinDsFilesStoreDirectory.PathRelativeToRootDirectory));
                 dataDirectoryInfo = new DirectoryInfo(Path.Combine(FilesStoreDirectoryInfo.FullName, existingDataDsFilesStoreDirectory.PathRelativeToRootDirectory));
             }
 
             return (
-                ProcessDirectoryInfo: processDirectoryInfo,
+                ProcessModelDirectoryInfo: processModelDirectoryInfo,
                 BinDirectoryInfo: binDirectoryInfo,
                 DataDirectoryInfo: dataDirectoryInfo
             );
@@ -585,9 +605,9 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             progressInfo.Count = DsFilesStoreHelper.GetDsFilesStoreDirectoryFilesCount(serverSavesDsFilesStoreDirectory) +
                 DsFilesStoreHelper.GetDsFilesStoreDirectoryFilesCount(serverSavesUserDsFilesStoreDirectory);
 
-            await DownloadFilesStoreDirectoryAsync(serverSavesDsFilesStoreDirectory, progressInfo, utilityDataAccessProvider);
+            await DownloadFilesStoreDirectoryAsync(serverSavesDsFilesStoreDirectory, progressInfo, utilityDataAccessProvider, includeSubdirectories: true, overwriteNewerFiles: true);
             if (serverSavesUserDsFilesStoreDirectory is not null)
-                await DownloadFilesStoreDirectoryAsync(serverSavesUserDsFilesStoreDirectory, progressInfo, utilityDataAccessProvider);
+                await DownloadFilesStoreDirectoryAsync(serverSavesUserDsFilesStoreDirectory, progressInfo, utilityDataAccessProvider, includeSubdirectories: true, overwriteNewerFiles: true);
         }
 
         #endregion

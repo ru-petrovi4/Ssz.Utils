@@ -39,8 +39,8 @@ namespace Ssz.IdentityServer
 
         public static IEnumerable<Client> GetClients(IConfiguration configuration)
         {
-            int accessTokenLifetimeSeconds = (int)DateTimeHelper.GetTimeSpan(ConfigurationHelper.GetValue<string>(configuration, @"OIDC:AccessTokenLifetime", @"10m")).TotalSeconds;
-            int refreshTokenLifetimeSeconds = (int)DateTimeHelper.GetTimeSpan(ConfigurationHelper.GetValue<string>(configuration, @"OIDC:RefreshTokenLifetime", @"24h")).TotalSeconds;
+            int accessTokenLifetimeSeconds = (int)new Any(ConfigurationHelper.GetValue<string>(configuration, @"OIDC:AccessTokenLifetime", @"10m")).ValueAs<TimeSpan>(false).TotalSeconds;
+            int refreshTokenLifetimeSeconds = (int)new Any(ConfigurationHelper.GetValue<string>(configuration, @"OIDC:RefreshTokenLifetime", @"24h")).ValueAs<TimeSpan>(false).TotalSeconds;
             return new Client[]
             {
                 new Client

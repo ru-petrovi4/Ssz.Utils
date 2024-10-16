@@ -75,11 +75,11 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                                 controlEngineServerAddress = uriBuilder.ToString();
                             }
 
-                            RunControlEngineExe(processModelingSessionId, workingDirectories.ProcessDirectoryInfo, workingDirectories.BinDirectoryInfo, controlEngineServerAddress, utilityDataAccessProvider, instanceInfo);
+                            RunControlEngineExe(processModelingSessionId, workingDirectories.ProcessModelDirectoryInfo, workingDirectories.BinDirectoryInfo, controlEngineServerAddress, utilityDataAccessProvider, instanceInfo);
                         }
                         break;
                     case DsFilesStoreDirectoryType.PlatInstructorBin:
-                        RunPlatInstructorExe(workingDirectories.ProcessDirectoryInfo, workingDirectories.BinDirectoryInfo, workingDirectories.DataDirectoryInfo, pathRelativeToDataDirectory, instanceInfo);
+                        RunPlatInstructorExe(workingDirectories.ProcessModelDirectoryInfo, workingDirectories.BinDirectoryInfo, workingDirectories.DataDirectoryInfo, pathRelativeToDataDirectory, instanceInfo);
                         break;
                     default:
                         Logger.LogError("Unknown Modeling Engine.");
@@ -155,7 +155,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                         () => new DsFilesStoreDirectory());
                     if (serverDsFilesStoreDirectory is not null)
                     {
-                        await DownloadFilesStoreDirectoryAsync(serverDsFilesStoreDirectory, null, utilityDataAccessProvider, includeSubdirectories);
+                        await DownloadFilesStoreDirectoryAsync(serverDsFilesStoreDirectory, null, utilityDataAccessProvider, includeSubdirectories, overwriteNewerFiles: true);
                     }
                 }
 

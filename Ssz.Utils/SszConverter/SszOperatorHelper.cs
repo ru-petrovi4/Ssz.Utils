@@ -252,19 +252,19 @@ namespace Ssz.Utils
                 case SszOperator.LessThan:
                     if (rightValues is null || rightValues.Length == 0)
                         return false;
-                    return left < DateTimeHelper.GetDateTimeUtc(rightValues[0]) - TimeSpanTolerance;
+                    return left < new Any(rightValues[0]).ValueAs<DateTime>(false) - TimeSpanTolerance;
                 case SszOperator.LessThanOrEqual:
                     if (rightValues is null || rightValues.Length == 0)
                         return false;
-                    return left <= DateTimeHelper.GetDateTimeUtc(rightValues[0]) + TimeSpanTolerance;
+                    return left <= new Any(rightValues[0]).ValueAs<DateTime>(false) + TimeSpanTolerance;
                 case SszOperator.GreaterThan:
                     if (rightValues is null || rightValues.Length == 0)
                         return false;
-                    return left > DateTimeHelper.GetDateTimeUtc(rightValues[0]) + TimeSpanTolerance;
+                    return left > new Any(rightValues[0]).ValueAs<DateTime>(false) + TimeSpanTolerance;
                 case SszOperator.GreaterThanOrEqual:
                     if (rightValues is null || rightValues.Length == 0)
                         return false;
-                    return left >= DateTimeHelper.GetDateTimeUtc(rightValues[0]) - TimeSpanTolerance;
+                    return left >= new Any(rightValues[0]).ValueAs<DateTime>(false) - TimeSpanTolerance;
                 default:
                     return false;
             }
@@ -289,19 +289,19 @@ namespace Ssz.Utils
                 case SszOperator.LessThan:
                     if (rightValues is null || rightValues.Length == 0)
                         return false;
-                    return left < DateTimeHelper.GetTimeSpan(rightValues[0]) - TimeSpanTolerance;
+                    return left < new Any(rightValues[0]).ValueAs<TimeSpan>(false) - TimeSpanTolerance;
                 case SszOperator.LessThanOrEqual:
                     if (rightValues is null || rightValues.Length == 0)
                         return false;
-                    return left <= DateTimeHelper.GetTimeSpan(rightValues[0]) + TimeSpanTolerance;
+                    return left <= new Any(rightValues[0]).ValueAs<TimeSpan>(false) + TimeSpanTolerance;
                 case SszOperator.GreaterThan:
                     if (rightValues is null || rightValues.Length == 0)
                         return false;
-                    return left > DateTimeHelper.GetTimeSpan(rightValues[0]) + TimeSpanTolerance;
+                    return left > new Any(rightValues[0]).ValueAs<TimeSpan>(false) + TimeSpanTolerance;
                 case SszOperator.GreaterThanOrEqual:
                     if (rightValues is null || rightValues.Length == 0)
                         return false;
-                    return left >= DateTimeHelper.GetTimeSpan(rightValues[0]) - TimeSpanTolerance;
+                    return left >= new Any(rightValues[0]).ValueAs<TimeSpan>(false) - TimeSpanTolerance;
                 default:
                     return false;
             }
@@ -410,9 +410,9 @@ namespace Ssz.Utils
                 case nameof(Decimal):
                     return Compare(new Any(left).ValueAsSingle(false), sszOperator, sszOperatorOptions, rightValues);
                 case nameof(DateTime):
-                    return Compare(DateTimeHelper.GetDateTimeUtc(left), sszOperator, sszOperatorOptions, rightValues);
+                    return Compare(new Any(left).ValueAs<DateTime>(false), sszOperator, sszOperatorOptions, rightValues);
                 case nameof(TimeSpan):
-                    return Compare(DateTimeHelper.GetTimeSpan(left), sszOperator, sszOperatorOptions, rightValues);
+                    return Compare(new Any(left).ValueAs<TimeSpan>(false), sszOperator, sszOperatorOptions, rightValues);
                 default:
                     return Compare(left, sszOperator, sszOperatorOptions, rightValues);
             }
@@ -566,40 +566,40 @@ namespace Ssz.Utils
                 if (operand[0] == '[')
                 {
                     result.LowerInclusive = true;
-                    result.Lower = DateTimeHelper.GetDateTimeUtc(operand.Substring(1, separatorIndex - 1).Trim());
+                    result.Lower = new Any(operand.Substring(1, separatorIndex - 1).Trim()).ValueAs<DateTime>(false);
                 }
                 else if (operand[0] == '(')
                 {
                     result.LowerInclusive = false;
-                    result.Lower = DateTimeHelper.GetDateTimeUtc(operand.Substring(1, separatorIndex - 1).Trim());
+                    result.Lower = new Any(operand.Substring(1, separatorIndex - 1).Trim()).ValueAs<DateTime>(false);
                 }
                 else
                 {
                     result.LowerInclusive = true;
-                    result.Lower = DateTimeHelper.GetDateTimeUtc(operand.Substring(0, separatorIndex).Trim());
+                    result.Lower = new Any(operand.Substring(0, separatorIndex).Trim()).ValueAs<DateTime>(false);
                 }
 
                 if (operand[operand.Length - 1] == ']')
                 {
                     result.UpperInclusive = true;
-                    result.Upper = DateTimeHelper.GetDateTimeUtc(operand.Substring(separatorIndex + 2, operand.Length - separatorIndex - 3).Trim());
+                    result.Upper = new Any(operand.Substring(separatorIndex + 2, operand.Length - separatorIndex - 3).Trim()).ValueAs<DateTime>(false);
                 }
                 else if (operand[operand.Length - 1] == ')')
                 {
                     result.UpperInclusive = false;
-                    result.Upper = DateTimeHelper.GetDateTimeUtc(operand.Substring(separatorIndex + 2, operand.Length - separatorIndex - 3).Trim());
+                    result.Upper = new Any(operand.Substring(separatorIndex + 2, operand.Length - separatorIndex - 3).Trim()).ValueAs<DateTime>(false);
                 }
                 else
                 {
                     result.UpperInclusive = true;
-                    result.Upper = DateTimeHelper.GetDateTimeUtc(operand.Substring(separatorIndex + 2, operand.Length - separatorIndex - 2).Trim());
+                    result.Upper = new Any(operand.Substring(separatorIndex + 2, operand.Length - separatorIndex - 2).Trim()).ValueAs<DateTime>(false);
                 }
 
                 return result;
             }
             else
             {
-                DateTime operandDateTime = DateTimeHelper.GetDateTimeUtc(operand);
+                DateTime operandDateTime = new Any(operand).ValueAs<DateTime>(false);
                 return new DateTimeOperand()
                 {
                     LowerInclusive = true,
@@ -620,40 +620,40 @@ namespace Ssz.Utils
                 if (operand[0] == '[')
                 {
                     result.LowerInclusive = true;
-                    result.Lower = DateTimeHelper.GetTimeSpan(operand.Substring(1, separatorIndex - 1).Trim());
+                    result.Lower = new Any(operand.Substring(1, separatorIndex - 1).Trim()).ValueAs<TimeSpan>(false);
                 }
                 else if (operand[0] == '(')
                 {
                     result.LowerInclusive = false;
-                    result.Lower = DateTimeHelper.GetTimeSpan(operand.Substring(1, separatorIndex - 1).Trim());
+                    result.Lower = new Any(operand.Substring(1, separatorIndex - 1).Trim()).ValueAs<TimeSpan>(false);
                 }
                 else
                 {
                     result.LowerInclusive = true;
-                    result.Lower = DateTimeHelper.GetTimeSpan(operand.Substring(0, separatorIndex).Trim());
+                    result.Lower = new Any(operand.Substring(0, separatorIndex).Trim()).ValueAs<TimeSpan>(false);
                 }
 
                 if (operand[operand.Length - 1] == ']')
                 {
                     result.UpperInclusive = true;
-                    result.Upper = DateTimeHelper.GetTimeSpan(operand.Substring(separatorIndex + 2, operand.Length - separatorIndex - 3).Trim());
+                    result.Upper = new Any(operand.Substring(separatorIndex + 2, operand.Length - separatorIndex - 3).Trim()).ValueAs<TimeSpan>(false);
                 }
                 else if (operand[operand.Length - 1] == ')')
                 {
                     result.UpperInclusive = false;
-                    result.Upper = DateTimeHelper.GetTimeSpan(operand.Substring(separatorIndex + 2, operand.Length - separatorIndex - 3).Trim());
+                    result.Upper = new Any(operand.Substring(separatorIndex + 2, operand.Length - separatorIndex - 3).Trim()).ValueAs<TimeSpan>(false);
                 }
                 else
                 {
                     result.UpperInclusive = true;
-                    result.Upper = DateTimeHelper.GetTimeSpan(operand.Substring(separatorIndex + 2, operand.Length - separatorIndex - 2).Trim());
+                    result.Upper = new Any(operand.Substring(separatorIndex + 2, operand.Length - separatorIndex - 2).Trim()).ValueAs<TimeSpan>(false);
                 }
 
                 return result;
             }
             else
             {
-                TimeSpan operandTimeSpan = DateTimeHelper.GetTimeSpan(operand);
+                TimeSpan operandTimeSpan = new Any(operand).ValueAs<TimeSpan>(false);
                 return new TimeSpanOperand()
                 {
                     LowerInclusive = true,

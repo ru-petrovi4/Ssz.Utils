@@ -55,7 +55,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 }
                 var workingDirectories = workingDirectoriesOptional.Value;
 
-                RunInstructorExe(processModelingSessionId, workingDirectories.ProcessDirectoryInfo, workingDirectories.BinDirectoryInfo, utilityDataAccessProvider);
+                RunInstructorExe(processModelingSessionId, workingDirectories.ProcessModelDirectoryInfo, workingDirectories.BinDirectoryInfo, utilityDataAccessProvider);
 
                 await SetJobProgressAsync(jobId, InstructorLaunchingMaxPercent, Ssz.Dcs.CentralServer.Properties.ResourceStrings.LaunchedInstructorProgressLabel, null, StatusCodes.Good, utilityDataAccessProvider);
             }
@@ -73,10 +73,10 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             }            
         }
 
-        private void RunInstructorExe(string processModelingSessionId, DirectoryInfo processDirectoryInfo, DirectoryInfo binDirectoryInfo, IDataAccessProvider utilityDataAccessProvider)
+        private void RunInstructorExe(string processModelingSessionId, DirectoryInfo processModelDirectoryInfo, DirectoryInfo binDirectoryInfo, IDataAccessProvider utilityDataAccessProvider)
         {
             string binDirectoryFullName = binDirectoryInfo.FullName;
-            string arguments = "-d \"" + processDirectoryInfo.FullName +
+            string arguments = "-d \"" + processModelDirectoryInfo.FullName +
                 "\" --CentralServerAddress=" + utilityDataAccessProvider.ServerAddress +
                 " -s \"" + processModelingSessionId + "\"";
 

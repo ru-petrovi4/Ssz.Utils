@@ -15,12 +15,12 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
     {
         #region private functions        
 
-        private void RunPlatInstructorExe(DirectoryInfo processDirectoryInfo, DirectoryInfo binDirectoryInfo, DirectoryInfo dataDirectoryInfo, string pathRelativeToDataDirectory, string instanceInfo)
+        private void RunPlatInstructorExe(DirectoryInfo processModelDirectoryInfo, DirectoryInfo binDirectoryInfo, DirectoryInfo dataDirectoryInfo, string pathRelativeToDataDirectory, string instanceInfo)
         {   
             string exeFileFullName = Path.Combine(binDirectoryInfo.FullName, @"PlatInstructor.exe");
             string arguments = "\"" + Path.Combine(dataDirectoryInfo.FullName, pathRelativeToDataDirectory) +
                 "\" /XISrv /s" +
-                " --xiserveroptions=\"" + processDirectoryInfo.FullName + @"|" + instanceInfo + "\"";
+                " --xiserveroptions=\"" + processModelDirectoryInfo.FullName + @"|" + instanceInfo + "\"";
 
             Logger.LogDebug("Dcs.PlatInstructorEngine is starting.. " + exeFileFullName + @" " + arguments);
 
