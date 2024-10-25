@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace Ssz.Utils
 {
+    /// <summary>
+    ///     If method uses <see cref="IJobProgress"/> it is supposed as no-throwing.
+    /// </summary>
     public interface IJobProgress
     {
         string JobId { get; }

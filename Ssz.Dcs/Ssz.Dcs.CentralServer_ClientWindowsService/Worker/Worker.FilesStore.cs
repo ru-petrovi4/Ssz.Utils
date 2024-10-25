@@ -125,17 +125,18 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     await DownloadFilesAsync(new List<string> { Path.Combine(serverDsFilesStoreDirectory.PathRelativeToRootDirectory, serverDsFilesStoreFile.Name) }, utilityDataAccessProvider);
                 }
             }
-            foreach (var fileInfo in fileInfosDictionary.Values)
-            {
-                try
+            if (overwriteNewerFiles)
+                foreach (var fileInfo in fileInfosDictionary.Values)
                 {
-                    fileInfo.Delete();
+                    try
+                    {
+                        fileInfo.Delete();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(ex, "Delete file error: " + fileInfo.FullName);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    Logger.LogError(ex, "Delete file error: " + fileInfo.FullName);
-                }
-            }
 
             if (includeSubdirectories)
             {

@@ -462,39 +462,18 @@ namespace Ssz.Utils.Addons
         /// <typeparam name="TAddon"></typeparam>
         /// <param name="addonDispatcher"></param>
         /// <returns></returns>
-        public TAddon? CreateInitializedAddonThreadSafe<TAddon>(IDispatcher? addonDispatcher, CancellationToken cancellationToken)
+        public TAddon? CreateInitializedAddonThreadSafe<TAddon>(IDispatcher? addonDispatcher, CancellationToken cancellationToken, string? addonIdentifier = null)
             where TAddon : AddonBase
         {
-            var addons = _addonsThreadSafe;
-            TAddon? addon = addons.OfType<TAddon>().FirstOrDefault();
-            if (addon is null)
-                return null;
-
-            TAddon? newAddon = CreateAvailableAddonInternal(addon, addon.InstanceId, null, addonDispatcher) as TAddon;
-            if (newAddon is null)
-                return null;
-
-            newAddon.Initialize(cancellationToken);
-
-            return newAddon;
-        }
-
-        /// <summary>
-        ///     Returns new instance of switched ON addon.
-        /// </summary>
-        /// <typeparam name="TAddon"></typeparam>
-        /// <param name="addonIdentifier"></param>
-        /// <param name="addonDispatcher"></param>
-        /// <returns></returns>
-        public TAddon? CreateInitializedAddonThreadSafe<TAddon>(string addonIdentifier, IDispatcher addonDispatcher, CancellationToken cancellationToken)
-            where TAddon : AddonBase
-        {
-            if (String.IsNullOrEmpty(addonIdentifier))
-                return null;
-
             var addonsThreadSafe = _addonsThreadSafe;
-            TAddon? addon = addonsThreadSafe.OfType<TAddon>()
+            TAddon? addon;
+            if (String.IsNullOrEmpty(addonIdentifier))
+                addon = addonsThreadSafe.OfType<TAddon>()
+                    .FirstOrDefault();
+            else
+                addon = addonsThreadSafe.OfType<TAddon>()
                     .FirstOrDefault(a => String.Equals(a.Identifier, addonIdentifier, StringComparison.InvariantCultureIgnoreCase));
+
             if (addon is null)
                 return null;
 
@@ -505,7 +484,7 @@ namespace Ssz.Utils.Addons
             newAddon.Initialize(cancellationToken);
 
             return newAddon;
-        }
+        }        
 
         /// <summary>
         ///     Create available but not necesary switched ON adddon. 
