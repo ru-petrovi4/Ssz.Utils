@@ -123,7 +123,7 @@ namespace Ssz.Utils
         {
             if (separator.Length != 1) throw new InvalidOperationException();            
 
-            var result = new List<List<string?>>();
+            var result = new List<List<string?>>(100);
 
             if (String.IsNullOrEmpty(sourceString))
                 return result;
