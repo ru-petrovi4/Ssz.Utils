@@ -110,6 +110,7 @@ namespace Ssz.Dcs.CentralServer
                 jobProgress.JobTimeout_ProgressLabel = Resources.ResourceManager.GetString(ResourceStrings.LaunchingOperatorProgressErrorMessage, serverContext.CultureInfo);
             }
 
+            Generate_SetOperatorLauncherBusy_UtilityEvent(operatorSession.OperatorWorkstationName, operatorSession);
             Generate_PrepareAndRunOperatorExe_UtilityEvent(operatorSession.OperatorWorkstationName, operatorSession);
 
             return jobId;

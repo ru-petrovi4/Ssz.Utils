@@ -116,6 +116,36 @@ namespace Ssz.Dcs.CentralServer
             utilityEventMessageNotification(targetWorkstationName, eventMessage);
         }
 
+        private void Generate_SetOperatorLauncherBusy_UtilityEvent(
+            string targetWorkstationName,
+            OperatorSession operatorSession)
+        {
+            if (operatorSession.ProcessModelingSession is null)
+                return;
+
+            Action<string?, Ssz.Utils.DataAccess.EventMessage>? utilityEventMessageNotification = UtilityEventMessageNotification;
+            if (utilityEventMessageNotification is null) return;
+
+            var eventMessage = new Ssz.Utils.DataAccess.EventMessage(
+                new Ssz.Utils.DataAccess.EventId
+                {
+                    Conditions = new List<Ssz.Utils.DataAccess.TypeId> { EventMessageConstants.SetOperatorLauncherBusy_TypeId }
+                }
+                );
+
+            string operatorSessionDescription = Properties.Resources.OperatorSessionDescription_InterfaceNameToDisplay + @" " + operatorSession.Interface_NameToDisplay +
+                "; " + Properties.Resources.OperatorSessionDescription_OperatorRoleName + @" " + operatorSession.OperatorRoleName;
+
+            eventMessage.EventType = EventType.SystemEvent;
+            eventMessage.OccurrenceTimeUtc = DateTime.UtcNow;
+            eventMessage.TextMessage = CsvHelper.FormatForCsv(",", new[] {
+                operatorSession.LaunchOperatorJobId,
+                operatorSession.ProcessModelingSession.ProcessModelingSessionId,
+                operatorSession.OperatorSessionId });
+
+            utilityEventMessageNotification(targetWorkstationName, eventMessage);
+        }
+
         private void Generate_RunOperatorExe_UtilityEvent(
             string targetWorkstationName,
             OperatorSession operatorSession, 
