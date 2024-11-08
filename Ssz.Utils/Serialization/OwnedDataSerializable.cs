@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.Json;
+using ProtoBuf;
 using Ssz.Utils.Serialization;
 
 namespace Ssz.Utils.Serialization
@@ -15,7 +16,7 @@ namespace Ssz.Utils.Serialization
     ///     Implemented Equal method which based of comparing serialized data.
     ///     Implemented ICloneable interface which based on serialized data.  
     /// </summary>
-    [Serializable]
+    [Serializable]    
     public abstract class OwnedDataSerializable : IOwnedDataSerializable, ICloneable
     {
         #region public functions
@@ -30,8 +31,12 @@ namespace Ssz.Utils.Serialization
         {
             using (writer.EnterBlock(1))
             {
-                string s = JsonSerializer.Serialize(this, GetType(), context as JsonSerializerOptions);
-                writer.Write(s);
+                using (var memoryStream = new MemoryStream())
+                {
+                    Serializer.Serialize(memoryStream, this);
+
+                    writer.Write(memoryStream.ToArray());
+                }
             }
         }
 
@@ -48,13 +53,11 @@ namespace Ssz.Utils.Serialization
                 switch (block.Version)
                 {
                     case 1:
-                        string s = reader.ReadString();
-                        object? temp = JsonSerializer.Deserialize(s, GetType(), context as JsonSerializerOptions);
-                        if (temp is null) throw new InvalidOperationException();
-                        // TODO
-                        //MemberInfo[] members = FormatterServices.GetSerializableMembers(GetType());
-                        //FormatterServices.PopulateObjectMembers(this, members,
-                        //    FormatterServices.GetObjectData(temp, members));
+                        byte[] data = reader.ReadByteArray();
+
+                        MethodInfo? methodInfo = typeof(OwnedDataSerializable).GetMethod("Merge", BindingFlags.NonPublic | BindingFlags.Static);
+                        MethodInfo genericMethod = methodInfo!.MakeGenericMethod(GetType());                        
+                        genericMethod.Invoke(null, [ new MemoryStream(data), this ]);
                         break;
                     default:
                         throw new BlockUnsupportedVersionException();
@@ -113,6 +116,15 @@ namespace Ssz.Utils.Serialization
         public override string ToString()
         {
             return @"";
+        }
+
+        #endregion
+
+        #region private functions
+
+        private static void Merge<T>(Stream source, T instance)
+        {
+            Serializer.Merge(source, instance);
         }
 
         #endregion
