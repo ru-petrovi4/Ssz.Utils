@@ -35,7 +35,7 @@ Kestrel:
       AllowInvalid: "true"
 DcsCentralServerAddonDesc: "Центральный сервер SSZ.DCS"
 AllowedHosts: "*"
-# задается язык сообщений в журналах событий которые доступны через веб интерфейс ИТ-решения возможные значения RU EN
+# Задается язык сообщений в журналах событий, которые доступны через веб интерфейс ИТ-решения. Возможные значения RU EN
 UICulture: "RU"
 DataAccessClientUserName: ""
 DataAccessClientPasswordHash: ""
