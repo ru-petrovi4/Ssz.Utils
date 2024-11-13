@@ -45,12 +45,7 @@ namespace Ssz.Utils.Logging
         ///     If size exeeds this limit, new file is created.        
         ///     Default is 10 MB.
         /// </summary>
-        public long LogFileMaxSizeInBytes { get; set; } = 10 * 1024 * 1024;
-
-        /// <summary>
-        ///     Default is 150 MB
-        /// </summary>
-        public long LogFilesWarningSizeInBytes { get; set; } = 150 * 1024 * 1024;
+        public long LogFileMaxSizeInBytes { get; set; } = 10 * 1024 * 1024;        
 
         /// <summary>
         ///     Default is 200 MB
