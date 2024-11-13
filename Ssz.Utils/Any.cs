@@ -510,7 +510,7 @@ namespace Ssz.Utils {
                     throw new InvalidOperationException();
             }         }          /// <summary>                 /// </summary>         /// <param name="left"></param>         /// <param name="right"></param>         /// <returns></returns>         public static bool operator !=(Any left, Any right)         {             return !(left == right);         }
 
-        /// <summary>         ///     Compares the current instance with another object of the same type and returns an integer that indicates          ///     whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.         ///     Uses ValueAsDouble(false), ValueAsUInt32(false), ValueAsString(false) depending of ValueTransportType.                 /// </summary>         /// <param name="that"></param>         /// <param name="deadband"></param>         /// <returns></returns>         public int CompareTo(Any that, double deadband)         {
+        /// <summary>         ///     Compares the current instance with another object of the same type and returns an integer that indicates          ///     whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.         ///     Uses ValueAsDouble(false), ValueAsUInt32(false), ValueAsString(false) depending of ValueTransportType.          ///     Warning! NaN equals NaN!         /// </summary>         /// <param name="that"></param>         /// <param name="deadband"></param>         /// <returns></returns>         public int CompareTo(Any that, double deadband)         {
             switch ((TypeCode)_valueTypeCode)
             {
                 case TypeCode.SByte:
@@ -532,6 +532,8 @@ namespace Ssz.Utils {
                 case TypeCode.Single:
                     {                         float d = ValueAsSingle(false);
                         float thatD = that.ValueAsSingle(false);
+                        if (Single.IsNaN(d) && Single.IsNaN(thatD))
+                            return 0;
                         float diff = d - thatD;
                         if (diff > -deadband - Single.Epsilon * 100 &&
                                 diff < deadband + Single.Epsilon * 100)
@@ -544,7 +546,9 @@ namespace Ssz.Utils {
                     }
                 case TypeCode.Double:
                     {                         double d = ValueAsDouble(false);
-                        double thatD = that.ValueAsDouble(false);                        
+                        double thatD = that.ValueAsDouble(false);
+                        if (Double.IsNaN(d) && Double.IsNaN(thatD))
+                            return 0;
                         double diff = d - thatD;
                         if (diff >= -deadband - Double.Epsilon * 100 &&
                                 diff <= deadband + Double.Epsilon * 100)

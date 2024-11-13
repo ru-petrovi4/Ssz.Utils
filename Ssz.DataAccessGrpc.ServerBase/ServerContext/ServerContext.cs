@@ -350,8 +350,10 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <returns></returns>
         protected uint ValidateContextTimeout(uint requestedServerContextTimeoutMs)
         {            
-            if (requestedServerContextTimeoutMs < 9 * 1000) requestedServerContextTimeoutMs = 9 * 1000; // The minimum timeout is nine seconds.
-            if (requestedServerContextTimeoutMs > 30 * 60 * 1000) requestedServerContextTimeoutMs = 30 * 60 * 1000; // The maximum timeout is 30 minutes.
+            if (requestedServerContextTimeoutMs < 9 * 1000) 
+                requestedServerContextTimeoutMs = 9 * 1000; // The minimum timeout is nine seconds.
+            if (requestedServerContextTimeoutMs > 7 * 24 * 60 * 60 * 1000) 
+                requestedServerContextTimeoutMs = 7 * 24 * 60 * 60 * 1000; // The maximum timeout is 1 week.
             return requestedServerContextTimeoutMs;
         }        
 

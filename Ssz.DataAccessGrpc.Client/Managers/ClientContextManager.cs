@@ -78,9 +78,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             if (_clientContext is not null) throw new Exception(@"DataAccessGrpc context already exists.");
 
 #if DEBUG            
-            TimeSpan requestedServerContextTimeoutMs = new TimeSpan(0, 30, 0);
+            uint requestedServerContextTimeoutMs = 7 * 24 * 60 * 60 * 1000;
 #else
-            TimeSpan requestedServerContextTimeoutMs = new TimeSpan(0, 0, 30);
+            uint requestedServerContextTimeoutMs = 30 * 1000;
 #endif
             GrpcChannel? grpcChannel = null;            
             try
@@ -116,7 +116,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                             );
 
                 await clientContext.InitiateAsync(
-                            (uint)requestedServerContextTimeoutMs.TotalMilliseconds,
+                            requestedServerContextTimeoutMs,
                             CultureInfo.CurrentUICulture.Name,
                             systemNameToConnect,
                             contextParams
