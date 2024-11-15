@@ -88,14 +88,16 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="configuration"></param>
         /// <param name="key"></param>
-        /// <param name="defaultFileName"></param>
+        /// <param name="defaultFileFullName"></param>
         /// <param name="canRead"></param>
         /// <param name="canWrite"></param>
         /// <param name="loggersSet"></param>
         /// <returns></returns>
-        public static string GetValue_FileName(IConfiguration configuration, string key, string defaultFileName, bool canRead, bool canWrite, ILoggersSet loggersSet)            
+        public static string GetValue_ValidatedFileName(IConfiguration configuration, string key, string defaultFileFullName, bool canRead, bool canWrite, ILoggersSet loggersSet)            
         {
-            string fileName = GetValue<string>(configuration, key, defaultFileName);            
+            string fileName = GetValue<string>(configuration, key, defaultFileFullName);
+            if (fileName == @"")
+                return @"";
 
             if (canRead)
             {
