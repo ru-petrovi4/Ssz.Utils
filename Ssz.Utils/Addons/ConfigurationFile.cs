@@ -65,12 +65,13 @@ namespace Ssz.Utils.Addons
             else
             {
                 if (readBigFileData)
-                {
-                    int bytesCount = (int)fileInfo.Length;
-                    byte[] fileData = new byte[bytesCount];
+                {                    
+                    byte[] fileData;
                     using (FileStream fileStream = File.Open(fileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    using (MemoryStream memoryStream = new())
                     {
-                        fileStream.Read(fileData, 0, bytesCount);
+                        fileStream.CopyTo(memoryStream);
+                        fileData = memoryStream.ToArray();
                     }
                     configurationFile.FileData = fileData;
                 }

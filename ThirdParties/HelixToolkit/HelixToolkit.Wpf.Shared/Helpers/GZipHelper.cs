@@ -29,9 +29,10 @@ namespace HelixToolkit.Wpf
             var ext = Path.GetExtension(source);
             byte[] input;
             using (var infile = File.OpenRead(source))
+            using (MemoryStream memoryStream = new())
             {
-                input = new byte[infile.Length];
-                infile.Read(input, 0, input.Length);
+                infile.CopyTo(memoryStream);
+                input = memoryStream.ToArray();                
             }
 
             var dest = Path.ChangeExtension(source, ext + "z");

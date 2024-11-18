@@ -15,12 +15,13 @@ namespace Ssz.Utils
         /// <param name="textFileFullName"></param>
         /// <returns></returns>
         public static StreamReader GetStreamReader(string textFileFullName, Encoding defaultEncoding, ILogger? logger = null)
-        {
-            int bytesCount = (int)(new FileInfo(textFileFullName).Length);
-            byte[] bytes = new byte[bytesCount];
+        {            
+            byte[] bytes;
             using (FileStream fileStream = File.Open(textFileFullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (MemoryStream memoryStream = new())
             {
-                fileStream.Read(bytes, 0, bytesCount);
+                fileStream.CopyTo(memoryStream);
+                bytes = memoryStream.ToArray();
             }
             CharsetDetector charsetDetector = new();
             charsetDetector.Feed(bytes, 0, bytes.Length);
