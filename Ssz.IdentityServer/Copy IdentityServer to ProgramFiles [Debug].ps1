@@ -15,7 +15,7 @@ Start-Sleep -Seconds 5
 
 Remove-Item "C:\Program Files\Ssz\IdentityServer\*" -Recurse -Force
 
-Copy-Item -Path "$PSScriptRoot\Ssz.IdentityServer\bin\Debug\net9.0\*" -Destination "C:\Program Files\Ssz\IdentityServer" -Recurse
+Copy-Item -Path "$PSScriptRoot\Ssz.IdentityServer\bin\Debug\net8.0\*" -Destination "C:\Program Files\Ssz\IdentityServer" -Recurse
 
 
 start-service $serviceName

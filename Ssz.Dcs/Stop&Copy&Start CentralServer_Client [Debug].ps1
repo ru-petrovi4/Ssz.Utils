@@ -18,7 +18,7 @@ Start-Sleep -Seconds 5
 
 Remove-Item "C:\Program Files\Ssz\Dcs.CentralServer_Client\*" -Recurse -Force
 
-Copy-Item -Path "$PSScriptRoot\Ssz.Dcs.CentralServer_ClientWindowsService\bin\Debug\net9.0-windows\*" -Destination "C:\Program Files\Ssz\Dcs.CentralServer_Client" -Recurse
+Copy-Item -Path "$PSScriptRoot\Ssz.Dcs.CentralServer_ClientWindowsService\bin\Debug\net8.0-windows\*" -Destination "C:\Program Files\Ssz\Dcs.CentralServer_Client" -Recurse
 
 
 start-service $serviceName
