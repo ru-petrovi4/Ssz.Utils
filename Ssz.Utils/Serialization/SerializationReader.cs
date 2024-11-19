@@ -1104,21 +1104,9 @@ namespace Ssz.Utils.Serialization
 
         private Type? GetType(string typeString, bool throwOnError)
         {
-            string[] typeStringParts = typeString.Split(',');
-            try
-            {
-                return Type.GetType(typeStringParts[0], throwOnError);
-            }
-            catch
-            {
-                return Type.GetType(typeStringParts[0] + "," + typeStringParts[1], throwOnError);
-            }            
-        }
-
-        private Type? GetType(string typeString)
-        {
-            string[] typeStringParts = typeString.Split(',');
-            return Type.GetType(typeStringParts[0] + "," + typeStringParts[1]);
+            string[] typeStringParts = typeString.Split(',');            
+            return GetType(typeStringParts[0], false) ?? 
+                Type.GetType(typeStringParts[0] + "," + typeStringParts[1], throwOnError);   
         }
 
         /// <summary>
