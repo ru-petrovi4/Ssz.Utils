@@ -1105,7 +1105,7 @@ namespace Ssz.Utils.Serialization
         private Type? GetType(string typeString, bool throwOnError)
         {
             string[] typeStringParts = typeString.Split(',');            
-            return GetType(typeStringParts[0], false) ?? 
+            return Type.GetType(typeStringParts[0], false) ?? 
                 Type.GetType(typeStringParts[0] + "," + typeStringParts[1], throwOnError);   
         }
 
