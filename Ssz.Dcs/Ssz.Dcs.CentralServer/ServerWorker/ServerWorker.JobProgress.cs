@@ -31,7 +31,10 @@ namespace Ssz.Dcs.CentralServer
         {
             JobProgress? jobProgress = _jobProgressesCollection.TryGetValue(jobId);
             if (jobProgress is null)
-                return;
+            {
+                jobProgress = new JobProgress(jobId);
+                _jobProgressesCollection.Add(jobId, jobProgress);
+            }
             
             jobProgress.ForTimeout_LastDateTimeUtc = DateTime.UtcNow;
             jobProgress.ProgressPercent = progressPercent;
