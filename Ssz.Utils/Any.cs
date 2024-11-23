@@ -868,7 +868,7 @@ namespace Ssz.Utils {
                 case @"System.DateTimeOffset":
                     return ValueAsDateTimeOffset(stringIsLocalized, stringFormat);
                 case @"System.DateTime":
-                    return ValueAsDateTimeOffset(stringIsLocalized, stringFormat).DateTime;                    
+                    return ValueAsDateTimeOffset(stringIsLocalized, stringFormat).UtcDateTime;                    
                 case @"System.TimeSpan":
                     return ValueAsTimeSpan(stringIsLocalized, stringFormat);
                 case @"System.String":
