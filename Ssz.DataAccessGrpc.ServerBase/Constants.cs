@@ -31,9 +31,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
         public const string ParamName_TotalMemoryInBytes = @"TotalMemoryInBytes";
 
         /// <summary>
-        ///     The memory utilization percentage.
+        ///     The memory utilization.
         /// </summary>
-        public const string ParamName_MemoryUsedPercentage = @"MemoryUsedPercentage";
+        public const string ParamName_MemoryUsedInBytes = @"MemoryUsedInBytes";
 
         /// <summary>
         ///     Volume Label.
@@ -51,9 +51,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
         public const string ParamName_Drive_TotalSizeInBytes = @"Drive_TotalSizeInBytes";
 
         /// <summary>
-        ///     Space Used Percentage
+        ///     Space Used.
         /// </summary>
-        public const string ParamName_Drive_SpaceUsedPercentage = @"Drive_SpaceUsedPercentage";
+        public const string ParamName_Drive_SpaceUsedInBytes = @"Drive_SpaceUsedInBytes";
 
         /// <summary>
         ///     Drives info.

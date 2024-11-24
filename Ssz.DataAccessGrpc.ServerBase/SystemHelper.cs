@@ -16,10 +16,10 @@ namespace Ssz.DataAccessGrpc.ServerBase
         {
             systemParams[Constants.ParamName_IsResourceMonitorAddon] = new Any(true);
 
-            ResourceUtilization resourceUtilization = resourceMonitor.GetUtilization(TimeSpan.FromSeconds(1));            
-            systemParams[Constants.ParamName_CpuUsedPercentage] = new Any(resourceUtilization.CpuUsedPercentage);
-            systemParams[Constants.ParamName_TotalMemoryInBytes] = new Any(100 * resourceUtilization.MemoryUsedInBytes / resourceUtilization.MemoryUsedPercentage);
-            systemParams[Constants.ParamName_MemoryUsedPercentage] = new Any(resourceUtilization.MemoryUsedPercentage);
+            ResourceUtilization resourceUtilization = resourceMonitor.GetUtilization(TimeSpan.FromSeconds(1));
+            systemParams[Constants.ParamName_CpuUsedPercentage] = new Any((long)resourceUtilization.CpuUsedPercentage);
+            systemParams[Constants.ParamName_TotalMemoryInBytes] = new Any((long)(100 * resourceUtilization.MemoryUsedInBytes / resourceUtilization.MemoryUsedPercentage));
+            systemParams[Constants.ParamName_MemoryUsedInBytes] = new Any((long)resourceUtilization.MemoryUsedInBytes);
 
             //ComputerInfo computerInfo = new();
             //addonStatusParams[Constants.ParamName_OSPlatform] = new Any(computerInfo.OSPlatform);
@@ -39,7 +39,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     driveInfo[Constants.ParamName_VolumeLabel] = new Any(di.VolumeLabel);
                     driveInfo[Constants.ParamName_DriveFormat] = new Any(di.DriveFormat);
                     driveInfo[Constants.ParamName_Drive_TotalSizeInBytes] = new Any(di.TotalSize);
-                    driveInfo[Constants.ParamName_Drive_SpaceUsedPercentage] = new Any(100 - 100 * di.AvailableFreeSpace / di.TotalSize);                    
+                    driveInfo[Constants.ParamName_Drive_SpaceUsedInBytes] = new Any(di.TotalSize - di.AvailableFreeSpace);
 
                     drivesInfo[di.Name] = new Any(driveInfo);
                 }
