@@ -26,38 +26,14 @@ namespace Ssz.DataAccessGrpc.ServerBase
         public const string ParamName_CpuUsedPercentage = @"CpuUsedPercentage";
 
         /// <summary>
+        ///     Total Physical Memory
+        /// </summary>
+        public const string ParamName_TotalMemoryInBytes = @"TotalMemoryInBytes";
+
+        /// <summary>
         ///     The memory utilization percentage.
         /// </summary>
         public const string ParamName_MemoryUsedPercentage = @"MemoryUsedPercentage";
-
-        /// <summary>
-        ///     The total memory used.
-        /// </summary>
-        public const string ParamName_MemoryUsedInBytes = @"MemoryUsedInBytes";
-
-        //public const string ParamName_OSPlatform = @"OSPlatform";
-
-        //public const string ParamName_OSVersion = @"OSVersion";
-
-        /// <summary>
-        ///     Total Physical Memory.
-        /// </summary>
-        public const string ParamName_TotalPhysicalMemory = @"TotalPhysicalMemory";
-
-        /// <summary>
-        ///     Available Physical Memory.
-        /// </summary>
-        public const string ParamName_AvailablePhysicalMemory = @"AvailablePhysicalMemory";
-
-        /// <summary>
-        ///     Total Virtual Memory.
-        /// </summary>
-        public const string ParamName_TotalVirtualMemory = @"TotalVirtualMemory";
-
-        /// <summary>
-        ///     Available Virtual Memory.
-        /// </summary>
-        public const string ParamName_AvailableVirtualMemory = @"AvailableVirtualMemory";
 
         /// <summary>
         ///     Volume Label.
@@ -70,19 +46,14 @@ namespace Ssz.DataAccessGrpc.ServerBase
         public const string ParamName_DriveFormat = @"DriveFormat";
 
         /// <summary>
-        ///     Drive Available Free Space.
-        /// </summary>
-        public const string ParamName_AvailableFreeSpace = @"AvailableFreeSpace";
-
-        /// <summary>
-        ///     Drive Total Free Space.
-        /// </summary>
-        public const string ParamName_TotalFreeSpace = @"TotalFreeSpace";
-
-        /// <summary>
         ///     Drive Total Size.
         /// </summary>
-        public const string ParamName_TotalSize = @"TotalSize";
+        public const string ParamName_Drive_TotalSizeInBytes = @"Drive_TotalSizeInBytes";
+
+        /// <summary>
+        ///     Space Used Percentage
+        /// </summary>
+        public const string ParamName_Drive_SpaceUsedPercentage = @"Drive_SpaceUsedPercentage";
 
         /// <summary>
         ///     Drives info.
