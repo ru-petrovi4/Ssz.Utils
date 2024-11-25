@@ -8,6 +8,8 @@ namespace Ssz.Utils
 {
     public static class SszOperatorHelper
     {
+        public static readonly string[] ValuesSeparator = ["|||"];
+
         public readonly static (string, SszOperator)[] Operators = new[]
                    {                        
                         (@"==", SszOperator.Equal),
@@ -31,6 +33,7 @@ namespace Ssz.Utils
 #if NET5_0_OR_GREATER
         /// <summary>
         ///     If no operator, then returns element
+        ///     {element}{Operator}{option1}{option2}{Value1}|||{Value2}
         /// </summary>
         /// <param name="elementAndOperatorAndValue"></param>
         /// <returns></returns>
@@ -76,6 +79,7 @@ namespace Ssz.Utils
 
         /// <summary>
         ///     If no operator, then returns values
+        ///     {Operator}{option1}{option2}{Value1}|||{Value2}
         /// </summary>
         /// <param name="elementAndOperatorAndValue"></param>
         /// <returns></returns>
@@ -699,9 +703,7 @@ namespace Ssz.Utils
                 return sszConverter;
         }
 
-        #endregion
-
-        private static readonly string[] ValuesSeparator = ["||"];
+        #endregion        
 
         private const float FloatTolerance = 0.000001f;
 
