@@ -69,8 +69,8 @@ namespace Ssz.Utils
                 }
                 else
                 {
-                    string name = nameValueCollectionString.Substring(nameValueBeginIndex, i - nameValueBeginIndex);
-                    result[UrlDecode(name)] = null;
+                    string value = nameValueCollectionString.Substring(nameValueBeginIndex, i - nameValueBeginIndex);
+                    result[@""] = UrlDecode(value);
                 }
 
                 i++;
@@ -131,8 +131,8 @@ namespace Ssz.Utils
                 }
                 else
                 {
-                    string name = nameValueCollectionString.Substring(nameValueBeginIndex, i - nameValueBeginIndex);
-                    result.Add((UrlDecode(name), null));
+                    string value = nameValueCollectionString.Substring(nameValueBeginIndex, i - nameValueBeginIndex);
+                    result.Add((@"", UrlDecode(value)));
                 }
 
                 i++;
