@@ -8,7 +8,7 @@ namespace Ssz.Utils
 {
     public static class SszOperatorHelper
     {
-        public static readonly string[] ValuesSeparator = ["|||"];
+        public static readonly string[] ValuesSeparator = ["||"];
 
         public readonly static (string, SszOperator)[] Operators = new[]
                    {                        
