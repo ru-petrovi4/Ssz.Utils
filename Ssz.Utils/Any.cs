@@ -1204,7 +1204,10 @@ namespace Ssz.Utils {
                     return ((TimeSpan)value).ToString(stringFormat ?? @"c", GetCultureInfo(stringIsLocalized));
             }
 
-            if (type.IsArray)
+            if (type.IsArray ||
+                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>)) ||
+                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>)) ||
+                (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(HashSet<>)))
             {
                 var options = new JsonSerializerOptions
                 {
