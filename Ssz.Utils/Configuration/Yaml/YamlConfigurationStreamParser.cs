@@ -8,7 +8,7 @@ using YamlDotNet.RepresentationModel;
 
 namespace Ssz.Utils.Yaml
 {
-    internal class YamlConfigurationStreamParser
+    public class YamlConfigurationStreamParser
     {
         #region public functions
 
@@ -19,7 +19,10 @@ namespace Ssz.Utils.Yaml
 
             // https://dotnetfiddle.net/rrR2Bb
             var yaml = new YamlStream();
-            yaml.Load(new StreamReader(input, detectEncodingFromByteOrderMarks: true));
+            using (var streamReader = new StreamReader(input, detectEncodingFromByteOrderMarks: true))
+            {
+                yaml.Load(streamReader);
+            }
 
             if (yaml.Documents.Any())
             {
@@ -28,6 +31,19 @@ namespace Ssz.Utils.Yaml
                 // The document node is a mapping node
                 VisitYamlMappingNode(mapping);
             }
+
+            return _data;
+        }
+
+        public IDictionary<string, string?> Parse(YamlDocument yamlDocument)
+        {
+            _data.Clear();
+            _context.Clear();            
+
+            var mapping = (YamlMappingNode)yamlDocument.RootNode;
+
+            // The document node is a mapping node
+            VisitYamlMappingNode(mapping);
 
             return _data;
         }

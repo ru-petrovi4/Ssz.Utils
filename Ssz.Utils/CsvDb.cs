@@ -81,7 +81,7 @@ namespace Ssz.Utils
                     }
                     catch (Exception ex)
                     {
-                        LoggersSet.Logger.LogWarning(ex, "AppSettings FilesStore directory error. Please, specify correct directory and restart service.");
+                        LoggersSet.Logger.LogWarning(ex, "CsvDb FileSystemWatcher error.");
                     }
             }
 
