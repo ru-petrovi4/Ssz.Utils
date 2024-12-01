@@ -1021,7 +1021,7 @@ namespace Ssz.Utils {
             {
                 case TypeCode.String:
                     {
-                        string dateTimeOffsetString = (string)StorageObject!;
+                        string dateTimeOffsetString = ((string)StorageObject!).Trim();
 
                         if (String.IsNullOrWhiteSpace(dateTimeOffsetString))
                             return default;
@@ -1030,17 +1030,36 @@ namespace Ssz.Utils {
 
                         if (String.IsNullOrEmpty(stringFormat))
                         {
-                            DateTimeOffset value;
-                            if (String.IsNullOrWhiteSpace(dateTimeOffsetString) ||
-                                    !DateTimeOffset.TryParse(dateTimeOffsetString, GetCultureInfo(stringIsLocalized), DateTimeStyles.None, out value))
-                                result = default;
+                            if (dateTimeOffsetString.StartsWith("now", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                result = DateTimeOffset.UtcNow;
+                                dateTimeOffsetString = dateTimeOffsetString.Substring("now".Length).Trim();
+                                bool? sign = null;
+                                if (dateTimeOffsetString.StartsWith("-"))
+                                    sign = false;
+                                if (dateTimeOffsetString.StartsWith("+"))
+                                    sign = true;
+                                if (sign is not null)
+                                {
+                                    var timeSpan = new Any(dateTimeOffsetString.Substring(1).Trim()).ValueAs<TimeSpan>(false);
+                                    if (sign.Value)
+                                        result += timeSpan;
+                                    else
+                                        result -= timeSpan;
+                                }
+                            }
                             else
-                                result = value;
+                            {
+                                DateTimeOffset value;
+                                if (!DateTimeOffset.TryParse(dateTimeOffsetString, GetCultureInfo(stringIsLocalized), DateTimeStyles.None, out value))
+                                    result = default;
+                                else
+                                    result = value;
+                            }                            
                         }                         else
                         {
                             DateTimeOffset value;
-                            if (String.IsNullOrWhiteSpace(dateTimeOffsetString) ||
-                                    !DateTimeOffset.TryParseExact(dateTimeOffsetString, stringFormat, GetCultureInfo(stringIsLocalized), DateTimeStyles.None, out value))
+                            if (!DateTimeOffset.TryParseExact(dateTimeOffsetString, stringFormat, GetCultureInfo(stringIsLocalized), DateTimeStyles.None, out value))
                                 result = default;
                             else
                                 result = value;
@@ -1245,7 +1264,7 @@ namespace Ssz.Utils {
                         JsonSerializer.Serialize(writer, StorageObject!, options);                         break;
                     case TypeCode.Object:                                                 JsonSerializer.Serialize(writer, StorageObject, options);                         break;                 }             }             catch (Exception)             {                             }         }
 
-        #endregion          #region public fields       
+#endregion          #region public fields       
         /// <summary>
         ///     Unsafe.
         /// </summary>
