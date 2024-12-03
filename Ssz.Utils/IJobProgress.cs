@@ -32,6 +32,11 @@ namespace Ssz.Utils
         public uint StatusCode { get; }
 
         /// <summary>
+        ///     ContinuationSemaphoreSlim for job continue from pause or cancel.
+        /// </summary>
+        public SemaphoreSlim Job_ContinuationSemaphoreSlim { get; }
+
+        /// <summary>
         ///     If parameter is null, the parameter does not change.
         /// </summary>
         /// <param name="progressPercent"></param>
@@ -46,9 +51,9 @@ namespace Ssz.Utils
         /// </summary>
         /// <param name="minProgressPercent"></param>
         /// <param name="maxProgressPercent"></param>
-        /// <param name="failedIfChildFailed"></param>
+        /// <param name="parentFailedIfFailed"></param>
         /// <returns></returns>
-        IJobProgress GetChildJobProgress(uint minProgressPercent, uint maxProgressPercent, bool failedIfChildFailed);
+        IJobProgress GetChildJobProgress(uint minProgressPercent, uint maxProgressPercent, bool parentFailedIfFailed);
     }
 
     public class NullJobProgress : IJobProgress
@@ -78,6 +83,11 @@ namespace Ssz.Utils
         public uint StatusCode { get; private set; }
 
         /// <summary>
+        ///     ContinuationSemaphoreSlim for job continue from pause or cancel.
+        /// </summary>
+        public SemaphoreSlim Job_ContinuationSemaphoreSlim { get; } = new SemaphoreSlim(0);
+
+        /// <summary>
         ///     
         /// </summary>
         /// <param name="progressPercent"></param>
@@ -90,7 +100,7 @@ namespace Ssz.Utils
             return Task.CompletedTask;
         }
 
-        public IJobProgress GetChildJobProgress(uint minProgressPercent, uint maxProgressPercent, bool failedIfChildFailed)
+        public IJobProgress GetChildJobProgress(uint minProgressPercent, uint maxProgressPercent, bool parentFailedIfFailed)
         {
             return this;
         }
