@@ -501,10 +501,15 @@ namespace Ssz.Utils {
                 case TypeCode.List:
                     return ((List<Any>)left.StorageObject!).SequenceEqual((List<Any>)right.StorageObject!);
                 case TypeCode.Object:
+                    try
                     {                        
                         if (left.StorageObject is IStructuralEquatable leftStructuralEquatable)
                             return leftStructuralEquatable.Equals(right.StorageObject, StructuralComparisons.StructuralEqualityComparer);                        
                         return left.StorageObject == right.StorageObject;
+                    }
+                    catch
+                    {
+                        return false;
                     }
                 default:
                     throw new InvalidOperationException();
@@ -578,6 +583,7 @@ namespace Ssz.Utils {
                 case TypeCode.List:
                     return ValueAsList().SequenceEqual(that.ValueAsList()) ? 0 : 1;
                 case TypeCode.Object:
+                    try
                     {
                         var thatObject = that.ValueAsObject();
                         if (thatObject is null)
@@ -587,7 +593,11 @@ namespace Ssz.Utils {
                         if (StorageObject is IComparable thisComparable)
                             return thisComparable.CompareTo(thatObject);
                         return ValueAsString(false).CompareTo(that.ValueAsString(false));
-                    }                 
+                    }      
+                    catch
+                    {
+                        return -1;
+                    }
                 default:
                     throw new InvalidOperationException();
             }         }        

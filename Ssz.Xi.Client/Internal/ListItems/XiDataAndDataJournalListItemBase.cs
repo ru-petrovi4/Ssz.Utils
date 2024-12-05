@@ -201,7 +201,7 @@ namespace Ssz.Xi.Client.Internal.ListItems
                 }
                 if (0 == string.Compare(typeof (DateTime).ToString(), _valueTypeId.LocalId, true))
                 {
-                    ValueTypeCode = Ssz.Utils.Any.TypeCode.DateTime;
+                    ValueTypeCode = Ssz.Utils.Any.TypeCode.DateTimeOffset;
                     return;
                 }
                 if (0 == string.Compare(typeof (Boolean).ToString(), _valueTypeId.LocalId, true))
