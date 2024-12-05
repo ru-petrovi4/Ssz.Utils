@@ -43,7 +43,7 @@ namespace Ssz.Utils
                     return TransportType.Object;
                 case Any.TypeCode.Decimal:
                     return TransportType.Object;
-                case Any.TypeCode.DateTime:
+                case Any.TypeCode.DateTimeOffset:
                     return TransportType.Object;
                 case Any.TypeCode.String:
                     return TransportType.Object;
