@@ -1,5 +1,6 @@
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
+using Ssz.DataAccessGrpc.ServerBase;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,21 +31,26 @@ namespace Ssz.DataAccessGrpc.Client
         ///     Result list count >= 1
         /// </summary>
         /// <returns></returns>
-        public static List<ByteString> SplitForCorrectGrpcMessageSize(ReadOnlyMemory<byte> bytes)
+        public static List<DataChunk> SplitForCorrectGrpcMessageSize(ReadOnlyMemory<byte> bytes)
         {
             if (bytes.Length == 0)
-                return new List<ByteString> { ByteString.Empty };
+                return new List<DataChunk> { new DataChunk { Bytes = ByteString.Empty } };
 
-            var result = new List<ByteString>();
+            var result = new List<DataChunk>();
             
             int position = 0;
             while (position < bytes.Length)
             {
                 int length = Math.Min(bytes.Length - position, Constants.MaxReplyObjectSize);
-                ByteString byteString = UnsafeByteOperations.UnsafeWrap(bytes.Slice(position, length));
+                DataChunk dataChunk = new DataChunk 
+                {
+                    Bytes = UnsafeByteOperations.UnsafeWrap(bytes.Slice(position, length)),
+                    IsIncomplete = true
+                };
                 position += length;
-                result.Add(byteString);                
+                result.Add(dataChunk);                
             }
+            result[result.Count - 1].IsIncomplete = false;
 
             return result;
         }

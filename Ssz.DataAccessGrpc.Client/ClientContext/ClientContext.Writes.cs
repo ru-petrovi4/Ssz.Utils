@@ -36,13 +36,13 @@ namespace Ssz.DataAccessGrpc.Client
             {
                 var call = _resourceManagementClient.WriteElementValues();
 
-                foreach (ByteString elementValuesCollection in ProtobufHelper.SplitForCorrectGrpcMessageSize(fullElementValuesCollection))
+                foreach (DataChunk dataChunk in ProtobufHelper.SplitForCorrectGrpcMessageSize(fullElementValuesCollection))
                 {
                     await call.RequestStream.WriteAsync(new WriteElementValuesRequest
                     {
                         ContextId = _serverContextId,
                         ListServerAlias = listServerAlias,
-                        ElementValuesCollection = elementValuesCollection
+                        ElementValuesCollection = dataChunk
                     });
                 }
                 await call.RequestStream.CompleteAsync();
@@ -131,14 +131,14 @@ namespace Ssz.DataAccessGrpc.Client
                 var call = _resourceManagementClient.Passthrough();
                 SetResourceManagementLastCallUtc();
 
-                foreach (var dataToSendByteString in ProtobufHelper.SplitForCorrectGrpcMessageSize(dataToSend))
+                foreach (DataChunk dataChunk in ProtobufHelper.SplitForCorrectGrpcMessageSize(dataToSend))
                 {
                     await call.RequestStream.WriteAsync(new PassthroughRequest
                     {
                         ContextId = _serverContextId,
                         RecipientPath = recipientPath,
                         PassthroughName = passthroughName,
-                        DataToSend = dataToSendByteString
+                        DataToSend = dataChunk
                     });                    
                 }
                 await call.RequestStream.CompleteAsync();
@@ -186,14 +186,14 @@ namespace Ssz.DataAccessGrpc.Client
                 var call = _resourceManagementClient.LongrunningPassthrough();
                 SetResourceManagementLastCallUtc();
 
-                foreach (var dataToSendByteString in ProtobufHelper.SplitForCorrectGrpcMessageSize(dataToSend))
+                foreach (DataChunk dataChunk in ProtobufHelper.SplitForCorrectGrpcMessageSize(dataToSend))
                 {
                     await call.RequestStream.WriteAsync(new ServerBase.LongrunningPassthroughRequest
                     {
                         ContextId = _serverContextId,
                         RecipientPath = recipientPath,
                         PassthroughName = passthroughName,
-                        DataToSend = dataToSendByteString
+                        DataToSend = dataChunk
                     });
                 }
                 await call.RequestStream.CompleteAsync();

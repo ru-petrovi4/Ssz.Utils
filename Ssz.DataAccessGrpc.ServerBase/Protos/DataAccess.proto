@@ -280,7 +280,7 @@ message ReadEventMessagesJournalRequest {
 message WriteElementValuesRequest {
   string context_id = 1;
   uint32 list_server_alias = 2; 
-  bytes element_values_collection = 3; 
+  DataChunk element_values_collection = 3; 
 }
 
 message WriteElementValuesReply {  
@@ -308,14 +308,14 @@ message PassthroughRequest {
   string context_id = 1;
   string recipient_path = 2;
   string passthrough_name = 3;
-  bytes data_to_send = 4;
+  DataChunk data_to_send = 4;
 }
 
 message LongrunningPassthroughRequest {  
   string context_id = 1;  
   string recipient_path = 2;
   string passthrough_name = 3;
-  bytes data_to_send = 4;
+  DataChunk data_to_send = 4;
 }
 
 message LongrunningPassthroughReply {    

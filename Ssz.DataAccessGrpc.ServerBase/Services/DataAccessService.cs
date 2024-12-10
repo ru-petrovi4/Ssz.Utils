@@ -293,7 +293,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             await foreach (WriteElementValuesRequest writeElementValuesRequest in requestStream.ReadAllAsync())
             {
                 request = writeElementValuesRequest;
-                requestByteStrings.Add(writeElementValuesRequest.ElementValuesCollection);
+                requestByteStrings.Add(writeElementValuesRequest.ElementValuesCollection.Bytes);
             }
             if (request is null)
                 throw new RpcException(new Status(StatusCode.Internal, "Invalid request."));
@@ -334,7 +334,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             await foreach (PassthroughRequest passthroughRequest in requestStream.ReadAllAsync())
             {
                 request = passthroughRequest;
-                requestByteStrings.Add(passthroughRequest.DataToSend);
+                requestByteStrings.Add(passthroughRequest.DataToSend.Bytes);
             }
             if (request is null)
                 throw new RpcException(new Status(StatusCode.Internal, "Invalid request."));
@@ -358,7 +358,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             await foreach (LongrunningPassthroughRequest longrunningPassthroughRequest in requestStream.ReadAllAsync())
             {
                 request = longrunningPassthroughRequest;
-                requestByteStrings.Add(longrunningPassthroughRequest.DataToSend);
+                requestByteStrings.Add(longrunningPassthroughRequest.DataToSend.Bytes);
             }
             if (request is null)
                 throw new RpcException(new Status(StatusCode.Internal, "Invalid request."));

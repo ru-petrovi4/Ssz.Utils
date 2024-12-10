@@ -190,7 +190,7 @@ namespace Ssz.Utils.Logging
 
             public Scope(SszLoggerBase sszLogger, (string, object?) scopeTuple)
             {
-                _sszLogger  = sszLogger;                
+                _sszLogger = sszLogger;                
                 _sszLogger.PushScope(scopeTuple);
             }
 
