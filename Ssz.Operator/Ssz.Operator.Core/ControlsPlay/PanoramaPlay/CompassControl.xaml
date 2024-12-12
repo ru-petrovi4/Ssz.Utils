@@ -1,0 +1,9 @@
+<UserControl x:Class="Ssz.Operator.Core.ControlsPlay.PanoramaPlay.CompassControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Viewport3D x:Name="MainViewport3D">
+        <Viewport3D.Camera>
+            <PerspectiveCamera Position="0, 15, 15" LookDirection="0, -15, -15" UpDirection="0, 1, 0" />
+        </Viewport3D.Camera>
+    </Viewport3D>
+</UserControl>

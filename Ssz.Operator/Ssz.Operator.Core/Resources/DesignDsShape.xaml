@@ -1,0 +1,112 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:res="clr-namespace:Ssz.Operator.Core.Properties"
+                    xmlns:controlsDesign="clr-namespace:Ssz.Operator.Core.ControlsDesign">
+
+    <!-- ResizeDecorator Default Template -->
+    <ControlTemplate x:Key="ResizeDecoratorTemplate" TargetType="{x:Type Control}">
+        <Grid Opacity="0.7">
+            <controlsDesign:DesignDsShapeViewResizeThumb Height="4" Cursor="SizeNWSE" Margin="0 -4 0 0"
+                                                           VerticalAlignment="Top" HorizontalAlignment="Stretch" />
+            <controlsDesign:DesignDsShapeViewResizeThumb Width="4" Cursor="SizeNWSE" Margin="-4 0 0 0"
+                                                           VerticalAlignment="Stretch" HorizontalAlignment="Left" />
+            <controlsDesign:DesignDsShapeViewResizeThumb Width="4" Cursor="SizeNWSE" Margin="0 0 -4 0"
+                                                           VerticalAlignment="Stretch" HorizontalAlignment="Right" />
+            <controlsDesign:DesignDsShapeViewResizeThumb Height="4" Cursor="SizeNWSE" Margin="0 0 0 -4"
+                                                           VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
+            <controlsDesign:DesignDsShapeViewResizeThumb Width="6" Height="6" Cursor="SizeAll" Margin="-6 -6 0 0"
+                                                           VerticalAlignment="Top" HorizontalAlignment="Left" />
+            <controlsDesign:DesignDsShapeViewResizeThumb Width="6" Height="6" Cursor="SizeAll" Margin="0 -6 -6 0"
+                                                           VerticalAlignment="Top" HorizontalAlignment="Right" />
+            <controlsDesign:DesignDsShapeViewResizeThumb Width="6" Height="6" Cursor="SizeAll" Margin="-6 0 0 -6"
+                                                           VerticalAlignment="Bottom" HorizontalAlignment="Left" />
+            <controlsDesign:DesignDsShapeViewResizeThumb Width="6" Height="6" Cursor="SizeAll" Margin="0 0 -6 -6"
+                                                           VerticalAlignment="Bottom" HorizontalAlignment="Right" />
+        </Grid>
+    </ControlTemplate>
+
+    <!-- DragThumb Default Template -->
+    <Style TargetType="{x:Type controlsDesign:DesignDsShapeViewDragThumb}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controlsDesign:DesignDsShapeViewDragThumb}">
+                    <Rectangle Fill="Transparent" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- DesignDsShapeView Style -->
+    <Style x:Key="DesignDsShapeViewStyle" TargetType="{x:Type controlsDesign:DesignDsShapeView}">
+        <Setter Property="MinWidth" Value="1" />
+        <Setter Property="MinHeight" Value="1" />
+        <Setter Property="ContextMenu" Value="{DynamicResource DesignDsShapeContextMenu}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controlsDesign:DesignDsShapeView}">
+                    <Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+                        <controlsDesign:DesignDsShapeViewDragThumb x:Name="PART_DragThumb"
+                                                                     Cursor="Hand" />
+                        <ContentPresenter x:Name="PART_ContentPresenter"
+                                          HorizontalAlignment="Stretch"
+                                          VerticalAlignment="Stretch"
+                                          Content="{TemplateBinding ContentControl.Content}"
+                                          Margin="{TemplateBinding ContentControl.Padding}" />
+                        <Control x:Name="PART_ResizeDecorator"
+                                 Template="{StaticResource ResizeDecoratorTemplate}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsFirstSelected}" Value="False">
+                            <Setter TargetName="PART_ResizeDecorator" Property="Opacity" Value="0.5" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=ResizeDecoratorIsVisible}" Value="False">
+                            <Setter TargetName="PART_ResizeDecorator" Property="Visibility" Value="Hidden" />
+                            <Setter TargetName="PART_DragThumb" Property="Visibility" Value="Hidden" />
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type controlsDesign:DesignDsShapeView}" BasedOn="{StaticResource DesignDsShapeViewStyle}" />
+    <Style TargetType="{x:Type controlsDesign:DesignGeometryDsShapeView}"
+           BasedOn="{StaticResource DesignDsShapeViewStyle}" />
+    <Style TargetType="{x:Type controlsDesign:DesignConnectorDsShapeView}"
+           BasedOn="{StaticResource DesignDsShapeViewStyle}" />
+
+    <ContextMenu x:Key="PathControlPointContextMenu">
+        <MenuItem Header="{x:Static res:Resources.PathControlPointAddMenuItemHeader}" Command="{Binding AddCommand}">
+            <MenuItem.Icon>
+                <Image Source="Images/Add.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{x:Static res:Resources.PathControlPointDeleteMenuItemHeader}"
+                  Command="{Binding DeleteCommand}">
+            <MenuItem.Icon>
+                <Image Source="Images/Delete.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+    </ContextMenu>
+
+    <ContextMenu x:Key="MiddleControlPointContextMenu">
+        <MenuItem Header="{x:Static res:Resources.MiddleControlPointSetHorizontalMenuItemHeader}"
+                  Command="{Binding SetHorizontalCommand}">
+            <MenuItem.Icon>
+                <Image Source="Images/SetHorizontal.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{x:Static res:Resources.MiddleControlPointSetVerticalMenuItemHeader}"
+                  Command="{Binding SetVerticalCommand}">
+            <MenuItem.Icon>
+                <Image Source="Images/SetVertical.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+        <MenuItem Header="{x:Static res:Resources.MiddleControlPointSetAngleMenuItemHeader}"
+                  Command="{Binding SetAngleCommand}">
+            <MenuItem.Icon>
+                <Image Source="Images/SetAngle.png" Width="16" />
+            </MenuItem.Icon>
+        </MenuItem>
+    </ContextMenu>
+</ResourceDictionary>

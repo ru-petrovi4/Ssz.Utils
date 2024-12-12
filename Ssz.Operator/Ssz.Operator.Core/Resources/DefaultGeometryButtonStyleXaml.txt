@@ -1,0 +1,33 @@
+<Style TargetType="{x:Type ButtonBase}" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Setter Property="Template">
+        <Setter.Value>
+            <ControlTemplate TargetType="{x:Type ButtonBase}">
+                <Border x:Name="ContentContainer"
+                                                BorderThickness="0"                                                
+                                                Background="{TemplateBinding Background}">
+                    <Grid>                        
+                        <ContentPresenter 
+                                            x:Name="ContentPresenter"
+                                            Margin="{TemplateBinding Padding}"
+                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                            RecognizesAccessKey="True"
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        <Path x:Name="Path" Fill="Transparent" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="{Binding Shape.StrokeThickness}" Data="{TemplateBinding Clip}"/>
+                    </Grid>
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="true">
+                        <Setter Property="Stroke" Value="#FF00FFFF" TargetName="Path"/>
+                    </Trigger>
+                    <Trigger Property="IsPressed" Value="true">
+                        <Setter Property="Fill" Value="#4200FFFF" TargetName="Path"/>
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="false">
+                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                    </Trigger>
+                </ControlTemplate.Triggers>                
+            </ControlTemplate>
+        </Setter.Value>
+    </Setter>
+</Style>

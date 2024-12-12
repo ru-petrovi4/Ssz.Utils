@@ -1,0 +1,38 @@
+<UserControl x:Class="Ssz.Operator.Core.VisualEditors.BrushEditorControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:res="clr-namespace:Ssz.Operator.Core.Properties"
+             xmlns:colorEditor="clr-namespace:Ssz.Operator.Core.VisualEditors.ColorEditor"
+             xmlns:gradientBrushEditor="clr-namespace:Ssz.Operator.Core.VisualEditors.GradientBrushEditor">
+
+    <TabControl Name="MainTabControl">
+        <TabItem Header="{x:Static res:Resources.SolidColorBrushTabItem}" Name="SolidBrushTabItem">
+            <colorEditor:ColorEditorControl x:Name="SolidColorPicker" />
+        </TabItem>
+        <TabItem Header="{x:Static res:Resources.GradientBrushTabItem}" Name="GradientBrushTabItem">
+            <gradientBrushEditor:GradientBrushEditorControl x:Name="GradientBrushEditor" />
+        </TabItem>
+        <TabItem Header="{x:Static res:Resources.BlinkingBrushTabItem}" Name="BlinkingBrushTabItem">
+            <StackPanel Orientation="Horizontal">
+                <colorEditor:ColorEditorControl x:Name="FirstColorPicker" />
+                <colorEditor:ColorEditorControl x:Name="SecondColorPicker" Margin="5,0,0,0" />
+            </StackPanel>
+        </TabItem>
+        <TabItem Header="{x:Static res:Resources.ParamNumBrushTabItem}" Name="ParamNumBrushTabItem">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{x:Static res:Resources.ParamNumBrushTextBlock}" VerticalAlignment="Center" />
+                <TextBox Grid.Column="1" x:Name="ParamNumBrushTextBox" Margin="5,0,0,0" Width="40" />
+            </Grid>
+        </TabItem>
+        <TabItem Header="{x:Static res:Resources.DefaultBrushTabItem}" Name="DefaultBrushTabItem" />
+    </TabControl>
+</UserControl>

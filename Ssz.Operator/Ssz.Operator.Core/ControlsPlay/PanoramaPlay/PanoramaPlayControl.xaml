@@ -1,0 +1,40 @@
+<controlsPlay:PlayControlBase x:Class="Ssz.Operator.Core.ControlsPlay.PanoramaPlay.PanoramaPlayControl"
+                              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                              xmlns:panoramaPlay="clr-namespace:Ssz.Operator.Core.ControlsPlay.PanoramaPlay"
+                              xmlns:controlsPlay="clr-namespace:Ssz.Operator.Core.ControlsPlay"
+                              mc:Ignorable="d"
+                              d:DesignHeight="300" d:DesignWidth="300">
+    <!--
+    <xctk:BusyIndicator x:Name="MainBusyIndicator" DisplayAfter="0:0:0.4">
+        <xctk:BusyIndicator.BusyContentTemplate>
+            <DataTemplate>
+                <Rectangle/>
+            </DataTemplate>
+        </xctk:BusyIndicator.BusyContentTemplate>
+        <xctk:BusyIndicator.OverlayStyle>
+            <Style TargetType="Rectangle"/>
+        </xctk:BusyIndicator.OverlayStyle>        
+        <xctk:BusyIndicator.ProgressBarStyle>
+            <Style TargetType="ProgressBar">
+                <Setter Property="Visibility" Value="Collapsed"/>
+            </Style>
+        </xctk:BusyIndicator.ProgressBarStyle>-->
+    <Grid x:Name="MainGrid">
+        <panoramaPlay:PanoramaViewport3D x:Name="FirstPanoramaViewport3D" />
+        <panoramaPlay:PanoramaViewport3D x:Name="SecondPanoramaViewport3D" />
+        <ContentControl x:Name="FrameContentControl" Panel.ZIndex="2" HorizontalAlignment="Left"
+                        VerticalAlignment="Stretch" />
+        <panoramaPlay:PanoramaLinesViewport3D x:Name="LinesViewport3D" Panel.ZIndex="3" Visibility="Hidden"
+                                              IsHitTestVisible="False" Opacity="0.2" />
+        <panoramaPlay:PanoramaDesignViewport3D Panel.ZIndex="4" x:Name="PanoramaDesignViewport3D" Visibility="Hidden" />
+        <TextBlock x:Name="InfoTextBlock" Panel.ZIndex="5" Foreground="White" TextAlignment="Left" Margin="20"
+                   Visibility="Hidden" IsHitTestVisible="False" Opacity="0.7" />
+        <panoramaPlay:CompassControl x:Name="CompassControl" Panel.ZIndex="5" Width="128" Height="128" Margin="20"
+                                     HorizontalAlignment="Right" VerticalAlignment="Bottom" IsHitTestVisible="False"
+                                     Opacity="0.7" />
+    </Grid>
+    <!--</xctk:BusyIndicator>-->
+</controlsPlay:PlayControlBase>

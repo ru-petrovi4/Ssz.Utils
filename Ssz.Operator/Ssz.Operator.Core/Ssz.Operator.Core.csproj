@@ -1,0 +1,114 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+	<TargetFrameworks>net462;net8.0-windows</TargetFrameworks>
+	<LangVersion>Latest</LangVersion>    
+    <Nullable>Enable</Nullable>    
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<Company>Simcode</Company>
+	<Version>1.0.76</Version>
+  </PropertyGroup>  
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">    
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>659;1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">    
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>659;1591</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0-windows'">
+	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>  
+  <ItemGroup>
+    <Compile Update="Properties\OperatorUIResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>OperatorUIResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\ResourceStrings.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ResourceStrings.tt</DependentUpon>
+    </Compile>    
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+	<Reference Include="PresentationFramework.Classic" Condition="'$(TargetFramework)' != 'net8.0-windows'" />
+    <Reference Include="System.Windows.Forms" Condition="'$(TargetFramework)' != 'net8.0-windows'" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\ResourceStrings.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ResourceStrings.cs</LastGenOutput>
+    </None>
+    <None Update="Resources\Buzzer.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\ClassicButtonStyleXaml.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\compass.mtl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\compass.obj">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Images\SetAngle.png" />
+    <Resource Include="Resources\Images\SetHorizontal.png" />
+    <Resource Include="Resources\Images\SetVertical.png" />
+    <Resource Include="Resources\Images\Add.png" />
+    <Resource Include="Resources\Images\Delete.png" />
+    <Resource Include="Resources\Images\Back.png" />
+    <Resource Include="Resources\Images\forward.png" />
+    <Resource Include="Resources\Images\Home.png" />
+    <Resource Include="Resources\Images\Symbol.png" />
+    <Resource Include="Resources\Images\Pushpin.png" />
+    <Resource Include="Resources\Images\Properties.png" />
+    <Resource Include="Resources\Images\Color_eyedropper.png" />
+    <None Update="Resources\Images\EyeDropper.cur">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>    
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Ssz.DataAccessGrpc.Client\Ssz.DataAccessGrpc.Client.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\..\Ssz.Utils.Wpf\Ssz.Utils.Wpf.csproj" />
+    <ProjectReference Include="..\..\Ssz.Utils\Ssz.Utils.csproj" />
+    <ProjectReference Include="..\..\Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.Toolkit\Ssz.Xceed.Wpf.Toolkit.csproj" />
+    <ProjectReference Include="..\..\ThirdParties\HelixToolkit\HelixToolkit.Wpf\HelixToolkit.Wpf.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\..\ThirdParties\Microsoft.Research.DynamicDataDisplay\Microsoft.Research.DynamicDataDisplay.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\..\ThirdParties\OxyPlot\OxyPlot.Wpf\OxyPlot.Wpf.csproj" />
+    <ProjectReference Include="..\..\ThirdParties\OxyPlot\OxyPlot\OxyPlot.csproj" />
+    <ProjectReference Include="..\..\ThirdParties\QuickGraph\QuickGraph.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\..\ThirdParties\Ssz.WindowsAPICodePack\Ssz.WindowsAPICodePack.csproj" />
+  </ItemGroup>  
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\OperatorUIResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>OperatorUIResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\OperatorUIResources.ru.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Resources.ru.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

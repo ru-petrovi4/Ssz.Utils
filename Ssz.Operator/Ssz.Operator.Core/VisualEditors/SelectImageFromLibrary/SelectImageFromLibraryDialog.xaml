@@ -1,0 +1,60 @@
+<locationMindfulWindows:LocationMindfulWindow
+    x:Class="Ssz.Operator.Core.VisualEditors.SelectImageFromLibrary.SelectImageFromLibraryDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:p="clr-namespace:Ssz.Operator.Core.Properties"
+    xmlns:visualEditors="clr-namespace:Ssz.Operator.Core.VisualEditors"
+    xmlns:libraryPath="clr-namespace:Ssz.Operator.Core.VisualEditors.LibraryPath"
+    xmlns:wpf="clr-namespace:Ssz.Operator.Core.ControlsCommon"
+    xmlns:locationMindfulWindows="clr-namespace:Ssz.Operator.Core.ControlsCommon"
+    FontSize="13"
+    Title="{x:Static p:Resources.AddDrawingsFromLibraryDialogTitle}"
+    WindowStyle="ToolWindow" ResizeMode="CanResize" wpf:WindowBehavior.HideCloseButton="True" ShowInTaskbar="False">
+    <Grid x:Name="MainGrid" Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <libraryPath:LibraryPathControl x:Name="LibraryPathControl" Grid.Row="0"
+                                        LibraryDirectoryInfoChanged="OnLibraryDirectoryInfoChanged"
+                                        IsEnabled="{Binding DataContext.IsNotBusy, ElementName=MainGrid}" />
+        <visualEditors:BusyWithStopControl Grid.Row="1" IsBusy="{Binding IsBusy}"
+                                           Text1="{x:Static p:Resources.SelectImageFromLibraryBusyText}"
+                                           Text2="{Binding ProgressString}"
+                                           Stopped="BusyControlOnStopped" ProgressPercent="{Binding ProgressPercent}">
+            <ListView
+                Margin="0,5,0,0"
+                ItemsSource="{Binding MainListViewItemsSource}" SelectedItem="{Binding SelectedImage}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Image Source="{Binding Image}"
+                               MouseDown="ImageOnMouseDown" Width="100" Height="100" ToolTip="{Binding FileInfo.Name}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </visualEditors:BusyWithStopControl>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <Button Width="80" IsDefault="True" Grid.Column="1" Click="OkButtonOnClick"
+                    Margin="5,5,0,0"
+                    Focusable="False">
+                OK
+            </Button>
+            <Button Width="80" IsCancel="True" Grid.Column="2" Click="CancelButtonOnClick"
+                    Margin="5,5,0,0" Focusable="False">
+                Cancel
+            </Button>
+        </Grid>
+    </Grid>
+</locationMindfulWindows:LocationMindfulWindow>

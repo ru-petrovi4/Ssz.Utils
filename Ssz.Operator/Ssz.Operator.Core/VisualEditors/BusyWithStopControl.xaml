@@ -1,0 +1,32 @@
+<xctk:BusyIndicator x:Class="Ssz.Operator.Core.VisualEditors.BusyWithStopControl"
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit/Ssz"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:p="clr-namespace:Ssz.Operator.Core.Properties"
+                    x:Name="busyIndicator">
+    <xctk:BusyIndicator.BusyContentTemplate>
+        <DataTemplate>
+            <StackPanel Margin="5">
+                <TextBlock Text="{Binding Text1, ElementName=busyIndicator}" HorizontalAlignment="Center"
+                           FontWeight="Bold" />
+                <StackPanel Margin="5">
+                    <TextBlock Text="{Binding Text2, ElementName=busyIndicator}" HorizontalAlignment="Center" />
+                    <ProgressBar Value="{Binding ProgressPercent, ElementName=busyIndicator}" Height="15" />
+                </StackPanel>
+                <Button Content="{x:Static p:Resources.StopButtonText}" HorizontalAlignment="Center"
+                        Click="StopButtonOnClick" />
+            </StackPanel>
+        </DataTemplate>
+    </xctk:BusyIndicator.BusyContentTemplate>
+    <xctk:BusyIndicator.OverlayStyle>
+        <Style TargetType="Rectangle">
+            <Setter Property="Fill" Value="Blue" />
+            <Setter Property="Opacity" Value="0.05" />
+        </Style>
+    </xctk:BusyIndicator.OverlayStyle>
+    <xctk:BusyIndicator.ProgressBarStyle>
+        <Style TargetType="ProgressBar">
+            <Setter Property="Visibility" Value="Collapsed" />
+        </Style>
+    </xctk:BusyIndicator.ProgressBarStyle>
+</xctk:BusyIndicator>

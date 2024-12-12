@@ -1,0 +1,32 @@
+<UserControl
+    x:Class="Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors.DataBindingItemsCollectionTypeEditor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:core="clr-namespace:Ssz.Operator.Core"
+    xmlns:res="clr-namespace:Ssz.Operator.Core.Properties"
+    mc:Ignorable="d"
+    d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="GetEnumValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="core:DataSourceType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+    <DataGrid Name="MainDataGrid" AutoGenerateColumns="False" HeadersVisibility="Column" CanUserAddRows="True"
+              CanUserDeleteRows="True" CanUserResizeColumns="True" CanUserSortColumns="False">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="N" IsReadOnly="True" Binding="{Binding Index}" />
+            <DataGridComboBoxColumn Header="{x:Static res:Resources.DataItemType}" IsReadOnly="False"
+                                    ItemsSource="{Binding Source={StaticResource GetEnumValues}}"
+                                    SelectedValueBinding="{Binding Type}" />
+            <DataGridTextColumn Header="{x:Static res:Resources.DataItemId}" IsReadOnly="False"
+                                Binding="{Binding IdString}" />
+            <DataGridTextColumn Header="{x:Static res:Resources.DataItemDefaultValue}"
+                                IsReadOnly="False" Binding="{Binding DefaultValue}" />
+        </DataGrid.Columns>
+    </DataGrid>
+</UserControl>

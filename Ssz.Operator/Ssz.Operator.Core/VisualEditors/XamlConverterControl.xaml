@@ -1,0 +1,96 @@
+<UserControl x:Class="Ssz.Operator.Core.VisualEditors.XamlConverterControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:res="clr-namespace:Ssz.Operator.Core.Properties"
+             xmlns:visualEditors="clr-namespace:Ssz.Operator.Core.VisualEditors"
+             xmlns:valueConverters="clr-namespace:Ssz.Operator.Core.VisualEditors.ValueConverters">
+    <UserControl.Resources>
+        <valueConverters:ExpressionIsValidToTextBrushConverter x:Key="ExpressionIsValidToTextBrushConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid Background="White">
+            <StackPanel Orientation="Vertical" VerticalAlignment="Top" Margin="5">
+                <Button Name="HelpButton" Width="100" Height="50" Foreground="Black"
+                        Content="{x:Static res:Resources.ConverterHelp}"
+                        Click="HelpButtonOnClick" />
+                <Button Name="ClearButton" Width="100" Height="50" Foreground="Black"
+                        Margin="0,5,0,0"
+                        Content="{x:Static res:Resources.ConverterClear}"
+                        Click="ClearButtonOnClick" />
+                <Button Name="SaveButton" Width="100" Height="50" Foreground="Black"
+                        Margin="0,5,0,0"
+                        Content="{x:Static res:Resources.ConverterSave}"
+                        Click="SaveButtonOnClick" />
+                <Button Name="LoadButton" Width="100" Height="50" Foreground="Black"
+                        Margin="0,5,0,0"
+                        Content="{x:Static res:Resources.ConverterLoad}"
+                        Click="LoadButtonOnClick" />
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Column="2" x:Name="DataSourceToUiGrid" Background="White">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox BorderThickness="0" IsReadOnly="true"
+                     Text="{x:Static res:Resources.ConverterWindowDataSourceToUi}" Margin="5" />
+            <DataGrid Grid.Row="1" Name="DataSourceToUiConverterDataGrid" Margin="5,0,0,5" AutoGenerateColumns="False"
+                      CanUserReorderColumns="False" CanUserSortColumns="False" CanUserAddRows="False"
+                      SelectionMode="Single" SelectionUnit="Cell"
+                      CurrentCellChanged="DataSourceToUiConverterDataGridCurrentCellChanged"
+                      LostFocus="DataSourceToUiConverterDataGridLostFocus">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="{x:Static res:Resources.XamlConverterWindowIfExpression}"
+                                            Width="*" IsReadOnly="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox
+                                    Text="{Binding Condition.ExpressionString, UpdateSourceTrigger=PropertyChanged}"
+                                    Foreground="{Binding Condition.IsValid, Converter={StaticResource ExpressionIsValidToTextBrushConverter}}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn
+                        Header="{x:Static res:Resources.ConverterWindowDataSourceToUiValueExpression}"
+                        MinWidth="91" IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <visualEditors:XamlEditor />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <StackPanel Grid.Row="1" Grid.Column="1" Margin="5,0,5,5" Orientation="Vertical">
+                <Button Name="DataSourceToUiUpButton" Width="30" Height="30"
+                        Click="DataSourceToUiUpButtonClick" ToolTip="{x:Static res:Resources.ConverterMoveUp}">
+                    <Polygon Points="20,0 40,40 0,40" Stretch="Fill" Width="20" Height="20" Fill="Black" />
+                </Button>
+                <Button Name="DataSourceToUiDownButton" Width="30" Height="30"
+                        Click="DataSourceToUiDownButtonClick" Margin="0,5,0,0"
+                        ToolTip="{x:Static res:Resources.ConverterMoveDown}">
+                    <Polygon Points="20,40 0,0 40,0" Stretch="Fill" Width="20" Height="20" Fill="Black" />
+                </Button>
+                <Button Name="DataSourceToUiNewButton" Width="30" Height="30" Foreground="Green"
+                        Margin="0,20,0,0"
+                        Padding="0" VerticalContentAlignment="Center" FontWeight="ExtraBold" FontSize="14"
+                        Click="DataSourceToUiNewButtonClick">
+                    <TextBlock Text="+" FontSize="24" FontFamily="Arial" />
+                </Button>
+                <Button Name="DataSourceToUiDeleteButton" Width="30" Height="30" Foreground="Red"
+                        Margin="0,5,0,0"
+                        FontFamily="Arial" Content="X" FontWeight="ExtraBold" FontSize="18"
+                        Click="DataSourceToUiDeleteButtonClick" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

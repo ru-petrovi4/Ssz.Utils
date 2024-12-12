@@ -1,0 +1,149 @@
+<UserControl x:Class="Ssz.Operator.Core.VisualEditors.ColorEditor.ColorEditorControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit/Ssz"
+             xmlns:themes="clr-namespace:Ssz.Xceed.Wpf.Toolkit.Themes;assembly=Ssz.Xceed.Wpf.Toolkit"
+             xmlns:res="clr-namespace:Ssz.Operator.Core.Properties"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <DrawingBrush x:Key="CheckerBrush" Viewport="0,0,10,10" ViewportUnits="Absolute" TileMode="Tile">
+            <DrawingBrush.Drawing>
+                <DrawingGroup>
+                    <GeometryDrawing Brush="White">
+                        <GeometryDrawing.Geometry>
+                            <RectangleGeometry Rect="0,0 100,100" />
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                    <GeometryDrawing Brush="LightGray">
+                        <GeometryDrawing.Geometry>
+                            <GeometryGroup>
+                                <RectangleGeometry Rect="0,0 50,50" />
+                                <RectangleGeometry Rect="50,50 50,50" />
+                            </GeometryGroup>
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+        <xctk:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter" />
+        <Style x:Key="ColorItemContainerStyle" TargetType="{x:Type ListBoxItem}">
+            <Setter Property="ToolTip" Value="{Binding Name}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Grid ToolTip="{Binding Name}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <Border BorderThickness="1" Background="Transparent" BorderBrush="Transparent"
+                                    x:Name="_outerBorder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <Border Background="Transparent" BorderThickness="1" BorderBrush="Transparent"
+                                        x:Name="_innerBorder" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="_outerBorder" Property="BorderBrush"
+                                        Value="{DynamicResource {x:Static themes:ResourceKeys.ControlSelectedBorderKey}}" />
+                                <Setter TargetName="_innerBorder" Property="BorderBrush"
+                                        Value="{DynamicResource {x:Static themes:ResourceKeys.ButtonMouseOverBackgroundKey}}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="_outerBorder" Property="BorderBrush"
+                                        Value="{DynamicResource {x:Static themes:ResourceKeys.ControlSelectedBorderKey}}" />
+                                <Setter TargetName="_innerBorder" Property="BorderBrush"
+                                        Value="{DynamicResource {x:Static themes:ResourceKeys.ButtonMouseOverBackgroundKey}}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <DataTemplate x:Key="ColorItemTemplate">
+            <Grid>
+                <Border Background="{StaticResource CheckerBrush}"
+                        BorderBrush="{DynamicResource {x:Static themes:ResourceKeys.ControlNormalBorderKey}}"
+                        BorderThickness="1" Margin="2,2,2,2">
+                    <Rectangle Width="14" Height="14">
+                        <Rectangle.Style>
+                            <Style TargetType="Rectangle">
+                                <Setter Property="Fill"
+                                        Value="{Binding Color, Converter={StaticResource ColorToSolidColorBrushConverter}}" />
+                            </Style>
+                        </Rectangle.Style>
+                    </Rectangle>
+                </Border>
+            </Grid>
+        </DataTemplate>
+        <Style x:Key="ColorListStyle" TargetType="ListBox">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Width="200" />
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemContainerStyle" Value="{StaticResource ColorItemContainerStyle}" />
+            <Setter Property="ItemTemplate" Value="{StaticResource ColorItemTemplate}" />
+            <Setter Property="SelectionMode" Value="Single" />
+        </Style>
+    </UserControl.Resources>
+    <StackPanel x:Name="MainStackPanel" Orientation="Horizontal">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Available Colors -->
+            <Grid Grid.Row="0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Available Colors" Background="AliceBlue" Padding="2" Margin="0,0,0,1" />
+                    <ListBox Grid.Row="1" SelectedItem="{Binding SelectedAvailableColors}"
+                             ItemsSource="{Binding AvailableColors}"
+                             Style="{StaticResource ColorListStyle}" />
+                </Grid>
+            </Grid>
+            <!-- Standard Colors-->
+            <Grid Grid.Row="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Standard Colors" Background="AliceBlue" Padding="2" Margin="0,1,0,1" />
+                    <ListBox Grid.Row="1" SelectedItem="{Binding SelectedStandardColors}"
+                             ItemsSource="{Binding StandardColors}"
+                             Style="{StaticResource ColorListStyle}" />
+                </Grid>
+            </Grid>
+            <StackPanel Grid.Row="2" Margin="5,5,0,0" Orientation="Vertical"
+                        ToolTip="{x:Static res:Resources.ColorFromScreenToolTip}">
+                <TextBlock Text="{x:Static res:Resources.ColorFromScreen}" HorizontalAlignment="Left" />
+                <Button x:Name="EyedropperButton" Width="25" Height="25" Margin="0,5,0,0"
+                        Click="EyedropperButtonOnClick" HorizontalAlignment="Left">
+                    <Image
+                        Source="pack://application:,,,/Ssz.Operator.Core;component/Resources/Images/Color_eyedropper.png"
+                        Margin="1" />
+                </Button>
+            </StackPanel>
+            <StackPanel Grid.Row="3" Margin="5,5,0,0" Orientation="Vertical"
+                        ToolTip="{x:Static res:Resources.ColorFromConstantToolTip}">
+                <TextBlock x:Name="ConstantTextBlock" Text="{x:Static res:Resources.ColorFromConstant}"
+                           HorizontalAlignment="Left" />
+                <TextBox x:Name="ConstantTextBox" Margin="0,5,0,0" Width="120" HorizontalAlignment="Left"
+                         KeyUp="ConstantTextBoxOnKeyUp" />
+            </StackPanel>
+        </Grid>
+        <xctk:ColorCanvas SelectedColor="{Binding SelectedColor}" Margin="5,0,0,0" />
+    </StackPanel>
+</UserControl>

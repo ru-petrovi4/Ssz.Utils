@@ -1,0 +1,58 @@
+<UserControl x:Class="Ssz.Operator.Core.VisualEditors.ConstContentEditorControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:res="clr-namespace:Ssz.Operator.Core.Properties"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d"
+             d:DesignHeight="400" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="dataFromStretchEnum" MethodName="GetValues"
+                            ObjectType="{x:Type system:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="Stretch" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="170" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0">
+            <Button Content="{x:Static res:Resources.ContentEditorClearContentButtonText}"
+                    HorizontalContentAlignment="Left" Margin="0,0,0,0" Padding="5"
+                    Click="ClearContentButtonOnClick" Height="30" />
+            <Button HorizontalContentAlignment="Left" Margin="0,5,0,0" Padding="5" Click="SelectFileButtonOnClick"
+                    Height="60">
+                <TextBlock Text="{x:Static res:Resources.ContentEditorSelectFileButtonText}" TextWrapping="Wrap" />
+            </Button>
+            <Button HorizontalContentAlignment="Left" Margin="0,5,0,0" Padding="5"
+                    Click="SelectFileFromLibraryButtonOnClick" Height="30">
+                <TextBlock Text="{x:Static res:Resources.ContentEditorSelectFileFromLibraryButtonText}"
+                           TextWrapping="Wrap" />
+            </Button>
+            <TextBlock Text="{x:Static res:Resources.ContentEditorContentStretch}" Margin="0,5,0,0" Padding="5" />
+            <ComboBox HorizontalContentAlignment="Left" Margin="0,5,0,0"
+                      Padding="5"
+                      ItemsSource="{Binding Source={StaticResource dataFromStretchEnum}}"
+                      SelectedItem="{Binding ContentStretchComboBoxSelectedItem}"
+                      VerticalContentAlignment="Center" Height="30" />
+            <Button Content="{x:Static res:Resources.SaveOriginalContentToFileButtonText}"
+                    HorizontalContentAlignment="Left" Margin="0,5,0,0" Padding="5"
+                    Click="SaveOriginalContentToFileButtonOnClick"
+                    Height="30" />
+            <Button Content="{x:Static res:Resources.SaveAsPngFileButtonText}"
+                    HorizontalContentAlignment="Left" Margin="0,5,0,0" Padding="5" Click="SaveAsPngFileButtonOnClick"
+                    Height="30" />
+            <Button Content="{x:Static res:Resources.SaveAsEmfFileButtonText}"
+                    HorizontalContentAlignment="Left" Margin="0,5,0,0" Padding="5" Click="SaveAsEmfFileButtonOnClick"
+                    Height="30" />
+            <TextBlock Text="{x:Static res:Resources.ContentEditorCurrentContentDesc}" Margin="0,5,0,0" Padding="5" />
+            <TextBlock Text="{Binding ContentDesc}" Margin="0,5,0,0" Padding="5" TextWrapping="WrapWithOverflow" />
+        </StackPanel>
+        <ContentControl Name="PreviewContentControl" Content="{Binding ContentPreview}" Margin="5,0,0,0"
+                        Grid.Column="1" />
+    </Grid>
+</UserControl>

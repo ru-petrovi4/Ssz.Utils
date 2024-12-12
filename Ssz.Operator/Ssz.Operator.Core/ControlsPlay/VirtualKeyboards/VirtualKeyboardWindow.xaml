@@ -1,0 +1,8 @@
+<controlsPlay:TouchScreenWindowBase
+    x:Class="Ssz.Operator.Core.ControlsPlay.VirtualKeyboards.VirtualKeyboardWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controlsPlay="clr-namespace:Ssz.Operator.Core.ControlsPlay"
+    Background="LightGray">
+    <Viewbox x:Name="Main" Visibility="Visible" Stretch="Uniform" StretchDirection="Both" />
+</controlsPlay:TouchScreenWindowBase>

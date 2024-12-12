@@ -1,0 +1,14 @@
+<UserControl x:Class="Ssz.Operator.Core.VisualEditors.ObjectPropertiesControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:res="clr-namespace:Ssz.Operator.Core.Properties"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit/Ssz">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <xctk:PropertyGrid Name="ObjectPropertyGrid" ShowTitle="False" />
+        <TextBlock Grid.Row="1" Text="{x:Static res:Resources.PropertyGridHint}" TextAlignment="Left" Margin="0,5,0,0" />
+    </Grid>
+</UserControl>

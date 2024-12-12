@@ -1,0 +1,26 @@
+<controlsPlay:PlayControlBase
+    x:Class="Ssz.Operator.Core.ControlsPlay.WpfModel3DPlay.WpfModel3DPlayControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit/Ssz"
+    xmlns:controlsPlay="clr-namespace:Ssz.Operator.Core.ControlsPlay"
+    xmlns:h="http://helix-toolkit.org/wpf">
+    <xctk:BusyIndicator x:Name="MainBusyIndicator" DisplayAfter="0" IsBusy="{Binding IsBusy}">
+        <h:HelixViewport3D x:Name="MainViewport3D"
+                           Title="{Binding Title}"
+                           SubTitle="{Binding SubTitle}"
+                           Background="#FF382F30"
+                           ShowCameraTarget="False"
+                           TextBrush="DeepSkyBlue"
+                           CameraRotationMode="Trackball"
+                           PanGesture="RightClick"
+                           RotateGesture="LeftClick"
+                           ModelUpDirection="0,1,0"
+                           IsHeadLightEnabled="True">
+            <h:HelixViewport3D.Camera>
+                <PerspectiveCamera Position="10, 0, 0" LookDirection="-10, 0, 0" UpDirection="0, 1, 0" />
+            </h:HelixViewport3D.Camera>
+            <ModelVisual3D Content="{Binding CurrentModel}" />
+        </h:HelixViewport3D>
+    </xctk:BusyIndicator>
+</controlsPlay:PlayControlBase>

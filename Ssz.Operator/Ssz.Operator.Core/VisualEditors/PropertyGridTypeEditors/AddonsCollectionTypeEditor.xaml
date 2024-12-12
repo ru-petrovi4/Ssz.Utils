@@ -1,0 +1,36 @@
+<UserControl x:Class="Ssz.Operator.Core.VisualEditors.PropertyGridTypeEditors.AddonsCollectionTypeEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit/Ssz"
+             xmlns:res="clr-namespace:Ssz.Operator.Core.Properties"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="500">
+    <UserControl.Resources>
+        <DataTemplate x:Key="ValueCellTemplate">
+            <TextBlock Text="{x:Static res:Resources.AddonPropertiesCellText}" />
+        </DataTemplate>
+        <DataTemplate x:Key="ValueCellEditingTemplate">
+            <xctk:PropertyGrid ShowTitle="False" ShowSearchBox="False" ShowSortOptions="False" ShowSummary="False"
+                               SelectedObject="{Binding}" />
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <DataGrid Name="MainDataGrid" AutoGenerateColumns="False" HeadersVisibility="Row" CanUserAddRows="False"
+                  CanUserDeleteRows="False" CanUserResizeColumns="True" CanUserSortColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn IsReadOnly="True" Binding="{Binding Name}" />
+                <DataGridTemplateColumn Width="*" IsReadOnly="False"
+                                        CellTemplate="{StaticResource ValueCellTemplate}"
+                                        CellEditingTemplate="{StaticResource ValueCellEditingTemplate}" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Width="160" Grid.Row="1" Margin="0,5,0,0" Content="{x:Static res:Resources.AddRemoveAddonsButtonText}"
+                HorizontalAlignment="Left" Click="AddRemoveAddonsButtonOnClick" />
+    </Grid>
+</UserControl>

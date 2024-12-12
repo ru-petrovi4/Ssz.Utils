@@ -1,0 +1,46 @@
+<UserControl
+    x:Class="Ssz.Operator.Core.VisualEditors.SameTypeCloneableObjectsListEditorControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:res="clr-namespace:Ssz.Operator.Core.Properties"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit/Ssz"
+    mc:Ignorable="d" d:DesignHeight="59">
+    <xctk:BusyIndicator x:Name="BusyIndicator">
+        <Grid Name="MainGrid" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <TextBlock Text="{x:Static res:Resources.SameTypeCloneableObjectsEditorControlHint}" />
+            <DataGrid Grid.Row="1" Name="MainDataGrid" Margin="0,5,0,0" AutoGenerateColumns="True"
+                      SelectionUnit="FullRow"
+                      CanUserAddRows="True" CanUserDeleteRows="True" CanUserReorderColumns="True"
+                      CanUserResizeColumns="True" CanUserResizeRows="True" CanUserSortColumns="False">
+                <DataGrid.CommandBindings>
+                    <CommandBinding Command="{x:Static ApplicationCommands.Paste}" Executed="PasteOnExecutedAsync" />
+                </DataGrid.CommandBindings>
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Command="{x:Static ApplicationCommands.Copy}" Header="Copy" />
+                        <MenuItem Command="{x:Static ApplicationCommands.Paste}" Header="Paste" />
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+            </DataGrid>
+            <WrapPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" Height="auto">
+                <Button Width="160" Content="{x:Static res:Resources.ImportFromCsvButtonText}" Margin="0,5,5,0"
+                        Click="ImportFromCsvButtonOnClickAsync" />
+                <Button Width="160" Content="{x:Static res:Resources.ExportToCsvButtonText}" Margin="0,5,5,0"
+                        Click="ExportToCsvButtonOnClickAsync" />
+                <Button Width="160" Content="{x:Static res:Resources.ClearAllButtonText}" Margin="0,5,5,0"
+                        Click="ClearAllButtonOnClick" />
+                <Button Width="160" Content="{x:Static res:Resources.FindButtonText}" Margin="0,5,5,0"
+                        Click="FindButtonOnClick" />
+                <Button Width="160" Content="{x:Static res:Resources.FindNextButtonText}" Margin="0,5,5,0"
+                        Click="FindNextButtonOnClick" />
+            </WrapPanel>
+        </Grid>
+    </xctk:BusyIndicator>
+</UserControl>

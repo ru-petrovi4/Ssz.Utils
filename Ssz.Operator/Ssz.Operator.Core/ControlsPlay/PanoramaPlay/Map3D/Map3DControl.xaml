@@ -1,0 +1,32 @@
+<UserControl x:Class="Ssz.Operator.Core.ControlsPlay.PanoramaPlay.Map3D.Map3DControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:map3D="clr-namespace:Ssz.Operator.Core.ControlsPlay.PanoramaPlay.Map3D"
+             xmlns:h="http://helix-toolkit.org/wpf">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <map3D:TagsFilteredComboBox x:Name="TagsComboBox" />
+        <h:HelixViewport3D x:Name="MainViewport3D"
+                           Grid.Row="1"
+                           Background="#FF382F30"
+                           ShowCameraTarget="False"
+                           TextBrush="DeepSkyBlue"
+                           CameraRotationMode="Trackball"
+                           PanGesture="LeftClick"
+                           RotateGesture="RightClick"
+                           ModelUpDirection="0,0,1"
+                           IsHeadLightEnabled="True"
+                           PreviewMouseMove="MainViewport3DOnPreviewMouseMove">
+            <h:HelixViewport3D.Camera>
+                <PerspectiveCamera Position="0, 0, 100" LookDirection="0, 0, -10" UpDirection="0, 1, 0" />
+            </h:HelixViewport3D.Camera>
+        </h:HelixViewport3D>
+        <Canvas Grid.Row="1">
+            <TextBlock x:Name="ToolTipTextBlock" Foreground="White" TextAlignment="Center" Padding="2"
+                       IsHitTestVisible="False" />
+        </Canvas>
+    </Grid>
+</UserControl>

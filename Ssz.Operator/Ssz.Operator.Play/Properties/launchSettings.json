@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Ssz.Operator.Play": {
+      "commandName": "Project",
+      "commandLineArgs": "-p \"D:\\Dev\\WinCC\\Model\\SARATOV_RSU_Interface\\Saratov.dsProject\" -ns 1"
+    }
+  }
+}

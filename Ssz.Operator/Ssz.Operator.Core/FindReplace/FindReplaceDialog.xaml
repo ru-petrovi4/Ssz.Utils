@@ -1,0 +1,159 @@
+<locationMindfulWindows:LocationMindfulWindow x:Class="Ssz.Operator.Core.FindReplace.FindReplaceDialog"
+                                              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                              xmlns:findReplace="clr-namespace:Ssz.Operator.Core.FindReplace"
+                                              xmlns:p="clr-namespace:Ssz.Operator.Core.Properties"
+                                              xmlns:visualEditors="clr-namespace:Ssz.Operator.Core.VisualEditors"
+                                              xmlns:locationMindfulWindows="clr-namespace:Ssz.Operator.Core.ControlsCommon"
+                                              KeyDown="WindowOnKeyDown" WindowStyle="ToolWindow" ShowInTaskbar="False"
+                                              Topmost="False"
+                                              FocusManager.IsFocusScope="True">
+    <!--Title="{x:Static p:Resources.FindAndReplaceWindowTitle}"-->
+    <Window.Resources>
+        <ResourceDictionary>
+            <findReplace:SearchScopeToInt x:Key="SearchScopeToInt" />
+            <findReplace:SearchScopePropsToInt x:Key="SearchScopePropsToInt" />
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <findReplace:BoolToInt x:Key="BoolToInt" />
+            <DataTemplate x:Key="FindDsPageTemplate">
+                <StackPanel>
+                    <TextBlock Margin="5,5,5,0" Text="{x:Static p:Resources.TextToFindLabel}" />
+                    <ContentPresenter Content="{Binding }" Margin="5,5,5,0" />
+                    <StackPanel DataContext="{Binding DataContext}" Margin="5,5,5,0">
+                        <TextBlock
+                            Visibility="{Binding ShowSearchIn,Converter={StaticResource BooleanToVisibilityConverter}}">
+                            Search in:
+                        </TextBlock>
+                        <ComboBox
+                            SelectedIndex="{Binding SearchIn, Mode=TwoWay,Converter={StaticResource SearchScopeToInt}}"
+                            Margin="0,5,0,0"
+                            Visibility="{Binding ShowSearchIn,Converter={StaticResource BooleanToVisibilityConverter}}"
+                            HorizontalAlignment="Stretch">
+                            <ComboBoxItem Content="{x:Static p:Resources.CurrentDrawingComboBoxItem}" />
+                            <ComboBoxItem Content="{x:Static p:Resources.AllOpenedDrawingsComboBoxItem}" />
+                            <ComboBoxItem Content="{x:Static p:Resources.AllDsPageDrawingsComboBoxItem}" />
+                            <ComboBoxItem Content="{x:Static p:Resources.AllDsShapeDrawingsComboBoxItem}" />
+                        </ComboBox>
+                        <ComboBox
+                            SelectedIndex="{Binding SearchInProps, Mode=TwoWay,Converter={StaticResource SearchScopePropsToInt}}"
+                            Margin="0,5,0,0"
+                            Visibility="{Binding ShowSearchInProps,Converter={StaticResource BooleanToVisibilityConverter}}"
+                            HorizontalAlignment="Stretch">
+                            <ComboBoxItem Content="{x:Static p:Resources.ConstantsValuesOnlyComboBoxItem}" />
+                            <ComboBoxItem Content="{x:Static p:Resources.AllPropertiesComboBoxItem}" />
+                        </ComboBox>
+                        <Expander Header="Options" IsExpanded="True" Visibility="{Binding OptionsExpanderVisibility}"
+                                  Margin="0,5,0,0">
+                            <StackPanel>
+                                <CheckBox Margin="1" Name="CaseSensitiveCheckBox"
+                                          IsChecked="{Binding CaseSensitive, Mode=TwoWay}">
+                                    Case Sensitive
+                                </CheckBox>
+                                <!--
+                                <CheckBox Margin="1" Name="SearchUpCheckBox" IsChecked="{Binding SearchUp, Mode=TwoWay}">Search up</CheckBox>-->
+                                <CheckBox Margin="1" Name="WholeStringCheckBox"
+                                          IsChecked="{Binding WholeString, Mode=TwoWay}"
+                                          Content="{x:Static p:Resources.WholeStringCheckBox}" />
+                                <CheckBox Margin="1" Name="RegexCheckBox" IsChecked="{Binding UseRegEx, Mode=TwoWay}">Regular Expression</CheckBox>
+                                <CheckBox Margin="1" Name="WildcardsCheckBox"
+                                          IsChecked="{Binding UseWildcards, Mode=TwoWay}"
+                                          Content="{x:Static p:Resources.WildcardsCheckBox}"
+                                          ToolTip="{x:Static p:Resources.WildcardsCheckBoxToolTip}" />
+                            </StackPanel>
+                        </Expander>
+                    </StackPanel>
+                </StackPanel>
+            </DataTemplate>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <TabControl Grid.Column="0" Name="MainTab" Height="Auto"
+                    BorderThickness="{Binding AllowReplace,  Converter={StaticResource BoolToInt}}"
+                    IsEnabled="{Binding IsNotBusy}">
+            <TabItem Header="Find" Name="FindTabItem" ContentTemplate="{StaticResource FindDsPageTemplate}"
+                     Visibility="{Binding AllowReplace, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel>
+                    <TextBox Name="FindTextBox" AcceptsReturn="{Binding AcceptsReturn}"
+                             Text="{Binding TextToFind, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <Button x:Name="FindButton" Margin="0,5,0,0" IsDefault="True" HorizontalAlignment="Left"
+                            Width="200"
+                            Click="FindButtonOnClickAsync" Content="{x:Static p:Resources.FindButton}"
+                            Padding="10,2,0,2" HorizontalContentAlignment="Left" />
+                    <Button x:Name="ExportResultsButton" Margin="0,5,0,0" HorizontalAlignment="Left" Width="200"
+                            Click="ExportResultsOnClick" Content="{x:Static p:Resources.ExportResultsButton}"
+                            Padding="10,2,0,2" HorizontalContentAlignment="Left" />
+                    <Button x:Name="CopyResultsButton" Margin="0,5,0,0" HorizontalAlignment="Left" Width="200"
+                            Click="CopyResultsOnClick" Content="{x:Static p:Resources.CopyResultsButton}"
+                            Padding="10,2,0,2" HorizontalContentAlignment="Left" />
+                    <TextBlock Margin="0,5,0,0" Text="{x:Static p:Resources.FindReplaceDialogHint}" TextWrapping="Wrap"
+                               TextAlignment="Left" />
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Replace" Name="ReplaceTabItem" ContentTemplate="{StaticResource FindDsPageTemplate}"
+                     Visibility="{Binding AllowReplace, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel>
+                    <TextBox Name="Find2TextBox" AcceptsReturn="{Binding AcceptsReturn}"
+                             Text="{Binding TextToFind, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBlock Margin="0,5,0,0" Text="{x:Static p:Resources.ReplaceWith}" />
+                    <TextBox Margin="0,5,0,0" Name="ReplaceTextBox" AcceptsReturn="{Binding AcceptsReturn}"
+                             Text="{Binding ReplacementText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    <StackPanel Margin="0,5,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <!--
+                        <Button IsDefault="True" HorizontalAlignment="Right" Width="65"
+                                Click="FindButtonOnClickAsync">
+                            Find Next
+                        </Button>
+                        <Button Margin="5,0,0,0" HorizontalAlignment="Right" Width="65" Click="ReplaceClick">Replace</Button>-->
+                        <Button Margin="5,0,0,0" HorizontalAlignment="Right" Width="65" Click="ReplaceAllClickAsync"
+                                Content="{x:Static p:Resources.ReplaceAll}" />
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+        <visualEditors:BusyWithStopControl x:Name="MainBusyWithStopControl" Grid.Column="1" IsBusy="{Binding IsBusy}"
+                                           Text1="{x:Static p:Resources.FindReplaceBusyText}"
+                                           Text2="{Binding ProgressString}"
+                                           Stopped="BusyControlOnStopped" ProgressPercent="{Binding ProgressPercent}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <TreeView Margin="5,5,5,0" ItemsSource="{Binding SearchResultGroupsCollection}">
+                    <TreeView.Resources>
+                        <HierarchicalDataTemplate
+                            DataType="{x:Type findReplace:SearchResultGroupViewModel}"
+                            ItemsSource="{Binding SearchResults}">
+                            <TextBlock Text="{Binding Header}" />
+                        </HierarchicalDataTemplate>
+                        <HierarchicalDataTemplate
+                            DataType="{x:Type findReplace:SearchResultViewModel}">
+                            <TextBlock MouseDown="SearchResultsOnMouseDown" Text="{Binding Header}" />
+                        </HierarchicalDataTemplate>
+                    </TreeView.Resources>
+                    <TreeView.ItemContainerStyle>
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <Setter Property="IsExpanded"
+                                    Value="True" />
+                        </Style>
+                    </TreeView.ItemContainerStyle>
+                </TreeView>
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="{x:Static p:Resources.ShowDsShapePropertiesButtonText}"
+                            Click="ShowDsShapePropertiesButtonOnClick" Margin="0,5,5,5" Width="180"
+                            Visibility="{Binding ShowDsShapePropertiesButtonVisibility}" />
+                    <Button Content="{x:Static p:OperatorUIResources.GoToDsPageButtonText}"
+                            Click="GoToDsPageButtonOnClick" Margin="0,5,5,5" Width="180"
+                            Visibility="{Binding GoToDsPageButtonVisibility}" />
+                    <Button Content="{x:Static p:OperatorUIResources.FindPathButtonText}" Click="FindPathButtonOnClick"
+                            Margin="0,5,5,5" Width="180"
+                            Visibility="{Binding FindPathButtonVisibility}" />
+                </StackPanel>
+            </Grid>
+        </visualEditors:BusyWithStopControl>
+    </Grid>
+</locationMindfulWindows:LocationMindfulWindow>

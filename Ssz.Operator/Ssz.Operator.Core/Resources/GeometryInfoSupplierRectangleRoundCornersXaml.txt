@@ -1,0 +1,2 @@
+<RectangleGeometry xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            Rect="0,0,100,100" RadiusX="10" RadiusY="10" />

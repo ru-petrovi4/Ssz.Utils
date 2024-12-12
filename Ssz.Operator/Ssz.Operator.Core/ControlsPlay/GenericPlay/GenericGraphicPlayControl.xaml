@@ -1,0 +1,19 @@
+<controlsPlay:PlayControlBase
+    x:Class="Ssz.Operator.Core.ControlsPlay.GenericPlay.GenericGraphicPlayControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit/Ssz"
+    xmlns:controlsPlay="clr-namespace:Ssz.Operator.Core.ControlsPlay"
+    mc:Ignorable="d"
+    d:DesignHeight="300" d:DesignWidth="300">
+    <xctk:BusyIndicator x:Name="MainBusyIndicator" DisplayAfter="0:0:0.400">
+        <xctk:BusyIndicator.OverlayStyle>
+            <Style TargetType="Rectangle">
+                <Setter Property="Fill" Value="White" />
+                <Setter Property="Opacity" Value="0.05" />
+            </Style>
+        </xctk:BusyIndicator.OverlayStyle>
+    </xctk:BusyIndicator>
+</controlsPlay:PlayControlBase>

@@ -1,0 +1,27 @@
+<UserControl
+    x:Class="Ssz.Operator.Core.VisualEditors.AddonsCollectionEditor.AddonsCollectionEditorControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:res="clr-namespace:Ssz.Operator.Core.Properties"
+    mc:Ignorable="d"
+    d:DesignHeight="600" d:DesignWidth="800">
+    <Grid Name="MainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <ListView ItemsSource="{Binding ItemsSource}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <CheckBox IsChecked="{Binding IsChecked}" Content="{Binding Header}" ToolTip="{Binding ToolTip}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left">
+            <Button Width="160" Content="{x:Static res:Resources.RefreshAddonsCollectionButtonText}" Margin="0,5,0,0"
+                    Click="RefreshAddonsCollectionButtonOnClick" />
+        </StackPanel>
+    </Grid>
+</UserControl>
