@@ -175,7 +175,7 @@ namespace Ssz.Dcs.CentralServer
         {
             ObservableCollection<CentralServer.EngineSession> engineSessions = GetEngineSessions(serverContext);
 
-            var tasks = new List<Task<Task<uint>>>();
+            var statusCodeTasks = new List<Task<uint>>();
 
             if (!String.IsNullOrEmpty(recipientPath))
             {
@@ -200,22 +200,22 @@ namespace Ssz.Dcs.CentralServer
                 if (engineSession is not null)
                 {
                     Logger.LogDebug("dataAccessProvider.LongrunningPassthrough passthroughName=" + passthroughName);
-                    tasks.Add(engineSession.DataAccessProvider.LongrunningPassthroughAsync(remainingRecipientPath, passthroughName, dataToSend, null));
+                    statusCodeTasks.Add(await engineSession.DataAccessProvider.LongrunningPassthroughAsync(remainingRecipientPath, passthroughName, dataToSend, null));
                 }
             }
-            if (tasks.Count == 0)
+            if (statusCodeTasks.Count == 0)
                 foreach (CentralServer.EngineSession engineSession in engineSessions)
                 {
                     Logger.LogDebug("dataAccessProvider.LongrunningPassthrough passthroughName=" + passthroughName);
-                    tasks.Add(engineSession.DataAccessProvider.LongrunningPassthroughAsync(recipientPath, passthroughName, dataToSend, null));
+                    statusCodeTasks.Add(await engineSession.DataAccessProvider.LongrunningPassthroughAsync(recipientPath, passthroughName, dataToSend, null));
                 }
 
             bool allSucceeded = true;
-            foreach (var task in tasks)
+            foreach (var statusCodeTask in statusCodeTasks)
             {
                 try
                 {
-                    if (!StatusCodes.IsGood(await await task))
+                    if (!StatusCodes.IsGood(await statusCodeTask))
                         allSucceeded = false;
                 }
                 catch

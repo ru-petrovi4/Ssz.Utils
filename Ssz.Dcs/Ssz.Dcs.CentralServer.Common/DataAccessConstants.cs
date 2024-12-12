@@ -14,7 +14,7 @@ namespace Ssz.Dcs.CentralServer.Common
 
         public const string Instructor_ClientApplicationName = @"Simcode.DeltaSim.Instructor";
 
-        public const string Operator_ClientApplicationName = @"Simcode.DeltaSim.Operator.Play";
+        public const string Operator_ClientApplicationName = @"Ssz.Operator.Play";
 
         public const string ControlEngine_ClientApplicationName = @"Ssz.Dcs.ControlEngine";
 

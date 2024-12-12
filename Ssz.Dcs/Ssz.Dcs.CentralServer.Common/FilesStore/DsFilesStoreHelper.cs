@@ -276,7 +276,7 @@ namespace Ssz.Dcs.CentralServer.Common
 //if (dsFilesStoreDirectory.DsFilesStoreFilesCollection.FirstOrDefault(f => f.Name.EndsWith(@".mv_", StringComparison.InvariantCultureIgnoreCase)) is not null)
 //    return DsFilesStoreDirectoryType.PlatInstructorEngineData;
 
-//if (dsFilesStoreDirectory.DsFilesStoreFilesCollection.FirstOrDefault(f => String.Equals(f.Name, @"Ssz.Dcs.Operator.Play.exe", StringComparison.InvariantCultureIgnoreCase)) is not null)
+//if (dsFilesStoreDirectory.DsFilesStoreFilesCollection.FirstOrDefault(f => String.Equals(f.Name, @"Ssz.Operator.Play.exe", StringComparison.InvariantCultureIgnoreCase)) is not null)
 //    return DsFilesStoreDirectoryType.OperatorBin;
 
 //if (dsFilesStoreDirectory.DsFilesStoreFilesCollection.FirstOrDefault(f => f.Name.Contains(@".dssolution.NameToDisplay=", StringComparison.InvariantCultureIgnoreCase)) is not null)

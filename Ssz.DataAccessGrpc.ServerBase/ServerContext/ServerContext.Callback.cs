@@ -132,8 +132,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogWarning(ex, @"ServerContext Callback Thread Exception");
-                    break;
+                    Logger.LogWarning(ex, @"ServerContext Callback Thread Exception");                    
                 }                
             }
 

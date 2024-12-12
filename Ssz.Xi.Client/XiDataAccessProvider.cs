@@ -576,8 +576,7 @@ namespace Ssz.Xi.Client
                 }
                 catch (Exception ex)
                 {
-                    LoggersSet.Logger.LogWarning(ex, @"ServerContext Callback Thread Exception");
-                    break;
+                    LoggersSet.Logger.LogWarning(ex, @"ServerContext Callback Thread Exception");                    
                 }
             }            
 

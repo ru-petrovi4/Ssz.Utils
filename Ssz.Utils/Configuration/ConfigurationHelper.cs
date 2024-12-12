@@ -188,7 +188,7 @@ namespace Ssz.Utils
 
         public static void SetCurrentDirectory(string[] args)
         {
-            int i = Array.FindIndex(args, a => a == "--" + ConfigurationConstants.ConfigurationKey_CurrentDirectory ||
+            int i = Array.FindIndex(args, a => String.Equals(a, "--" + ConfigurationConstants.ConfigurationKey_CurrentDirectory, StringComparison.InvariantCultureIgnoreCase) ||
                 a == ConfigurationConstants.ConfigurationKeyMapping_CurrentDirectory);
             if (i == -1 || i + 1 >= args.Length)
                 return;

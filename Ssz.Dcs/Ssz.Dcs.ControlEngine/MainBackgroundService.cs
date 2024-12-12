@@ -121,8 +121,7 @@ namespace Ssz.Dcs.ControlEngine
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex, @"_serverWorker.DoWorkAsync(...) Exception");
-                    break;
+                    Logger.LogError(ex, @"_serverWorker.DoWorkAsync(...) Exception");                    
                 }
             }
 

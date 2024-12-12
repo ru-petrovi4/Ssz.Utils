@@ -566,8 +566,7 @@ namespace Ssz.Dcs.Addons.OpcClient
                 }
                 catch (Exception ex)
                 {
-                    LoggersSet.Logger.LogWarning(ex, @"OPC Client WorkingTaskMain Exception");
-                    break;
+                    LoggersSet.Logger.LogWarning(ex, @"OPC Client WorkingTaskMain Exception");                    
                 }
             }            
 

@@ -54,8 +54,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogError(ex, @"_worker.DoWorkAsync(...) Exception");
-                    break;
+                    Logger.LogError(ex, @"_worker.DoWorkAsync(...) Exception");                    
                 }                
             }
 

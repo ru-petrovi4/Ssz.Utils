@@ -50,7 +50,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     };
                 }
 
-                var t = utilityDataAccessProvider.LongrunningPassthroughAsync(@"", LongrunningPassthroughConstants.ProcessModelingSession_RunOperatorExe,
+                var t = await utilityDataAccessProvider.LongrunningPassthroughAsync(@"", LongrunningPassthroughConstants.ProcessModelingSession_RunOperatorExe,
                     Encoding.UTF8.GetBytes(CsvHelper.FormatForCsv(operatorSessionId, 
                     workingDirectoriesOptional.Value.BinDirectoryInfo.FullName, 
                     workingDirectoriesOptional.Value.DataDirectoryInfo.FullName,
