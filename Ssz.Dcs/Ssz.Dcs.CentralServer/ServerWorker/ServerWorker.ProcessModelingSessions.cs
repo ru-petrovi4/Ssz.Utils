@@ -149,9 +149,9 @@ namespace Ssz.Dcs.CentralServer
 
         public async void ConcludeProcessModelingSession(string processModelingSessionId)
         {
-            ProcessModelingSession? processModelingSession = _processModelingSessionsCollection.TryGetValue(processModelingSessionId);
-            if (processModelingSession is null) return;
-            _processModelingSessionsCollection.Remove(processModelingSessionId);
+            _processModelingSessionsCollection.Remove(processModelingSessionId, out ProcessModelingSession? processModelingSession);
+            if (processModelingSession is null) 
+                return;            
 
             try
             {
@@ -202,9 +202,9 @@ namespace Ssz.Dcs.CentralServer
             {
                 for (int collectionIndex = processModelingSession.EngineSessions.Count - 1; collectionIndex >= 0; collectionIndex -= 1)
                 {
-                    var o = processModelingSession.EngineSessions[collectionIndex];
-                    processModelingSession.EngineSessions.RemoveAt(collectionIndex);                    
-                    o.Dispose();
+                    var engineSession = processModelingSession.EngineSessions[collectionIndex];
+                    processModelingSession.EngineSessions.RemoveAt(collectionIndex);
+                    engineSession.Dispose();
                 }
 
                 bool utilityItemsProcessingNeeded = false;
@@ -268,7 +268,7 @@ namespace Ssz.Dcs.CentralServer
                             ProcessModelingSessionStatus = ProcessModelingSessionConstants.Initiated                            
                         };
 
-                        DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewPreparedDataAccessProviderAddon(
+                        DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewInitializedDataAccessProviderAddon(
                             _serviceProvider,
                             $"http://localhost:60080/SimcodePlatServer/ServerDiscovery",
                             systemName,
@@ -296,7 +296,7 @@ namespace Ssz.Dcs.CentralServer
                             ProcessModelingSessionStatus = ProcessModelingSessionConstants.Initiated,                            
                         };
 
-                        DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewPreparedDataAccessProviderAddon(
+                        DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewInitializedDataAccessProviderAddon(
                             _serviceProvider,
                             $"http://localhost:60080/HoneywellUsoXiServer/ServerDiscovery",
                             systemName,
@@ -393,15 +393,14 @@ namespace Ssz.Dcs.CentralServer
 
                 Generate_LaunchEngine_SystemEvent(enginesHostInfo.WorkstationName, processModelingSession, DsFilesStoreDirectoryType.ControlEngineBin, DsFilesStoreDirectoryType.ControlEngineData, @"", engineSessionId);
 
-                DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewPreparedDataAccessProviderAddon(
+                DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewInitializedDataAccessProviderAddon(
                         _serviceProvider,
                         @"",
                         @"PROCESS",
                         new CaseInsensitiveDictionary<string?>(),
                         ThreadSafeDispatcher);
                 var controlEngineSession = new ControlEngine_TrainingEngineSession(engineSessionId, dataAccessProviderGetter_Addon);
-                processModelingSession.EngineSessions.Add(controlEngineSession);                
-                ProcessModeling_EngineSessions.Add(engineSessionId, controlEngineSession);
+                processModelingSession.EngineSessions.Add(controlEngineSession);
                 processModelingSession.SubscribeToMainControlEngine((GrpcDataAccessProvider)controlEngineSession.DataAccessProvider);
 
                 // Launch PlatInstructor
@@ -422,7 +421,7 @@ namespace Ssz.Dcs.CentralServer
                         DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon2;
                         if (String.Equals(enginesHostInfo.WorkstationName, @"localhost", StringComparison.InvariantCultureIgnoreCase))
                         {
-                            dataAccessProviderGetter_Addon2 = GetNewPreparedDataAccessProviderAddon(
+                            dataAccessProviderGetter_Addon2 = GetNewInitializedDataAccessProviderAddon(
                                 _serviceProvider,
                                 $"http://localhost:60080/SimcodePlatServer/ServerDiscovery",
                                 xiSystemName,
@@ -431,7 +430,7 @@ namespace Ssz.Dcs.CentralServer
                         }
                         else
                         {
-                            dataAccessProviderGetter_Addon2 = GetNewPreparedDataAccessProviderAddon(
+                            dataAccessProviderGetter_Addon2 = GetNewInitializedDataAccessProviderAddon(
                                 _serviceProvider,
                                 $"https://{enginesHostInfo.WorkstationName}:60060",
                                 DataAccessConstants.PlatformXiProcessModelingSessionId + xiSystemName,
@@ -439,8 +438,7 @@ namespace Ssz.Dcs.CentralServer
                                 ThreadSafeDispatcher);
                         }
                         var platInstructorEngineSession = new EngineSession(engineSessionId, dataAccessProviderGetter_Addon2);
-                        processModelingSession.EngineSessions.Add(platInstructorEngineSession);
-                        ProcessModeling_EngineSessions.Add(engineSessionId, controlEngineSession);
+                        processModelingSession.EngineSessions.Add(platInstructorEngineSession);                        
                     }
                 }
             }
@@ -561,7 +559,7 @@ namespace Ssz.Dcs.CentralServer
 
             public long? DbEnity_ProcessModelingSessionId { get; set; }
 
-            public ObservableCollection<CentralServer.EngineSession> EngineSessions { get; } = new();
+            public ObservableCollection<CentralServer.EngineSession> EngineSessions { get; } = new();            
 
             /// <summary>
             ///     See ProcessModelingSessionConstants

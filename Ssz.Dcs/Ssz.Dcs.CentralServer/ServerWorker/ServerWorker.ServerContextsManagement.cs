@@ -155,14 +155,13 @@ namespace Ssz.Dcs.CentralServer
             {                
                 if (added)
                 {
-                    EngineSession? engineSession = ProcessModeling_EngineSessions.TryGetValue(engineSessionId);
-                    if (engineSession is not null)
-                        engineSession.DataAccessProvider.ServerAddress = utilityServerContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_ControlEngineServerAddress)!;
-                }     
-                else
-                {
-                    ProcessModeling_EngineSessions.Remove(engineSessionId);
-                }
+                    foreach (var processModelingSession in _processModelingSessionsCollection.Values)
+                    {
+                        EngineSession? engineSession = processModelingSession.EngineSessions.FirstOrDefault(es => es.EngineSessionId == engineSessionId);
+                        if (engineSession is not null)
+                            engineSession.DataAccessProvider.ServerAddress = utilityServerContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_ControlEngineServerAddress)!;
+                    }                    
+                }                
             }
             catch
             {

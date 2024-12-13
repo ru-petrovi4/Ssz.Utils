@@ -18,12 +18,7 @@ namespace Ssz.Dcs.CentralServer
     {
         #region public functions
 
-        public ObservableCollection<CentralServer.EngineSession> Dcs_EngineSessions { get; } = new();
-
-        /// <summary>
-        ///     [EngineSessionId, EngineSession]
-        /// </summary>
-        public CaseInsensitiveDictionary<CentralServer.EngineSession> ProcessModeling_EngineSessions { get; } = new();
+        public ObservableCollection<CentralServer.EngineSession> Dcs_EngineSessions { get; } = new();        
 
         #endregion
 

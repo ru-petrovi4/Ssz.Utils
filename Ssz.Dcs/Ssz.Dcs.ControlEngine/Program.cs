@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Net;
 using Ssz.Dcs.CentralServer.Common.Helpers;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Ssz.Dcs.ControlEngine
 {
@@ -25,13 +26,13 @@ namespace Ssz.Dcs.ControlEngine
 
         public static Options Options { get; private set; } = null!;
 
-        #endregion
+        #endregion                
 
         #region public functions
 
-        public static void SafeShutdown()
+        public static async Task SafeShutdownAsync()
         {
-            var t = Host.StopAsync();
+            await Host.StopAsync();
         }
 
         #endregion

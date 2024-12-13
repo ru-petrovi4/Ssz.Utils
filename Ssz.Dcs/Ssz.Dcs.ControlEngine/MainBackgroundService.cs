@@ -22,14 +22,20 @@ namespace Ssz.Dcs.ControlEngine
     {
         #region construction and destruction
 
-        public MainBackgroundService(ILogger<MainBackgroundService> logger, IConfiguration configuration, IServiceProvider serviceProvider, ServerWorkerBase serverWorker)
+        public MainBackgroundService(
+            ILogger<MainBackgroundService> logger, 
+            IConfiguration configuration, 
+            IServiceProvider serviceProvider, 
+            ServerWorkerBase serverWorker,
+            IHostLifetime hostLifetime)
         {
             Logger = logger;
             Configuration = configuration;
             ServiceProvider = serviceProvider;
             _serverWorker = serverWorker;
+            _hostLifetime = hostLifetime;
 
-            _serverWorker.ShutdownRequested += This_ShutdownRequested;
+            _serverWorker.ShutdownRequested += ShutdownRequested;
 
             _utilityDataAccessProvider = ActivatorUtilities.CreateInstance<GrpcDataAccessProvider>(serviceProvider);
             _processDataAccessProvider = ActivatorUtilities.CreateInstance<GrpcDataAccessProvider>(ServiceProvider);
@@ -99,7 +105,7 @@ namespace Ssz.Dcs.ControlEngine
                 new DataAccessProviderOptions(),
                 _serverWorker.ThreadSafeDispatcher);
 
-            while (!_shutdownRequested)
+            while (true)
             {
                 try
                 {
@@ -117,6 +123,7 @@ namespace Ssz.Dcs.ControlEngine
                 }
                 catch when (cancellationToken.IsCancellationRequested)
                 {
+                    Logger.LogDebug(@"_serverWorker.DoWorkAsync(...) cancellationToken.IsCancellationRequested");
                     break;
                 }
                 catch (Exception ex)
@@ -133,17 +140,16 @@ namespace Ssz.Dcs.ControlEngine
             await _serverWorker.CloseAsync();
             
             await _utilityDataAccessProvider.DisposeAsync();
-
-            Program.SafeShutdown();
         }
 
         #endregion
 
         #region private functions
 
-        private void This_ShutdownRequested(object? sender, EventArgs args)
+        private async void ShutdownRequested(object? sender, EventArgs args)
         {
-            _shutdownRequested = true;
+            //await _hostLifetime.StopAsync(CancellationToken.None);
+            await Program.SafeShutdownAsync();
         }
 
         #endregion        
@@ -151,6 +157,8 @@ namespace Ssz.Dcs.ControlEngine
         #region private fields
 
         private readonly ServerWorkerBase _serverWorker;
+
+        private readonly IHostLifetime _hostLifetime;
 
         private readonly GrpcDataAccessProvider _utilityDataAccessProvider;
 
@@ -160,8 +168,6 @@ namespace Ssz.Dcs.ControlEngine
         ///    DsController can add items only in DoWork function, when GrpcDataAccessProvider is Initialized.
         /// </summary>
         private readonly GrpcDataAccessProvider _processDataAccessProvider;
-
-        private bool _shutdownRequested;
 
         #endregion
     }

@@ -13,6 +13,7 @@ namespace Ssz.Dcs.CentralServer
         {
             EngineSessionId = engineSessionId;
             DataAccessProviderGetter_Addon = dataAccessProviderGetter_Addon;
+            DataAccessProvider = DataAccessProviderGetter_Addon.DataAccessProvider!;
         }
 
         public void Dispose()
@@ -28,7 +29,7 @@ namespace Ssz.Dcs.CentralServer
 
         public DataAccessProviderGetter_AddonBase DataAccessProviderGetter_Addon { get; }
 
-        public IDataAccessProvider DataAccessProvider => DataAccessProviderGetter_Addon.DataAccessProvider!;        
+        public IDataAccessProvider DataAccessProvider { get; }        
 
         #endregion
     }

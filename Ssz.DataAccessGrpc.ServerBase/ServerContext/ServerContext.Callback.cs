@@ -172,17 +172,22 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
                     foreach (ContextStatusMessage contextStatusMessage in contextStatusMessagesCollection)
                     {
-                        cancellationToken.ThrowIfCancellationRequested();
-
-                        var callbackMessage = new CallbackMessage();
-                        callbackMessage.ContextStatus = new ContextStatus
+                        try
                         {
-                            StateCode = contextStatusMessage.StateCode
-                        };
-                        await _responseStream.WriteAsync(callbackMessage);
+                            cancellationToken.ThrowIfCancellationRequested();
 
-                        if (contextStatusMessage.StateCode == ContextStateCodes.STATE_ABORTING)
-                            CallbackWorkingTask_CancellationTokenSource.Cancel();
+                            var callbackMessage = new CallbackMessage();
+                            callbackMessage.ContextStatus = new ContextStatus
+                            {
+                                StateCode = contextStatusMessage.StateCode
+                            };
+                            await _responseStream.WriteAsync(callbackMessage);
+                        }
+                        finally
+                        {
+                            if (contextStatusMessage.StateCode == ContextStateCodes.STATE_ABORTING)
+                                CallbackWorkingTask_CancellationTokenSource.Cancel();
+                        }                        
                     }
                 }
 
