@@ -24,6 +24,10 @@ namespace Ssz.Dcs.ControlEngine
 
         public bool IsArray;
 
+        public bool IsConst;
+
+        public bool IsMajor;
+
         #endregion
     }
 }

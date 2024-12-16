@@ -39,9 +39,7 @@ namespace Ssz.Dcs.ControlEngine
 
         public UInt16 DsBlockType;
 
-        public UInt16 DsBlockParamInfosVersion;
-
-        public byte ParamInfoType;
+        public UInt16 DsBlockParamInfosVersion;        
 
         public byte ParamInfoIndex;
 
@@ -52,10 +50,9 @@ namespace Ssz.Dcs.ControlEngine
         /// </summary>
         public int? ParamIndex;
 
-        public bool IsRefToMajorParam()
-        {
-            return ParamInfoType == 0 || ParamInfoType == 2;
-        }
+        public bool IsRefToConstParam;
+
+        public bool IsRefToMajorParam;
 
         public override string ConnectionString
         {
@@ -76,7 +73,8 @@ namespace Ssz.Dcs.ControlEngine
             writer.Write(DsBlockIndexInModule);
             writer.Write(DsBlockType);
             writer.Write(DsBlockParamInfosVersion);
-            writer.Write(ParamInfoType);
+            writer.Write(IsRefToConstParam);
+            writer.Write(IsRefToMajorParam);
             writer.Write(ParamInfoIndex);
             writer.Write(ParamValueIndex);
         }
@@ -87,8 +85,9 @@ namespace Ssz.Dcs.ControlEngine
             ParamName = reader.ReadString();
             DsBlockIndexInModule = reader.ReadUInt16();
             DsBlockType = reader.ReadUInt16();
-            DsBlockParamInfosVersion = reader.ReadUInt16(); ;
-            ParamInfoType = reader.ReadByte();
+            DsBlockParamInfosVersion = reader.ReadUInt16();
+            IsRefToConstParam = reader.ReadBoolean();
+            IsRefToMajorParam = reader.ReadBoolean();
             ParamInfoIndex = reader.ReadByte();
             ParamValueIndex = reader.ReadByte();
         }

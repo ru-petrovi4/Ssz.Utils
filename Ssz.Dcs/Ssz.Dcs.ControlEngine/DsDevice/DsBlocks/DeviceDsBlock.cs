@@ -11,17 +11,12 @@ namespace Ssz.Dcs.ControlEngine
         #region construction and destruction
 
         static DeviceDsBlock()
-        {
-            _majorConstParamInfos = DsParamInfo.EmptyParamsArray;
-            _constParamInfos = new[]
-            {
-                new DsParamInfo { Name = @"DEVICE_VENDOR", Desc = @"Company name of the manufacturer" },
-                new DsParamInfo { Name = @"DEVICE_MODEL", Desc = @"Name of the device model" },
-                new DsParamInfo { Name = @"DEVICE_REVISION", Desc = @"Device revision number" },                
-            };
-            _majorParamInfos = DsParamInfo.EmptyParamsArray;
+        {            
             _paramInfos = new[]
             {
+                new DsParamInfo { Name = @"DEVICE_VENDOR", Desc = @"Company name of the manufacturer", IsConst = true },
+                new DsParamInfo { Name = @"DEVICE_MODEL", Desc = @"Name of the device model", IsConst = true },
+                new DsParamInfo { Name = @"DEVICE_REVISION", Desc = @"Device revision number", IsConst = true },
                 new DsParamInfo { Name = @"DEVICE_STATUS", Desc = @"Status of the device" },
                 new DsParamInfo { Name = @"MODEL_TIME", Desc = @"Already calculated Model Time (seconds)" },
                 new DsParamInfo { Name = @"MODEL_TIME_MS", Desc = @"Currently calculating Model Time (milliseconds)" },
@@ -42,13 +37,7 @@ namespace Ssz.Dcs.ControlEngine
 
         #endregion
 
-        #region public functions
-
-        public override DsParamInfo[] MajorConstParamInfos => _majorConstParamInfos;
-
-        public override DsParamInfo[] ConstParamInfos => _constParamInfos;
-
-        public override DsParamInfo[] MajorParamInfos => _majorParamInfos;
+        #region public functions        
 
         public override DsParamInfo[] ParamInfos => _paramInfos;
 
@@ -92,13 +81,7 @@ namespace Ssz.Dcs.ControlEngine
 
         #endregion
 
-        #region private fields
-
-        private static readonly DsParamInfo[] _majorConstParamInfos;
-
-        private static readonly DsParamInfo[] _constParamInfos;
-
-        private static readonly DsParamInfo[] _majorParamInfos;
+        #region private fields        
 
         private static readonly DsParamInfo[] _paramInfos;
 

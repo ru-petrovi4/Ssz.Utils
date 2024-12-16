@@ -11,18 +11,13 @@ namespace Ssz.Dcs.ControlEngine
         #region construction and destruction
 
         static JournalDsBlock()
-        {
-            _majorConstParamInfos = DsParamInfo.EmptyParamsArray;
-            _constParamInfos = new[]
-            {
-                new DsParamInfo { Name = @"UNITS", Desc = @"Units of the value" },
-                new DsParamInfo { Name = @"HI_LIM", Desc = @"Value for upper upper limit of value" },
-                new DsParamInfo { Name = @"LO_LIM", Desc = @"Value for lower limit of value" },
-                new DsParamInfo { Name = @"SETTINGS", Desc = @"Sampling interval" },
-            };
-            _majorParamInfos = DsParamInfo.EmptyParamsArray;
+        {            
             _paramInfos = new[]
             {
+                new DsParamInfo { Name = @"UNITS", Desc = @"Units of the value", IsConst = true },
+                new DsParamInfo { Name = @"HI_LIM", Desc = @"Value for upper upper limit of value", IsConst = true },
+                new DsParamInfo { Name = @"LO_LIM", Desc = @"Value for lower limit of value", IsConst = true },
+                new DsParamInfo { Name = @"SETTINGS", Desc = @"Sampling interval", IsConst = true },
                 new DsParamInfo { Name = @"VALUE", Desc = @"Main measurement value as a result of the Measurement FB" },                
                 new DsParamInfo { Name = @"MODE", Desc = @"Operation mode of the block (e.g. Manual, Automatic, Remote, Cascade)" },                
             };
@@ -49,13 +44,7 @@ namespace Ssz.Dcs.ControlEngine
 
         #endregion
 
-        #region public functions
-
-        public override DsParamInfo[] MajorConstParamInfos => _majorConstParamInfos;
-
-        public override DsParamInfo[] ConstParamInfos => _constParamInfos;
-
-        public override DsParamInfo[] MajorParamInfos => _majorParamInfos;
+        #region public functions        
 
         public override DsParamInfo[] ParamInfos => _paramInfos;
 

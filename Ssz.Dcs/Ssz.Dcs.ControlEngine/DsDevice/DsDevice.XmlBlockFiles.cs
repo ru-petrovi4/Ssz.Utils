@@ -536,34 +536,13 @@ namespace Ssz.Dcs.ControlEngine
                 writer.WriteStartElement(null, @"DsBlock", null);
                 writer.WriteAttributeString(null, "Type", null, block.DsBlockTypeString);
                 writer.WriteAttributeString(null, "Tag", null, block.TagName);
-                writer.WriteAttributeString(null, "ShapeData", null, block.ShapeData);
-
-                foreach (int index in Enumerable.Range(0, block.MajorConstParamInfos.Length))
-                {
-                    ExportParamToXml(writer,
-                        ref block.MajorConstParamInfos[index],
-                        ref block.Params[index]);
-                }
-
-                foreach (int index in Enumerable.Range(0, block.MajorParamInfos.Length))
-                {
-                    ExportParamToXml(writer,
-                        ref block.MajorParamInfos[index],
-                        ref block.Params[block.MajorConstParamInfos.Length + block.ConstParamInfos.Length + index]);
-                }
-
-                foreach (int index in Enumerable.Range(0, block.ConstParamInfos.Length))
-                {
-                    ExportParamToXml(writer,
-                        ref block.ConstParamInfos[index],
-                        ref block.Params[block.MajorConstParamInfos.Length + index]);
-                }
+                writer.WriteAttributeString(null, "ShapeData", null, block.ShapeData);                
 
                 foreach (int index in Enumerable.Range(0, block.ParamInfos.Length))
                 {
                     ExportParamToXml(writer,
                         ref block.ParamInfos[index],
-                        ref block.Params[block.MajorConstParamInfos.Length + block.ConstParamInfos.Length + block.MajorParamInfos.Length + index]);
+                        ref block.Params[index]);
                 }
 
                 if (block is ComponentDsBlock componentDsBlock)

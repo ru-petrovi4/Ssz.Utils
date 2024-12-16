@@ -280,80 +280,26 @@ namespace Ssz.Dcs.ControlEngine
                 if (block.DsBlockType != connection.DsBlockType ||
                     block.ParamInfosVersion != connection.DsBlockParamInfosVersion)
                 {
-                    foreach (int index in Enumerable.Range(0, block.MajorConstParamInfos.Length))
+                    foreach (int index in Enumerable.Range(0, block.ParamInfos.Length))
                     {
-                        if (block.MajorConstParamInfos[index].Name == connection.ParamName)
-                        {
-                            connection.ParamInfoType = 0;
+                        ref var paramInfo = ref block.ParamInfos[index];
+                        if (paramInfo.Name == connection.ParamName)
+                        {                            
                             connection.ParamInfoIndex = (byte)index;
                             connection.ParamIndex = index;
+                            connection.IsRefToConstParam = paramInfo.IsConst;
+                            connection.IsRefToMajorParam = paramInfo.IsMajor;
                             break;
                         }
                     }
                     if (connection.ParamIndex is null)
                     {
-                        foreach (int index in Enumerable.Range(0, block.ConstParamInfos.Length))
-                        {
-                            if (block.ConstParamInfos[index].Name == connection.ParamName)
-                            {
-                                connection.ParamInfoType = 1;
-                                connection.ParamInfoIndex = (byte)index;
-                                connection.ParamIndex = block.MajorConstParamInfos.Length + index;
-                                break;
-                            }
-                        }
-                        if (connection.ParamIndex is null)
-                        {
-                            foreach (int index in Enumerable.Range(0, block.MajorParamInfos.Length))
-                            {
-                                if (block.MajorParamInfos[index].Name == connection.ParamName)
-                                {
-                                    connection.ParamInfoType = 2;
-                                    connection.ParamInfoIndex = (byte)index;
-                                    connection.ParamIndex = block.MajorConstParamInfos.Length + block.ConstParamInfos.Length + index;
-                                    break;
-                                }
-                            }
-                            if (connection.ParamIndex is null)
-                            {
-                                foreach (int index in Enumerable.Range(0, block.ParamInfos.Length))
-                                {
-                                    if (block.ParamInfos[index].Name == connection.ParamName)
-                                    {
-                                        connection.ParamInfoType = 3;
-                                        connection.ParamInfoIndex = (byte)index;
-                                        connection.ParamIndex = block.MajorConstParamInfos.Length + block.ConstParamInfos.Length + block.MajorParamInfos.Length + index;
-                                        break;
-                                    }
-                                }
-                                if (connection.ParamIndex is null)
-                                {
-                                    connection.ParamIndex = IndexConstants.ParamIndex_ParamDoesNotExist;
-                                }
-                            }
-                        }
+                        connection.ParamIndex = IndexConstants.ParamIndex_ParamDoesNotExist;
                     }
                 }
                 else
                 {
-                    switch (connection.ParamInfoType)
-                    {
-                        case 0:
-                            connection.ParamIndex = connection.ParamInfoIndex;
-                            break;
-                        case 1:
-                            connection.ParamIndex = block.MajorConstParamInfos.Length + connection.ParamInfoIndex;
-                            break;
-                        case 2:
-                            connection.ParamIndex = block.MajorConstParamInfos.Length + block.ConstParamInfos.Length + connection.ParamInfoIndex;
-                            break;
-                        case 3:
-                            connection.ParamIndex = block.MajorConstParamInfos.Length + block.ConstParamInfos.Length + block.MajorParamInfos.Length + connection.ParamInfoIndex;
-                            break;
-                        default:
-                            connection.ParamIndex = IndexConstants.ParamIndex_ParamDoesNotExist;
-                            break;
-                    }
+                    connection.ParamIndex = connection.ParamInfoIndex;
                 }
             }
             int paramIndex = connection.ParamIndex.Value;
@@ -419,7 +365,7 @@ namespace Ssz.Dcs.ControlEngine
             {
                 param.Value = value;
             }
-            if (connection.IsRefToMajorParam())
+            if (connection.IsRefToMajorParam)
                 block.OnMajorParamsChanged();
 
             return ResultInfo.GoodResultInfo;

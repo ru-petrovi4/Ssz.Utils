@@ -23,8 +23,7 @@ namespace Ssz.Dcs.ControlEngine
             _parentModule = parentModule;
             _parentComponentDsBlock = parentComponentDsBlock;
 
-            Params = new DsParam[MajorConstParamInfos.Length + ConstParamInfos.Length +
-                MajorParamInfos.Length + ParamInfos.Length];
+            Params = new DsParam[ParamInfos.Length];
         }
 
         // <summary>
@@ -99,13 +98,7 @@ namespace Ssz.Dcs.ControlEngine
         /// </summary>
         public UInt16 DsBlockIndexInModule { get; internal set; } = IndexConstants.DsBlockIndexInModule_InitializationNeeded;
 
-        public ComponentDsBlock? ParentComponentDsBlock => _parentComponentDsBlock;
-
-        public abstract DsParamInfo[] MajorConstParamInfos { get; }
-
-        public abstract DsParamInfo[] ConstParamInfos { get; }
-
-        public abstract DsParamInfo[] MajorParamInfos { get; }
+        public ComponentDsBlock? ParentComponentDsBlock => _parentComponentDsBlock;        
 
         public abstract DsParamInfo[] ParamInfos { get; }
 
@@ -139,76 +132,27 @@ namespace Ssz.Dcs.ControlEngine
                 }
             }            
             
-            foreach (int index in Enumerable.Range(0, MajorConstParamInfos.Length))
-            {
-                ref var paramInfo = ref MajorConstParamInfos[index];
-                if (paramInfo.Name == paramName)
-                {
-                    int paramIndex = index;
-                    if (paramInfo.IsArray) 
-                    {
-                        if (paramValueIndex == IndexConstants.ParamValueIndex_IsNotArray) return IndexConstants.ParamIndex_ParamDoesNotExist;
-                    }
-                    else
-                    {
-                        if (paramValueIndex != IndexConstants.ParamValueIndex_IsNotArray) return IndexConstants.ParamIndex_ParamDoesNotExist;
-                    }
-                    isMajor = true;
-                    return paramIndex;
-                }
-            }
-            foreach (int index in Enumerable.Range(0, ConstParamInfos.Length))
-            {
-                ref var paramInfo = ref ConstParamInfos[index];
-                if (paramInfo.Name == paramName)
-                {
-                    int paramIndex = MajorConstParamInfos.Length + index;
-                    if (paramInfo.IsArray)
-                    {
-                        if (paramValueIndex == IndexConstants.ParamValueIndex_IsNotArray) return IndexConstants.ParamIndex_ParamDoesNotExist;
-                    }
-                    else
-                    {
-                        if (paramValueIndex != IndexConstants.ParamValueIndex_IsNotArray) return IndexConstants.ParamIndex_ParamDoesNotExist;
-                    }
-                    return paramIndex;
-                }
-            }
-            foreach (int index in Enumerable.Range(0, MajorParamInfos.Length))
-            {
-                ref var paramInfo = ref MajorParamInfos[index];
-                if (paramInfo.Name == paramName)
-                {
-                    int paramIndex = MajorConstParamInfos.Length + ConstParamInfos.Length + index;
-                    if (paramInfo.IsArray)
-                    {
-                        if (paramValueIndex == IndexConstants.ParamValueIndex_IsNotArray) return IndexConstants.ParamIndex_ParamDoesNotExist;
-                    }
-                    else
-                    {
-                        if (paramValueIndex != IndexConstants.ParamValueIndex_IsNotArray) return IndexConstants.ParamIndex_ParamDoesNotExist;
-                    }
-                    isMajor = true;
-                    return paramIndex;
-                }
-            }
             foreach (int index in Enumerable.Range(0, ParamInfos.Length))
             {
                 ref var paramInfo = ref ParamInfos[index];
                 if (paramInfo.Name == paramName)
                 {
-                    int paramIndex = MajorConstParamInfos.Length + ConstParamInfos.Length + MajorParamInfos.Length + index;
-                    if (paramInfo.IsArray)
+                    int paramIndex = index;
+                    if (paramInfo.IsArray) 
                     {
-                        if (paramValueIndex == IndexConstants.ParamValueIndex_IsNotArray) return IndexConstants.ParamIndex_ParamDoesNotExist;
+                        if (paramValueIndex == IndexConstants.ParamValueIndex_IsNotArray) 
+                            return IndexConstants.ParamIndex_ParamDoesNotExist;
                     }
                     else
                     {
-                        if (paramValueIndex != IndexConstants.ParamValueIndex_IsNotArray) return IndexConstants.ParamIndex_ParamDoesNotExist;
+                        if (paramValueIndex != IndexConstants.ParamValueIndex_IsNotArray) 
+                            return IndexConstants.ParamIndex_ParamDoesNotExist;
                     }
+                    if (paramInfo.IsMajor)
+                        isMajor = true;
                     return paramIndex;
                 }
-            }
+            }            
             return IndexConstants.ParamIndex_ParamDoesNotExist;
         }
 
@@ -224,54 +168,25 @@ namespace Ssz.Dcs.ControlEngine
             writer.Write(ParamInfosVersion);
             if (serializationContext is not null && serializationContext.SaveState)
             {
-                writer.Write((byte)MajorParamInfos.Length);
-                foreach (int index in Enumerable.Range(0, MajorParamInfos.Length))
-                {                    
-                    ParamSerializeOwnedData(writer, true,
-                        ref MajorParamInfos[index], 
-                        ref Params[MajorConstParamInfos.Length + ConstParamInfos.Length + index]);                    
-                }
-
-                writer.Write((byte)ParamInfos.Length);
+                writer.Write((byte)ParamInfos.Count(pi => !pi.IsConst));
                 foreach (int index in Enumerable.Range(0, ParamInfos.Length))
                 {
-                    ParamSerializeOwnedData(writer, true,
-                        ref ParamInfos[index],
-                        ref Params[MajorConstParamInfos.Length + ConstParamInfos.Length + MajorParamInfos.Length + index]);
+                    ref var paramInfo = ref ParamInfos[index];
+                    if (!paramInfo.IsConst)                        
+                        ParamSerializeOwnedData(writer, true,
+                            ref paramInfo, 
+                            ref Params[index]);                    
                 }
             }
             else
             {
-                writer.Write((byte)MajorConstParamInfos.Length);
-                foreach (int index in Enumerable.Range(0, MajorConstParamInfos.Length))
-                {
-                    ParamSerializeOwnedData(writer, false,
-                        ref MajorConstParamInfos[index],
-                        ref Params[index]);
-                }
-
-                writer.Write((byte)MajorParamInfos.Length);
-                foreach (int index in Enumerable.Range(0, MajorParamInfos.Length))
-                {
-                    ParamSerializeOwnedData(writer, false,
-                        ref MajorParamInfos[index],
-                        ref Params[MajorConstParamInfos.Length + ConstParamInfos.Length + index]);
-                }
-
-                writer.Write((byte)ConstParamInfos.Length);
-                foreach (int index in Enumerable.Range(0, ConstParamInfos.Length))
-                {
-                    ParamSerializeOwnedData(writer, false,
-                        ref ConstParamInfos[index],
-                        ref Params[MajorConstParamInfos.Length + index]);
-                }                
-
                 writer.Write((byte)ParamInfos.Length);
                 foreach (int index in Enumerable.Range(0, ParamInfos.Length))
                 {
+                    ref var paramInfo = ref ParamInfos[index];
                     ParamSerializeOwnedData(writer, false,
-                        ref ParamInfos[index],
-                        ref Params[MajorConstParamInfos.Length + ConstParamInfos.Length + MajorParamInfos.Length + index]);
+                        ref paramInfo,
+                        ref Params[index]);
                 }
                 
                 writer.Write(ShapeData);                
@@ -298,22 +213,31 @@ namespace Ssz.Dcs.ControlEngine
                 bool majorParamsChanged = false;
 
                 byte length = reader.ReadByte();
+
                 foreach (int index in Enumerable.Range(0, length))
                 {
-                    majorParamsChanged = true;
-                    ParamDeserializeOwnedData(reader, true,
-                        ref MajorParamInfos[index],
-                        ref Params[MajorConstParamInfos.Length + ConstParamInfos.Length + index]);
+                    ref var paramInfo = ref ParamInfos[index];
+                    if (!paramInfo.IsConst && paramInfo.IsMajor)
+                    {
+                        majorParamsChanged = true;
+                        ParamDeserializeOwnedData(reader, true,
+                            ref paramInfo,
+                            ref Params[index]);
+                    }
                 }
 
-                if (majorParamsChanged) OnMajorParamsChanged();
-
-                length = reader.ReadByte();
+                if (majorParamsChanged) 
+                    OnMajorParamsChanged();
+                
                 foreach (int index in Enumerable.Range(0, length))
                 {
-                    ParamDeserializeOwnedData(reader, true,
-                        ref ParamInfos[index],
-                        ref Params[MajorConstParamInfos.Length + ConstParamInfos.Length + MajorParamInfos.Length + index]);
+                    ref var paramInfo = ref ParamInfos[index];
+                    if (!paramInfo.IsConst && !paramInfo.IsMajor)
+                    {
+                        ParamDeserializeOwnedData(reader, true,
+                            ref paramInfo,
+                            ref Params[index]);
+                    }                        
                 }
             }
             else
@@ -321,39 +245,31 @@ namespace Ssz.Dcs.ControlEngine
                 bool majorParamsChanged = false;
 
                 byte length = reader.ReadByte();
+
                 foreach (int index in Enumerable.Range(0, length))
                 {
-                    majorParamsChanged = true;
-                    ParamDeserializeOwnedData(reader, false,
-                        ref MajorConstParamInfos[index],
-                        ref Params[index]);
+                    ref var paramInfo = ref ParamInfos[index];
+                    if (paramInfo.IsMajor)
+                    {
+                        majorParamsChanged = true;
+                        ParamDeserializeOwnedData(reader, true,
+                            ref paramInfo,
+                            ref Params[index]);
+                    }
                 }
 
-                length = reader.ReadByte();
+                if (majorParamsChanged)
+                    OnMajorParamsChanged();
+
                 foreach (int index in Enumerable.Range(0, length))
                 {
-                    majorParamsChanged = true;
-                    ParamDeserializeOwnedData(reader, false,
-                        ref MajorParamInfos[index],
-                        ref Params[MajorConstParamInfos.Length + ConstParamInfos.Length + index]);
-                }
-
-                if (majorParamsChanged) OnMajorParamsChanged();
-
-                length = reader.ReadByte();
-                foreach (int index in Enumerable.Range(0, length))
-                {
-                    ParamDeserializeOwnedData(reader, false,
-                        ref ConstParamInfos[index],
-                        ref Params[MajorConstParamInfos.Length + index]);
-                }
-
-                length = reader.ReadByte();
-                foreach (int index in Enumerable.Range(0, length))
-                {
-                    ParamDeserializeOwnedData(reader, false,
-                        ref ParamInfos[index],
-                        ref Params[MajorConstParamInfos.Length + ConstParamInfos.Length + MajorParamInfos.Length + index]);
+                    ref var paramInfo = ref ParamInfos[index];
+                    if (!paramInfo.IsMajor)
+                    {
+                        ParamDeserializeOwnedData(reader, true,
+                            ref paramInfo,
+                            ref Params[index]);
+                    }
                 }
 
                 ShapeData = reader.ReadString();
@@ -368,37 +284,29 @@ namespace Ssz.Dcs.ControlEngine
         {
             bool majorParamsChanged = false;
 
-            foreach (int index in Enumerable.Range(0, MajorConstParamInfos.Length))
+            foreach (int index in Enumerable.Range(0, ParamInfos.Length))
             {
-                if (ParamCompute(ref MajorConstParamInfos[index],
-                    ref Params[index]))
+                ref var paramInfo = ref ParamInfos[index];
+                if (paramInfo.IsMajor)
                 {
-                    majorParamsChanged = true;
-                }
-            }
+                    if (ParamCompute(ref paramInfo,
+                            ref Params[index]))
+                        majorParamsChanged = true;
+                }                    
+            }            
 
-            foreach (int index in Enumerable.Range(0, MajorParamInfos.Length))
-            {
-                if (ParamCompute(ref MajorParamInfos[index],
-                    ref Params[MajorConstParamInfos.Length + ConstParamInfos.Length + index]))
-                {
-                    majorParamsChanged = true;
-                }
-            }
-
-            if (majorParamsChanged) OnMajorParamsChanged();
-
-            foreach (int index in Enumerable.Range(0, ConstParamInfos.Length))
-            {
-                ParamCompute(ref ConstParamInfos[index],
-                    ref Params[index]);
-            }
+            if (majorParamsChanged) 
+                OnMajorParamsChanged();
 
             foreach (int index in Enumerable.Range(0, ParamInfos.Length))
             {
-                ParamCompute(ref ParamInfos[index],
-                    ref Params[MajorConstParamInfos.Length + ConstParamInfos.Length + MajorParamInfos.Length + index]);
-            }
+                ref var paramInfo = ref ParamInfos[index];
+                if (!paramInfo.IsMajor)
+                {
+                    ParamCompute(ref paramInfo,
+                        ref Params[index]);
+                }
+            }            
         }        
 
         #endregion

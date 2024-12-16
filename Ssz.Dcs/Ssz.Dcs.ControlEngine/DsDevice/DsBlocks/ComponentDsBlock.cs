@@ -12,14 +12,11 @@ namespace Ssz.Dcs.ControlEngine
         #region construction and destruction
 
         static ComponentDsBlock()
-        {
-            _majorConstParamInfos = DsParamInfo.EmptyParamsArray;
-            _constParamInfos = new[]
+        {            
+            _paramInfos = new[]
             {
-                new DsParamInfo { Name = @"DESC", Desc = @"DsBlock Description" },                
+                new DsParamInfo { Name = @"DESC", Desc = @"DsBlock Description", IsConst = true },
             };
-            _majorParamInfos = DsParamInfo.EmptyParamsArray;
-            _paramInfos = DsParamInfo.EmptyParamsArray;
             _paramInfosVersion = 1;
         }
 
@@ -51,13 +48,7 @@ namespace Ssz.Dcs.ControlEngine
 
         #endregion
 
-        #region public functions
-
-        public override DsParamInfo[] MajorConstParamInfos => _majorConstParamInfos;
-
-        public override DsParamInfo[] ConstParamInfos => _constParamInfos;
-
-        public override DsParamInfo[] MajorParamInfos => _majorParamInfos;
+        #region public functions        
 
         public override DsParamInfo[] ParamInfos => _paramInfos;
 
@@ -241,13 +232,7 @@ namespace Ssz.Dcs.ControlEngine
 
         #endregion
 
-        #region private fields
-
-        private static readonly DsParamInfo[] _majorConstParamInfos;
-
-        private static readonly DsParamInfo[] _constParamInfos;
-
-        private static readonly DsParamInfo[] _majorParamInfos;
+        #region private fields        
 
         private static readonly DsParamInfo[] _paramInfos;
 

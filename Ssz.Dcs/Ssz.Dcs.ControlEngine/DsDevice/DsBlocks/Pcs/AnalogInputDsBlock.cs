@@ -11,20 +11,15 @@ namespace Ssz.Dcs.ControlEngine.Pcs
         #region construction and destruction
 
         static AnalogInputDsBlock()
-        {
-            _majorConstParamInfos = DsParamInfo.EmptyParamsArray;
-            _constParamInfos = new[]
-            {                
-                new DsParamInfo { Name = @"UNITS", Desc = @"Units of the main measurement value" },
-                new DsParamInfo { Name = @"HIGH_HIGH_ALARM_LIMIT", Desc = @"Value for upper upper limit of alarms" },
-                new DsParamInfo { Name = @"HIGH_ALARM_LIMIT", Desc = @"Value for upper limit of alarms" },
-                new DsParamInfo { Name = @"LOW_ALARM_LIMIT", Desc = @"Value for lower limit of alarms" },
-                new DsParamInfo { Name = @"LOW_LOW_ALARM_LIMIT", Desc = @"Value for lower limit of alarms" },
-                new DsParamInfo { Name = @"CHANNEL", Desc = @"Logical reference to the Technology DsBlock measurement" },                
-            };
-            _majorParamInfos = DsParamInfo.EmptyParamsArray;
+        {            
             _paramInfos = new[]
             {
+                new DsParamInfo { Name = @"UNITS", Desc = @"Units of the main measurement value", IsConst = true },
+                new DsParamInfo { Name = @"HIGH_HIGH_ALARM_LIMIT", Desc = @"Value for upper upper limit of alarms", IsConst = true },
+                new DsParamInfo { Name = @"HIGH_ALARM_LIMIT", Desc = @"Value for upper limit of alarms", IsConst = true },
+                new DsParamInfo { Name = @"LOW_ALARM_LIMIT", Desc = @"Value for lower limit of alarms", IsConst = true },
+                new DsParamInfo { Name = @"LOW_LOW_ALARM_LIMIT", Desc = @"Value for lower limit of alarms", IsConst = true },
+                new DsParamInfo { Name = @"CHANNEL", Desc = @"Logical reference to the Technology DsBlock measurement", IsConst = true },
                 new DsParamInfo { Name = @"MEASUREMENT_VALUE", Desc = @"Main measurement value as a result of the Measurement FB" },
                 new DsParamInfo { Name = @"MEASUREMENT_STATUS", Desc = @"Status of the MEASUREMENT_VALUE" },
                 new DsParamInfo { Name = @"PRIMARY_MEASUREMENT_VALUE", Desc = @"Primary measurement value as a result of the measurement Technology DsBlock" },
@@ -42,13 +37,7 @@ namespace Ssz.Dcs.ControlEngine.Pcs
 
         #endregion
 
-        #region public functions
-
-        public override DsParamInfo[] MajorConstParamInfos => _majorConstParamInfos;
-
-        public override DsParamInfo[] ConstParamInfos => _constParamInfos;
-
-        public override DsParamInfo[] MajorParamInfos => _majorParamInfos;
+        #region public functions        
 
         public override DsParamInfo[] ParamInfos => _paramInfos;
 
@@ -88,13 +77,7 @@ namespace Ssz.Dcs.ControlEngine.Pcs
 
         #endregion
 
-        #region private fields
-
-        private static readonly DsParamInfo[] _majorConstParamInfos;
-
-        private static readonly DsParamInfo[] _constParamInfos;
-
-        private static readonly DsParamInfo[] _majorParamInfos;
+        #region private fields        
 
         private static readonly DsParamInfo[] _paramInfos;
 

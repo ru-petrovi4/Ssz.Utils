@@ -12,18 +12,11 @@ namespace Ssz.Dcs.ControlEngine.Sis
         #region construction and destruction
 
         static AndDsBlock()
-        {
-            _majorConstParamInfos = new[]
-            {
-                new DsParamInfo { Name = @"COUNT", Desc = @"Inputs count" }                
-            };
-            _constParamInfos = new[]
-            {                
-                new DsParamInfo { Name = @"INPTINVSTS", Desc = @"Inputs inversion flag", IsArray = true }                
-            };
-            _majorParamInfos = DsParamInfo.EmptyParamsArray;
+        {            
             _paramInfos = new[]
-            {                
+            {
+                new DsParamInfo { Name = @"COUNT", Desc = @"Inputs count", IsConst = true, IsMajor = true },
+                new DsParamInfo { Name = @"INPTINVSTS", Desc = @"Inputs inversion flag", IsArray = true, IsConst = true },
                 new DsParamInfo { Name = @"IN", Desc = @"Inputs", IsArray = true },
                 new DsParamInfo { Name = @"OUT", Desc = @"Output; True if all connected inputs are True" }
             };
@@ -37,13 +30,7 @@ namespace Ssz.Dcs.ControlEngine.Sis
 
         #endregion
 
-        #region public functions
-
-        public override DsParamInfo[] MajorConstParamInfos => _majorConstParamInfos;
-
-        public override DsParamInfo[] ConstParamInfos => _constParamInfos;
-
-        public override DsParamInfo[] MajorParamInfos => _majorParamInfos;
+        #region public functions        
 
         public override DsParamInfo[] ParamInfos => _paramInfos;
 
@@ -91,12 +78,6 @@ namespace Ssz.Dcs.ControlEngine.Sis
         #endregion
 
         #region private fields
-
-        private static readonly DsParamInfo[] _majorConstParamInfos;
-
-        private static readonly DsParamInfo[] _constParamInfos;
-
-        private static readonly DsParamInfo[] _majorParamInfos;
 
         private static readonly DsParamInfo[] _paramInfos;
 

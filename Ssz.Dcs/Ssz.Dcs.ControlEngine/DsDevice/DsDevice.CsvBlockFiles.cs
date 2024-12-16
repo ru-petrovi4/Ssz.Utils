@@ -107,7 +107,7 @@ namespace Ssz.Dcs.ControlEngine
                                     {
                                         param.Value.Set(value);
                                     }
-                                    if (paramAlias.Connection.IsRefToMajorParam())
+                                    if (paramAlias.Connection.IsRefToMajorParam)
                                         block.OnMajorParamsChanged();
                                 }
                             }
