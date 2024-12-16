@@ -299,7 +299,7 @@ namespace Ssz.Dcs.CentralServer
                 return Task.FromResult(ReadOnlyMemory<byte>.Empty);
             OperatorSession? operatorSession = OperatorSessionsCollection.TryGetValue(operatorSessionId);
             if (operatorSession is null)
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid operatorSession: " + operatorSessionId));
+                return Task.FromResult(ReadOnlyMemory<byte>.Empty);
 
             return Task.FromResult<ReadOnlyMemory<byte>>(Encoding.UTF8.GetBytes(operatorSession.OperatorUserName));
         }
@@ -311,7 +311,7 @@ namespace Ssz.Dcs.CentralServer
                 return Task.FromResult(ReadOnlyMemory<byte>.Empty);
             OperatorSession? operatorSession = OperatorSessionsCollection.TryGetValue(operatorSessionId);
             if (operatorSession is null)
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid operatorSession: " + operatorSessionId));
+                return Task.FromResult(ReadOnlyMemory<byte>.Empty);
 
             return Task.FromResult<ReadOnlyMemory<byte>>(Encoding.UTF8.GetBytes(operatorSession.OperatorRoleName));
         }

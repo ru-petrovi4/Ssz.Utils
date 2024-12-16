@@ -40,7 +40,7 @@ namespace Ssz.Dcs.CentralServer
                     {
                         if (!String.IsNullOrEmpty(serverContext.ContextParams.TryGetValue(@"OperatorSessionId")) &&
                                 !String.IsNullOrEmpty(serverContext.ContextParams.TryGetValue(DataAccessConstants.ParamName_Operator_ProcessModelNames)))
-                            On_Operator_AddedOrRemoved(serverContext, args.Added);
+                            On_Launcher_Operator_AddedOrRemoved(serverContext, args.Added);
                     }
                     else if (serverContext.ClientApplicationName == DataAccessConstants.ControlEngine_ClientApplicationName)
                     {
@@ -114,7 +114,7 @@ namespace Ssz.Dcs.CentralServer
             _utilityItemsDoWorkNeeded = true;
         }        
 
-        private void On_Operator_AddedOrRemoved(ServerContext utilityServerContext, bool added)
+        private void On_Launcher_Operator_AddedOrRemoved(ServerContext utilityServerContext, bool added)
         {
             string operatorSessionId = utilityServerContext.ContextParams.TryGetValue(@"OperatorSessionId")!;            
             if (added)

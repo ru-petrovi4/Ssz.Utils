@@ -2,7 +2,7 @@
   "profiles": {
     "Ssz.Operator.Play": {
       "commandName": "Project",
-      "commandLineArgs": "-p \"D:\\Dev\\WinCC\\Model\\SARATOV_RSU_Interface\\Saratov.dsProject\" -ns 1"
+      "commandLineArgs": "-p \"D:\\Dev\\Alpha\\Model\\D33 РСУ\\D33_RSU.dsProject\" -ns 1"
     }
   }
 }
