@@ -1,6 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-	<OutputType>WinExe</OutputType>
+  <PropertyGroup>	
 	<TargetFrameworks>net8.0-windows</TargetFrameworks>
 	<LangVersion>Latest</LangVersion>
     <Nullable>Enable</Nullable>
@@ -13,18 +12,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">    
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DefineConstants>TRACE;NO_LICENSE_CHECK</DefineConstants>	
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <ServerGarbageCollection>true</ServerGarbageCollection>
-    <GarbageCollectionAdaptationMode>1</GarbageCollectionAdaptationMode>
-  </PropertyGroup>
-  
-  <PropertyGroup>
-    <StartupObject>Ssz.Operator.Design.Program</StartupObject>
-    <ApplicationIcon>Resources\Images\Ssz.Operator.Design.ico</ApplicationIcon>
-    <BaseOutputPath>..\</BaseOutputPath>
-  </PropertyGroup>
+  </PropertyGroup> 
   
   <ItemGroup>
     <Resource Include="Resources\Images\Ssz.Operator.Design.ico" />

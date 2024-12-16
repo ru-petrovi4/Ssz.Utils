@@ -53,6 +53,7 @@ using System.Globalization;
 using Fluent;
 using Ssz.Operator.Core.Addons;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace Ssz.Operator.Design
 {
@@ -63,8 +64,10 @@ namespace Ssz.Operator.Design
     {
         #region construction and destruction
 
-        public MainWindow()
+        public MainWindow(Options commandLineOptions)
         {
+            CommandLineOptions = commandLineOptions;
+
             // Key Gestures
             ApplicationCommands.New.InputGestures.Clear();
             ApplicationCommands.Open.InputGestures.Clear();
@@ -201,9 +204,9 @@ namespace Ssz.Operator.Design
 
             Loaded += OnLoaded;
 
-            if (!String.IsNullOrEmpty(App.CommandLineOptions.DsProjectFile))
+            if (!String.IsNullOrEmpty(CommandLineOptions.DsProjectFile))
             {
-                ReadDsProjectFromBinFileAsync(App.CommandLineOptions.DsProjectFile);
+                ReadDsProjectFromBinFileAsync(CommandLineOptions.DsProjectFile);
             }
         }        
 
@@ -253,6 +256,8 @@ namespace Ssz.Operator.Design
         public static readonly RoutedCommand SetMark6 = new RoutedCommand();
 
         public static MainWindow Instance { get; private set; } = null!;
+
+        public Options CommandLineOptions { get; }
 
         public void ShowDsPageTypeObjectProperties(DsPageDrawingInfoViewModel? dsPageDrawingViewModel)
         {
@@ -508,12 +513,12 @@ namespace Ssz.Operator.Design
         {            
             RefreshWindowTitle();            
 
-            if (!String.IsNullOrWhiteSpace(App.CommandLineOptions.ToolkitOperation))
+            if (!String.IsNullOrWhiteSpace(CommandLineOptions.ToolkitOperation))
             {
-                if (DsProject.Instance.IsInitialized) DoToolkitOperation(App.CommandLineOptions.ToolkitOperation);
+                if (DsProject.Instance.IsInitialized) DoToolkitOperation(CommandLineOptions.ToolkitOperation);
                 else
                 {
-                    DsProject.Instance.Initialized += () => DoToolkitOperation(App.CommandLineOptions.ToolkitOperation);
+                    DsProject.Instance.Initialized += () => DoToolkitOperation(CommandLineOptions.ToolkitOperation);
                 }
             }
             else
@@ -565,7 +570,8 @@ namespace Ssz.Operator.Design
         private async void ReadDsProjectFromBinFileAsync(string dsProjectFileName)
         {
             var dsProjectDirectoryName = Path.GetDirectoryName(dsProjectFileName);
-            bool isReadOnly = !App.HasMaintenanceLicense; // ULM support
+            //bool isReadOnly = !App.HasMaintenanceLicense; // ULM support
+            bool isReadOnly = false; // ULM support
             if (!isReadOnly && Directory.Exists(dsProjectDirectoryName) &&
                 !FileSystemHelper.IsDirectoryWritable(dsProjectDirectoryName))
             {
@@ -578,7 +584,7 @@ namespace Ssz.Operator.Design
                 await busyCloser.SetHeaderAsync(Properties.Resources.ProgressInfo_LoadingDsProject_Header);
 
                 await DsProject.ReadDsProjectFromBinFileAsync(dsProjectFileName, DsProject.DsProjectModeEnum.VisualDesignMode,
-                            isReadOnly, App.CommandLineOptions.AutoConvert, @"", busyCloser);                
+                            isReadOnly, CommandLineOptions.AutoConvert, @"", busyCloser);                
             }
 
             if (!String.IsNullOrEmpty(DsProject.Instance.DsProjectFileFullName))
@@ -1100,12 +1106,12 @@ namespace Ssz.Operator.Design
 
         private async void NewExecutedAsync(object sender, ExecutedRoutedEventArgs e)
         {
-            if (!App.HasMaintenanceLicense)
-            {
-                MessageBoxHelper.ShowError(Properties.Resources.NoMaintLicenseTitle + "\n\n" +
-                                           Properties.Resources.AMSSupportInfo);
-                return;
-            }
+            //if (!App.HasMaintenanceLicense)
+            //{
+            //    MessageBoxHelper.ShowError(Properties.Resources.NoMaintLicenseTitle + "\n\n" +
+            //                               Properties.Resources.AMSSupportInfo);
+            //    return;
+            //}
 
             string newDsProjectName = Interaction.InputBox(Properties.Resources.NewDsProjectNameInputDialogPrompt,
                 Properties.Resources.ProgressInfo_CreatingDsProject_Header,"NewProject");
@@ -1880,7 +1886,7 @@ namespace Ssz.Operator.Design
                     groups.Add(group);                    
                 }
                 var o = toolkitOperation;
-                Func<IProgressInfo, object?, Task<ToolkitOperationResult>> toolkitOperationFunc = (pi, p) => o.DoWork(pi, p, App.CommandLineOptions.ToolkitOperationsSilent);
+                Func<IProgressInfo, object?, Task<ToolkitOperationResult>> toolkitOperationFunc = (pi, p) => o.DoWork(pi, p, CommandLineOptions.ToolkitOperationsSilent);
                 var button = new Fluent.Button
                 {                    
                     Tag = toolkitOperation,
@@ -2023,6 +2029,36 @@ namespace Ssz.Operator.Design
         #region private fields
 
         private Process? _previewSszOperatorProcess;
+
+        #endregion
+    }
+
+    public sealed class Options
+    {
+        #region construction and destruction
+
+        public Options(IConfiguration configuration)
+        {
+            DsProjectFile = ConfigurationHelper.GetValue<string>(configuration, "SolutionFile", @"");
+            AutoConvert = ConfigurationHelper.GetValue<bool>(configuration, "AutoConvert", false);
+            ToolkitOperation = ConfigurationHelper.GetValue<string>(configuration, "ToolkitOperation", @"");
+            ToolkitOperationsSilent = ConfigurationHelper.GetValue<bool>(configuration, "ToolkitOperationsSilent", false);
+            Options_ = ConfigurationHelper.GetValue<string>(configuration, "Options", @"");
+        }
+
+        #endregion
+
+        #region public functions
+
+        public string DsProjectFile { get; set; }
+
+        public bool AutoConvert { get; set; }
+
+        public string ToolkitOperation { get; set; }
+
+        public bool ToolkitOperationsSilent { get; set; }
+
+        public string Options_ { get; set; }
 
         #endregion
     }
