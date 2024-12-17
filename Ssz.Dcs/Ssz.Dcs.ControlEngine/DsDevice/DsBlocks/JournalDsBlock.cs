@@ -81,13 +81,7 @@ namespace Ssz.Dcs.ControlEngine
 
         #endregion
 
-        #region private fields
-
-        private static readonly DsParamInfo[] _majorConstParamInfos;
-
-        private static readonly DsParamInfo[] _constParamInfos;
-
-        private static readonly DsParamInfo[] _majorParamInfos;
+        #region private fields        
 
         private static readonly DsParamInfo[] _paramInfos;
 

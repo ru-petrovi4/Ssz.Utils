@@ -12,11 +12,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">    
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DefineConstants>TRACE;NO_LICENSE_CHECK</DefineConstants>	
-  </PropertyGroup> 
-  
-  <ItemGroup>
-    <Resource Include="Resources\Images\Ssz.Operator.Design.ico" />
-  </ItemGroup>
+  </PropertyGroup>
   
   <ItemGroup>     
     <Resource Include="Resources\Images\CreateDsShapeDrawing.png" />    
