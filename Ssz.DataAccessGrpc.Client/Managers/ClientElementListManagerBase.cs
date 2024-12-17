@@ -335,7 +335,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             get { return _clientObjectInfosDictionary; }
         }
 
-        protected CaseInsensitiveDictionary<DataAccessGrpcListItemWrapper> DataAccessGrpcListItemWrappersDictionary
+        protected Dictionary<string, DataAccessGrpcListItemWrapper> DataAccessGrpcListItemWrappersDictionary
         {
             get { return _dataAccessGrpcListItemWrappersDictionary; }
         }
@@ -346,11 +346,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
         #region private fields
 
-        private readonly Dictionary<object, ClientObjectInfo> _clientObjectInfosDictionary =
-            new Dictionary<object, ClientObjectInfo>(256, ReferenceEqualityComparer<object>.Default);
+        private readonly Dictionary<object, ClientObjectInfo> _clientObjectInfosDictionary = new(256, ReferenceEqualityComparer<object>.Default);
 
-        private readonly CaseInsensitiveDictionary<DataAccessGrpcListItemWrapper> _dataAccessGrpcListItemWrappersDictionary =
-            new CaseInsensitiveDictionary<DataAccessGrpcListItemWrapper>(256);
+        private readonly Dictionary<string, DataAccessGrpcListItemWrapper> _dataAccessGrpcListItemWrappersDictionary = new(256);
 
         private volatile bool _dataGrpcItemsMustBeAddedOrRemoved;
         private readonly List<ClientObjectInfo> _clientObjectInfosToRemove = new List<ClientObjectInfo>(256);        

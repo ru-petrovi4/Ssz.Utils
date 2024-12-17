@@ -257,7 +257,7 @@ namespace Ssz.Utils
 
                         line += l;
 
-                        if (line == "" || line.All(ch => Char.IsControl(ch))) 
+                        if (line == "" || line.All(Char.IsControl)) 
                             continue;
 
                         List<string?> fields;
@@ -365,7 +365,7 @@ namespace Ssz.Utils
                         }
                         if (field0 == @"")
                         {
-                            if (!fields.All(f => String.IsNullOrEmpty(f)))
+                            if (!fields.All(String.IsNullOrEmpty))
                             {
                                 if (fileData.ContainsKey(@""))
                                 {

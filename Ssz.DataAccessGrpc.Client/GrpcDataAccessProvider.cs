@@ -106,7 +106,7 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                     foreach (var values in ElementIdsMap.Map.Values)
                     {
-                        if (values.Count >= 2 && values.Skip(2).All(v => String.IsNullOrEmpty(v)))
+                        if (values.Count >= 2 && values.Skip(2).All(String.IsNullOrEmpty))
                         {
                             var constAny = ElementIdsMap.TryGetConstValue(values[1]);
                             if (constAny.HasValue)
@@ -367,9 +367,10 @@ namespace Ssz.DataAccessGrpc.Client
                     for (var i = 0; i < resultValues.Length; i++)
                     {
                         var resultValue = resultValues[i];
-                        if (resultValue != SszConverter.DoNothing)
+                        var childValueSubscription = valueSubscriptionObj.ChildValueSubscriptionsList[i];
+                        if (childValueSubscription is not null && resultValue != SszConverter.DoNothing)
                             LoggersSet.UserFriendlyLogger.LogInformation("Model TAG: \"" +
-                                                         valueSubscriptionObj.ChildValueSubscriptionsList[i]
+                                                         childValueSubscription
                                                              .ElementId + "\"; Write Value to Model: \"" +
                                                          new Any(resultValue) + "\"");
                     }
@@ -398,7 +399,7 @@ namespace Ssz.DataAccessGrpc.Client
                 try
                 {
                     await _clientElementValueListManager.SubscribeAsync(_clientContextManager, CallbackDispatcher,
-                    OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, ct);
+                        OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, ct);
 
                     if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
                     {
@@ -407,8 +408,9 @@ namespace Ssz.DataAccessGrpc.Client
                         for (var i = 0; i < resultValues.Length; i++)
                         {
                             var resultValue = resultValues[i];
-                            if (resultValue != SszConverter.DoNothing)
-                                resultInfo = await _clientElementValueListManager.WriteAsync(valueSubscriptionObj.ChildValueSubscriptionsList[i],
+                            var childValueSubscription = valueSubscriptionObj.ChildValueSubscriptionsList[i];
+                            if (childValueSubscription is not null && resultValue != SszConverter.DoNothing)
+                                resultInfo = await _clientElementValueListManager.WriteAsync(childValueSubscription,
                                     new ValueStatusTimestamp(new Any(resultValue), StatusCodes.Good, DateTime.UtcNow));
                         }
                     }
@@ -921,9 +923,11 @@ namespace Ssz.DataAccessGrpc.Client
             {
                 valueSubscriptionObj.MapValues = ElementIdsMap.GetFromMap(elementId);
 
-                if (valueSubscriptionObj.MapValues is not null)
+                if (valueSubscriptionObj.MapValues is not null &&
+                    valueSubscriptionObj.MapValues.Count > 2 &&
+                    !valueSubscriptionObj.MapValues.Skip(2).All(String.IsNullOrEmpty))
                 {
-                    var childValueSubscriptionsList = new List<ChildValueSubscription>();
+                    List<ChildValueSubscription?> childValueSubscriptionsList = new();
                     SszConverter? converter = null;
 
                     for (var i = 1; i < valueSubscriptionObj.MapValues.Count; i++)
@@ -967,35 +971,29 @@ namespace Ssz.DataAccessGrpc.Client
                             if (converter is not null)
                                 continue;
 
-                            if (!String.IsNullOrEmpty(v))
-                            {
-                                var childValueSubscription = new ChildValueSubscription(valueSubscriptionObj, v);
-                                childValueSubscriptionsList.Add(childValueSubscription);
-                            }
+                            if (String.IsNullOrEmpty(v))
+                                childValueSubscriptionsList.Add(null);
+                            else
+                                childValueSubscriptionsList.Add(new ChildValueSubscription(valueSubscriptionObj, v));
                         }
                     }
 
                     if (converter is not null && converter.Statements.Count == 0 && converter.BackStatements.Count == 0)
-                    {
                         converter = null;
-                    }
                     //else
                     //{
                     //    converter.ParentItem = DsProject.Instance;
                     //    converter.ReplaceConstants(DsProject.Instance);
                     //}
 
-                    if (childValueSubscriptionsList.Count > 1 || converter is not null)
+                    valueSubscriptionObj.ChildValueSubscriptionsList = childValueSubscriptionsList;
+                    valueSubscriptionObj.Converter = converter;
+                    try
                     {
-                        valueSubscriptionObj.ChildValueSubscriptionsList = childValueSubscriptionsList;
-                        valueSubscriptionObj.Converter = converter;
-                        try
-                        {
-                            callbackDispatcher.BeginInvoke(ct => valueSubscriptionObj.ChildValueSubscriptionUpdated());
-                        }
-                        catch (Exception)
-                        {
-                        }
+                        callbackDispatcher.BeginInvoke(ct => valueSubscriptionObj.ChildValueSubscriptionUpdated());
+                    }
+                    catch (Exception)
+                    {
                     }
                 }
             }
@@ -1004,16 +1002,17 @@ namespace Ssz.DataAccessGrpc.Client
             {
                 WorkingThreadSafeDispatcher.BeginInvoke(ct =>
                 {
-                    if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
+                    if (valueSubscriptionObj.ChildValueSubscriptionsList is null)
                     {
-                        foreach (var childValueSubscription in valueSubscriptionObj.ChildValueSubscriptionsList)
-                            if (!childValueSubscription.IsConst)
-                                _clientElementValueListManager.AddItem(childValueSubscription.ElementId,
-                                    childValueSubscription);
+                        _clientElementValueListManager.AddItem(valueSubscriptionObj.MapValues[1] ?? "", valueSubscription);
                     }
                     else
                     {
-                        _clientElementValueListManager.AddItem(valueSubscriptionObj.MapValues[1] ?? "", valueSubscription);
+                        foreach (var childValueSubscription in valueSubscriptionObj.ChildValueSubscriptionsList)
+                        {
+                            if (childValueSubscription is not null && !childValueSubscription.IsConst)
+                                _clientElementValueListManager.AddItem(childValueSubscription.ElementId, childValueSubscription);
+                        }
                     }
                 });
 
@@ -1035,15 +1034,15 @@ namespace Ssz.DataAccessGrpc.Client
         /// </summary>
         /// <param name="valueSubscriptionObj"></param>
         private void RemoveItem(ValueSubscriptionObj valueSubscriptionObj)
-        {   
+        {
             var valueSubscription = valueSubscriptionObj.ValueSubscription;
 
             var constAny = ElementIdsMap.TryGetConstValue(valueSubscriptionObj.ElementId);
-            if (constAny.HasValue) 
+            if (constAny.HasValue)
                 return;
 
             var disposable = valueSubscriptionObj.Converter as IDisposable;
-            if (disposable is not null) 
+            if (disposable is not null)
                 disposable.Dispose();
 
             lock (ConstItemsDictionary)
@@ -1058,21 +1057,29 @@ namespace Ssz.DataAccessGrpc.Client
 
             WorkingThreadSafeDispatcher.BeginInvoke(ct =>
             {
-                if (valueSubscriptionObj.ChildValueSubscriptionsList is not null)
+                if (valueSubscriptionObj.MapValues is not null)
                 {
-                    foreach (var childValueSubscription in valueSubscriptionObj.ChildValueSubscriptionsList)
+                    if (valueSubscriptionObj.ChildValueSubscriptionsList is null)
                     {
-                        if (!childValueSubscription.IsConst)
-                            _clientElementValueListManager.RemoveItem(childValueSubscription);
-                        childValueSubscription.ParentValueSubscriptionObj = null;
+                        _clientElementValueListManager.RemoveItem(valueSubscription);
                     }
-
-                    valueSubscriptionObj.ChildValueSubscriptionsList = null;
+                    else
+                    {
+                        foreach (var childValueSubscription in valueSubscriptionObj.ChildValueSubscriptionsList)
+                        {
+                            if (childValueSubscription is not null)
+                            {
+                                if (!childValueSubscription.IsConst)
+                                    _clientElementValueListManager.RemoveItem(childValueSubscription);
+                                childValueSubscription.ParentValueSubscriptionObj = null;
+                            }
+                        }
+                    }
                 }
                 else
                 {
                     _clientElementValueListManager.RemoveItem(valueSubscription);
-                }
+                }                
             });
         }
 
@@ -1146,7 +1153,7 @@ namespace Ssz.DataAccessGrpc.Client
             /// </summary>
             public readonly IValueSubscription ValueSubscription;
 
-            public List<ChildValueSubscription>? ChildValueSubscriptionsList;
+            public List<ChildValueSubscription?>? ChildValueSubscriptionsList;
 
             public SszConverter? Converter;
 
@@ -1157,14 +1164,15 @@ namespace Ssz.DataAccessGrpc.Client
 
             public void ChildValueSubscriptionUpdated()
             {
-                if (ChildValueSubscriptionsList is null) return;
+                if (ChildValueSubscriptionsList is null)
+                    return;
 
-                if (ChildValueSubscriptionsList.Any(vs => StatusCodes.IsBad(vs.ValueStatusTimestamp.StatusCode)))
+                if (ChildValueSubscriptionsList.Any(vs => StatusCodes.IsBad(vs?.ValueStatusTimestamp.StatusCode ?? StatusCodes.Good)))
                 {
                     ValueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.Bad });
                     return;
                 }
-                if (ChildValueSubscriptionsList.Any(vs => StatusCodes.IsUncertain(vs.ValueStatusTimestamp.StatusCode)))
+                if (ChildValueSubscriptionsList.Any(vs => StatusCodes.IsUncertain(vs?.ValueStatusTimestamp.StatusCode ?? StatusCodes.Good)))
                 {
                     ValueSubscription.Update(new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain });
                     return;
@@ -1172,7 +1180,9 @@ namespace Ssz.DataAccessGrpc.Client
 
                 var values = new List<object?>();
                 foreach (var childValueSubscription in ChildValueSubscriptionsList)
-                    values.Add(childValueSubscription.ValueStatusTimestamp.Value.ValueAsObject());
+                {
+                    values.Add(childValueSubscription?.ValueStatusTimestamp.Value.ValueAsObject());
+                }
                 SszConverter converter = Converter ?? SszConverter.Empty;                
                 var convertedValue = converter.Convert(values.ToArray(), Ssz.Utils.Logging.LoggersSet.Empty);
                 if (convertedValue == SszConverter.DoNothing) return;
@@ -1204,9 +1214,9 @@ namespace Ssz.DataAccessGrpc.Client
             {
             }            
 
-            public ValueStatusTimestamp ValueStatusTimestamp = new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain };
+            public ValueStatusTimestamp ValueStatusTimestamp = new ValueStatusTimestamp { StatusCode = StatusCodes.Uncertain };            
 
-            public readonly bool IsConst;            
+            public readonly bool IsConst;
 
             public void Update(ValueStatusTimestamp valueStatusTimestamp)
             {
