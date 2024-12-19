@@ -16,7 +16,7 @@ namespace Ssz.Operator.Core
     {
         #region public functions
 
-        public const string SimcodeSszOperatorSubKeyString = @"SOFTWARE\Simcode\Ssz.Operator";
+        public const string SszOperatorSubKeyString = @"SOFTWARE\Ssz\Ssz.Operator";
         public const string TouchScreenRectValueName = @"TouchScreenRect";
         public const string TouchScreenModeValueName = @"TouchScreenMode";
         public const string PlayWindowsInfoValueName = @"PlayWindowsInfo";
@@ -32,7 +32,7 @@ namespace Ssz.Operator.Core
             rootWindowPropsCollection = new List<WindowProps>();
             virtualKeyboardType = "";
 
-            var skSimcodeSszOperator = Registry.CurrentUser.OpenSubKey(SimcodeSszOperatorSubKeyString);
+            var skSimcodeSszOperator = Registry.CurrentUser.OpenSubKey(SszOperatorSubKeyString);
             string sTouchScreenRect = skSimcodeSszOperator is not null
                 ? (string) (skSimcodeSszOperator.GetValue(TouchScreenRectValueName, "") ?? "")
                 : "";
@@ -49,7 +49,7 @@ namespace Ssz.Operator.Core
                 touchScreenMode = ObsoleteAnyHelper.ConvertTo<TouchScreenMode>(sTouchScreenMode, false);
 
             var skSimcodeSszOperatorDsProject =
-                Registry.CurrentUser.OpenSubKey(SimcodeSszOperatorSubKeyString + @"\" +
+                Registry.CurrentUser.OpenSubKey(SszOperatorSubKeyString + @"\" +
                                                 GetDsProjectRegistryKeyString());
             string sPlayWindowsInfo = skSimcodeSszOperatorDsProject is not null
                 ? (string) (skSimcodeSszOperatorDsProject.GetValue(PlayWindowsInfoValueName, "") ?? "")
@@ -82,7 +82,7 @@ namespace Ssz.Operator.Core
             RegistryKey? skSimcodeSszOperator = null;
             try
             {
-                skSimcodeSszOperator = Registry.CurrentUser.CreateSubKey(SimcodeSszOperatorSubKeyString);
+                skSimcodeSszOperator = Registry.CurrentUser.CreateSubKey(SszOperatorSubKeyString);
             }
             catch (Exception)
             {
@@ -98,7 +98,7 @@ namespace Ssz.Operator.Core
             try
             {
                 skSimcodeSszOperatorDsProject =
-                    Registry.CurrentUser.CreateSubKey(SimcodeSszOperatorSubKeyString + @"\" +
+                    Registry.CurrentUser.CreateSubKey(SszOperatorSubKeyString + @"\" +
                                                       GetDsProjectRegistryKeyString());
             }
             catch (Exception)
@@ -130,7 +130,7 @@ namespace Ssz.Operator.Core
             RegistryKey? skSimcodeSszOperator = null;
             try
             {
-                skSimcodeSszOperator = Registry.CurrentUser.CreateSubKey(SimcodeSszOperatorSubKeyString);
+                skSimcodeSszOperator = Registry.CurrentUser.CreateSubKey(SszOperatorSubKeyString);
             }
             catch (Exception)
             {
@@ -156,7 +156,7 @@ namespace Ssz.Operator.Core
             try
             {
                 var skSimcodeSszOperatorDsProject =
-                    Registry.CurrentUser.OpenSubKey(SimcodeSszOperatorSubKeyString + @"\" +
+                    Registry.CurrentUser.OpenSubKey(SszOperatorSubKeyString + @"\" +
                                                     DsProject.Instance!.DsProjectFileFullName!.Replace(Path.PathSeparator, '_'));
 
                 if (skSimcodeSszOperatorDsProject is null) return null;
@@ -197,7 +197,7 @@ namespace Ssz.Operator.Core
             RegistryKey? skSimcodeSszOperator = null;
             try
             {
-                skSimcodeSszOperator = Registry.CurrentUser.CreateSubKey(SimcodeSszOperatorSubKeyString);
+                skSimcodeSszOperator = Registry.CurrentUser.CreateSubKey(SszOperatorSubKeyString);
             }
             catch (Exception)
             {
@@ -209,7 +209,7 @@ namespace Ssz.Operator.Core
             try
             {
                 skSimcodeSszOperatorDsProject =
-                    Registry.CurrentUser.CreateSubKey(SimcodeSszOperatorSubKeyString + @"\" +
+                    Registry.CurrentUser.CreateSubKey(SszOperatorSubKeyString + @"\" +
                                                       GetDsProjectRegistryKeyString());
             }
             catch (Exception)

@@ -215,7 +215,7 @@ namespace Ssz.Operator.Core
         protected DesignDsProjectViewModel()
         {
             RecentFilesCollectionManager =
-                new RecentFilesCollectionManager(AppRegistryOptions.SimcodeSszOperatorSubKeyString, 10, 150, null);
+                new RecentFilesCollectionManager(AppRegistryOptions.SszOperatorSubKeyString, 10, 150, null);
 
             DiscreteModeStep = 5;
             DsShapesInfoFontSizeScale = 0.4;

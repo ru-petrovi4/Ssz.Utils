@@ -96,9 +96,8 @@
     <ProjectReference Include="..\..\ThirdParties\Ssz.WindowsAPICodePack\Ssz.WindowsAPICodePack.csproj" />
   </ItemGroup>  
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.28.3" />
+    <PackageReference Include="Google.Protobuf" Version="3.29.2" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
-    <PackageReference Include="System.Management" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" Condition="'$(TargetFramework)' != 'net8.0-windows'" />

@@ -1090,6 +1090,16 @@ namespace Ssz.Operator.Core.Utils.Serialization
                     typeString = typeof(XamlConverter).FullName;
                     break;
 
+                case nameof(MenuItemInfo):
+                    typeString = typeof(MenuItemInfo).FullName;
+                    break;
+                case nameof(SeparatorMenuItemInfo):
+                    typeString = typeof(SeparatorMenuItemInfo).FullName;
+                    break;
+                case nameof(SimpleMenuItemInfo):
+                    typeString = typeof(SimpleMenuItemInfo).FullName;
+                    break;
+
                 default:
                     typeString = typeStringParts[0] + "," + typeStringParts[1];
                     break;

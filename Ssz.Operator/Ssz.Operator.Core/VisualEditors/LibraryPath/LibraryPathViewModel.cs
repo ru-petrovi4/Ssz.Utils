@@ -16,7 +16,7 @@ namespace Ssz.Operator.Core.VisualEditors.LibraryPath
         {
             RecentFilesCollectionManager =
                 new RecentFilesCollectionManager(
-                    AppRegistryOptions.SimcodeSszOperatorSubKeyString + @"\" +
+                    AppRegistryOptions.SszOperatorSubKeyString + @"\" +
                     AppRegistryOptions.DsPagesAndDsShapesLibrariesSubKeyString, 10, 150, "");
 
             RecentFilesCollectionManager.Add(LocalLibraryString);
