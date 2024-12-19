@@ -23,6 +23,7 @@ namespace IdentityServer4.Models
 
         /// <summary>
         /// Gets or sets the life time.
+        /// Sliding or absolute.
         /// </summary>
         /// <value>
         /// The life time.
