@@ -12,7 +12,7 @@ using Ssz.Operator.Core.DsShapeViews;
 using Ssz.Operator.Core.VisualEditors;
 using Ssz.Operator.Core.VisualEditors.AddDrawingsFromLibrary;
 using Ssz.Operator.Core.VisualEditors.Windows;
-using Ssz.Operator.Design.Controls;
+using Ssz.Operator.Design.Core.Controls;
 using Ssz.Operator.Core.FindReplace;
 using Microsoft.VisualBasic;
 using System;
@@ -55,7 +55,7 @@ using Ssz.Operator.Core.Addons;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 
-namespace Ssz.Operator.Design
+namespace Ssz.Operator.Design.Core
 {
     /// <summary>
     ///     Interaction logic for MainWindow.xaml
@@ -746,7 +746,7 @@ namespace Ssz.Operator.Design
             catch (Exception ex)
             {
                 DsProject.LoggersSet.Logger.LogError(ex, @"");
-                MessageBoxHelper.ShowError(Properties.Resources.RenameDsPageError + @" " + Core.Properties.Resources.SeeErrorLogForDetails);
+                MessageBoxHelper.ShowError(Properties.Resources.RenameDsPageError + @" " + Ssz.Operator.Core.Properties.Resources.SeeErrorLogForDetails);
             }
 
             DsProject.Instance.OnDsPageDrawingsListChanged();
@@ -809,8 +809,8 @@ namespace Ssz.Operator.Design
                 .Select(vm => vm.DrawingInfo).ToArray();
             if (drawingInfos.Length == 0) return;
 
-            WpfMessageBoxResult messageBoxResult = WpfMessageBox.Show(this, Core.Properties.Resources.MessageDeleteDsPagesQuestion,
-                            Core.Properties.Resources.QuestionMessageBoxCaption,
+            WpfMessageBoxResult messageBoxResult = WpfMessageBox.Show(this, Ssz.Operator.Core.Properties.Resources.MessageDeleteDsPagesQuestion,
+                            Ssz.Operator.Core.Properties.Resources.QuestionMessageBoxCaption,
                             WpfMessageBoxButton.YesNoCancel,
                             MessageBoxImage.Question);            
             if (messageBoxResult != WpfMessageBoxResult.Yes) return;
@@ -830,7 +830,7 @@ namespace Ssz.Operator.Design
                 catch (Exception ex)
                 {
                     DsProject.LoggersSet.Logger.LogError(ex, @"");
-                    MessageBoxHelper.ShowError(Properties.Resources.DeleteDrawingError + @" " + Core.Properties.Resources.SeeErrorLogForDetails);
+                    MessageBoxHelper.ShowError(Properties.Resources.DeleteDrawingError + @" " + Ssz.Operator.Core.Properties.Resources.SeeErrorLogForDetails);
                     break;
                 }
             }
@@ -844,8 +844,8 @@ namespace Ssz.Operator.Design
                 .Select(vm => vm.DrawingInfo).ToArray();
             if (drawingInfos.Length == 0) return;
 
-            WpfMessageBoxResult messageBoxResult = WpfMessageBox.Show(this, Core.Properties.Resources.MessageDeleteComplexDsShapesQuestion,
-                            Core.Properties.Resources.QuestionMessageBoxCaption,
+            WpfMessageBoxResult messageBoxResult = WpfMessageBox.Show(this, Ssz.Operator.Core.Properties.Resources.MessageDeleteComplexDsShapesQuestion,
+                            Ssz.Operator.Core.Properties.Resources.QuestionMessageBoxCaption,
                             WpfMessageBoxButton.YesNoCancel,
                             MessageBoxImage.Question);            
             if (messageBoxResult != WpfMessageBoxResult.Yes) return;
@@ -867,7 +867,7 @@ namespace Ssz.Operator.Design
                 {
                     DsProject.LoggersSet.Logger.LogError(ex, @"");
                     MessageBoxHelper.ShowError(Properties.Resources.DeleteDrawingError + @" " +
-                                               Core.Properties.Resources.SeeErrorLogForDetails);
+                                               Ssz.Operator.Core.Properties.Resources.SeeErrorLogForDetails);
                     break;
                 }
             }
@@ -909,8 +909,8 @@ namespace Ssz.Operator.Design
             catch (Exception ex)
             {
                 DsProject.LoggersSet.Logger.LogError(ex, @"");
-                MessageBoxHelper.ShowError(Core.Properties.Resources.ToolkitOperationError + @". " +
-                                                Core.Properties.Resources.SeeErrorLogForDetails);
+                MessageBoxHelper.ShowError(Ssz.Operator.Core.Properties.Resources.ToolkitOperationError + @". " +
+                                                Ssz.Operator.Core.Properties.Resources.SeeErrorLogForDetails);
                 return;
             }
 
@@ -923,8 +923,8 @@ namespace Ssz.Operator.Design
                     MessageBoxHelper.ShowInfo(Core.Properties.Resources.Done);
                     break;
                 case ToolkitOperationResult.DoneWithErrors:
-                    MessageBoxHelper.ShowWarning(Core.Properties.Resources.DoneWithErrors + @". " +
-                                                 Core.Properties.Resources.SeeErrorLogForDetails);
+                    MessageBoxHelper.ShowWarning(Ssz.Operator.Core.Properties.Resources.DoneWithErrors + @". " +
+                                                 Ssz.Operator.Core.Properties.Resources.SeeErrorLogForDetails);
                     break;
             }
         }
@@ -932,7 +932,7 @@ namespace Ssz.Operator.Design
         private async Task<ToolkitOperationResult> UpdateComplexDsShapesExtendedToolkitOperation(IProgressInfo progressInfo, object? parameter)
         {
             var toolkitOperationOptions = ToolkitOperationOptionsDialog.ShowDialog(new UpdateComplexDsShapesToolkitOperationOptions(),
-                Core.Properties.Resources.SpecifyToolkitOperationOptionsMessage) as UpdateComplexDsShapesToolkitOperationOptions;
+                Ssz.Operator.Core.Properties.Resources.SpecifyToolkitOperationOptionsMessage) as UpdateComplexDsShapesToolkitOperationOptions;
             if (toolkitOperationOptions is null) return ToolkitOperationResult.Cancelled;
 
             DrawingInfo[]? updatingDrawingInfos = null;
@@ -1149,7 +1149,7 @@ namespace Ssz.Operator.Design
                 catch (Exception ex)
                 {
                     DsProject.LoggersSet.Logger.LogError(ex, @"Cannot create dsProject directory: " + newDsProjectDirectoryInfo.FullName);
-                    MessageBoxHelper.ShowError(Properties.Resources.NewDsProjectCannotCreateDirectory + " " + Core.Properties.Resources.SeeErrorLogForDetails);
+                    MessageBoxHelper.ShowError(Properties.Resources.NewDsProjectCannotCreateDirectory + " " + Ssz.Operator.Core.Properties.Resources.SeeErrorLogForDetails);
                     return;
                 }
             }
@@ -1292,7 +1292,7 @@ namespace Ssz.Operator.Design
 
             if (errorString is not null)
             {
-                MessageBoxHelper.ShowWarning(Core.Properties.Resources.DoneWithErrors + @". " +
+                MessageBoxHelper.ShowWarning(Ssz.Operator.Core.Properties.Resources.DoneWithErrors + @". " +
                                              Properties.Resources.CannotCopyFiles + ".\n" + errorString);
             }
             else
@@ -1304,7 +1304,7 @@ namespace Ssz.Operator.Design
         private async Task<ToolkitOperationResult> CreateDsPagesToolkitOperation(IProgressInfo progressInfo, object? parameter)
         {
             var toolkitOperationOptions = ToolkitOperationOptionsDialog.ShowDialog(new CreateDsPagesToolkitOperationOptions(),
-                Core.Properties.Resources.SpecifyToolkitOperationOptionsMessage) as CreateDsPagesToolkitOperationOptions;
+                Ssz.Operator.Core.Properties.Resources.SpecifyToolkitOperationOptionsMessage) as CreateDsPagesToolkitOperationOptions;
             if (toolkitOperationOptions is null) return ToolkitOperationResult.Cancelled;
 
             MessageBoxHelper.ShowInfo(Properties.Resources.CreateDsPagesSelectImageFilesMessageBox);
@@ -1323,7 +1323,7 @@ namespace Ssz.Operator.Design
         private async Task<ToolkitOperationResult> UpdateDsPagesToolkitOperation(IProgressInfo progressInfo, object? parameter)
         {
             var toolkitOperationOptions = ToolkitOperationOptionsDialog.ShowDialog(new UpdateDsPagesToolkitOperationOptions(),
-                Core.Properties.Resources.SpecifyToolkitOperationOptionsMessage) as UpdateDsPagesToolkitOperationOptions;
+                Ssz.Operator.Core.Properties.Resources.SpecifyToolkitOperationOptionsMessage) as UpdateDsPagesToolkitOperationOptions;
             if (toolkitOperationOptions is null) return ToolkitOperationResult.Cancelled;
 
             MessageBoxHelper.ShowInfo(Properties.Resources.UpdateDsPagesSelectImageFilesMessageBox);
@@ -1392,7 +1392,7 @@ namespace Ssz.Operator.Design
                             {
                                 bool succeeded = DsProject.Instance.SaveUnconditionally();
                                 OnStartDsPageChanged();
-                                if (succeeded) WpfMessageBox.Show(propertiesWindow, Properties.Resources.DsProjectFileSavedToDiskMessageBox, Core.Properties.Resources.InfoMessageBoxCaption,
+                                if (succeeded) WpfMessageBox.Show(propertiesWindow, Properties.Resources.DsProjectFileSavedToDiskMessageBox, Ssz.Operator.Core.Properties.Resources.InfoMessageBoxCaption,
                                     WpfMessageBoxButton.OK,
                                     MessageBoxImage.Information);                                
                             }
@@ -1465,7 +1465,7 @@ namespace Ssz.Operator.Design
             if (!deltaSimOperatorFileInfo.Exists)
             {
                 DsProject.LoggersSet.Logger.LogCritical(@"Cannot find 'Ssz.Operator.Play.exe'");
-                MessageBoxHelper.ShowError(Core.Properties.Resources.SeeErrorLogForDetails);
+                MessageBoxHelper.ShowError(Ssz.Operator.Core.Properties.Resources.SeeErrorLogForDetails);
                 return;
             }
 
@@ -1922,9 +1922,9 @@ namespace Ssz.Operator.Design
             }
             catch (Exception ex)
             {
-                DsProject.LoggersSet.Logger.LogError(ex, Core.Properties.Resources.ToolkitOperationError);
-                MessageBoxHelper.ShowError(Core.Properties.Resources.ToolkitOperationError + @". " +
-                                        Core.Properties.Resources.SeeErrorLogForDetails);
+                DsProject.LoggersSet.Logger.LogError(ex, Ssz.Operator.Core.Properties.Resources.ToolkitOperationError);
+                MessageBoxHelper.ShowError(Ssz.Operator.Core.Properties.Resources.ToolkitOperationError + @". " +
+                                        Ssz.Operator.Core.Properties.Resources.SeeErrorLogForDetails);
                 toolkitOperationResult = ToolkitOperationResult.Cancelled;
             }
 
@@ -1937,11 +1937,11 @@ namespace Ssz.Operator.Design
             switch (toolkitOperationResult)
             {
                 case ToolkitOperationResult.Done:
-                    MessageBoxHelper.ShowInfo(Core.Properties.Resources.Done);
+                    MessageBoxHelper.ShowInfo(Ssz.Operator.Core.Properties.Resources.Done);
                     break;
                 case ToolkitOperationResult.DoneWithErrors:
-                    MessageBoxHelper.ShowWarning(Core.Properties.Resources.DoneWithErrors + @". " +
-                                                    Core.Properties.Resources.SeeErrorLogForDetails);
+                    MessageBoxHelper.ShowWarning(Ssz.Operator.Core.Properties.Resources.DoneWithErrors + @". " +
+                                                    Ssz.Operator.Core.Properties.Resources.SeeErrorLogForDetails);
                     break;
             }
         }

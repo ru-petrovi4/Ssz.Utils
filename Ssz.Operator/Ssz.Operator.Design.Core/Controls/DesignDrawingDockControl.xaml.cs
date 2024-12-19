@@ -10,7 +10,7 @@ using Ssz.Operator.Core.ControlsDesign;
 using Ssz.Operator.Core.Drawings;
 using Ssz.Operator.Core.DsShapeViews;
 
-namespace Ssz.Operator.Design.Controls
+namespace Ssz.Operator.Design.Core.Controls
 {
     /// <summary>
     ///     Interaction logic for DrawingsCollectionControlBase.xaml

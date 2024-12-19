@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ssz.Operator.Design.Controls
+namespace Ssz.Operator.Design.Core.Controls
 {
     public class DockingManagerViewModel : ViewModelBase
     {

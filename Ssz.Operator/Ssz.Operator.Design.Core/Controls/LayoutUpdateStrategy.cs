@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Ssz.Xceed.Wpf.AvalonDock.Layout;
 
-namespace Ssz.Operator.Design.Controls
+namespace Ssz.Operator.Design.Core.Controls
 {
     class LayoutUpdateStrategy : ILayoutUpdateStrategy
     {

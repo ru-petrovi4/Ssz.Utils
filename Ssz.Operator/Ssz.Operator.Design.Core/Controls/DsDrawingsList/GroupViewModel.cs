@@ -4,7 +4,7 @@ using Ssz.Operator.Core.ControlsDesign;
 using Ssz.Operator.Core.VisualEditors;
 using Ssz.Utils;
 
-namespace Ssz.Operator.Design.Controls
+namespace Ssz.Operator.Design.Core.Controls
 {
     public class GroupViewModel : ViewModelBase
     {

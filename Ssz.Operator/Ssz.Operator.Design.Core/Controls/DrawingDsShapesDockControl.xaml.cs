@@ -16,7 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Ssz.Operator.Design.Controls
+namespace Ssz.Operator.Design.Core.Controls
 {    
     public partial class DrawingDsShapesDockControl : UserControl
     {

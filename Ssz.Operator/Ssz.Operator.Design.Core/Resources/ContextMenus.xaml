@@ -1,8 +1,8 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:res="clr-namespace:Ssz.Operator.Design.Properties"
+                    xmlns:res="clr-namespace:Ssz.Operator.Design.Core.Properties"
                     xmlns:commonRes="clr-namespace:Ssz.Operator.Core.Properties;assembly=Ssz.Operator.Core"
-                    xmlns:designerMainWindow="clr-namespace:Ssz.Operator.Design"
+                    xmlns:designerMainWindow="clr-namespace:Ssz.Operator.Design.Core"
                     xmlns:common="clr-namespace:Ssz.Operator.Core;assembly=Ssz.Operator.Core">
     <ContextMenu x:Key="DsPagesItemContextMenu">
         <MenuItem Header="{x:Static res:Resources.OpenDsPagesText}"

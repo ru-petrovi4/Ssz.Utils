@@ -1,7 +1,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="clr-namespace:Ssz.Operator.Design.Controls"
-                    xmlns:dsProjectExplorer="clr-namespace:Ssz.Operator.Design.Controls">
+                    xmlns:controls="clr-namespace:Ssz.Operator.Design.Core.Controls"
+                    xmlns:dsProjectExplorer="clr-namespace:Ssz.Operator.Design.Core.Controls">
     <dsProjectExplorer:SelectionToBackgroundConverter x:Key="selectionToBackgroundConverter" />
     <dsProjectExplorer:SelectionToForegroundConverter x:Key="selectionToForegroundConverter" />
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />

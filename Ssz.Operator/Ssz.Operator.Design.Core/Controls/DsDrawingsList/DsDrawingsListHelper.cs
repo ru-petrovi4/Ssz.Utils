@@ -11,7 +11,7 @@ using Ssz.Operator.Core.DsShapes;
 using Ssz.Operator.Core.VisualEditors;
 using Ssz.Operator.Core.Addons;
 
-namespace Ssz.Operator.Design.Controls
+namespace Ssz.Operator.Design.Core.Controls
 {
     internal static class DsDrawingsListHelper
     {

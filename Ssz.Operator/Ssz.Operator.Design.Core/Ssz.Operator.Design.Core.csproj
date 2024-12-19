@@ -14,14 +14,15 @@
     <DefineConstants>TRACE;NO_LICENSE_CHECK</DefineConstants>	
   </PropertyGroup>
   
-  <ItemGroup>     
-    <Resource Include="Resources\Images\CreateDsShapeDrawing.png" />    
+  <ItemGroup>
+	<Resource Include="Resources\Images\Ssz.Operator.Design.ico" />
+	<Resource Include="Resources\Images\CreateDsShapeDrawing.png" />    
     <Resource Include="Resources\Images\Copy.png" />
     <Resource Include="Resources\Images\Cut.png" />
     <Resource Include="Resources\Images\Delete.png" />
     <Resource Include="Resources\Images\Paste.png" />
     <Resource Include="Resources\Images\Properties.png" />
-    <Resource Include="Resources\Images\Link.png" />
+    <Resource Include="Resources\Images\Link.png" />    
     <Resource Include="Resources\Images\tag.png" />
     <Resource Include="Resources\Images\update.png" />
     <Resource Include="Resources\Images\List.png" />

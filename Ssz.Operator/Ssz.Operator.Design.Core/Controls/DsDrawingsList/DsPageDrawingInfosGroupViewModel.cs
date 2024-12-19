@@ -1,6 +1,6 @@
 using System;
 
-namespace Ssz.Operator.Design.Controls
+namespace Ssz.Operator.Design.Core.Controls
 {
     public class DsPageDrawingInfosGroupViewModel : GroupViewModel
     {

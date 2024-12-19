@@ -4,9 +4,9 @@ using Ssz.Operator.Core;
 using Ssz.Operator.Core.Addons;
 using Ssz.Operator.Core.Drawings;
 using Ssz.Operator.Core.VisualEditors;
-using Ssz.Operator.Design.Properties;
+using Ssz.Operator.Design.Core.Properties;
 
-namespace Ssz.Operator.Design.Controls
+namespace Ssz.Operator.Design.Core.Controls
 {
     public class DrawingInfoViewModel : EntityInfoViewModel
     {

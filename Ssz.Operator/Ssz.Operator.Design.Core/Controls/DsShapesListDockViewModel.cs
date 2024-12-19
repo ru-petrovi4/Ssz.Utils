@@ -1,12 +1,12 @@
 ﻿using Ssz.Operator.Core.ControlsDesign;
-using Ssz.Operator.Design.Properties;
+using Ssz.Operator.Design.Core.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ssz.Operator.Design.Controls
+namespace Ssz.Operator.Design.Core.Controls
 {
     public class DsShapesListDockViewModel : DockViewModel
     {
