@@ -2,7 +2,7 @@
   "profiles": {
     "Ssz.Operator.Play": {
       "commandName": "Project",
-      "commandLineArgs": "-p \"D:\\Dev\\Alpha\\Model\\D33 РСУ\\D33_RSU.dsProject\" -ns 1"
+      "commandLineArgs": "-p \"D:\\Projects\\Lukoil !Release LukoilBud_Polyethylene (EPKS)\\ProgramData\\FilesStore\\CDT.2024.LukoilBud_Polyethylene\\Operator.Data\\Polietilen_Interface\\Polietilen_Interface.dsProject\" -ns 1"
     }
   }
 }

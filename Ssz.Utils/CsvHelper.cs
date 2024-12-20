@@ -264,14 +264,9 @@ namespace Ssz.Utils
 
                         if (beginFields is null)
                         {
-                            var fieldsLocal = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), ref inQuotes);
-
-                            if (includeFilesDirectory is not null &&
-                                fieldsLocal.Count == 1 &&
-                                StringHelper.StartsWithIgnoreCase(fieldsLocal[0], @"#include"))
+                            if (line.StartsWith(@"#include", StringComparison.InvariantCultureIgnoreCase) &&
+                                includeFilesDirectory is not null)
                             {
-                                line = fieldsLocal[0]!;
-
                                 var q1 = line.IndexOf('"', 8);
                                 if (q1 != -1 && q1 + 1 < line.Length)
                                 {
@@ -296,7 +291,8 @@ namespace Ssz.Utils
                                 line = "";
                                 continue;
                             }
-                            if (StringHelper.StartsWithIgnoreCase(line, @"#define") && line.Length > 7)
+                            if (line.StartsWith(@"#define", StringComparison.InvariantCultureIgnoreCase) &&
+                                line.Length > 7)
                             {
                                 int q1 = 7;
                                 for (; q1 < line.Length; q1++)
@@ -332,9 +328,9 @@ namespace Ssz.Utils
 
                                 line = "";
                                 continue;
-                            }
+                            }                            
 
-                            fields = fieldsLocal;
+                            fields = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), ref inQuotes);
                             if (inQuotes)
                             {
                                 beginFields = fields;
@@ -345,6 +341,7 @@ namespace Ssz.Utils
                         else
                         {
                             fields = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), ref inQuotes);
+
                             beginFields[beginFields.Count - 1] = beginFields[beginFields.Count - 1] + '\n' + fields[0];
                             beginFields.AddRange(fields.Skip(1));
                             if (inQuotes)
