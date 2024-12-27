@@ -57,10 +57,10 @@ namespace Ssz.Operator.Play
         {            
             // Explicitly calls DataAccessProvider.Dispose for correct diposing.
             // Shutdown(0) occurs too early, otherwise.
-            if (_deltaSimOperator32Process != null && !_deltaSimOperator32Process.HasExited)
+            if (_sszOperator32Process != null && !_sszOperator32Process.HasExited)
             {
-                ProcessHelper.CloseAllWindows(_deltaSimOperator32Process);
-                _deltaSimOperator32Process = null;
+                ProcessHelper.CloseAllWindows(_sszOperator32Process);
+                _sszOperator32Process = null;
             }
 
             if (_disableTouchConversionToMouse != null)
@@ -289,13 +289,13 @@ namespace Ssz.Operator.Play
                 var startInfo = new ProcessStartInfo(fi.DirectoryName + @"\Ssz.Operator.Play 32.exe", arguments);
                 try
                 {
-                    _deltaSimOperator32Process = Process.Start(startInfo)!;
+                    _sszOperator32Process = Process.Start(startInfo)!;
                 }
                 catch (Exception ex)
                 {
                     DsProject.LoggersSet.Logger.LogError(ex, @"Failed to start process");
                 }
-                if (_deltaSimOperator32Process != null)
+                if (_sszOperator32Process != null)
                 {
                     var thread = new Thread(SszOperator32ProcessWaitForExit);
                     thread.IsBackground = true;
@@ -439,10 +439,10 @@ namespace Ssz.Operator.Play
 
         private void SszOperator32ProcessWaitForExit()
         {
-            if (_deltaSimOperator32Process != null && !_deltaSimOperator32Process.HasExited)
+            if (_sszOperator32Process != null && !_sszOperator32Process.HasExited)
             {
-                _deltaSimOperator32Process.WaitForExit();
-                _deltaSimOperator32Process = null;
+                _sszOperator32Process.WaitForExit();
+                _sszOperator32Process = null;
 
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
@@ -593,7 +593,7 @@ namespace Ssz.Operator.Play
 
         #region private fields
 
-        private Process? _deltaSimOperator32Process;
+        private Process? _sszOperator32Process;
         
         private static DisableTouchConversionToMouse? _disableTouchConversionToMouse;
 
