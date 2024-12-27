@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq; using System.Runtime.CompilerServices; using System.Runtime.InteropServices; using System.Text.Json; using System.Text.Json.Serialization;
 
 namespace Ssz.Utils {
-    /// <summary>     ///     If func param stringIsLocalized = false, CultureInfo.InvariantCulture is used.     ///     If func param stringIsLocalized = true, CultureInfo.CurrentCulture is used.     /// </summary>     [StructLayout(LayoutKind.Explicit)]     public struct Any : IOwnedDataSerializable, IComparable<Any>, IComparable     {         #region StorageType enum          public enum TypeCode : byte
+    /// <summary>     ///     If func param stringIsLocalized = false, CultureInfo.InvariantCulture is used.     ///     If func param stringIsLocalized = true, CultureInfo.CurrentCulture is used.     ///     Double.NaN == Double.NaN, Single.NaN == Single.NaN     /// </summary>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   [StructLayout(LayoutKind.Explicit)]     public struct Any : IOwnedDataSerializable, IComparable<Any>, IComparable     {         #region StorageType enum          public enum TypeCode : byte
         {
             /// <summary>
             ///     A null reference.
@@ -479,8 +479,12 @@ namespace Ssz.Utils {
                 case TypeCode.Char:
                     return left.StorageChar == right.StorageChar;
                 case TypeCode.Single:
+                    if (Single.IsNaN(left.StorageSingle) && Single.IsNaN(right.StorageSingle))
+                        return true;
                     return left.StorageSingle == right.StorageSingle;                    
                 case TypeCode.Double:
+                    if (Double.IsNaN(left.StorageDouble) && Double.IsNaN(right.StorageDouble))
+                        return true;
                     return left.StorageDouble == right.StorageDouble;                    
                 case TypeCode.Empty:
                     return true;
@@ -540,12 +544,13 @@ namespace Ssz.Utils {
                         if (Single.IsNaN(d) && Single.IsNaN(thatD))
                             return 0;
                         float diff = d - thatD;
-                        if (diff > -deadband - Single.Epsilon * 100 &&
-                                diff < deadband + Single.Epsilon * 100)
+                        float deadbandF = (float)deadband + Single.Epsilon * 100;
+                        if (diff > -deadbandF &&
+                                diff < deadbandF)
                             return 0;
-                        if (diff <= -deadband - Single.Epsilon * 100)
+                        if (diff <= -deadbandF)
                             return -1;
-                        if (diff >= deadband + Single.Epsilon * 100)
+                        if (diff >= deadbandF)
                             return 1;
                         return -1;
                     }
@@ -555,12 +560,13 @@ namespace Ssz.Utils {
                         if (Double.IsNaN(d) && Double.IsNaN(thatD))
                             return 0;
                         double diff = d - thatD;
-                        if (diff >= -deadband - Double.Epsilon * 100 &&
-                                diff <= deadband + Double.Epsilon * 100)
+                        deadband = deadband + Single.Epsilon * 100;
+                        if (diff >= -deadband &&
+                                diff <= deadband)
                             return 0;
-                        if (diff < -deadband - Double.Epsilon * 100)
+                        if (diff < -deadband)
                             return -1;
-                        if (diff > deadband + Double.Epsilon * 100)
+                        if (diff > deadband)
                             return 1;
                         return -1;
                     }
