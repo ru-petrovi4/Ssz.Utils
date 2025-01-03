@@ -333,7 +333,20 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Returns a DateTime value from the stream.
+        ///     Use Write(DateTimeOffset value) for writing.
+        /// </summary>
+        /// <returns> A DateTimeOffset value. </returns>
+        public DateTimeOffset ReadDateTimeOffset()
+        {
+            if (IsBlockEnding()) throw new BlockEndingException();
+
+            var ticks = _binaryReader.ReadInt64();
+            var offsetTicks = _binaryReader.ReadInt64();
+            return new DateTimeOffset(ticks, new TimeSpan(offsetTicks));
+        }
+
+        /// <summary>
+        ///     Use Write(DateTime value) for writing.
         /// </summary>
         /// <returns> A DateTime value. </returns>
         public DateTime ReadDateTime()
@@ -344,7 +357,7 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Returns a TimeSpan value from the stream.
+        ///     Use Write(TimeSpan value) for writing.
         /// </summary>
         /// <returns> A TimeSpan value. </returns>
         public TimeSpan ReadTimeSpan()
@@ -517,7 +530,27 @@ namespace Ssz.Utils.Serialization
             var t = new T();
             t.DeserializeOwnedData(this, context);
             return t;
-        }        
+        }
+
+        /// <summary>
+        ///     Use WriteOwnedDataSerializableAndRecreatable(...) for writing.
+        ///     Throws if saved object not correct type;
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T? ReadOwnedDataSerializableAndRecreatable<T>(Func<T> func, object? context)
+            where T : class, IOwnedDataSerializable
+        {
+            if (IsBlockEnding()) throw new BlockEndingException();
+
+            var serializedType = (SerializedType)_binaryReader.ReadByte();
+            if (serializedType == SerializedType.NullType)
+                return null;
+
+            var t = func();
+            t.DeserializeOwnedData(this, context);
+            return t;
+        }
 
         /// <summary>
         ///     Use WriteNullable<T>() for reading.
@@ -573,6 +606,54 @@ namespace Ssz.Utils.Serialization
 
             return (T[]?)ReadArrayInternal(typeCode, typeof(T));
         }
+
+        /// <summary>
+        ///     Use WriteArrayOfSingle(...) for writing.
+        /// </summary>
+        /// <returns> A Single[]. </returns>
+        public float[] ReadArrayOfSingle()
+        {
+            var result = new float[ReadOptimizedInt32()];
+
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i] = ReadSingle();
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        ///     Use WriteArrayOfDouble(...) for writing.
+        /// </summary>
+        /// <returns> A Double[]. </returns>
+        public double[] ReadArrayOfDouble()
+        {
+            var result = new double[ReadOptimizedInt32()];
+
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i] = ReadDouble();
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        ///     Use WriteArrayOfDecimal(...) for writing.
+        /// </summary>
+        /// <returns> A Decimal[]. </returns>
+        private decimal[] ReadArrayOfDecimal()
+        {
+            var result = new decimal[ReadOptimizedInt32()];
+
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i] = ReadOptimizedDecimal();
+            }
+
+            return result;
+        }        
 
         /// <summary>
         ///     Use WriteArrayOfOwnedDataSerializable(...) for writing.
@@ -1424,13 +1505,13 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.EmptyTypedArrayType:
                     return new int[0];
                 default:
-                    BitArray optimizeFlags = ReadTypedArrayOptimizeFlags(typeCode);
+                    BitArray readOptimizedFlags = ReadTypedArrayOptimizeFlags(typeCode);
                     var result = new int[ReadOptimizedInt32()];
 
                     for (int i = 0; i < result.Length; i++)
                     {
-                        if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                            (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
+                        if (ReferenceEquals(readOptimizedFlags, AllFalseBitArray) ||
+                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[i]))
                         {
                             result[i] = _binaryReader.ReadInt32();
                         }
@@ -1459,13 +1540,13 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.EmptyTypedArrayType:
                     return new long[0];
                 default:
-                    BitArray optimizeFlags = ReadTypedArrayOptimizeFlags(typeCode);
+                    BitArray readOptimizedFlags = ReadTypedArrayOptimizeFlags(typeCode);
                     var result = new long[ReadOptimizedInt64()];
 
                     for (int i = 0; i < result.Length; i++)
                     {
-                        if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                            (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
+                        if (ReferenceEquals(readOptimizedFlags, AllFalseBitArray) ||
+                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[i]))
                         {
                             result[i] = _binaryReader.ReadInt64();
                         }
@@ -1494,13 +1575,13 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.EmptyTypedArrayType:
                     return new TimeSpan[0];
                 default:
-                    BitArray optimizeFlags = ReadTypedArrayOptimizeFlags(typeCode);
+                    BitArray readOptimizedFlags = ReadTypedArrayOptimizeFlags(typeCode);
                     var result = new TimeSpan[ReadOptimizedInt32()];
 
                     for (int i = 0; i < result.Length; i++)
                     {
-                        if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                            (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
+                        if (ReferenceEquals(readOptimizedFlags, AllFalseBitArray) ||
+                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[i]))
                         {
                             result[i] = ReadTimeSpan();
                         }
@@ -1529,13 +1610,13 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.EmptyTypedArrayType:
                     return new uint[0];
                 default:
-                    BitArray optimizeFlags = ReadTypedArrayOptimizeFlags(typeCode);
+                    BitArray readOptimizedFlags = ReadTypedArrayOptimizeFlags(typeCode);
                     var result = new uint[ReadOptimizedUInt32()];
 
                     for (int i = 0; i < result.Length; i++)
                     {
-                        if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                            (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
+                        if (ReferenceEquals(readOptimizedFlags, AllFalseBitArray) ||
+                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[i]))
                         {
                             result[i] = _binaryReader.ReadUInt32();
                         }
@@ -1564,13 +1645,13 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.EmptyTypedArrayType:
                     return new ulong[0];
                 default:
-                    BitArray optimizeFlags = ReadTypedArrayOptimizeFlags(typeCode);
+                    BitArray readOptimizedFlags = ReadTypedArrayOptimizeFlags(typeCode);
                     var result = new ulong[ReadOptimizedInt64()];
 
                     for (int i = 0; i < result.Length; i++)
                     {
-                        if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                            (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
+                        if (ReferenceEquals(readOptimizedFlags, AllFalseBitArray) ||
+                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[i]))
                         {
                             result[i] = _binaryReader.ReadUInt64();
                         }
@@ -1598,13 +1679,13 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.EmptyTypedArrayType:
                     return new DateTime[0];
                 default:
-                    BitArray optimizeFlags = ReadTypedArrayOptimizeFlags(typeCode);
+                    BitArray readOptimizedFlags = ReadTypedArrayOptimizeFlags(typeCode);
                     var result = new DateTime[ReadOptimizedInt32()];
 
                     for (int i = 0; i < result.Length; i++)
                     {
-                        if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                            (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
+                        if (ReferenceEquals(readOptimizedFlags, AllFalseBitArray) ||
+                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[i]))
                         {
                             result[i] = ReadDateTime();
                         }
@@ -1633,13 +1714,13 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.EmptyTypedArrayType:
                     return new ushort[0];
                 default:
-                    BitArray optimizeFlags = ReadTypedArrayOptimizeFlags(typeCode);
+                    BitArray readOptimizedFlags = ReadTypedArrayOptimizeFlags(typeCode);
                     var result = new ushort[ReadOptimizedUInt32()];
 
                     for (int i = 0; i < result.Length; i++)
                     {
-                        if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                            (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
+                        if (ReferenceEquals(readOptimizedFlags, AllFalseBitArray) ||
+                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[i]))
                         {
                             result[i] = _binaryReader.ReadUInt16();
                         }
@@ -1668,13 +1749,13 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.EmptyTypedArrayType:
                     return new short[0];
                 default:
-                    BitArray optimizeFlags = ReadTypedArrayOptimizeFlags(t);
+                    BitArray readOptimizedFlags = ReadTypedArrayOptimizeFlags(t);
                     var result = new short[ReadOptimizedInt32()];
 
                     for (int i = 0; i < result.Length; i++)
                     {
-                        if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                            (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
+                        if (ReferenceEquals(readOptimizedFlags, AllFalseBitArray) ||
+                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[i]))
                         {
                             result[i] = _binaryReader.ReadInt16();
                         }
@@ -1744,11 +1825,11 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.UInt64ArrayType:
                     return ReadUInt64Array();
                 case SerializedType.SingleArrayType:
-                    return ReadSingleArray();
+                    return ReadArrayOfSingle();
                 case SerializedType.DoubleArrayType:
-                    return ReadDoubleArray();
+                    return ReadArrayOfDouble();
                 case SerializedType.DecimalArrayType:
-                    return ReadDecimalArray();
+                    return ReadArrayOfDecimal();
                 case SerializedType.DateTimeArrayType:
                     return ReadDateTimeArray();
                 case SerializedType.TimeSpanArrayType:
@@ -1812,39 +1893,7 @@ namespace Ssz.Utils.Serialization
         private char[] ReadCharArray()
         {
             return _binaryReader.ReadChars(ReadOptimizedInt32());
-        }
-
-        /// <summary>
-        ///     Internal implementation returning a Decimal[].
-        /// </summary>
-        /// <returns> A Decimal[]. </returns>
-        private decimal[] ReadDecimalArray()
-        {
-            var result = new decimal[ReadOptimizedInt32()];
-
-            for (int i = 0; i < result.Length; i++)
-            {
-                result[i] = ReadOptimizedDecimal();
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Internal implementation returning a Double[].
-        /// </summary>
-        /// <returns> A Double[]. </returns>
-        private double[] ReadDoubleArray()
-        {
-            var result = new double[ReadOptimizedInt32()];
-
-            for (int i = 0; i < result.Length; i++)
-            {
-                result[i] = ReadDouble();
-            }
-
-            return result;
-        }
+        }        
 
         /// <summary>
         ///     Internal implementation returning a Guid[].
@@ -1876,23 +1925,7 @@ namespace Ssz.Utils.Serialization
             }
 
             return result;
-        }
-
-        /// <summary>
-        ///     Internal implementation returning a Single[].
-        /// </summary>
-        /// <returns> A Single[]. </returns>
-        private float[] ReadSingleArray()
-        {
-            var result = new float[ReadOptimizedInt32()];
-
-            for (int i = 0; i < result.Length; i++)
-            {
-                result[i] = ReadSingle();
-            }
-
-            return result;
-        }
+        }        
 
         #endregion
 

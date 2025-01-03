@@ -307,6 +307,19 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     Use ReadDateTimeOffset() for reading.
+        ///     Writes a DateTimeOffset value into the stream.
+        ///     Stored Size: 16 bytes
+        /// </summary>
+        /// <param name="value"> The DateTime value to store. </param>
+        public void Write(DateTimeOffset value)
+        {
+            _binaryWriter.Write(value.Ticks);
+            _binaryWriter.Write(value.Offset.Ticks);
+        }
+
+        /// <summary>
+        ///     Use ReadDateTime() for reading.
         ///     Writes a DateTime value into the stream.
         ///     Stored Size: 8 bytes
         /// </summary>
@@ -317,6 +330,7 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     Use ReadTimeSpan() for reading.
         ///     Writes a TimeSpan value into the stream.
         ///     Stored Size: 8 bytes
         /// </summary>
@@ -1125,7 +1139,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="value"></param>
         /// <param name="context"></param>
         public void WriteOwnedDataSerializableAndRecreatable<T>(T? value, object? context)
-            where T : class, IOwnedDataSerializable, new()
+            where T : class, IOwnedDataSerializable
         {
             if (value is null)
             {
@@ -1189,6 +1203,49 @@ namespace Ssz.Utils.Serialization
             else
             {
                 WriteArrayInternal(values, typeof (T));
+            }
+        }
+
+        /// <summary>
+        ///     Use ReadArrayOfSingle() for reading.
+        /// </summary>
+        /// <param name="values"></param>
+        public void WriteArrayOfSingle(float[] values)
+        {
+            WriteOptimized(values.Length);
+
+            foreach (float value in values)
+            {
+                _binaryWriter.Write(value);
+            }
+        }
+
+        /// <summary>
+        ///     Use ReadArrayOfDouble() for reading.
+        /// </summary>
+        /// <param name="values"></param>
+        public void WriteArrayOfDouble(double[] values)
+        {
+            WriteOptimized(values.Length);
+
+            foreach (double value in values)
+            {
+                _binaryWriter.Write(value);
+            }
+        }
+
+        /// <summary>
+        ///     Use ReadArrayOfDecimal() for reading.
+        ///     All elements are stored optimized.
+        /// </summary>
+        /// <param name="values"></param>
+        public void WriteArrayOfDecimal(decimal[] values)
+        {
+            WriteOptimized(values.Length);
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                WriteOptimized(values[i]);
             }
         }
 
@@ -1771,7 +1828,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="values"></param>
         private void WriteOptimizedArrayInternal(short[] values)
         {
-            BitArray optimizeFlags = AllFalseBitArray;
+            BitArray writeOptimizedFlags = AllFalseBitArray;
             int notOptimizable = 0;
             int notWorthOptimizingLimit = 1 + (int) (values.Length*(true ? 0.8f : 0.6f));
 
@@ -1783,25 +1840,25 @@ namespace Ssz.Utils.Serialization
                 }
                 else
                 {
-                    if (ReferenceEquals(optimizeFlags, AllFalseBitArray))
+                    if (ReferenceEquals(writeOptimizedFlags, AllFalseBitArray))
                     {
-                        optimizeFlags = new BitArray(values.Length);
+                        writeOptimizedFlags = new BitArray(values.Length);
                     }
 
-                    optimizeFlags[i] = true;
+                    writeOptimizedFlags[i] = true;
                 }
             }
 
             if (notOptimizable == 0)
             {
-                optimizeFlags = AllTrueBitArray;
+                writeOptimizedFlags = AllTrueBitArray;
             }
             else if (notOptimizable >= notWorthOptimizingLimit)
             {
-                optimizeFlags = AllFalseBitArray;
+                writeOptimizedFlags = AllFalseBitArray;
             }
 
-            WriteArray(values, optimizeFlags);
+            WriteArray(values, writeOptimizedFlags);
         }
 
         /// <summary>
@@ -1810,7 +1867,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="values"></param>
         private void WriteOptimizedArrayInternal(int[] values)
         {
-            BitArray optimizeFlags = AllFalseBitArray;
+            BitArray writeOptimizedFlags = AllFalseBitArray;
             int notOptimizable = 0;
             int notWorthOptimizingLimit = 1 + (int) (values.Length*(true ? 0.8f : 0.6f));
 
@@ -1822,25 +1879,25 @@ namespace Ssz.Utils.Serialization
                 }
                 else
                 {
-                    if (ReferenceEquals(optimizeFlags, AllFalseBitArray))
+                    if (ReferenceEquals(writeOptimizedFlags, AllFalseBitArray))
                     {
-                        optimizeFlags = new BitArray(values.Length);
+                        writeOptimizedFlags = new BitArray(values.Length);
                     }
 
-                    optimizeFlags[i] = true;
+                    writeOptimizedFlags[i] = true;
                 }
             }
 
             if (notOptimizable == 0)
             {
-                optimizeFlags = AllTrueBitArray;
+                writeOptimizedFlags = AllTrueBitArray;
             }
             else if (notOptimizable >= notWorthOptimizingLimit)
             {
-                optimizeFlags = AllFalseBitArray;
+                writeOptimizedFlags = AllFalseBitArray;
             }
 
-            WriteArray(values, optimizeFlags);
+            WriteArray(values, writeOptimizedFlags);
         }
 
         /// <summary>
@@ -1849,7 +1906,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="values"></param>
         private void WriteOptimizedArrayInternal(long[] values)
         {
-            BitArray optimizeFlags = AllFalseBitArray;
+            BitArray writeOptimizedFlags = AllFalseBitArray;
             int notOptimizable = 0;
             int notWorthOptimizingLimit = 1 + (int) (values.Length*(true ? 0.8f : 0.6f));
 
@@ -1861,25 +1918,25 @@ namespace Ssz.Utils.Serialization
                 }
                 else
                 {
-                    if (ReferenceEquals(optimizeFlags, AllFalseBitArray))
+                    if (ReferenceEquals(writeOptimizedFlags, AllFalseBitArray))
                     {
-                        optimizeFlags = new BitArray(values.Length);
+                        writeOptimizedFlags = new BitArray(values.Length);
                     }
 
-                    optimizeFlags[i] = true;
+                    writeOptimizedFlags[i] = true;
                 }
             }
 
             if (notOptimizable == 0)
             {
-                optimizeFlags = AllTrueBitArray;
+                writeOptimizedFlags = AllTrueBitArray;
             }
             else if (notOptimizable >= notWorthOptimizingLimit)
             {
-                optimizeFlags = AllFalseBitArray;
+                writeOptimizedFlags = AllFalseBitArray;
             }
 
-            WriteArray(values, optimizeFlags);
+            WriteArray(values, writeOptimizedFlags);
         }
 
         /// <summary>
@@ -1888,7 +1945,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="values"></param>
         private void WriteOptimizedArrayInternal(ushort[] values)
         {
-            BitArray optimizeFlags = AllFalseBitArray;
+            BitArray writeOptimizedFlags = AllFalseBitArray;
             int notOptimizable = 0;
             int notWorthOptimizingLimit = 1 + (int) (values.Length*(true ? 0.8f : 0.6f));
 
@@ -1900,25 +1957,25 @@ namespace Ssz.Utils.Serialization
                 }
                 else
                 {
-                    if (ReferenceEquals(optimizeFlags, AllFalseBitArray))
+                    if (ReferenceEquals(writeOptimizedFlags, AllFalseBitArray))
                     {
-                        optimizeFlags = new BitArray(values.Length);
+                        writeOptimizedFlags = new BitArray(values.Length);
                     }
 
-                    optimizeFlags[i] = true;
+                    writeOptimizedFlags[i] = true;
                 }
             }
 
             if (notOptimizable == 0)
             {
-                optimizeFlags = AllTrueBitArray;
+                writeOptimizedFlags = AllTrueBitArray;
             }
             else if (notOptimizable >= notWorthOptimizingLimit)
             {
-                optimizeFlags = AllFalseBitArray;
+                writeOptimizedFlags = AllFalseBitArray;
             }
 
-            WriteArray(values, optimizeFlags);
+            WriteArray(values, writeOptimizedFlags);
         }
 
         /// <summary>
@@ -1927,7 +1984,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="values"></param>
         private void WriteOptimizedArrayInternal(uint[] values)
         {
-            BitArray optimizeFlags = AllFalseBitArray;
+            BitArray writeOptimizedFlags = AllFalseBitArray;
             int notOptimizable = 0;
             int notWorthOptimizingLimit = 1 + (int) (values.Length*(true ? 0.8f : 0.6f));
 
@@ -1939,25 +1996,25 @@ namespace Ssz.Utils.Serialization
                 }
                 else
                 {
-                    if (ReferenceEquals(optimizeFlags, AllFalseBitArray))
+                    if (ReferenceEquals(writeOptimizedFlags, AllFalseBitArray))
                     {
-                        optimizeFlags = new BitArray(values.Length);
+                        writeOptimizedFlags = new BitArray(values.Length);
                     }
 
-                    optimizeFlags[i] = true;
+                    writeOptimizedFlags[i] = true;
                 }
             }
 
             if (notOptimizable == 0)
             {
-                optimizeFlags = AllTrueBitArray;
+                writeOptimizedFlags = AllTrueBitArray;
             }
             else if (notOptimizable >= notWorthOptimizingLimit)
             {
-                optimizeFlags = AllFalseBitArray;
+                writeOptimizedFlags = AllFalseBitArray;
             }
 
-            WriteArray(values, optimizeFlags);
+            WriteArray(values, writeOptimizedFlags);
         }
 
         /// <summary>
@@ -1966,7 +2023,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="values"></param>
         private void WriteOptimizedArrayInternal(ulong[] values)
         {
-            BitArray optimizeFlags = AllFalseBitArray;
+            BitArray writeOptimizedFlags = AllFalseBitArray;
             int notOptimizable = 0;
             int notWorthOptimizingLimit = 1 + (int) (values.Length*(true ? 0.8f : 0.6f));
 
@@ -1978,68 +2035,26 @@ namespace Ssz.Utils.Serialization
                 }
                 else
                 {
-                    if (ReferenceEquals(optimizeFlags, AllFalseBitArray))
+                    if (ReferenceEquals(writeOptimizedFlags, AllFalseBitArray))
                     {
-                        optimizeFlags = new BitArray(values.Length);
+                        writeOptimizedFlags = new BitArray(values.Length);
                     }
 
-                    optimizeFlags[i] = true;
+                    writeOptimizedFlags[i] = true;
                 }
             }
 
             if (notOptimizable == 0)
             {
-                optimizeFlags = AllTrueBitArray;
+                writeOptimizedFlags = AllTrueBitArray;
             }
             else if (notOptimizable >= notWorthOptimizingLimit)
             {
-                optimizeFlags = AllFalseBitArray;
+                writeOptimizedFlags = AllFalseBitArray;
             }
 
-            WriteArray(values, optimizeFlags);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="values"></param>
-        private void WriteArrayInternal(float[] values)
-        {
-            WriteOptimized(values.Length);
-
-            foreach (float value in values)
-            {
-                _binaryWriter.Write(value);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="values"></param>
-        private void WriteArrayInternal(double[] values)
-        {
-            WriteOptimized(values.Length);
-
-            foreach (double value in values)
-            {
-                _binaryWriter.Write(value);
-            }
-        }
-
-        /// <summary>
-        ///     All elements are stored optimized.
-        /// </summary>
-        /// <param name="values"></param>
-        private void WriteArrayInternal(decimal[] values)
-        {
-            WriteOptimized(values.Length);
-
-            for (int i = 0; i < values.Length; i++)
-            {
-                WriteOptimized(values[i]);
-            }
-        }
+            WriteArray(values, writeOptimizedFlags);
+        }        
 
         /// <summary>
         ///     Writes a DateTime[] into the stream using the fewest possible bytes.        
@@ -2047,7 +2062,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="values"> The DateTime[] to store. </param>
         private void WriteOptimizedArrayInternal(DateTime[] values)
         {
-            BitArray optimizeFlags = AllFalseBitArray;
+            BitArray writeOptimizedFlags = AllFalseBitArray;
             int notOptimizable = 0;
             int notWorthOptimizingLimit = 1 + (int) (values.Length*(true ? 0.8f : 0.6f));
 
@@ -2059,25 +2074,25 @@ namespace Ssz.Utils.Serialization
                 }
                 else
                 {
-                    if (ReferenceEquals(optimizeFlags, AllFalseBitArray))
+                    if (ReferenceEquals(writeOptimizedFlags, AllFalseBitArray))
                     {
-                        optimizeFlags = new BitArray(values.Length);
+                        writeOptimizedFlags = new BitArray(values.Length);
                     }
 
-                    optimizeFlags[i] = true;
+                    writeOptimizedFlags[i] = true;
                 }
             }
 
             if (notOptimizable == 0)
             {
-                optimizeFlags = AllTrueBitArray;
+                writeOptimizedFlags = AllTrueBitArray;
             }
             else if (notOptimizable >= notWorthOptimizingLimit)
             {
-                optimizeFlags = AllFalseBitArray;
+                writeOptimizedFlags = AllFalseBitArray;
             }
 
-            WriteArray(values, optimizeFlags);
+            WriteArray(values, writeOptimizedFlags);
         }
 
         /// <summary>
@@ -2086,7 +2101,7 @@ namespace Ssz.Utils.Serialization
         /// <param name="values"> The TimeSpan[] to store. </param>
         private void WriteOptimizedArrayInternal(TimeSpan[] values)
         {
-            BitArray optimizeFlags = AllFalseBitArray;
+            BitArray writeOptimizedFlags = AllFalseBitArray;
             int notOptimizable = 0;
             int notWorthOptimizingLimit = 1 + (int) (values.Length*(true ? 0.8f : 0.6f));
 
@@ -2098,25 +2113,25 @@ namespace Ssz.Utils.Serialization
                 }
                 else
                 {
-                    if (ReferenceEquals(optimizeFlags, AllFalseBitArray))
+                    if (ReferenceEquals(writeOptimizedFlags, AllFalseBitArray))
                     {
-                        optimizeFlags = new BitArray(values.Length);
+                        writeOptimizedFlags = new BitArray(values.Length);
                     }
 
-                    optimizeFlags[i] = true;
+                    writeOptimizedFlags[i] = true;
                 }
             }
 
             if (notOptimizable == 0)
             {
-                optimizeFlags = AllTrueBitArray;
+                writeOptimizedFlags = AllTrueBitArray;
             }
             else if (notOptimizable >= notWorthOptimizingLimit)
             {
-                optimizeFlags = AllFalseBitArray;
+                writeOptimizedFlags = AllFalseBitArray;
             }
 
-            WriteArray(values, optimizeFlags);
+            WriteArray(values, writeOptimizedFlags);
         }
 
         /// <summary>
@@ -2272,19 +2287,19 @@ namespace Ssz.Utils.Serialization
         ///     determine which elements are optimizable.
         /// </summary>
         /// <param name="values"> The DateTime[] to store. </param>
-        /// <param name="optimizeFlags">
+        /// <param name="writeOptimizedFlags">
         ///     A BitArray indicating which of the elements which are optimizable; a reference to constant
         ///     FullyOptimizableValueArray if all the elements are optimizable; or null if none of the elements are optimizable.
         /// </param>
-        private void WriteArray(DateTime[] values, BitArray optimizeFlags)
+        private void WriteArray(DateTime[] values, BitArray writeOptimizedFlags)
         {
-            WriteOptimizeFlags(optimizeFlags);
+            WriteOptimizeFlags(writeOptimizedFlags);
             WriteOptimized(values.Length);
 
             for (int i = 0; i < values.Length; i++)
             {
-                if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                    (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
+                if (ReferenceEquals(writeOptimizedFlags, AllFalseBitArray) ||
+                    (!ReferenceEquals(writeOptimizedFlags, AllTrueBitArray) && !writeOptimizedFlags[i]))
                 {
                     Write(values[i]);
                 }
@@ -2309,19 +2324,19 @@ namespace Ssz.Utils.Serialization
         ///     Internal implementation to write a non-null Int16[] using a BitArray to determine which elements are optimizable.
         /// </summary>
         /// <param name="values"> The Int16[] to store. </param>
-        /// <param name="optimizeFlags">
+        /// <param name="writeOptimizedFlags">
         ///     A BitArray indicating which of the elements which are optimizable; a reference to constant
         ///     FullyOptimizableValueArray if all the elements are optimizable; or null if none of the elements are optimizable.
         /// </param>
-        private void WriteArray(short[] values, BitArray optimizeFlags)
+        private void WriteArray(short[] values, BitArray writeOptimizedFlags)
         {
-            WriteOptimizeFlags(optimizeFlags);
+            WriteOptimizeFlags(writeOptimizedFlags);
             WriteOptimized(values.Length);
 
             for (int i = 0; i < values.Length; i++)
             {
-                if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                    (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
+                if (ReferenceEquals(writeOptimizedFlags, AllFalseBitArray) ||
+                    (!ReferenceEquals(writeOptimizedFlags, AllTrueBitArray) && !writeOptimizedFlags[i]))
                 {
                     _binaryWriter.Write(values[i]);
                 }
@@ -2336,19 +2351,19 @@ namespace Ssz.Utils.Serialization
         ///     Internal implementation to write a non-null Int32[] using a BitArray to determine which elements are optimizable.
         /// </summary>
         /// <param name="values"> The Int32[] to store. </param>
-        /// <param name="optimizeFlags">
+        /// <param name="writeOptimizedFlags">
         ///     A BitArray indicating which of the elements which are optimizable; a reference to constant
         ///     FullyOptimizableValueArray if all the elements are optimizable; or null if none of the elements are optimizable.
         /// </param>
-        private void WriteArray(int[] values, BitArray optimizeFlags)
+        private void WriteArray(int[] values, BitArray writeOptimizedFlags)
         {
-            WriteOptimizeFlags(optimizeFlags);
+            WriteOptimizeFlags(writeOptimizedFlags);
             WriteOptimized(values.Length);
 
             for (int i = 0; i < values.Length; i++)
             {
-                if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                    (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
+                if (ReferenceEquals(writeOptimizedFlags, AllFalseBitArray) ||
+                    (!ReferenceEquals(writeOptimizedFlags, AllTrueBitArray) && !writeOptimizedFlags[i]))
                 {
                     _binaryWriter.Write(values[i]);
                 }
@@ -2363,19 +2378,19 @@ namespace Ssz.Utils.Serialization
         ///     Internal implementation to writes a non-null Int64[] using a BitArray to determine which elements are optimizable.
         /// </summary>
         /// <param name="values"> The Int64[] to store. </param>
-        /// <param name="optimizeFlags">
+        /// <param name="writeOptimizedFlags">
         ///     A BitArray indicating which of the elements which are optimizable; a reference to constant
         ///     FullyOptimizableValueArray if all the elements are optimizable; or null if none of the elements are optimizable.
         /// </param>
-        private void WriteArray(long[] values, BitArray optimizeFlags)
+        private void WriteArray(long[] values, BitArray writeOptimizedFlags)
         {
-            WriteOptimizeFlags(optimizeFlags);
+            WriteOptimizeFlags(writeOptimizedFlags);
             WriteOptimized(values.Length);
 
             for (int i = 0; i < values.Length; i++)
             {
-                if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                    (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
+                if (ReferenceEquals(writeOptimizedFlags, AllFalseBitArray) ||
+                    (!ReferenceEquals(writeOptimizedFlags, AllTrueBitArray) && !writeOptimizedFlags[i]))
                 {
                     _binaryWriter.Write(values[i]);
                 }
@@ -2391,19 +2406,19 @@ namespace Ssz.Utils.Serialization
         ///     optimizable.
         /// </summary>
         /// <param name="values"> The TimeSpan[] to store. </param>
-        /// <param name="optimizeFlags">
+        /// <param name="writeOptimizedFlags">
         ///     A BitArray indicating which of the elements which are optimizable; a reference to constant
         ///     FullyOptimizableValueArray if all the elements are optimizable; or null if none of the elements are optimizable.
         /// </param>
-        private void WriteArray(TimeSpan[] values, BitArray optimizeFlags)
+        private void WriteArray(TimeSpan[] values, BitArray writeOptimizedFlags)
         {
-            WriteOptimizeFlags(optimizeFlags);
+            WriteOptimizeFlags(writeOptimizedFlags);
             WriteOptimized(values.Length);
 
             for (int i = 0; i < values.Length; i++)
             {
-                if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                    (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
+                if (ReferenceEquals(writeOptimizedFlags, AllFalseBitArray) ||
+                    (!ReferenceEquals(writeOptimizedFlags, AllTrueBitArray) && !writeOptimizedFlags[i]))
                 {
                     Write(values[i]);
                 }
@@ -2428,19 +2443,19 @@ namespace Ssz.Utils.Serialization
         ///     Internal implementation to write a non-null UInt16[] using a BitArray to determine which elements are optimizable.
         /// </summary>
         /// <param name="values"> The UInt16[] to store. </param>
-        /// <param name="optimizeFlags">
+        /// <param name="writeOptimizedFlags">
         ///     A BitArray indicating which of the elements which are optimizable; a reference to constant
         ///     FullyOptimizableValueArray if all the elements are optimizable; or null if none of the elements are optimizable.
         /// </param>
-        private void WriteArray(ushort[] values, BitArray optimizeFlags)
+        private void WriteArray(ushort[] values, BitArray writeOptimizedFlags)
         {
-            WriteOptimizeFlags(optimizeFlags);
+            WriteOptimizeFlags(writeOptimizedFlags);
             WriteOptimized(values.Length);
 
             for (int i = 0; i < values.Length; i++)
             {
-                if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                    (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
+                if (ReferenceEquals(writeOptimizedFlags, AllFalseBitArray) ||
+                    (!ReferenceEquals(writeOptimizedFlags, AllTrueBitArray) && !writeOptimizedFlags[i]))
                 {
                     _binaryWriter.Write(values[i]);
                 }
@@ -2455,19 +2470,19 @@ namespace Ssz.Utils.Serialization
         ///     Internal implementation to write a non-null UInt32[] using a BitArray to determine which elements are optimizable.
         /// </summary>
         /// <param name="values"> The UInt32[] to store. </param>
-        /// <param name="optimizeFlags">
+        /// <param name="writeOptimizedFlags">
         ///     A BitArray indicating which of the elements which are optimizable; a reference to constant
         ///     FullyOptimizableValueArray if all the elements are optimizable; or null if none of the elements are optimizable.
         /// </param>
-        private void WriteArray(uint[] values, BitArray optimizeFlags)
+        private void WriteArray(uint[] values, BitArray writeOptimizedFlags)
         {
-            WriteOptimizeFlags(optimizeFlags);
+            WriteOptimizeFlags(writeOptimizedFlags);
             WriteOptimized(values.Length);
 
             for (int i = 0; i < values.Length; i++)
             {
-                if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                    (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
+                if (ReferenceEquals(writeOptimizedFlags, AllFalseBitArray) ||
+                    (!ReferenceEquals(writeOptimizedFlags, AllTrueBitArray) && !writeOptimizedFlags[i]))
                 {
                     _binaryWriter.Write(values[i]);
                 }
@@ -2482,19 +2497,19 @@ namespace Ssz.Utils.Serialization
         ///     Internal implementation to write a non-null UInt64[] using a BitArray to determine which elements are optimizable.
         /// </summary>
         /// <param name="values"> The UInt64[] to store. </param>
-        /// <param name="optimizeFlags">
+        /// <param name="writeOptimizedFlags">
         ///     A BitArray indicating which of the elements which are optimizable; a reference to constant
         ///     FullyOptimizableValueArray if all the elements are optimizable; or null if none of the elements are optimizable.
         /// </param>
-        private void WriteArray(ulong[] values, BitArray optimizeFlags)
+        private void WriteArray(ulong[] values, BitArray writeOptimizedFlags)
         {
-            WriteOptimizeFlags(optimizeFlags);
+            WriteOptimizeFlags(writeOptimizedFlags);
             WriteOptimized(values.Length);
 
             for (int i = 0; i < values.Length; i++)
             {
-                if (ReferenceEquals(optimizeFlags, AllFalseBitArray) ||
-                    (!ReferenceEquals(optimizeFlags, AllTrueBitArray) && !optimizeFlags[i]))
+                if (ReferenceEquals(writeOptimizedFlags, AllFalseBitArray) ||
+                    (!ReferenceEquals(writeOptimizedFlags, AllTrueBitArray) && !writeOptimizedFlags[i]))
                 {
                     _binaryWriter.Write(values[i]);
                 }
@@ -2684,21 +2699,21 @@ namespace Ssz.Utils.Serialization
             if (elementType == typeof (Single))
             {
                 WriteSerializedType(SerializedType.SingleArrayType);
-                WriteArrayInternal((Single[]) values);
+                WriteArrayOfSingle((Single[]) values);
                 return;
             }
 
             if (elementType == typeof (Double))
             {
                 WriteSerializedType(SerializedType.DoubleArrayType);
-                WriteArrayInternal((Double[]) values);
+                WriteArrayOfDouble((Double[]) values);
                 return;
             }
 
             if (elementType == typeof (Decimal))
             {
                 WriteSerializedType(SerializedType.DecimalArrayType);
-                WriteArrayInternal((Decimal[]) values);
+                WriteArrayOfDecimal((Decimal[]) values);
                 return;
             }
 
@@ -2758,20 +2773,20 @@ namespace Ssz.Utils.Serialization
         /// <summary>
         ///     Writes the Optimize Flags.
         /// </summary>
-        private void WriteOptimizeFlags(BitArray optimizeFlags)
+        private void WriteOptimizeFlags(BitArray writeOptimizedFlags)
         {
-            if (ReferenceEquals(optimizeFlags, AllFalseBitArray))
+            if (ReferenceEquals(writeOptimizedFlags, AllFalseBitArray))
             {
                 WriteSerializedType(SerializedType.AllFalseOptimizeFlagsType);
             }
-            else if (ReferenceEquals(optimizeFlags, AllTrueBitArray))
+            else if (ReferenceEquals(writeOptimizedFlags, AllTrueBitArray))
             {
                 WriteSerializedType(SerializedType.AllTrueOptimizeFlagsType);
             }
             else
             {
                 WriteSerializedType(SerializedType.MiscOptimizeFlagsType);
-                WriteOptimized(optimizeFlags);
+                WriteOptimized(writeOptimizedFlags);
             }
         }
 

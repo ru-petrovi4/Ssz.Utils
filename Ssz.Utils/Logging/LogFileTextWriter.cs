@@ -26,31 +26,39 @@ namespace Ssz.Utils.Logging
         {
             Options = options;
 
-            _logsDirectoryFullName = Environment.ExpandEnvironmentVariables(Options.LogsDirectory);
-            
+            if (String.IsNullOrEmpty(Options.LogsDirectory))
+                _logsDirectoryFullName = @"";
+            else
+                _logsDirectoryFullName = Environment.ExpandEnvironmentVariables(Options.LogsDirectory);
+
             if (String.IsNullOrEmpty(_logsDirectoryFullName))
+                _logsDirectoryFullName = Directory.GetCurrentDirectory();
+
+            if (!String.IsNullOrEmpty(_logsDirectoryFullName))
             {
-                _logsDirectoryFullName = AppContext.BaseDirectory;
+                // Creates all directories and subdirectories in the specified path unless they
+                // already exist.
+                Directory.CreateDirectory(_logsDirectoryFullName);
             }
 
-            // Creates all directories and subdirectories in the specified path unless they
-            // already exist.
-            Directory.CreateDirectory(_logsDirectoryFullName);            
-
+            string desiredLogFileName;
             if (!String.IsNullOrEmpty(Options.LogFileName))
             {
-                SetLogFileFullName(Options.LogFileName);
+                desiredLogFileName = Options.LogFileName;
             }
             else
             {
                 Process currentProcess = Process.GetCurrentProcess();
                 string? moduleName = currentProcess.MainModule?.ModuleName;
-                if (moduleName is null) 
+                if (moduleName is null)
                     throw new InvalidOperationException();
                 var exeFileName = new FileInfo(moduleName).Name;
 
-                SetLogFileFullName(exeFileName + @".log");                
+                desiredLogFileName = exeFileName + @".log";
             }
+
+            _desiredLogFileNameWithoutExtension = Path.GetFileNameWithoutExtension(desiredLogFileName);
+            _desiredLogFileNameExtension = Path.GetExtension(desiredLogFileName);            
 
             if (Options.DeleteOldFilesAtStart)
             {
@@ -69,6 +77,8 @@ namespace Ssz.Utils.Logging
                     }
                 }
             }
+
+            FindAndSetLogFileFullName();
 
             _timer = new Timer(s => Flush(), null, 5000, 5000);
         }
@@ -121,9 +131,7 @@ namespace Ssz.Utils.Logging
                         {
                             var fi = new FileInfo(LogFileFullName);
                             if (fi.Exists && fi.Length > Options.LogFileMaxSizeInBytes)
-                            {
-                                SetLogFileFullName(_desiredLogFileNameWithoutExtension + _desiredLogFileNameExtension);
-                            }
+                                FindAndSetLogFileFullName();
                         }
                         File.AppendAllText(LogFileFullName, _buffer.ToString(), new UTF8Encoding(true));
                         _buffer.Clear();
@@ -558,10 +566,8 @@ namespace Ssz.Utils.Logging
 
         #region private functions
 
-        private void SetLogFileFullName(string desiredLogFileName)
-        {
-            _desiredLogFileNameWithoutExtension = Path.GetFileNameWithoutExtension(desiredLogFileName);
-            _desiredLogFileNameExtension = Path.GetExtension(desiredLogFileName);
+        private void FindAndSetLogFileFullName()
+        {   
             int n = 0;
             FileInfo fi;
             while (true)

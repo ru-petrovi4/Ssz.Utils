@@ -20,7 +20,7 @@ namespace Ssz.Utils.Logging
         public bool LogLevelIsExclusive { get; set; } = false;
 
         /// <summary>
-        ///     If empty (default) logs to .exe directory.
+        ///     If empty (default) logs to current directory.
         /// </summary>
         public string LogsDirectory { get; set; } = @"";
 
