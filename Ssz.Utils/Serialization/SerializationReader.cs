@@ -39,7 +39,11 @@ namespace Ssz.Utils.Serialization
             if (!baseStream.CanSeek) throw new ArgumentException("baseStream must be seekable.");
 
             _baseStream = baseStream;
+#if NET5_0_OR_GREATER
+            _binaryReader = new BinaryReader(_baseStream);      
+#else
             _binaryReader = new BinaryReaderEx(_baseStream);
+#endif            
 
             // Always read the first 4 bytes
             int version = _binaryReader.ReadInt32();
@@ -143,12 +147,34 @@ namespace Ssz.Utils.Serialization
             if (typeCode == SerializedType.BlockBeginWithVersion)
             {
                 // it will store either the block length or remain as 0 if allowUpdateHeader is false
-                _binaryReader.ReadInt32();
-                int version = ReadInt32OptimizedOrNot();
+                _binaryReader.ReadInt64();
+                int version = _binaryReader.Read7BitEncodedInt();
                 _baseStream.Seek(originalPosition, SeekOrigin.Begin);
                 return version;
             }
             if (typeCode == SerializedType.BlockBegin)
+            {
+                // it will store either the block length or remain as 0 if allowUpdateHeader is false                
+                _baseStream.Seek(originalPosition, SeekOrigin.Begin);
+                return -1;
+            }
+            if (typeCode == SerializedType.BlockBeginWithVersion_Obsolete)
+            {
+                // it will store either the block length or remain as 0 if allowUpdateHeader is false
+                _binaryReader.ReadInt32();
+                int version;
+                if (!_optimizedSize)
+                {
+                    version = _binaryReader.ReadInt32();
+                }
+                else
+                {
+                    version = ReadOptimizedInt32();
+                }                
+                _baseStream.Seek(originalPosition, SeekOrigin.Begin);
+                return version;
+            }
+            if (typeCode == SerializedType.BlockBegin_Obsolete)
             {
                 // it will store either the block length or remain as 0 if allowUpdateHeader is false                
                 _baseStream.Seek(originalPosition, SeekOrigin.Begin);
@@ -168,14 +194,41 @@ namespace Ssz.Utils.Serialization
             if (typeCode == SerializedType.BlockBeginWithVersion)
             {
                 // it will store either the block length or remain as 0 if allowUpdateHeader is false
+                long blockSize = _binaryReader.ReadInt64();
+                // Store the ending position of the block if allowUpdateHeader true
+                if (blockSize > 0) _blockEndingPositionsStack.Push(_baseStream.Position + blockSize);
+                else _blockEndingPositionsStack.Push(0);
+                int version = _binaryReader.Read7BitEncodedInt();
+                return version;
+            }
+            if (typeCode == SerializedType.BlockBegin)
+            {
+                // it will store either the block length or remain as 0 if allowUpdateHeader is false
+                long blockSize = _binaryReader.ReadInt64();
+                // Store the ending position of the block if allowUpdateHeader true
+                if (blockSize > 0) _blockEndingPositionsStack.Push(_baseStream.Position + blockSize);
+                else _blockEndingPositionsStack.Push(0);
+                return -1;
+            }
+            if (typeCode == SerializedType.BlockBeginWithVersion_Obsolete)
+            {
+                // it will store either the block length or remain as 0 if allowUpdateHeader is false
                 int blockSize = _binaryReader.ReadInt32();
                 // Store the ending position of the block if allowUpdateHeader true
                 if (blockSize > 0) _blockEndingPositionsStack.Push(_baseStream.Position + blockSize);
                 else _blockEndingPositionsStack.Push(0);
-                int version = ReadInt32OptimizedOrNot();
+                int version;
+                if (!_optimizedSize)
+                {
+                    version = _binaryReader.ReadInt32();
+                }
+                else
+                {
+                    version = ReadOptimizedInt32();
+                }
                 return version;
             }
-            if (typeCode == SerializedType.BlockBegin)
+            if (typeCode == SerializedType.BlockBegin_Obsolete)
             {
                 // it will store either the block length or remain as 0 if allowUpdateHeader is false
                 int blockSize = _binaryReader.ReadInt32();
@@ -212,10 +265,10 @@ namespace Ssz.Utils.Serialization
 
         public bool IsBlockEnding()
         {
-            if (_blockEndingPositionsStack.Count == 0) 
+            if (_blockEndingPositionsStack.Count == 0)
                 return false;
             long blockEndingPosition = _blockEndingPositionsStack.Peek();
-            if (blockEndingPosition == 0) 
+            if (blockEndingPosition == 0)
                 return false;
             return _baseStream.Position >= blockEndingPosition;
         }
@@ -275,14 +328,14 @@ namespace Ssz.Utils.Serialization
         {
             if (IsBlockEnding()) throw new BlockEndingException();
 
-            return ReadInt32OptimizedOrNot();
+            return _binaryReader.ReadInt32();
         }
 
         public uint ReadUInt32()
         {
             if (IsBlockEnding()) throw new BlockEndingException();
 
-            return ReadUInt32OptimizedOrNot();
+            return _binaryReader.ReadUInt32();
         }
 
         public long ReadInt64()
@@ -398,6 +451,7 @@ namespace Ssz.Utils.Serialization
 
         /// <summary>
         ///     Returns an Int16 value from the stream that was stored optimized.
+        ///     Use WriteOptimized(short value) for writing.
         /// </summary>
         /// <returns> An Int16 value. </returns>
         public short ReadOptimizedInt16()
@@ -407,6 +461,7 @@ namespace Ssz.Utils.Serialization
 
         /// <summary>
         ///     Returns a UInt16 value from the stream that was stored optimized.
+        ///     Use WriteOptimized(ushort value) for writing.
         /// </summary>
         /// <returns> A UInt16 value. </returns>
         public ushort ReadOptimizedUInt16()
@@ -416,6 +471,7 @@ namespace Ssz.Utils.Serialization
 
         /// <summary>
         ///     Returns an Int32 value from the stream that was stored optimized.
+        ///     Use WriteOptimized(int value) for writing.
         /// </summary>
         /// <returns> An Int32 value. </returns>
         public int ReadOptimizedInt32()
@@ -425,6 +481,7 @@ namespace Ssz.Utils.Serialization
 
         /// <summary>
         ///     Returns a UInt32 value from the stream that was stored optimized.
+        ///     Use WriteOptimized(uint value) for writing.
         /// </summary>
         /// <returns> A UInt32 value. </returns>
         public uint ReadOptimizedUInt32()
@@ -434,42 +491,138 @@ namespace Ssz.Utils.Serialization
 
         /// <summary>
         ///     Returns an Int64 value from the stream that was stored optimized.
+        ///     Use WriteOptimized(long value) for writing.
         /// </summary>
         /// <returns> An Int64 value. </returns>
         public long ReadOptimizedInt64()
         {
-            long result = 0;
-            int bitShift = 0;
-
-            while (true)
-            {
-                byte nextByte = _binaryReader.ReadByte();
-
-                result |= ((long)nextByte & 0x7f) << bitShift;
-                bitShift += 7;
-
-                if ((nextByte & 0x80) == 0) return result;
-            }
+            return _binaryReader.Read7BitEncodedInt64();
         }
 
         /// <summary>
         ///     Returns a UInt64 value from the stream that was stored optimized.
+        ///     Use WriteOptimized(ulong value) for writing.
         /// </summary>
         /// <returns> A UInt64 value. </returns>
         public ulong ReadOptimizedUInt64()
         {
-            ulong result = 0;
-            int bitShift = 0;
+            return unchecked((ulong)_binaryReader.Read7BitEncodedInt64());
+        }
 
-            while (true)
+        /// <summary>
+        ///     Returns a BitArray from the stream that was stored optimized.
+        ///     Use WriteOptimized(BitArray value) for writing.
+        /// </summary>
+        /// <returns> A BitArray instance. </returns>
+        public BitArray ReadOptimizedBitArray()
+        {
+            if (IsBlockEnding()) throw new BlockEndingException();
+
+            int length = ReadOptimizedInt32();
+            if (length == 0) return new BitArray(0);
+
+            return new BitArray(_binaryReader.ReadBytes((length + 7) / 8)) { Length = length };
+        }
+
+        /// <summary>
+        ///     Returns a DateTime value from the stream that was stored optimized.
+        ///     Use WriteOptimized(DateTime value) for writing.
+        /// </summary>
+        /// <returns> A DateTime value. </returns>
+        public DateTime ReadOptimizedDateTime()
+        {
+            if (IsBlockEnding()) throw new BlockEndingException();
+
+            // Read date information from first three bytes
+            var dateMask = new BitVector32(_binaryReader.ReadByte() | (_binaryReader.ReadByte() << 8) | (_binaryReader.ReadByte() << 16));
+            var result = new DateTime(
+                dateMask[SerializationWriter.DateYearMask],
+                dateMask[SerializationWriter.DateMonthMask],
+                dateMask[SerializationWriter.DateDayMask]
+                );
+
+            if (dateMask[SerializationWriter.DateHasTimeOrKindMask] == 1)
             {
-                byte nextByte = _binaryReader.ReadByte();
+                byte initialByte = _binaryReader.ReadByte();
+                var dateTimeKind = (DateTimeKind)(initialByte & 0x03);
 
-                result |= ((ulong)nextByte & 0x7f) << bitShift;
-                bitShift += 7;
+                // Remove the IsNegative and HasDays flags which are never true for a DateTime
+                initialByte &= 0xfc;
+                if (dateTimeKind != DateTimeKind.Unspecified)
+                {
+                    result = DateTime.SpecifyKind(result, dateTimeKind);
+                }
 
-                if ((nextByte & 0x80) == 0) return result;
+                if (initialByte == 0)
+                {
+                    // No need to call decodeTimeSpan if there is no time information
+                    _binaryReader.ReadByte();
+                }
+                else
+                {
+                    result = result.Add(DecodeTimeSpan(initialByte));
+                }
             }
+
+            return result;
+        }
+
+        /// <summary>
+        ///     Use WriteOptimized(double value) for writing.
+        /// </summary>
+        /// <returns></returns>
+        public double ReadOptimizedDouble()
+        {
+            SerializedType typeCode = ReadSerializedType();
+            switch (typeCode)
+            {
+                case SerializedType.ZeroDoubleType:
+                    return (Double)0;
+                case SerializedType.OneDoubleType:
+                    return (Double)1;
+                case SerializedType.DoubleType:
+                    return _binaryReader.ReadDouble();
+                default:
+                    throw new InvalidOperationException("Unrecognized TypeCode");
+            }
+        }
+
+        /// <summary>
+        ///     Returns a Decimal value from the stream that was stored optimized.
+        ///     Use WriteOptimized(Decimal value) for writing.
+        /// </summary>
+        /// <returns> A Decimal value. </returns>
+        public Decimal ReadOptimizedDecimal()
+        {
+            if (IsBlockEnding()) throw new BlockEndingException();
+
+            byte flags = _binaryReader.ReadByte();
+            int lo = 0;
+            int mid = 0;
+            int hi = 0;
+            byte scale = 0;
+
+            if ((flags & 0x02) != 0)
+            {
+                scale = _binaryReader.ReadByte();
+            }
+
+            if ((flags & 4) == 0)
+            {
+                lo = (flags & 32) != 0 ? ReadOptimizedInt32() : _binaryReader.ReadInt32();
+            }
+
+            if ((flags & 8) == 0)
+            {
+                mid = (flags & 64) != 0 ? ReadOptimizedInt32() : _binaryReader.ReadInt32();
+            }
+
+            if ((flags & 16) == 0)
+            {
+                hi = (flags & 128) != 0 ? ReadOptimizedInt32() : _binaryReader.ReadInt32();
+            }
+
+            return new decimal(lo, mid, hi, (flags & 0x01) != 0, scale);
         }
 
         /// <summary>
@@ -613,9 +766,9 @@ namespace Ssz.Utils.Serialization
         /// <returns> A Single[]. </returns>
         public float[] ReadArrayOfSingle()
         {
-            var result = new float[ReadOptimizedInt32()];
+            var result = new float[ReadOptimizedInt64()];
 
-            for (int i = 0; i < result.Length; i++)
+            for (long i = 0; i < result.LongLength; i++)
             {
                 result[i] = ReadSingle();
             }
@@ -629,9 +782,9 @@ namespace Ssz.Utils.Serialization
         /// <returns> A Double[]. </returns>
         public double[] ReadArrayOfDouble()
         {
-            var result = new double[ReadOptimizedInt32()];
+            var result = new double[ReadOptimizedInt64()];
 
-            for (int i = 0; i < result.Length; i++)
+            for (long i = 0; i < result.LongLength; i++)
             {
                 result[i] = ReadDouble();
             }
@@ -645,9 +798,9 @@ namespace Ssz.Utils.Serialization
         /// <returns> A Decimal[]. </returns>
         private decimal[] ReadArrayOfDecimal()
         {
-            var result = new decimal[ReadOptimizedInt32()];
+            var result = new decimal[ReadOptimizedInt64()];
 
-            for (int i = 0; i < result.Length; i++)
+            for (long i = 0; i < result.LongLength; i++)
             {
                 result[i] = ReadOptimizedDecimal();
             }
@@ -920,159 +1073,7 @@ namespace Ssz.Utils.Serialization
 
         #endregion
 
-        #region private functions
-
-        /// <summary>
-        ///     Returns a BitArray from the stream that was stored optimized.
-        /// </summary>
-        /// <returns> A BitArray instance. </returns>
-        private BitArray ReadOptimizedBitArray()
-        {
-            if (IsBlockEnding()) throw new BlockEndingException();
-
-            int length = ReadOptimizedInt32();
-            if (length == 0) return new BitArray(0);
-
-            return new BitArray(_binaryReader.ReadBytes((length + 7)/8)) {Length = length};
-        }
-
-        /// <summary>
-        ///     Returns a DateTime value from the stream that was stored optimized.
-        /// </summary>
-        /// <returns> A DateTime value. </returns>
-        private DateTime ReadOptimizedDateTime()
-        {
-            if (IsBlockEnding()) throw new BlockEndingException();
-
-            // Read date information from first three bytes
-            var dateMask = new BitVector32(_binaryReader.ReadByte() | (_binaryReader.ReadByte() << 8) | (_binaryReader.ReadByte() << 16));
-            var result = new DateTime(
-                dateMask[SerializationWriter.DateYearMask],
-                dateMask[SerializationWriter.DateMonthMask],
-                dateMask[SerializationWriter.DateDayMask]
-                );
-
-            if (dateMask[SerializationWriter.DateHasTimeOrKindMask] == 1)
-            {
-                byte initialByte = _binaryReader.ReadByte();
-                var dateTimeKind = (DateTimeKind) (initialByte & 0x03);
-
-                // Remove the IsNegative and HasDays flags which are never true for a DateTime
-                initialByte &= 0xfc;
-                if (dateTimeKind != DateTimeKind.Unspecified)
-                {
-                    result = DateTime.SpecifyKind(result, dateTimeKind);
-                }
-
-                if (initialByte == 0)
-                {
-                    // No need to call decodeTimeSpan if there is no time information
-                    _binaryReader.ReadByte();
-                }
-                else
-                {
-                    result = result.Add(DecodeTimeSpan(initialByte));
-                }
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Returns a Decimal value from the stream that was stored optimized.
-        /// </summary>
-        /// <returns> A Decimal value. </returns>
-        private Decimal ReadOptimizedDecimal()
-        {
-            if (IsBlockEnding()) throw new BlockEndingException();
-
-            byte flags = _binaryReader.ReadByte();
-            int lo = 0;
-            int mid = 0;
-            int hi = 0;
-            byte scale = 0;
-
-            if ((flags & 0x02) != 0)
-            {
-                scale = _binaryReader.ReadByte();
-            }
-
-            if ((flags & 4) == 0)
-            {
-                lo = (flags & 32) != 0 ? ReadOptimizedInt32() : _binaryReader.ReadInt32();
-            }
-
-            if ((flags & 8) == 0)
-            {
-                mid = (flags & 64) != 0 ? ReadOptimizedInt32() : _binaryReader.ReadInt32();
-            }
-
-            if ((flags & 16) == 0)
-            {
-                hi = (flags & 128) != 0 ? ReadOptimizedInt32() : _binaryReader.ReadInt32();
-            }
-
-            return new decimal(lo, mid, hi, (flags & 0x01) != 0, scale);
-        }
-
-        /// <summary>
-        ///     depends on _optimizedSize
-        /// </summary>
-        /// <returns></returns>
-        private uint ReadUInt32OptimizedOrNot()
-        {
-            if (!_optimizedSize)
-            {
-                return _binaryReader.ReadUInt32();
-            }
-            else
-            {
-                return ReadOptimizedUInt32();
-            }
-        }
-
-        /// <summary>
-        ///     depends on _optimizedSize
-        /// </summary>
-        /// <returns></returns>
-        private int ReadInt32OptimizedOrNot()
-        {            
-            if (!_optimizedSize)
-            {
-                return _binaryReader.ReadInt32();
-            }
-            else
-            {
-                return ReadOptimizedInt32();
-            }
-        }
-
-        /// <summary>
-        ///     depends on _optimizedSize
-        /// </summary>
-        /// <returns></returns>
-        private double ReadDoubleOptimizedOrNot()
-        {
-            if (!_optimizedSize)
-            {
-                return _binaryReader.ReadDouble();
-            }
-            else
-            {
-                SerializedType typeCode = ReadSerializedType();
-                switch (typeCode)
-                {
-                    case SerializedType.ZeroDoubleType:
-                        return (Double)0;
-                    case SerializedType.OneDoubleType:
-                        return (Double)1;
-                    case SerializedType.DoubleType:
-                        return _binaryReader.ReadDouble();
-                    default:
-                        throw new InvalidOperationException("Unrecognized TypeCode");
-                }
-            }
-        }
+        #region private functions                         
 
         /// <summary>        
         ///     Returns an object[] from the stream that was stored optimized.
@@ -1089,23 +1090,23 @@ namespace Ssz.Utils.Serialization
         {
             if (IsBlockEnding()) throw new BlockEndingException();
 
-            int length = ReadOptimizedInt32();
+            long length = ReadOptimizedInt64();
             var result =
                 (object?[])
                     (elementType == typeof (object) ? new object?[length] : Array.CreateInstance(elementType, length));
 
-            for (int i = 0; i < result.Length; i++)
+            for (long i = 0; i < length; i++)
             {
                 var serializedType = (SerializedType) _binaryReader.ReadByte();
 
                 switch (serializedType)
                 {
                     case SerializedType.NullSequenceType:
-                        i += ReadOptimizedInt32();
+                        i += ReadOptimizedInt64();
                         break;
                     case SerializedType.DuplicateValueSequenceType:
                         object? target = result[i] = ReadObject();
-                        int duplicateValueCount = ReadOptimizedInt32();
+                        long duplicateValueCount = ReadOptimizedInt64();
                         while (duplicateValueCount-- > 0)
                         {
                             result[++i] = target;
@@ -1113,7 +1114,7 @@ namespace Ssz.Utils.Serialization
                         break;
                     case SerializedType.DbNullSequenceType:
                         result[i] = DBNull.Value;
-                        int duplicateDbNullCount = ReadOptimizedInt32();
+                        long duplicateDbNullCount = ReadOptimizedInt64();
                         while (duplicateDbNullCount-- > 0)
                         {
                             result[++i] = DBNull.Value;
@@ -1506,12 +1507,12 @@ namespace Ssz.Utils.Serialization
                     return new int[0];
                 default:
                     BitArray readOptimizedFlags = ReadTypedArrayOptimizeFlags(typeCode);
-                    var result = new int[ReadOptimizedInt32()];
+                    var result = new int[ReadOptimizedInt64()];
 
-                    for (int i = 0; i < result.Length; i++)
+                    for (long i = 0; i < result.LongLength; i++)
                     {
                         if (ReferenceEquals(readOptimizedFlags, AllFalseBitArray) ||
-                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[i]))
+                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[(int)i]))
                         {
                             result[i] = _binaryReader.ReadInt32();
                         }
@@ -1543,10 +1544,10 @@ namespace Ssz.Utils.Serialization
                     BitArray readOptimizedFlags = ReadTypedArrayOptimizeFlags(typeCode);
                     var result = new long[ReadOptimizedInt64()];
 
-                    for (int i = 0; i < result.Length; i++)
+                    for (long i = 0; i < result.LongLength; i++)
                     {
                         if (ReferenceEquals(readOptimizedFlags, AllFalseBitArray) ||
-                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[i]))
+                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[(int)i]))
                         {
                             result[i] = _binaryReader.ReadInt64();
                         }
@@ -1576,12 +1577,12 @@ namespace Ssz.Utils.Serialization
                     return new TimeSpan[0];
                 default:
                     BitArray readOptimizedFlags = ReadTypedArrayOptimizeFlags(typeCode);
-                    var result = new TimeSpan[ReadOptimizedInt32()];
+                    var result = new TimeSpan[ReadOptimizedInt64()];
 
-                    for (int i = 0; i < result.Length; i++)
+                    for (long i = 0; i < result.LongLength; i++)
                     {
                         if (ReferenceEquals(readOptimizedFlags, AllFalseBitArray) ||
-                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[i]))
+                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[(int)i]))
                         {
                             result[i] = ReadTimeSpan();
                         }
@@ -1611,12 +1612,12 @@ namespace Ssz.Utils.Serialization
                     return new uint[0];
                 default:
                     BitArray readOptimizedFlags = ReadTypedArrayOptimizeFlags(typeCode);
-                    var result = new uint[ReadOptimizedUInt32()];
+                    var result = new uint[ReadOptimizedInt64()];
 
-                    for (int i = 0; i < result.Length; i++)
+                    for (long i = 0; i < result.LongLength; i++)
                     {
                         if (ReferenceEquals(readOptimizedFlags, AllFalseBitArray) ||
-                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[i]))
+                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[(int)i]))
                         {
                             result[i] = _binaryReader.ReadUInt32();
                         }
@@ -1648,10 +1649,10 @@ namespace Ssz.Utils.Serialization
                     BitArray readOptimizedFlags = ReadTypedArrayOptimizeFlags(typeCode);
                     var result = new ulong[ReadOptimizedInt64()];
 
-                    for (int i = 0; i < result.Length; i++)
+                    for (long i = 0; i < result.LongLength; i++)
                     {
                         if (ReferenceEquals(readOptimizedFlags, AllFalseBitArray) ||
-                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[i]))
+                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[(int)i]))
                         {
                             result[i] = _binaryReader.ReadUInt64();
                         }
@@ -1680,12 +1681,12 @@ namespace Ssz.Utils.Serialization
                     return new DateTime[0];
                 default:
                     BitArray readOptimizedFlags = ReadTypedArrayOptimizeFlags(typeCode);
-                    var result = new DateTime[ReadOptimizedInt32()];
+                    var result = new DateTime[ReadOptimizedInt64()];
 
-                    for (int i = 0; i < result.Length; i++)
+                    for (long i = 0; i < result.LongLength; i++)
                     {
                         if (ReferenceEquals(readOptimizedFlags, AllFalseBitArray) ||
-                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[i]))
+                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[(int)i]))
                         {
                             result[i] = ReadDateTime();
                         }
@@ -1715,12 +1716,12 @@ namespace Ssz.Utils.Serialization
                     return new ushort[0];
                 default:
                     BitArray readOptimizedFlags = ReadTypedArrayOptimizeFlags(typeCode);
-                    var result = new ushort[ReadOptimizedUInt32()];
+                    var result = new ushort[ReadOptimizedInt64()];
 
-                    for (int i = 0; i < result.Length; i++)
+                    for (long i = 0; i < result.LongLength; i++)
                     {
                         if (ReferenceEquals(readOptimizedFlags, AllFalseBitArray) ||
-                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[i]))
+                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[(int)i]))
                         {
                             result[i] = _binaryReader.ReadUInt16();
                         }
@@ -1750,12 +1751,12 @@ namespace Ssz.Utils.Serialization
                     return new short[0];
                 default:
                     BitArray readOptimizedFlags = ReadTypedArrayOptimizeFlags(t);
-                    var result = new short[ReadOptimizedInt32()];
+                    var result = new short[ReadOptimizedInt64()];
 
-                    for (int i = 0; i < result.Length; i++)
+                    for (long i = 0; i < result.LongLength; i++)
                     {
                         if (ReferenceEquals(readOptimizedFlags, AllFalseBitArray) ||
-                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[i]))
+                            (!ReferenceEquals(readOptimizedFlags, AllTrueBitArray) && !readOptimizedFlags[(int)i]))
                         {
                             result[i] = _binaryReader.ReadInt16();
                         }
@@ -1798,9 +1799,9 @@ namespace Ssz.Utils.Serialization
                 case SerializedType.AllTrueOptimizeFlagsType: // Obsolete
                 case SerializedType.OwnedDataSerializableTypedArrayType:
                 {
-                    int length = ReadOptimizedInt32();
+                    long length = ReadOptimizedInt64();
                     Array result = Array.CreateInstance(elementType!, length);
-                    for (int i = 0; i < length; i++)
+                    for (long i = 0; i < length; i++)
                     {
                         IOwnedDataSerializable? value = Activator.CreateInstance(elementType!) as IOwnedDataSerializable;
                         if (value is null) 
@@ -1901,9 +1902,9 @@ namespace Ssz.Utils.Serialization
         /// <returns> A Guid[]. </returns>
         private Guid[] ReadGuidArray()
         {
-            var result = new Guid[ReadOptimizedInt32()];
+            var result = new Guid[ReadOptimizedInt64()];
 
-            for (int i = 0; i < result.Length; i++)
+            for (long i = 0; i < result.LongLength; i++)
             {
                 result[i] = ReadGuid();
             }
@@ -1917,9 +1918,9 @@ namespace Ssz.Utils.Serialization
         /// <returns> An SByte[]. </returns>
         private sbyte[] ReadSByteArray()
         {
-            var result = new sbyte[ReadOptimizedInt32()];
+            var result = new sbyte[ReadOptimizedInt64()];
 
-            for (int i = 0; i < result.Length; i++)
+            for (long i = 0; i < result.LongLength; i++)
             {
                 result[i] = ReadSByte();
             }
@@ -1938,8 +1939,6 @@ namespace Ssz.Utils.Serialization
         private readonly Stream _baseStream;
 
         private readonly bool _optimizedSize;
-       
-        private readonly BinaryReaderEx _binaryReader;
         
         private readonly Stack<long> _blockEndingPositionsStack = new Stack<long>();
 
@@ -1949,8 +1948,9 @@ namespace Ssz.Utils.Serialization
 
         private List<string>? _stringsList;
 
-        #endregion
-
+#if NET5_0_OR_GREATER
+        private readonly BinaryReader _binaryReader;
+#else
         private class BinaryReaderEx : BinaryReader
         {
             public BinaryReaderEx(Stream input) : base(input)
@@ -1967,9 +1967,93 @@ namespace Ssz.Utils.Serialization
 
             public new int Read7BitEncodedInt()
             {
-                return base.Read7BitEncodedInt();
+                // Unlike writing, we can't delegate to the 64-bit read on
+                // 64-bit platforms. The reason for this is that we want to
+                // stop consuming bytes if we encounter an integer overflow.
+
+                uint result = 0;
+                byte byteReadJustNow;
+
+                // Read the integer 7 bits at a time. The high bit
+                // of the byte when on means to continue reading more bytes.
+                //
+                // There are two failure cases: we've read more than 5 bytes,
+                // or the fifth byte is about to cause integer overflow.
+                // This means that we can read the first 4 bytes without
+                // worrying about integer overflow.
+
+                const int MaxBytesWithoutOverflow = 4;
+                for (int shift = 0; shift < MaxBytesWithoutOverflow * 7; shift += 7)
+                {
+                    // ReadByte handles end of stream cases for us.
+                    byteReadJustNow = ReadByte();
+                    result |= (byteReadJustNow & 0x7Fu) << shift;
+
+                    if (byteReadJustNow <= 0x7Fu)
+                    {
+                        return (int)result; // early exit
+                    }
+                }
+
+                // Read the 5th byte. Since we already read 28 bits,
+                // the value of this byte must fit within 4 bits (32 - 28),
+                // and it must not have the high bit set.
+
+                byteReadJustNow = ReadByte();
+                if (byteReadJustNow > 0b_1111u)
+                {
+                    throw new FormatException("Bad 7 Bit Int");
+                }
+
+                result |= (uint)byteReadJustNow << (MaxBytesWithoutOverflow * 7);
+                return (int)result;
+            }
+
+            public long Read7BitEncodedInt64()
+            {
+                ulong result = 0;
+                byte byteReadJustNow;
+
+                // Read the integer 7 bits at a time. The high bit
+                // of the byte when on means to continue reading more bytes.
+                //
+                // There are two failure cases: we've read more than 10 bytes,
+                // or the tenth byte is about to cause integer overflow.
+                // This means that we can read the first 9 bytes without
+                // worrying about integer overflow.
+
+                const int MaxBytesWithoutOverflow = 9;
+                for (int shift = 0; shift < MaxBytesWithoutOverflow * 7; shift += 7)
+                {
+                    // ReadByte handles end of stream cases for us.
+                    byteReadJustNow = ReadByte();
+                    result |= (byteReadJustNow & 0x7Ful) << shift;
+
+                    if (byteReadJustNow <= 0x7Fu)
+                    {
+                        return (long)result; // early exit
+                    }
+                }
+
+                // Read the 10th byte. Since we already read 63 bits,
+                // the value of this byte must fit within 1 bit (64 - 63),
+                // and it must not have the high bit set.
+
+                byteReadJustNow = ReadByte();
+                if (byteReadJustNow > 0b_1u)
+                {
+                    throw new FormatException("Bad 7 Bit Int");
+                }
+
+                result |= (ulong)byteReadJustNow << (MaxBytesWithoutOverflow * 7);
+                return (long)result;
             }
         }
+
+        private readonly BinaryReaderEx _binaryReader;
+#endif
+
+        #endregion        
     }
 
     /// <summary>

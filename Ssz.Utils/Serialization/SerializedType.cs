@@ -153,12 +153,12 @@
         Reserved10,
         Reserved9,
         Reserved8,
-        Reserved7,
-        Reserved6,
         BlockBegin,
+        BlockBeginWithVersion,
+        BlockBegin_Obsolete,
         OptimizedStringType, // String in strings dictionary
         StringDirect, // String type
-        BlockBeginWithVersion, // Identifies block begin
+        BlockBeginWithVersion_Obsolete, // Identifies block begin
         BlockEnd, // Identifies block end        
     }
 }
