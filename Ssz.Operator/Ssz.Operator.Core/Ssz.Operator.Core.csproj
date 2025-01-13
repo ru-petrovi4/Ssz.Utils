@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-	<TargetFrameworks>net462;net8.0-windows</TargetFrameworks>
+	<TargetFrameworks>net462;net9.0-windows</TargetFrameworks>
 	<LangVersion>Latest</LangVersion>    
     <Nullable>Enable</Nullable>    
     <UseWindowsForms>true</UseWindowsForms>
@@ -17,7 +17,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <NoWarn>659;1591</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0-windows'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net9.0-windows'">
 	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>  
   <ItemGroup>
@@ -39,11 +39,11 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="9.0.0" />
   </ItemGroup>
   <ItemGroup>
-	<Reference Include="PresentationFramework.Classic" Condition="'$(TargetFramework)' != 'net8.0-windows'" />
-    <Reference Include="System.Windows.Forms" Condition="'$(TargetFramework)' != 'net8.0-windows'" />
+	<Reference Include="PresentationFramework.Classic" Condition="'$(TargetFramework)' != 'net9.0-windows'" />
+    <Reference Include="System.Windows.Forms" Condition="'$(TargetFramework)' != 'net9.0-windows'" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Properties\ResourceStrings.tt">

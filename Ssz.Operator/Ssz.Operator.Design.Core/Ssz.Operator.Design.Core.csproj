@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>	
-	<TargetFrameworks>net8.0-windows</TargetFrameworks>
+	<TargetFrameworks>net9.0-windows</TargetFrameworks>
 	<LangVersion>Latest</LangVersion>
     <Nullable>Enable</Nullable>
     <UseWPF>true</UseWPF>    
@@ -96,11 +96,11 @@
     <ProjectReference Include="..\..\ThirdParties\Ssz.WindowsAPICodePack\Ssz.WindowsAPICodePack.csproj" />
   </ItemGroup>  
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.29.2" />
+    <PackageReference Include="Google.Protobuf" Version="3.29.3" />
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="System.Windows.Forms" Condition="'$(TargetFramework)' != 'net8.0-windows'" />
+    <Reference Include="System.Windows.Forms" Condition="'$(TargetFramework)' != 'net9.0-windows'" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">

@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <!-- Project properties -->
     <PropertyGroup>
-        <TargetFramework>net8.0-windows</TargetFramework>
+        <TargetFramework>net9.0-windows</TargetFramework>
 		    <UseWPF>true</UseWPF>
 		    <UseWindowsForms>true</UseWindowsForms>
 		    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

@@ -14,7 +14,7 @@
     <ProjectName>Xi.OPC.COM.Impl</ProjectName>
     <ProjectGuid>{DFFB40E3-BE18-4B82-99D3-2AA382EF418C}</ProjectGuid>
     <RootNamespace>OPCWrapper.Implementation</RootNamespace>
-    <TargetFramework>netcoreapp8.0</TargetFramework>
+    <TargetFramework>netcoreapp9.0</TargetFramework>
     <SccProjectName>
     </SccProjectName>
     <SccAuxPath>
