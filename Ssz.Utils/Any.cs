@@ -770,14 +770,16 @@ namespace Ssz.Utils {
                             var options = new JsonSerializerOptions
                             {
                                 Converters = { new ToStringJsonConverter() },
-                                WriteIndented = false
+                                WriteIndented = false,
+                                NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals
                             };
                             return JsonSerializer.Serialize(StorageObject!, options);
                         }                                             case TypeCode.List:                         {
                             var options = new JsonSerializerOptions
                             {
                                 Converters = { new ToStringJsonConverter() },
-                                WriteIndented = false
+                                WriteIndented = false,
+                                NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals
                             };
                             return JsonSerializer.Serialize(StorageObject!, options);
                         }
@@ -1249,7 +1251,8 @@ namespace Ssz.Utils {
                 var options = new JsonSerializerOptions
                 {
                     Converters = { new ToStringJsonConverter() },
-                    WriteIndented = false
+                    WriteIndented = false,
+                    NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals
                 };
                 return JsonSerializer.Serialize(value, options);
             }             // TODO:             //System.Windows.Markup.ValueSerializer valueSerializer =             //                ValueSerializer.GetSerializerFor(type);             //if (valueSerializer is not null && valueSerializer.CanConvertToString(value, null))             //{             //    try             //    {             //        string result = valueSerializer.ConvertToString(value, null);             //        if (result is not null) return result;             //    }             //    catch (Exception)             //    {             //    }             //}              TypeConverter converter = TypeDescriptor.GetConverter(type);             if (converter.CanConvertTo(typeof(string)))             {                 try                 {                     string? result = converter.ConvertTo(null, GetCultureInfo(stringIsLocalized), value, typeof(string)) as string;                     if (result is not null) return result;                 }                 catch (Exception)                 {                 }             }              return value.ToString() ?? @"";         }          /// <summary>         ///     Returns false, if String.IsNullOrWhiteSpace(value) || value.ToUpperInvariant() == "FALSE" || value == "0",         ///     otherwise true.         /// </summary>         /// <param name="value"></param>         /// <param name="stringIsLocalized"></param>         /// <returns></returns>         private static bool ConvertToBoolean(string? value, bool stringIsLocalized)         {             Any any = ConvertToBestType(value, stringIsLocalized);             if (any._valueTypeCode == (byte)TypeCode.String)                  return false;             return any.ValueAsBoolean(stringIsLocalized);         }
