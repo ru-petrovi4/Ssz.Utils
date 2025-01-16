@@ -140,6 +140,7 @@ namespace Ssz.Utils.Serialization
                 _binaryWriter.Write((long)0);
                 // Store the begin position of the block
                 _blockBeginPositionsStack.Push(_baseStream.Position);
+                _shortBlockFlagsStack.Push(false);
                 _binaryWriter.Write7BitEncodedInt(version);
             }
             else
@@ -148,8 +149,36 @@ namespace Ssz.Utils.Serialization
                 // it will store the block length
                 _binaryWriter.Write((long)0);
                 // Store the begin position of the block
-                _blockBeginPositionsStack.Push(_baseStream.Position);                
-            }                
+                _blockBeginPositionsStack.Push(_baseStream.Position);
+                _shortBlockFlagsStack.Push(false);
+            }
+        }
+
+        /// <summary>
+        ///     Begins short Block        
+        /// </summary>
+        /// <param name="version"></param>
+        public void BeginShortBlock(int version = -1)
+        {
+            if (version >= 0)
+            {
+                WriteSerializedType(SerializedType.BlockBeginWithVersion_Obsolete);
+                // it will store the block length
+                _binaryWriter.Write((int)0);
+                // Store the begin position of the block
+                _blockBeginPositionsStack.Push(_baseStream.Position);
+                _binaryWriter.Write7BitEncodedInt(version);
+                _shortBlockFlagsStack.Push(true);
+            }
+            else
+            {
+                WriteSerializedType(SerializedType.BlockBegin_Obsolete);
+                // it will store the block length
+                _binaryWriter.Write((int)0);
+                // Store the begin position of the block
+                _blockBeginPositionsStack.Push(_baseStream.Position);
+                _shortBlockFlagsStack.Push(true);
+            }
         }
 
         /// <summary>
@@ -159,8 +188,17 @@ namespace Ssz.Utils.Serialization
         {
             long endPosition = _baseStream.Position;
             long beginPosition = _blockBeginPositionsStack.Pop();
-            _baseStream.Position = beginPosition - 8;
-            _binaryWriter.Write(endPosition - beginPosition);
+            bool IsShortBlock = _shortBlockFlagsStack.Pop();
+            _baseStream.Position = beginPosition - (IsShortBlock? 4 :8);
+            if (IsShortBlock)
+            {
+                if ((endPosition - beginPosition) < int.MaxValue)
+                    _binaryWriter.Write((int)(endPosition - beginPosition));
+                else
+                    throw new BlockSizeException(endPosition - beginPosition);
+            }
+            else
+                    _binaryWriter.Write(endPosition - beginPosition);
             _baseStream.Position = endPosition;
             WriteSerializedType(SerializedType.BlockEnd);
         }
@@ -173,6 +211,15 @@ namespace Ssz.Utils.Serialization
         public IDisposable EnterBlock(int version = -1)
         {
             return new Block(this, version);
+        }
+        /// <summary>
+        ///     Enters short Block
+        /// </summary>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        public IDisposable EnterShortBlock(int version = -1)
+        {
+            return new Block(this, version, true);
         }
 
         /// <summary>
@@ -2859,37 +2906,45 @@ namespace Ssz.Utils.Serialization
 #endif
 
         private readonly Stack<long> _blockBeginPositionsStack = new Stack<long>();
+        private readonly Stack<bool> _shortBlockFlagsStack = new Stack<bool>();
 
         private readonly long _stringsListInfoPosition;
         private Dictionary<string, int>? _stringsDictionary;
         private List<string>? _stringsList;
 
-#endregion
+        #endregion
 
         private class Block : IDisposable
         {
 #region construction and destruction
 
-            public Block(SerializationWriter serializationWriter, int version)
+            public Block(SerializationWriter serializationWriter, int version, bool shortBlock=false)
             {
                 _serializationWriter = serializationWriter;
-                _serializationWriter.BeginBlock(version);
+                if(shortBlock)
+                    _serializationWriter.BeginShortBlock(version);
+                else
+                    _serializationWriter.BeginBlock(version);
             }
 
             public void Dispose()
             {
                 _serializationWriter.EndBlock();
             }
-
 #endregion
 
 #region private fields
-
             private readonly SerializationWriter _serializationWriter;
-
 #endregion
+
         }
     }
+
+    public class BlockSizeException : Exception
+    {
+        public BlockSizeException(long size = 0) : base($"SortBlock too large. Current size is {size}.") { }
+    }
+
 }
 
 ///// <summary>
