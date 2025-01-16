@@ -145,14 +145,29 @@ namespace Ssz.DataAccessGrpc.Client
             _contextIsOperational = true;
 
             var cancellationToken = _cancellationTokenSource.Token;
-            var taskCompletionSource = new TaskCompletionSource<int>();
-            var workingThread = new Thread(async () =>
+
+            bool isBrowser = false;
+#if NET5_0_OR_GREATER
+            if (OperatingSystem.IsBrowser())
+                isBrowser = true;
+#endif
+            if (isBrowser)
             {
-                await ReadCallbackMessagesAsync(_callbackMessageStream.ResponseStream, cancellationToken);
-                taskCompletionSource.SetResult(0);
-            });
-            _workingTask = taskCompletionSource.Task;
-            workingThread.Start();
+                _workingTask = Task.Run(async () =>
+                    await ReadCallbackMessagesAsync(_callbackMessageStream.ResponseStream, cancellationToken)
+                );
+            }
+            else
+            {
+                var taskCompletionSource = new TaskCompletionSource<int>();
+                var workingThread = new Thread(async () =>
+                {
+                    await ReadCallbackMessagesAsync(_callbackMessageStream.ResponseStream, cancellationToken);
+                    taskCompletionSource.SetResult(0);
+                });
+                _workingTask = taskCompletionSource.Task;
+                workingThread.Start();
+            }            
         }
 
         public async Task KeepContextAliveIfNeededAsync(CancellationToken ct, DateTime nowUtc)

@@ -18,6 +18,7 @@ using static Ssz.DataAccessGrpc.Client.Managers.ClientElementValueListManager;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Diagnostics.SymbolStore;
 using Microsoft.Extensions.Configuration;
+using System.Runtime.InteropServices;
 
 namespace Ssz.DataAccessGrpc.Client
 {
@@ -121,14 +122,28 @@ namespace Ssz.DataAccessGrpc.Client
             _cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = _cancellationTokenSource.Token;
 
-            var taskCompletionSource = new TaskCompletionSource<int>();
-            var workingThread = new Thread(async () => 
-            { 
-                await WorkingTaskMainAsync(cancellationToken);
-                taskCompletionSource.SetResult(0);
-            });
-            _workingTask = taskCompletionSource.Task;
-            workingThread.Start();
+            bool isBrowser = false;
+#if NET5_0_OR_GREATER
+            if (OperatingSystem.IsBrowser())
+                isBrowser = true;
+#endif
+            if (isBrowser)
+            {
+                _workingTask = Task.Run(async () =>
+                    await WorkingTaskMainAsync(cancellationToken)
+                );
+            }
+            else
+            {
+                var taskCompletionSource = new TaskCompletionSource<int>();
+                var workingThread = new Thread(async () =>
+                {
+                    await WorkingTaskMainAsync(cancellationToken);
+                    taskCompletionSource.SetResult(0);
+                });
+                _workingTask = taskCompletionSource.Task;
+                workingThread.Start();
+            }
 
             foreach (ValueSubscriptionObj valueSubscriptionObj in _valueSubscriptionsCollection.Values)
             {
@@ -834,7 +849,7 @@ namespace Ssz.DataAccessGrpc.Client
         #endregion
 
         #region private functions
-
+        
         private async Task WorkingTaskMainAsync(CancellationToken cancellationToken)
         {
             if (!IsInitialized)
@@ -1106,7 +1121,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         #region private fields        
 
-        private Task<int>? _workingTask;
+        private Task? _workingTask;
 
         private CancellationTokenSource? _cancellationTokenSource;        
 
