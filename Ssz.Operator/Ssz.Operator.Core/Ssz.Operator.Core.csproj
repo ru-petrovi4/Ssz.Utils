@@ -7,7 +7,7 @@
     <UseWPF>true</UseWPF>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<Company>Simcode</Company>
-	<Version>1.0.76</Version>
+	<Version>1.0.77</Version>
   </PropertyGroup>  
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">    
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -39,7 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="9.0.0" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="9.0.1" />
   </ItemGroup>
   <ItemGroup>
 	<Reference Include="PresentationFramework.Classic" Condition="'$(TargetFramework)' != 'net9.0-windows'" />

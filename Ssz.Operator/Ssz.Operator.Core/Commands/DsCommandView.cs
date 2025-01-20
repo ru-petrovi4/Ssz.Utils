@@ -66,13 +66,11 @@ namespace Ssz.Operator.Core.Commands
                 IsEnabledProperty, dsCommand.IsEnabledInfo, BindingMode.OneWay, UpdateSourceTrigger.Default);
         }
 
-
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-
 
         protected virtual void Dispose(bool disposing)
         {
@@ -96,7 +94,6 @@ namespace Ssz.Operator.Core.Commands
             Disposed = true;
         }
 
-
         ~DsCommandView()
         {
             Dispose(false);
@@ -107,12 +104,10 @@ namespace Ssz.Operator.Core.Commands
         #region public functions
 
         public static readonly DependencyProperty ValueProperty =
-            DependencyProperty.Register("Value", typeof(string), typeof(ButtonDsShapeViewBase),
+            DependencyProperty.Register("Value", typeof(string), typeof(DsCommandView),
                 new PropertyMetadata(null));
 
-
         public bool IsEmpty => string.IsNullOrEmpty(_command);
-
 
         public async void DoCommand()
         {
