@@ -356,6 +356,13 @@ namespace Ssz.Operator.Core
             {
                 if (readOnlyDrawingGuid)
                 {
+#if NET5_0_OR_GREATER
+                    byte[] buffer = new byte[100];
+                    using (FileStream fs = new(drawingFileInfo.FullName, FileMode.Open, FileAccess.Read))
+                    {
+                        fs.ReadAtLeast(buffer, buffer.Length, throwOnEndOfStream: false);
+                    }
+#else
                     byte[] buffer;
                     using (FileStream fs = new(drawingFileInfo.FullName, FileMode.Open, FileAccess.Read))
                     using (MemoryStream ms = new())
@@ -363,6 +370,7 @@ namespace Ssz.Operator.Core
                         fs.CopyTo(ms);
                         buffer = ms.ToArray();
                     }
+#endif
 
                     if (BitConverter.ToInt32(buffer, 0) == 6)
                     {
@@ -1189,6 +1197,6 @@ namespace Ssz.Operator.Core
             }
         }
 
-        #endregion
+#endregion
     }
 }
