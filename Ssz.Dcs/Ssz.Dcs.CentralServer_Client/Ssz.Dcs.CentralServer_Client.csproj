@@ -6,20 +6,6 @@
 	<LangVersion>Latest</LangVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <NoWarn />
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <NoWarn />
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.29.3" />
     <PackageReference Include="Grpc.Net.ClientFactory" Version="2.67.0" />

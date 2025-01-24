@@ -143,11 +143,11 @@ namespace Ssz.Dcs.ControlEngine
                                 }
                                 moduleSerializationData = memoryStream.ToArray();
                             }
-                            writer.Write(moduleSerializationData);
+                            writer.WriteArray(moduleSerializationData);
                         }
                         else
                         {
-                            writer.Write(dsModuleCache.ModuleSerializationData!);
+                            writer.WriteArray(dsModuleCache.ModuleSerializationData!);
                         }                        
                     }
                 }

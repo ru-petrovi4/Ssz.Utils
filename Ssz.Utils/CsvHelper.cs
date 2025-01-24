@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Ssz.Utils.Logging;
 using Ude;
@@ -180,7 +181,7 @@ namespace Ssz.Utils
             }
 
             return result;
-        }        
+        }
 
         /// <summary>
         ///     First column in file is Key and must be unique.
@@ -196,16 +197,29 @@ namespace Ssz.Utils
         /// <param name="defines"></param>
         /// <param name="userFriendlyLogger"></param>
         /// <param name="includeFileNames"></param>
+        /// <param name="fileProvider"></param>
         /// <returns></returns>
-        public static CaseInsensitiveDictionary<List<string?>> LoadCsvFile(string fileFullName, bool includeFiles, Dictionary<Regex, string>? defines = null,
-            IUserFriendlyLogger? userFriendlyLogger = null, List<string>? includeFileNames = null)
+        public static CaseInsensitiveDictionary<List<string?>> LoadCsvFile(
+            string fileFullName, 
+            bool includeFiles, 
+            Dictionary<Regex, string>? defines = null,
+            IUserFriendlyLogger? userFriendlyLogger = null, 
+            List<string>? includeFileNames = null,
+            IFileProvider? fileProvider = null)
         {
-            using (FileStream fileStream = File.Open(fileFullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            if (fileProvider is null)
             {
-                if (includeFiles)
-                    return LoadCsvFile(fileStream, Path.GetDirectoryName(fileFullName), defines, userFriendlyLogger, includeFileNames);
-                else
-                    return LoadCsvFile(fileStream, null, defines, userFriendlyLogger, includeFileNames);
+                using (Stream fileStream = File.Open(fileFullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    return LoadCsvFile(fileStream, includeFiles, Path.GetDirectoryName(fileFullName), defines, userFriendlyLogger, includeFileNames);                    
+                }
+            }
+            else
+            {
+                using (Stream fileStream = fileProvider.GetFileInfo(fileFullName).CreateReadStream())
+                {
+                    return LoadCsvFile(fileStream, includeFiles, Path.GetDirectoryName(fileFullName), defines, userFriendlyLogger, includeFileNames, fileProvider);                    
+                }
             }
         }
 
@@ -219,13 +233,21 @@ namespace Ssz.Utils
         ///     Result: List.Count >= 1, List[0] is not null
         /// </summary>
         /// <param name="csvStream"></param>
+        /// <param name="includeFiles"></param>
         /// <param name="includeFilesDirectory"></param>
         /// <param name="defines"></param>
         /// <param name="userFriendlyLogger"></param>
         /// <param name="includeFileNames"></param>
+        /// <param name="fileProvider"></param>
         /// <returns></returns>
-        public static CaseInsensitiveDictionary<List<string?>> LoadCsvFile(Stream csvStream, string? includeFilesDirectory, Dictionary<Regex, string>? defines = null,
-            IUserFriendlyLogger? userFriendlyLogger = null, List<string>? includeFileNames = null)
+        public static CaseInsensitiveDictionary<List<string?>> LoadCsvFile(
+            Stream csvStream,
+            bool includeFiles,
+            string? includeFilesDirectory, 
+            Dictionary<Regex, string>? defines = null,
+            IUserFriendlyLogger? userFriendlyLogger = null,
+            List<string>? includeFileNames = null,
+            IFileProvider? fileProvider = null)
         {
             var fileData = new CaseInsensitiveDictionary<List<string?>>();
 
@@ -265,7 +287,7 @@ namespace Ssz.Utils
                         if (beginFields is null)
                         {
                             if (line.StartsWith(@"#include", StringComparison.InvariantCultureIgnoreCase) &&
-                                includeFilesDirectory is not null)
+                                includeFiles)
                             {
                                 var q1 = line.IndexOf('"', 8);
                                 if (q1 != -1 && q1 + 1 < line.Length)
@@ -276,7 +298,13 @@ namespace Ssz.Utils
                                         var includeFileName = line.Substring(q1 + 1, q2 - q1 - 1);
                                         if (includeFileNames is not null)
                                             includeFileNames.Add(includeFileName);
-                                        CaseInsensitiveDictionary<List<string?>> includeFileData = LoadCsvFile(Path.Combine(includeFilesDirectory, includeFileName), false, defines, userFriendlyLogger);
+                                        CaseInsensitiveDictionary<List<string?>> includeFileData = LoadCsvFile(
+                                            Path.Combine(includeFilesDirectory ?? @"", includeFileName), 
+                                            false,
+                                            defines, 
+                                            userFriendlyLogger, 
+                                            null,
+                                            fileProvider);
                                         foreach (var kvp in includeFileData)
                                         {
                                             if (fileData.ContainsKey(kvp.Key))

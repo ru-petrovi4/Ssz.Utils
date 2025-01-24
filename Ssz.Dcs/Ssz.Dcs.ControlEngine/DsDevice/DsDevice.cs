@@ -75,7 +75,7 @@ namespace Ssz.Dcs.ControlEngine
 
             var parameters = new List<object>();
             if (UserFriendlyLogger != null) parameters.Add(UserFriendlyLogger);
-            if (_dataDirectoryInfo != null) parameters.Add(_dataDirectoryInfo);
+            if (_dataDirectoryInfo != null) parameters.Add(_dataDirectoryInfo.FullName);
             if (_dispatcher != null) parameters.Add(_dispatcher);            
             CsvDb = ActivatorUtilities.CreateInstance<CsvDb>(serviceProvider, parameters.ToArray());
             CsvDb.CsvFileChanged += OnCsvDb_CsvFileChanged;

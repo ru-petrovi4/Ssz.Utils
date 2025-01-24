@@ -41,7 +41,7 @@ namespace Ssz.Dcs.CentralServer.Common
         {
             writer.Write(PathRelativeToRootDirectory);
             writer.Write(LastWriteTimeUtc);
-            writer.Write(FileData);
+            writer.WriteArray(FileData);
         }
 
         /// <summary>

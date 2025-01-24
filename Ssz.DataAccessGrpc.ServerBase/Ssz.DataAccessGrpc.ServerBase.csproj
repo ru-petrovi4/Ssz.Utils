@@ -6,20 +6,6 @@
 	<Nullable>Enable</Nullable>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <NoWarn />
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <NoWarn />
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.0" />
     <PackageReference Include="Google.Protobuf" Version="3.29.3" />

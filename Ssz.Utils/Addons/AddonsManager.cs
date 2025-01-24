@@ -557,7 +557,7 @@ namespace Ssz.Utils.Addons
             }
             if (addonConfigDirectoryInfo is not null)
             {
-                var csvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, addonConfigDirectoryInfo);
+                var csvDb = ActivatorUtilities.CreateInstance<CsvDb>(ServiceProvider, addonConfigDirectoryInfo.FullName);
                 var existingOptionsData = csvDb.GetData(AddonBase.OptionsCsvFileName);
                 foreach (var optionInfo in availableAddon.OptionsInfo)
                 {
@@ -740,7 +740,7 @@ namespace Ssz.Utils.Addons
                 var parameters = new List<object>();
                 parameters.Add(LoggersSet.UserFriendlyLogger);
                 if (addonConfigDirectoryInfo is not null)
-                    parameters.Add(addonConfigDirectoryInfo);
+                    parameters.Add(addonConfigDirectoryInfo.FullName);
                 if (addonDispatcher is not null)
                     parameters.Add(addonDispatcher);
 

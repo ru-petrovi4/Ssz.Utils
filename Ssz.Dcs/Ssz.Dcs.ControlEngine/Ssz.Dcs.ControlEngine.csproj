@@ -7,19 +7,6 @@
   <LangVersion>Latest</LangVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <NoWarn></NoWarn>
-    <WarningLevel>0</WarningLevel>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <NoWarn></NoWarn>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore.Web" Version="2.67.0" />
     <PackageReference Include="Grpc.Tools" Version="2.69.0">

@@ -1315,7 +1315,8 @@ namespace Ssz.Operator.Core
             
             CsvDb = new CsvDb(NullLogger<CsvDb>.Instance,
                 LoggersSet.UserFriendlyLogger,
-                CsvDbDirectoryInfo, 
+                CsvDbDirectoryInfo!.FullName, 
+                null,
                 new WrapperDispatcher(Application.Current.Dispatcher));
 
             ElementIdsMap.Initialize(CsvDb.GetData(DataEngine.ElementIdsMapFileName), CsvDb.GetData(DataEngine.TagsFileName), CsvDb);

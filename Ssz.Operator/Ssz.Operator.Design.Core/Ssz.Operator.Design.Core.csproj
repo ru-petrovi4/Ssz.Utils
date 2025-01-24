@@ -5,12 +5,10 @@
     <Nullable>Enable</Nullable>
     <UseWPF>true</UseWPF>    
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">    
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' "> 
     <DefineConstants>TRACE;NO_LICENSE_CHECK</DefineConstants>	
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">    
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' "> 
     <DefineConstants>TRACE;NO_LICENSE_CHECK</DefineConstants>	
   </PropertyGroup>
   

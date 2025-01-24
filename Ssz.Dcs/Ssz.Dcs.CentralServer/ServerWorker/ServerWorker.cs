@@ -51,7 +51,7 @@ namespace Ssz.Dcs.CentralServer
             // Creates all directories and subdirectories in the specified path unless they already exist.
             Directory.CreateDirectory(@"CsvDb");
             _csvDb = ActivatorUtilities.CreateInstance<CsvDb>(
-                _serviceProvider, new DirectoryInfo(@"CsvDb"), ThreadSafeDispatcher);
+                _serviceProvider, new DirectoryInfo(@"CsvDb").FullName, ThreadSafeDispatcher);
             //_csvDb.CsvFileChanged += CsvDbOnCsvFileChanged;
             //CsvDbOnCsvFileChanged(CsvFileChangeAction.Added, null);
                         

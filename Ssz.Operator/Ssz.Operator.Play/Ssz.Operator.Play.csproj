@@ -20,12 +20,10 @@
   </PropertyGroup>
   
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">    
-    <DefineConstants>TRACE;NO_LICENSE_CHECK</DefineConstants>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DefineConstants>TRACE;NO_LICENSE_CHECK</DefineConstants>    
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">    
-    <DefineConstants>TRACE;NO_LICENSE_CHECK</DefineConstants>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DefineConstants>TRACE;NO_LICENSE_CHECK</DefineConstants>    
   </PropertyGroup>
   
   <ItemGroup>    

@@ -722,12 +722,33 @@ namespace Ssz.Utils.Serialization
 
         /// <summary>
         ///     Use ReadByteArray() for reading.
-        /// </summary>
+        ///     Waring!!! Supports only int Length!!!
+        /// </summary>                
         /// <param name="values"></param>
-        public void Write(byte[] values)
+        public void WriteArray(byte[] values)
         {
-            WriteArrayInternal(values);
-        }             
+            WriteOptimized(values.Length);
+
+            if (values.Length > 0)
+            {
+                _binaryWriter.Write(values);
+            }
+        }
+
+        /// <summary>
+        ///     Use ReadCharArray() for reading.
+        ///     Waring!!! Supports only int Length!!!
+        /// </summary>
+        /// <param name="values"> The Char[] to store. </param>
+        public void WriteArray(char[] values)
+        {
+            WriteOptimized(values.Length);
+
+            if (values.Length > 0)
+            {
+                _binaryWriter.Write(values);
+            }
+        }
 
         /// <summary>
         ///     Use ReadObject() or ReadObjectTyped() for read.
@@ -1443,7 +1464,7 @@ namespace Ssz.Utils.Serialization
             object? context)
             where T : IOwnedDataSerializable
         {
-            Write(values.Length);
+            WriteOptimized(values.LongLength);
             foreach (var v in values)
             {
                 v.SerializeOwnedData(this, context);
@@ -1464,7 +1485,7 @@ namespace Ssz.Utils.Serialization
             {
                 WriteSerializedType(SerializedType.ByteArrayType);
 
-                WriteArrayInternal(values);
+                WriteArray(values);
             }            
         }
 
@@ -2166,35 +2187,7 @@ namespace Ssz.Utils.Serialization
             {
                 _binaryWriter.Write(value);
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="values"></param>
-        private void WriteArrayInternal(byte[] values)
-        {
-            WriteOptimized(values.Length);
-
-            if (values.Length > 0)
-            {
-                _binaryWriter.Write(values);
-            }
-        }
-
-        /// <summary>
-        ///     Internal implementation to store a non-null Char[].
-        /// </summary>
-        /// <param name="values"> The Char[] to store. </param>
-        private void WriteArrayInternal(char[] values)
-        {
-            WriteOptimized(values.Length);
-
-            if (values.Length > 0)
-            {
-                _binaryWriter.Write(values);
-            }
-        }
+        }        
 
         /// <summary>
         ///     Encodes a TimeSpan into the fewest number of bytes.
@@ -2752,14 +2745,14 @@ namespace Ssz.Utils.Serialization
             if (elementType == typeof (Byte))
             {
                 WriteSerializedType(SerializedType.ByteArrayType);
-                WriteArrayInternal((Byte[]) values);
+                WriteArray((Byte[]) values);
                 return;
             }
 
             if (elementType == typeof (Char))
             {
                 WriteSerializedType(SerializedType.CharArrayType);
-                WriteArrayInternal((Char[]) values);
+                WriteArray((Char[]) values);
                 return;
             }
 
