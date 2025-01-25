@@ -1,3 +1,4 @@
+#define EXTDEBUG
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.Json;
+
 
 namespace Ssz.Utils.Serialization
 {
@@ -167,7 +169,10 @@ namespace Ssz.Utils.Serialization
                 _binaryWriter.Write((int)0);
                 // Store the begin position of the block
                 _blockBeginPositionsStack.Push(_baseStream.Position);
-                _binaryWriter.Write7BitEncodedInt(version);
+                if (_optimizeSize)
+                    _binaryWriter.Write7BitEncodedInt(version);
+                else
+                    _binaryWriter.Write(version);
                 _shortBlockFlagsStack.Push(true);
             }
             else
@@ -1718,7 +1723,20 @@ namespace Ssz.Utils.Serialization
         /// <returns> true if the Type is recreatable; false otherwise. </returns>
         private static bool IsOwnedDataSerializableAndRecreatable(Type type)
         {
+#if DEBUG && EXTDEBUG
+            Console.WriteLine("IsOwnedDataSerializableAndRecreatable");
+            var s = (!type.IsValueType) ? "not" : "";
+            Console.WriteLine($"The type {type} is {s} ValueType");
+            s = typeof(IOwnedDataSerializable).IsAssignableFrom(type) ? "True" : "False";
+            Console.WriteLine($"typeof(IOwnedDataSerializable).IsAssignableFrom({type}) is {s}.");
+#endif
             if (type.IsValueType) return typeof (IOwnedDataSerializable).IsAssignableFrom(type);
+#if DEBUG && EXTDEBUG            
+            // !!! Reflection requared!
+            s = type.GetConstructor(Type.EmptyTypes) is not null ? "Constructor found." : "";
+
+            Console.WriteLine($"type.GetConstructor(Type.EmptyTypes) {s}");
+#endif
             return typeof (IOwnedDataSerializable).IsAssignableFrom(type) &&
                    type.GetConstructor(Type.EmptyTypes) is not null;
         }
