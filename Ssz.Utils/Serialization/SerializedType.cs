@@ -152,10 +152,10 @@
         Reserved11,
         Reserved10,
         Reserved9,
-        Reserved8,
+        ShortBlockBeginWithVersion,
         BlockBegin,
         BlockBeginWithVersion,
-        BlockBegin_Obsolete,
+        ShortBlockBegin,
         OptimizedStringType, // String in strings dictionary
         StringDirect, // String type
         BlockBeginWithVersion_Obsolete, // Identifies block begin

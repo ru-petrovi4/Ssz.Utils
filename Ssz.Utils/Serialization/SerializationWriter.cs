@@ -94,7 +94,6 @@ namespace Ssz.Utils.Serialization
                     _baseStream.Seek(streamEndPosition, SeekOrigin.Begin);
                 }
             }
-
             Disposed = true;
         }
 
@@ -157,27 +156,24 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
-        ///     Begins short Block        
+        ///     Begins short Block.  Allways use optimaized storage for versin value
         /// </summary>
         /// <param name="version"></param>
         public void BeginShortBlock(int version = -1)
         {
             if (version >= 0)
             {
-                WriteSerializedType(SerializedType.BlockBeginWithVersion_Obsolete);
+                WriteSerializedType(SerializedType.ShortBlockBeginWithVersion);
                 // it will store the block length
                 _binaryWriter.Write((int)0);
                 // Store the begin position of the block
                 _blockBeginPositionsStack.Push(_baseStream.Position);
-                if (_optimizeSize)
-                    _binaryWriter.Write7BitEncodedInt(version);
-                else
-                    _binaryWriter.Write(version);
+                _binaryWriter.Write7BitEncodedInt(version);
                 _shortBlockFlagsStack.Push(true);
             }
             else
             {
-                WriteSerializedType(SerializedType.BlockBegin_Obsolete);
+                WriteSerializedType(SerializedType.ShortBlockBegin);
                 // it will store the block length
                 _binaryWriter.Write((int)0);
                 // Store the begin position of the block
@@ -1367,6 +1363,113 @@ namespace Ssz.Utils.Serialization
         {
             target.SerializeOwnedData(this, context);
         }
+
+        /// <summary>
+        ///     Use ReadOwnedDataSerializable( Func<int,IOwnedDateSerializable?>, object?) for read.
+        ///     Allows any object supply serialization typeId and implementing IOwnedDataSerializable to serialize itself
+        ///     into this SerializationWriter.
+        ///     A context may also be used to give the object an indication of what data
+        ///     to store.        
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="typeId"></param>
+        /// <param name="context"></param>
+        public void WriteOwnedDataSerializable(IOwnedDataSerializable? target, int typeId, object? context)
+        {
+            if (target != null)
+            {
+                WriteSerializedType(SerializedType.OptimizedInt32Type);  // type code type )
+                WriteOptimized(typeId);                                  // type Id
+                target.SerializeOwnedData(this, context);
+            }
+            else
+                WriteSerializedType(SerializedType.NullType); 
+        }
+
+        /// <summary>
+        ///     Use ReadOwnedDataSerializable( Func<string,IOwnedDateSerializable?>, object?) for read.
+        ///     Allows any object supply serialization typeStringId and implementing IOwnedDataSerializable to serialize itself
+        ///     into this SerializationWriter.
+        ///     A context may also be used to give the object an indication of what data
+        ///     to store.        
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="typeStringId"></param>
+        /// <param name="context"></param>
+        /// <exception cref="ArgumentException"></exception>
+        public void WriteOwnedDataSerializable(IOwnedDataSerializable? target, string typeStringId, object? context)
+        {
+            if (target != null )
+            {
+                if (!string.IsNullOrEmpty(typeStringId))
+                {
+                    Write(typeStringId);                                  // type Id
+                    target.SerializeOwnedData(this, context);
+                }
+                else
+                    throw new ArgumentException($"Parameter typeStringId has invalid value for object {target.GetType().Name}");
+            }
+            else
+                WriteSerializedType(SerializedType.NullType);
+        }
+
+        /// <summary>
+        ///     Use ReadOwnedDataSerializable( Func<Guid,IOwnedDateSerializable?>, object?) for read.
+        ///     Allows any object supply serialization Guid and implementing IOwnedDataSerializable to serialize itself
+        ///     into this SerializationWriter.
+        ///     A context may also be used to give the object an indication of what data
+        ///     to store.        
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="typeGuidId"></param>
+        /// <param name="context"></param>
+        /// <exception cref="ArgumentException"></exception>
+        public void WriteOwnedDataSerializable(IOwnedDataSerializable? target, Guid typeGuidId, object? context)
+        {
+            if (target != null)
+            {
+                if (typeGuidId != Guid.Empty)
+                {
+                    WriteSerializedType(SerializedType.GuidType);           // type code type )
+                    Write(typeGuidId);                                      // type Id
+                    target.SerializeOwnedData(this, context);
+                }
+                else
+                    throw new ArgumentException($"Parameter typeGuidId has invalid value for object {target.GetType().Name}");
+            }
+            else
+                WriteSerializedType(SerializedType.NullType);
+        }
+
+        /// <summary>
+        ///     Use ReadOwnedDataSerializable( Func<Type,IOwnedDateSerializable?>, object?) for read.
+        ///     Allows any object supply serialization Guid and implementing IOwnedDataSerializable to serialize itself
+        ///     into this SerializationWriter.
+        ///     A context may also be used to give the object an indication of what data
+        ///     to store.        
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="context"></param>
+        /// <exception cref="ArgumentException"></exception>
+        public void WriteOwnedDataSerializableWithType(IOwnedDataSerializable? target, object? context)
+        {
+            if (target != null)
+            {
+                var type = target.GetType();
+                if (type != null)
+                {
+                    WriteSerializedType(SerializedType.TypeType);               // type code type )
+                    WriteOptimized(type);                                       // type 
+                    target.SerializeOwnedData(this, context);
+                }
+                else
+                    throw new ArgumentException($"Fail to obtain type information for parameter target for serializing");
+            }
+            else
+                WriteSerializedType(SerializedType.NullType);
+        }
+
+
 
         /// <summary>
         ///     Use ReadOwnedDataSerializableAndRecreatable(...) for read.
