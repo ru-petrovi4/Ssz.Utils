@@ -34,7 +34,6 @@ namespace Ssz.Dcs.CentralServer.Common
             return dsFilesStoreDirectoryName.Substring(1, dsFilesStoreDirectoryName.Length - 2);
         }
 
-
         public static int GetDsFilesStoreDirectoryFilesCount(DsFilesStoreDirectory? dsFilesStoreDirectory)
         {
             if (dsFilesStoreDirectory is null) return 0;
@@ -174,7 +173,7 @@ namespace Ssz.Dcs.CentralServer.Common
 
             bool found = false;
             DsFilesStoreFile? dsFilesStoreFile = null;
-            var parts = relativeToDirectoryPath.Split('\\', StringSplitOptions.RemoveEmptyEntries);
+            var parts = relativeToDirectoryPath.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < parts.Length; i++)
             {
                 var p = parts[i];
@@ -231,7 +230,7 @@ namespace Ssz.Dcs.CentralServer.Common
                     if (pathRelativeToRootDirectory == @"")
                         childPathRelativeToRootDirectory = childDirectoryInfo.Name;
                     else
-                        childPathRelativeToRootDirectory = pathRelativeToRootDirectory + @"\" + childDirectoryInfo.Name;
+                        childPathRelativeToRootDirectory = Path.Combine(pathRelativeToRootDirectory, childDirectoryInfo.Name);
                     dsFilesStoreDirectory.ChildDsFilesStoreDirectoriesCollection.Add(CreateDsFilesStoreDirectoryObjectInternal(childDirectoryInfo, childPathRelativeToRootDirectory,
                         filesAndDirectoriesIncludeLevel));
                 }
@@ -240,7 +239,7 @@ namespace Ssz.Dcs.CentralServer.Common
                 {
                     var dsFileInfo = new DsFilesStoreFile();
                     dsFileInfo.Name = fileInfo.Name;
-                    dsFileInfo.LastWriteTimeUtc = fileInfo.LastWriteTimeUtc;
+                    dsFileInfo.LastModified = fileInfo.LastWriteTimeUtc;
                     dsFilesStoreDirectory.DsFilesStoreFilesCollection.Add(dsFileInfo);
                 }
             }

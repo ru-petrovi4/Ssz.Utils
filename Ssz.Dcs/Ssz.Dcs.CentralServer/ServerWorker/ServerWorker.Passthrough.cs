@@ -282,16 +282,16 @@ namespace Ssz.Dcs.CentralServer
         /// <summary>
         ///     pathRelativeToRootCollection paths relative to the root of the Files Store.
         /// </summary>
-        /// <param name="pathRelativeToRootDirectoryCollection"></param>
+        /// <param name="invariantPathRelativeToRootDirectoryCollection"></param>
         /// <param name="returnData"></param>
         /// <returns></returns>
-        private void LoadFilesPassthrough(string pathRelativeToRootDirectoryCollection, out byte[] returnData)
+        private void LoadFilesPassthrough(string invariantPathRelativeToRootDirectoryCollection, out byte[] returnData)
         {
             var reply = new LoadFilesReply();
-            foreach (var pathRelativeToRootDirectoryNullable in CsvHelper.ParseCsvLine(",", pathRelativeToRootDirectoryCollection))
+            foreach (var invariantPathRelativeToRootDirectoryNullable in CsvHelper.ParseCsvLine(",", invariantPathRelativeToRootDirectoryCollection))
             {
-                var pathRelativeToRootDirectory = pathRelativeToRootDirectoryNullable ?? @"";
-                var fileInfo = new FileInfo(Path.Combine(FilesStoreDirectoryInfo.FullName, pathRelativeToRootDirectory));
+                var invariantPathRelativeToRootDirectory = invariantPathRelativeToRootDirectoryNullable ?? @"";
+                var fileInfo = new FileInfo(Path.Combine(FilesStoreDirectoryInfo.FullName, invariantPathRelativeToRootDirectory.Replace('/', Path.DirectorySeparatorChar)));
 
                 if (!FileSystemHelper.IsSubPathOf(fileInfo.Directory!.FullName, FilesStoreDirectoryInfo.FullName))
                     throw new Exception("Access to file destination denied.");
@@ -301,8 +301,8 @@ namespace Ssz.Dcs.CentralServer
                     reply.DsFilesStoreFileDatasCollection.Add(
                         new DsFilesStoreFileData
                         {
-                            PathRelativeToRootDirectory = pathRelativeToRootDirectory,
-                            LastWriteTimeUtc = fileInfo.LastWriteTimeUtc,
+                            InvariantPathRelativeToRootDirectory = invariantPathRelativeToRootDirectory,
+                            LastModified = fileInfo.LastWriteTimeUtc,
                             FileData = File.ReadAllBytes(fileInfo.FullName)
                         });
                 }
@@ -343,7 +343,7 @@ namespace Ssz.Dcs.CentralServer
                     //     Asynchronously creates a new file, writes the specified byte array to the file,
                     //     and then closes the file. If the target file already exists, it is overwritten.
                     await File.WriteAllBytesAsync(fileFullName, dsFilesStoreFileData.FileData);
-                    File.SetLastWriteTimeUtc(fileFullName, dsFilesStoreFileData.LastWriteTimeUtc);
+                    File.SetLastWriteTimeUtc(fileFullName, dsFilesStoreFileData.LastModified.UtcDateTime);
                 }
 
                 serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
@@ -376,7 +376,7 @@ namespace Ssz.Dcs.CentralServer
                 var request = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend.Span));
                 foreach (int index in Enumerable.Range(0, request.Length))
                 {
-                    string fileFullName = Path.Combine(FilesStoreDirectoryInfo.FullName, request[index] ?? @"");
+                    string fileFullName = Path.Combine(FilesStoreDirectoryInfo.FullName, (request[index] ?? @"").Replace('/', Path.DirectorySeparatorChar));
                     try
                     {
                         // If the file to be deleted does not exist, no exception is thrown.
@@ -419,8 +419,8 @@ namespace Ssz.Dcs.CentralServer
                 var request = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend.Span));                
                 foreach (int index in Enumerable.Range(0, request.Length / 2))
                 {
-                    string sourceFileFullName = Path.Combine(FilesStoreDirectoryInfo.FullName, request[2 * index] ?? @"");
-                    string destFileFullName = Path.Combine(FilesStoreDirectoryInfo.FullName, request[2 * index + 1] ?? @"");
+                    string sourceFileFullName = Path.Combine(FilesStoreDirectoryInfo.FullName, (request[2 * index] ?? @"").Replace('/', Path.DirectorySeparatorChar));
+                    string destFileFullName = Path.Combine(FilesStoreDirectoryInfo.FullName, (request[2 * index + 1] ?? @"").Replace('/', Path.DirectorySeparatorChar));
                     File.Move(sourceFileFullName, destFileFullName, true);
                 }
 

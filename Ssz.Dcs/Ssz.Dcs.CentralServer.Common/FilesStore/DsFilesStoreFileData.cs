@@ -14,18 +14,31 @@ namespace Ssz.Dcs.CentralServer.Common
 
         /// <summary>        
         /// </summary>
-        public string Name => PathRelativeToRootDirectory.Substring(PathRelativeToRootDirectory.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+        public string Name => InvariantPathRelativeToRootDirectory.Substring(InvariantPathRelativeToRootDirectory.LastIndexOf('/') + 1);
 
-        /// <summary>        
+        /// <summary>  
+        ///     !!! Warning: always '/' as path separator !!!
         ///     Path relative to the root of the Files Store.
-        ///     No '\' at the begin, no '\' at the end.        
+        ///     No '/' at the begin, no '/' at the end.        
         /// </summary>
-        public string PathRelativeToRootDirectory { get; set; } = @"";
+        public string InvariantPathRelativeToRootDirectory { get; set; } = @"";
+        
+        public string PathRelativeToRootDirectory
+        {
+            get
+            {
+                return InvariantPathRelativeToRootDirectory.Replace('/', Path.DirectorySeparatorChar);
+            }
+            set
+            {
+                InvariantPathRelativeToRootDirectory = value.Replace(Path.DirectorySeparatorChar, '/');
+            }
+        }
 
         /// <summary>
         ///     FileInfo.LastWriteTimeUtc
         /// </summary>
-        public DateTime LastWriteTimeUtc { get; set; } = DateTime.MinValue;
+        public DateTimeOffset LastModified { get; set; }
 
         /// <summary>
         ///     File content.
@@ -39,8 +52,8 @@ namespace Ssz.Dcs.CentralServer.Common
         /// <param name="context"></param>
         public void SerializeOwnedData(SerializationWriter writer, object? context)
         {
-            writer.Write(PathRelativeToRootDirectory);
-            writer.Write(LastWriteTimeUtc);
+            writer.Write(InvariantPathRelativeToRootDirectory);
+            writer.Write(LastModified);
             writer.WriteArray(FileData);
         }
 
@@ -51,8 +64,8 @@ namespace Ssz.Dcs.CentralServer.Common
         /// <param name="context"></param>
         public void DeserializeOwnedData(SerializationReader reader, object? context)
         {
-            PathRelativeToRootDirectory = reader.ReadString();
-            LastWriteTimeUtc = reader.ReadDateTime();
+            InvariantPathRelativeToRootDirectory = reader.ReadString();
+            LastModified = reader.ReadDateTimeOffset();
             FileData = reader.ReadByteArray();
         }
 

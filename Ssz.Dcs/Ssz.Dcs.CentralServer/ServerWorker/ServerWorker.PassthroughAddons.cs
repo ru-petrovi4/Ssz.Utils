@@ -151,11 +151,11 @@ namespace Ssz.Dcs.CentralServer
             }
             else
             {                
-                string? pathRelativeToRootDirectory = Encoding.UTF8.GetString(dataToSend.Span);
+                string? invariantPathRelativeToRootDirectory = Encoding.UTF8.GetString(dataToSend.Span);
                           
                 if (String.IsNullOrEmpty(recipientPath))
                 {
-                    configurationFiles = _addonsManager.ReadConfiguration(pathRelativeToRootDirectory);
+                    configurationFiles = _addonsManager.ReadConfiguration(invariantPathRelativeToRootDirectory);
                     foreach (var configurationFile in configurationFiles.ConfigurationFilesCollection)
                     {
                         configurationFile.SourcePath = @"";
@@ -189,7 +189,7 @@ namespace Ssz.Dcs.CentralServer
                     if (engineSession is not null)
                     {
                         var task = engineSession.DataAccessProvider.PassthroughAsync(remainingSourcePath, PassthroughConstants.ReadConfiguration,
-                            Encoding.UTF8.GetBytes(pathRelativeToRootDirectory));
+                            Encoding.UTF8.GetBytes(invariantPathRelativeToRootDirectory));
 
                         try
                         {

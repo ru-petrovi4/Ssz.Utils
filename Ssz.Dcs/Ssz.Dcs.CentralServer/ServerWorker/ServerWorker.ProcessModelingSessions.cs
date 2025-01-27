@@ -356,7 +356,7 @@ namespace Ssz.Dcs.CentralServer
                 {
                     // Only update Instructor.Data directory.
                     Generate_DownloadChangedFiles_SystemEvent(processModelingSession.InitiatorClientWorkstationName, jobId,
-                        Path.Combine(processModelDsFilesStoreDirectory.PathRelativeToRootDirectory, DsFilesStoreConstants.InstructorDataDirectoryName),
+                        processModelDsFilesStoreDirectory.InvariantPathRelativeToRootDirectory + "/" + DsFilesStoreConstants.InstructorDataDirectoryName,
                         true);
                 }
 
@@ -475,7 +475,7 @@ namespace Ssz.Dcs.CentralServer
         private string ProcessModelingSession_DownloadChangedFiles_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
         {
             string?[] csvLine = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend.Span));
-            string directoryPathsRelativeToRootDirectory = CsvHelper.FormatForCsv(@",", csvLine.Skip(1));            
+            string invariantDirectoryPathsRelativeToRootDirectory = CsvHelper.FormatForCsv(@",", csvLine.Skip(1));            
             ProcessModelingSession processModelingSession = GetProcessModelingSession(csvLine[0]);
 
             string jobId = Guid.NewGuid().ToString();
@@ -487,7 +487,7 @@ namespace Ssz.Dcs.CentralServer
             jobProgress.ProgressSubscribers.Add(serverContext);
             _jobProgressesCollection.Add(jobId, jobProgress);
 
-            Generate_DownloadChangedFiles_SystemEvent(processModelingSession.InitiatorClientWorkstationName, jobId, directoryPathsRelativeToRootDirectory, false);
+            Generate_DownloadChangedFiles_SystemEvent(processModelingSession.InitiatorClientWorkstationName, jobId, invariantDirectoryPathsRelativeToRootDirectory, false);
 
             return jobId;
         }
@@ -495,7 +495,7 @@ namespace Ssz.Dcs.CentralServer
         private string ProcessModelingSession_UploadChangedFiles_LongrunningPassthrough(ServerContext serverContext, ReadOnlyMemory<byte> dataToSend)
         {
             string?[] csvLine = CsvHelper.ParseCsvLine(@",", Encoding.UTF8.GetString(dataToSend.Span));
-            string directoryPathsRelativeToRootDirectory = CsvHelper.FormatForCsv(@",", csvLine.Skip(1));
+            string invariantDirectoryPathsRelativeToRootDirectory = CsvHelper.FormatForCsv(@",", csvLine.Skip(1));
             ProcessModelingSession processModelingSession = GetProcessModelingSession(csvLine[0]);
 
             string jobId = Guid.NewGuid().ToString();
@@ -507,7 +507,7 @@ namespace Ssz.Dcs.CentralServer
             jobProgress.ProgressSubscribers.Add(serverContext);
             _jobProgressesCollection.Add(jobId, jobProgress);
 
-            Generate_UploadChangedFiles_SystemEvent(processModelingSession.InitiatorClientWorkstationName, jobId, directoryPathsRelativeToRootDirectory);
+            Generate_UploadChangedFiles_SystemEvent(processModelingSession.InitiatorClientWorkstationName, jobId, invariantDirectoryPathsRelativeToRootDirectory);
 
             return jobId;
         }        

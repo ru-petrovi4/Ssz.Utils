@@ -1,3 +1,4 @@
+using Microsoft.Extensions.FileProviders;
 using Ssz.Utils.Serialization;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace Ssz.Dcs.CentralServer.Common
         /// <summary>
         ///     FileInfo.LastWriteTimeUtc
         /// </summary>
-        public DateTime LastWriteTimeUtc { get; set; } = DateTime.MinValue;
+        public DateTimeOffset LastModified { get; set; }
 
         /// <summary>
         /// 
@@ -26,7 +27,7 @@ namespace Ssz.Dcs.CentralServer.Common
         public void SerializeOwnedData(SerializationWriter writer, object? context)
         {
             writer.Write(Name);
-            writer.Write(LastWriteTimeUtc);
+            writer.Write(LastModified);
         }
 
         /// <summary>
@@ -37,7 +38,7 @@ namespace Ssz.Dcs.CentralServer.Common
         public void DeserializeOwnedData(SerializationReader reader, object? context)
         {
             Name = reader.ReadString();
-            LastWriteTimeUtc = reader.ReadDateTime();
+            LastModified = reader.ReadDateTimeOffset();
         }
 
         #endregion

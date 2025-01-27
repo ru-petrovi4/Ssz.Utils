@@ -214,7 +214,7 @@ namespace Ssz.Dcs.CentralServer
         private void Generate_DownloadChangedFiles_SystemEvent(
             string targetWorkstationName,
             string jobId,
-            string directoryPathsRelativeToRootDirectory,
+            string invariantDirectoryPathsRelativeToRootDirectory,
             bool includeSubdirectories)
         {
             Action<string?, Ssz.Utils.DataAccess.EventMessage>? utilityEventMessageNotification = UtilityEventMessageNotification;
@@ -229,7 +229,7 @@ namespace Ssz.Dcs.CentralServer
             eventMessage.OccurrenceTimeUtc = DateTime.UtcNow;
             eventMessage.TextMessage = CsvHelper.FormatForCsv(",", new object?[] {
                 jobId,
-                directoryPathsRelativeToRootDirectory,
+                invariantDirectoryPathsRelativeToRootDirectory,
                 includeSubdirectories
             });
 
@@ -239,7 +239,7 @@ namespace Ssz.Dcs.CentralServer
         private void Generate_UploadChangedFiles_SystemEvent(            
             string targetWorkstationName,
             string jobId,
-            string directoryPathsRelativeToRootDirectory)
+            string invariantDirectoryPathsRelativeToRootDirectory)
         {
             Action<string?, Ssz.Utils.DataAccess.EventMessage>? utilityEventMessageNotification = UtilityEventMessageNotification;
             if (utilityEventMessageNotification is null) return;
@@ -253,7 +253,7 @@ namespace Ssz.Dcs.CentralServer
             eventMessage.OccurrenceTimeUtc = DateTime.UtcNow;
             eventMessage.TextMessage = CsvHelper.FormatForCsv(",", new object?[] {
                 jobId,
-                directoryPathsRelativeToRootDirectory });
+                invariantDirectoryPathsRelativeToRootDirectory });
 
             utilityEventMessageNotification(targetWorkstationName, eventMessage);
         }

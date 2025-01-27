@@ -84,7 +84,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     if (overwriteNewerFiles)
                     {
                         if (serverDsFilesStoreFile.Name != existingFileInfo.Name || // Strict comparison
-                            !FileSystemHelper.FileSystemTimeIsEquals(existingFileInfo.LastWriteTimeUtc, serverDsFilesStoreFile.LastWriteTimeUtc))
+                            !FileSystemHelper.FileSystemTimeIsEquals(existingFileInfo.LastWriteTimeUtc, serverDsFilesStoreFile.LastModified.UtcDateTime))
                         {
                             try
                             {
@@ -100,7 +100,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     else
                     {
                         if (serverDsFilesStoreFile.Name != existingFileInfo.Name || // Strict comparison
-                            FileSystemHelper.FileSystemTimeIsLess(existingFileInfo.LastWriteTimeUtc, serverDsFilesStoreFile.LastWriteTimeUtc))
+                            FileSystemHelper.FileSystemTimeIsLess(existingFileInfo.LastWriteTimeUtc, serverDsFilesStoreFile.LastModified.UtcDateTime))
                         {
                             try
                             {
@@ -122,7 +122,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 
                 if (dowload)
                 {
-                    await DownloadFilesAsync(new List<string> { Path.Combine(serverDsFilesStoreDirectory.PathRelativeToRootDirectory, serverDsFilesStoreFile.Name) }, utilityDataAccessProvider);
+                    await DownloadFilesAsync(new List<string> { serverDsFilesStoreDirectory.InvariantPathRelativeToRootDirectory + "/" + serverDsFilesStoreFile.Name }, utilityDataAccessProvider);
                 }
             }
             
@@ -199,7 +199,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
             var request = new GetDirectoryInfoRequest
             {
-                PathRelativeToRootDirectory = dsFilesStoreDirectory.PathRelativeToRootDirectory,
+                InvariantPathRelativeToRootDirectory = dsFilesStoreDirectory.InvariantPathRelativeToRootDirectory,
                 FilesAndDirectoriesIncludeLevel = 1
             };
             var returnData = await utilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
@@ -225,7 +225,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 if (existingServerDsFilesStoreFile is not null)
                 {
                     if (dsFilesStoreFile.Name != existingServerDsFilesStoreFile.Name || // Strict comparison
-                        FileSystemHelper.FileSystemTimeIsLess(existingServerDsFilesStoreFile.LastWriteTimeUtc, dsFilesStoreFile.LastWriteTimeUtc))
+                        FileSystemHelper.FileSystemTimeIsLess(existingServerDsFilesStoreFile.LastModified.UtcDateTime, dsFilesStoreFile.LastModified.UtcDateTime))
                     {
                         upload = true;                        
                     }
@@ -259,8 +259,8 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     {
                         var dsFilesStoreFileData = new DsFilesStoreFileData
                         {
-                            PathRelativeToRootDirectory = dsFilesStoreDirectory.PathRelativeToRootDirectory + Path.DirectorySeparatorChar + dsFilesStoreFile.Name,
-                            LastWriteTimeUtc = File.GetLastWriteTimeUtc(fileFullName), // Request LastWriteTimeUtc again, because it can change
+                            InvariantPathRelativeToRootDirectory = dsFilesStoreDirectory.InvariantPathRelativeToRootDirectory + "/" + dsFilesStoreFile.Name,
+                            LastModified = File.GetLastWriteTimeUtc(fileFullName), // Request LastWriteTimeUtc again, because it can change
                             FileData = bytes
                         };
 
@@ -291,9 +291,9 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             //}            
         }
 
-        private async Task DownloadFilesAsync(List<string> filePathRelativeToRootDirectoryCollection, IDataAccessProvider utilityDataAccessProvider)
+        private async Task DownloadFilesAsync(List<string> invariantFilePathRelativeToRootDirectoryCollection, IDataAccessProvider utilityDataAccessProvider)
         {   
-            var returnData = await utilityDataAccessProvider.PassthroughAsync("", PassthroughConstants.LoadFiles, Encoding.UTF8.GetBytes(CsvHelper.FormatForCsv(@",", filePathRelativeToRootDirectoryCollection)));
+            var returnData = await utilityDataAccessProvider.PassthroughAsync("", PassthroughConstants.LoadFiles, Encoding.UTF8.GetBytes(CsvHelper.FormatForCsv(@",", invariantFilePathRelativeToRootDirectoryCollection)));
             var reply = SerializationHelper.CreateFromOwnedData(returnData, () => new LoadFilesReply());
             if (reply is not null)
             {
@@ -311,7 +311,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 try
                 {
                     await File.WriteAllBytesAsync(fileFullName, dsFilesStoreFileData.FileData);
-                    File.SetLastWriteTimeUtc(fileFullName, dsFilesStoreFileData.LastWriteTimeUtc);
+                    File.SetLastWriteTimeUtc(fileFullName, dsFilesStoreFileData.LastModified.UtcDateTime);
                 }
                 catch (Exception ex)                
                 {
@@ -393,7 +393,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             {
                 var request = new GetDirectoryInfoRequest
                 {
-                    PathRelativeToRootDirectory = @"",
+                    InvariantPathRelativeToRootDirectory = @"",
                     FilesAndDirectoriesIncludeLevel = 1
                 };
                 var returnData = await utilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
@@ -408,7 +408,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
                 request = new GetDirectoryInfoRequest
                 {
-                    PathRelativeToRootDirectory = processModelName,
+                    InvariantPathRelativeToRootDirectory = processModelName,
                     FilesAndDirectoriesIncludeLevel = Int32.MaxValue
                 };
                 returnData = await utilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
@@ -434,11 +434,11 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     Logger.LogError("No Server Bin Directory; ProcessModelName=" + processModelName + "; DirectoryType=" + binDsFilesStoreDirectoryType);
                     return null;
                 }
-                if (!serverBinDsFilesStoreDirectory.PathRelativeToRootDirectory.Contains(@"\")) // if in root directory, request again with more deep include level.
+                if (!serverBinDsFilesStoreDirectory.InvariantPathRelativeToRootDirectory.Contains(@"/")) // if in root directory, request again with more deep include level.
                 {
                     request = new GetDirectoryInfoRequest
                     {
-                        PathRelativeToRootDirectory = serverBinDsFilesStoreDirectory.PathRelativeToRootDirectory,
+                        InvariantPathRelativeToRootDirectory = serverBinDsFilesStoreDirectory.InvariantPathRelativeToRootDirectory,
                         FilesAndDirectoriesIncludeLevel = Int32.MaxValue
                     };
                     returnData = await utilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
@@ -488,8 +488,8 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 //        DeleteFilesStoreDirectory(existingDataOrChildDsFilesStoreDirectory.PathRelativeToRoot);
                 //    }
                 //}
-                if (existingBinDsFilesStoreDirectory is not null && existingBinDsFilesStoreDirectory.PathRelativeToRootDirectory.Count(c => c == '\\') > 0 &&
-                    !String.Equals(existingBinDsFilesStoreDirectory.PathRelativeToRootDirectory, serverBinDsFilesStoreDirectory.PathRelativeToRootDirectory))
+                if (existingBinDsFilesStoreDirectory is not null && existingBinDsFilesStoreDirectory.InvariantPathRelativeToRootDirectory.Count(c => c == '/') > 0 &&
+                    !String.Equals(existingBinDsFilesStoreDirectory.InvariantPathRelativeToRootDirectory, serverBinDsFilesStoreDirectory.InvariantPathRelativeToRootDirectory))
                 {
                     var directoryInfo = new DirectoryInfo(Path.Combine(FilesStoreDirectoryInfo.FullName, existingBinDsFilesStoreDirectory.PathRelativeToRootDirectory));
                     if (directoryInfo.Exists)
@@ -556,7 +556,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             {
                 var request = new GetDirectoryInfoRequest
                 {
-                    PathRelativeToRootDirectory = Path.Combine(processModelName, DsFilesStoreConstants.SavesDirectoryNameUpper),
+                    InvariantPathRelativeToRootDirectory = Path.Combine(processModelName, DsFilesStoreConstants.SavesDirectoryNameUpper),
                     FilesAndDirectoriesIncludeLevel = Int32.MaxValue
                 };
                 var returnData = await utilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
@@ -574,7 +574,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             {
                 var request = new GetDirectoryInfoRequest
                 {
-                    PathRelativeToRootDirectory = Path.Combine(processModelName, DsFilesStoreConstants.SavesDirectoryNameUpper),
+                    InvariantPathRelativeToRootDirectory = Path.Combine(processModelName, DsFilesStoreConstants.SavesDirectoryNameUpper),
                     FilesAndDirectoriesIncludeLevel = 1
                 };
                 var returnData = await utilityDataAccessProvider.PassthroughAsync(@"", PassthroughConstants.GetDirectoryInfo,
@@ -588,7 +588,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
                 request = new GetDirectoryInfoRequest
                 {
-                    PathRelativeToRootDirectory = Path.Combine(processModelName, DsFilesStoreConstants.SavesDirectoryNameUpper,
+                    InvariantPathRelativeToRootDirectory = Path.Combine(processModelName, DsFilesStoreConstants.SavesDirectoryNameUpper,
                         DsFilesStoreHelper.GetDsFilesStoreDirectoryName(userName)),
                     FilesAndDirectoriesIncludeLevel = Int32.MaxValue
                 };
