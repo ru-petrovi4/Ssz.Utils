@@ -83,10 +83,10 @@ namespace Ssz.Dcs.CentralServer
                 });
         }
 
-        public override async Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
+        public override async Task<int> DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) 
-                return;
+                return 0;
 
             foreach (IWorkDoer workDoer in _addonsManager.AddonsThreadSafe.OfType<IWorkDoer>().ToArray())
             {
@@ -96,11 +96,11 @@ namespace Ssz.Dcs.CentralServer
             Cleanup(nowUtc, cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) 
-                return;
+                return 0;
 
             DoWorkUtilityItems(nowUtc, cancellationToken);
 
-            await base.DoWorkAsync(nowUtc, cancellationToken);
+            return await base.DoWorkAsync(nowUtc, cancellationToken);
         }
 
         public override async Task CloseAsync()

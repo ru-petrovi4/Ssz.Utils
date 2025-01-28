@@ -67,20 +67,21 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="nowUtc"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public virtual async Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
+        public virtual async Task<int> DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) 
-                return;
+                return 0;
 
-            await ThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
+            int result = await ThreadSafeDispatcher.InvokeActionsInQueueAsync(cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) 
-                return;
+                return 0;
             
             foreach (ServerContext serverContext in _serverContextsDictionary.Values.ToArray())
             {
                 if (cancellationToken.IsCancellationRequested) 
-                    return;                
+                    return result; 
+                
                 if (nowUtc - serverContext.LastAccessDateTimeUtc > TimeSpan.FromMilliseconds(serverContext.ContextTimeoutMs))
                 {
                     // Expired
@@ -94,6 +95,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     serverContext.DoWork(nowUtc, cancellationToken);
                 }
             }
+
+            return result;
         }
 
         public virtual async Task CloseAsync()

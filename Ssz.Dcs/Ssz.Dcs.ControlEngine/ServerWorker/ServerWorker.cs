@@ -38,17 +38,17 @@ namespace Ssz.Dcs.ControlEngine
 
         public DsDevice? Device { get; set; }
 
-        public override async Task DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
+        public override async Task<int> DoWorkAsync(DateTime nowUtc, CancellationToken cancellationToken)
         {
             if (cancellationToken.IsCancellationRequested) 
-                return;
+                return 0;
 
             if (Device is not null)
                 Device.DoWork(nowUtc, cancellationToken);
 
             DoWorkUtilityItems(nowUtc, cancellationToken);
 
-            await base.DoWorkAsync(nowUtc, cancellationToken);
+            return await base.DoWorkAsync(nowUtc, cancellationToken);
         }
 
         #endregion        
