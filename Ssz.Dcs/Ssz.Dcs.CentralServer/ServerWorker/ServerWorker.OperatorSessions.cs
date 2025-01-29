@@ -184,25 +184,21 @@ namespace Ssz.Dcs.CentralServer
             if (!String.Equals(systemNameToConnect, DataAccessConstants.Dcs_SystemName, StringComparison.InvariantCultureIgnoreCase))
             {            
                 ProcessModelingSession? processModelingSession = GetProcessModelingSessionOrNull(systemNameToConnect);
-                if (added)
+                if (processModelingSession is not null)
                 {
-                    if (processModelingSession is null)
+                    if (added)
                     {
-                        throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid processModelingSessionId: " + systemNameToConnect));
+                        if (processServerContext.ClientApplicationName == DataAccessConstants.Instructor_ClientApplicationName &&
+                                processModelingSession.ProcessServerContextsCollection.Count(sc =>
+                                    String.Equals(sc.ClientApplicationName, DataAccessConstants.Instructor_ClientApplicationName, StringComparison.InvariantCultureIgnoreCase)
+                                    ) == 0)
+                        {
+                            processModelingSession.ForTimeout_LastDateTimeUtc = null; // Reset timeout, instruxtor connected.
+                            processModelingSession.ProcessModelingSessionStatus = ProcessModelingSessionConstants.InstructorConnected;
+                        }
+                        processModelingSession.ProcessServerContextsCollection.Add(processServerContext);
                     }
-                    if (processServerContext.ClientApplicationName == DataAccessConstants.Instructor_ClientApplicationName &&
-                        processModelingSession.ProcessServerContextsCollection.Count(sc =>
-                            String.Equals(sc.ClientApplicationName, DataAccessConstants.Instructor_ClientApplicationName, StringComparison.InvariantCultureIgnoreCase) 
-                            ) == 0)
-                    {
-                        processModelingSession.ForTimeout_LastDateTimeUtc = null; // Reset timeout, instruxtor connected.
-                        processModelingSession.ProcessModelingSessionStatus = ProcessModelingSessionConstants.InstructorConnected;
-                    }
-                    processModelingSession.ProcessServerContextsCollection.Add(processServerContext);
-                }
-                else
-                {
-                    if (processModelingSession is not null)
+                    else
                     {
                         processModelingSession.ProcessServerContextsCollection.Remove(processServerContext);
                         if (processServerContext.ClientApplicationName == DataAccessConstants.Instructor_ClientApplicationName &&
@@ -214,42 +210,44 @@ namespace Ssz.Dcs.CentralServer
                             processModelingSession.ProcessModelingSessionStatus = ProcessModelingSessionConstants.InstructorDisconnected;
                         }
                     }
-                }
+                }                    
             }
 
             string? operatorSessionId = processServerContext.ContextParams.TryGetValue(@"OperatorSessionId");
-            if (String.IsNullOrEmpty(operatorSessionId)) // Context with no operatorSessionId.
-                return;
-            OperatorSession? operatorSession = OperatorSessionsCollection.TryGetValue(operatorSessionId);
-            if (operatorSession is null)
-                return;
-            if (added)
+            if (!String.IsNullOrEmpty(operatorSessionId)) // Context with operatorSessionId.
             {
-                operatorSession.OperatorSession_ProcessServerContextsCollection.Add(processServerContext);                
-                if (!operatorSession.OperatorInterfaceConnected)
+                OperatorSession? operatorSession = OperatorSessionsCollection.TryGetValue(operatorSessionId);
+                if (operatorSession is not null)
                 {
-                    operatorSession.OperatorInterfaceConnected = true;
-                    operatorSession.ForTimeout_LastDateTimeUtc = null;
-                    SetOperatorSessionStatus(operatorSession, OperatorSessionConstants.LaunchedOperator);                                                         
-                    _utilityItemsDoWorkNeeded = true;
-                }   
-            }
-            else
-            {
-                operatorSession.OperatorSession_ProcessServerContextsCollection.Remove(processServerContext);                
-                if (operatorSession.OperatorSession_ProcessServerContextsCollection.Count == 0)
-                {
-                    if (!processServerContext.IsConcludeCalled)
+                    if (added)
                     {
-                        operatorSession.ForTimeout_LastDateTimeUtc = DateTime.UtcNow;
+                        operatorSession.OperatorSession_ProcessServerContextsCollection.Add(processServerContext);
+                        if (!operatorSession.OperatorInterfaceConnected)
+                        {
+                            operatorSession.OperatorInterfaceConnected = true;
+                            operatorSession.ForTimeout_LastDateTimeUtc = null;
+                            SetOperatorSessionStatus(operatorSession, OperatorSessionConstants.LaunchedOperator);
+                            _utilityItemsDoWorkNeeded = true;
+                        }
                     }
                     else
                     {
-                        OperatorSessionsCollection.Remove(operatorSession.OperatorSessionId);
-                        SetOperatorSessionStatus(operatorSession, OperatorSessionConstants.ShutdownedOperator);
-                        _utilityItemsDoWorkNeeded = true;
-                    }                    
-                }
+                        operatorSession.OperatorSession_ProcessServerContextsCollection.Remove(processServerContext);
+                        if (operatorSession.OperatorSession_ProcessServerContextsCollection.Count == 0)
+                        {
+                            if (!processServerContext.IsConcludeCalled)
+                            {
+                                operatorSession.ForTimeout_LastDateTimeUtc = DateTime.UtcNow;
+                            }
+                            else
+                            {
+                                OperatorSessionsCollection.Remove(operatorSession.OperatorSessionId);
+                                SetOperatorSessionStatus(operatorSession, OperatorSessionConstants.ShutdownedOperator);
+                                _utilityItemsDoWorkNeeded = true;
+                            }
+                        }
+                    }
+                }                
             }
         }
 
