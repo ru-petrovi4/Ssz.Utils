@@ -2,7 +2,7 @@
   "profiles": {
     "Ssz.Operator.Play": {
       "commandName": "Project",
-      "commandLineArgs": "-p \"D:\\Projects\\Lukoil !Release LukoilBud_Polyethylene (EPKS)\\ProgramData\\FilesStore\\CDT.2024.LukoilBud_Polyethylene\\Operator.Data\\Polietilen_Interface\\Polietilen_Interface.dsProject\" -ns 1"
+      "commandLineArgs": "-p \"D:\\Projects\\Ufa !Release L35-5\\ProgramData\\FilesStore\\Simcode.2021.Ufa.L35-5\\Operator.Data\\Ufa_35-5_Interface\\Ufa_35-5_Interface.dsProject\" -ns 1"
     }
   }
 }

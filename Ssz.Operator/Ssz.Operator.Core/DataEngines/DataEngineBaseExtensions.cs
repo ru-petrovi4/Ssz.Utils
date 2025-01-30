@@ -15,26 +15,26 @@ namespace Ssz.Operator.Core.DataEngines
             {
                 result =
                     dataEngine.ModelTagPropertyInfosCollection.FirstOrDefault(
-                        pi => StringHelper.CompareIgnoreCase(pi.PropertyPath, propertyPath) &&
+                        pi => (StringHelper.CompareIgnoreCase(pi.PropertyPath, propertyPath) || StringHelper.CompareIgnoreCase(pi.PropertyPathToDisplay, propertyPath)) &&
                               string.IsNullOrEmpty(pi.TagType));
             }
             else
             {
                 result =
                     dataEngine.ModelTagPropertyInfosCollection.FirstOrDefault(
-                        pi => StringHelper.CompareIgnoreCase(pi.PropertyPath, propertyPath) &&
+                        pi => (StringHelper.CompareIgnoreCase(pi.PropertyPath, propertyPath) || StringHelper.CompareIgnoreCase(pi.PropertyPathToDisplay, propertyPath)) &&
                               StringHelper.CompareIgnoreCase(pi.TagType, tagType));
                 if (result is null)
                     result =
                         dataEngine.ModelTagPropertyInfosCollection.FirstOrDefault(
-                            pi => StringHelper.CompareIgnoreCase(pi.PropertyPath, propertyPath) &&
+                            pi => (StringHelper.CompareIgnoreCase(pi.PropertyPath, propertyPath) || StringHelper.CompareIgnoreCase(pi.PropertyPathToDisplay, propertyPath)) &&
                                   string.IsNullOrEmpty(pi.TagType));
             }
 
             if (result is null) // It is better to return any result, than null
                 result =
                     dataEngine.ModelTagPropertyInfosCollection.FirstOrDefault(
-                        pi => StringHelper.CompareIgnoreCase(pi.PropertyPath, propertyPath));
+                        pi => StringHelper.CompareIgnoreCase(pi.PropertyPath, propertyPath) || StringHelper.CompareIgnoreCase(pi.PropertyPathToDisplay, propertyPath));
 
             return result;
         }

@@ -305,6 +305,8 @@ namespace Ssz.Dcs.ControlEngine
 
         public async Task LoadStateAsync(string filePathRelativeToProcessDrectory)
         {
+            _deviceDsBlock.MODEL_TIME_MS.Value.Set(0);
+
             if (_processDirectoryInfo is null || !_processDirectoryInfo.Exists) return;
 
             var fileInfo = new FileInfo(Path.Combine(_processDirectoryInfo.FullName, filePathRelativeToProcessDrectory));
