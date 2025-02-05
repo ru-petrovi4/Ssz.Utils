@@ -10,28 +10,6 @@ namespace Ssz.Operator.Core
     [ContentProperty(@"Xaml")] // For XAML serialization. Content property must be of type object or string.
     public class DsXaml : IDsItem, ICloneable
     {
-        #region private functions
-
-        private void TryConvertAbsoluteToRelative()
-        {
-            if (_isRelativePaths) return;
-
-            string? drawingFilesDirectoryFullName = null;
-            var drawing = ParentItem.Find<DrawingBase>();
-            if (drawing is not null) drawingFilesDirectoryFullName = drawing.DrawingFilesDirectoryFullName;
-
-            var xamlWithRelativePaths = XamlHelper.GetXamlWithRelativePathsAndCopyFiles(_xaml,
-                drawingFilesDirectoryFullName);
-            if (xamlWithRelativePaths is not null)
-            {
-                _xaml = xamlWithRelativePaths;
-                _isAbsolutePaths = false;
-                _isRelativePaths = true;
-            }
-        }
-
-        #endregion
-
         #region public functions
 
         [Searchable(false)]
@@ -90,13 +68,15 @@ namespace Ssz.Operator.Core
                     _xaml = value;
                     _isAbsolutePaths = false;
                     _isRelativePaths = true;
+
+                    if (_xaml.StartsWith(XamlHelper.XamlDescBegin)) // Old version
+                        _xaml = XamlHelper.UpdateXamlVersion(_xaml, ParentItem.Find<DrawingBase>());
                 }
             }
         }
 
-
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
-        public string? XamlDesc => XamlHelper.GetXamlDesc(_xaml);
+        public string? XamlDesc => NameValueCollectionHelper.GetNameValueCollectionStringToDisplay(XamlHelper.GetXamlDesc(_xaml));
 
         [Searchable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] // For XAML serialization
@@ -158,11 +138,32 @@ namespace Ssz.Operator.Core
 
         #endregion
 
+        #region private functions
+
+        private void TryConvertAbsoluteToRelative()
+        {
+            if (_isRelativePaths) return;
+
+            string? drawingFilesDirectoryFullName = null;
+            var drawing = ParentItem.Find<DrawingBase>();
+            if (drawing is not null) drawingFilesDirectoryFullName = drawing.DrawingFilesDirectoryFullName;
+
+            var xamlWithRelativePaths = XamlHelper.GetXamlWithRelativePathsAndCopyFiles(_xaml,
+                drawingFilesDirectoryFullName);
+            if (xamlWithRelativePaths is not null)
+            {
+                _xaml = xamlWithRelativePaths;
+                _isAbsolutePaths = false;
+                _isRelativePaths = true;
+            }
+        }
+
+        #endregion
+
         #region private fields
 
         private bool _isAbsolutePaths = true;
         private bool _isRelativePaths = true;
-
 
         private string _xaml = "";
 

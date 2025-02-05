@@ -1817,7 +1817,7 @@ namespace Ssz.Utils.Serialization
                         IOwnedDataSerializable? value = Activator.CreateInstance(elementType!) as IOwnedDataSerializable;
                         if (value is null) 
                             throw new InvalidOperationException();
-                            ReadOwnedDataSerializable(value, null);
+                        ReadOwnedDataSerializable(value, null);
                         result.SetValue(value, i);
                     }
                     return result;

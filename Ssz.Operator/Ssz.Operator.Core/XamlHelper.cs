@@ -39,6 +39,7 @@ namespace Ssz.Operator.Core
         #region public functions
 
         public const string XamlDescBegin = @"<!--Desc:";
+        public const string XamlDescV2Begin = @"<!--DescV2:";
         public const string XamlDescEnd = @"-->";
 
         public static string GetXamlWithAbsolutePaths(string? xamlWithRelativePaths, string? filesDirectoryName)
@@ -216,6 +217,8 @@ namespace Ssz.Operator.Core
             {
                 var desc = GetXamlDesc(xaml);
 
+                desc["Stretch"] = new Any(stretch).ValueAsString(false);
+
                 var previewContent = Load(xaml) as UIElement;
 
                 if (previewContent is Image)
@@ -357,7 +360,12 @@ namespace Ssz.Operator.Core
                     break;
             }
 
-            return AddXamlDesc(result, fileInfo.Name);
+            return AddXamlDesc(result, 
+                new CaseInsensitiveDictionary<string?>()
+                {
+                    { @"", fileInfo.Name },
+                    { @"Stretch", new Any(stretch).ValueAsString(false) }
+                });
         }
 
         public static object? GetContentPreview(string xaml, out string contentDesc, out Stretch contentStretch)
@@ -369,7 +377,7 @@ namespace Ssz.Operator.Core
                 return null;
             }
 
-            var desc = GetXamlDesc(xaml);
+            var desc = NameValueCollectionHelper.GetNameValueCollectionStringToDisplay(GetXamlDesc(xaml));
 
             try
             {
@@ -424,7 +432,7 @@ namespace Ssz.Operator.Core
 
             if (xamlWithAbsolutePaths!.Length >= 64 * 1024)
             {
-                var desc = GetXamlDesc(xamlWithAbsolutePaths);
+                var desc = NameValueCollectionHelper.GetNameValueCollectionStringToDisplay(GetXamlDesc(xamlWithAbsolutePaths));
                 return "XAML" + (!string.IsNullOrWhiteSpace(desc) ? @": " + desc : "");
             }
 
@@ -448,17 +456,31 @@ namespace Ssz.Operator.Core
         }
 
 
-        public static string? GetXamlDesc(string xaml)
-        {
-            string? desc = null;
-            if (xaml is not null && xaml.StartsWith(XamlDescBegin))
+        public static CaseInsensitiveDictionary<string?> GetXamlDesc(string xaml)
+        {            
+            if (String.IsNullOrEmpty(xaml))
             {
+                return new CaseInsensitiveDictionary<string?>();
+            }
+            if (xaml.StartsWith(XamlDescBegin))
+            {
+                string desc = @"";
                 var i = xaml.IndexOf(XamlDescEnd);
                 var xamlDescBeginLength = XamlDescBegin.Length;
-                if (i > xamlDescBeginLength) desc = xaml.Substring(xamlDescBeginLength, i - xamlDescBeginLength);
+                if (i > xamlDescBeginLength) 
+                    desc = xaml.Substring(xamlDescBeginLength, i - xamlDescBeginLength);
+                return new CaseInsensitiveDictionary<string?> { { @"", desc } };
             }
-
-            return desc;
+            if (xaml.StartsWith(XamlDescV2Begin))
+            {
+                string desc = @"";
+                var i = xaml.IndexOf(XamlDescEnd);
+                var xamlDescV2BeginLength = XamlDescV2Begin.Length;
+                if (i > xamlDescV2BeginLength)
+                    desc = xaml.Substring(xamlDescV2BeginLength, i - xamlDescV2BeginLength);
+                return NameValueCollectionHelper.Parse(desc);
+            }
+            return new CaseInsensitiveDictionary<string?>();
         }
 
 
@@ -466,24 +488,22 @@ namespace Ssz.Operator.Core
         [return: NotNullIfNotNull("xaml")]
 #endif
         public static string? GetXamlWithoutDesc(string? xaml)
-        {
-            if (xaml is not null && xaml.StartsWith(XamlDescBegin))
+        {            
+            if (String.IsNullOrEmpty(xaml))
+                return xaml;
+            if (xaml!.StartsWith(XamlDescBegin) || xaml!.StartsWith(XamlDescV2Begin))
             {
                 var i = xaml.IndexOf(XamlDescEnd);
-                if (i != -1) return xaml.Substring(i + XamlDescEnd.Length);
-            }
-
+                if (i != -1)
+                    return xaml.Substring(i + XamlDescEnd.Length);                
+            }            
             return xaml;
         }
 
-
-        public static string AddXamlDesc(string? xamlWithNoDesc, string? desc)
-        {
-            if (string.IsNullOrWhiteSpace(xamlWithNoDesc)) return "";
-            if (string.IsNullOrWhiteSpace(desc)) return xamlWithNoDesc!;
-            return XamlDescBegin + desc + XamlDescEnd + xamlWithNoDesc;
+        public static string AddXamlDesc(string? xamlWithNoDesc, Dictionary<string, string?> nameValueCollection)
+        {            
+            return XamlDescV2Begin + NameValueCollectionHelper.GetNameValueCollectionString(nameValueCollection) + XamlDescEnd + xamlWithNoDesc;
         }
-
 
         public static byte[]? CreatePreviewImageBytes(FrameworkElement? frameworkElement, double previewWidth,
             double previewHeight)
@@ -595,7 +615,7 @@ namespace Ssz.Operator.Core
                 DsProject.LoggersSet.Logger.LogError(ex, @"");
             }
 
-            var desc = GetXamlDesc(xaml);
+            var desc = GetXamlDesc(xaml).TryGetValue(@"");
 
             var dlg2 = new SaveFileDialog
             {
@@ -723,8 +743,73 @@ namespace Ssz.Operator.Core
             });
         }
 
-        #endregion
+        public static string UpdateXamlVersion(string xaml, Drawings.DrawingBase? drawing)
+        {
+            if (!xaml.StartsWith(XamlDescBegin)) // Update is not needed
+                return xaml;
 
+            var desc = GetXamlDesc(xaml);
+            var xamlWithoutDesc = GetXamlWithoutDesc(xaml) ?? @"";
+
+            if (string.IsNullOrWhiteSpace(xamlWithoutDesc))
+                return @"";
+
+            try
+            {
+                var contentPreview = Load(xamlWithoutDesc) as UIElement;
+
+                if (contentPreview is null)
+                    return @"";
+
+                if (contentPreview is Image image)
+                {
+                    var bitmapImage = image.Source as BitmapImage;
+                    if (bitmapImage is not null)
+                    {
+                        string? imagePath = bitmapImage!.UriSource?.LocalPath;
+                        if (imagePath is not null)
+                        {
+                            desc[@""] = Path.GetFileName(imagePath);
+                            desc[@"Stretch"] = new Any(image.Stretch).ValueAsString(false);
+                        }
+                    }
+
+                    desc[@""] = image.Source.
+                    contentDesc = "Image File" + (!string.IsNullOrWhiteSpace(desc) ? @": " + desc : "");
+                    contentStretch = ((Image)contentPreview).Stretch;
+                    return contentPreview;
+                }
+                //if (contentPreview is BrowserControl)
+                //{
+                //    contentDesc = "HTML" + (!String.IsNullOrWhiteSpace(desc) ? @": " + desc : "");
+                //    contentStretch = ((BrowserControl) contentPreview).Stretch;
+                //    return contentPreview;
+                //}
+
+                var border = new Border();
+                border.Background = (Brush)border.FindResource("CheckerBrush");
+                border.Child = contentPreview;
+
+                if (contentPreview is Viewbox)
+                {
+                    contentDesc = "XAML" + (!string.IsNullOrWhiteSpace(desc) ? @": " + desc : "");
+                    contentStretch = ((Viewbox)contentPreview).Stretch;
+                    return border;
+                }
+
+                contentDesc = "XAML" + (!string.IsNullOrWhiteSpace(desc) ? @": " + desc : "");
+                contentStretch = Stretch.None;
+                return border;
+            }
+            catch (Exception)
+            {
+                contentDesc = "XAML with Error" + (!string.IsNullOrWhiteSpace(desc) ? @": " + desc : "");
+                contentStretch = Stretch.None;
+                return null;
+            }
+        }
+
+        #endregion
 
         #region private functions
 

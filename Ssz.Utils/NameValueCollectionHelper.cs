@@ -65,7 +65,7 @@ namespace Ssz.Utils
                     string value = nameValueCollectionString.Substring(equalsCharIndex + 1, i - equalsCharIndex - 1);
 
                     // add name / value pair to the collection
-                    result[UrlDecode(name)] = UrlDecode(value);
+                    result[UrlDecode(name) ?? @""] = UrlDecode(value);
                 }
                 else
                 {
@@ -127,7 +127,7 @@ namespace Ssz.Utils
                     string value = nameValueCollectionString.Substring(equalsCharIndex + 1, i - equalsCharIndex - 1);
 
                     // add name / value pair to the collection
-                    result.Add((UrlDecode(name), UrlDecode(value)));
+                    result.Add((UrlDecode(name) ?? @"", UrlDecode(value)));
                 }
                 else
                 {
@@ -205,11 +205,11 @@ namespace Ssz.Utils
             {
                 if (kvp.Key == @"")
                 {
-                    items.Add(kvp.Value ?? @"<null>");
+                    items.Add(kvp.Value ?? @"%null");
                 }
                 else
                 {
-                    items.Add(kvp.Key + @": " + (kvp.Value ?? @"<null>"));
+                    items.Add(kvp.Key + @": " + (kvp.Value ?? @"%null"));
                 }
             }
 
@@ -224,11 +224,11 @@ namespace Ssz.Utils
             {
                 if (kvp.Item2 == @"")
                 {
-                    items.Add(kvp.Item1 ?? @"<null>");
+                    items.Add(kvp.Item1 ?? @"%null");
                 }
                 else
                 {
-                    items.Add(kvp.Item1 + @": " + (kvp.Item2 ?? @"<null>"));
+                    items.Add(kvp.Item1 + @": " + (kvp.Item2 ?? @"%null"));
                 }
             }
 
@@ -359,12 +359,14 @@ namespace Ssz.Utils
         /// <summary>        
         /// </summary>
         /// <param name="value"></param>
-        /// <returns></returns>
-        [return: NotNullIfNotNull("value")]
-        public static string? UrlEncode(string? value)
+        /// <returns></returns>        
+        public static string UrlEncode(string? value)
         {
-            if (String.IsNullOrEmpty(value))
-                return value;
+            if (value is null)
+                return @"%null";
+
+            if (value == @"")
+                return @"";
 
             value = value!.Replace(@"%", @"%25");
             value = value.Replace(@"&", @"%26");
@@ -374,12 +376,14 @@ namespace Ssz.Utils
         }
 
         /// <summary>        
-        /// </summary>
-        [return: NotNullIfNotNull("value")]
+        /// </summary>        
         public static string? UrlDecode(string? value)
         {
             if (String.IsNullOrEmpty(value))
-                return value;
+                return @"";
+
+            if (String.Equals(value, @"%null", StringComparison.InvariantCultureIgnoreCase))
+                return null;
 
             int count = value!.Length;
             var urlDecoder = new UrlDecoder(count);
