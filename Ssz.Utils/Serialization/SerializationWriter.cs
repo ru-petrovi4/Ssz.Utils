@@ -1606,6 +1606,24 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     use  T[] ReadArrayOfOwnedDataSerializable<T>(Func<int, IOwnedDataSerializable?> intTypeIdCreateFunc,
+        ///         object? context) for reading array
+        ///     Write array polymorphic objects to stream
+        /// </summary>
+        /// <param name="values">array of serializable objects</param>
+        /// <param name="typeIdFunc"> return integer Type Id for stored object</param>
+        /// <param name="context"></param>
+        public void WriteArrayOfOwnedDataSerializable<T>(T[] values, Func<T, int> typeIdFunc, object? context)
+            where T : IOwnedDataSerializable
+        {
+            Write(values.Length);
+            foreach (var v in values)
+            {
+                WriteOwnedDataSerializable(v, typeIdFunc(v), context);
+            }
+        }
+
+        /// <summary>
         ///     Use ReadNullableByteArray() for reading.
         /// </summary>
         /// <param name="values"></param>
@@ -1664,6 +1682,28 @@ namespace Ssz.Utils.Serialization
                 v.SerializeOwnedData(this, context);
             }
         }
+
+        /// <summary>
+        ///     use ReadListOfOwnedDataSerializable<T>(Func<int, IOwnedDataSerializable?> intTypeIdCreateFunc,
+        ///         object? context) for reading
+        ///     Writes list of polymorhic objects
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="values"></param>
+        /// <param name="typeIdFunc"> provide type identifiers for each element</param>
+        /// <param name="context"></param>
+        public void WriteListOfOwnedDataSerializable<T>(ICollection<T> values, Func<T, int> typeIdFunc,
+            object? context)
+            where T : IOwnedDataSerializable
+        {
+            Write(values.Count);
+            foreach (var v in values)
+            {
+                WriteOwnedDataSerializable(v, typeIdFunc(v), context);
+            }
+        }
+
+
 
         /// <summary>
         ///     use ReadListOfStrings() for reading.

@@ -135,7 +135,7 @@ namespace Ssz.Utils.Serialization
         {
             get { return _skippedBytesCount; }
         }
-        public Func<Type,object?> CustomFactory { get; set; }
+        public Func<Type,object?>? CustomFactory { get; set; }
 
         /// <summary>
         ///     Use only with memory streams.
@@ -860,6 +860,8 @@ namespace Ssz.Utils.Serialization
             return result;
         }
 
+
+
         /// <summary>
         ///     Use WriteNullable<T>() for reading.
         /// </summary>
@@ -990,6 +992,37 @@ namespace Ssz.Utils.Serialization
         }
 
         /// <summary>
+        ///     use WriteArrayOfOwnedDataSerializable<T>(T[] values, Func<T, int> typeIdFunc, object? context) for store objects
+        ///     Reads array of polymorphic object
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="intTypeIdCreateFunc"> </param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        /// <exception cref="BlockEndingException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        public T[] ReadArrayOfOwnedDataSerializable<T>(Func<int, IOwnedDataSerializable?> intTypeIdCreateFunc,
+            object? context)
+            where T : IOwnedDataSerializable
+        {
+            if (IsBlockEnding())
+                throw new BlockEndingException();
+
+            int length = ReadInt32();
+            var result = new T[length];
+            for (int i = 0; i < length; i++)
+            {
+                var v = ReadOwnedDataSerializable(intTypeIdCreateFunc, context);
+                if (v == null)
+                    throw new InvalidOperationException($"Fail to create array element in the ReadArrayOfOwnedDataSerializable at {_baseStream.Position}"); 
+                else
+                    result[i] = (T)v;
+            }
+            return result;
+        }
+
+
+        /// <summary>
         ///     Use WriteNullableByteArray(...) for writing.
         /// </summary>
         /// <returns></returns>
@@ -1053,6 +1086,28 @@ namespace Ssz.Utils.Serialization
             }
             return result;
         }
+
+
+        /// <summary>
+        ///     Use WriteListOfOwnedDataSerializable<T>(ICollection<T> values, Func<T, int> typeIdFunc,
+        ///         object? context) for writing.
+        ///     Reads list of polymorphic objects.
+        ///     intTypeIdCreateFunc is the object constructor function by int type identificator.              
+        /// </summary>        
+        /// <param name="intTypeIdCreateFunc"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public List<T> ReadListOfOwnedDataSerializable<T>(Func<int, IOwnedDataSerializable?> intTypeIdCreateFunc,
+            object? context)
+            where T : IOwnedDataSerializable
+        {
+            T[] arr = ReadArrayOfOwnedDataSerializable<T>(intTypeIdCreateFunc,context);
+            if(arr.Length>0)
+                return new List<T>(arr);
+            else
+                return new List<T>();
+        }
+
 
         /// <summary>
         ///     Use WriteListOfStrings(...) for writing.
