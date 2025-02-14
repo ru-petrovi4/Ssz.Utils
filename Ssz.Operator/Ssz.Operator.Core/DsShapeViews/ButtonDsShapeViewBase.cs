@@ -147,7 +147,8 @@ namespace Ssz.Operator.Core.DsShapeViews
 
         private void ButtonOnClick(object? sender, RoutedEventArgs routedEventArgs)
         {
-            if (Disposed || !IsEnabled) return;
+            if (Disposed || !IsEnabled) 
+                return;
 
             if (_timer is not null)
             {
@@ -170,6 +171,9 @@ namespace Ssz.Operator.Core.DsShapeViews
 
         private void ButtonOnMouseEnter(object? sender, MouseEventArgs args)
         {
+            if (Disposed || !IsEnabled)
+                return;
+
             if (_mouseEnterDsCommandView is not null)
                 _mouseEnterDsCommandView.DoCommand();
         }
@@ -181,6 +185,9 @@ namespace Ssz.Operator.Core.DsShapeViews
                 _timer.Dispose();
                 _timer = null;
             }
+
+            if (Disposed || !IsEnabled)
+                return;
 
             if (_mouseLeaveDsCommandView is not null)
                 _mouseLeaveDsCommandView.DoCommand();

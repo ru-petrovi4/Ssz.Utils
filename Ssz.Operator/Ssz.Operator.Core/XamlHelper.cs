@@ -15,27 +15,18 @@ using System.Xml;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 using Microsoft.Win32;
+using SharpVectors.Converters;
+using SharpVectors.Renderers.Wpf;
 using Ssz.Operator.Core.Properties;
 using Ssz.Operator.Core.Utils;
 using Ssz.Utils;
 using Ssz.Utils.Wpf;
+using Ssz.Utils.Wpf.WpfAnimatedGif;
 
 namespace Ssz.Operator.Core
 {
     public static class XamlHelper
     {
-        #region internal functions
-
-        internal static bool CheckXamlForDsShapeExtraction(string? xaml)
-        {
-            if (string.IsNullOrWhiteSpace(xaml)) return false;
-            xaml = GetXamlWithoutDesc(xaml)!.TrimStart();
-            if (xaml.StartsWith("<Image")) return false;
-            return true;
-        }
-
-        #endregion
-
         #region public functions
 
         public const string XamlDescBegin = @"<!--Desc:";
@@ -743,7 +734,7 @@ namespace Ssz.Operator.Core
             });
         }
 
-        public static string UpdateXamlVersion(string xaml, Drawings.DrawingBase? drawing)
+        public static string UpdateXamlVersion(string xaml)
         {
             if (!xaml.StartsWith(XamlDescBegin)) // Update is not needed
                 return xaml;
@@ -772,41 +763,58 @@ namespace Ssz.Operator.Core
                             desc[@""] = Path.GetFileName(imagePath);
                             desc[@"Stretch"] = new Any(image.Stretch).ValueAsString(false);
                         }
+                        return AddXamlDesc(xamlWithoutDesc, desc);
                     }
 
-                    desc[@""] = image.Source.
-                    contentDesc = "Image File" + (!string.IsNullOrWhiteSpace(desc) ? @": " + desc : "");
-                    contentStretch = ((Image)contentPreview).Stretch;
-                    return contentPreview;
+                    bitmapImage = ImageBehavior.GetAnimatedSource(image) as BitmapImage;
+                    if (bitmapImage is not null)
+                    {
+                        string? imagePath = bitmapImage!.UriSource?.LocalPath;
+                        if (imagePath is not null)
+                        {
+                            desc[@""] = Path.GetFileName(imagePath);
+                            desc[@"Stretch"] = new Any(image.Stretch).ValueAsString(false);
+                        }
+                        return AddXamlDesc(xamlWithoutDesc, desc);
+                    }
+
+                    return xaml;
                 }
                 //if (contentPreview is BrowserControl)
                 //{
                 //    contentDesc = "HTML" + (!String.IsNullOrWhiteSpace(desc) ? @": " + desc : "");
                 //    contentStretch = ((BrowserControl) contentPreview).Stretch;
                 //    return contentPreview;
-                //}
+                //}                
 
-                var border = new Border();
-                border.Background = (Brush)border.FindResource("CheckerBrush");
-                border.Child = contentPreview;
-
-                if (contentPreview is Viewbox)
-                {
-                    contentDesc = "XAML" + (!string.IsNullOrWhiteSpace(desc) ? @": " + desc : "");
-                    contentStretch = ((Viewbox)contentPreview).Stretch;
-                    return border;
+                if (contentPreview is Viewbox viewbox)
+                {                    
+                    desc[@""] = @"XAML";
+                    desc[@"Stretch"] = new Any(viewbox.Stretch).ValueAsString(false);
+                    
+                    return AddXamlDesc(xamlWithoutDesc, desc);
                 }
 
-                contentDesc = "XAML" + (!string.IsNullOrWhiteSpace(desc) ? @": " + desc : "");
-                contentStretch = Stretch.None;
-                return border;
+                desc[@""] = @"XAML";
+                desc[@"Stretch"] = new Any(Stretch.None).ValueAsString(false);
+                return AddXamlDesc(xamlWithoutDesc, desc);
             }
             catch (Exception)
-            {
-                contentDesc = "XAML with Error" + (!string.IsNullOrWhiteSpace(desc) ? @": " + desc : "");
-                contentStretch = Stretch.None;
-                return null;
+            {                
+                return xaml;
             }
+        }
+
+        #endregion
+
+        #region internal functions
+
+        internal static bool CheckXamlForDsShapeExtraction(string? xaml)
+        {
+            if (string.IsNullOrWhiteSpace(xaml)) return false;
+            xaml = GetXamlWithoutDesc(xaml)!.TrimStart();
+            if (xaml.StartsWith("<Image")) return false;
+            return true;
         }
 
         #endregion
@@ -842,7 +850,6 @@ namespace Ssz.Operator.Core
         {
             return @"file:./" + GetUriString(fileRelativePath);
         }
-
 
         private static FileInfo GetDestinationFileInfoAndCopyFile(FileInfo sourceFileInfo,
             DirectoryInfo filesStoreDirectoryInfo, ref Dictionary<byte[], FileInfo>? filesStoreInfo)
@@ -905,7 +912,6 @@ namespace Ssz.Operator.Core
 
             return destinationFileInfo;
         }
-
 
         private static string GetXamlWithAbsolutePathsFromXamlFile(List<FileInfo> fileInfos,
             string parserContextDirectoryName, Stretch stretch,

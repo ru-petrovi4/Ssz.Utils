@@ -7,15 +7,15 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>    
     <Company>SSZ</Company>
     <Version>1.0.77</Version>
-    <Platforms>AnyCPU;x86</Platforms>  
+    <Platforms>AnyCPU</Platforms>  
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.2" />
     <PackageReference Include="protobuf-net" Version="3.2.46" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="9.0.1" />
-    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.0.1" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="9.0.2" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.0.2" />
   </ItemGroup>
 
   <ItemGroup>

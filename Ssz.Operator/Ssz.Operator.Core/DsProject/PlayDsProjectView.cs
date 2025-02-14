@@ -64,9 +64,9 @@ namespace Ssz.Operator.Core
                 fi = new FileInfo(soundFile);
                 if (fi.Exists)
                 {
-                    PlayDsProjectView.Buzzer.ClearCustomSoundConfiguration();
-                    PlayDsProjectView.Buzzer.SetCustomSoundConfiguration(BuzzerStateEnum.ProcessAlarmMediumPriority, soundFile);
-                    PlayDsProjectView.Buzzer.SetCustomSoundConfiguration(BuzzerStateEnum.ProcessAlarmHighPriority, soundFile);
+                    Buzzer.ClearCustomSoundConfiguration();
+                    Buzzer.SetCustomSoundConfiguration(BuzzerStateEnum.ProcessAlarmMediumPriority, soundFile);
+                    Buzzer.SetCustomSoundConfiguration(BuzzerStateEnum.ProcessAlarmHighPriority, soundFile);
                 }
             }
         }
@@ -109,7 +109,7 @@ namespace Ssz.Operator.Core
             return frameDsShapeView.DsPageDrawing;
         }
 
-        public static IPlayWindow? GetPlayWindow(IPlayWindow? senderWindow, TargetWindow target,
+        public static IPlayWindow? GetPlayWindow(IPlayWindow? senderPlayWindow, TargetWindow target,
             string? rootWindowNum = null)
         {
             IPlayWindow? targetWindow = null;
@@ -123,21 +123,21 @@ namespace Ssz.Operator.Core
 
             if (targetWindow is null)
             {
-                if (senderWindow is null)
-                    senderWindow = LastActiveRootPlayWindow;
+                if (senderPlayWindow is null)
+                    senderPlayWindow = LastActiveRootPlayWindow;
 
                 switch (target)
                 {
                     case TargetWindow.CurrentWindow:
-                        targetWindow = senderWindow;
+                        targetWindow = senderPlayWindow;
                         break;
                     case TargetWindow.ParentWindow:
-                        if (senderWindow is not null) targetWindow = senderWindow.ParentWindow;
+                        if (senderPlayWindow is not null) targetWindow = senderPlayWindow.ParentWindow;
                         break;
                     case TargetWindow.RootWindow:
-                        if (senderWindow is not null)
+                        if (senderPlayWindow is not null)
                         {
-                            targetWindow = senderWindow;
+                            targetWindow = senderPlayWindow;
                             for (; ; )
                             {
                                 if (targetWindow.ParentWindow is null) break;

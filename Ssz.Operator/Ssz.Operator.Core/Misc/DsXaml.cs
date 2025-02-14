@@ -53,6 +53,9 @@ namespace Ssz.Operator.Core
             {
                 TryConvertAbsoluteToRelative();
 
+                if (_xaml.StartsWith(XamlHelper.XamlDescBegin) && _isAbsolutePaths) // Old version
+                    _xaml = XamlHelper.UpdateXamlVersion(_xaml);
+
                 return _xaml;
             }
             internal set
@@ -67,10 +70,7 @@ namespace Ssz.Operator.Core
                 {
                     _xaml = value;
                     _isAbsolutePaths = false;
-                    _isRelativePaths = true;
-
-                    if (_xaml.StartsWith(XamlHelper.XamlDescBegin)) // Old version
-                        _xaml = XamlHelper.UpdateXamlVersion(_xaml, ParentItem.Find<DrawingBase>());
+                    _isRelativePaths = true;                    
                 }
             }
         }

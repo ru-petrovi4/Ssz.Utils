@@ -202,7 +202,7 @@ namespace Ssz.Operator.Play
             }
         }
 
-        private void ShowWindow(IPlayWindow? playWindow, ShowWindowDsCommandOptions? showWindowDsCommandOptions)
+        private void ShowWindow(IPlayWindow? senderPlayWindow, ShowWindowDsCommandOptions? showWindowDsCommandOptions)
         {
             if (showWindowDsCommandOptions == null) return;
 
@@ -277,7 +277,7 @@ namespace Ssz.Operator.Play
             }
             else
             {
-                parentWindow = PlayDsProjectView.GetPlayWindow(playWindow, showWindowDsCommandOptions.ParentWindow);
+                parentWindow = PlayDsProjectView.GetPlayWindow(senderPlayWindow, showWindowDsCommandOptions.ParentWindow);
                 if (parentWindow != null && parentWindow.PlayControlWrapper.TryActivateExistingChildWindow(parentItem, showWindowDsCommandOptions.FileRelativePath))
                 {
                     return;
