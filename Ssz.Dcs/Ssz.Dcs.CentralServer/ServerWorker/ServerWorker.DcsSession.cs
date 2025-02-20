@@ -28,10 +28,12 @@ namespace Ssz.Dcs.CentralServer
         {
             switch (e.Action)
             {
-                case NotifyCollectionChangedAction.Add:                    
+                case NotifyCollectionChangedAction.Add:
+                    OnDcsCentralServerAddons_Added(e.NewItems!.OfType<DcsCentralServerAddon>());
                     OnDataAccessProviderGetter_Addons_Added(e.NewItems!.OfType<DataAccessProviderGetter_AddonBase>());
                     break;
-                case NotifyCollectionChangedAction.Remove:                    
+                case NotifyCollectionChangedAction.Remove:
+                    OnDcsCentralServerAddons_Removed(e.OldItems!.OfType<DcsCentralServerAddon>());
                     OnDataAccessProviderGetter_Addons_Removed(e.OldItems!.OfType<DataAccessProviderGetter_AddonBase>());
                     break;
                 case NotifyCollectionChangedAction.Replace:
@@ -39,6 +41,28 @@ namespace Ssz.Dcs.CentralServer
                 case NotifyCollectionChangedAction.Reset:
                     break;
             }
+        }
+
+        private void OnDcsCentralServerAddons_Added(IEnumerable<DcsCentralServerAddon> addedDcsCentralServerAddons)
+        {
+            foreach (var addedDcsCentralServerAddon in addedDcsCentralServerAddons)
+            {
+                addedDcsCentralServerAddon.CsvDb.CsvFileChanged += DcsCentralServerAddon_CsvDb_OnCsvFileChanged;
+            }
+        }        
+
+        private void OnDcsCentralServerAddons_Removed(IEnumerable<DcsCentralServerAddon> removedDcsCentralServerAddons)
+        {
+            foreach (var removedDcsCentralServerAddon in removedDcsCentralServerAddons)
+            {
+                removedDcsCentralServerAddon.CsvDb.CsvFileChanged -= DcsCentralServerAddon_CsvDb_OnCsvFileChanged;
+            }
+        }
+
+        private void DcsCentralServerAddon_CsvDb_OnCsvFileChanged(object? sender, CsvFileChangedEventArgs e)
+        {
+            if (String.Equals(e.CsvFileName, DcsCentralServerAddon.ClientsCsvFileName, StringComparison.InvariantCultureIgnoreCase))
+                _utilityItemsDoWorkNeeded = true;
         }
 
         private void OnDataAccessProviderGetter_Addons_Added(IEnumerable<DataAccessProviderGetter_AddonBase> addedDataAccessProviderGetter_Addons)

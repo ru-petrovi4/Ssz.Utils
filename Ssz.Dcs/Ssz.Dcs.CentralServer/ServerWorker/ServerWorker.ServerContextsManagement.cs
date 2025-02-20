@@ -197,7 +197,7 @@ namespace Ssz.Dcs.CentralServer
             /// </summary>
             public string ServerAddress { get; set; } = null!;
 
-            public HashSet<string> ClientWorkstationNames { get; } = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+            public HashSet<string> ClientWorkstationsGroups { get; } = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
 
             public List<ServerContext> UtilityServerContexts { get; } = new();
         }
