@@ -780,6 +780,8 @@ namespace Ssz.Operator.Core
                     return null;
                 }
 
+                csvDbDirectoryInfo = new DirectoryInfo(csvDbDirectoryInfo.FullName); // Because csvDbDirectoryInfo.Exists is not refreshed.
+
                 if (!csvDbDirectoryInfo.Exists)
                     return null;
                 else
