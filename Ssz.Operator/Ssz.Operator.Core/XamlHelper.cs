@@ -446,22 +446,12 @@ namespace Ssz.Operator.Core
             return contentPreview;
         }
 
-
         public static CaseInsensitiveDictionary<string?> GetXamlDesc(string xaml)
         {            
             if (String.IsNullOrEmpty(xaml))
             {
                 return new CaseInsensitiveDictionary<string?>();
-            }
-            if (xaml.StartsWith(XamlDescBegin))
-            {
-                string desc = @"";
-                var i = xaml.IndexOf(XamlDescEnd);
-                var xamlDescBeginLength = XamlDescBegin.Length;
-                if (i > xamlDescBeginLength) 
-                    desc = xaml.Substring(xamlDescBeginLength, i - xamlDescBeginLength);
-                return new CaseInsensitiveDictionary<string?> { { @"", desc } };
-            }
+            }            
             if (xaml.StartsWith(XamlDescV2Begin))
             {
                 string desc = @"";
@@ -471,9 +461,30 @@ namespace Ssz.Operator.Core
                     desc = xaml.Substring(xamlDescV2BeginLength, i - xamlDescV2BeginLength);
                 return NameValueCollectionHelper.Parse(desc);
             }
+            if (xaml.StartsWith(XamlDescBegin))
+            {
+                string desc = @"";
+                var i = xaml.IndexOf(XamlDescEnd);
+                var xamlDescBeginLength = XamlDescBegin.Length;
+                if (i > xamlDescBeginLength)
+                    desc = xaml.Substring(xamlDescBeginLength, i - xamlDescBeginLength);
+                return new CaseInsensitiveDictionary<string?> { { @"", desc } };
+            }
+            if (xaml.StartsWith("<!--"))
+            {
+                string desc = @"";
+                var i = xaml.IndexOf(XamlDescEnd);
+                var xamlDescBeginLength = "<!--".Length;
+                if (i > xamlDescBeginLength)
+                    desc = xaml.Substring(xamlDescBeginLength, i - xamlDescBeginLength);
+                var descParts = desc.Split(',');
+                var result = new CaseInsensitiveDictionary<string?> { { @"", descParts[0] } };
+                if (descParts.Length > 1)
+                    result["Stretch"] = descParts[1];
+                return result;
+            }
             return new CaseInsensitiveDictionary<string?>();
         }
-
 
 #if NET5_0_OR_GREATER
         [return: NotNullIfNotNull("xaml")]
@@ -482,7 +493,7 @@ namespace Ssz.Operator.Core
         {            
             if (String.IsNullOrEmpty(xaml))
                 return xaml;
-            if (xaml!.StartsWith(XamlDescBegin) || xaml!.StartsWith(XamlDescV2Begin))
+            if (xaml!.StartsWith("<!--"))
             {
                 var i = xaml.IndexOf(XamlDescEnd);
                 if (i != -1)
@@ -734,26 +745,28 @@ namespace Ssz.Operator.Core
             });
         }
 
-        public static string UpdateXamlVersion(string xaml)
+        /// <summary>
+        ///     Preconditions: xaml must have an absolute paths.
+        /// </summary>
+        /// <param name="xaml"></param>
+        /// <returns></returns>
+        public static string UpdateXamlWithAbsolutePathsVersion(string xaml)
         {
-            if (!xaml.StartsWith(XamlDescBegin)) // Update is not needed
-                return xaml;
-
-            var desc = GetXamlDesc(xaml);
-            var xamlWithoutDesc = GetXamlWithoutDesc(xaml) ?? @"";
-
-            if (string.IsNullOrWhiteSpace(xamlWithoutDesc))
-                return @"";
-
             try
             {
+                var desc = GetXamlDesc(xaml);
+                var xamlWithoutDesc = GetXamlWithoutDesc(xaml) ?? @"";
+
+                if (string.IsNullOrWhiteSpace(xamlWithoutDesc))
+                    return @"";
+
                 var contentPreview = Load(xamlWithoutDesc) as UIElement;
 
                 if (contentPreview is null)
                     return @"";
 
                 if (contentPreview is Image image)
-                {
+                {   
                     var bitmapImage = image.Source as BitmapImage;
                     if (bitmapImage is not null)
                     {
@@ -764,7 +777,7 @@ namespace Ssz.Operator.Core
                             desc[@"Stretch"] = new Any(image.Stretch).ValueAsString(false);
                         }
                         return AddXamlDesc(xamlWithoutDesc, desc);
-                    }
+                    }                    
 
                     bitmapImage = ImageBehavior.GetAnimatedSource(image) as BitmapImage;
                     if (bitmapImage is not null)
@@ -778,7 +791,8 @@ namespace Ssz.Operator.Core
                         return AddXamlDesc(xamlWithoutDesc, desc);
                     }
 
-                    return xaml;
+                    desc[@"Stretch"] = new Any(image.Stretch).ValueAsString(false);
+                    return AddXamlDesc(xamlWithoutDesc, desc);
                 }
                 //if (contentPreview is BrowserControl)
                 //{
@@ -788,10 +802,10 @@ namespace Ssz.Operator.Core
                 //}                
 
                 if (contentPreview is Viewbox viewbox)
-                {                    
+                {
                     desc[@""] = @"XAML";
                     desc[@"Stretch"] = new Any(viewbox.Stretch).ValueAsString(false);
-                    
+
                     return AddXamlDesc(xamlWithoutDesc, desc);
                 }
 
@@ -800,9 +814,10 @@ namespace Ssz.Operator.Core
                 return AddXamlDesc(xamlWithoutDesc, desc);
             }
             catch (Exception)
-            {                
-                return xaml;
+            {   
             }
+
+            return xaml;
         }
 
         #endregion

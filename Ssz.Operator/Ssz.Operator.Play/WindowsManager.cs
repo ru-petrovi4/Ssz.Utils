@@ -260,7 +260,7 @@ namespace Ssz.Operator.Play
                         }
                         return;
                 }
-            }            
+            }
 
             var parentItem = showWindowDsCommandOptions.ParentItem ?? DsProject.Instance;
             IPlayWindow? parentWindow;
@@ -282,9 +282,9 @@ namespace Ssz.Operator.Play
                 {
                     return;
                 }
-            }            
-            
-            var newWindow = new PlayWindow(parentWindow, rootWindowNum, showWindowDsCommandOptions.AutoCloseMs);            
+            }
+
+            var newWindow = new PlayWindow(parentWindow, rootWindowNum, showWindowDsCommandOptions.AutoCloseMs);
             newWindow.Owner = null; // Windows must be independable          
             newWindow.PlayControlWrapper.Jump(new JumpDsCommandOptions { FileRelativePath = showWindowDsCommandOptions.FileRelativePath, ParentItem = parentItem });
             showWindowDsCommandOptions = (ShowWindowDsCommandOptions)showWindowDsCommandOptions.Clone();
@@ -296,26 +296,24 @@ namespace Ssz.Operator.Play
                 return;
             }
 
-            newWindow.WindowCategory = showWindowDsCommandOptions.WindowCategory;            
+            newWindow.WindowCategory = showWindowDsCommandOptions.WindowCategory;
 
             if (newWindow.IsRootWindow)
             {
-                PlayDsProjectView.RootPlayWindows.Add(newWindow);
-
                 newWindow.Closing += (s, args) =>
                 {
                     if (PlayDsProjectView.RootPlayWindows.Count == 1)
                     {
                         DsProject.Instance.DesignModeInPlay = false;
                         if (DsProject.Instance.DesignModeInPlay) args.Cancel = true;
-                    }                    
+                    }
                 };
 
                 newWindow.Closed += (s, args) =>
                 {
                     if (PlayDsProjectView.RootPlayWindows.Count == 1)
                     {
-                        PlayDsProjectView.SaveCurrentPlayWindowsConfiguration(true);                        
+                        PlayDsProjectView.SaveCurrentPlayWindowsConfiguration(true);
                     }
                     PlayDsProjectView.RootPlayWindows.Remove(newWindow);
                     if (PlayDsProjectView.RootPlayWindows.Count == 0)
@@ -324,12 +322,12 @@ namespace Ssz.Operator.Play
 
                 newWindow.Activated += (s, args) =>
                 {
-                    PlayDsProjectView.RootPlayWindows.Remove(newWindow);
-                    PlayDsProjectView.RootPlayWindows.Add(newWindow);
+                    if (PlayDsProjectView.RootPlayWindows.Remove(newWindow))
+                        PlayDsProjectView.RootPlayWindows.Add(newWindow);
                 };
             }
             else // !newWindow.IsRootWindow
-            {            
+            {
                 if (parentWindow != null)
                 {
                     shouldClose = parentWindow.PlayControlWrapper.PrepareChildWindow(parentItem, newWindow, ref showWindowDsCommandOptions);
@@ -340,7 +338,7 @@ namespace Ssz.Operator.Play
                     return;
                 }
             }
-            
+
             if (showWindowDsCommandOptions.WindowStyle != PlayWindowStyle.Default)
             {
                 newWindow.WindowStyle = (WindowStyle)showWindowDsCommandOptions.WindowStyle;
@@ -390,8 +388,8 @@ namespace Ssz.Operator.Play
             else
             {
                 newWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            }            
-            
+            }
+
             if (ScreenHelper.IsValidLength(showWindowDsCommandOptions.ContentWidth) &&
                 ScreenHelper.IsValidLength(showWindowDsCommandOptions.ContentHeight))
             {
@@ -401,7 +399,7 @@ namespace Ssz.Operator.Play
             }
 
             newWindow.Show();
-            
+
             newWindow.PlayControlWrapper.Width = Double.NaN;
             newWindow.PlayControlWrapper.Height = Double.NaN;
             newWindow.SizeToContent = SizeToContent.Manual;
@@ -422,7 +420,7 @@ namespace Ssz.Operator.Play
             else
             {
                 showWindowDsCommandOptions.TitleInfo.FallbackValue = DsProject.Instance.Name;
-            }            
+            }
             newWindow.SetBindingOrConst(parentItem.Find<IDsContainer>(), Window.TitleProperty,
                     showWindowDsCommandOptions.TitleInfo, BindingMode.OneWay, UpdateSourceTrigger.Default);
 
@@ -444,7 +442,7 @@ namespace Ssz.Operator.Play
                         new Point(newWindow.Left + newWindow.ActualWidth / 2, newWindow.Top + newWindow.ActualHeight / 2));
                 }
             }
-            
+
             if (screenWorkingArea.HasValue && screenWorkingArea.Value != Rect.Empty)
             {
                 double kX = screenWorkingArea.Value.Width / newWindow.ActualWidth;
@@ -462,9 +460,13 @@ namespace Ssz.Operator.Play
             if (showWindowDsCommandOptions.WindowFullScreen == DefaultFalseTrue.True)
             {
                 newWindow.WindowState = WindowState.Maximized;
-            }            
+            }
+
+            if (newWindow.IsRootWindow)
+                PlayDsProjectView.RootPlayWindows.Add(newWindow);
         }
-        
+
+
         public static Rect GetFreeSystemScreenWorkingArea()
         {
             var systemScreensWorkingAreas = ScreenHelper.GetSystemScreensWorkingAreas();

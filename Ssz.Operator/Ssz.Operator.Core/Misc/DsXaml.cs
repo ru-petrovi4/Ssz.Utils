@@ -17,11 +17,13 @@ namespace Ssz.Operator.Core
         {
             get
             {
-                if (_isAbsolutePaths) return _xaml;
+                if (_isAbsolutePaths) 
+                    return _xaml;
 
                 string? drawingFilesDirectoryFullName = null;
                 var drawing = ParentItem.Find<DrawingBase>();
-                if (drawing is not null) drawingFilesDirectoryFullName = drawing.DrawingFilesDirectoryFullName;
+                if (drawing is not null) 
+                    drawingFilesDirectoryFullName = drawing.DrawingFilesDirectoryFullName;
 
                 return XamlHelper.GetXamlWithAbsolutePaths(_xaml, drawingFilesDirectoryFullName);
             }
@@ -51,10 +53,32 @@ namespace Ssz.Operator.Core
         {
             get
             {
-                TryConvertAbsoluteToRelative();
+                if (!String.IsNullOrWhiteSpace(_xaml) && !_xaml.StartsWith(XamlHelper.XamlDescV2Begin)) // Old version
+                {
+                    string? xamlWithAbsolutePaths = null;
+                    if (_isAbsolutePaths)
+                    {
+                        xamlWithAbsolutePaths = _xaml;
+                    }
+                    else
+                    {
+                        string? drawingFilesDirectoryFullName = null;
+                        var drawing = ParentItem.Find<DrawingBase>();
+                        if (drawing is not null)
+                        {
+                            drawingFilesDirectoryFullName = drawing.DrawingFilesDirectoryFullName;
+                            xamlWithAbsolutePaths = XamlHelper.GetXamlWithAbsolutePaths(_xaml, drawingFilesDirectoryFullName);                            
+                        }
+                    }
+                    if (!String.IsNullOrEmpty(xamlWithAbsolutePaths))
+                    {
+                        _xaml = XamlHelper.UpdateXamlWithAbsolutePathsVersion(xamlWithAbsolutePaths!);
+                        _isAbsolutePaths = true;
+                        _isRelativePaths = false;
+                    }                    
+                }
 
-                if (_xaml.StartsWith(XamlHelper.XamlDescBegin) && _isAbsolutePaths) // Old version
-                    _xaml = XamlHelper.UpdateXamlVersion(_xaml);
+                TryConvertAbsoluteToRelative();
 
                 return _xaml;
             }
