@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.Utils;
 using Ssz.Utils.Addons;
+using Ssz.Utils.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -46,23 +47,22 @@ namespace Ssz.Dcs.CentralServer
         {
             ServiceId = Guid.NewGuid().ToString();
 
-            _dcsCentralServer = ServiceProvider.GetRequiredService<DcsCentralServer>();
-
             base.Initialize(cancellationToken);
         }
 
         public override void Close()
         {
-            _dcsCentralServer = null;
-
             base.Close();
         }
 
-        public override Ssz.Utils.Addons.AddonStatus GetAddonStatus()
+        public override async Task<AddonStatus> GetAddonStatusAsync()
         {
-            Ssz.Utils.Addons.AddonStatus addonStatus = base.GetAddonStatus();
+            AddonStatus addonStatus = await base.GetAddonStatusAsync();
 
-            _dcsCentralServer?.GetSystemParams(addonStatus.Params);
+            foreach (var kvp in await ComputerInfoHelper.GetSystemParamsAsync())
+            {
+                addonStatus.Params[kvp.Key] = kvp.Value;
+            }            
 
             return addonStatus;
         }
@@ -72,12 +72,6 @@ namespace Ssz.Dcs.CentralServer
         #region internal functions
 
         internal static string DescStatic { get; set; } = Properties.Resources.DcsCentralServerAddon_Desc;
-
-        #endregion
-
-        #region private fields
-
-        private DcsCentralServer? _dcsCentralServer;
 
         #endregion
     }

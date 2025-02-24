@@ -27,7 +27,7 @@ namespace Ssz.Dcs.CentralServer
         {
             var dcsCentralServerAddon = _addonsManager.Addons.OfType<DcsCentralServerAddon>().Single();
 
-            AddonStatuses addonStatuses = _addonsManager.GetAddonStatuses();
+            AddonStatuses addonStatuses = await _addonsManager.GetAddonStatusesAsync();
             foreach (var addonStatus in addonStatuses.AddonStatusesCollection)
             {
                 addonStatus.SourcePath = @"";

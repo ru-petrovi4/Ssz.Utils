@@ -107,13 +107,13 @@ namespace Ssz.Utils.Addons
             _container = null;
         }
 
-        public AddonStatuses GetAddonStatuses()
+        public async Task<AddonStatuses> GetAddonStatusesAsync()
         {
             AddonStatuses result = new();
 
             foreach (AddonBase addon in Addons)
             {
-                result.AddonStatusesCollection.Add(addon.GetAddonStatus());
+                result.AddonStatusesCollection.Add(await addon.GetAddonStatusAsync());
             }
 
             return result;

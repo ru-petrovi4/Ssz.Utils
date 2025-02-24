@@ -13,51 +13,6 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// </summary>
         public const int MaxReplyObjectSize = 1024 * 1024;
 
-        public const int MaxEventMessagesCount = 1024;
-
-        /// <summary>
-        ///     Is addon contains resource monitoring data.
-        /// </summary>
-        public const string ParamName_IsResourceMonitorAddon = @"IsResourceMonitorAddon";
-
-        /// <summary>
-        ///     The CPU utilization percentage..
-        /// </summary>
-        public const string ParamName_CpuUsedPercentage = @"CpuUsedPercentage";
-
-        /// <summary>
-        ///     Total Physical Memory
-        /// </summary>
-        public const string ParamName_TotalMemoryInBytes = @"TotalMemoryInBytes";
-
-        /// <summary>
-        ///     The memory utilization.
-        /// </summary>
-        public const string ParamName_MemoryUsedInBytes = @"MemoryUsedInBytes";
-
-        /// <summary>
-        ///     Volume Label.
-        /// </summary>
-        public const string ParamName_VolumeLabel = @"VolumeLabel";
-
-        /// <summary>
-        ///     Drive Format.
-        /// </summary>
-        public const string ParamName_DriveFormat = @"DriveFormat";
-
-        /// <summary>
-        ///     Drive Total Size.
-        /// </summary>
-        public const string ParamName_Drive_TotalSizeInBytes = @"Drive_TotalSizeInBytes";
-
-        /// <summary>
-        ///     Space Used.
-        /// </summary>
-        public const string ParamName_Drive_SpaceUsedInBytes = @"Drive_SpaceUsedInBytes";
-
-        /// <summary>
-        ///     Drives info.
-        /// </summary>
-        public const string ParamName_DrivesInfo = @"DrivesInfo";
+        public const int MaxEventMessagesCount = 1024;        
     }
 }

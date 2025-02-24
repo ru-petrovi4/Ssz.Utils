@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Diagnostics.ResourceMonitoring;
 using Microsoft.Extensions.Logging;
 using Ssz.Utils;
 using Ssz.Utils.Diagnostics;
@@ -16,11 +15,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
     {
         #region construction and destruction
 
-        protected ServerWorkerBase(
-            IResourceMonitor resourceMonitor, 
+        protected ServerWorkerBase(            
             ILogger logger)
-        {
-            ResourceMonitor = resourceMonitor;
+        {            
             Logger = logger;           
         }
 
@@ -109,8 +106,6 @@ namespace Ssz.DataAccessGrpc.ServerBase
         #endregion        
 
         #region protected functions
-
-        protected IResourceMonitor ResourceMonitor { get; }
 
         protected ILogger Logger { get; }        
 
