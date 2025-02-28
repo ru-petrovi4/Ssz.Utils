@@ -103,7 +103,7 @@ namespace Ssz.Utils
             else
                 _csvFilesCollection = new Dictionary<string, CsvFile>();
 
-            LoadData();
+            LoadCsvFileInfos();
         }
 
         #endregion
@@ -165,11 +165,11 @@ namespace Ssz.Utils
         }
 
         /// <summary>
-        ///     Loads data from .csv files on disk.        
-        ///     Data is loaded in constructor.
-        ///     Data is loaded when directory content changes, if dispatcher in consructor is not null.
+        ///     Loads info about .csv files on disk.      
+        ///     Is called in constructor.
+        ///     Is called when directory content changes, if dispatcher in consructor is not null.
         /// </summary>
-        public void LoadData()
+        public void LoadCsvFileInfos()
         {            
             List<CsvFileChangedEventArgs> eventArgsList = new();
 
@@ -321,6 +321,45 @@ namespace Ssz.Utils
         }
 
         /// <summary>
+        ///     Optional method for loading all csv files data in advance. 
+        ///     If ths method is not called, csv files data are loaded only when needed.
+        /// </summary>
+        /// <returns></returns>
+        public async Task EnsureCsvFilesDataIsLoadedAsync()
+        {
+            foreach (var csvFile in _csvFilesCollection.Values.ToArray())
+            {
+                if (csvFile.Data is null)
+                {
+                    if (CsvDbDirectoryInfo?.Exists == true)
+                    {
+                        using var fileFullNameScope = LoggersSet.UserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, csvFile.FileName));
+                        csvFile.IncludeFileNamesCollection.Clear();
+                        string fileFullName = Path.Combine(CsvDbDirectoryInfo.FullName, csvFile.FileName);
+                        csvFile.Data = CsvHelper.LoadCsvFile(fileFullName, true, null, LoggersSet.UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
+                        var fi = new FileInfo(fileFullName);
+                        csvFile.Data_FileInfo_LastModifiedUtc = fi.LastWriteTimeUtc;
+                        csvFile.OnDiskFileInfo = fi;
+                    }
+                    else if (CsvDbFileProvider is not null)
+                    {
+                        using var fileFullNameScope = LoggersSet.UserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, csvFile.FileName));
+                        csvFile.IncludeFileNamesCollection.Clear();
+                        string fileFullName = Path.Combine(CsvDbDirectoryFullName ?? @"", csvFile.FileName);
+                        csvFile.Data = await CsvHelper.LoadCsvFileAsync(fileFullName, true, CsvDbFileProvider, null, LoggersSet.UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
+                        csvFile.Data_FileInfo_LastModifiedUtc = CsvDbFileProvider.GetFileInfo(fileFullName).LastModified.UtcDateTime;
+                        //csvFile.OnDiskFileInfo = fi;
+                    }
+                    else
+                    {
+                        csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
+                        csvFile.Data_FileInfo_LastModifiedUtc = null;
+                    }
+                }
+            }            
+        }
+
+        /// <summary>
         ///     Clears existing file, if any.
         ///     Returns true, if succeeded.
         /// </summary>
@@ -376,7 +415,7 @@ namespace Ssz.Utils
 
             if (!_csvFilesCollection.TryGetValue(fileName!, out CsvFile? csvFile)) return false;
 
-            EnsureDataIsLoaded(csvFile);
+            EnsureCsvFileDataIsLoaded(csvFile);
 
             bool removed = csvFile.Data!.Remove(key);
             if (removed)
@@ -412,7 +451,7 @@ namespace Ssz.Utils
             
             if (!_csvFilesCollection.TryGetValue(fileName!, out CsvFile? csvFile)) return new CaseInsensitiveDictionary<List<string?>>();
 
-            EnsureDataIsLoaded(csvFile);
+            EnsureCsvFileDataIsLoaded(csvFile);
             
             return csvFile.Data!;
         }
@@ -429,7 +468,7 @@ namespace Ssz.Utils
             if (!_csvFilesCollection.TryGetValue(fileName!, out CsvFile? csvFile))
                 return 1;
 
-            EnsureDataIsLoaded(csvFile);
+            EnsureCsvFileDataIsLoaded(csvFile);
             
             if (csvFile.Data!.Count == 0) return 1;
             return csvFile.Data.Keys.Max(k => new Any(k).ValueAsUInt32(false)) + 1;
@@ -447,7 +486,7 @@ namespace Ssz.Utils
             
             if (!_csvFilesCollection.TryGetValue(fileName!, out CsvFile? csvFile)) return null;
 
-            EnsureDataIsLoaded(csvFile);
+            EnsureCsvFileDataIsLoaded(csvFile);
 
             if (!csvFile.Data!.TryGetValue(key, out List<string?>? values)) return null;
             return values;
@@ -459,7 +498,7 @@ namespace Ssz.Utils
             
             if (!_csvFilesCollection.TryGetValue(fileName!, out CsvFile? csvFile)) return null;
 
-            EnsureDataIsLoaded(csvFile);
+            EnsureCsvFileDataIsLoaded(csvFile);
 
             if (!csvFile.Data!.TryGetValue(key, out List<string?>? values)) return null;
             if (column >= values.Count) return null;
@@ -495,7 +534,7 @@ namespace Ssz.Utils
                 _csvFilesCollection.Add(fileName!, csvFile);
             }
 
-            EnsureDataIsLoaded(csvFile);
+            EnsureCsvFileDataIsLoaded(csvFile);
 
             if (!csvFile.Data!.TryGetValue(key, out List<string?>? values))
             {
@@ -538,7 +577,7 @@ namespace Ssz.Utils
             if (!enumerator.MoveNext()) return;
             string key = enumerator.Current ?? @"";
 
-            EnsureDataIsLoaded(csvFile);
+            EnsureCsvFileDataIsLoaded(csvFile);
 
             if (!csvFile.Data!.TryGetValue(key, out List<string?>? existingValues))
             {
@@ -575,7 +614,7 @@ namespace Ssz.Utils
             if (!_csvFilesCollection.TryGetValue(fileName!, out CsvFile? csvFile))
                 return valuesList.Count == 0;
 
-            EnsureDataIsLoaded(csvFile);
+            EnsureCsvFileDataIsLoaded(csvFile);
 
             if (csvFile.Data!.Count != valuesList.Count)
                 return false;
@@ -616,7 +655,7 @@ namespace Ssz.Utils
             }
             else
             {
-                EnsureDataIsLoaded(csvFile);
+                EnsureCsvFileDataIsLoaded(csvFile);
             }
 
             foreach (var values in data)
@@ -777,7 +816,7 @@ namespace Ssz.Utils
 
         #region private functions
 
-        private void EnsureDataIsLoaded(CsvFile csvFile)
+        private void EnsureCsvFileDataIsLoaded(CsvFile csvFile)
         {
             if (csvFile.Data is null)
             {
@@ -793,12 +832,7 @@ namespace Ssz.Utils
                 }
                 else if (CsvDbFileProvider is not null)
                 {
-                    using var fileFullNameScope = LoggersSet.UserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, csvFile.FileName));
-                    csvFile.IncludeFileNamesCollection.Clear();
-                    string fileFullName = Path.Combine(CsvDbDirectoryFullName ?? @"", csvFile.FileName);
-                    csvFile.Data = CsvHelper.LoadCsvFile(fileFullName, true, null, LoggersSet.UserFriendlyLogger, csvFile.IncludeFileNamesCollection, CsvDbFileProvider);                    
-                    csvFile.Data_FileInfo_LastModifiedUtc = CsvDbFileProvider.GetFileInfo(fileFullName).LastModified.UtcDateTime;
-                    //csvFile.OnDiskFileInfo = fi;
+                    throw new NotImplementedException("Call EnsureCsvFilesDataIsLoadedAsync() after CsvDb creation to avoid this error.");
                 }
                 else
                 {
@@ -806,7 +840,7 @@ namespace Ssz.Utils
                     csvFile.Data_FileInfo_LastModifiedUtc = null;
                 }   
             }
-        }
+        }        
 
         private async void FileSystemWatcherOnEventAsync(object sender, FileSystemEventArgs e)
         {
@@ -818,7 +852,7 @@ namespace Ssz.Utils
 
             Dispatcher!.BeginInvoke(ct =>
             {
-                LoadData();
+                LoadCsvFileInfos();
             });
         }
 

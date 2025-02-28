@@ -18,7 +18,7 @@ namespace Ssz.Dcs.CentralServer
     {
         #region public functions
 
-        public ObservableCollection<CentralServer.EngineSession> Dcs_EngineSessions { get; } = new();        
+        public ObservableCollection<EngineSession> Dcs_EngineSessions { get; } = new();        
 
         #endregion
 
@@ -84,7 +84,7 @@ namespace Ssz.Dcs.CentralServer
                     if (ReferenceEquals(egineSession.DataAccessProviderGetter_Addon, removedDataAccessProviderGetter_Addon))
                     {
                         Dcs_EngineSessions.RemoveAt(collectionIndex);
-                        egineSession.Dispose();
+                        egineSession.DataAccessProviderGetter_Addon.Close();
                         break;
                     }
                 }                

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using Ssz.Utils.Logging;
@@ -200,25 +201,55 @@ namespace Ssz.Utils
         /// <param name="fileProvider"></param>
         /// <returns></returns>
         public static CaseInsensitiveDictionary<List<string?>> LoadCsvFile(
+            string fileFullName,
+            bool includeFiles,
+            Dictionary<Regex, string>? defines = null,
+            IUserFriendlyLogger? userFriendlyLogger = null,
+            List<string>? includeFileNames = null)
+        {
+            using (Stream fileStream = File.Open(fileFullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                return LoadCsvFile(fileStream, includeFiles, Path.GetDirectoryName(fileFullName), defines, userFriendlyLogger, includeFileNames);
+            }
+        }
+
+        /// <summary>
+        ///     First column in file is Key and must be unique.
+        ///     With procerssing #include, #define, comments.
+        ///     If file does not exist, returns empty result.
+        ///     userFriendlyLogger: Messages are localized. Priority is Information, Error, Warning.
+        ///     includeFiles: if true, processes #include directives.
+        ///     includeFileNames: returns all include file names.
+        ///     Result: List.Count >= 1, List[0] is not null
+        /// </summary>
+        /// <param name="fileFullName"></param>
+        /// <param name="includeFiles"></param>
+        /// <param name="defines"></param>
+        /// <param name="userFriendlyLogger"></param>
+        /// <param name="includeFileNames"></param>
+        /// <param name="fileProvider"></param>
+        /// <returns></returns>
+        public static async Task<CaseInsensitiveDictionary<List<string?>>> LoadCsvFileAsync(
             string fileFullName, 
-            bool includeFiles, 
+            bool includeFiles,
+            IFileProvider fileProvider,
             Dictionary<Regex, string>? defines = null,
             IUserFriendlyLogger? userFriendlyLogger = null, 
-            List<string>? includeFileNames = null,
-            IFileProvider? fileProvider = null)
-        {
-            if (fileProvider is null)
+            List<string>? includeFileNames = null)
+        {            
+            var fileInfo = fileProvider.GetFileInfo(fileFullName);
+            if (fileInfo is IFileInfoEx fileInfoEx)
             {
-                using (Stream fileStream = File.Open(fileFullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (Stream fileStream = await fileInfoEx.CreateReadStreamAsync())
                 {
-                    return LoadCsvFile(fileStream, includeFiles, Path.GetDirectoryName(fileFullName), defines, userFriendlyLogger, includeFileNames);                    
+                    return await LoadCsvFileAsync(fileStream, includeFiles, fileProvider, Path.GetDirectoryName(fileFullName), defines, userFriendlyLogger, includeFileNames);
                 }
             }
             else
             {
-                using (Stream fileStream = fileProvider.GetFileInfo(fileFullName).CreateReadStream())
+                using (Stream fileStream = fileInfo.CreateReadStream())
                 {
-                    return LoadCsvFile(fileStream, includeFiles, Path.GetDirectoryName(fileFullName), defines, userFriendlyLogger, includeFileNames, fileProvider);                    
+                    return await LoadCsvFileAsync(fileStream, includeFiles, fileProvider, Path.GetDirectoryName(fileFullName), defines, userFriendlyLogger, includeFileNames);
                 }
             }
         }
@@ -243,12 +274,209 @@ namespace Ssz.Utils
         public static CaseInsensitiveDictionary<List<string?>> LoadCsvFile(
             Stream csvStream,
             bool includeFiles,
+            string? includeFilesDirectory,
+            Dictionary<Regex, string>? defines = null,
+            IUserFriendlyLogger? userFriendlyLogger = null,
+            List<string>? includeFileNames = null)
+        {
+            // !!! Warning !!! Code duplicated in LoadCsvFileAsync(...)
+            var fileData = new CaseInsensitiveDictionary<List<string?>>();
+
+            try
+            {
+                if (defines is null)
+                    defines = new Dictionary<Regex, string>();
+
+                using (var reader = CharsetDetectorHelper.GetStreamReader(csvStream, Encoding.UTF8))
+                {
+                    string line = "";
+                    string? l;
+                    List<string?>? beginFields = null;
+                    bool inQuotes = false;
+                    while ((l = reader.ReadLine()) is not null)
+                    {
+                        l = l.Trim();
+                        l = l.TrimEnd(',');
+
+                        if (l.Length > 0 && l[l.Length - 1] == '\\')
+                        {
+                            if (line != @"")
+                                line += @" " + l.Substring(0, l.Length - 1);
+                            else
+                                line = l.Substring(0, l.Length - 1);
+
+                            continue;
+                        }
+
+                        line += l;
+
+                        if (line == "" || line.All(Char.IsControl))
+                            continue;
+
+                        List<string?> fields;
+
+                        if (beginFields is null)
+                        {
+                            if (line.StartsWith(@"#include", StringComparison.InvariantCultureIgnoreCase) &&
+                                includeFiles)
+                            {
+                                var q1 = line.IndexOf('"', 8);
+                                if (q1 != -1 && q1 + 1 < line.Length)
+                                {
+                                    var q2 = line.IndexOf('"', q1 + 1);
+                                    if (q2 != -1 && q2 > q1 + 1)
+                                    {
+                                        var includeFileName = line.Substring(q1 + 1, q2 - q1 - 1);
+                                        if (includeFileNames is not null)
+                                            includeFileNames.Add(includeFileName);
+                                        CaseInsensitiveDictionary<List<string?>> includeFileData = LoadCsvFile(
+                                            Path.Combine(includeFilesDirectory ?? @"", includeFileName),
+                                            false,
+                                            defines,
+                                            userFriendlyLogger,
+                                            null);
+                                        foreach (var kvp in includeFileData)
+                                        {
+                                            if (fileData.ContainsKey(kvp.Key))
+                                            {
+                                                userFriendlyLogger?.LogWarning(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key='" + kvp.Key + "'");
+                                            }
+                                            fileData[kvp.Key] = kvp.Value;
+                                        }
+                                    }
+                                }
+
+                                line = "";
+                                continue;
+                            }
+                            if (line.StartsWith(@"#define", StringComparison.InvariantCultureIgnoreCase) &&
+                                line.Length > 7)
+                            {
+                                int q1 = 7;
+                                for (; q1 < line.Length; q1++)
+                                {
+                                    char ch = line[q1];
+                                    if (Char.IsWhiteSpace(ch)) continue;
+                                    else break;
+                                }
+                                if (q1 < line.Length)
+                                {
+                                    int q2 = q1 + 1;
+                                    for (; q2 < line.Length; q2++)
+                                    {
+                                        char ch = line[q2];
+                                        if (Char.IsWhiteSpace(ch)) break;
+                                        else continue;
+                                    }
+                                    string define = line.Substring(q1, q2 - q1);
+                                    string subst = @"";
+                                    if (q2 < line.Length - 1)
+                                    {
+                                        subst = line.Substring(q2 + 1).Trim();
+                                    }
+                                    defines[new Regex(@"\b" + define + @"\b", RegexOptions.IgnoreCase)] = subst;
+                                }
+
+                                line = "";
+                                continue;
+                            }
+                            if (line[0] == '#')
+                            {
+                                // Comment, skip
+
+                                line = "";
+                                continue;
+                            }
+
+                            fields = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), ref inQuotes);
+                            if (inQuotes)
+                            {
+                                beginFields = fields;
+                                line = "";
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            fields = ParseCsvLineInternal(@",", ReplaceDefines(line, defines), ref inQuotes);
+
+                            beginFields[beginFields.Count - 1] = beginFields[beginFields.Count - 1] + '\n' + fields[0];
+                            beginFields.AddRange(fields.Skip(1));
+                            if (inQuotes)
+                            {
+                                line = "";
+                                continue;
+                            }
+
+                            fields = beginFields;
+                            beginFields = null;
+                        }
+
+                        string? field0 = fields[0];
+                        if (field0 is null)
+                        {
+                            fields[0] = @"";
+                            field0 = @"";
+                        }
+                        if (field0 == @"")
+                        {
+                            if (!fields.All(String.IsNullOrEmpty))
+                            {
+                                if (fileData.ContainsKey(@""))
+                                {
+                                    userFriendlyLogger?.LogWarning(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key=''");
+                                }
+                                fileData[@""] = fields;
+                            }
+                        }
+                        else
+                        {
+                            if (fileData.ContainsKey(field0))
+                            {
+                                userFriendlyLogger?.LogWarning(Properties.Resources.CsvHelper_CsvFileDuplicateKey + ", Key='" + field0 + "'");
+                            }
+                            fileData[field0] = fields;
+                        }
+
+                        line = "";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                userFriendlyLogger?.LogError(ex, Properties.Resources.CsvHelper_CsvFileReadingError);
+            }
+
+            return fileData;
+        }
+
+        /// <summary>
+        ///     First column in file is Key and must be unique.
+        ///     With procerssing #include, #define, comments.
+        ///     If file does not exist, returns empty result.
+        ///     userFriendlyLogger: Messages are localized. Priority is Information, Error, Warning.
+        ///     includeFilesDirectory: if not null, processes #include directives.
+        ///     includeFileNames: returns all include file names.
+        ///     Result: List.Count >= 1, List[0] is not null
+        /// </summary>
+        /// <param name="csvStream"></param>
+        /// <param name="includeFiles"></param>
+        /// <param name="includeFilesDirectory"></param>
+        /// <param name="defines"></param>
+        /// <param name="userFriendlyLogger"></param>
+        /// <param name="includeFileNames"></param>
+        /// <param name="fileProvider"></param>
+        /// <returns></returns>
+        public static async Task<CaseInsensitiveDictionary<List<string?>>> LoadCsvFileAsync(
+            Stream csvStream,
+            bool includeFiles,
+            IFileProvider fileProvider,
             string? includeFilesDirectory, 
             Dictionary<Regex, string>? defines = null,
             IUserFriendlyLogger? userFriendlyLogger = null,
-            List<string>? includeFileNames = null,
-            IFileProvider? fileProvider = null)
+            List<string>? includeFileNames = null)
         {
+            // !!! Warning !!! Code duplicated in LoadCsvFile(...)
             var fileData = new CaseInsensitiveDictionary<List<string?>>();
 
             try
@@ -298,13 +526,13 @@ namespace Ssz.Utils
                                         var includeFileName = line.Substring(q1 + 1, q2 - q1 - 1);
                                         if (includeFileNames is not null)
                                             includeFileNames.Add(includeFileName);
-                                        CaseInsensitiveDictionary<List<string?>> includeFileData = LoadCsvFile(
+                                        CaseInsensitiveDictionary<List<string?>> includeFileData = await LoadCsvFileAsync(
                                             Path.Combine(includeFilesDirectory ?? @"", includeFileName), 
                                             false,
+                                            fileProvider,
                                             defines, 
                                             userFriendlyLogger, 
-                                            null,
-                                            fileProvider);
+                                            null);
                                         foreach (var kvp in includeFileData)
                                         {
                                             if (fileData.ContainsKey(kvp.Key))

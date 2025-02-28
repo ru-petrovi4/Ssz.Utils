@@ -86,12 +86,15 @@ namespace Ssz.Dcs.CentralServer
 
             app.UseRouting();
             //app.UseJsonApi();
+
+#if DEBUG
             app.UseSwagger(); // http://localhost:60060/swagger/v1/swagger.json
             app.UseSwaggerUI(options =>
             {
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 //options.RoutePrefix = string.Empty;
             }); // http://localhost:60060/swagger    
+#endif
 
             app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true }); // For NETSTANDARD2.0 Clients
 

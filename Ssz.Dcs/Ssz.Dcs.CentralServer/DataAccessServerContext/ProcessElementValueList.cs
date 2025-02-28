@@ -165,9 +165,11 @@ namespace Ssz.Dcs.CentralServer
                 return failedAliasResults;
             }
 
+            Dictionary<IDataAccessProvider, PendingWrite> pendingWriteDictionary = new(ReferenceEqualityComparer.Instance);
+
             foreach (EngineSession engineSession in _engineSessions)
             {
-                engineSession.DataAccessProvider.Obj = new PendingWrite();
+                 pendingWriteDictionary[engineSession.DataAccessProvider] = new PendingWrite();
             }
 
             OperatorSession? operatorSession = ((ServerWorker)ServerContext.ServerWorker).OperatorSessionsCollection.TryGetValue(ServerContext.ContextParams.TryGetValue(@"OperatorSessionId") ?? "");
@@ -183,8 +185,9 @@ namespace Ssz.Dcs.CentralServer
                     {
                         if (StatusCodes.IsBad(valueSubscription.ValueStatusTimestamp.StatusCode))
                             continue;
-                        var pendingWrite = valueSubscription.DataAccessProvider.Obj as PendingWrite;
-                        if (pendingWrite is null) continue;
+                        pendingWriteDictionary.TryGetValue(valueSubscription.DataAccessProvider, out PendingWrite? pendingWrite);                        
+                        if (pendingWrite is null) 
+                            continue;
                         pendingWrite.ValueSubscriptions.Add(valueSubscription);
                         pendingWrite.ValueStatusTimestamps.Add(valueStatusTimestamp.Value);
                         aliasResultsDicitionary[valueSubscription] = new AliasResult
@@ -230,12 +233,11 @@ namespace Ssz.Dcs.CentralServer
 
             foreach (EngineSession engineSession in _engineSessions)
             {
-                var pendingWrite = engineSession.DataAccessProvider.Obj as PendingWrite;
+                pendingWriteDictionary.TryGetValue(engineSession.DataAccessProvider, out PendingWrite? pendingWrite);                           
                 if (pendingWrite is null || pendingWrite.ValueSubscriptions.Count == 0) 
                     continue;
                 var t = engineSession.DataAccessProvider.WriteAsync(pendingWrite.ValueSubscriptions.ToArray(), pendingWrite.ValueStatusTimestamps.ToArray());
-                tasks.Add(t);
-                engineSession.DataAccessProvider.Obj = null;
+                tasks.Add(t);                
             }  
             
             foreach (var task in tasks)

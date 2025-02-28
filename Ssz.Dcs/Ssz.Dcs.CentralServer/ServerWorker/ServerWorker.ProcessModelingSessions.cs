@@ -177,7 +177,7 @@ namespace Ssz.Dcs.CentralServer
             }
 
             var tasks = new List<Task>();
-            foreach (CentralServer.EngineSession engineSession in processModelingSession.EngineSessions)
+            foreach (EngineSession engineSession in processModelingSession.EngineSessions)
             {
                 try
                 {
@@ -204,7 +204,7 @@ namespace Ssz.Dcs.CentralServer
                 {
                     var engineSession = processModelingSession.EngineSessions[collectionIndex];
                     processModelingSession.EngineSessions.RemoveAt(collectionIndex);
-                    engineSession.Dispose();
+                    engineSession.DataAccessProviderGetter_Addon.Close();
                 }
 
                 bool utilityItemsProcessingNeeded = false;
@@ -451,7 +451,7 @@ namespace Ssz.Dcs.CentralServer
             Task.Run(async () =>
             {
                 var isConnectedEventWaitHandles = new List<EventWaitHandle>();
-                foreach (CentralServer.EngineSession engineSession in processModelingSession.EngineSessions)
+                foreach (EngineSession engineSession in processModelingSession.EngineSessions)
                 {
                     isConnectedEventWaitHandles.Add(engineSession.DataAccessProvider.IsConnectedEventWaitHandle);
                 }
@@ -559,7 +559,7 @@ namespace Ssz.Dcs.CentralServer
 
             public long? DbEnity_ProcessModelingSessionId { get; set; }
 
-            public ObservableCollection<CentralServer.EngineSession> EngineSessions { get; } = new();            
+            public ObservableCollection<EngineSession> EngineSessions { get; } = new();            
 
             /// <summary>
             ///     See ProcessModelingSessionConstants

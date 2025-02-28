@@ -3,9 +3,9 @@ using Ssz.Utils.Addons;
 using Ssz.Utils.DataAccess;
 using System;
 
-namespace Ssz.Dcs.CentralServer
+namespace Ssz.Dcs.CentralServer.Common
 {
-    public class EngineSession : IDisposable
+    public class EngineSession
     {
         #region construction and destruction
 
@@ -14,11 +14,6 @@ namespace Ssz.Dcs.CentralServer
             EngineSessionId = engineSessionId;
             DataAccessProviderGetter_Addon = dataAccessProviderGetter_Addon;
             DataAccessProvider = DataAccessProviderGetter_Addon.DataAccessProvider!;
-        }
-
-        public void Dispose()
-        {
-            DataAccessProviderGetter_Addon.Close();
         }
 
         #endregion

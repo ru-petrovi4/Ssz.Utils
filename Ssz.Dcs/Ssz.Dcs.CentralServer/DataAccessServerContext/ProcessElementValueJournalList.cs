@@ -11,6 +11,7 @@ using System.IO;
 using Ssz.Utils.Serialization;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using Ssz.Dcs.CentralServer.Common;
 
 namespace Ssz.Dcs.CentralServer
 {
