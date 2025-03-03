@@ -137,6 +137,7 @@ namespace Ssz.Operator.Core.DsShapeViews
 
         public virtual void Initialize(PlayDrawingViewModel? playDrawingViewModel)
         {
+            DsShapeViewModel.Close();
             DsShapeViewModel.Initialize(playDrawingViewModel);
 
             SetBaseBindings();

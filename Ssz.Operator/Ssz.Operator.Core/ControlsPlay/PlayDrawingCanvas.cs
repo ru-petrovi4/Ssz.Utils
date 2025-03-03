@@ -12,18 +12,6 @@ namespace Ssz.Operator.Core.ControlsPlay
 {
     public class PlayDrawingCanvas : Canvas, IDisposable
     {
-        #region private fields
-
-        private readonly List<DsShapeViewBase> _dsShapeViewsList = new();
-
-        #endregion
-
-        #region protected functions
-
-        protected bool Disposed { get; private set; }
-
-        #endregion
-
         #region construction and destruction
 
         public PlayDrawingCanvas(DrawingBase drawing, Frame? frame)
@@ -84,9 +72,12 @@ namespace Ssz.Operator.Core.ControlsPlay
                 }
                 catch
                 {
-                }                
+                }
 
-                foreach (DsShapeViewBase dsShapeView in _dsShapeViewsList) dsShapeView.Dispose();
+                foreach (DsShapeViewBase dsShapeView in _dsShapeViewsList)
+                {
+                    dsShapeView.Dispose();
+                }
                 _dsShapeViewsList.Clear();
 
                 PlayDrawingViewModel.Dispose();
@@ -106,11 +97,25 @@ namespace Ssz.Operator.Core.ControlsPlay
 
         public PlayDrawingViewModel PlayDrawingViewModel { get; }
 
-        public void RefreshBindins()
+        public void DsShapeViewsReInitialize()
         {
             foreach (DsShapeViewBase dsShapeView in _dsShapeViewsList)
+            {
                 dsShapeView.Initialize(PlayDrawingViewModel);
+            }
         }
+
+        #endregion
+
+        #region protected functions
+
+        protected bool Disposed { get; private set; }
+
+        #endregion
+
+        #region private fields
+
+        private readonly List<DsShapeViewBase> _dsShapeViewsList = new();
 
         #endregion
     }

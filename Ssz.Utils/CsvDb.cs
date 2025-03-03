@@ -178,51 +178,8 @@ namespace Ssz.Utils
                 newCsvFilesCollection = new CaseInsensitiveDictionary<CsvFile>();
             else
                 newCsvFilesCollection = new Dictionary<string, CsvFile>();
-
-            if (CsvDbDirectoryInfo?.Exists == true)
-            {
-                foreach (FileInfo fileInfo in CsvDbDirectoryInfo.GetFiles(@"*", SearchOption.TopDirectoryOnly).Where(f => f.Name.EndsWith(@".csv",
-                    StringComparison.InvariantCultureIgnoreCase)))
-                {
-                    _csvFilesCollection.TryGetValue(fileInfo.Name, out CsvFile? csvFile);
-                    if (csvFile is null)
-                    {
-                        csvFile = new CsvFile
-                        {
-                            FileName = fileInfo.Name,
-                            OnDiskFileInfo = fileInfo,
-                            Temp_NeedResetData = true
-                        };
-
-                        foreach (CsvFile oldCsvFile in _csvFilesCollection.Values)
-                        {
-                            if (oldCsvFile.IncludeFileNamesCollection.Contains(fileInfo.Name))
-                                oldCsvFile.Temp_NeedResetData = true;
-                        }
-                    }
-                    else
-                    {
-                        if (Path.GetFileNameWithoutExtension(csvFile.FileName) != Path.GetFileNameWithoutExtension(fileInfo.Name) || // Strict compare
-                            csvFile.Data_FileInfo_LastModifiedUtc is null ||
-                            csvFile.Data_FileInfo_LastModifiedUtc.Value != fileInfo.LastWriteTimeUtc)
-                        {
-                            csvFile.FileName = fileInfo.Name;
-                            csvFile.OnDiskFileInfo = fileInfo;
-                            csvFile.Temp_NeedResetData = true;
-
-                            foreach (CsvFile oldCsvFile in _csvFilesCollection.Values)
-                            {
-                                if (oldCsvFile.IncludeFileNamesCollection.Contains(fileInfo.Name))
-                                    oldCsvFile.Temp_NeedResetData = true;
-                            }
-                        }
-
-                        csvFile.Temp_FileUpdated = true;
-                    }
-                    newCsvFilesCollection.Add(fileInfo.Name, csvFile);
-                }
-            }
-            else if (CsvDbFileProvider is not null)
+            
+            if (CsvDbFileProvider is not null) // Always process first
             {
                 foreach (IFileInfo fileInfo in CsvDbFileProvider.GetDirectoryContents(CsvDbDirectoryFullName ?? @"").Where(f => !f.IsDirectory && f.Name.EndsWith(@".csv",
                     StringComparison.InvariantCultureIgnoreCase)))
@@ -251,6 +208,49 @@ namespace Ssz.Utils
                         {
                             csvFile.FileName = fileInfo.Name;
                             //csvFile.OnDiskFileInfo = fileInfo;
+                            csvFile.Temp_NeedResetData = true;
+
+                            foreach (CsvFile oldCsvFile in _csvFilesCollection.Values)
+                            {
+                                if (oldCsvFile.IncludeFileNamesCollection.Contains(fileInfo.Name))
+                                    oldCsvFile.Temp_NeedResetData = true;
+                            }
+                        }
+
+                        csvFile.Temp_FileUpdated = true;
+                    }
+                    newCsvFilesCollection.Add(fileInfo.Name, csvFile);
+                }
+            }
+            else if (CsvDbDirectoryInfo?.Exists == true)
+            {
+                foreach (FileInfo fileInfo in CsvDbDirectoryInfo.GetFiles(@"*", SearchOption.TopDirectoryOnly).Where(f => f.Name.EndsWith(@".csv",
+                    StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    _csvFilesCollection.TryGetValue(fileInfo.Name, out CsvFile? csvFile);
+                    if (csvFile is null)
+                    {
+                        csvFile = new CsvFile
+                        {
+                            FileName = fileInfo.Name,
+                            OnDiskFileInfo = fileInfo,
+                            Temp_NeedResetData = true
+                        };
+
+                        foreach (CsvFile oldCsvFile in _csvFilesCollection.Values)
+                        {
+                            if (oldCsvFile.IncludeFileNamesCollection.Contains(fileInfo.Name))
+                                oldCsvFile.Temp_NeedResetData = true;
+                        }
+                    }
+                    else
+                    {
+                        if (Path.GetFileNameWithoutExtension(csvFile.FileName) != Path.GetFileNameWithoutExtension(fileInfo.Name) || // Strict compare
+                            csvFile.Data_FileInfo_LastModifiedUtc is null ||
+                            csvFile.Data_FileInfo_LastModifiedUtc.Value != fileInfo.LastWriteTimeUtc)
+                        {
+                            csvFile.FileName = fileInfo.Name;
+                            csvFile.OnDiskFileInfo = fileInfo;
                             csvFile.Temp_NeedResetData = true;
 
                             foreach (CsvFile oldCsvFile in _csvFilesCollection.Values)
@@ -331,17 +331,7 @@ namespace Ssz.Utils
             {
                 if (csvFile.Data is null)
                 {
-                    if (CsvDbDirectoryInfo?.Exists == true)
-                    {
-                        using var fileFullNameScope = LoggersSet.UserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, csvFile.FileName));
-                        csvFile.IncludeFileNamesCollection.Clear();
-                        string fileFullName = Path.Combine(CsvDbDirectoryInfo.FullName, csvFile.FileName);
-                        csvFile.Data = CsvHelper.LoadCsvFile(fileFullName, true, null, LoggersSet.UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
-                        var fi = new FileInfo(fileFullName);
-                        csvFile.Data_FileInfo_LastModifiedUtc = fi.LastWriteTimeUtc;
-                        csvFile.OnDiskFileInfo = fi;
-                    }
-                    else if (CsvDbFileProvider is not null)
+                    if (CsvDbFileProvider is not null) // Always process first
                     {
                         using var fileFullNameScope = LoggersSet.UserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, csvFile.FileName));
                         csvFile.IncludeFileNamesCollection.Clear();
@@ -350,6 +340,16 @@ namespace Ssz.Utils
                         csvFile.Data_FileInfo_LastModifiedUtc = CsvDbFileProvider.GetFileInfo(fileFullName).LastModified.UtcDateTime;
                         //csvFile.OnDiskFileInfo = fi;
                     }
+                    else if (CsvDbDirectoryInfo?.Exists == true)
+                    {
+                        using var fileFullNameScope = LoggersSet.UserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, csvFile.FileName));
+                        csvFile.IncludeFileNamesCollection.Clear();
+                        string fileFullName = Path.Combine(CsvDbDirectoryInfo.FullName, csvFile.FileName);
+                        csvFile.Data = CsvHelper.LoadCsvFile(fileFullName, true, null, LoggersSet.UserFriendlyLogger, csvFile.IncludeFileNamesCollection);
+                        var fi = new FileInfo(fileFullName);
+                        csvFile.Data_FileInfo_LastModifiedUtc = fi.LastWriteTimeUtc;
+                        csvFile.OnDiskFileInfo = fi;
+                    }                    
                     else
                     {
                         csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();
@@ -820,7 +820,11 @@ namespace Ssz.Utils
         {
             if (csvFile.Data is null)
             {
-                if (CsvDbDirectoryInfo?.Exists == true)
+                if (CsvDbFileProvider is not null)
+                {
+                    throw new NotImplementedException("Call EnsureCsvFilesDataIsLoadedAsync() after CsvDb creation to avoid this error.");
+                }
+                else if (CsvDbDirectoryInfo?.Exists == true)
                 {
                     using var fileFullNameScope = LoggersSet.UserFriendlyLogger.BeginScope((Properties.Resources.FileNameScopeName, csvFile.FileName));
                     csvFile.IncludeFileNamesCollection.Clear();
@@ -829,11 +833,7 @@ namespace Ssz.Utils
                     var fi = new FileInfo(fileFullName);
                     csvFile.Data_FileInfo_LastModifiedUtc = fi.LastWriteTimeUtc;
                     csvFile.OnDiskFileInfo = fi;                    
-                }
-                else if (CsvDbFileProvider is not null)
-                {
-                    throw new NotImplementedException("Call EnsureCsvFilesDataIsLoadedAsync() after CsvDb creation to avoid this error.");
-                }
+                }                
                 else
                 {
                     csvFile.Data = new CaseInsensitiveDictionary<List<string?>>();

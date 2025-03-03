@@ -42,7 +42,6 @@ namespace Ssz.Operator.Core.DsShapeViews
             Content = _canvas;
         }
 
-
         protected override void Dispose(bool disposing)
         {
             if (Disposed) return;
@@ -80,7 +79,6 @@ namespace Ssz.Operator.Core.DsShapeViews
 
         public DsShapeViewBase[] DsShapeViews => _canvas.Children.OfType<DsShapeViewBase>().ToArray();
 
-
         public ConnectionPointDsShapeView[]? ConnectionPointDsShapeViews { get; }
 
         public override void Initialize(PlayDrawingViewModel? playDrawingViewModel)
@@ -88,9 +86,10 @@ namespace Ssz.Operator.Core.DsShapeViews
             base.Initialize(playDrawingViewModel);
 
             foreach (var dsShapeView in _canvas.Children.OfType<DsShapeViewBase>())
+            {
                 dsShapeView.Initialize(playDrawingViewModel);
+            }
         }
-
 
         public void UpdateModelLayer()
         {
@@ -156,9 +155,7 @@ namespace Ssz.Operator.Core.DsShapeViews
 
         private readonly ComplexDsShape _complexDsShape;
 
-
         private readonly Canvas _canvas;
-
 
         private readonly List<DsShapeViewBase> _dsShapeViewsList = new();
 

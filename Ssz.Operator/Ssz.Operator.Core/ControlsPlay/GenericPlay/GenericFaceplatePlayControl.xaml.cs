@@ -30,7 +30,8 @@ namespace Ssz.Operator.Core.ControlsPlay.GenericPlay
         public override bool PrepareWindow(IPlayWindow newWindow,
             ref ShowWindowDsCommandOptions showWindowDsCommandOptions)
         {
-            if (DsPageDrawing is null) return true;
+            if (DsPageDrawing is null) 
+                return true;
 
             var genericFaceplateDsPageType = DsPageDrawing.DsPageTypeObject as GenericFaceplateDsPageType;
             if (genericFaceplateDsPageType is null)

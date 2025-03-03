@@ -78,9 +78,9 @@ namespace Ssz.Operator.Core.ControlsPlay
 
         public PlayDrawingViewModel PlayDrawingViewModel => _playDsPageDrawingCanvas.PlayDrawingViewModel;
 
-        public void RefreshBindins()
+        public void DsShapeViewsReInitialize()
         {
-            _playDsPageDrawingCanvas.RefreshBindins();
+            _playDsPageDrawingCanvas.DsShapeViewsReInitialize();
         }
 
         #endregion
