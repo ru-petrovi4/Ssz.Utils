@@ -12,5 +12,7 @@ namespace Ssz.DataAccessGrpc.Client
         ///     Size in bytes.
         /// </summary>
         public const int MaxReplyObjectSize = 1024 * 1024;
+
+        public const int MaxEventMessagesCount = 1024;
     }
 }

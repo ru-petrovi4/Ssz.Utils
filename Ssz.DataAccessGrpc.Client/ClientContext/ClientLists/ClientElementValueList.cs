@@ -120,8 +120,8 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
             }
 
             var failedItems = new List<ClientElementValueListItem>();
-            AliasResult[] failedAliasResults = await Context.WriteElementValuesAsync(ListServerAlias, fullElementValuesCollection);
-            foreach (AliasResult failedAliasResult in failedAliasResults)
+            ServerBase.AliasResult[] failedAliasResults = await Context.WriteElementValuesAsync(ListServerAlias, fullElementValuesCollection);
+            foreach (ServerBase.AliasResult failedAliasResult in failedAliasResults)
             {
                 if (ListItemsManager.TryGetValue(failedAliasResult.ClientAlias, out ClientElementValueListItem? item))
                 {

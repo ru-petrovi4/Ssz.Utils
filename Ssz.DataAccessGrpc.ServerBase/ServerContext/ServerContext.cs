@@ -15,7 +15,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
     /// <summary>
     /// 
     /// </summary>
-    public partial class ServerContext : IDisposable, IAsyncDisposable
+    public partial class ServerContext : IDataAccessServerContext
     {
         #region construction and destruction
         
@@ -31,7 +31,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="systemNameToConnect"></param>
         /// <param name="contextParams"></param>
         public ServerContext(
-            ILogger<DataAccessService> logger,
+            ILogger logger,
             ServerWorkerBase serverWorker,
             string clientApplicationName, 
             string clientWorkstationName, 
@@ -159,7 +159,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public bool Disposed { get; private set; }
 
-        public ILogger<DataAccessService> Logger { get; }
+        public ILogger Logger { get; }
 
         public ServerWorkerBase ServerWorker { get; }
 
@@ -258,13 +258,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     LastContextStatusCallbackDateTimeUtc = nowUtc;
                 }
             }
-        }        
+        }               
 
-        #endregion
-
-        #region internal functions
-
-        internal async Task<List<AliasResult>?> WriteElementValuesAsync(uint listServerAlias, ReadOnlyMemory<byte> elementValuesCollectionBytes)
+        public async Task<List<Utils.DataAccess.AliasResult>?> WriteElementValuesAsync(uint listServerAlias, ReadOnlyMemory<byte> elementValuesCollectionBytes)
         {
             ServerListRoot? serverList;
 
@@ -276,8 +272,8 @@ namespace Ssz.DataAccessGrpc.ServerBase
             return await serverList.WriteElementValuesAsync(elementValuesCollectionBytes);
         }
 
-        internal List<EventIdResult> AckAlarms(uint listServerAlias, string operatorName, string comment,
-            IEnumerable<EventId> eventIdsToAck)
+        public List<Utils.DataAccess.EventIdResult> AckAlarms(uint listServerAlias, string operatorName, string comment,
+            IEnumerable<Ssz.Utils.DataAccess.EventId> eventIdsToAck)
         {
             ServerListRoot? serverList;
 
@@ -294,7 +290,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// </summary>
         /// <param name="listServerAlias"></param>
         /// <returns></returns>
-        internal void TouchList(uint listServerAlias)
+        public void TouchList(uint listServerAlias)
         {
             ServerListRoot? serverList;
 
@@ -306,22 +302,17 @@ namespace Ssz.DataAccessGrpc.ServerBase
             serverList.TouchList();
         }
 
-        internal async Task PassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend, IServerStreamWriter<DataChunk> responseStream)
+        public async Task<ReadOnlyMemory<byte>> PassthroughAsync(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
-            ReadOnlyMemory<byte> returnData = await ServerWorker.PassthroughAsync(this, recipientPath, passthroughName, dataToSend);
-
-            foreach (var dataChunk in ProtobufHelper.SplitForCorrectGrpcMessageSize(returnData))
-            {
-                await responseStream.WriteAsync(dataChunk);
-            };
+            return await ServerWorker.PassthroughAsync(this, recipientPath, passthroughName, dataToSend);
         }
 
-        internal string LongrunningPassthrough(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
+        public string LongrunningPassthrough(string recipientPath, string passthroughName, ReadOnlyMemory<byte> dataToSend)
         {
             return ServerWorker.LongrunningPassthrough(this, recipientPath, passthroughName, dataToSend);
         }
 
-        internal void LongrunningPassthroughCancel(string jobId)
+        public void LongrunningPassthroughCancel(string jobId)
         {
             ServerWorker.LongrunningPassthroughCancel(this, jobId);
         }

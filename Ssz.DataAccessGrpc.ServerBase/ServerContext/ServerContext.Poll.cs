@@ -1,4 +1,5 @@
 using Grpc.Core;
+using Ssz.Utils.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
     {
         #region internal functions
         
-        internal async Task PollElementValuesChangesAsync(uint listServerAlias, IServerStreamWriter<ElementValuesCallback> responseStream)
+        public Task<ElementValuesCallbackMessage?> PollElementValuesChangesAsync(uint listServerAlias)
         {
             ServerListRoot? serverList;
 
@@ -18,18 +19,10 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Incorrect listServerAlias."));
             }
 
-            ServerContext.ElementValuesCallbackMessage? elementValuesCallbackMessage = serverList.GetElementValuesCallbackMessage();
-
-            if (elementValuesCallbackMessage is not null)
-            {
-                foreach (var elementValuesCallback in elementValuesCallbackMessage.SplitForCorrectGrpcMessageSize())
-                {
-                    await responseStream.WriteAsync(elementValuesCallback);
-                };
-            }
+            return Task.FromResult(serverList.GetElementValuesCallbackMessage());
         }
-        
-        internal async Task PollEventsChangesAsync(uint listServerAlias, IServerStreamWriter<EventMessagesCollection> responseStream)
+
+        public Task<List<EventMessagesCallbackMessage>?> PollEventsChangesAsync(uint listServerAlias)
         {
             ServerListRoot? serverList;
 
@@ -38,17 +31,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Incorrect listServerAlias."));
             }
 
-            List<EventMessagesCallbackMessage>? eventMessagesCallbackMessages = serverList.GetEventMessagesCallbackMessages();
-            if (eventMessagesCallbackMessages is not null)
-            {
-                foreach (var fullEventMessagesCallbackMessage in eventMessagesCallbackMessages)
-                {
-                    foreach (var eventMessagesCallbackMessage in fullEventMessagesCallbackMessage.SplitForCorrectGrpcMessageSize())
-                    {
-                        await responseStream.WriteAsync(eventMessagesCallbackMessage.EventMessagesCollection);
-                    };                    
-                }
-            }      
+           return Task.FromResult(serverList.GetEventMessagesCallbackMessages());            
         }
 
         #endregion        

@@ -13,7 +13,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
     public partial class ServerContext        
     {
         #region internal functions
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -26,15 +26,14 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="serverAliases"></param>
         /// <returns></returns>
         /// <exception cref="RpcException"></exception>
-        internal async Task ReadElementValuesJournalsAsync(
+        public async Task<byte[]> ReadElementValuesJournalsAsync(
             uint listServerAlias, 
             DateTime firstTimeStampUtc,
             DateTime secondTimeStampUtc,
             uint numValuesPerAlias,
-            TypeId calculation,
+            Ssz.Utils.DataAccess.TypeId calculation,
             CaseInsensitiveDictionary<string?> params_,
-            List<uint> serverAliases,
-            IServerStreamWriter<DataChunk> responseStream)
+            List<uint> serverAliases)
         {
             ServerListRoot? serverList;
 
@@ -64,19 +63,14 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 }
                 bytes = memoryStream.ToArray();
             }
-
-            foreach (DataChunk dataChunk in ProtobufHelper.SplitForCorrectGrpcMessageSize(bytes))
-            {
-                await responseStream.WriteAsync(dataChunk);
-            };
+            return bytes;            
         }
 
-        internal async Task ReadEventMessagesJournalAsync(
+        public async Task<EventMessagesCallbackMessage?> ReadEventMessagesJournalAsync(
             uint listServerAlias,
             DateTime firstTimeStampUtc,
             DateTime secondTimeStampUtc,            
-            CaseInsensitiveDictionary<string?> params_, 
-            IServerStreamWriter<EventMessagesCollection> responseStream)
+            CaseInsensitiveDictionary<string?> params_)
         {
             ServerListRoot? serverList;
 
@@ -85,17 +79,10 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Incorrect listServerAlias."));
             }
 
-            EventMessagesCallbackMessage? fullEventMessagesCallbackMessage = await serverList.ReadEventMessagesJournalAsync(
+            return await serverList.ReadEventMessagesJournalAsync(
                     firstTimeStampUtc,
                     secondTimeStampUtc,
-                    params_);
-            if (fullEventMessagesCallbackMessage is not null)
-            {
-                foreach (var eventMessagesCallbackMessage in fullEventMessagesCallbackMessage.SplitForCorrectGrpcMessageSize())
-                {
-                    await responseStream.WriteAsync(eventMessagesCallbackMessage.EventMessagesCollection);
-                };
-            }
+                    params_);            
         }
 
         #endregion

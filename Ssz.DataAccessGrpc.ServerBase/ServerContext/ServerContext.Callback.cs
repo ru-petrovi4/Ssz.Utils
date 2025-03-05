@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Protobuf;
@@ -87,17 +88,13 @@ namespace Ssz.DataAccessGrpc.ServerBase
             }
         }
 
-        #endregion
-
-        #region internal functions
-
         /// <summary>
         /// 
         /// </summary>
         /// <param name="listServerAlias"></param>
         /// <param name="isEnabled"></param>
         /// <returns></returns>
-        internal void EnableListCallback(uint listServerAlias, ref bool isEnabled)
+        public void EnableListCallback(uint listServerAlias, ref bool isEnabled)
         {
             ServerListRoot? serverList;
 
@@ -280,89 +277,6 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         private List<LongrunningPassthroughCallbackMessage> _longrunningPassthroughCallbackMessagesCollection = new();
 
-        #endregion
-
-        public class ContextStatusMessage
-        {
-            /// <summary>
-            /// 
-            /// </summary>
-            public uint StateCode;
-        }
-
-        public class ElementValuesCallbackMessage
-        {
-            #region public functions            
-
-            public uint ListClientAlias;
-
-            public readonly Dictionary<uint, ValueStatusTimestamp> ElementValues = new Dictionary<uint, ValueStatusTimestamp>();
-
-            public List<ElementValuesCallback> SplitForCorrectGrpcMessageSize()
-            {
-                byte[] fullElementValuesCollection;
-                using (var memoryStream = new MemoryStream(1024))
-                { 
-                    using (var writer = new SerializationWriter(memoryStream))
-                    {
-                        using (writer.EnterBlock(1))
-                        {
-                            writer.Write(ElementValues.Count);
-                            foreach (var kvp in ElementValues)
-                            {
-                                uint serverAlias = kvp.Key;
-                                ValueStatusTimestamp valueStatusTimestamp = kvp.Value;
-
-                                writer.Write(serverAlias);                                
-                                valueStatusTimestamp.SerializeOwnedData(writer, null);
-                            }
-                        }                        
-                    }                    
-                    fullElementValuesCollection = memoryStream.ToArray();
-                }
-
-                List<ElementValuesCallback> list = new();
-                foreach (DataChunk elementValuesCollection in ProtobufHelper.SplitForCorrectGrpcMessageSize(fullElementValuesCollection))
-                {
-                    var elementValuesCallback = new ElementValuesCallback();
-                    elementValuesCallback.ListClientAlias = ListClientAlias;
-                    elementValuesCallback.ElementValuesCollection = elementValuesCollection;
-                    list.Add(elementValuesCallback);
-                }
-                return list;
-            }
-
-            #endregion
-        }
-
-        public class EventMessagesCallbackMessage
-        {
-            #region public functions
-
-            public uint ListClientAlias;
-
-            public List<EventMessage> EventMessages = new();
-
-            public CaseInsensitiveDictionary<string?>? CommonFields;            
-
-            public List<EventMessagesCallback> SplitForCorrectGrpcMessageSize()
-            {
-                List<EventMessagesCallback> result = new();
-                foreach (EventMessagesCollection eventMessagesCollection in ProtobufHelper.SplitForCorrectGrpcMessageSize(EventMessages, CommonFields))
-                {
-                    var eventMessagesCallback = new EventMessagesCallback();
-                    eventMessagesCallback.ListClientAlias = ListClientAlias;
-                    eventMessagesCallback.EventMessagesCollection = eventMessagesCollection;
-                    result.Add(eventMessagesCallback);
-                }
-                return result;
-            }
-
-            #endregion
-        }
-
-        public class LongrunningPassthroughCallbackMessage : Ssz.Utils.DataAccess.LongrunningPassthroughCallback
-        {            
-        }
-    }
+        #endregion                
+    }    
 }

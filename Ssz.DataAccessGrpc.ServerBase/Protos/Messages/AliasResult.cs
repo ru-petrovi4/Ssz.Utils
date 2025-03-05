@@ -1,10 +1,14 @@
-﻿using System;
+using Google.Protobuf.WellKnownTypes;
+using Ssz.Utils.DataAccess;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.ServerBase
 {
-    internal sealed partial class AliasResult
+    public sealed partial class AliasResult
     {
         #region construction and destruction
 
@@ -16,21 +20,6 @@ namespace Ssz.DataAccessGrpc.ServerBase
             Details = aliasResult.Details;
             ClientAlias = aliasResult.ClientAlias;
             ServerAlias = aliasResult.ServerAlias;
-        }
-
-        #endregion
-
-        #region public functions
-
-        public Ssz.Utils.DataAccess.ResultInfo GetResultInfo()
-        {
-            return new Ssz.Utils.DataAccess.ResultInfo
-            {
-                StatusCode = this.StatusCode,
-                Info = this.Info,
-                Label = this.Label,
-                Details = this.Details,
-            };
         }
 
         #endregion

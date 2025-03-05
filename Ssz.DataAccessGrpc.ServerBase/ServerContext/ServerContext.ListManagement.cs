@@ -21,13 +21,13 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="listType"></param>
         /// <param name="listParams"></param>
         /// <returns></returns>
-        internal AliasResult DefineList(uint listClientAlias, uint listType, CaseInsensitiveDictionary<string?> listParams)
+        public Utils.DataAccess.AliasResult DefineList(uint listClientAlias, uint listType, CaseInsensitiveDictionary<string?> listParams)
         {
             ServerListRoot serverList = ServerWorker.NewServerList(this, listClientAlias, listType, listParams);
             
             uint listServerAlias = _listsManager.Add(serverList);
 
-            var aliasResult = new AliasResult();
+            var aliasResult = new Utils.DataAccess.AliasResult();
             aliasResult.StatusCode = (uint)StatusCode.OK;
             aliasResult.ClientAlias = listClientAlias;
             aliasResult.ServerAlias = listServerAlias;
@@ -39,9 +39,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// </summary>
         /// <param name="listServerAliases"></param>
         /// <returns></returns>
-        internal List<AliasResult> DeleteLists(List<uint> listServerAliases)
+        public List<Utils.DataAccess.AliasResult> DeleteLists(List<uint> listServerAliases)
         {
-            var resultsList = new List<AliasResult>();
+            var resultsList = new List<Utils.DataAccess.AliasResult>();
 
             // null means to delete all lists, so put all lists into listIds
             if (listServerAliases.Count == 0)
@@ -65,7 +65,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     }
                     else
                     {                        
-                        resultsList.Add(new AliasResult
+                        resultsList.Add(new Utils.DataAccess.AliasResult
                             {
                                 StatusCode = (uint)StatusCode.InvalidArgument,
                                 ClientAlias = 0,
@@ -85,7 +85,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="listServerAlias"></param>
         /// <param name="itemsToAdd"></param>
         /// <returns></returns>
-        internal async Task<List<AliasResult>> AddItemsToListAsync(uint listServerAlias, List<ListItemInfo> itemsToAdd)
+        public async Task<List<Utils.DataAccess.AliasResult>> AddItemsToListAsync(uint listServerAlias, List<Utils.DataAccess.ListItemInfo> itemsToAdd)
         {
             ServerListRoot? serverList;
 
@@ -98,13 +98,13 @@ namespace Ssz.DataAccessGrpc.ServerBase
         }
 
         /// <summary>
-        ///     Returns failed AliasResults only.
+        ///     Returns failed AliasResultMessages only.
         /// </summary>
         /// <param name="listServerAlias"></param>
         /// <param name="serverAliasesToRemove"></param>
         /// <returns></returns>
         /// <exception cref="RpcException"></exception>
-        internal async Task<List<AliasResult>> RemoveItemsFromListAsync(uint listServerAlias, List<uint> serverAliasesToRemove)
+        public async Task<List<Utils.DataAccess.AliasResult>> RemoveItemsFromListAsync(uint listServerAlias, List<uint> serverAliasesToRemove)
         {
             ServerListRoot? serverList;
 

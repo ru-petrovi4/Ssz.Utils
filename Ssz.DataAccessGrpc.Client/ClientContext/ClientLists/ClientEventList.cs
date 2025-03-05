@@ -54,7 +54,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// <param name="comment"></param>
         /// <param name="eventIdsToAck"></param>
         /// <returns></returns>
-        public async Task<EventIdResult[]> AckAlarmsAsync(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
+        public async Task<ServerBase.EventIdResult[]> AckAlarmsAsync(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 

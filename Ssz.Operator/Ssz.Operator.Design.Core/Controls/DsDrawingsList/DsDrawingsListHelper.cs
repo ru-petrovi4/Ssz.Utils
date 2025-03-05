@@ -138,8 +138,12 @@ namespace Ssz.Operator.Design.Core.Controls
                     AlarmListDsShape.DsShapeTypeGuid, "", "")));
 
             entities.Add(
-                new EntityInfoViewModel(new EntityInfo(Top3AlarmListDsShape.DsShapeTypeNameToDisplay,
-                    Top3AlarmListDsShape.DsShapeTypeGuid, "", "")));
+                new EntityInfoViewModel(new EntityInfo(ConnectionPointDsShape.DsShapeTypeNameToDisplay,
+                    ConnectionPointDsShape.DsShapeTypeGuid, "", "")));
+
+            entities.Add(
+                new EntityInfoViewModel(new EntityInfo(ConnectorDsShape.DsShapeTypeNameToDisplay,
+                    ConnectorDsShape.DsShapeTypeGuid, "", "")));
 
             rootGroupViewModel.Entities = entities.OrderBy(e => e.Header).ToList();
 

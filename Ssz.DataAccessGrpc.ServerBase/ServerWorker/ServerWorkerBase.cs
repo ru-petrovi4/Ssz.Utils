@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Ssz.Utils;
+using Ssz.Utils.DataAccess;
 using Ssz.Utils.Diagnostics;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.ServerBase
 {
-    public abstract partial class ServerWorkerBase
+    public abstract partial class ServerWorkerBase : IDataAccessServerWorker
     {
         #region construction and destruction
 
@@ -121,7 +122,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public class ServerContextAddedOrRemovedEventArgs : EventArgs
         {
-            public ServerContext ServerContext { get; set; } = null!;
+            public IDataAccessServerContext ServerContext { get; set; } = null!;
 
             public bool Added { get; set; }
         }

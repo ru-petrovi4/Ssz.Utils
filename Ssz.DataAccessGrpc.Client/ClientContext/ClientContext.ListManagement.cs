@@ -73,7 +73,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// </summary>
         /// <param name="dataAccessGrpcList"> The list to deleted </param>
         /// <returns> The results of the deletion. </returns>
-        public async Task<AliasResult?> RemoveListAsync(ClientListRoot dataAccessGrpcList)
+        public async Task<ServerBase.AliasResult?> RemoveListAsync(ClientListRoot dataAccessGrpcList)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -122,7 +122,7 @@ namespace Ssz.DataAccessGrpc.Client
         ///     The list of results. The size and order of this list matches the size and order of the objectsToAdd
         ///     parameter.
         /// </returns>
-        public async Task<List<AliasResult>> AddItemsToListAsync(uint listServerAlias, List<ListItemInfo> itemsToAdd)
+        public async Task<List<ServerBase.AliasResult>> AddItemsToListAsync(uint listServerAlias, List<ServerBase.ListItemInfo> itemsToAdd)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -159,7 +159,7 @@ namespace Ssz.DataAccessGrpc.Client
         ///     The list identifiers and result codes for data objects whose removal failed. Returns null if all removals
         ///     succeeded.
         /// </returns>
-        public async Task<List<AliasResult>> RemoveItemsFromListAsync(uint listServerAlias, List<uint> serverAliasesToRemove)
+        public async Task<List<ServerBase.AliasResult>> RemoveItemsFromListAsync(uint listServerAlias, List<uint> serverAliasesToRemove)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 

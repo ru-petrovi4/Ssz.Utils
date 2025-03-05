@@ -1,6 +1,7 @@
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,6 +56,38 @@ namespace Ssz.DataAccessGrpc.Client
             return result;
         }
 
+        public static List<EventMessagesCollection> SplitForCorrectGrpcMessageSize(List<EventMessage> eventMessages, CaseInsensitiveDictionary<string?>? commonFields)
+        {
+            var result = new List<EventMessagesCollection>();
+
+            int index = 0;
+            while (index < eventMessages.Count)
+            {
+                var eventMessagesCollection = new EventMessagesCollection();
+                int length;
+                if (eventMessages.Count - index <= Constants.MaxEventMessagesCount)
+                {
+                    length = eventMessages.Count - index;
+                    if (commonFields is not null)
+                    {
+                        foreach (var kvp in commonFields)
+                            eventMessagesCollection.CommonFields.Add(kvp.Key,
+                                kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
+                    }
+                }
+                else
+                {
+                    length = Constants.MaxEventMessagesCount;
+                    eventMessagesCollection.IsIncomplete = true;
+                }
+                eventMessagesCollection.EventMessages.AddRange(eventMessages.Skip(index).Take(length));
+                index += length;
+                result.Add(eventMessagesCollection);
+            }
+
+            return result;
+        }
+
         public static Timestamp ConvertToTimestamp(DateTime dateTimeUtc)
         {
             if (dateTimeUtc == default(DateTime))
@@ -68,5 +101,5 @@ namespace Ssz.DataAccessGrpc.Client
                 return new Timestamp();
             }
         }
-    }
+    }    
 }

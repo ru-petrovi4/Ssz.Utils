@@ -76,18 +76,18 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public bool ListCallbackIsEnabled { get; protected set; }
 
-        public virtual Task<List<AliasResult>> AddItemsToListAsync(List<ListItemInfo> itemsToAdd)
+        public virtual Task<List<Utils.DataAccess.AliasResult>> AddItemsToListAsync(List<Utils.DataAccess.ListItemInfo> itemsToAdd)
         {
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid List Type for this Request."));
         }
 
         /// <summary>
-        ///     Returns failed AliasResults only.
+        ///     Returns failed AliasResultMessages only.
         /// </summary>
         /// <param name="serverAliasesToRemove"></param>
         /// <returns></returns>
         /// <exception cref="RpcException"></exception>
-        public virtual Task<List<AliasResult>> RemoveItemsFromListAsync(List<uint> serverAliasesToRemove)
+        public virtual Task<List<Utils.DataAccess.AliasResult>> RemoveItemsFromListAsync(List<uint> serverAliasesToRemove)
         {
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid List Type for this Request."));
         }
@@ -102,12 +102,12 @@ namespace Ssz.DataAccessGrpc.ServerBase
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid List Type for this Request."));
         }
 
-        public virtual ServerContext.ElementValuesCallbackMessage? GetElementValuesCallbackMessage()
+        public virtual ElementValuesCallbackMessage? GetElementValuesCallbackMessage()
         {
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid List Type for this Request."));
         }
 
-        public virtual List<ServerContext.EventMessagesCallbackMessage>? GetEventMessagesCallbackMessages()
+        public virtual List<EventMessagesCallbackMessage>? GetEventMessagesCallbackMessages()
         {
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid List Type for this Request."));
         }
@@ -116,14 +116,14 @@ namespace Ssz.DataAccessGrpc.ServerBase
             DateTime firstTimeStampUtc,
             DateTime secondTimeStampUtc,
             uint numValuesPerAlias,
-            TypeId calculation,
+            Ssz.Utils.DataAccess.TypeId calculation,
             CaseInsensitiveDictionary<string?> params_,
             List<uint> serverAliases)
         {
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid List Type for this Request."));
         }
 
-        public virtual Task<ServerContext.EventMessagesCallbackMessage> ReadEventMessagesJournalAsync(
+        public virtual Task<EventMessagesCallbackMessage> ReadEventMessagesJournalAsync(
             DateTime firstTimeStampUtc,
             DateTime secondTimeStampUtc,            
             CaseInsensitiveDictionary<string?> params_)
@@ -132,12 +132,12 @@ namespace Ssz.DataAccessGrpc.ServerBase
         }
 
         /// <summary>
-        ///     Returns failed AliasResults only.
+        ///     Returns failed AliasResultMessages only.
         /// </summary>
         /// <param name="elementValuesCollection"></param>
         /// <returns></returns>
         /// <exception cref="RpcException"></exception>
-        public async Task<List<AliasResult>?> WriteElementValuesAsync(ReadOnlyMemory<byte> elementValuesCollectionBytes)
+        public async Task<List<Utils.DataAccess.AliasResult>?> WriteElementValuesAsync(ReadOnlyMemory<byte> elementValuesCollectionBytes)
         {
             List<(uint, ValueStatusTimestamp)> elementValuesCollection = new();
 
@@ -168,7 +168,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             return await WriteElementValuesAsync(elementValuesCollection);
         }
 
-        public virtual List<EventIdResult> AckAlarms(string operatorName, string comment, IEnumerable<EventId> eventIdsToAck)
+        public virtual List<Utils.DataAccess.EventIdResult> AckAlarms(string operatorName, string comment, IEnumerable<Ssz.Utils.DataAccess.EventId> eventIdsToAck)
         {
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid List Type for this Request."));
         }
@@ -194,14 +194,14 @@ namespace Ssz.DataAccessGrpc.ServerBase
         #region protected functions        
 
         /// <summary>
-        ///     Returns failed AliasResults only.
+        ///     Returns failed AliasResultMessages only.
         /// </summary>
         /// <param name="elementValuesCollection"></param>
         /// <returns></returns>
         /// <exception cref="RpcException"></exception>
-        protected virtual Task<List<AliasResult>> WriteElementValuesAsync(List<(uint, ValueStatusTimestamp)> elementValuesCollection)
+        protected virtual Task<List<Utils.DataAccess.AliasResult>> WriteElementValuesAsync(List<(uint, ValueStatusTimestamp)> elementValuesCollection)
         {
-            return Task.FromResult(new List<AliasResult>());
+            return Task.FromResult(new List<Utils.DataAccess.AliasResult>());
         }
 
         protected ServerWorkerBase ServerWorker { get; }

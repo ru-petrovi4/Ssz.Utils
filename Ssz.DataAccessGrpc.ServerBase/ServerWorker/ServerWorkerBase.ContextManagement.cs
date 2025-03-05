@@ -1,6 +1,7 @@
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using Ssz.Utils;
+using Ssz.Utils.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,13 +15,39 @@ namespace Ssz.DataAccessGrpc.ServerBase
     public abstract partial class ServerWorkerBase
     {
         #region public functions
+        
+        public IDataAccessServerContext AddServerContext(ILogger logger,            
+            string clientApplicationName,
+            string clientWorkstationName,
+            uint requestedServerContextTimeoutMs,
+            string requestedCultureName,
+            string systemNameToConnect,
+            CaseInsensitiveDictionary<string?> contextParams)
+        {
+            var serverContext = new ServerContext(
+                        logger,
+                        this,
+                        clientApplicationName,
+                        clientWorkstationName,
+                        requestedServerContextTimeoutMs,
+                        requestedCultureName,
+                        systemNameToConnect,
+                        contextParams
+                        );            
+
+            _serverContextsDictionary.Add(serverContext.ContextId, serverContext);
+
+            ServerContextAddedOrRemoved(this, new ServerContextAddedOrRemovedEventArgs { ServerContext = serverContext, Added = true });
+
+            return serverContext;
+        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="contextId"></param>
         /// <returns></returns>
-        public ServerContext LookupServerContext(string contextId)
+        public IDataAccessServerContext LookupServerContext(string contextId)
         {
             ServerContext? serverContext;
             _serverContextsDictionary.TryGetValue(contextId, out serverContext);
@@ -47,33 +74,18 @@ namespace Ssz.DataAccessGrpc.ServerBase
             return serverContext;
         }
 
-        public ServerContext? TryLookupServerContext(string contextId)
+        public IDataAccessServerContext? TryLookupServerContext(string contextId)
         {
             ServerContext? serverContext;
             _serverContextsDictionary.TryGetValue(contextId, out serverContext);            
             return serverContext;
-        }
-
-        #endregion
-
-        #region internal functions
+        }        
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="serverContext"></param>
-        internal void AddServerContext(ServerContext serverContext)
-        {
-            _serverContextsDictionary.Add(serverContext.ContextId, serverContext);
-
-            ServerContextAddedOrRemoved(this, new ServerContextAddedOrRemovedEventArgs { ServerContext = serverContext, Added = true });
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="serverContext"></param>
-        internal void RemoveServerContext(ServerContext serverContext)
+        public void RemoveServerContext(IDataAccessServerContext serverContext)
         {
             _serverContextsDictionary.Remove(serverContext.ContextId);
 
