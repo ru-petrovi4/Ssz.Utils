@@ -21,7 +21,7 @@ namespace Ssz.Dcs.ControlEngine
         /// <summary>
         ///   Constructs a new instance of the <see cref = "ElementListBase" /> class.
         /// </summary>
-        public ElementValueListBase(ServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+        public ElementValueListBase(DataAccessServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
             : base(serverWorker, serverContext, listClientAlias, listParams)
         {
             string? updateRate = listParams.TryGetValue("UpdateRateMs");

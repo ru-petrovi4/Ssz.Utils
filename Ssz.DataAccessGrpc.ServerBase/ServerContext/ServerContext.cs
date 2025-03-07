@@ -23,7 +23,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// 
         /// </summary>
         /// <param name="logger"></param>
-        /// <param name="serverWorker"></param>
+        /// <param name="dataAccessServerWorker"></param>
         /// <param name="clientApplicationName"></param>
         /// <param name="clientWorkstationName"></param>
         /// <param name="requestedServerContextTimeoutMs"></param>
@@ -32,7 +32,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
         /// <param name="contextParams"></param>
         public ServerContext(
             ILogger logger,
-            ServerWorkerBase serverWorker,
+            DataAccessServerWorkerBase dataAccessServerWorker,
             string clientApplicationName, 
             string clientWorkstationName, 
             uint requestedServerContextTimeoutMs, 
@@ -41,7 +41,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             CaseInsensitiveDictionary<string?> contextParams)
         {
             Logger = logger;
-            ServerWorker = serverWorker;
+            ServerWorker = dataAccessServerWorker;
             ClientApplicationName = clientApplicationName;
             ClientWorkstationName = clientWorkstationName;
             ContextTimeoutMs = ValidateContextTimeout(requestedServerContextTimeoutMs);
@@ -161,7 +161,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public ILogger Logger { get; }
 
-        public ServerWorkerBase ServerWorker { get; }
+        public DataAccessServerWorkerBase ServerWorker { get; }
 
         /// <summary>
         ///   Application name handed to server when context was created.

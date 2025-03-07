@@ -21,9 +21,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
     {
         #region construction and destruction
         
-        public ServerListRoot(ServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+        public ServerListRoot(DataAccessServerWorkerBase dataAccessServerWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
         {
-            ServerWorker = serverWorker;
+            ServerWorker = dataAccessServerWorker;
             ServerContext = serverContext;
             ListClientAlias = listClientAlias;
             ListParams = listParams;
@@ -204,7 +204,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             return Task.FromResult(new List<Utils.DataAccess.AliasResult>());
         }
 
-        protected ServerWorkerBase ServerWorker { get; }
+        protected DataAccessServerWorkerBase ServerWorker { get; }
 
         #endregion
     }

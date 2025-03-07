@@ -73,7 +73,7 @@ namespace Ssz.Dcs.ControlEngine
                     })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddSingleton<ServerWorkerBase, ServerWorker>();                    
+                    services.AddSingleton<DataAccessServerWorkerBase, ServerWorker>();                    
                     services.AddHostedService<MainBackgroundService>();                    
                 });
         }

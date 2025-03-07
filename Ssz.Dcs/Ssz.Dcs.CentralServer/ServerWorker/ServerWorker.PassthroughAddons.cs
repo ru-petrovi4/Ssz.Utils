@@ -19,7 +19,7 @@ using Ssz.Utils.Addons;
 
 namespace Ssz.Dcs.CentralServer
 {    
-    public partial class ServerWorker : ServerWorkerBase
+    public partial class ServerWorker : DataAccessServerWorkerBase
     {
         #region private functions
 

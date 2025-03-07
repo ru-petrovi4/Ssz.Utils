@@ -18,7 +18,7 @@ namespace Ssz.Dcs.CentralServer
     {
         #region construction and destruction
         
-        public ElementValueListBase(ServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+        public ElementValueListBase(DataAccessServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
             : base(serverWorker, serverContext, listClientAlias, listParams)
         {
             string? updateRate = listParams.TryGetValue("UpdateRateMs");

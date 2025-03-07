@@ -23,7 +23,7 @@ namespace Ssz.Dcs.ControlEngine
         /// <summary>
         ///   Constructs a new instance of the <see cref = "ElementListBase" /> class.
         /// </summary>
-        public ElementListBase(ServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
+        public ElementListBase(DataAccessServerWorkerBase serverWorker, ServerContext serverContext, uint listClientAlias, CaseInsensitiveDictionary<string?> listParams)
             : base(serverWorker, serverContext, listClientAlias, listParams)
         {            
         }

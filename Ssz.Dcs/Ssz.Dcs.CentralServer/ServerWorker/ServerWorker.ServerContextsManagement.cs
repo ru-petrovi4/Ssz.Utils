@@ -14,7 +14,7 @@ using Ssz.DataAccessGrpc.Client;
 
 namespace Ssz.Dcs.CentralServer
 {
-    public partial class ServerWorker : ServerWorkerBase
+    public partial class ServerWorker : DataAccessServerWorkerBase
     {
         #region private functions
 

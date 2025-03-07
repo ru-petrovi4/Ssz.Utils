@@ -70,7 +70,7 @@ namespace Ssz.Dcs.CentralServer
                 options.OperationFilter<SwaggerOperationFilter>();
             });
 
-            services.AddSingleton<ServerWorkerBase, ServerWorker>();
+            services.AddSingleton<DataAccessServerWorkerBase, ServerWorker>();
             services.AddSingleton<AddonsManager>();
 
             services.AddTransient<DcsCentralServer>();

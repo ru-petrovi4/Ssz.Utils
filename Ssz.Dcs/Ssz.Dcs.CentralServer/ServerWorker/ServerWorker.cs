@@ -21,7 +21,7 @@ using Ssz.Dcs.CentralServer.Common.EntityFramework;
 
 namespace Ssz.Dcs.CentralServer
 {
-    public partial class ServerWorker : ServerWorkerBase
+    public partial class ServerWorker : DataAccessServerWorkerBase
     {
         #region construction and destruction
 
