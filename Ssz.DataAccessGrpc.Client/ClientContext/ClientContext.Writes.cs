@@ -34,20 +34,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             try
             {
-                var call = _resourceManagementClient.WriteElementValues();
-
-                foreach (DataChunk dataChunk in ProtobufHelper.SplitForCorrectGrpcMessageSize(fullElementValuesCollection))
-                {
-                    await call.RequestStream.WriteAsync(new WriteElementValuesRequest
-                    {
-                        ContextId = _serverContextId,
-                        ListServerAlias = listServerAlias,
-                        ElementValuesCollection = dataChunk
-                    });
-                }
-                await call.RequestStream.CompleteAsync();
-
-                WriteElementValuesReply reply = await call.ResponseAsync;
+                var reply = await _dataAccessService.WriteElementValuesAsync(listServerAlias, fullElementValuesCollection, _serverContextId);                
                 SetResourceManagementLastCallUtc();
                 return reply.Results.ToArray();                
             }
@@ -84,7 +71,7 @@ namespace Ssz.DataAccessGrpc.Client
                     Comment = comment,                   
                 };
                 request.EventIdsToAck.Add(eventIdsToAck.Select(e => new EventId(e)));
-                AckAlarmsReply reply = await _resourceManagementClient.AckAlarmsAsync(request);
+                AckAlarmsReply reply = await _dataAccessService.AckAlarmsAsync(request);
                 SetResourceManagementLastCallUtc();
                 return reply.Results.ToArray();
             }
@@ -110,7 +97,7 @@ namespace Ssz.DataAccessGrpc.Client
                 foreach (var kvp in contextParams)
                     request.ContextParams.Add(kvp.Key,
                         kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
-                await _resourceManagementClient.UpdateContextParamsAsync(request);
+                await _dataAccessService.UpdateContextParamsAsync(request);
                 SetResourceManagementLastCallUtc();
             }
             catch (Exception ex)
@@ -127,35 +114,10 @@ namespace Ssz.DataAccessGrpc.Client
             if (!ContextIsOperational) throw new InvalidOperationException();
 
             try
-            {
-                var call = _resourceManagementClient.Passthrough();
+            {   
+                var result = await _dataAccessService.PassthroughAsync(recipientPath, passthroughName, dataToSend, _serverContextId);
                 SetResourceManagementLastCallUtc();
-
-                foreach (DataChunk dataChunk in ProtobufHelper.SplitForCorrectGrpcMessageSize(dataToSend))
-                {
-                    await call.RequestStream.WriteAsync(new PassthroughRequest
-                    {
-                        ContextId = _serverContextId,
-                        RecipientPath = recipientPath,
-                        PassthroughName = passthroughName,
-                        DataToSend = dataChunk
-                    });                    
-                }
-                await call.RequestStream.CompleteAsync();
-
-                List<ByteString> requestByteStrings = new();
-#if NET5_0_OR_GREATER                              
-                await foreach (DataChunk dataChunk in call.ResponseStream.ReadAllAsync())
-                {                    
-                    requestByteStrings.Add(dataChunk.Bytes);
-                }      
-#else
-                while (await call.ResponseStream.MoveNext())
-                {
-                    requestByteStrings.Add(call.ResponseStream.Current.Bytes);
-                }
-#endif
-                return ProtobufHelper.Combine(requestByteStrings);
+                return result;
             }
             catch (Exception ex)
             {
@@ -183,22 +145,9 @@ namespace Ssz.DataAccessGrpc.Client
             
             try
             {
-                var call = _resourceManagementClient.LongrunningPassthrough();
-                SetResourceManagementLastCallUtc();
+                LongrunningPassthroughReply reply = await _dataAccessService.LongrunningPassthroughAsync(recipientPath, passthroughName, dataToSend, _serverContextId);
+                SetResourceManagementLastCallUtc();                
 
-                foreach (DataChunk dataChunk in ProtobufHelper.SplitForCorrectGrpcMessageSize(dataToSend))
-                {
-                    await call.RequestStream.WriteAsync(new ServerBase.LongrunningPassthroughRequest
-                    {
-                        ContextId = _serverContextId,
-                        RecipientPath = recipientPath,
-                        PassthroughName = passthroughName,
-                        DataToSend = dataChunk
-                    });
-                }
-                await call.RequestStream.CompleteAsync();
-
-                LongrunningPassthroughReply reply = await call.ResponseAsync;
                 string jobId = reply.JobId;
 
                 var longrunningPassthroughRequest = new LongrunningPassthroughRequest
@@ -221,7 +170,7 @@ namespace Ssz.DataAccessGrpc.Client
             }            
         }
 
-#endregion
+        #endregion
 
         #region private fields
 

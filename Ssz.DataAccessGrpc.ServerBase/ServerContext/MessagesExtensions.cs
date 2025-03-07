@@ -21,10 +21,10 @@ namespace Ssz.DataAccessGrpc.ServerBase
                     using (writer.EnterBlock(1))
                     {
                         writer.Write(elementValuesCallbackMessage.ElementValues.Count);
-                        foreach (var kvp in elementValuesCallbackMessage.ElementValues)
+                        foreach (var it in elementValuesCallbackMessage.ElementValues)
                         {
-                            uint serverAlias = kvp.Key;
-                            ValueStatusTimestamp valueStatusTimestamp = kvp.Value;
+                            uint serverAlias = it.Item1;
+                            ValueStatusTimestamp valueStatusTimestamp = it.Item2;
 
                             writer.Write(serverAlias);
                             valueStatusTimestamp.SerializeOwnedData(writer, null);

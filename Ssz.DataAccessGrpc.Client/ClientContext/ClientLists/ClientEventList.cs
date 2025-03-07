@@ -80,46 +80,6 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         }
 
         /// <summary>
-        ///     Returns new EventMessagesCollection or null, if waiting next message.
-        /// </summary>
-        /// <param name="eventMessagesCollection"></param>
-        /// <returns></returns>
-        public Utils.DataAccess.EventMessagesCollection? GetEventMessagesCollection(ServerBase.EventMessagesCollection eventMessagesCollection)
-        {
-            if (Disposed) 
-                throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
-
-            _incompleteEventMessagesCollections.Add(eventMessagesCollection);            
-
-            if (eventMessagesCollection.IsIncomplete)
-            {
-                return null;
-            }
-            else
-            {
-                Utils.DataAccess.EventMessagesCollection result = new();
-
-                foreach (var incompleteEventMessagesCollection in _incompleteEventMessagesCollections)
-                {
-                    foreach (var eventMessage in incompleteEventMessagesCollection.EventMessages)
-                    {
-                        result.EventMessages.Add(eventMessage.ToEventMessage());
-                    }
-
-                    if (incompleteEventMessagesCollection.CommonFields.Count > 0)
-                    {
-                        result.CommonFields = new CaseInsensitiveDictionary<string?>(eventMessagesCollection.CommonFields
-                                    .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)));
-
-                    }
-                }
-                _incompleteEventMessagesCollections.Clear();
-
-                return result;
-            }
-        }
-
-        /// <summary>
         ///     Throws or invokes EventMessagesCallbackEvent.        
         /// </summary>
         /// <param name="eventMessagesCollection"></param>
@@ -142,16 +102,6 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// </summary>
         public event EventHandler<EventMessagesCallbackEventArgs> EventMessagesCallback = delegate { };
 
-        #endregion
-
-        #region private fields
-
-        /// <summary>
-        ///     This data member holds the last exception message encountered by the
-        ///     ElementValuesCallback callback when calling valuesUpdateEvent().
-        /// </summary>
-        private readonly List<ServerBase.EventMessagesCollection> _incompleteEventMessagesCollections = new();
-
-        #endregion
+        #endregion        
     }
 }

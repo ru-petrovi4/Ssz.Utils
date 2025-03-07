@@ -68,16 +68,16 @@ namespace Ssz.DataAccessGrpc.ServerBase
             while (index < eventMessages.Count)
             {
                 var eventMessagesCollection = new EventMessagesCollection();
+                if (commonFields is not null)
+                {
+                    foreach (var kvp in commonFields)
+                        eventMessagesCollection.CommonFields.Add(kvp.Key,
+                            kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
+                }
                 int length;
                 if (eventMessages.Count - index <= Constants.MaxEventMessagesCount)
                 {
-                    length = eventMessages.Count - index;
-                    if (commonFields is not null)
-                    {
-                        foreach (var kvp in commonFields)
-                            eventMessagesCollection.CommonFields.Add(kvp.Key,
-                                kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
-                    }
+                    length = eventMessages.Count - index;                    
                 }
                 else
                 {

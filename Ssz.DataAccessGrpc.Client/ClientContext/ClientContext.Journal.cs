@@ -8,6 +8,8 @@ using Ssz.Utils;
 using Google.Protobuf.WellKnownTypes;
 using System.Threading.Tasks;
 using Grpc.Core;
+using CommunityToolkit.HighPerformance;
+using Ssz.Utils.Serialization;
 
 namespace Ssz.DataAccessGrpc.Client
 {
@@ -31,9 +33,14 @@ namespace Ssz.DataAccessGrpc.Client
         /// <returns></returns>
         /// <exception cref="ObjectDisposedException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        public async Task<ElementValuesJournal[]> ReadElementValuesJournalsAsync(ClientElementValuesJournalList elementValuesJournalList, DateTime firstTimestampUtc,
+        public async Task<ElementValuesJournal[]> ReadElementValuesJournalsAsync(
+            ClientElementValuesJournalList elementValuesJournalList, 
+            DateTime firstTimestampUtc,
             DateTime secondTimestampUtc,
-            uint numValuesPerAlias, Ssz.Utils.DataAccess.TypeId? calculation, CaseInsensitiveDictionary<string?>? params_, uint[] serverAliases)
+            uint numValuesPerAlias, 
+            Ssz.Utils.DataAccess.TypeId? calculation, 
+            CaseInsensitiveDictionary<string?>? params_, 
+            uint[] serverAliases)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -55,19 +62,28 @@ namespace Ssz.DataAccessGrpc.Client
                         request.Params.Add(kvp.Key,
                             kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
                 request.ServerAliases.Add(serverAliases);
-                var reply = _resourceManagementClient.ReadElementValuesJournals(request);
+                var reply = await _dataAccessService.ReadElementValuesJournalsAsync(request);
                 SetResourceManagementLastCallUtc();
 
                 ElementValuesJournal[]? result = null;
 
-                while (await reply.ResponseStream.MoveNext())
+                using (var stream = reply.AsStream())
+                using (var reader = new SerializationReader(stream))
                 {
-                    var result2 = elementValuesJournalList.OnReadElementValuesJournals(reply.ResponseStream.Current);
-                    if (result2 is not null)
-                        result = result2;
+                    using (Block block = reader.EnterBlock())
+                    {
+                        switch (block.Version)
+                        {
+                            case 1:
+                                result = reader.ReadArrayOfOwnedDataSerializable<ElementValuesJournal>(() => new ElementValuesJournal(), null);
+                                break;
+                            default:
+                                throw new BlockUnsupportedVersionException();
+                        }
+                    }
                 }
 
-                return result!;
+                return result;
             }
             catch (Exception ex)
             {
@@ -95,19 +111,9 @@ namespace Ssz.DataAccessGrpc.Client
                     foreach (var kvp in params_)
                         request.Params.Add(kvp.Key,
                             kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
-                var reply = _resourceManagementClient.ReadEventMessagesJournal(request);
+                var reply = await _dataAccessService.ReadEventMessagesJournalAsync(request);
                 SetResourceManagementLastCallUtc();
-
-                List<Utils.DataAccess.EventMessagesCollection> result = new();
-
-                while (await reply.ResponseStream.MoveNext())
-                {
-                    var fullEventMessagesCollection = eventList.GetEventMessagesCollection(reply.ResponseStream.Current);
-                    if (fullEventMessagesCollection is not null)
-                        result.Add(fullEventMessagesCollection);
-                }
-
-                return result;
+                return reply;
             }
             catch (Exception ex)
             {

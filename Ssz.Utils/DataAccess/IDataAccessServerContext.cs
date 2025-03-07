@@ -61,7 +61,11 @@ namespace Ssz.Utils.DataAccess
         /// </summary>
         bool IsConcludeCalled { get; set; }
 
-        void AddCallbackMessage(ContextStatusMessage contextStatusMessage);
+        /// <summary>
+        ///     Must be IAsyncStreamWriter
+        /// </summary>
+        /// <param name="responseStream"></param>
+        void SetResponseStream(object responseStream);
 
         void EnableListCallback(uint listServerAlias, ref bool isEnabled);
 
@@ -127,7 +131,7 @@ namespace Ssz.Utils.DataAccess
 
         public uint ListClientAlias;
 
-        public readonly Dictionary<uint, ValueStatusTimestamp> ElementValues = new Dictionary<uint, ValueStatusTimestamp>();        
+        public readonly List<(uint, ValueStatusTimestamp)> ElementValues = new(1000);        
 
         #endregion
     }

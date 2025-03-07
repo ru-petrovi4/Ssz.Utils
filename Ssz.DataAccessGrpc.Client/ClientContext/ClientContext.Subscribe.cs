@@ -39,17 +39,14 @@ namespace Ssz.DataAccessGrpc.Client
                     ContextId = _serverContextId,
                     ListServerAlias = elementValueList.ListServerAlias
                 };
-                var reply = _resourceManagementClient.PollElementValuesChanges(request);
+                var reply = await _dataAccessService.PollElementValuesChangesAsync(request);
                 SetResourceManagementLastCallUtc();
 
                 List<ClientElementValueListItem> result = new();
 
-                while (await reply.ResponseStream.MoveNext())
-                {
-                    var changedItems = ElementValuesCallback(elementValueList, reply.ResponseStream.Current.ElementValuesCollection);
-                    if (changedItems is not null)
-                        result.AddRange(changedItems);
-                }
+                var changedItems = ElementValuesCallback(elementValueList, reply.ElementValues);
+                if (changedItems is not null)
+                    result.AddRange(changedItems);
 
                 return result.ToArray();
             }
@@ -78,7 +75,7 @@ namespace Ssz.DataAccessGrpc.Client
                     ContextId = _serverContextId,
                     ListServerAlias = eventList.ListServerAlias
                 };
-                var reply = _resourceManagementClient.PollEventsChanges(request);
+                var reply = _dataAccessService.PollEventsChanges(request);
                 SetResourceManagementLastCallUtc();
 
                 List<Utils.DataAccess.EventMessagesCollection> result = new();
@@ -103,21 +100,21 @@ namespace Ssz.DataAccessGrpc.Client
 
         #region private functions
 
-        private async Task ReadCallbackMessagesAsync(IAsyncStreamReader<CallbackMessage> reader, CancellationToken cancellationToken)
+        private async Task ReadCallbackMessagesAsync(IAsyncStreamReader<CallbackMessage> callbackStreamReader, CancellationToken cancellationToken)
         {
             while (_contextIsOperational)
             {
                 try
                 {
                     cancellationToken.ThrowIfCancellationRequested();
-                    if (!await reader.MoveNext(cancellationToken))
+                    if (!await callbackStreamReader.MoveNext(cancellationToken))
                     {
                         _contextIsOperational = false;
                         break;
                     }
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    CallbackMessage current = reader.Current;
+                    CallbackMessage current = callbackStreamReader.Current;
                     _workingDispatcher.BeginInvoke(ct =>
                     {    
                         var ct2 = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, ct).Token;

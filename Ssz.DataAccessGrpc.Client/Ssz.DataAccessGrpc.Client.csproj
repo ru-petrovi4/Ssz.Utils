@@ -18,7 +18,8 @@
     <PackageReference Include="Grpc.Tools" Version="2.70.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>    
+    </PackageReference>
+    <PackageReference Include="System.Threading.Channels" Version="7.0.0" />    
   </ItemGroup>
 
   <ItemGroup>

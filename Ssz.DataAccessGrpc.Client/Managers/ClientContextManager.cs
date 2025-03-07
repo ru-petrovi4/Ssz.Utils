@@ -17,6 +17,7 @@ using System.Net.Http;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Diagnostics.Eventing.Reader;
+using Ssz.DataAccessGrpc.Client.LocalServer;
 
 namespace Ssz.DataAccessGrpc.Client.Managers
 {
@@ -51,15 +52,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
         #region public functions
 
-        public GrpcChannel? GrpcChannel
-        {
-            get
-            {
-                if (_clientContext is null) return null;
-
-                return _clientContext.GrpcChannel; 
-            }
-        }
+        public GrpcChannel? GrpcChannel => _clientContext?.GrpcChannel;        
 
         public DateTime LastFailedConnectionDateTimeUtc { get; protected set; }
 
@@ -84,10 +77,19 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 #else
             uint requestedServerContextTimeoutMs = 30 * 1000;
 #endif
-            GrpcChannel? grpcChannel = null;            
+            GrpcChannel? grpcChannel = null;
+
             try
             {
-                var httpClientHandler = new HttpClientHandler();
+                IDataAccessService dataAccessService;
+
+                if (String.Equals(serverAddress, "local", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    dataAccessService = new LocalDataAccessService(_logger, null);
+                }
+                else
+                {
+                    var httpClientHandler = new HttpClientHandler();
 #if NET5_0_OR_GREATER
                 if (dangerousAcceptAnyServerCertificate)
                 {
@@ -97,25 +99,26 @@ namespace Ssz.DataAccessGrpc.Client.Managers
                         httpClientHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
                 }
 #else
-                if (dangerousAcceptAnyServerCertificate)
-                    httpClientHandler.ServerCertificateCustomValidationCallback = (httpRequestMessage, x509Certificate2, x509Chain, sslPolicyErrors) => true;
+                    if (dangerousAcceptAnyServerCertificate)
+                        httpClientHandler.ServerCertificateCustomValidationCallback = (httpRequestMessage, x509Certificate2, x509Chain, sslPolicyErrors) => true;
 #endif
-                var grpcWebHandler = new GrpcWebHandler(
-                        GrpcWebMode.GrpcWeb,
-                        httpClientHandler);                
-                grpcChannel = GrpcChannel.ForAddress(serverAddress,
-                    new GrpcChannelOptions
-                    {
-                        HttpVersion = HttpVersion.Version11,
-                        HttpHandler = grpcWebHandler
-                    });                
+                    var grpcWebHandler = new GrpcWebHandler(
+                            GrpcWebMode.GrpcWeb,
+                            httpClientHandler);
+                    grpcChannel = GrpcChannel.ForAddress(serverAddress,
+                        new GrpcChannelOptions
+                        {
+                            HttpVersion = HttpVersion.Version11,
+                            HttpHandler = grpcWebHandler
+                        });
 
-                var resourceManagementClient = new DataAccess.DataAccessClient(grpcChannel);
+                    dataAccessService = new RemoteDataAccessService(new DataAccess.DataAccessClient(grpcChannel));
+                }
 
                 var clientContext = new ClientContext(_logger,
                             _workingDispatcher,
                             grpcChannel,
-                            resourceManagementClient,
+                            dataAccessService,
                             clientApplicationName,
                             clientWorkstationName
                             );

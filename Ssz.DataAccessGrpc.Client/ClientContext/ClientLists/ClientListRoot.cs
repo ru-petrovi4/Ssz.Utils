@@ -48,7 +48,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                 {
                     try
                     {
-                        var t = _clientContext.RemoveListAsync(this);
+                        var t = _clientContext.DeleteListAsync(this);
                     }
                     catch (Exception)
                     {

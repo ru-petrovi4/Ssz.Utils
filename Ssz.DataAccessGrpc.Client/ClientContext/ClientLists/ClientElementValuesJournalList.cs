@@ -110,64 +110,11 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                 serverAliases);
         }
 
-        /// <summary>
-        ///     Returns ElementValuesJournals or null, if waiting next message.
-        /// </summary>
-        /// <param name="elementValuesJournalsCollection"></param>
-        /// <returns></returns>
-        public ElementValuesJournal[]? OnReadElementValuesJournals(DataChunk elementValuesJournalsCollection)
-        {
-            if (Disposed) 
-                throw new ObjectDisposedException("Cannot access a disposed ClientElementValuesJournalList.");
-
-            _incompleteElementValuesJournalsCollections.Add(elementValuesJournalsCollection.Bytes);
-
-            if (elementValuesJournalsCollection.IsIncomplete)
-            {
-                return null;
-            }
-            else
-            {
-                var fullElementValuesCollection = ProtobufHelper.Combine(_incompleteElementValuesJournalsCollections);
-                _incompleteElementValuesJournalsCollections.Clear();
-
-                ElementValuesJournal[]? result = null;
-
-                using (var stream = fullElementValuesCollection.AsStream())
-                using (var reader = new SerializationReader(stream))
-                {
-                    using (Block block = reader.EnterBlock())
-                    {
-                        switch (block.Version)
-                        {
-                            case 1:
-                                result = reader.ReadArrayOfOwnedDataSerializable<ElementValuesJournal>(() => new ElementValuesJournal(), null);                                
-                                break;
-                            default:
-                                throw new BlockUnsupportedVersionException();
-                        }
-                    }
-                }
-
-                return result;
-            }
-        }
-
         public IEnumerable<ClientElementValuesJournalListItem> ListItems
         {
             get { return ListItemsManager.ToArray(); }
         }
 
-        #endregion
-
-        #region private fields
-
-        /// <summary>
-        ///     This data member holds the last exception message encountered by the
-        ///     ElementValuesCallback callback when calling valuesUpdateEvent().
-        /// </summary>
-        private readonly List<ByteString> _incompleteElementValuesJournalsCollections = new();
-
-        #endregion
+        #endregion        
     }
 }
