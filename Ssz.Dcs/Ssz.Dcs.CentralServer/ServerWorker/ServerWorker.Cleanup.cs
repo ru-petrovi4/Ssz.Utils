@@ -59,7 +59,7 @@ namespace Ssz.Dcs.CentralServer
                             continue;
                         }
 
-                        serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                        serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                         {
                             JobId = jobProgress.JobId,
                             ProgressPercent = 100,

@@ -26,7 +26,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// </summary>
         /// <param name="elementValueList"></param>
         /// <returns></returns>
-        public async Task<ClientElementValueListItem[]> PollElementValuesChangesAsync(ClientElementValueList elementValueList)
+        public async Task<ClientElementValueListItem[]?> PollElementValuesChangesAsync(ClientElementValueList elementValueList)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -42,13 +42,7 @@ namespace Ssz.DataAccessGrpc.Client
                 var reply = await _dataAccessService.PollElementValuesChangesAsync(request);
                 SetResourceManagementLastCallUtc();
 
-                List<ClientElementValueListItem> result = new();
-
-                var changedItems = ElementValuesCallback(elementValueList, reply.ElementValues);
-                if (changedItems is not null)
-                    result.AddRange(changedItems);
-
-                return result.ToArray();
+                return ElementValuesCallback(elementValueList, reply);
             }
             catch (Exception ex)
             {
@@ -62,7 +56,7 @@ namespace Ssz.DataAccessGrpc.Client
         /// </summary>
         /// <param name="eventList"></param>
         /// <returns></returns>
-        public async Task<List<Utils.DataAccess.EventMessagesCollection>> PollEventsChangesAsync(ClientEventList eventList)
+        public async Task<List<Utils.DataAccess.EventMessagesCollection>?> PollEventsChangesAsync(ClientEventList eventList)
         {
             if (_disposed) throw new ObjectDisposedException("Cannot access a disposed ClientContext.");
 
@@ -75,19 +69,15 @@ namespace Ssz.DataAccessGrpc.Client
                     ContextId = _serverContextId,
                     ListServerAlias = eventList.ListServerAlias
                 };
-                var reply = _dataAccessService.PollEventsChanges(request);
+                var reply = await _dataAccessService.PollEventsChangesAsync(request);
                 SetResourceManagementLastCallUtc();
 
-                List<Utils.DataAccess.EventMessagesCollection> result = new();
-
-                while (await reply.ResponseStream.MoveNext())
-                {
-                    var eventMessagesCollection = EventMessagesCallback(eventList, reply.ResponseStream.Current);
-                    if (eventMessagesCollection is not null)
-                        result.Add(eventMessagesCollection);
-                }
-
-                return result;                
+                if (reply is not null)
+                    foreach (var eventMessagesCollection in reply)
+                    {
+                        EventMessagesCallback(eventList, eventMessagesCollection);
+                    }                
+                return reply;                
             }
             catch (Exception ex)
             {
@@ -201,20 +191,43 @@ namespace Ssz.DataAccessGrpc.Client
             return changedListItems;
         }
 
+        private ClientElementValueListItem[]? ElementValuesCallback(ClientElementValueList dataList, List<(uint, ValueStatusTimestamp)>? elementValues)
+        {
+            ClientElementValueListItem[]? changedListItems = dataList.OnElementValuesCallback(elementValues);
+            if (changedListItems is not null && changedListItems.Length > 0)
+            {
+                List<ValueStatusTimestamp> changeValueStatusTimestampsList = new List<ValueStatusTimestamp>(changedListItems.Length);
+                foreach (ClientElementValueListItem changedListItem in changedListItems)
+                {
+                    changeValueStatusTimestampsList.Add(changedListItem.ValueStatusTimestamp);
+                }
+                dataList.RaiseElementValuesCallbackEvent(changedListItems, changeValueStatusTimestampsList.ToArray());
+            }
+            return changedListItems;
+        }
+
         /// <summary>
         ///     Returns null, if incomplete EventMessageArray.
         /// </summary>
         /// <param name="eventList"></param>
         /// <param name="eventMessages"></param>
         /// <returns></returns>
-        private Utils.DataAccess.EventMessagesCollection? EventMessagesCallback(ClientEventList eventList, EventMessagesCollection eventMessagesCollection)
+        private Utils.DataAccess.EventMessagesCollection? EventMessagesCallback(ClientEventList eventList, EventMessagesCollection? eventMessagesCollection)
         {
-            Utils.DataAccess.EventMessagesCollection? fullEventMessagesCollection = eventList.GetEventMessagesCollection(eventMessagesCollection);
-            if (fullEventMessagesCollection is not null && fullEventMessagesCollection.EventMessages.Count > 0)
+            if (eventMessagesCollection is null)
+                return null;
+
+            Utils.DataAccess.EventMessagesCollection result = ClientEventList.GetEventMessagesCollection(eventMessagesCollection);
+            EventMessagesCallback(eventList, result);
+            return result;
+        }
+
+        private void EventMessagesCallback(ClientEventList eventList, Utils.DataAccess.EventMessagesCollection eventMessagesCollection)
+        {            
+            if (eventMessagesCollection.EventMessages.Count > 0)
             {
-                eventList.RaiseEventMessagesCallbackEvent(fullEventMessagesCollection);
+                eventList.RaiseEventMessagesCallbackEvent(eventMessagesCollection);
             }
-            return fullEventMessagesCollection;
         }
 
         private void LongrunningPassthroughCallback(ServerBase.LongrunningPassthroughCallback longrunningPassthroughCallback)

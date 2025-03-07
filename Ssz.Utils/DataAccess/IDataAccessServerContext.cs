@@ -156,9 +156,9 @@ namespace Ssz.Utils.DataAccess
     public class AliasResult
     {
         public UInt32 StatusCode;
-        public string Info = null!;
-        public string Label = null!;
-        public string Details = null!;
+        public string Info = @"";
+        public string Label = @"";
+        public string Details = @"";
         public UInt32 ClientAlias;
         public UInt32 ServerAlias;        
     }
@@ -171,7 +171,7 @@ namespace Ssz.Utils.DataAccess
 
     public class ListItemInfo
     {
-        public string ElementId = null!;
+        public string ElementId = @"";
         public UInt32 ClientAlias;
     }
 }

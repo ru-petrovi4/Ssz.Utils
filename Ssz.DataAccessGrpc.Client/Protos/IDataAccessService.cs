@@ -32,9 +32,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         Task<TouchListReply> TouchListAsync(TouchListRequest request);
 
-        Task<ElementValuesCallbackMessage?> PollElementValuesChangesAsync(PollElementValuesChangesRequest request);
+        Task<List<(uint, ValueStatusTimestamp)>?> PollElementValuesChangesAsync(PollElementValuesChangesRequest request);
 
-        Task PollEventsChangesAsync(PollEventsChangesRequest request);
+        Task<List<Utils.DataAccess.EventMessagesCollection>?> PollEventsChangesAsync(PollEventsChangesRequest request);
 
         Task<ReadOnlyMemory<byte>> ReadElementValuesJournalsAsync(ReadElementValuesJournalsRequest request);
 
@@ -53,6 +53,6 @@ namespace Ssz.DataAccessGrpc.ServerBase
             string serverContextId
             );
 
-        Task<LongrunningPassthroughCancelReply> LongrunningPassthroughCancel(LongrunningPassthroughCancelRequest request);
+        Task<LongrunningPassthroughCancelReply> LongrunningPassthroughCancelAsync(LongrunningPassthroughCancelRequest request);
     } 
 }

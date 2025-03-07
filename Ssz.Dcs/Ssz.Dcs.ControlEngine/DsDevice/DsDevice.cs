@@ -261,7 +261,7 @@ namespace Ssz.Dcs.ControlEngine
                 SaveModules(blockFileFullName, modules);  
             }
 
-            CsvDb.LoadData();
+            CsvDb.LoadCsvFileInfos();
             CsvDb.EnableRaisingEvents = true;
             var t = FileSystemWatchersEnableRaisingEventsAsync();
         }

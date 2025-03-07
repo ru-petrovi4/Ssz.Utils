@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AliasResult = Ssz.Utils.DataAccess.AliasResult;
 
 namespace Ssz.Dcs.CentralServer
 {   
@@ -54,9 +55,9 @@ namespace Ssz.Dcs.CentralServer
             }            
         }
 
-        public override ServerContext.ElementValuesCallbackMessage? GetElementValuesCallbackMessage()
+        public override ElementValuesCallbackMessage? GetElementValuesCallbackMessage()
         {
-            ServerContext.ElementValuesCallbackMessage? result = null;
+            ElementValuesCallbackMessage? result = null;
 
             foreach (ElementValueListItemBase item in ListItemsManager)
             {
@@ -64,13 +65,13 @@ namespace Ssz.Dcs.CentralServer
                 {
                     if (result is null)
                     {
-                        result = new ServerContext.ElementValuesCallbackMessage
+                        result = new ElementValuesCallbackMessage
                         {
                             ListClientAlias = ListClientAlias
                         };
                     }
 
-                    result.ElementValues[item.ClientAlias] = item.ValueStatusTimestamp;
+                    result.ElementValues.Add((item.ClientAlias, item.ValueStatusTimestamp));
 
                     item.Changed = false;
                 }

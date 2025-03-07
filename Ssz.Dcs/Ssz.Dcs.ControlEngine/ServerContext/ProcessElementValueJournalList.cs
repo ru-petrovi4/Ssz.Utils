@@ -35,7 +35,7 @@ namespace Ssz.Dcs.ControlEngine
             DateTime firstTimeStampUtc,
             DateTime secondTimeStampUtc,
             uint numValuesPerAlias,
-            Ssz.DataAccessGrpc.ServerBase.TypeId calculation,
+            Ssz.Utils.DataAccess.TypeId calculation,
             CaseInsensitiveDictionary<string?> params_,
             List<uint> serverAliases)
         {

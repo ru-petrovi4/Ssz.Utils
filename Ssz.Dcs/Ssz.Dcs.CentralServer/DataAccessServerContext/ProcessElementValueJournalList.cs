@@ -12,6 +12,7 @@ using Ssz.Utils.Serialization;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Ssz.Dcs.CentralServer.Common;
+using AliasResult = Ssz.Utils.DataAccess.AliasResult;
 
 namespace Ssz.Dcs.CentralServer
 {
@@ -52,7 +53,7 @@ namespace Ssz.Dcs.CentralServer
             DateTime firstTimeStampUtc,
             DateTime secondTimeStampUtc,
             uint numValuesPerSubscription,
-            Ssz.DataAccessGrpc.ServerBase.TypeId calculation,
+            Ssz.Utils.DataAccess.TypeId calculation,
             CaseInsensitiveDictionary<string?> params_,
             List<uint> serverAliases)
         {
@@ -86,13 +87,12 @@ namespace Ssz.Dcs.CentralServer
                 }                
             }
 
-            var tasks = new List<Task<ElementValuesJournal[]?>>(_engineSessions.Count);            
-
-            var calculation2 = calculation.ToTypeId();
+            var tasks = new List<Task<ElementValuesJournal[]?>>(_engineSessions.Count);
+            
             foreach (var dataProviderRequest in dataProviderRequests)
             {        
                 tasks.Add(
-                    dataProviderRequest.Item1.ReadElementValuesJournalsAsync(firstTimeStampUtc, secondTimeStampUtc, numValuesPerSubscription, calculation2, params_, dataProviderRequest.Item2.Select(t => t.Item1).ToArray())
+                    dataProviderRequest.Item1.ReadElementValuesJournalsAsync(firstTimeStampUtc, secondTimeStampUtc, numValuesPerSubscription, calculation, params_, dataProviderRequest.Item2.Select(t => t.Item1).ToArray())
                     );                
             }
             

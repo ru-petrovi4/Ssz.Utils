@@ -6,6 +6,8 @@ using Ssz.Utils.DataAccess;
 using Ssz.Utils;
 using Grpc.Core;
 using System.Threading.Tasks;
+using AliasResult = Ssz.Utils.DataAccess.AliasResult;
+using ListItemInfo = Ssz.Utils.DataAccess.ListItemInfo;
 
 namespace Ssz.Dcs.CentralServer
 {

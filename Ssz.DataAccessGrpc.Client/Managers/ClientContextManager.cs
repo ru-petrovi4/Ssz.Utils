@@ -65,6 +65,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             string clientWorkstationName,
             string systemNameToConnect,
             CaseInsensitiveDictionary<string?> contextParams,
+            IDataAccessServerWorker? dataAccessServerWorker,
             bool dangerousAcceptAnyServerCertificate,
             IDispatcher? callbackDispatcher)
         {
@@ -83,9 +84,9 @@ namespace Ssz.DataAccessGrpc.Client.Managers
             {
                 IDataAccessService dataAccessService;
 
-                if (String.Equals(serverAddress, "local", StringComparison.InvariantCultureIgnoreCase))
+                if (dataAccessServerWorker is not null)
                 {
-                    dataAccessService = new LocalDataAccessService(_logger, null);
+                    dataAccessService = new LocalDataAccessService(_logger, dataAccessServerWorker);
                 }
                 else
                 {

@@ -11,6 +11,7 @@ using Ssz.Xi.Client.Internal.Context;
 using Ssz.Xi.Client.Internal.ListItems;
 using Xi.Contracts.Constants;
 using Xi.Contracts.Data;
+using AliasResult = Xi.Contracts.Data.AliasResult;
 
 namespace Ssz.Xi.Client.Internal.Lists
 {

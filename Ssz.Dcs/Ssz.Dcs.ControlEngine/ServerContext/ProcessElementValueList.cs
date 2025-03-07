@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Grpc.Core;
+using AliasResult = Ssz.Utils.DataAccess.AliasResult;
 
 namespace Ssz.Dcs.ControlEngine
 {
@@ -77,7 +78,7 @@ namespace Ssz.Dcs.ControlEngine
 
                 LastCallbackTime = nowUtc;
 
-                ServerContext.ElementValuesCallbackMessage? elementValuesCallbackMessage = GetElementValuesCallbackMessage();
+                ElementValuesCallbackMessage? elementValuesCallbackMessage = GetElementValuesCallbackMessage();
 
                 if (elementValuesCallbackMessage is not null)
                 {

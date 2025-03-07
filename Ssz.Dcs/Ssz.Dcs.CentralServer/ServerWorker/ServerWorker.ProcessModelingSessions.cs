@@ -460,7 +460,7 @@ namespace Ssz.Dcs.CentralServer
                     WaitHandle.WaitAll(isConnectedEventWaitHandles.ToArray());
                 });
 
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                 {
                     JobId = jobId,
                     ProgressPercent = 100,

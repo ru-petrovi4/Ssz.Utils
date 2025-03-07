@@ -761,6 +761,7 @@ namespace Ssz.DataAccessGrpc.Client
                             ClientWorkstationName, 
                             SystemNameToConnect, 
                             ContextParams, 
+                            Options.DataAccessServerWorker,
                             Options.DangerousAcceptAnyServerCertificate,
                             CallbackDispatcher);
 

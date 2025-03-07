@@ -211,35 +211,31 @@ namespace Ssz.DataAccessGrpc.Client.LocalServer
             });
         }
 
-        public async Task<ElementValuesCallbackMessage?> PollElementValuesChangesAsync(PollElementValuesChangesRequest request)
+        public async Task<List<(uint, ValueStatusTimestamp)>?> PollElementValuesChangesAsync(PollElementValuesChangesRequest request)
         {
             return await GetReplyAsync(async () =>
             {
                 IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
                 serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
                 ElementValuesCallbackMessage? elementValuesCallbackMessage = await serverContext.PollElementValuesChangesAsync(request.ListServerAlias);                
-                return elementValuesCallbackMessage;
+                return elementValuesCallbackMessage?.ElementValues;
             });
         }
 
-        public async Task PollEventsChanges(PollEventsChangesRequest request, IServerStreamWriter<ServerBase.EventMessagesCollection> responseStream)
+        public async Task<List<Utils.DataAccess.EventMessagesCollection>?> PollEventsChangesAsync(PollEventsChangesRequest request)
         {
-            await GetReplyAsync(async () =>
+            return await GetReplyAsync(async () =>
             {
                 IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
                 serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
-                List<EventMessagesCallbackMessage>? eventMessagesCallbackMessages = await serverContext.PollEventsChangesAsync(request.ListServerAlias);
-                if (eventMessagesCallbackMessages is not null)
-                {
-                    foreach (var fullEventMessagesCallbackMessage in eventMessagesCallbackMessages)
+                List<EventMessagesCallbackMessage>? eventMessagesCallbackMessages = await serverContext.PollEventsChangesAsync(request.ListServerAlias);                
+                return eventMessagesCallbackMessages
+                    ?.Select(m => new Utils.DataAccess.EventMessagesCollection
                     {
-                        foreach (var eventMessagesCallbackMessage in fullEventMessagesCallbackMessage.SplitForCorrectGrpcMessageSize())
-                        {
-                            await responseStream.WriteAsync(eventMessagesCallbackMessage.EventMessagesCollection);
-                        }
-                    }
-                }
-                return 0;
+                        CommonFields = m.CommonFields,
+                        EventMessages = m.EventMessages
+                    })
+                    .ToList();
             });
         }
 

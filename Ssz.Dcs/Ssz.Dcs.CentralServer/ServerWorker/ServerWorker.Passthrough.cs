@@ -225,7 +225,7 @@ namespace Ssz.Dcs.CentralServer
             }
             if (!allSucceeded)
             {
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                 {
                     JobId = jobId,
                     ProgressPercent = 100,
@@ -235,7 +235,7 @@ namespace Ssz.Dcs.CentralServer
             }
             else
             {
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                 {
                     JobId = jobId,
                     ProgressPercent = 100,
@@ -346,7 +346,7 @@ namespace Ssz.Dcs.CentralServer
                     File.SetLastWriteTimeUtc(fileFullName, dsFilesStoreFileData.LastModified.UtcDateTime);
                 }
 
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                 {
                     JobId = jobId,
                     ProgressPercent = 100,
@@ -357,7 +357,7 @@ namespace Ssz.Dcs.CentralServer
             catch (Exception ex)
             {
                 Logger.LogError(ex, "DeleteFilesLongrunningPassthrough error.");
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                 {
                     JobId = jobId,
                     ProgressPercent = 100,
@@ -387,7 +387,7 @@ namespace Ssz.Dcs.CentralServer
                     }                    
                 }
 
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                 {
                     JobId = jobId,
                     ProgressPercent = 100,
@@ -398,7 +398,7 @@ namespace Ssz.Dcs.CentralServer
             catch (Exception ex)
             {
                 Logger.LogError(ex, "DeleteFilesLongrunningPassthrough error.");
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                 {
                     JobId = jobId,
                     ProgressPercent = 100,
@@ -424,7 +424,7 @@ namespace Ssz.Dcs.CentralServer
                     File.Move(sourceFileFullName, destFileFullName, true);
                 }
 
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                 {
                     JobId = jobId,
                     ProgressPercent = 100,
@@ -435,7 +435,7 @@ namespace Ssz.Dcs.CentralServer
             catch (Exception ex)
             {
                 Logger.LogError(ex, "DeleteFilesLongrunningPassthrough error.");
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                 {
                     JobId = jobId,
                     ProgressPercent = 100,

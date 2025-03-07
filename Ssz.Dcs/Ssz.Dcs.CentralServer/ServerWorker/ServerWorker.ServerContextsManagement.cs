@@ -20,7 +20,7 @@ namespace Ssz.Dcs.CentralServer
 
         private void On_ServerContextAddedOrRemoved(object? sender, ServerContextAddedOrRemovedEventArgs args)
         {
-            ServerContext serverContext = args.ServerContext;
+            ServerContext serverContext = (ServerContext)args.ServerContext;
             string systemNameToConnect = serverContext.SystemNameToConnect;
             if (systemNameToConnect == @"") // Utility context            
             {

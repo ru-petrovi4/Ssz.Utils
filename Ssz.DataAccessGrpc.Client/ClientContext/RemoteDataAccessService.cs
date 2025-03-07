@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf;
 using Grpc.Core;
+using Ssz.DataAccessGrpc.Client.ClientLists;
 using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
@@ -80,47 +81,53 @@ namespace Ssz.DataAccessGrpc.Client
             return await _resourceManagementClient.TouchListAsync(request);
         }
 
-        public async Task<ElementValuesCallbackMessage?> PollElementValuesChangesAsync(PollElementValuesChangesRequest request)
+        public async Task<List<(uint, ValueStatusTimestamp)>?> PollElementValuesChangesAsync(PollElementValuesChangesRequest request)
         {
-            var call = _resourceManagementClient.PollElementValuesChanges(request);
-
-            ElementValuesCallbackMessage elementValuesCallbackMessage = new();
+            var call = _resourceManagementClient.PollElementValuesChanges(request);            
 
             List<ByteString> responseByteStrings = new();
 #if NET5_0_OR_GREATER
-                await foreach (DataChunk dataChunk in call.ResponseStream.ReadAllAsync())
-                {                    
-                    responseByteStrings.Add(dataChunk.Bytes);
-                }      
+            await foreach (var it in call.ResponseStream.ReadAllAsync())
+            {                    
+                responseByteStrings.Add(it.ElementValuesCollection.Bytes);
+            }      
 #else
             while (await call.ResponseStream.MoveNext())
             {
                 responseByteStrings.Add(call.ResponseStream.Current.ElementValuesCollection.Bytes);
             }
 #endif
-
-            return elementValuesCallbackMessage;
+            return responseByteStrings.Count > 0 ?
+                ClientElementValueList.GetElementValues(ProtobufHelper.Combine(responseByteStrings)) :
+                null;
         }
 
-        public async Task PollEventsChanges(PollEventsChangesRequest request, IServerStreamWriter<ServerBase.EventMessagesCollection> responseStream)
+        public async Task<List<Utils.DataAccess.EventMessagesCollection>?> PollEventsChangesAsync(PollEventsChangesRequest request)
         {
-            await GetReplyAsync(async () =>
+            var call = _resourceManagementClient.PollEventsChanges(request);
+
+            List<Utils.DataAccess.EventMessagesCollection> eventMessagesCollectionsList = new();
+
+            List<ByteString> responseByteStrings = new();
+#if NET5_0_OR_GREATER
+            await foreach (var it in call.ResponseStream.ReadAllAsync())
+            {                    
+                eventMessagesCollectionsList.Add(
+                    ClientEventList.GetEventMessagesCollection(it)
+                    );
+            }      
+#else
+            while (await call.ResponseStream.MoveNext())
             {
-                IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
-                serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
-                List<EventMessagesCallbackMessage>? eventMessagesCallbackMessages = await serverContext.PollEventsChangesAsync(request.ListServerAlias);
-                if (eventMessagesCallbackMessages is not null)
-                {
-                    foreach (var fullEventMessagesCallbackMessage in eventMessagesCallbackMessages)
-                    {
-                        foreach (var eventMessagesCallbackMessage in fullEventMessagesCallbackMessage.SplitForCorrectGrpcMessageSize())
-                        {
-                            await responseStream.WriteAsync(eventMessagesCallbackMessage.EventMessagesCollection);
-                        }
-                    }
-                }
-                return 0;
-            });
+                eventMessagesCollectionsList.Add(
+                    ClientEventList.GetEventMessagesCollection(call.ResponseStream.Current)
+                    );
+            }
+#endif
+
+            return eventMessagesCollectionsList.Count > 0 ?
+                eventMessagesCollectionsList :
+                null;
         }
 
         public async Task<ReadOnlyMemory<byte>> ReadElementValuesJournalsAsync(ReadElementValuesJournalsRequest request)

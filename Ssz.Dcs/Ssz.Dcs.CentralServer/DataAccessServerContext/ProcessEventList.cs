@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using EventId = Ssz.Utils.DataAccess.EventId;
+using EventIdResult = Ssz.Utils.DataAccess.EventIdResult;
 
 namespace Ssz.Dcs.CentralServer
 {
@@ -58,13 +60,11 @@ namespace Ssz.Dcs.CentralServer
         #region public functions
 
         public override List<EventIdResult> AckAlarms(string operatorName, string comment,
-                                                               IEnumerable<Ssz.DataAccessGrpc.ServerBase.EventId> eventIdsToAck)
+                                                               IEnumerable<EventId> eventIdsToAck)
         {
-            var eventIdsToAckArray = eventIdsToAck.Select(e => e.ToEventId()).ToArray();
-
             foreach (EngineSession engineSession in _engineSessions)
             {
-                engineSession.DataAccessProvider.AckAlarms(operatorName, comment, eventIdsToAckArray);
+                engineSession.DataAccessProvider.AckAlarms(operatorName, comment, eventIdsToAck.ToArray());
             }
             return eventIdsToAck.Select(e => new EventIdResult { StatusCode = (uint)StatusCode.OK, EventId = e }).ToList();
         }

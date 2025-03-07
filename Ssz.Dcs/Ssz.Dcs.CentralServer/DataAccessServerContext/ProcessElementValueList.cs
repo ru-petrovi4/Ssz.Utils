@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using static Ssz.Dcs.CentralServer.ServerWorker;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using AliasResult = Ssz.Utils.DataAccess.AliasResult;
 
 namespace Ssz.Dcs.CentralServer
 {
@@ -65,7 +66,7 @@ namespace Ssz.Dcs.CentralServer
 
                 LastCallbackTime = nowUtc;
 
-                ServerContext.ElementValuesCallbackMessage? elementValuesCallbackMessage = GetElementValuesCallbackMessage();
+                ElementValuesCallbackMessage? elementValuesCallbackMessage = GetElementValuesCallbackMessage();
 
                 if (elementValuesCallbackMessage is not null)
                 {

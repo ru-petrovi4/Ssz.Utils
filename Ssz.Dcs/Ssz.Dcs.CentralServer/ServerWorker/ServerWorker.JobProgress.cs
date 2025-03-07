@@ -60,7 +60,7 @@ namespace Ssz.Dcs.CentralServer
                     {
                     }
                 }                             
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                 {
                     JobId = jobProgress.JobId,
                     ProgressPercent = progressPercent,
@@ -94,7 +94,7 @@ namespace Ssz.Dcs.CentralServer
             JobProgress? jobProgress = _jobProgressesCollection.TryGetValue(jobId);
             if (jobProgress is null) // Completed long time ago, more than 1 day
             {
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                 {
                     JobId = jobId,
                     ProgressPercent = 100,
@@ -105,7 +105,7 @@ namespace Ssz.Dcs.CentralServer
             else
             {
                 jobProgress.ProgressSubscribers.Add(serverContext);
-                serverContext.AddCallbackMessage(new ServerContext.LongrunningPassthroughCallbackMessage
+                serverContext.AddCallbackMessage(new LongrunningPassthroughCallbackMessage
                 {
                     JobId = jobId,
                     ProgressPercent = jobProgress.ProgressPercent,
