@@ -14,7 +14,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
     {
         #region private functions               
 
-        private void UtilityDataAccessProvider_OnEventMessagesCallback(object? sender, EventMessagesCallbackEventArgs args)
+        private void AdditionalUtilityDataAccessProvider_OnEventMessagesCallback(object? sender, EventMessagesCallbackEventArgs args)
         {
             IDataAccessProvider utilityDataAccessProvider = (sender as IDataAccessProvider)!;
 

@@ -26,7 +26,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             var host = CreateHostBuilder(args).Build();
 
             var logger = host.Services.GetRequiredService<ILogger<Program>>();
-            logger.LogInformation("App starting with args: " + String.Join(" ", args));
+            logger.LogCritical($"MachineName: {Environment.MachineName}. App starting with args: {String.Join(" ", args)}");
 
             IConfiguration configuration = host.Services.GetRequiredService<IConfiguration>();
             CultureHelper.InitializeUICulture(configuration, logger);            

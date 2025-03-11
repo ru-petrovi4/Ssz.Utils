@@ -11,8 +11,6 @@ namespace Ssz.Dcs.CentralServer.Common
 {
     public class DataAccessProviderHolder : IObservableCollectionItem
     {
-        public bool IsPriority { get; set; }
-
         /// <summary>
         ///     Substituted CentralServerAddress
         /// </summary>

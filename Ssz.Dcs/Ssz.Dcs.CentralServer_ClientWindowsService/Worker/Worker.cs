@@ -37,7 +37,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
             MainUtilityDataAccessProvider = ActivatorUtilities.CreateInstance<GrpcDataAccessProvider>(ServiceProvider);
 
-            UtilityDataAccessProviderHolders.CollectionChanged += UtilityDataAccessProviderHolders_OnCollectionChanged;
+            AdditionalUtilityDataAccessProviderHolders.CollectionChanged += AdditionalUtilityDataAccessProviderHolders_OnCollectionChanged;
         }        
 
         #endregion
@@ -54,7 +54,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
         public GrpcDataAccessProvider MainUtilityDataAccessProvider { get; }
 
-        public ObservableCollection<DataAccessProviderHolder> UtilityDataAccessProviderHolders { get; } = new();
+        public ObservableCollection<DataAccessProviderHolder> AdditionalUtilityDataAccessProviderHolders { get; } = new();
 
         public DirectoryInfo FilesStoreDirectoryInfo { get; private set; }
 
@@ -98,9 +98,9 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
             await MainUtilityDataAccessProvider.CloseAsync();   
             
-            foreach (var h in UtilityDataAccessProviderHolders)
+            foreach (var additionalUtilityDataAccessProviderHolderh in AdditionalUtilityDataAccessProviderHolders)
             {
-                await h.DataAccessProvider.CloseAsync();
+                await additionalUtilityDataAccessProviderHolderh.DataAccessProvider.CloseAsync();
             }
         }
 
@@ -110,7 +110,7 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
 
         private void CentralServersValueSubscription_OnUpdated(object? sender, ValueStatusTimestampUpdatedEventArgs e)
         {
-            List<DataAccessProviderHolder> newUtilityDataAccessProviderHolders = new();
+            List<DataAccessProviderHolder> newAdditionalUtilityDataAccessProviderHolders = new();
 
             foreach (var it in CsvHelper.ParseCsvLine(@",", e.NewValueStatusTimestamp.Value.ValueAsString(false)))
             {
@@ -121,25 +121,25 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                 if (centralServerAddress == @"*")
                     centralServerAddress = MainUtilityDataAccessProvider.ServerAddress;
 
-                DataAccessProviderHolder newDataAccessProviderHolder = new()
+                DataAccessProviderHolder newAdditionalUtilityDataAccessProviderHolder = new()
                 {
                     CentralServerAddress = centralServerAddress,
                 };
-                newUtilityDataAccessProviderHolders.Add(newDataAccessProviderHolder);
+                newAdditionalUtilityDataAccessProviderHolders.Add(newAdditionalUtilityDataAccessProviderHolder);
             }            
 
-            UtilityDataAccessProviderHolders.Update(newUtilityDataAccessProviderHolders.OrderBy(a => ((IObservableCollectionItem)a).ObservableCollectionItemId).ToArray(), CancellationToken.None);
+            AdditionalUtilityDataAccessProviderHolders.Update(newAdditionalUtilityDataAccessProviderHolders.OrderBy(a => ((IObservableCollectionItem)a).ObservableCollectionItemId).ToArray(), CancellationToken.None);
         }
 
-        private void UtilityDataAccessProviderHolders_OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        private void AdditionalUtilityDataAccessProviderHolders_OnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:                    
-                    UtilityDataAccessProviderHolders_Added(e.NewItems!.OfType<DataAccessProviderHolder>());
+                    AdditionalUtilityDataAccessProviderHolders_Added(e.NewItems!.OfType<DataAccessProviderHolder>());
                     break;
-                case NotifyCollectionChangedAction.Remove:                    
-                    UtilityDataAccessProviderHolders_Removed(e.OldItems!.OfType<DataAccessProviderHolder>());
+                case NotifyCollectionChangedAction.Remove:
+                    AdditionalUtilityDataAccessProviderHolders_Removed(e.OldItems!.OfType<DataAccessProviderHolder>());
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     break;
@@ -148,16 +148,16 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
             }
         }
 
-        private void UtilityDataAccessProviderHolders_Added(IEnumerable<DataAccessProviderHolder> addedUtilityDataAccessProviderHolders)
+        private void AdditionalUtilityDataAccessProviderHolders_Added(IEnumerable<DataAccessProviderHolder> addedAdditionalUtilityDataAccessProviderHolders)
         {
-            foreach (var addedUtilityDataAccessProviderHolder in addedUtilityDataAccessProviderHolders)
+            foreach (var addedAdditionalUtilityDataAccessProviderHolder in addedAdditionalUtilityDataAccessProviderHolders)
             {
-                var utilityDataAccessProvider = ActivatorUtilities.CreateInstance<GrpcDataAccessProvider>(ServiceProvider);
+                var additionalUtilityDataAccessProvider = ActivatorUtilities.CreateInstance<GrpcDataAccessProvider>(ServiceProvider);
 
-                utilityDataAccessProvider.EventMessagesCallback += UtilityDataAccessProvider_OnEventMessagesCallback;                
+                additionalUtilityDataAccessProvider.EventMessagesCallback += AdditionalUtilityDataAccessProvider_OnEventMessagesCallback;                
 
-                utilityDataAccessProvider.Initialize(null,
-                    addedUtilityDataAccessProviderHolder.CentralServerAddress,
+                additionalUtilityDataAccessProvider.Initialize(null,
+                    addedAdditionalUtilityDataAccessProviderHolder.CentralServerAddress,
                     DataAccessConstants.CentralServer_ClientWindowsService_ClientApplicationName,
                     System.Environment.MachineName,
                     @"",
@@ -169,27 +169,27 @@ namespace Ssz.Dcs.CentralServer_ClientWindowsService
                     new DataAccessProviderOptions(),
                     _threadSafeDispatcher);                
 
-                addedUtilityDataAccessProviderHolder.DataAccessProvider = utilityDataAccessProvider;
+                addedAdditionalUtilityDataAccessProviderHolder.DataAccessProvider = additionalUtilityDataAccessProvider;
             }
         }
 
-        private void UtilityDataAccessProviderHolders_Removed(IEnumerable<DataAccessProviderHolder> removedUtilityDataAccessProviderHolders)
+        private void AdditionalUtilityDataAccessProviderHolders_Removed(IEnumerable<DataAccessProviderHolder> removedAdditionalUtilityDataAccessProviderHolders)
         {
-            foreach (var removedUtilityDataAccessProviderHolder in removedUtilityDataAccessProviderHolders)
+            foreach (var removedAdditionalUtilityDataAccessProviderHolder in removedAdditionalUtilityDataAccessProviderHolders)
             {
-                var utilityDataAccessProvider = removedUtilityDataAccessProviderHolder.DataAccessProvider;
+                var additionalUtilityDataAccessProvider = removedAdditionalUtilityDataAccessProviderHolder.DataAccessProvider;
 
-                utilityDataAccessProvider.EventMessagesCallback -= UtilityDataAccessProvider_OnEventMessagesCallback;
+                additionalUtilityDataAccessProvider.EventMessagesCallback -= AdditionalUtilityDataAccessProvider_OnEventMessagesCallback;
 
-                var t = utilityDataAccessProvider.CloseAsync();
+                var t = additionalUtilityDataAccessProvider.CloseAsync();
             }
         }
 
         private async Task UtilityDataAccessProviderHolders_UpdateContextParams()
         {            
-            foreach (var utilityDataAccessProviderHolder in UtilityDataAccessProviderHolders)
+            foreach (var additionalUtilityDataAccessProviderHolder in AdditionalUtilityDataAccessProviderHolders)
             {
-                await utilityDataAccessProviderHolder.DataAccessProvider.UpdateContextParamsAsync(new CaseInsensitiveDictionary<string?>()
+                await additionalUtilityDataAccessProviderHolder.DataAccessProvider.UpdateContextParamsAsync(new CaseInsensitiveDictionary<string?>()
                     {
                         { DataAccessConstants.ParamName_Engine_ProcessModelNames, ConfigurationHelper.GetValue<string>(Configuration, DataAccessConstants.ParamName_Engine_ProcessModelNames, @"") },
                         { DataAccessConstants.ParamName_RunningControlEnginesCount, new Any(_runningControlEngineServerAddresses.Count).ValueAsString(false) }

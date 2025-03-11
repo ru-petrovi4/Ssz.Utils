@@ -55,7 +55,7 @@ namespace Ssz.Dcs.CentralServer
             Host = CreateHostBuilder(args).Build();
 
             var logger = Host.Services.GetRequiredService<ILogger<Program>>();
-            logger.LogInformation("App starting with args: " + String.Join(" ", args));
+            logger.LogCritical($"MachineName: {Environment.MachineName}. App starting with args: {String.Join(" ", args)}");
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
