@@ -1,0 +1,35 @@
+<!--<ControlTheme TargetType="{x:Type Slider}" xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:dsShapeViews="clr-namespace:Ssz.Operator.Core.DsShapeViews;assembly=Ssz.Operator.Core">        
+	<Setter Property="OverridesDefaultStyle"
+          Value="true" />        
+	<Setter Property="Template">
+		<Setter.Value>
+			<ControlTemplate TargetType="{x:Type Slider}">
+				<Grid>                        
+					<Track x:Name="PART_Track">
+						<Track.DecreaseRepeatButton>
+							<RepeatButton Style="{StaticResource SliderButtonStyle}"
+                                    Command="Slider.DecreaseLarge" />
+						</Track.DecreaseRepeatButton>
+						<Track.Thumb>
+							<Thumb>
+								<Thumb.Template>
+									<ControlTemplate TargetType="{x:Type Thumb}">
+										<ContentControl Content="{Binding ThumbContent, 
+											 RelativeSource={RelativeSource Mode=FindAncestor, 
+											 AncestorType={x:Type dsShapeViews:SliderDsShapeView }}}"
+											 Width="{TemplateBinding ActualHeight}" />
+									</ControlTemplate>
+								</Thumb.Template>
+							</Thumb>
+						</Track.Thumb>
+						<Track.IncreaseRepeatButton>
+							<RepeatButton Style="{StaticResource SliderButtonStyle}"
+                                    Command="Slider.IncreaseLarge" />
+						</Track.IncreaseRepeatButton>
+					</Track>
+				</Grid>
+			</ControlTemplate>
+		</Setter.Value>
+	</Setter>        
+</ControlTheme>-->

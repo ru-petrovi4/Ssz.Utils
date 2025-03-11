@@ -1,0 +1,70 @@
+<UserControl x:Class="Ssz.Operator.Core.ControlsCommon.GenericAlarmListControl"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controlsCommon="clr-namespace:Ssz.Operator.Core.ControlsCommon"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300" x:Name="UserControl">
+    <!--<DataGrid Name="MainDataGrid" AutoGenerateColumns="False" HeadersVisibility="None"
+              Background="{Binding Path=Background, ElementName=UserControl}"
+              RowBackground="{Binding Path=Background, ElementName=UserControl}"
+              Foreground="{Binding Path=Foreground, ElementName=UserControl}"
+              GridLinesVisibility="None" Padding="0" CanUserAddRows="False" IsReadOnly="True"
+              SelectionMode="Single" SelectionUnit="FullRow" DoubleTapped="MainDataGrid_DoubleTapped"
+              x:FieldModifier="public">
+        <DataGrid.RowStyle>
+            --><!--<ControlTheme TargetType="{x:Type DataGridRow}">
+                <ControlTheme.Styles>
+                    <DataTrigger Binding="{Binding IsVisible}" Value="False">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                </ControlTheme.Styles>
+            </ControlTheme>--><!--
+        </DataGrid.RowStyle>
+        <DataGrid.Columns>
+            <DataGridTemplateColumn Width="auto">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Num}" Margin="10,0,10,0" />
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Width="auto">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <controlsCommon:AlarmRectView Margin="10,0,10,0" />
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Width="auto">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding OccurrenceTimeString}" Margin="10,0,10,0" />
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Width="auto">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding TagNameToDisplay}" Margin="10,0,10,0" />
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Width="auto">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Desc}" Margin="10,0,10,0" />
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTemplateColumn Width="auto">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding CurrentAlarmConditionTypeToDisplay}" Margin="10,0,10,0" />
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+        </DataGrid.Columns>
+    </DataGrid>-->
+</UserControl>

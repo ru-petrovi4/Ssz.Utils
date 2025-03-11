@@ -1,0 +1,32 @@
+<ControlTheme TargetType="{x:Type Button}" xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">       
+    <Setter Property="Template">	    
+		<Setter.Value>
+			<ControlTemplate TargetType="{x:Type Button}">
+				<Border x:Name="ContentContainer"
+															BorderThickness="{TemplateBinding BorderThickness}"
+															BorderBrush="#FF00FFFF"
+															Background="{TemplateBinding Background}">
+					<Grid>						
+						<ContentPresenter x:Name="PART_ContentPresenter"
+										Content="{TemplateBinding Content}"
+										Margin="{TemplateBinding Padding}"
+										Foreground="{TemplateBinding Foreground}"
+										HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+										VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+										RecognizesAccessKey="True" />
+						<Rectangle Name="ForegroundRectangle" StrokeThickness="0" Fill="Transparent"/>
+					</Grid>								
+				</Border>
+			</ControlTemplate>
+		</Setter.Value>
+	</Setter>
+	<Style Selector="^:disabled">
+		<Setter Property="Foreground" Value="{DynamicResource ThemeBackgroundBrush}"/>
+	</Style>
+	<Style Selector="^:not(:pointerover) /template/ Border#ContentContainer">
+		<Setter Property="BorderBrush" Value="Transparent" />
+	</Style>
+	<Style Selector="^:pressed /template/ Rectangle#ForegroundRectangle">
+		<Setter Property="Fill" Value="#4200FFFF" />
+	</Style>
+</ControlTheme>	

@@ -1,0 +1,2432 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="GeometryInfoSupplierLLineXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\GeometryInfoSupplierLLineXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="ClassicButtonStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ClassicButtonStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;koi8-r</value>
+  </data>
+  <data name="TrivialButtonStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TrivialButtonStyleXaml.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="InvisibleButtonStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\InvisibleButtonStyleXaml.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ClassicSliderStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ClassicSliderStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="ContentSliderStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ContentSliderStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="TouchScreenSliderStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TouchScreenSliderStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="GeometryInfoSupplierHorizontalLineXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\geometryinfosupplierhorizontallinexaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="GeometryInfoSupplierVerticalLineXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\geometryinfosupplierverticallinexaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="DefaultButtonStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DefaultButtonStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;koi8-r</value>
+  </data>
+  <data name="ClassicToggleButtonStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ClassicToggleButtonStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="DefaultToggleButtonStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DefaultToggleButtonStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="InvisibleToggleButtonStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\InvisibleToggleButtonStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="TrivialToggleButtonStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TrivialToggleButtonStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="GeometryInfoSupplierEllipseXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\GeometryInfoSupplierEllipseXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="GeometryInfoSupplierRectangleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\GeometryInfoSupplierRectangleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="ClassicComboBoxStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ClassicComboBoxStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="DefaultComboBoxStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DefaultComboBoxStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="GeometryInfoSupplierLLineRoundCornerXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\GeometryInfoSupplierLLineRoundCornerXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;koi8-r</value>
+  </data>
+  <data name="DefaultGeometryButtonStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\defaultgeometrybuttonstylexaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="GeometryInfoSupplierRectangleRoundCornersXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\GeometryInfoSupplierRectangleRoundCornersXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="MultiChartDsShapeGeometryInfoSupplierCircleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MultiChartDsShapeGeometryInfoSupplierCircleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="MultiChartDsShapeGeometryInfoSupplierCrossXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MultiChartDsShapeGeometryInfoSupplierCrossXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="AddDrawingsFromLibraryDialogTitle" xml:space="preserve">
+    <value>Add Pages and Shapes from Library</value>
+  </data>
+  <data name="AddonBaseSszOperatorVersion" xml:space="preserve">
+    <value>Ssz.Operator.Play Version</value>
+  </data>
+  <data name="AddonBaseDescription" xml:space="preserve">
+    <value>Addon Description</value>
+  </data>
+  <data name="AddonBaseNameToDisplay" xml:space="preserve">
+    <value>Display Name</value>
+  </data>
+  <data name="AddonBaseDllFileFullName" xml:space="preserve">
+    <value>Full Path</value>
+  </data>
+  <data name="AddonBaseVersion" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="AddonSszDsProjectPlay" xml:space="preserve">
+    <value>Ssz Project</value>
+  </data>
+  <data name="AddonDeserializationError" xml:space="preserve">
+    <value>Addon can not read his props.</value>
+  </data>
+  <data name="AddonDeserializationErrorUnsupportedFileVersion" xml:space="preserve">
+    <value>Unsupported addon props file format version.</value>
+  </data>
+  <data name="AddonDeserializationErrorUnsupportedVersion" xml:space="preserve">
+    <value>Addon can not read his props. Props were saved for newer or unsupported version of addon.</value>
+  </data>
+  <data name="AddonNotFoundMessage" xml:space="preserve">
+    <value>Addon not found</value>
+  </data>
+  <data name="AddonPropertiesCellText" xml:space="preserve">
+    <value>Properties ...</value>
+  </data>
+  <data name="AddonsCategory" xml:space="preserve">
+    <value>Addons</value>
+  </data>
+  <data name="AddonSerializationError" xml:space="preserve">
+    <value>Addon can not serialize his props.</value>
+  </data>
+  <data name="AddonUnavailable" xml:space="preserve">
+    <value>Unavailable</value>
+  </data>
+  <data name="AddonUnavailableMessage" xml:space="preserve">
+    <value>Cannot find settings for Addon {0}. Please add this addon in Project -&gt; Properties -&gt; Addons.</value>
+  </data>
+  <data name="AddRemoveAddonsButtonText" xml:space="preserve">
+    <value>Add/Remove Addons</value>
+  </data>
+  <data name="AdvancedCategory" xml:space="preserve">
+    <value>Dynamic</value>
+  </data>
+  <data name="AlarmListDsShapeAppearanceType" xml:space="preserve">
+    <value>Appearance type</value>
+  </data>
+  <data name="AllDsPageDrawingsComboBoxItem" xml:space="preserve">
+    <value>All Pages Drawings</value>
+  </data>
+  <data name="AllDsShapeDrawingsComboBoxItem" xml:space="preserve">
+    <value>All Shapes Drawings</value>
+  </data>
+  <data name="AllOpenedDrawingsComboBoxItem" xml:space="preserve">
+    <value>All Opened Drawings</value>
+  </data>
+  <data name="AllPropertiesComboBoxItem" xml:space="preserve">
+    <value>All Properties</value>
+  </data>
+  <data name="AppearanceCategory" xml:space="preserve">
+    <value>Appearance</value>
+  </data>
+  <data name="AppInfoCategory" xml:space="preserve">
+    <value>Application Info</value>
+  </data>
+  <data name="ApplyToOtherDsShapesQuestion" xml:space="preserve">
+    <value>Do you want to apply the property change to other selected Shapes?</value>
+  </data>
+  <data name="BackupDrawingWasCreated" xml:space="preserve">
+    <value>Backup was Created</value>
+  </data>
+  <data name="BasicCategory" xml:space="preserve">
+    <value>Basic</value>
+  </data>
+  <data name="BehaviourCategory" xml:space="preserve">
+    <value>Behaviour</value>
+  </data>
+  <data name="BlinkingBrushTabItem" xml:space="preserve">
+    <value>Blinking Brush</value>
+  </data>
+  <data name="BrowseButtonLabel" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="BrowserDsShapeUrl" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="BrushConverterWindowIfExpression" xml:space="preserve">
+    <value>If expression is true (first true row is executed)</value>
+  </data>
+  <data name="ButtonDsShapeBase_ClickDsCommand" xml:space="preserve">
+    <value>Click (Mouse Up)</value>
+  </data>
+  <data name="ButtonDsShapeBase_DoubleClickDsCommand" xml:space="preserve">
+    <value>Double Click</value>
+  </data>
+  <data name="ButtonDsShapeBase_HoldCommandDelayMs" xml:space="preserve">
+    <value>Press and Hold Command Delay before Start Ms</value>
+  </data>
+  <data name="ButtonDsShapeBase_HoldCommandDelayMsDescription" xml:space="preserve">
+    <value>When mouse left button is pushed down, delays ... ms before starting executing 'Press and Hold' command.</value>
+  </data>
+  <data name="ButtonDsShapeBase_HoldCommandIntervalMs" xml:space="preserve">
+    <value>Press and Hold Command Repeat Interval Ms</value>
+  </data>
+  <data name="ButtonDsShapeBase_HoldCommandIntervalMsDescription" xml:space="preserve">
+    <value>When mouse left button is pushed down, delays 'Delay before Start' ms before executing 'Press and Hold' command first time and then repeating execution with interval 'Repeat Interval' ms. If value of this property is 0 then there is no repeating.</value>
+  </data>
+  <data name="ButtonDsShapeBase_HoldDsCommand" xml:space="preserve">
+    <value>Press and Hold (Mouse Down)</value>
+  </data>
+  <data name="ButtonDsShapeBase_IsCancelInfo" xml:space="preserve">
+    <value>Is Cancel Button</value>
+  </data>
+  <data name="ButtonDsShapeBase_IsCancelInfoDescription" xml:space="preserve">
+    <value>Indicates whether a Button is a Cancel button. A user can activate the Cancel button by pressing the ESC key.</value>
+  </data>
+  <data name="ButtonDsShapeBase_IsDefaultInfo" xml:space="preserve">
+    <value>Is Default Button</value>
+  </data>
+  <data name="ButtonDsShapeBase_IsDefaultInfoDescription" xml:space="preserve">
+    <value>Indicates whether a Button is the default button. A user invokes the default button by pressing the ENTER key.</value>
+  </data>
+  <data name="ButtonDsShape_ContentHorizontalAlignment" xml:space="preserve">
+    <value>Content Horizontal Alignment</value>
+  </data>
+  <data name="ButtonDsShape_ContentInfo" xml:space="preserve">
+    <value>Content</value>
+  </data>
+  <data name="ButtonDsShape_ContentVerticalAlignment" xml:space="preserve">
+    <value>Content Vertical Alignment</value>
+  </data>
+  <data name="ButtonDsShape_PressedContentInfo" xml:space="preserve">
+    <value>Content when Pressed</value>
+  </data>
+  <data name="ButtonDsShape_TextHorizontalAlignment" xml:space="preserve">
+    <value>Text Horizontal Alignment</value>
+  </data>
+  <data name="ButtonDsShape_TextInfo" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="ButtonDsShape_TextMargin" xml:space="preserve">
+    <value>Text Margin</value>
+  </data>
+  <data name="ButtonDsShape_TextStretch" xml:space="preserve">
+    <value>Text Stretch</value>
+  </data>
+  <data name="ButtonDsShape_TextVerticalAlignment" xml:space="preserve">
+    <value>Text Vertical Alignment</value>
+  </data>
+  <data name="ButtonDsShape_TextWrapping" xml:space="preserve">
+    <value>Text Wrapping</value>
+  </data>
+  <data name="CancelButtonText" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CannotCreateDsShapeView" xml:space="preserve">
+    <value>Cannot create dsShape view</value>
+  </data>
+  <data name="CannotFindFaceplateForTag" xml:space="preserve">
+    <value>Cannot find faceplate for tag</value>
+  </data>
+  <data name="CannotSaveFileMessage" xml:space="preserve">
+    <value>File saving error!</value>
+  </data>
+  <data name="CannotShowDsPage" xml:space="preserve">
+    <value>Cannot show page</value>
+  </data>
+  <data name="CentumTrendGroupDsShapeDsTrendItemsCollection" xml:space="preserve">
+    <value>Lines</value>
+  </data>
+  <data name="ChangeControlStyleQuestion" xml:space="preserve">
+    <value>Change Shape style to</value>
+  </data>
+  <data name="ChangedDsPagesCount" xml:space="preserve">
+    <value>Changed pages count</value>
+  </data>
+  <data name="ChartDsShapeAppearanceType" xml:space="preserve">
+    <value>Chart Type</value>
+  </data>
+  <data name="ChartDsShapeDsChartItemsCollection" xml:space="preserve">
+    <value>Items</value>
+  </data>
+  <data name="CheckDrawingsBinSerializationVersion" xml:space="preserve">
+    <value>Update pages version:</value>
+  </data>
+  <data name="ChildWindowInfo" xml:space="preserve">
+    <value>Child Window</value>
+  </data>
+  <data name="ChildWindowInfoDescription" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ClearAllButtonText" xml:space="preserve">
+    <value>Clear All</value>
+  </data>
+  <data name="ClickCoordinate" xml:space="preserve">
+    <value>Click Coordinate:</value>
+  </data>
+  <data name="CloneableObjectProperties" xml:space="preserve">
+    <value>...</value>
+  </data>
+  <data name="CloseAllFaceplatesDsCommandOptions_PlayWindowClassInfo" xml:space="preserve">
+    <value>Faceplates Class to Close</value>
+  </data>
+  <data name="CloseAllFaceplatesDsCommandOptions_PlayWindowClassInfo_Description" xml:space="preserve">
+    <value>Closes all faceplates of specific class. If this setting is not specified then closes all faceplates of current play window. </value>
+  </data>
+  <data name="CloseButtonToolTip" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="CloseDsProjectToolkitOperation" xml:space="preserve">
+    <value>Closing Project...</value>
+  </data>
+  <data name="ColorFromConstant" xml:space="preserve">
+    <value>Color form Generic Param:</value>
+  </data>
+  <data name="ColorFromConstantToolTip" xml:space="preserve">
+    <value>You can get color from generic param. Type in generic param name in common format %(...) to get color from its value</value>
+  </data>
+  <data name="ColorFromScreen" xml:space="preserve">
+    <value>Select Color from any Point of Screen:</value>
+  </data>
+  <data name="ColorFromScreenToolTip" xml:space="preserve">
+    <value>Select color from any point of other applications or desktop</value>
+  </data>
+  <data name="ComboBoxDsShapeIsEditableInfo" xml:space="preserve">
+    <value>Is Editable</value>
+  </data>
+  <data name="ComboBoxDsShapeMenuItemInfosCollection" xml:space="preserve">
+    <value>Items</value>
+  </data>
+  <data name="ComboBoxDsShapeSelectedIndexInfo" xml:space="preserve">
+    <value>Selected Index [0,1,2...]</value>
+  </data>
+  <data name="ComboBoxDsShapeTextInfo" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="CommandListenerDsShape_CommandToListen" xml:space="preserve">
+    <value>Command to Listen</value>
+  </data>
+  <data name="CommandListenerDsShape_CommandToListenDescription" xml:space="preserve">
+    <value>Application-wide command to listen, e.g. 'Ack' command. When such command occurs, dsShape does command specified in 'Command to Listen - Command to Do' field.</value>
+  </data>
+  <data name="CommandListenerDsShape_CommandToListenDsCommand" xml:space="preserve">
+    <value>Command to Listen - Command to Do</value>
+  </data>
+  <data name="CommandListenerDsShape_CommandToListenDsCommandDescription" xml:space="preserve">
+    <value>Command to do, e. g. 'AckTag' , when application-wide command occurs.</value>
+  </data>
+  <data name="CommandListenerDsShape_CommandToListenOptions" xml:space="preserve">
+    <value>Command to Listen - Options</value>
+  </data>
+  <data name="CommandListenerDsShape_CommandToListenOptionsDescription" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CommandListenerDsShape_ConditionalDsCommandsCollection" xml:space="preserve">
+    <value>Conditional Commands</value>
+  </data>
+  <data name="CommandListenerDsShape_ConditionalDsCommandsCollectionDescription" xml:space="preserve">
+    <value>Command from list is executed, when transition from command disabled to command enabled occurs or after page load, if enabled.</value>
+  </data>
+  <data name="CommandListenerDsShape_EachSecondDsCommand" xml:space="preserve">
+    <value>Command to Do each Second</value>
+  </data>
+  <data name="CommandListenerDsShape_EachSecondDsCommandDescription" xml:space="preserve">
+    <value>Command to do each second.</value>
+  </data>
+  <data name="CommandListenerDsShape_LoadedDsCommand" xml:space="preserve">
+    <value>Command to Do when Page is Loaded</value>
+  </data>
+  <data name="CommandListenerDsShape_LoadedDsCommandDescription" xml:space="preserve">
+    <value>Command to do, each time page is loaded (shown).</value>
+  </data>
+  <data name="CommandListenerDsShape_UnloadedDsCommand" xml:space="preserve">
+    <value>Command to Do when Page is Unloaded</value>
+  </data>
+  <data name="CommandListenerDsShape_UnloadedDsCommandDescription" xml:space="preserve">
+    <value>Command to do, each time page is unloaded (closed).</value>
+  </data>
+  <data name="CommandsListDsCommandOptionsDsCommandsList" xml:space="preserve">
+    <value>Commands List</value>
+  </data>
+  <data name="ComplexDsShape" xml:space="preserve">
+    <value>Complex Shape</value>
+  </data>
+  <data name="ComplexDsShapeDesc" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="ComplexDsShapeDsConstantsCollection" xml:space="preserve">
+    <value>Generic Params</value>
+  </data>
+  <data name="ComplexDsShapeGroup" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="ComplexDsShapeName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ComplexDsShape_DrawingCenterRelativePosition" xml:space="preserve">
+    <value>Drawing Center Point (relative to upper left corner [0..1, 0..1])</value>
+  </data>
+  <data name="ComplexDsShape_DrawingDesc" xml:space="preserve">
+    <value>Drawing Description</value>
+  </data>
+  <data name="ComplexDsShape_DrawingGroup" xml:space="preserve">
+    <value>Drawing Group</value>
+  </data>
+  <data name="ComplexDsShape_DrawingGuid" xml:space="preserve">
+    <value>Drawing GUID</value>
+  </data>
+  <data name="ComplexDsShape_DrawingHeight" xml:space="preserve">
+    <value>Drawing Height</value>
+  </data>
+  <data name="ComplexDsShape_DrawingName" xml:space="preserve">
+    <value>Drawing Name</value>
+  </data>
+  <data name="ComplexDsShape_DrawingWidth" xml:space="preserve">
+    <value>Drawing Width</value>
+  </data>
+  <data name="ConnectionPointDsShape_Type" xml:space="preserve">
+    <value>Connection Point Type</value>
+  </data>
+  <data name="ConnectorDsShape_Begin" xml:space="preserve">
+    <value>Begin</value>
+  </data>
+  <data name="ConnectorDsShape_End" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="ConnectorDsShape_Type" xml:space="preserve">
+    <value>Connector Type</value>
+  </data>
+  <data name="ConstantsValuesOnlyComboBoxItem" xml:space="preserve">
+    <value>Generic Params Only</value>
+  </data>
+  <data name="ConstantValueIsInherited" xml:space="preserve">
+    <value>&lt;Value is Inherited&gt;</value>
+  </data>
+  <data name="ConstantValueNotInListWarning" xml:space="preserve">
+    <value>Warning: value not in list!</value>
+  </data>
+  <data name="ContentButtonDsShape_HorizontalTextAlignment" xml:space="preserve">
+    <value>Text Horizontal Alignment</value>
+  </data>
+  <data name="ContentButtonDsShape_TextMargin" xml:space="preserve">
+    <value>Text Margin</value>
+  </data>
+  <data name="ContentButtonDsShape_TextStretch" xml:space="preserve">
+    <value>Text Stretch</value>
+  </data>
+  <data name="ContentButtonDsShape_VerticalTextAlignment" xml:space="preserve">
+    <value>Text Vertical Alignment</value>
+  </data>
+  <data name="ContentDsShapeContentInfo" xml:space="preserve">
+    <value>Content</value>
+  </data>
+  <data name="ContentEditorClearContentButtonText" xml:space="preserve">
+    <value>Clear Content</value>
+  </data>
+  <data name="ContentEditorContentStretch" xml:space="preserve">
+    <value>Content Stretch Type:</value>
+  </data>
+  <data name="ContentEditorCurrentContentDesc" xml:space="preserve">
+    <value>Current Content:</value>
+  </data>
+  <data name="ContentEditorSelectFileButtonText" xml:space="preserve">
+    <value>Select File (image, animated GIF, XPS, OXPS, XAML, HTML)</value>
+  </data>
+  <data name="ContentEditorSelectFileFromLibraryButtonText" xml:space="preserve">
+    <value>Select Image from Library</value>
+  </data>
+  <data name="ContentEditorSelectStretch" xml:space="preserve">
+    <value>Select Stretch:</value>
+  </data>
+  <data name="ContentEditorWindowBlinkingFirstTabText" xml:space="preserve">
+    <value>First</value>
+  </data>
+  <data name="ContentEditorWindowBlinkingSecondTabText" xml:space="preserve">
+    <value>Second</value>
+  </data>
+  <data name="ContentEditorWindowBlinkingTabText" xml:space="preserve">
+    <value>Blinking</value>
+  </data>
+  <data name="ContentEditorWindowStaticTabText" xml:space="preserve">
+    <value>Static</value>
+  </data>
+  <data name="ContextMenuDsShapeMenuItemInfosCollection" xml:space="preserve">
+    <value>Menu Items</value>
+  </data>
+  <data name="ControlDsShapeBackgroundInfo" xml:space="preserve">
+    <value>Background</value>
+  </data>
+  <data name="ControlDsShapeBorderBrushInfo" xml:space="preserve">
+    <value>Border Brush</value>
+  </data>
+  <data name="ControlDsShapeBorderThickness" xml:space="preserve">
+    <value>Border Thickness</value>
+  </data>
+  <data name="ControlDsShapeForegroundInfo" xml:space="preserve">
+    <value>Foreground</value>
+  </data>
+  <data name="ControlDsShapeHorizontalContentAlignment" xml:space="preserve">
+    <value>Horizontal Content Alignment</value>
+  </data>
+  <data name="ControlDsShapePadding" xml:space="preserve">
+    <value>Padding</value>
+  </data>
+  <data name="ControlDsShapeStyleInfo" xml:space="preserve">
+    <value>Style</value>
+  </data>
+  <data name="ControlDsShapeToolTipFileRelativePath" xml:space="preserve">
+    <value>ToolTip Page File Name</value>
+  </data>
+  <data name="ControlDsShapeToolTipTextInfo" xml:space="preserve">
+    <value>ToolTip Text</value>
+  </data>
+  <data name="ControlDsShapeVerticalContentAlignment" xml:space="preserve">
+    <value>Vertical Content Alignment</value>
+  </data>
+  <data name="ConvertAllDrawingsToNewDrawingsStoreModeQuestion" xml:space="preserve">
+    <value>Do you wish to convert all pages according new selected store mode?</value>
+  </data>
+  <data name="Converter" xml:space="preserve">
+    <value>&lt;Converter&gt;</value>
+  </data>
+  <data name="ConverterClear" xml:space="preserve">
+    <value>Clear Converter</value>
+  </data>
+  <data name="ConverterHelp" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="ConverterLoad" xml:space="preserve">
+    <value>Load Converter
+from File</value>
+  </data>
+  <data name="ConverterMoveDown" xml:space="preserve">
+    <value>Moves selected row down</value>
+  </data>
+  <data name="ConverterMoveUp" xml:space="preserve">
+    <value>Moves selected row up</value>
+  </data>
+  <data name="ConverterSave" xml:space="preserve">
+    <value>Save Converter
+to File</value>
+  </data>
+  <data name="ConverterWindowDataSourceToUi" xml:space="preserve">
+    <value>Data Source to UI</value>
+  </data>
+  <data name="ConverterWindowDataSourceToUiValueExpression" xml:space="preserve">
+    <value>Set UI to</value>
+  </data>
+  <data name="ConverterWindowHelp" xml:space="preserve">
+    <value>You can use any valid C# expression, including standard .NET library function calls. To refer to data source items, use variables of types double, int, bool, string:
+d[i], i[i], b[i], s[i], where i is Data Source Item index (N). In string literals, you can use Generic Params in common format %(...).
+If expression must results to boolean value."</value>
+  </data>
+  <data name="ConverterWindowHelp2" xml:space="preserve">
+    <value>Set UI to" expression must results to UI data type (usually string). </value>
+  </data>
+  <data name="ConverterWindowUiToDataSource" xml:space="preserve">
+    <value>UI to Data Source</value>
+  </data>
+  <data name="ConverterWindowUiToDataSourceIfExpression" xml:space="preserve">
+    <value>If expression is true (first true row for every data source is executed)</value>
+  </data>
+  <data name="ConverterWindowUiToDataSourceParamNum" xml:space="preserve">
+    <value>Data Source N</value>
+  </data>
+  <data name="ConverterWindowUiToDataSourceValueExpression" xml:space="preserve">
+    <value>Set Data Source to</value>
+  </data>
+  <data name="Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="CopyResultsButton" xml:space="preserve">
+    <value>Copy Results to Clipboard</value>
+  </data>
+  <data name="CreateDsPagesToolkitOperationOptions_TemplateDsPageDrawingFileName" xml:space="preserve">
+    <value>Select Page Template</value>
+  </data>
+  <data name="CreateDsPagesToolkitOperationOptions_TemplateDsPageDrawingFileName_Description" xml:space="preserve">
+    <value>New pages will take Width, Height, Page Style, Page Style-Specific Props form that template (if blank, Generic Pages with default props and default width and height will be created).</value>
+  </data>
+  <data name="CreateDsPagesToolkitOperationOptions_TryCreateDsPagesWithSizeOfImage" xml:space="preserve">
+    <value>Try to Create Pages with Size of Underlying Image</value>
+  </data>
+  <data name="CreateDsPagesToolkitOperationOptions_TryCreateDsPagesWithSizeOfImage_Description" xml:space="preserve">
+    <value>When this option is selected, if image size is known, then new page takes that image size, otherwise template page or default width and height is used.</value>
+  </data>
+  <data name="CreateMapToolkitOperationOptionsMaxPointsDelta" xml:space="preserve">
+    <value>Accuracy (Meters) </value>
+  </data>
+  <data name="CreateMapToolkitOperationOptionsMutualPointRefsMaxAngleDelta" xml:space="preserve">
+    <value>Mutual Point Refs Max Angle Delta (Degree)</value>
+  </data>
+  <data name="CurrentDrawingComboBoxItem" xml:space="preserve">
+    <value>Current Drawing</value>
+  </data>
+  <data name="CustomControlStyle" xml:space="preserve">
+    <value>User Defined</value>
+  </data>
+  <data name="Cut" xml:space="preserve">
+    <value>Cut</value>
+  </data>
+  <data name="DataCategory" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="DataEngineBaseDescription" xml:space="preserve">
+    <value>Model Engine Description</value>
+  </data>
+  <data name="DataEngineBase_AlarmMessages_ElementIdsMapFileName" xml:space="preserve">
+    <value>Alarm Messages File Name</value>
+  </data>
+  <data name="DataEngineBase_AlarmMessages_ElementIdsMapFileNameDescription" xml:space="preserve">
+    <value>Map for generating alarm messages</value>
+  </data>
+  <data name="DataEngineBase_Constant" xml:space="preserve">
+    <value>Generic Param (to use is this props)</value>
+  </data>
+  <data name="DataEngineBase_ElementIdsMapFileName" xml:space="preserve">
+    <value>Tags Map File Name</value>
+  </data>
+  <data name="DataEngineBase_ElementIdsMapFileName_Description" xml:space="preserve">
+    <value>CSV file name in .\CsvDb directory. Columns in file: &lt;tag.param in interface&gt;,&lt;tag.param in model&gt;. Maps interface and model params.</value>
+  </data>
+  <data name="DataEngineBase_FontsMapFileName" xml:space="preserve">
+    <value>Fonts Map File Name</value>
+  </data>
+  <data name="DataEngineBase_FontsMapFileName_Description" xml:space="preserve">
+    <value>CSV file name in .\CsvDb directory. Columns in file: &lt;font in interface&gt;,&lt;font to substitute&gt;. Example: 'Arial Cyr,"Family=Arial&amp;Style=Normal&amp;Stretch=Condensed&amp;Weight=Bold"'</value>
+  </data>
+  <data name="DataEngineBase_GlobalVariablesFileName" xml:space="preserve">
+    <value>Global Variables File Name</value>
+  </data>
+  <data name="DataEngineBase_GlobalVariablesFileName_Description" xml:space="preserve">
+    <value>File to store values of global variables.</value>
+  </data>
+  <data name="DataEngineBase_ModelTagPropertyInfosCollection" xml:space="preserve">
+    <value>Model Tag Properties Info</value>
+  </data>
+  <data name="DataEngineBase_SymbolsToRemoveFromTagInAlarmMessage" xml:space="preserve">
+    <value>Symbol(s) to Remove from Tag in Alarm Message</value>
+  </data>
+  <data name="DataEngineBase_SymbolsToRemoveFromTagInAlarmMessage_Description" xml:space="preserve">
+    <value>Comma separated values</value>
+  </data>
+  <data name="DataEngineBase_TagAndPropertySeparator" xml:space="preserve">
+    <value>Tag Property Separator</value>
+  </data>
+  <data name="DataEngineBase_TagAndPropertySeparator_Description" xml:space="preserve">
+    <value>Used for Map.csv processing. Can be configured in Map.csv, 'TagAndPropertySeparator' key</value>
+  </data>
+  <data name="DataEngineBase_TagDescriptionInfo" xml:space="preserve">
+    <value>Tag Description</value>
+  </data>
+  <data name="DataEngineBase_TagAlarmsInfosCollection" xml:space="preserve">
+    <value>Alarm Labels, Colors and Buzzer</value>
+  </data>
+  <data name="DataEngineBase_TagsFileName" xml:space="preserve">
+    <value>Tags Info File Name</value>
+  </data>
+  <data name="DataEngineBase_TagsFileName_Description" xml:space="preserve">
+    <value>Optional: CSV file name in .\CsvDb directory. Columns in file: &lt;tag&gt;,&lt;tag type&gt;,&lt;page file name for tag search&gt;. Tag type is used for showing standard faceplate for that tag. Page file name is used for showing page related with the tag, if automatic page search works incorrect. </value>
+  </data>
+  <data name="DataEngineBase_TagNameToDisplayInfo" xml:space="preserve">
+    <value>Tag to Display</value>
+  </data>
+  <data name="DataEngineBase_TagTypeSeparator" xml:space="preserve">
+    <value>Tag Type Separator</value>
+  </data>
+  <data name="DataEngineBase_TagTypeSeparator_Description" xml:space="preserve">
+    <value>Used for Map.csv processing. Can be configured in Map.csv, 'TagTypeSeparator' key</value>
+  </data>
+  <data name="DataEngineBase_TagTypesFileName" xml:space="preserve">
+    <value>Tag Types Info File Name</value>
+  </data>
+  <data name="DataEngineBase_TagTypesFileName_Description" xml:space="preserve">
+    <value>Optional: CSV file name in .\CsvDb directory. Columns in file: &lt;tag type&gt;,&lt;facepates file names (comma separated)&gt;,&lt;generic param in faceplate, usually %(TAG)&gt;. Defines Tag types and corresponding standard faceplates and detail faceplates.</value>
+  </data>
+  <data name="DataEngineUnavailableDefaultWillBeUsedMessage" xml:space="preserve">
+    <value>Cannot find settings for Model Engine {0}. Default settings will be used. Please specify this model engine type in Project -&gt; Properties -&gt; Model Engine.</value>
+  </data>
+  <data name="DataEngineUnavailableMessage" xml:space="preserve">
+    <value>Cannot find settings for Model Engine {0}. Please specify this model engine type in Project -&gt; Properties -&gt; Model Engine.</value>
+  </data>
+  <data name="DataItemDefaultValue" xml:space="preserve">
+    <value>Value when Unknown</value>
+  </data>
+  <data name="DataItemId" xml:space="preserve">
+    <value>Data Source Item Id</value>
+  </data>
+  <data name="DataItemType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="DefaultBrushTabItem" xml:space="preserve">
+    <value>&lt;default&gt;</value>
+  </data>
+  <data name="DefaultTrendValuesZoomValue" xml:space="preserve">
+    <value>Y axis: default value zoom (value should be in list)</value>
+  </data>
+  <data name="DefaultValue" xml:space="preserve">
+    <value>&lt;default&gt;</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="SszAlarmsInfoCategoryIdNormalizedConditionChangeOfState" xml:space="preserve">
+    <value>Change of State Category</value>
+  </data>
+  <data name="SszAlarmsInfoCategoryIdNormalizedConditionH" xml:space="preserve">
+    <value>H Category</value>
+  </data>
+  <data name="SszAlarmsInfoCategoryIdNormalizedConditionHH" xml:space="preserve">
+    <value>HH Category</value>
+  </data>
+  <data name="SszAlarmsInfoCategoryIdNormalizedConditionL" xml:space="preserve">
+    <value>L Category</value>
+  </data>
+  <data name="SszAlarmsInfoCategoryIdNormalizedConditionLL" xml:space="preserve">
+    <value>LL Category</value>
+  </data>
+  <data name="SszAlarmsInfoCategoryIdNormalizedConditionNormal" xml:space="preserve">
+    <value>Normal Category</value>
+  </data>
+  <data name="SszAlarmsInfoCategoryIdNormalizedConditionNotNormalState" xml:space="preserve">
+    <value>Not Normal State Category</value>
+  </data>
+  <data name="SszAlarmsInfoCategoryIdNormalizedConditionOther" xml:space="preserve">
+    <value>Other Category</value>
+  </data>
+  <data name="SszAlarmsInfoCategoryIdNormalizedConditionSwOff" xml:space="preserve">
+    <value>OFF Category</value>
+  </data>
+  <data name="SszAlarmsInfoCategoryIdNormalizedConditionSwOn" xml:space="preserve">
+    <value>ON Category</value>
+  </data>
+  <data name="SszAlarmsInfoCategoryIdNormalizedConditionSwTurnOff" xml:space="preserve">
+    <value>Turn OFF Category</value>
+  </data>
+  <data name="SszAlarmsInfoCategoryIdNormalizedConditionSwTurnOn" xml:space="preserve">
+    <value>Turn ON Category</value>
+  </data>
+  <data name="SszDataEngineDescription" xml:space="preserve">
+    <value>Ssz Model Engine</value>
+  </data>
+  <data name="SszDataEngineNameToDisplay" xml:space="preserve">
+    <value>Ssz</value>
+  </data>
+  <data name="DesignModeInPlayFailed" xml:space="preserve">
+    <value>There is no supported play for Desiger Mode!</value>
+  </data>
+  <data name="Done" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="DoneWithErrors" xml:space="preserve">
+    <value>Done with errors</value>
+  </data>
+  <data name="DrawingCategory" xml:space="preserve">
+    <value>Drawing</value>
+  </data>
+  <data name="DrawingDsConstantsCollection" xml:space="preserve">
+    <value>Generic Params</value>
+  </data>
+  <data name="DrawingFileNotFoundMessage" xml:space="preserve">
+    <value>Drawing file not found!</value>
+  </data>
+  <data name="DrawingFileOpenErrorAddonIsNotFound" xml:space="preserve">
+    <value>Cannot read drawing! Addon(s) isn't found:</value>
+  </data>
+  <data name="DrawingFileOpenErrorGeneral" xml:space="preserve">
+    <value>Cannot read drawing!</value>
+  </data>
+  <data name="DrawingFileOpenErrorUnsupportedVersion" xml:space="preserve">
+    <value>Cannot read drawing! Drawing was saved in unsupported or newer version of designer.</value>
+  </data>
+  <data name="DrawingFilesDirectoryFullName" xml:space="preserve">
+    <value>Files Dir</value>
+  </data>
+  <data name="DrawingGuid" xml:space="preserve">
+    <value>GUID</value>
+  </data>
+  <data name="DrawingHeight" xml:space="preserve">
+    <value>Height</value>
+  </data>
+  <data name="DrawingOnDiskChangedMessage" xml:space="preserve">
+    <value>File on disk changed outside the designer!</value>
+  </data>
+  <data name="DrawingSaveErrorUnSupportedAddons" xml:space="preserve">
+    <value>Cannot save drawing, addons is not found</value>
+  </data>
+  <data name="DrawingSavingError" xml:space="preserve">
+    <value>Error saving drawing file.</value>
+  </data>
+  <data name="DrawingSavingUnauthorizedAccessError" xml:space="preserve">
+    <value>Error saving drawing file. Access is denied!</value>
+  </data>
+  <data name="DrawingsStoreBinMode" xml:space="preserve">
+    <value>Binary Files</value>
+  </data>
+  <data name="DrawingsStoreXamlMode" xml:space="preserve">
+    <value>XAML Files</value>
+  </data>
+  <data name="DrawingWidth" xml:space="preserve">
+    <value>Width</value>
+  </data>
+  <data name="DsChartItemDsBrush" xml:space="preserve">
+    <value>Brush</value>
+  </data>
+  <data name="DsChartItemHeaderInfo" xml:space="preserve">
+    <value>Label</value>
+  </data>
+  <data name="DsChartItemValueInfo" xml:space="preserve">
+    <value>Value [0..1]</value>
+  </data>
+  <data name="DsCommandCommand" xml:space="preserve">
+    <value>Command</value>
+  </data>
+  <data name="DsCommandCommandUrl" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="DsCommandDsCommandOptions" xml:space="preserve">
+    <value>Params</value>
+  </data>
+  <data name="DsCommandIsEnabledInfo" xml:space="preserve">
+    <value>Is Enabled</value>
+  </data>
+  <data name="DsConstantsCollectionDescription" xml:space="preserve">
+    <value>You can type in partial value in 'Value' field, e. g. you can type in '3310' to filter drop-down list for values 'FIC3310', 'FI3310'.</value>
+  </data>
+  <data name="DsPageBackground" xml:space="preserve">
+    <value>Page Background</value>
+  </data>
+  <data name="DsPageBackgroundDescription" xml:space="preserve">
+    <value>If value is default, corresponding Project setting is used.</value>
+  </data>
+  <data name="DsPageDrawing" xml:space="preserve">
+    <value>Page</value>
+  </data>
+  <data name="DsPageDrawingForConstantValueConstantName" xml:space="preserve">
+    <value>Generic Param Name</value>
+  </data>
+  <data name="DsPageDrawingForConstantValueConstantType" xml:space="preserve">
+    <value>Generic Param Type</value>
+  </data>
+  <data name="DsPageDrawingForConstantValueFaceplateDsPageDrawingFileName" xml:space="preserve">
+    <value>Faceplate Page File Name</value>
+  </data>
+  <data name="DsPageDrawing_Desc" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="DsPageDrawing_DescDescription" xml:space="preserve">
+    <value>Use %(PageDesc) to refer current page desc. Use %(RootPageDesc) to refer root page desc in windows hierarchy.</value>
+  </data>
+  <data name="DsPageDrawing_DsPageTypeGuid" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="DsPageDrawing_DsPageTypeObject" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="DsPageDrawing_ExcludeFromTagSearch" xml:space="preserve">
+    <value>Exclude from Tag Search</value>
+  </data>
+  <data name="DsPageDrawing_ExcludeFromTagSearchDescription" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DsPageDrawing_Group" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="DsPageDrawing_GroupDescription" xml:space="preserve">
+    <value>Use %(PageGroup) to refer current page group. Use %(RootPageGroup) to refer root page group in windows hierarchy.</value>
+  </data>
+  <data name="DsPageDrawing_HorizontalAlignment" xml:space="preserve">
+    <value>Page Horizontal Alignment</value>
+  </data>
+  <data name="DsPageDrawing_HorizontalAlignment_Description" xml:space="preserve">
+    <value>If value is default, corresponding Project property is used.</value>
+  </data>
+  <data name="DsPageDrawing_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="DsPageDrawing_NameDescription" xml:space="preserve">
+    <value>Use %(PageName) to refer current page name. Use %(RootPageName) to refer root page name in windows hierarchy.</value>
+  </data>
+  <data name="DsPageDrawing_UnderlyingXaml" xml:space="preserve">
+    <value>Underlying Content</value>
+  </data>
+  <data name="DsPageDrawing_VerticalAlignment" xml:space="preserve">
+    <value>Page Vertical Alignment</value>
+  </data>
+  <data name="DsPageDrawing_VerticalAlignment_Description" xml:space="preserve">
+    <value>If value is default, corresponding Project property is used.</value>
+  </data>
+  <data name="DsPagesAndDsShapesDirectoryError" xml:space="preserve">
+    <value>Pages and Shapes library directory not found</value>
+  </data>
+  <data name="DsPageStretchMode" xml:space="preserve">
+    <value>Page Stretch Mode</value>
+  </data>
+  <data name="DsPageStretchModeDescription" xml:space="preserve">
+    <value>If value is default, corresponding Project property is used.</value>
+  </data>
+  <data name="DsPageTypeBase_Desc" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="DsPageTypeBase_IsFaceplate" xml:space="preserve">
+    <value>Is Faceplate</value>
+  </data>
+  <data name="DsPageTypeCategory" xml:space="preserve">
+    <value>Page Type</value>
+  </data>
+  <data name="DsProject" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="DsProjectActuallyUsedAddons" xml:space="preserve">
+    <value>Actually Used Addons</value>
+  </data>
+  <data name="DsProjectAddonsCollection" xml:space="preserve">
+    <value>Project Addons</value>
+  </data>
+  <data name="DsProjectDesc" xml:space="preserve">
+    <value>Project Description</value>
+  </data>
+  <data name="DsProjectDrawingCurrentSerializationVersionDateTime" xml:space="preserve">
+    <value>Project Files Storage Version</value>
+  </data>
+  <data name="DsProjectDrawingsStoreMode" xml:space="preserve">
+    <value>Store Pages as </value>
+  </data>
+  <data name="DsProjectDsConstantsCollection" xml:space="preserve">
+    <value>Project Generic Params</value>
+  </data>
+  <data name="DsProjectExeVersionDateTime" xml:space="preserve">
+    <value>EXE Version</value>
+  </data>
+  <data name="DsProjectFileFullName" xml:space="preserve">
+    <value>Project File</value>
+  </data>
+  <data name="DsProjectFileOpenErrorAddonIsNotFound" xml:space="preserve">
+    <value>Cannot open Project! Addon(s) isn't found:</value>
+  </data>
+  <data name="DsProjectFileOpenErrorFileWasSavedInNewerVersion" xml:space="preserve">
+    <value>Cannot open Project! File was saved in unsupported or newer version of designer.</value>
+  </data>
+  <data name="DsProjectFileOpenErrorGeneral" xml:space="preserve">
+    <value>Cannot open Project!</value>
+  </data>
+  <data name="DsProjectFileOpenWarningAddonIsNotFound" xml:space="preserve">
+    <value>Addon(s) isn't found:</value>
+  </data>
+  <data name="DsProjectIsReadOnlyDueToLicense" xml:space="preserve">
+    <value>Project cannot be modified or saved. Design is in Read-Only mode. A Ssz Maintenance Licence is required to perform this toolkitOperation.</value>
+  </data>
+  <data name="DsProjectLoadedWithErrors" xml:space="preserve">
+    <value>Project loaded with errors. See error log for details.</value>
+  </data>
+  <data name="DsProjectName" xml:space="preserve">
+    <value>Project Name</value>
+  </data>
+  <data name="DsProjectRootWindowProps" xml:space="preserve">
+    <value>Play Window Properties</value>
+  </data>
+  <data name="DsProjectRootWindowPropsDescription" xml:space="preserve">
+    <value>Properties of root play windows (title etc.)</value>
+  </data>
+  <data name="DsProjectSavingError" xml:space="preserve">
+    <value>Error saving Project file.</value>
+  </data>
+  <data name="DsProjectSavingUnauthorizedAccessError" xml:space="preserve">
+    <value>Error saving Project file. Access is denied!</value>
+  </data>
+  <data name="DsProjectStartDsPageFileRelativePath" xml:space="preserve">
+    <value>Start Page</value>
+  </data>
+  <data name="DsProject_ConditionalDsCommandsCollection" xml:space="preserve">
+    <value>Conditional Commands</value>
+  </data>
+  <data name="DsProject_ConditionalDsCommandsCollection_Description" xml:space="preserve">
+    <value>Command from list is executed, when transition from command disabled to command enabled occurs or after Project load, if enabled.</value>
+  </data>
+  <data name="DsProject_DataEngine" xml:space="preserve">
+    <value>Play-time Properties</value>
+  </data>
+  <data name="DsProject_DataEngineGuidAndName" xml:space="preserve">
+    <value>Model Engine</value>
+  </data>
+  <data name="DsProject_DefaultDsPageSize" xml:space="preserve">
+    <value>Default Page Size</value>
+  </data>
+  <data name="DsProject_DefaultServerAddress" xml:space="preserve">
+    <value>Default Server Address</value>
+  </data>
+  <data name="DsProject_DsPageBackground" xml:space="preserve">
+    <value>Pages Background</value>
+  </data>
+  <data name="DsProject_DsPageBackground_Description" xml:space="preserve">
+    <value>You can override this setting in page properties.</value>
+  </data>
+  <data name="DsProject_DsPageHorizontalAlignment" xml:space="preserve">
+    <value>Pages Horizontal Alignment</value>
+  </data>
+  <data name="DsProject_DsPageHorizontalAlignment_Description" xml:space="preserve">
+    <value>You can override this setting in page properties.</value>
+  </data>
+  <data name="DsProject_DsPageStretchMode" xml:space="preserve">
+    <value>Pages Stretch Mode</value>
+  </data>
+  <data name="DsProject_DsPageStretchMode_Description" xml:space="preserve">
+    <value>You can override this setting in page properties.</value>
+  </data>
+  <data name="DsProject_DsPageVerticalAlignment" xml:space="preserve">
+    <value>Pages Vertical Alignment</value>
+  </data>
+  <data name="DsProject_DsPageVerticalAlignment_Description" xml:space="preserve">
+    <value>You can override this setting in page properties.</value>
+  </data>
+  <data name="DsProject_OperatorUICultureName" xml:space="preserve">
+    <value>Operator UI Culture</value>
+  </data>
+  <data name="DsProject_PlayWindowClassOptionsCollection" xml:space="preserve">
+    <value>Windows Classes Options</value>
+  </data>
+  <data name="DsProject_PlayWindowClassOptionsCollection_Description" xml:space="preserve">
+    <value>Defines for windows classes: max windows count of the class and whether to close faceplates of this class when jump on next page uccurs.</value>
+  </data>
+  <data name="DsProject_TryConvertXamlToDsShapes" xml:space="preserve">
+    <value>Try Convert XAML to Shapes</value>
+  </data>
+  <data name="DsShapeAngleDeltaInfo" xml:space="preserve">
+    <value>Angle delta [0..1]</value>
+  </data>
+  <data name="DsShapeAngleFinal" xml:space="preserve">
+    <value>Angle Final</value>
+  </data>
+  <data name="DsShapeAngleInitial" xml:space="preserve">
+    <value>Angle</value>
+  </data>
+  <data name="DsShapeAngleInitialAdvanced" xml:space="preserve">
+    <value>Angle Initial</value>
+  </data>
+  <data name="DsShapeCenterDeltaPositionXInfo" xml:space="preserve">
+    <value>Center Point Delta Position X [0..1]</value>
+  </data>
+  <data name="DsShapeCenterDeltaPositionYInfo" xml:space="preserve">
+    <value>Center Point Delta Position Y [0..1]</value>
+  </data>
+  <data name="DsShapeCenterFinalPosition" xml:space="preserve">
+    <value>Center Point Final Position</value>
+  </data>
+  <data name="DsShapeCenterInitialPosition" xml:space="preserve">
+    <value>Position of Center Point</value>
+  </data>
+  <data name="DsShapeCenterInitialPositionAdvanced" xml:space="preserve">
+    <value>Center Point Initial Position</value>
+  </data>
+  <data name="DsShapeCenterPointMoved" xml:space="preserve">
+    <value>DsShape center point moved</value>
+  </data>
+  <data name="DsShapeCenterRelativePosition" xml:space="preserve">
+    <value>Center Point (relative to upper left corner [0..1, 0..1])</value>
+  </data>
+  <data name="DsShapeDesc" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="DsShapeDrawing" xml:space="preserve">
+    <value>Complex Shape Drawing</value>
+  </data>
+  <data name="DsShapeExportPropertiesSaveAsDialogTitle" xml:space="preserve">
+    <value>Please, specify new file name to export to</value>
+  </data>
+  <data name="DsShapeHeightDeltaInfo" xml:space="preserve">
+    <value>Height Delta [0..1]</value>
+  </data>
+  <data name="DsShapeHeightFinal" xml:space="preserve">
+    <value>Height Final</value>
+  </data>
+  <data name="DsShapeHeightInitial" xml:space="preserve">
+    <value>Height</value>
+  </data>
+  <data name="DsShapeHeightInitialAdvanced" xml:space="preserve">
+    <value>Height Initial</value>
+  </data>
+  <data name="DsShapeImportPropertiesDialogTitle" xml:space="preserve">
+    <value>Please, specify file name to import</value>
+  </data>
+  <data name="DsShapeIsEnabledInfo" xml:space="preserve">
+    <value>Is Enabled</value>
+  </data>
+  <data name="DsShapeIsFlipped" xml:space="preserve">
+    <value>Is Flipped</value>
+  </data>
+  <data name="DsShapeIsLocked" xml:space="preserve">
+    <value>Is Locked</value>
+  </data>
+  <data name="DsShapeIsVisibleInfo" xml:space="preserve">
+    <value>Is Visible</value>
+  </data>
+  <data name="DsShapeName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="DsShapeOpacityInfo" xml:space="preserve">
+    <value>Opacity</value>
+  </data>
+  <data name="DsShapeResetedCenterRelativePositionToOriginal" xml:space="preserve">
+    <value>Shape center relative position reseted to original</value>
+  </data>
+  <data name="DsShapeResetedSizeToOriginal" xml:space="preserve">
+    <value>Shape size reseted to original</value>
+  </data>
+  <data name="DsShapes" xml:space="preserve">
+    <value>Shapes</value>
+  </data>
+  <data name="DsShapeUpdated" xml:space="preserve">
+    <value>Shape updated</value>
+  </data>
+  <data name="DsShapeWidthDeltaInfo" xml:space="preserve">
+    <value>Width Delta [0..1]</value>
+  </data>
+  <data name="DsShapeWidthFinal" xml:space="preserve">
+    <value>Width Final</value>
+  </data>
+  <data name="DsShapeWidthInitial" xml:space="preserve">
+    <value>Width</value>
+  </data>
+  <data name="DsShapeWidthInitialAdvanced" xml:space="preserve">
+    <value>Width Initial</value>
+  </data>
+  <data name="DsShape_FieldOfView" xml:space="preserve">
+    <value>Field of View</value>
+  </data>
+  <data name="DsShape_ResizeMode" xml:space="preserve">
+    <value>Resize Mode</value>
+  </data>
+  <data name="DsShape_ResizeModeDescription" xml:space="preserve">
+    <value>Applies when Shape is standalone or inside complex Shape</value>
+  </data>
+  <data name="DsShape_RotationX" xml:space="preserve">
+    <value>Rotation X</value>
+  </data>
+  <data name="DsShape_RotationY" xml:space="preserve">
+    <value>Rotation Y</value>
+  </data>
+  <data name="DsShape_RotationZ" xml:space="preserve">
+    <value>Rotation Z</value>
+  </data>
+  <data name="DsTrendItemColor" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="DsTrendItemHdaId" xml:space="preserve">
+    <value>HDA item</value>
+  </data>
+  <data name="DsTrendItemTag" xml:space="preserve">
+    <value>Tag</value>
+  </data>
+  <data name="DuplicateAddonsMessage" xml:space="preserve">
+    <value>Duplicate addons are found</value>
+  </data>
+  <data name="EnableDisableBuzzer" xml:space="preserve">
+    <value>Enable or disable buzzer</value>
+  </data>
+  <data name="ErrorMessageBoxCaption" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="ExportResultsButton" xml:space="preserve">
+    <value>Export Results...</value>
+  </data>
+  <data name="ExportToCsvButtonText" xml:space="preserve">
+    <value>Export to CSV...</value>
+  </data>
+  <data name="ExportToXamlSaveAsDialogTitle" xml:space="preserve">
+    <value>Please, specify new XAML file name to export to</value>
+  </data>
+  <data name="FileExistsOverwriteQuestion" xml:space="preserve">
+    <value>File exists and differs. Overwrite?</value>
+  </data>
+  <data name="FileMustBeInDsPagesDir" xml:space="preserve">
+    <value>Error! File must be in Project Pages\ directory</value>
+  </data>
+  <data name="FileMustBeInDsProjectDir" xml:space="preserve">
+    <value>File must be in Project directory</value>
+  </data>
+  <data name="FileMustBeInDsShapesDir" xml:space="preserve">
+    <value>Error! File must be in Project Shapes\ directory</value>
+  </data>
+  <data name="FileNotFoundMessage" xml:space="preserve">
+    <value>File not found:</value>
+  </data>
+  <data name="FileOpenErrorFileNotFound" xml:space="preserve">
+    <value>Cannot open file. File isn't found.</value>
+  </data>
+  <data name="FileOpenErrorFileVersionError" xml:space="preserve">
+    <value>File open error. File saved in newer version of designer.</value>
+  </data>
+  <data name="FileOpenErrorMissingExtension" xml:space="preserve">
+    <value>Extension dll (addon) that supports this page style isn't found.</value>
+  </data>
+  <data name="FileUnknownExtensionMessage" xml:space="preserve">
+    <value>File unknown extension</value>
+  </data>
+  <data name="FindButton" xml:space="preserve">
+    <value>Find...</value>
+  </data>
+  <data name="FindButtonText" xml:space="preserve">
+    <value>Find</value>
+  </data>
+  <data name="FindDialogLabel" xml:space="preserve">
+    <value>Text to Find</value>
+  </data>
+  <data name="FindNextButtonText" xml:space="preserve">
+    <value>Find Next</value>
+  </data>
+  <data name="FindReplaceBusyText" xml:space="preserve">
+    <value>Searching...</value>
+  </data>
+  <data name="FindReplaceDialogHint" xml:space="preserve">
+    <value>Hint: you can copy results to clipboard and paste them to Excel</value>
+  </data>
+  <data name="FontSizeTextBoxToolTip" xml:space="preserve">
+    <value>You can get font size from generic param. Type in generic param name in common format %(...) to get font size from its value</value>
+  </data>
+  <data name="FrameDrawingNotFoundErrorMessage" xml:space="preserve">
+    <value>Frame drawing file not found</value>
+  </data>
+  <data name="FrameDsShape_FrameName" xml:space="preserve">
+    <value>Frame Name</value>
+  </data>
+  <data name="FrameDsShape_FrameName_Description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FrameDsShape_StartDsPageFileRelativePath" xml:space="preserve">
+    <value>Start Page</value>
+  </data>
+  <data name="FrameDsShape_StartDsPageFileRelativePath_Description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GenericAddonTrendsInGroupCount" xml:space="preserve">
+    <value>Trends in Group Count</value>
+  </data>
+  <data name="GenericAddon_FileRelativePath" xml:space="preserve">
+    <value>Frames Page</value>
+  </data>
+  <data name="GenericAddon_FileRelativePath_Description" xml:space="preserve">
+    <value>Generic page style pages are dispalyed inside page with frames. Main frame has blank name. You can override this behaviour in page properties. Can be blank.</value>
+  </data>
+  <data name="GenericDataEngine_Description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GenericDataEngine_NameToDisplay" xml:space="preserve">
+    <value>Generic Model Engine</value>
+  </data>
+  <data name="GenericDsCommandOptionsParamsString" xml:space="preserve">
+    <value>Params String</value>
+  </data>
+  <data name="GenericEmulationAddon_Desc" xml:space="preserve">
+    <value>Generic Emulation</value>
+  </data>
+  <data name="GenericFaceplateDsPageType_Desc" xml:space="preserve">
+    <value>Generic Faceplate</value>
+  </data>
+  <data name="GenericGraphicDsPageType_Desc" xml:space="preserve">
+    <value>Generic Graphic</value>
+  </data>
+  <data name="GenericGraphicDsPageType_FramesDsPageFileRelativePath" xml:space="preserve">
+    <value>Frames Page</value>
+  </data>
+  <data name="GenericGraphicDsPageType_FramesDsPageFileRelativePath_Description" xml:space="preserve">
+    <value>Page is dispalyed inside page with frames. Main frame has blank name. If value of this property is blank, default value from property of generic emulation addon is used.</value>
+  </data>
+  <data name="Geometry3DCategory" xml:space="preserve">
+    <value>Geometry 3D</value>
+  </data>
+  <data name="GeometryAdvancedCategory" xml:space="preserve">
+    <value>Geometry Dynamic</value>
+  </data>
+  <data name="GeometryCategory" xml:space="preserve">
+    <value>Geometry</value>
+  </data>
+  <data name="GeometryDsShapeFillInfo" xml:space="preserve">
+    <value>Fill</value>
+  </data>
+  <data name="GeometryDsShapeGeometryInfo" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="GeometryDsShapeStrokeDashArray" xml:space="preserve">
+    <value>Stroke Dash Array</value>
+  </data>
+  <data name="GeometryDsShapeStrokeDashArrayDescription" xml:space="preserve">
+    <value>Comma separated dash array. If 'Stroke Dash Length' and 'Stroke Gap Length' are not empty, this property is ignored.</value>
+  </data>
+  <data name="GeometryDsShapeStrokeDashLength" xml:space="preserve">
+    <value>Stroke Dash Length</value>
+  </data>
+  <data name="GeometryDsShapeStrokeEndLineCap" xml:space="preserve">
+    <value>Stroke End Line Cap</value>
+  </data>
+  <data name="GeometryDsShapeStrokeGapLength" xml:space="preserve">
+    <value>Stroke Gap Length</value>
+  </data>
+  <data name="GeometryDsShapeStrokeInfo" xml:space="preserve">
+    <value>Stroke</value>
+  </data>
+  <data name="GeometryDsShapeStrokeLineJoin" xml:space="preserve">
+    <value>Stroke Line Join</value>
+  </data>
+  <data name="GeometryDsShapeStrokeStartLineCap" xml:space="preserve">
+    <value>Stroke Start Line Cap</value>
+  </data>
+  <data name="GeometryDsShapeStrokeThickness" xml:space="preserve">
+    <value>Stroke Thickness</value>
+  </data>
+  <data name="GetDsPageDrawingsListDialogTitle" xml:space="preserve">
+    <value>Select Pages</value>
+  </data>
+  <data name="GoLibraryButtonLabel" xml:space="preserve">
+    <value>Go!</value>
+  </data>
+  <data name="GradientBrushTabItem" xml:space="preserve">
+    <value>Gradient Brush</value>
+  </data>
+  <data name="HelpFileName" xml:space="preserve">
+    <value>Field view user guide.pdf</value>
+  </data>
+  <data name="ImportFromCsvButtonText" xml:space="preserve">
+    <value>Import from CSV...</value>
+  </data>
+  <data name="ImportFromXamlDialogTitle" xml:space="preserve">
+    <value>Please, specify XAML file name to import</value>
+  </data>
+  <data name="InfoMessageBoxCaption" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="InsertSpecialCharacterButtonToolTip" xml:space="preserve">
+    <value>Insert Special Character</value>
+  </data>
+  <data name="InsertSpecialCharacterButtonToolTipDescription" xml:space="preserve">
+    <value>To insert &lt;Enter&gt; (new line) into text filed, press &lt;Ctrl&gt;+&lt;Enter&gt;. Alternatively, you can insert any unicode character in any field, where generic params are supported. To insert character, write in any place of string %(U+&lt;Unicode number&gt;), for example %(U+A) - inserts new line character</value>
+  </data>
+  <data name="JumpDsCommandOptions_FileRelativePath" xml:space="preserve">
+    <value>File Name (with Relative Path)</value>
+  </data>
+  <data name="LibPathLabel" xml:space="preserve">
+    <value>Library Path:</value>
+  </data>
+  <data name="LibraryDsPagesAndDsShapes" xml:space="preserve">
+    <value>Library Pages and Complex Shapes</value>
+  </data>
+  <data name="MainBusyIndicatorText" xml:space="preserve">
+    <value>Please, wait ...</value>
+  </data>
+  <data name="MainCategory" xml:space="preserve">
+    <value> Main</value>
+  </data>
+  <data name="MainGroup" xml:space="preserve">
+    <value>Main</value>
+  </data>
+  <data name="MapDsShapeStrokeDashLength" xml:space="preserve">
+    <value>Stroke Dash Length</value>
+  </data>
+  <data name="MapDsShapeStrokeGapLength" xml:space="preserve">
+    <value>Stroke Gap Length</value>
+  </data>
+  <data name="MapDsShapeStrokeInfo" xml:space="preserve">
+    <value>Stroke</value>
+  </data>
+  <data name="MapDsShapeStrokeThickness" xml:space="preserve">
+    <value>Stroke Thickness</value>
+  </data>
+  <data name="MenuItemInfoDsCommand" xml:space="preserve">
+    <value>Command</value>
+  </data>
+  <data name="MenuItemInfoHeaderInfo" xml:space="preserve">
+    <value>Header</value>
+  </data>
+  <data name="MenuItemInfoIsVisibleInfo" xml:space="preserve">
+    <value>Is Visible</value>
+  </data>
+  <data name="MessageAreYouSureToClearAllQuestion" xml:space="preserve">
+    <value>Are you sure to clear all data?</value>
+  </data>
+  <data name="MessageDeleteComplexDsShapesQuestion" xml:space="preserve">
+    <value>Are you sure to delete selected Shape(s)?</value>
+  </data>
+  <data name="MessageDeleteDsPagesQuestion" xml:space="preserve">
+    <value>Are you sure to delete selected page(s)?</value>
+  </data>
+  <data name="MessageSaveFileQuestion" xml:space="preserve">
+    <value>Save file?</value>
+  </data>
+  <data name="MiddleControlPointSetAngleMenuItemHeader" xml:space="preserve">
+    <value>Set Angle</value>
+  </data>
+  <data name="MiddleControlPointSetHorizontalMenuItemHeader" xml:space="preserve">
+    <value>Set Horizontal</value>
+  </data>
+  <data name="MiddleControlPointSetVerticalMenuItemHeader" xml:space="preserve">
+    <value>Set Vertical</value>
+  </data>
+  <data name="MissingFile" xml:space="preserve">
+    <value>Missing file</value>
+  </data>
+  <data name="ModelAndUIValueModelValue" xml:space="preserve">
+    <value>Model Value</value>
+  </data>
+  <data name="ModelAndUIValueUIValue" xml:space="preserve">
+    <value>UI Value</value>
+  </data>
+  <data name="ModelTagPropertyInfoAddToTrendGroups" xml:space="preserve">
+    <value>Add to Trend Groups</value>
+  </data>
+  <data name="ModelTagPropertyInfoEUInfo" xml:space="preserve">
+    <value>Eng Units</value>
+  </data>
+  <data name="ModelTagPropertyInfoFormatInfo" xml:space="preserve">
+    <value>Value Format</value>
+  </data>
+  <data name="ModelTagPropertyInfoHiAlarmInfo" xml:space="preserve">
+    <value>Hi Alarm Limit</value>
+  </data>
+  <data name="ModelTagPropertyInfoHiHiAlarmInfo" xml:space="preserve">
+    <value>HiHi Alarm Limit</value>
+  </data>
+  <data name="ModelTagPropertyInfoLoAlarmInfo" xml:space="preserve">
+    <value>Lo Alarm Limit</value>
+  </data>
+  <data name="ModelTagPropertyInfoLoLoAlarmInfo" xml:space="preserve">
+    <value>LoLo Alarm Limit</value>
+  </data>
+  <data name="ModelTagPropertyInfoMaxScaleInfo" xml:space="preserve">
+    <value>Max Scale</value>
+  </data>
+  <data name="ModelTagPropertyInfoMinScaleInfo" xml:space="preserve">
+    <value>Min Scale</value>
+  </data>
+  <data name="ModelTagPropertyInfoPropertyPath" xml:space="preserve">
+    <value>Property Path</value>
+  </data>
+  <data name="ModelTagPropertyInfoPropertyPathToDisplay" xml:space="preserve">
+    <value>Property Path to Display</value>
+  </data>
+  <data name="ModelTagPropertyInfoTagType" xml:space="preserve">
+    <value>Tag Type (Generic Param Type, can be blank)</value>
+  </data>
+  <data name="ModelTagPropertyInfo_DescriptionInfo" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="MultiChartDsShape_AxisXBottomIsVisible" xml:space="preserve">
+    <value>X Axis is Visible (Bottom)</value>
+  </data>
+  <data name="MultiChartDsShape_AxisXTopIsVisible" xml:space="preserve">
+    <value>X Axis is Visible (Top)</value>
+  </data>
+  <data name="MultiChartDsShape_AxisYLeftIsVisible" xml:space="preserve">
+    <value>Y Axis is Visible (Left)</value>
+  </data>
+  <data name="MultiChartDsShape_AxisYRightIsVisible" xml:space="preserve">
+    <value>Y Axis is Visible (Right)</value>
+  </data>
+  <data name="MultiChartDsShape_ChartGridBrush" xml:space="preserve">
+    <value>Chart Grid Color</value>
+  </data>
+  <data name="MultiChartDsShape_ChartGridIsVisible" xml:space="preserve">
+    <value>Chart Grid is Visible</value>
+  </data>
+  <data name="MultiChartDsShape_ChartGridLabelsBottomIsVisible" xml:space="preserve">
+    <value>Chart Grid Labels is Visible (Bottom)</value>
+  </data>
+  <data name="MultiChartDsShape_ChartGridLabelsLeftIsVisible" xml:space="preserve">
+    <value>Chart Grid Labels is Visible (Left)</value>
+  </data>
+  <data name="MultiChartDsShape_ChartGridLabelsRightIsVisible" xml:space="preserve">
+    <value>Chart Grid Labels is Visible (Right)</value>
+  </data>
+  <data name="MultiChartDsShape_ChartGridLabelsTopIsVisible" xml:space="preserve">
+    <value>Chart Grid Labels is Visible (Top)</value>
+  </data>
+  <data name="MultiChartDsShape_EngUnitXInfo" xml:space="preserve">
+    <value>X Eng. Unit</value>
+  </data>
+  <data name="MultiChartDsShape_EngUnitYInfo" xml:space="preserve">
+    <value>Y Eng. Unit</value>
+  </data>
+  <data name="MultiChartDsShape_FormatXInfo" xml:space="preserve">
+    <value>X Values Format</value>
+  </data>
+  <data name="MultiChartDsShape_FormatYInfo" xml:space="preserve">
+    <value>Y Values Format</value>
+  </data>
+  <data name="MultiChartDsShape_MaximumXInfo" xml:space="preserve">
+    <value>X Max</value>
+  </data>
+  <data name="MultiChartDsShape_MaximumYInfo" xml:space="preserve">
+    <value>Y Max</value>
+  </data>
+  <data name="MultiChartDsShape_MinimumXInfo" xml:space="preserve">
+    <value>X Min</value>
+  </data>
+  <data name="MultiChartDsShape_MinimumYInfo" xml:space="preserve">
+    <value>Y Min</value>
+  </data>
+  <data name="MultiChartDsShape_MultiDsChartItemsCollection" xml:space="preserve">
+    <value>Line Series</value>
+  </data>
+  <data name="MultiChartDsShape_TextTickFrequencyXInfo" xml:space="preserve">
+    <value>X Text Tick</value>
+  </data>
+  <data name="MultiChartDsShape_TextTickFrequencyYInfo" xml:space="preserve">
+    <value>Y Text Tick</value>
+  </data>
+  <data name="MultiChartDsShape_TickFrequencyXInfo" xml:space="preserve">
+    <value>X Tick</value>
+  </data>
+  <data name="MultiChartDsShape_TickFrequencyYInfo" xml:space="preserve">
+    <value>Y Tick</value>
+  </data>
+  <data name="MultiChartDsShape_TickLength" xml:space="preserve">
+    <value>Tick Length</value>
+  </data>
+  <data name="MultiChartDsShape_TickStrokeThickness" xml:space="preserve">
+    <value>Tick Stroke Thickness</value>
+  </data>
+  <data name="MultiDsChartItem_AppearanceType" xml:space="preserve">
+    <value>Appearance Type</value>
+  </data>
+  <data name="MultiDsChartItem_FillDsBrush" xml:space="preserve">
+    <value>Fill under N'th Point</value>
+  </data>
+  <data name="MultiDsChartItem_FillIsVisible" xml:space="preserve">
+    <value>Fill under Point is Visible</value>
+  </data>
+  <data name="MultiDsChartItem_LineDsBrush" xml:space="preserve">
+    <value>Line Brush</value>
+  </data>
+  <data name="MultiDsChartItem_LineIsVisible" xml:space="preserve">
+    <value>Line is Visible</value>
+  </data>
+  <data name="MultiDsChartItem_LineStrokeDashArray" xml:space="preserve">
+    <value>Line Stroke Dash Array</value>
+  </data>
+  <data name="MultiDsChartItem_LineStrokeDashArrayDescription" xml:space="preserve">
+    <value>Comma separated dash array. If 'Line Stroke Dash Length' and 'Line Stroke Gap Length' are not empty, this property is ignored.</value>
+  </data>
+  <data name="MultiDsChartItem_LineStrokeDashLength" xml:space="preserve">
+    <value>Line Stroke Dash Length</value>
+  </data>
+  <data name="MultiDsChartItem_LineStrokeGapLength" xml:space="preserve">
+    <value>Line Stroke Gap Length</value>
+  </data>
+  <data name="MultiDsChartItem_LineStrokeThickness" xml:space="preserve">
+    <value>Line Stroke Thickness</value>
+  </data>
+  <data name="MultiDsChartItem_PointDsBrush" xml:space="preserve">
+    <value>Point Brush of N'th Point</value>
+  </data>
+  <data name="MultiDsChartItem_PointGeometryInfo" xml:space="preserve">
+    <value>Point Geometry</value>
+  </data>
+  <data name="MultiDsChartItem_PointNumberConstant" xml:space="preserve">
+    <value>Point Number Generic Param</value>
+  </data>
+  <data name="MultiDsChartItem_PointNumberConstantDescription" xml:space="preserve">
+    <value>%(N) has Points Count values starting from Points Start Number</value>
+  </data>
+  <data name="MultiDsChartItem_PointNumberFormat" xml:space="preserve">
+    <value>Point Number Format (can be empty)</value>
+  </data>
+  <data name="MultiDsChartItem_PointsCountInfo" xml:space="preserve">
+    <value>Points Count</value>
+  </data>
+  <data name="MultiDsChartItem_PointsIsVisible" xml:space="preserve">
+    <value>Points is Visible</value>
+  </data>
+  <data name="MultiDsChartItem_PointsStartNumber" xml:space="preserve">
+    <value>Points Start Number</value>
+  </data>
+  <data name="MultiDsChartItem_PointStrokeThickness" xml:space="preserve">
+    <value>Point Stroke Thickness</value>
+  </data>
+  <data name="MultiDsChartItem_PointValueXInfo" xml:space="preserve">
+    <value>X of N'th Point</value>
+  </data>
+  <data name="MultiDsChartItem_PointValueYInfo" xml:space="preserve">
+    <value>Y of N'th Point</value>
+  </data>
+  <data name="MultiDsChartItem_TitleInfo" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="MustDefineDataItemsMessage" xml:space="preserve">
+    <value>Please, define Data Source Item(s) first!</value>
+  </data>
+  <data name="NewDsPageDrawingDialogTitle" xml:space="preserve">
+    <value>Specify New Page File Name</value>
+  </data>
+  <data name="NewDsShapeDrawingDialogTitle" xml:space="preserve">
+    <value>Specify New Complex Shape Drawing File Name</value>
+  </data>
+  <data name="NoConverter" xml:space="preserve">
+    <value>&lt;No Conversion&gt;</value>
+  </data>
+  <data name="NoDataMessage" xml:space="preserve">
+    <value>&lt;No Data&gt;</value>
+  </data>
+  <data name="NoSearchResults" xml:space="preserve">
+    <value>Specified text was not found</value>
+  </data>
+  <data name="NoSearchResultsToExport" xml:space="preserve">
+    <value>There's no results to export</value>
+  </data>
+  <data name="NotAllComplexDsShapesRestoredMessage" xml:space="preserve">
+    <value>Warning! Not all Complex Shapes restored! Complex Shapes contains each other, or level of Complex Shapes inclusion more than 10. Please, check drawings</value>
+  </data>
+  <data name="NotAllComplexDsShapesUpdatedMessage" xml:space="preserve">
+    <value>Warning! Not all Complex Shapes updated! Complex Shapes contains each other, or level of Complex Shapes inclusion more than 10. Please, check Shape(s)</value>
+  </data>
+  <data name="NotAllDataWasReadMessage" xml:space="preserve">
+    <value>Not all data was read from file! Propably it was saved in newer version of designer or Addon is missing. Backup file was created (*.backup).</value>
+  </data>
+  <data name="NotDefined" xml:space="preserve">
+    <value>&lt;Not Defined&gt;</value>
+  </data>
+  <data name="NoTextToFind" xml:space="preserve">
+    <value>There is no text to find</value>
+  </data>
+  <data name="OkButtonText" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="OpenDsShapeDrawingFromComplexDsShape" xml:space="preserve">
+    <value>Open Shape</value>
+  </data>
+  <data name="OpenedUnsavedDrawingExistsMessage" xml:space="preserve">
+    <value>Opened unsaved drawing exists. Close drawing and try again.</value>
+  </data>
+  <data name="Pages" xml:space="preserve">
+    <value>Pages</value>
+  </data>
+  <data name="PanoramaAddonAllowDesignModeInPlay" xml:space="preserve">
+    <value>Allow Design Mode in Play</value>
+  </data>
+  <data name="PanoramaAddonAllowDesignModeInPlayDescription" xml:space="preserve">
+    <value>Design mode in play is always available, if launched from FV Design</value>
+  </data>
+  <data name="PanoramaAddonAnimationDurationMs" xml:space="preserve">
+    <value>Transition between Points Animation Duration (Ms)</value>
+  </data>
+  <data name="PanoramaAddonDefaultCameraH" xml:space="preserve">
+    <value>Default Camera  Height over the Floor</value>
+  </data>
+  <data name="PanoramaAddonDefaultCameraHDescription" xml:space="preserve">
+    <value>Default camera height over the floor (meters),  this value can be overriden in panorama page style properties.</value>
+  </data>
+  <data name="PanoramaAddonFrameDsPageDrawingFileName" xml:space="preserve">
+    <value>Page Used as Frame for Panorama Style Pages</value>
+  </data>
+  <data name="PanoramaAddonFrameDsPageDrawingFileNameDescription" xml:space="preserve">
+    <value>Panorama style pages are dispalyed behind frame page, therefore background of the frame page MUST be transparent. You can override this behaviour in page properties. Can be blank.</value>
+  </data>
+  <data name="PanoramaAddonShowLines" xml:space="preserve">
+    <value>Show Lines</value>
+  </data>
+  <data name="PanoramaAddonShowLinesDescription" xml:space="preserve">
+    <value>Shows map lines in 3D view</value>
+  </data>
+  <data name="PanoramaAddonTagsConstantsTypes" xml:space="preserve">
+    <value>Tags Types for Path Finding</value>
+  </data>
+  <data name="PanoramaAddonTagsConstantsTypesDescription" xml:space="preserve">
+    <value>Comma separated generic params types for path finding.</value>
+  </data>
+  <data name="PanoramaAddon_Desc" xml:space="preserve">
+    <value>Panorama</value>
+  </data>
+  <data name="PanoramaDsPageTypeCameraH" xml:space="preserve">
+    <value>Camera  Height over the Floor</value>
+  </data>
+  <data name="PanoramaDsPageTypeCameraHDescription" xml:space="preserve">
+    <value>Camera height over the floor (meters). If blank, corresponding value from panorama addon properties is used.</value>
+  </data>
+  <data name="PanoramaDsPageTypeDefaultViewAzimuth" xml:space="preserve">
+    <value>Default View Azimuth [0..360]</value>
+  </data>
+  <data name="PanoramaDsPageTypeFrameDsPageDrawingFileName" xml:space="preserve">
+    <value>Page Used as Frame for This Page</value>
+  </data>
+  <data name="PanoramaDsPageTypeFrameDsPageDrawingFileNameDescription" xml:space="preserve">
+    <value>Page is dispalyed behind frame page, therefore background of the frame page MUST be transparent. If blank, corresponding value from panorama addon properties is used.</value>
+  </data>
+  <data name="PanoramaDsPageTypeHorizonAngle" xml:space="preserve">
+    <value>Horizon Angle</value>
+  </data>
+  <data name="PanoramaDsPageTypeHorizonAngleDescription" xml:space="preserve">
+    <value>Horizon angle relative to vertical center of image (degrees, up - positive, down - negative). </value>
+  </data>
+  <data name="PanoramaDsPageTypeHorizontalImageAngle" xml:space="preserve">
+    <value>Picture Width Angle [0..360]</value>
+  </data>
+  <data name="PanoramaDsPageTypeLeftEdgeAzimuth" xml:space="preserve">
+    <value>Page Left Edge Azimuth [0..360]</value>
+  </data>
+  <data name="PanoramaDsPageTypePanoramaType" xml:space="preserve">
+    <value>Panorama Type</value>
+  </data>
+  <data name="PanoramaDsPageTypeX" xml:space="preserve">
+    <value>X (meters)</value>
+  </data>
+  <data name="PanoramaDsPageTypeY" xml:space="preserve">
+    <value>Y (meters)</value>
+  </data>
+  <data name="PanoramaDsPageTypeZ" xml:space="preserve">
+    <value>Z (meters)</value>
+  </data>
+  <data name="PanoramaDsPageType_Desc" xml:space="preserve">
+    <value>Panorama Page</value>
+  </data>
+  <data name="PanoramaJumpDsCommandOptionsHorizontalDeltaToButton" xml:space="preserve">
+    <value>Next Point Horizontal Delta to Button</value>
+  </data>
+  <data name="PanoramaJumpDsCommandOptionsHorizontalDeltaToButtonDescription" xml:space="preserve">
+    <value>Horizontal delta (meters, left to right) to real position of the next point, relative to jump button</value>
+  </data>
+  <data name="PanoramaJumpDsCommandOptionsHorizontalLength" xml:space="preserve">
+    <value>Jump Horizontal Length (meters)</value>
+  </data>
+  <data name="PanoramaJumpDsCommandOptionsVerticalDelta" xml:space="preserve">
+    <value>Jump Vertical Delta (meters, up - positive, down - negative)</value>
+  </data>
+  <data name="PanoramaPlayDesignModeLabel" xml:space="preserve">
+    <value>(Design Mode)</value>
+  </data>
+  <data name="PanoramaPlayDesignModeMessage" xml:space="preserve">
+    <value>You have entered designer mode! Shortcuts: CTRL+s - save changes; CTRL+r - play mode; CTRL+d - designer mode.</value>
+  </data>
+  <data name="ParamNumBrushTabItem" xml:space="preserve">
+    <value>Brush from Data Source</value>
+  </data>
+  <data name="ParamNumBrushTextBlock" xml:space="preserve">
+    <value>Data Source Item N</value>
+  </data>
+  <data name="Paste" xml:space="preserve">
+    <value>Paste</value>
+  </data>
+  <data name="PathControlPointAddMenuItemHeader" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="PathControlPointDeleteMenuItemHeader" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="PinButtonToolTip" xml:space="preserve">
+    <value>Pin current window</value>
+  </data>
+  <data name="PinButtonToolTipDescription" xml:space="preserve">
+    <value>Another properties window will be opened as needed</value>
+  </data>
+  <data name="PlayWindowClassInfo_WindowCategory" xml:space="preserve">
+    <value>Window Category</value>
+  </data>
+  <data name="PlayWindowClassInfo_WindowCategory_Description" xml:space="preserve">
+    <value>Can be set in ShowWindow command options or in Faceplate properties</value>
+  </data>
+  <data name="PlayWindowClassOptions_CloseWindowsOnParentJump" xml:space="preserve">
+    <value>Close when parent Jump</value>
+  </data>
+  <data name="PlayWindowClassOptions_CloseWindowsOnParentJump_Description" xml:space="preserve">
+    <value>Whether to close this windows when parent window jumping to another Page.</value>
+  </data>
+  <data name="PlayWindowClassOptions_PlayWindowClassInfo" xml:space="preserve">
+    <value>Window Class</value>
+  </data>
+  <data name="PlayWindowClassOptions_PlayWindowClassInfo_Description" xml:space="preserve">
+    <value>Defines window class using Category and/or Drawing type</value>
+  </data>
+  <data name="PlayWindowClassOptions_WindowsMaxCount" xml:space="preserve">
+    <value>Max Count</value>
+  </data>
+  <data name="PlayWindowClassOptions_WindowsMaxCount_Description" xml:space="preserve">
+    <value>0 for unlimited.</value>
+  </data>
+  <data name="PreviewCategory" xml:space="preserve">
+    <value>Preview Settings</value>
+  </data>
+  <data name="ProgressInfo_AllDsPagesCacheUpdate_Description" xml:space="preserve">
+    <value>Updating pages index:</value>
+  </data>
+  <data name="ProgressInfo_AllDsPagesCacheUpdate_Header" xml:space="preserve">
+    <value>Updating pages index...</value>
+  </data>
+  <data name="ProgressInfo_DescriptionLine1_AddingDsShapes" xml:space="preserve">
+    <value>Adding Shapes...</value>
+  </data>
+  <data name="ProgressInfo_DescriptionLine1_TryConvertUnderlyingContentXamlToDsShapes" xml:space="preserve">
+    <value>Converting page XAML to Shapes...</value>
+  </data>
+  <data name="ProgressInfo_GetAllDsPageDrawingInfos_Description" xml:space="preserve">
+    <value>Reading pages info:</value>
+  </data>
+  <data name="ProgressInfo_ReadingCache_Description" xml:space="preserve">
+    <value>Reading pages index:</value>
+  </data>
+  <data name="ProgressInfo_SavingCache_Description" xml:space="preserve">
+    <value>Saving pages index:</value>
+  </data>
+  <data name="Properties" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="PropertiesMenuItemHeader" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="PropertyGridHint" xml:space="preserve">
+    <value>Hint: you can select property to see its description at the bottom of the property grid Shape, if available</value>
+  </data>
+  <data name="PropsDeserializationError" xml:space="preserve">
+    <value>Object can not read his props.</value>
+  </data>
+  <data name="PropsDeserializationErrorUnsupportedVersion" xml:space="preserve">
+    <value>Object can not read his props. Props were saved for newer or unsupported version of application or addon.</value>
+  </data>
+  <data name="PropsSerializationError" xml:space="preserve">
+    <value>Object can not serialize his props.</value>
+  </data>
+  <data name="PrototypeDsShapeDrawingCategory" xml:space="preserve">
+    <value>Base Shape</value>
+  </data>
+  <data name="QuestionMessageBoxCaption" xml:space="preserve">
+    <value>Question</value>
+  </data>
+  <data name="ReadCsvFileError" xml:space="preserve">
+    <value>Read CSV file error</value>
+  </data>
+  <data name="ReadDrawingErrorMessage" xml:space="preserve">
+    <value>Read drawing error</value>
+  </data>
+  <data name="ReadFrameDrawingErrorMessage" xml:space="preserve">
+    <value>Read frame page error</value>
+  </data>
+  <data name="ReadToolTipDrawingErrorMessage" xml:space="preserve">
+    <value>Read tooltip page error</value>
+  </data>
+  <data name="RefreshAddonsCollectionButtonText" xml:space="preserve">
+    <value>Refresh List</value>
+  </data>
+  <data name="ReplaceAll" xml:space="preserve">
+    <value>Replace All</value>
+  </data>
+  <data name="ReplaceConfirmationQuestion" xml:space="preserve">
+    <value>Do you really want to replace all occurences of '{0}' with '{1}'?</value>
+  </data>
+  <data name="ReplaceWith" xml:space="preserve">
+    <value>Replace with</value>
+  </data>
+  <data name="RestoreDsProjectComplexDsShapesXamlModeError" xml:space="preserve">
+    <value>Cann't restore Project complex Shapes when drawings store mode is XAML</value>
+  </data>
+  <data name="RootPlayDsPageDrawingViewbox_MainFrame_ErrorMessage" xml:space="preserve">
+    <value>Main frame isn't found on frames page. Frames page must contain Frame DsShape with empty property Frame Name.</value>
+  </data>
+  <data name="SameTypeCloneableObjectsEditorControlHint" xml:space="preserve">
+    <value>Hint: you can copy and paste selected rows to and from Excel</value>
+  </data>
+  <data name="SaveAsEmfFileButtonText" xml:space="preserve">
+    <value>Save as Image File (EMF)</value>
+  </data>
+  <data name="SaveAsImageFileInputImageDimensions" xml:space="preserve">
+    <value>Image Width,Height</value>
+  </data>
+  <data name="SaveAsPngFileButtonText" xml:space="preserve">
+    <value>Save as Image File (PNG)</value>
+  </data>
+  <data name="SaveChangesQuestion" xml:space="preserve">
+    <value>Save changes?</value>
+  </data>
+  <data name="SaveFilesToLatestSerializationVersionQuestion" xml:space="preserve">
+    <value>Convert files to latest storage version? (Recommended)</value>
+  </data>
+  <data name="SaveOriginalContentToFileButtonText" xml:space="preserve">
+    <value>Save Original Content to File</value>
+  </data>
+  <data name="SeeErrorLogForDetails" xml:space="preserve">
+    <value>See error log for details.</value>
+  </data>
+  <data name="SelectImageFromLibraryBusyText" xml:space="preserve">
+    <value>Scanning Library</value>
+  </data>
+  <data name="SendKeyDsCommandOptionsKey" xml:space="preserve">
+    <value>Key</value>
+  </data>
+  <data name="SendKeyDsCommandOptionsKeyDescription" xml:space="preserve">
+    <value>Key to send.</value>
+  </data>
+  <data name="SetAnglePrompt" xml:space="preserve">
+    <value>Set Angle (Degree)</value>
+  </data>
+  <data name="SetAngleTitle" xml:space="preserve">
+    <value>Set Angle</value>
+  </data>
+  <data name="SetInDsProjectProperties" xml:space="preserve">
+    <value>Set in Project properties</value>
+  </data>
+  <data name="SetTagsInfoMessage" xml:space="preserve">
+    <value>Add this tag to file</value>
+  </data>
+  <data name="ShowDsShapePropertiesButtonText" xml:space="preserve">
+    <value>Show Shape</value>
+  </data>
+  <data name="ShowFaceplateForTagDsCommandOptions_FaceplateIndex" xml:space="preserve">
+    <value>Faceplate Index</value>
+  </data>
+  <data name="ShowFaceplateForTagDsCommandOptions_FaceplateIndexDescription" xml:space="preserve">
+    <value>Zero based index in comma separated page file names. See 'Project -&gt; Play Data -&gt; Tag Types Info File Name' property description for details.</value>
+  </data>
+  <data name="ShowFaceplateForTagDsCommandOptions_Tag" xml:space="preserve">
+    <value>TAG</value>
+  </data>
+  <data name="ShowFaceplateForTagDsCommandOptions_TagDescription" xml:space="preserve">
+    <value>For tag determines tag type using 'Project -&gt; Play Data -&gt; Tags Info File Name' file. For tag type searches faceplete using 'Project -&gt; Play Data -&gt; Tag Types Info File Name' file. See that properties description for details.</value>
+  </data>
+  <data name="ShowWindowDsCommandOptions_FileRelativePath" xml:space="preserve">
+    <value>File Name (with Relative Path)</value>
+  </data>
+  <data name="ShowWindowDsCommandOptions_FrameName" xml:space="preserve">
+    <value>Frame Name</value>
+  </data>
+  <data name="ShowWindowDsCommandOptions_FrameName_Description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ShowWindowDsCommandOptions_ParentWindow" xml:space="preserve">
+    <value>Parent (Owner)</value>
+  </data>
+  <data name="ShowWindowDsCommandOptions_ShowOnTouchScreen" xml:space="preserve">
+    <value>Show on Touchscreen</value>
+  </data>
+  <data name="ShowWindowDsCommandOptions_TitleInfo" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="ShowWindowDsCommandOptions_WindowCategory" xml:space="preserve">
+    <value>Window Category</value>
+  </data>
+  <data name="ShowWindowDsCommandOptions_WindowCategoryMaxCount" xml:space="preserve">
+    <value>Window Category Max Count</value>
+  </data>
+  <data name="ShowWindowDsCommandOptions_WindowCategory_Description" xml:space="preserve">
+    <value>Window category of newly created window. Affects max windows count of this category and whether to close widows of this category when jump on next page occur. See Project -&gt; Properties -&gt; Windows Categories.</value>
+  </data>
+  <data name="ShowWindowDsCommandOptions_WindowFullScreen" xml:space="preserve">
+    <value>FullScreen</value>
+  </data>
+  <data name="ShowWindowDsCommandOptions_WindowResizeMode" xml:space="preserve">
+    <value>Resize Mode</value>
+  </data>
+  <data name="ShowWindowDsCommandOptions_WindowShowInTaskbar" xml:space="preserve">
+    <value>Show in Taskbar</value>
+  </data>
+  <data name="ShowWindowDsCommandOptions_WindowStartupLocation" xml:space="preserve">
+    <value>Startup Location</value>
+  </data>
+  <data name="ShowWindowDsCommandOptions_WindowStyle" xml:space="preserve">
+    <value>Window Style</value>
+  </data>
+  <data name="ShowWindowDsCommandOptions_WindowTopmost" xml:space="preserve">
+    <value>Topmost</value>
+  </data>
+  <data name="SliderDsShapeInterval" xml:space="preserve">
+    <value>Interval</value>
+  </data>
+  <data name="SliderDsShapeLargeChangePercent" xml:space="preserve">
+    <value>Large Change (percent)</value>
+  </data>
+  <data name="SliderDsShapeMaximumInfo" xml:space="preserve">
+    <value>Maximum</value>
+  </data>
+  <data name="SliderDsShapeMinimumInfo" xml:space="preserve">
+    <value>Minimum</value>
+  </data>
+  <data name="SliderDsShapeSmallChangePercent" xml:space="preserve">
+    <value>Small Change (percent)</value>
+  </data>
+  <data name="SliderDsShapeValueInfo" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="SliderDsShapeXamlInfo" xml:space="preserve">
+    <value>Custom Thumb</value>
+  </data>
+  <data name="SolidColorBrushTabItem" xml:space="preserve">
+    <value>Solid Color Brush</value>
+  </data>
+  <data name="SpecifyToolkitOperationOptionsMessage" xml:space="preserve">
+    <value>Please, specify toolkitOperation options</value>
+  </data>
+  <data name="StandardPagesAndDsShapesDirectoryError" xml:space="preserve">
+    <value>Standard pages and Shapes library not found</value>
+  </data>
+  <data name="StartProcessDsCommandOptionsArguments" xml:space="preserve">
+    <value>Arguments</value>
+  </data>
+  <data name="StartProcessDsCommandOptionsCommand" xml:space="preserve">
+    <value>Command to Run in Shell</value>
+  </data>
+  <data name="StartProcessDsCommandOptionsCommandDescription" xml:space="preserve">
+    <value>Working directory is Project root directory</value>
+  </data>
+  <data name="StartToolkitOperationButtonText" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="StatmentValidationError" xml:space="preserve">
+    <value>Validation error</value>
+  </data>
+  <data name="StopButtonText" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="StructConverterWindowIfExpression" xml:space="preserve">
+    <value>If expression is true (first true row is executed)</value>
+  </data>
+  <data name="SystemCategory" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="TagInfoAreas" xml:space="preserve">
+    <value>Areas</value>
+  </data>
+  <data name="TagInfo_DsPageFileRelativePath" xml:space="preserve">
+    <value>Page file for tags search</value>
+  </data>
+  <data name="TagInfo_TagName" xml:space="preserve">
+    <value>Tag</value>
+  </data>
+  <data name="TagInfo_TagType" xml:space="preserve">
+    <value>Tag Type</value>
+  </data>
+  <data name="TagAlarmsInfo_AlarmCategory0DsBrush" xml:space="preserve">
+    <value>Alarm Category 0 (Normal)</value>
+  </data>
+  <data name="TagAlarmsInfo_AlarmCategory1DsBrush" xml:space="preserve">
+    <value>Alarm Category 1 (Hi, Lo)</value>
+  </data>
+  <data name="TagAlarmsInfo_AlarmCategory2DsBrush" xml:space="preserve">
+    <value>Alarm Category 2 (HiHi, LoLo)</value>
+  </data>
+  <data name="TagAlarmsInfo_AlarmCategory3DsBrush" xml:space="preserve">
+    <value>Alarm Category 3 (HHH, LLL)</value>
+  </data>
+  <data name="TagAlarmsInfo_AlarmConditionInfosList" xml:space="preserve">
+    <value>Alarms Additional Info</value>
+  </data>
+  <data name="TagAlarmsInfo_AlarmsIsVisible" xml:space="preserve">
+    <value>Alarms Is Visible</value>
+  </data>
+  <data name="TagAlarmsInfo_CsvDbFileName" xml:space="preserve">
+    <value>Tags file name (can be empty)</value>
+  </data>
+  <data name="TagAlarmsInfo_CsvDbFileName_Description" xml:space="preserve">
+    <value>Optional: CSV file name in .\CsvDb directory. Column in file: &lt;tag&gt;. Defines tags with different colors for alarms.</value>
+  </data>
+  <data name="TagTypeInfoConstant" xml:space="preserve">
+    <value>Param in Faceplate</value>
+  </data>
+  <data name="TagTypeInfoDsPageFileRelativePaths" xml:space="preserve">
+    <value>Page File for Tag Search</value>
+  </data>
+  <data name="TagTypeInfoPageFileRelativePaths" xml:space="preserve">
+    <value>Faceplates File Names (comma separated)</value>
+  </data>
+  <data name="TagTypeInfoTagType" xml:space="preserve">
+    <value>Tag Type</value>
+  </data>
+  <data name="TextBlockDsShapeBackgroundInfo" xml:space="preserve">
+    <value>Background</value>
+  </data>
+  <data name="TextBlockDsShapeForegroundInfo" xml:space="preserve">
+    <value>Foreground</value>
+  </data>
+  <data name="TextBlockDsShapeVerticalAlignment" xml:space="preserve">
+    <value>Vertical Alignment</value>
+  </data>
+  <data name="TextBoxDsShapeIsReadOnlyInfo" xml:space="preserve">
+    <value>Is Read Only</value>
+  </data>
+  <data name="TextDsShapeDsFont" xml:space="preserve">
+    <value>Font</value>
+  </data>
+  <data name="TextDsShapeTextAlignment" xml:space="preserve">
+    <value>Text Alignment</value>
+  </data>
+  <data name="TextDsShapeTextDecorations" xml:space="preserve">
+    <value>Text Decorations</value>
+  </data>
+  <data name="TextDsShapeTextInfo" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="TextDsShapeTextStretch" xml:space="preserve">
+    <value>Text Stretch</value>
+  </data>
+  <data name="TextDsShapeTextWrapping" xml:space="preserve">
+    <value>Text Wrapping</value>
+  </data>
+  <data name="TextToFindLabel" xml:space="preserve">
+    <value>Text to Find</value>
+  </data>
+  <data name="ToggleButtonDsShapeCheckedContentInfo" xml:space="preserve">
+    <value>Content when Checked</value>
+  </data>
+  <data name="ToggleButtonDsShapeIsCheckedInfo" xml:space="preserve">
+    <value>Is Checked</value>
+  </data>
+  <data name="ToggleButtonDsShapePressedContentInfo" xml:space="preserve">
+    <value>Content when Pressed (mouse button pressed)</value>
+  </data>
+  <data name="ToggleButtonDsShapeUncheckedContentInfo" xml:space="preserve">
+    <value>Content when Unchecked</value>
+  </data>
+  <data name="ToolkitOperationError" xml:space="preserve">
+    <value>ToolkitOperation error</value>
+  </data>
+  <data name="ToolTipCategory" xml:space="preserve">
+    <value>ToolTip</value>
+  </data>
+  <data name="ToolTipDsPageType_Desc" xml:space="preserve">
+    <value>ToolTip</value>
+  </data>
+  <data name="TransparentSolidBrush" xml:space="preserve">
+    <value>&lt;Transparent&gt;</value>
+  </data>
+  <data name="TrendGroupDsShapeBackground" xml:space="preserve">
+    <value>Background</value>
+  </data>
+  <data name="TrendGroupDsShapeChartAxisBrush" xml:space="preserve">
+    <value>Chart Axis Brush</value>
+  </data>
+  <data name="TrendGroupDsShapeChartBackground" xml:space="preserve">
+    <value>Chart Background</value>
+  </data>
+  <data name="TrendGroupDsShapeChartGridBrush" xml:space="preserve">
+    <value>Chart Grid Brush</value>
+  </data>
+  <data name="TrendGroupDsShapeDsTrendItemsCollection" xml:space="preserve">
+    <value>Chart Serias</value>
+  </data>
+  <data name="TrendGroupDsShapeLabelsBrush" xml:space="preserve">
+    <value>Labels Brush</value>
+  </data>
+  <data name="TrendGroupDsShapeTrendsInfoTableVisibility" xml:space="preserve">
+    <value>Bottom Table is Visible</value>
+  </data>
+  <data name="TrendGroupDsShapeTrendsTuningVisibility" xml:space="preserve">
+    <value>Right Tuning Panel is Visible</value>
+  </data>
+  <data name="UnauthorizedAcessMessage" xml:space="preserve">
+    <value>Administrator access rights needed</value>
+  </data>
+  <data name="UpdateComplexDsShapesToolkitOperationOptions" xml:space="preserve">
+    <value>Update Shapes Options</value>
+  </data>
+  <data name="UpdateComplexDsShapesToolkitOperationOptions_ComplexDsShapeNames" xml:space="preserve">
+    <value>Complex Shape(s)</value>
+  </data>
+  <data name="UpdateComplexDsShapesToolkitOperationOptions_ComplexDsShapeNamesDescription" xml:space="preserve">
+    <value>You can specify several, comma separeted, Shapes names</value>
+  </data>
+  <data name="UpdateComplexDsShapesToolkitOperationOptions_MoveCenterPointOfDsShapes" xml:space="preserve">
+    <value>Move Center Point of Shapes</value>
+  </data>
+  <data name="UpdateComplexDsShapesToolkitOperationOptions_MoveCenterPointOfDsShapesDescription" xml:space="preserve">
+    <value>Moves center point of Shapes on pages to this value (dx, dy).</value>
+  </data>
+  <data name="UpdateComplexDsShapesToolkitOperationOptions_ResetCenterRelativePositionToOriginal" xml:space="preserve">
+    <value>Reset Center Relative Position to Original</value>
+  </data>
+  <data name="UpdateComplexDsShapesToolkitOperationOptions_ResetCenterRelativePositionToOriginalDescription" xml:space="preserve">
+    <value>Whether reset center relative positions of Shapes on pages to original Shape center relative position. DsShapes do not move on pages.</value>
+  </data>
+  <data name="UpdateComplexDsShapesToolkitOperationOptions_ResetSizeToOriginal" xml:space="preserve">
+    <value>Reset Size to Original</value>
+  </data>
+  <data name="UpdateComplexDsShapesToolkitOperationOptions_ResetSizeToOriginalDescription" xml:space="preserve">
+    <value>Whether reset size of Shapes on pages to original Shape size.</value>
+  </data>
+  <data name="UpdateComplexDsShapesToolkitOperationOptions_UpdateOnAllDsPages" xml:space="preserve">
+    <value>Update on All Pages</value>
+  </data>
+  <data name="UpdateDsPagesToolkitOperationOptionsTryUpdateDsPagesWithSizeOfImage" xml:space="preserve">
+    <value>Try to Update Pages with Size of Underlying Image</value>
+  </data>
+  <data name="UpdateDsPagesToolkitOperationOptionsTryUpdateDsPagesWithSizeOfImageDescription" xml:space="preserve">
+    <value>When this option is selected, if image size is known, then updating page takes that image size, otherwise size of the page is unchanged.</value>
+  </data>
+  <data name="UpdateObsoleteDrawingsQuestion" xml:space="preserve">
+    <value>Project contains drawings saved in older designer version. Do you wish to resave them in current version? ('Yes' recommended.)</value>
+  </data>
+  <data name="ValueDataBindingBaseConverter" xml:space="preserve">
+    <value>Values Converter</value>
+  </data>
+  <data name="ValueDataBindingBaseDataBindingItemsCollection" xml:space="preserve">
+    <value>Data Source Items</value>
+  </data>
+  <data name="ValueDataBindingBaseFormat" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="WarningMessageBoxCaption" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="WholeStringCheckBox" xml:space="preserve">
+    <value>Match whole String</value>
+  </data>
+  <data name="WildcardsCheckBox" xml:space="preserve">
+    <value>Wildcards ("*" or "?")</value>
+  </data>
+  <data name="WildcardsCheckBoxToolTip" xml:space="preserve">
+    <value>Wildcards are represented by "*" or "?", where "*" matches multiple characters and "?" matches only a single character</value>
+  </data>
+  <data name="WindowDsCommandOptionsBase_CurrentFrame" xml:space="preserve">
+    <value>Current Frame</value>
+  </data>
+  <data name="WindowDsCommandOptionsBase_CurrentFrame_Description" xml:space="preserve">
+    <value>Uses current frame for jump</value>
+  </data>
+  <data name="WindowDsCommandOptionsBase_FrameName" xml:space="preserve">
+    <value>Frame Name</value>
+  </data>
+  <data name="WindowDsCommandOptionsBase_FrameName_Description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WindowDsCommandOptionsBase_RootWindowNum" xml:space="preserve">
+    <value>Root Window Num [1..N]</value>
+  </data>
+  <data name="WindowDsCommandOptionsBase_RootWindowNum_Description" xml:space="preserve">
+    <value>If blank or 0, then jumps to root window of the current window. Else jumps to root window with number N.</value>
+  </data>
+  <data name="WindowDsCommandOptionsBase_TargetWindow" xml:space="preserve">
+    <value>Target Window</value>
+  </data>
+  <data name="WindowDsCommandOptionsBase_TargetWindow_Description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WpfModel3DAddon_Desc" xml:space="preserve">
+    <value>Model 3D</value>
+  </data>
+  <data name="WpfModel3DPlayWindowParamsAmbientLightColor" xml:space="preserve">
+    <value>Ambient Light Color</value>
+  </data>
+  <data name="WpfModel3DPlayWindowParamsBackgroundDsBrush" xml:space="preserve">
+    <value>Background Brush</value>
+  </data>
+  <data name="WpfModel3DPlayWindowParamsTitleDsBrush" xml:space="preserve">
+    <value>Title Brush</value>
+  </data>
+  <data name="XamlConverterWindowIfExpression" xml:space="preserve">
+    <value>If expression is true (first true row is executed)</value>
+  </data>
+  <data name="XamlFileReadError" xml:space="preserve">
+    <value>Cannot read XAML file. See error log for details.</value>
+  </data>
+  <data name="XpsFileReadError" xml:space="preserve">
+    <value>Cannot read XPS or OXPS file. See error log for details.</value>
+  </data>
+  <data name="ZoomboxAddon_Desc" xml:space="preserve">
+    <value>Zoombox</value>
+  </data>
+  <data name="ZoomboxBackButtonToolTip" xml:space="preserve">
+    <value>Back History</value>
+  </data>
+  <data name="ZoomboxDsPageType_Desc" xml:space="preserve">
+    <value>Zoombox Page</value>
+  </data>
+  <data name="ZoomboxForwardButtonToolTip" xml:space="preserve">
+    <value>Forward History</value>
+  </data>
+  <data name="ZoomboxHomeButtonToolTip" xml:space="preserve">
+    <value>Start Page</value>
+  </data>
+  <data name="TrendGroupDsShapeTrendsAxisXVisibility" xml:space="preserve">
+    <value>Axis X is Visible</value>
+  </data>
+  <data name="TrendGroupDsShapeTrendsScrollbarsVisibility" xml:space="preserve">
+    <value>Scrollbars is Visible</value>
+  </data>
+  <data name="TrendGroupDsShapeTrendsAxisYVisibility" xml:space="preserve">
+    <value>Axis Y is Visible</value>
+  </data>
+  <data name="DsProject_DefaultSystemNameToConnect" xml:space="preserve">
+    <value>Default SystemName to Connect</value>
+  </data>
+  <data name="VarComboBoxDsShape_MenuItemsInfo" xml:space="preserve">
+    <value>Menu Items</value>
+  </data>
+  <data name="ButtonDsShapeBase_RightClickDsCommand" xml:space="preserve">
+    <value>Right Click</value>
+  </data>
+  <data name="ShowNavigationPanel" xml:space="preserve">
+    <value>Show Navigation Panel</value>
+  </data>
+  <data name="ShowNavigationPanelDescription" xml:space="preserve">
+    <value>Show Navigation Panel in Upper-Left Corner</value>
+  </data>
+  <data name="DataEngineBase_ReverseElementIdsMapFileName" xml:space="preserve">
+    <value>Tags Map File Name</value>
+  </data>
+  <data name="DataEngineBase_ReverseElementIdsMapFileName_Description" xml:space="preserve">
+    <value>CSV file name in .\CsvDb directory. Columns in file: &lt;tag.param in model&gt;,&lt;tag.param in interface&gt;. Maps model and interface params.</value>
+  </data>
+  <data name="ShowWindowDsCommandOptions_AutoCloseMs" xml:space="preserve">
+    <value>Auto Close (Ms)</value>
+  </data>
+  <data name="ShowWindowDsCommandOptions_AutoCloseMs_Description" xml:space="preserve">
+    <value>Auto close window after delay when mouse leave, 0 - window is not autoclosed.</value>
+  </data>
+  <data name="GenericGraphicDsPageType_FrameInitializationInfosCollection" xml:space="preserve">
+    <value>Frames Initialization Info</value>
+  </data>
+  <data name="ButtonDsShapeBase_MouseEnterDsCommand" xml:space="preserve">
+    <value>Mouse Enter</value>
+  </data>
+  <data name="ButtonDsShapeBase_MouseLeaveDsCommand" xml:space="preserve">
+    <value>Mouse Leave</value>
+  </data>
+  <data name="ControlDsShapeToolTipPlacement" xml:space="preserve">
+    <value>ToolTip Placement</value>
+  </data>
+  <data name="ClassicTabStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ClassicTabStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="DefaultTabStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DefaultTabStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="TabItemInfo_PageFileRelativePath" xml:space="preserve">
+    <value>Page File Relative Path</value>
+  </data>
+  <data name="TabDsShape_TabItemInfosCollection" xml:space="preserve">
+    <value>Tab Items</value>
+  </data>
+  <data name="DsTrendItem_ValueFormat" xml:space="preserve">
+    <value>Value Format</value>
+  </data>
+  <data name="MenuItemInfo_Path" xml:space="preserve">
+    <value>Parent Menu Item or Items (separated by '/')</value>
+  </data>
+  <data name="TagAlarmsInfo_AlarmPriorityInfosList" xml:space="preserve">
+    <value>Alarm Additional Priority Colors</value>
+  </data>
+  <data name="MainButtonStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MainButtonStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+</root>

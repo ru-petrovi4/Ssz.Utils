@@ -1,0 +1,2 @@
+<RectangleGeometry xmlns="https://github.com/avaloniaui"
+            Rect="0,0,100,100" RadiusX="10" RadiusY="10" />
