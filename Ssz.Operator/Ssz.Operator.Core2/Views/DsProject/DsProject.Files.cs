@@ -188,13 +188,13 @@ namespace Ssz.Operator.Core
 
                         using (var reader = new SerializationReader(stream))
                         {
-                            drawingInfo.DeserializeOwnedData(reader, null);
+                            drawingInfo.DeserializeOwnedDataAsync(reader, null);
                         }
 
                         drawing.SetDrawingInfo(drawingInfo);
                         using (var reader = new SerializationReader(stream))
                         {
-                            drawing.DeserializeOwnedData(reader, null);
+                            drawing.DeserializeOwnedDataAsync(reader, null);
                         }
                     }
                     else
@@ -297,13 +297,13 @@ namespace Ssz.Operator.Core
 
                     using (var reader = new SerializationReader(stream))
                     {
-                        drawingInfo.DeserializeOwnedData(reader, null);
+                        drawingInfo.DeserializeOwnedDataAsync(reader, null);
                     }
 
                     dsPageDrawing.SetDrawingInfo(drawingInfo);
                     using (var reader = new SerializationReader(stream))
                     {
-                        dsPageDrawing.DeserializeOwnedData(reader, null);
+                        dsPageDrawing.DeserializeOwnedDataAsync(reader, null);
                     }
                 }
                 else
@@ -439,7 +439,7 @@ namespace Ssz.Operator.Core
                             if (readOnlyDrawingGuid)
                                 drawingInfo.DeserializeGuidOnly(reader);
                             else
-                                drawingInfo.DeserializeOwnedData(reader, null);
+                                drawingInfo.DeserializeOwnedDataAsync(reader, null);
                         }
 
                         return drawingInfo;

@@ -43,7 +43,7 @@ namespace Ssz.Operator.Core.DsShapes
             writer.Write(DsCommands);
         }
 
-        public override void DeserializeOwnedData(SerializationReader reader, object? context)
+        public override void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
         {
             DsCommands = reader.ReadList<DsCommand>();
         }

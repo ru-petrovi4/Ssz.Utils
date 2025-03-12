@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="Ssz.Operator.Core.Design.Controls.DrawingDsShapesDockControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:core="clr-namespace:Ssz.Operator.Core;assembly=Ssz.Operator.Core"
+             xmlns:p="clr-namespace:Ssz.Operator.Core.Design.Properties"
+             xmlns:dsShapeViews="clr-namespace:Ssz.Operator.Core.DsShapeViews;assembly=Ssz.Operator.Core" 
+             xmlns:fluent="urn:fluent-ribbon"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             MinHeight="450" MinWidth="80">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="24" />
+            <RowDefinition Height="399*" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal">            
+            <fluent:ComboBox x:Name="OrderDsShapesByComboBox" SizeDefinition="Large"
+                                      Header="{x:Static p:Resources.OrderDsShapesByText}"                                      
+                                      IsReadOnly="True" IsEditable="False"                        
+                             SelectedIndex="{Binding Source={x:Static core:DesignDsProjectViewModel.Instance}, Path=DsShapesOrdering, Mode=TwoWay}">
+                <ComboBoxItem Content="{x:Static p:Resources.OrderDsShapesByZIndexText}" />
+                <ComboBoxItem Content="{x:Static p:Resources.OrderDsShapesByTypeText}" />
+                <ComboBoxItem Content="{x:Static p:Resources.OrderDsShapesByNameText}" />
+            </fluent:ComboBox>            
+        </StackPanel>
+        <TreeView Name="DrawingDsShapesTreeView" Grid.Row="1" Margin="0,5,0,0"
+                  ItemsSource="{Binding DrawingDsShapesTreeViewItemsSource}">
+            <TreeView.Resources>
+                <DataTemplate DataType="{x:Type dsShapeViews:DsShapeViewModel}">
+                    <StackPanel Orientation="Horizontal"
+                                                    Margin="-10,0,0,0">
+                        <StackPanel.Background>
+                            <MultiBinding Converter="{StaticResource selectionToBackgroundConverter}">
+                                <Binding Path="IsSelected"></Binding>
+                                <Binding Path="IsFirstSelected"></Binding>
+                            </MultiBinding>
+                        </StackPanel.Background>
+                        <TextBlock Text="{Binding Header}" ContextMenu="{StaticResource DesignDsShapeContextMenu}">
+                            <TextBlock.Foreground>
+                                <MultiBinding Converter="{StaticResource selectionToForegroundConverter}">
+                                    <Binding Path="IsSelected"></Binding>
+                                    <Binding Path="IsFirstSelected"></Binding>
+                                </MultiBinding>
+                            </TextBlock.Foreground>
+                        </TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </TreeView.Resources>
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <EventSetter Event="MouseDown"
+                                                     Handler="DrawingDsShapeTreeViewItemOnMouseDown" />
+                    <EventSetter Event="MouseDoubleClick"
+                                                     Handler="DrawingDsShapeTreeViewItemOnMouseDoubleClick" />
+                    <Setter Property="KeyboardNavigation.DirectionalNavigation" Value="None" />
+                    <Setter Property="Focusable" Value="False" />
+                </Style>
+            </TreeView.ItemContainerStyle>
+        </TreeView>
+    </Grid>
+</UserControl>

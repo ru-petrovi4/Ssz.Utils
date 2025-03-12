@@ -95,7 +95,7 @@ namespace Ssz.Operator.Core
             }
         }
 
-        public void DeserializeOwnedData(SerializationReader reader, object? context)
+        public void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
         {
             using (Block block = reader.EnterBlock())
             {

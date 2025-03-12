@@ -38,7 +38,7 @@ namespace Ssz.Operator.Core.Utils
                 }                
                 using (var reader = new SerializationReader(memoryStream))
                 {
-                    clone.DeserializeOwnedData(reader, null);
+                    clone.DeserializeOwnedDataAsync(reader, null);
                 }
                 return clone;
             }

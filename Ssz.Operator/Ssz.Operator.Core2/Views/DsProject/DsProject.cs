@@ -46,7 +46,7 @@ namespace Ssz.Operator.Core
     //[DsCategoryOrder(ResourceStrings.DataCategory, 2)]
     //[DsCategoryOrder(ResourceStrings.BehaviourCategory, 3)]
     //[DsCategoryOrder(ResourceStrings.AppInfoCategory, 4)]
-    public partial class DsProject : ViewModelBase, IOwnedDataSerializable,        
+    public partial class DsProject : ViewModelBase,        
         IDsContainer,
         IUsedAddonsInfo
     {
@@ -159,7 +159,7 @@ namespace Ssz.Operator.Core
                     throw new ShowMessageException(dsProjectFileFullName + @": " +
                                                    Resources.FileOpenErrorFileNotFound);
 
-                Instance.DeserializeOwnedData(new SerializationReader(dsProjectFileStream), Instance);
+                await Instance.DeserializeOwnedDataAsync(new SerializationReader(dsProjectFileStream), Instance);
                 dsProjectFileStream.Dispose();
 
                 if (Instance.BinDeserializationSkippedBytesCount > 0 &&
@@ -231,11 +231,11 @@ namespace Ssz.Operator.Core
                                                 string fileFullName = Path.Combine(Instance.DsPagesDirectoryFullName, name + DsPageFileExtension);
                                                 var dsPageDrawingInfo =
                                                     new DsPageDrawingInfo(fileFullName);
-                                                dsPageDrawingInfo.DeserializeOwnedData(reader,
+                                                dsPageDrawingInfo.DeserializeOwnedDataAsync(reader,
                                                     SerializationContext.IndexFile);
                                                 var dsPageDrawing = new DsPageDrawing(false, false);
                                                 dsPageDrawing.SetDrawingInfo(dsPageDrawingInfo);
-                                                dsPageDrawing.DeserializeOwnedData(reader,
+                                                dsPageDrawing.DeserializeOwnedDataAsync(reader,
                                                     SerializationContext.IndexFile);
 
                                                 allDsPagesCache.Add(dsPageDrawing.Name, dsPageDrawing);

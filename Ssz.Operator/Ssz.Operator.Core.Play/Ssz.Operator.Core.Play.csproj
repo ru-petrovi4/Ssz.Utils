@@ -1,0 +1,69 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>    
+    <TargetFrameworks>net462;net9.0-windows</TargetFrameworks>
+	<LangVersion>Latest</LangVersion>    
+    <Nullable>Enable</Nullable>
+	<UseWPF>true</UseWPF>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">    
+    <DefineConstants>TRACE;NO_LICENSE_CHECK</DefineConstants>    
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">    
+    <DefineConstants>TRACE;NO_LICENSE_CHECK</DefineConstants>    
+  </PropertyGroup>
+  
+  <ItemGroup>    
+    <PackageReference Include="Google.Protobuf" Version="3.30.0" />
+    <PackageReference Include="Grpc.Net.Client.Web" Version="2.70.0" />
+    <PackageReference Include="Grpc.Net.ClientFactory" Version="2.70.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.71.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>    
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Ssz.DataAccessGrpc.Client\Ssz.DataAccessGrpc.Client.csproj" />
+    <ProjectReference Include="..\..\Ssz.Utils.Wpf\Ssz.Utils.Wpf.csproj" />
+    <ProjectReference Include="..\..\Ssz.Utils\Ssz.Utils.csproj" />
+    <ProjectReference Include="..\Ssz.Operator.Core\Ssz.Operator.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms" Condition="'$(TargetFramework)' != 'net9.0-windows'" />
+  </ItemGroup>
+
+  <ItemGroup>    
+    <Resource Include="Images\Connected.ico" />
+    <Resource Include="Images\ConnectedWithWarning.ico" />
+    <Resource Include="Images\Disconnected.ico" />	
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+	<EmbeddedResource Update="Properties\Resources.ru.resx">
+	  <Generator></Generator>
+	</EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="appsettings.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

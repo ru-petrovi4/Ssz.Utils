@@ -40,7 +40,7 @@ namespace Ssz.Operator.Core
             }
         }
 
-        public override void DeserializeOwnedData(SerializationReader reader, object? context)
+        public override void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
         {
             using (Block block = reader.EnterBlock())
             {
@@ -49,7 +49,7 @@ namespace Ssz.Operator.Core
                     case 1:
                         try
                         {
-                            base.DeserializeOwnedData(reader, context);
+                            base.DeserializeOwnedDataAsync(reader, context);
 
                             PageFileRelativePath = reader.ReadString();
                         }

@@ -1,0 +1,24 @@
+<UserControl
+    x:Class="Ssz.Operator.Core.Design.Controls.DesignDrawingDockControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"    
+    xmlns:controls="clr-namespace:Ssz.Operator.Core.Design.Controls"
+    xmlns:res="clr-namespace:Ssz.Operator.Core.Properties;assembly=Ssz.Operator.Core"
+    xmlns:controlsDesign="clr-namespace:Ssz.Operator.Core.ControlsDesign;assembly=Ssz.Operator.Core"
+    mc:Ignorable="d"
+    d:DesignHeight="300" d:DesignWidth="300">
+    <ScrollViewer x:Name="MainScrollViewer" HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Auto"
+                          Loaded="MainScrollViewerOnLoaded"
+                          PreviewMouseWheel="MainScrollViewerOnPreviewMouseWheel">
+        <Viewbox Width="{Binding ViewboxWidth}"
+                         Height="{Binding ViewboxHeight}">
+            <controlsDesign:DesignDrawingBorder x:Name="DesignDrawingBorder"
+                            Width="{Binding BorderWidth}"
+                            Height="{Binding BorderHeight}"
+                            ContextMenu="{StaticResource DesignDrawingContextMenu}" />
+        </Viewbox>
+    </ScrollViewer>
+</UserControl>

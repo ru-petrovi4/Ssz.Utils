@@ -12,6 +12,7 @@ using Ssz.Operator.Core.Properties;
 using Ssz.Operator.Core.Utils;
 using Ssz.Operator.Core.Utils.Serialization;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace Ssz.Operator.Core
 {
@@ -104,7 +105,7 @@ namespace Ssz.Operator.Core
             }
         }
 
-        public void DeserializeOwnedData(SerializationReader reader, object? context)
+        public async Task DeserializeOwnedDataAsync(SerializationReader reader, object? context)
         {
             var skippedBytesCountBefore = reader.SkippedBytesCount;
 
@@ -127,7 +128,7 @@ namespace Ssz.Operator.Core
                                         guidAndName.Name = latestNameToDisplay;
                                 }
 
-                        AddonsCollection.ReadAddonsOwnedDataFromFiles();
+                        await AddonsCollection.ReadAddonsOwnedDataFromFilesAsync();
 
                         _actuallyUsedAddonsInfo = reader.ReadList<GuidAndName>();
                         // Refresh addons display names, if possible

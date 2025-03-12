@@ -48,7 +48,7 @@ namespace Ssz.Operator.Core.Utils
         /// </summary>
         /// <param name="reader"> The SerializationReader to use </param>
         /// <param name="context"> Optional context to use as a hint as to what to retrieve (BitVector32 is useful) </param>
-        public virtual void DeserializeOwnedData(SerializationReader reader, object context)
+        public virtual void DeserializeOwnedDataAsync(SerializationReader reader, object context)
         {
             using (Block block = reader.EnterBlock())
             {

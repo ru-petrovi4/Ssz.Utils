@@ -189,14 +189,14 @@ namespace Ssz.Operator.Core.Drawings
             }
         }
 
-        public override void DeserializeOwnedData(SerializationReader reader, object? context)
+        public override void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
         {
             using (Block block = reader.EnterBlock())
             {
                 switch (block.Version)
                 {                    
                     case 4:
-                        base.DeserializeOwnedData(reader, context);
+                        base.DeserializeOwnedDataAsync(reader, context);
 
                         CenterRelativePosition = reader.ReadPoint();
                         break;

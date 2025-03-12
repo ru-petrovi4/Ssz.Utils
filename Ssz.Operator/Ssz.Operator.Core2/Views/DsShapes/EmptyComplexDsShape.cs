@@ -41,7 +41,7 @@ namespace Ssz.Operator.Core.DsShapes
             writer.WriteDsShapes(DsShapes, context);
         }
 
-        public override void DeserializeOwnedData(SerializationReader reader, object? context)
+        public override void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
         {
             DsShapeDrawingGuid = reader.ReadGuid();
             DsShapeDrawingName = reader.ReadString();

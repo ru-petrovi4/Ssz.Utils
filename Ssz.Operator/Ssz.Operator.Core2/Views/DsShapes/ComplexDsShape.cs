@@ -135,7 +135,7 @@ namespace Ssz.Operator.Core.DsShapes
             }
         }
 
-        public override void DeserializeOwnedData(SerializationReader reader, object? context)
+        public override void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
         {
             if (reader.GetBlockVersionWithoutChangingStreamPosition() <= 2)
                 throw new Exception("Unsupported old file format.");
@@ -146,7 +146,7 @@ namespace Ssz.Operator.Core.DsShapes
                 {
                     case 4:
                     {
-                        base.DeserializeOwnedData(reader, context);
+                        base.DeserializeOwnedDataAsync(reader, context);
 
                         DsShapeDrawingGuid = reader.ReadGuid();
                         DsShapeDrawingName = reader.ReadString();

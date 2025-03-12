@@ -42,14 +42,14 @@ namespace Ssz.Operator.Core.Commands.DsCommandOptions
             }
         }
 
-        public override void DeserializeOwnedData(SerializationReader reader, object? context)
+        public override void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
         {
             using (Block block = reader.EnterBlock())
             {
                 switch (block.Version)
                 {                    
                     case 3:
-                        base.DeserializeOwnedData(reader, context);
+                        base.DeserializeOwnedDataAsync(reader, context);
 
                         try
                         {

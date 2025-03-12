@@ -47,6 +47,8 @@ namespace Ssz.Operator.Core.Addons
 
         #region public functions
 
+        public static string AddonsSearchPattern { get; set;} = @"Ssz.Operator.Addons.*.dll";
+
         public static readonly AddonsCollection AddonsCollection =
             new();
 
@@ -472,19 +474,17 @@ namespace Ssz.Operator.Core.Addons
         private static AddonBase[] GetAvailableAdditionalAddonsUnconditionally()
         {
             var exeDirectory = AppContext.BaseDirectory;
-            if (String.IsNullOrEmpty(exeDirectory)) return new AddonBase[0];
-
-            const string addonsSearchPattern = @"Ssz.Operator.Addons.*.dll";
+            if (String.IsNullOrEmpty(exeDirectory)) return new AddonBase[0];            
 
             var addonsFileInfos = new List<FileInfo>();
             addonsFileInfos.AddRange(
-                Directory.GetFiles(exeDirectory, addonsSearchPattern, SearchOption.TopDirectoryOnly)                    
+                Directory.GetFiles(exeDirectory, AddonsSearchPattern, SearchOption.TopDirectoryOnly)                    
                     .Select(fn => new FileInfo(fn)));
 
             var addonsDirectoryInfo = DsProject.Instance.AddonsDirectoryInfo;
             if (addonsDirectoryInfo is not null)
                 addonsFileInfos.AddRange(
-                    Directory.GetFiles(addonsDirectoryInfo.FullName, addonsSearchPattern, SearchOption.AllDirectories)
+                    Directory.GetFiles(addonsDirectoryInfo.FullName, AddonsSearchPattern, SearchOption.AllDirectories)
                         .Select(fn => new FileInfo(fn)));
 
             var availableAdditionalAddonsList = new List<AddonBase>();

@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Ssz.Operator.Play": {
-      "commandName": "Project",
-      "commandLineArgs": "-p \"C:\\CDT.CentralServer\\FilesStore\\CDT.2024.SaratovPCNiDCS\\Operator.Data\\SARATOV_POLE_Interface\\Saratov.dsProject\" -ns 1"
-    }
-  }
-}

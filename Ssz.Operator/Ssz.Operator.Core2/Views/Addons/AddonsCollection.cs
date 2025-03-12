@@ -108,7 +108,7 @@ namespace Ssz.Operator.Core.Addons
             }
         }
 
-        public async Task ReadAddonsOwnedDataFromFiles()
+        public async Task ReadAddonsOwnedDataFromFilesAsync()
         {
             var addonsDirectoryInfo = new DirectoryInfo(DsProject.Instance.AddonsDirectoryFullName);
             if (!addonsDirectoryInfo.Exists) 
