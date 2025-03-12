@@ -367,6 +367,7 @@ namespace Ssz.DataAccessGrpc.Client
                     converter.ConvertBack(
                         value.ValueAsObject(),
                         valueSubscriptionObj.ChildValueSubscriptionsList.Count,
+                        null,
                         LoggersSet);
                 if (resultValues.Length == 0)
                     return ResultInfo.GoodResultInfo;
@@ -1200,7 +1201,7 @@ namespace Ssz.DataAccessGrpc.Client
                     values.Add(childValueSubscription?.ValueStatusTimestamp.Value.ValueAsObject());
                 }
                 SszConverter converter = Converter ?? SszConverter.Empty;                
-                var convertedValue = converter.Convert(values.ToArray(), Ssz.Utils.Logging.LoggersSet.Empty);
+                var convertedValue = converter.Convert(values.ToArray(), null, Ssz.Utils.Logging.LoggersSet.Empty);
                 if (convertedValue == SszConverter.DoNothing) return;
                 ValueSubscription.Update(new ValueStatusTimestamp(new Any(convertedValue), StatusCodes.Good,
                     DateTime.UtcNow));

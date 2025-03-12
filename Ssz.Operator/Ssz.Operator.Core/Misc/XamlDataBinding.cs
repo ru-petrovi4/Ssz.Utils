@@ -142,7 +142,7 @@ namespace Ssz.Operator.Core
                 {
                     var firstTrue =
                         converter.DataSourceToUiStatements.FirstOrDefault(s =>
-                            ObsoleteAnyHelper.ConvertTo<bool>(s.Condition.Evaluate(values, null), false));
+                            ObsoleteAnyHelper.ConvertTo<bool>(s.Condition.Evaluate(values, null, null), false));
                     if (firstTrue is not null)
                         ConstValue = (DsXaml) ((DsXaml) firstTrue.ConstXaml).Clone();
                     else

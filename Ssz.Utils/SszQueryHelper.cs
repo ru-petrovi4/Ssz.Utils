@@ -153,7 +153,7 @@ namespace Ssz.Utils
                     dataSourceValues.Add(valueOfQuery);
                 }
 
-                var evaluated = new SszExpression(lambda).Evaluate(dataSourceValues.ToArray(), null, LoggersSet.Empty);
+                var evaluated = new SszExpression(lambda).Evaluate(dataSourceValues.ToArray(), null, null, LoggersSet.Empty);
                 return new Any(evaluated).ValueAsString(false);
             }
 

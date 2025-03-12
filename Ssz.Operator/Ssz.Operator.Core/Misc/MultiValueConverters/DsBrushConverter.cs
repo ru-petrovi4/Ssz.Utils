@@ -51,7 +51,7 @@ namespace Ssz.Operator.Core.MultiValueConverters
 
             var firstTrue =
                 DataSourceToUiStatements.FirstOrDefault(
-                    s => ObsoleteAnyHelper.ConvertTo<bool>(s.Condition.Evaluate(values, null), false));
+                    s => ObsoleteAnyHelper.ConvertTo<bool>(s.Condition.Evaluate(values, null, null), false));
             if (firstTrue is not null)
             {
                 if (firstTrue.ParamNum.HasValue)

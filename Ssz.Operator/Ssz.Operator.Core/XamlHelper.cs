@@ -167,7 +167,7 @@ namespace Ssz.Operator.Core
                 }
                 catch (Exception ex)
                 {
-                    DsProject.LoggersSet.Logger.LogError(ex, @"");
+                    DsProject.LoggersSet.UserFriendlyLogger.LogError(ex, @"");
                     return null;
                 }
             });
