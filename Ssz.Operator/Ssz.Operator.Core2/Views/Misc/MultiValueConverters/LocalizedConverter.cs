@@ -82,9 +82,9 @@ namespace Ssz.Operator.Core.MultiValueConverters
 
             var firstTrue =
                 DataSourceToUiStatements.FirstOrDefault(
-                    s => ObsoleteAnyHelper.ConvertTo<bool>(s.Condition.Evaluate(values.ToArray(), null), false));
+                    s => ObsoleteAnyHelper.ConvertTo<bool>(s.Condition.Evaluate(values.ToArray(), null, Format), false));
             if (firstTrue is not null)
-                evaluatedValue = firstTrue.Value.Evaluate(values.ToArray(), null);
+                evaluatedValue = firstTrue.Value.Evaluate(values.ToArray(), null, Format);
             else
                 evaluatedValue = values[0];
 
@@ -137,9 +137,9 @@ namespace Ssz.Operator.Core.MultiValueConverters
                     if (paramNum >= 0 && paramNum < sourcesCount)
                         if (!conditionResults[paramNum])
                         {
-                            if (ObsoleteAnyHelper.ConvertTo<bool>(statement.Condition.Evaluate(_dataSourceValues, value), false))
+                            if (ObsoleteAnyHelper.ConvertTo<bool>(statement.Condition.Evaluate(_dataSourceValues, value, Format), false))
                             {
-                                sourcesValues[paramNum] = statement.Value.Evaluate(_dataSourceValues, value);
+                                sourcesValues[paramNum] = statement.Value.Evaluate(_dataSourceValues, value, Format);
                                 conditionResults[paramNum] = true;
                             }
                         }
@@ -182,7 +182,7 @@ namespace Ssz.Operator.Core.MultiValueConverters
             }
         }
 
-        public override void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
+        public override void DeserializeOwnedData(SerializationReader reader, object? context)
         {
             using (Block block = reader.EnterBlock())
             {

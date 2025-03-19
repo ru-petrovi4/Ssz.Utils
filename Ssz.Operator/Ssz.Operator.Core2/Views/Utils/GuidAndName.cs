@@ -20,7 +20,7 @@ namespace Ssz.Operator.Core.Utils
             }
         }
 
-        public void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
+        public void DeserializeOwnedData(SerializationReader reader, object? context)
         {
             using (var block = reader.EnterBlock())
             {

@@ -231,11 +231,11 @@ namespace Ssz.Operator.Core
                                                 string fileFullName = Path.Combine(Instance.DsPagesDirectoryFullName, name + DsPageFileExtension);
                                                 var dsPageDrawingInfo =
                                                     new DsPageDrawingInfo(fileFullName);
-                                                dsPageDrawingInfo.DeserializeOwnedDataAsync(reader,
+                                                dsPageDrawingInfo.DeserializeOwnedData(reader,
                                                     SerializationContext.IndexFile);
                                                 var dsPageDrawing = new DsPageDrawing(false, false);
                                                 dsPageDrawing.SetDrawingInfo(dsPageDrawingInfo);
-                                                dsPageDrawing.DeserializeOwnedDataAsync(reader,
+                                                dsPageDrawing.DeserializeOwnedData(reader,
                                                     SerializationContext.IndexFile);
 
                                                 allDsPagesCache.Add(dsPageDrawing.Name, dsPageDrawing);

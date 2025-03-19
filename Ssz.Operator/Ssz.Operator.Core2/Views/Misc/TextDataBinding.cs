@@ -63,11 +63,11 @@ namespace Ssz.Operator.Core
             }
         }
 
-        public override void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
+        public override void DeserializeOwnedData(SerializationReader reader, object? context)
         {
             if (reader.GetBlockVersionWithoutChangingStreamPosition() == 1)
             {
-                base.DeserializeOwnedDataAsync(reader, context);
+                base.DeserializeOwnedData(reader, context);
 
                 using (Block block = reader.EnterBlock())
                 {
@@ -90,7 +90,7 @@ namespace Ssz.Operator.Core
                 switch (block.Version)
                 {
                     case 3:
-                        base.DeserializeOwnedDataAsync(reader, context);
+                        base.DeserializeOwnedData(reader, context);
                         break;
                     default:
                         throw new BlockUnsupportedVersionException();

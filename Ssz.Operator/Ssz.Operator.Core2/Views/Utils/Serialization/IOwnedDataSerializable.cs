@@ -20,6 +20,6 @@ namespace Ssz.Operator.Core.Utils.Serialization
         /// </summary>
         /// <param name="reader"> The SerializationReader to use </param>
         /// <param name="context"> Optional context to use as a hint as to what to retrieve </param>
-        void DeserializeOwnedDataAsync(SerializationReader reader, object context);
+        void DeserializeOwnedData(SerializationReader reader, object context);
     }
 }

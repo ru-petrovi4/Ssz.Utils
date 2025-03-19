@@ -105,9 +105,9 @@ namespace Ssz.Operator.Core.MultiValueConverters
         {
         }
 
-        public object? Evaluate(object?[]? dataSourceValues, object? userValue)
+        public object? Evaluate(object?[]? dataSourceValues, object? userValue, string? stringFormat)
         {
-            return base.Evaluate(dataSourceValues, userValue, DsProject.LoggersSet);
+            return base.Evaluate(dataSourceValues, userValue, stringFormat, DsProject.LoggersSet);
         }
 
         public override bool Equals(object? obj)
@@ -132,7 +132,7 @@ namespace Ssz.Operator.Core.MultiValueConverters
             }
         }
 
-        public void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
+        public void DeserializeOwnedData(SerializationReader reader, object? context)
         {
             using (Block block = reader.EnterBlock())
             {

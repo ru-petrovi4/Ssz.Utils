@@ -221,7 +221,7 @@ namespace Ssz.Operator.Core.DsShapes
             }
         }
 
-        public virtual void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
+        public virtual void DeserializeOwnedData(SerializationReader reader, object? context)
         {
             if (ReferenceEquals(context, SerializationContext.IndexFile)) return;
 

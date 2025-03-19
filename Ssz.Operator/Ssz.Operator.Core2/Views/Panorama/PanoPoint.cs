@@ -72,7 +72,7 @@ namespace Ssz.Operator.Core.Panorama
             }
         }
 
-        public void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
+        public void DeserializeOwnedData(SerializationReader reader, object? context)
         {
             using (Block block = reader.EnterBlock())
             {

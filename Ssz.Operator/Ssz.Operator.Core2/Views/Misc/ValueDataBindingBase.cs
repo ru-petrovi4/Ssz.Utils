@@ -240,7 +240,7 @@ namespace Ssz.Operator.Core
             }
         }
 
-        public virtual void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
+        public virtual void DeserializeOwnedData(SerializationReader reader, object? context)
         {
             using (Block block = reader.EnterBlock())
             {

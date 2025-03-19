@@ -29,7 +29,7 @@ namespace Ssz.Operator.Core.Commands.DsCommandOptions
             }
         }
 
-        public override void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
+        public override void DeserializeOwnedData(SerializationReader reader, object? context)
         {
             using (Block block = reader.EnterBlock())
             {
@@ -46,7 +46,7 @@ namespace Ssz.Operator.Core.Commands.DsCommandOptions
 
                         break;
                     case 2:
-                        base.DeserializeOwnedDataAsync(reader, context);
+                        base.DeserializeOwnedData(reader, context);
 
                         break;
                     default:

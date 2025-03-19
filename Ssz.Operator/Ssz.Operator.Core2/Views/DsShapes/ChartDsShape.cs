@@ -138,9 +138,9 @@ namespace Ssz.Operator.Core.DsShapes
             }
         }
 
-        public override void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
+        public override void DeserializeOwnedData(SerializationReader reader, object? context)
         {
-            base.DeserializeOwnedDataAsync(reader, context);
+            base.DeserializeOwnedData(reader, context);
 
             using (Block block = reader.EnterBlock())
             {

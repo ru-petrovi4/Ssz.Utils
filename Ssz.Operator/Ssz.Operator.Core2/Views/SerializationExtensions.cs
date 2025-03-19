@@ -37,7 +37,7 @@ namespace Ssz.Operator.Core
                 try
                 {
                     var hasValue = reader.ReadBoolean();
-                    if (hasValue && value is not null) value.DeserializeOwnedDataAsync(reader, context);
+                    if (hasValue && value is not null) value.DeserializeOwnedData(reader, context);
                 }
                 catch (BlockEndingException)
                 {
@@ -58,7 +58,7 @@ namespace Ssz.Operator.Core
                     if (hasValue)
                     {
                         result = func();
-                        result.DeserializeOwnedDataAsync(reader, context);
+                        result.DeserializeOwnedData(reader, context);
                     }
                 }
                 catch (BlockEndingException)

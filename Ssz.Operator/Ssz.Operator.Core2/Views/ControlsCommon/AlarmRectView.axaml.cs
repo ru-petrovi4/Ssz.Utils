@@ -8,7 +8,7 @@ namespace Ssz.Operator.Core.ControlsCommon
 
         public AlarmRectView()
         {
-            //InitializeComponent();
+            InitializeComponent();
         }
 
         #endregion

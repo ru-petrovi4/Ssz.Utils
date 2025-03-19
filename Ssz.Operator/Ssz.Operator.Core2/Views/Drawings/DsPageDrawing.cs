@@ -317,14 +317,14 @@ namespace Ssz.Operator.Core.Drawings
             }
         }
 
-        public override void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
+        public override void DeserializeOwnedData(SerializationReader reader, object? context)
         {
             using (Block block = reader.EnterBlock())
             {
                 switch (block.Version)
                 {
                     case 2:
-                        base.DeserializeOwnedDataAsync(reader, context);
+                        base.DeserializeOwnedData(reader, context);
 
                         StretchMode = (DsPageStretchMode) reader.ReadInt32();
                         HorizontalAlignment = (DsPageHorizontalAlignment) reader.ReadInt32();

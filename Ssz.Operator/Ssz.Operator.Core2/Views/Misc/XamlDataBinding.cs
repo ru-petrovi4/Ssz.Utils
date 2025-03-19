@@ -96,7 +96,7 @@ namespace Ssz.Operator.Core
             }
         }
 
-        public override void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
+        public override void DeserializeOwnedData(SerializationReader reader, object? context)
         {
             using (Block block = reader.EnterBlock())
             {
@@ -140,7 +140,7 @@ namespace Ssz.Operator.Core
                 {
                     var firstTrue =
                         converter.DataSourceToUiStatements.FirstOrDefault(s =>
-                            ObsoleteAnyHelper.ConvertTo<bool>(s.Condition.Evaluate(values, null), false));
+                            ObsoleteAnyHelper.ConvertTo<bool>(s.Condition.Evaluate(values, null, null), false));
                     if (firstTrue is not null)
                         ConstValue = (DsXaml) ((DsXaml) firstTrue.ConstXaml).Clone();
                     else

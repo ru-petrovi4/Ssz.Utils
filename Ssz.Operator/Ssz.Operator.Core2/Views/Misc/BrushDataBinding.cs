@@ -57,14 +57,14 @@ namespace Ssz.Operator.Core
             }
         }
 
-        public override void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
+        public override void DeserializeOwnedData(SerializationReader reader, object? context)
         {
             using (Block block = reader.EnterBlock())
             {
                 switch (block.Version)
                 {
                     case 2:
-                        base.DeserializeOwnedDataAsync(reader, context);
+                        base.DeserializeOwnedData(reader, context);
                         break;
                     default:
                         throw new BlockUnsupportedVersionException();
@@ -114,7 +114,7 @@ namespace Ssz.Operator.Core
                     {
                         var firstTrue =
                             converter.DataSourceToUiStatements.FirstOrDefault(
-                                s => ObsoleteAnyHelper.ConvertTo<bool>(s.Condition.Evaluate(values, null), false));
+                                s => ObsoleteAnyHelper.ConvertTo<bool>(s.Condition.Evaluate(values, null, null), false));
                         if (firstTrue is not null)
                         {
                             if (firstTrue.ParamNum.HasValue)

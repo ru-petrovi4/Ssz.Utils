@@ -72,7 +72,7 @@ namespace Ssz.Operator.Core.Drawings
 
         public abstract void SerializeOwnedData(SerializationWriter writer, object? context);
 
-        public abstract void DeserializeOwnedDataAsync(SerializationReader reader, object? context);
+        public abstract void DeserializeOwnedData(SerializationReader reader, object? context);
 
         public abstract void DeserializeGuidOnly(SerializationReader reader);
 

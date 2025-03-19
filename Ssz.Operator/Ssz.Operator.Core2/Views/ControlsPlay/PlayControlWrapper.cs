@@ -587,7 +587,7 @@ namespace Ssz.Operator.Core.ControlsPlay
                 /*
                  * 
                  * 
-                if (DsProject.Instance.Mode == DsProject.DsProjectModeEnum.WindowsPlayMode)
+                if (DsProject.Instance.Mode == DsProject.DsProjectModeEnum.DesktopPlayMode)
                 {
                     DsProject.Instance.CheckDrawingsBinSerializationVersion(new[] {dsPageDrawing.GetDrawingInfo()},
                         new DummyProgressInfo());

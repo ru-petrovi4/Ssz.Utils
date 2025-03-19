@@ -4,24 +4,21 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controlsCommon="clr-namespace:Ssz.Operator.Core.ControlsCommon"
+			 xmlns:vm="using:Ssz.Operator.Core.ControlsPlay.GenericPlay"
+			 x:CompileBindings="False"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300" x:Name="UserControl">
-    <!--<DataGrid Name="MainDataGrid" AutoGenerateColumns="False" HeadersVisibility="None"
+    <DataGrid Name="MainDataGrid" AutoGenerateColumns="False" HeadersVisibility="None"
               Background="{Binding Path=Background, ElementName=UserControl}"
               RowBackground="{Binding Path=Background, ElementName=UserControl}"
               Foreground="{Binding Path=Foreground, ElementName=UserControl}"
-              GridLinesVisibility="None" Padding="0" CanUserAddRows="False" IsReadOnly="True"
-              SelectionMode="Single" SelectionUnit="FullRow" DoubleTapped="MainDataGrid_DoubleTapped"
-              x:FieldModifier="public">
-        <DataGrid.RowStyle>
-            --><!--<ControlTheme TargetType="{x:Type DataGridRow}">
-                <ControlTheme.Styles>
-                    <DataTrigger Binding="{Binding IsVisible}" Value="False">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                    </DataTrigger>
-                </ControlTheme.Styles>
-            </ControlTheme>--><!--
-        </DataGrid.RowStyle>
+              GridLinesVisibility="None" Padding="0" IsReadOnly="True"
+              SelectionMode="Single" DoubleTapped="MainDataGrid_DoubleTapped">
+        <DataGrid.RowTheme>
+            <ControlTheme TargetType="DataGridRow">
+				<Setter Property="IsVisible" Value="{Binding IsVisible}" />
+            </ControlTheme>
+        </DataGrid.RowTheme>
         <DataGrid.Columns>
             <DataGridTemplateColumn Width="auto">
                 <DataGridTemplateColumn.CellTemplate>
@@ -66,5 +63,5 @@
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
         </DataGrid.Columns>
-    </DataGrid>-->
+    </DataGrid>
 </UserControl>

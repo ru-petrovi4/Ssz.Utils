@@ -104,7 +104,7 @@ namespace Ssz.Operator.Core.DsShapes
             }
         }
 
-        public override void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
+        public override void DeserializeOwnedData(SerializationReader reader, object? context)
         {
             using (Block block = reader.EnterBlock())
             {
@@ -113,7 +113,7 @@ namespace Ssz.Operator.Core.DsShapes
                     case 1:
                         try
                         {
-                            base.DeserializeOwnedDataAsync(reader, context);
+                            base.DeserializeOwnedData(reader, context);
                             
                             List<TabItemInfo> tabItemInfosCollection = reader.ReadList<TabItemInfo>();
                             TabItemInfosCollection.Clear();

@@ -15,8 +15,8 @@
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, Avalonia.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, Avalonia.Forms, ...</resheader>
     <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
     <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
     <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
@@ -112,79 +112,79 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, Avalonia.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, Avalonia.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="GeometryInfoSupplierLLineXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <assembly alias="Avalonia.Forms" name="Avalonia.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="GeometryInfoSupplierLLineXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\GeometryInfoSupplierLLineXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
-  <data name="ClassicButtonStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="ClassicButtonStyleXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\ClassicButtonStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;koi8-r</value>
   </data>
-  <data name="TrivialButtonStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="TrivialButtonStyleXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\TrivialButtonStyleXaml.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="InvisibleButtonStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="InvisibleButtonStyleXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\InvisibleButtonStyleXaml.txt;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="ClassicSliderStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="ClassicSliderStyleXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\ClassicSliderStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
-  <data name="ContentSliderStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="ContentSliderStyleXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\ContentSliderStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
-  <data name="TouchScreenSliderStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="TouchScreenSliderStyleXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\TouchScreenSliderStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
-  <data name="GeometryInfoSupplierHorizontalLineXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="GeometryInfoSupplierHorizontalLineXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\resources\geometryinfosupplierhorizontallinexaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
-  <data name="GeometryInfoSupplierVerticalLineXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="GeometryInfoSupplierVerticalLineXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\resources\geometryinfosupplierverticallinexaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
-  <data name="DefaultButtonStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="DefaultButtonStyleXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\DefaultButtonStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;koi8-r</value>
   </data>
-  <data name="ClassicToggleButtonStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="ClassicToggleButtonStyleXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\ClassicToggleButtonStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
-  <data name="DefaultToggleButtonStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="DefaultToggleButtonStyleXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\DefaultToggleButtonStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
-  <data name="InvisibleToggleButtonStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="InvisibleToggleButtonStyleXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\InvisibleToggleButtonStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
-  <data name="TrivialToggleButtonStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="TrivialToggleButtonStyleXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\TrivialToggleButtonStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
-  <data name="GeometryInfoSupplierEllipseXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="GeometryInfoSupplierEllipseXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\GeometryInfoSupplierEllipseXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
-  <data name="GeometryInfoSupplierRectangleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="GeometryInfoSupplierRectangleXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\GeometryInfoSupplierRectangleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
-  <data name="ClassicComboBoxStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="ClassicComboBoxStyleXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\ClassicComboBoxStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
-  <data name="DefaultComboBoxStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="DefaultComboBoxStyleXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\DefaultComboBoxStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
-  <data name="GeometryInfoSupplierLLineRoundCornerXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="GeometryInfoSupplierLLineRoundCornerXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\GeometryInfoSupplierLLineRoundCornerXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;koi8-r</value>
   </data>
-  <data name="DefaultGeometryButtonStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="DefaultGeometryButtonStyleXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\resources\defaultgeometrybuttonstylexaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
-  <data name="GeometryInfoSupplierRectangleRoundCornersXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="GeometryInfoSupplierRectangleRoundCornersXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\GeometryInfoSupplierRectangleRoundCornersXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
-  <data name="MultiChartDsShapeGeometryInfoSupplierCircleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="MultiChartDsShapeGeometryInfoSupplierCircleXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\MultiChartDsShapeGeometryInfoSupplierCircleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
-  <data name="MultiChartDsShapeGeometryInfoSupplierCrossXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="MultiChartDsShapeGeometryInfoSupplierCrossXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\MultiChartDsShapeGeometryInfoSupplierCrossXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="AddDrawingsFromLibraryDialogTitle" xml:space="preserve">
@@ -2405,10 +2405,10 @@ If expression must results to boolean value."</value>
   <data name="ControlDsShapeToolTipPlacement" xml:space="preserve">
     <value>ToolTip Placement</value>
   </data>
-  <data name="ClassicTabStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="ClassicTabStyleXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\ClassicTabStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
-  <data name="DefaultTabStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="DefaultTabStyleXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\DefaultTabStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
   <data name="TabItemInfo_PageFileRelativePath" xml:space="preserve">
@@ -2426,7 +2426,7 @@ If expression must results to boolean value."</value>
   <data name="TagAlarmsInfo_AlarmPriorityInfosList" xml:space="preserve">
     <value>Alarm Additional Priority Colors</value>
   </data>
-  <data name="MainButtonStyleXaml" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="MainButtonStyleXaml" type="System.Resources.ResXFileRef, Avalonia.Forms">
     <value>..\Resources\MainButtonStyleXaml.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
   </data>
 </root>

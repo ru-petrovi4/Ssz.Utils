@@ -200,14 +200,14 @@ namespace Ssz.Operator.Core.DsShapes
             }
         }
 
-        public override void DeserializeOwnedDataAsync(SerializationReader reader, object? context)
+        public override void DeserializeOwnedData(SerializationReader reader, object? context)
         {
             using (Block block = reader.EnterBlock())
             {
                 switch (block.Version)
                 {
                     case 1:
-                        base.DeserializeOwnedDataAsync(reader, context);
+                        base.DeserializeOwnedData(reader, context);
 
                         ContentHorizontalAlignment = TreeHelper.GetHorizontalAlignment_FromWpf(reader.ReadInt32());
                         ContentVerticalAlignment = TreeHelper.GetVerticalAlignment_FromWpf(reader.ReadInt32());
@@ -222,7 +222,7 @@ namespace Ssz.Operator.Core.DsShapes
                         reader.ReadOwnedData(TextInfo, context);
                         break;
                     case 2:
-                        base.DeserializeOwnedDataAsync(reader, context);
+                        base.DeserializeOwnedData(reader, context);
 
                         ContentHorizontalAlignment = (HorizontalAlignment)reader.ReadInt32();
                         ContentVerticalAlignment = (VerticalAlignment)reader.ReadInt32();

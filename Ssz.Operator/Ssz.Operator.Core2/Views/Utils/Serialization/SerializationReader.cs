@@ -246,7 +246,7 @@ namespace Ssz.Operator.Core.Utils.Serialization
         {
             if (IsBlockEnding()) throw new BlockEndingException();
 
-            target.DeserializeOwnedDataAsync(this, context);
+            target.DeserializeOwnedData(this, context);
         }
 
         /// <summary>
@@ -413,7 +413,7 @@ namespace Ssz.Operator.Core.Utils.Serialization
             if (serializedType == SerializedType.NullType) return null;
             SkipString(); // Skip Type string.
             var result = new T();
-            result.DeserializeOwnedDataAsync(this, null);
+            result.DeserializeOwnedData(this, null);
             return result;
         }
 
@@ -515,7 +515,7 @@ namespace Ssz.Operator.Core.Utils.Serialization
             for (int i = 0; i < count; i += 1)
             {
                 var v = func();
-                v.DeserializeOwnedDataAsync(this, context);
+                v.DeserializeOwnedData(this, context);
                 result.Add(v);
             }
             return result;
@@ -1345,7 +1345,7 @@ namespace Ssz.Operator.Core.Utils.Serialization
                 {
                     Type type = ReadOptimizedType();
                     object result = Activator.CreateInstance(type);
-                    ((IOwnedDataSerializable)result).DeserializeOwnedDataAsync(this, null);
+                    ((IOwnedDataSerializable)result).DeserializeOwnedData(this, null);
                     return result;
                 }
                 case SerializedType.OptimizedEnumType:
