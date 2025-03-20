@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.OpenGL;
 using static Avalonia.OpenGL.GlConsts;
+using static Ssz.Utils.Avalonia.Model3D.Model3DControl;
 // ReSharper disable StringLiteralTypo
 
 namespace Ssz.Utils.Avalonia.Model3D;
@@ -64,7 +65,7 @@ internal class OpenGlContent
         GlInterface gl, 
         int fb, 
         PixelSize size,
-        Model3D model3D)
+        Model3DMessage model3DMessage)
     {
         gl.Viewport(0, 0, size.Width, size.Height);
         gl.ClearDepth((float)1);
@@ -77,9 +78,9 @@ internal class OpenGlContent
         gl.Clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         gl.Enable(GL_DEPTH_TEST);
         
-        if (model3D.Model3DScene is not null)
+        if (model3DMessage.Model3DScene is not null)
         {
-            var points = model3D.Model3DScene.Point3DWithColorArray;
+            var points = model3DMessage.Model3DScene.Point3DWithColorArray;
             if (points is not null)
             {
                 float[] vertexData = new float[points.Length * 7];
@@ -106,8 +107,8 @@ internal class OpenGlContent
         CheckError(gl);
 
         // Матрицы трансформации
-        var model = Matrix4x4.Identity * Matrix4x4.CreateRotationX(model3D.RotationX) * Matrix4x4.CreateRotationY(model3D.RotationY);
-        var view = Matrix4x4.CreateLookAt(new Vector3(0, 0, model3D.Zoom), Vector3.Zero, Vector3.UnitY);
+        var model = Matrix4x4.Identity * Matrix4x4.CreateRotationX(model3DMessage.RotationX) * Matrix4x4.CreateRotationY(model3DMessage.RotationY);
+        var view = Matrix4x4.CreateLookAt(new Vector3(0, 0, -model3DMessage.Zoom), Vector3.Zero, Vector3.UnitY);
         var projection = Matrix4x4.CreatePerspectiveFieldOfView(MathF.PI / 4, (float)size.Width / (float)size.Height, 0.1f, 100.0f);
 
         unsafe

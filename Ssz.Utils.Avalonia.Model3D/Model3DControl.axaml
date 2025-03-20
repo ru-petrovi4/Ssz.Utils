@@ -5,7 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Ssz.Utils.Avalonia.Model3D.Model3DControl">
 	<Grid>
-		<Border x:Name="Border" BorderThickness="0" Background="Transparent" />
-		<Control x:Name="Viewport" />		
+		<Border x:Name="Border" BorderThickness="0" Background="Black" />
+		<Control x:Name="Viewport" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />		
 	</Grid>
 </UserControl>

@@ -101,7 +101,7 @@ public partial class Model3DControl : UserControl
             _rotationX += (float)delta.Y * 0.005f;
 
             _lastMousePos = currentPos;
-            _visual?.SendHandlerMessage(new Model3D
+            _visual?.SendHandlerMessage(new Model3DMessage
             {
                 Model3DScene = null,
                 RotationX = _rotationX,
@@ -115,7 +115,7 @@ public partial class Model3DControl : UserControl
     {
         _zoom -= (float)e.Delta.Y * 0.5f;
         _zoom = Math.Max(1.0f, Math.Min(10.0f, _zoom));
-        _visual?.SendHandlerMessage(new Model3D
+        _visual?.SendHandlerMessage(new Model3DMessage
         {
             Model3DScene = null,
             RotationX = _rotationX,
@@ -132,7 +132,7 @@ public partial class Model3DControl : UserControl
 
     private void OnDataPropertyChanged()
     {
-        _visual?.SendHandlerMessage(new Model3D
+        _visual?.SendHandlerMessage(new Model3DMessage
         {
             Model3DScene = Data,
             RotationX = _rotationX,
@@ -169,7 +169,7 @@ public partial class Model3DControl : UserControl
         {
             var bounds = GetRenderBounds();
             var size = PixelSize.FromSize(bounds.Size, 1);
-            if (size.Width < 1 || size.Height < 1 || _model3D is null)
+            if (size.Width < 1 || size.Height < 1 || _currentModel3DMessage is null)
                 return;
 
             if (drawingContext.TryGetFeature<ISkiaSharpApiLeaseFeature>(out var skiaFeature))
@@ -207,7 +207,7 @@ public partial class Model3DControl : UserControl
                         _contentInitialized = true;
                     }
 
-                    _content.OnOpenGlRender(gl, _fbo.Fbo, size, _model3D);
+                    _content.OnOpenGlRender(gl, _fbo.Fbo, size, _currentModel3DMessage);
 
                     snapshot = _fbo.Snapshot();
                     gl.BindFramebuffer(GL_FRAMEBUFFER, oldFb);
@@ -233,9 +233,9 @@ public partial class Model3DControl : UserControl
 
         public override void OnMessage(object message)
         {
-            if (message is Model3D model3DMessage)
+            if (message is Model3DMessage model3DMessage)
             {
-                _model3D = model3DMessage;
+                _currentModel3DMessage = model3DMessage;
                 _reRender = true;
                 RegisterForNextAnimationFrameUpdate();
             }
@@ -274,7 +274,7 @@ public partial class Model3DControl : UserControl
         #region private fields
 
         private OpenGlContent _content;
-        private Model3D? _model3D;
+        private Model3DMessage? _currentModel3DMessage;
         private bool _contentInitialized;
         private OpenGlFbo? _fbo;
         private bool _reRender;
@@ -286,5 +286,13 @@ public partial class Model3DControl : UserControl
     public class DisposeMessage
     {
 
-    }    
+    }
+
+    public class Model3DMessage
+    {
+        public Model3DScene? Model3DScene;
+        public float RotationX;
+        public float RotationY;
+        public float Zoom;
+    }
 }
