@@ -92,7 +92,7 @@ namespace Ssz.Operator.Core
             {
                 var itemCollection = new ItemCollection();
                 itemCollection.Add(Guid.Empty, @"Any");
-                foreach (AddonBase addon in AddonsHelper.AddonsCollection.ObservableCollection)
+                foreach (AddonBase addon in AddonsManager.AddonsCollection.ObservableCollection)
                 {
                     var dsPageTypes = addon.GetDsPageTypes();
                     if (dsPageTypes is not null)

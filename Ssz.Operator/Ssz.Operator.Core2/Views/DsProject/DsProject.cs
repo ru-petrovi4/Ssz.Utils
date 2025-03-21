@@ -92,9 +92,9 @@ namespace Ssz.Operator.Core
             await Instance.InitializeAsync(dsProjectFileFullName, mode, false, false, fileProvider);
 
             //  Add addons that has IsAutoSwitchOnForNewDsProjects == true
-            var addonGuids = AddonsHelper.GetAvailableAdditionalAddonsCache()
+            var addonGuids = AddonsManager.GetAvailableAdditionalAddonsCache()
                 .Where(p => p.IsAutoSwitchOnForNewDsProjects).Select(p => p.Guid);
-            Instance.DesiredAdditionalAddonsInfo = AddonsHelper.GetAddonsInfo(addonGuids);
+            Instance.DesiredAdditionalAddonsInfo = AddonsManager.GetAddonsInfo(addonGuids);
 
             if (Instance.Mode == DsProjectModeEnum.VisualDesignMode)
             {
@@ -499,7 +499,7 @@ namespace Ssz.Operator.Core
                 }
                 else
                 {
-                    DataEngine = AddonsHelper.NewDataEngineObject(_dataEngineGuidAndName.Guid) ?? GenericDataEngine.Instance;                    
+                    DataEngine = AddonsManager.NewDataEngineObject(_dataEngineGuidAndName.Guid) ?? GenericDataEngine.Instance;                    
                 }
 
                 _dataEngineGuidAndName.Name = DataEngine.NameToDisplay;
@@ -734,7 +734,7 @@ namespace Ssz.Operator.Core
                 {
                     _desiredAdditionalAddonsInfo = value;
 
-                    AddonsHelper.Initialize(_desiredAdditionalAddonsInfo.Select(i => i.Guid).ToArray());
+                    AddonsManager.Initialize(_desiredAdditionalAddonsInfo.Select(i => i.Guid).ToArray());
 
                     var action = DesiredAdditionalAddonsInfoChanged;
                     if (action is not null) action();
@@ -746,7 +746,7 @@ namespace Ssz.Operator.Core
         [DsDisplayName(ResourceStrings.DsProjectAddonsCollection)]
         //[PropertyOrder(1)]
         //[ExpandableObject]
-        public AddonsCollection AddonsCollection => AddonsHelper.AddonsCollection;
+        public AddonsCollection AddonsCollection => AddonsManager.AddonsCollection;
 
         //[DsCategory(ResourceStrings.AddonsCategory),
         // DsDisplayName(ResourceStrings.DsProjectActuallyUsedAddons)]
@@ -892,7 +892,7 @@ namespace Ssz.Operator.Core
             GlobalVariables.Clear();
             CsvDb.Clear();
 
-            AddonsHelper.Close();
+            AddonsManager.Close();
         }
 
         public void FindConstants(HashSet<string> constants)
@@ -917,7 +917,7 @@ namespace Ssz.Operator.Core
             where T : AddonBase
         {
             var addon =
-                AddonsHelper.AddonsCollection.ObservableCollection.FirstOrDefault(p => p.GetType() == typeof(T)) as T;
+                AddonsManager.AddonsCollection.ObservableCollection.FirstOrDefault(p => p.GetType() == typeof(T)) as T;
             if (addon is null)
             {
                 if (Review) MessageBoxHelper.ShowError(string.Format(Resources.AddonUnavailableMessage, typeof(T)));
@@ -1062,7 +1062,7 @@ namespace Ssz.Operator.Core
                 }
 
                 string[] unSupportedAddonsNameToDisplays =
-                    AddonsHelper.GetNotInAddonsCollection(drawing.ActuallyUsedAddonsInfo);
+                    AddonsManager.GetNotInAddonsCollection(drawing.ActuallyUsedAddonsInfo);
                 if (unSupportedAddonsNameToDisplays.Length > 0)
                 {
                     errorMessages.Add(drawingInfo.FileName + @": " + Resources.DrawingSaveErrorUnSupportedAddons +
@@ -1161,7 +1161,7 @@ namespace Ssz.Operator.Core
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
                 try
                 {
-                    var assemblyFileFullName = AddonsHelper.GetAssemblyFileInfo(assembly)?.FullName;
+                    var assemblyFileFullName = AddonsManager.GetAssemblyFileInfo(assembly)?.FullName;
                     if (assemblyFileFullName is not null)
                     {
                         var assemblyDirectory = Path.GetDirectoryName(assemblyFileFullName);
@@ -1231,7 +1231,7 @@ namespace Ssz.Operator.Core
                 if (kvp.Key != @"")
                     GlobalVariables.Add(kvp.Key, kvp.Value.Skip(1).Select(GetVariableValue).ToList());
             
-            AddonsHelper.ResetAvailableAdditionalAddonsCache();
+            AddonsManager.ResetAvailableAdditionalAddonsCache();
 
             Mode = mode;
 

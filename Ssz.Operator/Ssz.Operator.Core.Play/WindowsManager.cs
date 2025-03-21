@@ -508,7 +508,7 @@ namespace Ssz.Operator.Core.Play
                 return;
             }
 
-            var virtualKeyboardControl = AddonsHelper.NewVirtualKeyboardControl(virtualKeyboardType);
+            var virtualKeyboardControl = AddonsManager.NewVirtualKeyboardControl(virtualKeyboardType);
             if (virtualKeyboardControl == null)
             {
                 System.Windows.MessageBox.Show(Resources.VirtualKeyboardNotSupportedMessage + @": " + virtualKeyboardType);

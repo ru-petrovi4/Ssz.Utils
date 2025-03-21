@@ -1066,7 +1066,7 @@ namespace Ssz.Operator.Core.DsShapes
 
         public virtual IEnumerable<Guid> GetUsedAddonGuids()
         {
-            var additionalAddon = AddonsHelper.GetAdditionalAddon(GetType());
+            var additionalAddon = AddonsManager.GetAdditionalAddon(GetType());
             if (additionalAddon is not null) yield return additionalAddon.Guid;
 
             IEnumerable<FieldInfo> fields = ObjectHelper.GetAllFields(this);

@@ -540,10 +540,10 @@ namespace Ssz.Operator.Core
                                     previewImageBytes = drawing.PreviewImageBytes;
                                     mark = drawing.Mark;                                    
 
-                                    usedAddonsInfo = AddonsHelper.GetAddonsInfo(drawing.GetUsedAddonGuids());
+                                    usedAddonsInfo = AddonsManager.GetAddonsInfo(drawing.GetUsedAddonGuids());
 
                                     string[] unSupportedAddonsNameToDisplays =
-                                        AddonsHelper.GetNotInAddonsCollection(usedAddonsInfo);
+                                        AddonsManager.GetNotInAddonsCollection(usedAddonsInfo);
                                     if (unSupportedAddonsNameToDisplays.Length > 0)
                                     {
                                         string message = Path.GetFileName(drawingFileFullName) + @": " +
@@ -562,7 +562,7 @@ namespace Ssz.Operator.Core
                     if (!readOnlyDrawingGuid)
                     {
                         // Refresh Style NameToDisplay
-                        var styleDispalyName = AddonsHelper.GetDsPageTypeName(styleInfo.Guid);
+                        var styleDispalyName = AddonsManager.GetDsPageTypeName(styleInfo.Guid);
                         if (styleDispalyName is not null) styleInfo.Name = styleDispalyName;
                     }
 

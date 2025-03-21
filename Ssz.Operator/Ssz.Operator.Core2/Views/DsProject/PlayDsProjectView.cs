@@ -60,7 +60,7 @@ namespace Ssz.Operator.Core
         {
             if (!OperatingSystem.IsBrowser())
             {
-                var fi = AddonsHelper.GetAssemblyFileInfo(Buzzer.GetType().Assembly);
+                var fi = AddonsManager.GetAssemblyFileInfo(Buzzer.GetType().Assembly);
                 if (fi != null && fi.DirectoryName != null)
                 {
                     string soundFile = Path.Combine(fi.DirectoryName, "Resources", "Buzzer.wav");

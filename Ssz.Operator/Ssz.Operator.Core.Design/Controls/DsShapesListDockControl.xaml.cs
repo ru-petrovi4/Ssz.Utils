@@ -113,7 +113,7 @@ namespace Ssz.Operator.Core.Design.Controls
                 Header = Properties.Resources.AddonSimpleDsShapesTreeViewItemHeader
             };
             DsDrawingsListHelper.FillGroupViewModelWithDsShapes(addonsSimpleDsShapesGroupViewModel,
-                AddonsHelper.GetAddonsDsShapeTypes(), entityInfo => new EntityInfoViewModel(entityInfo));
+                AddonsManager.GetAddonsDsShapeTypes(), entityInfo => new EntityInfoViewModel(entityInfo));
 
             var comlexDsShapesGroupViewModel = new GroupViewModel
             {

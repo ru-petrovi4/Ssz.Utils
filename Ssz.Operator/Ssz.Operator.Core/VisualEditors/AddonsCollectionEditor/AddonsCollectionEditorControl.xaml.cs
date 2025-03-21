@@ -66,8 +66,8 @@ namespace Ssz.Operator.Core.VisualEditors.AddonsCollectionEditor
         {
             var viewModel = new AddonsCollectionEditorViewModel();
 
-            AddonsHelper.ResetAvailableAdditionalAddonsCache();
-            AddonBase[] availableAdditionalAddons = AddonsHelper.GetAvailableAdditionalAddonsCache();
+            AddonsManager.ResetAvailableAdditionalAddonsCache();
+            AddonBase[] availableAdditionalAddons = AddonsManager.GetAvailableAdditionalAddonsCache();
 
             foreach (AddonBase availableAdditionalAddon in availableAdditionalAddons.OrderBy(p => p.Name))
                 viewModel.ItemsSource.Add(new AddonViewModel(availableAdditionalAddon)

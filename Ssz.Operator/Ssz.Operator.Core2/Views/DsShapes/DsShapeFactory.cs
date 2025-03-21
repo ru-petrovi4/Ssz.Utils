@@ -146,7 +146,7 @@ namespace Ssz.Operator.Core.DsShapes
                 return factory(visualDesignMode, loadXamlContent);
 
             // try to dynamically load dsShape from addons
-            return AddonsHelper.NewDsShape(dsShapeTypeGuid, visualDesignMode, loadXamlContent);
+            return AddonsManager.NewDsShape(dsShapeTypeGuid, visualDesignMode, loadXamlContent);
         }
 
         #endregion

@@ -1875,7 +1875,7 @@ namespace Ssz.Operator.Core.Design
             groups.Clear();
             groups.Add(DsPagesToolkitRibbonGroupBox);
             
-            foreach (ToolkitOperation toolkitOperation in AddonsHelper.GetToolkitOperations())
+            foreach (ToolkitOperation toolkitOperation in AddonsManager.GetToolkitOperations())
             {
                 var group =
                     groups.FirstOrDefault(

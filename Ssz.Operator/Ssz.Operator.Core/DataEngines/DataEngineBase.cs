@@ -179,7 +179,7 @@ namespace Ssz.Operator.Core.DataEngines
 
         public IEnumerable<Guid> GetUsedAddonGuids()
         {
-            var additionalAddon = AddonsHelper.GetAdditionalAddon(Guid);
+            var additionalAddon = AddonsManager.GetAdditionalAddon(Guid);
             if (additionalAddon is not null) yield return additionalAddon.Guid;
         }
 

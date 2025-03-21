@@ -415,7 +415,7 @@ namespace Ssz.Operator.Core.Drawings
             var beforeDrawingSaveEvent = BeforeDrawingSaveEvent;
             if (beforeDrawingSaveEvent is not null) beforeDrawingSaveEvent();
 
-            ActuallyUsedAddonsInfo = AddonsHelper.GetAddonsInfo(GetUsedAddonGuids());
+            ActuallyUsedAddonsInfo = AddonsManager.GetAddonsInfo(GetUsedAddonGuids());
             SerializationVersionDateTime = CurrentSerializationVersionDateTime;
         }
 
@@ -606,7 +606,7 @@ namespace Ssz.Operator.Core.Drawings
 
         public IEnumerable<Guid> GetUsedAddonGuids()
         {
-            var addonGuid = AddonsHelper.GetAddonGuidFromDsPageType(Guid);
+            var addonGuid = AddonsManager.GetAddonGuidFromDsPageType(Guid);
             if (addonGuid != Guid.Empty) yield return addonGuid;
 
             foreach (DsShapeBase dsShape in _dsShapes)

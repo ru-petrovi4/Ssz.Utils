@@ -253,7 +253,7 @@ namespace Ssz.Operator.Core.Design.Controls
 
             foreach (
                 var keyValuePair in
-                    groupDictionary.OrderBy(kvp => AddonsHelper.IsFaceplate(kvp.Key)).ThenBy(kvp => kvp.Value.Header))
+                    groupDictionary.OrderBy(kvp => AddonsManager.IsFaceplate(kvp.Key)).ThenBy(kvp => kvp.Value.Header))
             {
                 rootGroupViewModel.ChildGroups.Add(keyValuePair.Value);
             }

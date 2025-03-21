@@ -554,7 +554,7 @@ namespace Ssz.Operator.Core.ControlsPlay
             if (typeGuid == ToolTipDsPageType.TypeGuid) 
                 return new GenericFaceplatePlayControl(window);
 
-            return AddonsHelper.NewPlayControl(typeGuid, window) ?? new GenericGraphicPlayControl(window); // TEMPCODE 
+            return AddonsManager.NewPlayControl(typeGuid, window) ?? new GenericGraphicPlayControl(window); // TEMPCODE 
         }
 
         private async void OnCurrentJumpInfoChanged()

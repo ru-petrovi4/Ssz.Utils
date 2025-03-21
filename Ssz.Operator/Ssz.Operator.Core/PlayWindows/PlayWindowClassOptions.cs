@@ -166,7 +166,7 @@ namespace Ssz.Operator.Core
             if (!String.IsNullOrEmpty(PlayWindowClassInfo.WindowCategory))
                 list.Add("Category: " + PlayWindowClassInfo.WindowCategory);
             if (PlayWindowClassInfo.WindowDsPageTypeGuid != Guid.Empty)
-                list.Add("DsPage Type: " + AddonsHelper.GetDsPageTypeName(PlayWindowClassInfo.WindowDsPageTypeGuid));
+                list.Add("DsPage Type: " + AddonsManager.GetDsPageTypeName(PlayWindowClassInfo.WindowDsPageTypeGuid));
 #if NET5_0_OR_GREATER
             return String.Join(';', list);
 #else

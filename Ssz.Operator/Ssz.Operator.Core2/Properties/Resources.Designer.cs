@@ -621,9 +621,9 @@ namespace Ssz.Operator.Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Lines.
         /// </summary>
-        public static string CentumTrendGroupDsShapeDsTrendItemsCollection {
+        public static string GenericTrendGroupDsShapeDsTrendItemsCollection {
             get {
-                return ResourceManager.GetString("CentumTrendGroupDsShapeDsTrendItemsCollection", resourceCulture);
+                return ResourceManager.GetString("GenericTrendGroupDsShapeDsTrendItemsCollection", resourceCulture);
             }
         }
         

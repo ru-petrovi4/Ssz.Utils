@@ -364,7 +364,7 @@
   <data name="CannotShowDsPage" xml:space="preserve">
     <value>Cannot show page</value>
   </data>
-  <data name="CentumTrendGroupDsShapeDsTrendItemsCollection" xml:space="preserve">
+  <data name="GenericTrendGroupDsShapeDsTrendItemsCollection" xml:space="preserve">
     <value>Lines</value>
   </data>
   <data name="ChangeControlStyleQuestion" xml:space="preserve">

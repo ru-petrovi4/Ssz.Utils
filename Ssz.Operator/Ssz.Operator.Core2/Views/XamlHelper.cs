@@ -404,13 +404,13 @@ namespace Ssz.Operator.Core
             //    case ".HTM":
             //    case ".HTML":
             //        result =
-            //            "<controlsCommon:BrowserControl xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" xmlns:controlsCommon=\"clr-namespace:Ssz.Operator.Core.ControlsCommon;assembly=Ssz.Operator.Core\" Url=\"" +
+            //            "<controlsCommon:BrowserControl xmlns=\"https://github.com/avaloniaui\" xmlns:controlsCommon=\"clr-namespace:Ssz.Operator.Core.ControlsCommon;assembly=Ssz.Operator.Core\" Url=\"" +
             //            GetUriString(DsProject.Instance.GetFileRelativePath(fileInfo.FullName)) + "\" Stretch=\"" +
             //            stretch + "\" />";
             //        break;
             //    case ".GIF":
             //        result =
-            //            "<Image xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" xmlns:wpfAnimatedGif=\"clr-namespace:Ssz.Utils.Wpf.WpfAnimatedGif;assembly=Ssz.Utils.Wpf\" wpfAnimatedGif:ImageBehavior.AnimatedSource=\"" +
+            //            "<Image xmlns=\"https://github.com/avaloniaui\" xmlns:wpfAnimatedGif=\"clr-namespace:Ssz.Utils.Wpf.WpfAnimatedGif;assembly=Ssz.Utils.Wpf\" wpfAnimatedGif:ImageBehavior.AnimatedSource=\"" +
             //            GetFileUriStringWithAbsolutePath(fileInfo.FullName) + "\" Stretch=\"" + stretch + "\" />";
             //        try
             //        {
@@ -425,7 +425,7 @@ namespace Ssz.Operator.Core
             //        break;
             //    default:
             //        result =
-            //            "<Image xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" Source=\"" +
+            //            "<Image xmlns=\"https://github.com/avaloniaui\" Source=\"" +
             //            GetFileUriStringWithAbsolutePath(fileInfo.FullName) + "\" Stretch=\"" + stretch + "\" />";
             //        try
             //        {
@@ -946,7 +946,7 @@ namespace Ssz.Operator.Core
             if (xaml.StartsWith("<Style "))
                 return null;            
 
-            xaml = xaml.Replace("xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"", "xmlns=\"https://github.com/avaloniaui\"");
+            xaml = xaml.Replace("xmlns=\"https://github.com/avaloniaui\"", "xmlns=\"https://github.com/avaloniaui\"");
 
             if (xaml.Contains("<SolidColorBrush") || 
                 xaml.Contains("<LinearGradientBrush") || 

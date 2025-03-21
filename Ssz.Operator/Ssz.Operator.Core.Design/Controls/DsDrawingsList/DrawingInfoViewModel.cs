@@ -55,7 +55,7 @@ namespace Ssz.Operator.Core.Design.Controls
             else
             {
                 string[] unSupportedAddonsNameToDisplays =
-                    AddonsHelper.GetNotInAddonsCollection(DrawingInfo.ActuallyUsedAddonsInfo);
+                    AddonsManager.GetNotInAddonsCollection(DrawingInfo.ActuallyUsedAddonsInfo);
                 if (unSupportedAddonsNameToDisplays.Length > 0)
                 {
                     HintText = " ! ";

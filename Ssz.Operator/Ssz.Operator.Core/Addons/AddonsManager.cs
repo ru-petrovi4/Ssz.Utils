@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Avalonia;
+using System.Windows;
 using Ssz.Operator.Core.Addons;
 using Ssz.Operator.Core.Commands;
 using Ssz.Operator.Core.ControlsPlay;
@@ -19,14 +19,14 @@ using Ssz.Utils;
 using OwnedDataSerializableAndCloneable = Ssz.Operator.Core.Utils.OwnedDataSerializableAndCloneable;
 using GuidAndName = Ssz.Operator.Core.Utils.GuidAndName;
 using Microsoft.Extensions.Logging;
-using Avalonia.Controls;
-using Microsoft.Extensions.FileProviders;
 
 namespace Ssz.Operator.Core.Addons
 {
-    public static class AddonsHelper
+    public static class AddonsManager
     {
         #region public functions
+
+        public static string AddonsSearchPattern { get; set;} = @"Ssz.Operator.Addons.*.dll";
 
         public static readonly AddonsCollection AddonsCollection =
             new();
@@ -46,7 +46,7 @@ namespace Ssz.Operator.Core.Addons
                 //DsProject.LoggersSet.Logger.Critical("GetAvailableAdditionalAddonsCache() time = " + watch.ElapsedMilliseconds + " ms");
             }
 
-            if (DsProject.Instance.Mode != DsProject.DsProjectModeEnum.BrowserPlayMode)
+            if (DsProject.Instance.Mode != DsProject.DsProjectModeEnum.WebPlayMode)
             {
                 var catalog = new AggregateCatalog();                
                 if (availableAdditionalAddons is not null)
@@ -209,7 +209,7 @@ namespace Ssz.Operator.Core.Addons
             return keyboardsInfo.ToArray();
         }
 
-        public static Control? NewVirtualKeyboardControl(string virtualKeyboardType)
+        public static UIElement? NewVirtualKeyboardControl(string virtualKeyboardType)
         {
             return AddonsCollection.ObservableCollection
                 .Select(factory => factory.NewVirtualKeyboardControl(virtualKeyboardType))
@@ -452,24 +452,18 @@ namespace Ssz.Operator.Core.Addons
 
         private static AddonBase[] GetAvailableAdditionalAddonsUnconditionally()
         {
-            if (DsProject.Instance.FileProvider is not null)
-                return new AddonBase[0];
-
             var exeDirectory = AppContext.BaseDirectory;
-            if (String.IsNullOrEmpty(exeDirectory)) 
-                return new AddonBase[0];
-
-            const string addonsSearchPattern = @"Ssz.Operator.Addons.*.dll";
+            if (String.IsNullOrEmpty(exeDirectory)) return new AddonBase[0];            
 
             var addonsFileInfos = new List<FileInfo>();
             addonsFileInfos.AddRange(
-                Directory.GetFiles(exeDirectory, addonsSearchPattern, SearchOption.TopDirectoryOnly)                    
+                Directory.GetFiles(exeDirectory, AddonsSearchPattern, SearchOption.TopDirectoryOnly)                    
                     .Select(fn => new FileInfo(fn)));
 
-            var addonsDirectoryInfo = new DirectoryInfo(DsProject.Instance.AddonsDirectoryFullName);
-            if (addonsDirectoryInfo.Exists)
+            var addonsDirectoryInfo = DsProject.Instance.AddonsDirectoryInfo;
+            if (addonsDirectoryInfo is not null)
                 addonsFileInfos.AddRange(
-                    Directory.GetFiles(addonsDirectoryInfo.FullName, addonsSearchPattern, SearchOption.AllDirectories)
+                    Directory.GetFiles(addonsDirectoryInfo.FullName, AddonsSearchPattern, SearchOption.AllDirectories)
                         .Select(fn => new FileInfo(fn)));
 
             var availableAdditionalAddonsList = new List<AddonBase>();

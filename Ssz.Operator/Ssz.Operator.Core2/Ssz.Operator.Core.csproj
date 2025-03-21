@@ -11,6 +11,13 @@
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
+ 
+  <ItemGroup>
+    <AvaloniaXaml Remove="Views\ControlsCommon\Trends\GenericTrends\**" />
+    <Compile Remove="Views\ControlsCommon\Trends\GenericTrends\**" />
+    <EmbeddedResource Remove="Views\ControlsCommon\Trends\GenericTrends\**" />
+    <None Remove="Views\ControlsCommon\Trends\GenericTrends\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.2.5" />

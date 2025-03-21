@@ -272,7 +272,7 @@ public partial class App : Application
 
         PlayDsProjectView.Initialize();
 
-        foreach (AddonBase addon in AddonsHelper.AddonsCollection.ObservableCollection)
+        foreach (AddonBase addon in AddonsManager.AddonsCollection.ObservableCollection)
         {
             addon.InitializeInPlayMode();
         }        
@@ -339,7 +339,7 @@ public partial class App : Application
 
         WindowsManager.Instance.Close();
 
-        foreach (AddonBase addon in AddonsHelper.AddonsCollection.ObservableCollection)
+        foreach (AddonBase addon in AddonsManager.AddonsCollection.ObservableCollection)
         {
             addon.CloseInPlayMode();
         }

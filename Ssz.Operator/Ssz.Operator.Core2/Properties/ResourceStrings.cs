@@ -184,7 +184,7 @@ public const String CannotSaveFileMessage = @"CannotSaveFileMessage";
         
 public const String CannotShowDsPage = @"CannotShowDsPage";
         
-public const String CentumTrendGroupDsShapeDsTrendItemsCollection = @"CentumTrendGroupDsShapeDsTrendItemsCollection";
+public const String GenericTrendGroupDsShapeDsTrendItemsCollection = @"GenericTrendGroupDsShapeDsTrendItemsCollection";
         
 public const String ChangeControlStyleQuestion = @"ChangeControlStyleQuestion";
         

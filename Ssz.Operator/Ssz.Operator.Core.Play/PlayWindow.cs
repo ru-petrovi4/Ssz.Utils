@@ -98,7 +98,7 @@ namespace Ssz.Operator.Core.Play
                 //MenuItems.Add(smi);                
 
                 // add supported virtual keyboards
-                var keyboardsInfo = AddonsHelper.GetVirtualKeyboardsInfo();
+                var keyboardsInfo = AddonsManager.GetVirtualKeyboardsInfo();
                 if (keyboardsInfo.Length > 0)
                 {
                     foreach (VirtualKeyboardInfo virtualKeyboardInfo in keyboardsInfo)

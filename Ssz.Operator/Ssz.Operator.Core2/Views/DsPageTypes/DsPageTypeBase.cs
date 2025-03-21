@@ -31,7 +31,7 @@ namespace Ssz.Operator.Core.DsPageTypes
 
         public IEnumerable<Guid> GetUsedAddonGuids()
         {
-            yield return AddonsHelper.GetAddonGuidFromDsPageType(Guid);
+            yield return AddonsManager.GetAddonGuidFromDsPageType(Guid);
         }
 
         public override string ToString()

@@ -1,0 +1,133 @@
+<visualization:TrendsPlotView x:Class="Ssz.Operator.Core.ControlsCommon.Trends.GenericTrendsPlot"
+                              xmlns="https://github.com/avaloniaui"
+                              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                              xmlns:oxy="http://oxyplot.org/wpf"
+                              xmlns:visualization="clr-namespace:Ssz.Operator.Core.ControlsCommon.Trends"
+                              xmlns:trends="clr-namespace:Ssz.Operator.Core.ControlsCommon.Trends"
+                              mc:Ignorable="d"
+                              d:DesignHeight="300" d:DesignWidth="800">
+    <visualization:TrendsPlotView.Template>
+        <ControlTemplate TargetType="visualization:TrendsPlotView">
+            <ControlTemplate.Resources>
+                <Style x:Key="SliderThumb" TargetType="Thumb">
+                    <Setter Property="SnapsToDevicePixels" Value="true" />
+                    <Setter Property="OverridesDefaultStyle" Value="true" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Thumb">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Path Data="M 0 0 L 10 17 L 20 0 Z" Fill="Cyan" />
+                                    <Rectangle Width="1" VerticalAlignment="Stretch" Grid.Row="1" Fill="Cyan"
+                                               Margin="-0.5,-1,0,0" />
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+                <ControlTemplate x:Key="Slider" TargetType="Slider">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" MinHeight="{TemplateBinding MinHeight}" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Track Grid.Row="1" x:Name="PART_Track" Margin="0,0,0,0">
+                            <Track.Thumb>
+                                <Thumb Style="{StaticResource SliderThumb}" />
+                            </Track.Thumb>
+                        </Track>
+                    </Grid>
+                </ControlTemplate>
+
+                <Style x:Key="Horizontal_Slider" TargetType="Slider">
+                    <Setter Property="Focusable" Value="False" />
+                    <Setter Property="SnapsToDevicePixels" Value="true" />
+                    <Setter Property="OverridesDefaultStyle" Value="true" />
+                    <Setter Property="Template" Value="{StaticResource Slider}" />
+                    <Setter Property="MinHeight" Value="21" />
+                    <Setter Property="MinWidth" Value="104" />
+                    <Setter Property="Margin" Value="-10,0,-11,0" />
+                </Style>
+            </ControlTemplate.Resources>
+            <Grid>
+                <Grid Background="#FFDFE4E8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <ScrollBar Grid.Row="0" Grid.Column="1" Orientation="Vertical"
+                               x:Name="VerticalScrollBar"
+                               Maximum="100" />
+                    <ScrollBar Grid.Row="1" Grid.Column="0" Orientation="Horizontal"
+                               x:Name="HorizontalScrollBar"
+                               Maximum="10" />
+
+                    <Grid Grid.Row="0" Grid.Column="0">
+                        <Border Background="#FF10151E" Width="70" HorizontalAlignment="Left" Margin="0,7.333,0,24"
+                                CornerRadius="7" />
+
+                        <oxy:PlotView x:Name="Plot"
+                                      PlotAreaBackground="#FF10151E"
+                                      Background="{x:Null}"
+                                      PlotMargins="70,9,10,26">
+                            <!-- Don't display tooltip when hovering over line -->
+                            <oxy:PlotView.DefaultTrackerTemplate>
+                                <ControlTemplate />
+                            </oxy:PlotView.DefaultTrackerTemplate>
+                            <oxy:PlotView.Axes>
+                                <oxy:DateTimeAxis Position="Bottom" MajorGridlineStyle="Solid"
+                                                  MajorGridlineColor="#FF2C449A"
+                                                  MinorGridlineColor="#FF2C449A"
+                                                  x:Name="XAxis"
+                                                  IsPanEnabled="False"
+                                                  IsZoomEnabled="False" />
+                                <oxy:LinearAxis Position="Left" MajorGridlineStyle="Solid"
+                                                MajorGridlineColor="#FF2C449A"
+                                                MinorGridlineColor="#FF2C449A"
+                                                AxisTickToLabelDistance="10"
+                                                x:Name="YAxis"
+                                                IsPanEnabled="False"
+                                                IsZoomEnabled="False" />
+                            </oxy:PlotView.Axes>
+                        </oxy:PlotView>
+
+                        <Grid Margin="78,0,17,0">
+                            <Border BorderThickness="1" BorderBrush="#FF7A868F" Height="17" VerticalAlignment="Top">
+                                <Grid Margin="-1">
+                                    <Border Width="17" Height="17" BorderThickness="1" BorderBrush="#FF7A868F"
+                                            HorizontalAlignment="Left">
+                                        <Path Data="M 0,3 L 3,6 L 3,0 Z" Fill="#FF7A868F"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                                    </Border>
+                                    <Border Width="17" Height="17" BorderThickness="1" BorderBrush="#FF7A868F"
+                                            HorizontalAlignment="Right">
+                                        <Path Data="M 3,3 L 0,6 L 0,0 Z" Fill="#FF7A868F"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center" />
+                                    </Border>
+                                </Grid>
+                            </Border>
+                            <Slider Style="{StaticResource Horizontal_Slider}"
+                                    Minimum="0" Maximum="100" Value="100"
+                                    x:Name="DisplayValuesSlider" />
+                        </Grid>
+                    </Grid>
+
+                </Grid>
+            </Grid>
+        </ControlTemplate>
+    </visualization:TrendsPlotView.Template>
+</visualization:TrendsPlotView>

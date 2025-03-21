@@ -320,7 +320,7 @@ namespace Ssz.Operator.Core.Commands
 
         public IEnumerable<Guid> GetUsedAddonGuids()
         {
-            var additionalAddon = AddonsHelper.GetAdditionalAddon(Command);
+            var additionalAddon = AddonsManager.GetAdditionalAddon(Command);
             if (additionalAddon is not null) yield return additionalAddon.Guid;
         }
 
