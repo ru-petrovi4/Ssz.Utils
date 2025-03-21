@@ -143,7 +143,7 @@ namespace Ssz.Dcs.CentralServer
             {
                 Logger.LogError(ex, @"dbContext error.");
             }
-            Logger.LogCritical($"Process modeling session initiated. Instructor workstation: {clientWorkstationName}");
+            Logger.LogInformation($"Process modeling session initiated. Instructor workstation: {clientWorkstationName}");
 
             return processModelingSession.ProcessModelingSessionId;
         }        
@@ -271,7 +271,7 @@ namespace Ssz.Dcs.CentralServer
 
                         DataAccessProviderGetter_AddonBase dataAccessProviderGetter_Addon = GetNewInitializedDataAccessProviderAddon(
                             _serviceProvider,
-                            $"http://localhost:60080/SimcodePlatServer/ServerDiscovery",
+                            $"http://localhost:60080/PlatServer/ServerDiscovery",
                             systemName,
                             new CaseInsensitiveDictionary<string?> { { @"XiSystem", systemName } },
                             ThreadSafeDispatcher);
@@ -424,7 +424,7 @@ namespace Ssz.Dcs.CentralServer
                         {
                             dataAccessProviderGetter_Addon2 = GetNewInitializedDataAccessProviderAddon(
                                 _serviceProvider,
-                                $"http://localhost:60080/SimcodePlatServer/ServerDiscovery",
+                                $"http://localhost:60080/PlatServer/ServerDiscovery",
                                 xiSystemName,
                                 new CaseInsensitiveDictionary<string?> { { @"XiSystem", xiSystemName } },
                                 ThreadSafeDispatcher);
@@ -641,7 +641,7 @@ namespace Ssz.Dcs.CentralServer
 //    var platInstructorEngineSession = new PlatInstructor_TrainingEngineSession(
 //        _serviceProvider,
 //        ThreadSafeDispatcher,
-//        "http://" + targetWorkstationName + ":60080/SimcodePlatServer/ServerDiscovery",
+//        "http://" + targetWorkstationName + ":60080/PlatServer/ServerDiscovery",
 //        @"",
 //        new CaseInsensitiveDictionary<string?>());
 //    processModelingSession.EngineSessions.Add(platInstructorEngineSession);

@@ -1,10 +1,11 @@
 ﻿Logging:
   LogLevel:
+    Ssz.Dcs.CentralServer.Program: "Information"
     # задается уровень логирования событий в файлы журналов
     Default: "Warning"
     Grpc: "Warning"
     Microsoft: "Warning"
-    Microsoft.Hosting.Lifetime: "Warning"
+    Microsoft.Hosting.Lifetime: "Warning"    
   SszLogger:
     # путь до директории где будут храниться файлы журналов событий
     LogsDirectory: "%ProgramData%\\Ssz\\Logs"

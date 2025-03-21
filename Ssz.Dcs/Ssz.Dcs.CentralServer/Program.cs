@@ -50,12 +50,25 @@ namespace Ssz.Dcs.CentralServer
 
         private static void Main(string[] args)
         {
+#if DEBUG
+            var originalCurrentDirectory = Directory.GetCurrentDirectory();
+#endif
             ConfigurationHelper.SetCurrentDirectory(args);
+#if DEBUG
+            File.Copy(
+                Path.Combine(originalCurrentDirectory, "appsettings.yml"),
+                Path.Combine(Directory.GetCurrentDirectory(), "appsettings.yml"),
+                true);
+            File.Copy(
+                Path.Combine(originalCurrentDirectory, "appsettings.Development.yml"),
+                Path.Combine(Directory.GetCurrentDirectory(), "appsettings.Development.yml"),
+                true);
+#endif
 
             Host = CreateHostBuilder(args).Build();
 
             var logger = Host.Services.GetRequiredService<ILogger<Program>>();
-            logger.LogCritical($"MachineName: {Environment.MachineName}. App starting with args: {String.Join(" ", args)}");
+            logger.LogInformation($"MachineName: {Environment.MachineName}. App starting with args: {String.Join(" ", args)}");
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -156,6 +169,6 @@ namespace Ssz.Dcs.CentralServer
             };
         }
 
-        #endregion
+#endregion
     }
 }

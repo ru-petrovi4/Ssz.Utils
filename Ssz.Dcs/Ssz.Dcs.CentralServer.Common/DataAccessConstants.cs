@@ -10,11 +10,11 @@ namespace Ssz.Dcs.CentralServer.Common
     {
         public const string CentralServer_ClientWindowsService_ClientApplicationName = @"Ssz.Dcs.CentralServer_ClientWindowsService";
 
-        public const string Launcher_ClientApplicationName = @"Simcode.DeltaSim.Launcher";
+        public const string Launcher_ClientApplicationName = @"Launcher";
 
-        public const string Instructor_ClientApplicationName = @"Simcode.DeltaSim.Instructor";
+        public const string Instructor_ClientApplicationName = @"Instructor";
 
-        public const string Operator_ClientApplicationName = @"Ssz.Operator.Play";
+        public const string Operator_ClientApplicationName = @"Operator.Play";
 
         public const string ControlEngine_ClientApplicationName = @"Ssz.Dcs.ControlEngine";
 

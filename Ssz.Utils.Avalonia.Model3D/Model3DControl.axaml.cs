@@ -147,7 +147,7 @@ public partial class Model3DControl : UserControl
 
     private CompositionCustomVisual? _visual;        
     private float _rotationX, _rotationY;
-    private float _zoom = 5.0f;
+    private float _zoom = 3.0f;
     private Point _lastMousePos;
 
     #endregion
