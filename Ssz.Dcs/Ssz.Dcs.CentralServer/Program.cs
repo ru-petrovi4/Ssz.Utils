@@ -55,14 +55,18 @@ namespace Ssz.Dcs.CentralServer
 #endif
             ConfigurationHelper.SetCurrentDirectory(args);
 #if DEBUG
-            File.Copy(
-                Path.Combine(originalCurrentDirectory, "appsettings.yml"),
-                Path.Combine(Directory.GetCurrentDirectory(), "appsettings.yml"),
-                true);
-            File.Copy(
-                Path.Combine(originalCurrentDirectory, "appsettings.Development.yml"),
-                Path.Combine(Directory.GetCurrentDirectory(), "appsettings.Development.yml"),
-                true);
+            var newCurrentDirectory = Directory.GetCurrentDirectory();
+            if (newCurrentDirectory != originalCurrentDirectory)
+            {
+                File.Copy(
+                    Path.Combine(originalCurrentDirectory, "appsettings.yml"),
+                    Path.Combine(newCurrentDirectory, "appsettings.yml"),
+                    true);
+                File.Copy(
+                    Path.Combine(originalCurrentDirectory, "appsettings.Development.yml"),
+                    Path.Combine(newCurrentDirectory, "appsettings.Development.yml"),
+                    true);
+            }
 #endif
 
             Host = CreateHostBuilder(args).Build();
