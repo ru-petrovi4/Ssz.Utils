@@ -12,7 +12,7 @@ namespace Ssz.Dcs.CentralServer.Common.EntityFramework
     /// <summary>
     ///    Instructor or Operator
     /// </summary>   
-    [Resource]
+    //[Resource]
     [Index(nameof(UserName))]
     public class User : Identifiable<Int64>, IOwnedDataSerializable
     {

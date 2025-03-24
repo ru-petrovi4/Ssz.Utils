@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ssz.Dcs.CentralServer.Common.EntityFramework
 {
-    [Resource]
+    //[Resource]
     public class OperatorSession : Identifiable<Int64>
     {
         #region public functions        

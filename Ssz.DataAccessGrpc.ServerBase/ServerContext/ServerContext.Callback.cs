@@ -25,7 +25,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         public void SetResponseStream(object responseStream)
         {
-            _responseStreamWriter = (IAsyncStreamWriter<CallbackMessage>)responseStream;
+            _responseStreamWriter = (IServerStreamWriter<CallbackMessage>)responseStream;
         }
 
         /// <summary>
@@ -263,7 +263,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
 
         #region private fields
 
-        private IAsyncStreamWriter<CallbackMessage>? _responseStreamWriter;
+        private IServerStreamWriter<CallbackMessage>? _responseStreamWriter;
 
         private readonly Task _callbackWorkingTask;        
 
