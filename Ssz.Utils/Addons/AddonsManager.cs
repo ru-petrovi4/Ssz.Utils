@@ -401,7 +401,7 @@ namespace Ssz.Utils.Addons
                     if (configurationFile.FileData is null)
                         throw new InvalidOperationException("configurationFile.FileData is null");
 
-                    if (configurationFile.Name.EndsWith(@".csv", StringComparison.InvariantCultureIgnoreCase))
+                    if (ConfigurationFile.EditableFilesExtensions.Any(ext => configurationFile.Name.EndsWith(ext, StringComparison.InvariantCultureIgnoreCase)))
                     {
                         string fileDataString = Encoding.UTF8.GetString(configurationFile.FileData);
                         fileDataString = TextFileHelper.NormalizeNewLineForCurrentOs(fileDataString);

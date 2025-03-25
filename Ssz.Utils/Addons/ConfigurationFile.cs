@@ -16,6 +16,8 @@ namespace Ssz.Utils.Addons
     {
         #region public functions
 
+        public static readonly string[] EditableFilesExtensions = [ @".txt", @".csv", @".htm", @".html", @".yml", @".xml" ];
+
         /// <summary>
         ///     pathRelativeToRootDirectory_NoFIleName - Path separator is always '/'. No '/' at the begin, file name at the end.
         /// </summary>
@@ -31,7 +33,7 @@ namespace Ssz.Utils.Addons
                 Length = fileInfo.Length,
             };            
 
-            if (fileInfo.Name.EndsWith(@".csv", StringComparison.InvariantCultureIgnoreCase))
+            if (EditableFilesExtensions.Any(ext => fileInfo.Name.EndsWith(ext, StringComparison.InvariantCultureIgnoreCase)))
             {
                 bool readFileData;
                 if (readBigFileData)
