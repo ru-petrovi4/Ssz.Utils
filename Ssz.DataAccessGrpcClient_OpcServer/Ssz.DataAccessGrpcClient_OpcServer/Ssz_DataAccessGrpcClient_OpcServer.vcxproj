@@ -250,8 +250,17 @@ attrib -R  "$(OutDir)%(Filename)%(Extension)"
     <Xml Include="Additional Files\OpcServer.config.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Ssz.DataAccessGrpc.Client\Ssz.DataAccessGrpc.Client.csproj">
+      <Project>{fe6737a8-f52c-4d57-9f68-d630252f55de}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Ssz.DataAccessGrpc.Common\Ssz.DataAccessGrpc.Common.csproj">
+      <Project>{4f3f2430-581a-e5d5-0686-aaede1a5c8d9}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\Ssz.Utils\Ssz.Utils.csproj">
       <Project>{a86c5a82-ee13-4080-b61a-7748321da0b0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ThirdParties\YamlDotNet\YamlDotNet.csproj">
+      <Project>{5375b1e7-e39a-4c53-b859-80dbad73f2c5}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Ssz.DataAccessGrpcClient_OpcServer.Common\Ssz.DataAccessGrpcClient_OpcServer.Common.csproj">
       <Project>{9acc4e31-9346-4458-9332-2f06f290c855}</Project>

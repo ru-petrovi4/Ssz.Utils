@@ -7,7 +7,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>    
     <Company>SSZ</Company>
     <Version>1.0.77</Version>
-    <Platforms>AnyCPU</Platforms>  
+    <Platforms>AnyCPU;x86</Platforms>  
   </PropertyGroup>
 
   <ItemGroup>
