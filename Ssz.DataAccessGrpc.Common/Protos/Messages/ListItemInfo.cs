@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ssz.DataAccessGrpc.ServerBase
+namespace Ssz.DataAccessGrpc.Common
 {
-    internal sealed partial class ListItemInfo
+    public sealed partial class ListItemInfo
     {
         #region public functions
 

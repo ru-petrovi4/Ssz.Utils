@@ -6,7 +6,7 @@ using System.Net;
 using System.Threading;
 using Ssz.Utils;
 using Ssz.DataAccessGrpc.Client.Managers;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using Microsoft.Extensions.Logging;
 using Ssz.Utils.DataAccess;
 using Grpc.Net.Client;

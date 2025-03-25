@@ -355,7 +355,7 @@ namespace Ssz.DataAccessGrpc.Client.Managers
 
         /*
         /// <summary>
-        ///     Reads current value from cache, not remote ServerBase.
+        ///     Reads current value from cache, not remote Common.
         /// </summary>
         public Any TryRead(string id)
         {

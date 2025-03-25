@@ -16,13 +16,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Diagnostics.ResourceMonitoring" Version="9.3.0" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Protobuf Include="Protos\DataAccess.proto" GrpcServices="Server" />
-  </ItemGroup>
+  </ItemGroup> 
 
-  <ItemGroup>
+  <ItemGroup>    
+    <ProjectReference Include="..\Ssz.DataAccessGrpc.Common\Ssz.DataAccessGrpc.Common.csproj" />    
     <ProjectReference Include="..\Ssz.Utils\Ssz.Utils.csproj" />
   </ItemGroup>
 

@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ssz.DataAccessGrpc.ServerBase
+namespace Ssz.DataAccessGrpc.Common
 {
-    internal sealed partial class EventIdResult
+    public sealed partial class EventIdResult
     {
         #region construction and destruction
 

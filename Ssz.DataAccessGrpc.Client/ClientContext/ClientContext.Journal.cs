@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Ssz.DataAccessGrpc.Client.ClientLists;
 using Ssz.Utils.DataAccess;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using Ssz.Utils;
 using Google.Protobuf.WellKnownTypes;
 using System.Threading.Tasks;
@@ -55,7 +55,7 @@ namespace Ssz.DataAccessGrpc.Client
                     FirstTimestamp = ProtobufHelper.ConvertToTimestamp(firstTimestampUtc),
                     SecondTimestamp = ProtobufHelper.ConvertToTimestamp(secondTimestampUtc),
                     NumValuesPerAlias = numValuesPerAlias,
-                    Calculation = new ServerBase.TypeId(calculation),
+                    Calculation = new Common.TypeId(calculation),
                 };
                 if (params_ is not null)
                     foreach (var kvp in params_)

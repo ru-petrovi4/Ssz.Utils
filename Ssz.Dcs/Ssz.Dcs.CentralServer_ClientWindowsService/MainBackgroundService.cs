@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Ssz.DataAccessGrpc.ServerBase;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using System;

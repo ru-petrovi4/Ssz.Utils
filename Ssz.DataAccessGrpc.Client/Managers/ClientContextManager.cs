@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 using Ssz.Utils;
 using Ssz.DataAccessGrpc.Client.ClientLists;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;

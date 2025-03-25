@@ -1,4 +1,4 @@
-﻿using Ssz.DataAccessGrpc.ServerBase;
+﻿using Ssz.DataAccessGrpc.Common;
 using Ssz.Utils.DataAccess;
 using Ssz.Utils.Serialization;
 using System;
@@ -49,8 +49,8 @@ namespace Ssz.DataAccessGrpc.Client.LocalServer
         internal static List<EventMessagesCallback> SplitForCorrectGrpcMessageSize(this EventMessagesCallbackMessage eventMessagesCallbackMessage)
         {
             List<EventMessagesCallback> result = new();
-            foreach (ServerBase.EventMessagesCollection eventMessagesCollection in ProtobufHelper.SplitForCorrectGrpcMessageSize(
-                eventMessagesCallbackMessage.EventMessages.Select(em => new ServerBase.EventMessage(em)).ToList(), 
+            foreach (Common.EventMessagesCollection eventMessagesCollection in ProtobufHelper.SplitForCorrectGrpcMessageSize(
+                eventMessagesCallbackMessage.EventMessages.Select(em => new Common.EventMessage(em)).ToList(), 
                 eventMessagesCallbackMessage.CommonFields))
             {
                 var eventMessagesCallback = new EventMessagesCallback();

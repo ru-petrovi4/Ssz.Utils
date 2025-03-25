@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using Ssz.DataAccessGrpc.Client.ClientLists;
 using Ssz.Utils.DataAccess;
 using System.Collections.Generic;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using System.Threading.Tasks;
 
 namespace Ssz.DataAccessGrpc.Client.Managers

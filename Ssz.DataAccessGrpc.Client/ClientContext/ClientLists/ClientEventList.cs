@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Ssz.DataAccessGrpc.Client.Managers;
 using Ssz.DataAccessGrpc.Client.ClientListItems;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using System.Threading.Tasks;
@@ -33,7 +33,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
 
         #region public functions
         
-        public static Utils.DataAccess.EventMessagesCollection GetEventMessagesCollection(ServerBase.EventMessagesCollection eventMessagesCollection)
+        public static Utils.DataAccess.EventMessagesCollection GetEventMessagesCollection(Common.EventMessagesCollection eventMessagesCollection)
         {
             Utils.DataAccess.EventMessagesCollection result = new();
 
@@ -73,7 +73,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// <param name="comment"></param>
         /// <param name="eventIdsToAck"></param>
         /// <returns></returns>
-        public async Task<ServerBase.EventIdResult[]> AckAlarmsAsync(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
+        public async Task<Common.EventIdResult[]> AckAlarmsAsync(string operatorName, string comment, Ssz.Utils.DataAccess.EventId[] eventIdsToAck)
         {
             if (Disposed) throw new ObjectDisposedException("Cannot access a disposed ClientEventList.");
 

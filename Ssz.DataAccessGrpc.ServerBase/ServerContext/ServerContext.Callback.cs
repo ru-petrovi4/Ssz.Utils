@@ -9,6 +9,7 @@ using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
+using Ssz.DataAccessGrpc.Common;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using Ssz.Utils.Serialization;
@@ -244,7 +245,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         Logger.LogDebug("_responseStream.WriteAsync(callbackMessage)");
                         var callbackMessage = new CallbackMessage
                         {
-                            LongrunningPassthroughCallback = new LongrunningPassthroughCallback
+                            LongrunningPassthroughCallback = new Common.LongrunningPassthroughCallback
                             {
                                 JobId = longrunningPassthroughCallbackMessage.JobId,
                                 ProgressPercent = longrunningPassthroughCallbackMessage.ProgressPercent,

@@ -23,13 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Ssz.DataAccessGrpc.Common\Ssz.DataAccessGrpc.Common.csproj" />
     <ProjectReference Include="..\Ssz.Utils\Ssz.Utils.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Protobuf Include="..\Ssz.DataAccessGrpc.ServerBase\Protos\DataAccess.proto" GrpcServices="Client" Access="Internal">
-      <Link>Protos\DataAccess.proto</Link>
-    </Protobuf>
-  </ItemGroup>  
 
 </Project>

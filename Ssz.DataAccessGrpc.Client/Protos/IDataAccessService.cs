@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Ssz.DataAccessGrpc.ServerBase
+namespace Ssz.DataAccessGrpc.Common
 {
     internal interface IDataAccessService
     {

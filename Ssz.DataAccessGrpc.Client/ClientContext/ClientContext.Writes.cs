@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using Ssz.Utils;
 
 namespace Ssz.DataAccessGrpc.Client
@@ -16,7 +16,7 @@ namespace Ssz.DataAccessGrpc.Client
         #region public functions
 
         /// <summary>
-        ///     This method is used to write data of the specified list to the ServerBase.  It is called
+        ///     This method is used to write data of the specified list to the Common.  It is called
         ///     by the ClientBase after the client application has prepared and committed the data
         ///     values.
         /// </summary>

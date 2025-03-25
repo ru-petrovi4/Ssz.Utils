@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.WellKnownTypes;
+using Google.Protobuf.WellKnownTypes;
 using Ssz.Utils.DataAccess;
 using System;
 using System.Collections.Generic;
@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ssz.DataAccessGrpc.ServerBase
+namespace Ssz.DataAccessGrpc.Common
 {
-    internal sealed partial class AlarmMessageData
+    public sealed partial class AlarmMessageData
     {
         #region construction and destruction
 
@@ -34,7 +34,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             if (OptionalTimeLastActiveCase == OptionalTimeLastActiveOneofCase.TimeLastActive)
             {
                 alarmMessageData.TimeLastActive = TimeLastActive.ToDateTime();
-            }            
+            }
             return alarmMessageData;
         }
 

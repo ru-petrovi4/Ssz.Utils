@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "Ssz.DataAccessGrpc.ServerBase";
+option csharp_namespace = "Ssz.DataAccessGrpc.Common";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";

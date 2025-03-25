@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Ssz.Utils;
 using Ssz.DataAccessGrpc.Client.ClientListItems;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using Ssz.Utils.DataAccess;
 using Grpc.Core;
 using System.Threading.Tasks;
@@ -92,13 +92,13 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
         /// <returns></returns>
         protected async Task<IEnumerable<TClientElementListItemBase>?> CommitAddItemsInternalAsync()
         {
-            var listInstanceIdsCollection = new List<ServerBase.ListItemInfo>();
+            var listInstanceIdsCollection = new List<Common.ListItemInfo>();
 
             foreach (TClientElementListItemBase listItem in ListItemsManager)
             {
                 if (!listItem.IsInServerList && listItem.PreparedForAdd)
                 {
-                    var listInstanceId = new ServerBase.ListItemInfo
+                    var listInstanceId = new Common.ListItemInfo
                     {
                         ElementId = listItem.ElementId,
                         ClientAlias = listItem.ClientAlias,
@@ -114,10 +114,10 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
             {
                 try
                 {
-                    List<ServerBase.AliasResult> result = await Context.AddItemsToListAsync(ListServerAlias,
+                    List<Common.AliasResult> result = await Context.AddItemsToListAsync(ListServerAlias,
                         listInstanceIdsCollection);
                     
-                    foreach (ServerBase.AliasResult r in result)
+                    foreach (Common.AliasResult r in result)
                     {
                         TClientElementListItemBase? listItem = null;
                         if (ListItemsManager.TryGetValue(r.ClientAlias, out listItem))
@@ -141,7 +141,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                 }
                 catch (Exception)
                 {
-                    foreach (ServerBase.ListItemInfo ar in listInstanceIdsCollection)
+                    foreach (Common.ListItemInfo ar in listInstanceIdsCollection)
                     {
                         ListItemsManager.Remove(ar.ClientAlias); // remove values that the server failed to add                                            
                     }
@@ -190,7 +190,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                 try
                 {
                     // Remove the items from the list in the server
-                    List<ServerBase.AliasResult>? aliasResultList = null;
+                    List<Common.AliasResult>? aliasResultList = null;
                     // a null list means all were successfully removed or are no longer defined in the server
                     if (Context.ContextIsOperational) // if still connected to the server
                         aliasResultList = await Context.RemoveItemsFromListAsync(ListServerAlias, serverAliasesToRemove);
@@ -203,7 +203,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
                         foreach (TClientElementListItemBase removedListItem in listItemsToRemove)
                         {
                             // look for the server alias since if the server did not find it, it will not return a client alias
-                            ServerBase.AliasResult? aliasResult =
+                            Common.AliasResult? aliasResult =
                                 aliasResultList.Find(ar => ar.ServerAlias == removedListItem.ServerAlias);
                             if (aliasResult is not null)
                             {

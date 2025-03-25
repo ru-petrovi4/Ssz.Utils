@@ -1,7 +1,7 @@
 ﻿using Google.Protobuf;
 using Grpc.Core;
 using Ssz.DataAccessGrpc.Client.ClientLists;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using System;
@@ -246,7 +246,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             foreach (DataChunk dataChunk in ProtobufHelper.SplitForCorrectGrpcMessageSize(dataToSend))
             {
-                await call.RequestStream.WriteAsync(new ServerBase.LongrunningPassthroughRequest
+                await call.RequestStream.WriteAsync(new Common.LongrunningPassthroughRequest
                 {
                     ContextId = serverContextId,
                     RecipientPath = recipientPath,

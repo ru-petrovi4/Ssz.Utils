@@ -4,17 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ssz.DataAccessGrpc.ServerBase
+namespace Ssz.DataAccessGrpc.Common
 {
     public sealed partial class TypeId
     {
         #region construction and destruction        
 
-        public TypeId(Ssz.Utils.DataAccess.TypeId typeId)
+        public TypeId(Ssz.Utils.DataAccess.TypeId? typeId)
         {
-            SchemaType = typeId.SchemaType;
-            Namespace = typeId.Namespace;
-            LocalId = typeId.LocalId;
+            if (typeId is not null)
+            {
+                SchemaType = typeId.SchemaType;
+                Namespace = typeId.Namespace;
+                LocalId = typeId.LocalId;
+            }            
         }
 
         #endregion

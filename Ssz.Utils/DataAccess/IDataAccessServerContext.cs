@@ -62,7 +62,7 @@ public interface IDataAccessServerContext : IDisposable, IAsyncDisposable
     bool IsConcludeCalled { get; set; }
 
     /// <summary>
-    ///     Must be IAsyncStreamWriter ICallbackMessage
+    ///     Must be IAsyncStreamWriter CallbackMessage
     /// </summary>
     /// <param name="responseStream"></param>
     void SetResponseStream(object responseStream);

@@ -2,7 +2,7 @@ using Google.Protobuf;
 using Grpc.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using Ssz.Utils;
 using Ssz.Utils.DataAccess;
 using System;
@@ -140,7 +140,7 @@ namespace Ssz.DataAccessGrpc.Client.LocalServer
                 IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
                 serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
                 var reply = new DefineListReply();
-                reply.Result = new ServerBase.AliasResult(serverContext.DefineList(request.ListClientAlias, request.ListType,
+                reply.Result = new Common.AliasResult(serverContext.DefineList(request.ListClientAlias, request.ListType,
                     new Utils.CaseInsensitiveDictionary<string?>(request.ListParams
                         .Select(cp => new KeyValuePair<string, string?>(cp.Key, cp.Value.KindCase == NullableString.KindOneofCase.Data ? cp.Value.Data : null)))));
                 return Task.FromResult(reply);
@@ -154,7 +154,7 @@ namespace Ssz.DataAccessGrpc.Client.LocalServer
                 IDataAccessServerContext serverContext = _dataAccessServerWorker.LookupServerContext(request.ContextId ?? @"");
                 serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
                 var reply = new DeleteListsReply();
-                reply.Results.Add(serverContext.DeleteLists(request.ListServerAliases.ToList()).Select(ar => new ServerBase.AliasResult(ar)));
+                reply.Results.Add(serverContext.DeleteLists(request.ListServerAliases.ToList()).Select(ar => new Common.AliasResult(ar)));
                 return Task.FromResult(reply);
             });
         }
@@ -167,7 +167,7 @@ namespace Ssz.DataAccessGrpc.Client.LocalServer
                 serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
                 var reply = new AddItemsToListReply();
                 reply.Results.Add((await serverContext.AddItemsToListAsync(request.ListServerAlias, request.ItemsToAdd.Select(i => i.ToListItemInfoMessage()).ToList()))
-                    .Select(ar => new ServerBase.AliasResult(ar)).ToList());
+                    .Select(ar => new Common.AliasResult(ar)).ToList());
                 return reply;
             });
         }
@@ -180,7 +180,7 @@ namespace Ssz.DataAccessGrpc.Client.LocalServer
                 serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
                 var reply = new RemoveItemsFromListReply();
                 reply.Results.Add((await serverContext.RemoveItemsFromListAsync(request.ListServerAlias, request.ServerAliasesToRemove.ToList()))
-                    .Select(ar => new ServerBase.AliasResult(ar)).ToList());
+                    .Select(ar => new Common.AliasResult(ar)).ToList());
                 return reply;
             });
         }
@@ -290,7 +290,7 @@ namespace Ssz.DataAccessGrpc.Client.LocalServer
                 serverContext.LastAccessDateTimeUtc = DateTime.UtcNow;
                 var aliasResults = await serverContext.WriteElementValuesAsync(listServerAlias, fullElementValuesCollection);
                 if (aliasResults is not null)
-                    reply.Results.Add(aliasResults.Select(ar => new ServerBase.AliasResult(ar)));
+                    reply.Results.Add(aliasResults.Select(ar => new Common.AliasResult(ar)));
                 return reply;
             });
         }
@@ -304,7 +304,7 @@ namespace Ssz.DataAccessGrpc.Client.LocalServer
                 var reply = new AckAlarmsReply();
                 reply.Results.Add(serverContext.AckAlarms(request.ListServerAlias,
                     request.OperatorName ?? @"", request.Comment ?? @"", request.EventIdsToAck.Select(e => e.ToEventId()))
-                    .Select(e => new ServerBase.EventIdResult(e)));
+                    .Select(e => new Common.EventIdResult(e)));
                 return Task.FromResult(reply);
             });
         }

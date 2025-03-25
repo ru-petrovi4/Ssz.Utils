@@ -1,10 +1,14 @@
-﻿using System;
+using Google.Protobuf.WellKnownTypes;
+using Ssz.Utils.DataAccess;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace Ssz.DataAccessGrpc.ServerBase
+namespace Ssz.DataAccessGrpc.Common
 {
-    internal sealed partial class AliasResult
+    public sealed partial class AliasResult
     {
         #region construction and destruction
 
@@ -29,7 +33,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
                 StatusCode = this.StatusCode,
                 Info = this.Info,
                 Label = this.Label,
-                Details = this.Details,
+                Details = this.Details                
             };
         }
 

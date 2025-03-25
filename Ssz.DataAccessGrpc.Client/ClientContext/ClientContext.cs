@@ -5,7 +5,7 @@ using System.Net;
 using System.Threading;
 using Ssz.Utils;
 using Ssz.DataAccessGrpc.Client.Managers;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
@@ -272,7 +272,7 @@ namespace Ssz.DataAccessGrpc.Client
 
         /// <summary>
         ///     The time interval that controls when ClientKeepAlive messages are
-        ///     sent to the ServerBase.  If no IResourceManagement messages are sent to
+        ///     sent to the Common.  If no IResourceManagement messages are sent to
         ///     the server for this period of time, a ClientKeepAlive message is
         ///     sent.  The value is expressed in milliseconds.  This value is the
         ///     same for all contexts.

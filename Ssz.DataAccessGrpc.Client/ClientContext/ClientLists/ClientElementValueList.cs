@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Ssz.Utils;
 using Ssz.DataAccessGrpc.Client.ClientListItems;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using Ssz.Utils.DataAccess;
 using System.IO;
 using Ssz.Utils.Serialization;
@@ -150,8 +150,8 @@ namespace Ssz.DataAccessGrpc.Client.ClientLists
             }
 
             var failedItems = new List<ClientElementValueListItem>();
-            ServerBase.AliasResult[] failedAliasResults = await Context.WriteElementValuesAsync(ListServerAlias, fullElementValuesCollection);
-            foreach (ServerBase.AliasResult failedAliasResult in failedAliasResults)
+            Common.AliasResult[] failedAliasResults = await Context.WriteElementValuesAsync(ListServerAlias, fullElementValuesCollection);
+            foreach (Common.AliasResult failedAliasResult in failedAliasResults)
             {
                 if (ListItemsManager.TryGetValue(failedAliasResult.ClientAlias, out ClientElementValueListItem? item))
                 {

@@ -1,6 +1,6 @@
 using System;
 using Ssz.Utils.DataAccess;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using Grpc.Core;
 using Ssz.Utils;
 using Google.Protobuf.WellKnownTypes;
@@ -37,7 +37,7 @@ namespace Ssz.DataAccessGrpc.Client.ClientListItems
 
         /// <summary>
         ///     This method is used to set the state of the data object to allow it to be
-        ///     removed from the ServerBase. If the data object has not yet been added to the
+        ///     removed from the Common. If the data object has not yet been added to the
         ///     server, This method is used to set the state of the data object to disposable.
         /// </summary>
         /// <returns> Returns true if the state of data object was successfully set to RemoveableFromServer or Disposable. </returns>

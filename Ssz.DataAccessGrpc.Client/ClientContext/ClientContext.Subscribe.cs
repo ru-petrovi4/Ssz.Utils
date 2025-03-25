@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using Ssz.DataAccessGrpc.Client.ClientLists;
-using Ssz.DataAccessGrpc.ServerBase;
+using Ssz.DataAccessGrpc.Common;
 using Ssz.DataAccessGrpc.Client.ClientListItems;
 using Ssz.Utils.DataAccess;
 using System.Linq;
 using System.Threading.Tasks;
 using Grpc.Core;
-using EventMessagesCollection = Ssz.DataAccessGrpc.ServerBase.EventMessagesCollection;
+using EventMessagesCollection = Ssz.DataAccessGrpc.Common.EventMessagesCollection;
 using Google.Protobuf.Collections;
 using Ssz.Utils;
 using System.Threading;
@@ -230,7 +230,7 @@ namespace Ssz.DataAccessGrpc.Client
             }
         }
 
-        private void LongrunningPassthroughCallback(ServerBase.LongrunningPassthroughCallback longrunningPassthroughCallback)
+        private void LongrunningPassthroughCallback(Common.LongrunningPassthroughCallback longrunningPassthroughCallback)
         {
             var jobId = longrunningPassthroughCallback.JobId ?? @"";
             if (_longrunningPassthroughRequestsCollection.TryGetValue(jobId, out List<LongrunningPassthroughRequest>? longrunningPassthroughRequestsList))

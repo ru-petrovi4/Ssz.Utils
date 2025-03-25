@@ -1,5 +1,4 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using Ssz.DataAccessGrpc.Client;
+using Google.Protobuf.WellKnownTypes;
 using Ssz.Utils.DataAccess;
 using System;
 using System.Collections.Generic;
@@ -7,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ssz.DataAccessGrpc.ServerBase
+namespace Ssz.DataAccessGrpc.Common
 {
-    internal sealed partial class EventMessage
+    public sealed partial class EventMessage
     {
         #region construction and destruction
 
@@ -31,7 +30,7 @@ namespace Ssz.DataAccessGrpc.ServerBase
             {
                 foreach (var kvp in eventMessage.Fields)
                     Fields.Add(kvp.Key,
-                        kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null =  NullValue.NullValue });
+                        kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
             }
         }
 
