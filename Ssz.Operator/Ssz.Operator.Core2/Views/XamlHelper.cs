@@ -946,7 +946,7 @@ namespace Ssz.Operator.Core
             if (xaml.StartsWith("<Style "))
                 return null;            
 
-            xaml = xaml.Replace("xmlns=\"https://github.com/avaloniaui\"", "xmlns=\"https://github.com/avaloniaui\"");
+            xaml = xaml.Replace("xmlns=\"http://schemas.microsoft.com/" + "winfx/2006/xaml/presentation\"", "xmlns=\"https://github.com/avaloniaui\""); // Splitted because of replace issues in VS Editor
 
             if (xaml.Contains("<SolidColorBrush") || 
                 xaml.Contains("<LinearGradientBrush") || 

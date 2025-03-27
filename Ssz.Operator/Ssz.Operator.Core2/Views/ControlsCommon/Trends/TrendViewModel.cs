@@ -23,29 +23,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
 
         #endregion
 
-        #region public functions
-
-        public async void LoadPoints(DateRange range)
-        {
-            if (_isPointsLoadingInProgress)
-                return;
-
-            _isPointsLoadingInProgress = true;
-           
-            var points = (await DsDataAccessProvider.Instance.ReadElementValuesJournal(
-                    Source.HdaId,
-                    range.Minimum.ToUniversalTime(),
-                    range.Maximum.ToUniversalTime()))
-                .Select(xiValue => new TrendPoint(
-                        xiValue.TimestampUtc.ToLocalTime(),
-                        xiValue.Value.ValueAsDouble(false))).ToList();
-
-            _rawTrendPoints = points.ToArray();
-           
-            OnRawTrendPointsLoaded(_rawTrendPoints);
-
-            _isPointsLoadingInProgress = false;
-        }
+        #region public functions        
 
         public IEnumerable<TrendPoint> Points
         {
@@ -56,53 +34,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
         public IEnumerable<TrendPoint> RawTrendPoints
         {
             get { return _rawTrendPoints; }
-        }
-
-        public virtual void OnTimerTick()
-        {
-            if (!_isValueFreezed)
-                UpdateCurrentValueAndTimestamp();
-        }
-
-        public void DisplayCurrentValue()
-        {
-            _isValueFreezed = false;
-            UpdateCurrentValueAndTimestamp();
         }        
-
-        public void DisplayValueAtTime(DateTime time)
-        {
-            _isValueFreezed = true;
-            ValueTimestamp = time;
-            Value = GetValue(time);
-        }
-
-        public double? GetValue(DateTime time)
-        {
-            var trendPt = _rawTrendPoints
-                .OrderBy(pt => pt.Timestamp)
-                .TakeWhile(pt => pt.Timestamp <= time)
-                .LastOrDefault();
-
-            var nextTrendPt = _rawTrendPoints
-                .OrderBy(pt => pt.Timestamp)
-                .SkipWhile(pt => pt.Timestamp <= time)
-                .FirstOrDefault();
-
-            if (trendPt != null && nextTrendPt != null)
-            {
-                var percentage =
-                    (double)(time - trendPt.Timestamp).Ticks /
-                    (nextTrendPt.Timestamp - trendPt.Timestamp).Ticks;
-
-                return trendPt.Value + (nextTrendPt.Value - trendPt.Value) * percentage;
-            }
-
-            if (trendPt != null && trendPt.Timestamp == time)
-                return trendPt.Value;
-
-            return null;
-        }
 
         public Trend Source { get; private set; }
 
@@ -171,8 +103,76 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
             get { return Source.YMax; }
         }
 
+        public async void LoadPoints(DateRange range)
+        {
+            if (_isPointsLoadingInProgress)
+                return;
+
+            _isPointsLoadingInProgress = true;
+
+            var points = (await DsDataAccessProvider.Instance.ReadElementValuesJournal(
+                    Source.HdaId,
+                    range.Minimum.ToUniversalTime(),
+                    range.Maximum.ToUniversalTime()))
+                .Select(xiValue => new TrendPoint(
+                        xiValue.TimestampUtc.ToLocalTime(),
+                        xiValue.Value.ValueAsDouble(false))).ToList();
+
+            _rawTrendPoints = points.ToArray();
+
+            OnRawTrendPointsLoaded(_rawTrendPoints);
+
+            _isPointsLoadingInProgress = false;
+        }
+
         public virtual void OnSelectedTrendChanged()
         {
+        }
+
+        public virtual void OnTimerTick()
+        {
+            if (!_isValueFreezed)
+                UpdateCurrentValueAndTimestamp();
+        }
+
+        public void DisplayCurrentValue()
+        {
+            _isValueFreezed = false;
+            UpdateCurrentValueAndTimestamp();
+        }
+
+        public void DisplayValueAtTime(DateTime time)
+        {
+            _isValueFreezed = true;
+            ValueTimestamp = time;
+            Value = GetValue(time);
+        }
+
+        public double? GetValue(DateTime time)
+        {
+            var trendPt = _rawTrendPoints
+                .OrderBy(pt => pt.Timestamp)
+                .TakeWhile(pt => pt.Timestamp <= time)
+                .LastOrDefault();
+
+            var nextTrendPt = _rawTrendPoints
+                .OrderBy(pt => pt.Timestamp)
+                .SkipWhile(pt => pt.Timestamp <= time)
+                .FirstOrDefault();
+
+            if (trendPt != null && nextTrendPt != null)
+            {
+                var percentage =
+                    (double)(time - trendPt.Timestamp).Ticks /
+                    (nextTrendPt.Timestamp - trendPt.Timestamp).Ticks;
+
+                return trendPt.Value + (nextTrendPt.Value - trendPt.Value) * percentage;
+            }
+
+            if (trendPt != null && trendPt.Timestamp == time)
+                return trendPt.Value;
+
+            return null;
         }
 
         public static string GetNumberFormat(double min, double max)

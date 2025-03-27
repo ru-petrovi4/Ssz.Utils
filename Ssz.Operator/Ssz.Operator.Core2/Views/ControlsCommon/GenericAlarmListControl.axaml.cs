@@ -33,7 +33,7 @@ namespace Ssz.Operator.Core.ControlsCommon
 
             MainDataGrid.LoadingRow += MainDataGrid_LoadingRow;
             MainDataGrid.UnloadingRow += MainDataGrid_UnloadingRow;
-
+            
             MainDataGrid.ItemsSource = itemsSource;            
         }        
 

@@ -10,11 +10,11 @@
 	<Rectangle Name="MainRectangle" StrokeThickness="2" Stroke="{Binding AlarmRectBrush}"
                Fill="{Binding AlarmRectBrush}">
 		<Interaction.Behaviors>
-			<DataTriggerBehavior Binding="{Binding AlarmIsActive}"	Value="false">
+			<DataTriggerBehavior Binding="{Binding AlarmIsActive}" Value="false">
 				<ChangePropertyAction TargetObject="MainRectangle"
 										 PropertyName="Fill"
 										 Value="Transparent" />
 			</DataTriggerBehavior>			
-		</Interaction.Behaviors>        
+		</Interaction.Behaviors>
     </Rectangle>
 </UserControl>

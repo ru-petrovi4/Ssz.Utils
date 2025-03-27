@@ -14,11 +14,11 @@
               Foreground="{Binding Path=Foreground, ElementName=UserControl}"
               GridLinesVisibility="None" Padding="0" IsReadOnly="True"
               SelectionMode="Single" DoubleTapped="MainDataGrid_DoubleTapped">
-        <DataGrid.RowTheme>
-            <ControlTheme TargetType="DataGridRow">
+        <DataGrid.Styles>
+			<Style Selector="DataGridRow">
 				<Setter Property="IsVisible" Value="{Binding IsVisible}" />
-            </ControlTheme>
-        </DataGrid.RowTheme>
+			</Style>
+        </DataGrid.Styles>
         <DataGrid.Columns>
             <DataGridTemplateColumn Width="auto">
                 <DataGridTemplateColumn.CellTemplate>
