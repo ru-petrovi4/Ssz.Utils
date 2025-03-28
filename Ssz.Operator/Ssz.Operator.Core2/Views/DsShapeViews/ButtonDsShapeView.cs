@@ -131,12 +131,7 @@ namespace Ssz.Operator.Core.DsShapeViews
                     viewBox.Stretch = dsShape.TextStretch;
                 }
             }
-
-            if (propertyName is null || propertyName == nameof(dsShape.BackgroundInfo))
-                _textBlock.SetBindingOrConst(dsShape.Container, TemplatedControl.BackgroundProperty,
-                    dsShape.BackgroundInfo,
-                    BindingMode.OneWay,
-                    UpdateSourceTrigger.Default, VisualDesignMode);
+            
             if (propertyName is null || propertyName == nameof(dsShape.ForegroundInfo))
                 _textBlock.SetBindingOrConst(dsShape.Container, TextBlock.ForegroundProperty,
                     dsShape.ForegroundInfo,
