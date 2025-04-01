@@ -497,7 +497,7 @@ namespace Ssz.DataAccessGrpc.Client
             if (!_clientContextManager.ContextIsOperational)
                 throw new ConnectionDoesNotExistException();            
 
-            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
             {
                 try
                 {
@@ -536,7 +536,7 @@ namespace Ssz.DataAccessGrpc.Client
 
             var taskCompletionSource = new TaskCompletionSource<ReadOnlyMemory<byte>>();
 
-            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
             {                
                 try
                 {
@@ -610,7 +610,7 @@ namespace Ssz.DataAccessGrpc.Client
             var taskCompletionSource = new TaskCompletionSource<Task<uint>>();
 
             // Do not use BeginExclusiveInvoke() because long running task
-            WorkingThreadSafeDispatcher.BeginInvokeEx(async ct =>
+            WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
             {
                 IDispatcher? сallbackDispatcher = CallbackDispatcher;
                 Action<Ssz.Utils.DataAccess.LongrunningPassthroughCallback>? callbackActionDispatched;

@@ -154,12 +154,15 @@ namespace Ssz.DataAccessGrpc.Client
                 {
                     CallbackAction = callbackAction
                 };
-                if (!_longrunningPassthroughRequestsCollection.TryGetValue(jobId, out List<LongrunningPassthroughRequest>? longrunningPassthroughRequestsList))
+                lock (_longrunningPassthroughRequestsCollection)
                 {
-                    longrunningPassthroughRequestsList = new List<LongrunningPassthroughRequest>();
-                    _longrunningPassthroughRequestsCollection.Add(jobId, longrunningPassthroughRequestsList);
+                    if (!_longrunningPassthroughRequestsCollection.TryGetValue(jobId, out List<LongrunningPassthroughRequest>? longrunningPassthroughRequestsList))
+                    {
+                        longrunningPassthroughRequestsList = new List<LongrunningPassthroughRequest>();
+                        _longrunningPassthroughRequestsCollection.Add(jobId, longrunningPassthroughRequestsList);
+                    }
+                    longrunningPassthroughRequestsList.Add(longrunningPassthroughRequest);
                 }
-                longrunningPassthroughRequestsList.Add(longrunningPassthroughRequest);
 
                 return longrunningPassthroughRequest.TaskCompletionSource.Task;
             }
