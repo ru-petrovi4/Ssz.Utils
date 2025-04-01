@@ -233,41 +233,48 @@ namespace Ssz.DataAccessGrpc.Client
         private void LongrunningPassthroughCallback(Common.LongrunningPassthroughCallback longrunningPassthroughCallback)
         {
             var jobId = longrunningPassthroughCallback.JobId ?? @"";
+            LongrunningPassthroughRequest[]? longrunningPassthroughRequestsArray = null;
             lock (_longrunningPassthroughRequestsCollection)
             {
-                if (_longrunningPassthroughRequestsCollection.TryGetValue(jobId, out List<LongrunningPassthroughRequest>? longrunningPassthroughRequestsList))
+                _longrunningPassthroughRequestsCollection.TryGetValue(jobId, out List<LongrunningPassthroughRequest>? longrunningPassthroughRequests);
+                if (longrunningPassthroughRequests is not null)
+                    longrunningPassthroughRequestsArray = longrunningPassthroughRequests.ToArray();
+            }
+            if (longrunningPassthroughRequestsArray is not null)
+            {
+                var statusCode = longrunningPassthroughCallback.StatusCode;
+
+                foreach (LongrunningPassthroughRequest longrunningPassthroughRequest in longrunningPassthroughRequestsArray)
                 {
-                    var statusCode = longrunningPassthroughCallback.StatusCode;
-
-                    foreach (LongrunningPassthroughRequest longrunningPassthroughRequest in longrunningPassthroughRequestsList)
+                    var callbackAction = longrunningPassthroughRequest.CallbackAction;
+                    if (callbackAction is not null)
                     {
-                        var callbackAction = longrunningPassthroughRequest.CallbackAction;
-                        if (callbackAction is not null)
+                        callbackAction(new Utils.DataAccess.LongrunningPassthroughCallback
                         {
-                            callbackAction(new Utils.DataAccess.LongrunningPassthroughCallback
-                            {
-                                JobId = jobId,
-                                ProgressPercent = longrunningPassthroughCallback.ProgressPercent,
-                                ProgressLabel = longrunningPassthroughCallback.ProgressLabel ?? @"",
-                                ProgressDetails = longrunningPassthroughCallback.ProgressDetails ?? @"",
-                                StatusCode = statusCode
-                            });
-                        }
-
-                        if (!StatusCodes.IsGood(statusCode) ||
-                            longrunningPassthroughCallback.ProgressPercent == 100)
-                        {
-                            longrunningPassthroughRequest.TaskCompletionSource.SetResult(statusCode);
-                        }
+                            JobId = jobId,
+                            ProgressPercent = longrunningPassthroughCallback.ProgressPercent,
+                            ProgressLabel = longrunningPassthroughCallback.ProgressLabel ?? @"",
+                            ProgressDetails = longrunningPassthroughCallback.ProgressDetails ?? @"",
+                            StatusCode = statusCode
+                        });
                     }
 
                     if (!StatusCodes.IsGood(statusCode) ||
-                            longrunningPassthroughCallback.ProgressPercent == 100)
+                        longrunningPassthroughCallback.ProgressPercent == 100)
                     {
-                        _longrunningPassthroughRequestsCollection.Remove(jobId);
+                        longrunningPassthroughRequest.TaskCompletionSource.SetResult(statusCode);
                     }
                 }
-            }                
+
+                if (!StatusCodes.IsGood(statusCode) ||
+                        longrunningPassthroughCallback.ProgressPercent == 100)
+                {
+                    lock (_longrunningPassthroughRequestsCollection)
+                    {
+                        _longrunningPassthroughRequestsCollection.Remove(jobId);
+                    }                    
+                }
+            }                          
         }
 
         #endregion

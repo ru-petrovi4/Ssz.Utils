@@ -499,24 +499,39 @@ namespace Ssz.DataAccessGrpc.Client
 
             WorkingThreadSafeDispatcher.BeginInvoke(async ct =>
             {
+                ReadOnlyMemory<byte> returnData;
                 try
                 {
-                    ReadOnlyMemory<byte> returnData = await _clientContextManager.PassthroughAsync(recipientPath, passthroughName, dataToSend);
-                    callbackAction(returnData);
+                    returnData = await _clientContextManager.PassthroughAsync(recipientPath, passthroughName, dataToSend);                    
                 }
                 catch (RpcException ex)
                 {
                     LoggersSet.Logger.LogError(ex, ex.Status.Detail);
-                    callbackAction(ReadOnlyMemory<byte>.Empty);
+                    returnData = ReadOnlyMemory<byte>.Empty;
                 }
-                catch (ConnectionDoesNotExistException ex)
+                catch (ConnectionDoesNotExistException)
                 {
-                    callbackAction(ReadOnlyMemory<byte>.Empty);
+                    returnData = ReadOnlyMemory<byte>.Empty;
                 }
                 catch (Exception ex)
                 {
                     LoggersSet.Logger.LogError(ex, "Passthrough exception.");
-                    callbackAction(ReadOnlyMemory<byte>.Empty);
+                    returnData = ReadOnlyMemory<byte>.Empty;
+                }
+
+                var сallbackDispatcher = CallbackDispatcher;
+                if (сallbackDispatcher is not null)
+                {
+                    try
+                    {
+                        сallbackDispatcher.BeginInvoke(ct =>
+                        {
+                            callbackAction(returnData);
+                        });
+                    }
+                    catch (Exception)
+                    {
+                    }
                 }
             });
         }
