@@ -113,23 +113,19 @@ public class GenericToolBarViewModel : ViewModelBase
 
         ZoomInTimeCommand = new RelayCommand(
             zoomInTime,
-            canZoomInTime,
-            true);
+            canZoomInTime);
 
         ZoomOutTimeCommand = new RelayCommand(
             zoomOutTime,
-            canZoomOutTime,
-            true);
+            canZoomOutTime);
 
         ZoomInValueCommand = new RelayCommand(
             zoomInValue,
-            canZoomInValue,
-            true);
+            canZoomInValue);
 
         ZoomOutValueCommand = new RelayCommand(
             zoomOutValue,
-            canZoomOutValue,
-            true);
+            canZoomOutValue);
     }
 
     #endregion
@@ -171,94 +167,93 @@ public class GenericToolBarViewModel : ViewModelBase
         get { return _valueZoomLevels; }
     }
 
-    public void LoadFromDsProjectSettings(TrendsInfo trendProperties)
-    {
-        /*
-        XAxisInterval[] timeZoomLevels = trendProperties.ParseXAxisIntervals()
-            .Select(timeSpan => new XAxisInterval(timeSpan))
-            .ToArray();
+    //public void LoadFromDsProjectSettings(TrendsInfo trendProperties)
+    //{        
+    //    XAxisInterval[] timeZoomLevels = trendProperties.ParseXAxisIntervals()
+    //        .Select(timeSpan => new XAxisInterval(timeSpan))
+    //        .ToArray();
 
-        if (timeZoomLevels.Length != 0)
-        {
-            XAxisInterval defaultTimeZoomLevel = loadDefaultTimeZoomLevel(
-                trendProperties,
-                timeZoomLevels);
+    //    if (timeZoomLevels.Length != 0)
+    //    {
+    //        XAxisInterval defaultTimeZoomLevel = loadDefaultTimeZoomLevel(
+    //            trendProperties,
+    //            timeZoomLevels);
 
-            _timeZoomLevels = timeZoomLevels;
+    //        _timeZoomLevels = timeZoomLevels;
 
-            _currentTimeZoomLevelIndex = 0;
-            for (int i = 0; i < _timeZoomLevels.Length; i += 1)
-                if (defaultTimeZoomLevel.VisibleRange == _timeZoomLevels[i].VisibleRange)
-                    _currentTimeZoomLevelIndex = i;
+    //        _currentTimeZoomLevelIndex = 0;
+    //        for (int i = 0; i < _timeZoomLevels.Length; i += 1)
+    //            if (defaultTimeZoomLevel.VisibleRange == _timeZoomLevels[i].VisibleRange)
+    //                _currentTimeZoomLevelIndex = i;
 
-            _trendsViewModel.ZoomTime(defaultTimeZoomLevel.VisibleRange);
-        }
+    //        _trendsViewModel.ZoomTime(defaultTimeZoomLevel.VisibleRange);
+    //    }
 
-        YAxisInterval[] valueZoomLevels = trendProperties.ParseYAxisIntervals()
-            .Select(value => new YAxisInterval(value))
-            .ToArray();
+    //    YAxisInterval[] valueZoomLevels = trendProperties.ParseYAxisIntervals()
+    //        .Select(value => new YAxisInterval(value))
+    //        .ToArray();
 
-        if (valueZoomLevels.Length == 0)
-        {*/
-        _valueZoomLevels = RoskValueZoomLevels;
-        _trendsViewModel.ValueZoomLevel = RoskValueZoomLevels[2];
-        /*}
-        else
-        {
-            YAxisInterval defaultValueZoomLevel = loadDefaultValueZoomLevel(
-                trendProperties,
-                valueZoomLevels);
+    //    if (valueZoomLevels.Length == 0)
+    //    {
+    //        _valueZoomLevels = RoskValueZoomLevels;
+    //        _trendsViewModel.ValueZoomLevel = RoskValueZoomLevels[2];
+    //    }
+    //    else
+    //    {
+    //        YAxisInterval defaultValueZoomLevel = loadDefaultValueZoomLevel(
+    //            trendProperties,
+    //            valueZoomLevels);
 
-            _valueZoomLevels = valueZoomLevels;
+    //        _valueZoomLevels = valueZoomLevels;
 
-            _currentValueZoomLevelIndex = 0;
-            for (int i = 0; i < _valueZoomLevels.Length; i += 1)
-                if (Math.Abs(defaultValueZoomLevel.ScaleCoefficient - _valueZoomLevels[i].ScaleCoefficient) < 1e-6)
-                    _currentValueZoomLevelIndex = i;
+    //        _currentValueZoomLevelIndex = 0;
+    //        for (int i = 0; i < _valueZoomLevels.Length; i += 1)
+    //            if (Math.Abs(defaultValueZoomLevel.ScaleCoefficient - _valueZoomLevels[i].ScaleCoefficient) < 1e-6)
+    //                _currentValueZoomLevelIndex = i;
 
-            _trendsViewModel.ValueZoomLevel = defaultValueZoomLevel;
-        }*/
-    }
+    //        _trendsViewModel.ValueZoomLevel = defaultValueZoomLevel;
+    //    }
+    //}
 
     #endregion
 
     #region private functions
 
-    private static XAxisInterval loadDefaultTimeZoomLevel(TrendsInfo trendProperties,
-        XAxisInterval[] timeZoomLevels)
-    {
-        return timeZoomLevels[timeZoomLevels.Length / 2];
-        /*
-        XAxisInterval fallbackZoom = timeZoomLevels[timeZoomLevels.Length/2];
+    //private static XAxisInterval loadDefaultTimeZoomLevel(TrendsInfo trendProperties,
+    //    XAxisInterval[] timeZoomLevels)
+    //{
+    //    return timeZoomLevels[timeZoomLevels.Length / 2];
+    //    /*
+    //    XAxisInterval fallbackZoom = timeZoomLevels[timeZoomLevels.Length/2];
 
-        TimeSpan? defaultXAxisInterval = trendProperties.ParseDefaultXAxisInterval();
-        if (defaultXAxisInterval == null)
-            return fallbackZoom;
+    //    TimeSpan? defaultXAxisInterval = trendProperties.ParseDefaultXAxisInterval();
+    //    if (defaultXAxisInterval == null)
+    //        return fallbackZoom;
 
-        var timeZoom = new XAxisInterval(defaultXAxisInterval.Value);
+    //    var timeZoom = new XAxisInterval(defaultXAxisInterval.Value);
 
-        return timeZoomLevels.Contains(timeZoom) ? timeZoom : fallbackZoom;
-        */
-    }
+    //    return timeZoomLevels.Contains(timeZoom) ? timeZoom : fallbackZoom;
+    //    */
+    //}
 
-    private static YAxisInterval loadDefaultValueZoomLevel(TrendsInfo trendProperties,
-        YAxisInterval[] valueZoomLevels)
-    {
-        return valueZoomLevels[valueZoomLevels.Length / 2];
-        /*
-        YAxisInterval fallbackZoom = valueZoomLevels[valueZoomLevels.Length/2];
+    //private static YAxisInterval loadDefaultValueZoomLevel(TrendsInfo trendProperties,
+    //    YAxisInterval[] valueZoomLevels)
+    //{
+    //    return valueZoomLevels[valueZoomLevels.Length / 2];
+    //    /*
+    //    YAxisInterval fallbackZoom = valueZoomLevels[valueZoomLevels.Length/2];
 
-        double? valueZoomValue = trendProperties.ParseDefaultYAxisInterval();
-        if (valueZoomValue == null)
-            return fallbackZoom;
+    //    double? valueZoomValue = trendProperties.ParseDefaultYAxisInterval();
+    //    if (valueZoomValue == null)
+    //        return fallbackZoom;
 
-        var valueZoom = new YAxisInterval(valueZoomValue.Value);
+    //    var valueZoom = new YAxisInterval(valueZoomValue.Value);
 
-        return valueZoomLevels.Contains(valueZoom) ? valueZoom : fallbackZoom;
-        */
-    }
+    //    return valueZoomLevels.Contains(valueZoom) ? valueZoom : fallbackZoom;
+    //    */
+    //}
 
-    private void zoomInTime(object parameter)
+    private void zoomInTime()
     {
         if (_currentTimeZoomLevelIndex < 1)
             return;
@@ -269,7 +264,7 @@ public class GenericToolBarViewModel : ViewModelBase
         _currentTimeZoomLevelIndex --;
     }
 
-    private void zoomOutTime(object parameter)
+    private void zoomOutTime()
     {
         if (_currentTimeZoomLevelIndex == _timeZoomLevels.Length - 1)
             return;
@@ -279,17 +274,17 @@ public class GenericToolBarViewModel : ViewModelBase
         _currentTimeZoomLevelIndex  += 1;
     }
 
-    private bool canZoomInTime(object parameter)
+    private bool canZoomInTime()
     {
         return _currentTimeZoomLevelIndex >= 1;
     }
 
-    private bool canZoomOutTime(object parameter)
+    private bool canZoomOutTime()
     {
         return _currentTimeZoomLevelIndex < _timeZoomLevels.Length - 1;
     }
 
-    private void zoomInValue(object parameter)
+    private void zoomInValue()
     {
         if (_currentValueZoomLevelIndex < 1)
             return;
@@ -299,7 +294,7 @@ public class GenericToolBarViewModel : ViewModelBase
         _currentValueZoomLevelIndex --;
     }
 
-    private void zoomOutValue(object parameter)
+    private void zoomOutValue()
     {
         if (_currentValueZoomLevelIndex == _valueZoomLevels.Length - 1)
             return;
@@ -309,12 +304,12 @@ public class GenericToolBarViewModel : ViewModelBase
         _currentValueZoomLevelIndex  += 1;
     }
 
-    private bool canZoomInValue(object parameter)
+    private bool canZoomInValue()
     {
         return _currentValueZoomLevelIndex >= 1;
     }
 
-    private bool canZoomOutValue(object parameter)
+    private bool canZoomOutValue()
     {
         return _currentValueZoomLevelIndex < _valueZoomLevels.Length - 1;
     }

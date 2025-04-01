@@ -948,11 +948,11 @@ namespace Ssz.Operator.Core
 
             xaml = xaml.Replace("xmlns=\"http://schemas.microsoft.com/" + "winfx/2006/xaml/presentation\"", "xmlns=\"https://github.com/avaloniaui\""); // Splitted because of replace issues in VS Editor
 
-            if (xaml.Contains("<SolidColorBrush") || 
-                xaml.Contains("<LinearGradientBrush") || 
-                xaml.Contains("<RadialGradientBrush") ||
-                xaml.Contains("<ConicGradientBrush") ||
-                xaml.Contains("LineCap"))
+            //if (xaml.Contains("<SolidColorBrush") || 
+            //    xaml.Contains("<LinearGradientBrush") || 
+            //    xaml.Contains("<RadialGradientBrush") ||
+            //    xaml.Contains("<ConicGradientBrush") ||
+            //    xaml.Contains("LineCap")) // Not full list
             {
                 XDocument doc = XDocument.Parse(xaml);
                 XNamespace ns = "https://github.com/avaloniaui";

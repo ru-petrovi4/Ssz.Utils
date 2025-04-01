@@ -33,13 +33,13 @@
                     Padding="0"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
-                    ToolTip="{x:Static res:OperatorUIResources.TrendGroupControlDecreaseTime}"
+                    ToolTip.Tip="{x:Static res:OperatorUIResources.TrendGroupControlDecreaseTime}"
                     Click="onDecreaseTimeZoomButtonClicked"
                     x:Name="DecreaseTimeZoomButton">
                 <Button.Content>
                     <StackPanel Orientation="Horizontal">
                         <Path Data="M 0,0 L 5,5 L 0,10 M 15,0 L 10,5 L 15,10" Stroke="Black" StrokeThickness="2"
-                              StrokeEndLineCap="Round" StrokeStartLineCap="Round"
+                              StrokeLineCap="Round"
                               Width="17.876"
                               Height="13" Stretch="Fill"
                               Margin="5" />
@@ -51,12 +51,12 @@
                     Padding="0"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
-                    ToolTip="{x:Static res:OperatorUIResources.TrendGroupControlIncreaseTime}"
+                    ToolTip.Tip="{x:Static res:OperatorUIResources.TrendGroupControlIncreaseTime}"
                     Click="onIncreaseTimeZoomButtonClicked"
                     x:Name="IncreaseTimeZoomButton">
                 <StackPanel Orientation="Horizontal">
                     <Path Data="M 5,0 L 0,5 L 5,10 M 10,0 L 15,5 L 10,10" Stroke="Black" StrokeThickness="2"
-                          StrokeEndLineCap="Round" StrokeStartLineCap="Round"
+                          StrokeLineCap="Round"
                           Width="17.876"
                           Height="13" Stretch="Fill"
                           Margin="5" />
@@ -67,12 +67,12 @@
                     Padding="0"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
-                    ToolTip="{x:Static res:OperatorUIResources.TrendGroupControlDecreaseValue}"
+                    ToolTip.Tip="{x:Static res:OperatorUIResources.TrendGroupControlDecreaseValue}"
                     x:Name="DecreaseValueZoomButton"
                     Click="onDecreaseValueZoomButtonClicked">
                 <StackPanel Orientation="Horizontal">
                     <Path Data="M 0,0 L 5,5 L 0,10 M 15,0 L 10,5 L 15,10" Stroke="Black" StrokeThickness="2"
-                          StrokeEndLineCap="Round" StrokeStartLineCap="Round"
+                          StrokeLineCap="Round"
                           Width="17.876"
                           Height="13" Stretch="Fill"
                           Margin="5" RenderTransformOrigin="0.5,0.5">
@@ -94,12 +94,12 @@
                     Padding="0"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
-                    ToolTip="{x:Static res:OperatorUIResources.TrendGroupControlIncreaseValue}"
+                    ToolTip.Tip="{x:Static res:OperatorUIResources.TrendGroupControlIncreaseValue}"
                     x:Name="IncreaseValueZoomButton"
                     Click="onIncreaseValueZoomButtonClicked">
                 <StackPanel Orientation="Horizontal">
                     <Path Data="M 5,0 L 0,5 L 5,10 M 10,0 L 15,5 L 10,10" Stroke="Black" StrokeThickness="2"
-                          StrokeEndLineCap="Round" StrokeStartLineCap="Round"
+                          StrokeLineCap="Round"
                           Width="17.876"
                           Height="13" Stretch="Fill"
                           Margin="5" RenderTransformOrigin="0.5,0.5">

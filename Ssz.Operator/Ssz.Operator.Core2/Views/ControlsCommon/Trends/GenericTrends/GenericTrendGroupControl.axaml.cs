@@ -3,6 +3,7 @@ using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
+using Avalonia.Interactivity;
 using Ssz.Operator.Core.ControlsCommon.Trends.ZoomLevels;
 
 namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends;
@@ -14,6 +15,8 @@ public partial class TrendGroupControl : UserControl
     public TrendGroupControl()
     {
         InitializeComponent();
+
+        DataContext = new GenericTrendsViewModel();
 
         UpdateTimeAxis();
     }
@@ -30,47 +33,49 @@ public partial class TrendGroupControl : UserControl
         set => SetValue(SelectedItemProperty, value);
     }
 
-    public ObservableCollection<Trend>? TrendItemViewsCollection
-    {
-        get => _trendItemViewsCollection;
-        set
-        {
-            _trendItemViewsCollection = value;
-            MainGenericTrendsPlotView.TrendItemViewsCollection = value;
-            MainGenericTrendsInfoTableControl.TrendItemViewsCollection = value;
+    public GenericTrendsViewModel GenericTrendsViewModel => (GenericTrendsViewModel)DataContext!;
 
-            SetBinding(DataContextProperty, new Binding
-            {
-                Source = MainGenericTrendsInfoTableControl,
-                Path = new PropertyPath("SelectedItem"),
-                Mode = BindingMode.OneWay
-            });
-            MainGenericTrendsPlotView.SetBinding(MainGenericTrendsPlotViewControl.SelectedItemProperty, new Binding
-            {
-                Source = MainGenericTrendsInfoTableControl,
-                Path =
-                    new PropertyPath("SelectedItem"),
-                Mode = BindingMode.OneWay
-            });
-            SetBinding(SelectedItemProperty, new Binding
-            {
-                Source = MainGenericTrendsInfoTableControl,
-                Path = new PropertyPath("SelectedItem"),
-                Mode = BindingMode.OneWay
-            });
+    //public ObservableCollection<Trend>? TrendItemViewsCollection
+    //{
+    //    get => _trendItemViewsCollection;
+    //    set
+    //    {
+    //        _trendItemViewsCollection = value;
+    //        MainGenericTrendsPlotView.TrendItemViewsCollection = value;
+    //        MainGenericTrendsInfoTableControl.TrendItemViewsCollection = value;
 
-            if (value is not null)
-            {
-                foreach (var tr in value)
-                {
-                    var tr2 = tr;
-                    tr.PropertyChanged += a => TrendItemViewOnChanged(tr2);
-                }
+    //        SetBinding(DataContextProperty, new Binding
+    //        {
+    //            Source = MainGenericTrendsInfoTableControl,
+    //            Path = new PropertyPath("SelectedItem"),
+    //            Mode = BindingMode.OneWay
+    //        });
+    //        MainGenericTrendsPlotView.SetBinding(MainGenericTrendsPlotViewControl.SelectedItemProperty, new Binding
+    //        {
+    //            Source = MainGenericTrendsInfoTableControl,
+    //            Path =
+    //                new PropertyPath("SelectedItem"),
+    //            Mode = BindingMode.OneWay
+    //        });
+    //        SetBinding(SelectedItemProperty, new Binding
+    //        {
+    //            Source = MainGenericTrendsInfoTableControl,
+    //            Path = new PropertyPath("SelectedItem"),
+    //            Mode = BindingMode.OneWay
+    //        });
 
-                MainGenericTrendsInfoTableControl.SelectedItem = value.FirstOrDefault();
-            }
-        }
-    }
+    //        if (value is not null)
+    //        {
+    //            foreach (var tr in value)
+    //            {
+    //                var tr2 = tr;
+    //                tr.PropertyChanged += a => TrendItemViewOnChanged(tr2);
+    //            }
+
+    //            MainGenericTrendsInfoTableControl.SelectedItem = value.FirstOrDefault();
+    //        }
+    //    }
+    //}
 
     #endregion    
 
@@ -92,17 +97,21 @@ public partial class TrendGroupControl : UserControl
 
     private void UpdateTimeAxis()
     {
-        MainGenericTrendsPlotView.ZoomRestriction.Interval = _currentTimeZoom.VisibleRange;
-        MainGenericTrendsPlotView.Update();
+        //MainGenericTrendsPlotView.ZoomRestriction.Interval = _currentTimeZoom.VisibleRange;
+        //MainGenericTrendsPlotView.Update();
     }
 
     private void UpdateValueAxis()
     {
-        if (_trendItemViewsCollection is null) return;
+        if (_trendItemViewsCollection is null) 
+            return;
 
-        foreach (Trend trendItemView in _trendItemViewsCollection) TrendItemViewOnChanged(trendItemView);
+        foreach (Trend trendItemView in _trendItemViewsCollection)
+        {
+            TrendItemViewOnChanged(trendItemView);
+        }
 
-        MainGenericTrendsPlotView.Update();
+        //MainGenericTrendsPlotView.Update();
     }
 
     private void TrendItemViewOnChanged(Trend trendItemView)
@@ -113,15 +122,15 @@ public partial class TrendGroupControl : UserControl
         trendItemView.VisibleYMin = trendItemView.YMin - visibleValueRange / 2;
         trendItemView.VisibleYMax = trendItemView.YMax + visibleValueRange / 2;
 
-        if (trendItemView.ObservableDataSource is not null)
-            trendItemView.ObservableDataSource.SetYMapping(trendItemView.YMapping);
+        //if (trendItemView.ObservableDataSource is not null)
+        //    trendItemView.ObservableDataSource.SetYMapping(trendItemView.YMapping);
 
-        if (ReferenceEquals(SelectedItem, trendItemView))
-        {
-            MainGenericTrendsPlotView.ZoomRestriction.ValueRange = visibleValueRange;
-            MainGenericTrendsPlotView.ZoomRestriction.ValueMin = trendItemView.VisibleYMin;
-            MainGenericTrendsPlotView.ZoomRestriction.ValueMax = trendItemView.VisibleYMax;
-        }
+        //if (ReferenceEquals(SelectedItem, trendItemView))
+        //{
+        //    MainGenericTrendsPlotView.ZoomRestriction.ValueRange = visibleValueRange;
+        //    MainGenericTrendsPlotView.ZoomRestriction.ValueMin = trendItemView.VisibleYMin;
+        //    MainGenericTrendsPlotView.ZoomRestriction.ValueMax = trendItemView.VisibleYMax;
+        //}
     }
 
     private void onDecreaseTimeZoomButtonClicked(object? sender, RoutedEventArgs e)

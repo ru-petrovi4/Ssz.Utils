@@ -6,11 +6,12 @@
              xmlns:valueConverters="clr-namespace:Ssz.Operator.Core.VisualEditors.ValueConverters"
              xmlns:res="clr-namespace:Ssz.Operator.Core.Properties"
              x:Name="MainUserControl"
+			 x:CompileBindings="False"
              d:DesignWidth="400" d:DesignHeight="200"
              mc:Ignorable="d">    
-    <DataGrid AutoGenerateColumns="False" Name="MainDataGrid" CanUserAddRows="False" CanUserDeleteRows="False"
+    <DataGrid AutoGenerateColumns="False" Name="MainDataGrid"
               CanUserReorderColumns="False" CanUserSortColumns="False"
-              Background="{Binding ElementName=MainUserControl, Path=Background}" IsSynchronizedWithCurrentItem="True"
+              Background="{Binding ElementName=MainUserControl, Path=Background}"
 			  SelectedItem="{Binding ElementName=MainUserControl, Path=SelectedItem}">
         <DataGrid.Styles>
             <!--<Style Selector="DataGridRow">
