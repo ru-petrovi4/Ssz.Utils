@@ -98,10 +98,10 @@ namespace Ssz.Operator.Core.DsShapeViews
                 //    (dsShape, frame) =>
                 //        new EditableComboBoxDsShapeView((EditableComboBoxDsShape) dsShape, frame)
                 //},
-                //{
-                //    TrendGroupDsShape.DsShapeTypeGuid,
-                //    (dsShape, frame) => new TrendGroupDsShapeView((TrendGroupDsShape) dsShape, frame)
-                //},
+                {
+                    TrendGroupDsShape.DsShapeTypeGuid,
+                    (dsShape, frame) => new TrendGroupDsShapeView((TrendGroupDsShape) dsShape, frame)
+                },
                 {
                     ChartDsShape.DsShapeTypeGuid,
                     (dsShape, frame) => new ChartDsShapeView((ChartDsShape) dsShape, frame)

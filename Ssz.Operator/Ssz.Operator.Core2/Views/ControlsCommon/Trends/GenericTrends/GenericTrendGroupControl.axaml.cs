@@ -5,7 +5,7 @@ using Avalonia.Controls;
 using Avalonia.Data;
 using Ssz.Operator.Core.ControlsCommon.Trends.ZoomLevels;
 
-namespace Ssz.Operator.Core.ControlsCommon.Trends;
+namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends;
 
 public partial class TrendGroupControl : UserControl
 {
@@ -22,13 +22,13 @@ public partial class TrendGroupControl : UserControl
 
     #region public functions
 
-    public static readonly AvaloniaProperty SelectedItemProperty = AvaloniaProperty.Register("SelectedItem",
-        typeof(object),
-        typeof(
-            TrendGroupControl
-        ),
-        new PropertyMetadata
-            (SelectedItemChanged));
+    public static readonly AvaloniaProperty SelectedItemProperty = AvaloniaProperty.Register<TrendGroupControl, object?>(nameof(SelectedItem));
+
+    public object? SelectedItem
+    {
+        get => GetValue(SelectedItemProperty);
+        set => SetValue(SelectedItemProperty, value);
+    }
 
     public ObservableCollection<Trend>? TrendItemViewsCollection
     {
@@ -36,25 +36,25 @@ public partial class TrendGroupControl : UserControl
         set
         {
             _trendItemViewsCollection = value;
-            TrendChartPlotter.TrendItemViewsCollection = value;
-            TrendsInfoTableControl.TrendItemViewsCollection = value;
+            MainGenericTrendsPlotView.TrendItemViewsCollection = value;
+            MainGenericTrendsInfoTableControl.TrendItemViewsCollection = value;
 
             SetBinding(DataContextProperty, new Binding
             {
-                Source = TrendsInfoTableControl,
+                Source = MainGenericTrendsInfoTableControl,
                 Path = new PropertyPath("SelectedItem"),
                 Mode = BindingMode.OneWay
             });
-            TrendChartPlotter.SetBinding(TrendChartPlotterControl.SelectedItemProperty, new Binding
+            MainGenericTrendsPlotView.SetBinding(MainGenericTrendsPlotViewControl.SelectedItemProperty, new Binding
             {
-                Source = TrendsInfoTableControl,
+                Source = MainGenericTrendsInfoTableControl,
                 Path =
                     new PropertyPath("SelectedItem"),
                 Mode = BindingMode.OneWay
             });
             SetBinding(SelectedItemProperty, new Binding
             {
-                Source = TrendsInfoTableControl,
+                Source = MainGenericTrendsInfoTableControl,
                 Path = new PropertyPath("SelectedItem"),
                 Mode = BindingMode.OneWay
             });
@@ -67,33 +67,33 @@ public partial class TrendGroupControl : UserControl
                     tr.PropertyChanged += a => TrendItemViewOnChanged(tr2);
                 }
 
-                TrendsInfoTableControl.SelectedItem = value.FirstOrDefault();
+                MainGenericTrendsInfoTableControl.SelectedItem = value.FirstOrDefault();
             }
         }
     }
 
-    public object SelectedItem
+    #endregion    
+
+    #region protected functions
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
     {
-        get => GetValue(SelectedItemProperty);
-        set => SetValue(SelectedItemProperty, value);
+        base.OnPropertyChanged(e);
+
+        if (e.Property == SelectedItemProperty)
+        {
+            UpdateValueAxis();
+        }
     }
 
     #endregion
 
     #region private functions
 
-    private static void SelectedItemChanged(DependencyObject d, AvaloniaPropertyChangedEventArgs e)
-    {
-        var control = (TrendGroupControl) d;
-        var seria = e.NewValue as Trend;
-
-        control.UpdateValueAxis();
-    }
-
     private void UpdateTimeAxis()
     {
-        TrendChartPlotter.ZoomRestriction.Interval = _currentTimeZoom.VisibleRange;
-        TrendChartPlotter.Update();
+        MainGenericTrendsPlotView.ZoomRestriction.Interval = _currentTimeZoom.VisibleRange;
+        MainGenericTrendsPlotView.Update();
     }
 
     private void UpdateValueAxis()
@@ -102,7 +102,7 @@ public partial class TrendGroupControl : UserControl
 
         foreach (Trend trendItemView in _trendItemViewsCollection) TrendItemViewOnChanged(trendItemView);
 
-        TrendChartPlotter.Update();
+        MainGenericTrendsPlotView.Update();
     }
 
     private void TrendItemViewOnChanged(Trend trendItemView)
@@ -118,9 +118,9 @@ public partial class TrendGroupControl : UserControl
 
         if (ReferenceEquals(SelectedItem, trendItemView))
         {
-            TrendChartPlotter.ZoomRestriction.ValueRange = visibleValueRange;
-            TrendChartPlotter.ZoomRestriction.ValueMin = trendItemView.VisibleYMin;
-            TrendChartPlotter.ZoomRestriction.ValueMax = trendItemView.VisibleYMax;
+            MainGenericTrendsPlotView.ZoomRestriction.ValueRange = visibleValueRange;
+            MainGenericTrendsPlotView.ZoomRestriction.ValueMin = trendItemView.VisibleYMin;
+            MainGenericTrendsPlotView.ZoomRestriction.ValueMax = trendItemView.VisibleYMax;
         }
     }
 

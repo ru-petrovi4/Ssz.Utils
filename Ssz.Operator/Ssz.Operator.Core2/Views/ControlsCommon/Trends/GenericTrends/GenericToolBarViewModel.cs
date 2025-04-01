@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 using Ssz.Utils;
 
-namespace Ssz.Operator.Core.ControlsCommon.Trends;
+namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends;
 
 public class XAxisInterval
 {
@@ -24,7 +25,7 @@ public class XAxisInterval
         get { return _visibleRange; }
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         var that = obj as XAxisInterval;
         if (that == null)
@@ -70,7 +71,7 @@ public class YAxisInterval
         return (maxScale - minScale)*_scaleCoefficient;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         var that = obj as YAxisInterval;
         if (that == null)

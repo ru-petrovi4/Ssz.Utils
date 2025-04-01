@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net9.0</TargetFrameworks>
+  
+    <RootNamespace>Egorozh.ColorPicker</RootNamespace>
+  
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageTags>Color, ColorPicker, Avalonia, AvaloniaUI</PackageTags>    
+
+    <Description>ColorPicker control for Avalonia</Description>
+    
+  </PropertyGroup>  
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.0.0" />
+    <PackageReference Include="TextCopy" Version="6.2.1" />
+  </ItemGroup>
+
+  <Import Project="..\..\Core\ColorPicker.Shared\ColorPicker.Shared.projitems" Label="Shared" />
+
+</Project>

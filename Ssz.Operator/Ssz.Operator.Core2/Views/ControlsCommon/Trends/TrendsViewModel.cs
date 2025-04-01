@@ -64,10 +64,9 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
         /// <param name="dsTrendItems"></param>
         public virtual void Display(IEnumerable<DsTrendItem> dsTrendItems)
         {
-            var trends = dsTrendItems.Select(i =>
-            {
-                var trend = new Trend(i, false, PlayDsProjectView.LastActiveRootPlayWindow);                
-                return trend;
+            var trends = dsTrendItems.Select(it =>
+            {                     
+                return new Trend(it, false, PlayDsProjectView.LastActiveRootPlayWindow);
             }).ToArray();
 
             foreach (var trend in _trends)

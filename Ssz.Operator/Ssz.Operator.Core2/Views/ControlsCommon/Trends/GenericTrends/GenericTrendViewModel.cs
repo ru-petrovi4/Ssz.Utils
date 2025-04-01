@@ -2,8 +2,10 @@ using System.Linq;
 using Ssz.Operator.Core.Commands;
 using Ssz.Operator.Core;
 using Ssz.Operator.Core.ControlsCommon.Trends;
+using Avalonia;
+using Ssz.Operator.Core.Commands.DsCommandOptions;
 
-namespace Ssz.Operator.Core.ControlsCommon.Trends;
+namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends;
 
 public class GenericTrendViewModel : TrendViewModel
 {
@@ -52,8 +54,8 @@ public class GenericTrendViewModel : TrendViewModel
         {
             CommandsManager.NotifyCommand(
                 null,
-                GenericCommands.ShowFaceplateCommand,
-                new ShowFaceplateDsCommandOptions { ParamsString = tag});
+                CommandsManager.ShowFaceplateForTagCommand,
+                new ShowFaceplateForTagDsCommandOptions { TagName = tag });
         }
     }
 
@@ -75,7 +77,7 @@ public class GenericTrendViewModel : TrendViewModel
             YMaxWithPadding = Source.YMax + VisibleValueRange/2;
         }
 
-        Source.ValueFormat = FaceplateBaseControl.GetNumberFormat(Source.YMin, Source.YMax);
+        Source.ValueFormat = "F02"; // FaceplateBaseControl.GetNumberFormat(Source.YMin, Source.YMax);
     }
 
     public void UpdatePoints()
@@ -95,13 +97,13 @@ public class GenericTrendViewModel : TrendViewModel
 
         if (doubleClick)
         {
-            CommandsManager.NotifyCommand(null,
-                GenericCommands.ShowSingleTrendCommand,
-                new ShowSingleTrendDsCommandOptions
-                {
-                    HdaId = Source.HdaId,
-                    ColorBrush = new SolidDsBrush(Color)
-                });
+            //CommandsManager.NotifyCommand(null,
+            //    CommandsManager.ShowSingleTrendCommand,
+            //    new ShowSingleTrendDsCommandOptions
+            //    {
+            //        HdaId = Source.HdaId,
+            //        ColorBrush = new SolidDsBrush(Color)
+            //    });
         }
     }
 
@@ -118,13 +120,15 @@ public class GenericTrendViewModel : TrendViewModel
 
     #region private functions
 
-    private void Source_OnPropertyChanged(DependencyPropertyChangedEventArgs args = default(DependencyPropertyChangedEventArgs))
+    private void Source_OnPropertyChanged(object? sender = null, AvaloniaPropertyChangedEventArgs? args = null)
     {
-        if (args == default(DependencyPropertyChangedEventArgs) || args.Property == Trend.YMinProperty || args.Property == Trend.YMaxProperty)
+        if (args == null || args.Property == Trend.YMinProperty || args.Property == Trend.YMaxProperty)
         {
             UpdateMinimumMaximumBorders();
             foreach (GenericTrendViewModel trendViewModel in _trendsCollectionViewModel.Items.OfType<GenericTrendViewModel>())
+            {
                 trendViewModel.UpdatePoints();
+            }
         }
     }
 

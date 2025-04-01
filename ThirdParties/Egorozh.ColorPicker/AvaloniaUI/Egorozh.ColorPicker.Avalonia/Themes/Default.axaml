@@ -1,0 +1,17 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+  <StyleInclude Source="avares://Egorozh.ColorPicker.Avalonia/Themes/Controls/Default/LabelNumericUpDown.axaml" />
+
+  <StyleInclude Source="avares://Egorozh.ColorPicker.Avalonia/Themes/Controls/Default/ColorWheel.axaml" />
+  <StyleInclude Source="avares://Egorozh.ColorPicker.Avalonia/Themes/Controls/Default/ColorPalette.axaml" />
+  <StyleInclude Source="avares://Egorozh.ColorPicker.Avalonia/Themes/Controls/Default/ColorPreview.axaml" />
+  <StyleInclude Source="avares://Egorozh.ColorPicker.Avalonia/Themes/Controls/Default/ColorSlider.axaml" />
+  <StyleInclude Source="avares://Egorozh.ColorPicker.Avalonia/Themes/Controls/Default/ColorHexComboBox.axaml" />
+  <StyleInclude Source="avares://Egorozh.ColorPicker.Avalonia/Themes/Controls/Default/ColorEditor.axaml" />
+
+  <StyleInclude Source="avares://Egorozh.ColorPicker.Avalonia/Themes/Controls/Default/ColorPicker.axaml" />
+
+  <StyleInclude Source="avares://Egorozh.ColorPicker.Avalonia/Themes/Controls/ColorPickerButton.axaml" />
+
+</Styles>

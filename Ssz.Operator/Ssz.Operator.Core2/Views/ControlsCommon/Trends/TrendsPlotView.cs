@@ -21,10 +21,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
     [TemplatePart(Name = XAxis_PART, Type = typeof(DateTimeAxis))]
     public abstract class TrendsPlotView : TemplatedControl
     {
-        #region public functions
-
-        public const string Plot_PART = "Plot";
-        public const string XAxis_PART = "XAxis";
+        #region construction and destruction    
 
         protected TrendsPlotView()
         {
@@ -38,6 +35,13 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
                 DsProject.Instance.GlobalUITimerEvent -= OnGlobalUITimerEvent;
             };
         }
+
+        #endregion
+
+        #region public functions
+
+        public const string Plot_PART = "Plot";
+        public const string XAxis_PART = "XAxis";        
 
         public bool RefreshOnTimerTick = true;        
 
@@ -146,6 +150,11 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
             {
                 RefreshLines();
             }
+
+            if (e.Property == SelectedItemProperty)
+            {
+                RefreshLines();
+            }
         }
 
         protected virtual void RefreshLines()
@@ -248,11 +257,6 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
         //        .GetValue(Plot)!;
         //    grid.Children.Add(mouseGrid);
         //}
-
-        #endregion
-
-        #region private fields
-        
 
         #endregion
     }

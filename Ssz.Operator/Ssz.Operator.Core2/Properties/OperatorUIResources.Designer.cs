@@ -97,6 +97,69 @@ namespace Ssz.Operator.Core.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Color.
+        /// </summary>
+        public static string GenericTrendsInfoTableControl_ColorColumn {
+            get {
+                return ResourceManager.GetString("GenericTrendsInfoTableControl_ColorColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string GenericTrendsInfoTableControl_DescriptionColumn {
+            get {
+                return ResourceManager.GetString("GenericTrendsInfoTableControl_DescriptionColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Eng Units.
+        /// </summary>
+        public static string GenericTrendsInfoTableControl_EUColumn {
+            get {
+                return ResourceManager.GetString("GenericTrendsInfoTableControl_EUColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Param.
+        /// </summary>
+        public static string GenericTrendsInfoTableControl_HdaIdToDisplayColumn {
+            get {
+                return ResourceManager.GetString("GenericTrendsInfoTableControl_HdaIdToDisplayColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max.
+        /// </summary>
+        public static string GenericTrendsInfoTableControl_MaxScaleColumn {
+            get {
+                return ResourceManager.GetString("GenericTrendsInfoTableControl_MaxScaleColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Min.
+        /// </summary>
+        public static string GenericTrendsInfoTableControl_MinScaleColumn {
+            get {
+                return ResourceManager.GetString("GenericTrendsInfoTableControl_MinScaleColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Visibility.
+        /// </summary>
+        public static string GenericTrendsInfoTableControl_VisibleColumn {
+            get {
+                return ResourceManager.GetString("GenericTrendsInfoTableControl_VisibleColumn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Go to Point.
         /// </summary>
         public static string GoToDsPageButtonText {
@@ -138,69 +201,6 @@ namespace Ssz.Operator.Core.Properties {
         public static string TrendGroupControlIncreaseValue {
             get {
                 return ResourceManager.GetString("TrendGroupControlIncreaseValue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Color.
-        /// </summary>
-        public static string TrendsInfoControlColorColumn {
-            get {
-                return ResourceManager.GetString("TrendsInfoControlColorColumn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Description.
-        /// </summary>
-        public static string TrendsInfoControlDescriptionColumn {
-            get {
-                return ResourceManager.GetString("TrendsInfoControlDescriptionColumn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Eng Units.
-        /// </summary>
-        public static string TrendsInfoControlEUColumn {
-            get {
-                return ResourceManager.GetString("TrendsInfoControlEUColumn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Param.
-        /// </summary>
-        public static string TrendsInfoControlHdaIdToDisplayColumn {
-            get {
-                return ResourceManager.GetString("TrendsInfoControlHdaIdToDisplayColumn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Max.
-        /// </summary>
-        public static string TrendsInfoControlMaxScaleColumn {
-            get {
-                return ResourceManager.GetString("TrendsInfoControlMaxScaleColumn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Min.
-        /// </summary>
-        public static string TrendsInfoControlMinScaleColumn {
-            get {
-                return ResourceManager.GetString("TrendsInfoControlMinScaleColumn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Visibility.
-        /// </summary>
-        public static string TrendsInfoControlVisibleColumn {
-            get {
-                return ResourceManager.GetString("TrendsInfoControlVisibleColumn", resourceCulture);
             }
         }
     }

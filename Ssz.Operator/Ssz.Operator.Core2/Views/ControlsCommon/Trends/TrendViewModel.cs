@@ -247,7 +247,11 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
             Points = points;
         }
 
-        protected virtual void Source_OnPropertyChanged(object? sender = null, AvaloniaPropertyChangedEventArgs? args = null)
+        #endregion
+
+        #region private functions   
+
+        private void Source_OnPropertyChanged(object? sender = null, AvaloniaPropertyChangedEventArgs? args = null)
         {
             if (args == null || args.Property == Trend.BrushProperty)
                 UpdateColor();
@@ -271,10 +275,6 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
             if (args != null)
                 OnPropertyChanged(args.Property.Name);
         }
-
-        #endregion
-
-        #region private functions    
 
         private void UpdateCurrentValueAndTimestamp()
         {

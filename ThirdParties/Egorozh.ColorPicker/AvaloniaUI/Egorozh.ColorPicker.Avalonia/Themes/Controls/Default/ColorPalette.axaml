@@ -1,0 +1,159 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+
+        xmlns:local="clr-namespace:Egorozh.ColorPicker;assembly=Egorozh.ColorPicker.Avalonia">
+
+    <Styles.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="../../Others/Brushes.axaml"/>
+                <ResourceInclude Source="../../Others/Icons.axaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Styles.Resources>
+
+    
+    <Style Selector="local|ColorPalette">
+        <Setter Property="LoadPaletteIconTemplate">
+            <DataTemplate>
+                <Image Source="{StaticResource LoadPaletteIcon}" />
+            </DataTemplate>
+        </Setter>
+
+        <Setter Property="SavePaletteIconTemplate">
+            <DataTemplate>
+                <Image Source="{StaticResource SavePaletteIcon}" />
+            </DataTemplate>
+        </Setter>
+
+        <Setter Property="ContextMenu">
+            <ContextMenu>
+                <MenuItem Name="PART_AddMenuItem" 
+                          Header="{Binding $parent[local:ColorPalette].AddColorContextMenuText}" />
+                <MenuItem Name="PART_RemoveMenuItem"
+                          Header="{Binding $parent[local:ColorPalette].RemoveColorContextMenuText}" />
+                <Separator />
+                <MenuItem Name="PART_LoadPaletteMenuItem"
+                          Header="{Binding $parent[local:ColorPalette].LoadPaletteContextMenuText}">
+                    <MenuItem.Icon>
+                        <ContentControl ContentTemplate="{Binding $parent[local:ColorPalette].LoadPaletteIconTemplate}">
+                            <ContentControl.Content>
+                                <DataObject />
+                            </ContentControl.Content>
+                        </ContentControl>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Name="PART_SavePaletteMenuItem"
+                          Header="{Binding $parent[local:ColorPalette].SavePaletteContextMenuText}">
+                    <MenuItem.Icon>
+                        <ContentControl ContentTemplate="{Binding $parent[local:ColorPalette].SavePaletteIconTemplate}">
+                            <ContentControl.Content>
+                                <DataObject />
+                            </ContentControl.Content>
+                        </ContentControl>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </ContextMenu>
+        </Setter>
+
+        <Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+
+        <Setter Property="ItemsPanel">
+            <ItemsPanelTemplate>
+                <WrapPanel />
+            </ItemsPanelTemplate>
+        </Setter>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="border"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                    <ScrollViewer Name="PART_ScrollViewer"
+                                  AllowAutoHide="{TemplateBinding (ScrollViewer.AllowAutoHide)}"
+                                  BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}"
+                                  Background="{TemplateBinding Background}"
+                                  HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                                  IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
+                                  VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}"
+                                  VerticalSnapPointsType="{TemplateBinding (ScrollViewer.VerticalSnapPointsType)}"
+                                  HorizontalSnapPointsType="{TemplateBinding (ScrollViewer.HorizontalSnapPointsType)}">
+                        <ItemsPresenter Name="PART_ItemsPresenter"
+                                        Margin="{TemplateBinding Padding}"
+                                        ItemsPanel="{TemplateBinding ItemsPanel}" />
+                    </ScrollViewer>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="local|ColorListItem">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Width"
+                Value="{Binding $parent[local:ColorPalette].Bounds.Width, Converter={local:DivideDoubleToDoubleConverter}, ConverterParameter=10}" />
+        <Setter Property="Padding" Value="2 1" />
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="Transparent"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderBrush="{TemplateBinding BorderBrush}">
+
+                    <Grid>
+                        <Rectangle Fill="{StaticResource TransparencyBrush}" />
+                        <Rectangle Fill="{TemplateBinding Background}" />
+                    </Grid>
+
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    
+    <Style Selector="local|ColorListItem.Add">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Width"
+                Value="{Binding $parent[local:ColorPalette].Bounds.Width, Converter={local:DivideDoubleToDoubleConverter}, ConverterParameter=10}" />
+        <Setter Property="Padding" Value="4" />
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderBrush="{TemplateBinding BorderBrush}">
+
+                    <Path Data="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"
+                          Fill="{DynamicResource ThemeAccentBrush}"
+                          Stretch="Uniform"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Center"
+                          Margin="{TemplateBinding Padding}" />
+
+                </Border>
+
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    
+    <Style Selector="local|ColorListItem:pointerover /template/ Border">
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderHighBrush}" />
+    </Style>
+    
+    <Style Selector="local|ColorListItem:pressed  /template/ Border">
+        <Setter Property="Background" Value="{DynamicResource ThemeControlHighBrush}" />
+    </Style>
+    
+    <Style Selector="local|ColorListItem:selected  /template/ Border">
+        <Setter Property="BorderBrush" Value="{DynamicResource ThemeAccentBrush}" />
+    </Style>
+</Styles>

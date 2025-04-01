@@ -4,7 +4,7 @@ using System.Linq;
 using Ssz.Operator.Core.DsShapes.Trends;
 
 
-namespace Ssz.Operator.Core.ControlsCommon.Trends;
+namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends;
 
 public class GenericTrendsViewModel : TrendsViewModel
 {
@@ -88,11 +88,9 @@ public class GenericTrendsViewModel : TrendsViewModel
 
     public override void Display(IEnumerable<DsTrendItem> dsTrendItems)
     {
-        var trends = dsTrendItems.Select(i =>
-        {
-            var trend = new Trend();
-            trend.SubscribeTo(i);
-            return trend;
+        var trends = dsTrendItems.Select(it =>
+        {            
+            return new Trend(it, false, PlayDsProjectView.LastActiveRootPlayWindow);
         }).ToArray();
 
         foreach (var trend in _trends)
@@ -104,16 +102,16 @@ public class GenericTrendsViewModel : TrendsViewModel
         Items = trends.Select((i, idx) => new GenericTrendViewModel(this, i, idx));
     }
 
-    public void Display(IEnumerable<Trend> trends)
-    {
-        foreach (var trend in _trends)
-        {
-            trend.Dispose();
-        }
-        _trends = trends.ToArray();
+    //public void Display(IEnumerable<Trend> trends)
+    //{
+    //    foreach (var trend in _trends)
+    //    {
+    //        trend.Dispose();
+    //    }
+    //    _trends = trends.ToArray();
 
-        Items = trends.Select((i, idx) => new GenericTrendViewModel(this, i, idx));
-    }
+    //    Items = trends.Select((i, idx) => new GenericTrendViewModel(this, i, idx));
+    //}
 
     #endregion
 
@@ -160,8 +158,8 @@ public class GenericTrendsViewModel : TrendsViewModel
 
     private Trend[] _trends = [];
 
-    private YAxisInterval _valueZoomLevel;
-    private DateRange _totalDateRange;
+    private YAxisInterval _valueZoomLevel = null!;
+    private DateRange _totalDateRange = null!;
 
     #endregion
 }

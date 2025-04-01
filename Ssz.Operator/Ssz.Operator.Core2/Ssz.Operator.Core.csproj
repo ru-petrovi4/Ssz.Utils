@@ -11,14 +11,7 @@
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
- 
-  <ItemGroup>
-    <AvaloniaXaml Remove="Views\ControlsCommon\Trends\GenericTrends\**" />
-    <Compile Remove="Views\ControlsCommon\Trends\GenericTrends\**" />
-    <EmbeddedResource Remove="Views\ControlsCommon\Trends\GenericTrends\**" />
-    <None Remove="Views\ControlsCommon\Trends\GenericTrends\**" />
-  </ItemGroup>
-
+	
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.2.5" />
     <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.2.5" />
@@ -40,6 +33,7 @@
     <ProjectReference Include="..\..\Ssz.DataAccessGrpc.Client\Ssz.DataAccessGrpc.Client.csproj" />
     <ProjectReference Include="..\..\Ssz.Utils.Avalonia\Ssz.Utils.Avalonia.csproj" />
     <ProjectReference Include="..\..\Ssz.Utils\Ssz.Utils.csproj" />
+    <ProjectReference Include="..\..\ThirdParties\Egorozh.ColorPicker\AvaloniaUI\Egorozh.ColorPicker.Avalonia.Dialog\Egorozh.ColorPicker.Avalonia.Dialog.csproj" />
     <ProjectReference Include="..\..\ThirdParties\OxyPlot\OxyPlot.Avalonia\OxyPlot.Avalonia.csproj" />
     <ProjectReference Include="..\..\ThirdParties\OxyPlot\OxyPlot.Core\OxyPlot.Core.csproj" />
   </ItemGroup>
@@ -54,6 +48,9 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ControlsCommon\Trends\GenericTrends\GenericTrendsPlotView.axaml.cs">
+      <DependentUpon>GenericTrendsPlotView.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
 

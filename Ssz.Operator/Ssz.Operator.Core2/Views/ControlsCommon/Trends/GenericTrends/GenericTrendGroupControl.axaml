@@ -1,11 +1,11 @@
-<UserControl x:Class="Ssz.Operator.Core.ControlsCommon.Trends.TrendGroupControl"
+<UserControl x:Class="Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.TrendGroupControl"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:res="clr-namespace:Ssz.Operator.Core.Properties"
              xmlns:trends="clr-namespace:Ssz.Operator.Core.ControlsCommon.Trends"
-             xmlns:genericTrends="clr-namespace:Ssz.Operator.Core.ControlsCommon.Trends"
+             xmlns:genericTrends="clr-namespace:Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends"
              mc:Ignorable="d"
              d:DesignHeight="427" d:DesignWidth="722">
     <Grid Name="MainGrid">
@@ -18,13 +18,13 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <genericTrends:TrendChartPlotterControl x:Name="TrendChartPlotter" Margin="5,5,0,0" x:FieldModifier="public"
+		<genericTrends:GenericTrendsPlotView x:Name="MainGenericTrendsPlotView" Margin="5,5,0,0" x:FieldModifier="public"
                                          Grid.ColumnSpan="1"
                                          HorizontalAlignment="Stretch"
                                          VerticalAlignment="Stretch" />
         <GridSplitter Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Height="5" Background="LightGray"
                       HorizontalAlignment="Stretch" />
-        <genericTrends:TrendsInfoTableControl Margin="5,5,5,5" Grid.Row="2" x:Name="TrendsInfoTableControl"
+		<genericTrends:GenericTrendsInfoTableControl Margin="5,5,5,5" Grid.Row="2" x:Name="MainGenericTrendsInfoTableControl"
                                        x:FieldModifier="public"
                                        Grid.ColumnSpan="2" Grid.Column="0" />
         <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="0" x:Name="TrendsTuningControl"
