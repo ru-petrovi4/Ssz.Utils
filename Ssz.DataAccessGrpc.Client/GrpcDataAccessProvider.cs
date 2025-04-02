@@ -295,7 +295,7 @@ namespace Ssz.DataAccessGrpc.Client
                 try
                 {
                     await _clientElementValueListManager.SubscribeAsync(_clientContextManager, CallbackDispatcher,
-                    OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, ct);
+                        OnElementValuesCallback, Options.UnsubscribeValueListItemsFromServer, Options.ElementValueListCallbackIsEnabled, ct);
                     object[]? changedValueSubscriptions = await _clientElementValueListManager.PollChangesAsync();
                     taskCompletionSource.SetResult(changedValueSubscriptions is not null ? changedValueSubscriptions.OfType<IValueSubscription>().ToArray() : null);
                 }

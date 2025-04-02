@@ -23,30 +23,7 @@ public partial class GenericTrendsInfoTableControl : UserControl
         InitializeComponent();
     }
 
-    #endregion
-
-    #region public functions
-
-    public static readonly AvaloniaProperty SelectedItemProperty = AvaloniaProperty.Register<GenericTrendsInfoTableControl, object?>(nameof(SelectedItem));
-
-    public object? SelectedItem
-    {
-        get => GetValue(SelectedItemProperty);
-        set => SetValue(SelectedItemProperty, value);
-    }
-
-    public ObservableCollection<Trend>? TrendItemViewsCollection
-    {
-        get => MainDataGrid.ItemsSource as ObservableCollection<Trend>;
-        set
-        {
-            MainDataGrid.ItemsSource = value;
-            if (value?.Count > 0)
-                MainDataGrid.SelectedIndex = 0;
-        }
-    }    
-
-    #endregion
+    #endregion    
 
     #region private functions    
 

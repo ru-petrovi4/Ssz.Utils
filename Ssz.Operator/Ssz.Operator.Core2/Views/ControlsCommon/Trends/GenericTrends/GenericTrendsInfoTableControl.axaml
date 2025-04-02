@@ -2,21 +2,21 @@
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:valueConverters="clr-namespace:Ssz.Operator.Core.VisualEditors.ValueConverters"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"             
              xmlns:res="clr-namespace:Ssz.Operator.Core.Properties"
              x:Name="MainUserControl"
 			 x:CompileBindings="False"
              d:DesignWidth="400" d:DesignHeight="200"
              mc:Ignorable="d">    
     <DataGrid AutoGenerateColumns="False" Name="MainDataGrid"
-              CanUserReorderColumns="False" CanUserSortColumns="False"
+              CanUserReorderColumns="False" CanUserSortColumns="False"			  
               Background="{Binding ElementName=MainUserControl, Path=Background}"
-			  SelectedItem="{Binding ElementName=MainUserControl, Path=SelectedItem}">
+			  ItemsSource="{Binding Items}"
+			  SelectedItem="{Binding SelectedItem}">
         <DataGrid.Styles>
             <!--<Style Selector="DataGridRow">
                 <Setter Property="IsVisible" Value="{Binding IsVisible}" />
-            </Style>-->                
+            </Style>             
             <Style Selector="DataGridCell">
                 <Setter Property="Padding" Value="5,0,5,0" />
                 <Setter Property="Template">
@@ -30,7 +30,7 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-            </Style>        
+            </Style>    -->
 		</DataGrid.Styles>
         <DataGrid.Columns>
             <DataGridTemplateColumn Header="{x:Static res:OperatorUIResources.GenericTrendsInfoTableControl_VisibleColumn}"

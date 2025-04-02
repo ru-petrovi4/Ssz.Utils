@@ -157,7 +157,9 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
             var range = VisibleDateRange.AddPadding(VisibleDateRange.Range);
 
             foreach (var trendViewModel in _items)
+            {
                 trendViewModel.LoadPoints(range);
+            }
         }
 
         #endregion
