@@ -59,8 +59,10 @@ namespace Ssz.DataAccessGrpc.Client
                 };
                 if (params_ is not null)
                     foreach (var kvp in params_)
+                    {
                         request.Params.Add(kvp.Key,
                             kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
+                    }
                 request.ServerAliases.Add(serverAliases);
                 var reply = await _dataAccessService.ReadElementValuesJournalsAsync(request);
                 SetResourceManagementLastCallUtc();

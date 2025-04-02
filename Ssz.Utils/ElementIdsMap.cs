@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Ssz.Utils.DataAccess;
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -53,17 +54,18 @@ namespace Ssz.Utils
         /// <summary>
         ///     Not null after Initialize(...)
         /// </summary>
-        public CaseInsensitiveDictionary<List<string?>> Map { get; private set; } = null!;
+        public FrozenDictionary<string, List<string?>> Map { get; private set; } = null!;
 
         /// <summary>
         ///     Not null after Initialize(...)
         /// </summary>
-        public CaseInsensitiveDictionary<List<string?>> Tags { get; private set; } = null!;
+        public FrozenDictionary<string, List<string?>> Tags { get; private set; } = null!;
 
         /// <summary>
         ///     Can be configured in map, '%(CommonEventMessageFieldsToAdd)' key
+        ///     Not null after Initialize(...)
         /// </summary>
-        public CaseInsensitiveDictionary<string?> CommonEventMessageFieldsToAdd { get; private set; } = new();
+        public FrozenDictionary<string, string?> CommonEventMessageFieldsToAdd { get; set; } = null!;
 
         public bool IsEmpty => Map.Count == 0;
 
@@ -77,8 +79,8 @@ namespace Ssz.Utils
         public void Initialize(CaseInsensitiveDictionary<List<string?>> map,
             CaseInsensitiveDictionary<List<string?>> tags, CsvDb? csvDb = null)
         {            
-            Map = map;
-            Tags = tags;
+            Map = map.ToFrozenDictionary(StringComparer.InvariantCultureIgnoreCase);
+            Tags = tags.ToFrozenDictionary(StringComparer.InvariantCultureIgnoreCase);
             _csvDb = csvDb;
 
             var values = Map.TryGetValue(GenericTagMapOptionParamName);
@@ -99,7 +101,7 @@ namespace Ssz.Utils
 
             values = Map.TryGetValue(CommonEventMessageFieldsToAddParamName);
             if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
-                CommonEventMessageFieldsToAdd = NameValueCollectionHelper.Parse(values[1]);
+                CommonEventMessageFieldsToAdd = NameValueCollectionHelper.Parse(values[1]).ToFrozenDictionary(StringComparer.InvariantCultureIgnoreCase);
         }
 
         /// <summary>
@@ -230,14 +232,15 @@ namespace Ssz.Utils
             if (eventMessagesCollection is null)
                 return null;
 
+            var commonEventMessageFieldsToAdd = CommonEventMessageFieldsToAdd;
             if (eventMessagesCollection.CommonFields is null)
             {
-                if (CommonEventMessageFieldsToAdd.Count > 0)
-                    eventMessagesCollection.CommonFields = new CaseInsensitiveDictionary<string?>(CommonEventMessageFieldsToAdd);
+                if (commonEventMessageFieldsToAdd.Count > 0)
+                    eventMessagesCollection.CommonFields = new CaseInsensitiveDictionary<string?>(commonEventMessageFieldsToAdd);
             }
             else
             {
-                foreach (var kvp in CommonEventMessageFieldsToAdd)
+                foreach (var kvp in commonEventMessageFieldsToAdd)
                 {
                     eventMessagesCollection.CommonFields[kvp.Key] = kvp.Value;
                 }

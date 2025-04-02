@@ -175,13 +175,20 @@ namespace Ssz.DataAccessGrpc.Client
             if (!_contextIsOperational) 
                 return;
 
-            uint timeDiffInMs = (uint)(nowUtc - _resourceManagementLastCallUtc).TotalMilliseconds + 500;
+            uint timeDiffInMs;
+            lock (_resourceManagementLastCallUtcSyncRoot)
+            {
+                timeDiffInMs = (uint)(nowUtc - _resourceManagementLastCallUtc).TotalMilliseconds + 500;
+            }
 
             if (timeDiffInMs >= KeepAliveIntervalMs)
             {
                 try
                 {
-                    _resourceManagementLastCallUtc = nowUtc;
+                    lock (_resourceManagementLastCallUtcSyncRoot)
+                    {
+                        _resourceManagementLastCallUtc = nowUtc;
+                    }                    
 
                     await _dataAccessService.ClientKeepAliveAsync(new ClientKeepAliveRequest
                     {
@@ -201,7 +208,10 @@ namespace Ssz.DataAccessGrpc.Client
 
         private void SetResourceManagementLastCallUtc()
         {
-            _resourceManagementLastCallUtc = DateTime.UtcNow;
+            lock (_resourceManagementLastCallUtcSyncRoot)
+            {
+                _resourceManagementLastCallUtc = DateTime.UtcNow;
+            }           
         }
 
         /// <summary>
@@ -264,6 +274,7 @@ namespace Ssz.DataAccessGrpc.Client
         
         private string _serverCultureName = null!;
 
+        private readonly object _resourceManagementLastCallUtcSyncRoot = new();
         private DateTime _resourceManagementLastCallUtc;
 
         private IAsyncStreamReader<CallbackMessage>? _callbackStreamReader;

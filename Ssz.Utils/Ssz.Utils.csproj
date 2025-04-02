@@ -13,12 +13,18 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.4.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.3" />
-    <PackageReference Include="protobuf-net" Version="3.2.46" />
+    <PackageReference Include="protobuf-net" Version="3.2.46" />    
     <PackageReference Include="System.ComponentModel.Composition" Version="9.0.3" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<PackageReference Include="System.Collections.Immutable" Version="9.0.3" />	
+	</ItemGroup>
+
+	
+
+	<ItemGroup>
     <ProjectReference Include="..\ThirdParties\YamlDotNet\YamlDotNet.csproj" PrivateAssets="all" />
   </ItemGroup>
 

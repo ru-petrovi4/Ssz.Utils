@@ -95,8 +95,10 @@ namespace Ssz.DataAccessGrpc.Client
                     ContextId = _serverContextId                    
                 };
                 foreach (var kvp in contextParams)
+                {
                     request.ContextParams.Add(kvp.Key,
                         kvp.Value is not null ? new NullableString { Data = kvp.Value } : new NullableString { Null = NullValue.NullValue });
+                }
                 await _dataAccessService.UpdateContextParamsAsync(request);
                 SetResourceManagementLastCallUtc();
             }
