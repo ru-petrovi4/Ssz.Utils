@@ -35,8 +35,8 @@ using System.Globalization;
 using System.Text;
 using System.Xml;
 using System.IO;
-using System.DrawingCore;
-using System.DrawingCore.Imaging;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Diagnostics;
 using OfficeOpenXml.Utils;
 using OfficeOpenXml.Compatibility;
@@ -63,7 +63,7 @@ namespace OfficeOpenXml.Drawing
                 ContentType = GetContentType(f.Extension);
                 _image = Image.FromStream(Part.GetStream());
 
-#if NET5_0_OR_GREATER
+#if (Core)
                 byte[] iby = ImageCompat.GetImageAsByteArray(_image);
 #else
                 ImageConverter ic =new ImageConverter();
@@ -128,7 +128,7 @@ namespace OfficeOpenXml.Drawing
             var imagestream = new FileStream(imageFile.FullName, FileMode.Open, FileAccess.Read);
             _image = Image.FromStream(imagestream);
 
-#if NET5_0_OR_GREATER
+#if (Core)
             var img=ImageCompat.GetImageAsByteArray(_image);
 #else
             ImageConverter ic = new ImageConverter();
@@ -228,7 +228,7 @@ namespace OfficeOpenXml.Drawing
         #endregion
         private string SavePicture(Image image)
         {
-#if NET5_0_OR_GREATER
+#if (Core)
             byte[] img = ImageCompat.GetImageAsByteArray(image);
 #else
             ImageConverter ic = new ImageConverter();

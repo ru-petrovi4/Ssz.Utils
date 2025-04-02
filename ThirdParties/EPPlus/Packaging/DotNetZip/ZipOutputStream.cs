@@ -1022,7 +1022,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         {
             get
             {
-                #if NET5_0_OR_GREATER
+                #if Core
                     return System.Text.Encoding.GetEncoding("utf-8");     
                 #else
                                 return System.Text.Encoding.GetEncoding("IBM437");
@@ -1619,7 +1619,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Zip
         private Dictionary<String, ZipEntry> _entriesWritten;
         private int _entryCount;
         private ZipOption _alternateEncodingUsage = ZipOption.Never;
-#if NET5_0_OR_GREATER
+#if (Core)
         private System.Text.Encoding _alternateEncoding
             = System.Text.Encoding.GetEncoding("utf-8"); // 
 #else

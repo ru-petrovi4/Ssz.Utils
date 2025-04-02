@@ -18,7 +18,7 @@ namespace OfficeOpenXml.FormulaParsing.Logging
         private Dictionary<string, long> _funcPerformance = new Dictionary<string, long>();
         internal TextFileLogger(FileInfo fileInfo)
         {
-#if NET5_0_OR_GREATER
+#if (Core)
             _sw = new StreamWriter(new FileStream(fileInfo.FullName, FileMode.Append));
 #else
             _sw = new StreamWriter(fileInfo.FullName);

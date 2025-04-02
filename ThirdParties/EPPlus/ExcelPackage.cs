@@ -46,9 +46,9 @@ using OfficeOpenXml.Utils.CompundDocument;
 using System.Configuration;
 using OfficeOpenXml.Compatibility;
 using System.Text;
-//#if NET5_0_OR_GREATER
-//using Microsoft.Extensions.Configuration;
-//#endif
+#if (Core)
+using Microsoft.Extensions.Configuration;
+#endif
 namespace OfficeOpenXml
 {
     /// <summary>
@@ -425,7 +425,7 @@ namespace OfficeOpenXml
         }
         internal ImageInfo AddImage(byte[] image, Uri uri, string contentType)
         {
-#if NET5_0_OR_GREATER
+#if (Core)
             var hashProvider = SHA1.Create();
 #else
             var hashProvider = new SHA1CryptoServiceProvider();
@@ -459,7 +459,7 @@ namespace OfficeOpenXml
         }
         internal ImageInfo LoadImage(byte[] image, Uri uri, Packaging.ZipPackagePart imagePart)
         {
-#if NET5_0_OR_GREATER
+#if (Core)
             var hashProvider = SHA1.Create();
 #else
             var hashProvider = new SHA1CryptoServiceProvider();
@@ -493,7 +493,7 @@ namespace OfficeOpenXml
         }
         internal ImageInfo GetImageInfo(byte[] image)
         {
-#if NET5_0_OR_GREATER
+#if (Core)
             var hashProvider = SHA1.Create();
 #else
             var hashProvider = new SHA1CryptoServiceProvider();
@@ -526,25 +526,25 @@ namespace OfficeOpenXml
         private void Init()
         {
             DoAdjustDrawings = true;
-//#if NET5_0_OR_GREATER
-//            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);  //Add Support for codepage 1252
+#if (Core)
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);  //Add Support for codepage 1252
 
-//            var build = new ConfigurationBuilder()
-//                .SetBasePath(Directory.GetCurrentDirectory())
-//                .AddJsonFile("appsettings.json", true,false);            
-//            var c = build.Build();
+            var build = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", true,false);            
+            var c = build.Build();
 
-//            var v = c["EPPlus:ExcelPackage:Compatibility:IsWorksheets1Based"];
-//#else
-//            var v = ConfigurationManager.AppSettings["EPPlus:ExcelPackage.Compatibility.IsWorksheets1Based"];
-//#endif
-//            if (v != null)
-//            {
-//                if(Boolean.TryParse(v.ToLowerInvariant(), out bool value))
-//                {
-//                    Compatibility.IsWorksheets1Based = value;
-//                }
-//            }
+            var v = c["EPPlus:ExcelPackage:Compatibility:IsWorksheets1Based"];
+#else
+            var v = ConfigurationManager.AppSettings["EPPlus:ExcelPackage.Compatibility.IsWorksheets1Based"];
+#endif
+            if (v != null)
+            {
+                if(Boolean.TryParse(v.ToLowerInvariant(), out bool value))
+                {
+                    Compatibility.IsWorksheets1Based = value;
+                }
+            }
         }
         /// <summary>
         /// Create a new file from a template
@@ -1213,7 +1213,7 @@ namespace OfficeOpenXml
             this._workbook = null;
         }
         static object _lock=new object();
-#if NET5_0_OR_GREATER
+#if (Core)
         internal int _worksheetAdd=0;
 #else
         internal int _worksheetAdd=1;

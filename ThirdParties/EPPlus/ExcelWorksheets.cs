@@ -751,13 +751,14 @@ namespace OfficeOpenXml
 			var xml = origSheet.VmlDrawingsComments.VmlDrawingXml.OuterXml;
 			var vmlUri = new Uri(string.Format("/xl/drawings/vmlDrawing{0}.vml", newSheet.SheetID), UriKind.Relative);
 			var part = _pck.Package.CreatePart(vmlUri, "application/vnd.openxmlformats-officedocument.vmlDrawing", _pck.Compression);
-            // VALFIX
-            var streamDrawing = new StreamWriter(part.GetStream(FileMode.Create, FileAccess.Write));
-            streamDrawing.Write(xml);
-            streamDrawing.Flush();
-
+			using (var streamDrawing = new StreamWriter(part.GetStream(FileMode.Create, FileAccess.Write)))
+			{
+				streamDrawing.Write(xml);
+                streamDrawing.Flush();
+            }
+			
             //Add the relationship ID to the worksheet xml.
-            var vmlRelation = newSheet.Part.CreateRelationship(UriHelper.GetRelativeUri(newSheet.WorksheetUri,vmlUri), Packaging.TargetMode.Internal, ExcelPackage.schemaRelationships + "/vmlDrawing");
+			var vmlRelation = newSheet.Part.CreateRelationship(UriHelper.GetRelativeUri(newSheet.WorksheetUri,vmlUri), Packaging.TargetMode.Internal, ExcelPackage.schemaRelationships + "/vmlDrawing");
 			var e = newSheet.WorksheetXml.SelectSingleNode("//d:legacyDrawing", _namespaceManager) as XmlElement;
 			if (e == null)
 			{
@@ -1008,7 +1009,7 @@ namespace OfficeOpenXml
 			_worksheets = worksheets;
 		}
 
-#if NET5_0_OR_GREATER
+#if Core
         /// <summary>
         /// Returns the worksheet at the specified position. 
         /// </summary>

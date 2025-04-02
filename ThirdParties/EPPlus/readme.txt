@@ -17,8 +17,8 @@ This can be altered by setting the ExcelPackage.Compatibility.IsWorksheets1Based
 .NET Core will have this property set to false, and .Net 3.5 and .Net 4 version will have this property set to true for backward compatibility reasons.
 This property can also be set via the appsettings.json file in .Net Core or the app.config file. See sample project for examples!
 
-.NET Core uses a preview of System.DrawingCore.Common, so be aware of that. We will update it as Microsoft releases newer versions.
-System.DrawingCore.Common requires libgdiplus to be installed on non-Windows operating systems.
+.NET Core uses a preview of System.Drawing.Common, so be aware of that. We will update it as Microsoft releases newer versions.
+System.Drawing.Common requires libgdiplus to be installed on non-Windows operating systems.
 Use your favorite package manager to install it.
 For example:
 
@@ -35,7 +35,7 @@ Changes
 * Support for .NET Standard 2.1.
 
 4.5.3.2
-* Added a target build for .NET Core 2.1 (netcoreapp2.1) with System.DrawingCore.Common 4.6.0-preview6.19303.8 
+* Added a target build for .NET Core 2.1 (netcoreapp2.1) with System.Drawing.Common 4.6.0-preview6.19303.8 
 * Fixed Text property with short date format
 * Fixed problem with defined names containing backslash 
 * More bugfixes, see https://github.com/JanKallman/EPPlus/commits/master
@@ -45,17 +45,17 @@ Changes
 * Fixed address validation.
 
 4.5.3
-* Upgraded System.DrawingCore.Common for .NET Core to 4.5.1
+* Upgraded System.Drawing.Common for .NET Core to 4.5.1
 * Enabled worksheetcharts to use a pivottable as source by adding a pivotTableSource parameter to the AddChart method of the Worksheets collection
 * Pmt function
 * And lots of bugfixes, see https://github.com/JanKallman/EPPlus/commits/master
       
 4.5.2.1
-* Upgraded System.DrawingCore.Common for .NET Core to 4.5.0
+* Upgraded System.Drawing.Common for .NET Core to 4.5.0
 * Fixed problem with Apostrophe in worksheet name
 
 4.5.2
-* Upgraded System.DrawingCore.Common to 4.5.0-rc1
+* Upgraded System.Drawing.Common to 4.5.0-rc1
 * Optimized image handling
 * External Streams are not closed when disposing the package
 * Fixed issue with Floor and Celing functions
@@ -69,7 +69,7 @@ Changes
 4.5.0.3
 * Fix for compound documents (VBA and Encryption).
 * Fix for Excel 2010 sha1 hashed agile encryption.
-* Upgraded System.DrawingCore.Common to 4.5.0-preview1-26216-02
+* Upgraded System.Drawing.Common to 4.5.0-preview1-26216-02
 * Also see https://github.com/JanKallman/EPPlus/commits/master
 
 4.5.0.2 rc
@@ -79,7 +79,7 @@ Changes
 4.5.0.1 Beta 2
 * Added sparkline support.
 * Switched targetframework from netcoreapp2.0 to netstandardapp2.0
-* Replaced CoreCompat.System.DrawingCore.v2 with System.DrawingCore.Common
+* Replaced CoreCompat.System.Drawing.v2 with System.Drawing.Common
 * Fixed a few issues. See https://github.com/JanKallman/EPPlus/commits/master
 
 4.5.0.0 Beta 1

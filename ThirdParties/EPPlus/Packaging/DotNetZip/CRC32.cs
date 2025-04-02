@@ -659,7 +659,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Crc
         /// </summary>
         /// <remarks>
         ///   <para>
-        ///     Set this at any point before calling Close/>.
+        ///     Set this at any point before calling <see cref="Close()"/>.
         ///   </para>
         /// </remarks>
         public bool LeaveOpen
@@ -793,7 +793,7 @@ namespace OfficeOpenXml.Packaging.Ionic.Crc
             throw new NotSupportedException();
         }
 
-#if !NET5_0_OR_GREATER
+#if !Core
         void IDisposable.Dispose()
         {
             Close();

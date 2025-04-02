@@ -33,7 +33,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using OfficeOpenXml.Style.XmlAccess;
-using System.DrawingCore;
+using System.Drawing;
 
 namespace OfficeOpenXml.Style
 {

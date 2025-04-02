@@ -218,7 +218,7 @@ namespace OfficeOpenXml.Encryption
         private byte[] EncryptDataAgile(byte[] data, EncryptionInfoAgile encryptionInfo, HashAlgorithm hashProvider)
         {
             var ke = encryptionInfo.KeyEncryptors[0];
-#if NET5_0_OR_GREATER
+#if Core
             var aes = Aes.Create();
 #else
             RijndaelManaged aes = new RijndaelManaged();
@@ -270,7 +270,7 @@ namespace OfficeOpenXml.Encryption
         {
             switch (ei.HashAlgorithm)
             {
-#if !NET5_0_OR_GREATER
+#if (!Core)
                 case eHashAlogorithm.RIPEMD160:
                     return new HMACRIPEMD160(salt);
 #endif                
@@ -466,7 +466,7 @@ namespace OfficeOpenXml.Encryption
 
             //AES = 32 Bits
             encryptionInfo.Verifier.VerifierHashSize = 0x20;
-#if NET5_0_OR_GREATER
+#if (Core)
             var sha = SHA1.Create();
 #else
             var sha = new SHA1Managed();
@@ -479,7 +479,7 @@ namespace OfficeOpenXml.Encryption
         }
         private byte[] EncryptData(byte[] key, byte[] data, bool useDataSize)
         {
-#if NET5_0_OR_GREATER
+#if (Core)
             var aes = Aes.Create();
 #else
             RijndaelManaged aes = new RijndaelManaged();
@@ -625,7 +625,7 @@ namespace OfficeOpenXml.Encryption
             }
             return null;
         }
-#if NET5_0_OR_GREATER
+#if Core
         private HashAlgorithm GetHashProvider(EncryptionInfoAgile.EncryptionKeyData encr)
         {
             switch (encr.HashAlgorithm)
@@ -679,7 +679,7 @@ namespace OfficeOpenXml.Encryption
                 encryptionInfo.Header.AlgID == AlgorithmID.AES256
                 )
             {
-#if NET5_0_OR_GREATER
+#if (Core)
                 var decryptKey = Aes.Create();
 #else
                 RijndaelManaged decryptKey = new RijndaelManaged();
@@ -720,7 +720,7 @@ namespace OfficeOpenXml.Encryption
         /// <returns></returns>
         private bool IsPasswordValid(byte[] key, EncryptionInfoBinary encryptionInfo)
         {
-#if NET5_0_OR_GREATER
+#if (Core)
             var decryptKey = Aes.Create();
 #else
                 RijndaelManaged decryptKey = new RijndaelManaged();
@@ -753,7 +753,7 @@ namespace OfficeOpenXml.Encryption
             cryptoStream.Read(decryptedVerifierHash, 0, (int)16);
 
             //Get the hash for the decrypted verifier
-#if NET5_0_OR_GREATER
+#if (Core)
             var sha = SHA1.Create();
 #else
             var sha = new SHA1Managed();
@@ -796,7 +796,7 @@ namespace OfficeOpenXml.Encryption
             SymmetricAlgorithm decryptKey = GetEncryptionAlgorithm(encr);
             decryptKey.BlockSize = encr.BlockSize << 3;
             decryptKey.KeySize = encr.KeyBits;
-#if NET5_0_OR_GREATER
+#if (Core)
             decryptKey.Mode = CipherMode.CBC;
 #else
             decryptKey.Mode = encr.CipherChaining == eChainingMode.ChainingModeCBC ? CipherMode.CBC : CipherMode.CFB;
@@ -820,7 +820,7 @@ namespace OfficeOpenXml.Encryption
             return decryptedData;
         }
 
-#if NET5_0_OR_GREATER
+#if (Core)
         private SymmetricAlgorithm GetEncryptionAlgorithm(EncryptionInfoAgile.EncryptionKeyData encr)
         {
             switch (encr.CipherAlgorithm)
@@ -862,7 +862,7 @@ namespace OfficeOpenXml.Encryption
             var encryptKey = GetEncryptionAlgorithm(encr);
             encryptKey.BlockSize = encr.BlockSize << 3;
             encryptKey.KeySize = encr.KeyBits;
-#if NET5_0_OR_GREATER
+#if (Core)
             encryptKey.Mode = CipherMode.CBC;
 #else
             encryptKey.Mode = encr.CipherChaining==eChainingMode.ChainingModeCBC ? CipherMode.CBC : CipherMode.CFB;
@@ -905,7 +905,7 @@ namespace OfficeOpenXml.Encryption
                 HashAlgorithm hashProvider;
                 if (encryptionInfo.Header.AlgIDHash == AlgorithmHashID.SHA1 || encryptionInfo.Header.AlgIDHash == AlgorithmHashID.App && (encryptionInfo.Flags & Flags.fExternal) == 0)
                 {
-#if NET5_0_OR_GREATER
+#if (Core)
                     hashProvider = SHA1.Create();
 #else
                     hashProvider = new SHA1CryptoServiceProvider();

@@ -47,7 +47,7 @@ namespace OfficeOpenXml.Compatibility
         {
             this.excelPackage = excelPackage;
         }
-#if NET5_0_OR_GREATER
+#if Core
         /// <summary>
         /// If the worksheets collection of the ExcelWorkbook class is 1 based.
         /// This property can be set from appsettings.json file.

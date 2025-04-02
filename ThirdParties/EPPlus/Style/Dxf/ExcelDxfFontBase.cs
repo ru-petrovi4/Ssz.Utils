@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.DrawingCore;
+using System.Drawing;
 using System.Xml;
 
 namespace OfficeOpenXml.Style.Dxf

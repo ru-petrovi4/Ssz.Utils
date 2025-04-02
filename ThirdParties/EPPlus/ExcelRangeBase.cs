@@ -39,7 +39,7 @@ using System.Threading;
 using OfficeOpenXml.FormulaParsing;
 using OfficeOpenXml.Style;
 using System.Xml;
-using System.DrawingCore;
+using System.Drawing;
 using System.Globalization;
 using System.Collections;
 using OfficeOpenXml.Table;
@@ -859,7 +859,8 @@ namespace OfficeOpenXml
             if (nf.Bold) fs |= FontStyle.Bold;
             if (nf.UnderLine) fs |= FontStyle.Underline;
             if (nf.Italic) fs |= FontStyle.Italic;
-            if (nf.Strike) fs |= FontStyle.Strikeout;            
+            if (nf.Strike) fs |= FontStyle.Strikeout;
+            var nfont = new Font(nf.Name, nf.Size, fs);
 
             var normalSize = Convert.ToSingle(ExcelWorkbook.GetWidthPixels(nf.Name, nf.Size));
 
@@ -2449,7 +2450,7 @@ namespace OfficeOpenXml
         {
             if (string.IsNullOrEmpty(Author))
             {
-#if NET5_0_OR_GREATER
+#if Core
                 Author = System.Security.Claims.ClaimsPrincipal.Current.Identity.Name;
 #else
                 Author = Thread.CurrentPrincipal.Identity.Name;
