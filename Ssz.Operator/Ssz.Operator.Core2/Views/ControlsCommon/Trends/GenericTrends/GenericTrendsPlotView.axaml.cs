@@ -1,4 +1,7 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
@@ -6,295 +9,623 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Styling;
+using OxyPlot;
 using OxyPlot.Avalonia;
-using Ssz.Operator.Core.ControlsCommon.Trends.Converters;
+using Ssz.Operator.Core.ControlsCommon.Trends;
+using Ssz.Operator.Core.Utils;
+using Ssz.Utils;
 
-namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends;
-
-[TemplatePart(Name = YAxis_PART, Type = typeof (Axis))]
-[TemplatePart(Name = HorizontalScrollBar_PART, Type = typeof (ScrollBar))]
-[TemplatePart(Name = VerticalScrollBar_PART, Type = typeof (ScrollBar))]
-[TemplatePart(Name = DisplayValuesSlider_PART, Type = typeof (Range))]
-[TemplatePart(Name = DisplayValuesMoveRight_PART, Type = typeof (Button))]
-[TemplatePart(Name = DisplayValuesMoveLeft_PART, Type = typeof (Button))]
-public partial class GenericTrendsPlotView : TrendsPlotView
+namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 {
-    #region construction and destruction    
-
-    public GenericTrendsPlotView()
+    /// <summary>
+    ///     Interaction logic for TrendsPlotView.axaml
+    /// </summary>
+    [TemplatePart(Name = HorizontalScrollBar_PART, Type = typeof (ScrollBar))]
+    [TemplatePart(Name = AdditionalGrid_PART, Type = typeof (Grid))]
+    [TemplatePart(Name = YAxis_PART, Type = typeof(Axis))]
+    public partial class GenericTrendsPlotView : TrendsPlotView
     {
-        InitializeComponent();
-    }
+        #region construction and destruction        
 
-    #endregion
-
-    #region public functions
-
-    public const string HorizontalScrollBar_PART = "HorizontalScrollBar";
-    public const string VerticalScrollBar_PART = "VerticalScrollBar";
-    public const string DisplayValuesSlider_PART = "DisplayValuesSlider";
-    public const string DisplayValuesMoveRight_PART = "DisplayValues_MoveRight";
-    public const string DisplayValuesMoveLeft_PART = "DisplayValues_MoveLeft";
-    public const string YAxis_PART = "YAxis";
-
-    public ScrollBar? HorizontalScrollBar { get; private set; }
-    public ScrollBar? VerticalScrollBar { get; private set; }
-    public RangeBase? DisplayValuesSlider { get; private set; }
-    public Button? DisplayValuesMoveRight { get; private set; }
-    public Button? DisplayValuesMoveLeft { get; private set; }
-    public Axis? YAxis { get; private set; }
-
-    #endregion
-
-    #region protected functions
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-
-        HorizontalScrollBar = e.NameScope.Find(HorizontalScrollBar_PART) as ScrollBar;
-        VerticalScrollBar = e.NameScope.Find(VerticalScrollBar_PART) as ScrollBar;
-        DisplayValuesSlider = e.NameScope.Find(DisplayValuesSlider_PART) as RangeBase;
-        DisplayValuesMoveLeft = e.NameScope.Find(DisplayValuesMoveLeft_PART) as Button;
-        DisplayValuesMoveRight = e.NameScope.Find(DisplayValuesMoveRight_PART) as Button;
-        YAxis = e.NameScope.Find(YAxis_PART) as Axis;
-
-        if (XAxis != null)
+        public GenericTrendsPlotView()
         {
-            XAxis.Bind(Axis.AbsoluteMinimumProperty, new Binding("TotalDateRange.Minimum")
-            {
-                Converter = new DateTimeToDoubleConverter()
-            });
-            XAxis.Bind(Axis.AbsoluteMaximumProperty, new Binding("TotalDateRange.Maximum")
-            {
-                Converter = new DateTimeToDoubleConverter()
-            });
-
-            XAxis.StringFormat = "HH:mm:ss";
+            InitializeComponent();
         }
 
-        if (YAxis != null)
+        #endregion
+
+        #region public functions
+
+        public const string HorizontalScrollBar_PART = "HorizontalScrollBar";
+        public const string AdditionalGrid_PART = "AdditionalGrid";
+        public const string YAxis_PART = "YAxis";
+        
+        public ScrollBar? HorizontalScrollBar { get; private set; }
+        public Grid? AdditionalGrid { get; private set; }
+        public Axis? YAxis { get; private set; }
+
+        public bool DisableMouseZoom = false;
+        //public ValuesControl RightCurrentValuesControl { get; } = new ValuesControl();        
+
+        public event Action TimeZoomChanged = delegate { };
+
+        public static readonly AvaloniaProperty SelectedTrendColorProperty = AvaloniaProperty.Register<GenericTrendsPlotView, Color>(
+            nameof(SelectedTrendColor), Colors.Red);
+
+        public Color SelectedTrendColor
         {
-            YAxis.Bind(Axis.AbsoluteMinimumProperty, new Binding("SelectedItem.YMinWithPadding"));
-            YAxis.Bind(Axis.AbsoluteMaximumProperty,
-                new Binding("SelectedItem.YMaxWithPadding") { TargetNullValue = 100.0 });
-            YAxis.Bind(Axis.TitleProperty, new Binding("SelectedItem.Source.HdaIdToDisplay"));
-
-            YAxis.Bind(Axis.StringFormatProperty, new Binding("SelectedItem.Source.ValueFormat"));
-
-            Bind(ColorProperty, new Binding("SelectedItem.Color"));
-        }
-
-        if (HorizontalScrollBar != null)
-        {
-            HorizontalScrollBar.ValueChanged += HorizontalScrollBar_OnValueChanged;
-            HorizontalScrollBar.Value = HorizontalScrollBar.Maximum;
-
-            RefreshHorizontalScrollBar();
-        }
-
-        if (VerticalScrollBar != null)
-        {
-            VerticalScrollBar.ValueChanged += VerticalScrollBar_OnValueChanged;
-            VerticalScrollBar.Value = (VerticalScrollBar.Minimum + VerticalScrollBar.Maximum) / 2;
-        }
-
-        if (DisplayValuesSlider != null)
-        {
-            DisplayValuesSlider.ValueChanged += OnDisplayValuesSliderValueChanged;
-        }
-
-        if (DisplayValuesMoveLeft != null)
-        {
-            DisplayValuesMoveLeft.Click += OnDisplayValuesMoveLeftClicked;
-        }
-
-        if (DisplayValuesMoveRight != null)
-        {
-            DisplayValuesMoveRight.Click += OnDisplayValuesMoveRightClicked;
-        }
-
-        Bind(VisibleValueRangeProperty, new Binding("SelectedItem.VisibleValueRange"));
-        Bind(MinimumValueProperty, new Binding("SelectedItem.YMinWithPadding"));
-        Bind(MaximumValueProperty, new Binding("SelectedItem.YMaxWithPadding"));
-
-        RefreshVisibleValuesRange();
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        base.OnPropertyChanged(e);
-
-        if (YAxis is null)
-            return;
-
-        if (e.Property == MinimumVisibleTimeProperty || e.Property == MaximumVisibleTimeProperty)
-        {
-            RefreshHorizontalScrollBar();
-            UpdateValuesUnderSliderPosition();
-        }
-
-        if (e.Property == MinimumValueProperty || e.Property == MaximumValueProperty)
-        {
-            RefreshVisibleValuesRange();
-
-            YAxis.MajorStep = VisibleValueRange/5;
-            YAxis.MinorStep = VisibleValueRange/10;
+            get { return (Color)GetValue(SelectedTrendColorProperty)!; }
         }        
 
-        if (e.Property == ColorProperty)
+        public void ResetPanningAndZooming()
         {
-            var newColor = (Color) e.NewValue!;
+            var viewModel = (GenericTrendsViewModel) DataContext!;
+            viewModel.ResetPanAndZoom();
 
-            YAxis.TitleColor = newColor;
-            YAxis.InternalAxis.TextColor = newColor.ToOxyColor();
+            ResetYAxesOffsets();
+            OnRemoveAllRulers(null, new RoutedEventArgs());
         }
-    }
 
-    #endregion
-
-    #region private functions
-
-    private static readonly AvaloniaProperty VisibleValueRangeProperty = AvaloniaProperty.Register<GenericTrendsPlotView, double>(
-        nameof(VisibleValueRange));
-
-    private static readonly AvaloniaProperty MinimumValueProperty = AvaloniaProperty.Register<GenericTrendsPlotView, double>(
-        nameof(MinimumValue));
-
-    private static readonly AvaloniaProperty MaximumValueProperty = AvaloniaProperty.Register<GenericTrendsPlotView, double>(
-        nameof(MaximumValue));
-
-    private static readonly AvaloniaProperty ColorProperty = AvaloniaProperty.Register<GenericTrendsPlotView, Color>(
-        nameof(Color));
-
-    private double VisibleValueRange
-    {
-        get { return (double)GetValue(VisibleValueRangeProperty)!; }
-    }
-
-    private double MinimumValue
-    {
-        get { return (double)GetValue(MinimumValueProperty)!; }
-    }
-
-    private double MaximumValue
-    {
-        get { return (double)GetValue(MaximumValueProperty)!; }
-    }
-
-    private Color Color
-    {
-        get { return (Color)GetValue(ColorProperty)!; }
-    }    
-
-    private void RefreshVisibleValuesRange()
-    {
-        if (YAxis == null)
-            return;
-
-        if (VerticalScrollBar != null)
+        public void ZoomSelectedValueAxisIn()
         {
-            double scrollBarRange = VerticalScrollBar.Maximum - VerticalScrollBar.Minimum;
-            double scrollBarValueFrom0To1 = (VerticalScrollBar.Value - VerticalScrollBar.Minimum)/
-                                            scrollBarRange;
+            var axis = (GenericYAxis?) Plot.Axes.FirstOrDefault(ax => ax.DataContext == SelectedTrend);
+            if (axis == null)
+                return;
 
-            YAxis.Minimum = MinimumValue*scrollBarValueFrom0To1 +
-                            (MaximumValue - VisibleValueRange)*(1 - scrollBarValueFrom0To1);
+            axis.ZoomIn();
+        }
 
-            YAxis.Maximum = (MinimumValue + VisibleValueRange)*scrollBarValueFrom0To1 +
-                            MaximumValue*(1 - scrollBarValueFrom0To1);
+        public void ZoomSelectedValueAxisOut()
+        {
+            var axis = (GenericYAxis?) Plot.Axes.FirstOrDefault(ax => ax.DataContext == SelectedTrend);
+            if (axis == null)
+                return;
 
-            double valuesRange = MaximumValue - MinimumValue;
-            if (valuesRange > 1e-6)
+            axis.ZoomOut();
+        }
+
+        public void GetSelectedValueAxisMinimumAndMaximum(out double minimum, out double maximum)
+        {
+            minimum = 0;
+            maximum = 100;
+
+            var axis = (GenericYAxis?) Plot.Axes.FirstOrDefault(ax => ax.DataContext == SelectedTrend);
+            if (axis == null)
+                return;
+
+            minimum = axis.InternalAxis.ActualMinimum;
+            maximum = axis.InternalAxis.ActualMaximum;
+        }
+
+        public void SetSelectedValueAxisMinimumAndMaximum(double minimum, double maximum)
+        {
+            var axis = (GenericYAxis?) Plot.Axes.FirstOrDefault(ax => ax.DataContext == SelectedTrend);
+            if (axis == null)
+                return;
+
+            axis.SetMinimumAndMaximum(minimum, maximum);
+        }
+
+        public void CenterPlotAroundDisplayValueSliderPosition()
+        {
+            var viewModel = (GenericTrendsViewModel) DataContext;
+
+            viewModel.CenterMinAndMaxAroundCurrentDisplayedValue();
+        }
+
+        public void WriteSettings(TrendsGroupConfiguration configuration)
+        {
+            configuration.PlotAreaBackgroundColor = ((SolidColorBrush) Plot!.PlotAreaBackground).Color;
+            //configuration.PlotBackgroundColor = ((SolidColorBrush) Plot.Background).Color;
+
+            configuration.DsTrendItemsCollection = Plot.Axes.Skip(2).Select(a => ((TrendViewModel)a.DataContext).Source.DsTrendItem).ToArray();
+        }
+
+        public void ReadSettings(TrendsGroupConfiguration configuration)
+        {
+            if (configuration.PlotAreaBackgroundColor != null)
+                Plot.PlotAreaBackground = new SolidColorBrush(configuration.PlotAreaBackgroundColor.Value);
+            if (configuration.PlotBackgroundColor != null)
+                Plot.Background = new SolidColorBrush(configuration.PlotBackgroundColor.Value);
+
+            if (configuration.DsTrendItemsCollection != null)
             {
-                VerticalScrollBar.ViewportSize = VisibleValueRange/valuesRange*scrollBarRange;
+                var viewModel = (TrendsViewModel) DataContext;
+                viewModel.Display(configuration.DsTrendItemsCollection);
+                /*
+                for (int i = 0; i < Plot.Axes.Count - 1; ++i)
+                {
+                    TrendConfiguration trendConfiguration = configuration.DsTrendItemsCollection[i];
+
+                    if (trendConfiguration.Minimum != null && trendConfiguration.Maximum != null)
+                    {
+                        ((GenericAxis) Plot.Axes[i + 1]).SetMinimumAndMaximum(
+                            trendConfiguration.Minimum.Value,
+                            trendConfiguration.Maximum.Value);
+                    }
+                }*/
             }
         }
-    }
 
-    private void RefreshHorizontalScrollBar()
-    {
-        var viewModel = DataContext as GenericTrendsViewModel;
-        if (viewModel == null)
-            return;
+        #endregion
 
-        if (HorizontalScrollBar != null)
+        #region protected functions
+
+        protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
         {
-            double newPosition = new DateRange(
-                viewModel.TotalDateRange.Minimum,
-                viewModel.TotalDateRange.Maximum - viewModel.VisibleDateRange.Range)
-                .Percentage(viewModel.VisibleDateRange.Minimum);
+            base.OnApplyTemplate(e);            
 
-            HorizontalScrollBar.Value =
-                HorizontalScrollBar.Minimum +
-                newPosition*(HorizontalScrollBar.Maximum - HorizontalScrollBar.Minimum);
+            HorizontalScrollBar = e.NameScope.Find(HorizontalScrollBar_PART) as ScrollBar;
+            AdditionalGrid = e.NameScope.Find(AdditionalGrid_PART) as Grid;
+            //AdditionalGrid.Children.Add(RightCurrentValuesControl);
+            //RightCurrentValuesControl.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
 
-            double viewportSize = (double) (viewModel.VisibleDateRange.Range).Ticks/
-                                  GenericTrendsViewModel.TotalTimeRange.Ticks*
-                                  (HorizontalScrollBar.Maximum - HorizontalScrollBar.Minimum);
+            if (Plot is not null)
+            {
+                //Plot.ApplyTemplate();
+                Plot.ActualController.UnbindMouseDown(OxyMouseButton.Left);
+                Plot.ActualController.UnbindMouseDown(OxyMouseButton.Right);
 
-            HorizontalScrollBar.ViewportSize = Math.Max(viewportSize, 1);
+                //Plot.ActualController.BindMouseDown(OxyMouseButton.Left,
+                //    new DelegatePlotCommand<OxyMouseDownEventArgs>((view, controller, args) =>
+                //    {
+                //        if (!Plot.ActualModel.PlotArea.Contains(args.Position))
+                //            return;
+
+                //        if (!DisableMouseZoom)
+                //        {
+                //            Plot.ActualController.AddMouseManipulator(view, new ZoomManipulator(view, this), args);
+                //        }
+                //    }));
+                Plot.ActualController.BindMouseDown(OxyMouseButton.Left, OxyModifierKeys.None, 1,
+                    new DelegatePlotCommand<OxyMouseDownEventArgs>((view, controller, args) =>
+                    {
+                        if (!Plot.ActualModel.PlotArea.Contains(args.Position))
+                            return;
+
+                        TryAddRuler(args.Position);
+                    }));
+            }
+
+            ResetYAxesOffsets();
+
+            YAxis = e.NameScope.Find(YAxis_PART) as Axis;
+            if (YAxis != null)
+            {
+                YAxis.SetBinding(Axis.AbsoluteMinimumProperty, new Binding("SelectedItem.YMinWithPadding"));
+                YAxis.SetBinding(Axis.AbsoluteMaximumProperty, new Binding("SelectedItem.YMaxWithPadding"));
+                YAxis.SetBinding(Axis.MinimumProperty, new Binding("SelectedItem.AxisMinimumWithPadding"));
+                YAxis.SetBinding(Axis.MaximumProperty, new Binding("SelectedItem.AxisMaximumWithPadding"));
+                YAxis.SetBinding(Axis.MajorStepProperty, new Binding("SelectedItem.MajorStep"));
+                YAxis.SetBinding(Axis.MinorStepProperty, new Binding("SelectedItem.MinorStep"));
+
+                YAxis.SetBinding(Axis.StringFormatProperty, new Binding("SelectedItem.ValueFormat"));
+
+                SetBinding(SelectedTrendColorProperty, new Binding("SelectedItem.Color"));
+            }
         }
-    }
 
-    private void UpdateValuesUnderSliderPosition()
-    {
-        var viewModel = DataContext as GenericTrendsViewModel;
-        if (viewModel == null)
-            return;
-
-        double sliderValue0To1 = 1;
-        if (DisplayValuesSlider != null && DisplayValuesSlider.IsVisible)
-            sliderValue0To1 = (DisplayValuesSlider.Value - DisplayValuesSlider.Minimum)/
-                              (DisplayValuesSlider.Maximum - DisplayValuesSlider.Minimum);
-
-        if (Math.Abs(sliderValue0To1 - 1) < 1e-6)
+        protected override void RefreshLines()
         {
-            viewModel.DisplayCurrentTrendValues();
+            if (Plot == null)
+                return;
+
+            if (TrendItems == null)
+                return;
+
+            List<TrendViewModel> trendItems = TrendItems.ToList();
+
+            ClearLines();
+
+            int nItem = 0;
+            foreach (TrendViewModel trendItem in trendItems)
+            {
+                var axis = new GenericYAxis
+                {
+                    PositionTier = Plot.Axes.Count - 2,
+                    AxislineStyle = LineStyle.Solid,
+                    MinimumPadding = 10,
+                    IsZoomEnabled = false,
+                    DataContext = trendItem,
+                    Key = nItem.ToString(CultureInfo.InvariantCulture)
+                };
+                axis.Position = AxisPosition.Left;                
+
+                Plot.Axes.Add(axis);
+                nItem ++;
+            }
+
+            foreach (TrendViewModel trendItem in TrendItemsInDisplayOrder(trendItems))
+            {
+                LineSeries series = AddLine(trendItem);
+                series.YAxisKey = trendItems.IndexOf(trendItem).ToString(CultureInfo.InvariantCulture);
+            }            
         }
-        else if (!double.IsNaN(sliderValue0To1))
+
+        protected override void ClearLines()
         {
-            DateTime time = viewModel.VisibleDateRange.Interpolate(sliderValue0To1);
-            viewModel.DisplayValuesAtTime(time);
+            base.ClearLines();
+
+            List<Axis> allVerticalAxes = Plot!.Axes.Skip(2).ToList();
+            allVerticalAxes.ForEach(axis => Plot.Axes.Remove(axis));
         }
+
+        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+
+            if (e.Property == SelectedTrendProperty)
+            {
+                if (Plot == null)
+                    return;
+
+                var value = GetValue(SelectedTrendProperty) as TrendViewModel;
+                if (value == null)
+                    return;
+
+                List<LineSeries> series = Plot.Series
+                    .OfType<LineSeries>()
+                    .OrderBy(s => s.DataContext == SelectedTrend).ToList();
+
+                Plot.Series.Clear();
+                foreach (LineSeries seria in series)
+                {
+                    Plot.Series.Add(seria);
+
+                    // selected line always goes last
+                    seria.StrokeThickness = Equals(seria, series.Last())
+                        ? 3
+                        : 1;
+                }                
+            }
+
+            if (e.Property == MinimumVisibleTimeProperty ||
+                e.Property == MaximumVisibleTimeProperty)
+            {
+                UpdateValueLabels();
+            }
+
+            if (e.Property == SelectedTrendColorProperty)
+            {
+                YAxis.TitleColor = SelectedTrendColor;
+                YAxis.InternalAxis.TextColor = SelectedTrendColor.ToOxyColor();
+                YAxis.TicklineColor = SelectedTrendColor;
+            }
+        }
+
+        #endregion
+
+        #region private functions
+
+        private void ResetYAxesOffsets()
+        {
+            //foreach (Axis yAxis in Plot.Axes.Skip(1))
+            //{
+            //    var trendItem = (TrendViewModel) yAxis.DataContext;
+
+            //    yAxis.InternalAxis.Reset();
+
+            //    yAxis.Minimum = trendItem.Source.YMin - (trendItem.Source.YMax - trendItem.Source.YMin)/2;
+            //    yAxis.Maximum = trendItem.Source.YMax + (trendItem.Source.YMax - trendItem.Source.YMin)/2;
+            //}
+        }
+
+        private void UpdateValueLabels()
+        {
+            if (AdditionalGrid == null)
+                return;
+
+            var viewModel = DataContext as TrendsViewModel;
+            if (viewModel == null)
+                return;
+
+            foreach (var child in AdditionalGrid.Children)
+            {
+                UpdateRulerValues(child as Slider);
+            }
+        }
+
+        private void UpdateRulerValues(Slider? ruler)
+        {
+            if (ruler == null)
+                return;
+
+            var viewModel = DataContext as TrendsViewModel;
+            if (viewModel == null)
+                return;
+
+            var valuesControl = TreeHelper.FindChild<ValuesControl>(ruler, "ValuesControl");
+            if (valuesControl == null)
+                return;
+
+            double sliderValue0To1 = ruler.Value / 100;
+            if (!double.IsNaN(sliderValue0To1))
+            {
+                DateTime time = viewModel.VisibleDateRange.Interpolate(sliderValue0To1);
+
+                var dataValues = new List<string>();
+                dataValues.Add(new Any(true).ValueAsString(true));
+                dataValues.Add(new Any(time).ValueAsString(true));
+                foreach (TrendViewModel trendViewModel in viewModel.Items)
+                {
+                    var value = trendViewModel.GetValue(time);
+                    if (value == null || Double.IsNaN(value.Value)) continue;
+                    dataValues.Add(new Any(trendViewModel.Color).ValueAsString(false, trendViewModel.Source.ValueFormat));
+                    dataValues.Add(new Any(value.Value).ValueAsString(true, trendViewModel.Source.ValueFormat));
+                }
+
+                valuesControl.Data = CsvHelper.FormatForCsv(",", dataValues);
+            }
+            else
+            {
+                valuesControl.Data = @"";
+            }
+        }
+
+        private void Plot_OnLayoutUpdated(object sender, EventArgs e)
+        {
+            if (AdditionalGrid == null)
+                return;
+
+            if (Plot.ActualModel != null)
+            {
+                Canvas.SetLeft(AdditionalGrid, Plot.ActualModel.PlotArea.Left);
+                Canvas.SetTop(AdditionalGrid, Plot.ActualModel.PlotArea.Top);
+                AdditionalGrid.Width = Plot.ActualModel.PlotArea.Width;
+                AdditionalGrid.Height = Plot.ActualModel.PlotArea.Height;
+            }
+        }
+
+        private void TryAddRuler(ScreenPoint position)
+        {
+            if (AdditionalGrid == null)
+                return;
+
+            double valueXPercent = 100 * (position.X - Plot!.ActualModel.PlotArea.Left) / Plot.ActualModel.PlotArea.Width;
+
+            var ruler = new Slider()
+            {
+                Theme = Resources["RulerSliderStyle"] as ControlTheme,                
+                Value = valueXPercent                
+            };
+            ruler.ValueChanged += (s, e) => UpdateRulerValues(s as Slider);
+            ruler.Loaded += (s, e) => UpdateRulerValues(s as Slider);
+            AdditionalGrid.Children.Add(ruler);
+        }        
+
+        private void OnRemoveAllRulers(object? sender, RoutedEventArgs e)
+        {
+            if (AdditionalGrid == null)
+                return;
+
+            foreach (var ruler in AdditionalGrid.Children.OfType<Slider>().ToArray())
+            {
+                AdditionalGrid.Children.Remove(ruler);
+            }    
+            //Plot!.HideZoomRectangle();
+
+            //if (_completedZoomRect_DataPoint0 == null || _completedZoomRect_DataPoint1 == null)
+            //    return;
+
+            //var minimumVisibleTime = new DateTime(DateTimeAxis.ToDateTime(_completedZoomRect_DataPoint0.Value.X).Ticks, DateTimeKind.Local);
+            //var maximumVisibleTime = new DateTime(DateTimeAxis.ToDateTime(_completedZoomRect_DataPoint1.Value.X).Ticks, DateTimeKind.Local);
+
+            //if (maximumVisibleTime - minimumVisibleTime > TimeSpan.FromSeconds(10))
+            //{
+            //    var viewModel = (TrendsViewModel)DataContext;
+            //    viewModel.Zoom(minimumVisibleTime, maximumVisibleTime);
+            //    TimeZoomChanged();
+            //}
+        }
+
+        #endregion
+
+        #region private fields        
+
+        private DataPoint? _completedZoomRect_DataPoint0;
+        private DataPoint? _completedZoomRect_DataPoint1;        
+
+        #endregion
+
+        private class GenericYAxis : LinearAxis
+        {
+            #region construction and destruction
+
+            public GenericYAxis()
+            {
+                Bind(YMinProperty, new Binding("Source.YMin"));
+                Bind(YMaxProperty, new Binding("Source.YMax"));
+                IsAxisVisible = false;               
+            }
+
+            #endregion
+
+            #region public functions
+
+            public void ZoomIn()
+            {
+                Zoom(1/ValueZoomCoefficient);
+            }
+
+            public void ZoomOut()
+            {
+                Zoom(1*ValueZoomCoefficient);
+            }
+
+            public void SetMinimumAndMaximum(double minimum, double maximum)
+            {
+                InternalAxis.Reset();
+
+                _minMaxOverriden = true;
+
+                Minimum = minimum;
+                Maximum = maximum;
+
+                InternalAxis.Minimum = minimum;
+                InternalAxis.Maximum = maximum;
+            }
+
+            public double GetMinimumToDisplay()
+            {
+                double max = (Maximum * (1 + YAxisCoefficient) + Minimum * YAxisCoefficient) / (1 + 2 * YAxisCoefficient);
+                return Minimum + Maximum - max;
+            }
+
+            public double GetMaximumToDisplay()
+            {
+                return (Maximum * (1 + YAxisCoefficient) + Minimum * YAxisCoefficient) / (1 + 2 * YAxisCoefficient);
+            }
+
+            public double GetMiddleToDisplay()
+            {
+                return (Minimum + Maximum) / 2;
+            }
+
+            #endregion
+
+            #region protected functions
+
+            protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+            {
+                base.OnPropertyChanged(e);
+
+                if ((e.Property == YMinProperty || e.Property == YMaxProperty) &&
+                    YMin < YMax)
+                {
+                    if (!_minMaxOverriden)
+                    {
+                        Minimum = YMin - (YMax - YMin) * YAxisCoefficient;
+                        Maximum = YMax + (YMax - YMin) * YAxisCoefficient;
+                    }
+                }
+            }
+
+            #endregion
+
+            #region private functions
+
+            private static readonly AvaloniaProperty YMinProperty = AvaloniaProperty.Register<GenericYAxis, double>(
+                nameof(YMin));
+
+            private static readonly AvaloniaProperty YMaxProperty = AvaloniaProperty.Register<GenericYAxis, double>(
+                nameof(YMax));
+
+            private double YMin
+            {
+                get { return (double)GetValue(YMinProperty)!; }
+            }
+
+            private double YMax
+            {
+                get { return (double)GetValue(YMaxProperty)!; }
+            }
+
+            private void Zoom(double zoomCoefficient)
+            {
+                double center = (InternalAxis.ActualMinimum + InternalAxis.ActualMaximum)/2;
+                double height = (InternalAxis.ActualMaximum - InternalAxis.ActualMinimum);
+
+                InternalAxis.Reset();
+
+                Minimum = center - height/2*zoomCoefficient;
+                Maximum = center + height/2*zoomCoefficient;
+            }
+
+            #endregion
+
+            #region private fields            
+
+            private bool _minMaxOverriden;
+            private const double ValueZoomCoefficient = 1.1; // 10%
+            private const double YAxisCoefficient = 0.1; // 10%            
+
+            #endregion
+        }
+
+        private class ZoomManipulator : MouseManipulator
+        {
+            #region construction and destruction
+
+            public ZoomManipulator(IPlotView plotView, GenericTrendsPlotView trendsPlotView) :
+                base(plotView)
+            {
+                _trendsPlotView = trendsPlotView;
+            }
+
+            #endregion
+
+            #region public functions
+
+            public override void Delta(OxyMouseEventArgs args)
+            {
+                _trendsPlotView.Plot.ZoomRectangleTemplate = (ControlTemplate)_trendsPlotView.Resources["ZoomRectangleTemplate"];
+
+                OxyRect plotArea = PlotView.ActualModel.PlotArea;
+                ScreenPoint position = ValidatePosition(plotArea, args.Position);
+                OxyRect zoomOxyRect = GetZoomOxyRect(position, plotArea);                
+                PlotView.ShowZoomRectangle(zoomOxyRect);
+
+                args.Handled = true;
+            }
+
+            public override void Completed(OxyMouseEventArgs args)
+            {
+                //Application.Current.Dispatcher.Invoke(() =>
+                //    _aspenTrendsPlotView.DisplayValuesSlider.IsHitTestVisible = true);
+
+                _trendsPlotView.Plot.ZoomRectangleTemplate = (ControlTemplate)_trendsPlotView.Resources["CompletedZoomRectangleTemplate"];
+
+                OxyRect plotArea = PlotView.ActualModel.PlotArea;
+                ScreenPoint position = ValidatePosition(plotArea, args.Position);
+                OxyRect zoomOxyRect = GetZoomOxyRect(position, plotArea);
+                PlotView.ShowZoomRectangle(zoomOxyRect);
+
+                _trendsPlotView.Plot.ReleaseMouseCapture();
+
+                if (zoomOxyRect.Width > 50)
+                {
+                    _trendsPlotView._completedZoomRect_DataPoint0 = InverseTransform(zoomOxyRect.Left, zoomOxyRect.Top);
+                    _trendsPlotView._completedZoomRect_DataPoint1 = InverseTransform(zoomOxyRect.Right, zoomOxyRect.Bottom);
+                }
+                
+                args.Handled = true;
+            }
+
+            #endregion
+
+            #region private functions
+
+            private static ScreenPoint ValidatePosition(OxyRect plotArea, ScreenPoint position)
+            {
+                double positionX = position.X;
+
+                if (positionX < plotArea.Left)
+                    positionX = plotArea.Left;
+                else if (positionX > plotArea.Right)
+                    positionX = plotArea.Right;
+
+                position = new ScreenPoint(positionX, position.Y);
+                return position;
+            }
+
+            private OxyRect GetZoomOxyRect(ScreenPoint position, OxyRect plotArea)
+            {                
+                var zoomOxyRect = new OxyRect(
+                    Math.Min(position.X, StartPosition.X),
+                    Math.Min(position.Y, StartPosition.Y),
+                    Math.Abs(position.X - StartPosition.X),
+                    Math.Abs(position.Y - StartPosition.Y));
+                return zoomOxyRect;
+            }
+
+            #endregion
+
+            #region private fields
+
+            private readonly GenericTrendsPlotView _trendsPlotView;
+
+            #endregion
+        }        
     }
-
-    private void HorizontalScrollBar_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
-    {
-        if (XAxis is null || HorizontalScrollBar is null)
-            return;
-
-        var viewModel = DataContext as GenericTrendsViewModel;
-        if (viewModel is null)
-            return;
-
-        double scrollbar01 = (HorizontalScrollBar.Value - HorizontalScrollBar.Minimum) /
-                             (HorizontalScrollBar.Maximum - HorizontalScrollBar.Minimum);
-
-        viewModel.OnHorizontalScrollChanged(scrollbar01);
-    }
-
-    private void VerticalScrollBar_OnValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
-    {
-        RefreshVisibleValuesRange();
-    }
-
-    private void OnDisplayValuesSliderValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
-    {
-        UpdateValuesUnderSliderPosition();
-    }
-
-    private void OnDisplayValuesMoveRightClicked(object? sender, RoutedEventArgs e)
-    {
-        if (DisplayValuesSlider != null)
-            DisplayValuesSlider.Value += 1;
-    }
-
-    private void OnDisplayValuesMoveLeftClicked(object? sender, RoutedEventArgs e)
-    {
-        if (DisplayValuesSlider != null)
-            DisplayValuesSlider.Value--;
-    }   
-
-    #endregion    
 }

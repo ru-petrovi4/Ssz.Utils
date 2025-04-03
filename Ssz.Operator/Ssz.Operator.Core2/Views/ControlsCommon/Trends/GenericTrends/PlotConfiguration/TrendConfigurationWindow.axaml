@@ -1,0 +1,101 @@
+﻿<Window x:Class="Cdt.Operator.Addons.Generic.Controls.Trends.PlotConfiguration.TrendConfigurationWindow"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Classic"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        Title="Конфигурирование Тренда" Height="412" Width="600" ResizeMode="NoResize" Topmost="True"
+        WindowStartupLocation="CenterOwner"
+        mc:Ignorable="d"
+        >
+    <Grid>
+        <TextBlock HorizontalAlignment="Left" Margin="8,15,0,0" Text="Ссылка на Параметр:" VerticalAlignment="Top" />
+        <TextBox HorizontalAlignment="Left" Height="29" Margin="8,36,0,0" TextWrapping="Wrap" Text="{Binding HdaId}"
+                 VerticalAlignment="Top" Width="472" />
+        <Button Content="OK" HorizontalAlignment="Left" Margin="507,17,0,0" VerticalAlignment="Top" Width="75"
+                Click="onOkButtonClicked" />
+        <Button Content="Отмена" HorizontalAlignment="Left" Margin="507,43,0,0" VerticalAlignment="Top" Width="75"
+                Click="onCancelButtonClicked" />
+        <CheckBox Content="Показать Шкалу Y?" HorizontalAlignment="Left" Margin="20,74,0,0" VerticalAlignment="Top"
+                  IsChecked="True" IsEnabled="False" />
+        <CheckBox Content="Показать События?" HorizontalAlignment="Left" Margin="20,94,0,0" VerticalAlignment="Top"
+                  IsEnabled="False" />
+        <CheckBox Content="Показать Шкалу Y Справа?" HorizontalAlignment="Left" Margin="188,74,0,0"
+                  VerticalAlignment="Top"
+                  IsEnabled="False" />
+        <Button Content="Отбор" HorizontalAlignment="Left" Margin="405,70,0,0" VerticalAlignment="Top" Width="75"
+                IsEnabled="False" />
+        <Button Content="{Binding}" HorizontalAlignment="Left" Margin="20,120,0,0" VerticalAlignment="Top" Width="28"
+                Height="24"
+                Click="onChangeTrendColorClicked">
+            <Button.ContentTemplate>
+                <DataTemplate>
+                    <Rectangle Width="20" Height="20">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{Binding Color}" />
+                        </Rectangle.Fill>
+                    </Rectangle>
+                </DataTemplate>
+            </Button.ContentTemplate>
+        </Button>
+        <themes:ClassicBorderDecorator BorderStyle="Sunken" BorderThickness="1"
+                                       VerticalAlignment="Top" Height="29" Margin="53,117,428,0"
+                                       Background="DarkGray">
+            <TextBlock Text="Пример Метки" VerticalAlignment="Center">
+                <TextBlock.Foreground>
+                    <SolidColorBrush Color="{Binding Color}" />
+                </TextBlock.Foreground>
+            </TextBlock>
+        </themes:ClassicBorderDecorator>
+
+        <themes:ClassicBorderDecorator BorderStyle="Sunken" BorderThickness="1"
+                                       VerticalAlignment="Top" Height="29" Margin="175,117,306,0"
+                                       Background="DimGray">
+            <Rectangle VerticalAlignment="Center" Height="1" StrokeThickness="1">
+                <Rectangle.Stroke>
+                    <SolidColorBrush Color="{Binding Color}" />
+                </Rectangle.Stroke>
+            </Rectangle>
+        </themes:ClassicBorderDecorator>
+        <CheckBox Content="Автонастройка цветов ASCII?" HorizontalAlignment="Left" Margin="20,151,0,0"
+                  VerticalAlignment="Top"
+                  IsEnabled="False" IsChecked="True" />
+        <CheckBox Content="Описатель Пользователя?" HorizontalAlignment="Left" Margin="302,151,0,0"
+                  VerticalAlignment="Top"
+                  IsEnabled="False" />
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="294,117,0,0" TextWrapping="Wrap" Text=""
+                 VerticalAlignment="Top" Width="264"
+                 IsEnabled="False" />
+        <GroupBox Header="Определение Пределов Шкалы Y" HorizontalAlignment="Left" Margin="20,185,0,0"
+                  VerticalAlignment="Top" Height="98" Width="552">
+            <Grid>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Верхний Предел Y:"
+                           VerticalAlignment="Top" Margin="10,10,0,0" />
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Нижний Предел Y:"
+                           VerticalAlignment="Top" Margin="11,38,0,0" />
+                <TextBox HorizontalAlignment="Left" Height="23" Margin="118,7,0,0" TextWrapping="Wrap" Text="100"
+                         VerticalAlignment="Top" Width="72" IsEnabled="False" />
+                <TextBox HorizontalAlignment="Left" Height="23" Margin="118,35,0,0" TextWrapping="Wrap" Text="0"
+                         VerticalAlignment="Top" Width="72" IsEnabled="False" />
+                <RadioButton Content="Устанавливать по Пределам ИЕ в реальн времени" HorizontalAlignment="Left"
+                             Margin="210,7,0,0" VerticalAlignment="Top" IsEnabled="False" />
+                <RadioButton Content="Автомасштабирование по значениям данных" HorizontalAlignment="Left"
+                             Margin="210,28,0,0" VerticalAlignment="Top" IsEnabled="False" />
+                <RadioButton Content="Определить Пределы" HorizontalAlignment="Left" Margin="210,49,0,0"
+                             VerticalAlignment="Top" IsEnabled="False" />
+                <Button Content="Текущие ИЕ" HorizontalAlignment="Left" Margin="360,49,0,0" Width="75" Height="24"
+                        VerticalAlignment="Top" IsEnabled="False" />
+            </Grid>
+        </GroupBox>
+        <TextBlock HorizontalAlignment="Left" Margin="81,309,0,0" TextWrapping="Wrap"
+                   Text="Время Начала (если отлично от шкалы времени):" VerticalAlignment="Top" />
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="358,306,0,0" TextWrapping="Wrap" Text=""
+                 VerticalAlignment="Top" Width="137" IsEnabled="False" />
+        <TextBlock HorizontalAlignment="Left" Margin="94,330,0,0" TextWrapping="Wrap"
+                   Text="{}{ пример:    1-Май-02 8:00 (абс время);  Вчера или Сегодня (00:00 вчера"
+                   VerticalAlignment="Top" />
+        <TextBlock HorizontalAlignment="Left" Margin="165,347,0,0" TextWrapping="Wrap"
+                   Text="или сегодня); Понедельник+10h (10:00 последнего Понедельника) }" VerticalAlignment="Top" />
+
+    </Grid>
+</Window>
