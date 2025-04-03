@@ -5,6 +5,10 @@ using Ssz.Operator.Core;
 using System.Collections.Generic;
 using Ssz.Operator.Core.DsShapes.Trends;
 using Avalonia.Controls;
+using Avalonia.Media;
+using Egorozh.ColorPicker.Dialog;
+using Avalonia.Interactivity;
+using Avalonia;
 
 namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 {
@@ -19,10 +23,10 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
         {
             InitializeComponent();            
 
-            Loaded += (s, a) =>
-            {
-                TrendGroupToolbar2.toolStripComboBox2.SelectedIndex = 0;
-            };
+            //Loaded += (s, a) =>
+            //{
+            //    TrendGroupToolbar2.toolStripComboBox2.SelectedIndex = 0;
+            //};
             //TrendPeriodChanged();
 
             DataContext = new GenericTrendsViewModel(DateTime.Now);
@@ -53,15 +57,15 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
         public void Jump(string groupId, string tag)
         {
-            ((GenericTrendsViewModel)DataContext).LoadTrendGroup(groupId, tag);
+            ((GenericTrendsViewModel)DataContext!).LoadTrendGroup(groupId, tag);
         }
 
         public void Jump(IEnumerable<DsTrendItem> trendItemInfos)
         {
-            ((GenericTrendsViewModel)DataContext).Display(trendItemInfos);
+            ((GenericTrendsViewModel)DataContext!).Display(trendItemInfos);
         }
 
-        public void ChangeTrendColor(TrendViewModel? trendViewModel = null)
+        public async void ChangeTrendColor(TrendViewModel? trendViewModel = null)
         {
             if (trendViewModel == null)
             {
@@ -74,53 +78,60 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
                     return;
             }
 
-            Color? newColor = WpfColorDialog.Show(trendViewModel.Color);
-            if (newColor != null)
+            ColorPickerDialog dialog = new()
             {
+                //Color = Color,
+                //Colors = Colors,
+                //Title = "Custom Title"
+            };
+            var result = await dialog.ShowDialog<bool>((Window)TopLevel.GetTopLevel(this)!);
+            if (result)
+            {
+                var newColor = dialog.Color;
                 trendViewModel.Source.DsTrendItem.DsBrush = new BrushDataBinding(false, true)
                 {
                     ConstValue = new SolidDsBrush
                     {
-                        Color = newColor.Value
+                        Color = newColor
                     }
                 };
-                trendViewModel.Source.Brush = new SolidColorBrush(newColor.Value);
+                trendViewModel.Source.Brush = new SolidColorBrush(newColor);
             }
         }
 
         public void Save()
         {
-            ((GenericTrendsViewModel)DataContext).Save();
+            ((GenericTrendsViewModel)DataContext!).Save();
 
-            WpfMessageBox.Show(Window.GetWindow(this), "Сохранено");
+            MessageBoxHelper.ShowInfo("Сохранено");
         }
 
         public void TrendPeriodChanged()
         {
-            switch (TrendGroupToolbar2.toolStripComboBox2.SelectedIndex)
-            {
-                case 0:
-                    ((GenericTrendsViewModel)DataContext).Zoom(TimeSpan.FromMinutes(30));
-                    break;
-                case 1:
-                    ((GenericTrendsViewModel)DataContext).Zoom(TimeSpan.FromMinutes(60));
-                    break;
-                case 2:
-                    ((GenericTrendsViewModel)DataContext).Zoom(TimeSpan.FromMinutes(120));
-                    break;
-                case 3:
-                    ((GenericTrendsViewModel)DataContext).Zoom(TimeSpan.FromMinutes(240));
-                    break;
-            }            
+            //switch (TrendGroupToolbar2.toolStripComboBox2.SelectedIndex)
+            //{
+            //    case 0:
+            //        ((GenericTrendsViewModel)DataContext).Zoom(TimeSpan.FromMinutes(30));
+            //        break;
+            //    case 1:
+            //        ((GenericTrendsViewModel)DataContext).Zoom(TimeSpan.FromMinutes(60));
+            //        break;
+            //    case 2:
+            //        ((GenericTrendsViewModel)DataContext).Zoom(TimeSpan.FromMinutes(120));
+            //        break;
+            //    case 3:
+            //        ((GenericTrendsViewModel)DataContext).Zoom(TimeSpan.FromMinutes(240));
+            //        break;
+            //}            
         }
 
         #endregion
 
         #region private functions
 
-        private void OnChangeTrendColorClicked(object sender, RoutedEventArgs e)
+        private void OnChangeTrendColorClicked(object? sender, RoutedEventArgs e)
         {
-            var fe = sender as FrameworkElement;
+            var fe = sender as StyledElement;
             if (fe == null)
                 return;
 

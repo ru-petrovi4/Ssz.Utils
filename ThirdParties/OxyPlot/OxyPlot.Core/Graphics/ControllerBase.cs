@@ -77,14 +77,15 @@ namespace OxyPlot
         {
             lock (this.GetSyncRoot(view))
             {
-                if (view.ActualModel != null)
-                {
-                    view.ActualModel.HandleMouseDown(this, args);
-                    if (args.Handled)
-                    {
-                        return true;
-                    }
-                }
+                // VALFIX
+                //if (view.ActualModel != null)
+                //{
+                //    view.ActualModel.HandleMouseDown(this, args);
+                //    if (args.Handled)
+                //    {
+                //        return true;
+                //    }
+                //}
 
                 var command = this.GetCommand(new OxyMouseDownGesture(args.ChangedButton, args.ModifierKeys, args.ClickCount));
                 return this.HandleCommand(command, view, args);

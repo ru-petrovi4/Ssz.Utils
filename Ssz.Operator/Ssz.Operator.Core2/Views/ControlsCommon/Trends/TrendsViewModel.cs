@@ -6,6 +6,7 @@ using Ssz.Operator.Core.DsShapes.Trends;
 using Ssz.Operator.Core.ControlsCommon.Trends;
 using Ssz.Utils;
 using Ssz.Operator.Core;
+using Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends;
 
 namespace Ssz.Operator.Core.ControlsCommon.Trends
 {    
@@ -18,7 +19,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
             DateRange visibleDateRange)
         {
             _now = now;
-            _visibleDateRange = visibleDateRange;
+            _visibleDateRange = visibleDateRange;            
         }
 
         ~TrendsViewModel()
@@ -96,6 +97,9 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
             get { return _selectedItem; }
             set
             {
+                //if (value is null)
+                //    value = new GenericTrendViewModel(); // Stubb
+
                 if (SetValue(ref _selectedItem, value))
                 {
                     foreach (var viewModel in Items)

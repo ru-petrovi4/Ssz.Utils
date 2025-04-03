@@ -2,31 +2,31 @@
 
 namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.PlotConfiguration
 {
-    public partial class AssignTrendToVariableWindow
-    {
-        #region construction and destruction
+    //public partial class AssignTrendToVariableWindow
+    //{
+    //    #region construction and destruction
 
-        public AssignTrendToVariableWindow(TrendConfigurationViewModel viewModel)
-        {
-            InitializeComponent();
+    //    public AssignTrendToVariableWindow(TrendConfigurationViewModel viewModel)
+    //    {
+    //        InitializeComponent();
 
-            DataContext = viewModel;
-        }
+    //        DataContext = viewModel;
+    //    }
 
-        #endregion
+    //    #endregion
 
-        #region private functions
+    //    #region private functions
 
-        private void onOkButtonClicked(object sender, RoutedEventArgs e)
-        {
-            DialogResult = true;
-        }
+    //    private void onOkButtonClicked(object sender, RoutedEventArgs e)
+    //    {
+    //        DialogResult = true;
+    //    }
 
-        private void onCancelButtonClicked(object sender, RoutedEventArgs e)
-        {
-            DialogResult = false;
-        }
+    //    private void onCancelButtonClicked(object sender, RoutedEventArgs e)
+    //    {
+    //        DialogResult = false;
+    //    }
 
-        #endregion
-    }
+    //    #endregion
+    //}
 }

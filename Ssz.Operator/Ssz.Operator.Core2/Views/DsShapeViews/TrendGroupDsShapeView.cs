@@ -49,14 +49,17 @@ namespace Ssz.Operator.Core.DsShapeViews
             var dsShape = (TrendGroupDsShape)DsShapeViewModel.DsShape;
             if (propertyName is null || propertyName == nameof(dsShape.DsTrendItemsCollection))
             {
-                Control.GenericTrendsViewModel.Display(dsShape.DsTrendItemsCollection);
+                Control.Jump(dsShape.DsTrendItemsCollection);
             }
 
             if (propertyName is null || propertyName == nameof(dsShape.ChartBackground))
-                Control.MainGenericTrendsPlotView.Background =
-                    dsShape.ChartBackground.GetBrush(dsShape.Container);
+            {
+                if (Control.MainGenericTrendsPlotView.Plot is not null)
+                    Control.MainGenericTrendsPlotView.Plot.PlotAreaBackground =
+                        dsShape.ChartBackground.GetBrush(dsShape.Container);
+            }
             //if (propertyName is null || propertyName == nameof(dsShape.ChartGridBrush))
-            //    Control.MainGenericTrendsPlotView.PlotGridBrush =
+            //    Control.MainGenericTrendsPlotView.Plot.PlotGridBrush =
             //        dsShape.ChartGridBrush.GetBrush(dsShape.Container);
             //if (propertyName is null || propertyName == nameof(dsShape.ChartAxisBrush))
             //    Control.MainGenericTrendsPlotView.AxisBrush = dsShape.ChartAxisBrush.GetBrush(dsShape.Container);
@@ -80,7 +83,7 @@ namespace Ssz.Operator.Core.DsShapeViews
             //if (propertyName is null || propertyName == nameof(dsShape.TrendsAxisXVisibility))
             //{
             //    if (dsShape.TrendsAxisXVisibility)
-            //        Control.MainGenericTrendsPlotView.Plot.HorizontalAxis.Visibility = true;
+            //        Control.MainGenericTrendsPlotView.XAxis.IsVisible = true;
             //    else
             //        Control.MainGenericTrendsPlotView.Plot.HorizontalAxis.Visibility = false;
             //}

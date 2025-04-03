@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Media;
+using Avalonia.Media;
 using Ssz.Operator.Core.ControlsCommon.Trends;
 using Ssz.Utils;
 

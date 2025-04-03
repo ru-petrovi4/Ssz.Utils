@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using Avalonia.Media;
 using Ssz.Operator.Core;
 using Ssz.Operator.Core.DsShapes.Trends;
 
@@ -211,7 +211,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
             {
                 try
                 {
-                    var trendItemInfo = (DsTrendItem)XamlHelper.Load(trendItemInfoXElement.ToString(SaveOptions.None));
+                    var trendItemInfo = (DsTrendItem)XamlHelper.Load(trendItemInfoXElement.ToString(SaveOptions.None))!;
                     trendItemInfosCollection.Add(trendItemInfo);
                 }
                 catch (Exception)
@@ -224,11 +224,12 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
             return trendsGroupConfiguration;
         }
 
-        private static Color? ToColor(XElement element)
+        private static Color? ToColor(XElement? element)
         {
-            if (element == null) return null;
+            if (element == null) 
+                return null;
 
-            System.Drawing.Color systemDrawingColor = ColorTranslator.FromHtml(element.Value);
+            System.Drawing.Color systemDrawingColor = System.Drawing.ColorTranslator.FromHtml(element.Value);
 
             return Color.FromArgb(
                 systemDrawingColor.A,

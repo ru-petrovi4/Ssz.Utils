@@ -102,6 +102,8 @@ namespace Ssz.Utils
             values = Map.TryGetValue(CommonEventMessageFieldsToAddParamName);
             if (values is not null && values.Count > 1 && !String.IsNullOrEmpty(values[1]))
                 CommonEventMessageFieldsToAdd = NameValueCollectionHelper.Parse(values[1]).ToFrozenDictionary(StringComparer.InvariantCultureIgnoreCase);
+            else
+                CommonEventMessageFieldsToAdd = new CaseInsensitiveDictionary<string?>().ToFrozenDictionary(StringComparer.InvariantCultureIgnoreCase);
         }
 
         /// <summary>
@@ -233,18 +235,20 @@ namespace Ssz.Utils
                 return null;
 
             var commonEventMessageFieldsToAdd = CommonEventMessageFieldsToAdd;
-            if (eventMessagesCollection.CommonFields is null)
+            if (commonEventMessageFieldsToAdd.Count > 0)
             {
-                if (commonEventMessageFieldsToAdd.Count > 0)
-                    eventMessagesCollection.CommonFields = new CaseInsensitiveDictionary<string?>(commonEventMessageFieldsToAdd);
-            }
-            else
-            {
-                foreach (var kvp in commonEventMessageFieldsToAdd)
+                if (eventMessagesCollection.CommonFields is null)
                 {
-                    eventMessagesCollection.CommonFields[kvp.Key] = kvp.Value;
+                    eventMessagesCollection.CommonFields = new CaseInsensitiveDictionary<string?>(commonEventMessageFieldsToAdd);
                 }
-            }            
+                else
+                {
+                    foreach (var kvp in commonEventMessageFieldsToAdd)
+                    {
+                        eventMessagesCollection.CommonFields[kvp.Key] = kvp.Value;
+                    }
+                }
+            }
 
             return eventMessagesCollection;
         }

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows.Media;
-using System.Windows.Threading;
+using Avalonia.Media;
+using Avalonia.Threading;
 using Ssz.Operator.Core;
+using Ssz.Operator.Core.Addons;
 using Ssz.Operator.Core.ControlsCommon.Trends;
 using Ssz.Operator.Core.DsShapes.Trends;
 using Ssz.Utils;
@@ -97,7 +98,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
                 .Where(trendItemInfo => !String.IsNullOrEmpty(trendItemInfo.TagName))
                 .Select(trendItemInfo =>
             {        
-                return new Trend(trendItemInfo, false, false, PlayDsProjectView.LastActiveRootPlayWindow);
+                return new Trend(trendItemInfo, false, PlayDsProjectView.LastActiveRootPlayWindow);
             }).ToArray();
 
             if (_trends != null)
@@ -149,7 +150,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
             {
                 groupId = @"";
 
-                foreach (var it in DsProject.Instance.CsvDb.GetData(GenericAddon.TrendGroups_FileName).OrderBy(i => i.Key))
+                foreach (var it in DsProject.Instance.CsvDb.GetData(GenericEmulationAddon.TrendGroups_FileName).OrderBy(i => i.Key))
                 {
                     if (it.Key.Contains('|') && it.Value.Count >= 2)
                     {
@@ -164,7 +165,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
             if (!String.IsNullOrEmpty(groupId))
             {
-                foreach (var it in DsProject.Instance.CsvDb.GetData(GenericAddon.TrendGroups_FileName).OrderBy(i => i.Key))
+                foreach (var it in DsProject.Instance.CsvDb.GetData(GenericEmulationAddon.TrendGroups_FileName).OrderBy(i => i.Key))
                 {
                     if (!it.Key.StartsWith(groupId + "|", StringComparison.InvariantCultureIgnoreCase) || it.Value.Count < 2)
                         continue;
@@ -233,7 +234,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
         private void SaveTrendGroup(string groupId)
         {
             var data = new CaseInsensitiveDictionary<List<string?>>(
-                DsProject.Instance.CsvDb.GetData(GenericAddon.TrendGroups_FileName));
+                DsProject.Instance.CsvDb.GetData(GenericEmulationAddon.TrendGroups_FileName));
 
             foreach (var key in data.Keys.ToArray())
             {
@@ -249,26 +250,27 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
                 data[key] = new List<string?> { key, trendViewModel.Source.HdaId, new Any(trendViewModel.Source.Brush).ValueAsString(false) };
             }
 
-            DsProject.Instance.CsvDb.SetData(GenericAddon.TrendGroups_FileName, data.Values);
+            DsProject.Instance.CsvDb.SetData(GenericEmulationAddon.TrendGroups_FileName, data.Values);
 
-            DsProject.Instance.CsvDb.SaveData(GenericAddon.TrendGroups_FileName);
+            DsProject.Instance.CsvDb.SaveData(GenericEmulationAddon.TrendGroups_FileName);
         }
 
         private static DateRange GetDefaultDateRange(DateTime now)
         {
             TimeSpan? defaultXAxisInterval = null;
-            defaultXAxisInterval = TimeSpan.FromHours(8);
+            defaultXAxisInterval = TimeSpan.FromMinutes(15);
             return new DateRange(now, defaultXAxisInterval.Value, 1);
         }
 
         private void Refresh()
         {
             var newDsTrendItems = TrendViewModelsCollection.Select(i => i.Source.DsTrendItem).ToArray();
-            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background,
+            Dispatcher.UIThread.InvokeAsync(
                 new Action(() =>
                 {
                     Display(newDsTrendItems);
-                })
+                }),
+                DispatcherPriority.Background
             );
         }
 
@@ -315,7 +317,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
         #region private fields
 
-        private string _caption;
+        private string _caption = @"";
 
         private Trend[] _trends = null!;
 

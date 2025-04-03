@@ -11,6 +11,14 @@
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
+ 
+  <ItemGroup>
+    <AvaloniaXaml Remove="Views\ControlsCommon\Trends\GenericTrends\AxisConfiguration\AxisConfigurationWindow.axaml" />
+    <AvaloniaXaml Remove="Views\ControlsCommon\Trends\GenericTrends\PlotConfiguration\AssignTrendToVariableWindow.axaml" />
+    <AvaloniaXaml Remove="Views\ControlsCommon\Trends\GenericTrends\PlotConfiguration\PlotConfigurationWindow.axaml" />
+    <AvaloniaXaml Remove="Views\ControlsCommon\Trends\GenericTrends\PlotConfiguration\TrendConfigurationWindow.axaml" />
+    <AvaloniaXaml Remove="Views\ControlsCommon\Trends\GenericTrends\Settings\SettingsWindow.axaml" />
+  </ItemGroup>
 	
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.2.6" />

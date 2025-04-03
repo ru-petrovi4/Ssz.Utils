@@ -1,4 +1,4 @@
-﻿using System.Windows.Media;
+﻿using Avalonia.Media;
 using Ssz.Operator.Core.ControlsCommon.Trends;
 
 namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.Settings
@@ -48,20 +48,20 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.Settings
             return new ColorPreset
             {
                 Name = "from plot values",
-                PlotBackground = plot.Plot.Background,
-                PlotAreaBackground = plot.Plot.PlotAreaBackground
+                PlotBackground = plot.Plot!.Background!,
+                PlotAreaBackground = plot.Plot!.PlotAreaBackground
             };
         }
 
-        public string Name { get; private set; }
-        public Brush PlotAreaBackground { get; private set; }
-        public Brush PlotBackground { get; private set; }
+        public string Name { get; private set; } = null!;
+        public IBrush PlotAreaBackground { get; private set; } = null!;
+        public IBrush PlotBackground { get; private set; } = null!;
 
         public void Apply(TrendsPlotView plot)
         {
             if (Name == @"Default") return;
-            plot.Plot.Background = PlotBackground;
-            plot.Plot.PlotAreaBackground = PlotAreaBackground;
+            plot.Plot!.Background = PlotBackground;
+            plot.Plot!.PlotAreaBackground = PlotAreaBackground as Brush;
         }
 
         public ColorPreset WithPlotBackgroundColor(Color color)
@@ -84,7 +84,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.Settings
             };
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             var that = obj as ColorPreset;
             if (that == null)

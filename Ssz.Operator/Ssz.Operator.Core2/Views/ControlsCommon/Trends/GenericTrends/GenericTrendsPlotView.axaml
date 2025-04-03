@@ -1,4 +1,4 @@
-﻿<genericTrends:TrendsPlotView x:Class="Cdt.Operator.Addons.Generic.Controls.Trends.GenericTrendsPlotView"
+﻿<trends:TrendsPlotView x:Class="Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.GenericTrendsPlotView"
                           xmlns="https://github.com/avaloniaui"
                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -22,23 +22,20 @@
 
         <!--<trends:StartDateConverter x:Key="StartDateConverter" />-->
 
-        <ControlTheme x:Key="SliderThumb" TargetType="Thumb">            
-            <Setter Property="OverridesDefaultStyle" Value="true" />
-            <Setter Property="Cursor" Value="SizeWE" />
-            <!-- <Setter Property="IsHitTestVisible" Value="False" />-->
+        <ControlTheme x:Key="SliderThumb" TargetType="Thumb">
+          <!-- <Setter Property="Cursor" Value="SizeWE" />
+          <Setter Property="IsHitTestVisible" Value="False" />-->
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Thumb">
                         <Grid>
                             <Line StrokeThickness="2"
                                       HorizontalAlignment="Center"
-                                      VerticalAlignment="Stretch"
-                                      Y2="1"
+                                      VerticalAlignment="Stretch"                                      
                                       Stretch="Fill"
-                                      StrokeEndLineCap="Square"
-                                      StrokeStartLineCap="Square"                                      
+                                      StrokeLineCap="Square"                                      
                                       Stroke="#FFC1C288" />
-							<genericTrends:ValuesControl x:Name="ValuesControl" Width="2" />
+							              <genericTrends:ValuesControl x:Name="ValuesControl" Width="2" />
                         </Grid>                        
                     </ControlTemplate>
                 </Setter.Value>
@@ -46,10 +43,8 @@
         </ControlTheme>
 
 		<ControlTheme x:Key="RulerSliderStyle" TargetType="Slider">
-			<Setter Property="Focusable" Value="False" />
-			<Setter Property="SnapsToDevicePixels" Value="true" />
-			<Setter Property="OverridesDefaultStyle" Value="true" />
-			<Setter Property="IsMoveToPointEnabled" Value="false" />
+			<Setter Property="Focusable" Value="False" />			
+			<!--<Setter Property="IsMoveToPointEnabled" Value="false" />-->
 			<Setter Property="Minimum" Value="0" />
 			<Setter Property="Maximum" Value="100" />
 			<Setter Property="Template">
@@ -65,7 +60,7 @@
                             <Rectangle StrokeThickness="0" Grid.RowSpan="3" />-->
 							<Track Grid.Row="1" x:Name="PART_Track" Margin="0,0,0,0">
 								<Track.Thumb>
-									<Thumb Style="{StaticResource SliderThumb}" />
+									<Thumb Theme="{StaticResource SliderThumb}" />
 								</Track.Thumb>
 							</Track>
 						</Grid>
@@ -78,21 +73,21 @@
     <trends:TrendsPlotView.Template>
         <ControlTemplate TargetType="trends:TrendsPlotView">            
             <Grid>                            
-                <oxy:Plot PlotAreaBackground="White" Padding="50,15,50,5"
+                <oxy:Plot Padding="50,15,50,5"
                               x:Name="Plot"
                               LayoutUpdated="Plot_OnLayoutUpdated">
-                    <oxy:Plot.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Убрать все" Click="OnRemoveAllRulers" />
-                        </ContextMenu>
-                    </oxy:Plot.ContextMenu>                    
-                    <oxy:Plot.Background>
-                        <SolidColorBrush Color="White" />
-                    </oxy:Plot.Background>
-                    <oxy:Plot.DefaultTrackerTemplate>
-                        <ControlTemplate />
-                    </oxy:Plot.DefaultTrackerTemplate>                    
-                    <oxy:PlotView.Axes>
+                  <oxy:Plot.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="Убрать все" Click="OnRemoveAllRulers" />
+                    </ContextMenu>
+                  </oxy:Plot.ContextMenu>
+                  <oxy:Plot.Background>
+                    <SolidColorBrush Color="White" />
+                  </oxy:Plot.Background>
+                  <oxy:Plot.DefaultTrackerTemplate>
+                    <ControlTemplate />
+                  </oxy:Plot.DefaultTrackerTemplate>                    
+                    <oxy:Plot.Axes>
                         <oxy:DateTimeAxis Position="Bottom" x:Name="XAxis"
                                           AxislineThickness="3"
                                           TickStyle="Inside"
@@ -119,7 +114,7 @@
                                           IsPanEnabled="False"
                                           IsZoomEnabled="False"
                                           StringFormat="F02" />
-                    </oxy:PlotView.Axes>
+                    </oxy:Plot.Axes>
                 </oxy:Plot>
 
                 <!--
@@ -133,7 +128,7 @@
 
                 <ScrollBar Orientation="Horizontal"
                            Value="0" Maximum="100" ViewportSize="2"
-                           x:Name="HorizontalScrollBar" Visibility="Collapsed" />
+                           x:Name="HorizontalScrollBar" IsVisible="False" />
 
                 <Canvas>
                     <Grid x:Name="AdditionalGrid"                                        
@@ -143,4 +138,4 @@
             </Grid>
         </ControlTemplate>
     </trends:TrendsPlotView.Template>
-</genericTrends:TrendsPlotView>
+</trends:TrendsPlotView>

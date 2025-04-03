@@ -1,61 +1,52 @@
-﻿using Ssz.Utils;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Media;
+using Ssz.Utils;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 {
-    public class ValuesControl : Control
+    public class ValuesControl : TemplatedControl
     {
         #region public functions
 
         public static readonly AvaloniaProperty DataProperty =
-            AvaloniaProperty.Register("Data", typeof(string), typeof(ValuesControl),
-                new PropertyMetadata(null, OnPropertyChanged));
+            AvaloniaProperty.Register<YAxisControl, string>(nameof(Data));
 
         public string Data
         {
-            get { return (string)GetValue(DataProperty); }
+            get { return (string)GetValue(DataProperty)!; }
             set { SetValue(DataProperty, value); }
         }
 
-        #endregion
-
-        #region protected functions
-
-        protected static void OnPropertyChanged(DependencyObject d, AvaloniaPropertyChangedEventArgs e)
-        {
-            ((ValuesControl)d).InvalidateVisual();
-        }
-
-        protected override void OnRender(DrawingContext dc)
+        public override void Render(DrawingContext dc)
         {
             var dataValues = CsvHelper.ParseCsvLine(",", Data);
             if (dataValues.Length < 2)
                 return;
-            
+
             bool isOnPlot = new Any(dataValues[0]).ValueAsBoolean(false);
             string caption = dataValues[1] ?? @"";
 
             if (isOnPlot)
             {
                 FormattedText formattedText =
-                            GetFormattedText(caption, Brushes.Red);                
+                            GetFormattedText(caption, Brushes.Red);
                 var p0 = new Point(-formattedText.Width / 2 - 1, -formattedText.Height - 2);
                 var p1 = new Point(formattedText.Width / 2 + 1, -formattedText.Height - 2);
                 var p2 = new Point(formattedText.Width / 2 + 1, -1);
-                var p3 = new Point(-formattedText.Width / 2 - 1, -1);                
+                var p3 = new Point(-formattedText.Width / 2 - 1, -1);
                 var geometry = Geometry.Parse("M " + p0.ToString() + " L " + p1.ToString() +
                     " L " + p2.ToString() +
-                    " L " + p3.ToString() +                    
+                    " L " + p3.ToString() +
                     " Z");
-                dc.DrawGeometry(new Any("#FFF0EEEF").ValueAs<Brush>(false), new Pen(Brushes.Black, 0.5), geometry);
+                dc.DrawGeometry(new SolidColorBrush(Color.Parse("#FFF0EEEF")), new Pen(Brushes.Black, 0.5), geometry);
 
                 dc.DrawText(formattedText, new Point(-formattedText.Width / 2, -formattedText.Height - 1));
             }
@@ -64,14 +55,26 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
             int count = dataValues.Length / 2;
             if (count == 0)
                 return;
-            double delta = ActualHeight / count;
+            double delta = Bounds.Height / count;
             for (int i = 0; i < count; i++)
             {
-                DrawValue(dc, isOnPlot, 6, delta / 2 + delta * i, dataValues[2 * i + 1], new Any(dataValues[2 * i]).ValueAs<Brush>(false));
+                DrawValue(dc, isOnPlot, 6, delta / 2 + delta * i, dataValues[2 * i + 1], new SolidColorBrush(Color.Parse(dataValues[2 * i] ?? @"")));
             }
 
-            base.OnRender(dc);
+            base.Render(dc);
         }
+
+        #endregion
+
+        #region protected functions
+
+        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+
+            if (e.Property == DataProperty)
+                InvalidateVisual();
+        }        
 
         #endregion
 
@@ -94,13 +97,13 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
                     " L " + p3.ToString() +
                     " Q " + p30.ToString() + " " + p0.ToString() +
                     " Z");
-                dc.DrawGeometry(new Any("#FFF0EEEF").ValueAs<Brush>(false), new Pen(Brushes.Black, 0.5), geometry);
+                dc.DrawGeometry(new SolidColorBrush(Color.Parse("#FFF0EEEF")), new Pen(Brushes.Black, 0.5), geometry);
             }
             
             dc.DrawText(formattedText, new Point(x, y - formattedText.Height / 2));
         }        
 
-        private FormattedText GetFormattedText(string? text, Brush? brush)
+        private FormattedText GetFormattedText(string? text, IBrush? brush)
         {
             return new FormattedText(text ?? @"", CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
                 new Typeface(FontFamily, FontStyle, FontWeight, FontStretch), 10, brush);

@@ -8,7 +8,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
     {
         #region construction and destruction
 
-        private TrendGroupWindow() :
+        protected TrendGroupWindow()
             //base("Generic.TrendGroupWindow", 1300, 800)
         {
             InitializeComponent();

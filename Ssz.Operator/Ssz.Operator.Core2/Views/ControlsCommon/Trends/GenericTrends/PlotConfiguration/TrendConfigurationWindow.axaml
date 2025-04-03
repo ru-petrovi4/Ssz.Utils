@@ -1,4 +1,4 @@
-﻿<Window x:Class="Cdt.Operator.Addons.Generic.Controls.Trends.PlotConfiguration.TrendConfigurationWindow"
+﻿<!--<Window x:Class="Cdt.Operator.Addons.Generic.Controls.Trends.PlotConfiguration.TrendConfigurationWindow"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Classic"
@@ -98,4 +98,4 @@
                    Text="или сегодня); Понедельник+10h (10:00 последнего Понедельника) }" VerticalAlignment="Top" />
 
     </Grid>
-</Window>
+</Window>-->

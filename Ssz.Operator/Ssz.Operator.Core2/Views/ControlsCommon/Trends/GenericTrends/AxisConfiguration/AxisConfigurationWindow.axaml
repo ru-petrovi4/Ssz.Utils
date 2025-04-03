@@ -1,4 +1,4 @@
-﻿<Window x:Class="Cdt.Operator.Addons.Generic.Controls.Trends.AxisConfiguration.AxisConfigurationWindow"
+﻿<!--<Window x:Class="Cdt.Operator.Addons.Generic.Controls.Trends.AxisConfiguration.AxisConfigurationWindow"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -30,4 +30,4 @@
                    Width="254" />
 
     </Grid>
-</Window>
+</Window>-->

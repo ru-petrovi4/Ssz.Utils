@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Windows.Media;
+using Avalonia.Media;
 using Ssz.Operator.Core;
 using Ssz.Operator.Core.Constants;
 using Ssz.Operator.Core.ControlsCommon.Trends;
@@ -32,7 +32,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
             IsDisplayedOnPlot = true;
 
-            trend.PropertyChanged += args =>
+            trend.PropertyChanged += (s, args) =>
             {
                 if (args.Property == Trend.HdaIdToDisplayProperty)
                 {
@@ -301,7 +301,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
         private static Trend CreateTrend()
         {                      
-            return new Trend(new DsTrendItem(), false, false, PlayDsProjectView.LastActiveRootPlayWindow);
+            return new Trend(new DsTrendItem(), false, PlayDsProjectView.LastActiveRootPlayWindow);
         }
 
         #endregion

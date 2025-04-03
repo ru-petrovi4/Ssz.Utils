@@ -212,7 +212,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends
             lineSeries.Bind(
                 LineSeries.ItemsSourceProperty,
                 new Binding("Points"));
-            
+
             lineSeries.Bind(
                 LineSeries.IsVisibleProperty,
                 new Binding("IsDisplayedOnPlot"));

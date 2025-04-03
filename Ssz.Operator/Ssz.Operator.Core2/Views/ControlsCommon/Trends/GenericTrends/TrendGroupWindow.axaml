@@ -1,9 +1,7 @@
 ﻿<Window
-    x:Class="Cdt.Operator.Addons.Generic.Controls.Trends.GenericTrends.TrendGroupWindow"
+    x:Class="Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.TrendGroupWindow"
     xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"    
-    xmlns:locationMindfulWindows="clr-namespace:Ssz.Operator.Core.ControlsCommon;assembly=Ssz.Operator.Core"    
-    Title=""
-    ResizeMode="CanResize"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"           
+    Title=""    
     Topmost="true">
 </Window>

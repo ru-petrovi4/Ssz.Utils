@@ -8,6 +8,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Media;
 using Avalonia.Styling;
 using OxyPlot;
@@ -50,12 +51,12 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
         public event Action TimeZoomChanged = delegate { };
 
-        public static readonly AvaloniaProperty SelectedTrendColorProperty = AvaloniaProperty.Register<GenericTrendsPlotView, Color>(
-            nameof(SelectedTrendColor), Colors.Red);
+        public static readonly AvaloniaProperty SelectedItemColorProperty = AvaloniaProperty.Register<GenericTrendsPlotView, Color>(
+            nameof(SelectedItemColor), Colors.Red);
 
-        public Color SelectedTrendColor
+        public Color SelectedItemColor
         {
-            get { return (Color)GetValue(SelectedTrendColorProperty)!; }
+            get { return (Color)GetValue(SelectedItemColorProperty)!; }
         }        
 
         public void ResetPanningAndZooming()
@@ -69,8 +70,11 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
         public void ZoomSelectedValueAxisIn()
         {
-            var axis = (GenericYAxis?) Plot.Axes.FirstOrDefault(ax => ax.DataContext == SelectedTrend);
-            if (axis == null)
+            if (Plot is null)
+                return;
+
+            var axis = (GenericYAxis?) Plot.Axes.FirstOrDefault(ax => ax.DataContext == SelectedItem);
+            if (axis is null)
                 return;
 
             axis.ZoomIn();
@@ -78,8 +82,11 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
         public void ZoomSelectedValueAxisOut()
         {
-            var axis = (GenericYAxis?) Plot.Axes.FirstOrDefault(ax => ax.DataContext == SelectedTrend);
-            if (axis == null)
+            if (Plot is null)
+                return;
+
+            var axis = (GenericYAxis?) Plot.Axes.FirstOrDefault(ax => ax.DataContext == SelectedItem);
+            if (axis is null)
                 return;
 
             axis.ZoomOut();
@@ -90,8 +97,11 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
             minimum = 0;
             maximum = 100;
 
-            var axis = (GenericYAxis?) Plot.Axes.FirstOrDefault(ax => ax.DataContext == SelectedTrend);
-            if (axis == null)
+            if (Plot is null)
+                return;
+
+            var axis = (GenericYAxis?) Plot.Axes.FirstOrDefault(ax => ax.DataContext == SelectedItem);
+            if (axis is null)
                 return;
 
             minimum = axis.InternalAxis.ActualMinimum;
@@ -100,8 +110,11 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
         public void SetSelectedValueAxisMinimumAndMaximum(double minimum, double maximum)
         {
-            var axis = (GenericYAxis?) Plot.Axes.FirstOrDefault(ax => ax.DataContext == SelectedTrend);
-            if (axis == null)
+            if (Plot is null)
+                return;
+
+            var axis = (GenericYAxis?) Plot.Axes.FirstOrDefault(ax => ax.DataContext == SelectedItem);
+            if (axis is null)
                 return;
 
             axis.SetMinimumAndMaximum(minimum, maximum);
@@ -109,21 +122,27 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
         public void CenterPlotAroundDisplayValueSliderPosition()
         {
-            var viewModel = (GenericTrendsViewModel) DataContext;
+            var viewModel = (GenericTrendsViewModel) DataContext!;
 
             viewModel.CenterMinAndMaxAroundCurrentDisplayedValue();
         }
 
         public void WriteSettings(TrendsGroupConfiguration configuration)
         {
-            configuration.PlotAreaBackgroundColor = ((SolidColorBrush) Plot!.PlotAreaBackground).Color;
+            if (Plot is null)
+                return;
+
+            configuration.PlotAreaBackgroundColor = ((SolidColorBrush) Plot.PlotAreaBackground).Color;
             //configuration.PlotBackgroundColor = ((SolidColorBrush) Plot.Background).Color;
 
-            configuration.DsTrendItemsCollection = Plot.Axes.Skip(2).Select(a => ((TrendViewModel)a.DataContext).Source.DsTrendItem).ToArray();
+            configuration.DsTrendItemsCollection = Plot.Axes.Skip(2).Select(a => ((TrendViewModel)a.DataContext!).Source.DsTrendItem).ToArray();
         }
 
         public void ReadSettings(TrendsGroupConfiguration configuration)
         {
+            if (Plot is null)
+                return;
+
             if (configuration.PlotAreaBackgroundColor != null)
                 Plot.PlotAreaBackground = new SolidColorBrush(configuration.PlotAreaBackgroundColor.Value);
             if (configuration.PlotBackgroundColor != null)
@@ -131,7 +150,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
             if (configuration.DsTrendItemsCollection != null)
             {
-                var viewModel = (TrendsViewModel) DataContext;
+                var viewModel = (TrendsViewModel) DataContext!;
                 viewModel.Display(configuration.DsTrendItemsCollection);
                 /*
                 for (int i = 0; i < Plot.Axes.Count - 1; ++i)
@@ -163,7 +182,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
             if (Plot is not null)
             {
-                //Plot.ApplyTemplate();
+                Plot.ApplyTemplate();
                 Plot.ActualController.UnbindMouseDown(OxyMouseButton.Left);
                 Plot.ActualController.UnbindMouseDown(OxyMouseButton.Right);
 
@@ -193,28 +212,28 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
             YAxis = e.NameScope.Find(YAxis_PART) as Axis;
             if (YAxis != null)
             {
-                YAxis.SetBinding(Axis.AbsoluteMinimumProperty, new Binding("SelectedItem.YMinWithPadding"));
-                YAxis.SetBinding(Axis.AbsoluteMaximumProperty, new Binding("SelectedItem.YMaxWithPadding"));
-                YAxis.SetBinding(Axis.MinimumProperty, new Binding("SelectedItem.AxisMinimumWithPadding"));
-                YAxis.SetBinding(Axis.MaximumProperty, new Binding("SelectedItem.AxisMaximumWithPadding"));
-                YAxis.SetBinding(Axis.MajorStepProperty, new Binding("SelectedItem.MajorStep"));
-                YAxis.SetBinding(Axis.MinorStepProperty, new Binding("SelectedItem.MinorStep"));
+                YAxis.Bind(Axis.AbsoluteMinimumProperty, new Binding("SelectedItem.YMinWithPadding") { TargetNullValue = 0.0 });
+                YAxis.Bind(Axis.AbsoluteMaximumProperty, new Binding("SelectedItem.YMaxWithPadding") { TargetNullValue = 100.0 });
+                YAxis.Bind(Axis.MinimumProperty, new Binding("SelectedItem.AxisMinimumWithPadding") { TargetNullValue = 0.0 });
+                YAxis.Bind(Axis.MaximumProperty, new Binding("SelectedItem.AxisMaximumWithPadding") { TargetNullValue = 100.0 });
+                YAxis.Bind(Axis.MajorStepProperty, new Binding("SelectedItem.MajorStep") { TargetNullValue = 5.0 });
+                YAxis.Bind(Axis.MinorStepProperty, new Binding("SelectedItem.MinorStep") { TargetNullValue = 10.0 });
 
-                YAxis.SetBinding(Axis.StringFormatProperty, new Binding("SelectedItem.ValueFormat"));
+                YAxis.Bind(Axis.StringFormatProperty, new Binding("SelectedItem.ValueFormat") { TargetNullValue = "F02" });
 
-                SetBinding(SelectedTrendColorProperty, new Binding("SelectedItem.Color"));
+                Bind(SelectedItemColorProperty, new Binding("SelectedItem.Color") { TargetNullValue = Colors.Black });
             }
         }
 
         protected override void RefreshLines()
         {
-            if (Plot == null)
+            if (Plot is null)
                 return;
 
-            if (TrendItems == null)
+            if (Items is null)
                 return;
 
-            List<TrendViewModel> trendItems = TrendItems.ToList();
+            List<TrendViewModel> trendItems = Items.ToList();
 
             ClearLines();
 
@@ -230,13 +249,13 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
                     DataContext = trendItem,
                     Key = nItem.ToString(CultureInfo.InvariantCulture)
                 };
-                axis.Position = AxisPosition.Left;                
+                axis.Position = OxyPlot.Axes.AxisPosition.Left;                
 
                 Plot.Axes.Add(axis);
                 nItem ++;
             }
 
-            foreach (TrendViewModel trendItem in TrendItemsInDisplayOrder(trendItems))
+            foreach (TrendViewModel trendItem in ItemsInDisplayOrder(trendItems))
             {
                 LineSeries series = AddLine(trendItem);
                 series.YAxisKey = trendItems.IndexOf(trendItem).ToString(CultureInfo.InvariantCulture);
@@ -255,29 +274,28 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
         {
             base.OnPropertyChanged(e);
 
-            if (e.Property == SelectedTrendProperty)
+            if (e.Property == SelectedItemProperty)
             {
-                if (Plot == null)
-                    return;
-
-                var value = GetValue(SelectedTrendProperty) as TrendViewModel;
-                if (value == null)
-                    return;
-
-                List<LineSeries> series = Plot.Series
-                    .OfType<LineSeries>()
-                    .OrderBy(s => s.DataContext == SelectedTrend).ToList();
+                if (Plot is null)
+                    return;                          
 
                 Plot.Series.Clear();
-                foreach (LineSeries seria in series)
+                foreach (LineSeries seria in Plot.Series.ToArray())
                 {
-                    Plot.Series.Add(seria);
-
-                    // selected line always goes last
-                    seria.StrokeThickness = Equals(seria, series.Last())
-                        ? 3
-                        : 1;
-                }                
+                    if (seria.DataContext == SelectedItem)
+                    {
+                        Plot.Series.Remove(seria);
+                        seria.StrokeThickness = 3;
+                        Plot.Series.Add(seria);
+                    }
+                    else
+                    {
+                        seria.StrokeThickness = 1;
+                        
+                    }
+                }
+                // TODO Reorder.
+                //Plot.Series.Add(seria);
             }
 
             if (e.Property == MinimumVisibleTimeProperty ||
@@ -286,11 +304,11 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
                 UpdateValueLabels();
             }
 
-            if (e.Property == SelectedTrendColorProperty)
+            if (e.Property == SelectedItemColorProperty && YAxis is not null)
             {
-                YAxis.TitleColor = SelectedTrendColor;
-                YAxis.InternalAxis.TextColor = SelectedTrendColor.ToOxyColor();
-                YAxis.TicklineColor = SelectedTrendColor;
+                YAxis.TitleColor = SelectedItemColor;
+                YAxis.InternalAxis.TextColor = SelectedItemColor.ToOxyColor();
+                YAxis.TicklineColor = SelectedItemColor;
             }
         }
 
@@ -313,11 +331,11 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
         private void UpdateValueLabels()
         {
-            if (AdditionalGrid == null)
+            if (AdditionalGrid is null)
                 return;
 
             var viewModel = DataContext as TrendsViewModel;
-            if (viewModel == null)
+            if (viewModel is null)
                 return;
 
             foreach (var child in AdditionalGrid.Children)
@@ -328,15 +346,15 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
         private void UpdateRulerValues(Slider? ruler)
         {
-            if (ruler == null)
+            if (ruler is null)
                 return;
 
             var viewModel = DataContext as TrendsViewModel;
-            if (viewModel == null)
+            if (viewModel is null)
                 return;
 
-            var valuesControl = TreeHelper.FindChild<ValuesControl>(ruler, "ValuesControl");
-            if (valuesControl == null)
+            var valuesControl = TreeHelper.FindChild<ValuesControl>(ruler, vc => vc.Name == "ValuesControl");
+            if (valuesControl is null)
                 return;
 
             double sliderValue0To1 = ruler.Value / 100;
@@ -350,7 +368,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
                 foreach (TrendViewModel trendViewModel in viewModel.Items)
                 {
                     var value = trendViewModel.GetValue(time);
-                    if (value == null || Double.IsNaN(value.Value)) continue;
+                    if (value is null || Double.IsNaN(value.Value)) continue;
                     dataValues.Add(new Any(trendViewModel.Color).ValueAsString(false, trendViewModel.Source.ValueFormat));
                     dataValues.Add(new Any(value.Value).ValueAsString(true, trendViewModel.Source.ValueFormat));
                 }
@@ -365,10 +383,10 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
         private void Plot_OnLayoutUpdated(object sender, EventArgs e)
         {
-            if (AdditionalGrid == null)
+            if (AdditionalGrid is null)
                 return;
 
-            if (Plot.ActualModel != null)
+            if (Plot?.ActualModel is not null)
             {
                 Canvas.SetLeft(AdditionalGrid, Plot.ActualModel.PlotArea.Left);
                 Canvas.SetTop(AdditionalGrid, Plot.ActualModel.PlotArea.Top);
@@ -379,7 +397,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
         private void TryAddRuler(ScreenPoint position)
         {
-            if (AdditionalGrid == null)
+            if (AdditionalGrid is null)
                 return;
 
             double valueXPercent = 100 * (position.X - Plot!.ActualModel.PlotArea.Left) / Plot.ActualModel.PlotArea.Width;
@@ -396,7 +414,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
         private void OnRemoveAllRulers(object? sender, RoutedEventArgs e)
         {
-            if (AdditionalGrid == null)
+            if (AdditionalGrid is null)
                 return;
 
             foreach (var ruler in AdditionalGrid.Children.OfType<Slider>().ToArray())
@@ -405,7 +423,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
             }    
             //Plot!.HideZoomRectangle();
 
-            //if (_completedZoomRect_DataPoint0 == null || _completedZoomRect_DataPoint1 == null)
+            //if (_completedZoomRect_DataPoint0 is null || _completedZoomRect_DataPoint1 is null)
             //    return;
 
             //var minimumVisibleTime = new DateTime(DateTimeAxis.ToDateTime(_completedZoomRect_DataPoint0.Value.X).Ticks, DateTimeKind.Local);
@@ -559,7 +577,8 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
 
             public override void Delta(OxyMouseEventArgs args)
             {
-                _trendsPlotView.Plot.ZoomRectangleTemplate = (ControlTemplate)_trendsPlotView.Resources["ZoomRectangleTemplate"];
+                if (_trendsPlotView.Plot is not null)
+                    _trendsPlotView.Plot.ZoomRectangleTemplate = (ControlTemplate)_trendsPlotView.Resources["ZoomRectangleTemplate"]!;
 
                 OxyRect plotArea = PlotView.ActualModel.PlotArea;
                 ScreenPoint position = ValidatePosition(plotArea, args.Position);
@@ -573,15 +592,16 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends
             {
                 //Application.Current.Dispatcher.Invoke(() =>
                 //    _aspenTrendsPlotView.DisplayValuesSlider.IsHitTestVisible = true);
-
-                _trendsPlotView.Plot.ZoomRectangleTemplate = (ControlTemplate)_trendsPlotView.Resources["CompletedZoomRectangleTemplate"];
+                if (_trendsPlotView.Plot is not null)
+                    _trendsPlotView.Plot.ZoomRectangleTemplate = (ControlTemplate)_trendsPlotView.Resources["CompletedZoomRectangleTemplate"]!;
 
                 OxyRect plotArea = PlotView.ActualModel.PlotArea;
                 ScreenPoint position = ValidatePosition(plotArea, args.Position);
                 OxyRect zoomOxyRect = GetZoomOxyRect(position, plotArea);
                 PlotView.ShowZoomRectangle(zoomOxyRect);
 
-                _trendsPlotView.Plot.ReleaseMouseCapture();
+                // TODO
+                //_trendsPlotView.Plot?.PointerCaptureLost();
 
                 if (zoomOxyRect.Width > 50)
                 {

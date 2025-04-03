@@ -1,5 +1,4 @@
 ﻿using Ssz.Utils;
-using Ssz.Utils.Wpf;
 
 namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.AxisConfiguration
 {

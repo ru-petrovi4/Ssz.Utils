@@ -1,4 +1,4 @@
-﻿<Window x:Class="Cdt.Operator.Addons.Generic.Controls.Trends.PlotConfiguration.AssignTrendToVariableWindow"
+﻿<!--<Window x:Class="Cdt.Operator.Addons.Generic.Controls.Trends.PlotConfiguration.AssignTrendToVariableWindow"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Определение Сссылки на Параметр" Height="285" Width="600" ResizeMode="NoResize"
@@ -20,4 +20,4 @@
                  VerticalAlignment="Top" Width="418" />
 
     </Grid>
-</Window>
+</Window>-->

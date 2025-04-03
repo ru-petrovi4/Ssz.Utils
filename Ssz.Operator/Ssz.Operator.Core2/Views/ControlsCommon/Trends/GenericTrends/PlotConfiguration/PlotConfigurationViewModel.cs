@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Media;
 using Ssz.Operator.Core.ControlsCommon.Trends;
 using Ssz.Utils;
 using Ssz.Operator.Core.DsShapes.Trends;
 using Ssz.Operator.Core;
+using Avalonia.Media;
 
 namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.PlotConfiguration
 {
@@ -47,7 +47,7 @@ namespace Ssz.Operator.Core.ControlsCommon.Trends.GenericTrends.PlotConfiguratio
 
         public TrendConfigurationViewModel[] TrendConfigurationViewModels { get; private set; }
 
-        public TrendConfigurationViewModel FirstUnassignedTrend()
+        public TrendConfigurationViewModel? FirstUnassignedTrend()
         {
             return TrendConfigurationViewModels.FirstOrDefault(vm => !vm.IsAssigned);
         }

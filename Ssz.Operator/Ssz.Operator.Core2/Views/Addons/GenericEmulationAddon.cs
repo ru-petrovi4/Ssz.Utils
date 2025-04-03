@@ -23,6 +23,8 @@ namespace Ssz.Operator.Core.Addons
 
         #region public functions
 
+        public const string TrendGroups_FileName = @"GenericEmulation_TrendGroups.csv";
+
         public static readonly Guid AddonGuid = new(@"4FBAE868-6CA6-43BC-8A8D-88789803ED79");
 
         public override Guid Guid => AddonGuid;
@@ -98,8 +100,7 @@ namespace Ssz.Operator.Core.Addons
         #region private fields        
 
         private readonly DsPageTypeBase[] _dsPageTypes =
-            {new GenericGraphicDsPageType(), new GenericFaceplateDsPageType()};
-
+            {new GenericGraphicDsPageType(), new GenericFaceplateDsPageType()};        
         private AlarmsListViewModel? _alarmsListViewModel;
 
         #endregion
