@@ -256,11 +256,11 @@
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net40'">
     <DefineConstants>NET40;NETFULL</DefineConstants>
-  </PropertyGroup>-->
+  </PropertyGroup>
 
 	<PropertyGroup Condition="'$(Platform)'=='AnyCPU'">
 		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\EPPlus.xml</DocumentationFile>
-	</PropertyGroup>
+	</PropertyGroup>-->
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
 		<NoWarn>1591</NoWarn>
@@ -327,7 +327,7 @@
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.0" />
     <PackageReference Include="System.Xml.XmlDocument" Version="4.3.0" />
     <PackageReference Include="System.Xml.XPath.XmlDocument" Version="4.3.0" />
-  </ItemGroup>-->
+  </ItemGroup>
 
 	<ItemGroup>
 		<None Update="readme.txt">
@@ -337,5 +337,5 @@
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
-	</ItemGroup>
+	</ItemGroup>-->
 </Project>
