@@ -47,7 +47,8 @@ using System.Configuration;
 using OfficeOpenXml.Compatibility;
 using System.Text;
 #if (Core)
-using Microsoft.Extensions.Configuration;
+// VALFIX
+//using Microsoft.Extensions.Configuration;
 #endif
 namespace OfficeOpenXml
 {
@@ -527,14 +528,16 @@ namespace OfficeOpenXml
         {
             DoAdjustDrawings = true;
 #if (Core)
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);  //Add Support for codepage 1252
+            // VALFIX
+            string v = null;
+            //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);  //Add Support for codepage 1252
 
-            var build = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", true,false);            
-            var c = build.Build();
+            //var build = new ConfigurationBuilder()
+            //    .SetBasePath(Directory.GetCurrentDirectory())
+            //    .AddJsonFile("appsettings.json", true,false);            
+            //var c = build.Build();
 
-            var v = c["EPPlus:ExcelPackage:Compatibility:IsWorksheets1Based"];
+            //var v = c["EPPlus:ExcelPackage:Compatibility:IsWorksheets1Based"];
 #else
             var v = ConfigurationManager.AppSettings["EPPlus:ExcelPackage.Compatibility.IsWorksheets1Based"];
 #endif
