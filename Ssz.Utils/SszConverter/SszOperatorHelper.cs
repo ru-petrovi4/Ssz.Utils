@@ -33,7 +33,7 @@ namespace Ssz.Utils
 #if NET5_0_OR_GREATER
         /// <summary>
         ///     If no operator, then returns element
-        ///     {element}{Operator}{option1}{option2}{Value1}|||{Value2}
+        ///     {element}{Operator}{option1}{option2}{Value1}||{Value2}
         /// </summary>
         /// <param name="elementAndOperatorAndValue"></param>
         /// <returns></returns>
@@ -79,7 +79,7 @@ namespace Ssz.Utils
 
         /// <summary>
         ///     If no operator, then returns values
-        ///     {Operator}{option1}{option2}{Value1}|||{Value2}
+        ///     {Operator}{option1}{option2}{Value1}||{Value2}
         /// </summary>
         /// <param name="elementAndOperatorAndValue"></param>
         /// <returns></returns>

@@ -56,7 +56,9 @@ namespace Ssz.DataAccessGrpc.ServerBase
                         byte[] clientPasswordInRequestHashBytes = SHA512.HashData(new UTF8Encoding(false).GetBytes(clientPasswordInRequest));
                         if (!clientPasswordInRequestHashBytes.SequenceEqual(dataAccessClientPasswordHashBytes))
                             throw new RpcException(new Status(StatusCode.PermissionDenied, "Invalid client password (ClientPassword context params)."));
-                    }                    
+                    }
+                    if (request.ClientWorkstationName == @"local") // Reserved for internal use
+                        throw new RpcException(new Status(StatusCode.PermissionDenied, "ClientWorkstationName cannot be 'local'."));
                     IDataAccessServerContext serverContext = _dataAccessServerWorker.AddServerContext(
                         _logger,                        
                         request.ClientApplicationName ?? @"",
